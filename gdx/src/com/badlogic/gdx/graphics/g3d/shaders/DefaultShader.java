@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -93,11 +94,18 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform opacity = new Uniform("u_opacity", BlendingAttribute.Type);
 		public final static Uniform diffuseColor = new Uniform("u_diffuseColor", ColorAttribute.Diffuse);
 		public final static Uniform diffuseTexture = new Uniform("u_diffuseTexture", TextureAttribute.Diffuse);
+		public final static Uniform diffuseUVTranslation = new Uniform("u_diffuseUVTranslation");
+		public final static Uniform diffuseUVScaling = new Uniform("u_diffuseUVScaling");
 		public final static Uniform specularColor = new Uniform("u_specularColor", ColorAttribute.Specular);
 		public final static Uniform specularTexture = new Uniform("u_specularTexture", TextureAttribute.Specular);
+		public final static Uniform specularUVTranslation = new Uniform("u_specularUVTranslation");
+		public final static Uniform specularUVScaling = new Uniform("u_specularUVScaling");
 		public final static Uniform emissiveColor = new Uniform("u_emissiveColor", ColorAttribute.Emissive);
+		public final static Uniform emissiveTexture = new Uniform("u_emissiveTexture", TextureAttribute.Emissive);
 		public final static Uniform reflectionColor = new Uniform("u_reflectionColor", ColorAttribute.Reflection);
+		public final static Uniform reflectionTexture = new Uniform("u_reflectionTexture", TextureAttribute.Reflection);
 		public final static Uniform normalTexture = new Uniform("u_normalTexture", TextureAttribute.Normal);
+		public final static Uniform ambientTexture = new Uniform("u_ambientTexture", TextureAttribute.Ambient);
 		public final static Uniform alphaTest = new Uniform("u_alphaTest");
 
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
@@ -343,6 +351,45 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, unit);
 			}
 		};
+		public final static Setter ambientTexture = new Setter() {
+			@Override
+			public boolean isGlobal (BaseShader shader, int inputID) {
+				return false;
+			}
+
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Ambient))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
+		public final static Setter emissiveTexture = new Setter() {
+			@Override
+			public boolean isGlobal (BaseShader shader, int inputID) {
+				return false;
+			}
+
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Emissive))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
+		public final static Setter reflectionTexture = new Setter() {
+			@Override
+			public boolean isGlobal (BaseShader shader, int inputID) {
+				return false;
+			}
+
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Reflection))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
 
 		public static class ACubemap implements Setter {
 			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -445,11 +492,18 @@ public class DefaultShader extends BaseShader {
 	public final int u_opacity;
 	public final int u_diffuseColor;
 	public final int u_diffuseTexture;
+	public final int u_diffuseUVTranslation;
+	public final int u_diffuseUVScaling;
 	public final int u_specularColor;
 	public final int u_specularTexture;
+	public final int u_specularUVTranslation;
+	public final int u_specularUVScaling;
 	public final int u_emissiveColor;
+	public final int u_emissiveTexture;
 	public final int u_reflectionColor;
+	public final int u_reflectionTexture;
 	public final int u_normalTexture;
+	public final int u_ambientTexture;
 	public final int u_alphaTest;
 	// Lighting uniforms
 	protected final int u_ambientCubemap;
@@ -553,11 +607,18 @@ public class DefaultShader extends BaseShader {
 		u_opacity = register(Inputs.opacity);
 		u_diffuseColor = register(Inputs.diffuseColor, Setters.diffuseColor);
 		u_diffuseTexture = register(Inputs.diffuseTexture, Setters.diffuseTexture);
+		u_diffuseUVTranslation = register(Inputs.diffuseUVTranslation);
+		u_diffuseUVScaling = register(Inputs.diffuseUVScaling);
 		u_specularColor = register(Inputs.specularColor, Setters.specularColor);
 		u_specularTexture = register(Inputs.specularTexture, Setters.specularTexture);
+		u_specularUVTranslation = register(Inputs.specularUVTranslation);
+		u_specularUVScaling = register(Inputs.specularUVScaling);
 		u_emissiveColor = register(Inputs.emissiveColor, Setters.emissiveColor);
+		u_emissiveTexture = register(Inputs.emissiveTexture, Setters.emissiveTexture);
 		u_reflectionColor = register(Inputs.reflectionColor, Setters.reflectionColor);
+		u_reflectionTexture = register(Inputs.reflectionTexture, Setters.reflectionTexture);
 		u_normalTexture = register(Inputs.normalTexture, Setters.normalTexture);
+		u_ambientTexture = register(Inputs.ambientTexture, Setters.ambientTexture);
 		u_alphaTest = register(Inputs.alphaTest);
 
 		u_ambientCubemap = lighting ? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights,
@@ -626,6 +687,7 @@ public class DefaultShader extends BaseShader {
 		if ((attributes & Usage.Tangent) == Usage.Tangent) prefix += "#define tangentFlag\n";
 		if ((attributes & Usage.BiNormal) == Usage.BiNormal) prefix += "#define binormalFlag\n";
 		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
+		
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
@@ -638,6 +700,13 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define " + TextureAttribute.NormalAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.NormalAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
+		if ((mask & TextureAttribute.Ambient) == TextureAttribute.Ambient)
+			prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
+		if ((mask & TextureAttribute.Emissive) == TextureAttribute.Emissive)
+			prefix += "#define " + TextureAttribute.EmissiveAlias + "Flag\n";
+		if ((mask & TextureAttribute.Reflection) == TextureAttribute.Reflection)
+			prefix += "#define " + TextureAttribute.ReflectionAlias + "Flag\n";			
+			
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
@@ -737,7 +806,18 @@ public class DefaultShader extends BaseShader {
 				depthRangeNear = dta.depthRangeNear;
 				depthRangeFar = dta.depthRangeFar;
 				depthMask = dta.depthMask;
-			} else if (!config.ignoreUnimplemented) throw new GdxRuntimeException("Unknown material attribute: " + attr.toString());
+			}
+			else if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
+				TextureAttribute ta = (TextureAttribute)attr;
+				set(u_diffuseUVTranslation, ta.uvTranslation);
+				set(u_diffuseUVScaling, ta.uvScaling);
+			}
+			else if ((t & TextureAttribute.Specular) == TextureAttribute.Specular) {
+				TextureAttribute ta = (TextureAttribute)attr;
+				set(u_specularUVTranslation, ta.uvTranslation);
+				set(u_specularUVScaling, ta.uvScaling);
+			}
+			else if (!config.ignoreUnimplemented) throw new GdxRuntimeException("Unknown material attribute: " + attr.toString());
 		}
 
 		context.setCullFace(cullFace);

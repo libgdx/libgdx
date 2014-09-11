@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.math.Vector2;
 
 public class TextureAttribute extends Attribute {
 	public final static String DiffuseAlias = "diffuseTexture";
@@ -31,16 +32,28 @@ public class TextureAttribute extends Attribute {
 	public final static long Bump = register(BumpAlias);
 	public final static String NormalAlias = "normalTexture";
 	public final static long Normal = register(NormalAlias);
-
+	public final static String AmbientAlias = "ambientTexture";
+	public final static long Ambient = register(AmbientAlias);
+	public final static String EmissiveAlias = "emissiveTexture";
+	public final static long Emissive = register(EmissiveAlias);
+	public final static String ReflectionAlias = "reflectionTexture";
+	public final static long Reflection = register(ReflectionAlias);
+	public final static String UnknownAlias = "unknownTexture";
+	public final static long Unknown = register(UnknownAlias);
+	
 	// FIXME add more types!
-	// FIXME add scaling + offset?
 	// FIXME add filter settings? MipMap needs to be obeyed during loading :/
 
-	protected static long Mask = Diffuse | Specular | Bump | Normal;
+	protected static long Mask = Diffuse | Specular | Bump | Normal | Ambient | Emissive | Reflection | Unknown;
 
 	public final static boolean is (final long mask) {
 		return (mask & Mask) != 0;
 	}
+
+	/** uv translation (default: 0,0) */
+	public Vector2 uvTranslation = new Vector2(0.0f, 0.0f);
+	/** uv scaling (default: 1,1) */
+	public Vector2 uvScaling = new Vector2(1.0f, 1.0f);
 
 	public static TextureAttribute createDiffuse (final Texture texture) {
 		return new TextureAttribute(Diffuse, texture);
@@ -57,6 +70,18 @@ public class TextureAttribute extends Attribute {
 	public static TextureAttribute createBump (final Texture texture) {
 		return new TextureAttribute(Bump, texture);
 	}
+	
+	public static TextureAttribute createAmbient (final Texture texture) {
+		return new TextureAttribute(Ambient, texture);
+	}	
+	
+	public static TextureAttribute createEmissive (final Texture texture) {
+		return new TextureAttribute(Emissive, texture);
+	}
+	
+	public static TextureAttribute createReflection (final Texture texture) {
+		return new TextureAttribute(Reflection, texture);
+	}
 
 	public final TextureDescriptor<Texture> textureDescription;
 
@@ -71,13 +96,19 @@ public class TextureAttribute extends Attribute {
 		this.textureDescription.set(textureDescription);
 	}
 
+	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, final Vector2 uvTranslation, final Vector2 uvScaling) {
+		this(type, textureDescription);
+		if (uvTranslation != null) this.uvTranslation.set(uvTranslation);
+		if (uvScaling != null) this.uvScaling.set(uvScaling);
+	}
+
 	public TextureAttribute (final long type, final Texture texture) {
 		this(type);
 		textureDescription.texture = texture;
 	}
 
 	public TextureAttribute (final TextureAttribute copyFrom) {
-		this(copyFrom.type, copyFrom.textureDescription);
+		this(copyFrom.type, copyFrom.textureDescription, copyFrom.uvTranslation, copyFrom.uvScaling);
 	}
 
 	@Override
@@ -89,6 +120,8 @@ public class TextureAttribute extends Attribute {
 	public int hashCode () {
 		int result = (int)type;
 		result = 991 * result + textureDescription.hashCode();
-		return result; 
+		result = 991 * result + uvTranslation.hashCode();
+		result = 991 * result + uvScaling.hashCode();
+		return result;
 	}
 }

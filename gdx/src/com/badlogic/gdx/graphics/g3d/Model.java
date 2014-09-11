@@ -255,7 +255,6 @@ public class Model implements Disposable {
 
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 
-		// FIXME uvScaling/uvTranslation totally ignored
 		if (mtl.textures != null) {
 			for (ModelTexture tex : mtl.textures) {
 				Texture texture;
@@ -274,16 +273,28 @@ public class Model implements Disposable {
 				descriptor.vWrap = texture.getVWrap();
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
-					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
+					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor, tex.uvTranslation, tex.uvScaling));
 					break;
 				case ModelTexture.USAGE_SPECULAR:
-					result.set(new TextureAttribute(TextureAttribute.Specular, descriptor));
+					result.set(new TextureAttribute(TextureAttribute.Specular, descriptor, tex.uvTranslation, tex.uvScaling));
 					break;
 				case ModelTexture.USAGE_BUMP:
-					result.set(new TextureAttribute(TextureAttribute.Bump, descriptor));
+					result.set(new TextureAttribute(TextureAttribute.Bump, descriptor, tex.uvTranslation, tex.uvScaling));
 					break;
 				case ModelTexture.USAGE_NORMAL:
-					result.set(new TextureAttribute(TextureAttribute.Normal, descriptor));
+					result.set(new TextureAttribute(TextureAttribute.Normal, descriptor, tex.uvTranslation, tex.uvScaling));
+					break;
+				case ModelTexture.USAGE_AMBIENT:
+					result.set(new TextureAttribute(TextureAttribute.Ambient, descriptor, tex.uvTranslation, tex.uvScaling));
+					break;
+				case ModelTexture.USAGE_EMISSIVE:
+					result.set(new TextureAttribute(TextureAttribute.Emissive, descriptor, tex.uvTranslation, tex.uvScaling));
+					break;
+				case ModelTexture.USAGE_REFLECTION:
+					result.set(new TextureAttribute(TextureAttribute.Reflection, descriptor, tex.uvTranslation, tex.uvScaling));
+					break;
+				default:
+					result.set(new TextureAttribute(TextureAttribute.Unknown, descriptor, tex.uvTranslation, tex.uvScaling));
 					break;
 				}
 			}
