@@ -327,7 +327,8 @@ public class Skin implements Disposable {
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
-		if (drawable instanceof TintedDrawable) return new TintedDrawable((TintedDrawable)drawable);
+		if (drawable instanceof TintedDrawable)
+			return new TintedDrawable((TintedDrawable)drawable, newDrawable(((TintedDrawable)drawable).getDrawable()));
 		throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
 	}
 
@@ -338,6 +339,7 @@ public class Skin implements Disposable {
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
+		if (drawable instanceof TintedDrawable) drawable = ((TintedDrawable)drawable).getDrawable();
 		if (drawable instanceof TextureRegionDrawable) {
 			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
 			Sprite sprite;
@@ -500,11 +502,11 @@ public class Skin implements Disposable {
 			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
-				TintedDrawable tintedDrawable = new TintedDrawable();
-				tintedDrawable.name = jsonData.name;
-				tintedDrawable.color = color;
-				tintedDrawable.setDrawable(newDrawable(name, color));
-				return tintedDrawable;
+				TintedDrawable tinted = new TintedDrawable();
+				tinted.name = name;
+				tinted.color = color;
+				tinted.setDrawable(newDrawable(name, color));
+				return tinted;
 			}
 		});
 
@@ -529,10 +531,10 @@ public class Skin implements Disposable {
 		}
 
 		/** Copy. */
-		public TintedDrawable (TintedDrawable drawable) {
-			super(drawable.getDrawable());
-			name = drawable.name;
-			color = drawable.color;
+		public TintedDrawable (TintedDrawable tinted, Drawable copy) {
+			super(copy);
+			name = tinted.name;
+			color = tinted.color;
 		}
 
 		public String toString () {
