@@ -38,13 +38,11 @@ public class TextureAttribute extends Attribute {
 	public final static long Emissive = register(EmissiveAlias);
 	public final static String ReflectionAlias = "reflectionTexture";
 	public final static long Reflection = register(ReflectionAlias);
-	public final static String UnknownAlias = "unknownTexture";
-	public final static long Unknown = register(UnknownAlias);
 	
 	// FIXME add more types!
 	// FIXME add filter settings? MipMap needs to be obeyed during loading :/
 
-	protected static long Mask = Diffuse | Specular | Bump | Normal | Ambient | Emissive | Reflection | Unknown;
+	protected static long Mask = Diffuse | Specular | Bump | Normal | Ambient | Emissive | Reflection;
 
 	public final static boolean is (final long mask) {
 		return (mask & Mask) != 0;

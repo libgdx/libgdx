@@ -293,9 +293,6 @@ public class Model implements Disposable {
 				case ModelTexture.USAGE_REFLECTION:
 					result.set(new TextureAttribute(TextureAttribute.Reflection, descriptor, tex.uvTranslation, tex.uvScaling));
 					break;
-				default:
-					result.set(new TextureAttribute(TextureAttribute.Unknown, descriptor, tex.uvTranslation, tex.uvScaling));
-					break;
 				}
 			}
 		}
