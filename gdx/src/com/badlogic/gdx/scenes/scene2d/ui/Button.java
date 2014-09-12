@@ -28,7 +28,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
- * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.
+ * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.<br>
+ * <br>
+ * The button's padding is set to the background drawable's padding when the background changes, overwriting any padding set
+ * manually. Padding can still be set on the button's table cells.
  * <p>
  * {@link ChangeEvent} is fired when the button is clicked. Cancelling the event will restore the checked button state to what is
  * was previously.
