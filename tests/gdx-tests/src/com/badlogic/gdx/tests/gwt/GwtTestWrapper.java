@@ -363,6 +363,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isCatchBackKey() {
+			return input.isCatchBackKey();
+		}
+
+		@Override
 		public void setCatchMenuKey (boolean catchMenu) {
 			input.setCatchMenuKey(catchMenu);
 		}
