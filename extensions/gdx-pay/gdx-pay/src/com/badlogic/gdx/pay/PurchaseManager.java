@@ -61,8 +61,7 @@ public interface PurchaseManager {
 	/** Disposes the purchase manager. */
 	public void dispose ();
 
-	/** Requests to purchase an item without a developer payload set. The listener will always be called once the purchase has
-	 * either completed or failed.
+	/** Requests to purchase an item. The listener will always be called once the purchase has either completed or failed.
 	 * <p>
 	 * Note: a GDX runtime exception if throw if you have not registered a purchase observer.
 	 * 
@@ -71,17 +70,6 @@ public interface PurchaseManager {
 	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.
 	 * @param identifier The item to purchase. */
 	public void purchase (PurchaseListener listener, String identifier);
-
-	/** Requests to purchase an item. The listener will always be called once the purchase has either completed or failed.
-	 * <p>
-	 * Note: a GDX runtime exception if throw if you have not registered a purchase observer.
-	 * 
-	 * @param listener The listener that will be called with the purchase information. If the listener finishes without throwing an
-	 *           exception the purchases is considered handled by the application. If the listener is (a) never called or (b) the
-	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.
-	 * @param identifier The item to purchase.
-	 * @param developerPayload A payload identifying the user and purchase. */
-	public void purchase (PurchaseListener listener, String identifier, String developerPayload);
 
 	/** Restores existing purchases. */
 	public void purchaseRestore ();

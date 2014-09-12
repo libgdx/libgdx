@@ -45,6 +45,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.amazon.inapp.purchasing.PurchaseResponse;
 import com.android.vending.billing.IInAppBillingService;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.pay.Offer;
@@ -230,11 +231,8 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	
 	@Override
 	public void purchase (final PurchaseListener listener, final String identifier) {
-		purchase(listener, identifier, null);
-	}
-
-	@Override
-	public void purchase (final PurchaseListener listener, final String identifier, final String payload) {
+		String payload = null;
+		
 		// make a purchase
 		helper.launchPurchaseFlow(activity, identifier, IabHelper.ITEM_TYPE_INAPP, requestCode, new IabHelper.OnIabPurchaseFinishedListener() {
 			@Override
@@ -246,6 +244,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				else {
 					// parse transaction data
 					String identifier = purchase.getSku();
+					
 					
 					String transactionId = purchase.getOrderId();
 					Date transactionDate = new Date(purchase.getPurchaseTime());
@@ -276,11 +275,19 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	@Override
 	public void purchaseRestore () {
 		// ask for purchase restore
-		helper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener() {
+		boolean querySkuDetails = true;  // --> that way we get prices and title/description as well!
+		helper..queryInventoryAsync(querySkuDetails, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished (IabResult result, Inventory inventory) {
+				// build list of purchases
 				xxx();
+inventory.getSkuDetails("hell").getPrice();
 
+				// send inventory to observer
+				observer.handleRestore(transactions);
+				
+				// if the observer above didn't throw an error, we consume all consumeables as needed
+				xxx();
 			}
 		});
 	}
