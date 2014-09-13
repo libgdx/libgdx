@@ -8,9 +8,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>gdx-pay-ios-apple</artifactId>
+  <artifactId>gdx-pay-iosrobovm-apple</artifactId>
   <packaging>jar</packaging>
-  <name>libGDX Pay iOS/Apple</name>
+  <name>libGDX Pay iOS RoboVM/Apple</name>
 
   <dependencies>
     <dependency>

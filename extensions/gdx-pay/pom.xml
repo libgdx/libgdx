@@ -16,7 +16,7 @@
     <module>gdx-pay</module>
     <module>gdx-pay-android-openiab</module>
     <module>gdx-pay-desktop-apple</module>
-    <module>gdx-pay-ios-apple</module>
+    <module>gdx-pay-iosrobovm-apple</module>
     <module>gdx-pay-gwt-googlewallet</module>
   </modules>
 </project>
