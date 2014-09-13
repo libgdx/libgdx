@@ -260,6 +260,11 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public boolean isCatchBackKey() {
+		return false;
+	}
+
+	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
 

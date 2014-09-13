@@ -49,6 +49,7 @@ public class NinePatch {
 	static private final Color tmpDrawColor = new Color();
 
 	private Texture texture;
+	private String name;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
 	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
 	private int topLeft = -1, topCenter = -1, topRight = -1;
@@ -507,5 +508,17 @@ public class NinePatch {
 
 	public Texture getTexture () {
 		return texture;
+	}
+
+	public String getName () {
+		return name;
+	}
+
+	public void setName (String name) {
+		this.name = name;
+	}
+
+	public String toString () {
+		return name != null ? name : super.toString();
 	}
 }

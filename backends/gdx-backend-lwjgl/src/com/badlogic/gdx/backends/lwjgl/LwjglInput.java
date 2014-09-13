@@ -287,6 +287,11 @@ final public class LwjglInput implements Input {
 
 	}
 
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
+	}
+
 	void processEvents () {
 		synchronized (this) {
 			if (processor != null) {

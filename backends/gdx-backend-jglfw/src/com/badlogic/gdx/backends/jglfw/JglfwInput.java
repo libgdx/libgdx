@@ -252,6 +252,10 @@ public class JglfwInput implements Input {
 	public void setCatchBackKey (boolean catchBack) {
 	}
 
+	public boolean isCatchBackKey() {
+		return false;
+	}
+
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
 
