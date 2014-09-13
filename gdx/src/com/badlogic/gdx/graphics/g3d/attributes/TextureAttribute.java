@@ -69,10 +69,10 @@ public class TextureAttribute extends Attribute {
 	}
 
 	public final TextureDescriptor<Texture> textureDescription;
-	public float uvOffsetX = 0;
-	public float uvOffsetY = 0;
-	public float uvScaleX = 1;
-	public float uvScaleY = 1;
+	public float offsetU = 0;
+	public float offsetV = 0;
+	public float scaleU = 1;
+	public float scaleV = 1;
 
 	public TextureAttribute (final long type) {
 		super(type);
@@ -85,13 +85,13 @@ public class TextureAttribute extends Attribute {
 		this.textureDescription.set(textureDescription);
 	}
 	
-	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float uvOffsetX,
-		float uvOffsetY, float uvScaleX, float uvScaleY) {
+	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float offsetU,
+		float offsetV, float scaleU, float scaleV) {
 		this(type, textureDescription);
-		this.uvOffsetX = uvOffsetX;
-		this.uvOffsetY = uvOffsetY;
-		this.uvScaleX = uvScaleX;
-		this.uvScaleY = uvScaleY;
+		this.offsetU = offsetU;
+		this.offsetV = offsetV;
+		this.scaleU = scaleU;
+		this.scaleV = scaleV;
 	}
 
 	public TextureAttribute (final long type, final Texture texture) {
@@ -105,15 +105,15 @@ public class TextureAttribute extends Attribute {
 	}
 
 	public TextureAttribute (final TextureAttribute copyFrom) {
-		this(copyFrom.type, copyFrom.textureDescription, copyFrom.uvOffsetX, copyFrom.uvOffsetY, copyFrom.uvScaleX, copyFrom.uvScaleY);
+		this(copyFrom.type, copyFrom.textureDescription, copyFrom.offsetU, copyFrom.offsetV, copyFrom.scaleU, copyFrom.scaleV);
 	}
 
 	public void set (final TextureRegion region) {
 		textureDescription.texture = region.getTexture();
-		uvOffsetX = region.getU();
-		uvOffsetY = region.getV();
-		uvScaleX = region.getU2() - uvOffsetX;
-		uvScaleY = region.getV2() - uvOffsetY;
+		offsetU = region.getU();
+		offsetV = region.getV();
+		scaleU = region.getU2() - offsetU;
+		scaleV = region.getV2() - offsetV;
 	}
 
 	@Override
@@ -125,10 +125,10 @@ public class TextureAttribute extends Attribute {
 	public int hashCode () {
 		int result = (int)type;
 		result = 991 * result + textureDescription.hashCode();
-		result = 991 * result + NumberUtils.floatToRawIntBits(uvOffsetX);
-		result = 991 * result + NumberUtils.floatToRawIntBits(uvOffsetY);
-		result = 991 * result + NumberUtils.floatToRawIntBits(uvScaleX);
-		result = 991 * result + NumberUtils.floatToRawIntBits(uvScaleY);
+		result = 991 * result + NumberUtils.floatToRawIntBits(offsetU);
+		result = 991 * result + NumberUtils.floatToRawIntBits(offsetV);
+		result = 991 * result + NumberUtils.floatToRawIntBits(scaleU);
+		result = 991 * result + NumberUtils.floatToRawIntBits(scaleV);
 		return result;
 	}
 }

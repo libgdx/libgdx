@@ -39,6 +39,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -218,7 +219,7 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Diffuse));
-				shader.set(inputID, ta.uvOffsetX, ta.uvOffsetY, ta.uvScaleX, ta.uvScaleY);
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
 		public final static Setter specularColor = new LocalSetter() {
@@ -239,7 +240,7 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Specular));
-				shader.set(inputID, ta.uvOffsetX, ta.uvOffsetY, ta.uvScaleX, ta.uvScaleY);
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
 		public final static Setter emissiveColor = new LocalSetter() {
@@ -266,7 +267,7 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Normal));
-				shader.set(inputID, ta.uvOffsetX, ta.uvOffsetY, ta.uvScaleX, ta.uvScaleY);
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
 
