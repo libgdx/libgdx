@@ -56,6 +56,20 @@ public abstract class BaseShader implements Shader {
 
 		void set (final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);
 	}
+	
+	public abstract static class GlobalSetter implements Setter {
+		@Override
+		public boolean isGlobal (final BaseShader shader, final int inputID) {
+			return true;
+		}
+	}
+	
+	public abstract static class LocalSetter implements Setter {
+		@Override
+		public boolean isGlobal (final BaseShader shader, final int inputID) {
+			return false;
+		}
+	}
 
 	public static class Uniform implements Validator {
 		public final String alias;
