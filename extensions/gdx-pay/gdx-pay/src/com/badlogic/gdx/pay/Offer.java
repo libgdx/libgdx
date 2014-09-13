@@ -36,8 +36,8 @@ public class Offer {
 		// and return this for chaining
 		return this;
 	}
-	
-	public Map<String, String> getIdentifierForStores() {
+
+	public Map<String, String> getIdentifierForStores () {
 		return identifierForStores;
 	}
 

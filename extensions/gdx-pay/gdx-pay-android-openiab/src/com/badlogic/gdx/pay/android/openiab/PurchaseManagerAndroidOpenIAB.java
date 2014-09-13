@@ -120,8 +120,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 		// return the correct store name
 		if (helper != null) {
 			return storeNameFromOpenIAB(helper.getConnectedAppstoreName());
-		}
-		else {
+		} else {
 			// create temporary helper to retrieve store name (not very clean though!)
 			return null;
 		}
@@ -130,8 +129,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	private String storeNameFromOpenIAB (String storeNameOpenIAB) {
 		if (storeNameOpenIAB == null) {
 			return null;
-		}
-		else {
+		} else {
 			if (storeNameOpenIAB.equals(OpenIabHelper.NAME_GOOGLE)) {
 				return PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE;
 			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_AMAZON)) {
@@ -159,8 +157,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	private String storeNameToOpenIAB (String storeName) {
 		if (storeName == null) {
 			return null;
-		}
-		else {
+		} else {
 			if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE)) {
 				return OpenIabHelper.NAME_GOOGLE;
 			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON)) {
@@ -189,15 +186,15 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	public void install (final PurchaseObserver observer, PurchaseManagerConfig config) {
 		this.observer = observer;
 		this.config = config;
-		
+
 		// map the identifiers/SKUs
 		for (int i = 0; i < config.getOfferCount(); i++) {
 			Offer offer = config.getOffer(i);
-			
+
 			// map store-specific identifiers with our default identifier!
 			String identifier = offer.getIdentifier();
 			Map<String, String> identifierForStores = offer.getIdentifierForStores();
-			for (Map.Entry<String, String> entry: identifierForStores.entrySet()) {
+			for (Map.Entry<String, String> entry : identifierForStores.entrySet()) {
 				String storeNameOpenIAB = storeNameToOpenIAB(entry.getKey());
 				String identifierForStore = entry.getValue();
 				if (!(SkuManager.getInstance().getStoreSku(storeNameOpenIAB, identifier).equals(identifierForStore))) {
@@ -205,12 +202,11 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				}
 			}
 		}
-		
+
 		// build the OpenIAB options
 		OpenIabHelper.Options.Builder builder = new OpenIabHelper.Options.Builder()
-		                                                         .setVerifyMode(OpenIabHelper.Options.VERIFY_SKIP)
-		                                                         .addStoreKeys(config.getStoreKeys());
-		
+			.setVerifyMode(OpenIabHelper.Options.VERIFY_SKIP).addStoreKeys(config.getStoreKeys());
+
 		// start OpenIAB
 		helper = new OpenIabHelper(activity, builder.build());
 		helper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
@@ -219,7 +215,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 					// error setting up the
 					helper = null;
 					inventory = null;
-					
+
 					// remove observer and config as well
 					PurchaseManagerAndroidOpenIAB.this.observer = null;
 					PurchaseManagerAndroidOpenIAB.this.config = null;
@@ -234,7 +230,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 						public void onQueryInventoryFinished (IabResult result, Inventory inventory) {
 							// store the inventory so we can lookup prices later!
 							PurchaseManagerAndroidOpenIAB.this.inventory = inventory;
-							
+
 							// notify of successful initialization
 							observer.handleInstall();
 						}
@@ -266,42 +262,41 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	@Override
 	public void purchase (final PurchaseListener listener, final String identifier) {
 		String payload = null;
-		
+
 		// make a purchase
-		helper.launchPurchaseFlow(activity, identifier, IabHelper.ITEM_TYPE_INAPP, requestCode, new IabHelper.OnIabPurchaseFinishedListener() {
-			@Override
-			public void onIabPurchaseFinished (IabResult result, Purchase purchase) {
-				if (result.isFailure()) {
-					// the purchase has failed
-					listener.handlePurchaseError(new GdxRuntimeException(result.toString()));
-				}
-				else {
-					// parse transaction data
-					Transaction transaction = transaction(purchase);
-	
-					// forward result to listener
-					listener.handlePurchase(transaction);
-	
-					// if the listener doesn't throw an error, we consume as needed
-					Offer offer = config.getOffer(purchase.getSku());
-					if (offer == null) {
-						Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
-					}
-					else if (offer.getType() == OfferType.CONSUMABLE) {
-						// it's a consumable, so we consume right away!
-						helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-							@Override
-							public void onConsumeFinished (Purchase purchase, IabResult result) {
-								if (!result.isSuccess()) {
-									// NOTE: we should only rarely have an exception due to e.g. network outages etc.
-									Gdx.app.error(TAG, "Error while consuming: " + result);
+		helper.launchPurchaseFlow(activity, identifier, IabHelper.ITEM_TYPE_INAPP, requestCode,
+			new IabHelper.OnIabPurchaseFinishedListener() {
+				@Override
+				public void onIabPurchaseFinished (IabResult result, Purchase purchase) {
+					if (result.isFailure()) {
+						// the purchase has failed
+						listener.handlePurchaseError(new GdxRuntimeException(result.toString()));
+					} else {
+						// parse transaction data
+						Transaction transaction = transaction(purchase);
+
+						// forward result to listener
+						listener.handlePurchase(transaction);
+
+						// if the listener doesn't throw an error, we consume as needed
+						Offer offer = config.getOffer(purchase.getSku());
+						if (offer == null) {
+							Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
+						} else if (offer.getType() == OfferType.CONSUMABLE) {
+							// it's a consumable, so we consume right away!
+							helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+								@Override
+								public void onConsumeFinished (Purchase purchase, IabResult result) {
+									if (!result.isSuccess()) {
+										// NOTE: we should only rarely have an exception due to e.g. network outages etc.
+										Gdx.app.error(TAG, "Error while consuming: " + result);
+									}
 								}
-							}
-						});
+							});
+						}
 					}
 				}
-			}
-		}, payload);
+			}, payload);
 	}
 
 	@Override
@@ -330,8 +325,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 					Offer offer = config.getOffer(purchase.getSku());
 					if (offer == null) {
 						Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
-					}
-					else if (offer.getType() == OfferType.CONSUMABLE) {
+					} else if (offer.getType() == OfferType.CONSUMABLE) {
 						// it's a consumable, so we consume right away!
 						helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
 							@Override

@@ -23,14 +23,14 @@ public interface PurchaseObserver {
 
 	/** Called when the purchase manager has successfully initialized. */
 	public void handleInstall ();
-	
-	/** Called when the installation of the purchase manager failed. 
+
+	/** Called when the installation of the purchase manager failed.
 	 * 
 	 * @param e The error, e.g. network outage, invalid keys, etc. */
 	public void handleInstallError (Throwable e);
-	
-	/** Called when purchases have been restored. The "valid" parameter will indicate if the purchase was successful (true) or was aborted or
-	 * refunded by the user (false).
+
+	/** Called when purchases have been restored. The "valid" parameter will indicate if the purchase was successful (true) or was
+	 * aborted or refunded by the user (false).
 	 * 
 	 * @param transactions The restored purchases. */
 	public void handleRestore (Transaction[] transactions);

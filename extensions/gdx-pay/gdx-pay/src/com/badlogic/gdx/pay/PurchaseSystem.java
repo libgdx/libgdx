@@ -32,15 +32,14 @@ public final class PurchaseSystem {
 	}
 
 	/** Returns the store name or null for none. */
-	public static String storeName() {
+	public static String storeName () {
 		if (manager != null) {
 			return manager.storeName();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	/** Installs a purchase observer. */
 	public static void install (PurchaseObserver observer, PurchaseManagerConfig config) {
 		if (manager != null) {
@@ -51,14 +50,14 @@ public final class PurchaseSystem {
 	}
 
 	/** Returns true if the purchase system is installed and ready to go. */
-	public static boolean installed() {
+	public static boolean installed () {
 		if (manager != null) {
 			return manager.installed();
 		} else {
 			return false;
 		}
 	}
-	
+
 	/** Disposes the purchase manager if there was one. */
 	public static void dispose () {
 		if (manager != null) {

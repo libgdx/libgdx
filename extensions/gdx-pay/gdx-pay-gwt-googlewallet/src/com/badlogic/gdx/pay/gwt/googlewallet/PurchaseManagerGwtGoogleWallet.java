@@ -21,9 +21,11 @@ import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.PurchaseObserver;
 
-/** The purchase manager implementation for Google Wallet for GWT.
+/**
+ * The purchase manager implementation for Google Wallet for GWT.
  * 
- * @author noblemaster */
+ * @author noblemaster
+ */
 public class PurchaseManagerGwtGoogleWallet implements PurchaseManager {
 
   @Override
@@ -34,7 +36,7 @@ public class PurchaseManagerGwtGoogleWallet implements PurchaseManager {
   @Override
   public void install(PurchaseObserver observer, PurchaseManagerConfig config) {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -46,18 +48,18 @@ public class PurchaseManagerGwtGoogleWallet implements PurchaseManager {
   @Override
   public void dispose() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   public void purchase(PurchaseListener listener, String identifier) {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   public void purchaseRestore() {
     // TODO Auto-generated method stub
-    
+
   }
 }

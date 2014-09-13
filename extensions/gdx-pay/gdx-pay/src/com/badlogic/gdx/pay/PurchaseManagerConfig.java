@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.pay;
 
 import java.util.ArrayList;
@@ -19,50 +20,49 @@ public class PurchaseManagerConfig {
 	public static final String STORE_NAME_IOS_APPLE = "AppleiOS";
 	public static final String STORE_NAME_DESKTOP_APPLE = "AppleMac";
 	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
-	
+
 	private List<Offer> offers;
-	
+
 	private Map<String, String> storeKeys;
-	
-	
-	public PurchaseManagerConfig() {
+
+	public PurchaseManagerConfig () {
 		offers = new ArrayList<Offer>(16);
 		storeKeys = new HashMap<String, String>(16);
 	}
-	
-	public void addOffer(Offer offer) {
+
+	public void addOffer (Offer offer) {
 		offers.add(offer);
 	}
-	
-	public Offer getOffer(String identifier) {
+
+	public Offer getOffer (String identifier) {
 		// search matching offer and return it
 		for (int i = 0; i < offers.size(); i++) {
 			if (offers.get(i).getIdentifier().equals(identifier)) {
 				return offers.get(i);
 			}
 		}
-		
+
 		// no matching offer found
 		return null;
 	}
-	
-	public Offer getOffer(int index) {
+
+	public Offer getOffer (int index) {
 		return offers.get(index);
 	}
-	
-	public int getOfferCount() {
+
+	public int getOfferCount () {
 		return offers.size();
 	}
-	
-	public void addStoreKey(String storeName, String publicKey) {
+
+	public void addStoreKey (String storeName, String publicKey) {
 		storeKeys.put(storeName, publicKey);
 	}
-	
-	public String getStoreKey(String storeName) {
+
+	public String getStoreKey (String storeName) {
 		return storeKeys.get(storeName);
 	}
-	
-	public Map<String, String> getStoreKeys() {
+
+	public Map<String, String> getStoreKeys () {
 		return storeKeys;
 	}
 }

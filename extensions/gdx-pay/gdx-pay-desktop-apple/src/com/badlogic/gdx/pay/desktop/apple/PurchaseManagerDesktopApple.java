@@ -34,7 +34,7 @@ public class PurchaseManagerDesktopApple implements PurchaseManager {
 	@Override
 	public void install (PurchaseObserver observer, PurchaseManagerConfig config) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -46,18 +46,18 @@ public class PurchaseManagerDesktopApple implements PurchaseManager {
 	@Override
 	public void dispose () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void purchase (PurchaseListener listener, String identifier) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void purchaseRestore () {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
