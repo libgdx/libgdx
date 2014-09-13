@@ -8,9 +8,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>gdx-pay-google-gwt</artifactId>
+	<artifactId>gdx-pay-gwt-googlewallet</artifactId>
 	<packaging>jar</packaging>
-	<name>libGDX Pay Google/GWT</name>
+	<name>libGDX Pay GWT/GoogleWallet</name>
 
 	<dependencies>
 		<dependency>

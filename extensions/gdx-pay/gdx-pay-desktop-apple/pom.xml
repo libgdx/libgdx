@@ -8,9 +8,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>gdx-pay-stripe-desktop</artifactId>
+  <artifactId>gdx-pay-desktop-apple</artifactId>
   <packaging>jar</packaging>
-  <name>libGDX Pay Stripe/Desktop</name>
+  <name>libGDX Pay Desktop/Apple</name>
 
   <dependencies>
     <dependency>

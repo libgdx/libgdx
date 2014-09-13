@@ -118,17 +118,6 @@ public class PurchaseManagerGoogleAndroid implements PurchaseManager, Disposable
 
 	@Override
 	public void purchase (PurchaseListener listener, String identifier) {
-		// are we in test-mode: if yes, use custom android identifiers!
-		if (identifier.equals(Transaction.IDENTIFIER_TEST_SUCCESS)) {
-			identifier = "android.test.purchased";
-		} else if (identifier.equals(Transaction.IDENTIFIER_TEST_FAILURE_CANCELED)) {
-			identifier = "android.test.canceled";
-		} else if (identifier.equals(Transaction.IDENTIFIER_TEST_FAILURE_REFUNDED)) {
-			identifier = "android.test.refunded";
-		} else if (identifier.equals(Transaction.IDENTIFIER_TEST_FAILURE_INVALIDIDENTIFIER)) {
-			identifier = "android.test.item_unavailable";
-		}
-
 		// store the listener
 		String developerPayload = "gdx-pay-google-android-listener-" + listenerIndex++;
 		listeners.put(developerPayload, listener);
@@ -247,17 +236,6 @@ public class PurchaseManagerGoogleAndroid implements PurchaseManager, Disposable
 								}
 							}
 						}).start();
-					}
-
-					// are we in test-mode: if yes, use custom android identifiers!
-					if (identifier.equals("android.test.purchased")) {
-						identifier = Transaction.IDENTIFIER_TEST_SUCCESS;
-					} else if (identifier.equals("android.test.canceled")) {
-						identifier = Transaction.IDENTIFIER_TEST_FAILURE_CANCELED;
-					} else if (identifier.equals("android.test.refunded")) {
-						identifier = Transaction.IDENTIFIER_TEST_FAILURE_REFUNDED;
-					} else if (identifier.equals("android.test.item_unavailable")) {
-						identifier = Transaction.IDENTIFIER_TEST_FAILURE_INVALIDIDENTIFIER;
 					}
 
 					// obtain listener from payload

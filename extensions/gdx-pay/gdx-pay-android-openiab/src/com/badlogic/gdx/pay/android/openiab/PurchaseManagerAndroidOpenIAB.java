@@ -19,6 +19,7 @@ package com.badlogic.gdx.pay.android.openiab;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import org.onepf.oms.appstore.googleUtils.IabHelper;
 import org.onepf.oms.appstore.googleUtils.IabResult;
 import org.onepf.oms.appstore.googleUtils.Inventory;
 import org.onepf.oms.appstore.googleUtils.Purchase;
+import org.onepf.oms.appstore.googleUtils.SkuDetails;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -98,7 +100,9 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	PurchaseManagerConfig config;
 
 	/** Our OpenIAB helper class through which we get access to the various markets. */
-   OpenIabHelper helper;
+	OpenIabHelper helper;
+	/** The inventory with all the prices/details. */
+	Inventory inventory;
 
 	public PurchaseManagerAndroidOpenIAB (Activity activity) {
 		this(activity, 1001); // NOTE: requestCode here is an arbitrarily chosen number!
@@ -114,57 +118,73 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	@Override
 	public String storeName () {
 		// return the correct store name
-		return storeNameFromOpenIAB(helper.getConnectedAppstoreName());
+		if (helper != null) {
+			return storeNameFromOpenIAB(helper.getConnectedAppstoreName());
+		}
+		else {
+			// create temporary helper to retrieve store name (not very clean though!)
+			return null;
+		}
 	}
 
-	private String storeNameFromOpenIAB(String storeNameOpenIAB) {
-		if (storeNameOpenIAB.equals(OpenIabHelper.NAME_GOOGLE)) {
-			return PurchaseManagerConfig.STORE_NAME_GOOGLE;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_AMAZON)) {
-			return PurchaseManagerConfig.STORE_NAME_AMAZON;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_SAMSUNG)) {
-			return PurchaseManagerConfig.STORE_NAME_SAMSUNG;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_NOKIA)) {
-			return PurchaseManagerConfig.STORE_NAME_NOKIA;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_SLIDEME)) {
-			return PurchaseManagerConfig.STORE_NAME_SLIDEME;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_APTOIDE)) {
-			return PurchaseManagerConfig.STORE_NAME_APTOIDE;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_APPLAND)) {
-			return PurchaseManagerConfig.STORE_NAME_APPLAND;
-		} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_YANDEX)) {
-			return PurchaseManagerConfig.STORE_NAME_YANDEX;
-		} else {
-			// we should get here: the correct store should always be mapped!
-			Gdx.app.error(TAG, "Store name could not be mapped: " + storeNameOpenIAB);
-			return storeNameOpenIAB;
+	private String storeNameFromOpenIAB (String storeNameOpenIAB) {
+		if (storeNameOpenIAB == null) {
+			return null;
+		}
+		else {
+			if (storeNameOpenIAB.equals(OpenIabHelper.NAME_GOOGLE)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_AMAZON)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_SAMSUNG)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_SAMSUNG;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_NOKIA)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_NOKIA;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_SLIDEME)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_SLIDEME;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_APTOIDE)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_APTOIDE;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_APPLAND)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_APPLAND;
+			} else if (storeNameOpenIAB.equals(OpenIabHelper.NAME_YANDEX)) {
+				return PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX;
+			} else {
+				// we should get here: the correct store should always be mapped!
+				Gdx.app.error(TAG, "Store name could not be mapped: " + storeNameOpenIAB);
+				return storeNameOpenIAB;
+			}
 		}
 	}
-	
-	private String storeNameToOpenIAB(String storeName) {
-		if (storeName.equals(PurchaseManagerConfig.STORE_NAME_GOOGLE)) {
-			return OpenIabHelper.NAME_GOOGLE;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_AMAZON)) {
-			return OpenIabHelper.NAME_AMAZON;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_SAMSUNG)) {
-			return OpenIabHelper.NAME_SAMSUNG;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_NOKIA)) {
-			return OpenIabHelper.NAME_NOKIA;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_SLIDEME)) {
-			return OpenIabHelper.NAME_SLIDEME;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_APTOIDE)) {
-			return OpenIabHelper.NAME_APTOIDE;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_APPLAND)) {
-			return OpenIabHelper.NAME_APPLAND;
-		} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_YANDEX)) {
-			return OpenIabHelper.NAME_YANDEX;
-		} else {
-			// we should get here: the correct store should always be mapped!
-			Gdx.app.error(TAG, "Store name could not be mapped: " + storeName);
-			return storeName;
+
+	private String storeNameToOpenIAB (String storeName) {
+		if (storeName == null) {
+			return null;
+		}
+		else {
+			if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE)) {
+				return OpenIabHelper.NAME_GOOGLE;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON)) {
+				return OpenIabHelper.NAME_AMAZON;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_SAMSUNG)) {
+				return OpenIabHelper.NAME_SAMSUNG;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_NOKIA)) {
+				return OpenIabHelper.NAME_NOKIA;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_SLIDEME)) {
+				return OpenIabHelper.NAME_SLIDEME;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_APTOIDE)) {
+				return OpenIabHelper.NAME_APTOIDE;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_APPLAND)) {
+				return OpenIabHelper.NAME_APPLAND;
+			} else if (storeName.equals(PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX)) {
+				return OpenIabHelper.NAME_YANDEX;
+			} else {
+				// we should get here: the correct store should always be mapped!
+				Gdx.app.error(TAG, "Store name could not be mapped: " + storeName);
+				return storeName;
+			}
 		}
 	}
-	
+
 	@Override
 	public void install (final PurchaseObserver observer, PurchaseManagerConfig config) {
 		this.observer = observer;
@@ -180,13 +200,15 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 			for (Map.Entry<String, String> entry: identifierForStores.entrySet()) {
 				String storeNameOpenIAB = storeNameToOpenIAB(entry.getKey());
 				String identifierForStore = entry.getValue();
-				SkuManager.getInstance().mapSku(identifier, storeNameOpenIAB, identifierForStore);
+				if (!(SkuManager.getInstance().getStoreSku(storeNameOpenIAB, identifier).equals(identifierForStore))) {
+					SkuManager.getInstance().mapSku(identifier, storeNameOpenIAB, identifierForStore);
+				}
 			}
 		}
 		
 		// build the OpenIAB options
 		OpenIabHelper.Options.Builder builder = new OpenIabHelper.Options.Builder()
-		                                                         .setVerifyMode(OpenIabHelper.Options.VERIFY_EVERYTHING)
+		                                                         .setVerifyMode(OpenIabHelper.Options.VERIFY_SKIP)
 		                                                         .addStoreKeys(config.getStoreKeys());
 		
 		// start OpenIAB
@@ -196,7 +218,8 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				if (!result.isSuccess()) {
 					// error setting up the
 					helper = null;
-
+					inventory = null;
+					
 					// remove observer and config as well
 					PurchaseManagerAndroidOpenIAB.this.observer = null;
 					PurchaseManagerAndroidOpenIAB.this.config = null;
@@ -204,8 +227,18 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 					// notify about the problem
 					observer.handleInstallError(new GdxRuntimeException("Problem setting up in-app billing: " + result));
 				} else {
-					// notify of successful initialization
-					observer.handleInstall();
+					// do a restore first to get the inventory
+					boolean querySkuDetails = true; // --> that way we get prices and title/description as well!
+					helper.queryInventoryAsync(querySkuDetails, new IabHelper.QueryInventoryFinishedListener() {
+						@Override
+						public void onQueryInventoryFinished (IabResult result, Inventory inventory) {
+							// store the inventory so we can lookup prices later!
+							PurchaseManagerAndroidOpenIAB.this.inventory = inventory;
+							
+							// notify of successful initialization
+							observer.handleInstall();
+						}
+					});
 				}
 			}
 		});
@@ -222,13 +255,14 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 		if (helper != null) {
 			helper.dispose();
 			helper = null;
-			
+			inventory = null;
+
 			// remove observer and config as well
 			observer = null;
 			config = null;
 		}
 	}
-	
+
 	@Override
 	public void purchase (final PurchaseListener listener, final String identifier) {
 		String payload = null;
@@ -243,19 +277,17 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				}
 				else {
 					// parse transaction data
-					String identifier = purchase.getSku();
-					
-					
-					String transactionId = purchase.getOrderId();
-					Date transactionDate = new Date(purchase.getPurchaseTime());
-					String transactionReceipt = purchase.getToken();
-					Transaction transaction = new Transaction(identifier, valid, transactionId, transactionDate, transactionReceipt)
+					Transaction transaction = transaction(purchase);
 	
 					// forward result to listener
 					listener.handlePurchase(transaction);
 	
 					// if the listener doesn't throw an error, we consume as needed
-					if (config.getOffer(identifier).getType() == OfferType.CONSUMABLE) {
+					Offer offer = config.getOffer(purchase.getSku());
+					if (offer == null) {
+						Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
+					}
+					else if (offer.getType() == OfferType.CONSUMABLE) {
 						// it's a consumable, so we consume right away!
 						helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
 							@Override
@@ -275,21 +307,77 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	@Override
 	public void purchaseRestore () {
 		// ask for purchase restore
-		boolean querySkuDetails = true;  // --> that way we get prices and title/description as well!
-		helper..queryInventoryAsync(querySkuDetails, new IabHelper.QueryInventoryFinishedListener() {
+		boolean querySkuDetails = true; // --> that way we get prices and title/description as well!
+		helper.queryInventoryAsync(querySkuDetails, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished (IabResult result, Inventory inventory) {
+				// store the inventory so we can lookup prices later!
+				PurchaseManagerAndroidOpenIAB.this.inventory = inventory;
+
 				// build list of purchases
-				xxx();
-inventory.getSkuDetails("hell").getPrice();
+				List<Purchase> purchases = inventory.getAllPurchases();
+				List<Transaction> transactions = new ArrayList<Transaction>(purchases.size());
+				for (int i = 0; i < purchases.size(); i++) {
+					transactions.add(transaction(purchases.get(i)));
+				}
 
 				// send inventory to observer
-				observer.handleRestore(transactions);
-				
+				observer.handleRestore(transactions.toArray(new Transaction[transactions.size()]));
+
 				// if the observer above didn't throw an error, we consume all consumeables as needed
-				xxx();
+				for (int i = 0; i < purchases.size(); i++) {
+					Purchase purchase = purchases.get(i);
+					Offer offer = config.getOffer(purchase.getSku());
+					if (offer == null) {
+						Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
+					}
+					else if (offer.getType() == OfferType.CONSUMABLE) {
+						// it's a consumable, so we consume right away!
+						helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+							@Override
+							public void onConsumeFinished (Purchase purchase, IabResult result) {
+								if (!result.isSuccess()) {
+									// NOTE: we should only rarely have an exception due to e.g. network outages etc.
+									Gdx.app.error(TAG, "Error while consuming: " + result);
+								}
+							}
+						});
+					}
+				}
 			}
 		});
+	}
+
+	/** Converts a purchase to our transaction object. */
+	Transaction transaction (Purchase purchase) {
+		// obtain the SKU details (could be null!)
+		SkuDetails skuDetails = inventory.getSkuDetails(purchase.getSku());
+
+		// build the transaction from the purchase object
+		Transaction transaction = new Transaction();
+		transaction.setIdentifier(purchase.getSku());
+
+		transaction.setStoreName(storeNameFromOpenIAB(purchase.getAppstoreName()));
+		transaction.setOrderId(purchase.getOrderId());
+
+		transaction.setPurchaseTime(new Date(purchase.getPurchaseTime()));
+		transaction.setPurchaseText(skuDetails != null ? "Purchased: " + skuDetails.getTitle() : "Purchased");
+		transaction.setPurchaseCost(-1); // TODO: GdxPay: impl. parsing of COST + CURRENCY via skuDetails.getPrice()!
+		transaction.setPurchaseCostCurrency(null);
+
+		if (purchase.getPurchaseState() != 0) {
+			// order has been refunded or cancelled
+			transaction.setReversalTime(new Date()); // TODO: Amazon IAP 2.0 has "cancelDate" which can be obtained via original Json
+			transaction.setReversalText(purchase.getPurchaseState() == 1 ? "Cancelled" : "Refunded");
+		} else {
+			// still valid!
+			transaction.setReversalTime(null);
+			transaction.setReversalText(null);
+		}
+
+		transaction.setTransactionData(purchase.getOriginalJson());
+		transaction.setTransactionDataSignature(purchase.getSignature());
+		return transaction;
 	}
 
 	public void onActivityResult (int requestCode, int resultCode, Intent data) {

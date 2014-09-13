@@ -4,6 +4,7 @@ package com.badlogic.gdx.pay;
 import java.util.HashMap;
 import java.util.Map;
 
+/** A product offer that can be purchased. */
 public class Offer {
 
 	private OfferType type;
@@ -45,7 +46,7 @@ public class Offer {
 		if (identifier != null) {
 			return identifier;
 		} else {
-			// that's our default
+			// we use our default
 			return this.identifier;
 		}
 	}

@@ -18,80 +18,144 @@ package com.badlogic.gdx.pay;
 
 import java.util.Date;
 
-/** An item purchased via libGDX In-App payment system (IAP).
- * <p>
- * The item identifier/SKU matches the item id in the IAP service. Please note that Valve/Steam expects an integer value for the
- * item identifier (which is somewhat restrictive) while other services such as Google Play, Amazon or iOS expect a textual
- * identifier. So, to ensure cross-platform compatibility simply prefix "item_" before the number for stores that expect a textual
- * identifier. For an item with identifier 1401 register the item identifier in the corresponding store page as follows:
- * <ul>
- * <li>Steam (just a number!): 1401
- * <li>Google Play/Amazon/iOS/Mac OS X: "item_1401"
- * </ul>
+/** An transaction for an item purchased via libGDX In-App payment system (IAP).
  * 
  * @author noblemaster */
 public final class Transaction {
 
 	/** Item identifier/SKU number. */
-	public String identifier;
+	private String identifier;
 
-	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has
-	 * expired, e.g. subscription. */
-	public boolean valid;
+	/** The store name. */
+	private String storeName;
+	/** A unique order ID. */
+	private String orderId;
 
-	/** A unique transaction ID. */
-	public String transactionId;
-	/** The original transaction date which never changes. */
-	public Date transactionDate;
-	/** A transaction-receipt for optional postback validation on a server if available. null if not available. */
-	public String transactionReceipt;
+	/** The original purchase time in milliseconds since the epoch (Jan 1, 1970). */
+	private Date purchaseTime;
+	/** The title/info for the purchase (or null for unknown). E.g. "Purchased: 100 Coins". */
+	private String purchaseText;
+	/** How much was originally charged in the lowest denomination (or -1 for unknown). E.g. if the cost was USD 4.99, then this
+	 * field contains 499. */
+	private int purchaseCost;
+	/** The ISO 4217 currency code for price (or null for unknown). For example, if price is specified in British pounds sterling
+	 * then this field is "GBP". */
+	private String purchaseCostCurrency;
 
-	/** Creates a new purchase.
-	 * 
-	 * @param identifier The item identifier/SKU number. */
-	public Transaction (String identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
-		this.identifier = identifier;
+	/** The original refund/cancellation time or null for non-refunded. Might not be accurate if it cannot be determined. */
+	private Date reversalTime;
+	/** The title/info for the refund (or null for unknown). E.g. "Refunded" or "Cancelled". */
+	private String reversalText;
 
-		// true for a valid purchase.
-		this.valid = valid;
+	/** The original data string from the purchase (or null for unknown). */
+	private String transactionData;
+	/** A signature for the purchase data string for validation of the data (or null for unknown). */
+	private String transactionDataSignature;
 
-		// the transaction information
-		this.transactionId = transactionId;
-		this.transactionDate = transactionDate;
-		this.transactionReceipt = transactionReceipt;
-	}
-
-	/** The item identifier/SKU that matches the item id in the IAP service. Please note that Valve/Steam expects an integer value
-	 * for the item identifier (which is somewhat restrictive). */
+	/** The item identifier/SKU that matches our item id in the IAP service. */
 	public String getIdentifier () {
 		return identifier;
 	}
 
-	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has
-	 * expired, e.g. subscription.
-	 * <p>
-	 * Note: consumable items (such as depleting health packs) have to be managed by the application and are not handled by the
-	 * libGDX payment API. This is the standard for payment APIs such as Google Play or iTunes. We might add a higher-level
-	 * Inventory class in the future to simplify consumable items, the raw libGDX payment API however is not responsible for
-	 * keeping track of consumable items. */
-	public boolean isValid () {
-		return valid;
+	public void setIdentifier (String identifier) {
+		this.identifier = identifier;
+	}
+
+	/** Returns one of the store names as defined in PurchaseManagerConfig. */
+	public String getStoreName () {
+		return storeName;
+	}
+
+	public void setStoreName (String storeName) {
+		this.storeName = storeName;
 	}
 
 	/** The original transaction identifier which is unique for each purchase (doesn't change). It represents an unique ID for the
-	 * purchase on the corresponding IAP system. */
-	public String getTransactionId () {
-		return transactionId;
+	 * purchase on the corresponding store. */
+	public String getOrderId () {
+		return orderId;
 	}
 
-	/** The original transaction date, i.e. when the product was first purchased (doesn't change). */
-	public Date getTransactionDate () {
-		return transactionDate;
+	public void setOrderId (String orderId) {
+		this.orderId = orderId;
 	}
 
-	/** A transaction receipt that can be used for postback validation if you have setup a server to make sure the purchased item is
-	 * genuine. Returns null if not available. */
-	public String getTransactionReceipt () {
-		return transactionReceipt;
+	/** Returns true if the order is considered valid, i.e. in purchased state (non-refunded/cancelled). */
+	public boolean isPurchased () {
+		return reversalTime == null;
+	}
+
+	/** The original purchase time in milliseconds since the epoch (Jan 1, 1970). */
+	public Date getPurchaseTime () {
+		return purchaseTime;
+	}
+
+	public void setPurchaseTime (Date purchaseTime) {
+		this.purchaseTime = purchaseTime;
+	}
+
+	/** The title/info for the purchase (or null for unknown). E.g. "Purchased: 100 Coins". */
+	public String getPurchaseText () {
+		return purchaseText;
+	}
+
+	public void setPurchaseText (String purchaseText) {
+		this.purchaseText = purchaseText;
+	}
+
+	/** How much was originally charged in the lowest denomination (or null for unknown). E.g. if the cost was USD 4.99, then this
+	 * field contains 499. */
+	public int getPurchaseCost () {
+		return purchaseCost;
+	}
+
+	public void setPurchaseCost (int purchaseCost) {
+		this.purchaseCost = purchaseCost;
+	}
+
+	/** The ISO 4217 currency code for price (or null for unknown). For example, if price is specified in British pounds sterling
+	 * then this field is "GBP". */
+	public String getPurchaseCostCurrency () {
+		return purchaseCostCurrency;
+	}
+
+	public void setPurchaseCostCurrency (String purchaseCostCurrency) {
+		this.purchaseCostCurrency = purchaseCostCurrency;
+	}
+
+	/** The original refund/cancellation time in milliseconds since the epoch (Jan 1, 1970) or null for non-refunded. */
+	public Date getReversalTime () {
+		return reversalTime;
+	}
+
+	public void setReversalTime (Date reversalTime) {
+		this.reversalTime = reversalTime;
+	}
+
+	/** The title/info for the refund (or null for unknown). E.g. "Refunded" or "Cancelled". */
+	public String getReversalText () {
+		return reversalText;
+	}
+
+	public void setReversalText (String reversalText) {
+		this.reversalText = reversalText;
+	}
+
+	public String getTransactionData () {
+		return transactionData;
+	}
+
+	public void setTransactionData (String transactionData) {
+		this.transactionData = transactionData;
+	}
+
+	/** The original data string from the purchase (or null for unknown). */
+	public String getTransactionDataSignature () {
+		return transactionDataSignature;
+	}
+
+	/** A signature for the purchase data string for validation of the data (or null for unknown). */
+	public void setTransactionDataSignature (String transactionDataSignature) {
+		this.transactionDataSignature = transactionDataSignature;
 	}
 }

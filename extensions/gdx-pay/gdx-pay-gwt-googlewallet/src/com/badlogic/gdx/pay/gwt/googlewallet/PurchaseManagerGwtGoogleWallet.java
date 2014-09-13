@@ -14,27 +14,50 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.pay.google.gwt;
+package com.badlogic.gdx.pay.gwt.googlewallet;
 
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
+import com.badlogic.gdx.pay.PurchaseObserver;
 
 /** The purchase manager implementation for Google Wallet for GWT.
  * 
  * @author noblemaster */
-public class PurchaseManagerGoogleGwt implements PurchaseManager {
+public class PurchaseManagerGwtGoogleWallet implements PurchaseManager {
 
-	public PurchaseManagerGoogleGwt (String publicKey) {
-		// TODO: initialize the app with it's public key (I guess that's how it still works for Google Wallet???)
-	}
+  @Override
+  public String storeName() {
+    return PurchaseManagerConfig.STORE_NAME_GWT_GOOGLEWALLET;
+  }
 
-	@Override
-	public void register (PurchaseListener listener) {
-		// TODO: implement!
-	}
+  @Override
+  public void install(PurchaseObserver observer, PurchaseManagerConfig config) {
+    // TODO Auto-generated method stub
+    
+  }
 
-	@Override
-	public void purchase (PurchaseListener listener, String identifier) {
-		// TODO: implement!
-	}
+  @Override
+  public boolean installed() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public void dispose() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void purchase(PurchaseListener listener, String identifier) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void purchaseRestore() {
+    // TODO Auto-generated method stub
+    
+  }
 }

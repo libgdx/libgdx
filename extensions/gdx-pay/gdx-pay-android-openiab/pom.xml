@@ -8,7 +8,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>gdx-pay-google-openiab</artifactId>
+	<artifactId>gdx-pay-android-openiab</artifactId>
 	<packaging>jar</packaging>
 	<name>libGDX Pay Android/OpenIAB</name>
 

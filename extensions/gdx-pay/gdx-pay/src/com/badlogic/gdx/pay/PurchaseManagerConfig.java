@@ -8,15 +8,18 @@ import java.util.Map;
 public class PurchaseManagerConfig {
 
 	// available store names (not even sure what all those are!?)
-	public static final String STORE_NAME_GOOGLE = "Google";
-	public static final String STORE_NAME_AMAZON = "Amazon";
-	public static final String STORE_NAME_SAMSUNG = "Samsung";
-	public static final String STORE_NAME_NOKIA = "Nokia";
-	public static final String STORE_NAME_SLIDEME = "SlideME";
-	public static final String STORE_NAME_APTOIDE = "Aptoide";
-	public static final String STORE_NAME_APPLAND = "Appland";
-	public static final String STORE_NAME_YANDEX = "Yandex";
-
+	public static final String STORE_NAME_ANDROID_GOOGLE = "GooglePlay";
+	public static final String STORE_NAME_ANDROID_AMAZON = "Amazon";
+	public static final String STORE_NAME_ANDROID_SAMSUNG = "Samsung";
+	public static final String STORE_NAME_ANDROID_NOKIA = "Nokia";
+	public static final String STORE_NAME_ANDROID_SLIDEME = "SlideME";
+	public static final String STORE_NAME_ANDROID_APTOIDE = "Aptoide";
+	public static final String STORE_NAME_ANDROID_APPLAND = "Appland";
+	public static final String STORE_NAME_ANDROID_YANDEX = "Yandex";
+	public static final String STORE_NAME_IOS_APPLE = "AppleiOS";
+	public static final String STORE_NAME_DESKTOP_APPLE = "AppleMac";
+	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
+	
 	private List<Offer> offers;
 	
 	private Map<String, String> storeKeys;

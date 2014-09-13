@@ -14,29 +14,50 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.pay.stripe.desktop;
+package com.badlogic.gdx.pay.ios.apple;
 
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
+import com.badlogic.gdx.pay.PurchaseObserver;
 
-/** The purchase manager implementation for Stripe.com a payment processor for credit cards.
- * <p>
- * See <a href="https://stripe.com/">Stripe.com</a> for details.
+/** The purchase manager implementation for Apple's iOS IAP system.
  * 
  * @author noblemaster */
-public class PurchaseManagerStripeDesktop implements PurchaseManager {
+public class PurchaseManageriOSApple implements PurchaseManager {
 
-	public PurchaseManagerStripeDesktop (String publicKey) {
-		// TODO: initialize the app with it's public key (I guess that's how it still works for Google Play???)
+	@Override
+	public String storeName () {
+		return PurchaseManagerConfig.STORE_NAME_IOS_APPLE;
 	}
 
 	@Override
-	public void register (PurchaseListener listener) {
-		// TODO: implement!
+	public void install (PurchaseObserver observer, PurchaseManagerConfig config) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean installed () {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void dispose () {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void purchase (PurchaseListener listener, String identifier) {
-		// TODO: implement!
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void purchaseRestore () {
+		// TODO Auto-generated method stub
+		
 	}
 }
