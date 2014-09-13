@@ -195,14 +195,9 @@ public class Skin implements Disposable {
 		if (tiled != null) return tiled;
 
 		Drawable drawable = optional(name, Drawable.class);
-		if (drawable != null) {
-			if (!(drawable instanceof TiledDrawable)) {
-				throw new GdxRuntimeException("Drawable found but is not a TiledDrawable: " + name + ", "
-					+ drawable.getClass().getName());
-			}
-			return (TiledDrawable)drawable;
-		}
+		if (drawable instanceof TiledDrawable) return (TiledDrawable)drawable;
 
+		// if not a TiledDrawable try to create it
 		tiled = new TiledDrawable(getRegion(name));
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
