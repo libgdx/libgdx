@@ -393,6 +393,7 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsLoc;
 	protected int pointLightsColorOffset;
 	protected int pointLightsPositionOffset;
+	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
 
 	protected final boolean lighting;
@@ -503,6 +504,7 @@ public class DefaultShader extends BaseShader {
 		pointLightsLoc = loc(u_pointLights0color);
 		pointLightsColorOffset = loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset = loc(u_pointLights0position) - pointLightsLoc;
+		pointLightsIntensityOffset = has(u_pointLights0intensity) ? loc(u_pointLights0intensity) - pointLightsLoc : -1;
 		pointLightsSize = loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0) pointLightsSize = 0;
 	}
@@ -707,6 +709,8 @@ public class DefaultShader extends BaseShader {
 				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
 					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
 				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position);
+				if (pointLightsIntensityOffset >= 0)
+					program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0) break;
 			}
 		}
