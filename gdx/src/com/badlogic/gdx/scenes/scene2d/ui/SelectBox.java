@@ -152,10 +152,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
-		if (bg != null)
+		if (bg != null) {
 			prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
 				bg.getMinHeight());
-		else
+		} else
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
 		float maxItemWidth = 0;
@@ -229,7 +229,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return selection;
 	}
 
-	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()} */
+	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}. */
 	public T getSelected () {
 		return selection.first();
 	}
