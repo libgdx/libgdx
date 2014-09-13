@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class TextureAttribute extends Attribute {
 	public final static String DiffuseAlias = "diffuseTexture";
@@ -124,10 +125,10 @@ public class TextureAttribute extends Attribute {
 	public int hashCode () {
 		int result = (int)type;
 		result = 991 * result + textureDescription.hashCode();
-		result = 991 * result + Float.floatToRawIntBits(uvOffsetX);
-		result = 991 * result + Float.floatToRawIntBits(uvOffsetY);
-		result = 991 * result + Float.floatToRawIntBits(uvScaleX);
-		result = 991 * result + Float.floatToRawIntBits(uvScaleY);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvOffsetX);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvOffsetY);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvScaleX);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvScaleY);
 		return result;
 	}
 }
