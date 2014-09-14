@@ -205,7 +205,7 @@ public final class Affine2 implements Serializable {
 	 * @param scaleX The scale in y.
 	 * @param scaleY The scale in x.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationRotationScaling (float x, float y, float degrees, float scaleX, float scaleY) {
+	public Affine2 setToTrnRotScl (float x, float y, float degrees, float scaleX, float scaleY) {
 		m02 = x;
 		m12 = y;
 
@@ -233,8 +233,8 @@ public final class Affine2 implements Serializable {
 	 * @param degrees The angle in degrees.
 	 * @param scale The scale vector.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationRotationScaling (Vector2 trn, float degrees, Vector2 scale) {
-		return setToProdTranslationRotationScaling(trn.x, trn.y, degrees, scale.x, scale.y);
+	public Affine2 setToTrnRotScl (Vector2 trn, float degrees, Vector2 scale) {
+		return setToTrnRotScl(trn.x, trn.y, degrees, scale.x, scale.y);
 	}
 
 	/** Sets this matrix to a concatenation of translation, rotation and scale. It is a more efficient form for:
@@ -245,7 +245,7 @@ public final class Affine2 implements Serializable {
 	 * @param scaleX The scale in y.
 	 * @param scaleY The scale in x.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationRotationRadScaling (float x, float y, float radians, float scaleX, float scaleY) {
+	public Affine2 setToTrnRotRadScl (float x, float y, float radians, float scaleX, float scaleY) {
 		m02 = x;
 		m12 = y;
 
@@ -272,8 +272,8 @@ public final class Affine2 implements Serializable {
 	 * @param radians The angle in radians.
 	 * @param scale The scale vector.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationRotationRadScaling (Vector2 trn, float radians, Vector2 scale) {
-		return setToProdTranslationRotationRadScaling(trn.x, trn.y, radians, scale.x, scale.y);
+	public Affine2 setToTrnRotRadScl (Vector2 trn, float radians, Vector2 scale) {
+		return setToTrnRotRadScl(trn.x, trn.y, radians, scale.x, scale.y);
 	}
 
 	/** Sets this matrix to a concatenation of translation and scale. It is a more efficient form for:
@@ -283,7 +283,7 @@ public final class Affine2 implements Serializable {
 	 * @param scaleX The scale in y.
 	 * @param scaleY The scale in x.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationScale (float x, float y, float scaleX, float scaleY) {
+	public Affine2 setToTrnScl (float x, float y, float scaleX, float scaleY) {
 		m00 = scaleX;
 		m01 = 0;
 		m02 = x;
@@ -298,8 +298,8 @@ public final class Affine2 implements Serializable {
 	 * @param trn The translation vector.
 	 * @param scale The scale vector.
 	 * @return This matrix for the purpose of chaining operations. */
-	public Affine2 setToProdTranslationScale (Vector2 trn, Vector2 scale) {
-		return setToProdTranslationScale(trn.x, trn.y, scale.x, scale.y);
+	public Affine2 setToTrnScl (Vector2 trn, Vector2 scale) {
+		return setToTrnScl(trn.x, trn.y, scale.x, scale.y);
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
@@ -599,6 +599,6 @@ public final class Affine2 implements Serializable {
 
 	@Override
 	public String toString () {
-		return String.format("[%.3f|%.3f|%.3f]\n[%.3f|%.3f|%.3f]\n[%.3f|%.3f|%.3f]\n", m00, m01, m02, m10, m11, m12, 0.f, 0.f, 1.f);
+		return "[" + m00 + "|" + m01 + "|" + m02 + "]\n[" + m10 + "|" + m11 + "|" + m12 + "]\n[0.0|0.0|0.1]";
 	}
 }

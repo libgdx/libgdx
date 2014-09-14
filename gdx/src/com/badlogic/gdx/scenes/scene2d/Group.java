@@ -191,7 +191,7 @@ public class Group extends Actor implements Cullable {
 		float scaleX = this.scaleX;
 		float scaleY = this.scaleY;
 
-		localTransform.setToProdTranslationRotationScaling(x + originX, y + originY, rotation, scaleX, scaleY);
+		localTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
 		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
 
 		// Find the first parent that transforms.
