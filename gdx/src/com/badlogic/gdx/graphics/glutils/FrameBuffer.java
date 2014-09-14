@@ -69,6 +69,9 @@ public class FrameBuffer implements Disposable {
 	/** the depthbuffer render object handle **/
 	private int depthbufferHandle;
 
+	/** the stencilbuffer render object handle **/
+	private int stencilbufferHandle;
+
 	/** width **/
 	protected final int width;
 
@@ -77,6 +80,9 @@ public class FrameBuffer implements Disposable {
 
 	/** depth **/
 	protected final boolean hasDepth;
+
+	/** stencil **/
+	protected final boolean hasStencil;
 
 	/** format **/
 	protected final Pixmap.Format format;
@@ -88,12 +94,13 @@ public class FrameBuffer implements Disposable {
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
-	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
-	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
+	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
+	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
 		this.width = width;
 		this.height = height;
 		this.format = format;
 		this.hasDepth = hasDepth;
+		this.hasStencil = hasStencil;
 		build();
 
 		addManagedFrameBuffer(Gdx.app, this);
@@ -102,8 +109,8 @@ public class FrameBuffer implements Disposable {
 	/** Override this method in a derived class to set up the backing texture as you like. */
 	protected void setupTexture () {
 		colorTexture = new Texture(width, height, format);
-		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		colorTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		colorTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
 	}
 
 	private void build () {
@@ -112,7 +119,7 @@ public class FrameBuffer implements Disposable {
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
-			if (Gdx.app.getType() == ApplicationType.iOS) {
+			if (Gdx.app.getType() == Application.ApplicationType.iOS) {
 				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
 				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
 				defaultFramebufferHandle = intbuf.get(0);
@@ -133,6 +140,12 @@ public class FrameBuffer implements Disposable {
 			depthbufferHandle = handle.get(0);
 		}
 
+		if (hasStencil) {
+			handle.clear();
+			gl.glGenRenderbuffers(1, handle);
+			stencilbufferHandle = handle.get(0);
+		}
+
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
 
 		if (hasDepth) {
@@ -141,12 +154,22 @@ public class FrameBuffer implements Disposable {
 				colorTexture.getHeight());
 		}
 
+		if (hasStencil) {
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_STENCIL_INDEX8, colorTexture.getWidth(), colorTexture.getHeight());
+		}
+
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
 			colorTexture.getTextureObjectHandle(), 0);
 		if (hasDepth) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
 		}
+
+		if (hasStencil) {
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
+		}
+
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
@@ -158,6 +181,13 @@ public class FrameBuffer implements Disposable {
 			if (hasDepth) {
 				handle.clear();
 				handle.put(depthbufferHandle);
+				handle.flip();
+				gl.glDeleteRenderbuffers(1, handle);
+			}
+
+			if (hasStencil) {
+				handle.clear();
+				handle.put(stencilbufferHandle);
 				handle.flip();
 				gl.glDeleteRenderbuffers(1, handle);
 			}
@@ -188,6 +218,12 @@ public class FrameBuffer implements Disposable {
 		colorTexture.dispose();
 		if (hasDepth) {
 			handle.put(depthbufferHandle);
+			handle.flip();
+			gl.glDeleteRenderbuffers(1, handle);
+		}
+
+		if (hasStencil) {
+			handle.put(stencilbufferHandle);
 			handle.flip();
 			gl.glDeleteRenderbuffers(1, handle);
 		}
