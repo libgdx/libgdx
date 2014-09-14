@@ -18,8 +18,6 @@ package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.common.Vec2;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
