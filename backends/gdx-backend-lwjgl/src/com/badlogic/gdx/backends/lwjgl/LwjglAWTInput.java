@@ -410,6 +410,11 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public boolean isCatchBackKey() {
+		return false;
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 
 	}

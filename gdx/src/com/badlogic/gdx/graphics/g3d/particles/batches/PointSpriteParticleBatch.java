@@ -84,7 +84,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		renderable.meshPartOffset = 0;
 		renderable.material = new Material(	new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
 			new DepthTestAttribute(GL20.GL_LEQUAL, false),
-			TextureAttribute.createDiffuse(null));
+			TextureAttribute.createDiffuse((Texture)null));
 	}
 
 	public void setTexture(Texture texture){

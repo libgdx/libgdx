@@ -58,6 +58,7 @@ public class ButtonGroup {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
 		button.buttonGroup = null;
 		buttons.removeValue(button, true);
+		checkedButtons.removeValue(button, true);
 	}
 
 	public void remove (Button... buttons) {
