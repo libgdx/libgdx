@@ -87,7 +87,20 @@ public class FrameBuffer implements Disposable {
 	/** format **/
 	protected final Pixmap.Format format;
 
+	
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
+	 * 
+	 * @param format
+	 * @param width
+	 * @param height
+	 * @param hasDepth
+	 */
+	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
+		this(format, width, height, hasDepth, false);
+	}
+	
+	
+	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
 	 * 
 	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
 	 *           color-renderable
