@@ -232,20 +232,35 @@ public final class MathUtils {
 	// ---
 
 	static public int clamp (int value, int min, int max) {
-		if (value < min) return min;
-		if (value > max) return max;
+		int min1, max1;
+		if( min > max ){
+			max1 = min
+			min1 = max;
+		}
+		if (value < min1) return min1;
+		if (value > max1) return max1;
 		return value;
 	}
 
 	static public short clamp (short value, short min, short max) {
-		if (value < min) return min;
-		if (value > max) return max;
+		short min1, max1;
+		if( min > max ){
+			max1 = min
+			min1 = max;
+		}
+		if (value < min1) return min1;
+		if (value > max1) return max1;
 		return value;
 	}
 
 	static public float clamp (float value, float min, float max) {
-		if (value < min) return min;
-		if (value > max) return max;
+		float min1, max1;
+		if( min > max ){
+			max1 = min
+			min1 = max;
+		}
+		if (value < min1) return min1;
+		if (value > max1) return max1;
 		return value;
 	}
 
