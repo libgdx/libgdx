@@ -63,9 +63,8 @@ public class PayTest extends GdxTest {
 
 		// test the purchase manager if there is one (if you use the default APK install it should find Google!)
 		if (PurchaseSystem.hasManager()) {
-			// build our purchase configuration
-			final String IAP_TEST_CONSUMEABLE = "com.badlogic.gdx.tests.pay.consumeable";
-			
+			// build our purchase configuration: all your products and types need to be listed here
+			final String IAP_TEST_CONSUMEABLE = "com.badlogic.gdx.tests.pay.consumeable";		
 			PurchaseManagerConfig config = new PurchaseManagerConfig();
 			config.addOffer(new Offer().setType(OfferType.CONSUMABLE)
 				                        .setIdentifier(IAP_TEST_CONSUMEABLE)
