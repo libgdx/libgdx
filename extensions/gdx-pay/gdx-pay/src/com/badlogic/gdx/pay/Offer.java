@@ -7,6 +7,7 @@ import java.util.Map;
 /** A product offer that can be purchased. */
 public class Offer {
 
+	/** The offer type. */
 	private OfferType type;
 
 	/** The default identifier that is used to identify purchases and also serves as default for stores where no specific identifier

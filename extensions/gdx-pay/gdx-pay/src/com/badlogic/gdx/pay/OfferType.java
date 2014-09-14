@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.pay;
 
+/** An offer type for a product that can be purchased.
+ * @author noblemaster */
 public enum OfferType {
 
 	/** A consumable can be purchased multiple times and diminishes once used (e.g. virtual money, coins). */
