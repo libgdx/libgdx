@@ -46,7 +46,7 @@
     <gwt.version>2.6.0</gwt.version>
     <lwjgl.version>2.9.1</lwjgl.version>
     <jglfw.version>1.1</jglfw.version>
-    <robovm.version>0.0.14</robovm.version>
+    <robovm.version>1.0.0-SNAPSHOT</robovm.version>
   </properties>
 
   <modules>

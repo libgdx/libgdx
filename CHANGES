@@ -6,6 +6,7 @@
 - API Addition: added annotation support in reflection layer, thanks code-disaster! https://github.com/libgdx/libgdx/pull/2215
 - API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178 
 - API Addition: bitmap fonts can now be loaded from an atlas via AssetManager/BitmapFontLoader, see https://github.com/libgdx/libgdx/pull/2110
+- API Change: updated to RoboVM 1.0.0-SNAPSHOT for now until the next alpha is released.
 - API Change: Button now uses padding of all background drawables. https://github.com/libgdx/libgdx/issues/2322
 - Drawables now know their names, making debugging easier.
 - API Change: Table fill now respects the widget's minimum size.
