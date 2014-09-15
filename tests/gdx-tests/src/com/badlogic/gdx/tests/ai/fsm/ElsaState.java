@@ -92,9 +92,8 @@ public enum ElsaState implements State<Elsa> {
 		}
 
 		@Override
-		public boolean onMessage (Telegram telegram) {
+		public boolean onMessage (Elsa elsa, Telegram telegram) {
 			if (telegram.message == MessageType.STEW_READY) {
-				Elsa elsa = (Elsa)(telegram.receiver);
 
 				System.out.println("Message received by " + elsa.getClass().getSimpleName() + " at time: "
 					+ MessageDispatcher.getCurrentTime());
@@ -130,10 +129,9 @@ public enum ElsaState implements State<Elsa> {
 		}
 
 		@Override
-		public boolean onMessage (Telegram telegram) {
+		public boolean onMessage (Elsa elsa, Telegram telegram) {
 
 			if (telegram.message == MessageType.HI_HONEY_I_M_HOME) {
-				Elsa elsa = (Elsa)(telegram.receiver);
 
 				System.out.println("Message handled by " + elsa.getClass().getSimpleName() + " at time: "
 					+ MessageDispatcher.getCurrentTime());
@@ -157,7 +155,7 @@ public enum ElsaState implements State<Elsa> {
 	}
 
 	@Override
-	public boolean onMessage (Telegram telegram) {
+	public boolean onMessage (Elsa elsa, Telegram telegram) {
 		return false;
 	}
 

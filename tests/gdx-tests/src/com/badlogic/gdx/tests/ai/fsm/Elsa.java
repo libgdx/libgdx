@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.tests.ai.fsm;
 
-import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** @author davebaol */
-public class Elsa implements Agent {
+public class Elsa implements Telegraph {
 
 	// an instance of the state machine class
 	private StateMachine<Elsa> stateMachine;
@@ -46,7 +46,6 @@ public class Elsa implements Agent {
 		return stateMachine.handleMessage(msg);
 	}
 
-	@Override
 	public void update (float delta) {
 		stateMachine.update();
 	}

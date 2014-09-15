@@ -303,6 +303,7 @@
 		<include name="math/Quaternion.java"/>
 		<include name="math/RandomXS128.java"/>
 		<include name="math/Rectangle.java"/>
+		<include name="math/Shape2D.java"/>
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
 		<include name="math/Vector3.java"/>		
@@ -377,6 +378,7 @@
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
+		<include name="utils/OrderedSet.java"/>
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>

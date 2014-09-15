@@ -13,6 +13,7 @@
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
+		<exclude name="**/FreeTypeFontLoaderTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypePackTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeDisposeTest.java"/> <!-- native  -->
@@ -23,6 +24,7 @@
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/ScreenCaptureTest.java"/> <!-- ScreenUtils -->
+		<exclude name="**/ScreenshotTest.java"/> <!-- ScreenUtils -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->
 		<exclude name="**/SoundTouchTest.java"/> <!-- native -->
 		<exclude name="**/StbTrueTypeTest.java"/> <!-- native -->
@@ -40,4 +42,5 @@
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
 	</source>
+	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
 </module>

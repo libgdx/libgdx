@@ -48,6 +48,7 @@ public class Decal {
 	protected Vector3 position = new Vector3();
 	protected Quaternion rotation = new Quaternion();
 	protected Vector2 scale = new Vector2(1, 1);
+	protected Color color = new Color();
 
 	/** The transformation offset can be used to change the pivot point for rotation and scaling. By default the pivot is the middle
 	 * of the decal. */
@@ -67,6 +68,7 @@ public class Decal {
 	 * @param b Blue component
 	 * @param a Alpha component */
 	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
 		vertices[C1] = color;
@@ -77,6 +79,7 @@ public class Decal {
 
 	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
+		color.set(tint);
 		float color = tint.toFloatBits();
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -86,6 +89,7 @@ public class Decal {
 
 	/** @see #setColor(Color) */
 	public void setColor (float color) {
+		this.color.set(NumberUtils.floatToIntColor(color));
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
@@ -164,7 +168,7 @@ public class Decal {
 
 	/** Sets the rotation of this decal based on the provided Quaternion
 	 * @param q desired Rotation */
-	public void setRotation(Quaternion q) {
+	public void setRotation (Quaternion q) {
 		rotation.set(q);
 		updated = false;
 	}
@@ -250,7 +254,7 @@ public class Decal {
 	}
 
 	/** @see Decal#translate(float, float, float) */
-	public void translate(Vector3 trans) {
+	public void translate (Vector3 trans) {
 		this.position.add(trans);
 		updated = false;
 	}
@@ -266,9 +270,16 @@ public class Decal {
 	}
 
 	/** @see Decal#setPosition(float, float, float) */
-	public void setPosition(Vector3 pos) {
+	public void setPosition (Vector3 pos) {
 		this.position.set(pos);
 		updated = false;
+	}
+
+	/** Returns the color of this decal. The returned color should under no circumstances be modified.
+	 * 
+	 * @return The color of this decal. */
+	public Color getColor () {
+		return color;
 	}
 
 	/** Returns the position of this decal. The returned vector should under no circumstances be modified.

@@ -399,6 +399,7 @@ public class TextureAtlas implements Disposable {
 				int[] splits = region.splits;
 				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
 				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				patch.setName(name);
 				if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
 				return patch;
 			}
@@ -534,6 +535,10 @@ public class TextureAtlas implements Disposable {
 		public float getRotatedPackedHeight () {
 			return rotate ? packedWidth : packedHeight;
 		}
+
+		public String toString () {
+			return name;
+		}
 	}
 
 	/** A sprite that, if whitespace was stripped from the region when it was packed, is automatically positioned as if whitespace
@@ -609,7 +614,10 @@ public class TextureAtlas implements Disposable {
 		@Override
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
-			super.flip(x, y);
+			if (region.rotate)
+				super.flip(y, x);
+			else
+				super.flip(x, y);
 
 			float oldOriginX = getOriginX();
 			float oldOriginY = getOriginY();
@@ -698,6 +706,10 @@ public class TextureAtlas implements Disposable {
 
 		public AtlasRegion getAtlasRegion () {
 			return region;
+		}
+
+		public String toString () {
+			return region.toString();
 		}
 	}
 }

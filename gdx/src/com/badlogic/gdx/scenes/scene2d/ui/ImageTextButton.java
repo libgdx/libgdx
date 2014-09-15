@@ -84,7 +84,7 @@ public class ImageTextButton extends Button {
 
 	private void updateImage () {
 		boolean isPressed = isPressed();
-		if (isDisabled && style.imageDisabled != null)
+		if (isDisabled() && style.imageDisabled != null)
 			image.setDrawable(style.imageDisabled);
 		else if (isPressed && style.imageDown != null)
 			image.setDrawable(style.imageDown);
@@ -99,7 +99,7 @@ public class ImageTextButton extends Button {
 	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		Color fontColor;
-		if (isDisabled && style.disabledFontColor != null)
+		if (isDisabled() && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;
 		else if (isPressed() && style.downFontColor != null)
 			fontColor = style.downFontColor;
@@ -129,7 +129,7 @@ public class ImageTextButton extends Button {
 		return getCell(label);
 	}
 
-	public void setText (String text) {
+	public void setText (CharSequence text) {
 		label.setText(text);
 	}
 

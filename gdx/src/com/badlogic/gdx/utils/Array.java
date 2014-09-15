@@ -238,7 +238,7 @@ public class Array<T> implements Iterable<T> {
 		return value;
 	}
 
-	/** Removes the items at the specified indices, inclusive. */
+	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
 		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);

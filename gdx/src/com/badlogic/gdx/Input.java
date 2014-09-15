@@ -633,6 +633,12 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
+	/** Returns whether the key has just been pressed.
+	 * 
+	 * @param key The key code as found in {@link Input.Keys}.
+	 * @return true or false. */
+	public boolean isKeyJustPressed (int key);
+
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
 	 * thread.
@@ -709,6 +715,9 @@ public interface Input {
 	 * 
 	 * @param catchBack whether to catch the back button */
 	public void setCatchBackKey (boolean catchBack);
+
+	/** @return whether the back button is currently being caught */
+	public boolean isCatchBackKey();
 
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.

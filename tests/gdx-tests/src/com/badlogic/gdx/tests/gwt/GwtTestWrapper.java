@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
+import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
@@ -295,6 +296,11 @@ public class GwtTestWrapper extends GdxTest {
 		public boolean isKeyPressed (int key) {
 			return input.isKeyPressed(key);
 		}
+		
+		@Override
+		public boolean isKeyJustPressed (int key) {
+			return input.isKeyJustPressed(key);
+		}
 
 		@Override
 		public void getTextInput (TextInputListener listener, String title, String text) {
@@ -354,6 +360,11 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public void setCatchBackKey (boolean catchBack) {
 			input.setCatchBackKey(catchBack);
+		}
+
+		@Override
+		public boolean isCatchBackKey() {
+			return input.isCatchBackKey();
 		}
 
 		@Override
@@ -427,6 +438,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new AnimationTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new AnnotationTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {

@@ -122,10 +122,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRevol
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateWeldJoint
- * Signature: (JJJZFFFFF)J
+ * Signature: (JJJZFFFFFFF)J
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJoint
-  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World

@@ -819,11 +819,13 @@ public class Json {
 			String className = typeName == null ? null : jsonData.getString(typeName, null);
 			if (className != null) {
 				jsonData.remove(typeName);
-				try {
-					type = (Class<T>)ClassReflection.forName(className);
-				} catch (ReflectionException ex) {
-					type = tagToClass.get(className);
-					if (type == null) throw new SerializationException(ex);
+				type = tagToClass.get(className);
+				if (type == null) {
+					try {
+						type = (Class<T>)ClassReflection.forName(className);
+					} catch (ReflectionException ex) {
+						throw new SerializationException(ex);
+					}
 				}
 			}
 
@@ -902,7 +904,7 @@ public class Json {
 				if (type == int.class || type == Integer.class) return (T)(Integer)jsonData.asInt();
 				if (type == long.class || type == Long.class) return (T)(Long)jsonData.asLong();
 				if (type == double.class || type == Double.class) return (T)(Double)jsonData.asDouble();
-				if (type == String.class) return (T)Float.toString(jsonData.asFloat());
+				if (type == String.class) return (T)jsonData.asString();
 				if (type == short.class || type == Short.class) return (T)(Short)jsonData.asShort();
 				if (type == byte.class || type == Byte.class) return (T)(Byte)jsonData.asByte();
 			} catch (NumberFormatException ignored) {

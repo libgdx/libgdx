@@ -40,6 +40,8 @@ public class Animation {
 	final TextureRegion[] keyFrames;
 	private float frameDuration;
 	private float animationDuration;
+	private int lastFrameNumber;
+	private float lastStateTime;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -144,7 +146,12 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			frameNumber = MathUtils.random(keyFrames.length - 1);
+			int lastFrameNumber = (int) ((lastStateTime) / frameDuration);
+			if (lastFrameNumber != frameNumber) {
+				frameNumber = MathUtils.random(keyFrames.length - 1);
+			} else {
+				frameNumber = this.lastFrameNumber;
+			}
 			break;
 		case REVERSED:
 			frameNumber = Math.max(keyFrames.length - frameNumber - 1, 0);
@@ -154,6 +161,9 @@ public class Animation {
 			frameNumber = keyFrames.length - frameNumber - 1;
 			break;
 		}
+
+		lastFrameNumber = frameNumber;
+		lastStateTime = stateTime;
 
 		return frameNumber;
 	}
@@ -183,27 +193,21 @@ public class Animation {
 		int frameNumber = (int)(stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
 	}
-	
-	/**
-	 * Sets duration a frame will be displayed.
-	 * @param frameDuration in seconds
-	 */
-	public void setFrameDuration(float frameDuration) {
+
+	/** Sets duration a frame will be displayed.
+	 * @param frameDuration in seconds */
+	public void setFrameDuration (float frameDuration) {
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.length * frameDuration;
 	}
-	
-	/**
-	 * @return the duration of a frame in seconds
-	 */
-	public float getFrameDuration() {
+
+	/** @return the duration of a frame in seconds */
+	public float getFrameDuration () {
 		return frameDuration;
 	}
-	
-	/**
-	 * @return the duration of the entire animation, number of frames times frame duration, in seconds 
-	 */
-	public float getAnimationDuration() {
+
+	/** @return the duration of the entire animation, number of frames times frame duration, in seconds */
+	public float getAnimationDuration () {
 		return animationDuration;
 	}
 }

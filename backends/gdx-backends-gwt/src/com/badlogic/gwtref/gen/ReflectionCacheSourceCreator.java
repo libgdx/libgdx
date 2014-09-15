@@ -17,6 +17,12 @@
 package com.badlogic.gwtref.gen;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,27 +36,13 @@ import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.core.ext.typeinfo.JAbstractMethod;
-import com.google.gwt.core.ext.typeinfo.JArrayType;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JConstructor;
-import com.google.gwt.core.ext.typeinfo.JEnumConstant;
-import com.google.gwt.core.ext.typeinfo.JEnumType;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JPackage;
-import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JParameterizedType;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.core.ext.typeinfo.*;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class ReflectionCacheSourceCreator {
-	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList(new String[] {"char", "int",
-		"long", "byte", "short", "float", "double", "boolean"}));
+	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList("char", "int",
+			"long", "byte", "short", "float", "double", "boolean"));
 	final TreeLogger logger;
 	final GeneratorContext context;
 	final JClassType type;
@@ -61,8 +53,8 @@ public class ReflectionCacheSourceCreator {
 	final List<JType> types = new ArrayList<JType>();
 	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
-	final Map<String, String> parameterName2ParameterInstantiation = new HashMap();
-	final Map<String, Integer> typeNames2typeIds = new HashMap();
+	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<String, String>();
+	final Map<String, Integer> typeNames2typeIds = new HashMap<String, Integer>();
 	int nextTypeId;
 	int nextSetterGetterId;
 	int nextInvokableId;
@@ -511,13 +503,21 @@ public class ReflectionCacheSourceCreator {
 		pb("if(" + varName + "!=null) return " + varName + ";");
 		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ");");
 
+		if (c == null) {
+			// if it's not a class, it may be an interface instead
+			c = t.isInterface();
+		}
+
 		if (c != null) {
-			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
 			if (c.isArray() != null) pb(varName + ".isArray = true;");
 			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
-			pb(varName + ".isStatic = " + c.isStatic() + ";");
-			pb(varName + ".isAbstract = " + c.isAbstract() + ";");
+			if (c.isInterface() != null) {
+				pb(varName + ".isInterface = true;");
+			} else {
+				pb(varName + ".isStatic = " + c.isStatic() + ";");
+				pb(varName + ".isAbstract = " + c.isAbstract() + ";");
+			}
 
 			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
@@ -526,11 +526,12 @@ public class ReflectionCacheSourceCreator {
 					String fieldType = getType(f.getType());
 					int setterGetter = nextSetterGetterId++;
 					String elementType = getElementTypes(f);
+					String annotations = getAnnotations(f.getDeclaredAnnotations());
 
 					pb("    new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
 						+ f.isDefaultAccess() + ", " + f.isPrivate() + ", " + f.isProtected() + ", " + f.isPublic() + ", "
 						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + setterGetter + ", " + setterGetter
-						+ ", " + elementType + "), ");
+						+ ", " + elementType + ", " + annotations + "), ");
 
 					SetterGetterStub stub = new SetterGetterStub();
 					stub.name = f.getName();
@@ -567,6 +568,13 @@ public class ReflectionCacheSourceCreator {
 					}
 				}
 			}
+
+			Annotation[] annotations = c.getDeclaredAnnotations();
+			if (annotations != null && annotations.length > 0) {
+				pb(varName + ".annotations = " + getAnnotations(annotations) + ";");
+			}
+		} else if (t.isAnnotation() != null) {
+			pb(varName + ".isAnnotation = true;");
 		} else {
 			pb(varName + ".isPrimitive = true;");
 		}
@@ -669,6 +677,118 @@ public class ReflectionCacheSourceCreator {
 			}
 			b.append("}");
 			return b.toString();
+		}
+		return "null";
+	}
+
+	private String getAnnotations (Annotation[] annotations) {
+		if (annotations != null && annotations.length > 0) {
+			int numValidAnnotations = 0;
+			final Class<?>[] ignoredAnnotations = {Deprecated.class, Retention.class};
+			StringBuilder b = new StringBuilder();
+			b.append("new java.lang.annotation.Annotation[] {");
+			for (Annotation annotation : annotations) {
+				Class<?> type = annotation.annotationType();
+				// skip ignored types, assuming we are not interested in those at runtime
+				boolean ignoredType = false;
+				for (int i = 0; !ignoredType && i < ignoredAnnotations.length; i++) {
+					ignoredType = ignoredAnnotations[i].equals(type);
+				}
+				if (ignoredType) {
+					continue;
+				}
+				// skip if not annotated with RetentionPolicy.RUNTIME
+				Retention retention = type.getAnnotation(Retention.class);
+				if (retention == null || retention.value() != RetentionPolicy.RUNTIME) {
+					continue;
+				}
+				numValidAnnotations++;
+				// anonymous class
+				b.append(" new ").append(type.getCanonicalName()).append("() {");
+				// override all methods
+				Method[] methods = type.getDeclaredMethods();
+				for (Method method : methods) {
+					Class<?> returnType = method.getReturnType();
+					b.append(" @Override public");
+					b.append(" ").append(returnType.getCanonicalName());
+					b.append(" ").append(method.getName()).append("() { return");
+					if (returnType.isArray()) {
+						b.append(" new ").append(returnType.getCanonicalName()).append(" {");
+					}
+					// invoke the annotation method
+					Object invokeResult = null;
+					try {
+						invokeResult = method.invoke(annotation);
+					} catch (IllegalAccessException e) {
+						logger.log(Type.ERROR, "Error invoking annotation method.");
+					} catch (InvocationTargetException e) {
+						logger.log(Type.ERROR, "Error invoking annotation method.");
+					}
+					// write result as return value
+					if (invokeResult != null) {
+						if (returnType.equals(String[].class)) {
+							// String[]
+							for (String s : (String[])invokeResult) {
+								b.append(" \"").append(s).append("\",");
+							}
+						} else if (returnType.equals(String.class)) {
+							// String
+							b.append(" \"").append((String)invokeResult).append("\"");
+						} else if (returnType.equals(Class[].class)) {
+							// Class[]
+							for (Class c : (Class[])invokeResult) {
+								b.append(" ").append(c.getCanonicalName()).append(".class,");
+							}
+						} else if (returnType.equals(Class.class)) {
+							// Class
+							b.append(" ").append(((Class)invokeResult).getCanonicalName()).append(".class");
+						} else if (returnType.isArray() && returnType.getComponentType().isEnum()) {
+							// enum[]
+							String enumTypeName = returnType.getComponentType().getCanonicalName();
+							int length = Array.getLength(invokeResult);
+							for (int i = 0; i < length; i++) {
+								Object e = Array.get(invokeResult, i);
+								b.append(" ").append(enumTypeName).append(".").append(e.toString()).append(",");
+							}
+						} else if (returnType.isEnum()) {
+							// enum
+							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult.toString());
+						} else if (returnType.isArray() && returnType.getComponentType().isPrimitive()) {
+							// primitive []
+							Class<?> primitiveType = returnType.getComponentType();
+							int length = Array.getLength(invokeResult);
+							for (int i = 0; i < length; i++) {
+								Object n = Array.get(invokeResult, i);
+								b.append(" ").append(n.toString());
+								if (primitiveType.equals(float.class)) {
+									b.append("f");
+								}
+								b.append(",");
+							}
+						} else if (returnType.isPrimitive()) {
+							// primitive
+							b.append(" ").append(invokeResult.toString());
+							if (returnType.equals(float.class)) {
+								b.append("f");
+							}
+						} else {
+							logger.log(Type.ERROR, "Return type not supported (or not yet implemented).");
+						}
+					}
+					if (returnType.isArray()) {
+						b.append(" }");
+					}
+					b.append("; ");
+					b.append("}");
+				}
+				// must override annotationType()
+				b.append(" @Override public Class<? extends java.lang.annotation.Annotation> annotationType() { return ");
+				b.append(type.getCanonicalName());
+				b.append(".class; }");
+				b.append("}, ");
+			}
+			b.append("}");
+			return (numValidAnnotations > 0) ? b.toString() : "null";
 		}
 		return "null";
 	}
@@ -890,7 +1010,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlock {
-		private List<KeyedCodeBlock> blocks = new ArrayList();
+		private List<KeyedCodeBlock> blocks = new ArrayList<KeyedCodeBlock>();
 		private final String switchStatement;
 
 		SwitchedCodeBlock (String switchStatement) {
@@ -921,7 +1041,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlockByString {
-		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap();
+		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap<String, List<KeyedCodeBlock>>();
 		private final String switchStatement;
 		private final String expectedValue;
 
@@ -936,7 +1056,7 @@ public class ReflectionCacheSourceCreator {
 			b.codeBlock = codeBlock;
 			List<KeyedCodeBlock> blockList = blocks.get(key);
 			if (blockList == null) {
-				blockList = new ArrayList();
+				blockList = new ArrayList<KeyedCodeBlock>();
 				blocks.put(key, blockList);
 			}
 			blockList.add(b);

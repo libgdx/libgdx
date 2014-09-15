@@ -20,6 +20,7 @@ void main() {
 	gl_FragColor = texture2D(u_diffuseTexture, v_texCoords0) * v_color;
 }
 #else
+
 //Point particles
 varying vec4 v_color;
 varying mat2 v_rotation;

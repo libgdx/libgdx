@@ -29,8 +29,9 @@ import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Box2DDebugRenderer {
+public class Box2DDebugRenderer implements Disposable {
 
 	/** the immediate mode renderer to output our debug drawings **/
 	protected ShapeRenderer renderer;

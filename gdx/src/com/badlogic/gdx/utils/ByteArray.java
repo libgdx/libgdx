@@ -100,96 +100,6 @@ public class ByteArray {
 		size += length;
 	}
 
-	public void addAll (char[] array, int offset, int length) {
-		byte[] items = this.items;
-		length *= 2;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0, a = 0; i < length; i += 2, a++) {
-			char value = array[a];
-			items[i] = (byte)(value >> 8);
-			items[i + 1] = (byte)value;
-		}
-		size += length;
-	}
-
-	public void addAll (int[] array, int offset, int length) {
-		byte[] items = this.items;
-		length *= 4;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0, a = 0; i < length; i += 4, a++) {
-			int value = array[a];
-			items[i] = (byte)(value >> 24);
-			items[i + 1] = (byte)(value >> 16);
-			items[i + 2] = (byte)(value >> 8);
-			items[i + 3] = (byte)value;
-		}
-		size += length;
-	}
-
-	public void addAll (long[] array, int offset, int length) {
-		byte[] items = this.items;
-		length *= 8;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0, a = 0; i < length; i += 8, a++) {
-			long value = array[a];
-			items[i] = (byte)(value >> 56);
-			items[i + 1] = (byte)(value >> 48);
-			items[i + 2] = (byte)(value >> 40);
-			items[i + 3] = (byte)(value >> 32);
-			items[i + 4] = (byte)(value >> 24);
-			items[i + 5] = (byte)(value >> 16);
-			items[i + 6] = (byte)(value >> 8);
-			items[i + 7] = (byte)value;
-		}
-		size += length;
-	}
-
-	public void addAll (float[] array, int offset, int length) {
-		byte[] items = this.items;
-		length *= 4;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0, a = 0; i < length; i += 4, a++) {
-			int value = Float.floatToIntBits(array[a]);
-			items[i] = (byte)(value >> 24);
-			items[i + 1] = (byte)(value >> 16);
-			items[i + 2] = (byte)(value >> 8);
-			items[i + 3] = (byte)value;
-		}
-		size += length;
-	}
-
-	public void addAll (double[] array, int offset, int length) {
-		byte[] items = this.items;
-		length *= 8;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0, a = 0; i < length; i += 8, a++) {
-			long value = Double.doubleToLongBits(array[a]);
-			items[i] = (byte)(value >> 56);
-			items[i + 1] = (byte)(value >> 48);
-			items[i + 2] = (byte)(value >> 40);
-			items[i + 3] = (byte)(value >> 32);
-			items[i + 4] = (byte)(value >> 24);
-			items[i + 5] = (byte)(value >> 16);
-			items[i + 6] = (byte)(value >> 8);
-			items[i + 7] = (byte)value;
-		}
-		size += length;
-	}
-
-	public void addAll (boolean[] array, int offset, int length) {
-		byte[] items = this.items;
-		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		for (int i = 0; i < length; i++)
-			items[i] = array[i] ? (byte)1 : 0;
-		size += length;
-	}
-
 	public byte get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
@@ -277,7 +187,7 @@ public class ByteArray {
 		return value;
 	}
 
-	/** Removes the items at the specified indices, inclusive. */
+	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
 		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);

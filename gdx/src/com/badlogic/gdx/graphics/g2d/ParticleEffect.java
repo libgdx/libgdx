@@ -129,8 +129,6 @@ public class ParticleEffect implements Disposable {
 			ParticleEmitter emitter = emitters.get(i);
 			if (index++ > 0) output.write("\n\n");
 			emitter.save(output);
-			output.write("- Image Path -\n");
-			output.write(emitter.getImagePath() + "\n");
 		}
 	}
 
@@ -156,8 +154,6 @@ public class ParticleEffect implements Disposable {
 			reader = new BufferedReader(new InputStreamReader(input), 512);
 			while (true) {
 				ParticleEmitter emitter = new ParticleEmitter(reader);
-				reader.readLine();
-				emitter.setImagePath(reader.readLine());
 				emitters.add(emitter);
 				if (reader.readLine() == null) break;
 				if (reader.readLine() == null) break;

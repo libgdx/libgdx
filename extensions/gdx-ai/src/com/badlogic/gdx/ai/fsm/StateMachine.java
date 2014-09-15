@@ -16,27 +16,32 @@
 
 package com.badlogic.gdx.ai.fsm;
 
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** A state machine manages the state transitions of its entity. Additionally, the state machine may be delegated by the entity to
  * handle its messages.
  * 
+ * @param <E> is the type of the entity
+ * 
  * @author davebaol */
-public interface StateMachine<E> {
+public interface StateMachine<E> extends Telegraph {
 
 	/** Updates the state machine.
 	 * <p>
-	 * Implementation classes should invoke first the {@code execute} method of the global state (if any) then the {@code execute}
-	 * method of the current state. */
+	 * Implementation classes should invoke first the {@code update} method of the global state (if any) then the {@code update}
+	 * method of the current state.
+	 * </p> */
 	public void update ();
 
 	/** Performs a transition to the specified state.
-	 * 
 	 * @param newState the state to transition to */
 	public void changeState (State<E> newState);
 
-	/** Change state back to the previous state. */
-	public void revertToPreviousState ();
+	/** Change state back to the previous state.
+	 * @return {@code True} in case there was a previous state that we were able to revert to. In case there is no previous state,
+	 *         no state change occurs and {@code false} will be returned. */
+	public boolean revertToPreviousState ();
 
 	/** Sets the initial state of this state machine.
 	 * @param state the initial state. */
@@ -51,15 +56,15 @@ public interface StateMachine<E> {
 
 	/** Returns the global state of this state machine.
 	 * <p>
-	 * Implementation classes should invoke the {@code execute} method of the global state every time the FSM is updated. Also,
-	 * they should never invoke its {@code enter} and {@code exit} method. */
+	 * Implementation classes should invoke the {@code update} method of the global state every time the FSM is updated. Also, they
+	 * should never invoke its {@code enter} and {@code exit} method.
+	 * </p> */
 	public State<E> getGlobalState ();
 
 	/** Returns the last state of this state machine. */
 	public State<E> getPreviousState ();
 
 	/** Indicates whether the state machine is in the given state.
-	 * 
 	 * @param state the state to be compared with the current state
 	 * @returns true if the current state's type is equal to the type of the class passed as a parameter. */
 	public boolean isInState (State<E> state);
@@ -68,6 +73,7 @@ public interface StateMachine<E> {
 	 * <p>
 	 * Implementation classes should first route the telegram to the current state. If the current state does not deal with the
 	 * message, it should be routed to the global state.
+	 * </p>
 	 * @param telegram the received telegram
 	 * @returns true if telegram has been successfully handled; false otherwise. */
 	public boolean handleMessage (Telegram telegram);

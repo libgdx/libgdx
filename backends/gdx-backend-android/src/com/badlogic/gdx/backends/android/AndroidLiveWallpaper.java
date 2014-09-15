@@ -125,14 +125,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() application paused!");
 		audio.pause();
 
-		input.unregisterSensorListeners();
-
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		input.onPause();
 
 		if (graphics != null) {
 			graphics.onPauseGLSurfaceView();
@@ -149,7 +142,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		Gdx.graphics = graphics;
 		Gdx.net = net;
 
-		input.registerSensorListeners();
+		input.onResume();
 
 		if (graphics != null) {
 			graphics.onResumeGLSurfaceView();

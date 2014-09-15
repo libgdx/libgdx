@@ -101,4 +101,8 @@ public final class WindowedMean {
 
 		return (float)Math.sqrt(sum / values.length);
 	}
+	
+	public int getWindowSize () {
+		return values.length;
+	}
 }

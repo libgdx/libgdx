@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.ai.msg;
 
-import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** A Telegram is the container of a message. The {@link MessageDispatcher} manages telegram life-cycle.
@@ -24,10 +23,10 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public class Telegram implements Comparable<Telegram>, Poolable {
 
 	/** The agent that sent this telegram */
-	public Agent sender;
+	public Telegraph sender;
 
 	/** The agent that is to receive this telegram */
-	public Agent receiver;
+	public Telegraph receiver;
 
 	/** The message type. */
 	public int message;
@@ -40,8 +39,8 @@ public class Telegram implements Comparable<Telegram>, Poolable {
 	/** Any additional information that may accompany the message */
 	public Object extraInfo;
 
-	/** Package private constructor. */
-	Telegram () {
+	/** Creates an empty {@code Telegram}. */
+	public Telegram () {
 	}
 
 	/** Returns the time stamp of this telegram. */

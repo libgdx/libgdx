@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class AndroidClipboard implements Clipboard {
 	Context context;
 
-	protected AndroidClipboard (Context context) {
+	public AndroidClipboard (Context context) {
 		this.context = context;
 	}
 

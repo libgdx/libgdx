@@ -549,6 +549,7 @@ public class GdxSetupUI extends JFrame {
 							continue;
 						}
 						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
+						depCheckBox.setToolTipText(projDep.getDescription());
 						if (projDep.equals(ProjectDependency.BOX2D)) {
 							depCheckBox.setSelected(true);
 						}

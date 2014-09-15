@@ -68,6 +68,7 @@ public class I18NBundle {
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
 	private static boolean simpleFormatter = false;
+	private static boolean exceptionOnMissingKey = true;
 
 	/** The parent of this {@code I18NBundle} that is used if this bundle doesn't include the requested resource. */
 	private I18NBundle parent;
@@ -81,16 +82,30 @@ public class I18NBundle {
 	/** The formatter used for argument replacement. */
 	private TextFormatter formatter;
 
-	/** Returns the flag indicating whether to use the simplified message pattern syntax (default is false). This flag is always assumed to
-	 * be true on GWT backend. */
+	/** Returns the flag indicating whether to use the simplified message pattern syntax (default is false). This flag is always
+	 * assumed to be true on GWT backend. */
 	public static boolean getSimpleFormatter () {
 		return simpleFormatter;
 	}
 
-	/** Sets the flag indicating whether to use the simplified message pattern. The flag must be set before calling the factory methods {@code createBundle}. Notice that this method has no effect on the GWT backend where
-	 * it's always assumed to be true. */
+	/** Sets the flag indicating whether to use the simplified message pattern. The flag must be set before calling the factory
+	 * methods {@code createBundle}. Notice that this method has no effect on the GWT backend where it's always assumed to be true. */
 	public static void setSimpleFormatter (boolean enabled) {
 		simpleFormatter = enabled;
+	}
+
+	/** Returns the flag indicating whether to throw a {@link MissingResourceException} from the {@link #get(String) get(key)}
+	 * method if no string for the given key can be found. If this flag is {@code false} the missing key surrounded by {@code ???}
+	 * is returned. */
+	public static boolean getExceptionOnMissingKey () {
+		return exceptionOnMissingKey;
+	}
+
+	/** Sets the flag indicating whether to throw a {@link MissingResourceException} from the {@link #get(String) get(key)} method
+	 * if no string for the given key can be found. If this flag is {@code false} the missing key surrounded by {@code ???} is
+	 * returned. */
+	public static void setExceptionOnMissingKey (boolean enabled) {
+		exceptionOnMissingKey = enabled;
 	}
 
 	/** Creates a new bundle using the specified <code>baseFileHandle</code>, the default locale and the default encoding "UTF-8".
@@ -393,13 +408,20 @@ public class I18NBundle {
 	 * 
 	 * @param key the key for the desired string
 	 * @exception NullPointerException if <code>key</code> is <code>null</code>
-	 * @exception MissingResourceException if no string for the given key can be found
-	 * @return the string for the given key */
+	 * @exception MissingResourceException if no string for the given key can be found and {@link #getExceptionOnMissingKey()}
+	 *               returns {@code true}
+	 * @return the string for the given key or the key surrounded by {@code ???} if it cannot be found and
+	 *         {@link #getExceptionOnMissingKey()} returns {@code false} */
 	public final String get (String key) {
 		String result = properties.get(key);
 		if (result == null) {
 			if (parent != null) result = parent.get(key);
-			if (result == null) throw new MissingResourceException("Can't find bundle key " + key, this.getClass().getName(), key);
+			if (result == null) {
+				if (exceptionOnMissingKey)
+					throw new MissingResourceException("Can't find bundle key " + key, this.getClass().getName(), key);
+				else
+					return "???" + key + "???";
+			}
 		}
 		return result;
 	}

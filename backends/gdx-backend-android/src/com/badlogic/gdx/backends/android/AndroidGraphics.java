@@ -69,6 +69,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	protected long lastFrameTime = System.nanoTime();
 	protected float deltaTime = 0;
 	protected long frameStart = System.nanoTime();
+	protected long frameId = -1;
 	protected int frames = 0;
 	protected int fps;
 	protected WindowedMean mean = new WindowedMean(5);
@@ -411,6 +412,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 				}
 			}
 			app.getInput().processEvents();
+			frameId++;
 			app.getApplicationListener().render();
 		}
 
@@ -442,6 +444,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 			frameStart = time;
 		}
 		frames++;
+	}
+
+	@Override
+	public long getFrameId () {
+		return frameId;
 	}
 
 	/** {@inheritDoc} */

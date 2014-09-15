@@ -28,28 +28,28 @@
 	void getRayFromWorld(btVector3 &out) {
 		out = $self->m_rayFromWorld;
 	}
-	void setRayFromWorld(btVector3 value) {
+	void setRayFromWorld(btVector3 const &value) {
 		$self->m_rayFromWorld = value;
 	}
 	
 	void getRayToWorld(btVector3 &out) {
 		out = $self->m_rayToWorld;
 	}
-	void setRayToWorld(btVector3 value) {
+	void setRayToWorld(btVector3 const &value) {
 		$self->m_rayToWorld = value;
 	}
 	
 	void getHitNormalWorld(btVector3 &out) {
 		out = $self->m_hitNormalWorld;
 	}
-	void setHitNormalWorld(btVector3 value) {
+	void setHitNormalWorld(btVector3 const &value) {
 		$self->m_hitNormalWorld = value;
 	}
 	
 	void getHitPointWorld(btVector3 &out) {
 		out = $self->m_hitPointWorld;
 	}
-	void setHitPointWorld(btVector3 value) {
+	void setHitPointWorld(btVector3 const &value) {
 		$self->m_hitPointWorld = value;
 	}
 };
@@ -61,14 +61,14 @@
 	void getRayFromWorld(btVector3 &out) {
 		out = $self->m_rayFromWorld;
 	}
-	void setRayFromWorld(btVector3 value) {
+	void setRayFromWorld(btVector3 const &value) {
 		$self->m_rayFromWorld = value;
 	}
 	
 	void getRayToWorld(btVector3 &out) {
 		out = $self->m_rayToWorld;
 	}
-	void setRayToWorld(btVector3 value) {
+	void setRayToWorld(btVector3 const &value) {
 		$self->m_rayToWorld = value;
 	}
 };
@@ -80,14 +80,14 @@
 	void getHitNormalLocal(btVector3 &out) {
 		out = $self->m_hitNormalLocal;
 	}
-	void setHitNormalLocal(btVector3 value) {
+	void setHitNormalLocal(btVector3 const &value) {
 		$self->m_hitNormalLocal = value;
 	}
 	
 	void getHitPointLocal(btVector3 &out) {
 		out = $self->m_hitPointLocal;
 	}
-	void setHitPointLocal(btVector3 value) {
+	void setHitPointLocal(btVector3 const &value) {
 		$self->m_hitPointLocal = value;
 	}
 };
@@ -101,28 +101,28 @@
 	void getConvexFromWorld(btVector3 &out) {
 		out = $self->m_convexFromWorld;
 	}
-	void setRayFromWorld(btVector3 value) {
+	void setRayFromWorld(btVector3 const &value) {
 		$self->m_convexFromWorld = value;
 	}
 	
 	void getConvexToWorld(btVector3 &out) {
 		out = $self->m_convexToWorld;
 	}
-	void setConvexToWorld(btVector3 value) {
+	void setConvexToWorld(btVector3 const &value) {
 		$self->m_convexToWorld = value;
 	}
 	
 	void getHitNormalWorld(btVector3 &out) {
 		out = $self->m_hitNormalWorld;
 	}
-	void setHitNormalWorld(btVector3 value) {
+	void setHitNormalWorld(btVector3 const &value) {
 		$self->m_hitNormalWorld = value;
 	}
 	
 	void getHitPointWorld(btVector3 &out) {
 		out = $self->m_hitPointWorld;
 	}
-	void setHitPointWorld(btVector3 value) {
+	void setHitPointWorld(btVector3 const &value) {
 		$self->m_hitPointWorld = value;
 	}
 };

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.utils.reflect;
 
-import com.badlogic.gwtref.client.ReflectionCache;
 import com.badlogic.gwtref.client.Type;
 
 /** Provides information about, and access to, a single field of a class or interface.
@@ -102,6 +101,41 @@ public final class Field {
 	public Class getElementType (int index) {
 		Type elementType = field.getElementType(index);
 		return elementType != null ? elementType.getClassOfType() : null;
+	}
+
+	/** Returns true if the field includes an annotation of the provided class type. */
+	public boolean isAnnotationPresent (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by this field,
+	 * or an empty array if there are none. Does not include inherited annotations. */
+	public Annotation[] getDeclaredAnnotations () {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
+
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this field doesn't
+	 * have such an annotation. This is a convenience function if the caller knows already which annotation
+	 * type he's looking for. */
+	public Annotation getDeclaredAnnotation (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return new Annotation(annotation);
+			}
+		}
+		return null;
 	}
 
 	/** Returns the value of the field on the supplied object. */

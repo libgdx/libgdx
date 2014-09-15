@@ -304,6 +304,11 @@ public class Tree extends WidgetGroup {
 		this.padding = padding;
 	}
 
+	/** Returns the amount of horizontal space for indentation level. */
+	public float getIndentSpacing () {
+		return indentSpacing;
+	}
+
 	/** Sets the amount of vertical space between nodes. */
 	public void setYSpacing (float ySpacing) {
 		this.ySpacing = ySpacing;
@@ -530,6 +535,16 @@ public class Tree extends WidgetGroup {
 
 		public Drawable getIcon () {
 			return icon;
+		}
+
+		public int getLevel () {
+			int level = 0;
+			Node current = this;
+			do {
+				level++;
+				current = current.getParent();
+			} while (current != null);
+			return level;
 		}
 
 		/** Returns this node or the child node with the specified object, or null. */

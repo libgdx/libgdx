@@ -1,4 +1,28 @@
-[1.2.1]
+[1.3.2]
+- API Addition: Added randomSign and randomTriangular methods to MathUtils.
+- API Addition: Decal has now a getter for the Color.
+- API Change: renamed Agent to Telegraph and moved it to msg package. Also, removed the update method and made StateMachine a Telegraph.
+- API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.
+- API Addition: added annotation support in reflection layer, thanks code-disaster! https://github.com/libgdx/libgdx/pull/2215
+- API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178 
+- API Addition: bitmap fonts can now be loaded from an atlas via AssetManager/BitmapFontLoader, see https://github.com/libgdx/libgdx/pull/2110
+- API Change: updated to RoboVM 1.0.0-SNAPSHOT for now until the next alpha is released.
+- API Change: Button now uses padding of all background drawables. https://github.com/libgdx/libgdx/issues/2322
+- Drawables now know their names, making debugging easier.
+- API Change: Table fill now respects the widget's minimum size.
+- Texture packer, fixed image size written to atlas file.
+- API Change: Cell no longer uses primitive wrappers in public API and boxing is minimized.
+- API Addition: TextureAttribute now supports uv transform (texture regions).
+
+[1.3.1]
+- API change: Viewport refactoring. https://github.com/libgdx/libgdx/pull/2220
+- Fixed GWT issues
+
+[1.3.0]
+- Added Input.isKeyJustPressed.
+- API Addition: multiple recipients are now supported by MessageDispatcher, see https://github.com/libgdx/libgdx/wiki/Message-Handling#multiple-recipients
+- API Change: State#onMessage now takes the message receiver as argument.
+- API Addition: added StackStateMachine to the gdx-ai extension.
 - API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
 - API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011
 - Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).
@@ -17,6 +41,7 @@
 - Added Intersector#intersectRayRay to detect if two 2D rays intersect, see https://github.com/libgdx/libgdx/pull/2132
 - Bullet: ClosestRayResultCallback, AllHitsRayResultCallback, LocalConvexResult, ClosestConvexResultCallback and subclasses now use getter/setters taking a Vector3 instead of btVector3, see https://github.com/libgdx/libgdx/pull/2176
 - 2d particle system supports pre-multiplied alpha.
+- Bullet: btIDebugDrawer/DebugDrawer now use pooled Vector3 instances instead of btVector3, see https://github.com/libgdx/libgdx/issues/2174
 
 [1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling

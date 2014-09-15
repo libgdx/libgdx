@@ -219,6 +219,8 @@ public class ScrollPane extends WidgetGroup {
 					setScrollY(amountY + getMouseWheelY() * amount);
 				else if (scrollX) //
 					setScrollX(amountX + getMouseWheelX() * amount);
+				else
+					return false;
 				return true;
 			}
 		});
