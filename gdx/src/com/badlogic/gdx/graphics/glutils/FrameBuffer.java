@@ -122,8 +122,8 @@ public class FrameBuffer implements Disposable {
 	/** Override this method in a derived class to set up the backing texture as you like. */
 	protected void setupTexture () {
 		colorTexture = new Texture(width, height, format);
-		colorTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-		colorTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
+		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	private void build () {
@@ -132,7 +132,7 @@ public class FrameBuffer implements Disposable {
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
-			if (Gdx.app.getType() == Application.ApplicationType.iOS) {
+			if (Gdx.app.getType() == ApplicationType.iOS) {
 				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
 				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
 				defaultFramebufferHandle = intbuf.get(0);
