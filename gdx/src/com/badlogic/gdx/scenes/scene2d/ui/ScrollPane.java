@@ -391,15 +391,15 @@ public class ScrollPane extends WidgetGroup {
 
 		boolean fade = fadeScrollBars;
 		if (!fade) {
-		// Check again, now taking into account the area that's taken up by any enabled scrollbars.
-		if (scrollY) {
-			areaWidth -= scrollbarWidth;
-			if (!scrollX && widgetWidth > areaWidth && !disableX) scrollX = true;
-		}
-		if (scrollX) {
-			areaHeight -= scrollbarHeight;
-			if (!scrollY && widgetHeight > areaHeight && !disableY) {
-				scrollY = true;
+			// Check again, now taking into account the area that's taken up by any enabled scrollbars.
+			if (scrollY) {
+				areaWidth -= scrollbarWidth;
+				if (!scrollX && widgetWidth > areaWidth && !disableX) scrollX = true;
+			}
+			if (scrollX) {
+				areaHeight -= scrollbarHeight;
+				if (!scrollY && widgetHeight > areaHeight && !disableY) {
+					scrollY = true;
 					areaWidth -= scrollbarWidth;
 				}
 			}
