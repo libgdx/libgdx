@@ -49,6 +49,12 @@ public class Cell<T extends Actor> implements Poolable {
 		return (Cell<A>)this;
 	}
 
+	/** Removes the current actor for the cell, if any. */
+	public Cell<T> clearActor () {
+		setActor(null);
+		return this;
+	}
+
 	/** Returns the actor for this cell, or null. */
 	public T getActor () {
 		return (T)actor;
