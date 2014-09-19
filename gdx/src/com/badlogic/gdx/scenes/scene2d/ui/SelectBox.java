@@ -25,16 +25,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
@@ -42,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Pools;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -58,7 +55,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	SelectBoxStyle style;
 	final Array<T> items = new Array();
-	Selection<T> selection = new Selection();
+	final ArraySelection<T> selection = new ArraySelection(items);
 	SelectBoxList<T> selectBoxList;
 	private final TextBounds bounds = new TextBounds();
 	private float prefWidth, prefHeight;
@@ -78,6 +75,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 		setSize(getPrefWidth(), getPrefHeight());
 
 		selection.setActor(this);
+		selection.setRequired(true);
+
 		selectBoxList = new SelectBoxList(this);
 
 		addListener(clickListener = new ClickListener() {
@@ -124,20 +123,35 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth();
+
 		items.clear();
 		items.addAll(newItems);
+		selection.validate();
 		selectBoxList.list.setItems(items);
-		selection.set(selectBoxList.list.getSelected());
-		invalidateHierarchy();
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
 	}
 
 	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth();
+
 		items.clear();
 		items.addAll(newItems);
+		selection.validate();
 		selectBoxList.list.setItems(items);
-		selection.set(selectBoxList.list.getSelected());
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
+	}
+
+	public void clearItems () {
+		if (items.size == 0) return;
+		items.clear();
+		selection.clear();
 		invalidateHierarchy();
 	}
 
@@ -271,6 +285,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	public void showList () {
+		if (items.size == 0) return;
 		selectBoxList.show(getStage());
 	}
 
@@ -279,7 +294,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Returns the list shown when the select box is open. */
-	public List getList () {
+	public List<T> getList () {
 		return selectBoxList.list;
 	}
 
@@ -320,7 +335,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			list.addListener(new ClickListener() {
 				public void clicked (InputEvent event, float x, float y) {
-					selectBox.setSelected(list.getSelected());
+					selectBox.selection.choose(list.getSelected());
 					hide();
 				}
 
@@ -328,9 +343,11 @@ public class SelectBox<T> extends Widget implements Disableable {
 					list.setSelectedIndex(Math.min(selectBox.items.size - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
 					return true;
 				}
+			});
 
+			addListener(new InputListener() {
 				public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-					list.selection.set(selectBox.getSelected());
+					if (toActor == null || !isAscendantOf(toActor)) list.selection.set(selectBox.getSelected());
 				}
 			});
 
@@ -384,8 +401,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			else
 				setY(screenPosition.y + selectBox.getHeight());
 			setX(screenPosition.x);
-			setWidth(selectBox.getWidth());
-			setHeight(height);
+			setSize(Math.max(getPrefWidth(), selectBox.getWidth()), height);
 
 			validate();
 			scrollToCenter(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);

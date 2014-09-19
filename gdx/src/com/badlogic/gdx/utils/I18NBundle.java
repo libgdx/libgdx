@@ -313,7 +313,7 @@ public class I18NBundle {
 	// Tries to load the bundle for the given locale.
 	private static I18NBundle loadBundle (FileHandle baseFileHandle, String encoding, Locale targetLocale) {
 		I18NBundle bundle = null;
-		InputStream stream = null;
+		Reader reader = null;
 		try {
 			FileHandle fileHandle = toFileHandle(baseFileHandle, targetLocale);
 			if (fileHandle.exists()) {
@@ -321,13 +321,14 @@ public class I18NBundle {
 				bundle = new I18NBundle();
 
 				// Load bundle properties from the stream with the specified encoding
-				stream = fileHandle.read();
-				bundle.load(new InputStreamReader(stream, encoding));
+				reader = fileHandle.reader(encoding);
+				bundle.load(reader);
 			}
-		} catch (Throwable t) {
-			throw new GdxRuntimeException(t);
-		} finally {
-			StreamUtils.closeQuietly(stream);
+		} catch (IOException e) {
+			throw new GdxRuntimeException(e);
+		} 
+		finally {
+			StreamUtils.closeQuietly(reader);
 		}
 		if (bundle != null) {
 			bundle.setLocale(targetLocale);

@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -395,9 +394,7 @@ public class ScrollPane extends WidgetGroup {
 			// Check again, now taking into account the area that's taken up by any enabled scrollbars.
 			if (scrollY) {
 				areaWidth -= scrollbarWidth;
-				if (!scrollX && widgetWidth > areaWidth && !disableX) {
-					scrollX = true;
-				}
+				if (!scrollX && widgetWidth > areaWidth && !disableX) scrollX = true;
 			}
 			if (scrollX) {
 				areaHeight -= scrollbarHeight;
@@ -408,7 +405,7 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
-		// Set the widget area bounds.
+		// The bounds of the scrollable area for the widget.
 		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		if (fade) {
@@ -446,19 +443,10 @@ public class ScrollPane extends WidgetGroup {
 		if (scrollX) {
 			if (hScrollKnob != null) {
 				float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
-				// the small gap where the two scroll bars intersect might have to flip from right to left
-				float boundsX, boundsY;
-				if (vScrollOnRight) {
-					boundsX = bgLeftWidth;
-				} else {
-					boundsX = bgLeftWidth + scrollbarWidth;
-				}
-				// bar on the top or bottom
-				if (hScrollOnBottom) {
-					boundsY = bgBottomHeight;
-				} else {
-					boundsY = height - bgTopHeight - hScrollHeight;
-				}
+				// The corner gap where the two scroll bars intersect might have to flip from right to left.
+				float boundsX = vScrollOnRight ? bgLeftWidth : bgLeftWidth + scrollbarWidth;
+				// Scrollbar on the top or bottom.
+				float boundsY = hScrollOnBottom ? bgBottomHeight : height - bgTopHeight - hScrollHeight;
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
 				if (variableSizeKnobs)
 					hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
@@ -834,10 +822,12 @@ public class ScrollPane extends WidgetGroup {
 		return areaHeight;
 	}
 
+	/** Returns true if the widget is larger than the scroll pane horizontally. */
 	public boolean isScrollX () {
 		return scrollX;
 	}
 
+	/** Returns true if the widget is larger than the scroll pane vertically. */
 	public boolean isScrollY () {
 		return scrollY;
 	}
@@ -921,15 +911,13 @@ public class ScrollPane extends WidgetGroup {
 		this.clamp = clamp;
 	}
 
-	/** Set the position of the vertical and horizontal scroll bars (if they exist).
-	 * @param bottom sets horizontal scroll bar to be at the bottom or the top
-	 * @param right sets vertical scroll bar to be at the right or the left */
+	/** Set the position of the vertical and horizontal scroll bars. */
 	public void setScrollBarPositions (boolean bottom, boolean right) {
 		hScrollOnBottom = bottom;
 		vScrollOnRight = right;
 	}
 
-	/** When true the scroll bars fade out after some time of not being used. */
+	/** When true the scrollbars don't reduce the scrollable size and fade out after some time of not being used. */
 	public void setFadeScrollBars (boolean fadeScrollBars) {
 		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
