@@ -597,6 +597,15 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
 			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			if (scrollY && !fadeScrollBars) {
+				float vScrollWidth = 0;
+				if (style.vScroll != null) {
+					vScrollWidth = style.vScroll.getMinWidth();
+				} else if (style.vScrollKnob != null) {
+					vScrollWidth = style.vScrollKnob.getMinWidth();
+				}
+				width += vScrollWidth;
+			}
 			return width;
 		}
 		return 150;
@@ -606,6 +615,15 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float height = ((Layout)widget).getPrefHeight();
 			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			if (scrollX && !fadeScrollBars) {
+				float hScrollHeight = 0;
+				if (style.hScroll != null) {
+					hScrollHeight = style.hScroll.getMinHeight();
+				} else if (style.hScrollKnob != null) {
+					hScrollHeight = style.hScrollKnob.getMinHeight();
+				}
+				height += hScrollHeight;
+			}
 			return height;
 		}
 		return 150;
@@ -922,7 +940,7 @@ public class ScrollPane extends WidgetGroup {
 		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
 		if (!fadeScrollBars) fadeAlpha = fadeAlphaSeconds;
-		invalidate();
+		invalidateHierarchy();
 	}
 
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
