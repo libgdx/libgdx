@@ -44,7 +44,7 @@ public class IntAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 983 * result + value;
 		return result; 
 	}

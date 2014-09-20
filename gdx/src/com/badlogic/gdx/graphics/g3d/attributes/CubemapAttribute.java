@@ -65,7 +65,7 @@ public class CubemapAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 967 * result + textureDescription.hashCode();
 		return result; 
 	}
