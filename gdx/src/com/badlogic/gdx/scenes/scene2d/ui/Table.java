@@ -64,13 +64,13 @@ public class Table extends WidgetGroup {
 	private float[] columnWidth, rowHeight;
 	private float[] expandWidth, expandHeight;
 
-	Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
+	Value padTop = backgroundTop, padLeft = backgroundLeft, padBottom = backgroundBottom, padRight = backgroundRight;
 	int align = Align.center;
 
 	Debug debug = Debug.none;
 	Array<DebugRect> debugRects;
 
-	private Drawable background;
+	Drawable background;
 	private boolean clip;
 	private Skin skin;
 	boolean round = true;
@@ -134,48 +134,22 @@ public class Table extends WidgetGroup {
 
 	/** Sets the background drawable from the skin and adjusts the table's padding to match the background. This may only be called
 	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
-	 * @see #setBackground(Drawable, boolean) */
+	 * @see #setBackground(Drawable) */
 	public void setBackground (String drawableName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		setBackground(skin.getDrawable(drawableName), true);
+		setBackground(skin.getDrawable(drawableName));
 	}
 
-	/** Sets the background drawable and adjusts the table's padding to match the background.
-	 * @see #setBackground(Drawable, boolean) */
+	/** @param background May be null to clear the background. */
 	public void setBackground (Drawable background) {
-		setBackground(background, true);
-	}
-
-	/** Sets the background drawable and, if adjustPadding is true, sets the table's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and padding removed. */
-	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
+		float padTopOld = getPadTop(), padLeftOld = getPadLeft(), padBottomOld = getPadBottom(), padRightOld = getPadRight();
 		this.background = background;
-		if (adjustPadding) {
-			// Set padding only if different and avoid invalidateHierarchy if the total x and y padding did not change.
-			float padTop = getPadTop(), padLeft = getPadLeft(), padBottom = getPadBottom(), padRight = getPadRight();
-			if (background == null) {
-				if (padTop != 0 || padLeft != 0 || padBottom != 0 || padRight != 0) {
-					float padX = getPadX(), padY = getPadY();
-					pad(Value.zero);
-					if (padX != getPadX() || padY != getPadY())
-						invalidate();
-					else
-						invalidateHierarchy();
-				}
-			} else {
-				if (padTop != background.getTopHeight() || padLeft != background.getLeftWidth()
-					|| padBottom != background.getBottomHeight() || padRight != background.getRightWidth()) {
-					float padX = getPadX(), padY = getPadY();
-					pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
-					if (padX != getPadX() || padY != getPadY())
-						invalidate();
-					else
-						invalidateHierarchy();
-				}
-			}
-		}
+		float padTopNew = getPadTop(), padLeftNew = getPadLeft(), padBottomNew = getPadBottom(), padRightNew = getPadRight();
+		if (padTopOld + padBottomOld != padTopNew + padBottomNew || padLeftOld + padRightOld != padLeftNew + padRightNew)
+			invalidateHierarchy();
+		else if (padTopOld != padTopNew || padLeftOld != padLeftNew || padBottomOld != padBottomNew || padRightOld != padRightNew)
+			invalidate();
 	}
 
 	/** @see #setBackground(Drawable) */
@@ -341,10 +315,10 @@ public class Table extends WidgetGroup {
 	 * cell, column, and row defaults. */
 	public void reset () {
 		clear();
-		padTop = Value.zero;
-		padLeft = Value.zero;
-		padBottom = Value.zero;
-		padRight = Value.zero;
+		padTop = backgroundTop;
+		padLeft = backgroundLeft;
+		padBottom = backgroundBottom;
+		padRight = backgroundRight;
 		align = Align.center;
 		debug(Debug.none);
 		cellDefaults.defaults();
@@ -1238,4 +1212,40 @@ public class Table extends WidgetGroup {
 	static public enum Debug {
 		none, all, table, cell, actor
 	}
+
+	/** Value that is the top padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundTop = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getTopHeight();
+		}
+	};
+
+	/** Value that is the left padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundLeft = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getLeftWidth();
+		}
+	};
+
+	/** Value that is the bottom padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundBottom = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getBottomHeight();
+		}
+	};
+
+	/** Value that is the right padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundRight = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getRightWidth();
+		}
+	};
 }

@@ -19,7 +19,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean isDisabled;
 	private boolean toggle;
 	boolean multiple;
-	private boolean required;
+	boolean required;
 	private boolean programmaticChangeEvents = true;
 	T lastSelected;
 
@@ -34,21 +34,25 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		snapshot();
-		if ((toggle || (!required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)) {
-			if (required && selected.size == 1) return;
-			selected.remove(item);
-			lastSelected = null;
-		} else {
-			boolean modified = false;
-			if (!multiple || (!toggle && !UIUtils.ctrl())) {
-				modified = selected.size > 0;
-				selected.clear();
+		try {
+			if ((toggle || (!required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)) {
+				if (required && selected.size == 1) return;
+				selected.remove(item);
+				lastSelected = null;
+			} else {
+				boolean modified = false;
+				if (!multiple || (!toggle && !UIUtils.ctrl())) {
+					if (selected.size == 1 && selected.contains(item)) return;
+					modified = selected.size > 0;
+					selected.clear();
+				}
+				if (!selected.add(item) && !modified) return;
+				lastSelected = item;
 			}
-			if (!selected.add(item) && !modified) return;
-			lastSelected = item;
+			if (fireChangeEvent()) revert();
+		} finally {
+			cleanup();
 		}
-		if (fireChangeEvent()) revert();
-		cleanup();
 	}
 
 	public boolean hasItems () {
@@ -176,7 +180,8 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	/** Called when the selection changes.
+	/** Fires a change event on the selection's actor, if any. Called internally when the selection changes, depending on
+	 * {@link #setProgrammaticChangeEvents(boolean)}.
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
 		if (actor == null) return false;

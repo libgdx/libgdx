@@ -51,9 +51,12 @@ public abstract class Attribute {
 
 	/** The type of this attribute */
 	public final long type;
+	
+	private final int typeBit;
 
 	protected Attribute (final long type) {
 		this.type = type;
+		this.typeBit = Long.numberOfTrailingZeros(type);
 	}
 
 	/** @return An exact copy of this attribute */
@@ -76,5 +79,10 @@ public abstract class Attribute {
 	@Override
 	public String toString () {
 		return getAttributeAlias(type);
+	}
+	
+	@Override
+	public int hashCode () {
+		return 7489 * typeBit;
 	}
 }

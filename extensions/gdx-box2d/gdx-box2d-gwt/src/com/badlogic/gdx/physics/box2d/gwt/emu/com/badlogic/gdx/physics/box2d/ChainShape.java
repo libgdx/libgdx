@@ -18,7 +18,6 @@ package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.common.Vec2;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
@@ -42,9 +41,9 @@ public class ChainShape extends Shape {
 
 	public void createLoop (float[] vertices) {
 		Vec2[] v = new Vec2[vertices.length / 2];
-		for (int i = 0; i < vertices.length; i += 2) {
-			v[i] = new Vec2(vertices[i], vertices[i + 1]);
-		}
+		for (int i = 0, vi = 0; i < vertices.length; i += 2, vi++) {
+			v[vi] = new Vec2(vertices[i], vertices[i + 1]);
+		}		
 		shape.createLoop(v, v.length);
 		isLooped = true;
 	}
@@ -55,15 +54,15 @@ public class ChainShape extends Shape {
 		Vec2[] v = new Vec2[vertices.length];
 		for (int i = 0; i < vertices.length; i++) {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
-		}
+		}		
 		shape.createLoop(v, v.length);
 		isLooped = true;
 	}
 
 	public void createChain (float[] vertices) {
 		Vec2[] v = new Vec2[vertices.length / 2];
-		for (int i = 0; i < vertices.length; i += 2) {
-			v[i] = new Vec2(vertices[i], vertices[i + 1]);
+		for (int i = 0, vi = 0; i < vertices.length; i += 2, vi++) {
+			v[vi] = new Vec2(vertices[i], vertices[i + 1]);
 		}
 		shape.createChain(v, v.length);
 		isLooped = false;

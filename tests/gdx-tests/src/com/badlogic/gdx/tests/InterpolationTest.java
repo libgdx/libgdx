@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class InterpolationTest extends GdxTest {
 	Stage stage;
@@ -79,7 +80,7 @@ public class InterpolationTest extends GdxTest {
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 		resetPositions();
 
 		Field[] interpolationFields = ClassReflection.getFields(Interpolation.class);
@@ -145,8 +146,8 @@ public class InterpolationTest extends GdxTest {
 		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getBatch().begin();
-		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2
-			- list.getStyle().font.getBounds(text).width / 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
+		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2 - list.getStyle().font.getBounds(text).width
+			/ 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
 		stage.getBatch().end();
 
 		renderer.begin(ShapeType.Line);

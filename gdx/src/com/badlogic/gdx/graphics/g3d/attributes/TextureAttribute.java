@@ -123,7 +123,7 @@ public class TextureAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 991 * result + textureDescription.hashCode();
 		result = 991 * result + NumberUtils.floatToRawIntBits(offsetU);
 		result = 991 * result + NumberUtils.floatToRawIntBits(offsetV);

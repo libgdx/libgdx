@@ -160,9 +160,11 @@ public class FileHandle {
 	/** Returns a reader for reading this file as characters.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
+		InputStream stream = read();
 		try {
-			return new InputStreamReader(read(), charset);
+			return new InputStreamReader(stream, charset);
 		} catch (UnsupportedEncodingException ex) {
+			StreamUtils.closeQuietly(stream);
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
