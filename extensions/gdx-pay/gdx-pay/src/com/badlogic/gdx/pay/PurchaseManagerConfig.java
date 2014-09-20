@@ -35,14 +35,17 @@ public class PurchaseManagerConfig {
 	public static final String STORE_NAME_IOS_APPLE = "AppleiOS";
 	public static final String STORE_NAME_DESKTOP_APPLE = "AppleMac";
 	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
+	public static final String STORE_NAME_OUYA = "OUYAStore";
 
 	private List<Offer> offers;
-
 	private Map<String, String> storeKeys;
+	private String developerID;									// new
+	private byte[] applicationKey;								// new
 
 	public PurchaseManagerConfig () {
 		offers = new ArrayList<Offer>(16);
 		storeKeys = new HashMap<String, String>(16);
+		developerID = "";												// new
 	}
 
 	public void addOffer (Offer offer) {
@@ -79,5 +82,21 @@ public class PurchaseManagerConfig {
 
 	public Map<String, String> getStoreKeys () {
 		return storeKeys;
+	}
+	
+	public void setDeveloperID(String ID) {				// New
+		this.developerID = ID;
+	}
+	
+	public String getDeveloperID() {							// New
+		return developerID;
+	}
+	
+	public void setApplicationKey(byte[] key) {			// New
+		this.applicationKey = key;
+	}
+	
+	public byte[] getApplicationKey() {						// New
+		return applicationKey;
 	}
 }
