@@ -49,7 +49,7 @@ public class HieroSettings {
 	/** @param hieroFileRef The file system or classpath location of the Hiero settings file. */
 	public HieroSettings (String hieroFileRef) {
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read(), "UTF-8"));
 			while (true) {
 				String line = reader.readLine();
 				if (line == null) break;
@@ -265,7 +265,7 @@ public class HieroSettings {
 	/** Saves the settings to a file.
 	 * @throws IOException if the file could not be saved. */
 	public void save (File file) throws IOException {
-		PrintStream out = new PrintStream(new FileOutputStream(file));
+		PrintStream out = new PrintStream(file, "UTF-8");
 		out.println("font.name=" + fontName);
 		out.println("font.size=" + fontSize);
 		out.println("font.bold=" + bold);
