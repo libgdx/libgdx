@@ -87,7 +87,7 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 				}
 			reader.close();
 		} catch (IOException e) {
-			Gdx.app.error(PolygonRegionLoader.class.getSimpleName(), "could not read " + fileName, e);
+			throw new GdxRuntimeException("Error reading " + fileName, e);
 		}
 
 		if (image == null && params.textureExtensions != null) for (String extension : params.textureExtensions) {
