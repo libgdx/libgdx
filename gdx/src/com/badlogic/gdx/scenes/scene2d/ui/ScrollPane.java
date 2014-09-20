@@ -185,7 +185,7 @@ public class ScrollPane extends WidgetGroup {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				cancelTouchFocusedChild(event);
+				cancelTouchFocusedChildPan(event,amountX,amountY);
 			}
 
 			public void fling (InputEvent event, float x, float y, int button) {
@@ -230,7 +230,11 @@ public class ScrollPane extends WidgetGroup {
 		fadeDelay = fadeDelaySeconds;
 	}
 
-	void cancelTouchFocusedChild (InputEvent event) {
+	protected void cancelTouchFocusedChildPan (InputEvent event,float amountX,float amountY) {
+		cancelTouchFocusedChild(event);
+	}
+	
+	protected void cancelTouchFocusedChild (InputEvent event) {
 		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
 		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
