@@ -73,15 +73,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </ul>
  * Please note that Fortumo is not included.
  * <p>
- * To integrate on Android do the following:
- * <ul>
- * <li>AndroidManifest.xml: add the required permissions (see <a href="https://github.com/onepf/OpenIAB">OpenIAB on GitHub</a>).
- * <li>proguard.cfg: add the required proguard settings (see <a href="https://github.com/onepf/OpenIAB">OpenIAB on GitHub</a>).
- * <li>AndroidApplication/member variables: add "PurchaseManagerAndroidOpenIAB manager;"
- * <li>AndroidApplication.onCreate(...): add "manager = new PurchaseManagerAndroidOpenIAB(this);"
- * <li>AndroidApplication.onDispose(): add "manager.dispose(); manager = null;"
- * <li>AndroidApplication.onActivityResult(...): add "manager.onActivityResult(requestCode, resultCode, data);"
- * <ul>
+ * Include the gdx-pay-android-openiab.jar for this to work (plus gdx-pay-android.jar). Also update the "uses-permission" settings
+ * in AndroidManifest.xml and your proguard settings.
  * 
  * @author noblemaster */
 public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposable {
@@ -103,10 +96,6 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	OpenIabHelper helper;
 	/** The inventory with all the prices/details. */
 	Inventory inventory;
-
-	public PurchaseManagerAndroidOpenIAB (Activity activity) {
-		this(activity, 1001); // NOTE: requestCode here is an arbitrarily chosen number!
-	}
 
 	public PurchaseManagerAndroidOpenIAB (Activity activity, int requestCode) {
 		this.activity = activity;

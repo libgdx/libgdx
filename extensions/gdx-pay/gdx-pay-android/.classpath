@@ -7,7 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-pay"/>
 	<classpathentry kind="lib" path="/gdx-backend-android/libs/android-4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/ouya-sdk.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>

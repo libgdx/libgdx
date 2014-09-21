@@ -38,30 +38,9 @@ public class GdxTestActivity extends AndroidApplication {
 		String testName = (String)extras.get("test");
 		GdxTest test = GdxTests.newTest(testName);
 		
-		// InApp: instantiate payment systems
-		if (PayTest.class.equals(test.getClass())) {
-			PurchaseSystem.setManager(new PurchaseManagerAndroidOpenIAB(this));
-		}
-		
 		// and run the application...
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		initialize(test, config);
-	}
-
-	@Override
-	protected void onDestroy () {
-		super.onDestroy();
-		
-		//  InApp: dispose payment system(s)
-		PurchaseSystem.dispose();
-	}
-
-	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-		// InApp: forward activities to our purchase manager
-		if (PurchaseSystem.hasManager()) {
-			((PurchaseManagerAndroidOpenIAB)PurchaseSystem.getManager()).onActivityResult(requestCode, resultCode, data);
-		}
 	}
 }
