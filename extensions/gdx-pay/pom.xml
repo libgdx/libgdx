@@ -20,5 +20,6 @@
     <module>gdx-pay-desktop-apple</module>
     <module>gdx-pay-iosrobovm-apple</module>
     <module>gdx-pay-gwt-googlewallet</module>
+    <module>gdx-pay-server</module>
   </modules>
 </project>

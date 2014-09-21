@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.pay;
 
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 /** Our purchase system to make InApp payments.
  * 
  * @author noblemaster */
@@ -60,7 +57,7 @@ public final class PurchaseSystem {
 		if (manager != null) {
 			manager.install(observer, config);
 		} else {
-			observer.handleInstallError(new GdxRuntimeException("No purchase manager was available."));
+			observer.handleInstallError(new RuntimeException("No purchase manager was available."));
 		}
 	}
 
@@ -76,9 +73,7 @@ public final class PurchaseSystem {
 	/** Disposes the purchase manager if there was one. */
 	public static void dispose () {
 		if (manager != null) {
-			if (manager instanceof Disposable) {
-				((Disposable)manager).dispose();
-			}
+			manager.dispose();
 			manager = null;
 		}
 	}
@@ -88,7 +83,7 @@ public final class PurchaseSystem {
 		if (manager != null) {
 			manager.purchase(listener, identifier);
 		} else {
-			throw new GdxRuntimeException("No purchase manager was found.");
+			throw new RuntimeException("No purchase manager was found.");
 		}
 	}
 
@@ -97,7 +92,7 @@ public final class PurchaseSystem {
 		if (manager != null) {
 			manager.purchaseRestore();
 		} else {
-			throw new GdxRuntimeException("No purchase manager was found.");
+			throw new RuntimeException("No purchase manager was found.");
 		}
 	}
 }

@@ -340,6 +340,19 @@
 		</ant>
 	</target>
 
+	<target name="gdx-pay-server" depends="gdx-core,gdx-jnigen,gdx-pay">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-server">
+			<property name="distDir" value="${distDir}/extensions/gdx-pay/"/>
+			<property name="jar" value="gdx-pay-server"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
@@ -388,7 +401,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-pay,gdx-pay-android,gdx-pay-android-openiab,gdx-pay-android-ouya,gdx-pay-desktop-apple,gdx-pay-gwt-googlewallet"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-pay,gdx-pay-android,gdx-pay-android-openiab,gdx-pay-android-ouya,gdx-pay-desktop-apple,gdx-pay-gwt-googlewallet,gdx-pay-server"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

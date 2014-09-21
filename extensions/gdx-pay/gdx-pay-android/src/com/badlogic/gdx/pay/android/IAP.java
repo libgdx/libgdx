@@ -41,7 +41,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.pay.Offer;
 import com.badlogic.gdx.pay.OfferType;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
@@ -50,8 +49,6 @@ import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseObserver;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** The IAP system for Android supporting the following stores:
  * <ul>
@@ -102,7 +99,7 @@ public class IAP {
 		   	return;
 		   }
 		} catch (Exception e) {
-			Gdx.app.debug(TAG, "Failed to locate purchase manager for OUYA-IAP (gdx-pay-android-ouya.jar file not installed)", e);
+			Log.d(TAG, "Failed to locate purchase manager for OUYA-IAP (gdx-pay-android-ouya.jar file not installed)", e);
 		}
 
 		// let's go with OpenIAB instead if we can find it...
@@ -110,7 +107,7 @@ public class IAP {
 			Class<?> iabClazz = Class.forName("com.badlogic.gdx.pay.android.openiab.PurchaseManagerAndroidOpenIAB");
 		   PurchaseSystem.setManager((PurchaseManager)iabClazz.getConstructor(Activity.class, int.class).newInstance(activity, requestCode));
 		} catch (Exception e) {
-			Gdx.app.debug(TAG, "Failed to locate purchase manager for OpenIAB-IAP (gdx-pay-android-openiab.jar file not installed)", e);
+			Log.d(TAG, "Failed to locate purchase manager for OpenIAB-IAP (gdx-pay-android-openiab.jar file not installed)", e);
 		}
 	}
 
@@ -124,7 +121,7 @@ public class IAP {
 				Method method = manager.getClass().getMethod("onActivityResult", int.class, int.class, Intent.class);
 				method.invoke(manager, requestCode, resultCode, data);
 			} catch (Exception e) {
-				Gdx.app.debug(TAG, "Failed to invoke onActivityResult(...) on purchase manager.", e);
+				Log.d(TAG, "Failed to invoke onActivityResult(...) on purchase manager.", e);
 			}
 		}
 	}
