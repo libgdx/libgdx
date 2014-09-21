@@ -45,11 +45,11 @@ import com.badlogic.gdx.pay.Transaction;
  * // verify a purchase
  * if (verifier.isValid(transaction)) {
  *   // transaction appears valid
- *   ... punish user ...
+ *   ... add to DB etc. ...
  * }
  * else {
  *   // transaction appears bogus
- *   ... add to DB etc ...
+ *   ... punish user ...
  * }
  * </pre>
  * 
@@ -74,6 +74,7 @@ public class PurchaseVerifierManager {
 	}
 
 	public void addVerifier (PurchaseVerifier verifier) {
+		PurchaseVerifierManager
 		verifiers.put(verifier.storeName(), verifier);
 	}
 
