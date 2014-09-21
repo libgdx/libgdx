@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,6 +77,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
+	private Object iap = null;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
@@ -190,6 +192,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
+		
+		// InApp: look for gdx-pay-android and if it exists, instantiate it (gdx-pay jars need to be in place)
+		try {
+			Class<?> iapClazz = Class.forName("com.badlogic.gdx.pay.android.IAP");
+			int requestCode = 1032;  // request code for onActivityResult for when purchases happen (could go into AndroidConfiguration)
+			iap = iapClazz.getConstructor(Activity.class, int.class).newInstance(this, requestCode);
+			log("AndroidApplication", "IAP: gdx-pay successfully instantiated.");
+		} catch (Exception e) {
+			debug("AndroidApplication", "Failed to locate IAP (gdx-pay jar files not installed for Android)", e);
+		}
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -303,9 +315,36 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		super.onResume();
 	}
 
+
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// InApp: forward activities to our purchase manager if it was installed
+		if (iap != null) {
+			try {
+				Method method = iap.getClass().getMethod("onActivityResult", int.class, int.class, Intent.class);
+				method.invoke(iap, requestCode, resultCode, data);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to invoke onActivityResult(...) on IAP.", e);
+			}
+		}
+	}
+
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
+		
+		// InApp: we destroy the purchase manager if it was installed
+		if (iap != null) {
+			try {
+				Method method = iap.getClass().getMethod("dispose");
+				method.invoke(iap);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to invoke dispose() on IAP.", e);
+			}
+			iap = null;
+		}
 	}
 
 	@Override
