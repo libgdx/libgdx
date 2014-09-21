@@ -239,6 +239,22 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Sets this matrix to a scaling matrix.
+	 * @param scale The scale vector.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToScaling (Vector2 scale) {
+		val[M00] = scale.x;
+		val[M10] = 0;
+		val[M20] = 0;
+		val[M01] = 0;
+		val[M11] = scale.y;
+		val[M21] = 0;
+		val[M02] = 0;
+		val[M12] = 0;
+		val[M22] = 1;
+		return this;
+	}
+
 	public String toString () {
 		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
 			+ val[2] + "|" + val[5] + "|" + val[8] + "]";

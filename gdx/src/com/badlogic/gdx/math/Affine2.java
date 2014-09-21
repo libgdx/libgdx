@@ -576,27 +576,6 @@ public final class Affine2 implements Serializable {
 		return position;
 	}
 
-	/** Get the scale component of the matrix.
-	 * @param scale Output vector.
-	 * @return Filled scale. */
-	public Vector2 getScale (Vector2 scale) {
-		scale.x = (float)Math.sqrt(m00 * m00 + m01 * m01);
-		scale.y = (float)Math.sqrt(m10 * m10 + m11 * m11);
-		return scale;
-	}
-
-	/** Get the rotation component of the matrix.
-	 * @return Rotation in degrees. */
-	public float getRotation () {
-		return MathUtils.radiansToDegrees * getRotationRad();
-	}
-
-	/** Get the rotation component of the matrix.
-	 * @return Rotation in radians. */
-	public float getRotationRad () {
-		return (float)Math.atan2(m10, m00);
-	}
-
 	@Override
 	public String toString () {
 		return "[" + m00 + "|" + m01 + "|" + m02 + "]\n[" + m10 + "|" + m11 + "|" + m12 + "]\n[0.0|0.0|0.1]";
