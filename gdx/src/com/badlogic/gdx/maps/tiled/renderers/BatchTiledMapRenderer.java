@@ -53,11 +53,6 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public float getUnitScale () {
 		return unitScale;
 	}
-
-	/** @deprecated */
-	public Batch getSpriteBatch () {
-		return batch;
-	}
 	
 	public Batch getBatch() {
 		return batch;
