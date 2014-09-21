@@ -985,6 +985,36 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
+	/** Sets this matrix to the given affine matrix. The values are mapped as follows:
+	 *
+	 * <pre>
+	 *      [  M00  M01   0   M02  ]
+	 *      [  M10  M11   0   M12  ]
+	 *      [   0    0    1    0   ]
+	 *      [   0    0    0    1   ]
+	 * </pre>
+	 * @param affine the affine matrix
+	 * @return This matrix for chaining */
+	public Matrix4 set (Affine2 affine) {
+		val[0] = affine.m00;
+		val[1] = affine.m10;
+		val[2] = 0;
+		val[3] = 0;
+		val[4] = affine.m01;
+		val[5] = affine.m11;
+		val[6] = 0;
+		val[7] = 0;
+		val[8] = 0;
+		val[9] = 0;
+		val[10] = 1;
+		val[11] = 0;
+		val[12] = affine.m02;
+		val[13] = affine.m12;
+		val[14] = 0;
+		val[15] = 1;
+		return this;
+	}
+
 	public Matrix4 scl (Vector3 scale) {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
