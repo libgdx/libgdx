@@ -41,12 +41,18 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the actor in this cell and adds the actor to the cell's table. If null, removes any current actor. */
 	public <A extends Actor> Cell<A> setActor (A newActor) {
-		if (actor != null) actor.remove();
 		if (actor != newActor) {
+			if (actor != null) actor.remove();
 			actor = newActor;
 			if (newActor != null) table.addActor(newActor);
 		}
 		return (Cell<A>)this;
+	}
+
+	/** Removes the current actor for the cell, if any. */
+	public Cell<T> clearActor () {
+		setActor(null);
+		return this;
 	}
 
 	/** Returns the actor for this cell, or null. */

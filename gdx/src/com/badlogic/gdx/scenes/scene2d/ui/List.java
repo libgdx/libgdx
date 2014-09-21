@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -41,11 +40,11 @@ import com.badlogic.gdx.utils.ObjectSet;
 public class List<T> extends Widget implements Cullable {
 	private ListStyle style;
 	private final Array<T> items = new Array();
+	final ArraySelection<T> selection = new ArraySelection(items);
 	private Rectangle cullingArea;
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
-	final ArraySelection<T> selection;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -56,7 +55,6 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	public List (ListStyle style) {
-		selection = new ArraySelection(items);
 		selection.setActor(this);
 		selection.setRequired(true);
 
@@ -176,6 +174,16 @@ public class List<T> extends Widget implements Cullable {
 		return selection.first();
 	}
 
+	/** Sets the selection to only the passed item, if it is a possible choice. */
+	public void setSelected (T item) {
+		if (items.contains(item, false))
+			selection.set(item);
+		else if (selection.getRequired() && items.size > 0)
+			selection.set(items.first());
+		else
+			selection.clear();
+	}
+
 	/** @return The index of the first selected item. The top item has an index of 0. Nothing selected has an index of -1. */
 	public int getSelectedIndex () {
 		ObjectSet<T> selected = selection.items();
@@ -195,34 +203,34 @@ public class List<T> extends Widget implements Cullable {
 
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
 		items.clear();
 		items.addAll(newItems);
+		selection.validate();
 
-		if (selection.getRequired() && items.size > 0)
-			selection.set(items.first());
-		else
-			selection.clear();
-
-		invalidateHierarchy();
+		invalidate();
+		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
 	}
 
 	/** Sets the current items, clearing the selection if it is no longer valid. If a selection is
 	 * {@link ArraySelection#getRequired()}, the first item is selected. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
 		items.clear();
 		items.addAll(newItems);
+		selection.validate();
 
-		T selected = getSelected();
-		if (!items.contains(selected, false)) {
-			if (selection.getRequired() && items.size > 0)
-				selection.set(items.first());
-			else
-				selection.clear();
-		}
+		invalidate();
+		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
+	}
 
+	public void clearItems () {
+		if (items.size == 0) return;
+		items.clear();
+		selection.clear();
 		invalidateHierarchy();
 	}
 

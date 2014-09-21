@@ -32,7 +32,10 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 	 * @author mzechner */
 	public static final class Usage {
 		public static final int Position = 1;
+		/** @deprecated use {@link #ColorUnpacked} instead. */
+		@Deprecated
 		public static final int Color = 2;
+		public static final int ColorUnpacked = 2;
 		public static final int ColorPacked = 4;
 		public static final int Normal = 8;
 		public static final int TextureCoordinates = 16;

@@ -84,7 +84,7 @@ public class DepthTestAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 971 * result + depthFunc;
 		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeNear);
 		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeFar);

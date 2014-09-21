@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -36,8 +37,8 @@ public class Group extends Actor implements Cullable {
 	static private final Vector2 tmp = new Vector2();
 
 	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
-	private final Matrix3 localTransform = new Matrix3();
-	private final Matrix3 worldTransform = new Matrix3();
+	private final Affine2 localTransform = new Affine2();
+	private final Affine2 worldTransform = new Affine2();
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
@@ -181,8 +182,8 @@ public class Group extends Actor implements Cullable {
 
 	/** Returns the transform for this group's coordinate system. */
 	protected Matrix4 computeTransform () {
-		Matrix3 worldTransform = this.worldTransform;
-		Matrix3 localTransform = this.localTransform;
+		Affine2 worldTransform = this.worldTransform;
+		Affine2 localTransform = this.localTransform;
 
 		float originX = this.originX;
 		float originY = this.originY;
@@ -190,14 +191,8 @@ public class Group extends Actor implements Cullable {
 		float scaleX = this.scaleX;
 		float scaleY = this.scaleY;
 
-		if (originX != 0 || originY != 0)
-			localTransform.setToTranslation(originX, originY);
-		else
-			localTransform.idt();
-		if (rotation != 0) localTransform.rotate(rotation);
-		if (scaleX != 1 || scaleY != 1) localTransform.scale(scaleX, scaleY);
+		localTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
 		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
-		localTransform.trn(x, y);
 
 		// Find the first parent that transforms.
 		Group parentGroup = parent;
@@ -367,7 +362,7 @@ public class Group extends Actor implements Cullable {
 		super.setStage(stage);
 		Actor[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
-			childrenArray[i].setStage(stage);
+			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ancestor.
 	}
 
 	/** Swaps two actors by index. Returns false if the swap did not occur because the indexes were out of bounds. */

@@ -193,7 +193,7 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-		setBackground(background, background != null); // Keep padding from last background if new background is null.
+		setBackground(background);
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)

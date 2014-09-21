@@ -46,7 +46,7 @@ public class Dialog extends Window {
 	Actor previousKeyboardFocus, previousScrollFocus;
 	FocusListener focusListener;
 
-	InputListener ignoreTouchDown = new InputListener() {
+	protected InputListener ignoreTouchDown = new InputListener() {
 		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 			event.cancel();
 			return false;
