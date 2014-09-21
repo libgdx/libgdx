@@ -79,7 +79,7 @@ public class BlendingAttribute extends Attribute {
 	
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 947 * result + (blended ? 1 : 0);
 		result = 947 * result + sourceFunction;
 		result = 947 * result + destFunction;

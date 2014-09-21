@@ -50,7 +50,7 @@ public class IOSMusic implements Music {
 	public void play () {
 		if (track.isPaused()) {
 			track.setPaused(false);
-		} else {
+		} else if (!track.isPlaying()) {
 			track.play();
 		}
 	}
