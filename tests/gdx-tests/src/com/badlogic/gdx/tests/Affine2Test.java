@@ -116,6 +116,8 @@ public class Affine2Test extends GdxTest {
 			didThrow = true;
 		}
 		check(didThrow);
+		
+		System.out.println("All tests passed.");
 	}
 
 	private static void check (boolean condition) {
