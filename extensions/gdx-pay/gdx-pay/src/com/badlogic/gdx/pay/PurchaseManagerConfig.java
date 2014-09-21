@@ -32,10 +32,10 @@ public class PurchaseManagerConfig {
 	public static final String STORE_NAME_ANDROID_APTOIDE = "Aptoide";
 	public static final String STORE_NAME_ANDROID_APPLAND = "Appland";
 	public static final String STORE_NAME_ANDROID_YANDEX = "Yandex";
+	public static final String STORE_NAME_ANDROID_OUYA = "OUYA";
 	public static final String STORE_NAME_IOS_APPLE = "AppleiOS";
 	public static final String STORE_NAME_DESKTOP_APPLE = "AppleMac";
 	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
-	public static final String STORE_NAME_OUYA = "OUYAStore";
 
 	private List<Offer> offers;
 	private Map<String, String> storeKeys;

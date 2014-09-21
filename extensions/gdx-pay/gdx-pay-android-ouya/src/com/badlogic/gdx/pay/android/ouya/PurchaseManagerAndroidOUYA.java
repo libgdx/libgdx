@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.pay.android.openiab;
+package com.badlogic.gdx.pay.android.ouya;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -78,7 +78,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * <ul>
  * 
  * @author just4phil */
-public class PurchaseManagerOUYA implements PurchaseManager, Disposable {
+public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 
 	/** Debug tag for logging. */
 	private static final String TAG = "GdxPay/OUYA";
@@ -117,11 +117,11 @@ public class PurchaseManagerOUYA implements PurchaseManager, Disposable {
     public int duration;
 	//--------------------------------------------------
 
-	public PurchaseManagerOUYA (Activity activity) {
+	public PurchaseManagerAndroidOUYA (Activity activity) {
 		this(activity, 1001); // NOTE: requestCode here is an arbitrarily chosen number!
 	}
 
-	public PurchaseManagerOUYA (Activity activity, int requestCode) {
+	public PurchaseManagerAndroidOUYA (Activity activity, int requestCode) {
 		this.activity = activity;
 		this.requestCode = requestCode;	// TODO: the request code for onActivityResult, not needed for OUYA!
 	}
