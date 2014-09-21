@@ -38,14 +38,11 @@ public class PurchaseManagerConfig {
 	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
 
 	private List<Offer> offers;
-	private Map<String, String> storeKeys;
-	private String developerID;									// new
-	private byte[] applicationKey;								// new
+	private Map<String, Object> storeConfigurations;
 
 	public PurchaseManagerConfig () {
 		offers = new ArrayList<Offer>(16);
-		storeKeys = new HashMap<String, String>(16);
-		developerID = "";												// new
+		storeConfigurations = new HashMap<String, Object>(16);
 	}
 
 	public void addOffer (Offer offer) {
@@ -72,31 +69,11 @@ public class PurchaseManagerConfig {
 		return offers.size();
 	}
 
-	public void addStoreKey (String storeName, String publicKey) {
-		storeKeys.put(storeName, publicKey);
+	public void addStoreConfiguration (String storeName, Object configuration) {
+		storeConfigurations.put(storeName, configuration);
 	}
 
-	public String getStoreKey (String storeName) {
-		return storeKeys.get(storeName);
-	}
-
-	public Map<String, String> getStoreKeys () {
-		return storeKeys;
-	}
-	
-	public void setDeveloperID(String ID) {				// New
-		this.developerID = ID;
-	}
-	
-	public String getDeveloperID() {							// New
-		return developerID;
-	}
-	
-	public void setApplicationKey(byte[] key) {			// New
-		this.applicationKey = key;
-	}
-	
-	public byte[] getApplicationKey() {						// New
-		return applicationKey;
+	public Object getStoreConfiguration (String storeName) {
+		return storeConfigurations.get(storeName);
 	}
 }

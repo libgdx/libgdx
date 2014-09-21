@@ -8,6 +8,5 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-ai"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
