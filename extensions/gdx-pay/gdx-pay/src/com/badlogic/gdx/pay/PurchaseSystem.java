@@ -79,9 +79,9 @@ public final class PurchaseSystem {
 	}
 
 	/** Executes a purchase. */
-	public static void purchase (PurchaseListener listener, String identifier) {
+	public static void purchase (String identifier, PurchaseListener listener) {
 		if (manager != null) {
-			manager.purchase(listener, identifier);
+			manager.purchase(identifier, listener);
 		} else {
 			throw new RuntimeException("No purchase manager was found.");
 		}

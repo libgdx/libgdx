@@ -288,7 +288,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 	}
 
 	@Override
-	public void purchase (final PurchaseListener listener, final String identifier) {
+	public void purchase (final String identifier, final PurchaseListener listener) {
 		String payload = null;
 
 		// make a purchase

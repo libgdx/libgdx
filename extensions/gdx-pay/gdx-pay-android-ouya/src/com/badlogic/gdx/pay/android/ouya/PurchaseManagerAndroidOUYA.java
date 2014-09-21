@@ -235,7 +235,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 
 	/** make a purchase */
 	@Override
-	public void purchase (com.badlogic.gdx.pay.PurchaseListener listener, String identifier) {
+	public void purchase (String identifier, com.badlogic.gdx.pay.PurchaseListener listener) {
 // String payload = null;
 		this.appPurchaseListener = listener; // store the listener
 

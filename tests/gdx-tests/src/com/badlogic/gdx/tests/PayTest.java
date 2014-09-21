@@ -114,7 +114,7 @@ public class PayTest extends GdxTest {
 				@Override
 				public void run () {					
 					message(" - purchasing: " + IAP_TEST_CONSUMEABLE + ".\n");
-					PurchaseSystem.purchase(new PurchaseListener() {					
+					PurchaseSystem.purchase(IAP_TEST_CONSUMEABLE, new PurchaseListener() {					
 						@Override
 						public void handlePurchase (Transaction transaction) {
 							message(" - purchased: " + transaction.getIdentifier() + "\n");
@@ -136,7 +136,7 @@ public class PayTest extends GdxTest {
 							// throw error
 							throw new GdxRuntimeException(e);				
 						}				
-					}, IAP_TEST_CONSUMEABLE);
+					});
 				}
 			}, 4.0f);
 		}

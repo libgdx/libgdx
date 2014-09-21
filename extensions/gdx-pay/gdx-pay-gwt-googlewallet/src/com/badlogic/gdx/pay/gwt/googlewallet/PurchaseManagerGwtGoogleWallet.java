@@ -52,7 +52,7 @@ public class PurchaseManagerGwtGoogleWallet implements PurchaseManager {
   }
 
   @Override
-  public void purchase(PurchaseListener listener, String identifier) {
+  public void purchase(String identifier, PurchaseListener listener) {
     // TODO Auto-generated method stub
 
   }
