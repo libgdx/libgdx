@@ -766,6 +766,10 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
+	public void setFlickScrollTapSquareSize (float halfTapSquareSize) {
+		flickScrollListener.getGestureDetector().setTapSquareSize(halfTapSquareSize);
+	}
+
 	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane widget's
 	 * coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
