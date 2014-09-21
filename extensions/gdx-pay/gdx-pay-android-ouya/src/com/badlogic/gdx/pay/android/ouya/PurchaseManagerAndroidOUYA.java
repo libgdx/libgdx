@@ -128,7 +128,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 
 	@Override
 	public String storeName() {
-		return PurchaseManagerConfig.STORE_NAME_OUYA;
+		return PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA;
 	}
 
 	@Override
