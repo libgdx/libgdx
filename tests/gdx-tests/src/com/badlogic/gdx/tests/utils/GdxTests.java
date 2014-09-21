@@ -72,6 +72,7 @@ public class GdxTests {
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
+		Affine2Test.class,
 		AlphaTest.class,
 		Animation3DTest.class,
 		AnimationTest.class,
