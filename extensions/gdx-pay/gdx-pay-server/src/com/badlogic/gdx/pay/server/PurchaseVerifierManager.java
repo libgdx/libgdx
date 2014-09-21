@@ -74,7 +74,6 @@ public class PurchaseVerifierManager {
 	}
 
 	public void addVerifier (PurchaseVerifier verifier) {
-		PurchaseVerifierManager
 		verifiers.put(verifier.storeName(), verifier);
 	}
 
