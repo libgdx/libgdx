@@ -26,16 +26,20 @@ package com.badlogic.gdx.pay;
  * some IAP services. Icons and downloadable content have to be either integrated into your application or served by a separate
  * server that you setup. Your application is responsible to display the items for purchase.
  * <p>
- * 1. Copy the Needed JAR Files into your Application
+ * 1. Copy the needed JAR files into your Application to make this all work:
  * <ul>
- * <li>Required: gdx-pay.jar (into your libs/ folder in "core")
- * <li>Optional: gdx-pay-android-openiab.jar (into your libs/ folder in your Android project if you are deploying to Google Play)
- * <li>Optional: etc.
+ * <li>Required: gdx-pay.jar (into "core"/libs)
+ * <li>Required for Android: gdx-pay-android.jar (into "android"/libs)
+ * <li>Optional for Android: gdx-pay-android-openiab.jar (for Google Play, Amazon etc.)
+ * <li>Optional for Android: gdx-pay-android-ouya.jar (for OUYA)
+ * <li>Required for iOS: gdx-pay-iosrobovm-apple (for iOS/Apple Store)
+ * <li>...
  * </ul>
  * <p>
- * 2. How to setup IAP in your application have a look at the corresponding PurchaseManager implementation.
+ * 2. For Android, the correct purchase manager is located automatically if the jar files are available (via Java reflection). No
+ * code changes are needed within your Android project. In your "core" project is where it all happens: Have a look at
+ * PayTest.java to see how it works.
  * <p>
- * 3. How to use IAP in your application have a look at PayTest.java.
  * 
  * @author noblemaster */
 public interface PurchaseManager {

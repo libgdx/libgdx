@@ -192,9 +192,48 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 			}
 		}
 
-		// build the OpenIAB options
-		OpenIabHelper.Options.Builder builder = new OpenIabHelper.Options.Builder()
-			.setVerifyMode(OpenIabHelper.Options.VERIFY_SKIP).addStoreKeys(config.getStoreKeys());
+		// build the OpenIAB options. Pass in the storeKeys as follows:
+		// -------------------------------------------------------------------------
+		// config.addStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE, "<store key GooglePlay>");
+		// config.addStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON, "<store key Amazon>");
+		// ...
+		// -------------------------------------------------------------------------
+		Map<String, String> storeKeys = new HashMap<String, String>(16);
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_GOOGLE));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_AMAZON));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_SAMSUNG) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_SAMSUNG),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_SAMSUNG));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_NOKIA) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_NOKIA),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_NOKIA));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_SLIDEME) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_SLIDEME),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_SLIDEME));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_APTOIDE) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_APTOIDE),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_APTOIDE));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_APPLAND) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_APPLAND),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_APPLAND));
+		}
+		if (config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX) != null) {
+			storeKeys.put(storeNameToOpenIAB(PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX),
+				(String)config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX));
+		}
+		OpenIabHelper.Options.Builder builder = new OpenIabHelper.Options.Builder();
+		builder.setVerifyMode(OpenIabHelper.Options.VERIFY_SKIP);
+		builder.addStoreKeys(storeKeys);
 
 		// start OpenIAB
 		helper = new OpenIabHelper(activity, builder.build());

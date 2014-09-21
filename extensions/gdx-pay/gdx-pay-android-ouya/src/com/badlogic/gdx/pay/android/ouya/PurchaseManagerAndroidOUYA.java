@@ -115,17 +115,17 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 	}
 
 	/** Used by IAP.java to determine if we are running on OUYA hardware :). */
-	public static final boolean isRunningOnOUYAHardware() {
-		// NOTE: - this would be nice but doesn't work yet (i.e. crashes before ouyaFacade.init(...) is called) 
-		//       - promised to be fixed in the next SDK release... 
-		//       - see for details: http://forums.ouya.tv/discussion/3772/bug-limit-in-isrunningonouyasupportedhardware
+	public static final boolean isRunningOnOUYAHardware () {
+		// NOTE: - this would be nice but doesn't work yet (i.e. crashes before ouyaFacade.init(...) is called)
+		// - promised to be fixed in the next SDK release...
+		// - see for details: http://forums.ouya.tv/discussion/3772/bug-limit-in-isrunningonouyasupportedhardware
 		// return OuyaFacade.getInstance().isRunningOnOUYAHardware();
-		
+
 		// let's determine if we are on OUYA-hardware by this hack...
 		String name = android.os.Build.MODEL.toLowerCase();
 		return (name.contains("ouya") || name.contains("mojo") || name.contains("m.o.j.o"));
 	}
-	
+
 	@Override
 	public String storeName () {
 		return PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA;
@@ -136,10 +136,20 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 		this.observer = observer;
 		this.config = config;
 
+		// Obtain applicationKey and developer ID. Pass in as follows:
+		// -------------------------------------------------------------------------
+		// config.addStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA, new Object[] {
+		//   "<OUYA developerID String",
+		//   new byte[] { <OUYA applicationKey> }
+		// });
+		// -------------------------------------------------------------------------
+
+		Object[] configuration = (Object[])config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA);
+		String developerID = (String)configuration[0];
+		applicationKey = (byte[])configuration[1]; // store our OUYA applicationKey!
+
 		ouyaFacade = OuyaFacade.getInstance();
-		ouyaFacade.init((Context)activity, config.getDeveloperID());
-		/** store the ouya applicationKey */
-		applicationKey = config.getApplicationKey();
+		ouyaFacade.init((Context)activity, developerID);
 
 		// --- copy all available products to the list of purchasables
 		productIDList = new ArrayList<Purchasable>(config.getOfferCount());

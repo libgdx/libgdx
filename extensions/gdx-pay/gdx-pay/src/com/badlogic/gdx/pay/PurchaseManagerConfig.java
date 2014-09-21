@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** This configuration is set in your "core"-project and will be passed on to the active InApp store automatically.
+ * @author noblemaster */
 public class PurchaseManagerConfig {
 
 	// available store names (not even sure what all those are!?)
@@ -37,12 +39,15 @@ public class PurchaseManagerConfig {
 	public static final String STORE_NAME_DESKTOP_APPLE = "AppleMac";
 	public static final String STORE_NAME_GWT_GOOGLEWALLET = "GwtGoogleWallet";
 
+	/** Our list of purchaseable products. */
 	private List<Offer> offers;
-	private Map<String, Object> storeConfigurations;
+
+	/** The store-specific parameters where needed. */
+	private Map<String, Object> storeParams;
 
 	public PurchaseManagerConfig () {
 		offers = new ArrayList<Offer>(16);
-		storeConfigurations = new HashMap<String, Object>(16);
+		storeParams = new HashMap<String, Object>(16);
 	}
 
 	public void addOffer (Offer offer) {
@@ -69,11 +74,21 @@ public class PurchaseManagerConfig {
 		return offers.size();
 	}
 
-	public void addStoreConfiguration (String storeName, Object configuration) {
-		storeConfigurations.put(storeName, configuration);
+	/** Adds a parameter for a store.
+	 * 
+	 * @param storeName The name of the store.
+	 * @param param The store parameters to use. This could be a string or byte-array etc. depending on what that store needs to
+	 *           initialize. */
+	public void addStoreParam (String storeName, Object param) {
+		storeParams.put(storeName, param);
 	}
 
-	public Object getStoreConfiguration (String storeName) {
-		return storeConfigurations.get(storeName);
+	/** Returns parameters for a store.
+	 * 
+	 * @param storeName The name of the store.
+	 * @return The store parameters or null if there where none. This could be a string or byte-array etc. depending on what that
+	 *         store needs to initialize. */
+	public Object getStoreParam (String storeName) {
+		return storeParams.get(storeName);
 	}
 }
