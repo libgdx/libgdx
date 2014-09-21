@@ -257,19 +257,7 @@
 			<reference refid="src"/>
 		</ant>
 	</target>
-    
-    <!-- gdx ai -->
-    <target name="gdx-ai" depends="gdx-core">
-        <path id="classpath">
-            <pathelement location="${distDir}/gdx.jar"/>
-        </path>
-        <ant antfile="../../build-template.xml" dir="extensions/gdx-ai">
-            <property name="distDir" value="${distDir}/extensions/gdx-ai"/>
-            <property name="jar" value="gdx-ai"/>
-            <reference refid="classpath"/>
-        </ant>
-    </target>
-	
+    	
 	<!-- gdx pay -->
 	<target name="gdx-pay" depends="gdx-core">
 		<path id="classpath">
