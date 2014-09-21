@@ -1,4 +1,5 @@
 [1.3.2]
+- Reduced I18NBundle loading times on Android and bypassed unclosed stream on iOS. 
 - Removed the gdx-ai extension from the libGDX repository. Now it lives in its own repository under the libGDX umbrella, see https://github.com/libgdx/gdx-ai
 - API Addition: Added randomSign and randomTriangular methods to MathUtils.
 - API Addition: Decal has now a getter for the Color.
