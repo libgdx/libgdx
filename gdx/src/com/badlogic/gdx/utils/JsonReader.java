@@ -320,6 +320,9 @@ public class JsonReader implements BaseJsonReader {
 										outer:
 										while (true) {
 											switch (data[p]) {
+											case '\\':
+												needsUnescape = true;
+												break;
 											case ':':
 											case ' ':
 											case '\r':
@@ -335,6 +338,9 @@ public class JsonReader implements BaseJsonReader {
 										outer:
 										while (true) {
 											switch (data[p]) {
+											case '\\':
+												needsUnescape = true;
+												break;
 											case '}':
 											case ']':
 											case ',':
@@ -353,7 +359,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 8:
-								// line 226 "JsonReader.rl"
+								// line 232 "JsonReader.rl"
 								{
 									if (debug) System.out.println("quotedChars");
 									s = ++p;
@@ -375,7 +381,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 265 "JsonReader.java"
+								// line 271 "JsonReader.java"
 								}
 							}
 						}
@@ -442,7 +448,7 @@ public class JsonReader implements BaseJsonReader {
 									stringIsUnquoted = false;
 								}
 									break;
-								// line 331 "JsonReader.java"
+								// line 337 "JsonReader.java"
 								}
 							}
 						}
@@ -453,7 +459,7 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			// line 257 "JsonReader.rl"
+			// line 263 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -483,7 +489,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 341 "JsonReader.java"
+	// line 347 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
@@ -566,7 +572,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 19;
 	static final int json_en_main = 1;
 
-	// line 287 "JsonReader.rl"
+	// line 293 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);

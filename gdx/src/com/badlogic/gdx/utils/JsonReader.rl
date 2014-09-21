@@ -192,6 +192,9 @@ public class JsonReader implements BaseJsonReader {
 					outer:
 					while (true) {
 						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
 						case ':':
 						case ' ':
 						case '\r':
@@ -207,6 +210,9 @@ public class JsonReader implements BaseJsonReader {
 					outer:
 					while (true) {
 						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
 						case '}':
 						case ']':
 						case ',':
