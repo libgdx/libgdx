@@ -16,13 +16,68 @@
 
 package com.badlogic.gdx.pay;
 
+import java.lang.reflect.Method;
+
 /** Our purchase system to make InApp payments.
  * 
  * @author noblemaster */
 public final class PurchaseSystem {
 
+	private static final String TAG = "IAP";
+
 	/** The actual purchase manager or null if none was available. */
 	private static PurchaseManager manager = null;
+
+	/** We try to locate a suitable store via Java reflection. */
+	static {
+		// obtain the Gdx class
+		try {
+			Class<?> gdxClazz = Class.forName("com.badlogic.gdx.Gdx");
+			Class<?> gdxLifecycleListenerClazz = Class.forName("com.badlogic.gdx.LifecycleListener");
+			Class<?> gdxAndroidEventListenerClazz = Class.forName("com.badlogic.gdx.backends.android.AndroidEventListener");
+			Object gdxAppObject = gdxClazz.getField("app").get(null);
+			Method gdxAppLogMethod = gdxAppObject.getClass().getMethod("log", String.class, String.class);
+			Method gdxAppLogMethodT = gdxAppObject.getClass().getMethod("log", String.class, String.class, Throwable.class);
+			Method gdxAppAddLifecycleListenerMethod = gdxAppObject.getClass().getMethod("addLifecycleListener", gdxLifecycleListenerClazz);
+			Method gdxAppAddAndroidEventListenerMethod = gdxAppObject.getClass().getMethod("addAndroidEventListener", gdxAndroidEventListenerClazz);
+			
+			// check if we are on Android
+			boolean android;
+			try {
+				// this will crash if we are not on android!
+				Class<?> androidAppClazz = Class.forName("com.badlogic.gdx.backends.android.AndroidApplication");
+				android = true;
+			} catch (Exception e) {
+				// we appear not to be on Android
+				android = false;
+			}
+			if (android) {
+				try {
+					// look for gdx-pay-android and if it exists, instantiate it (gdx-pay jars need to be in place)
+					Class<?> iapClazz = Class.forName("com.badlogic.gdx.pay.android.IAP");
+					Class<?> activityClazz = Class.forName("android.app.Activity");
+					Class<?> intentClazz = Class.forName("android.content.Intent");
+					int requestCode = 1032; // requestCode for onActivityResult for purchases (could go into PurchaseManagerConfig)
+					Object iap = iapClazz.getConstructor(activityClazz, int.class).newInstance(gdxAppObject, requestCode);
+
+					// add a listener for Lifecycle events
+					gdxAppAddLifecycleListenerMethod.invoke(gdxAppObject, iap);
+					
+					// add a listener for Android Events events
+					gdxAppAddAndroidEventListenerMethod.invoke(gdxAppObject, iap);
+
+					// notify of success
+					gdxAppLogMethod.invoke(gdxAppObject, TAG, "IAP: gdx-pay successfully instantiated.");
+				} catch (Exception e) {
+					// some jar files appear to be missing
+					gdxAppLogMethodT.invoke(gdxAppObject, TAG,
+						"IAP: Error creating IAP for Android (are the gdx-pay**.jar files installed?).", e);
+				}
+			}
+		} catch (Exception e) {
+			// we appear not to be on libGDX!
+		}
+	}
 
 	private PurchaseSystem () {
 		// private to prevent instantiation

@@ -49,7 +49,6 @@ import android.util.Log;
 
 import com.amazon.inapp.purchasing.PurchaseResponse;
 import com.android.vending.billing.IInAppBillingService;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.pay.Offer;
 import com.badlogic.gdx.pay.OfferType;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
@@ -57,8 +56,6 @@ import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseObserver;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** The purchase manager implementation for Android via <a href="http://www.onepf.org/openiab">OpenIAB</a>. Supported stores
  * include:
@@ -77,7 +74,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * in AndroidManifest.xml and your proguard settings.
  * 
  * @author noblemaster */
-public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposable {
+public class PurchaseManagerAndroidOpenIAB implements PurchaseManager {
 
 	/** Debug tag for logging. */
 	private static final String TAG = "GdxPay/OpenIAB";
@@ -137,7 +134,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				return PurchaseManagerConfig.STORE_NAME_ANDROID_YANDEX;
 			} else {
 				// we should get here: the correct store should always be mapped!
-				Gdx.app.error(TAG, "Store name could not be mapped: " + storeNameOpenIAB);
+				Log.e(TAG, "Store name could not be mapped: " + storeNameOpenIAB);
 				return storeNameOpenIAB;
 			}
 		}
@@ -165,7 +162,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				return OpenIabHelper.NAME_YANDEX;
 			} else {
 				// we should get here: the correct store should always be mapped!
-				Gdx.app.error(TAG, "Store name could not be mapped: " + storeName);
+				Log.e(TAG, "Store name could not be mapped: " + storeName);
 				return storeName;
 			}
 		}
@@ -249,7 +246,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 					PurchaseManagerAndroidOpenIAB.this.config = null;
 
 					// notify about the problem
-					observer.handleInstallError(new GdxRuntimeException("Problem setting up in-app billing: " + result));
+					observer.handleInstallError(new RuntimeException("Problem setting up in-app billing: " + result));
 				} else {
 					// do a restore first to get the inventory
 					boolean querySkuDetails = true; // --> that way we get prices and title/description as well!
@@ -298,7 +295,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 				public void onIabPurchaseFinished (IabResult result, Purchase purchase) {
 					if (result.isFailure()) {
 						// the purchase has failed
-						listener.handlePurchaseError(new GdxRuntimeException(result.toString()));
+						listener.handlePurchaseError(new RuntimeException(result.toString()));
 					} else {
 						// parse transaction data
 						Transaction transaction = transaction(purchase);
@@ -309,7 +306,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 						// if the listener doesn't throw an error, we consume as needed
 						Offer offer = config.getOffer(purchase.getSku());
 						if (offer == null) {
-							Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
+							Log.d(TAG, "Offer not found for: " + purchase.getSku());
 						} else if (offer.getType() == OfferType.CONSUMABLE) {
 							// it's a consumable, so we consume right away!
 							helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
@@ -317,7 +314,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 								public void onConsumeFinished (Purchase purchase, IabResult result) {
 									if (!result.isSuccess()) {
 										// NOTE: we should only rarely have an exception due to e.g. network outages etc.
-										Gdx.app.error(TAG, "Error while consuming: " + result);
+										Log.e(TAG, "Error while consuming: " + result);
 									}
 								}
 							});
@@ -352,7 +349,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 					Purchase purchase = purchases.get(i);
 					Offer offer = config.getOffer(purchase.getSku());
 					if (offer == null) {
-						Gdx.app.debug(TAG, "Offer not found for: " + purchase.getSku());
+						Log.d(TAG, "Offer not found for: " + purchase.getSku());
 					} else if (offer.getType() == OfferType.CONSUMABLE) {
 						// it's a consumable, so we consume right away!
 						helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
@@ -360,7 +357,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager, Disposabl
 							public void onConsumeFinished (Purchase purchase, IabResult result) {
 								if (!result.isSuccess()) {
 									// NOTE: we should only rarely have an exception due to e.g. network outages etc.
-									Gdx.app.error(TAG, "Error while consuming: " + result);
+									Log.e(TAG, "Error while consuming: " + result);
 								}
 							}
 						});

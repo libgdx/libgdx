@@ -41,6 +41,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.android.AndroidEventListener;
 import com.badlogic.gdx.pay.Offer;
 import com.badlogic.gdx.pay.OfferType;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
@@ -78,7 +80,7 @@ import com.badlogic.gdx.pay.PurchaseObserver;
  * box (instantiated via reflection).
  * 
  * @author noblemaster */
-public class IAP {
+public class IAP implements LifecycleListener, AndroidEventListener {
 
 	/** Debug tag for logging. */
 	private static final String TAG = "GdxPay/IAP";
@@ -111,7 +113,7 @@ public class IAP {
 		}
 	}
 
-	/** Called from AndroidActivity for updates (reflection). */
+	@Override
 	public void onActivityResult (int requestCode, int resultCode, Intent data) {
 		// forward to corresponding Android IAP-system
 		PurchaseManager manager = PurchaseSystem.getManager();
@@ -126,7 +128,17 @@ public class IAP {
 		}
 	}
 
-	/** Called from AndroidActivity to end this thing (reflection). */
+	@Override
+	public void pause () {
+		// not used ...
+	}
+
+	@Override
+	public void resume () {
+		// not used ...
+	}
+
+	@Override
 	public void dispose () {
 		// dispose the purchase system
 		PurchaseSystem.dispose();

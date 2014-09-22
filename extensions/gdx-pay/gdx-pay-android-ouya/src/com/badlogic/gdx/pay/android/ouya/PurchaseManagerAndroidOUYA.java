@@ -55,15 +55,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.PurchaseObserver;
 import com.badlogic.gdx.pay.Transaction;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** The purchase manager implementation for OUYA.
  * <p>
@@ -71,7 +69,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * AndroidManifest.xml and your proguard settings.
  * 
  * @author just4phil */
-public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
+public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 
 	/** Debug tag for logging. */
 	private static final String TAG = "GdxPay/OUYA";
@@ -181,7 +179,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 		} catch (Exception e) {
 			// notify about the problem
 			showMessage(LOGTYPEERROR, "Problem setting up in-app billing: Unable to create encryption key");
-			observer.handleInstallError(new GdxRuntimeException(
+			observer.handleInstallError(new RuntimeException(
 				"Problem setting up in-app billing: Unable to create encryption key: " + e));
 		}
 	}
@@ -258,7 +256,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 			}
 		} else {
 			showMessage(LOGTYPEERROR, "There has been a Problem with your Internet connection. Please try again later");
-			appPurchaseListener.handlePurchaseError(new GdxRuntimeException(
+			appPurchaseListener.handlePurchaseError(new RuntimeException(
 				"There has been a Problem with your Internet connection. Please try again later"));
 		}
 	}
@@ -620,8 +618,8 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager, Disposable {
 
 	private void showMessage (final int type, final String message) {
 		if (LOGDEBUG) {
-			if (type == LOGTYPELOG) Gdx.app.log(TAG, message);
-			if (type == LOGTYPEERROR) Gdx.app.error(TAG, message);
+			if (type == LOGTYPELOG) Log.d(TAG, message);
+			if (type == LOGTYPEERROR) Log.e(TAG, message);
 		}
 		if (SHOWTOASTS) {
 			if (type == LOGTYPELOG) showToast(message);

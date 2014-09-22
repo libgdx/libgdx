@@ -72,12 +72,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
-	private Object iap = null;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
@@ -192,16 +192,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
-		
-		// InApp: look for gdx-pay-android and if it exists, instantiate it (gdx-pay jars need to be in place)
-		try {
-			Class<?> iapClazz = Class.forName("com.badlogic.gdx.pay.android.IAP");
-			int requestCode = 1032;  // request code for onActivityResult for when purchases happen (could go into AndroidConfiguration)
-			iap = iapClazz.getConstructor(Activity.class, int.class).newInstance(this, requestCode);
-			log("AndroidApplication", "IAP: gdx-pay successfully instantiated.");
-		} catch (Exception e) {
-			debug("AndroidApplication", "Failed to locate IAP (gdx-pay jar files not installed for Android)", e);
-		}
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -315,36 +305,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		super.onResume();
 	}
 
-
-	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		// InApp: forward activities to our purchase manager if it was installed
-		if (iap != null) {
-			try {
-				Method method = iap.getClass().getMethod("onActivityResult", int.class, int.class, Intent.class);
-				method.invoke(iap, requestCode, resultCode, data);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to invoke onActivityResult(...) on IAP.", e);
-			}
-		}
-	}
-
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
-		
-		// InApp: we destroy the purchase manager if it was installed
-		if (iap != null) {
-			try {
-				Method method = iap.getClass().getMethod("dispose");
-				method.invoke(iap);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to invoke dispose() on IAP.", e);
-			}
-			iap = null;
-		}
 	}
 
 	@Override
@@ -497,8 +460,34 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// forward events to our listeners if there are any installed
+		synchronized (androidEventListeners) {
+			for (int i = 0; i < androidEventListeners.size; i++) {
+				androidEventListeners.get(i).onActivityResult(requestCode, resultCode, data);
+			}
+		}
+	}
+
+	/** Adds an event listener for Android specific event such as onActivityResult(...). */
+	public void addAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.add(listener);
+		}
+	}
+
+	/** Removes an event listener for Android specific event such as onActivityResult(...). */
+	public void removeAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.removeValue(listener, true);
+		}
+	}
+
+	@Override
 	public Context getContext () {
-		return this;
+		return this;  
 	}
 
 	@Override
