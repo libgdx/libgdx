@@ -276,6 +276,7 @@
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
 	
 	<!-- math -->
+		<include name="math/Affine2.java"/>
 		<include name="math/Bezier.java"/>
 		<include name="math/Bresenham2.java"/>
 		<include name="math/BSpline.java"/>
