@@ -417,14 +417,14 @@ public class Actor {
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
 	public void setPosition (float x, float y, int align) {
 		if ((align & right) != 0)
-			x += width;
+			x -= width;
 		else if ((align & left) == 0) //
-			x += width / 2;
+			x -= width / 2;
 
 		if ((align & top) != 0)
-			y += height;
+			y -= height;
 		else if ((align & bottom) == 0) //
-			y += height / 2;
+			y -= height / 2;
 
 		if (this.x != x || this.y != y) {
 			this.x = x;
