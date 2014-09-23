@@ -39,4 +39,20 @@ public interface PurchaseObserver {
 	 * 
 	 * @param e The error, e.g. network outage, invalid identifier, etc. */
 	public void handleRestoreError (Throwable e);
+	
+	/** The item that was purchased. The "valid" parameter will indicate if the purchase was successful (true) or was aborted or
+	 * refunded by the user (false).
+	 * 
+	 * @param transaction The purchased item information. */
+	public void handlePurchase (Transaction transaction);
+
+	/** Called when a purchase failed for unexpected reasons.
+	 * 
+	 * @param e The error, e.g. network outage, invalid identifier, etc. */
+	public void handlePurchaseError (Throwable e);
+	
+	/** Called when a purchase is canceled by the user.
+	 * 
+	 *  */
+	public void handlePurchaseCanceled ();
 }
