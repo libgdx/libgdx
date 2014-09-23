@@ -222,6 +222,7 @@ public class LwjglCanvas implements Application {
 
 					input.update();
 					input.processEvents();
+					graphics.frameId++;
 					listener.render();
 					if (audio != null) audio.update();
 					Display.update();

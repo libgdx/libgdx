@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
+import static com.badlogic.gdx.scenes.scene2d.utils.Align.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -25,6 +27,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
@@ -348,7 +351,7 @@ public class Actor {
 		this.visible = visible;
 	}
 
-	/** Retrieves application specific object for convenience. */
+	/** Returns an application specific object for convenience, or null. */
 	public Object getUserObject () {
 		return userObject;
 	}
@@ -358,8 +361,18 @@ public class Actor {
 		this.userObject = userObject;
 	}
 
-	/** Get the X position of the actor (left edge of actor) */
+	/** Returns the X position of the actor's left edge. */
 	public float getX () {
+		return x;
+	}
+
+	/** Returns the X position of the specified {@link Align alignment}. */
+	public float getX (int align) {
+		float x = this.x;
+		if ((align & right) != 0)
+			x += width;
+		else if ((align & left) == 0) //
+			x += width / 2;
 		return x;
 	}
 
@@ -370,7 +383,7 @@ public class Actor {
 		}
 	}
 
-	/** Get the Y position of the actor (bottom edge of actor) */
+	/** Returns the Y position of the actor's bottom edge. */
 	public float getY () {
 		return y;
 	}
@@ -382,7 +395,17 @@ public class Actor {
 		}
 	}
 
-	/** Set position of Actor to x, y (using bottom left corner of Actor) */
+	/** Returns the Y position of the specified {@link Align alignment}. */
+	public float getY (int align) {
+		float y = this.y;
+		if ((align & top) != 0)
+			y += height;
+		else if ((align & bottom) == 0) //
+			y += height / 2;
+		return y;
+	}
+
+	/** Sets the position of the actor's bottom left corner. */
 	public void setPosition (float x, float y) {
 		if (this.x != x || this.y != y) {
 			this.x = x;
@@ -391,23 +414,23 @@ public class Actor {
 		}
 	}
 
-	/** Set position of Actor centered on x, y */
-	public void setCenterPosition (float x, float y) {
-		float newX = x - width / 2;
-		float newY = y - height / 2;
-		if (this.x != newX || this.y != newY) {
-			this.x = newX;
-			this.y = newY;
+	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
+	public void setPosition (float x, float y, int align) {
+		if ((align & right) != 0)
+			x -= width;
+		else if ((align & left) == 0) //
+			x -= width / 2;
+
+		if ((align & top) != 0)
+			y -= height;
+		else if ((align & bottom) == 0) //
+			y -= height / 2;
+
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
 			positionChanged();
 		}
-	}
-
-	public float getCenterX () {
-		return this.x + width / 2;
-	}
-
-	public float getCenterY () {
-		return this.y + height / 2;
 	}
 
 	/** Add x and y to current position */
@@ -510,10 +533,27 @@ public class Actor {
 		this.originY = originY;
 	}
 
-	/** Sets the origin X and origin Y. */
+	/** Sets the origin position which is relative to the actor's bottom left corner. */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
+	}
+
+	/** Sets the origin position to the specified {@link Align alignment}. */
+	public void setOrigin (int align) {
+		if ((align & left) != 0)
+			originX = 0;
+		else if ((align & right) != 0)
+			originX = width;
+		else
+			originX = width / 2;
+
+		if ((align & bottom) != 0)
+			originY = 0;
+		else if ((align & top) != 0)
+			originY = height;
+		else
+			originY = height / 2;
 	}
 
 	public float getScaleX () {
@@ -756,10 +796,10 @@ public class Actor {
 
 	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
 	protected void drawDebugBounds (ShapeRenderer shapes) {
-		if (!getDebug()) return;
+		if (!debug) return;
 		shapes.set(ShapeType.Line);
-		shapes.setColor(getStage().getDebugColor());
-		shapes.rect(getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+		shapes.setColor(stage.getDebugColor());
+		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 
 	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */

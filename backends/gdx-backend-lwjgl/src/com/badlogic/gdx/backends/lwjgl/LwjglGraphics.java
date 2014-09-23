@@ -41,6 +41,7 @@ public class LwjglGraphics implements Graphics {
 
 	GL20 gl20;
 	GL30 gl30;
+	long frameId = -1;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -94,6 +95,10 @@ public class LwjglGraphics implements Graphics {
 		return gl20 != null;
 	}
 
+	public long getFrameId () {
+		return frameId;
+	}
+
 	public float getDeltaTime () {
 		return deltaTime;
 	}
@@ -137,7 +142,7 @@ public class LwjglGraphics implements Graphics {
 				}
 				if (!displayCreated) {
 					throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
-							+ config.fullscreen);
+						+ config.fullscreen);
 				}
 			}
 			if (config.iconPaths.size > 0) {
@@ -218,14 +223,9 @@ public class LwjglGraphics implements Graphics {
 							createDisplayPixelFormat();
 							return;
 						}
-						String glInfo = ".";
-						try {
-							glInfo = ": " + GL11.glGetString(GL11.GL_VENDOR) + " " //
-								+ GL11.glGetString(GL11.GL_RENDERER) + " " //
-								+ GL11.glGetString(GL11.GL_VERSION);
-						} catch (Throwable ignored) {
-						}
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver" + glInfo, ex3);
+						String glInfo = glInfo();
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver"
+							+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
 					}
 					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
@@ -247,7 +247,7 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if(major >= 3) {
+		if (major >= 3) {
 			gl30 = new LwjglGL30();
 			gl20 = gl30;
 		} else {
@@ -258,13 +258,24 @@ public class LwjglGraphics implements Graphics {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
 		if (major == 2 || version.contains("2.1")) {
 			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				String glInfo = glInfo();
 				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
-					+ ", FBO extension: false");
+					+ ", FBO extension: false" + (glInfo.isEmpty() ? "" : ("\n" + glInfo())));
 			}
 		}
 
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
+	}
+
+	private String glInfo () {
+		try {
+			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
+				+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
+				+ GL11.glGetString(GL11.GL_VERSION);
+		} catch (Throwable ignored) {
+		}
+		return "";
 	}
 
 	@Override
@@ -289,8 +300,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		if (config.overrideDensity != -1)
-			return config.overrideDensity / 160f;
+		if (config.overrideDensity != -1) return config.overrideDensity / 160f;
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
 	}
 
@@ -477,11 +487,10 @@ public class LwjglGraphics implements Graphics {
 
 	/** A callback used by LwjglApplication when trying to create the display */
 	public interface SetDisplayModeCallback {
-		/** If the display creation fails, this method will be called.
-		 * Suggested usage is to modify the passed configuration to use
-		 * a common width and height, and set fullscreen to false.
-		 * @return the configuration to be used for a second attempt at creating a display.
-		 * A null value results in NOT attempting to create the display a second time */
-		public LwjglApplicationConfiguration onFailure(LwjglApplicationConfiguration initialConfig);
+		/** If the display creation fails, this method will be called. Suggested usage is to modify the passed configuration to use a
+		 * common width and height, and set fullscreen to false.
+		 * @return the configuration to be used for a second attempt at creating a display. A null value results in NOT attempting
+		 *         to create the display a second time */
+		public LwjglApplicationConfiguration onFailure (LwjglApplicationConfiguration initialConfig);
 	}
 }

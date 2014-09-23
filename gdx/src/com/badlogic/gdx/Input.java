@@ -716,10 +716,13 @@ public interface Input {
 	 * @param catchBack whether to catch the back button */
 	public void setCatchBackKey (boolean catchBack);
 
+	/** @return whether the back button is currently being caught */
+	public boolean isCatchBackKey();
+
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
-	 * @param catchMenu whether to catch the back button */
+	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the

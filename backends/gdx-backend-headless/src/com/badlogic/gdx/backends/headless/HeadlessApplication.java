@@ -75,6 +75,7 @@ public class HeadlessApplication implements Application {
 		Gdx.net = net;
 		Gdx.audio = audio;
 		Gdx.graphics = graphics;
+		Gdx.input = input;
 		
 		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
 		
@@ -120,6 +121,7 @@ public class HeadlessApplication implements Application {
 					t = n + renderInterval;
 				
 				executeRunnables();
+				graphics.incrementFrameId();
 				listener.render();
 				graphics.updateTime();
 	
@@ -157,20 +159,17 @@ public class HeadlessApplication implements Application {
 
 	@Override
 	public Graphics getGraphics() {
-		// no graphics
-		return null;
+		return graphics;
 	}
 
 	@Override
 	public Audio getAudio() {
-		// no audio
-		return null;
+		return audio;
 	}
 
 	@Override
 	public Input getInput() {
-		// no input
-		return null;
+		return input;
 	}
 
 	@Override

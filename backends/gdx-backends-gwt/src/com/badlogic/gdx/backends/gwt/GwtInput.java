@@ -37,12 +37,13 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
+	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
-	private boolean[] touched = new boolean[20];
-	private int[] touchX = new int[20];
-	private int[] touchY = new int[20];
-	private int[] deltaX = new int[20];
-	private int[] deltaY = new int[20];
+	private boolean[] touched = new boolean[MAX_TOUCHES];
+	private int[] touchX = new int[MAX_TOUCHES];
+	private int[] touchY = new int[MAX_TOUCHES];
+	private int[] deltaX = new int[MAX_TOUCHES];
+	private int[] deltaY = new int[MAX_TOUCHES];
 	IntSet pressedButtons = new IntSet();
 	int pressedKeyCount = 0;
 	boolean[] pressedKeys = new boolean[256];
@@ -126,8 +127,13 @@ public class GwtInput implements Input {
 	}
 
 	@Override
-	public boolean isTouched () {
-		return touched[0];
+	public boolean isTouched() {
+		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
+			if (touched[pointer]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -251,6 +257,11 @@ public class GwtInput implements Input {
 
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
 	}
 
 	@Override

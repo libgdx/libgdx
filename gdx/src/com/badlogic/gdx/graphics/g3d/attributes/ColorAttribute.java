@@ -102,7 +102,7 @@ public class ColorAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 953 * result + color.hashCode();
 		return result; 
 	}

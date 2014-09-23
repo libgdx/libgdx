@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
+import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
@@ -45,6 +46,7 @@ import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -70,9 +72,11 @@ public class GdxTests {
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
+		Affine2Test.class,
 		AlphaTest.class,
 		Animation3DTest.class,
 		AnimationTest.class,
+		AnnotationTest.class,
 		AssetManagerTest.class,
 		AtlasIssueTest.class,
 		AudioDeviceTest.class,
@@ -85,6 +89,7 @@ public class GdxTests {
 		BitmapFontFlipTest.class,
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
+		BitmapFontAtlasRegionTest.class,
 		BlitTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
@@ -109,7 +114,7 @@ public class GdxTests {
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
-		GamepadTest.class,
+		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
 		GroupCullingTest.class,
@@ -148,6 +153,7 @@ public class GdxTests {
 		ParallaxTest.class,
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
+		PayTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
@@ -186,7 +192,6 @@ public class GdxTests {
 		SpriteCacheTest.class,
 		StagePerformanceTest.class,
 		StageTest.class,
-		StateMachineTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
@@ -197,6 +202,7 @@ public class GdxTests {
 		TextureDataTest.class,
 		TextureDownloadTest.class,
 		TextureFormatTest.class,
+		TextureRegion3DTest.class,
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,

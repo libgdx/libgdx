@@ -46,7 +46,7 @@
     <gwt.version>2.6.0</gwt.version>
     <lwjgl.version>2.9.1</lwjgl.version>
     <jglfw.version>1.1</jglfw.version>
-    <robovm.version>0.0.14</robovm.version>
+    <robovm.version>1.0.0-SNAPSHOT</robovm.version>
   </properties>
 
   <modules>
@@ -68,6 +68,7 @@
     <module>extensions/gdx-freetype/jni/maven</module>
     <module>extensions/gdx-video</module>
     <module>extensions/gdx-ai</module>
+    <module>extensions/gdx-pay</module>
   </modules>
 
   <build>
@@ -86,7 +87,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>2.6</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -94,12 +95,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.17</version>
         <configuration>
           <includes><include>**/*Test.java</include></includes>
         </configuration>
@@ -107,7 +108,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.9.1</version>
         <configuration>
           <quiet>true</quiet>
           <show>public</show>

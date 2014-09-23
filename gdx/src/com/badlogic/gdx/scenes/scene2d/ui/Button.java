@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -29,7 +28,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
- * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.
+ * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.<br>
+ * <br>
+ * The button's padding is set to the background drawable's padding when the background changes, overwriting any padding set
+ * manually. Padding can still be set on the button's table cells.
  * <p>
  * {@link ChangeEvent} is fired when the button is clicked. Cancelling the event will restore the checked button state to what is
  * was previously.
@@ -82,7 +84,7 @@ public class Button extends Table implements Disableable {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-				if (isDisabled) return;
+				if (isDisabled()) return;
 				setChecked(!isChecked);
 			}
 		});
@@ -148,18 +150,20 @@ public class Button extends Table implements Disableable {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
-		Drawable background = style.up;
-		if (background == null) {
-			background = style.down;
-			if (background == null) background = style.checked;
+		Drawable background = null;
+		if (isPressed() && !isDisabled()) {
+			background = style.down == null ? style.up : style.down;
+		} else {
+			if (isDisabled() && style.disabled != null)
+				background = style.disabled;
+			else if (isChecked && style.checked != null)
+				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
+			else if (isOver() && style.over != null)
+				background = style.over;
+			else
+				background = style.up;
 		}
-		if (background != null) {
-			padBottom(background.getBottomHeight());
-			padTop(background.getTopHeight());
-			padLeft(background.getLeftWidth());
-			padRight(background.getRightWidth());
-		}
-		invalidateHierarchy();
+		setBackground(background);
 	}
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
@@ -171,25 +175,30 @@ public class Button extends Table implements Disableable {
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
+		boolean isPressed = isPressed();
+		boolean isDisabled = isDisabled();
+
 		Drawable background = null;
+		if (isDisabled && style.disabled != null)
+			background = style.disabled;
+		else if (isPressed && style.down != null)
+			background = style.down;
+		else if (isChecked && style.checked != null)
+			background = (style.checkedOver != null && isOver()) ? style.checkedOver : style.checked;
+		else if (isOver() && style.over != null)
+			background = style.over;
+		else if (style.up != null) //
+			background = style.up;
+		setBackground(background);
+
 		float offsetX = 0, offsetY = 0;
-		if (isPressed() && !isDisabled) {
-			background = style.down == null ? style.up : style.down;
+		if (isPressed && !isDisabled) {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
 		} else {
-			if (isDisabled && style.disabled != null)
-				background = style.disabled;
-			else if (isChecked && style.checked != null)
-				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
-			else if (isOver() && style.over != null)
-				background = style.over;
-			else
-				background = style.up;
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-		setBackground(background, false);
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
@@ -229,9 +238,7 @@ public class Button extends Table implements Disableable {
 		/** Optional. */
 		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY;
-		/** Optional. */
-		public float unpressedOffsetX, unpressedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY;
 
 		public ButtonStyle () {
 		}

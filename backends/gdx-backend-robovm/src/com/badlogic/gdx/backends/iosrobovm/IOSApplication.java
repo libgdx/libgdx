@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,12 @@ import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
@@ -45,6 +45,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -57,7 +58,7 @@ public class IOSApplication implements Application {
 		protected abstract IOSApplication createApplication ();
 
 		@Override
-		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -108,7 +109,7 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 
-	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
+	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -176,7 +177,7 @@ public class IOSApplication implements Application {
 	}
 
 	/** Returns our real display dimension based on screen orientation.
-	 * 
+	 *
 	 * @param viewController The view controller.
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
@@ -227,6 +228,9 @@ public class IOSApplication implements Application {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		OALAudioSession.sharedInstance().forceEndInterruption();
+		if (config.allowIpod) {
+			 OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+		}
 		graphics.makeCurrent();
 		graphics.resume();
 	}

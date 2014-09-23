@@ -437,6 +437,11 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public boolean isCatchBackKey() {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}

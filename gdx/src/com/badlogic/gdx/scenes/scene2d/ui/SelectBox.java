@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
@@ -38,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Pools;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -50,18 +51,15 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class SelectBox<T> extends Widget implements Disableable {
-	static final Vector2 tmpCoords = new Vector2();
+	static final Vector2 temp = new Vector2();
 
 	SelectBoxStyle style;
 	final Array<T> items = new Array();
-	T selected;
+	final ArraySelection<T> selection = new ArraySelection(items);
+	SelectBoxList<T> selectBoxList;
 	private final TextBounds bounds = new TextBounds();
-	ListScroll scroll;
-	Selection<T> selection;
-	Actor previousScrollFocus;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
-	int maxListCount;
 	boolean disabled;
 
 	public SelectBox (Skin skin) {
@@ -76,14 +74,19 @@ public class SelectBox<T> extends Widget implements Disableable {
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 
-		scroll = new ListScroll();
-		selection = scroll.list.getSelection();
+		selection.setActor(this);
+		selection.setRequired(true);
+
+		selectBoxList = new SelectBoxList(this);
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				if (disabled) return false;
-				showList();
+				if (selectBoxList.hasParent())
+					hideList();
+				else
+					showList();
 				return true;
 			}
 		});
@@ -92,16 +95,16 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Set the max number of items to display when the select box is opened. Set to 0 (the default) to display as many as fit in
 	 * the stage height. */
 	public void setMaxListCount (int maxListCount) {
-		this.maxListCount = maxListCount;
+		selectBoxList.maxListCount = maxListCount;
 	}
 
 	/** @return Max number of items to display when the box is opened, or <= 0 to display them all. */
 	public int getMaxListCount () {
-		return maxListCount;
+		return selectBoxList.maxListCount;
 	}
 
 	protected void setStage (Stage stage) {
-		if (stage == null) hideList();
+		if (stage == null) selectBoxList.hide();
 		super.setStage(stage);
 	}
 
@@ -120,18 +123,35 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth();
+
 		items.clear();
 		items.addAll(newItems);
-		scroll.list.setItems(items);
-		invalidateHierarchy();
+		selection.validate();
+		selectBoxList.list.setItems(items);
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
 	}
 
 	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+		float oldPrefWidth = getPrefWidth();
+
 		items.clear();
 		items.addAll(newItems);
-		scroll.list.setItems(items);
+		selection.validate();
+		selectBoxList.list.setItems(items);
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
+	}
+
+	public void clearItems () {
+		if (items.size == 0) return;
+		items.clear();
+		selection.clear();
 		invalidateHierarchy();
 	}
 
@@ -146,10 +166,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
-		if(bg != null)
+		if (bg != null) {
 			prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
 				bg.getMinHeight());
-		else
+		} else
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
 		float maxItemWidth = 0;
@@ -157,8 +177,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			maxItemWidth = Math.max(font.getBounds(items.get(i).toString()).width, maxItemWidth);
 
 		prefWidth = maxItemWidth;
-		if (bg != null)
-			prefWidth += bg.getLeftWidth() + bg.getRightWidth();
+		if (bg != null) prefWidth += bg.getLeftWidth() + bg.getRightWidth();
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
@@ -180,7 +199,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Drawable background;
 		if (disabled && style.backgroundDisabled != null)
 			background = style.backgroundDisabled;
-		else if (scroll.hasParent() && style.backgroundOpen != null)
+		else if (selectBoxList.hasParent() && style.backgroundOpen != null)
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
@@ -198,10 +217,9 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (background != null)
-			background.draw(batch, x, y, width, height);
+		if (background != null) background.draw(batch, x, y, width, height);
 
-		T selected = this.selected != null ? this.selected : selection.first();
+		T selected = selection.first();
 		if (selected != null) {
 			String string = selected.toString();
 			bounds.set(font.getBounds(string));
@@ -225,7 +243,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return selection;
 	}
 
-	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()} */
+	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}. */
 	public T getSelected () {
 		return selection.first();
 	}
@@ -267,89 +285,108 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	public void showList () {
-		selected = selection.first();
-		scroll.list.setTouchable(Touchable.enabled);
-		scroll.show(getStage());
+		if (items.size == 0) return;
+		selectBoxList.show(getStage());
 	}
 
 	public void hideList () {
-		if (!scroll.hasParent()) return;
-		selected = null;
-		scroll.list.setTouchable(Touchable.disabled);
-		Stage stage = scroll.getStage();
-		if (stage != null) {
-			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
-			Actor actor = stage.getScrollFocus();
-			if (actor == null || actor.isDescendantOf(scroll)) stage.setScrollFocus(previousScrollFocus);
-		}
-		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
+		selectBoxList.hide();
 	}
 
 	/** Returns the list shown when the select box is open. */
-	public List getList () {
-		return scroll.list;
+	public List<T> getList () {
+		return selectBoxList.list;
 	}
 
 	/** Returns the scroll pane containing the list that is shown when the select box is open. */
 	public ScrollPane getScrollPane () {
-		return scroll;
+		return selectBoxList;
 	}
 
-	class ListScroll extends ScrollPane {
-		final List<T> list;
-		final Vector2 screenCoords = new Vector2();
+	protected void onShow (Actor selectBoxList, boolean below) {
+		selectBoxList.getColor().a = 0;
+		selectBoxList.addAction(fadeIn(0.3f, Interpolation.fade));
+	}
 
-		public ListScroll () {
-			super(null, style.scrollStyle);
+	protected void onHide (Actor selectBoxList) {
+		selectBoxList.getColor().a = 1;
+		selectBoxList.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
+	}
+
+	/** @author Nathan Sweet */
+	static class SelectBoxList<T> extends ScrollPane {
+		private final SelectBox<T> selectBox;
+		int maxListCount;
+		private final Vector2 screenPosition = new Vector2();
+		final List<T> list;
+		private InputListener hideListener;
+		private Actor previousScrollFocus;
+
+		public SelectBoxList (final SelectBox<T> selectBox) {
+			super(null, selectBox.style.scrollStyle);
+			this.selectBox = selectBox;
 
 			setOverscroll(false, false);
 			setFadeScrollBars(false);
 
-			list = new List(style.listStyle);
+			list = new List(selectBox.style.listStyle);
+			list.setTouchable(Touchable.disabled);
 			setWidget(list);
-			list.addListener(new InputListener() {
+
+			list.addListener(new ClickListener() {
+				public void clicked (InputEvent event, float x, float y) {
+					selectBox.selection.choose(list.getSelected());
+					hide();
+				}
+
 				public boolean mouseMoved (InputEvent event, float x, float y) {
-					list.setSelectedIndex(Math.min(items.size - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
+					list.setSelectedIndex(Math.min(selectBox.items.size - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
 					return true;
 				}
 			});
 
 			addListener(new InputListener() {
+				public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+					if (toActor == null || !isAscendantOf(toActor)) list.selection.set(selectBox.getSelected());
+				}
+			});
+
+			hideListener = new InputListener() {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-					if (event.getTarget() == list) return true;
-					setSelected(selected); // Revert.
-					hideList();
+					Actor target = event.getTarget();
+					if (isAscendantOf(target)) return false;
+					list.selection.set(selectBox.getSelected());
+					hide();
 					return false;
 				}
 
-				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-					if (hit(x, y, true) == list) {
-						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-						SelectBox.this.fire(changeEvent);
-						Pools.free(changeEvent);
-						hideList();
-					}
+				public boolean keyDown (InputEvent event, int keycode) {
+					if (keycode == Keys.ESCAPE) hide();
+					return false;
 				}
-			});
+			};
 		}
 
 		public void show (Stage stage) {
+			if (list.isTouchable()) return;
+
+			stage.removeCaptureListener(hideListener);
+			stage.addCaptureListener(hideListener);
 			stage.addActor(this);
 
-			SelectBox.this.localToStageCoordinates(tmpCoords.set(0, 0));
-			screenCoords.set(tmpCoords);
+			selectBox.localToStageCoordinates(screenPosition.set(0, 0));
 
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
 			float itemHeight = list.getItemHeight();
-			float height = itemHeight * (maxListCount <= 0 ? items.size : Math.min(maxListCount, items.size));
+			float height = itemHeight * (maxListCount <= 0 ? selectBox.items.size : Math.min(maxListCount, selectBox.items.size));
 			Drawable scrollPaneBackground = getStyle().background;
 			if (scrollPaneBackground != null)
 				height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
 			Drawable listBackground = list.getStyle().background;
 			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
-			float heightBelow = tmpCoords.y;
-			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
+			float heightBelow = screenPosition.y;
+			float heightAbove = stage.getCamera().viewportHeight - screenPosition.y - selectBox.getHeight();
 			boolean below = true;
 			if (height > heightBelow) {
 				if (heightAbove > heightBelow) {
@@ -360,38 +397,51 @@ public class SelectBox<T> extends Widget implements Disableable {
 			}
 
 			if (below)
-				setY(tmpCoords.y - height);
+				setY(screenPosition.y - height);
 			else
-				setY(tmpCoords.y + SelectBox.this.getHeight());
-			setX(tmpCoords.x);
-			setWidth(SelectBox.this.getWidth());
-			setHeight(height);
+				setY(screenPosition.y + selectBox.getHeight());
+			setX(screenPosition.x);
+			setSize(Math.max(getPrefWidth(), selectBox.getWidth()), height);
 
 			validate();
-			scrollToCenter(0, list.getHeight() - getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
+			scrollToCenter(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
 			updateVisualScroll();
-
-			clearActions();
-			getColor().a = 0;
-			addAction(fadeIn(0.3f, Interpolation.fade));
 
 			previousScrollFocus = null;
 			Actor actor = stage.getScrollFocus();
 			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
-
 			stage.setScrollFocus(this);
+
+			list.setTouchable(Touchable.enabled);
+			clearActions();
+			selectBox.onShow(this, below);
 		}
 
-		@Override
-		public Actor hit (float x, float y, boolean touchable) {
-			Actor actor = super.hit(x, y, touchable);
-			return actor != null ? actor : this;
+		public void hide () {
+			if (!list.isTouchable() || !hasParent()) return;
+			list.setTouchable(Touchable.disabled);
+
+			Stage stage = getStage();
+			if (stage != null) {
+				stage.removeCaptureListener(hideListener);
+				if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
+				Actor actor = stage.getScrollFocus();
+				if (actor == null || isAscendantOf(actor)) stage.setScrollFocus(previousScrollFocus);
+			}
+
+			clearActions();
+			selectBox.onHide(this);
+		}
+
+		public void draw (Batch batch, float parentAlpha) {
+			selectBox.localToStageCoordinates(temp.set(0, 0));
+			if (!temp.equals(screenPosition)) hide();
+			super.draw(batch, parentAlpha);
 		}
 
 		public void act (float delta) {
 			super.act(delta);
-			SelectBox.this.localToStageCoordinates(tmpCoords.set(0, 0));
-			if (tmpCoords.x != screenCoords.x || tmpCoords.y != screenCoords.y) hideList();
+			toFront();
 		}
 	}
 

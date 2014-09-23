@@ -542,16 +542,18 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
-	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio.
+	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio. Note that
+	 * the field of view specified is the angle in degrees for the height, the field of view for the width will be calculated
+	 * according to the aspect ratio.
 	 * 
 	 * @param near The near plane
 	 * @param far The far plane
-	 * @param fov The field of view in degrees
+	 * @param fovy The field of view of the height in degrees
 	 * @param aspectRatio The "width over height" aspect ratio
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {
+	public Matrix4 setToProjection (float near, float far, float fovy, float aspectRatio) {
 		idt();
-		float l_fd = (float)(1.0 / Math.tan((fov * (Math.PI / 180)) / 2.0));
+		float l_fd = (float)(1.0 / Math.tan((fovy * (Math.PI / 180)) / 2.0));
 		float l_a1 = (far + near) / (near - far);
 		float l_a2 = (2 * far * near) / (near - far);
 		val[M00] = l_fd / aspectRatio;
@@ -1056,6 +1058,36 @@ public class Matrix4 implements Serializable {
 		val[13] = mat.val[7];
 		val[14] = 0;
 		val[15] = mat.val[8];
+		return this;
+	}
+
+	/** Sets this matrix to the given affine matrix. The values are mapped as follows:
+	 *
+	 * <pre>
+	 *      [  M00  M01   0   M02  ]
+	 *      [  M10  M11   0   M12  ]
+	 *      [   0    0    1    0   ]
+	 *      [   0    0    0    1   ]
+	 * </pre>
+	 * @param affine the affine matrix
+	 * @return This matrix for chaining */
+	public Matrix4 set (Affine2 affine) {
+		val[0] = affine.m00;
+		val[1] = affine.m10;
+		val[2] = 0;
+		val[3] = 0;
+		val[4] = affine.m01;
+		val[5] = affine.m11;
+		val[6] = 0;
+		val[7] = 0;
+		val[8] = 0;
+		val[9] = 0;
+		val[10] = 1;
+		val[11] = 0;
+		val[12] = affine.m02;
+		val[13] = affine.m12;
+		val[14] = 0;
+		val[15] = 1;
 		return this;
 	}
 

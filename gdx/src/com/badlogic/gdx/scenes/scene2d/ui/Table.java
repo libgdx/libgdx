@@ -64,13 +64,13 @@ public class Table extends WidgetGroup {
 	private float[] columnWidth, rowHeight;
 	private float[] expandWidth, expandHeight;
 
-	Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
+	Value padTop = backgroundTop, padLeft = backgroundLeft, padBottom = backgroundBottom, padRight = backgroundRight;
 	int align = Align.center;
 
 	Debug debug = Debug.none;
 	Array<DebugRect> debugRects;
 
-	private Drawable background;
+	Drawable background;
 	private boolean clip;
 	private Skin skin;
 	boolean round = true;
@@ -134,30 +134,22 @@ public class Table extends WidgetGroup {
 
 	/** Sets the background drawable from the skin and adjusts the table's padding to match the background. This may only be called
 	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
-	 * @see #setBackground(Drawable, boolean) */
+	 * @see #setBackground(Drawable) */
 	public void setBackground (String drawableName) {
-		setBackground(skin.getDrawable(drawableName), true);
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		setBackground(skin.getDrawable(drawableName));
 	}
 
-	/** Sets the background drawable and adjusts the table's padding to match the background.
-	 * @see #setBackground(Drawable, boolean) */
+	/** @param background May be null to clear the background. */
 	public void setBackground (Drawable background) {
-		setBackground(background, true);
-	}
-
-	/** Sets the background drawable and, if adjustPadding is true, sets the table's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and padding removed. */
-	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
+		float padTopOld = getPadTop(), padLeftOld = getPadLeft(), padBottomOld = getPadBottom(), padRightOld = getPadRight();
 		this.background = background;
-		if (adjustPadding) {
-			if (background == null)
-				pad(Value.zero);
-			else
-				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+		float padTopNew = getPadTop(), padLeftNew = getPadLeft(), padBottomNew = getPadBottom(), padRightNew = getPadRight();
+		if (padTopOld + padBottomOld != padTopNew + padBottomNew || padLeftOld + padRightOld != padLeftNew + padRightNew)
+			invalidateHierarchy();
+		else if (padTopOld != padTopNew || padLeftOld != padLeftNew || padBottomOld != padBottomNew || padRightOld != padRightNew)
 			invalidate();
-		}
 	}
 
 	/** @see #setBackground(Drawable) */
@@ -323,10 +315,10 @@ public class Table extends WidgetGroup {
 	 * cell, column, and row defaults. */
 	public void reset () {
 		clear();
-		padTop = Value.zero;
-		padLeft = Value.zero;
-		padBottom = Value.zero;
-		padRight = Value.zero;
+		padTop = backgroundTop;
+		padLeft = backgroundLeft;
+		padBottom = backgroundBottom;
+		padRight = backgroundRight;
 		align = Align.center;
 		debug(Debug.none);
 		cellDefaults.defaults();
@@ -815,12 +807,11 @@ public class Table extends WidgetGroup {
 		outer:
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
-			if (c.expandX == 0) continue;
-			int column = c.column;
-			int nn = column + c.colspan;
+			int expandX = c.expandX;
+			if (expandX == 0) continue;
+			int column = c.column, nn = column + c.colspan;
 			for (int ii = column; ii < nn; ii++)
 				if (expandWidth[ii] != 0) continue outer;
-			int expandX = c.expandX;
 			for (int ii = column; ii < nn; ii++)
 				expandWidth[ii] = expandX;
 		}
@@ -977,7 +968,8 @@ public class Table extends WidgetGroup {
 			Actor a = c.actor;
 
 			float spannedWeightedWidth = 0;
-			for (int ii = column, nn = ii + c.colspan; ii < nn; ii++)
+			int colspan = c.colspan;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
 				spannedWeightedWidth += columnWeightedWidth[ii];
 			float weightedHeight = rowWeightedHeight[row];
 
@@ -995,7 +987,7 @@ public class Table extends WidgetGroup {
 			c.actorWidth = Math.min(spannedWeightedWidth - c.computedPadLeft - c.computedPadRight, prefWidth);
 			c.actorHeight = Math.min(weightedHeight - c.computedPadTop - c.computedPadBottom, prefHeight);
 
-			if (c.colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
+			if (colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
 			rowHeight[row] = Math.max(rowHeight[row], weightedHeight);
 		}
 
@@ -1082,27 +1074,29 @@ public class Table extends WidgetGroup {
 
 			currentX += c.computedPadLeft;
 
-			if (c.fillX > 0) {
-				c.actorWidth = spannedCellWidth * c.fillX;
+			float fillX = c.fillX, fillY = c.fillY;
+			if (fillX > 0) {
+				c.actorWidth = Math.max(spannedCellWidth * fillX, c.minWidth.get(c.actor));
 				float maxWidth = c.maxWidth.get(c.actor);
 				if (maxWidth > 0) c.actorWidth = Math.min(c.actorWidth, maxWidth);
 			}
-			if (c.fillY > 0) {
-				c.actorHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
+			if (fillY > 0) {
+				c.actorHeight = Math.max(rowHeight[c.row] * fillY - c.computedPadTop - c.computedPadBottom, c.minHeight.get(c.actor));
 				float maxHeight = c.maxHeight.get(c.actor);
 				if (maxHeight > 0) c.actorHeight = Math.min(c.actorHeight, maxHeight);
 			}
 
-			if ((c.align & Align.left) != 0)
+			align = c.align;
+			if ((align & Align.left) != 0)
 				c.actorX = currentX;
-			else if ((c.align & Align.right) != 0)
+			else if ((align & Align.right) != 0)
 				c.actorX = currentX + spannedCellWidth - c.actorWidth;
 			else
 				c.actorX = currentX + (spannedCellWidth - c.actorWidth) / 2;
 
-			if ((c.align & Align.top) != 0)
+			if ((align & Align.top) != 0)
 				c.actorY = currentY + c.computedPadTop;
-			else if ((c.align & Align.bottom) != 0)
+			else if ((align & Align.bottom) != 0)
 				c.actorY = currentY + rowHeight[c.row] - c.actorHeight - c.computedPadBottom;
 			else
 				c.actorY = currentY + (rowHeight[c.row] - c.actorHeight + c.computedPadTop - c.computedPadBottom) / 2;
@@ -1218,4 +1212,40 @@ public class Table extends WidgetGroup {
 	static public enum Debug {
 		none, all, table, cell, actor
 	}
+
+	/** Value that is the top padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundTop = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getTopHeight();
+		}
+	};
+
+	/** Value that is the left padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundLeft = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getLeftWidth();
+		}
+	};
+
+	/** Value that is the bottom padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundBottom = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getBottomHeight();
+		}
+	};
+
+	/** Value that is the right padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundRight = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getRightWidth();
+		}
+	};
 }

@@ -173,6 +173,9 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 				event.code = keyCode;
 				eventQueue.add(event);
 			}
+			if (keyCode == KeyEvent.KEYCODE_BACK && !Gdx.input.isCatchBackKey()) {
+				return false;
+			}
 			return true;
 		} else {
 			return false;

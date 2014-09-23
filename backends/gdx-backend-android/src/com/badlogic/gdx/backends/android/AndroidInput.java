@@ -325,8 +325,15 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public boolean isTouched () {
+	public boolean isTouched() {
 		synchronized (this) {
+			if (hasMultitouch) {
+				for (int pointer = 0; pointer < NUM_TOUCHES; pointer++) {
+					if (touched[pointer]) {
+						return true;
+					}
+				}
+			}
 			return touched[0];
 		}
 	}
@@ -559,7 +566,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
-// onscreenKeyboard.setVisible(visible);
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -578,6 +584,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return catchBack;
 	}
 
 	@Override

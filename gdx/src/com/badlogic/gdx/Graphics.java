@@ -116,6 +116,13 @@ public interface Graphics {
 	/** @return the height in pixels of the display surface */
 	public int getHeight ();
 
+	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
+	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
+	 * the first frame is 0; the id of subsequent frames is guaranteed to take increasing values for 2<sup>63</sup>-1 rendering
+	 * cycles.
+	 * @return the id of the current frame */
+	public long getFrameId ();
+
 	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
 	public float getDeltaTime ();
 

@@ -49,6 +49,7 @@ libgdx-*.zip.MD5
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
 /extensions/gdx-video/gdx-video-desktop/libs/
+/extensions/gdx-setup/gdx-setup.jar
 
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war

@@ -230,7 +230,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched() {
-		return touchDown[0] != 0;
+		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
+			if (touchDown[pointer] != 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -422,6 +427,11 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setCatchBackKey(boolean catchBack) {
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
 	}
 
 	@Override

@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** A convenient 2D circle class.
  * @author mzechner */
-public class Circle implements Serializable {
+public class Circle implements Serializable, Shape2D {
 	public float x, y;
 	public float radius;
 

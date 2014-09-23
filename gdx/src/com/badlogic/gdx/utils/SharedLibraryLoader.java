@@ -40,7 +40,8 @@ public class SharedLibraryLoader {
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
 	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
-	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
+	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
+		|| System.getProperty("os.arch").equals("x86_64");
 
 	// JDK 8 only.
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
@@ -208,14 +209,19 @@ public class SharedLibraryLoader {
 			testFile.delete();
 		}
 	}
-	
-	private boolean canExecute(File file) {
+
+	private boolean canExecute (File file) {
 		try {
-			Method m = File.class.getMethod("canExecute");
-			return (Boolean)m.invoke(file);
-		} catch (Exception e) {
-			return false;
+			Method canExecute = File.class.getMethod("canExecute");
+			if ((Boolean)canExecute.invoke(file)) return true;
+
+			Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
+			setExecutable.invoke(file, true, false);
+
+			return (Boolean)canExecute.invoke(file);
+		} catch (Exception ignored) {
 		}
+		return false;
 	}
 
 	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {

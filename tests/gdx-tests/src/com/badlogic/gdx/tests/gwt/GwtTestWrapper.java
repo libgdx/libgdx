@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
+import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
@@ -90,7 +91,6 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
-import com.badlogic.gdx.tests.StateMachineTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
@@ -362,6 +362,11 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public boolean isCatchBackKey() {
+			return input.isCatchBackKey();
+		}
+
+		@Override
 		public void setCatchMenuKey (boolean catchMenu) {
 			input.setCatchMenuKey(catchMenu);
 		}
@@ -432,6 +437,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new AnimationTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new AnnotationTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
@@ -688,10 +697,6 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TimeUtilsTest();
-			}
-		}, new Instancer() {
-			public GdxTest instance () {
-				return new StateMachineTest();
 			}
 		}};
 }

@@ -313,27 +313,39 @@ public class I18NBundle {
 	// Tries to load the bundle for the given locale.
 	private static I18NBundle loadBundle (FileHandle baseFileHandle, String encoding, Locale targetLocale) {
 		I18NBundle bundle = null;
-		InputStream stream = null;
+		Reader reader = null;
 		try {
 			FileHandle fileHandle = toFileHandle(baseFileHandle, targetLocale);
-			if (fileHandle.exists()) {
+			if (checkFileExistence(fileHandle)) {
 				// Instantiate the bundle
 				bundle = new I18NBundle();
 
 				// Load bundle properties from the stream with the specified encoding
-				stream = fileHandle.read();
-				bundle.load(new InputStreamReader(stream, encoding));
+				reader = fileHandle.reader(encoding);
+				bundle.load(reader);
 			}
-		} catch (Throwable t) {
-			throw new GdxRuntimeException(t);
-		} finally {
-			StreamUtils.closeQuietly(stream);
+		} catch (IOException e) {
+			throw new GdxRuntimeException(e);
+		} 
+		finally {
+			StreamUtils.closeQuietly(reader);
 		}
 		if (bundle != null) {
 			bundle.setLocale(targetLocale);
 		}
 
 		return bundle;
+	}
+
+	// On Android this is much faster than fh.exists(), see https://github.com/libgdx/libgdx/issues/2342
+	// Also this should fix a weird problem on iOS, see https://github.com/libgdx/libgdx/issues/2345
+	private static boolean checkFileExistence (FileHandle fh) {
+		try {
+			fh.read().close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/** Load the properties from the specified reader.
