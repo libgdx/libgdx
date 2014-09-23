@@ -133,7 +133,7 @@
 		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
 		<mkdir dir="${libsDir}" />
 		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
-			<arg line="${linker-opts}" />
+			<arg line="-Wl,--whole-archive,--allow-multiple-definition ${linker-opts} -Wl,--no-whole-archive " />
 			<arg value="-o" />
 			<arg path="${libsDir}/${libName}" />
 			<arg line="${objFiles}"/>

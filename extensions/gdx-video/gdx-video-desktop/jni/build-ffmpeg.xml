@@ -11,6 +11,8 @@
 		<mkdir dir="ffmpeg"/>
 		<get src="http://ffmpeg.org/releases/ffmpeg-2.2.2.tar.gz" dest="ffmpeg/ffmpeg-2.2.2.tar.gz" skipexisting="true"/>
 		<untar src="ffmpeg/ffmpeg-2.2.2.tar.gz" dest="ffmpeg" compression="gzip"/>
+		<!-- apply patches to hide certain globals -->
+        <patch dir="ffmpeg" patchfile="hide_ffmpeg_globals.patch" strip="0"/>
 
 		<ant antfile="build-ffmpeg-linux32.xml"/>
 		<ant antfile="build-ffmpeg-linux64.xml"/>
