@@ -58,6 +58,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.PurchaseObserver;
@@ -91,16 +93,15 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 
 	/** The OUYA cryptographic key for the application */
 	public PublicKey ouyaPublicKey;
-	private byte[] applicationKey;
-	public List<Purchasable> productIDList; // --- This is the set of OUYA product IDs which our app knows about
+	private String applicationKeyPath;
+	public List<Purchasable> productIDList; 	// --- This is the set of OUYA product IDs which our app knows about
 	private final Map<String, Product> ouyaOutstandingPurchaseRequests = new HashMap<String, Product>();
 	ReceiptListener myOUYAreceiptListener = new ReceiptListener();
-	private List<Receipt> mReceiptList; // the list of purchased items, sorted
+	private List<Receipt> mReceiptList; 		// the list of purchased items, sorted
 	private ArrayList<Product> productList = new ArrayList<Product>();
-	private Purchasable purchasable; // for a concrete purchase
+	private Purchasable purchasable; 			// for a concrete purchase
 	Product OUYApurchaseProduct;
-	com.badlogic.gdx.pay.PurchaseListener appPurchaseListener; // this is the listener from the app that will be informed after a
-// purchase
+	com.badlogic.gdx.pay.PurchaseListener appPurchaseListener; // this is the listener from the app that will be informed after a purchase
 
 	// ------- for Toasts (debugging) -----
 	public String toastText;
@@ -136,16 +137,15 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 
 		// Obtain applicationKey and developer ID. Pass in as follows:
 		// -------------------------------------------------------------------------
-		// config.addStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA, new Object[] {
-		//   "<OUYA developerID String",
-		//   new byte[] { <OUYA applicationKey> }
-		// });
+		//		config.addStoreParam(
+		//			PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA, 
+		//			new Object[] { OUYA_DEVELOPERID_STRING, applicationKeyPathSTRING });
 		// -------------------------------------------------------------------------
 
 		Object[] configuration = (Object[])config.getStoreParam(PurchaseManagerConfig.STORE_NAME_ANDROID_OUYA);
 		String developerID = (String)configuration[0];
-		applicationKey = (byte[])configuration[1]; // store our OUYA applicationKey!
-
+		applicationKeyPath = (String)configuration[1]; // store our OUYA applicationKey-Path!
+		
 		ouyaFacade = OuyaFacade.getInstance();
 		ouyaFacade.init((Context)activity, developerID);
 
@@ -158,14 +158,10 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 		// Create a PublicKey object from the key data downloaded from the developer portal.
 		try {
 			// Read in the key.der file (downloaded from the developer portal)
-			// TODO: needed: path to key??! -> inputstream
-// InputStream inputStream = getResources().openRawResource(R.raw.key);
-// byte[] applicationKey = new byte[inputStream.available()];
-// inputStream.read(applicationKey);
-// inputStream.close();
+			FileHandle fHandle = Gdx.files.internal(applicationKeyPath);
+			byte[] applicationKey = fHandle.readBytes();
 
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(applicationKey); // by now we just take the ready-to-go
-// applicationkey
+			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(applicationKey);
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			ouyaPublicKey = keyFactory.generatePublic(keySpec);
 			showMessage(LOGTYPELOG, "succesfully created publicKey");
@@ -234,7 +230,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	/** make a purchase */
 	@Override
 	public void purchase (String identifier, com.badlogic.gdx.pay.PurchaseListener listener) {
-// String payload = null;
+		// String payload = null;
 		this.appPurchaseListener = listener; // store the listener
 
 		OUYApurchaseProduct = getProduct(identifier);
@@ -314,39 +310,39 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 			// ========= not sure if this is needed?? ---- shouldnt this be the task of the app ??
 
 			// if the observer above didn't throw an error, we consume all consumeables as needed
-// for (int i = 0; i < mReceiptList.size(); i++) {
-// Receipt receipt = mReceiptList.get(i);
-// Offer offer = config.getOffer(receipt.getIdentifier());
-// if (offer == null) {
-// Gdx.app.debug(TAG, "Offer not found for: " + receipt.getIdentifier());
-// }
-// else if (offer.getType() == OfferType.CONSUMABLE) {
-//
-// Gdx.app.log("TODO", "we have to consume incoming receipts?!");
-//
-// // it's a consumable, so we consume right away!
-// helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-// @Override
-// public void onConsumeFinished (Purchase purchase, IabResult result) {
-// if (!result.isSuccess()) {
-// // NOTE: we should only rarely have an exception due to e.g. network outages etc.
-// Gdx.app.error(TAG, "Error while consuming: " + result);
-// }
-// }
-// });
-// }
-// }
+			// for (int i = 0; i < mReceiptList.size(); i++) {
+				// Receipt receipt = mReceiptList.get(i);
+				// Offer offer = config.getOffer(receipt.getIdentifier());
+					// if (offer == null) {
+						// Gdx.app.debug(TAG, "Offer not found for: " + receipt.getIdentifier());
+					// }
+					// else if (offer.getType() == OfferType.CONSUMABLE) {
+						//
+						// Gdx.app.log("TODO", "we have to consume incoming receipts?!");
+						//
+						// // it's a consumable, so we consume right away!
+						// helper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+							// @Override
+							// public void onConsumeFinished (Purchase purchase, IabResult result) {
+							// if (!result.isSuccess()) {
+								// // NOTE: we should only rarely have an exception due to e.g. network outages etc.
+								// Gdx.app.error(TAG, "Error while consuming: " + result);
+							// }
+						// }
+					// });
+				// }
+			// }
 		}
 
 		@Override
 		public void onCancel () {
-// observer.handleRestoreError(new GdxRuntimeException("");
+			// observer.handleRestoreError(new GdxRuntimeException("");
 			showMessage(LOGTYPELOG, "receiptlistener: user canceled");
 		}
 
 		@Override
 		public void onFailure (int arg0, String arg1, Bundle arg2) {
-// observer.handleRestoreError(e);
+			// observer.handleRestoreError(e);
 			showMessage(LOGTYPEERROR, "receiptlistener: onFailure!");
 		}
 	}
@@ -398,7 +394,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 		JSONObject purchaseRequest = new JSONObject();
 		purchaseRequest.put("uuid", uniqueId);
 		purchaseRequest.put("identifier", product.getIdentifier());
-// purchaseRequest.put("testing", "true"); // This value is only needed for testing, not setting it results in a live purchase
+		// purchaseRequest.put("testing", "true"); // !!!! This value is only needed for testing, not setting it results in a live purchase
 		String purchaseRequestJson = purchaseRequest.toString();
 
 		byte[] keyBytes = new byte[16];
@@ -458,7 +454,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 					id = helper.decryptPurchaseResponse(response, ouyaPublicKey);
 					synchronized (ouyaOutstandingPurchaseRequests) {
 						storedProduct = ouyaOutstandingPurchaseRequests.remove(id);
-// showMessage("PurchaseListener: looks good ....");
+						// showMessage("PurchaseListener: looks good ....");
 					}
 					if (storedProduct == null || !storedProduct.getIdentifier().equals(mProduct.getIdentifier())) {
 						showMessage(LOGTYPEERROR, "Purchased product is not the same as purchase request product");
@@ -506,7 +502,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 				// inform the listener
 				appPurchaseListener.handlePurchase(trans);
 			} else {
-// appPurchaseListener.handlePurchaseError(e);
+				// appPurchaseListener.handlePurchaseError(e);
 				showMessage(LOGTYPEERROR, "PurchaseListener: storedProduct == null!");
 			}
 		}
@@ -645,6 +641,9 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 			ouyaFacade.shutdown();
 			ouyaFacade = null;
 
+			productIDList = null;
+			productList = null;
+			
 			// remove observer and config as well
 			observer = null;
 			config = null;
