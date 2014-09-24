@@ -39,7 +39,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="linker-opts" value="-shared -m32"/>
+	<property name="linker-opts" value="-shared -m32 -Wl,-wrap,memcpy"/>
 	<property name="libraries" value="-L../../ffmpeg/libs/linux32/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
 	<property name="includes" value="-Iffmpeg/libs/linux32/include/"/>
 
@@ -133,11 +133,18 @@
 		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
 		<mkdir dir="${libsDir}" />
 		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
-			<arg line="${linker-opts}" />
-			<arg value="-o" />
-			<arg path="${libsDir}/${libName}" />
-			<arg line="${objFiles}"/>
-			<arg line="${libraries}" />
+			<arg line="${linker-opts}"/>
+            <arg value="-Wl,--whole-archive,--allow-multiple-definition"/>
+            <arg value="../../ffmpeg/libs/linux32/lib/libavcodec.a"/>
+            <arg value="../../ffmpeg/libs/linux32/lib/libavformat.a"/>
+            <arg value="../../ffmpeg/libs/linux32/lib/libavutil.a"/>
+            <arg value="../../ffmpeg/libs/linux32/lib/libswscale.a"/>
+            <arg value="../../ffmpeg/libs/linux32/lib/libswresample.a"/>
+            <arg value="-Wl,--no-whole-archive"/>
+            <arg value="-g -ggdb"/>
+            <arg value="-o"/>
+            <arg path="${libsDir}/${libName}"/>
+            <arg line="${objFiles}"/>
 		</exec>
 	</target>	
 	

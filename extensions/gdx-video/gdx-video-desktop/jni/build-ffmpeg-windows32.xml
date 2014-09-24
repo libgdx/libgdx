@@ -28,7 +28,7 @@
 		<chmod file="ffmpeg/ffmpeg-2.2.2/configure" perm="+x"/>
 		<chmod file="ffmpeg/ffmpeg-2.2.2/version.sh" perm="+x"/>
 		<exec executable="../../ffmpeg-2.2.2/configure" failonerror="true" dir="${buildDir}">
-			<arg line="--prefix=${libsDir} --disable-htmlpages --enable-memalign-hack --arch=x86 --target-os=mingw32 --cross-prefix=i686-w64-mingw32- --pkg-config=pkg-config --enable-shared --disable-static --disable-everything --enable-filter=deshake --enable-protocol=file --enable-filter=aresample --enable-demuxer=ogg --enable-decoder=vorbis --enable-decoder=theora"/>
+			<arg line="--enable-pic --enable-cross-compile --disable-symver --disable-doc --prefix=${libsDir} --enable-memalign-hack --arch=x86 --target-os=mingw32 --cross-prefix=i686-w64-mingw32- --pkg-config=pkg-config --disable-shared --enable-static --disable-everything --enable-filter=deshake --enable-protocol=file --enable-filter=aresample --enable-demuxer=ogg --enable-decoder=vorbis --enable-decoder=theora"/>
 		</exec>
 		<exec executable="make" failonerror="true" dir="${buildDir}"/>
 		<exec executable="make" failonerror="true" dir="${buildDir}">

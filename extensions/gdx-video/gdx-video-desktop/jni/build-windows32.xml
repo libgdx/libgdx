@@ -16,7 +16,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -fPIC"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -28,7 +28,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -DWIN32"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -fPIC -DWIN32"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -41,6 +41,7 @@
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++"/>
 	<property name="libraries" value="-Lffmpeg/libs/windows32/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
+	<property name="includes" value="-Iffmpeg/libs/linux64/include/"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -92,6 +93,7 @@
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="${includes}" />
 			<arg value="-I."/>
 			
 			<srcfile/>
@@ -130,11 +132,18 @@
 		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
 		<mkdir dir="${libsDir}" />
 		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
-			<arg line="${linker-opts}" />
-			<arg value="-o" />
-			<arg path="${libsDir}/${libName}" />
-			<arg line="${objFiles}"/>
-			<arg line="${libraries}" />
+			<arg line="${linker-opts}"/>
+            <arg value="-Wl,--whole-archive,--allow-multiple-definition"/>
+            <arg value="../../ffmpeg/libs/windows32/lib/libavcodec.a"/>
+            <arg value="../../ffmpeg/libs/windows32/lib/libavformat.a"/>
+            <arg value="../../ffmpeg/libs/windows32/lib/libavutil.a"/>
+            <arg value="../../ffmpeg/libs/windows32/lib/libswscale.a"/>
+            <arg value="../../ffmpeg/libs/windows32/lib/libswresample.a"/>
+            <arg value="-Wl,--no-whole-archive"/>
+            <arg value="-g -ggdb"/>
+            <arg value="-o"/>
+            <arg path="${libsDir}/${libName}"/>
+            <arg line="${objFiles}"/>
 		</exec>
 	</target>	
 	

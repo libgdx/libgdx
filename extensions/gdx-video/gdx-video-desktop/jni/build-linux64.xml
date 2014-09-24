@@ -133,11 +133,18 @@
 		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
 		<mkdir dir="${libsDir}" />
 		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
-			<arg line="-Wl,--whole-archive,--allow-multiple-definition ${linker-opts} -Wl,--no-whole-archive " />
-			<arg value="-o" />
-			<arg path="${libsDir}/${libName}" />
-			<arg line="${objFiles}"/>
-			<arg line="${libraries}" />
+			<arg line="${linker-opts}"/>
+            <arg value="-Wl,--whole-archive,--allow-multiple-definition"/>
+            <arg value="../../ffmpeg/libs/linux64/lib/libavcodec.a"/>
+            <arg value="../../ffmpeg/libs/linux64/lib/libavformat.a"/>
+            <arg value="../../ffmpeg/libs/linux64/lib/libavutil.a"/>
+            <arg value="../../ffmpeg/libs/linux64/lib/libswscale.a"/>
+            <arg value="../../ffmpeg/libs/linux64/lib/libswresample.a"/>
+            <arg value="-Wl,--no-whole-archive"/>
+            <arg value="-g -ggdb"/>
+            <arg value="-o"/>
+            <arg path="${libsDir}/${libName}"/>
+            <arg line="${objFiles}"/>
 		</exec>
 	</target>	
 	
