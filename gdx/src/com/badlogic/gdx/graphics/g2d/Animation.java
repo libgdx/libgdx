@@ -42,6 +42,7 @@ public class Animation {
 	private float animationDuration;
 	private int lastFrameNumber;
 	private float lastStateTime;
+	private Object userdata;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -184,6 +185,14 @@ public class Animation {
 	 * @param playMode The animation {@link PlayMode} to use. */
 	public void setPlayMode (PlayMode playMode) {
 		this.playMode = playMode;
+	}
+	
+	public Object getUserdata() {
+		return userdata;
+	}
+
+	public void setUserdata(Object userdata) {
+		this.userdata = userdata;
 	}
 
 	/** Whether the animation would be finished if played without looping (PlayMode#NORMAL), given the state time.
