@@ -399,7 +399,6 @@ public class TextureAtlas implements Disposable {
 				int[] splits = region.splits;
 				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
 				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-				patch.setName(name);
 				if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
 				return patch;
 			}

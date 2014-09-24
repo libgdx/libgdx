@@ -233,7 +233,7 @@ public class ScrollPane extends WidgetGroup {
 	void cancelTouchFocusedChild (InputEvent event) {
 		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
-		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
+		if (stage != null) stage.cancelTouchFocusExcept(flickScrollListener, this);
 	}
 
 	/** If currently scrolling by tracking a touch down, stop scrolling. */
@@ -764,6 +764,10 @@ public class ScrollPane extends WidgetGroup {
 		else
 			removeListener(flickScrollListener);
 		invalidate();
+	}
+
+	public void setFlickScrollTapSquareSize (float halfTapSquareSize) {
+		flickScrollListener.getGestureDetector().setTapSquareSize(halfTapSquareSize);
 	}
 
 	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane widget's

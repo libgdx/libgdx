@@ -730,6 +730,10 @@ public class BitmapFont implements Disposable {
 		this.ownsTexture = ownsTexture;
 	}
 
+	public String toString () {
+		return data.fontFile.nameWithoutExtension();
+	}
+
 	/** Represents a single character in a font page. */
 	public static class Glyph {
 		public int id;
@@ -805,7 +809,6 @@ public class BitmapFont implements Disposable {
 	/** Backing data for a {@link BitmapFont}. */
 	public static class BitmapFontData {
 		/** The first discovered image path; included for backwards-compatibility This is the same as imagePaths[0].
-		 * 
 		 * @deprecated use imagePaths[0] instead */
 		@Deprecated public String imagePath;
 

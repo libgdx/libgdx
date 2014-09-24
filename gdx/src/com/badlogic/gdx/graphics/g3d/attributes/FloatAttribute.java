@@ -53,7 +53,7 @@ public class FloatAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 977 * result + NumberUtils.floatToRawIntBits(value);
 		return result; 
 	}

@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,6 +72,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
@@ -458,8 +460,34 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// forward events to our listeners if there are any installed
+		synchronized (androidEventListeners) {
+			for (int i = 0; i < androidEventListeners.size; i++) {
+				androidEventListeners.get(i).onActivityResult(requestCode, resultCode, data);
+			}
+		}
+	}
+
+	/** Adds an event listener for Android specific event such as onActivityResult(...). */
+	public void addAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.add(listener);
+		}
+	}
+
+	/** Removes an event listener for Android specific event such as onActivityResult(...). */
+	public void removeAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.removeValue(listener, true);
+		}
+	}
+
+	@Override
 	public Context getContext () {
-		return this;
+		return this;  
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class DragAndDrop {
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
 
-				if (cancelTouchFocus && payload != null) source.getActor().getStage().cancelTouchFocus(this, source.getActor());
+				if (cancelTouchFocus && payload != null) source.getActor().getStage().cancelTouchFocusExcept(this, source.getActor());
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {

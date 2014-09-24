@@ -16,10 +16,15 @@
 
 package com.badlogic.gdx.tests.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseSystem;
+import com.badlogic.gdx.pay.android.openiab.PurchaseManagerAndroidOpenIAB;
+import com.badlogic.gdx.tests.PayTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -28,10 +33,12 @@ public class GdxTestActivity extends AndroidApplication {
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
 
+		// obtain the test info
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("test");
-
 		GdxTest test = GdxTests.newTest(testName);
+		
+		// and run the application...
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		initialize(test, config);
