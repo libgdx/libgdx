@@ -203,8 +203,12 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
+			height = (int) bounds.width();
+			width = (int) bounds.height();
+			if (width < height) {
+				width = (int) bounds.width();
+				height = (int) bounds.height();
+			}
 			break;
 		default:
 			// assume portrait
