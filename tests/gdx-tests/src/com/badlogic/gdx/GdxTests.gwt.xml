@@ -22,6 +22,7 @@
 		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
+		<exclude name="**/PayTest.java"/> <!-- Not ready -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/ScreenCaptureTest.java"/> <!-- ScreenUtils -->
 		<exclude name="**/ScreenshotTest.java"/> <!-- ScreenUtils -->

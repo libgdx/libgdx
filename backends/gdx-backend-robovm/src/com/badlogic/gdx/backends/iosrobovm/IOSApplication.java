@@ -118,13 +118,15 @@ public class IOSApplication implements Application {
 
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
 		if (UIScreen.getMainScreen().getScale() == 2.0f) {
+			Gdx.app.debug("IOSApplication", "scale: " + UIScreen.getMainScreen().getScale());
 			// we have a retina device!
+			float scale = (float)UIScreen.getMainScreen().getScale();			
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
 			} else {
 				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
 			}
 		} else {
 			// no retina screen: no scaling!
@@ -162,6 +164,12 @@ public class IOSApplication implements Application {
 		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
+	}
+	
+	private int getIosVersion() {
+		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
+		int version = Character.getNumericValue(systemVersion.charAt(0));
+		return version;
 	}
 
 	/** Return the UI view controller of IOSApplication
@@ -203,8 +211,12 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
+			height = (int) bounds.width();
+			width = (int) bounds.height();
+			if (width < height) {
+				width = (int) bounds.width();
+				height = (int) bounds.height();
+			}
 			break;
 		default:
 			// assume portrait

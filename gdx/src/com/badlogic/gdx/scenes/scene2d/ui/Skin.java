@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.DelegateDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -195,6 +195,7 @@ public class Skin implements Disposable {
 		if (tiled != null) return tiled;
 
 		tiled = new TiledDrawable(getRegion(name));
+		tiled.setName(name);
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
@@ -212,7 +213,6 @@ public class Skin implements Disposable {
 				int[] splits = ((AtlasRegion)region).splits;
 				if (splits != null) {
 					patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-					patch.setName(name);
 					int[] pads = ((AtlasRegion)region).pads;
 					if (pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
 				}
@@ -240,7 +240,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
-			add(name, sprite, NinePatch.class);
+			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
 			throw new GdxRuntimeException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
@@ -285,6 +285,8 @@ public class Skin implements Disposable {
 			}
 		}
 
+		if (drawable instanceof BaseDrawable) ((BaseDrawable)drawable).setName(name);
+
 		add(name, drawable, Drawable.class);
 		return drawable;
 	}
@@ -318,8 +320,6 @@ public class Skin implements Disposable {
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
-		if (drawable instanceof TintedDrawable)
-			return new TintedDrawable((TintedDrawable)drawable, newDrawable(((TintedDrawable)drawable).getDrawable()));
 		throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
 	}
 
@@ -330,7 +330,7 @@ public class Skin implements Disposable {
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
-		if (drawable instanceof TintedDrawable) drawable = ((TintedDrawable)drawable).getDrawable();
+		Drawable newDrawable;
 		if (drawable instanceof TextureRegionDrawable) {
 			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
 			Sprite sprite;
@@ -339,14 +339,12 @@ public class Skin implements Disposable {
 			else
 				sprite = new Sprite(region);
 			sprite.setColor(tint);
-			return new SpriteDrawable(sprite);
-		}
-		if (drawable instanceof NinePatchDrawable) {
+			newDrawable = new SpriteDrawable(sprite);
+		} else if (drawable instanceof NinePatchDrawable) {
 			NinePatchDrawable patchDrawable = new NinePatchDrawable((NinePatchDrawable)drawable);
 			patchDrawable.setPatch(new NinePatch(patchDrawable.getPatch(), tint));
-			return patchDrawable;
-		}
-		if (drawable instanceof SpriteDrawable) {
+			newDrawable = patchDrawable;
+		} else if (drawable instanceof SpriteDrawable) {
 			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
 			Sprite sprite = spriteDrawable.getSprite();
 			if (sprite instanceof AtlasSprite)
@@ -355,9 +353,19 @@ public class Skin implements Disposable {
 				sprite = new Sprite(sprite);
 			sprite.setColor(tint);
 			spriteDrawable.setSprite(sprite);
-			return spriteDrawable;
+			newDrawable = spriteDrawable;
+		} else
+			throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		if (newDrawable instanceof BaseDrawable) {
+			BaseDrawable named = (BaseDrawable)newDrawable;
+			if (drawable instanceof BaseDrawable)
+				named.setName(((BaseDrawable)drawable).getName() + " (" + tint + ")");
+			else
+				named.setName(" (" + tint + ")");
 		}
-		throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		return newDrawable;
 	}
 
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
@@ -493,11 +501,12 @@ public class Skin implements Disposable {
 			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
-				TintedDrawable tinted = new TintedDrawable();
-				tinted.name = name;
-				tinted.color = color;
-				tinted.setDrawable(newDrawable(name, color));
-				return tinted;
+				Drawable drawable = newDrawable(name, color);
+				if (drawable instanceof BaseDrawable) {
+					BaseDrawable named = (BaseDrawable)drawable;
+					named.setName(jsonData.name + " (" + name + ", " + color + ")");
+				}
+				return drawable;
 			}
 		});
 
@@ -514,22 +523,8 @@ public class Skin implements Disposable {
 	}
 
 	/** @author Nathan Sweet */
-	static public class TintedDrawable extends DelegateDrawable {
+	static public class TintedDrawable {
 		public String name;
 		public Color color;
-
-		public TintedDrawable () {
-		}
-
-		/** Copy. */
-		public TintedDrawable (TintedDrawable tinted, Drawable copy) {
-			super(copy);
-			name = tinted.name;
-			color = tinted.color;
-		}
-
-		public String toString () {
-			return name + " (" + getDrawable() + ", " + color + ")";
-		}
 	}
 }

@@ -64,8 +64,4 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	public Sprite getSprite () {
 		return sprite;
 	}
-
-	public String toString () {
-		return sprite.toString();
-	}
 }

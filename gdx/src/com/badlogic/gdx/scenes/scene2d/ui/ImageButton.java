@@ -70,17 +70,18 @@ public class ImageButton extends Button {
 	}
 
 	private void updateImage () {
-		boolean isPressed = isPressed();
+		Drawable drawable = null;
 		if (isDisabled() && style.imageDisabled != null)
-			image.setDrawable(style.imageDisabled);
-		else if (isPressed && style.imageDown != null)
-			image.setDrawable(style.imageDown);
+			drawable = style.imageDisabled;
+		else if (isPressed() && style.imageDown != null)
+			drawable = style.imageDown;
 		else if (isChecked && style.imageChecked != null)
-			image.setDrawable((style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked);
+			drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
 		else if (isOver() && style.imageOver != null)
-			image.setDrawable(style.imageOver);
+			drawable = style.imageOver;
 		else if (style.imageUp != null) //
-			image.setDrawable(style.imageUp);
+			drawable = style.imageUp;
+		image.setDrawable(drawable);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
