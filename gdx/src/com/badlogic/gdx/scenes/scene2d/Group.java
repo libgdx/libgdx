@@ -83,7 +83,6 @@ public class Group extends Actor implements Cullable {
 					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
 						child.draw(batch, parentAlpha);
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
 				float offsetX = x, offsetY = y;
@@ -112,7 +111,6 @@ public class Group extends Actor implements Cullable {
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
 				float offsetX = x, offsetY = y;
