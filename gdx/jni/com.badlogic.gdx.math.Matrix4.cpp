@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.math.Matrix4.h>
 
-//@line:964
+//@line:1079
 
 	#include <memory.h>
 	#include <stdio.h>
@@ -92,7 +92,7 @@
 			* val[M12] * val[M31] + val[M01] * val[M10] * val[M32] - val[M00] * val[M11] * val[M32];
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
-	
+
 		float inv_det = 1.0f / l_det;
 		val[M00] = tmp[M00] * inv_det;
 		val[M01] = tmp[M01] * inv_det;
@@ -112,7 +112,7 @@
 		val[M33] = tmp[M33] * inv_det;
 		return true;
 	}
-	
+
 	static inline void matrix4_mulVec(float* mat, float* vec) {
 		float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
 		float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];
@@ -145,7 +145,7 @@
 	float* matb = (float*)env->GetPrimitiveArrayCritical(obj_matb, 0);
 
 
-//@line:1110
+//@line:1225
 
 		matrix4_mul(mata, matb);
 	
@@ -159,7 +159,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3F(JNIEnv*
 	float* vec = (float*)env->GetPrimitiveArrayCritical(obj_vec, 0);
 
 
-//@line:1120
+//@line:1235
 
 		matrix4_mulVec(mat, vec);
 	
@@ -173,7 +173,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3FIII(JNIE
 	float* vecs = (float*)env->GetPrimitiveArrayCritical(obj_vecs, 0);
 
 
-//@line:1135
+//@line:1250
 
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
@@ -191,7 +191,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_prj___3F_3F(JNIEnv* en
 	float* vec = (float*)env->GetPrimitiveArrayCritical(obj_vec, 0);
 
 
-//@line:1149
+//@line:1264
 
 		matrix4_proj(mat, vec);
 	
@@ -205,7 +205,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_prj___3F_3FIII(JNIEnv*
 	float* vecs = (float*)env->GetPrimitiveArrayCritical(obj_vecs, 0);
 
 
-//@line:1164
+//@line:1279
 
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
@@ -223,7 +223,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rot___3F_3F(JNIEnv* en
 	float* vec = (float*)env->GetPrimitiveArrayCritical(obj_vec, 0);
 
 
-//@line:1178
+//@line:1293
 
 		matrix4_rot(mat, vec);
 	
@@ -237,7 +237,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rot___3F_3FIII(JNIEnv*
 	float* vecs = (float*)env->GetPrimitiveArrayCritical(obj_vecs, 0);
 
 
-//@line:1193
+//@line:1308
 
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
@@ -253,7 +253,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rot___3F_3FIII(JNIEnv*
 static inline jboolean wrapped_Java_com_badlogic_gdx_math_Matrix4_inv
 (JNIEnv* env, jclass clazz, jfloatArray obj_values, float* values) {
 
-//@line:1205
+//@line:1320
 
 		return matrix4_inv(values);
 	
@@ -272,7 +272,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_math_Matrix4_inv(JNIEnv* env, j
 static inline jfloat wrapped_Java_com_badlogic_gdx_math_Matrix4_det
 (JNIEnv* env, jclass clazz, jfloatArray obj_values, float* values) {
 
-//@line:1213
+//@line:1328
 
 		return matrix4_det(values);
 	

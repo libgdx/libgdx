@@ -16,7 +16,7 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
+/** Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com */
 public class Rectangle implements Serializable, Shape2D {
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */

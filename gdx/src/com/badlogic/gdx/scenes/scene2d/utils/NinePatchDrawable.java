@@ -61,8 +61,4 @@ public class NinePatchDrawable extends BaseDrawable {
 	public NinePatch getPatch () {
 		return patch;
 	}
-
-	public String toString () {
-		return patch.toString();
-	}
 }

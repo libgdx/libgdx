@@ -29,7 +29,7 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
 		config.useAccelerometer = false;
-		return new IOSApplication(new DownloadTest(), config);
+		return new IOSApplication(new Box2DTestCollection(), config);
 	}
 
 	public static void main(String[] argv) {

@@ -159,13 +159,13 @@ public class JsonWriter extends Writer {
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
 		/** Like JSON, but names and values are only quoted if they don't contain <code>\r\n\t</code> or <code>space</code> and don't
-		 * begin with <code>{}[]:,"</code>. Additionally, names cannot contain <code>:</code> and values cannot contain
+		 * begin with <code>/{}[]:,"</code>. Additionally, names cannot contain <code>:</code> and values cannot contain
 		 * <code>}],</code>. */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-		static private Pattern minimalNamePattern = Pattern.compile("[^{}\\[\\],\":\\r\\n\\t ][^:\\r\\n\\t ]*");
-		static private Pattern minimalValuePattern = Pattern.compile("[^{}\\[\\],\":\\r\\n\\t ][^}\\],\\r\\n\\t ]*");
+		static private Pattern minimalNamePattern = Pattern.compile("[^/{}\\[\\],\":\\r\\n\\t ][^:\\r\\n\\t ]*");
+		static private Pattern minimalValuePattern = Pattern.compile("[^/{}\\[\\],\":\\r\\n\\t ][^}\\],\\r\\n\\t ]*");
 
 		public String quoteValue (Object value) {
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);

@@ -362,8 +362,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolator) {
-		return lerp(target, interpolator.apply(0f, 1f, alpha));
+	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolation) {
+		return lerp(target, interpolation.apply(alpha));
 	}
 
 	@Override
