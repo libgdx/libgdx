@@ -27,9 +27,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
+	private Stage stage;
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
@@ -47,6 +53,22 @@ public class BitmapFontTest extends GdxTest {
 
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+
+		stage = new Stage();
+
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		
+		BitmapFont labelFont = skin.get("default-font", BitmapFont.class);
+		labelFont.setMarkupEnabled(true);
+
+		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[BLACK]t[ORANGE]i[GREEN]c[MAGENTA]o[PINK]l[OLIVE]o[PERU]r[][MAROON]*Label[]>>", skin);
+		label.setPosition(200, 200);
+		stage.addActor(label);
+
+		Window window = new Window("[RED]Multicolor[GREEN] Title", skin);
+		window.setPosition(400, 200);
+		window.pack();
+		stage.addActor(window);
 	}
 
 	@Override
@@ -122,6 +144,9 @@ public class BitmapFontTest extends GdxTest {
 		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
+		
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 	}
 
 	@Override

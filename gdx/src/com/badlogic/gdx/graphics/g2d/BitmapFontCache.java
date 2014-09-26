@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
@@ -37,6 +38,8 @@ public class BitmapFontCache {
 
 	private float[][] vertexData;
 
+	private Array<ColorChunk> colorChunks;
+	
 	private int[] idx;
 	/** Used internally to ensure a correct capacity for multi-page font vertex data. */
 	private int[] tmpGlyphCount;
@@ -70,6 +73,7 @@ public class BitmapFontCache {
 		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 
 		this.vertexData = new float[regionsLength][];
+		this.colorChunks = new Array<ColorChunk>();
 
 		this.idx = new int[regionsLength];
 		int vertexDataLength = vertexData.length;
@@ -108,6 +112,72 @@ public class BitmapFontCache {
 			for (int i = 0, n = idx[j]; i < n; i += 5) {
 				vertices[i] += xAmount;
 				vertices[i + 1] += yAmount;
+			}
+		}
+	}
+
+	private float oldTint = 0;
+	private final Color currentChunkColor = new Color();
+	private int currentChunkEndIndex = 0;
+
+	private Color setColor (Color color, float floatColor) {
+		int intBits = NumberUtils.floatToIntColor(floatColor);
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+
+	private int updateCurrentChunk(int lastChunkIndex, Color tint) {
+		lastChunkIndex++;
+		if (colorChunks.size <= lastChunkIndex) {
+			if (colorChunks.size <= 0)
+				currentChunkColor.set(tint);
+			currentChunkEndIndex = Integer.MAX_VALUE;
+		}
+		else {
+			ColorChunk cc = colorChunks.get(lastChunkIndex);
+			if (currentChunkEndIndex == cc.endIndex)
+				lastChunkIndex = updateCurrentChunk(lastChunkIndex, tint);
+			else {
+				setColor(currentChunkColor, cc.color).mul(tint);
+				currentChunkEndIndex = cc.endIndex;
+			}
+		}
+		return lastChunkIndex;
+	}
+
+	/** Tints all text currently in the cache. Does not affect subsequently added text. */
+	public void tint (Color tint) {
+		float floatTint = tint.toFloatBits();
+		if (textChanged || oldTint != floatTint) {
+			textChanged = false;
+			oldTint = floatTint;
+			if (font.markupEnabled) {
+				int lastChunkIndex = updateCurrentChunk(-1, tint);
+				float color = currentChunkColor.toFloatBits();
+				int ci = 0;  // character index
+				for (int j = 0, length = vertexData.length; j < length; j++) {
+					float[] vertices = vertexData[j];
+					for (int i = 2, n = idx[j]; i < n; i += 5) {
+						if ((i % 20) == 2) {
+							if (++ci > currentChunkEndIndex) {
+								lastChunkIndex = updateCurrentChunk(lastChunkIndex, tint);
+								color = currentChunkColor.toFloatBits();
+							}
+						}
+						vertices[i] = color;
+					}					
+				}
+			}
+			else {
+				for (int j = 0, length = vertexData.length; j < length; j++) {
+					float[] vertices = vertexData[j];
+					for (int i = 2, n = idx[j]; i < n; i += 5) {
+						vertices[i] = floatTint;
+					}					
+				}
 			}
 		}
 	}
@@ -281,6 +351,7 @@ public class BitmapFontCache {
 			if (glyphIndices != null) glyphIndices[i].clear();
 			idx[i] = 0;
 		}
+		colorChunks.clear();
 	}
 
 	/** Counts the actual glyphs excluding characters used to markup the text. */
@@ -369,6 +440,7 @@ public class BitmapFontCache {
 							Color.rgba8888ToColor(hexColor, colorInt);
 						}
 						this.color = hexColor.toFloatBits();
+						addColorChunk(this.color);
 						return i - start;
 					}
 					if (ch >= '0' && ch <= '9')
@@ -386,7 +458,7 @@ public class BitmapFontCache {
 				for (int i = start; i < end; i++) {
 					char ch = str.charAt(i);
 					if (ch == ']') {
-						if (colorBuffer.length() == 0) {
+						if (colorBuffer.length() == 0) { // end tag []
 							this.color = previousColor;
 						} else {
 							String colorString = colorBuffer.toString();
@@ -395,6 +467,7 @@ public class BitmapFontCache {
 							this.previousColor = this.color;
 							this.color = newColor.toFloatBits();
 						}
+						addColorChunk(this.color);
 						return i - start;
 					} else {
 						colorBuffer.append(ch);
@@ -405,11 +478,23 @@ public class BitmapFontCache {
 		throw new GdxRuntimeException("Unclosed color tag");
 	}
 
+	private void addColorChunk(float color) {
+		if (colorChunks.size > 0) {
+			colorChunks.peek().endIndex = (glyphIndices != null? glyphCount : this.idx[0] / 20);
+		}
+		colorChunks.add(new ColorChunk(color));
+	}
+
+	private boolean textChanged;
+
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
 		BitmapFontData data = font.data;
+		textChanged = start < end;
+		if (font.markupEnabled && colorChunks.size == 0)
+			colorChunks.add(new ColorChunk(this.color));
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
 				char ch = str.charAt(start++);
@@ -757,5 +842,15 @@ public class BitmapFontCache {
 
 	public float[] getVertices (int page) {
 		return vertexData[page];
+	}
+	
+	private static class ColorChunk {
+		float color;
+		int endIndex;
+
+		ColorChunk (float color) {
+			this.color = color;
+			this.endIndex = Integer.MAX_VALUE;
+		}
 	}
 }
