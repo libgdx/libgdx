@@ -47,7 +47,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
-		final Color batchColor = spriteBatch.getColor();
+		final Color batchColor = batch.getColor();
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
 		final int layerWidth = layer.getWidth();
@@ -155,7 +155,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 						vertices[V4] = tempV;
 						break;
 					}
-					spriteBatch.draw(region.getTexture(), vertices, 0, 20);
+					batch.draw(region.getTexture(), vertices, 0, 20);
 				}
 			}
 		}

@@ -34,7 +34,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	protected float unitScale;
 
-	protected Batch spriteBatch;
+	protected Batch batch;
 
 	protected Rectangle viewBounds;
 
@@ -53,9 +53,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public float getUnitScale () {
 		return unitScale;
 	}
-
-	public Batch getSpriteBatch () {
-		return spriteBatch;
+	
+	public Batch getBatch() {
+		return batch;
 	}
 
 	public Rectangle getViewBounds () {
@@ -70,7 +70,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		this.map = map;
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
-		this.spriteBatch = new SpriteBatch();
+		this.batch = new SpriteBatch();
 		this.ownsSpriteBatch = true;
 	}
 
@@ -82,13 +82,13 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		this.map = map;
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
-		this.spriteBatch = batch;
+		this.batch = batch;
 		this.ownsSpriteBatch = false;
 	}
 
 	@Override
 	public void setView (OrthographicCamera camera) {
-		spriteBatch.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
 		float width = camera.viewportWidth * camera.zoom;
 		float height = camera.viewportHeight * camera.zoom;
 		viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
@@ -96,7 +96,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	@Override
 	public void setView (Matrix4 projection, float x, float y, float width, float height) {
-		spriteBatch.setProjectionMatrix(projection);
+		batch.setProjectionMatrix(projection);
 		viewBounds.set(x, y, width, height);
 	}
 
@@ -138,18 +138,18 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	/** Called before the rendering of all layers starts. */
 	protected void beginRender () {
 		AnimatedTiledMapTile.updateAnimationBaseTime();
-		spriteBatch.begin();
+		batch.begin();
 	}
 
 	/** Called after the rendering of all layers ended. */
 	protected void endRender () {
-		spriteBatch.end();
+		batch.end();
 	}
 
 	@Override
 	public void dispose () {
 		if (ownsSpriteBatch) {
-			spriteBatch.dispose();
+			batch.dispose();
 		}
 	}
 }
