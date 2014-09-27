@@ -216,18 +216,15 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
-					if (ex3.getMessage().contains("Pixel format not accelerated")) {
-						if (!softwareMode && config.allowSoftwareMode) {
-							softwareMode = true;
-							System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
-							createDisplayPixelFormat();
-							return;
-						}
-						String glInfo = glInfo();
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver"
-							+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
+					if (!softwareMode && config.allowSoftwareMode) {
+						softwareMode = true;
+						System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
+						createDisplayPixelFormat();
+						return;
 					}
-					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
+					String glInfo = glInfo();
+					throw new GdxRuntimeException("OpenGL is not supported by the video driver"
+						+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
 				}
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
