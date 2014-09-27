@@ -31,7 +31,8 @@ import com.badlogic.gdx.utils.StringBuilder;
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
  * @author Nathan Sweet
- * @author Matthias Mann */
+ * @author Matthias Mann
+ * @author davebaol */
 public class BitmapFontCache {
 
 	private final BitmapFont font;
@@ -57,6 +58,11 @@ public class BitmapFontCache {
 	/** An array for each page containing an entry for each glyph from that page, where the entry is the index of the character in
 	 * the full text being cached. */
 	private IntArray[] glyphIndices;
+
+	private boolean textChanged;
+	private float oldTint = 0;
+	private final Color currentChunkColor = new Color();
+	private int currentChunkEndIndex = 0;
 
 	public BitmapFontCache (BitmapFont font) {
 		this(font, font.usesIntegerPositions());
@@ -115,10 +121,6 @@ public class BitmapFontCache {
 			}
 		}
 	}
-
-	private float oldTint = 0;
-	private final Color currentChunkColor = new Color();
-	private int currentChunkEndIndex = 0;
 
 	private Color setColor (Color color, float floatColor) {
 		int intBits = NumberUtils.floatToIntColor(floatColor);
@@ -484,8 +486,6 @@ public class BitmapFontCache {
 		}
 		colorChunks.add(new ColorChunk(color));
 	}
-
-	private boolean textChanged;
 
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
