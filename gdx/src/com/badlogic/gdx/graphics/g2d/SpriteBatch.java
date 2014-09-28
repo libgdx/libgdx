@@ -36,10 +36,11 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class SpriteBatch implements Batch {
 	private Mesh mesh;
 
-	private final float[] vertices;
-	private int idx = 0;
-	private Texture lastTexture = null;
-	private float invTexWidth = 0, invTexHeight = 0;
+	final float[] vertices;
+	int idx = 0;
+	Texture lastTexture = null;
+	float invTexWidth = 0, invTexHeight = 0;
+
 	private boolean drawing = false;
 
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -980,7 +981,7 @@ public class SpriteBatch implements Batch {
 		}
 	}
 
-	private void switchTexture (Texture texture) {
+	protected void switchTexture (Texture texture) {
 		flush();
 		lastTexture = texture;
 		invTexWidth = 1.0f / texture.getWidth();

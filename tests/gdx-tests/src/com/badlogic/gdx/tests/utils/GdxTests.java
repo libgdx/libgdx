@@ -96,6 +96,7 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		CpuSpriteBatchTest.class,
 		ContainerTest.class,
 		CullTest.class,
 		DelaunayTriangulatorTest.class,
