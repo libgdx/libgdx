@@ -413,6 +413,7 @@ public class CpuSpriteBatch extends SpriteBatch {
 
 		int copyCount = Math.min(vertices.length - idx, count);
 		do {
+			count -= copyCount;
 			while (copyCount > 0) {
 				float x = spriteVertices[offset];
 				float y = spriteVertices[offset + 1];
@@ -428,7 +429,6 @@ public class CpuSpriteBatch extends SpriteBatch {
 				copyCount -= Sprite.VERTEX_SIZE;
 			}
 
-			count -= copyCount;
 			if (count > 0) {
 				super.flush();
 				copyCount = Math.min(vertices.length, count);
