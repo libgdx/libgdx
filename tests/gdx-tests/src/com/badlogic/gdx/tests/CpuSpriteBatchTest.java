@@ -105,7 +105,8 @@ public class CpuSpriteBatchTest extends GdxTest {
 			}
 		};
 		group.addActor(main);
-		group.addActor(hat);
+		group.addActor(hat) ;
+		// group.setTransform(false);
 
 		float margin = 35;
 		float x = MathUtils.random(margin, stage.getWidth() - margin);
