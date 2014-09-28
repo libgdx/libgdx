@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.onepf.oms.OpenIabHelper;
 import org.onepf.oms.SkuManager;
 import org.onepf.oms.appstore.googleUtils.IabHelper;
@@ -33,29 +31,15 @@ import org.onepf.oms.appstore.googleUtils.Purchase;
 import org.onepf.oms.appstore.googleUtils.SkuDetails;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
-import com.amazon.inapp.purchasing.PurchaseResponse;
-import com.android.vending.billing.IInAppBillingService;
 import com.badlogic.gdx.pay.Offer;
 import com.badlogic.gdx.pay.OfferType;
-import com.badlogic.gdx.pay.PurchaseManagerConfig;
-import com.badlogic.gdx.pay.Transaction;
-import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.PurchaseObserver;
+import com.badlogic.gdx.pay.Transaction;
 
 /** The purchase manager implementation for Android via <a href="http://www.onepf.org/openiab">OpenIAB</a>. Supported stores
  * include:
@@ -285,7 +269,7 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager {
 	}
 
 	@Override
-	public void purchase (final String identifier, final PurchaseListener listener) {
+	public void purchase (final String identifier) {
 		String payload = null;
 
 		// make a purchase
@@ -295,13 +279,13 @@ public class PurchaseManagerAndroidOpenIAB implements PurchaseManager {
 				public void onIabPurchaseFinished (IabResult result, Purchase purchase) {
 					if (result.isFailure()) {
 						// the purchase has failed
-						listener.handlePurchaseError(new RuntimeException(result.toString()));
+						observer.handlePurchaseError(new RuntimeException(result.toString()));
 					} else {
 						// parse transaction data
 						Transaction transaction = transaction(purchase);
 
 						// forward result to listener
-						listener.handlePurchase(transaction);
+						observer.handlePurchase(transaction);
 
 						// if the listener doesn't throw an error, we consume as needed
 						Offer offer = config.getOffer(purchase.getSku());

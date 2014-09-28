@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.pay.ios.apple;
 
-import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.PurchaseObserver;
@@ -50,7 +49,7 @@ public class PurchaseManageriOSApple implements PurchaseManager {
 	}
 
 	@Override
-	public void purchase (String identifier, PurchaseListener listener) {
+	public void purchase (String identifier) {
 		// TODO Auto-generated method stub
 
 	}
