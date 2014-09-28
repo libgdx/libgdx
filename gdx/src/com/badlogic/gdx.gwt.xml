@@ -87,6 +87,7 @@
 		<include name="graphics/g2d/Batch.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
+		<include name="graphics/g2d/CpuSpriteBatch.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
 		<include name="graphics/g2d/NinePatch.java"/>
 		<include name="graphics/g2d/ParticleEffect.java"/> <!-- Emulated: Not supporting save -->
@@ -101,7 +102,6 @@
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
 		<include name="graphics/g2d/SpriteCache.java"/>
-		<include name="graphics/g2d/SWSpriteBatch.java"/>
 		<include name="graphics/g2d/TextureAtlas.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
 		

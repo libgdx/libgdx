@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,14 +24,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** SWSpriteBatch behaves like SpriteBatch, except it doesn't flush automatically whenever the transformation matrix changes.
+/** CpuSpriteBatch behaves like SpriteBatch, except it doesn't flush automatically whenever the transformation matrix changes.
  * Instead, the vertices get adjusted on subsequent draws to match the running batch. This can improve performance through longer
  * batches, for example when drawing Groups with transform enabled.
- * 
+ *
  * @see SpriteBatch#renderCalls
  * @see com.badlogic.gdx.scenes.scene2d.Group#setTransform(boolean) Group.setTransform()
  * @author Valentin Milea */
-public class SWSpriteBatch extends SpriteBatch {
+public class CpuSpriteBatch extends SpriteBatch {
 
 	private final Matrix4 virtualMatrix = new Matrix4();
 	private final Affine2 adjustAffine = new Affine2();
@@ -42,21 +40,21 @@ public class SWSpriteBatch extends SpriteBatch {
 	private final FloatArray vertexBuffer = new FloatArray();
 	private final Affine2 tmpAffine = new Affine2();
 
-	/** Constructs a SWSpriteBatch with a size of 1000 and the default shader.
+	/** Constructs a CpuSpriteBatch with a size of 1000 and the default shader.
 	 * @see SpriteBatch#SpriteBatch() */
-	public SWSpriteBatch () {
+	public CpuSpriteBatch () {
 		this(1000);
 	}
 
-	/** Constructs a SWSpriteBatch with the default shader.
+	/** Constructs a CpuSpriteBatch with the default shader.
 	 * @see SpriteBatch#SpriteBatch(int) */
-	public SWSpriteBatch (int size) {
+	public CpuSpriteBatch (int size) {
 		this(size, null);
 	}
 
-	/** Constructs a SWSpriteBatch with a custom shader.
+	/** Constructs a CpuSpriteBatch with a custom shader.
 	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram) */
-	public SWSpriteBatch (int size, ShaderProgram defaultShader) {
+	public CpuSpriteBatch (int size, ShaderProgram defaultShader) {
 		super(size, defaultShader);
 		vertexBuffer.ensureCapacity(Sprite.SPRITE_SIZE);
 	}
@@ -65,10 +63,10 @@ public class SWSpriteBatch extends SpriteBatch {
 	public void flush () {
 		super.flush();
 
-		// done rendering, safe now to replace matrix
-		if (haveVirtualMatrix) {
-			super.setTransformMatrix(virtualMatrix);
+		if (haveVirtualMatrix && vertexBuffer.size == 0) {
+			// done rendering, safe now to replace matrix
 			haveVirtualMatrix = false;
+			super.setTransformMatrix(virtualMatrix);
 		}
 	}
 
@@ -86,7 +84,9 @@ public class SWSpriteBatch extends SpriteBatch {
 	 * </p> */
 	@Override
 	public void setTransformMatrix (Matrix4 transform) {
-		if (checkEqual(super.getTransformMatrix(), transform)) {
+		Matrix4 realMatrix = super.getTransformMatrix();
+
+		if (checkEqual(realMatrix, transform)) {
 			haveVirtualMatrix = false;
 		} else {
 			if (isDrawing()) {
@@ -96,11 +96,11 @@ public class SWSpriteBatch extends SpriteBatch {
 				// adjust = inverse(real) x virtual
 				// real x adjust x vertex = virtual x vertex
 
-				adjustAffine.set(super.getTransformMatrix()).inv();
+				adjustAffine.set(realMatrix).inv();
 				tmpAffine.set(transform);
 				adjustAffine.mul(tmpAffine);
 			} else {
-				super.setTransformMatrix(transform);
+				realMatrix.set(transform);
 			}
 		}
 	}
@@ -113,7 +113,9 @@ public class SWSpriteBatch extends SpriteBatch {
 	 * (identical to SpriteBatch) resumes.
 	 * </p> */
 	public void setTransformMatrix (Affine2 transform) {
-		if (checkEqual(super.getTransformMatrix(), transform)) {
+		Matrix4 realMatrix = super.getTransformMatrix();
+
+		if (checkEqual(realMatrix, transform)) {
 			haveVirtualMatrix = false;
 		} else {
 			virtualMatrix.set(transform);
@@ -124,9 +126,9 @@ public class SWSpriteBatch extends SpriteBatch {
 				// adjust = inverse(real) x virtual
 				// real x adjust x vertex = virtual x vertex
 
-				adjustAffine.set(super.getTransformMatrix()).inv().mul(transform);
+				adjustAffine.set(realMatrix).inv().mul(transform);
 			} else {
-				super.setTransformMatrix(virtualMatrix);
+				realMatrix.set(transform);
 			}
 		}
 	}
@@ -134,7 +136,6 @@ public class SWSpriteBatch extends SpriteBatch {
 	@Override
 	public void draw (Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, srcX, srcY, srcWidth, srcHeight,
 				flipX, flipY);
@@ -149,7 +150,6 @@ public class SWSpriteBatch extends SpriteBatch {
 	@Override
 	public void draw (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
 		int srcHeight, boolean flipX, boolean flipY) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, flipX, flipY);
 		} else {
@@ -161,7 +161,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y, srcX, srcY, srcWidth, srcHeight);
 		} else {
@@ -174,7 +173,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y, width, height, u, v, u2, v2);
 		} else {
@@ -186,7 +184,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (Texture texture, float x, float y) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y);
 		} else {
@@ -198,7 +195,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (Texture texture, float x, float y, float width, float height) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(texture, x, y, width, height);
 		} else {
@@ -210,7 +206,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (TextureRegion region, float x, float y) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(region, x, y);
 		} else {
@@ -222,7 +217,6 @@ public class SWSpriteBatch extends SpriteBatch {
 
 	@Override
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(region, x, y, width, height);
 		} else {
@@ -235,7 +229,6 @@ public class SWSpriteBatch extends SpriteBatch {
 	@Override
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation) {
-
 		if (!haveVirtualMatrix) {
 			super.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 		} else {
