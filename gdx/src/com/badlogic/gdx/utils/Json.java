@@ -50,6 +50,7 @@ public class Json {
 	private String typeName = "class";
 	private boolean usePrototypes = true;
 	private OutputType outputType;
+	private boolean quoteLongValues = false;
 	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
@@ -72,6 +73,11 @@ public class Json {
 
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
+	}
+
+	/** When true, quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP. */
+	public void setQuoteLongValues (boolean quoteLongValues) {
+		this.quoteLongValues = quoteLongValues;
 	}
 
 	public void addClassTag (String tag, Class type) {
@@ -220,6 +226,7 @@ public class Json {
 		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
 		this.writer = (JsonWriter)writer;
 		this.writer.setOutputType(outputType);
+		this.writer.setQuoteLongValues(quoteLongValues);
 	}
 
 	public JsonWriter getWriter () {

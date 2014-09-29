@@ -18,6 +18,8 @@ package com.badlogic.gdx.utils;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.regex.Pattern;
 
 /** Builder style API for emitting JSON.
@@ -28,6 +30,7 @@ public class JsonWriter extends Writer {
 	private JsonObject current;
 	private boolean named;
 	private OutputType outputType = OutputType.json;
+	private boolean quoteLongValues = false;
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
@@ -39,6 +42,11 @@ public class JsonWriter extends Writer {
 
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
+	}
+
+	/** When true, quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP. */
+	public void setQuoteLongValues (boolean quoteLongValues) {
+		this.quoteLongValues = quoteLongValues;
 	}
 
 	public JsonWriter name (String name) throws IOException {
@@ -86,7 +94,10 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
-		if (value instanceof Number) {
+		// quote long values; convert integer Doubles to Long
+		if (quoteLongValues && (value instanceof Long || value instanceof BigDecimal || value instanceof BigInteger)) {
+			value = String.valueOf(value);
+		} else if (value instanceof Number) {
 			Number number = (Number)value;
 			long longValue = number.longValue();
 			if (number.doubleValue() == longValue) value = longValue;
