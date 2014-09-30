@@ -1199,6 +1199,4 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (chars[i] != chars2[i]) return false;
 		return true;
 	}
-	
-	
 }
