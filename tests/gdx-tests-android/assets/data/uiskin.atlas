@@ -37,9 +37,9 @@ cursor
 default
   rotate: false
   xy: 1, 50
-  size: 253, 77
+  size: 254, 77
   orig: 254, 77
-  offset: 1, 0
+  offset: 0, 0
   index: -1
 default-pane
   rotate: false
@@ -59,7 +59,7 @@ default-rect-pad
   index: -1
 default-pane-noborder
   rotate: false
-  xy: 129, 33
+  xy: 170, 44
   size: 1, 1
   split: 0, 0, 0, 0
   orig: 1, 1
@@ -172,7 +172,7 @@ default-window
   index: -1
 selection
   rotate: false
-  xy: 170, 44
+  xy: 174, 48
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
@@ -193,8 +193,8 @@ tree-plus
   index: -1
 white
   rotate: false
-  xy: 174, 48
-  size: 1, 1
-  orig: 1, 1
+  xy: 129, 31
+  size: 3, 3
+  orig: 3, 3
   offset: 0, 0
   index: -1
