@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
@@ -57,13 +56,14 @@ public class BitmapFontTest extends GdxTest {
 		stage = new Stage();
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		
+
 		BitmapFont labelFont = skin.get("default-font", BitmapFont.class);
 		labelFont.setMarkupEnabled(true);
 
-		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations (they are silently ignored).
+		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations.
+		// They are silently ignored, as expected.
 		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[GREEN]t[OLIVE]ic[]o[]l[]o[]r[]*[MAROON]Label[][]>>", skin);
-		
+
 		label.setPosition(200, 200);
 		stage.addActor(label);
 
@@ -146,7 +146,7 @@ public class BitmapFontTest extends GdxTest {
 		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
-		
+
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}

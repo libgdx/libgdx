@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
@@ -47,8 +46,9 @@ public class BitmapFontCache {
 			return new ColorChunk();
 		}
 	};
+
 	private Array<ColorChunk> colorChunks;
-	
+
 	private int[] idx;
 	/** Used internally to ensure a correct capacity for multi-page font vertex data. */
 	private int[] tmpGlyphCount;
@@ -138,14 +138,12 @@ public class BitmapFontCache {
 		return color;
 	}
 
-	private int updateCurrentChunk(int lastChunkIndex, Color tint) {
+	private int updateCurrentChunk (int lastChunkIndex, Color tint) {
 		lastChunkIndex++;
 		if (colorChunks.size <= lastChunkIndex) {
-			if (colorChunks.size <= 0)
-				currentChunkColor.set(tint);
+			if (colorChunks.size <= 0) currentChunkColor.set(tint);
 			currentChunkEndIndex = Integer.MAX_VALUE;
-		}
-		else {
+		} else {
 			ColorChunk cc = colorChunks.get(lastChunkIndex);
 			if (currentChunkEndIndex == cc.endIndex)
 				lastChunkIndex = updateCurrentChunk(lastChunkIndex, tint);
@@ -166,7 +164,7 @@ public class BitmapFontCache {
 			if (font.markupEnabled) {
 				int lastChunkIndex = updateCurrentChunk(-1, tint);
 				float color = currentChunkColor.toFloatBits();
-				int ci = 0;  // character index
+				int ci = 0; // character index
 				for (int j = 0, length = vertexData.length; j < length; j++) {
 					float[] vertices = vertexData[j];
 					for (int i = 2, n = idx[j]; i < n; i += 5) {
@@ -177,15 +175,14 @@ public class BitmapFontCache {
 							}
 						}
 						vertices[i] = color;
-					}					
+					}
 				}
-			}
-			else {
+			} else {
 				for (int j = 0, length = vertexData.length; j < length; j++) {
 					float[] vertices = vertexData[j];
 					for (int i = 2, n = idx[j]; i < n; i += 5) {
 						vertices[i] = floatTint;
-					}					
+					}
 				}
 			}
 		}
@@ -520,8 +517,7 @@ public class BitmapFontCache {
 		Glyph lastGlyph = null;
 		BitmapFontData data = font.data;
 		textChanged = start < end;
-		if (font.markupEnabled && colorChunks.size == 0)
-			colorChunks.add(obtainColorChunk(this.color, -1));
+		if (font.markupEnabled && colorChunks.size == 0) colorChunks.add(obtainColorChunk(this.color, -1));
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
 				char ch = str.charAt(start++);
@@ -870,11 +866,11 @@ public class BitmapFontCache {
 	public float[] getVertices (int page) {
 		return vertexData[page];
 	}
-	
+
 	private static class ColorChunk implements Poolable {
 		float color;
 		int endIndex;
-		int popIndex;  // needed to emulate the color stack
+		int popIndex; // needed to emulate the color stack
 
 		ColorChunk () {
 			this.endIndex = Integer.MAX_VALUE;
