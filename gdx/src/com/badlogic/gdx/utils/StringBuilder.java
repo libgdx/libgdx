@@ -759,22 +759,23 @@ public class StringBuilder implements Appendable, CharSequence {
 			append0('-');
 			value = -value;
 		}
+		final int numChars = numChars(value, 10);
 		if (minLength > 1) {
-			for (int j = minLength - numChars(value, 10); j > 0; --j)
-				append(prefix);
+			for (int j = minLength - numChars; j > 0; --j)
+				append0(prefix);
 		}
-		if (value >= 10000) {
-			if (value >= 1000000000) append0(digits[(int)((long)value % 10000000000L / 1000000000L)]);
-			if (value >= 100000000) append0(digits[value % 1000000000 / 100000000]);
-			if (value >= 10000000) append0(digits[value % 100000000 / 10000000]);
-			if (value >= 1000000) append0(digits[value % 10000000 / 1000000]);
-			if (value >= 100000) append0(digits[value % 1000000 / 100000]);
-			append0(digits[value % 100000 / 10000]);
+		switch(numChars) {
+		case 10: append0(digits[(int)((long)value % 10000000000L / 1000000000L)]);
+		case 9: append0(digits[value % 1000000000 / 100000000]);
+		case 8: append0(digits[value % 100000000 / 10000000]);
+		case 7: append0(digits[value % 10000000 / 1000000]);
+		case 6: append0(digits[value % 1000000 / 100000]);
+		case 5: append0(digits[value % 100000 / 10000]);
+		case 4: append0(digits[value % 10000 / 1000]);
+		case 3: append0(digits[value % 1000 / 100]);
+		case 2: append0(digits[value % 100 / 10]);
+		case 1: append0(digits[value % 10]);
 		}
-		if (value >= 1000) append0(digits[value % 10000 / 1000]);
-		if (value >= 100) append0(digits[value % 1000 / 100]);
-		if (value >= 10) append0(digits[value % 100 / 10]);
-		append0(digits[value % 10]);
 		return this;
 	}
 
@@ -813,31 +814,32 @@ public class StringBuilder implements Appendable, CharSequence {
 			append0('-');
 			value = -value;
 		}
+		final int numChars = numChars(value, 10);
 		if (minLength > 1) {
-			for (int j = minLength - numChars(value, 10); j > 0; --j)
-				append(prefix);
+			for (int j = minLength - numChars; j > 0; --j)
+				append0(prefix);
 		}
-		if (value >= 10000) {
-			if (value >= 1000000000000000000L) append0(digits[(int)(value % 10000000000000000000D / 1000000000000000000L)]);
-			if (value >= 100000000000000000L) append0(digits[(int)(value % 1000000000000000000L / 100000000000000000L)]);
-			if (value >= 10000000000000000L) append0(digits[(int)(value % 100000000000000000L / 10000000000000000L)]);
-			if (value >= 1000000000000000L) append0(digits[(int)(value % 10000000000000000L / 1000000000000000L)]);
-			if (value >= 100000000000000L) append0(digits[(int)(value % 1000000000000000L / 100000000000000L)]);
-			if (value >= 10000000000000L) append0(digits[(int)(value % 100000000000000L / 10000000000000L)]);
-			if (value >= 1000000000000L) append0(digits[(int)(value % 10000000000000L / 1000000000000L)]);
-			if (value >= 100000000000L) append0(digits[(int)(value % 1000000000000L / 100000000000L)]);
-			if (value >= 10000000000L) append0(digits[(int)(value % 100000000000L / 10000000000L)]);
-			if (value >= 1000000000L) append0(digits[(int)(value % 10000000000L / 1000000000L)]);
-			if (value >= 100000000L) append0(digits[(int)(value % 1000000000L / 100000000L)]);
-			if (value >= 10000000L) append0(digits[(int)(value % 100000000L / 10000000L)]);
-			if (value >= 1000000L) append0(digits[(int)(value % 10000000L / 1000000L)]);
-			if (value >= 100000L) append0(digits[(int)(value % 1000000L / 100000L)]);
-			append0(digits[(int)(value % 100000L / 10000L)]);
+		switch(numChars) {
+		case 19: append0(digits[(int)(value % 10000000000000000000D / 1000000000000000000L)]);
+		case 18: append0(digits[(int)(value % 1000000000000000000L / 100000000000000000L)]);
+		case 17: append0(digits[(int)(value % 100000000000000000L / 10000000000000000L)]);
+		case 16: append0(digits[(int)(value % 10000000000000000L / 1000000000000000L)]);
+		case 15: append0(digits[(int)(value % 1000000000000000L / 100000000000000L)]);
+		case 14: append0(digits[(int)(value % 100000000000000L / 10000000000000L)]);
+		case 13: append0(digits[(int)(value % 10000000000000L / 1000000000000L)]);
+		case 12: append0(digits[(int)(value % 1000000000000L / 100000000000L)]);
+		case 11: append0(digits[(int)(value % 100000000000L / 10000000000L)]);
+		case 10: append0(digits[(int)(value % 10000000000L / 1000000000L)]);
+		case 9: append0(digits[(int)(value % 1000000000L / 100000000L)]);
+		case 8: append0(digits[(int)(value % 100000000L / 10000000L)]);
+		case 7: append0(digits[(int)(value % 10000000L / 1000000L)]);
+		case 6: append0(digits[(int)(value % 1000000L / 100000L)]);
+		case 5: append0(digits[(int)(value % 100000L / 10000L)]);
+		case 4: append0(digits[(int)(value % 10000L / 1000L)]);
+		case 3: append0(digits[(int)(value % 1000L / 100L)]);
+		case 2: append0(digits[(int)(value % 100L / 10L)]);
+		case 1: append0(digits[(int)(value % 10L)]);
 		}
-		if (value >= 1000L) append0(digits[(int)(value % 10000L / 1000L)]);
-		if (value >= 100L) append0(digits[(int)(value % 1000L / 100L)]);
-		if (value >= 10L) append0(digits[(int)(value % 100L / 10L)]);
-		append0(digits[(int)(value % 10L)]);
 		return this;
 	}
 
@@ -1197,4 +1199,6 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (chars[i] != chars2[i]) return false;
 		return true;
 	}
+	
+	
 }
