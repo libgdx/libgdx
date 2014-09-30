@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
@@ -40,6 +42,11 @@ public class BitmapFontCache {
 
 	private float[][] vertexData;
 
+	private static final Pool<ColorChunk> colorChunkPool = new Pool<ColorChunk>(32) {
+		protected ColorChunk newObject () {
+			return new ColorChunk();
+		}
+	};
 	private Array<ColorChunk> colorChunks;
 	
 	private int[] idx;
@@ -353,7 +360,13 @@ public class BitmapFontCache {
 			if (glyphIndices != null) glyphIndices[i].clear();
 			idx[i] = 0;
 		}
-		colorChunks.clear();
+
+		// Remove all the color chunks from the list and releases them to the internal pool
+		for (int i = 0; i < colorChunks.size; i++) {
+			colorChunkPool.free(colorChunks.get(i));
+			colorChunks.set(i, null);
+		}
+		colorChunks.size = 0;
 	}
 
 	/** Counts the actual glyphs excluding characters used to markup the text. */
@@ -490,7 +503,15 @@ public class BitmapFontCache {
 			else
 				popIndex = colorChunks.size - 1;
 		}
-		colorChunks.add(new ColorChunk(color, popIndex));
+		colorChunks.add(obtainColorChunk(color, popIndex));
+	}
+
+	private ColorChunk obtainColorChunk (float color, int popIndex) {
+		// Get a color chunk from the pool
+		ColorChunk colorChunk = colorChunkPool.obtain();
+		colorChunk.color = color;
+		colorChunk.popIndex = popIndex;
+		return colorChunk;
 	}
 
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
@@ -500,7 +521,7 @@ public class BitmapFontCache {
 		BitmapFontData data = font.data;
 		textChanged = start < end;
 		if (font.markupEnabled && colorChunks.size == 0)
-			colorChunks.add(new ColorChunk(this.color, -1));
+			colorChunks.add(obtainColorChunk(this.color, -1));
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
 				char ch = str.charAt(start++);
@@ -850,15 +871,26 @@ public class BitmapFontCache {
 		return vertexData[page];
 	}
 	
-	private static class ColorChunk {
+	private static class ColorChunk implements Poolable {
 		float color;
 		int endIndex;
 		int popIndex;  // needed to emulate the color stack
+
+		ColorChunk () {
+			this.endIndex = Integer.MAX_VALUE;
+		}
 
 		ColorChunk (float color, int popIndex) {
 			this.color = color;
 			this.endIndex = Integer.MAX_VALUE;
 			this.popIndex = popIndex;
+		}
+
+		@Override
+		public void reset () {
+			this.color = 0f;
+			this.endIndex = Integer.MAX_VALUE;
+			this.popIndex = 0;
 		}
 	}
 }
