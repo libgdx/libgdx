@@ -774,8 +774,7 @@ final public class LwjglInput implements Input {
 		if (button == 0) return Buttons.LEFT;
 		if (button == 1) return Buttons.RIGHT;
 		if (button == 2) return Buttons.MIDDLE;
-		return Buttons.LEFT;
-
+		return -1;
 	}
 
 	void updateTime () {
@@ -793,11 +792,13 @@ final public class LwjglInput implements Input {
 				int x = Mouse.getEventX();
 				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
 				int button = Mouse.getEventButton();
+				int gdxButton = toGdxButton(button);
+				if (button != -1 && gdxButton == -1) continue; // Ignore unknown button. 
 
 				TouchEvent event = usedTouchEvents.obtain();
 				event.x = x;
 				event.y = y;
-				event.button = toGdxButton(button);
+				event.button = gdxButton;
 				event.pointer = 0;
 				event.timeStamp = Mouse.getEventNanoseconds();
 
