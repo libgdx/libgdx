@@ -88,6 +88,8 @@ public class TexturePacker {
 	}
 
 	public void pack (File outputDir, String packFileName) {
+		if (packFileName.endsWith(settings.atlasExtension))
+			packFileName = packFileName.substring(packFileName.length() - settings.atlasExtension.length());
 		outputDir.mkdirs();
 
 		for (int i = 0, n = settings.scale.length; i < n; i++) {
@@ -102,13 +104,9 @@ public class TexturePacker {
 			Array<Page> pages = packer.pack(imageProcessor.getImages());
 
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
-			File packFile = new File(outputDir, scaledPackFileName);
-			File packDir = packFile.getParentFile();
-			packDir.mkdirs();
-
-			writeImages(packFile, pages);
+			writeImages(outputDir, scaledPackFileName, pages);
 			try {
-				writePackFile(packFile, pages);
+				writePackFile(outputDir, scaledPackFileName, pages);
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing pack file.", ex);
 			}
@@ -116,11 +114,10 @@ public class TexturePacker {
 		}
 	}
 
-	private void writeImages (File packFile, Array<Page> pages) {
-		File packDir = packFile.getParentFile();
-		String imageName = packFile.getName();
-		int dotIndex = imageName.lastIndexOf('.');
-		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
+	private void writeImages (File outputDir, String scaledPackFileName, Array<Page> pages) {
+		File packFileNoExt = new File(outputDir, scaledPackFileName);
+		File packDir = packFileNoExt.getParentFile();
+		String imageName = packFileNoExt.getName();
 
 		int fileIndex = 0;
 		for (Page page : pages) {
@@ -278,7 +275,11 @@ public class TexturePacker {
 		}
 	}
 
-	private void writePackFile (File packFile, Array<Page> pages) throws IOException {
+	private void writePackFile (File outputDir, String scaledPackFileName, Array<Page> pages) throws IOException {
+		File packFile = new File(outputDir, scaledPackFileName + settings.atlasExtension);
+		File packDir = packFile.getParentFile();
+		packDir.mkdirs();
+
 		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
@@ -537,6 +538,7 @@ public class TexturePacker {
 		public boolean grid;
 		public float[] scale = {1};
 		public String[] scaleSuffix = {""};
+		public String atlasExtension = ".atlas";
 
 		public Settings () {
 		}
@@ -578,13 +580,6 @@ public class TexturePacker {
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
-			String extension = "";
-			int dotIndex = packFileName.lastIndexOf('.');
-			if (dotIndex != -1) {
-				extension = packFileName.substring(dotIndex);
-				packFileName = packFileName.substring(0, dotIndex);
-			}
-
 			// Use suffix if not empty string.
 			if (scaleSuffix[scaleIndex].length() > 0)
 				packFileName += scaleSuffix[scaleIndex];
@@ -596,10 +591,6 @@ public class TexturePacker {
 						+ "/" + packFileName;
 				}
 			}
-
-			packFileName += extension;
-			if (packFileName.indexOf('.') == -1 || packFileName.endsWith(".png") || packFileName.endsWith(".jpg"))
-				packFileName += ".atlas";
 			return packFileName;
 		}
 	}
