@@ -61,7 +61,9 @@ public class BitmapFontTest extends GdxTest {
 		BitmapFont labelFont = skin.get("default-font", BitmapFont.class);
 		labelFont.setMarkupEnabled(true);
 
-		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[BLACK]t[ORANGE]i[GREEN]c[MAGENTA]o[PINK]l[OLIVE]o[PERU]r[][MAROON]*Label[]>>", skin);
+		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations (they are silently ignored).
+		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[GREEN]t[OLIVE]ic[]o[]l[]o[]r[]*[MAROON]Label[][]>>", skin);
+		
 		label.setPosition(200, 200);
 		stage.addActor(label);
 

@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
@@ -47,7 +48,6 @@ public class BitmapFontCache {
 
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
-	private float previousColor = color;
 	private final Color tempColor = new Color(1, 1, 1, 1);
 	private final Color hexColor = new Color();
 	private final StringBuilder colorBuffer = new StringBuilder();
@@ -434,7 +434,6 @@ public class BitmapFontCache {
 					if (ch == ']') {
 						if (i < start + 2 || i > start + 9)
 							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits");
-						this.previousColor = this.color;
 						if (i <= start + 7) { // RRGGBB
 							Color.rgb888ToColor(hexColor, colorInt);
 							hexColor.a = 1f;
@@ -442,7 +441,7 @@ public class BitmapFontCache {
 							Color.rgba8888ToColor(hexColor, colorInt);
 						}
 						this.color = hexColor.toFloatBits();
-						addColorChunk(this.color);
+						addColorChunk(this.color, false);
 						return i - start;
 					}
 					if (ch >= '0' && ch <= '9')
@@ -461,15 +460,16 @@ public class BitmapFontCache {
 					char ch = str.charAt(i);
 					if (ch == ']') {
 						if (colorBuffer.length() == 0) { // end tag []
-							this.color = previousColor;
+							int popIndex = Math.max(0, colorChunks.peek().popIndex);
+							this.color = colorChunks.get(popIndex).color;
+							addColorChunk(this.color, true);
 						} else {
 							String colorString = colorBuffer.toString();
 							Color newColor = Colors.get(colorString);
 							if (newColor == null) throw new GdxRuntimeException("Unknown color '" + colorString + "'");
-							this.previousColor = this.color;
 							this.color = newColor.toFloatBits();
+							addColorChunk(this.color, false);
 						}
-						addColorChunk(this.color);
 						return i - start;
 					} else {
 						colorBuffer.append(ch);
@@ -480,11 +480,17 @@ public class BitmapFontCache {
 		throw new GdxRuntimeException("Unclosed color tag");
 	}
 
-	private void addColorChunk(float color) {
+	private void addColorChunk (float color, boolean isPop) {
+		int popIndex = -1;
 		if (colorChunks.size > 0) {
-			colorChunks.peek().endIndex = (glyphIndices != null? glyphCount : this.idx[0] / 20);
+			ColorChunk last = colorChunks.peek();
+			last.endIndex = (glyphIndices != null ? glyphCount : this.idx[0] / 20);
+			if (isPop)
+				popIndex = colorChunks.get(Math.max(0, last.popIndex)).popIndex;
+			else
+				popIndex = colorChunks.size - 1;
 		}
-		colorChunks.add(new ColorChunk(color));
+		colorChunks.add(new ColorChunk(color, popIndex));
 	}
 
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
@@ -494,7 +500,7 @@ public class BitmapFontCache {
 		BitmapFontData data = font.data;
 		textChanged = start < end;
 		if (font.markupEnabled && colorChunks.size == 0)
-			colorChunks.add(new ColorChunk(this.color));
+			colorChunks.add(new ColorChunk(this.color, -1));
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
 				char ch = str.charAt(start++);
@@ -847,10 +853,12 @@ public class BitmapFontCache {
 	private static class ColorChunk {
 		float color;
 		int endIndex;
+		int popIndex;  // needed to emulate the color stack
 
-		ColorChunk (float color) {
+		ColorChunk (float color, int popIndex) {
 			this.color = color;
 			this.endIndex = Integer.MAX_VALUE;
+			this.popIndex = popIndex;
 		}
 	}
 }
