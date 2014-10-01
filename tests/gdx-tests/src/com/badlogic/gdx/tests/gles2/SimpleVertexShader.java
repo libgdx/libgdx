@@ -37,6 +37,7 @@ public class SimpleVertexShader extends GdxTest {
 
 	@Override
 	public void create () {
+		// @off
 		String vertexShader =
 			  "uniform mat4 u_mvpMatrix;                   \n"
 			+ "attribute vec4 a_position;                  \n"
@@ -52,6 +53,7 @@ public class SimpleVertexShader extends GdxTest {
 			+ "{                                            \n"
 			+ "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
 			+ "}";
+		// @on
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		mesh = Shapes.genCube();
