@@ -147,6 +147,8 @@ public class JniGenSharedLibraryLoader {
 	}
 
 	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
+		// File will be closed by caller with inputStream.close()
+		@SuppressWarnings("resource")
 		ZipFile file = new ZipFile(nativesJar);
 		ZipEntry entry = file.getEntry(sharedLibrary);
 		return file.getInputStream(entry);
