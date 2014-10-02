@@ -130,7 +130,6 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		if (button == 4) return Buttons.MIDDLE;
 		if (button == 8) return Buttons.BACK;
 		if (button == 16) return Buttons.FORWARD;
-		Gdx.app.log("AndroidMultiTouchHandler", "Unknown button:  " + button);
 		return -1;
 	}
 
