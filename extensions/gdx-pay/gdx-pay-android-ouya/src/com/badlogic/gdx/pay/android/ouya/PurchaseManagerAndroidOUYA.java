@@ -516,7 +516,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 		 * 
 		 * @param optionalData A Map of optional key/value pairs which provide additional information. */
 		@Override
-		public void onFailure (int arg0, String e, Bundle arg2) {
+		public void onFailure (int errorCode, String errorMessage, Bundle optionalData) {
 			// TODO: inform observer 
 			showMessage(LOGTYPEERROR, "PurchaseListener: onFailure :(");
 		}

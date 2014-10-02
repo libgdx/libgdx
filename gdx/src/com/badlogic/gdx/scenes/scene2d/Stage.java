@@ -476,8 +476,8 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageX(Integer.MIN_VALUE);
 		event.setStageY(Integer.MIN_VALUE);
 
-		// Cancel all current touch focuses except for the specified listener, allowing for concurrent modification, and never
-		// cancel the same focus twice.
+		// Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
+		// same focus twice.
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {

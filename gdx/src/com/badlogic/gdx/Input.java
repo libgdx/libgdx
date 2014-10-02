@@ -58,6 +58,8 @@ public interface Input {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
+		public static final int BACK = 3;
+		public static final int FORWARD = 4;
 	}
 
 	/** Keys.
@@ -717,7 +719,7 @@ public interface Input {
 	public void setCatchBackKey (boolean catchBack);
 
 	/** @return whether the back button is currently being caught */
-	public boolean isCatchBackKey();
+	public boolean isCatchBackKey ();
 
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.

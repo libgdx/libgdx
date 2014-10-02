@@ -47,15 +47,13 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				if (android.os.Build.VERSION.SDK_INT >= 14) {
-					button = toGdxButton(event.getButtonState());
-				}
-				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
+				if (android.os.Build.VERSION.SDK_INT >= 14) button = toGdxButton(event.getButtonState());
+				if (button != -1) postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
 				input.deltaY[realPointerIndex] = 0;
-				input.touched[realPointerIndex] = true;
+				input.touched[realPointerIndex] = (button != -1);
 				input.button[realPointerIndex] = button;
 				break;
 
@@ -70,12 +68,13 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
 				button = input.button[realPointerIndex];
-				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
+				if (button != -1) postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
 				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = false;
+				input.button[realPointerIndex] = 0;
 				break;
 
 			case MotionEvent.ACTION_MOVE:
@@ -89,7 +88,10 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					if (realPointerIndex == -1) continue;
 					if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
 					button = input.button[realPointerIndex];
-					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, button, timeStamp);
+					if (button != -1)
+						postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, button, timeStamp);
+					else
+						postTouchEvent(input, TouchEvent.TOUCH_MOVED, x, y, realPointerIndex, 0, timeStamp);
 					input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
 					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
 					input.touchX[realPointerIndex] = x;
@@ -123,10 +125,12 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	}
 
 	private int toGdxButton (int button) {
-		if (button == 1) return Buttons.LEFT;
+		if (button == 0 || button == 1) return Buttons.LEFT;
 		if (button == 2) return Buttons.RIGHT;
 		if (button == 4) return Buttons.MIDDLE;
-		return Buttons.LEFT;
+		if (button == 8) return Buttons.BACK;
+		if (button == 16) return Buttons.FORWARD;
+		return -1;
 	}
 
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, int button, long timeStamp) {
