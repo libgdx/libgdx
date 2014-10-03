@@ -81,7 +81,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	private static final int LOGTYPEERROR = 1;
 
 	/** Our Android activity. */
-	protected Activity activity;
+	Activity activity;
 
 	/** The registered observer. */
 	PurchaseObserver observer;
