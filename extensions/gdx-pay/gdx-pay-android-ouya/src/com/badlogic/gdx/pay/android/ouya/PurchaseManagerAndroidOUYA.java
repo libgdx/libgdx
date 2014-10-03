@@ -81,7 +81,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	private static final int LOGTYPEERROR = 1;
 
 	/** Our Android activity. */
-	Activity activity;
+	protected Activity activity;
 
 	/** The registered observer. */
 	PurchaseObserver observer;
@@ -89,23 +89,23 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	PurchaseManagerConfig config;
 
 	/** the ouya helper */
-	OuyaFacade ouyaFacade;
+	protected OuyaFacade ouyaFacade;
 
 	/** The OUYA cryptographic key for the application */
-	PublicKey ouyaPublicKey;
-	String applicationKeyPath;
-	List<Purchasable> productIDList; 	// --- This is the set of OUYA product IDs which our app knows about
-	final Map<String, Product> ouyaOutstandingPurchaseRequests = new HashMap<String, Product>();
-	ReceiptListener myOUYAreceiptListener = new ReceiptListener();
-	List<Receipt> mReceiptList; 		// the list of purchased items, sorted
-	ArrayList<Product> productList = new ArrayList<Product>();
-	Purchasable purchasable; 			// for a concrete purchase
-	Product OUYApurchaseProduct;
+	protected PublicKey ouyaPublicKey;
+	protected String applicationKeyPath;
+	protected List<Purchasable> productIDList; 	// --- This is the set of OUYA product IDs which our app knows about
+	protected final Map<String, Product> ouyaOutstandingPurchaseRequests = new HashMap<String, Product>();
+	protected ReceiptListener myOUYAreceiptListener = new ReceiptListener();
+	protected List<Receipt> mReceiptList; 		// the list of purchased items, sorted
+	protected ArrayList<Product> productList = new ArrayList<Product>();
+	protected Purchasable purchasable; 			// for a concrete purchase
+	protected Product OUYApurchaseProduct;
 //	com.badlogic.gdx.pay.PurchaseListener appPurchaseListener; // this is the listener from the app that will be informed after a purchase
 
 	// ------- for Toasts (debugging) -----
-	String toastText;
-	int duration;
+	protected String toastText;
+	protected int duration;
 
 	// --------------------------------------------------
 
@@ -189,7 +189,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	final static int requestOUYApurchase = 2;
 	final static int requestPurchaseRestore = 3;
 
-	final class HandlerExtension extends Handler {
+	protected final class HandlerExtension extends Handler {
 
 		@Override
 		public void handleMessage (Message msg) {
@@ -613,7 +613,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 		return "OUYA";
 	}
 
-	void showMessage (final int type, final String message) {
+	protected void showMessage (final int type, final String message) {
 		if (LOGDEBUG) {
 			if (type == LOGTYPELOG) Log.d(TAG, message);
 			if (type == LOGTYPEERROR) Log.e(TAG, message);
@@ -625,7 +625,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	}
 
 	// ---- saves the toast text and displays it
-	void showToast (String toastText) {
+	public void showToast (String toastText) {
 		this.duration = Toast.LENGTH_SHORT;
 		this.toastText = toastText;
 		handler.sendEmptyMessage(showToast);
