@@ -10,6 +10,7 @@
       <directory>../gdx-tests-android/assets</directory>
       <includes>
         <include>data/**</include>
+        <include>*.png</include>
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
