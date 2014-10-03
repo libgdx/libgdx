@@ -73,6 +73,10 @@ public class TextureAttribute extends Attribute {
 	public float offsetV = 0;
 	public float scaleU = 1;
 	public float scaleV = 1;
+	/** The index of the texture coordinate vertex attribute to use for this TextureAttribute. Whether this value is used, depends
+	 * on the shader and {@link Attribute#type} value. For basic (model specific) types (e.g. {@link #Diffuse}, {@link #Normal},
+	 * etc.), this value is usually ignored and the first texture coordinate vertex attribute is used. */
+	public int uvIndex = 0;
 
 	public TextureAttribute (final long type) {
 		super(type);
@@ -84,14 +88,20 @@ public class TextureAttribute extends Attribute {
 		this(type);
 		this.textureDescription.set(textureDescription);
 	}
-	
+
 	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float offsetU,
-		float offsetV, float scaleU, float scaleV) {
+		float offsetV, float scaleU, float scaleV, int uvIndex) {
 		this(type, textureDescription);
 		this.offsetU = offsetU;
 		this.offsetV = offsetV;
 		this.scaleU = scaleU;
 		this.scaleV = scaleV;
+		this.uvIndex = uvIndex;
+	}
+
+	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float offsetU,
+		float offsetV, float scaleU, float scaleV) {
+		this(type, textureDescription, offsetU, offsetV, scaleU, scaleV, 0);
 	}
 
 	public TextureAttribute (final long type, final Texture texture) {
@@ -105,7 +115,8 @@ public class TextureAttribute extends Attribute {
 	}
 
 	public TextureAttribute (final TextureAttribute copyFrom) {
-		this(copyFrom.type, copyFrom.textureDescription, copyFrom.offsetU, copyFrom.offsetV, copyFrom.scaleU, copyFrom.scaleV);
+		this(copyFrom.type, copyFrom.textureDescription, copyFrom.offsetU, copyFrom.offsetV, copyFrom.scaleU, copyFrom.scaleV,
+			copyFrom.uvIndex);
 	}
 
 	public void set (final TextureRegion region) {
@@ -129,6 +140,7 @@ public class TextureAttribute extends Attribute {
 		result = 991 * result + NumberUtils.floatToRawIntBits(offsetV);
 		result = 991 * result + NumberUtils.floatToRawIntBits(scaleU);
 		result = 991 * result + NumberUtils.floatToRawIntBits(scaleV);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvIndex);
 		return result;
 	}
 }
