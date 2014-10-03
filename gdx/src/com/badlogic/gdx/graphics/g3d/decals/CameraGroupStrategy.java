@@ -173,7 +173,6 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void afterGroups () {
 		shader.end();
-		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 

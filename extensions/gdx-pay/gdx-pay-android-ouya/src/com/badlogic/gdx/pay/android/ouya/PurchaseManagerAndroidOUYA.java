@@ -101,7 +101,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 	private ArrayList<Product> productList = new ArrayList<Product>();
 	private Purchasable purchasable; 			// for a concrete purchase
 	Product OUYApurchaseProduct;
-	com.badlogic.gdx.pay.PurchaseListener appPurchaseListener; // this is the listener from the app that will be informed after a purchase
+//	com.badlogic.gdx.pay.PurchaseListener appPurchaseListener; // this is the listener from the app that will be informed after a purchase
 
 	// ------- for Toasts (debugging) -----
 	public String toastText;
@@ -229,9 +229,8 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 
 	/** make a purchase */
 	@Override
-	public void purchase (String identifier, com.badlogic.gdx.pay.PurchaseListener listener) {
+	public void purchase (String identifier) {
 		// String payload = null;
-		this.appPurchaseListener = listener; // store the listener
 
 		OUYApurchaseProduct = getProduct(identifier);
 
@@ -241,18 +240,18 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 				handler.sendEmptyMessage(requestOUYApurchase);
 
 			} catch (UnsupportedEncodingException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				e.printStackTrace();
 			} catch (GeneralSecurityException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				e.printStackTrace();
 			} catch (JSONException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				e.printStackTrace();
 			}
 		} else {
 			showMessage(LOGTYPEERROR, "There has been a Problem with your Internet connection. Please try again later");
-			appPurchaseListener.handlePurchaseError(new RuntimeException(
+			observer.handlePurchaseError(new RuntimeException(
 				"There has been a Problem with your Internet connection. Please try again later"));
 		}
 	}
@@ -336,7 +335,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 
 		@Override
 		public void onCancel () {
-			// observer.handleRestoreError(new GdxRuntimeException("");
+//			observer.handlePurchaseCanceled();	 // this is minor relevant
 			showMessage(LOGTYPELOG, "receiptlistener: user canceled");
 		}
 
@@ -472,22 +471,22 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 					}
 				}
 			} catch (ParseException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				onFailure(OuyaErrorCodes.THROW_DURING_ON_SUCCESS, e.getMessage(), Bundle.EMPTY);
 			} catch (JSONException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				onFailure(OuyaErrorCodes.THROW_DURING_ON_SUCCESS, e.getMessage(), Bundle.EMPTY);
 				return;
 			} catch (IOException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				onFailure(OuyaErrorCodes.THROW_DURING_ON_SUCCESS, e.getMessage(), Bundle.EMPTY);
 				return;
 			} catch (GeneralSecurityException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				onFailure(OuyaErrorCodes.THROW_DURING_ON_SUCCESS, e.getMessage(), Bundle.EMPTY);
 				return;
 			} catch (java.text.ParseException e) {
-				appPurchaseListener.handlePurchaseError(e);
+				observer.handlePurchaseError(e);
 				e.printStackTrace();
 				return;
 			}
@@ -500,7 +499,7 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 				Transaction trans = convertPurchasedProductToTransaction(storedProduct);
 
 				// inform the listener
-				appPurchaseListener.handlePurchase(trans);
+				observer.handlePurchase(trans);
 			} else {
 				// appPurchaseListener.handlePurchaseError(e);
 				showMessage(LOGTYPEERROR, "PurchaseListener: storedProduct == null!");
@@ -517,12 +516,14 @@ public class PurchaseManagerAndroidOUYA implements PurchaseManager {
 		 * 
 		 * @param optionalData A Map of optional key/value pairs which provide additional information. */
 		@Override
-		public void onFailure (int arg0, String e, Bundle arg2) {
+		public void onFailure (int errorCode, String errorMessage, Bundle optionalData) {
+			// TODO: inform observer 
 			showMessage(LOGTYPEERROR, "PurchaseListener: onFailure :(");
 		}
 
 		@Override
 		public void onCancel () {
+			observer.handlePurchaseCanceled();
 			showMessage(LOGTYPELOG, "PurchaseListener: onCancel ...");
 		}
 	}

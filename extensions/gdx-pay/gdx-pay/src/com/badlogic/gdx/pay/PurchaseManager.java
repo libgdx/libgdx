@@ -68,11 +68,8 @@ public interface PurchaseManager {
 	/** Requests to purchase an item. The listener will always be called once the purchase has either completed or failed.
 	 * <p>
 	 * Note: a GDX runtime exception if throw if you have not registered a purchase observer.
-	 * @param identifier The item to purchase. 
-	 * @param listener The listener that will be called with the purchase information. If the listener finishes without throwing an
-	 *           exception the purchases is considered handled by the application. If the listener is (a) never called or (b) the
-	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.*/
-	public void purchase (String identifier, PurchaseListener listener);
+	 * @param identifier The item to purchase. */
+	public void purchase (String identifier);
 
 	/** Restores existing purchases. */
 	public void purchaseRestore ();

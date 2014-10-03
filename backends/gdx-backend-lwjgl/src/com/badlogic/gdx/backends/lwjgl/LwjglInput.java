@@ -37,6 +37,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntSet;
@@ -229,16 +230,16 @@ final public class LwjglInput implements Input {
 
 	public boolean isKeyPressed (int key) {
 		if (!Keyboard.isCreated()) return false;
-		
+
 		if (key == Input.Keys.ANY_KEY)
 			return pressedKeys > 0;
 		else
 			return Keyboard.isKeyDown(getLwjglKeyCode(key));
 	}
-	
+
 	@Override
 	public boolean isKeyJustPressed (int key) {
-		if(key == Input.Keys.ANY_KEY){
+		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
 		if (key < 0 || key > 255) {
@@ -288,7 +289,7 @@ final public class LwjglInput implements Input {
 	}
 
 	@Override
-	public boolean isCatchBackKey() {
+	public boolean isCatchBackKey () {
 		return false;
 	}
 
@@ -774,8 +775,9 @@ final public class LwjglInput implements Input {
 		if (button == 0) return Buttons.LEFT;
 		if (button == 1) return Buttons.RIGHT;
 		if (button == 2) return Buttons.MIDDLE;
-		return Buttons.LEFT;
-
+		if (button == 3) return Buttons.BACK;
+		if (button == 4) return Buttons.FORWARD;
+		return -1;
 	}
 
 	void updateTime () {
@@ -793,11 +795,13 @@ final public class LwjglInput implements Input {
 				int x = Mouse.getEventX();
 				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
 				int button = Mouse.getEventButton();
+				int gdxButton = toGdxButton(button);
+				if (button != -1 && gdxButton == -1) continue; // Ignore unknown button.
 
 				TouchEvent event = usedTouchEvents.obtain();
 				event.x = x;
 				event.y = y;
-				event.button = toGdxButton(button);
+				event.button = gdxButton;
 				event.pointer = 0;
 				event.timeStamp = Mouse.getEventNanoseconds();
 
@@ -941,6 +945,10 @@ final public class LwjglInput implements Input {
 			return 1;
 		case Buttons.MIDDLE:
 			return 2;
+		case Buttons.BACK:
+			return 3;
+		case Buttons.FORWARD:
+			return 4;
 		}
 		return 0;
 	}
@@ -1030,63 +1038,70 @@ final public class LwjglInput implements Input {
 		Mouse.setCursorPosition(x, Gdx.graphics.getHeight() - 1 - y);
 	}
 
-  @Override
-  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
-    try {
-      if (pixmap == null) {
-        Mouse.setNativeCursor (null);
-        return;
-      }
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+		try {
+			if (pixmap == null) {
+				Mouse.setNativeCursor(null);
+				return;
+			}
 
-      if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
-        throw new GdxRuntimeException ("Cursor image pixmap is not in RGBA8888 format.");
-      }
+			if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
+				throw new GdxRuntimeException("Cursor image pixmap is not in RGBA8888 format.");
+			}
 
-      if ((pixmap.getWidth() & (pixmap.getWidth() - 1)) != 0 ) {
-        throw new GdxRuntimeException ("Cursor image pixmap width of " + pixmap.getWidth() + " is not a power-of-two greater than zero.");
-      }
+			if ((pixmap.getWidth() & (pixmap.getWidth() - 1)) != 0) {
+				throw new GdxRuntimeException("Cursor image pixmap width of " + pixmap.getWidth()
+					+ " is not a power-of-two greater than zero.");
+			}
 
-      if ((pixmap.getHeight() & (pixmap.getHeight() - 1)) != 0 ) {
-        throw new GdxRuntimeException ("Cursor image pixmap height of " + pixmap.getHeight() + " is not a power-of-two greater than zero.");
-      }
+			if ((pixmap.getHeight() & (pixmap.getHeight() - 1)) != 0) {
+				throw new GdxRuntimeException("Cursor image pixmap height of " + pixmap.getHeight()
+					+ " is not a power-of-two greater than zero.");
+			}
 
-      if (xHotspot < 0 || xHotspot >= pixmap.getWidth()) {
-        throw new GdxRuntimeException ("xHotspot coordinate of " + xHotspot  + " is not within image width bounds: [0, " + pixmap.getWidth() + ").");
-      }
+			if (xHotspot < 0 || xHotspot >= pixmap.getWidth()) {
+				throw new GdxRuntimeException("xHotspot coordinate of " + xHotspot + " is not within image width bounds: [0, "
+					+ pixmap.getWidth() + ").");
+			}
 
-      if (yHotspot < 0 || yHotspot >= pixmap.getHeight()) {
-        throw new GdxRuntimeException ("yHotspot coordinate of " + yHotspot  + " is not within image height bounds: [0, " + pixmap.getHeight() + ").");
-      }
+			if (yHotspot < 0 || yHotspot >= pixmap.getHeight()) {
+				throw new GdxRuntimeException("yHotspot coordinate of " + yHotspot + " is not within image height bounds: [0, "
+					+ pixmap.getHeight() + ").");
+			}
 
-      // Convert from RGBA8888 to ARGB8888 and flip vertically
-      IntBuffer pixelBuffer = pixmap.getPixels().asIntBuffer();
-      int[] pixelsRGBA = new int[pixelBuffer.capacity()];
-      pixelBuffer.get(pixelsRGBA);
-      int[] pixelsARGBflipped = new int[pixelBuffer.capacity()];
-      int pixel;
-      if (pixelBuffer.order() == ByteOrder.BIG_ENDIAN) {
-        for (int y = 0; y < pixmap.getHeight(); ++y) {
-          for (int x = 0; x < pixmap.getWidth(); ++x) {
-            pixel = pixelsRGBA[x + (y * pixmap.getWidth())];
-            pixelsARGBflipped[x + ((pixmap.getHeight() - 1 - y) * pixmap.getWidth())] = ((pixel >> 8) & 0x00FFFFFF) | ((pixel << 24) & 0xFF000000);
-          }
-        }
-      } else {
-        for (int y = 0; y < pixmap.getHeight(); ++y) {
-          for (int x = 0; x < pixmap.getWidth(); ++x) {
-            pixel = pixelsRGBA[x + (y * pixmap.getWidth())];
-            pixelsARGBflipped[x + ((pixmap.getHeight() - 1 - y) * pixmap.getWidth())] = ((pixel & 0xFF) << 16) | ((pixel & 0xFF0000) >> 16) | (pixel & 0xFF00FF00);
-          }
-        }
-      }
+			// Convert from RGBA8888 to ARGB8888 and flip vertically
+			IntBuffer pixelBuffer = pixmap.getPixels().asIntBuffer();
+			int[] pixelsRGBA = new int[pixelBuffer.capacity()];
+			pixelBuffer.get(pixelsRGBA);
+			int[] pixelsARGBflipped = new int[pixelBuffer.capacity()];
+			int pixel;
+			if (pixelBuffer.order() == ByteOrder.BIG_ENDIAN) {
+				for (int y = 0; y < pixmap.getHeight(); ++y) {
+					for (int x = 0; x < pixmap.getWidth(); ++x) {
+						pixel = pixelsRGBA[x + (y * pixmap.getWidth())];
+						pixelsARGBflipped[x + ((pixmap.getHeight() - 1 - y) * pixmap.getWidth())] = ((pixel >> 8) & 0x00FFFFFF)
+							| ((pixel << 24) & 0xFF000000);
+					}
+				}
+			} else {
+				for (int y = 0; y < pixmap.getHeight(); ++y) {
+					for (int x = 0; x < pixmap.getWidth(); ++x) {
+						pixel = pixelsRGBA[x + (y * pixmap.getWidth())];
+						pixelsARGBflipped[x + ((pixmap.getHeight() - 1 - y) * pixmap.getWidth())] = ((pixel & 0xFF) << 16)
+							| ((pixel & 0xFF0000) >> 16) | (pixel & 0xFF00FF00);
+					}
+				}
+			}
 
-      Mouse.setNativeCursor(new Cursor(pixmap.getWidth(), pixmap.getHeight(), xHotspot, pixmap.getHeight() - yHotspot - 4, 1, IntBuffer.wrap(pixelsARGBflipped), null));
-    } catch (LWJGLException e) {
-      throw new GdxRuntimeException("Could not set cursor image.", e);
-    }
-  }
+			Mouse.setNativeCursor(new Cursor(pixmap.getWidth(), pixmap.getHeight(), xHotspot, pixmap.getHeight() - yHotspot - 4, 1,
+				IntBuffer.wrap(pixelsARGBflipped), null));
+		} catch (LWJGLException e) {
+			throw new GdxRuntimeException("Could not set cursor image.", e);
+		}
+	}
 
-  @Override
+	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
 

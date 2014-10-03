@@ -64,6 +64,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
 	static boolean debug;
+	static boolean actionsRequestRendering;
 
 	private Viewport viewport;
 	private final Batch batch;
@@ -218,7 +219,10 @@ public class Stage extends InputAdapter implements Disposable {
 		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
+		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		root.act(delta);
+		if (actionsRequestRendering && Actor.actionsChanged) Gdx.graphics.requestRendering();
+		Actor.actionsChanged = false;
 	}
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
@@ -472,8 +476,8 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageX(Integer.MIN_VALUE);
 		event.setStageY(Integer.MIN_VALUE);
 
-		// Cancel all current touch focuses except for the specified listener, allowing for concurrent modification, and never
-		// cancel the same focus twice.
+		// Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
+		// same focus twice.
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
@@ -789,6 +793,11 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #setDebugAll(boolean)}. */
 	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
 		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
+	}
+	
+	/** If true, any actions executed during a call to Stage.act() will result in a call to Gdx.graphics.requestRendering(). */
+	public static void setActionsRequestRendering (boolean actionsRequestRendering) {
+		Stage.actionsRequestRendering = actionsRequestRendering;
 	}
 
 	public void dispose () {

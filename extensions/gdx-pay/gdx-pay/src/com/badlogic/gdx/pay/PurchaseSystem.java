@@ -134,9 +134,9 @@ public final class PurchaseSystem {
 	}
 
 	/** Executes a purchase. */
-	public static void purchase (String identifier, PurchaseListener listener) {
+	public static void purchase (String identifier) {
 		if (manager != null) {
-			manager.purchase(identifier, listener);
+			manager.purchase(identifier);
 		} else {
 			throw new RuntimeException("No purchase manager was found.");
 		}

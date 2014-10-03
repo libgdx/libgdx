@@ -556,6 +556,7 @@ public class ScrollPane extends WidgetGroup {
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawChildren(batch, parentAlpha);
+			batch.flush();
 			ScissorStack.popScissors();
 		}
 

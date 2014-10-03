@@ -37,6 +37,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
@@ -206,7 +207,7 @@ public class JglfwInput implements Input {
 			return glfwGetKey(app.graphics.window, GLFW_KEY_LEFT_SUPER) || glfwGetKey(app.graphics.window, GLFW_KEY_RIGHT_SUPER);
 		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
 	}
-	
+
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
@@ -252,7 +253,7 @@ public class JglfwInput implements Input {
 	public void setCatchBackKey (boolean catchBack) {
 	}
 
-	public boolean isCatchBackKey() {
+	public boolean isCatchBackKey () {
 		return false;
 	}
 
@@ -860,13 +861,25 @@ public class JglfwInput implements Input {
 			processor.scrolled((int)-Math.signum(scrollY));
 		}
 
+		private int toGdxButton (int button) {
+			if (button == 0) return Buttons.LEFT;
+			if (button == 1) return Buttons.RIGHT;
+			if (button == 2) return Buttons.MIDDLE;
+			if (button == 3) return Buttons.BACK;
+			if (button == 4) return Buttons.FORWARD;
+			return -1;
+		}
+
 		public void mouseButton (long window, int button, boolean pressed) {
+			int gdxButton = toGdxButton(button);
+			if (button != -1 && gdxButton == -1) return; // Ignore unknown button.
+
 			if (pressed) {
 				mousePressed++;
-				processor.touchDown(mouseX, mouseY, 0, button);
+				processor.touchDown(mouseX, mouseY, 0, gdxButton);
 			} else {
 				mousePressed = Math.max(0, mousePressed - 1);
-				processor.touchUp(mouseX, mouseY, 0, button);
+				processor.touchUp(mouseX, mouseY, 0, gdxButton);
 			}
 		}
 

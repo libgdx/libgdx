@@ -16,32 +16,18 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.pay.Offer;
 import com.badlogic.gdx.pay.OfferType;
 import com.badlogic.gdx.pay.PurchaseManagerConfig;
-import com.badlogic.gdx.pay.Transaction;
-import com.badlogic.gdx.pay.PurchaseListener;
-import com.badlogic.gdx.pay.PurchaseManager;
 import com.badlogic.gdx.pay.PurchaseObserver;
 import com.badlogic.gdx.pay.PurchaseSystem;
+import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Timer;
 
 /** Performs some tests for InApp payments.
@@ -97,7 +83,32 @@ public class PayTest extends GdxTest {
 
 					// throw error
 					throw new GdxRuntimeException(e);				
-				}				
+				}
+				@Override
+				public void handlePurchase (Transaction transaction) {
+					message(" - purchased: " + transaction.getIdentifier() + "\n");
+					
+					// dispose the purchase system
+					Gdx.app.postRunnable(new Runnable() {		
+						@Override
+						public void run () {					
+							message(" - disposing the purchase manager.\n");
+							PurchaseSystem.dispose();
+							message("Testing InApp System: COMPLETED\n");
+						}
+					});
+				}
+				@Override
+				public void handlePurchaseError (Throwable e) {
+					message(" - error purchasing: " + e + "\n");
+					// throw error
+					throw new GdxRuntimeException(e);				
+				}
+				@Override
+				public void handlePurchaseCanceled () {
+					// TODO Auto-generated method stub
+					
+				}
 			}, config);
 					
 			// restore purchases!
@@ -114,29 +125,7 @@ public class PayTest extends GdxTest {
 				@Override
 				public void run () {					
 					message(" - purchasing: " + IAP_TEST_CONSUMEABLE + ".\n");
-					PurchaseSystem.purchase(IAP_TEST_CONSUMEABLE, new PurchaseListener() {					
-						@Override
-						public void handlePurchase (Transaction transaction) {
-							message(" - purchased: " + transaction.getIdentifier() + "\n");
-							
-							// dispose the purchase system
-							Gdx.app.postRunnable(new Runnable() {		
-								@Override
-								public void run () {					
-									message(" - disposing the purchase manager.\n");
-									PurchaseSystem.dispose();
-									message("Testing InApp System: COMPLETED\n");
-								}
-							});
-						}
-						@Override
-						public void handlePurchaseError (Throwable e) {
-							message(" - error purchasing: " + e + "\n");
-
-							// throw error
-							throw new GdxRuntimeException(e);				
-						}				
-					});
+					PurchaseSystem.purchase(IAP_TEST_CONSUMEABLE);
 				}
 			}, 4.0f);
 		}

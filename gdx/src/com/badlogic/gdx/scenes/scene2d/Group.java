@@ -37,7 +37,6 @@ public class Group extends Actor implements Cullable {
 	static private final Vector2 tmp = new Vector2();
 
 	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
-	private final Affine2 localTransform = new Affine2();
 	private final Affine2 worldTransform = new Affine2();
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
@@ -83,7 +82,6 @@ public class Group extends Actor implements Cullable {
 					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
 						child.draw(batch, parentAlpha);
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
 				float offsetX = x, offsetY = y;
@@ -112,7 +110,6 @@ public class Group extends Actor implements Cullable {
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
 				float offsetX = x, offsetY = y;
@@ -183,7 +180,6 @@ public class Group extends Actor implements Cullable {
 	/** Returns the transform for this group's coordinate system. */
 	protected Matrix4 computeTransform () {
 		Affine2 worldTransform = this.worldTransform;
-		Affine2 localTransform = this.localTransform;
 
 		float originX = this.originX;
 		float originY = this.originY;
@@ -191,8 +187,8 @@ public class Group extends Actor implements Cullable {
 		float scaleX = this.scaleX;
 		float scaleY = this.scaleY;
 
-		localTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
-		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
+		worldTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
+		if (originX != 0 || originY != 0) worldTransform.translate(-originX, -originY);
 
 		// Find the first parent that transforms.
 		Group parentGroup = parent;
@@ -200,13 +196,7 @@ public class Group extends Actor implements Cullable {
 			if (parentGroup.transform) break;
 			parentGroup = parentGroup.parent;
 		}
-
-		if (parentGroup != null) {
-			worldTransform.set(parentGroup.worldTransform);
-			worldTransform.mul(localTransform);
-		} else {
-			worldTransform.set(localTransform);
-		}
+		if (parentGroup != null) worldTransform.preMul(parentGroup.worldTransform);
 
 		computedTransform.set(worldTransform);
 		return computedTransform;

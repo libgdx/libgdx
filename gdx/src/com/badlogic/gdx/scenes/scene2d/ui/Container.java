@@ -49,6 +49,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
 				if (draw) {
 					drawChildren(batch, parentAlpha);
+					batch.flush();
 					clipEnd();
 				}
 			} else
