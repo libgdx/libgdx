@@ -548,8 +548,6 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define boneWeight" + attr.unit + "Flag\n";
 			else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
 		}
-		if ((attributes & Usage.Tangent) == Usage.Tangent) prefix += "#define tangentFlag\n";
-		if ((attributes & Usage.BiNormal) == Usage.BiNormal) prefix += "#define binormalFlag\n";
 		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
