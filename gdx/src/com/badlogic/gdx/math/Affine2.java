@@ -576,6 +576,26 @@ public final class Affine2 implements Serializable {
 		return position;
 	}
 
+	/** Check if the this is a plain translation matrix.
+	 * @return True if scale is 1 and rotation is 0. */
+	public boolean isTranslation () {
+		return (m00 == 1 && m11 == 1 && m01 == 0 && m10 == 0);
+	}
+
+	/** Check if this is an indentity matrix.
+	 * @return True if scale is 1 and rotation is 0. */
+	public boolean isIdt () {
+		return (m00 == 1 && m02 == 0 && m12 == 0 && m11 == 1 && m01 == 0 && m10 == 0);
+	}
+
+	/** Applies the affine transformation on a vector. */
+	public void applyTo (Vector2 point) {
+		float x = point.x;
+		float y = point.y;
+		point.x = m00 * x + m01 * y + m02;
+		point.y = m10 * x + m11 * y + m12;
+	}
+
 	@Override
 	public String toString () {
 		return "[" + m00 + "|" + m01 + "|" + m02 + "]\n[" + m10 + "|" + m11 + "|" + m12 + "]\n[0.0|0.0|0.1]";
