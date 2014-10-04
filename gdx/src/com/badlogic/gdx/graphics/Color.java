@@ -438,6 +438,17 @@ public class Color {
 		color.a = ((value & 0x000000ff)) / 255f;
 	}
 
+	/** Sets the Color components using the specified integer value in the format ARGB8888.
+	 *
+	 * @param color The Color to be modified.
+	 * @param value An integer color value in ARGB8888 format. */
+	public static void argb8888ToColor(Color color, int value) {
+		color.a = ((value & 0xff000000) >>> 24) / 255f;
+		color.r = ((value & 0x00ff0000) >>> 16) / 255f;
+		color.g = ((value & 0x0000ff00) >>> 8) / 255f;
+		color.b = ((value & 0x000000ff)) / 255f;
+	}
+
 	/** Returns a temporary copy of this color. This is not thread safe, do not save a reference to this instance.
 	 * 
 	 * @return a temporary copy of this color */
