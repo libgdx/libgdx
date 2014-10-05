@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Array;
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
-	
+
 	static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
@@ -63,9 +63,14 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public void viewDidAppear(boolean animated) {
-			if (app.viewControllerListener != null)
-				app.viewControllerListener.viewDidAppear(animated);
+		public void viewWillAppear (boolean arg0) {
+			super.viewWillAppear(arg0);
+			setPaused(!graphics.isContinuous);
+		}
+
+		@Override
+		public void viewDidAppear (boolean animated) {
+			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 		}
 
 		@Override
@@ -84,7 +89,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public UIInterfaceOrientationMask getSupportedInterfaceOrientations() {
+		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
 			long mask = 0;
 			if (app.config.orientationLandscape) {
 				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
@@ -96,7 +101,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public boolean shouldAutorotate() {
+		public boolean shouldAutorotate () {
 			return true;
 		}
 
@@ -148,13 +153,15 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	volatile boolean paused;
 	private long frameId = -1;
+	private boolean isContinuous = true;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (CGSize bounds, float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+	public IOSGraphics (CGSize bounds, float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
+		GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
 		width = (int)bounds.width();
@@ -456,18 +463,20 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		// FIXME implement this if possible
+		this.isContinuous = isContinuous;
+		viewController.setPaused(!isContinuous);
+		viewController.setResumeOnDidBecomeActive(isContinuous);
+		view.setEnableSetNeedsDisplay(!isContinuous);
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		// FIXME implement this if possible
-		return true;
+		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering () {
-		// FIXME implement this if possible
+		view.setNeedsDisplay();
 	}
 
 	@Override
@@ -486,7 +495,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public long getFrameId() {
+	public long getFrameId () {
 		return frameId;
 	}
 }
