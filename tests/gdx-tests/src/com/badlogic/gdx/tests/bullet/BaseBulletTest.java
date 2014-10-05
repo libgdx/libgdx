@@ -46,11 +46,11 @@ import com.badlogic.gdx.utils.Disposable;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib.
-	private final static String customDesktopLib = null;//"C:\\Xoppa\\code\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null;//"C:\\Xoppa\\code\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 
 	private static boolean initialized = false;
 	
-	public static boolean shadows = true;
+	public static boolean shadows = false;
 	
 	public static void init () {
 		if (initialized) return;
@@ -231,7 +231,7 @@ public class BaseBulletTest extends BulletTest {
 
 	public void toggleDebugMode () {
 		if (world.getDebugMode() == DebugDrawModes.DBG_NoDebug)
-			setDebugMode(DebugDrawModes.DBG_DrawWireframe);
+			setDebugMode(DebugDrawModes.DBG_DrawWireframe | DebugDrawModes.DBG_DrawFeaturesText | DebugDrawModes.DBG_DrawText | DebugDrawModes.DBG_DrawContactPoints);
 		else if (world.renderMeshes)
 			world.renderMeshes = false;
 		else {

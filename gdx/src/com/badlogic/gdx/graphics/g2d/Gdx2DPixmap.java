@@ -54,7 +54,7 @@ public class Gdx2DPixmap implements Disposable {
 
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
 		pixelPtr = load(nativeData, encodedData, offset, len);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
@@ -77,7 +77,7 @@ public class Gdx2DPixmap implements Disposable {
 
 		buffer = bytes.toByteArray();
 		pixelPtr = load(nativeData, buffer, 0, buffer.length);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
@@ -92,7 +92,7 @@ public class Gdx2DPixmap implements Disposable {
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new GdxRuntimeException("couldn't load pixmap");
+		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];

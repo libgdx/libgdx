@@ -44,8 +44,9 @@ public class Dialog extends Window {
 	ObjectMap<Actor, Object> values = new ObjectMap();
 	boolean cancelHide;
 	Actor previousKeyboardFocus, previousScrollFocus;
+	FocusListener focusListener;
 
-	InputListener ignoreTouchDown = new InputListener() {
+	protected InputListener ignoreTouchDown = new InputListener() {
 		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 			event.cancel();
 			return false;
@@ -92,7 +93,7 @@ public class Dialog extends Window {
 			}
 		});
 
-		addListener(new FocusListener() {
+		focusListener = new FocusListener() {
 			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
 				if (!focused) focusChanged(event);
 			}
@@ -109,7 +110,15 @@ public class Dialog extends Window {
 					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this)) event.cancel();
 				}
 			}
-		});
+		};
+	}
+
+	protected void setStage (Stage stage) {
+		if (stage == null)
+			addListener(focusListener);
+		else
+			removeListener(focusListener);
+		super.setStage(stage);
 	}
 
 	public Table getContentTable () {
@@ -188,9 +197,8 @@ public class Dialog extends Window {
 		stage.addActor(this);
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
-		if (action != null) 
-			addAction(action);
-		
+		if (action != null) addAction(action);
+
 		return this;
 	}
 
@@ -205,6 +213,7 @@ public class Dialog extends Window {
 	public void hide (Action action) {
 		Stage stage = getStage();
 		if (stage != null) {
+			removeListener(focusListener);
 			if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
 			Actor actor = stage.getKeyboardFocus();
 			if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);

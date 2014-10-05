@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,16 +20,16 @@ import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
+import org.robovm.apple.uikit.UIColor;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
-import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
@@ -45,6 +45,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -57,7 +58,7 @@ public class IOSApplication implements Application {
 		protected abstract IOSApplication createApplication ();
 
 		@Override
-		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -108,22 +109,25 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 
-	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
+	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
 		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
 
+		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
-		if (UIScreen.getMainScreen().getScale() == 2.0f) {
-			// we have a retina device!
+		
+		float scale = (float)(getIosVersion() >= 8? UIScreen.getMainScreen().getNativeScale(): UIScreen.getMainScreen().getScale());
+		if (scale >= 2.0f) {
+			Gdx.app.debug("IOSApplication", "scale: " + scale);					
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
 			} else {
 				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
 			}
 		} else {
 			// no retina screen: no scaling!
@@ -143,7 +147,7 @@ public class IOSApplication implements Application {
 
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(null), scale, this, config, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
@@ -162,6 +166,12 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
+	
+	private int getIosVersion() {
+		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
+		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
+		return version;
+	}
 
 	/** Return the UI view controller of IOSApplication
 	 * @return the view controller of IOSApplication */
@@ -176,7 +186,7 @@ public class IOSApplication implements Application {
 	}
 
 	/** Returns our real display dimension based on screen orientation.
-	 * 
+	 *
 	 * @param viewController The view controller.
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
@@ -202,14 +212,20 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
+			height = (int) bounds.width();
+			width = (int) bounds.height();
+			if (width < height) {
+				width = (int) bounds.width();
+				height = (int) bounds.height();
+			}
 			break;
 		default:
 			// assume portrait
 			width = (int)bounds.width();
 			height = (int)bounds.height();
 		}
+
+		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
 
 		// update width/height depending on display scaling selected
 		width *= displayScaleFactor;
@@ -227,6 +243,9 @@ public class IOSApplication implements Application {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		OALAudioSession.sharedInstance().forceEndInterruption();
+		if (config.allowIpod) {
+			 OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+		}
 		graphics.makeCurrent();
 		graphics.resume();
 	}

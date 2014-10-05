@@ -67,6 +67,8 @@ public class MatrixJNITest extends GdxTest {
 		check(mat1, mat3);
 
 		bench();
+		
+		System.out.println("All tests passed.");
 	}
 
 	private void bench () {

@@ -192,6 +192,9 @@ public class JsonReader implements BaseJsonReader {
 					outer:
 					while (true) {
 						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
 						case ':':
 						case ' ':
 						case '\r':
@@ -207,6 +210,9 @@ public class JsonReader implements BaseJsonReader {
 					outer:
 					while (true) {
 						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
 						case '}':
 						case ']':
 						case ',':
@@ -245,7 +251,7 @@ public class JsonReader implements BaseJsonReader {
 			}
 
 			ws = [ \r\n\t] | (('//' | '/*') @comment);
-			string = '"' @quotedChars %string '"' | ^[{}\[\],:"\r\n\t ] >unquotedChars %string;
+			string = '"' @quotedChars %string '"' | ^[/{}\[\],:"\r\n\t ] >unquotedChars %string;
 			value = '{' @startObject | '[' @startArray | string;
 			nameValue = string >name ws* ':' ws* value;
 			object := ws* nameValue? ws* (',' ws* nameValue ws*)** ','? ws* '}' @endObject;

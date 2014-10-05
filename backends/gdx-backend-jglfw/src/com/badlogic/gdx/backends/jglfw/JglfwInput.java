@@ -37,7 +37,9 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
@@ -48,6 +50,8 @@ public class JglfwInput implements Input {
 	final InputProcessorQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	boolean justTouched;
 	int deltaX, deltaY;
 	long currentEventTime;
@@ -60,6 +64,8 @@ public class JglfwInput implements Input {
 
 			public boolean keyDown (int keycode) {
 				pressedKeys++;
+				keyJustPressed = true;
+				justPressedKeys[keycode] = true;
 				app.graphics.requestRendering();
 				return processor != null ? processor.keyDown(keycode) : false;
 			}
@@ -120,6 +126,12 @@ public class JglfwInput implements Input {
 
 	public void update () {
 		justTouched = false;
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 		if (processorQueue != null)
 			processorQueue.drain(); // Main loop is handled elsewhere and events are queued.
 		else {
@@ -196,6 +208,17 @@ public class JglfwInput implements Input {
 		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
 	}
 
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > 256) {
+			return false;
+		}
+		return justPressedKeys[key];
+	}
+
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
 
@@ -228,6 +251,10 @@ public class JglfwInput implements Input {
 	}
 
 	public void setCatchBackKey (boolean catchBack) {
+	}
+
+	public boolean isCatchBackKey () {
+		return false;
 	}
 
 	public void setCatchMenuKey (boolean catchMenu) {
@@ -834,13 +861,25 @@ public class JglfwInput implements Input {
 			processor.scrolled((int)-Math.signum(scrollY));
 		}
 
+		private int toGdxButton (int button) {
+			if (button == 0) return Buttons.LEFT;
+			if (button == 1) return Buttons.RIGHT;
+			if (button == 2) return Buttons.MIDDLE;
+			if (button == 3) return Buttons.BACK;
+			if (button == 4) return Buttons.FORWARD;
+			return -1;
+		}
+
 		public void mouseButton (long window, int button, boolean pressed) {
+			int gdxButton = toGdxButton(button);
+			if (button != -1 && gdxButton == -1) return; // Ignore unknown button.
+
 			if (pressed) {
 				mousePressed++;
-				processor.touchDown(mouseX, mouseY, 0, button);
+				processor.touchDown(mouseX, mouseY, 0, gdxButton);
 			} else {
 				mousePressed = Math.max(0, mousePressed - 1);
-				processor.touchUp(mouseX, mouseY, 0, button);
+				processor.touchUp(mouseX, mouseY, 0, gdxButton);
 			}
 		}
 

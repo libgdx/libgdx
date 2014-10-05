@@ -14,7 +14,7 @@
       <unpack>true</unpack>
       <scope>runtime</scope>
       <excludes>
-        <exclude>com.badlogic.gdx:gdx-backend-lwjgl</exclude>
+        <exclude>com.badlogicgames.gdx:gdx-backend-lwjgl</exclude>
       </excludes>
     </dependencySet>
     <dependencySet>

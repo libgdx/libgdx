@@ -10,6 +10,7 @@
       <directory>../gdx-tests-android/assets</directory>
       <includes>
         <include>data/**</include>
+        <include>*.png</include>
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
@@ -34,6 +35,7 @@
     <lib>../../gdx/libs/ios32/libObjectAL.a</lib>
     <lib>../../extensions/gdx-freetype/libs/ios32/libgdx-freetype.a</lib>
     <lib>../../extensions/gdx-bullet/libs/ios32/libgdx-bullet.a</lib>
+    <lib>../../extensions/gdx-box2d/gdx-box2d/libs/ios32/libgdx-box2d.a</lib>
   </libs>
   <frameworks>
     <framework>UIKit</framework>

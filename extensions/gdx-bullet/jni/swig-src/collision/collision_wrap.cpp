@@ -1424,7 +1424,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass gdx_getClassbtBroadphasePair(JNIEnv * jenv) {
+	SWIGINTERN inline jclass &gdx_getClassbtBroadphasePair(JNIEnv * jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btBroadphasePair"));
@@ -1434,9 +1434,9 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 	// Inline method to get the termporary instance
 	SWIGINTERN inline jobject gdx_getTempbtBroadphasePair(JNIEnv * jenv, void *cPtr, bool ownMem) {
 	  static jobject ret = NULL;
-	  static jclass clazz = gdx_getClassbtBroadphasePair(jenv);
+	  jclass &clazz = gdx_getClassbtBroadphasePair(jenv);
 	  if (ret == NULL) {
-	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/collision/btBroadphasePair");
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
 	  }
 	  
@@ -2265,7 +2265,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 
 
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass gdx_getClassbtCollisionObjectWrapper(JNIEnv * jenv) {
+	SWIGINTERN inline jclass &gdx_getClassbtCollisionObjectWrapper(JNIEnv * jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper"));
@@ -2275,9 +2275,9 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	// Inline method to get the termporary instance
 	SWIGINTERN inline jobject gdx_getTempbtCollisionObjectWrapper(JNIEnv * jenv, void *cPtr, bool ownMem) {
 	  static jobject ret = NULL;
-	  static jclass clazz = gdx_getClassbtCollisionObjectWrapper(jenv);
+	  jclass &clazz = gdx_getClassbtCollisionObjectWrapper(jenv);
 	  if (ret == NULL) {
-	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper");
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
 	  }
 	  

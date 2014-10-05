@@ -87,6 +87,7 @@
 		<include name="graphics/g2d/Batch.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
+		<include name="graphics/g2d/CpuSpriteBatch.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
 		<include name="graphics/g2d/NinePatch.java"/>
 		<include name="graphics/g2d/ParticleEffect.java"/> <!-- Emulated: Not supporting save -->
@@ -276,6 +277,7 @@
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
 	
 	<!-- math -->
+		<include name="math/Affine2.java"/>
 		<include name="math/Bezier.java"/>
 		<include name="math/Bresenham2.java"/>
 		<include name="math/BSpline.java"/>
@@ -303,6 +305,7 @@
 		<include name="math/Quaternion.java"/>
 		<include name="math/RandomXS128.java"/>
 		<include name="math/Rectangle.java"/>
+		<include name="math/Shape2D.java"/>
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
 		<include name="math/Vector3.java"/>		

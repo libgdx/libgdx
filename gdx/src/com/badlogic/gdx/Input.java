@@ -58,6 +58,8 @@ public interface Input {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
+		public static final int BACK = 3;
+		public static final int FORWARD = 4;
 	}
 
 	/** Keys.
@@ -622,7 +624,7 @@ public interface Input {
 	public boolean isTouched (int pointer);
 
 	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
-	 * constant is meaningful.
+	 * constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
@@ -632,6 +634,12 @@ public interface Input {
 	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
+
+	/** Returns whether the key has just been pressed.
+	 * 
+	 * @param key The key code as found in {@link Input.Keys}.
+	 * @return true or false. */
+	public boolean isKeyJustPressed (int key);
 
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
@@ -710,10 +718,13 @@ public interface Input {
 	 * @param catchBack whether to catch the back button */
 	public void setCatchBackKey (boolean catchBack);
 
+	/** @return whether the back button is currently being caught */
+	public boolean isCatchBackKey ();
+
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
-	 * @param catchMenu whether to catch the back button */
+	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
@@ -742,8 +753,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y coordinates
-	 * are still reported as if the mouse was not catched.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
+	 * coordinates are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 

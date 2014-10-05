@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -127,7 +128,6 @@ public class Skin implements Disposable {
 		typeResources.remove(name);
 	}
 
-
 	public <T> T get (Class<T> type) {
 		return get("default", type);
 	}
@@ -194,16 +194,8 @@ public class Skin implements Disposable {
 		TiledDrawable tiled = optional(name, TiledDrawable.class);
 		if (tiled != null) return tiled;
 
-		Drawable drawable = optional(name, Drawable.class);
-		if (drawable != null) {
-			if (!(drawable instanceof TiledDrawable)) {
-				throw new GdxRuntimeException("Drawable found but is not a TiledDrawable: " + name + ", "
-					+ drawable.getClass().getName());
-			}
-			return (TiledDrawable)drawable;
-		}
-
 		tiled = new TiledDrawable(getRegion(name));
+		tiled.setName(name);
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
@@ -248,7 +240,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
-			add(name, sprite, NinePatch.class);
+			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
 			throw new GdxRuntimeException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
@@ -293,6 +285,8 @@ public class Skin implements Disposable {
 			}
 		}
 
+		if (drawable instanceof BaseDrawable) ((BaseDrawable)drawable).setName(name);
+
 		add(name, drawable, Drawable.class);
 		return drawable;
 	}
@@ -336,6 +330,7 @@ public class Skin implements Disposable {
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
+		Drawable newDrawable;
 		if (drawable instanceof TextureRegionDrawable) {
 			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
 			Sprite sprite;
@@ -344,14 +339,12 @@ public class Skin implements Disposable {
 			else
 				sprite = new Sprite(region);
 			sprite.setColor(tint);
-			return new SpriteDrawable(sprite);
-		}
-		if (drawable instanceof NinePatchDrawable) {
+			newDrawable = new SpriteDrawable(sprite);
+		} else if (drawable instanceof NinePatchDrawable) {
 			NinePatchDrawable patchDrawable = new NinePatchDrawable((NinePatchDrawable)drawable);
 			patchDrawable.setPatch(new NinePatch(patchDrawable.getPatch(), tint));
-			return patchDrawable;
-		}
-		if (drawable instanceof SpriteDrawable) {
+			newDrawable = patchDrawable;
+		} else if (drawable instanceof SpriteDrawable) {
 			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
 			Sprite sprite = spriteDrawable.getSprite();
 			if (sprite instanceof AtlasSprite)
@@ -360,9 +353,19 @@ public class Skin implements Disposable {
 				sprite = new Sprite(sprite);
 			sprite.setColor(tint);
 			spriteDrawable.setSprite(sprite);
-			return spriteDrawable;
+			newDrawable = spriteDrawable;
+		} else
+			throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		if (newDrawable instanceof BaseDrawable) {
+			BaseDrawable named = (BaseDrawable)newDrawable;
+			if (drawable instanceof BaseDrawable)
+				named.setName(((BaseDrawable)drawable).getName() + " (" + tint + ")");
+			else
+				named.setName(" (" + tint + ")");
 		}
-		throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		return newDrawable;
 	}
 
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
@@ -498,7 +501,12 @@ public class Skin implements Disposable {
 			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
-				return newDrawable(name, color);
+				Drawable drawable = newDrawable(name, color);
+				if (drawable instanceof BaseDrawable) {
+					BaseDrawable named = (BaseDrawable)drawable;
+					named.setName(jsonData.name + " (" + name + ", " + color + ")");
+				}
+				return drawable;
 			}
 		});
 

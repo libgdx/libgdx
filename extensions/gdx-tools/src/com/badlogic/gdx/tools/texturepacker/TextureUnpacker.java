@@ -134,12 +134,12 @@ public class TextureUnpacker {
 
 		// get the needed part of the page and rotate if needed
 		if (region.rotate) {
-			BufferedImage srcImage = page.getSubimage(region.left, region.top, region.width, region.height);
+			BufferedImage srcImage = page.getSubimage(region.left, region.top, region.height, region.width);
 			splitImage = new BufferedImage(region.height, region.width, page.getType());
 
 			AffineTransform transform = new AffineTransform();
 			transform.rotate(Math.toRadians(90.0));
-			transform.translate(0, -region.height);
+			transform.translate(0, -region.width);
 			AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 			op.filter(srcImage, splitImage);
 		} else {

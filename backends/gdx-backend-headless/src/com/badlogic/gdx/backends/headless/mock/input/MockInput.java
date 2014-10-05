@@ -105,6 +105,11 @@ public class MockInput implements Input {
 	public boolean isKeyPressed(int key) {
 		return false;
 	}
+	
+	@Override
+	public boolean isKeyJustPressed(int key) {
+		return false;
+	}
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
@@ -164,6 +169,11 @@ public class MockInput implements Input {
 	@Override
 	public void setCatchBackKey(boolean catchBack) {
 
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
 	}
 
 	@Override
