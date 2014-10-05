@@ -278,7 +278,7 @@ public class IOSInput implements Input {
 			super(frame);
 
 			setKeyboardType(UIKeyboardType.Default);
-			setReturnKeyType(UIReturnKeyType.Done);
+			setReturnKeyType(UIReturnKeyType.Default);
 			setAutocapitalizationType(UITextAutocapitalizationType.None);
 			setAutocorrectionType(UITextAutocorrectionType.No);
 			setSpellCheckingType(UITextSpellCheckingType.No);
@@ -324,7 +324,8 @@ public class IOSInput implements Input {
 
 		@Override
 		public boolean shouldReturn(UITextField textField) {
-			textField.resignFirstResponder();
+			app.input.inputProcessor.keyDown(Keys.ENTER);
+			app.input.inputProcessor.keyTyped((char)13);
 			return false;
 		}
 	};
@@ -337,7 +338,7 @@ public class IOSInput implements Input {
 			textfield = new UITextField(new CGRect(10, 10, 100, 50));
 			//Setting parameters
 			textfield.setKeyboardType(UIKeyboardType.Default);
-			textfield.setReturnKeyType(UIReturnKeyType.Done);
+			textfield.setReturnKeyType(UIReturnKeyType.Default);
 			textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
 			textfield.setAutocorrectionType(UITextAutocorrectionType.No);
 			textfield.setSpellCheckingType(UITextSpellCheckingType.No);
