@@ -8,7 +8,6 @@ General
 	
 - IOSGraphics
 	- need to store current device orientation for Input#getOrienation and consorts
-	- implement non-continuous rendering
 	
 - IOSInput
 	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
