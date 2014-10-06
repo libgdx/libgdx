@@ -71,7 +71,7 @@ public class GdxSetup {
 				DependencyBank.buildToolsVersion = newestLocalTool;
 			}
 		} else {
-			if (!hasFileInDirectory(buildTools, DependencyBank.buildToolsVersion)) {
+			if (!versionsEqual(localToolVersion, targetToolVersion)) {
 				JOptionPane.showMessageDialog(null, "Please update your Android SDK, you need build tools: "
 					+ DependencyBank.buildToolsVersion);
 				return false;
@@ -89,20 +89,13 @@ public class GdxSetup {
 				DependencyBank.androidAPILevel = String.valueOf(newestLocalApi);
 			}
 		} else {
-			if (!hasFileInDirectory(apis, "android-" + DependencyBank.androidAPILevel)) {
+			if (newestLocalApi != Integer.valueOf(DependencyBank.androidAPILevel)) {
 				JOptionPane.showMessageDialog(null, "Please update your Android SDK, you need the Android API: "
 					+ DependencyBank.androidAPILevel);
 				return false;
 			}
 		}
 		return true;
-	}
-
-	private static boolean hasFileInDirectory (File file, String fileName) {
-		for (String name : file.list()) {
-			if (name.equals(fileName)) return true;
-		}
-		return false;
 	}
 
 	private static int getLatestApi (File apis) {
@@ -199,6 +192,13 @@ public class GdxSetup {
 			e.printStackTrace();
 		}
 		return "0.0.0";
+	}
+	
+	private static boolean versionsEqual(int[] testVersion, int[] targetVersion) {
+		for (int i = 0; i < 3; i++) {
+			if (testVersion[i] != targetVersion[i]) return false;
+		}
+		return true;
 	}
 	
 	private static boolean compareVersions(int[] version, int[] testVersion) {
