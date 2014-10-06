@@ -82,7 +82,7 @@ eclipse {
     }
 
     classpath {
-        plusConfigurations += project.configurations.compile        
+        plusConfigurations += [ project.configurations.compile ]        
         containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'       
     }
 
