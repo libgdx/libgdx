@@ -1,4 +1,7 @@
 [1.3.2]
+- Updated to Gradle 2.1 and Android build tools 20. You need to install the latest Android build tools via the SDK manager
+- API Change: deprecation of bounding box methods, see https://github.com/libgdx/libgdx/pull/2408
+- Added non-continuous rendering to iOS backend, thanks Dominik!
 - Added color markup support for scene2d label and window title.
 - API Change: removed default constructor of DecalBatch, removed DefaultGroupStrategy
 - Updated to latests RoboVM release, 1.0.0-alpha-02, please update your RoboVM plugins/installations
