@@ -1,4 +1,6 @@
 [1.3.2]
+- Setup now uses Gradle 2.1 with default Android API level 20, build tools 20.0.0
+- Non-continuous renderering implemented for iOS
 - Added color markup support for scene2d label and window title.
 - API Change: removed default constructor of DecalBatch, removed DefaultGroupStrategy
 - Updated to latests RoboVM release, 1.0.0-alpha-02, please update your RoboVM plugins/installations
