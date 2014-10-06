@@ -10,6 +10,7 @@
 		<exclude name="**/ContactListenerTest.java"/> <!-- String.format, Reflection -->
 		<exclude name="**/CullTest.java"/> <!-- GL ES 1.0 -->
 		<exclude name="**/DownloadTest.java"/> <!-- Incompatible Pixmap ctor -->
+		<exclude name="**/KTXTest.java"/> <!-- use ECT1 which is native -->
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
