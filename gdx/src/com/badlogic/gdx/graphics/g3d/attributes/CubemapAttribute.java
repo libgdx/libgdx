@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.attributes;
 
-import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -36,20 +35,20 @@ public class CubemapAttribute extends Attribute {
 		return (mask & Mask) != 0;
 	}
 
-	public final TextureDescriptor<Cubemap> textureDescription;
+	public final TextureDescriptor<GLTexture> textureDescription;
 
 	public CubemapAttribute (final long type) {
 		super(type);
 		if (!is(type)) throw new GdxRuntimeException("Invalid type specified");
-		textureDescription = new TextureDescriptor<Cubemap>();
+		textureDescription = new TextureDescriptor<GLTexture>();
 	}
 
-	public <T extends Cubemap> CubemapAttribute (final long type, final TextureDescriptor<T> textureDescription) {
+	public <T extends GLTexture> CubemapAttribute (final long type, final TextureDescriptor<T> textureDescription) {
 		this(type);
 		this.textureDescription.set(textureDescription);
 	}
 
-	public CubemapAttribute (final long type, final Cubemap texture) {
+	public CubemapAttribute (final long type, final GLTexture texture) {
 		this(type);
 		textureDescription.texture = texture;
 	}
@@ -67,6 +66,6 @@ public class CubemapAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 967 * result + textureDescription.hashCode();
-		return result; 
+		return result;
 	}
 }

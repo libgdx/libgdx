@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.IntBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -25,13 +27,10 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.nio.IntBuffer;
 
 /** Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.
  * Also provides some (protected) static methods to create TextureData and upload image data.
@@ -194,6 +193,7 @@ public abstract class GLTexture implements Disposable {
 	protected static TextureData createTextureData (FileHandle file, Format format, boolean useMipMaps) {
 		if (file == null) return null;
 		if (file.name().endsWith(".etc1")) return new ETC1TextureData(file, useMipMaps);
+		if (file.name().endsWith(".ktx") || file.name().endsWith(".zktx")) return new KTXTextureData(file, useMipMaps);
 		return new FileTextureData(file, null, format, useMipMaps);
 	}
 

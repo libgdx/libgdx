@@ -135,6 +135,7 @@ public class GdxTests {
 		InverseKinematicsTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,
+		KTXTest.class,
 		LabelScaleTest.class,
 		LabelTest.class,
 		LifeCycleTest.class,
