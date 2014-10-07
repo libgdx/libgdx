@@ -61,11 +61,23 @@ public class ShaderTest extends GdxTest {
 	}
 
 	public static class TestShader extends BaseShader {
-		public final static String vertexShader = "attribute vec3 a_position;\n" + "uniform mat4 u_projTrans;\n"
-			+ "uniform mat4 u_worldTrans;\n" + "uniform float u_test;\n" + "varying float v_test;\n" + "void main() {\n"
-			+ "	v_test = u_test;\n" + "	gl_Position = u_projTrans * u_worldTrans * vec4(a_position, 1.0);\n" + "}\n";
-		public final static String fragmentShader = "varying float v_test;\n" + "void main() {\n"
-			+ "	gl_FragColor.rgb = vec3(v_test);\n" + "}\n";
+		// @off
+		public final static String vertexShader =
+			  "attribute vec3 a_position;\n"
+			+ "uniform mat4 u_projTrans;\n"
+			+ "uniform mat4 u_worldTrans;\n"
+			+ "uniform mediump float u_test;\n"
+			+ "varying mediump float v_test;\n"
+			+ "void main() {\n"
+			+ "	v_test = u_test;\n"
+			+ "	gl_Position = u_projTrans * u_worldTrans * vec4(a_position, 1.0);\n"
+			+ "}\n";
+		public final static String fragmentShader =
+			  "varying mediump float v_test;\n"
+			+ "void main() {\n"
+			+ "	gl_FragColor.rgb = vec3(v_test);\n"
+			+ "}\n";
+		// @on
 
 		protected final int u_projTrans = register(new Uniform("u_projTrans"));
 		protected final int u_worldTrans = register(new Uniform("u_worldTrans"));
