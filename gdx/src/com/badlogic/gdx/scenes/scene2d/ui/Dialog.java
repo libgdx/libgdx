@@ -107,7 +107,9 @@ public class Dialog extends Window {
 				if (isModal && stage != null && stage.getRoot().getChildren().size > 0
 					&& stage.getRoot().getChildren().peek() == Dialog.this) { // Dialog is top most actor.
 					Actor newFocusedActor = event.getRelatedActor();
-					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this)) event.cancel();
+					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this) &&
+						!(newFocusedActor.equals(previousKeyboardFocus) || newFocusedActor.equals(previousScrollFocus)) )
+						event.cancel();
 				}
 			}
 		};
