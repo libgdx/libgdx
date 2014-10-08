@@ -118,6 +118,7 @@ public class Hiero extends JFrame {
 	List<EffectPanel> effectPanels = new ArrayList<EffectPanel>();
 	Preferences prefs;
 	ColorEffect colorEffect;
+	boolean batchMode = false;
 
 	JScrollPane appliedEffectsScroll;
 	JPanel appliedEffectsPanel;
@@ -163,7 +164,7 @@ public class Hiero extends JFrame {
 	File saveBmFontFile;
 	String lastSaveFilename = "", lastSaveBMFilename = "", lastOpenFilename = "";
 
-	public Hiero () {
+	public Hiero(String [] args) {
 		super("Hiero v3.0 - Bitmap Font Tool");
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
@@ -191,6 +192,8 @@ public class Hiero extends JFrame {
 		effectsListModel.addElement(new DistanceFieldEffect());
 		new EffectPanel(colorEffect);
 
+		parseArgs(args);
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
@@ -212,6 +215,35 @@ public class Hiero extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		sampleNeheButton.doClick();
+	}
+
+	private void parseArgs (String[] args) {
+		float scale = 1f;
+
+		for (int i = 0; i < args.length; i++) {
+			final String param = args[i];
+			final boolean more = i < args.length - 1;
+
+			if (param.equals("-b") || param.equals("--batch")) {
+				batchMode = true;
+			} else if (more && (param.equals("-s") || param.equals("--scale"))) {
+				scale = Float.parseFloat(args[++i]);
+			} else if (more && (param.equals("-i") || param.equals("--input"))) {
+				File f = new File(args[++i]);
+				open(f);
+				fontFileRadio.setText("");
+				updateFont();
+			} else if (more && (param.equals("-o") || param.equals("--output"))) {
+				File f = new File(args[++i]);
+				saveBm(f);
+			} else {
+				System.err.println("Unknown parameter: " + param);
+				System.exit(3);
+			}
+		}
+
+		// update scale:
+		fontSizeSpinner.setValue((int)(0.5f + Math.max(4, scale * ((Integer)fontSizeSpinner.getValue()))));
 	}
 
 	private void updateFontSelector () {
@@ -272,12 +304,16 @@ public class Hiero extends JFrame {
 		updateFontSelector();
 	}
 
+	void saveBm (File file) {
+		saveBmFontFile = file;
+	}
+
 	void save (File file) throws IOException {
 		HieroSettings settings = new HieroSettings();
 		settings.setFontName((String)fontList.getSelectedValue());
 		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
 		settings.setFont2File(fontFileText.getText());
-		settings.setFont2Active(fontFileRadio.isSelected());
+	settings.setFont2Active(fontFileRadio.isSelected());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
 		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
@@ -567,7 +603,7 @@ public class Hiero extends JFrame {
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				lastSaveBMFilename = fileName;
-				saveBmFontFile = new File(dialog.getDirectory(), fileName);
+				saveBm(new File(dialog.getDirectory(), fileName));
 			}
 		});
 
@@ -1318,18 +1354,6 @@ public class Hiero extends JFrame {
 				glyphsTotalLabel.setText(String.valueOf(glyphCount));
 			}
 
-			if (saveBmFontFile != null) {
-				try {
-					BMFontUtil bmFont = new BMFontUtil(unicodeFont);
-					bmFont.save(saveBmFontFile);
-				} catch (Throwable ex) {
-					System.out.println("Error saving BMFont files: " + saveBmFontFile.getAbsolutePath());
-					ex.printStackTrace();
-				} finally {
-					saveBmFontFile = null;
-				}
-			}
-
 			if (unicodeFont == null) return;
 
 			try {
@@ -1384,6 +1408,22 @@ public class Hiero extends JFrame {
 					glEnd();
 				}
 			}
+
+			if (saveBmFontFile != null) {
+				try {
+					BMFontUtil bmFont = new BMFontUtil(unicodeFont);
+					bmFont.save(saveBmFontFile);
+
+					if (batchMode) {
+						System.exit(0);
+					}
+				} catch (Throwable ex) {
+					System.out.println("Error saving BMFont files: " + saveBmFontFile.getAbsolutePath());
+					ex.printStackTrace();
+				} finally {
+					saveBmFontFile = null;
+				}
+			}
 		}
 
 		@Override
@@ -1399,7 +1439,7 @@ public class Hiero extends JFrame {
 		}
 	}
 
-	public static void main (String[] args) throws Exception {
+	public static void main (final String[] args) throws Exception {
 // LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
 // for (int i = 0, n = lookAndFeels.length; i < n; i++) {
 // if ("Nimbus".equals(lookAndFeels[i].getName())) {
@@ -1414,7 +1454,7 @@ public class Hiero extends JFrame {
 
 			@Override
 			public void run () {
-				new Hiero();
+				new Hiero(args);
 			}
 		});
 	}
