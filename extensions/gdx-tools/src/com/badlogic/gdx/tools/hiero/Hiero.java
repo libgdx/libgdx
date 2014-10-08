@@ -198,6 +198,7 @@ public class Hiero extends JFrame {
 			}
 		});
 
+		updateFontSelector();
 		setVisible(true);
 	}
 
@@ -213,37 +214,41 @@ public class Hiero extends JFrame {
 		sampleNeheButton.doClick();
 	}
 
-	void updateFont () {
-		updateFont(false);
+	private void updateFontSelector () {
+		final boolean use2 = fontFileRadio.isSelected();
+		fontList.setEnabled(!use2);
+		fontFileText.setEnabled(use2);
+		browseButton.setEnabled(use2);
 	}
 
-	private void updateFont (boolean ignoreFileText) {
-		UnicodeFont unicodeFont;
+	void updateFont () {
+		final boolean useFont2 = fontFileRadio.isSelected();
+		UnicodeFont unicodeFont = null;
 
 		int fontSize = ((Integer)fontSizeSpinner.getValue()).intValue();
 
-		File file = new File(fontFileText.getText());
-		if (!ignoreFileText && file.exists() && file.isFile()) {
-			// Load from file.
-			fontFileRadio.setSelected(true);
-			fontList.setEnabled(false);
-			systemFontRadio.setEnabled(false);
-			try {
-				unicodeFont = new UnicodeFont(fontFileText.getText(), fontSize, boldCheckBox.isSelected(),
-					italicCheckBox.isSelected());
-			} catch (Throwable ex) {
-				ex.printStackTrace();
-				updateFont(true);
-				return;
+		
+		 
+		if (useFont2) {
+			File file = new File(fontFileText.getText());
+			if (file.exists() && file.isFile()) {
+				// Load from file.
+				try {
+					unicodeFont = new UnicodeFont(fontFileText.getText(), fontSize, boldCheckBox.isSelected(),
+						italicCheckBox.isSelected());
+				} catch (Throwable ex) {
+					ex.printStackTrace();
+					fontFileRadio.setSelected(false);
+				}
 			}
-		} else {
+		}
+		
+		if(unicodeFont == null) {
 			// Load from java.awt.Font (kerning not available!).
-			fontList.setEnabled(true);
-			systemFontRadio.setEnabled(true);
-			systemFontRadio.setSelected(true);
 			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
 				italicCheckBox.isSelected());
 		}
+
 		unicodeFont.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
 		unicodeFont.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
 		unicodeFont.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
@@ -264,12 +269,15 @@ public class Hiero extends JFrame {
 		sampleTextPane.setFont(unicodeFont.getFont().deriveFont((float)size));
 
 		this.newUnicodeFont = unicodeFont;
+		updateFontSelector();
 	}
 
 	void save (File file) throws IOException {
 		HieroSettings settings = new HieroSettings();
 		settings.setFontName((String)fontList.getSelectedValue());
 		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
+		settings.setFont2File(fontFileText.getText());
+		settings.setFont2Active(fontFileRadio.isSelected());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
 		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
@@ -310,7 +318,16 @@ public class Hiero extends JFrame {
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
 		}
+		
+		final String font2 = settings.getFont2File();
+		if (font2.length() > 0)
+			fontFileText.setText(font2);
+		else
+			fontFileText.setText(prefs.get("font.file", ""));
 
+		fontFileRadio.setSelected(settings.isFont2Active());
+		systemFontRadio.setSelected(!settings.isFont2Active());
+ 
 		for (Iterator iter = settings.getEffects().iterator(); iter.hasNext();) {
 			ConfigurableEffect settingsEffect = (ConfigurableEffect)iter.next();
 			for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
@@ -414,11 +431,15 @@ public class Hiero extends JFrame {
 			}
 		});
 
-		fontFileRadio.addActionListener(new ActionListener() {
+		final ActionListener al = new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
-				if (fontList.isEnabled()) systemFontRadio.setSelected(true);
+				updateFontSelector();
+				updateFont();
 			}
-		});
+		};
+		
+		systemFontRadio.addActionListener(al);
+		fontFileRadio.addActionListener(al);
 
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
