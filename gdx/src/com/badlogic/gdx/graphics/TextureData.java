@@ -62,7 +62,7 @@ public interface TextureData {
 	public boolean disposePixmap ();
 
 	/** Uploads the pixel data to the OpenGL ES texture. The caller must bind an OpenGL ES texture. A call to {@link #prepare()}
-	 * must preceed a call to this method. Any internal data structures created in {@link #prepare()}. */
+	 * must preceed a call to this method. Any internal data structures created in {@link #prepare()} should be disposed of here. */
 	public void consumeCustomData (int target);
 
 	/** @return the width of the pixel data */
