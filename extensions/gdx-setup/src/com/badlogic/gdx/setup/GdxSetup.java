@@ -120,6 +120,7 @@ public class GdxSetup {
 			testSplit = convertTools(readBuildToolsVersion(toolsVersion));
 			if (compareVersions(versionSplit, testSplit)) {
 				version = readBuildToolsVersion(toolsVersion);
+				versionSplit = convertTools(version);
 			}
 		}
 		if (version != null) {
