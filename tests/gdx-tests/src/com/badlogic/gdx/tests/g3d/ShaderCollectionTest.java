@@ -171,7 +171,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			cubemap = new Cubemap(root.child(name + "_PX.png"), root.child(name+"_NX.png"),
 				root.child(name + "_PY.png"), root.child(name + "_NY.png"), root.child(name + "_PZ.png"),
 				root.child(name + "_NZ.png"), false); // FIXME mipmapping on desktop
-			cubemap.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
+			// cubemap.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
 			if (!lights.has(CubemapAttribute.EnvironmentMap)) shaderProvider.clear();
 			lights.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 		}

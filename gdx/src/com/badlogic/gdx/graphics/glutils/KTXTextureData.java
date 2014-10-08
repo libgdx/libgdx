@@ -10,6 +10,7 @@ import java.util.zip.GZIPInputStream;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.CubemapData;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-public class KTXTextureData implements TextureData {
+public class KTXTextureData implements TextureData, CubemapData {
 
 	// The file we are loading
 	private FileHandle file;
@@ -133,6 +134,11 @@ public class KTXTextureData implements TextureData {
 	private static final int GL_TEXTURE_3D = 0x1234;
 	private static final int GL_TEXTURE_1D_ARRAY_EXT = 0x1234;
 	private static final int GL_TEXTURE_2D_ARRAY_EXT = 0x1234;
+
+	@Override
+	public void consumeCubemapData () {
+		consumeCustomData(GL20.GL_TEXTURE_CUBE_MAP);
+	}
 
 	@Override
 	public void consumeCustomData (int target) {

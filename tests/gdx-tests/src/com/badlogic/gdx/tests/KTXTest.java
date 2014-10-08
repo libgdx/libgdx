@@ -19,9 +19,8 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLTexture;
-import com.badlogic.gdx.graphics.KTXCubemap;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -56,7 +55,7 @@ public class KTXTest extends GdxTest {
 	private Model model;
 	private ModelInstance instance;
 	private Environment environment;
-	private GLTexture cubemap;
+	private Cubemap cubemap;
 
 	// 2D texture alpha ETC1 example
 	private OrthographicCamera orthoCamera;
@@ -93,7 +92,7 @@ public class KTXTest extends GdxTest {
 			+ "}\n";
 		modelBatch = new ModelBatch(new DefaultShaderProvider(new Config(cubemapVS, cubemapFS)));
 
-		cubemap = new KTXCubemap(new KTXTextureData(Gdx.files.internal("data/cubemap.zktx"), true));
+		cubemap = new Cubemap(new KTXTextureData(Gdx.files.internal("data/cubemap.zktx"), true));
 		cubemap.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 
 		environment = new Environment();
