@@ -73,8 +73,7 @@ public class Cubemap extends GLTexture {
 
 	protected CubemapData data;
 
-	/** Construct an empty Cubemap. Use the load(...) methods to set the texture of each side. Every side of the cubemap must be set
-	 * before it can be used. */
+	/** Construct an Cubemap based on the given CubemapData. */
 	public Cubemap (CubemapData data) {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
@@ -140,7 +139,7 @@ public class Cubemap extends GLTexture {
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 
-	public CubemapData getTextureData () {
+	public CubemapData getCubemapData () {
 		return data;
 	}
 
@@ -171,7 +170,7 @@ public class Cubemap extends GLTexture {
 		return 0;
 	}
 
-	/** Disposes all resources associated with the texture */
+	/** Disposes all resources associated with the cubemap */
 	public void dispose () {
 		// this is a hack. reason: we have to set the glHandle to 0 for textures that are
 		// reloaded through the asset manager as we first remove (and thus dispose) the texture
@@ -189,13 +188,13 @@ public class Cubemap extends GLTexture {
 		managedCubemaps.put(app, managedCubemapArray);
 	}
 
-	/** Clears all managed textures. This is an internal method. Do not use it! */
+	/** Clears all managed cubemaps. This is an internal method. Do not use it! */
 	public static void clearAllCubemaps (Application app) {
 		managedCubemaps.remove(app);
 	}
 
-	/** Invalidate all managed textures. This is an internal method. Do not use it! */
-	public static void invalidateAllTextures (Application app) {
+	/** Invalidate all managed cubemaps. This is an internal method. Do not use it! */
+	public static void invalidateAllCubemaps (Application app) {
 		Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
 		if (managedCubemapArray == null) return;
 
@@ -206,11 +205,11 @@ public class Cubemap extends GLTexture {
 			}
 		} else {
 			// first we have to make sure the AssetManager isn't loading anything anymore,
-			// otherwise the ref counting trick below wouldn't work (when a texture is
+			// otherwise the ref counting trick below wouldn't work (when a cubemap is
 			// currently on the task stack of the manager.)
 			assetManager.finishLoading();
 
-			// next we go through each texture and reload either directly or via the
+			// next we go through each cubemap and reload either directly or via the
 			// asset manager.
 			Array<Cubemap> cubemaps = new Array<Cubemap>(managedCubemapArray);
 			for (Cubemap cubemap : cubemaps) {
@@ -218,18 +217,18 @@ public class Cubemap extends GLTexture {
 				if (fileName == null) {
 					cubemap.reload();
 				} else {
-					// get the ref count of the texture, then set it to 0 so we
+					// get the ref count of the cubemap, then set it to 0 so we
 					// can actually remove it from the assetmanager. Also set the
 					// handle to zero, otherwise we might accidentially dispose
-					// already reloaded textures.
+					// already reloaded cubemaps.
 					final int refCount = assetManager.getReferenceCount(fileName);
 					assetManager.setReferenceCount(fileName, 0);
 					cubemap.glHandle = 0;
 
-					// create the parameters, passing the reference to the texture as
+					// create the parameters, passing the reference to the cubemap as
 					// well as a callback that sets the ref count.
 					CubemapParameter params = new CubemapParameter();
-					params.textureData = cubemap.getTextureData();
+					params.cubemapData = cubemap.getCubemapData();
 					params.minFilter = cubemap.getMinFilter();
 					params.magFilter = cubemap.getMagFilter();
 					params.wrapU = cubemap.getUWrap();
@@ -242,7 +241,7 @@ public class Cubemap extends GLTexture {
 						}
 					};
 
-					// unload the texture, create a new gl handle then reload it.
+					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
 					cubemap.glHandle = GLTexture.createGLHandle();
 					assetManager.load(fileName, Cubemap.class, params);
@@ -272,7 +271,7 @@ public class Cubemap extends GLTexture {
 		return builder.toString();
 	}
 
-	/** @return the number of managed textures currently loaded */
+	/** @return the number of managed cubemaps currently loaded */
 	public static int getNumManagedCubemaps () {
 		return managedCubemaps.get(Gdx.app).size;
 	}

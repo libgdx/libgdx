@@ -106,7 +106,7 @@ public class KTXProcessor {
 		FileHandle file = new FileHandle(args[0]);
 		if (file.name().toLowerCase().endsWith(".ktx") || file.name().toLowerCase().endsWith(".zktx")) {
 			ktx = new KTXTextureData(file, false);
-			if (ktx.getNFaces() == 6) isCubemap = true;
+			if (ktx.getNumberOfFaces() == 6) isCubemap = true;
 			ktxDispose = DISPOSE_PACK;
 		}
 
@@ -122,20 +122,20 @@ public class KTXProcessor {
 			int ktxFace = 0;
 
 			// Load source image (ends up with either ktx, etc1 or facePixmap initialized)
-			if (ktx != null && ktx.getNFaces() == 6) {
+			if (ktx != null && ktx.getNumberOfFaces() == 6) {
 				// No loading since we have a ktx file with cubemap as input
-				nLevels = ktx.getNMipMapLevels();
+				nLevels = ktx.getNumberOfMipMapLevels();
 				ktxFace = face;
 			} else {
 				file = new FileHandle(args[face]);
 				System.out.println("Processing : " + file + " for face #" + face);
 				if (file.name().toLowerCase().endsWith(".ktx") || file.name().toLowerCase().endsWith(".zktx")) {
-					if (ktx == null || ktx.getNFaces() != 6) {
+					if (ktx == null || ktx.getNumberOfFaces() != 6) {
 						ktxDispose = DISPOSE_FACE;
 						ktx = new KTXTextureData(file, false);
 						ktx.prepare();
 					}
-					nLevels = ktx.getNMipMapLevels();
+					nLevels = ktx.getNumberOfMipMapLevels();
 					texWidth = ktx.getWidth();
 					texHeight = ktx.getHeight();
 				} else if (file.name().toLowerCase().endsWith(".etc1")) {
@@ -244,12 +244,12 @@ public class KTXProcessor {
 				etc1 = null;
 			}
 			if (ktx != null && ktxDispose == DISPOSE_FACE) {
-				ktx.dispose();
+				ktx.disposePreparedData();
 				ktx = null;
 			}
 		}
 		if (ktx != null) {
-			ktx.dispose();
+			ktx.disposePreparedData();
 			ktx = null;
 		}
 

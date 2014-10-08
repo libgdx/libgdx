@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** A FacedCubemapData holds a cubemap data definition based on a {@link TextureData} per face.
+ * 
+ * @author Vincent Nousquet */
 public class FacedCubemapData implements CubemapData {
 
 	protected final TextureData[] data = new TextureData[6];
@@ -108,7 +111,7 @@ public class FacedCubemapData implements CubemapData {
 	public void prepare () {
 		if (!isComplete()) throw new GdxRuntimeException("You need to complete your cubemap data before using it");
 		for (int i = 0; i < data.length; i++)
-			data[i].prepare();
+			if (!data[i].isPrepared()) data[i].prepare();
 	}
 
 	@Override

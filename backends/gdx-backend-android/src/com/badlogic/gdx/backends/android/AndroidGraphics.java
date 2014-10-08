@@ -16,7 +16,12 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.content.Context;
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
+
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -32,6 +37,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -41,14 +47,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -252,6 +250,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
+		Cubemap.invalidateAllCubemaps(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
@@ -477,6 +476,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public void clearManagedCaches () {
 		Mesh.clearAllMeshes(app);
 		Texture.clearAllTextures(app);
+		Cubemap.clearAllCubemaps(app);
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 
@@ -486,6 +486,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	protected void logManagedCachesStatus() {
 		Gdx.app.log(LOG_TAG, Mesh.getManagedStatus());
 		Gdx.app.log(LOG_TAG, Texture.getManagedStatus());
+		Gdx.app.log(LOG_TAG, Cubemap.getManagedStatus());
 		Gdx.app.log(LOG_TAG, ShaderProgram.getManagedStatus());
 		Gdx.app.log(LOG_TAG, FrameBuffer.getManagedStatus());
 	}

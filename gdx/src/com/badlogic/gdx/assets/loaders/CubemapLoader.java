@@ -40,13 +40,13 @@ import com.badlogic.gdx.utils.Array;
  * various Cubemap constructors, e.g. filtering and so on.
  * @author mzechner, Vincent Bousquet */
 public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoader.CubemapParameter> {
-	static public class TextureLoaderInfo {
+	static public class CubemapLoaderInfo {
 		String filename;
 		CubemapData data;
-		Cubemap texture;
+		Cubemap cubemap;
 	};
 
-	TextureLoaderInfo info = new TextureLoaderInfo();
+	CubemapLoaderInfo info = new CubemapLoaderInfo();
 
 	public CubemapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -55,23 +55,23 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
 		info.filename = fileName;
-		if (parameter == null || parameter.textureData == null) {
+		if (parameter == null || parameter.cubemapData == null) {
 			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
-			info.texture = null;
+			info.cubemap = null;
 
 			if (parameter != null) {
 				format = parameter.format;
-				info.texture = parameter.cubemap;
+				info.cubemap = parameter.cubemap;
 			}
 
 			if (fileName.contains(".ktx") || fileName.contains(".zktx")) {
 				info.data = new KTXTextureData(file, genMipMaps);
 			}
 		} else {
-			info.data = parameter.textureData;
-			info.texture = parameter.cubemap;
+			info.data = parameter.cubemapData;
+			info.cubemap = parameter.cubemap;
 		}
 		if (!info.data.isPrepared()) info.data.prepare();
 	}
@@ -79,17 +79,17 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 	@Override
 	public Cubemap loadSync (AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
 		if (info == null) return null;
-		Cubemap texture = info.texture;
-		if (texture != null) {
-			texture.load(info.data);
+		Cubemap cubemap = info.cubemap;
+		if (cubemap != null) {
+			cubemap.load(info.data);
 		} else {
-			texture = new Cubemap(info.data);
+			cubemap = new Cubemap(info.data);
 		}
 		if (parameter != null) {
-			texture.setFilter(parameter.minFilter, parameter.magFilter);
-			texture.setWrap(parameter.wrapU, parameter.wrapV);
+			cubemap.setFilter(parameter.minFilter, parameter.magFilter);
+			cubemap.setWrap(parameter.wrapU, parameter.wrapV);
 		}
-		return texture;
+		return cubemap;
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 		/** The texture to put the {@link TextureData} in, optional. **/
 		public Cubemap cubemap = null;
 		/** CubemapData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
-		public CubemapData textureData = null;
+		public CubemapData cubemapData = null;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
 		public TextureWrap wrapU = TextureWrap.ClampToEdge;
