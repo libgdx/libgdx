@@ -163,7 +163,7 @@ public class GdxSetupUI extends JFrame {
 						String replaced = sdkLocation.replace("\\", "\\\\");
 						Runtime.getRuntime().exec("\"" + replaced + "\\SDK Manager.exe\"");
 					} else {
-						Runtime.getRuntime().exec(sdkLocation + "tools/android sdk");
+						Runtime.getRuntime().exec("\"" + sdkLocation + "tools/android sdk\"");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

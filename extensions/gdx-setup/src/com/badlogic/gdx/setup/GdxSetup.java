@@ -309,6 +309,8 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-568h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
