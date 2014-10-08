@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * This class is used to provide a way of creating a VideoPlayer, without knowing the platform the program is running
  * on. This has to be extended for each supported platform.
@@ -55,7 +57,13 @@ public class VideoPlayerCreator {
 		try {
 			return videoPlayerClass.getConstructor(Viewport.class)
 					.newInstance(viewport);
-		} catch (ReflectiveOperationException e) {
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -83,7 +91,13 @@ public class VideoPlayerCreator {
 		try {
 			return videoPlayerClass.getConstructor(Camera.class, Mesh.class)
 					.newInstance(cam, mesh);
-		} catch (ReflectiveOperationException e) {
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
