@@ -20,6 +20,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -65,17 +66,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				info.texture = parameter.texture;
 			}
 
-			if (fileName.contains(".ktx") || fileName.contains(".zktx")) {
-				info.data = new KTXTextureData(file, genMipMaps);
-			} else if (!fileName.contains(".etc1")) {
-				if (fileName.contains(".cim"))
-					pixmap = PixmapIO.readCIM(file);
-				else
-					pixmap = new Pixmap(file);
-				info.data = new FileTextureData(file, pixmap, format, genMipMaps);
-			} else {
-				info.data = new ETC1TextureData(file, genMipMaps);
-			}
+			info.data = GLTexture.createTextureData(file, format, genMipMaps);
 		} else {
 			info.data = parameter.textureData;
 			info.texture = parameter.texture;

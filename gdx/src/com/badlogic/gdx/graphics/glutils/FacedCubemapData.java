@@ -2,9 +2,12 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
 import com.badlogic.gdx.graphics.CubemapData;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -22,6 +25,22 @@ public class FacedCubemapData implements CubemapData {
 	 * before it can be used. */
 	public FacedCubemapData () {
 		this((TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null);
+	}
+
+	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
+	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
+		FileHandle positiveZ, FileHandle negativeZ) {
+		this(GLTexture.createTextureData(positiveX, false), GLTexture.createTextureData(negativeX, false), GLTexture
+			.createTextureData(positiveY, false), GLTexture.createTextureData(negativeY, false), GLTexture.createTextureData(
+			positiveZ, false), GLTexture.createTextureData(negativeZ, false));
+	}
+
+	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
+	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
+		FileHandle positiveZ, FileHandle negativeZ, boolean useMipMaps) {
+		this(GLTexture.createTextureData(positiveX, useMipMaps), GLTexture.createTextureData(negativeX, useMipMaps), GLTexture
+			.createTextureData(positiveY, useMipMaps), GLTexture.createTextureData(negativeY, useMipMaps), GLTexture
+			.createTextureData(positiveZ, useMipMaps), GLTexture.createTextureData(negativeZ, useMipMaps));
 	}
 
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
@@ -64,6 +83,24 @@ public class FacedCubemapData implements CubemapData {
 		for (TextureData data : this.data)
 			if (!data.isManaged()) return false;
 		return true;
+	}
+
+	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set to
+	 * that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change
+	 * to be taken in account.
+	 * @param side The {@link CubemapSide}
+	 * @param file The texture {@link FileHandle} */
+	public void load (CubemapSide side, FileHandle file) {
+		data[side.index] = GLTexture.createTextureData(file, false);
+	}
+
+	/** Sets the specified side of this cubemap to the specified {@link Pixmap}, overwriting any previous data set to that side.
+	 * Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change to be
+	 * taken in account.
+	 * @param side The {@link CubemapSide}
+	 * @param pixmap The {@link Pixmap} */
+	public void load (CubemapSide side, Pixmap pixmap) {
+		data[side.index] = pixmap == null ? null : new PixmapTextureData(pixmap, null, false, false);
 	}
 
 	/** @return True if all sides of this cubemap are set, false otherwise. */
