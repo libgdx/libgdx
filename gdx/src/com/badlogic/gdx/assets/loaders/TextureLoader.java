@@ -66,7 +66,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				info.texture = parameter.texture;
 			}
 
-			info.data = GLTexture.createTextureData(file, format, genMipMaps);
+			info.data = TextureData.Factory.loadFromFile(file, format, genMipMaps);
 		} else {
 			info.data = parameter.textureData;
 			info.texture = parameter.texture;
