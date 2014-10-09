@@ -178,6 +178,7 @@ public class Body {
 	private final Vector2 position = new Vector2();
 
 	/** Get the world body origin position.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @return the world position of the body's origin. */
 	public Vector2 getPosition () {
 		jniGetPosition(addr, tmp);
@@ -206,7 +207,8 @@ public class Body {
 
 	private final Vector2 worldCenter = new Vector2();
 	
-	/** Get the world position of the center of mass. */
+	/** Get the world position of the center of mass.
+	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getWorldCenter () {
 		jniGetWorldCenter(addr, tmp);
 		worldCenter.x = tmp[0];
@@ -223,7 +225,8 @@ public class Body {
 
 	private final Vector2 localCenter = new Vector2();
 	
-	/** Get the local position of the center of mass. */
+	/** Get the local position of the center of mass.
+	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getLocalCenter () {
 		jniGetLocalCenter(addr, tmp);
 		localCenter.x = tmp[0];
@@ -255,7 +258,8 @@ public class Body {
 
 	private final Vector2 linearVelocity = new Vector2();
 	
-	/** Get the linear velocity of the center of mass. */
+	/** Get the linear velocity of the center of mass.
+	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getLinearVelocity () {
 		jniGetLinearVelocity(addr, tmp);
 		linearVelocity.x = tmp[0];
@@ -458,6 +462,7 @@ public class Body {
 	private final Vector2 localPoint = new Vector2();
 
 	/** Get the world coordinates of a point given the local coordinates.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param localPoint a point on the body measured relative the the body's origin.
 	 * @return the same point expressed in world coordinates. */
 	public Vector2 getWorldPoint (Vector2 localPoint) {
@@ -477,6 +482,7 @@ public class Body {
 	private final Vector2 worldVector = new Vector2();
 
 	/** Get the world coordinates of a vector given the local coordinates.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param localVector a vector fixed in the body.
 	 * @return the same vector expressed in world coordinates. */
 	public Vector2 getWorldVector (Vector2 localVector) {
@@ -496,6 +502,7 @@ public class Body {
 	public final Vector2 localPoint2 = new Vector2();
 
 	/** Gets a local point relative to the body's origin given a world point.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param worldPoint a point in world coordinates.
 	 * @return the corresponding local point relative to the body's origin. */
 	public Vector2 getLocalPoint (Vector2 worldPoint) {
@@ -515,6 +522,7 @@ public class Body {
 	public final Vector2 localVector = new Vector2();
 
 	/** Gets a local vector given a world vector.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param worldVector a vector in world coordinates.
 	 * @return the corresponding local vector. */
 	public Vector2 getLocalVector (Vector2 worldVector) {
@@ -534,6 +542,7 @@ public class Body {
 	public final Vector2 linVelWorld = new Vector2();
 
 	/** Get the world linear velocity of a world point attached to this body.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param worldPoint a point in world coordinates.
 	 * @return the world velocity of a point. */
 	public Vector2 getLinearVelocityFromWorldPoint (Vector2 worldPoint) {
@@ -553,6 +562,7 @@ public class Body {
 	public final Vector2 linVelLoc = new Vector2();
 
 	/** Get the world velocity of a local point.
+	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @param localPoint a point in local coordinates.
 	 * @return the world velocity of a point. */
 	public Vector2 getLinearVelocityFromLocalPoint (Vector2 localPoint) {

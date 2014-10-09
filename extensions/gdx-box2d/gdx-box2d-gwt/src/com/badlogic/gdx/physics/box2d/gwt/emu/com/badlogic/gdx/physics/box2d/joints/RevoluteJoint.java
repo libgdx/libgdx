@@ -108,7 +108,7 @@ public class RevoluteJoint extends Joint {
 	}
 
 	public Vector2 getLocalAnchorB () {
-		return localAnchorA.set(joint.getLocalAnchorB().x, joint.getLocalAnchorB().y);
+		return localAnchorB.set(joint.getLocalAnchorB().x, joint.getLocalAnchorB().y);
 	}
 
 	/** Get the current motor torque, usually in N-m. */
