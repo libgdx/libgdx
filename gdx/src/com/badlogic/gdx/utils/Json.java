@@ -545,10 +545,10 @@ public class Json {
 
 					writeObjectStart(actualType, null);
 					writer.name("value");
-					writer.value(((Enum)value).name());
+					writer.value(getEnumValue((Enum)value));
 					writeObjectEnd();
 				} else {
-					writer.value(((Enum)value).name());
+					writer.value(getEnumValue((Enum)value));
 				}
 				return;
 			}
@@ -559,6 +559,10 @@ public class Json {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		}
+	}
+
+	private String getEnumValue (Enum enun) {
+		return enumNames ? enun.name() : enun.toString();
 	}
 
 	public void writeObjectStart (String name) {
@@ -965,8 +969,10 @@ public class Json {
 			if (type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
 			if (ClassReflection.isAssignableFrom(Enum.class, type)) {
 				Enum[] constants = (Enum[])type.getEnumConstants();
-				for (int i = 0, n = constants.length; i < n; i++)
-					if (string.equals(constants[i].name())) return (T)constants[i];
+				for (int i = 0, n = constants.length; i < n; i++) {
+					Enum enun = constants[i];
+					if (string.equals(getEnumValue(enun))) return (T)enun;
+				}
 			}
 			if (type == CharSequence.class) return (T)string;
 			throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
