@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.MovementMethod;
 import android.util.Log;
@@ -63,7 +64,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 	}
 
 	Dialog createDialog () {
-		textView = createView(context);
+		textView = createView(context, input);
 		textView.setOnKeyListener(this);
 		FrameLayout.LayoutParams textBoxLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
 			FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
@@ -83,9 +84,9 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 		return dialog;
 	}
 
-	public static TextView createView (Context context) {
+	public static TextView createView (Context context, final AndroidInput input) {
 		final TextView view = new TextView(context) {
-			Editable editable = new PassThroughEditable();
+			Editable editable = new PassThroughEditable(input);
 
 			@Override
 			protected boolean getDefaultEditable () {
@@ -104,17 +105,15 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 
 			@Override
 			public boolean onKeyDown (int keyCode, KeyEvent event) {
-				Log.d("Test", "down keycode: " + event.getKeyCode());
 				return super.onKeyDown(keyCode, event);
 			}
 
 			@Override
 			public boolean onKeyUp (int keyCode, KeyEvent event) {
-				Log.d("Test", "up keycode: " + event.getKeyCode());
 				return super.onKeyUp(keyCode, event);
 			}
 		};
-// view.setCursorVisible(false);
+		view.setCursorVisible(false);
 		return view;
 	}
 
@@ -133,6 +132,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 					handler.post(new Runnable() {
 						@Override
 						public void run () {
+							textView.setInputType(InputType.TYPE_CLASS_TEXT);
 							dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 							InputMethodManager input = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 							if (input != null) input.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
@@ -150,7 +150,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 							content.getLocationOnScreen(screenloc);
 							keyboardHeight = Math.abs(screenloc[1]);
 							if (keyboardHeight > 0) keyboardShowing = true;
-							if (keyboardHeight == 0 && keyboardShowing) {
+							if (keyboardHeight == 0 && keyboardShowing && dialog != null) {
 								dialog.dismiss();
 								dialog = null;
 							}
@@ -167,137 +167,122 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 	}
 
 	public static class PassThroughEditable implements Editable {
+		private AndroidInput input;
+
+		public PassThroughEditable (AndroidInput input) {
+			this.input = input;
+		}
+
 
 		@Override
 		public char charAt (int index) {
-			Log.d("Editable", "charAt");
 			return 0;
 		}
 
 		@Override
 		public int length () {
-			Log.d("Editable", "length");
 			return 0;
 		}
 
 		@Override
 		public CharSequence subSequence (int start, int end) {
-			Log.d("Editable", "subSequence");
 			return null;
 		}
 
 		@Override
 		public void getChars (int start, int end, char[] dest, int destoff) {
-			Log.d("Editable", "getChars");
 		}
 
 		@Override
 		public void removeSpan (Object what) {
-			Log.d("Editable", "removeSpan");
 		}
 
 		@Override
 		public void setSpan (Object what, int start, int end, int flags) {
-			Log.d("Editable", "setSpan");
 		}
 
 		@Override
 		public int getSpanEnd (Object tag) {
-			Log.d("Editable", "getSpanEnd");
 			return 0;
 		}
 
 		@Override
 		public int getSpanFlags (Object tag) {
-			Log.d("Editable", "getSpanFlags");
 			return 0;
 		}
 
 		@Override
 		public int getSpanStart (Object tag) {
-			Log.d("Editable", "getSpanStart");
 			return 0;
 		}
 
 		@Override
 		public <T> T[] getSpans (int arg0, int arg1, Class<T> arg2) {
-			Log.d("Editable", "getSpans");
 			return null;
 		}
 
 		@Override
 		public int nextSpanTransition (int start, int limit, Class type) {
-			Log.d("Editable", "nextSpanTransition");
 			return 0;
 		}
 
 		@Override
 		public Editable append (CharSequence text) {
-			Log.d("Editable", "append: " + text);
 			return this;
 		}
 
 		@Override
 		public Editable append (char text) {
-			Log.d("Editable", "append: " + text);
 			return this;
 		}
 
 		@Override
 		public Editable append (CharSequence text, int start, int end) {
-			Log.d("Editable", "append: " + text);
 			return this;
 		}
 
 		@Override
 		public void clear () {
-			Log.d("Editable", "clear");
 		}
 
 		@Override
 		public void clearSpans () {
-			Log.d("Editable", "clearSpanes");
 		}
 
 		@Override
 		public Editable delete (int st, int en) {
-			Log.d("Editable", "delete, " + st + ", " + en);
 			return this;
 		}
 
 		@Override
 		public InputFilter[] getFilters () {
-			Log.d("Editable", "getFilters");
 			return new InputFilter[0];
 		}
 
 		@Override
 		public Editable insert (int where, CharSequence text) {
-			Log.d("Editable", "insert: " + text);
 			return this;
 		}
 
 		@Override
 		public Editable insert (int where, CharSequence text, int start, int end) {
-			Log.d("Editable", "insert: " + text);
 			return this;
 		}
 
 		@Override
 		public Editable replace (int st, int en, CharSequence text) {
-			Log.d("Editable", "replace: " + text);
+			KeyEvent keyEvent = new KeyEvent(0l, text.toString(), 0, 0);
+			input.onKey(null, android.view.KeyEvent.KEYCODE_UNKNOWN, keyEvent);
 			return this;
 		}
 
 		@Override
 		public Editable replace (int st, int en, CharSequence source, int start, int end) {
-			Log.d("Editable", "replace: " + source);
 			return this;
 		}
 
 		@Override
 		public void setFilters (InputFilter[] filters) {
-			Log.d("Editable", "setFilters");
 		}
 	}
 
@@ -308,6 +293,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 
 	@Override
 	public boolean onKey (View view, int keycode, KeyEvent e) {
+		input.onKey(view, keycode, e);
 		return false;
 	}
 }
