@@ -318,15 +318,15 @@ public final class BufferUtils {
 		dst.limit(dst.capacity());
 		if (srcIsByte && dstIsByte)
 			((ByteBuffer)dst).put((ByteBuffer)src);
-		else if ((srcIsByte || dst instanceof CharBuffer) && (dstIsByte || dst instanceof CharBuffer))
+		else if ((srcIsByte || src instanceof CharBuffer) && (dstIsByte || dst instanceof CharBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asCharBuffer() : (CharBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asCharBuffer() : (CharBuffer)src));
-		else if ((srcIsByte || dst instanceof ShortBuffer) && (dstIsByte || dst instanceof ShortBuffer))
+		else if ((srcIsByte || src instanceof ShortBuffer) && (dstIsByte || dst instanceof ShortBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asShortBuffer() : (ShortBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asShortBuffer() : (ShortBuffer)src));
-		else if ((srcIsByte || dst instanceof IntBuffer) && (dstIsByte || dst instanceof IntBuffer))
+		else if ((srcIsByte || src instanceof IntBuffer) && (dstIsByte || dst instanceof IntBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asIntBuffer() : (IntBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asIntBuffer() : (IntBuffer)src));
-		else if ((srcIsByte || dst instanceof LongBuffer) && (dstIsByte || dst instanceof LongBuffer))
+		else if ((srcIsByte || src instanceof LongBuffer) && (dstIsByte || dst instanceof LongBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asLongBuffer() : (LongBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asLongBuffer() : (LongBuffer)src));
-		else if ((srcIsByte || dst instanceof FloatBuffer) && (dstIsByte || dst instanceof FloatBuffer))
+		else if ((srcIsByte || src instanceof FloatBuffer) && (dstIsByte || dst instanceof FloatBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asFloatBuffer() : (FloatBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asFloatBuffer() : (FloatBuffer)src));
 		else if ((srcIsByte || src instanceof DoubleBuffer) && (dstIsByte || dst instanceof DoubleBuffer))
 			(dstIsByte ? ((ByteBuffer)dst).asDoubleBuffer() : (DoubleBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asDoubleBuffer() : (DoubleBuffer)src));
