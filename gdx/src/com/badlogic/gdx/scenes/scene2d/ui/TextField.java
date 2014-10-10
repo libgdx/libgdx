@@ -348,7 +348,10 @@ public class TextField extends Widget implements Disableable {
 		}
 		String newDisplayText = buffer.toString();
 
-		if (passwordMode && font.containsCharacter(passwordCharacter)) {
+		if (passwordMode) {
+			if (!font.containsCharacter(passwordCharacter)) {
+				throw new IllegalStateException("The font of this UI element does not contain the defined password character");
+			}
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
 			if (passwordBuffer.length() > textLength) //
 				passwordBuffer.setLength(textLength);
