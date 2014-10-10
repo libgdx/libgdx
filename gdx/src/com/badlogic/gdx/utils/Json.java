@@ -545,10 +545,10 @@ public class Json {
 
 					writeObjectStart(actualType, null);
 					writer.name("value");
-					writer.value(getEnumValue((Enum)value));
+					writer.value(convertToString((Enum)value));
 					writeObjectEnd();
 				} else {
-					writer.value(getEnumValue((Enum)value));
+					writer.value(convertToString((Enum)value));
 				}
 				return;
 			}
@@ -559,10 +559,6 @@ public class Json {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		}
-	}
-
-	private String getEnumValue (Enum enun) {
-		return enumNames ? enun.name() : enun.toString();
 	}
 
 	public void writeObjectStart (String name) {
@@ -970,8 +966,8 @@ public class Json {
 			if (ClassReflection.isAssignableFrom(Enum.class, type)) {
 				Enum[] constants = (Enum[])type.getEnumConstants();
 				for (int i = 0, n = constants.length; i < n; i++) {
-					Enum enun = constants[i];
-					if (string.equals(getEnumValue(enun))) return (T)enun;
+					Enum e = constants[i];
+					if (string.equals(convertToString(e))) return (T)e;
 				}
 			}
 			if (type == CharSequence.class) return (T)string;
@@ -981,7 +977,12 @@ public class Json {
 		return null;
 	}
 
+	private String convertToString (Enum e) {
+		return enumNames ? e.name() : e.toString();
+	}
+
 	private String convertToString (Object object) {
+		if (object instanceof Enum) return convertToString((Enum)object);
 		if (object instanceof Class) return ((Class)object).getName();
 		return String.valueOf(object);
 	}
