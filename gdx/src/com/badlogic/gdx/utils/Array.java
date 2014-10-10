@@ -506,8 +506,7 @@ public class Array<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
-// StringWriter acquireStacktrace = new StringWriter();
-// ArrayIterator other;
+// ArrayIterable<T> iterable;
 
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
@@ -520,8 +519,7 @@ public class Array<T> implements Iterable<T> {
 
 		public boolean hasNext () {
 			if (!valid) {
-// System.out.println("1: " + acquireStacktrace.getBuffer());
-// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return index < array.size;
@@ -530,8 +528,7 @@ public class Array<T> implements Iterable<T> {
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) {
-// System.out.println("1: " + acquireStacktrace.getBuffer());
-// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return array.items[index++];
@@ -557,6 +554,8 @@ public class Array<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
 
+//		java.io.StringWriter lastAcquire = new java.io.StringWriter();
+
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
 		}
@@ -567,25 +566,23 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public Iterator<T> iterator () {
+// lastAcquire.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
-// iterator1.other = iterator2;
-// iterator2.other = iterator1;
+//				iterator1.iterable = this;
+//				iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;
 				iterator1.valid = true;
 				iterator2.valid = false;
-// iterator1.acquireStacktrace.getBuffer().setLength(0);
-// new Throwable().printStackTrace(new PrintWriter(iterator1.acquireStacktrace));
 				return iterator1;
 			}
 			iterator2.index = 0;
 			iterator2.valid = true;
 			iterator1.valid = false;
-// iterator2.acquireStacktrace.getBuffer().setLength(0);
-// new Throwable().printStackTrace(new PrintWriter(iterator2.acquireStacktrace));
 			return iterator2;
 		}
 	}
