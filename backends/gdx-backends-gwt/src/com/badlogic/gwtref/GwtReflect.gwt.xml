@@ -50,6 +50,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particle.renderers.PointSpriteControllerRenderData" />
     <extend-configuration-property name="gdx.reflect.include"
+        value="java.util.Collection" />
+	<extend-configuration-property name="gdx.reflect.include"
         value="java.util.List" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="java.util.ArrayList" />
