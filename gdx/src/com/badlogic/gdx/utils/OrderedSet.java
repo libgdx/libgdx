@@ -18,12 +18,9 @@ package com.badlogic.gdx.utils;
 
 import java.util.NoSuchElementException;
 
-/** An unordered set where the keys are objects. This implementation uses cuckoo hashing using 3 hashes, random walking, and a
- * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
- * <br>
- * This set performs very fast contains and remove (typically O(1), worst case O(log(n))). Add may be a bit slower, depending on
- * hash collisions. Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT
- * size.
+/** An {@link ObjectSet} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead for
+ * put and remove. {@link #iterator() Iteration} is ordered and faster than an unordered set. Keys can also be accessed and the
+ * order changed using {@link #orderedItems()}.
  * @author Nathan Sweet */
 public class OrderedSet<T> extends ObjectSet<T> {
 	final Array<T> items;

@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead for
- * put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered. Keys can also be
- * accessed and the order changed using {@link #orderedKeys()}.
+ * put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
+ * unordered map. Keys can also be accessed and the order changed using {@link #orderedKeys()}.
  * @author Nathan Sweet */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;
