@@ -6,7 +6,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-box2d"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
