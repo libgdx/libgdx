@@ -40,11 +40,13 @@ public class JsonWriter extends Writer {
 		return writer;
 	}
 
+	/** Sets the type of JSON output. Default is {@link OutputType#minimal}. */
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
 	}
 
-	/** When true, quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP. */
+	/** When true, quotes long, double, BigInteger, BigDecimal types to prevent truncation in languages like JavaScript and PHP.
+	 * This is not necessary when using libgdx, which handles these types without truncation. Default is false. */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
 	}
@@ -94,8 +96,8 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
-		// quote long values; convert integer Doubles to Long
-		if (quoteLongValues && (value instanceof Long || value instanceof BigDecimal || value instanceof BigInteger)) {
+		if (quoteLongValues
+			&& (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)) {
 			value = String.valueOf(value);
 		} else if (value instanceof Number) {
 			Number number = (Number)value;
