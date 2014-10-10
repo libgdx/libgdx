@@ -16,15 +16,10 @@
 
 package com.badlogic.gdx.tests.android;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.pay.PurchaseManager;
-import com.badlogic.gdx.pay.PurchaseSystem;
-import com.badlogic.gdx.pay.android.openiab.PurchaseManagerAndroidOpenIAB;
-import com.badlogic.gdx.tests.PayTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
