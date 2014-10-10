@@ -315,6 +315,7 @@ public final class BufferUtils {
 		src.limit(src.position() + numElements);
 		final boolean srcIsByte = src instanceof ByteBuffer;
 		final boolean dstIsByte = dst instanceof ByteBuffer;
+		dst.limit(dst.capacity());
 		if (srcIsByte && dstIsByte)
 			((ByteBuffer)dst).put((ByteBuffer)src);
 		else if ((srcIsByte || dst instanceof CharBuffer) && (dstIsByte || dst instanceof CharBuffer))
