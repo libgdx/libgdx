@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears. <a
- * href="http://http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and
+ * href="http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and
  * parallel lines remain parallel after the transformation. Operations on affine matrices are faster because the last row can
  * always be assumed (0, 0, 1).
  *

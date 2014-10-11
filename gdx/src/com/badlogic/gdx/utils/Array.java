@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
@@ -506,6 +506,9 @@ public class Array<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
+// StringWriter acquireStacktrace = new StringWriter();
+// ArrayIterator other;
+
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
 		}
@@ -516,13 +519,21 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println("1: " + acquireStacktrace.getBuffer());
+// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return index < array.size;
 		}
 
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println("1: " + acquireStacktrace.getBuffer());
+// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return array.items[index++];
 		}
 
@@ -559,16 +570,22 @@ public class Array<T> implements Iterable<T> {
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
+// iterator1.other = iterator2;
+// iterator2.other = iterator1;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;
 				iterator1.valid = true;
 				iterator2.valid = false;
+// iterator1.acquireStacktrace.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new PrintWriter(iterator1.acquireStacktrace));
 				return iterator1;
 			}
 			iterator2.index = 0;
 			iterator2.valid = true;
 			iterator1.valid = false;
+// iterator2.acquireStacktrace.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new PrintWriter(iterator2.acquireStacktrace));
 			return iterator2;
 		}
 	}

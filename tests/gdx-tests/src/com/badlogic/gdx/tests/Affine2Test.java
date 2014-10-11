@@ -24,6 +24,9 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Affine2Test extends GdxTest {
+
+	static public final float TOLERANCE = 0.005f;
+
 	@Override
 	public void create () {
 		Vector2 trn = new Vector2(30, 50);
@@ -100,12 +103,12 @@ public class Affine2Test extends GdxTest {
 		checkEqual(mat1, afn1);
 
 		// check determinant and inverse
-		check(mat1.det() == afn1.det());
+		checkEqual(mat1.det(), afn1.det());
 		check(afn1.det() == (afn1.m00 * afn1.m11 - afn1.m01 * afn1.m10));
 		mat1.inv();
 		afn2.set(afn1).inv();
 		checkEqual(mat1, afn2);
-		check(MathUtils.isEqual(afn1.det(), 1 / afn2.det()));
+		checkEqual(afn1.det(), 1 / afn2.det());
 
 		// check for exception when trying to invert singular matrices
 		boolean didThrow = false;
@@ -116,7 +119,7 @@ public class Affine2Test extends GdxTest {
 			didThrow = true;
 		}
 		check(didThrow);
-		
+
 		System.out.println("All tests passed.");
 	}
 
@@ -138,11 +141,15 @@ public class Affine2Test extends GdxTest {
 
 	private static void checkEqual (Matrix3 a, Matrix3 b) {
 		for (int i = 0; i < 9; i++)
-			check(MathUtils.isEqual(a.val[i], b.val[i]), "matrices are not equal");
+			check(MathUtils.isEqual(a.val[i], b.val[i], TOLERANCE), "matrices are not equal");
 	}
 
 	private static void checkEqual (Matrix3 matrix, float[] vals) {
 		for (int i = 0; i < 9; i++)
-			check(MathUtils.isEqual(matrix.val[i], vals[i]), "matrices are not equal");
+			check(MathUtils.isEqual(matrix.val[i], vals[i], TOLERANCE), "matrices are not equal");
+	}
+
+	private static void checkEqual (float a, float b) {
+		check(MathUtils.isEqual(a, b, TOLERANCE));
 	}
 }

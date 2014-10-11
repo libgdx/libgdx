@@ -154,7 +154,6 @@ public class GdxTests {
 		ParallaxTest.class,
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
-		PayTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
