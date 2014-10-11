@@ -86,7 +86,7 @@ public interface TextureData {
 	 * @author Vincent Bousquet */
 	public static class Factory {
 
-		public static TextureData loadTextureDataFromFile (FileHandle file, boolean useMipMaps) {
+		public static TextureData loadFromFile (FileHandle file, boolean useMipMaps) {
 			return loadFromFile(file, null, useMipMaps);
 		}
 
