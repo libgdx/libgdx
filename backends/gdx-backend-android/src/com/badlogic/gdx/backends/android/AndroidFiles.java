@@ -53,7 +53,7 @@ public class AndroidFiles implements Files {
 			// Android 4.4 'KitKat' and above have new external storage guidelines 
 			// Some devices don't respect this, so we have a nice little patch to detect that.
 			
-			File testFile = new File(this.sdcard, ".gdxexternaltest.");
+			File testFile = new File(this.sdcard, ".gdxexternaltest");
 			
 			if (testFile.exists()) {
 				testFile.delete();
@@ -74,6 +74,12 @@ public class AndroidFiles implements Files {
 				}
 				
 				this.sdcard = externalDir.getAbsolutePath() + "/";
+				
+				try {
+					testFile.delete();
+				} catch (Exception e) {
+					// Ignored
+				}
 			}
 		}
 	}
