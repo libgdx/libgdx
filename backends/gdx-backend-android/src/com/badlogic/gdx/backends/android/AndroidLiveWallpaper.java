@@ -88,7 +88,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath(), this.getService());
 		net = new AndroidNet(this);
 		this.listener = listener;
 
