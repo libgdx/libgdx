@@ -33,6 +33,7 @@ public class AndroidFiles implements Files {
 	protected String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	protected final String localpath;
 
+	protected final String sdcardRoot = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	protected boolean legacyWriting = true;
 	protected final AssetManager assets;
 
@@ -49,39 +50,12 @@ public class AndroidFiles implements Files {
 	}
 
 	private void setupExternalStorage (Context context) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			// Android 4.4 'KitKat' and above have new external storage guidelines 
-			// Some devices don't respect this, so we have a nice little patch to detect that.
-			
-			File testFile = new File(this.sdcard, ".gdxexternaltest");
-			
-			if (testFile.exists()) {
-				testFile.delete();
-			}
-			
-			try {
-				this.legacyWriting = testFile.createNewFile();
-			} catch (IOException e) {
-				// Legacy writing is not available.
-				this.legacyWriting = false;
-			}
-			
-			if (!this.legacyWriting) {
-				// Gets an application-specific directory that is writable on the external storage.
-				File externalDir = context.getExternalFilesDir(null);
-				if (!externalDir.exists()) {
-					externalDir.mkdirs();
-				}
-				
-				this.sdcard = externalDir.getAbsolutePath() + "/";
-				
-				try {
-					testFile.delete();
-				} catch (Exception e) {
-					// Ignored
-				}
-			}
+		// Gets an application-specific directory that is writable on the external storage.
+		File externalDir = context.getExternalFilesDir(null);
+		if (!externalDir.exists()) {
+			externalDir.mkdirs();
 		}
+		this.sdcard = externalDir.getAbsolutePath() + "/";
 	}
 
 	@Override
@@ -116,7 +90,7 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public String getExternalStoragePath () {
-		return sdcard;
+		return this.sdcardRoot;
 	}
 
 	@Override

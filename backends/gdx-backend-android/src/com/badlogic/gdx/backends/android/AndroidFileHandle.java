@@ -231,14 +231,17 @@ public class AndroidFileHandle extends FileHandle {
 	public File file () {
 		if (type == FileType.Local) return new File(Gdx.files.getLocalStoragePath(), file.getPath());
 		if (type == FileType.External) {
-			if (!this.files.legacyWriting) {
-				File tempFile = new File(Environment.getExternalStorageDirectory(), this.file.getPath());
-				if (tempFile.exists()) {
-					return tempFile;
-				} else {
-					tempFile = new File(this.files.sdcard, this.file.getPath());
-					return tempFile;
+			File tempFile = new File(Environment.getExternalStorageDirectory(), this.file.getPath());
+			File tempFile2 = new File(this.files.sdcard, this.file.getPath());
+			
+			if (tempFile.exists()) {
+				if (tempFile2.exists()) {
+					// They both exist. Oh shoot. Use new apis
+					return tempFile2;
 				}
+				return tempFile;
+			} else {
+				return tempFile2;
 			}
 		}
 		return super.file();
