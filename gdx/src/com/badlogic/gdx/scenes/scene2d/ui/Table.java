@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -842,12 +841,11 @@ public class Table extends WidgetGroup {
 			float totalExpandWidth = 0;
 			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
 				totalExpandWidth += expandWidth[ii];
-			boolean isZero = MathUtils.isZero(totalExpandWidth);
 
 			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
 			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
 			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
-				float ratio = isZero ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
+				float ratio = totalExpandWidth == 0 ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
 				columnMinWidth[ii] += extraMinWidth * ratio;
 				columnPrefWidth[ii] += extraPrefWidth * ratio;
 			}
@@ -936,7 +934,7 @@ public class Table extends WidgetGroup {
 		// Size columns and rows between min and pref size using (preferred - min) size to weight distribution of extra space.
 		float[] columnWeightedWidth;
 		float totalGrowWidth = tablePrefWidth - tableMinWidth;
-		if (MathUtils.isZero(totalGrowWidth))
+		if (totalGrowWidth == 0)
 			columnWeightedWidth = columnMinWidth;
 		else {
 			float extraWidth = Math.min(totalGrowWidth, Math.max(0, layoutWidth - tableMinWidth));
@@ -951,7 +949,7 @@ public class Table extends WidgetGroup {
 
 		float[] rowWeightedHeight;
 		float totalGrowHeight = tablePrefHeight - tableMinHeight;
-		if (MathUtils.isZero(totalGrowHeight))
+		if (totalGrowHeight == 0)
 			rowWeightedHeight = rowMinHeight;
 		else {
 			rowWeightedHeight = Table.rowWeightedHeight = ensureSize(Table.rowWeightedHeight, rows);
