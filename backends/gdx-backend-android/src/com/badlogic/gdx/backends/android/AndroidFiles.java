@@ -30,28 +30,35 @@ import com.badlogic.gdx.files.FileHandle;
 /** @author mzechner
  * @author Nathan Sweet */
 public class AndroidFiles implements Files {
-	protected String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+	protected String sdcard = null;
 	protected final String localpath;
-
-	protected final String sdcardRoot = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+	
 	protected boolean legacyWriting = true;
 	protected final AssetManager assets;
+	protected Context context;
 
 	public AndroidFiles (AssetManager assets, Context context) {
 		this.assets = assets;
-		setupExternalStorage(context);
+		this.context = context;
+		setupExternalStorage(this.context);
 		localpath = sdcard;
 	}
 
 	public AndroidFiles (AssetManager assets, String localpath, Context context) {
 		this.assets = assets;
+		this.context = context;
 		this.localpath = localpath.endsWith("/") ? localpath : localpath + "/";
-		setupExternalStorage(context);
+		setupExternalStorage(this.context);
 	}
 
 	private void setupExternalStorage (Context context) {
 		// Gets an application-specific directory that is writable on the external storage.
 		File externalDir = context.getExternalFilesDir(null);
+		
+		if (externalDir == null) {
+			this.sdcard = null;
+		}
+		
 		if (!externalDir.exists()) {
 			externalDir.mkdirs();
 		}
@@ -90,7 +97,7 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public String getExternalStoragePath () {
-		return this.sdcardRoot;
+		return this.sdcard;
 	}
 
 	@Override
@@ -106,5 +113,12 @@ public class AndroidFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
+	}
+	
+	protected String getModernSdcardPath() {
+		if (this.sdcard == null && this.isExternalStorageAvailable()) {
+			this.setupExternalStorage(this.context);
+		}
+		return this.sdcard;
 	}
 }

@@ -232,8 +232,11 @@ public class AndroidFileHandle extends FileHandle {
 		if (type == FileType.Local) return new File(Gdx.files.getLocalStoragePath(), file.getPath());
 		if (type == FileType.External) {
 			File tempFile = new File(Environment.getExternalStorageDirectory(), this.file.getPath());
-			File tempFile2 = new File(this.files.sdcard, this.file.getPath());
+			File tempFile2 = new File(this.files.getModernSdcardPath(), this.file.getPath());
 			
+			if (this.files.getModernSdcardPath() == null) {
+				throw new GdxRuntimeException("External storage has not been mounted.");
+			}
 			if (tempFile.exists()) {
 				if (tempFile2.exists()) {
 					// They both exist. Oh shoot. Use new apis
