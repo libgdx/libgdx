@@ -154,6 +154,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	volatile boolean paused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
+	private boolean needsRender; // This flag is used to prevent requestRendering() to be called multiple times in the same frame.
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -324,6 +325,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		input.processEvents();
 		frameId++;
 		app.listener.render();
+
+		needsRender = false;
 	}
 
 	void makeCurrent () {
@@ -464,9 +467,14 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		this.isContinuous = isContinuous;
-		viewController.setPaused(!isContinuous);
-		viewController.setResumeOnDidBecomeActive(isContinuous);
 		view.setEnableSetNeedsDisplay(!isContinuous);
+		viewController.setResumeOnDidBecomeActive(isContinuous);
+
+		// We need to keep track of the paused state because setPaused() invokes willPause() which messes with our paused state.
+		boolean wasPaused = paused;
+		paused = !isContinuous; // This is needed to prevent willPause() from calling the application listeners pause() or resume().
+		viewController.setPaused(!isContinuous);
+		paused = wasPaused;
 	}
 
 	@Override
@@ -476,7 +484,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void requestRendering () {
-		view.setNeedsDisplay();
+		if (!isContinuous && !needsRender) {
+			needsRender = true;
+			view.setNeedsDisplay();
+		}
 	}
 
 	@Override
