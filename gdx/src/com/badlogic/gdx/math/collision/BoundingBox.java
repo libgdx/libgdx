@@ -300,6 +300,7 @@ public class BoundingBox implements Serializable {
 	 * @return This bounding box for chaining. */
 	public BoundingBox mul (Matrix4 transform) {
 		final float x0 = min.x, y0 = min.y, z0 = min.z, x1 = max.x, y1 = max.y, z1 = max.z;
+		inf();
 		ext(tmpVector.set(x0, y0, z0).mul(transform));
 		ext(tmpVector.set(x0, y0, z1).mul(transform));
 		ext(tmpVector.set(x0, y1, z0).mul(transform));
