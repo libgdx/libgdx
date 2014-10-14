@@ -18,7 +18,7 @@ package com.badlogic.gdx.net;
 
 /** A list of common response header constants of the HTTP protocol. See http://en.wikipedia.org/wiki/List_of_HTTP_header_fields.
  * @author Daniel Holderbaum */
-public class HttpResponseHeader {
+public interface HttpResponseHeader {
 	/** Specifying which web sites can participate in cross-origin resource sharing.
 	 * <p>
 	 * Example: Access-Control-Allow-Origin: * */
