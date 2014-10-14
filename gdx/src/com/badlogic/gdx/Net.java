@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.net.HttpRequestHeader;
+import com.badlogic.gdx.net.HttpResponseHeader;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -80,11 +82,12 @@ public interface Net {
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
 
-		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. See
+		 * {@link HttpResponseHeader}. */
 		String getHeader (String name);
 
 		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
-		 * represent the corresponding header values. */
+		 * represent the corresponding header values. See {@link HttpResponseHeader}. */
 		Map<String, List<String>> getHeaders ();
 	}
 
@@ -170,8 +173,7 @@ public interface Net {
 			this.url = url;
 		}
 
-		/** Sets a header to this HTTP request. Headers definition could be found at <a
-		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
+		/** Sets a header to this HTTP request, see {@link HttpRequestHeader}.
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
 		public void setHeader (String name, String value) {

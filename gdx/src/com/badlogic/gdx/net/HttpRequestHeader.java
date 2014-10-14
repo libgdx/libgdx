@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.net;
 
-/** A list of common header constants of the HTTP protocol. See http://en.wikipedia.org/wiki/List_of_HTTP_header_fields.
+/** A list of common request header constants of the HTTP protocol. See http://en.wikipedia.org/wiki/List_of_HTTP_header_fields.
  * @author Daniel Holderbaum */
-public class HttpRequestHeader {
+public interface HttpRequestHeader {
 
 	/** Content-Types that are acceptable for the response.
 	 * <p>
