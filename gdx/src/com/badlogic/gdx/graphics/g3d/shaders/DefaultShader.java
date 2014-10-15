@@ -99,9 +99,15 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform specularTexture = new Uniform("u_specularTexture", TextureAttribute.Specular);
 		public final static Uniform specularUVTransform = new Uniform("u_specularUVTransform", TextureAttribute.Specular);
 		public final static Uniform emissiveColor = new Uniform("u_emissiveColor", ColorAttribute.Emissive);
+		public final static Uniform emissiveTexture = new Uniform("u_emissiveTexture", TextureAttribute.Emissive);
+		public final static Uniform emissiveUVTransform = new Uniform("u_emissiveUVTransform", TextureAttribute.Emissive);
 		public final static Uniform reflectionColor = new Uniform("u_reflectionColor", ColorAttribute.Reflection);
+		public final static Uniform reflectionTexture = new Uniform("u_reflectionTexture", TextureAttribute.Reflection);
+		public final static Uniform reflectionUVTransform = new Uniform("u_reflectionUVTransform", TextureAttribute.Reflection);
 		public final static Uniform normalTexture = new Uniform("u_normalTexture", TextureAttribute.Normal);
 		public final static Uniform normalUVTransform = new Uniform("u_normalUVTransform", TextureAttribute.Normal);
+		public final static Uniform ambientTexture = new Uniform("u_ambientTexture", TextureAttribute.Ambient);
+		public final static Uniform ambientUVTransform = new Uniform("u_ambientUVTransform", TextureAttribute.Ambient);
 		public final static Uniform alphaTest = new Uniform("u_alphaTest");
 
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
@@ -249,10 +255,40 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Emissive))).color);
 			}
 		};
+		public final static Setter emissiveTexture = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Emissive))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
+		public final static Setter emissiveUVTransform = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Emissive));
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
+			}
+		};
 		public final static Setter reflectionColor = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Reflection))).color);
+			}
+		};
+		public final static Setter reflectionTexture = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Reflection))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
+		public final static Setter reflectionUVTransform = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Reflection));
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
 		public final static Setter normalTexture = new LocalSetter() {
@@ -267,6 +303,21 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Normal));
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
+			}
+		};
+		public final static Setter ambientTexture = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes
+					.get(TextureAttribute.Ambient))).textureDescription);
+				shader.set(inputID, unit);
+			}
+		};
+		public final static Setter ambientUVTransform = new LocalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Ambient));
 				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
@@ -367,9 +418,15 @@ public class DefaultShader extends BaseShader {
 	public final int u_specularTexture;
 	public final int u_specularUVTransform;
 	public final int u_emissiveColor;
+	public final int u_emissiveTexture;
+	public final int u_emissiveUVTransform;
 	public final int u_reflectionColor;
+	public final int u_reflectionTexture;
+	public final int u_reflectionUVTransform;
 	public final int u_normalTexture;
 	public final int u_normalUVTransform;
+	public final int u_ambientTexture;
+	public final int u_ambientUVTransform;
 	public final int u_alphaTest;
 	// Lighting uniforms
 	protected final int u_ambientCubemap;
@@ -479,9 +536,15 @@ public class DefaultShader extends BaseShader {
 		u_specularTexture = register(Inputs.specularTexture, Setters.specularTexture);
 		u_specularUVTransform = register(Inputs.specularUVTransform, Setters.specularUVTransform);
 		u_emissiveColor = register(Inputs.emissiveColor, Setters.emissiveColor);
+		u_emissiveTexture = register(Inputs.emissiveTexture, Setters.emissiveTexture);
+		u_emissiveUVTransform = register(Inputs.emissiveUVTransform, Setters.emissiveUVTransform);
 		u_reflectionColor = register(Inputs.reflectionColor, Setters.reflectionColor);
+		u_reflectionTexture = register(Inputs.reflectionTexture, Setters.reflectionTexture);
+		u_reflectionUVTransform = register(Inputs.reflectionUVTransform, Setters.reflectionUVTransform);
 		u_normalTexture = register(Inputs.normalTexture, Setters.normalTexture);
 		u_normalUVTransform = register(Inputs.normalUVTransform, Setters.normalUVTransform);
+		u_ambientTexture = register(Inputs.ambientTexture, Setters.ambientTexture);
+		u_ambientUVTransform = register(Inputs.ambientUVTransform, Setters.ambientUVTransform);
 		u_alphaTest = register(Inputs.alphaTest);
 
 		u_ambientCubemap = lighting ? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights,
@@ -560,6 +623,18 @@ public class DefaultShader extends BaseShader {
 		if ((mask & TextureAttribute.Normal) == TextureAttribute.Normal) {
 			prefix += "#define " + TextureAttribute.NormalAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.NormalAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
+		if ((mask & TextureAttribute.Emissive) == TextureAttribute.Emissive) {
+			prefix += "#define " + TextureAttribute.EmissiveAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.EmissiveAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
+		if ((mask & TextureAttribute.Reflection) == TextureAttribute.Reflection) {
+			prefix += "#define " + TextureAttribute.ReflectionAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.ReflectionAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
+		if ((mask & TextureAttribute.Ambient) == TextureAttribute.Ambient) {
+			prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
