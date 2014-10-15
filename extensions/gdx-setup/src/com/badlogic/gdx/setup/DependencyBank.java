@@ -44,6 +44,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
+		gwtInheritances.put(ProjectDependency.AI, new String[]{"com.badlogic.gdx.ai"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -133,6 +134,15 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
 			
 			"Lightweight Entity framework"
+		),
+		AI(
+			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1:sources"},
+			
+			"Framework for artificial intelligence"
 		);
 
 		private String[] coreDependencies;
