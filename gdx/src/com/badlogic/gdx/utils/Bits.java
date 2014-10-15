@@ -213,7 +213,7 @@ public class Bits {
 		}
 		
 		if (bits.length > commonWords) {
-			for (int i = other.bits.length, s = bits.length; s > i; i++) {
+			for (int i = commonWords, s = bits.length; s > i; i++) {
 				bits[i] = 0L;
 			}
 		}
