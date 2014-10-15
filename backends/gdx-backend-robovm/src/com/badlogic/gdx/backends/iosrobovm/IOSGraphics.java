@@ -66,6 +66,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		public void viewWillAppear (boolean arg0) {
 			super.viewWillAppear(arg0);
 			// start GLKViewController even though we may only draw a single frame
+			// (we may be in non-continuous mode)
 			setPaused(false);
 		}
 
@@ -338,8 +339,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		app.processRunnables();
 		// pause the GLKViewController render loop if we are no longer continuous
 		// and if we haven't requested a frame in the last loop iteration
-		if (!isContinuous && !isFrameRequested)
-		{
+		if (!isContinuous && !isFrameRequested) {
 			viewController.setPaused(true);
 		}
 		isFrameRequested = false;
@@ -465,8 +465,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		this.isContinuous = isContinuous;
-		if (isContinuous) viewController.setPaused(false);
+		if (isContinuous != this.isContinuous) {
+			this.isContinuous = isContinuous;
+			// start the GLKViewController if we go from non-continuous -> continuous
+			if (isContinuous) viewController.setPaused(false);
+		}
 	}
 
 	@Override
@@ -477,8 +480,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public void requestRendering () {
 		isFrameRequested = true;
-		// start the GLKViewController render loop
-		viewController.setPaused(false);
+		// start the GLKViewController if we are in non-continuous mode
+		// (we should already be started in continuous mode)
+		if (!isContinuous) viewController.setPaused(false);
 	}
 
 	@Override
