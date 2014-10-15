@@ -127,11 +127,11 @@ public class DependencyBank {
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.3.1"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.3.1"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.3.1:sources"},
 			
 			"Lightweight Entity framework"
 		),
