@@ -15,6 +15,11 @@ public class DependencyBank {
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
 
+	//Extension versions
+	private static final String EXT_VERSION_BOX2DLIGHTS = "1.2";
+	private static final String EXT_VERSION_ASHLEY = "1.3.1";
+	private static final String EXT_VERSION_AI = "1.3.1";
+
 	//Repositories
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
@@ -44,6 +49,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
+		gwtInheritances.put(ProjectDependency.AI, new String[]{"com.badlogic.gdx.ai"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -117,22 +123,31 @@ public class DependencyBank {
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS + ":sources"},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY + ":sources"},
 			
 			"Lightweight Entity framework"
+		),
+		AI(
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI + ":sources"},
+			
+			"Framework for artificial intelligence"
 		);
 
 		private String[] coreDependencies;
