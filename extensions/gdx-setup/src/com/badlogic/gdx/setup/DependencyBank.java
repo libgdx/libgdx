@@ -15,6 +15,11 @@ public class DependencyBank {
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
 
+	//Extension versions
+	private static final String EXT_VERSION_BOX2DLIGHTS = "1.2";
+	private static final String EXT_VERSION_ASHLEY = "1.3.1";
+	private static final String EXT_VERSION_AI = "1.3.1";
+
 	//Repositories
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
@@ -118,29 +123,29 @@ public class DependencyBank {
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:" + EXT_VERSION_BOX2DLIGHTS + ":sources"},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.3.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.3.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.3.1:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:" + EXT_VERSION_ASHLEY + ":sources"},
 			
 			"Lightweight Entity framework"
 		),
 		AI(
-			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1"},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI},
 			new String[]{},
-			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1"},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI},
 			new String[]{},
-			new String[]{"com.badlogicgames.gdx:gdx-ai:1.3.1:sources"},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:" + EXT_VERSION_AI + ":sources"},
 			
 			"Framework for artificial intelligence"
 		);
