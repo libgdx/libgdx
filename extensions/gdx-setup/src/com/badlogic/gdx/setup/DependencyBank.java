@@ -25,6 +25,10 @@ public class DependencyBank {
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.5";
 	static String androidPluginImport = "com.android.tools.build:gradle:0.13+";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:1.0.0-alpha-04";
+	
+	//Extension versions
+	static String box2DLightsVersion = "1.2";
+	static String ashleyVersion = "1.3.1";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -117,20 +121,20 @@ public class DependencyBank {
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
 			
 			"Lightweight Entity framework"
 		);
