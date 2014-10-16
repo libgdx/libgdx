@@ -29,6 +29,7 @@ public class DependencyBank {
 	//Extension versions
 	static String box2DLightsVersion = "1.2";
 	static String ashleyVersion = "1.3.1";
+	static String aiVersion = "1.4.0";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -48,6 +49,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
+		gwtInheritances.put(ProjectDependency.AI, new String[]{"com.badlogic.gdx.ai"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -137,6 +139,15 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
 			
 			"Lightweight Entity framework"
+		),
+		AI(
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
+			
+			"Artificial Intelligence framework"
 		);
 
 		private String[] coreDependencies;
