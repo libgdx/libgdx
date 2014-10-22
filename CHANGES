@@ -1,7 +1,14 @@
-[1.3.2]
+[1.4.1]
+- Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
+- Update Intellij IDEA to 13.1.5+, because Gradle!
+- Updated to Gradle 2.1 and Android build tools 20, default Android version to 20. You need to install the latest Android build tools via the SDK manager
+- API Change: deprecation of bounding box methods, see https://github.com/libgdx/libgdx/pull/2408
+- Added non-continuous rendering to iOS backend, thanks Dominik!
+- Setup now uses Gradle 2.1 with default Android API level 20, build tools 20.0.0
+- Non-continuous renderering implemented for iOS
 - Added color markup support for scene2d label and window title.
 - API Change: removed default constructor of DecalBatch, removed DefaultGroupStrategy
-- Updated to latests RoboVM release, 1.0.0-alpha-02, please update your RoboVM plugins/installations
+- Updated to latests RoboVM release, 1.0.0-alpha-04, please update your RoboVM plugins/installations
 - Reduced I18NBundle loading times on Android and bypassed unclosed stream on iOS. 
 - Removed the gdx-ai extension from the libGDX repository. Now it lives in its own repository under the libGDX umbrella, see https://github.com/libgdx/gdx-ai
 - API Addition: Added randomSign and randomTriangular methods to MathUtils.

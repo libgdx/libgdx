@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -67,6 +68,10 @@ public interface Batch extends Disposable {
 
 	/** @return the rendering color of this Batch. Manipulating the returned instance has no effect. */
 	public Color getColor ();
+
+	/** @return the rendering color of this Batch in vertex format
+	 * @see Color#toFloatBits() */
+	public float getPackedColor ();
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
 	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
@@ -159,6 +164,9 @@ public interface Batch extends Disposable {
 	 *           counter clockwise. */
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise);
+
+	/** Draws a rectangle transformed by the given matrix. */
+	public void draw (TextureRegion region, float width, float height, Affine2 transform);
 
 	/** Causes any pending sprites to be rendered, without ending the Batch. */
 	public void flush ();

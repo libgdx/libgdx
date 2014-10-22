@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears. <a
- * href="http://http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and
+ * href="http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and
  * parallel lines remain parallel after the transformation. Operations on affine matrices are faster because the last row can
  * always be assumed (0, 0, 1).
  *
@@ -152,14 +152,32 @@ public final class Affine2 implements Serializable {
 	 * @param degrees The angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Affine2 setToRotation (float degrees) {
-		return setToRotationRad(MathUtils.degreesToRadians * degrees);
+		float cos = MathUtils.cosDeg(degrees);
+		float sin = MathUtils.sinDeg(degrees);
+
+		m00 = cos;
+		m01 = -sin;
+		m02 = 0;
+		m10 = sin;
+		m11 = cos;
+		m12 = 0;
+		return this;
 	}
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
 	 * @param radians The angle in radians.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Affine2 setToRotationRad (float radians) {
-		return setToRotation((float)Math.cos(radians), (float)Math.sin(radians));
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
+
+		m00 = cos;
+		m01 = -sin;
+		m02 = 0;
+		m10 = sin;
+		m11 = cos;
+		m12 = 0;
+		return this;
 	}
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
@@ -215,9 +233,8 @@ public final class Affine2 implements Serializable {
 			m10 = 0;
 			m11 = scaleY;
 		} else {
-			float radians = MathUtils.degreesToRadians * degrees;
-			float sin = (float)Math.sin(radians);
-			float cos = (float)Math.cos(radians);
+			float sin = MathUtils.sinDeg(degrees);
+			float cos = MathUtils.cosDeg(degrees);
 
 			m00 = cos * scaleX;
 			m01 = -sin * scaleY;
@@ -255,8 +272,8 @@ public final class Affine2 implements Serializable {
 			m10 = 0;
 			m11 = scaleY;
 		} else {
-			float sin = (float)Math.sin(radians);
-			float cos = (float)Math.cos(radians);
+			float sin = MathUtils.sin(radians);
+			float cos = MathUtils.cos(radians);
 
 			m00 = cos * scaleX;
 			m01 = -sin * scaleY;
@@ -300,6 +317,20 @@ public final class Affine2 implements Serializable {
 	 * @return This matrix for the purpose of chaining operations. */
 	public Affine2 setToTrnScl (Vector2 trn, Vector2 scale) {
 		return setToTrnScl(trn.x, trn.y, scale.x, scale.y);
+	}
+
+	/** Sets this matrix to the product of two matrices.
+	 * @param l Left matrix.
+	 * @param r Right matrix.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Affine2 setToProduct (Affine2 l, Affine2 r) {
+		m00 = l.m00 * r.m00 + l.m01 * r.m10;
+		m01 = l.m00 * r.m01 + l.m01 * r.m11;
+		m02 = l.m00 * r.m02 + l.m01 * r.m12 + l.m02;
+		m10 = l.m10 * r.m00 + l.m11 * r.m10;
+		m11 = l.m10 * r.m01 + l.m11 * r.m11;
+		m12 = l.m10 * r.m02 + l.m11 * r.m12 + l.m12;
+		return this;
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
@@ -453,7 +484,21 @@ public final class Affine2 implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
 	public Affine2 rotate (float degrees) {
-		return rotateRad(MathUtils.degreesToRadians * degrees);
+		if (degrees == 0) return this;
+
+		float cos = MathUtils.cosDeg(degrees);
+		float sin = MathUtils.sinDeg(degrees);
+
+		float tmp00 = m00 * cos + m01 * sin;
+		float tmp01 = m00 * -sin + m01 * cos;
+		float tmp10 = m10 * cos + m11 * sin;
+		float tmp11 = m10 * -sin + m11 * cos;
+
+		m00 = tmp00;
+		m01 = tmp01;
+		m10 = tmp10;
+		m11 = tmp11;
+		return this;
 	}
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
@@ -462,8 +507,8 @@ public final class Affine2 implements Serializable {
 	public Affine2 rotateRad (float radians) {
 		if (radians == 0) return this;
 
-		float cos = (float)Math.cos(radians);
-		float sin = (float)Math.sin(radians);
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
 
 		float tmp00 = m00 * cos + m01 * sin;
 		float tmp01 = m00 * -sin + m01 * cos;
@@ -481,7 +526,25 @@ public final class Affine2 implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
 	public Affine2 preRotate (float degrees) {
-		return preRotateRad(MathUtils.degreesToRadians * degrees);
+		if (degrees == 0) return this;
+
+		float cos = MathUtils.cosDeg(degrees);
+		float sin = MathUtils.sinDeg(degrees);
+
+		float tmp00 = cos * m00 - sin * m10;
+		float tmp01 = cos * m01 - sin * m11;
+		float tmp02 = cos * m02 - sin * m12;
+		float tmp10 = sin * m00 + cos * m10;
+		float tmp11 = sin * m01 + cos * m11;
+		float tmp12 = sin * m02 + cos * m12;
+
+		m00 = tmp00;
+		m01 = tmp01;
+		m02 = tmp02;
+		m10 = tmp10;
+		m11 = tmp11;
+		m12 = tmp12;
+		return this;
 	}
 
 	/** Premultiplies this matrix with a (counter-clockwise) rotation matrix.
@@ -490,8 +553,8 @@ public final class Affine2 implements Serializable {
 	public Affine2 preRotateRad (float radians) {
 		if (radians == 0) return this;
 
-		float cos = (float)Math.cos(radians);
-		float sin = (float)Math.sin(radians);
+		float cos = MathUtils.cos(radians);
+		float sin = MathUtils.sin(radians);
 
 		float tmp00 = cos * m00 - sin * m10;
 		float tmp01 = cos * m01 - sin * m11;
@@ -574,6 +637,26 @@ public final class Affine2 implements Serializable {
 		position.x = m02;
 		position.y = m12;
 		return position;
+	}
+
+	/** Check if the this is a plain translation matrix.
+	 * @return True if scale is 1 and rotation is 0. */
+	public boolean isTranslation () {
+		return (m00 == 1 && m11 == 1 && m01 == 0 && m10 == 0);
+	}
+
+	/** Check if this is an indentity matrix.
+	 * @return True if scale is 1 and rotation is 0. */
+	public boolean isIdt () {
+		return (m00 == 1 && m02 == 0 && m12 == 0 && m11 == 1 && m01 == 0 && m10 == 0);
+	}
+
+	/** Applies the affine transformation on a vector. */
+	public void applyTo (Vector2 point) {
+		float x = point.x;
+		float y = point.y;
+		point.x = m00 * x + m01 * y + m02;
+		point.y = m10 * x + m11 * y + m12;
 	}
 
 	@Override
