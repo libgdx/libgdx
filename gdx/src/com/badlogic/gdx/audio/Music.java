@@ -81,6 +81,9 @@ public interface Music extends Disposable {
 	/** Returns the playback position in seconds. */
 	public float getPosition ();
 
+	/** Set the playback position in seconds. */
+	public void setPosition (float position);
+
 	/** Needs to be called when the Music is no longer needed. */
 	public void dispose ();
 
