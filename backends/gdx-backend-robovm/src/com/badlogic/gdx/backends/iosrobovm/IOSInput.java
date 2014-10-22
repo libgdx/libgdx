@@ -567,7 +567,7 @@ public class IOSInput implements Input {
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
-			CGPoint loc = touch.getLocation(touch.getView());
+			CGPoint loc = touch.getLocationInView(touch.getView());
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();

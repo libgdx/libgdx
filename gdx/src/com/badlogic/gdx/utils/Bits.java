@@ -207,8 +207,15 @@ public class Bits {
 	 * also had the value true.
 	 * @param other a bit set */
 	public void and (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] &= other.bits[i];
+		}
+		
+		if (bits.length > commonWords) {
+			for (int i = commonWords, s = bits.length; s > i; i++) {
+				bits[i] = 0L;
+			}
 		}
 	}
 
@@ -226,8 +233,16 @@ public class Bits {
 	 * value true.
 	 * @param other a bit set */
 	public void or (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] |= other.bits[i];
+		}
+		
+		if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
 		}
 	}
 
@@ -239,8 +254,21 @@ public class Bits {
 	 * </ul>
 	 * @param other */
 	public void xor (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] ^= other.bits[i];
+		}
+		
+		if (bits.length > commonWords) {
+			for (int i = other.bits.length, s = bits.length; s > i; i++) {
+				bits[i] = 0L;
+			}
+		} else if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
 		}
 	}
 
@@ -285,7 +313,12 @@ public class Bits {
 	
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(bits);
+		final int word = length() >>> 6;
+		int hash = 0;
+		for (int i = 0; word >= i; i++) {
+			hash = 127 * hash + (int)(bits[i] ^ (bits[i] >>> 32));
+		}
+		return hash;
 	}
 
 	@Override
@@ -296,7 +329,19 @@ public class Bits {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		
 		Bits other = (Bits) obj;
-		return Arrays.equals(bits, other.bits);
+		long[] otherBits = other.bits;
+		
+		int commonWords = Math.min(bits.length, otherBits.length);
+		for (int i = 0; commonWords > i; i++) {
+			if (bits[i] != otherBits[i])
+				return false;
+		}
+		
+		if (bits.length == otherBits.length)
+			return true;
+		
+		return length() == other.length();
 	}
 }
