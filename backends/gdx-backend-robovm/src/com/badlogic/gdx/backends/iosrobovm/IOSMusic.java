@@ -87,8 +87,9 @@ public class IOSMusic implements Music {
 		track.setVolume(volume);
 	}
 
+	@Override
 	public void setPosition (float position) {
-		track.setCurrentTime(position / 1000);
+		track.setCurrentTime(position);
 	}
 
 	@Override
