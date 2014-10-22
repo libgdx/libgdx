@@ -65,7 +65,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		@Override
 		public void viewWillAppear (boolean arg0) {
 			super.viewWillAppear(arg0);
-			setPaused(!graphics.isContinuous);
+			// start GLKViewController even though we may only draw a single frame
+			// (we may be in non-continuous mode)
+			setPaused(false);
 		}
 
 		@Override
@@ -151,9 +153,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float ppcY = 0;
 	private float density = 1;
 
-	volatile boolean paused;
+	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
+	private boolean isFrameRequested = true;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -262,12 +265,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
 
-		paused = false;
+		appPaused = false;
 	}
 
 	public void resume () {
-		if (!paused) return;
-		paused = false;
+		if (!appPaused) return;
+		appPaused = false;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
@@ -279,8 +282,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	public void pause () {
-		if (paused) return;
-		paused = true;
+		if (appPaused) return;
+		appPaused = true;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
@@ -306,7 +309,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			app.listener.resize(width, height);
 			created = true;
 		}
-		if (paused) {
+		if (appPaused) {
 			return;
 		}
 
@@ -334,17 +337,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
+		// pause the GLKViewController render loop if we are no longer continuous
+		// and if we haven't requested a frame in the last loop iteration
+		if (!isContinuous && !isFrameRequested) {
+			viewController.setPaused(true);
+		}
+		isFrameRequested = false;
 	}
 
 	@Override
 	public void willPause (GLKViewController controller, boolean pause) {
-		if (pause) {
-			if (paused) return;
-			pause();
-		} else {
-			if (!paused) return;
-			resume();
-		}
 	}
 
 	@Override
@@ -463,10 +465,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		this.isContinuous = isContinuous;
-		viewController.setPaused(!isContinuous);
-		viewController.setResumeOnDidBecomeActive(isContinuous);
-		view.setEnableSetNeedsDisplay(!isContinuous);
+		if (isContinuous != this.isContinuous) {
+			this.isContinuous = isContinuous;
+			// start the GLKViewController if we go from non-continuous -> continuous
+			if (isContinuous) viewController.setPaused(false);
+		}
 	}
 
 	@Override
@@ -476,7 +479,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void requestRendering () {
-		view.setNeedsDisplay();
+		isFrameRequested = true;
+		// start the GLKViewController if we are in non-continuous mode
+		// (we should already be started in continuous mode)
+		if (!isContinuous) viewController.setPaused(false);
 	}
 
 	@Override
