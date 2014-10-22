@@ -138,6 +138,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		isPrepared = false;
 	}
 
+	@Override
 	public void setPosition (float position) {
 		if (player == null) return;
 		try {

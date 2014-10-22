@@ -73,6 +73,11 @@ public class MockMusic implements Music {
 	}
 
 	@Override
+	public void setPosition(float position) {
+
+	}
+
+	@Override
 	public void dispose() {
 
 	}
