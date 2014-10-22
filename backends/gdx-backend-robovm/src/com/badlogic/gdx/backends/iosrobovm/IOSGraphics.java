@@ -246,6 +246,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
 		if (scale == 2) density = 2f;
+		if (scale == 3) density = 3f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
