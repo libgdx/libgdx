@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -246,6 +246,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
 		if (scale == 2) density = 2f;
+		if (scale == 3) density = 3f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -405,7 +406,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	/** Returns the display density.
-	 * 
+	 *
 	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
 	public float getDensity () {
