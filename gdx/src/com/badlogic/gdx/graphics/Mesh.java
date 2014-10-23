@@ -142,6 +142,8 @@ public class Mesh implements Disposable {
 			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
 			isVertexArray = false;
 		} else {
+			//NOTE: VertexArray uses client memory to store vertex data, which is not supported in
+			// 3.0+ core profiles, so only use this for 2.0 contexts.
 			vertices = new VertexArray(maxVertices, attributes);
 			indices = new IndexArray(maxIndices);
 			isVertexArray = true;
