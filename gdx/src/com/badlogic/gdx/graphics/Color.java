@@ -102,7 +102,7 @@ public class Color {
 	}
 
 	/** Multiplies all components of this Color with the given value.
-	 *
+	 * 
 	 * @param value the value
 	 * @return this color */
 	public Color mul (float value) {
