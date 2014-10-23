@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.decals;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -86,10 +87,15 @@ public class DecalBatch implements Disposable {
 	 * @param size Maximum size of decal objects to hold in memory */
 	public void initialize (int size) {
 		vertices = new float[size * Decal.SIZE];
-		mesh = new Mesh(Mesh.VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(
-			VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(
-			VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(
-			VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+
+		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
+		if(Gdx.gl30 != null) {
+			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
+		}
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(
+				VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(
+				VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(
+				VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		short[] indices = new short[size * 6];
 		int v = 0;
