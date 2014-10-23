@@ -241,12 +241,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 		this.gl20 = gl20;
 
-		// determine display density and PPI (PPI values via Wikipedia!)
-		density = 1f;
-
 		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2) density = 2f;
-		if (scale == 3) density = 3f;
+    density = scale;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
