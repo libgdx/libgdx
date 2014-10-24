@@ -116,8 +116,7 @@ public class PolygonSpriteBatch implements Batch {
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
 		if (Gdx.gl30 != null) {
-			//cannot use VertexArray for GL30.
-			vertexDataType = Mesh.VertexDataType.VertexBufferObject;
+			vertexDataType = VertexDataType.VertexBufferObjectWithVAO;
 		}
 		mesh = new Mesh(vertexDataType, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
