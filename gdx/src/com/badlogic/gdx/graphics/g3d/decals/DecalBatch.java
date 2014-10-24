@@ -90,8 +90,7 @@ public class DecalBatch implements Disposable {
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
 		if(Gdx.gl30 != null) {
-			//cannot use VertexArray for GL30.
-			vertexDataType = Mesh.VertexDataType.VertexBufferObject;
+			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
 		}
 		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(
 				VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(
