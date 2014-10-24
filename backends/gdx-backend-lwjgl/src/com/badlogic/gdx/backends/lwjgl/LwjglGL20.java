@@ -726,7 +726,7 @@ class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glUniform4fv (int location, int count, float[] v, int offset) {
-		GL20.glUniform4(location, toFloatBuffer(v, offset, count << 4));
+		GL20.glUniform4(location, toFloatBuffer(v, offset, count << 2));
 	}
 
 	public void glUniform4i (int location, int x, int y, int z, int w) {
@@ -738,7 +738,7 @@ class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glUniform4iv (int location, int count, int[] v, int offset) {
-		GL20.glUniform4(location, toIntBuffer(v, offset, count << 4));
+		GL20.glUniform4(location, toIntBuffer(v, offset, count << 2));
 	}
 
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value) {
