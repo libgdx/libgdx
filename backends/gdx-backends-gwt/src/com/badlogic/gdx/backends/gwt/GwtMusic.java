@@ -108,6 +108,11 @@ public class GwtMusic implements Music, SMSoundCallback {
 	}
 
 	@Override
+	public void setPosition (float position) {
+		sound.setPosition((int)(position * 1000f));
+	}
+	
+	@Override
 	public float getPosition () {
 		return sound.getPosition() / 1000f;
 	}
