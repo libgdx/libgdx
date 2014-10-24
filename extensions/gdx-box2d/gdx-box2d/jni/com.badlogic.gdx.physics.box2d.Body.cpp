@@ -82,7 +82,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetPosition(J
 	float* position = (float*)env->GetPrimitiveArrayCritical(obj_position, 0);
 
 
-//@line:189
+//@line:190
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 p = body->GetPosition();
@@ -96,7 +96,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetPosition(J
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngle(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:202
+//@line:203
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngle();
@@ -108,7 +108,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetWorldCente
 	float* worldCenter = (float*)env->GetPrimitiveArrayCritical(obj_worldCenter, 0);
 
 
-//@line:217
+//@line:219
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldCenter();
@@ -123,7 +123,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLocalCente
 	float* localCenter = (float*)env->GetPrimitiveArrayCritical(obj_localCenter, 0);
 
 
-//@line:234
+//@line:237
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalCenter();
@@ -137,7 +137,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLocalCente
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetLinearVelocity(JNIEnv* env, jobject object, jlong addr, jfloat x, jfloat y) {
 
 
-//@line:251
+//@line:254
 
 		b2Body* body = (b2Body*)addr;
 		body->SetLinearVelocity(b2Vec2(x, y));
@@ -149,7 +149,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelo
 	float* linearVelocity = (float*)env->GetPrimitiveArrayCritical(obj_linearVelocity, 0);
 
 
-//@line:266
+//@line:270
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 l = body->GetLinearVelocity();
@@ -163,7 +163,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAngularVelocity(JNIEnv* env, jobject object, jlong addr, jfloat omega) {
 
 
-//@line:278
+//@line:282
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAngularVelocity(omega);
@@ -174,7 +174,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAngularVel
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngularVelocity(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:288
+//@line:292
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngularVelocity();
@@ -185,7 +185,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngularV
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForce(JNIEnv* env, jobject object, jlong addr, jfloat forceX, jfloat forceY, jfloat pointX, jfloat pointY, jboolean wake) {
 
 
-//@line:313
+//@line:317
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyForce(b2Vec2(forceX, forceY), b2Vec2(pointX, pointY), wake);
@@ -196,7 +196,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForce(JN
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToCenter(JNIEnv* env, jobject object, jlong addr, jfloat forceX, jfloat forceY, jboolean wake) {
 
 
-//@line:331
+//@line:335
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyForceToCenter(b2Vec2(forceX, forceY), wake);
@@ -207,7 +207,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToC
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyTorque(JNIEnv* env, jobject object, jlong addr, jfloat torque, jboolean wake) {
 
 
-//@line:344
+//@line:348
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyTorque(torque, wake);
@@ -218,7 +218,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyTorque(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyLinearImpulse(JNIEnv* env, jobject object, jlong addr, jfloat impulseX, jfloat impulseY, jfloat pointX, jfloat pointY, jboolean wake) {
 
 
-//@line:369
+//@line:373
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyLinearImpulse( b2Vec2( impulseX, impulseY ), b2Vec2( pointX, pointY ), wake);
@@ -229,7 +229,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyLinearIm
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyAngularImpulse(JNIEnv* env, jobject object, jlong addr, jfloat impulse, jboolean wake) {
 
 
-//@line:380
+//@line:384
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyAngularImpulse(impulse, wake);
@@ -240,7 +240,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyAngularI
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetMass(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:391
+//@line:395
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetMass();
@@ -251,7 +251,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetMass(JNI
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetInertia(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:402
+//@line:406
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetInertia();
@@ -263,7 +263,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetMassData(J
 	float* massData = (float*)env->GetPrimitiveArrayCritical(obj_massData, 0);
 
 
-//@line:420
+//@line:424
 
 		b2Body* body = (b2Body*)addr;
 		b2MassData m;
@@ -280,7 +280,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetMassData(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetMassData(JNIEnv* env, jobject object, jlong addr, jfloat mass, jfloat centerX, jfloat centerY, jfloat I) {
 
 
-//@line:437
+//@line:441
 
 		b2Body* body = (b2Body*)addr;
 		b2MassData m;
@@ -296,7 +296,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetMassData(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniResetMassData(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:453
+//@line:457
 
 		b2Body* body = (b2Body*)addr;
 		body->ResetMassData();
@@ -308,7 +308,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetWorldPoint
 	float* worldPoint = (float*)env->GetPrimitiveArrayCritical(obj_worldPoint, 0);
 
 
-//@line:470
+//@line:475
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldPoint( b2Vec2( localPointX, localPointY ) );
@@ -323,7 +323,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetWorldVecto
 	float* worldVector = (float*)env->GetPrimitiveArrayCritical(obj_worldVector, 0);
 
 
-//@line:489
+//@line:495
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldVector( b2Vec2( localVectorX, localVectorY ) );
@@ -338,7 +338,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLocalPoint
 	float* localPoint = (float*)env->GetPrimitiveArrayCritical(obj_localPoint, 0);
 
 
-//@line:508
+//@line:515
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalPoint( b2Vec2( worldPointX, worldPointY ) );
@@ -353,7 +353,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLocalVecto
 	float* worldVector = (float*)env->GetPrimitiveArrayCritical(obj_worldVector, 0);
 
 
-//@line:527
+//@line:535
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalVector( b2Vec2( worldVectorX, worldVectorY ) );
@@ -368,7 +368,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelo
 	float* linVelWorld = (float*)env->GetPrimitiveArrayCritical(obj_linVelWorld, 0);
 
 
-//@line:546
+//@line:555
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLinearVelocityFromWorldPoint( b2Vec2( worldPointX, worldPointY ) );
@@ -383,7 +383,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelo
 	float* linVelLoc = (float*)env->GetPrimitiveArrayCritical(obj_linVelLoc, 0);
 
 
-//@line:565
+//@line:575
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLinearVelocityFromLocalPoint( b2Vec2( localPointX, localPointY ) );
@@ -397,7 +397,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelo
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearDamping(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:577
+//@line:587
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetLinearDamping();
@@ -408,7 +408,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetLinearDa
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetLinearDamping(JNIEnv* env, jobject object, jlong addr, jfloat linearDamping) {
 
 
-//@line:587
+//@line:597
 
 		b2Body* body = (b2Body*)addr;
 		body->SetLinearDamping(linearDamping);
@@ -419,7 +419,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetLinearDamp
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngularDamping(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:597
+//@line:607
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngularDamping();
@@ -430,7 +430,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngularD
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAngularDamping(JNIEnv* env, jobject object, jlong addr, jfloat angularDamping) {
 
 
-//@line:607
+//@line:617
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAngularDamping(angularDamping);
@@ -439,7 +439,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAngularDam
 }
 
 
-//@line:618
+//@line:628
 
 inline b2BodyType getBodyType( int type )
 {
@@ -455,7 +455,7 @@ inline b2BodyType getBodyType( int type )
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetType(JNIEnv* env, jobject object, jlong addr, jint type) {
 
 
-//@line:632
+//@line:642
 
 		b2Body* body = (b2Body*)addr;
 		body->SetType(getBodyType(type));
@@ -466,7 +466,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetType(JNIEn
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetType(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:646
+//@line:656
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetType();
@@ -477,7 +477,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetType(JNIEn
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetBullet(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:656
+//@line:666
 
 		b2Body* body = (b2Body*)addr;
 		body->SetBullet(flag);
@@ -488,7 +488,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetBullet(JNI
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsBullet(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:666
+//@line:676
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsBullet();
@@ -499,7 +499,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsBullet(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetSleepingAllowed(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:676
+//@line:686
 
 		b2Body* body = (b2Body*)addr;
 		body->SetSleepingAllowed(flag);
@@ -510,7 +510,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetSleepingAl
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsSleepingAllowed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:686
+//@line:696
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsSleepingAllowed();
@@ -521,7 +521,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsSleepin
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAwake(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:697
+//@line:707
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAwake(flag);
@@ -532,7 +532,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetAwake(JNIE
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsAwake(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:708
+//@line:718
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsAwake();
@@ -543,7 +543,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsAwake(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetActive(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:723
+//@line:733
 
 		b2Body* body = (b2Body*)addr;
 		body->SetActive(flag);
@@ -554,7 +554,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetActive(JNI
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsActive(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:733
+//@line:743
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsActive();
@@ -565,7 +565,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsActive(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetFixedRotation(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:743
+//@line:753
 
 		b2Body* body = (b2Body*)addr;
 		body->SetFixedRotation(flag);
@@ -576,7 +576,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetFixedRotat
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsFixedRotation(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:753
+//@line:763
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsFixedRotation();
@@ -587,7 +587,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsFixedRo
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetGravityScale(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:781
+//@line:791
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetGravityScale();
@@ -598,7 +598,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetGravityS
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetGravityScale(JNIEnv* env, jobject object, jlong addr, jfloat scale) {
 
 
-//@line:791
+//@line:801
 
 		b2Body* body = (b2Body*)addr;
 		body->SetGravityScale(scale);
