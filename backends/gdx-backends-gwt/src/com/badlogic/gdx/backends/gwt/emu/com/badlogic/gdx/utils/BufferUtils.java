@@ -26,6 +26,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.google.gwt.core.client.GWT;
@@ -309,30 +310,30 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (Buffer src, Buffer dst, int numElements) {
-		int srcLimit = src.limit();
 		int srcPos = src.position();
 		int dstPos = dst.position();
 		src.limit(src.position() + numElements);
 		final boolean srcIsByte = src instanceof ByteBuffer;
 		final boolean dstIsByte = dst instanceof ByteBuffer;
+		dst.limit(dst.capacity());
 		if (srcIsByte && dstIsByte)
 			((ByteBuffer)dst).put((ByteBuffer)src);
 		else if ((srcIsByte || src instanceof CharBuffer) && (dstIsByte || dst instanceof CharBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asCharBuffer() : (CharBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asCharBuffer() : (CharBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asCharBuffer() : (CharBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asCharBuffer() : (CharBuffer)src));
 		else if ((srcIsByte || src instanceof ShortBuffer) && (dstIsByte || dst instanceof ShortBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asShortBuffer() : (ShortBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asShortBuffer() : (ShortBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asShortBuffer() : (ShortBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asShortBuffer() : (ShortBuffer)src));
 		else if ((srcIsByte || src instanceof IntBuffer) && (dstIsByte || dst instanceof IntBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asIntBuffer() : (IntBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asIntBuffer() : (IntBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asIntBuffer() : (IntBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asIntBuffer() : (IntBuffer)src));
 		else if ((srcIsByte || src instanceof LongBuffer) && (dstIsByte || dst instanceof LongBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asLongBuffer() : (LongBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asLongBuffer() : (LongBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asLongBuffer() : (LongBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asLongBuffer() : (LongBuffer)src));
 		else if ((srcIsByte || src instanceof FloatBuffer) && (dstIsByte || dst instanceof FloatBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asFloatBuffer() : (FloatBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asFloatBuffer() : (FloatBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asFloatBuffer() : (FloatBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asFloatBuffer() : (FloatBuffer)src));
 		else if ((srcIsByte || src instanceof DoubleBuffer) && (dstIsByte || dst instanceof DoubleBuffer))
-			(srcIsByte ? ((ByteBuffer)src).asDoubleBuffer() : (DoubleBuffer)src).put((dstIsByte ? ((ByteBuffer)dst).asDoubleBuffer() : (DoubleBuffer)dst));
+			(dstIsByte ? ((ByteBuffer)dst).asDoubleBuffer() : (DoubleBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asDoubleBuffer() : (DoubleBuffer)src));
 		else
 			throw new GdxRuntimeException("Buffers must be of same type or ByteBuffer");
 		src.position(srcPos);
-		src.limit(srcLimit);
+		dst.flip();
 		dst.position(dstPos);
 	}
 	
