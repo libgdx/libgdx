@@ -298,6 +298,7 @@ public class IOSInput implements Input {
 			}
 
 			if (string.isEmpty()) {
+				if (range.length() > 0) Gdx.graphics.requestRendering();
 				return false;
 			}
 
