@@ -32,7 +32,6 @@ public class Timer {
 	static Timer instance = new Timer();
 
 	static public Timer instance () {
-		checkStatics();
 		if (instance == null) {
 			instance = new Timer();
 		}
@@ -82,7 +81,6 @@ public class Timer {
 	/** Starts the timer if it was stopped. */
 	public void start () {
 		synchronized (instances) {
-			checkStatics();
 			if (instances.contains(this, true)) return;
 			instances.add(this);
 			if (thread == null) thread = new TimerThread();
@@ -248,27 +246,14 @@ public class Timer {
 				app = null;
 				wake();
 			}
+			thread = null;
 		}
 
 		public void dispose () {
 			pause();
 			Gdx.app.removeLifecycleListener(this);
-			thread = null;
 			instances.clear();
 			instance = null;
-		}
-	}
-
-	private static void checkStatics () {
-		// fix for https://github.com/libgdx/libgdx/issues/1548, in case the statics are left overs...
-		synchronized (instances) {
-			if (thread != null) {
-				if (thread.app != Gdx.app) {
-					thread = null;
-					instances.clear();
-					instance = null;
-				}
-			}
 		}
 	}
 }
