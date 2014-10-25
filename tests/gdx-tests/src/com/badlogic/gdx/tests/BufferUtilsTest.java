@@ -24,6 +24,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -35,9 +36,10 @@ public class BufferUtilsTest extends GdxTest {
 
 	@Override
 	public void create () {
-		ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
-		BufferUtils.disposeUnsafeByteBuffer(bytebuffer);
-
+		//Not emulated in gwt
+		//ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
+		//BufferUtils.disposeUnsafeByteBuffer(bytebuffer);
+		
 		ByteBuffer bb = BufferUtils.newByteBuffer(8);
 		CharBuffer cb = BufferUtils.newCharBuffer(8);
 		ShortBuffer sb = BufferUtils.newShortBuffer(8);
@@ -52,14 +54,14 @@ public class BufferUtilsTest extends GdxTest {
 		checkInt(bb.get(), 2);
 		checkInt(bb.get(), 3);
 		checkInt(bb.get(), 4);
-
+		
 		cb.position(4);
 		BufferUtils.copy(new char[] {1, 2, 3, 4}, 0, cb, 4);
 		checkInt(cb.get(), 1);
 		checkInt(cb.get(), 2);
 		checkInt(cb.get(), 3);
 		checkInt(cb.get(), 4);
-
+		
 		sb.position(4);
 		BufferUtils.copy(new short[] {1, 2, 3, 4}, 0, sb, 4);
 		checkInt(sb.get(), 1);
@@ -73,7 +75,7 @@ public class BufferUtilsTest extends GdxTest {
 		checkInt(ib.get(), 2);
 		checkInt(ib.get(), 3);
 		checkInt(ib.get(), 4);
-
+		
 		lb.position(4);
 		BufferUtils.copy(new long[] {1, 2, 3, 4}, 0, lb, 4);
 		checkInt(lb.get(), 1);
@@ -88,12 +90,14 @@ public class BufferUtilsTest extends GdxTest {
 		checkFloat(fb.get(), 3);
 		checkFloat(fb.get(), 4);
 
-		db.position(4);
-		BufferUtils.copy(new double[] {1, 2, 3, 4}, 0, db, 4);
-		checkFloat(db.get(), 1);
-		checkFloat(db.get(), 2);
-		checkFloat(db.get(), 3);
-		checkFloat(db.get(), 4);
+		if (Gdx.app.getType() != ApplicationType.WebGL) { // gwt throws: NYI: Numbers.doubleToRawLongBits
+			db.position(4);
+			BufferUtils.copy(new double[] {1, 2, 3, 4}, 0, db, 4);
+			checkFloat(db.get(), 1);
+			checkFloat(db.get(), 2);
+			checkFloat(db.get(), 3);
+			checkFloat(db.get(), 4);
+		}
 
 		ByteBuffer bb2 = BufferUtils.newByteBuffer(4);
 		bb.position(4);
@@ -357,10 +361,16 @@ public class BufferUtilsTest extends GdxTest {
 	}
 
 	private void checkInt (long val1, long val2) {
-		if (val1 != val2) throw new GdxRuntimeException("Error, val1 != val2");
+		if (val1 != val2) { 
+			Gdx.app.error("BufferUtilsTest", "checkInt failed: "+val1+" != "+val2);
+			throw new GdxRuntimeException("Error, val1 != val2");
+		}
 	}
 
 	private void checkFloat (double val1, double val2) {
-		if (val1 != val2) throw new GdxRuntimeException("Error, val1 != val2");
+		if (val1 != val2) {
+			Gdx.app.error("BufferUtilsTest", "checkFloat failed: "+val1+" != "+val2);
+			throw new GdxRuntimeException("Error, val1 != val2");
+		}
 	}
 }
