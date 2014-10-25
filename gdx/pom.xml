@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.4.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>gdx</artifactId>
@@ -18,10 +18,17 @@
       <version>${project.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
 
     <plugins>
       <plugin>
@@ -38,8 +45,8 @@
         </executions>
       </plugin>
     </plugins>
-	
-	<resources>
+    
+    <resources>
       <resource>
         <directory>src</directory>
         <includes>

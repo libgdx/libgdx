@@ -149,6 +149,29 @@ public abstract class OpenALMusic implements Music {
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
+	public void setPosition (float position) {
+		if (audio.noDevice) return;
+		if (sourceID == -1) return;
+		boolean wasPlaying = isPlaying;
+		isPlaying = false;
+		alSourceStop(sourceID);
+		renderedSeconds += secondsPerBuffer;
+		if (position <= renderedSeconds) {
+			reset();
+			renderedSeconds = 0;
+		}
+		while (renderedSeconds < (position - secondsPerBuffer)) {
+			if (read(tempBytes) <= 0) break;
+			renderedSeconds += secondsPerBuffer;
+		}
+		update();
+		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
+		if (wasPlaying) {
+			alSourcePlay(sourceID);
+			isPlaying = true;
+		}
+	}
+
 	public float getPosition () {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;

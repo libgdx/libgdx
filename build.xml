@@ -256,102 +256,7 @@
 			<reference refid="classpath"/>
 			<reference refid="src"/>
 		</ant>
-	</target>
-    	
-	<!-- gdx pay -->
-	<target name="gdx-pay" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-desktop-apple" depends="gdx-core,gdx-jnigen,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-desktop-apple">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay/"/>
-			<property name="jar" value="gdx-pay-desktop-apple"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-android" depends="gdx-core,gdx-backend-android,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-android.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-android">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay-android"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-android-openiab" depends="gdx-core,gdx-backend-android,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-android.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-android-openiab">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay-android-openiab"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-android-ouya" depends="gdx-core,gdx-backend-android,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-android.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-android-ouya">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay-android-ouya"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-gwt-googlewallet" depends="gdx-core,gdx-backend-gwt,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-gwt-googlewallet">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay-gwt-googlewallet"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<target name="gdx-pay-server" depends="gdx-core,gdx-jnigen,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-server">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay/"/>
-			<property name="jar" value="gdx-pay-server"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
+	</target>    	
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
@@ -401,7 +306,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-pay,gdx-pay-android,gdx-pay-android-openiab,gdx-pay-android-ouya,gdx-pay-desktop-apple,gdx-pay-gwt-googlewallet,gdx-pay-server"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

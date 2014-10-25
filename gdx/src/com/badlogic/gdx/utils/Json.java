@@ -43,20 +43,21 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
  * @author Nathan Sweet */
 public class Json {
-	private static final boolean debug = false;
+	static private final boolean debug = false;
 
 	private JsonWriter writer;
 	private String typeName = "class";
 	private boolean usePrototypes = true;
 	private OutputType outputType;
-	private boolean quoteLongValues = false;
+	private boolean quoteLongValues;
+	private boolean ignoreUnknownFields;
+	private boolean enumNames = true;
+	private Serializer defaultSerializer;
 	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
 	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
-	private Serializer defaultSerializer;
-	private boolean ignoreUnknownFields;
 
 	public Json () {
 		outputType = OutputType.minimal;
@@ -66,29 +67,39 @@ public class Json {
 		this.outputType = outputType;
 	}
 
+	/** When true, fields in the JSON that are not found on the class will not throw a {@link SerializationException}. Default is
+	 * false. */
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
 	}
 
+	/** @see JsonWriter#setOutputType(OutputType) */
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
 	}
 
-	/** When true, quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP. */
+	/** @see JsonWriter#setQuoteLongValues(boolean) */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
 	}
 
+	/** When true, {@link Enum#name()} is used to write enum values. When false, {@link Enum#toString()} is used which may not be
+	 * unique. Default is true. */
+	public void setEnumNames (boolean enumNames) {
+		this.enumNames = enumNames;
+	}
+
+	/** Sets a tag to use instead of the fully qualifier class name. This can make the JSON easier to read. */
 	public void addClassTag (String tag, Class type) {
 		tagToClass.put(tag, type);
 		classToTag.put(type, tag);
 	}
 
-	public Class getClass (String tag) {
-		Class type = tagToClass.get(tag);
+	public Class getClass (String tagOrClassName) {
+		Class type = tagToClass.get(tagOrClassName);
 		if (type != null) return type;
 		try {
-			return ClassReflection.forName(tag);
+			return ClassReflection.forName(tagOrClassName);
 		} catch (ReflectionException ex) {
 			throw new SerializationException(ex);
 		}
@@ -101,15 +112,20 @@ public class Json {
 	}
 
 	/** Sets the name of the JSON field to store the Java class name or class tag when required to avoid ambiguity during
-	 * deserialization. Set to null to never output this information, but be warned that deserialization may fail. */
+	 * deserialization. Set to null to never output this information, but be warned that deserialization may fail. Default is
+	 * "class". */
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
 	}
 
+	/** Sets the serializer to use when the type being deserialized is not known (null).
+	 * @param defaultSerializer May be null. */
 	public void setDefaultSerializer (Serializer defaultSerializer) {
 		this.defaultSerializer = defaultSerializer;
 	}
 
+	/** Registers a serializer to use for the specified type instead of the default behavior of serializing all of an objects
+	 * fields. */
 	public <T> void setSerializer (Class<T> type, Serializer<T> serializer) {
 		classToSerializer.put(type, serializer);
 	}
@@ -118,10 +134,13 @@ public class Json {
 		return classToSerializer.get(type);
 	}
 
+	/** When true, field values that are identical to a newly constructed instance are not written. Default is true. */
 	public void setUsePrototypes (boolean usePrototypes) {
 		this.usePrototypes = usePrototypes;
 	}
 
+	/** Sets the type of elements in a collection. When the element type is known, the class for each element in the collection does
+	 * not need to be written unless different from the element type. */
 	public void setElementType (Class type, String fieldName, Class elementType) {
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
@@ -220,7 +239,7 @@ public class Json {
 		}
 	}
 
-	/** Sets the writer where JSON output will go. This is only necessary when not using the toJson methods. */
+	/** Sets the writer where JSON output will be written. This is only necessary when not using the toJson methods. */
 	public void setWriter (Writer writer) {
 		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
 		this.writer = (JsonWriter)writer;
@@ -460,7 +479,7 @@ public class Json {
 				return;
 			}
 			if (value instanceof Collection) {
-				if (knownType != null && actualType != knownType && actualType != ArrayList.class) {
+				if (typeName != null && actualType != ArrayList.class && (knownType == null || knownType != actualType)) {
 					writeObjectStart(actualType, knownType);
 					writeArrayStart("items");
 					for (Object item : (Collection)value)
@@ -520,16 +539,16 @@ public class Json {
 
 			// Enum special case.
 			if (ClassReflection.isAssignableFrom(Enum.class, actualType)) {
-				if (knownType == null || knownType != actualType) {
+				if (typeName != null && (knownType == null || knownType != actualType)) {
 					// Ensures that enums with specific implementations (abstract logic) serialize correctly.
 					if (actualType.getEnumConstants() == null) actualType = actualType.getSuperclass();
 
 					writeObjectStart(actualType, null);
 					writer.name("value");
-					writer.value(((Enum)value).name());
+					writer.value(convertToString((Enum)value));
 					writeObjectEnd();
 				} else {
-					writer.value(((Enum)value).name());
+					writer.value(convertToString((Enum)value));
 				}
 				return;
 			}
@@ -837,7 +856,7 @@ public class Json {
 				return readValue("value", type, jsonData);
 			}
 
-			if (ClassReflection.isAssignableFrom(Collection.class, type)) {
+			if (typeName != null && ClassReflection.isAssignableFrom(Collection.class, type)) {
 				// JSON object wrapper to specify type.
 				jsonData = jsonData.get("items");
 			} else {
@@ -946,8 +965,10 @@ public class Json {
 			if (type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
 			if (ClassReflection.isAssignableFrom(Enum.class, type)) {
 				Enum[] constants = (Enum[])type.getEnumConstants();
-				for (int i = 0, n = constants.length; i < n; i++)
-					if (string.equals(constants[i].name())) return (T)constants[i];
+				for (int i = 0, n = constants.length; i < n; i++) {
+					Enum e = constants[i];
+					if (string.equals(convertToString(e))) return (T)e;
+				}
 			}
 			if (type == CharSequence.class) return (T)string;
 			throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
@@ -956,7 +977,12 @@ public class Json {
 		return null;
 	}
 
+	private String convertToString (Enum e) {
+		return enumNames ? e.name() : e.toString();
+	}
+
 	private String convertToString (Object object) {
+		if (object instanceof Enum) return convertToString((Enum)object);
 		if (object instanceof Class) return ((Class)object).getName();
 		return String.valueOf(object);
 	}
