@@ -376,6 +376,10 @@ public class Color {
 		return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
 	}
 
+	public static int argb8888 (float a, float r, float g, float b) {
+		return ((int)(a * 255) << 24) | ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
+	}
+
 	public static int rgb565 (Color color) {
 		return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
 	}
