@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import java.io.IOException;
+import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -47,12 +48,14 @@ public class PngTest extends GdxTest {
 				batch.draw(badlogic, MathUtils.random(width), MathUtils.random(height));
 			batch.flush();
 
-			FileHandle file = Gdx.files.local("screenshot.png");
+			FileHandle file = FileHandle.tempFile("screenshot-");
 			System.out.println(file.file().getAbsolutePath());
 			Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			try {
-				PNG writer = new PNG();
+				PNG writer = new PNG(pixmap.getWidth(), pixmap.getHeight());
+				// writer.setCompression(Deflater.NO_COMPRESSION);
 				writer.write(file, pixmap);
+				writer.dispose();
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			}

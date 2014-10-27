@@ -59,9 +59,10 @@ public class PixmapIO {
 	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
 	static public void writePNG (FileHandle file, Pixmap pixmap) {
 		try {
-			PNG writer = new PNG();
+			PNG writer = new PNG(pixmap.getWidth(), pixmap.getHeight());
 			writer.setFlipY(false);
 			writer.write(file, pixmap);
+			writer.dispose();
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
@@ -184,11 +185,17 @@ public class PixmapIO {
 		private final ChunkBuffer buffer;
 		private final DeflaterOutputStream deflaterOutput;
 		private final Deflater deflater;
-		private final ByteArray lineOut = new ByteArray(64), curLine = new ByteArray(64), prevLine = new ByteArray(64);
+		private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
 		private boolean flipY = true;
+		private int lastLineLen;
 
 		public PNG () throws IOException {
-			buffer = new ChunkBuffer();
+			this(256, 256);
+		}
+
+		/** Creates a new instances using the specified width and height to estimate the initial size of internal buffers. */
+		public PNG (int width, int height) throws IOException {
+			buffer = new ChunkBuffer((int)(width * height * 1.5f)); // Guess at deflated size.
 			deflater = new Deflater();
 			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 		}
@@ -231,16 +238,36 @@ public class PixmapIO {
 			deflater.reset();
 
 			int lineLen = pixmap.getWidth() * 4;
-			byte[] lineOut = this.lineOut.ensureCapacity(lineLen);
-			byte[] curLine = this.curLine.ensureCapacity(lineLen);
-			byte[] prevLine = this.prevLine.ensureCapacity(lineLen);
-			for (int i = 0; i < lineLen; i++)
-				prevLine[i] = 0;
+			byte[] lineOut, curLine, prevLine;
+			if (lineOutBytes == null) {
+				lineOut = (lineOutBytes = new ByteArray(lineLen)).items;
+				curLine = (curLineBytes = new ByteArray(lineLen)).items;
+				prevLine = (prevLineBytes = new ByteArray(lineLen)).items;
+			} else {
+				lineOut = lineOutBytes.ensureCapacity(lineLen);
+				curLine = curLineBytes.ensureCapacity(lineLen);
+				prevLine = prevLineBytes.ensureCapacity(lineLen);
+				for (int i = 0, n = lastLineLen; i < n; i++)
+					prevLine[i] = 0;
+			}
+			lastLineLen = lineLen;
 
 			ByteBuffer pixels = pixmap.getPixels();
+			boolean rgba8888 = pixmap.getFormat() == Format.RGBA8888;
 			for (int y = 0, h = pixmap.getHeight(); y < h; y++) {
-				pixels.position((flipY ? (h - y - 1) : y) * lineLen);
-				pixels.get(curLine, 0, lineLen);
+				int py = flipY ? (h - y - 1) : y;
+				if (rgba8888) {
+					pixels.position(py * lineLen);
+					pixels.get(curLine, 0, lineLen);
+				} else {
+					for (int px = 0, x = 0; px < pixmap.getWidth(); px++) {
+						int pixel = pixmap.getPixel(px, py);
+						curLine[x++] = (byte)((pixel >> 24) & 0xff);
+						curLine[x++] = (byte)((pixel >> 16) & 0xff);
+						curLine[x++] = (byte)((pixel >> 8) & 0xff);
+						curLine[x++] = (byte)(pixel & 0xff);
+					}
+				}
 
 				lineOut[0] = (byte)(curLine[0] - prevLine[0]);
 				lineOut[1] = (byte)(curLine[1] - prevLine[1]);
@@ -248,9 +275,9 @@ public class PixmapIO {
 				lineOut[3] = (byte)(curLine[3] - prevLine[3]);
 
 				for (int x = 4; x < lineLen; x++) {
-					int a = curLine[x - 4] & 255;
-					int b = prevLine[x] & 255;
-					int c = prevLine[x - 4] & 255;
+					int a = curLine[x - 4] & 0xff;
+					int b = prevLine[x] & 0xff;
+					int c = prevLine[x - 4] & 0xff;
 					int p = a + b - c;
 					int pa = p - a;
 					if (pa < 0) pa = -pa;
@@ -290,8 +317,8 @@ public class PixmapIO {
 			final ByteArrayOutputStream buffer;
 			final CRC32 crc;
 
-			ChunkBuffer () throws IOException {
-				this(new ByteArrayOutputStream(256), new CRC32());
+			ChunkBuffer (int initialSize) throws IOException {
+				this(new ByteArrayOutputStream(initialSize), new CRC32());
 			}
 
 			private ChunkBuffer (ByteArrayOutputStream buffer, CRC32 crc) throws IOException {
