@@ -59,10 +59,13 @@ public class PixmapIO {
 	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
 	static public void writePNG (FileHandle file, Pixmap pixmap) {
 		try {
-			PNG writer = new PNG(pixmap.getWidth(), pixmap.getHeight());
-			writer.setFlipY(false);
-			writer.write(file, pixmap);
-			writer.dispose();
+			PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
+			try {
+				writer.setFlipY(false);
+				writer.write(file, pixmap);
+			} finally {
+				writer.dispose();
+			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
@@ -190,12 +193,11 @@ public class PixmapIO {
 		private int lastLineLen;
 
 		public PNG () throws IOException {
-			this(256, 256);
+			this(128 * 128);
 		}
 
-		/** Creates a new instances using the specified width and height to estimate the initial size of internal buffers. */
-		public PNG (int width, int height) throws IOException {
-			buffer = new ChunkBuffer((int)(width * height * 1.5f)); // Guess at deflated size.
+		public PNG (int initialBufferSize) throws IOException {
+			buffer = new ChunkBuffer(initialBufferSize);
 			deflater = new Deflater();
 			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 		}
