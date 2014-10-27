@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSExtensions;
@@ -30,6 +31,7 @@ import org.robovm.apple.uikit.UIAlertViewDelegate;
 import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
 import org.robovm.apple.uikit.UIAlertViewStyle;
 import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIKeyboardType;
@@ -108,6 +110,7 @@ public class IOSInput implements Input {
 	// We need to hold on to the reference to this delegate or else its
 	// ObjC peer will get released when the Java peer is GCed.
 	UIAccelerometerDelegate accelerometerDelegate;
+	boolean hasVibrator;
 
 	public IOSInput (IOSApplication app) {
 		this.app = app;
@@ -117,6 +120,8 @@ public class IOSInput implements Input {
 	void setupPeripherals () {
 		setupAccelerometer();
 		setupCompass();
+		UIDevice device = UIDevice.getCurrentDevice();
+		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 	}
 
 	private void setupCompass () {
@@ -298,6 +303,7 @@ public class IOSInput implements Input {
 			}
 
 			if (string.isEmpty()) {
+				if (range.length() > 0) Gdx.graphics.requestRendering();
 				return false;
 			}
 
@@ -406,7 +412,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		// FIXME implement this
+		AudioServices.playSystemSound(4095);
 	}
 
 	@Override
@@ -451,10 +457,11 @@ public class IOSInput implements Input {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return true;
+		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		// FIXME implement this (not sure if possible)
-// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
 		// FIXME implement this
-// if(peripheral == Peripheral.Compass) return true;
+		// if(peripheral == Peripheral.Compass) return true;
 
 		return false;
 	}

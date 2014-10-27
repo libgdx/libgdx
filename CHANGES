@@ -1,3 +1,8 @@
+[1.4.2]
+- API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
+- API Addition: HttpRequest is now poolable.
+- New PNG encoder that supports compression, more efficient vertical flipping, and minimal allocation when encoding multiple PNGs.
+
 [1.4.1]
 - Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
 - Update Intellij IDEA to 13.1.5+, because Gradle!
