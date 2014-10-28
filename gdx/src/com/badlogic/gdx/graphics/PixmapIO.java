@@ -192,11 +192,11 @@ public class PixmapIO {
 		private boolean flipY = true;
 		private int lastLineLen;
 
-		public PNG () throws IOException {
+		public PNG () {
 			this(128 * 128);
 		}
 
-		public PNG (int initialBufferSize) throws IOException {
+		public PNG (int initialBufferSize) {
 			buffer = new ChunkBuffer(initialBufferSize);
 			deflater = new Deflater();
 			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
@@ -255,6 +255,7 @@ public class PixmapIO {
 			lastLineLen = lineLen;
 
 			ByteBuffer pixels = pixmap.getPixels();
+			int oldPosition = pixels.position();
 			boolean rgba8888 = pixmap.getFormat() == Format.RGBA8888;
 			for (int y = 0, h = pixmap.getHeight(); y < h; y++) {
 				int py = flipY ? (h - y - 1) : y;
@@ -301,6 +302,7 @@ public class PixmapIO {
 				curLine = prevLine;
 				prevLine = temp;
 			}
+			pixels.position(oldPosition);
 			deflaterOutput.finish();
 			buffer.endChunk(dataOutput);
 
@@ -319,11 +321,11 @@ public class PixmapIO {
 			final ByteArrayOutputStream buffer;
 			final CRC32 crc;
 
-			ChunkBuffer (int initialSize) throws IOException {
+			ChunkBuffer (int initialSize) {
 				this(new ByteArrayOutputStream(initialSize), new CRC32());
 			}
 
-			private ChunkBuffer (ByteArrayOutputStream buffer, CRC32 crc) throws IOException {
+			private ChunkBuffer (ByteArrayOutputStream buffer, CRC32 crc) {
 				super(new CheckedOutputStream(buffer, crc));
 				this.buffer = buffer;
 				this.crc = crc;
