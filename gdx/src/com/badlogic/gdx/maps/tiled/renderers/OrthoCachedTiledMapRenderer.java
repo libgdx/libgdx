@@ -142,9 +142,7 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 			MapLayer layer = mapLayers.get(i);
 			if (layer.isVisible()) {
 				spriteCache.draw(i);
-				for (MapObject object : layer.getObjects()) {
-					renderObject(object);
-				}
+				renderObjects(layer);
 			}
 		}
 		spriteCache.end();
@@ -184,13 +182,18 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 			MapLayer layer = mapLayers.get(i);
 			if (layer.isVisible()) {
 				spriteCache.draw(i);
-				for (MapObject object : layer.getObjects()) {
-					renderObject(object);
-				}
+				renderObjects(layer);
 			}
 		}
 		spriteCache.end();
 		if (blending) Gdx.gl.glDisable(GL20.GL_BLEND);
+	}
+
+	@Override
+	public void renderObjects (MapLayer layer) {
+		for (MapObject object : layer.getObjects()) {
+			renderObject(object);
+		}
 	}
 
 	@Override
