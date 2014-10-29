@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -24,9 +27,14 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Path;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -51,6 +59,11 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final VertexInfo vertTmp8 = new VertexInfo();
 
 	private final Matrix4 matTmp1 = new Matrix4();
+	private final Matrix4 matTmp2 = new Matrix4();
+	private final Matrix4 matTmp3 = new Matrix4();
+
+	private final Quaternion quatTmp1 = new Quaternion();
+	private final Quaternion quatTmp2 = new Quaternion();
 
 	private final Vector3 tempV1 = new Vector3();
 	private final Vector3 tempV2 = new Vector3();
@@ -60,6 +73,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final Vector3 tempV6 = new Vector3();
 	private final Vector3 tempV7 = new Vector3();
 	private final Vector3 tempV8 = new Vector3();
+
+	private final Color colorTemp1 = new Color();
 
 	/** The vertex attributes of the resulting mesh */
 	private VertexAttributes attributes;
@@ -92,19 +107,40 @@ public class MeshBuilder implements MeshPartBuilder {
 	/** The parts created between begin and end */
 	private Array<MeshPart> parts = new Array<MeshPart>();
 	/** The color used if no vertex color is specified. */
-	private final Color color = new Color();
+	private final Color color = new Color(1, 1, 1, 1);
 	/** Whether to apply the default color. */
 	private boolean colorSet;
+	private float[] profileShape;
+	private ShortArray profileIndices;
+	private int profileOffset;
+	private int profileSize;
+	private boolean profileContinuous;
+	private boolean profileSmooth;
+	private boolean gradientSet;
+	private final GradientColorValue gradientColor = new GradientColorValue();
+	private boolean colorFollowOffset;
+	private Interpolation scaleFunc = null;
+	private float startScale;
+	private float endScale;
+	private boolean scaleFollowOffset;
+	private int ignoreFaces = 0;
 	/** The current primitiveType */
 	private int primitiveType;
 	/** The UV range used when building */
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
+	private float uMin2 = 0, uMax2 = 1, vMin2 = 0, vMax2 = 1;
 	private float[] vertex;
 
 	private boolean vertexTransformationEnabled = false;
 	private final Matrix4 positionTransform = new Matrix4();
 	private final Matrix4 normalTransform = new Matrix4();
 	private final Vector3 tempVTransformed = new Vector3();
+
+	// scratch buffers
+	private FloatArray tempFloats = new FloatArray();
+	private ShortArray tempInds = new ShortArray();
+
+	private static EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal and
 	 *           TextureCoordinates is supported. */
@@ -203,6 +239,19 @@ public class MeshBuilder implements MeshPartBuilder {
 		endpart();
 
 		final Mesh mesh = new Mesh(true, vertices.size / stride, indices.size, attributes);
+
+		return end(mesh);
+	}
+
+	/** End building the mesh and insert results in supplied mesh object */
+	public Mesh end (Mesh mesh) {
+		if (this.attributes == null) throw new RuntimeException("Call begin() first");
+		endpart();
+
+		if (!this.attributes.equals(mesh.getVertexAttributes())) throw new RuntimeException("Supplied mesh has incompatible vertex attributes");
+		if (mesh.getMaxVertices() < vertices.size / stride) throw new RuntimeException("Supplied mesh does not have enough vertex space");
+		if (mesh.getMaxIndices() < indices.size) throw new RuntimeException("Supplied mesh does not have enough index space");
+
 		mesh.setVertices(vertices.items, 0, vertices.size);
 		mesh.setIndices(indices.items, 0, indices.size);
 
@@ -283,6 +332,55 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	public void setGradientColor (float[] colors, boolean followOffset) {
+		if ((gradientSet = colors != null) == true) gradientColor.setColors(colors);
+		else return;
+		int count = colors.length / 3;
+		float[] timeline = new float[count];
+		float size = 1/(float)count;
+		float amt = 0;
+		for (int i = 0; i < timeline.length; i++) {
+			timeline[i] = amt;
+			amt += size;
+		}
+		gradientColor.setTimeline(timeline);
+		colorFollowOffset = followOffset;
+	}
+
+	@Override
+	public void setProfileShape (float[] shape, boolean continuous, boolean smooth) {
+		setProfileShape(shape, 0, shape.length, continuous, smooth);
+	}
+
+	@Override
+	public void setProfileShape (FloatArray shape, boolean continuous, boolean smooth) {
+		setProfileShape(shape.items, 0, shape.size, continuous, smooth);
+	}
+
+	@Override
+	public void setProfileShape (float[] shape, int offset, int size, boolean continuous, boolean smooth) {
+		profileShape = shape;
+		profileIndices = null;
+		profileOffset = offset;
+		profileSize = size;
+		profileContinuous = continuous;
+		profileSmooth = smooth;
+	}
+
+	@Override
+	public void setScaleInterpolation(Interpolation func, float startScale, float endScale, boolean followOffset) {
+		this.scaleFunc = func;
+		this.startScale = startScale;
+		this.endScale = endScale;
+		this.scaleFollowOffset = followOffset;
+	}
+
+	@Override
+	public void setIgnoreFaces (int faces) {
+		ignoreFaces = faces;
+	}
+
+	@Override
 	public void setUVRange (float u1, float v1, float u2, float v2) {
 		uMin = u1;
 		vMin = v1;
@@ -293,6 +391,29 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setUVRange (TextureRegion region) {
 		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+	}
+
+	@Override
+	public void setUVRange2 (float u1, float v1, float u2, float v2) {
+		uMin2 = u1;
+		vMin2 = v1;
+		uMax2 = u2;
+		vMax2 = v2;
+	}
+
+	@Override
+	public void setUVRange2 (TextureRegion region) {
+		setUVRange2(region.getU(), region.getV(), region.getU2(), region.getV2());
+	}
+
+	@Override
+	public void resetDefaults () {
+		setColor(null);
+		setGradientColor(null, false);
+		setScaleInterpolation(null, 1, 1, false);
+		ignoreFaces = 0;
+		uMin = 0; uMax = 1; vMin = 0; vMax = 1;
+		uMin2 = 0; uMax2 = 1; vMin2 = 0; vMax2 = 1;
 	}
 
 	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
@@ -1096,6 +1217,558 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	public void mesh (Mesh mesh) {
+		mesh(mesh, mesh.getNumVertices(), mesh.getNumIndices());		
+	}
+
+	@Override
+	public void mesh (Mesh mesh, int numVerts, int numIndices) {
+		if (numVerts < 1 || numVerts > mesh.getNumVertices())
+			throw new GdxRuntimeException("Invalid vertex count");
+		if (numIndices < 1 || numIndices > mesh.getNumIndices())
+			throw new GdxRuntimeException("Invalid index count");
+
+		if (this.attributes == null)
+			begin(mesh.getVertexAttributes());
+		else if (!this.attributes.equals(mesh.getVertexAttributes()))
+			throw new GdxRuntimeException("Vertex attributes must be the same for added mesh");
+
+		int size = stride * numVerts;
+		tempFloats.clear();
+		tempFloats.ensureCapacity(size);
+		FloatBuffer vBuffer = mesh.getVerticesBuffer();
+		vBuffer.position(0);
+		vBuffer.get(tempFloats.items, 0, size);
+		tempFloats.size = size;
+
+		tempInds.clear();
+		tempInds.ensureCapacity(numIndices);
+		ShortBuffer iBuffer = mesh.getIndicesBuffer();
+		iBuffer.position(0);
+		iBuffer.get(tempInds.items, 0, numIndices);
+		tempInds.size = numIndices;
+
+		mesh(tempFloats, tempInds);
+	}
+
+	@Override
+	public void mesh (FloatArray srcVertices, ShortArray srcIndices) {
+		mesh(srcVertices.items, srcVertices.size / stride, srcIndices.items, srcIndices.size);
+	}
+
+	@Override
+	public void mesh (float[] srcVertices, short[] srcIndices) {
+		mesh(srcVertices, srcVertices.length / stride, srcIndices, srcIndices.length);
+	}
+
+	@Override
+	public void mesh (float[] srcVertices, int numVerts, short[] srcIndices, int numIndices) {
+		if (this.attributes == null) throw new RuntimeException("Call begin() first");
+
+		if (numVerts < 1 || numVerts > srcVertices.length / stride)
+			throw new GdxRuntimeException("Invalid vertex count");
+		if (numIndices < 1 || numIndices > srcIndices.length)
+			throw new GdxRuntimeException("Invalid index count");
+
+		ensureCapacity(numVerts, numIndices);
+
+		short startIndex = (short)vindex;
+		boolean moveUVs = (uMin != 0 || uMax != 1 || vMin != 0 || vMax != 1);
+		int posOff = posOffset;
+		int norOff = norOffset;
+		int uvOff = uvOffset;
+		int colOff = colOffset;
+		float uDelta = uMax - uMin;
+		float vDelta = vMax - vMin;
+
+		// transform vertices and re-normalize uv ranges
+		for (int i = 0; i < numVerts; i++) {
+			if (posOffset >= 0) {
+				if (vertexTransformationEnabled) {
+					if (posSize > 2) {
+						tempVTransformed.set(srcVertices[posOff], srcVertices[posOff+1], srcVertices[posOff+2]).mul(positionTransform);
+						vertex[posOffset  ] = tempVTransformed.x;
+						vertex[posOffset+1] = tempVTransformed.y;
+						vertex[posOffset+2] = tempVTransformed.z;
+					} else if (posSize > 1) {
+						tempVTransformed.set(srcVertices[posOff], srcVertices[posOff+1], 0).mul(positionTransform);
+						srcVertices[posOffset  ] = tempVTransformed.x;
+						srcVertices[posOffset+1] = tempVTransformed.y;
+					} else {
+						vertex[posOffset] = srcVertices[posOff];
+					}
+				} else {
+					vertex[posOffset] = srcVertices[posOff];
+					if (posSize > 1) vertex[posOffset+1] = srcVertices[posOff+1];
+					if (posSize > 2) vertex[posOffset+2] = srcVertices[posOff+2];
+				}
+				posOff += stride;
+			}
+			if (norOffset >= 0) {
+				if (vertexTransformationEnabled) {
+					tempVTransformed.set(srcVertices[norOff], srcVertices[norOff+1], srcVertices[norOff+2]).mul(normalTransform).nor();
+					vertex[norOffset  ] = tempVTransformed.x;
+					vertex[norOffset+1] = tempVTransformed.y;
+					vertex[norOffset+2] = tempVTransformed.z;
+				} else {
+					vertex[norOffset  ] = srcVertices[norOff  ];
+					vertex[norOffset+1] = srcVertices[norOff+1];
+					vertex[norOffset+2] = srcVertices[norOff+2];
+				}
+				norOff += stride;
+			}
+			if (uvOffset >= 0) {
+				if (moveUVs) {
+					vertex[uvOffset  ] = uMin + srcVertices[uvOff  ] * uDelta;
+					vertex[uvOffset+1] = vMin + srcVertices[uvOff+1] * vDelta;
+				} else {
+					vertex[uvOffset  ] = srcVertices[uvOff  ];
+					vertex[uvOffset+1] = srcVertices[uvOff+1];
+				}
+				uvOff += stride;
+			}
+			if (colOffset >= 0) {
+				if (colOffset >= 0) {
+					vertex[colOffset  ] = color.r;
+					vertex[colOffset+1] = color.g;
+					vertex[colOffset+2] = color.b;
+					if (colSize > 3) vertex[colOffset + 3] = color.a;
+				} else if (cpOffset > 0) vertex[cpOffset] = color.toFloatBits(); // FIXME cache packed color?
+			}
+			addVertex(vertex, 0);
+		}
+
+		// increment indices and add them
+		for (int i = 0; i < numIndices; i++)
+			indices.add(srcIndices[i] + startIndex);
+
+		lastIndex = (short)vindex;
+	}
+
+	@Override
+	public void extrude (float distance, float tileU, float tileV) {
+		extrude(distance, 2, tileU, tileV);
+	}
+
+	// used by simple distance extrudes
+	final SimplePath distancePath = new SimplePath(false, new Vector3[]{new Vector3(), new Vector3()});
+
+	@Override
+	public void extrude (float distance, int steps, float tileU, float tileV) {
+		distancePath.points[1].z = distance;
+		sweep(distancePath, true, steps, tileU, tileV);
+	}
+
+	// used by explicit point path sweeps
+	final SimplePath simplePath = new SimplePath(true, null);
+
+	@Override
+	public void sweep (Vector3[] path, boolean smooth, boolean continuous, float tileU, float tileV) {
+		simplePath.set(path);
+		if (simplePath.getCount() < 1)
+			throw new GdxRuntimeException("invalid point path");
+
+		simplePath.continuous = continuous;
+		sweep(simplePath, smooth, simplePath.getCount(), tileU, tileV);
+	}
+
+	@Override
+	public void sweep (Path path, boolean smooth, int steps, float tileU, float tileV) {
+		sweep(path, smooth, 0, 1, steps, tileU, tileV);
+	}
+
+	@Override
+	public void sweep (Path path, boolean smooth, float startT, float endT, int steps, float tileU, float tileV) {
+		if (posSize < 3 || norOffset < 0)
+			throw new GdxRuntimeException("extrude/sweep expects 3 position components and normals");
+		if (profileShape == null || profileSize < 4 || profileShape.length < 4)
+			throw new GdxRuntimeException("profile shape not set or is invalid");
+
+		// get the bounds for cap uv assignment and distances of profile segments
+		float minX = profileShape[0];
+		float minY = profileShape[1];
+		float maxX = profileShape[0];
+		float maxY = profileShape[1];
+		float profileDistance = 0;
+		float pathLength = path.approxLength(steps);
+		if (uvOffset > 0) {
+			tempFloats.clear();
+			float lastptx = profileShape[0];
+			float lastpty = profileShape[1];
+			for (int i = 2; i < profileSize-1; i += 2) {
+				float ptx = profileShape[i];
+				float pty = profileShape[i+1];
+				minX = minX > ptx ? ptx : minX;
+				minY = minY > pty ? pty : minY;
+				maxX = maxX < ptx ? ptx : maxX;
+				maxY = maxY < pty ? pty : maxY;
+				float d = Vector2.dst(lastptx, lastpty, ptx, pty);
+				profileDistance += d;
+				tempFloats.add(profileDistance);
+				lastptx = profileShape[i];
+				lastpty = profileShape[i+1];
+			}
+			float d = Vector2.dst(lastptx, lastpty, profileShape[0], profileShape[1]);
+			profileDistance += d;
+			tempFloats.add(profileDistance);
+		}
+		float shapeWidth = maxX - minX;
+		float shapeHeight = maxY - minY;
+
+		short startIndex = vindex;
+		short start = startIndex;
+		int shapePointCount = profileSize / (profileSmooth ? 2 : 1);
+		boolean useSecondUVRange = (uMin2 != 0 || uMax2 != 1 || vMin2 != 0 || vMax2 != 1);
+		boolean useFlatMapping = tileU == 0 && tileV == 0;
+		float uDelta = uMax - uMin;
+		float vDelta = vMax - vMin;
+		float uDelta2 = uMax2 - uMin2;
+		float vDelta2 = vMax2 - vMin2;
+		if (!useFlatMapping) {
+			uDelta2 *= tileU / profileDistance;
+			vDelta2 *= tileV;
+		}
+		float distance = 0;
+		Color col = color;
+		if (gradientSet)
+			col = colorTemp1;
+
+		boolean doBottom = (ignoreFaces & IgnoreFaces.Bottom) == 0;
+		boolean doTop = (ignoreFaces & IgnoreFaces.Top) == 0;
+
+		// count indices and triangulate polygon (if not yet triangulated) for index count now and caps indices later
+		int indexCount = 6 * (steps-1) * (shapePointCount - (profileContinuous ? 0 : 1));
+		if (doBottom || doTop) {
+			if (profileIndices == null)
+				profileIndices = triangulator.computeTriangles(profileShape, 0, profileSize);
+			indexCount += doBottom ? profileIndices.size : 0;
+			indexCount += doTop ? profileIndices.size : 0;
+		}
+		int vertexCount = profileSize/2 * ((doBottom ? 1 : 0) + (doTop ? 1 : 0) + (profileSmooth ? 1 : 2) * (steps * (smooth ? 1 : 2) - (smooth ? 0 : 2)));
+
+		ensureCapacity(vertexCount, indexCount);
+
+		// include base transform if set, otherwise matTmp2 used directly
+		Matrix4 posMat = matTmp2;
+		if (vertexTransformationEnabled)
+			posMat = matTmp1;
+
+		// setup some vectors for the calculations
+		Vector3 pos = tmp(0, 0, 0);
+		Vector3 tan = tmp(Vector3.Z);
+		Vector3 up = tmp(Vector3.Y);
+		Vector3 biNorm = tmp(0, 0, 0);
+		Vector3 firstNorm = tmp(0, 0, 0);
+		Vector3 prevPos = tmp(0, 0, 0);
+		Vector3 prevTan = tmp(0, 0, 0);
+		Vector3 x = tmp(0, 0, 0);
+		Vector3 y = tmp(0, 0, 0);
+		Vector3 point = tmp(0, 0, 0);
+		Vector3 prevPoint = tmp(0, 0, 0);
+		Vector3 nextPoint = tmp(0, 0, 0);
+		Vector3 nor = tmp(0, 0, 0);
+		Vector3[] prevNorms = null;
+		if (!smooth) {
+			prevNorms = new Vector3[profileSize];
+			for (int i = 0; i < prevNorms.length; i++) {
+				prevNorms[i] = tmp(0,0,0);
+			}
+		}
+
+		// sides
+		float stepSize = 1f/(float)(steps-1);
+		float a = 0;
+		float deltaT = endT - startT;
+		float scale = 1, scaleDelta = 1;
+		float angle = 0, prevAngle = 0;
+		float stepLength2 = 1;
+		if (scaleFunc != null) {
+			stepLength2 = stepSize * pathLength;
+			stepLength2 *= stepLength2;
+		}
+
+		for (int step = 0; step < steps; step++) {
+
+			// step along path, clamp to full length towards end
+			if (step == steps-1) a = 1f;
+			float t = startT + a * deltaT;
+			if (t > 1f) t %= 1f;		// keep in 0-1 range, but don't wrap on 1 or 2-step paths will collapse
+			else if (t < 0) t = 1f + (t % 1f);
+
+			// set shape scale interpolation along path, this also affects side normal
+			if (scaleFunc != null) {
+				float prevScale = scale;
+				scale = scaleFunc.apply(startScale, endScale, scaleFollowOffset ? a : t);
+				if (step == 0) {
+					float a2 = stepSize;
+					float t2 = (startT + a2 * deltaT) % 1f;
+					scaleDelta = scaleFunc.apply(startScale, endScale, scaleFollowOffset ? a2 : t2) - scale;
+				} else {
+					scaleDelta = scale - prevScale;
+				}
+			}
+
+			// if set, gradient determines vertex color along path
+			if (gradientSet) {
+				float[] cols = gradientColor.getColor(colorFollowOffset ? a : t);
+				col.set(cols[0], cols[1], cols[2], 1);
+			}
+
+			a += stepSize;
+
+			// get position along the path
+			if (!useFlatMapping)
+				prevPos.set(pos);
+			path.valueAt(pos, t);
+			if (!useFlatMapping)
+				distance += pos.dst(prevPos);
+
+			// get the tangent, first saving the previous tangent
+			prevTan.set(tan);
+			path.derivativeAt(tan, t);
+			tan.nor();
+
+			// setup transform for this point
+
+			// determine initial frame
+			if (step == 0) {
+				x.set(tan).crs(Vector3.Y);
+				if (x.len2() < MathUtils.FLOAT_ROUNDING_ERROR) {
+					x.set(-1, 0, 0);
+					y.set(Vector3.Z);
+				} else {
+					x.nor();
+					y.set(tan).crs(x).nor();
+				}
+				quatTmp1.setFromAxes(x.x, x.y, x.z, y.x, y.y, y.z, tan.x, tan.y, tan.z);
+				quatTmp2.setFromAxisRad(tan, MathUtils.PI);
+				quatTmp1.mulLeft(quatTmp2);
+
+			// rotate later frames to align with tangent
+			} else if (step < steps-1) {
+				if (!prevTan.epsilonEquals(tan, MathUtils.FLOAT_ROUNDING_ERROR)) {
+					nor.set(prevTan).crs(tan).nor();
+					// clamp param to 1f to avoid NaNs
+					angle = (float)Math.acos(Math.min(prevTan.dot(tan), 1f));
+					quatTmp2.setFromAxisRad(nor, angle);
+					quatTmp1.mulLeft(quatTmp2);
+				}
+			}
+			matTmp2.setToTranslation(pos).rotate(quatTmp1);
+			if (vertexTransformationEnabled)
+				posMat.set(positionTransform).mul(matTmp2);
+
+			for (int i = 0; i < profileSize-1; i += 2) {
+				// get profile point and surrounding points as needed
+				point.set(profileShape[i], profileShape[i+1], 0);
+				if (i == 0) {
+					if (profileContinuous)
+						prevPoint.set(profileShape[profileSize-2], profileShape[profileSize-1], 0);
+					else
+						prevPoint.set(profileShape[i+2], profileShape[i+3], 0).sub(point);
+					nextPoint.set(profileShape[i+2], profileShape[i+3], 0);
+				} else {
+					prevPoint.set(profileShape[i-2], profileShape[i-1], 0);
+					// for smooth profiles, need next point too
+					if (profileSmooth) {
+						if (i == profileSize-2) {
+							if (profileContinuous)
+								nextPoint.set(profileShape[0], profileShape[1], 0);
+							else
+								nextPoint.set(point);
+						} else
+							nextPoint.set(profileShape[i+2], profileShape[i+3], 0);
+					}
+				}
+
+				// do normals first in case we want facetted sides, which just duplicates the previous vertex with a new normal
+
+				biNorm.set(prevPoint).sub(point);
+				// for smooth profiles, take average of profile edges on either side of current profile point
+				if (profileSmooth)
+					biNorm.lerp(tempVTransformed.set(point).sub(nextPoint), 0.5f);
+				// cross with z-axis and then align to path and transforms
+				tempVTransformed.set(Vector3.Z).crs(biNorm);
+				if (scaleFunc != null) {
+					// scale interpolation changes the side normal
+					angle = MathUtils.atan2(point.len2() * scaleDelta, stepLength2);
+					if (step > 0)
+						angle = prevAngle + 0.5f * (angle - prevAngle);
+					prevAngle = angle;
+					tempVTransformed.rotateRad(biNorm, angle);
+				}
+				tempVTransformed.rot(matTmp2);
+				if (vertexTransformationEnabled)
+					tempVTransformed.mul(normalTransform);
+				tempVTransformed.nor();
+
+				// For facetted sides, average the normals for each end of the face, but store the unaveraged normal for calculation
+				// on the next segment. This isn't really correct as it still evaluates the normal at the ends instead of the face.
+				// This is more noticeably wrong on point array paths with colinear segments as the tangent evaluation snaps to path
+				// vertices and face normals which should be equal from segment to segment differ because of neighboring segments
+				// bending the normal. But it's better than nothing. This also builds up a temp array which is ugly. Maybe there's a
+				// better way to do this...
+				if (!smooth) {
+					if( step > 0) {
+						Vector3 prevNorm = prevNorms[i/2];
+						tempV1.set(prevNorm);
+						prevNorm.set(tempVTransformed);
+						tempVTransformed.lerp(tempV1, 0.5f);
+					} else {
+						prevNorms[i/2].set(tempVTransformed);
+					}
+				}
+
+				// save first normal for later on facetted profiles
+				if (i == 0)
+					firstNorm.set(tempVTransformed);
+
+				// normal
+				vertex[norOffset  ] = tempVTransformed.x;
+				vertex[norOffset+1] = tempVTransformed.y;
+				vertex[norOffset+2] = tempVTransformed.z;
+
+				// copy this normal to previous segment for facetted sides
+				if (!smooth && step > 0) {
+					int idx = norOffset + stride * (vindex - shapePointCount);
+					vertices.set(idx  , tempVTransformed.x);
+					vertices.set(idx+1, tempVTransformed.y);
+					vertices.set(idx+2, tempVTransformed.z);
+				}
+
+				// duplicate vertex at this point if facetted profile
+				if (!profileSmooth && i > 0) {
+					addVertex(vertex, 0);
+
+					// copy this normal to previous segment for facetted sides
+					if (!smooth && step > 0) {
+						int idx = norOffset + stride * (vindex - shapePointCount);
+						vertices.set(idx  , tempVTransformed.x);
+						vertices.set(idx+1, tempVTransformed.y);
+						vertices.set(idx+2, tempVTransformed.z);
+					}
+				}
+
+				// position
+				tempVTransformed.set(point.x * scale, point.y * scale, 0).mul(posMat);
+				vertex[posOffset  ] = tempVTransformed.x;
+				vertex[posOffset+1] = tempVTransformed.y;
+				vertex[posOffset+2] = tempVTransformed.z;
+
+				// texture coords
+				if (uvOffset >= 0) {
+					// flat mapping maps just stretches the uvs along the path perpendicular to its tangent
+					if (useFlatMapping) {
+						vertex[uvOffset  ] = uMin2 + point.x / shapeWidth * uDelta2;
+						vertex[uvOffset+1] = vMin2 + point.y / shapeHeight * vDelta2;
+					// tiled mapping repeats the mapping, u along profile and v along path
+					} else {
+						vertex[uvOffset  ] = uMin2 + tempFloats.get(i/2) * uDelta2;
+						vertex[uvOffset+1] = vMin2 + distance/pathLength * vDelta2;
+					}
+				}
+
+				// color
+				if (colOffset >= 0) {
+					vertex[colOffset  ] = col.r;
+					vertex[colOffset+1] = col.g;
+					vertex[colOffset+2] = col.b;
+					if (colSize > 3) vertex[colOffset + 3] = col.a;
+				} else if (cpOffset > 0) vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
+
+				addVertex(vertex, 0);
+			}
+
+			// set to saved normal from first edge if facetted profile
+			if (!profileSmooth) {
+				vertex[norOffset  ] = firstNorm.x;
+				vertex[norOffset+1] = firstNorm.y;
+				vertex[norOffset+2] = firstNorm.z;
+				addVertex(vertex, 0);
+			}
+
+			// set side indices
+			if (step > 0) {
+				short closenext, farnext;
+				int end = (profileContinuous ? 0 : 1);
+				for (int i = 0; i < shapePointCount - end; i++) {
+					short idx = (short)(start + i);
+					if (i < shapePointCount - 1) {
+						closenext = (short)(idx + 1);
+						farnext = (short)((idx + shapePointCount + 1) % (start + 2 * shapePointCount));
+					} else {
+						closenext = (short)(start);
+						farnext = (short)(start + shapePointCount);
+					}
+					indices.add(idx + shapePointCount);
+					indices.add(idx);
+					indices.add(farnext);
+
+					indices.add(farnext);
+					indices.add(idx);
+					indices.add(closenext);
+				}
+				start += (short)(shapePointCount * (smooth ? 1 : 2));
+			}
+
+			// repeat these vertices for facetted sides
+			if (!smooth && step > 0 && step < steps-1) {
+				vertices.addAll(vertices, stride * (vindex - shapePointCount), stride * shapePointCount);
+				vindex += shapePointCount;
+				lastIndex = (short)(vindex);
+			}
+		}
+
+		// end caps - copy vertices from path segment ends and just give new normals and texture coords
+		int firstIndex = startIndex;
+		int startCap = 0;
+		int endCap = doBottom ? 1 : 0;
+		if (endCap == 0) {
+			startCap++;
+			endCap++;
+			firstIndex = vindex - shapePointCount;
+		}
+		endCap += doTop ? 1 : 0;
+		boolean resetUVs = uvOffset >= 0 && (!useFlatMapping || useSecondUVRange);
+		for (int c = startCap; c < endCap; c++) {
+			float t = (startT + (float)c * deltaT);
+			if (t > 1f) t %= 1f;		// keep in 0-1 range, but don't wrap on 1 or 2-step paths will collapse
+			else if (t < 0) t = 1f + (t % 1f);
+			path.derivativeAt(tan, t);
+			tan.nor();
+			if (c == 0)
+				tan.scl(-1);
+			tempVTransformed.set(tan);
+			if (vertexTransformationEnabled)
+				tempVTransformed.mul(normalTransform);
+			int inc = (profileSmooth ? 1 : 2);
+			for (int i = (profileSmooth ? 0 : 1), pi = 0; i < shapePointCount; i += inc) {
+				System.arraycopy(vertices.items, (firstIndex + i) * stride, vertex, 0, stride);
+				vertex[norOffset  ] = tempVTransformed.x;
+				vertex[norOffset+1] = tempVTransformed.y;
+				vertex[norOffset+2] = tempVTransformed.z;
+				if (resetUVs) {
+					vertex[uvOffset  ] = uMin + profileShape[pi++] / shapeWidth * uDelta;
+					vertex[uvOffset+1] = vMin + profileShape[pi++] / shapeHeight * vDelta;
+				}
+				addVertex(vertex, 0);
+			}
+			firstIndex = vindex - 2 * shapePointCount + (profileSmooth ? 0 : shapePointCount/2);
+		}
+
+		// cap indices
+		short offset = (short)(startIndex + shapePointCount * (smooth ? steps : 2 * steps - 2));
+		if (doBottom) {
+			for (int i = 0; i < profileIndices.size; i++)
+				indices.add(profileIndices.get(i) + offset);
+			offset += shapePointCount / (profileSmooth ? 1 : 2);
+		}
+		if (doTop)
+			for (int i = profileIndices.size-1; i >= 0; i--)
+				indices.add(profileIndices.get(i) + offset);
+	}
+
+	@Override
 	public Matrix4 getVertexTransform (Matrix4 out) {
 		return out.set(positionTransform);
 	}
@@ -1116,5 +1789,92 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setVertexTransformationEnabled (boolean enabled) {
 		vertexTransformationEnabled = enabled;
+	}
+
+	// simple path class to handle extrudes along vertex paths
+	private class SimplePath<T extends Vector3> implements Path<Vector3> {
+
+		public Vector3[] points;
+		public boolean continuous;
+		public boolean snap;
+		private Vector3 tempV = new Vector3();
+		private boolean dirty = true;
+		private float pathLength = 0;
+
+		public SimplePath(boolean snap, Vector3[] points) {
+			this.snap = snap;
+			set(points);
+		}
+
+		public void set(Vector3[] points) {
+			this.points = points;
+			dirty = true;
+		}
+
+		public int getCount() {
+			return points.length;
+		}
+
+		private int getIndex (float t) {
+			return Math.max(0, Math.min((int)Math.floor(t * (float)points.length-1), points.length-1));
+		}
+
+		private void calculateLength() {
+			dirty = false;
+			pathLength = 0;
+			if (points == null || points.length < 2)
+				return;
+			for (int i = 0; i < points.length-1; i++) {
+				pathLength += points[i].dst(points[i+1]);
+			}
+		}
+
+		@Override
+		public Vector3 derivativeAt (Vector3 out, float t) {
+			if (points.length == 0) return out;
+			if (points.length == 1) return out.set(points[0]);
+			if (points.length == 2) return out.set(points[1]).sub(points[0]);
+			if (continuous && (t == 0f || t == 1f)) {
+				tempV.set(points[points.length-1]).sub(points[points.length-2]);
+				return out.set(points[1]).sub(points[0]).lerp(tempV, 0.5f);
+			}
+			int i = getIndex(t);
+			if (i == points.length-1)
+				return out.set(points[i]).sub(points[i-1]);
+			if (i == 0)
+				return out.set(points[1]).sub(points[0]);
+			tempV.set(points[i]).sub(points[i-1]);
+			return out.set(points[i+1]).sub(points[i]).lerp(tempV, 0.5f);
+		}
+
+		@Override
+		public Vector3 valueAt (Vector3 out, float t) {
+			if (points.length == 0) return out;
+			if (t == 0f) return out.set(points[0]);
+			if (t == 1f) return out.set(points[points.length-1]);
+			int i = getIndex(t);
+			if (snap || i == points.length-1)
+				return out.set(points[i]);
+			return out.set(points[i]).lerp(points[i+1], t);
+		}
+
+		@Override
+		public float approximate (Vector3 v) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public float locate (Vector3 v) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public float approxLength (int samples) {
+			if (dirty)
+				calculateLength();
+			return pathLength;
+		}
 	}
 }
