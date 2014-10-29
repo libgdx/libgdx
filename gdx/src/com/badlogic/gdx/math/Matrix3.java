@@ -143,7 +143,7 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
-	 * @param radians the angle in degrees.
+	 * @param radians the angle in radians.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotationRad (float radians) {
 		float cos = (float)Math.cos(radians);
@@ -429,7 +429,7 @@ public class Matrix3 implements Serializable {
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
-	 * @param radians The angle in degrees
+	 * @param radians The angle in radians
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotateRad (float radians) {
 		if (radians == 0) return this;
