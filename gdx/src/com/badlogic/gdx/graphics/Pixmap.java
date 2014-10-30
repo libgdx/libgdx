@@ -47,11 +47,14 @@ public class Pixmap implements Disposable {
 	 * 
 	 * @author mzechner */
 	public enum Format {
-		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
+		Alpha, Luminance, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888,
+		/** @deprecated OpenGL ES lacks GL_INTENSITY. Use {@link Format#Luminance} or {@link Format#Alpha} instead */
+		Intensity;
 
 		public static int toGdx2DPixmapFormat (Format format) {
 			if (format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
 			if (format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
+			if (format == Luminance) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE;
 			if (format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
 			if (format == RGB565) return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
 			if (format == RGBA4444) return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
@@ -62,6 +65,7 @@ public class Pixmap implements Disposable {
 
 		public static Format fromGdx2DPixmapFormat (int format) {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA) return Alpha;
+			if (format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE) return Luminance;
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA) return LuminanceAlpha;
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB565) return RGB565;
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA4444) return RGBA4444;

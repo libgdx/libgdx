@@ -16,25 +16,24 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.imageio.IIOImage;
@@ -42,6 +41,21 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import com.badlogic.gdx.graphics.glutils.ETC1;
+import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
@@ -217,7 +231,8 @@ public class TexturePacker {
 				}
 			}
 
-			if (settings.bleed && !settings.premultiplyAlpha && !settings.outputFormat.equalsIgnoreCase("jpg")) {
+			if (settings.bleed && !settings.premultiplyAlpha && !settings.outputFormat.equalsIgnoreCase("jpg")
+				&& !settings.outputFormat.equalsIgnoreCase("etc1")) {
 				canvas = new ColorBleedEffect().processImage(canvas, 2);
 				g = (Graphics2D)canvas.getGraphics();
 			}
@@ -227,36 +242,116 @@ public class TexturePacker {
 				g.drawRect(0, 0, width - 1, height - 1);
 			}
 
-			ImageOutputStream ios = null;
-			try {
-				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
-					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-					newImage.getGraphics().drawImage(canvas, 0, 0, null);
-					canvas = newImage;
+			if (!settings.maskFormat.equalsIgnoreCase("none")) {
+				// extract alpha channel into a gray byte buffer
+				BufferedImage maskImage = extractAlpha(canvas, true);
 
-					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-					ImageWriter writer = writers.next();
-					ImageWriteParam param = writer.getDefaultWriteParam();
-					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-					param.setCompressionQuality(settings.jpegQuality);
-					ios = ImageIO.createImageOutputStream(outputFile);
-					writer.setOutput(ios);
-					writer.write(null, new IIOImage(canvas, null, null), param);
-				} else {
+				File maskFile = new File(outputFile.getPath() + ".mask." + settings.maskFormat);
+				System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + maskFile);
+
+				try {
+					if (settings.maskFormat.equalsIgnoreCase("png")) {
+						writePNG(maskImage, maskFile);
+					} else if (settings.maskFormat.equalsIgnoreCase("jpg")) {
+						writeJPEG(maskImage, maskFile, settings.jpegQuality);
+					} else if (settings.maskFormat.equalsIgnoreCase("etc1")) {
+						maskImage = convertToRGB888(maskImage); // ETC1 encoder needs RGB565 or RGB888
+						writePKM(maskImage, maskFile);
+					} else {
+						throw new RuntimeException("Unsupported mask format: " + settings.maskFormat);
+					}
+				} catch (IOException ex) {
+					throw new RuntimeException("Error writing file: " + maskFile, ex);
+				}
+			}
+
+			try {
+				if (settings.outputFormat.equalsIgnoreCase("png")) {
 					if (settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
-					ImageIO.write(canvas, "png", outputFile);
+					writePNG(canvas, outputFile);
+				} else if (settings.outputFormat.equalsIgnoreCase("jpg")) {
+					canvas = convertToRGB888(canvas); // JPEG doesn't play nicely with INT_(A)RGB
+					writeJPEG(canvas, outputFile, settings.jpegQuality);
+				} else if (settings.outputFormat.equalsIgnoreCase("etc1")) {
+					canvas = convertToRGB888(canvas); // ETC1 encoder needs RGB565 or RGB888
+					writePKM(canvas, outputFile);
+				} else {
+					throw new RuntimeException("Unsupported output format: " + settings.outputFormat);
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
-			} finally {
-				if (ios != null) {
-					try {
-						ios.close();
-					} catch (Exception ignored) {
-					}
-				}
 			}
 		}
+	}
+
+	private static BufferedImage convertToRGB888 (BufferedImage image) {
+		ColorModel colorModel = image.getColorModel();
+
+		if (colorModel.getNumComponents() == 3 && colorModel.getPixelSize() == 24 && colorModel.getColorSpace().isCS_sRGB()) {
+			return image; // already RGB888
+		} else {
+			ColorModel rgbColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), null, false, false,
+				Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+			WritableRaster rgbRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 3,
+				null);
+			BufferedImage rgbImage = new BufferedImage(rgbColorModel, rgbRaster, false, null);
+			rgbImage.getGraphics().drawImage(image, 0, 0, null);
+			return rgbImage;
+		}
+	}
+
+	private static BufferedImage extractAlpha (BufferedImage image, boolean grayscale) {
+		BufferedImage maskImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D maskGraphics = (Graphics2D)maskImage.getGraphics();
+		// copy original image
+		maskGraphics.drawImage(image, 0, 0, null);
+		// strip color, keep transparency
+		maskGraphics.setComposite(AlphaComposite.SrcIn);
+		maskGraphics.setColor(Color.WHITE);
+		maskGraphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+		if (grayscale) {
+			// convert alpha to grayscale. white is opaque, black is transparent
+			BufferedImage grayImage = new BufferedImage(maskImage.getWidth(), maskImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+			grayImage.getGraphics().drawImage(maskImage, 0, 0, null);
+			maskImage = grayImage;
+		}
+		return maskImage;
+	}
+
+	private static void writePNG (BufferedImage image, File outputFile) throws IOException {
+		ImageIO.write(image, "png", outputFile);
+	}
+
+	private static void writeJPEG (BufferedImage image, File outputFile, float quality) throws IOException {
+		ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
+		ImageWriteParam param = writer.getDefaultWriteParam();
+		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+		param.setCompressionQuality(quality);
+
+		ImageOutputStream ios = null;
+		try {
+			ios = ImageIO.createImageOutputStream(outputFile);
+			writer.setOutput(ios);
+			writer.write(null, new IIOImage(image, null, null), param);
+		} finally {
+			StreamUtils.closeQuietly(ios);
+		}
+	}
+
+	private static void writePKM (BufferedImage image, File outputFile) {
+		// image data is assumed to be 3-byte RGB888, load it into a native buffer
+		byte[] rgbData = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(rgbData.length);
+		BufferUtils.copy(rgbData, 0, buffer, rgbData.length);
+
+		// encode and write ETC1 file
+		ByteBuffer compressedData = ETC1.encodeImagePKM(buffer, 0, image.getWidth(), image.getHeight(), 3);
+		BufferUtils.newUnsafeByteBuffer(compressedData);
+		BufferUtils.disposeUnsafeByteBuffer(buffer);
+		ETC1Data etc1Data = new ETC1Data(image.getWidth(), image.getHeight(), compressedData, ETC1.PKM_HEADER_SIZE);
+		etc1Data.write(new FileHandle(outputFile));
+		etc1Data.dispose();
 	}
 
 	static private void plot (BufferedImage dst, int x, int y, int argb) {
@@ -300,6 +395,7 @@ public class TexturePacker {
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
+			writer.write("mask: " + settings.maskFormat + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");
@@ -525,6 +621,7 @@ public class TexturePacker {
 		public Format format = Format.RGBA8888;
 		public boolean alias = true;
 		public String outputFormat = "png";
+		public String maskFormat = "none";
 		public float jpegQuality = 0.9f;
 		public boolean ignoreBlankImages = true;
 		public boolean fast;
@@ -563,6 +660,7 @@ public class TexturePacker {
 			format = settings.format;
 			jpegQuality = settings.jpegQuality;
 			outputFormat = settings.outputFormat;
+			maskFormat = settings.maskFormat;
 			filterMin = settings.filterMin;
 			filterMag = settings.filterMag;
 			wrapX = settings.wrapX;
@@ -674,6 +772,7 @@ public class TexturePacker {
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
 
+		GdxNativesLoader.load();
 		process(input, output, packFileName);
 	}
 }

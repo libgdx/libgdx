@@ -1,0 +1,35 @@
+
+compressed.etc1
+size: 1024,1024
+mask: png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+frame1
+  rotate: false
+  xy: 2, 570
+  size: 420, 282
+  orig: 420, 282
+  offset: 0, 0
+  index: -1
+frame2
+  rotate: false
+  xy: 2, 286
+  size: 420, 282
+  orig: 420, 282
+  offset: 0, 0
+  index: -1
+frame3
+  rotate: false
+  xy: 424, 570
+  size: 420, 282
+  orig: 420, 282
+  offset: 0, 0
+  index: -1
+frame4
+  rotate: false
+  xy: 2, 2
+  size: 420, 282
+  orig: 420, 282
+  offset: 0, 0
+  index: -1

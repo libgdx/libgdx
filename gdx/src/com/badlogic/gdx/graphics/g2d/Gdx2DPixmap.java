@@ -33,6 +33,7 @@ public class Gdx2DPixmap implements Disposable {
 	public static final int GDX2D_FORMAT_RGBA8888 = 4;
 	public static final int GDX2D_FORMAT_RGB565 = 5;
 	public static final int GDX2D_FORMAT_RGBA4444 = 6;
+	public static final int GDX2D_FORMAT_LUMINANCE = 7;
 
 	public static final int GDX2D_SCALE_NEAREST = 0;
 	public static final int GDX2D_SCALE_LINEAR = 1;
@@ -60,12 +61,12 @@ public class Gdx2DPixmap implements Disposable {
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
-		
-		if(requestedFormat != 0 && requestedFormat != format) {
+
+		if (requestedFormat != 0 && requestedFormat != format) {
 			convert(requestedFormat);
 		}
 	}
-	
+
 	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
@@ -83,21 +84,25 @@ public class Gdx2DPixmap implements Disposable {
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
-		
-		if(requestedFormat != 0 && requestedFormat != format) {
+
+		if (requestedFormat != 0 && requestedFormat != format) {
 			convert(requestedFormat);
 		}
 	}
 
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
-		pixelPtr = newPixmap(nativeData, width, height, format);
+		pixelPtr = newPixmap(nativeData, width, height, (format == GDX2D_FORMAT_LUMINANCE ? GDX2D_FORMAT_ALPHA : format));
 		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
+
+		// formats LUMINANCE and ALPHA are encoded the same, but we have to make a distinction when uploading image data
+		if (this.format == GDX2D_FORMAT_ALPHA && format == GDX2D_FORMAT_LUMINANCE) //
+			this.format = GDX2D_FORMAT_LUMINANCE;
 	}
 
 	public Gdx2DPixmap (ByteBuffer pixelPtr, long[] nativeData) {
@@ -205,6 +210,8 @@ public class Gdx2DPixmap implements Disposable {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
 			return GL20.GL_ALPHA;
+		case GDX2D_FORMAT_LUMINANCE:
+			return GL20.GL_LUMINANCE;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
 			return GL20.GL_LUMINANCE_ALPHA;
 		case GDX2D_FORMAT_RGB888:
@@ -225,6 +232,7 @@ public class Gdx2DPixmap implements Disposable {
 	public int getGLType () {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
+		case GDX2D_FORMAT_LUMINANCE:
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
 		case GDX2D_FORMAT_RGB888:
 		case GDX2D_FORMAT_RGBA8888:
@@ -242,6 +250,8 @@ public class Gdx2DPixmap implements Disposable {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
 			return "alpha";
+		case GDX2D_FORMAT_LUMINANCE:
+			return "luminance";
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
 			return "luminance alpha";
 		case GDX2D_FORMAT_RGB888:

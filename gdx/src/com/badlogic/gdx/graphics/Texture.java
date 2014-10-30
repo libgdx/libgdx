@@ -124,7 +124,12 @@ public class Texture extends GLTexture {
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
 	}
-	
+
+	/** Constructs a dummy texture without a GL handle */
+	protected Texture () {
+		super(0, 0);
+	}
+
 	public void load (TextureData data) {
 		if (this.data != null && data.isManaged() != this.data.isManaged())
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");

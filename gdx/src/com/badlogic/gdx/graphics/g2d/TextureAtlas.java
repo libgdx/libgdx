@@ -21,6 +21,7 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.CompositeTexture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -47,7 +48,8 @@ import java.util.Set;
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
  * @author Nathan Sweet */
 public class TextureAtlas implements Disposable {
-	static final String[] tuple = new String[4];
+
+	static final Array<String> tuple = new Array<String>(4);
 
 	private final ObjectSet<Texture> textures = new ObjectSet(4);
 	private final Array<AtlasRegion> regions = new Array();
@@ -55,6 +57,7 @@ public class TextureAtlas implements Disposable {
 	public static class TextureAtlasData {
 		public static class Page {
 			public final FileHandle textureFile;
+			public final FileHandle textureMaskFile;
 			public Texture texture;
 			public final float width, height;
 			public final boolean useMipMaps;
@@ -64,11 +67,12 @@ public class TextureAtlas implements Disposable {
 			public final TextureWrap uWrap;
 			public final TextureWrap vWrap;
 
-			public Page (FileHandle handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
-				TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+			public Page (FileHandle handle, FileHandle maskHandle, float width, float height, boolean useMipMaps, Format format,
+				TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+				this.textureFile = handle;
+				this.textureMaskFile = maskHandle;
 				this.width = width;
 				this.height = height;
-				this.textureFile = handle;
 				this.useMipMaps = useMipMaps;
 				this.format = format;
 				this.minFilter = minFilter;
@@ -111,19 +115,31 @@ public class TextureAtlas implements Disposable {
 					else if (pageImage == null) {
 						FileHandle file = imagesDir.child(line);
 
+						String key = readTuple(reader);
+
+						// size is only optional for an atlas packed with an old TexturePacker.
 						float width = 0, height = 0;
-						if (readTuple(reader) == 2) { // size is only optional for an atlas packed with an old TexturePacker.
-							width = Integer.parseInt(tuple[0]);
-							height = Integer.parseInt(tuple[1]);
+						if (key.equals("size")) {
+							width = Integer.parseInt(tuple.get(0));
+							height = Integer.parseInt(tuple.get(1));
+							key = readTuple(reader);
+						}
+
+						// mask is optional for an atlas packed with an old TexturePacker
+						String mask = "none";
+						if (key.equals("mask")) {
+							mask = tuple.get(0);
 							readTuple(reader);
 						}
-						Format format = Format.valueOf(tuple[0]);
+
+						Format format = Format.valueOf(tuple.get(0));
 
 						readTuple(reader);
-						TextureFilter min = TextureFilter.valueOf(tuple[0]);
-						TextureFilter max = TextureFilter.valueOf(tuple[1]);
+						TextureFilter min = TextureFilter.valueOf(tuple.get(0));
+						TextureFilter max = TextureFilter.valueOf(tuple.get(1));
 
-						String direction = readValue(reader);
+						readTuple(reader);
+						String direction = tuple.get(0);
 						TextureWrap repeatX = ClampToEdge;
 						TextureWrap repeatY = ClampToEdge;
 						if (direction.equals("x"))
@@ -135,18 +151,22 @@ public class TextureAtlas implements Disposable {
 							repeatY = Repeat;
 						}
 
-						pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
+						FileHandle maskFile = null;
+						if (!mask.equals("none")) maskFile = imagesDir.child(file.name() + ".mask." + mask);
+
+						pageImage = new Page(file, maskFile, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
 						pages.add(pageImage);
 					} else {
-						boolean rotate = Boolean.valueOf(readValue(reader));
+						readTuple(reader);
+						boolean rotate = Boolean.valueOf(tuple.get(0));
 
 						readTuple(reader);
-						int left = Integer.parseInt(tuple[0]);
-						int top = Integer.parseInt(tuple[1]);
+						int left = Integer.parseInt(tuple.get(0));
+						int top = Integer.parseInt(tuple.get(1));
 
 						readTuple(reader);
-						int width = Integer.parseInt(tuple[0]);
-						int height = Integer.parseInt(tuple[1]);
+						int width = Integer.parseInt(tuple.get(0));
+						int height = Integer.parseInt(tuple.get(1));
 
 						Region region = new Region();
 						region.page = pageImage;
@@ -157,26 +177,29 @@ public class TextureAtlas implements Disposable {
 						region.name = line;
 						region.rotate = rotate;
 
-						if (readTuple(reader) == 4) { // split is optional
-							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+						String key = readTuple(reader);
+						if (key.equals("split")) { // split is optional
+							region.splits = new int[] {Integer.parseInt(tuple.get(0)), Integer.parseInt(tuple.get(1)),
+								Integer.parseInt(tuple.get(2)), Integer.parseInt(tuple.get(3))};
 
-							if (readTuple(reader) == 4) { // pad is optional, but only present with splits
-								region.pads = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+							key = readTuple(reader);
+							if (key.equals("pad")) { // pad is optional, but only present with splits
+								region.pads = new int[] {Integer.parseInt(tuple.get(0)), Integer.parseInt(tuple.get(1)),
+									Integer.parseInt(tuple.get(2)), Integer.parseInt(tuple.get(3))};
 
 								readTuple(reader);
 							}
 						}
 
-						region.originalWidth = Integer.parseInt(tuple[0]);
-						region.originalHeight = Integer.parseInt(tuple[1]);
+						region.originalWidth = Integer.parseInt(tuple.get(0));
+						region.originalHeight = Integer.parseInt(tuple.get(1));
 
 						readTuple(reader);
-						region.offsetX = Integer.parseInt(tuple[0]);
-						region.offsetY = Integer.parseInt(tuple[1]);
+						region.offsetX = Integer.parseInt(tuple.get(0));
+						region.offsetY = Integer.parseInt(tuple.get(1));
 
-						region.index = Integer.parseInt(readValue(reader));
+						readTuple(reader);
+						region.index = Integer.parseInt(tuple.get(0));
 
 						if (flip) region.flip = true;
 
@@ -241,7 +264,13 @@ public class TextureAtlas implements Disposable {
 		for (Page page : data.pages) {
 			Texture texture = null;
 			if (page.texture == null) {
-				texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+				if (page.textureMaskFile == null) {
+					texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+				} else {
+					Texture colorTexture = new Texture(page.textureFile, page.format, page.useMipMaps);
+					Texture maskTexture = new Texture(page.textureMaskFile, Format.Luminance, page.useMipMaps);
+					texture = new CompositeTexture(colorTexture, maskTexture);
+				}
 				texture.setFilter(page.minFilter, page.magFilter);
 				texture.setWrap(page.uWrap, page.vWrap);
 			} else {
@@ -429,27 +458,26 @@ public class TextureAtlas implements Disposable {
 		}
 	};
 
-	static String readValue (BufferedReader reader) throws IOException {
+	/** Reads a tuple with up to 4 values.
+	 * @return the tuple key */
+	static String readTuple (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
-		int colon = line.indexOf(':');
-		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
-		return line.substring(colon + 1).trim();
-	}
 
-	/** Returns the number of tuple values read (1, 2 or 4). */
-	static int readTuple (BufferedReader reader) throws IOException {
-		String line = reader.readLine();
 		int colon = line.indexOf(':');
 		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
-		int i = 0, lastMatch = colon + 1;
-		for (i = 0; i < 3; i++) {
+		String tupleKey = line.substring(0, colon).trim();
+
+		tuple.clear();
+		int lastMatch = colon + 1;
+		do {
 			int comma = line.indexOf(',', lastMatch);
 			if (comma == -1) break;
-			tuple[i] = line.substring(lastMatch, comma).trim();
+			tuple.add(line.substring(lastMatch, comma).trim());
 			lastMatch = comma + 1;
-		}
-		tuple[i] = line.substring(lastMatch).trim();
-		return i + 1;
+		} while (tuple.size < 3);
+		tuple.add(line.substring(lastMatch).trim());
+
+		return tupleKey;
 	}
 
 	/** Describes the region of a packed image and provides information about the original image before it was packed. */
