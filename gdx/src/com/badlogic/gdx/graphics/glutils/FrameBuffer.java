@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
@@ -44,11 +45,7 @@ import com.badlogic.gdx.utils.Disposable;
  * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
  * application or receives an incoming call, the framebuffer will be automatically recreated.
  * </p>
- *
- * <p>
- * In order to add your own attachments, you can override buildAttachments().
- * </p>
- *
+ * 
  * <p>
  * A FrameBuffer must be disposed if it is no longer needed
  * </p>
@@ -62,18 +59,18 @@ public class FrameBuffer implements Disposable {
 	protected Texture colorTexture;
 
 	/** the default framebuffer handle, a.k.a screen. */
-	protected static int defaultFramebufferHandle;
+	private static int defaultFramebufferHandle;
 	/** true if we have polled for the default handle already. */
-	protected static boolean defaultFramebufferHandleInitialized = false;
+	private static boolean defaultFramebufferHandleInitialized = false;
 
 	/** the framebuffer handle **/
-	protected int framebufferHandle;
+	private int framebufferHandle;
 
 	/** the depthbuffer render object handle **/
-	protected int depthbufferHandle;
+	private int depthbufferHandle;
 
 	/** the stencilbuffer render object handle **/
-	protected int stencilbufferHandle;
+	private int stencilbufferHandle;
 
 	/** width **/
 	protected final int width;
@@ -129,7 +126,7 @@ public class FrameBuffer implements Disposable {
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
-	protected void build () {
+	private void build () {
 		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
@@ -144,17 +141,50 @@ public class FrameBuffer implements Disposable {
 			}
 		}
 
-		//create and bind
+		setupTexture();
+
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
 		gl.glGenFramebuffers(1, handle);
 		framebufferHandle = handle.get(0);
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 
-		buildAttachments(gl, handle);
+		if (hasDepth) {
+			handle.clear();
+			gl.glGenRenderbuffers(1, handle);
+			depthbufferHandle = handle.get(0);
+		}
+
+		if (hasStencil) {
+			handle.clear();
+			gl.glGenRenderbuffers(1, handle);
+			stencilbufferHandle = handle.get(0);
+		}
+
+		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
+
+		if (hasDepth) {
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(),
+				colorTexture.getHeight());
+		}
+
+		if (hasStencil) {
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_STENCIL_INDEX8, colorTexture.getWidth(), colorTexture.getHeight());
+		}
+
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+			colorTexture.getTextureObjectHandle(), 0);
+		if (hasDepth) {
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
+		}
+
+		if (hasStencil) {
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
+		}
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
-		//restore default buffers
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
@@ -190,47 +220,6 @@ public class FrameBuffer implements Disposable {
 				throw new IllegalStateException("frame buffer couldn't be constructed: unsupported combination of formats");
 			throw new IllegalStateException("frame buffer couldn't be constructed: unknown error " + result);
 		}
-	}
-
-	/**
-	 * Override this to add your own additional attachments. Remember to also dispose them.
-	 * @param gl
-	 * @param handle
-	 */
-	protected void buildAttachments(GL20 gl, IntBuffer handle) {
-		setupTexture();
-		attachTexture(gl);
-		buildDepth(gl, handle);
-		buildStencil(gl, handle);
-	}
-
-	protected void buildStencil(GL20 gl, IntBuffer handle) {
-		if (hasStencil) {
-			handle.clear();
-			gl.glGenRenderbuffers(1, handle);
-			stencilbufferHandle = handle.get(0);
-			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_STENCIL_INDEX8, colorTexture.getWidth(), colorTexture.getHeight());
-			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
-		}
-	}
-
-	protected void buildDepth(GL20 gl, IntBuffer handle) {
-		if (hasDepth) {
-			handle.clear();
-			gl.glGenRenderbuffers(1, handle);
-			depthbufferHandle = handle.get(0);
-			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(),
-				colorTexture.getHeight());
-			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
-		}
-	}
-
-	protected void attachTexture(GL20 gl) {
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
-		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
-			colorTexture.getTextureObjectHandle(), 0);
 	}
 
 	/** Releases all resources associated with the FrameBuffer. */
