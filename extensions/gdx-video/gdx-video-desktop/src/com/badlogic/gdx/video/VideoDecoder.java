@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
  *
  */
 public class VideoDecoder
-		implements AutoCloseable, Disposable {
+		implements Disposable {
 	/**
 	 * This value should not be used or altered in any way. It is used to store the pointer to the native object, for
 	 * which this object is a wrapper.
@@ -92,7 +92,6 @@ public class VideoDecoder
 	/**
 	 * This will close the VideoDecoder, and with it cleanup everything.
 	 */
-	@Override
 	public void close() {
 		disposeNative();
 		nativePointer = 0;
@@ -183,7 +182,7 @@ public class VideoDecoder
 	/**
 	 * This will load a file for playback
 	 * @param decodingObject The instance on which the next parameter should be used.
-	 * @param methodSignature	The name of the function that should be called on the provided object. (The
+	 * @param methodName	The name of the function that should be called on the provided object. (The
 	 * 							function should have return type int, and should accept a single ByteBuffer).
 	 * @return A VideoDecoderBuffers object which contains all the information that may be needed about the video.
 	 * @throws IllegalArgumentException When the filename is invalid.

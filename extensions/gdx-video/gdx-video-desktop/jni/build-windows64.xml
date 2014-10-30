@@ -84,6 +84,11 @@
 				<exclude name="*.o"/>
 			</fileset>
 		</delete>
+        <!-- locate suitable libpthread -->
+        <exec executable="${g++}" outputProperty="pathToLibPthread">
+            <arg value="-print-file-name=libpthread.a"/>
+        </exec>
+        <echo message="found libpthread used by ${g++} at '${pathToLibPthread}'"/>
 	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
@@ -139,6 +144,7 @@
             <arg value="../../ffmpeg/libs/windows64/lib/libavutil.a"/>
             <arg value="../../ffmpeg/libs/windows64/lib/libswscale.a"/>
             <arg value="../../ffmpeg/libs/windows64/lib/libswresample.a"/>
+            <arg value="${pathToLibPthread}"/>
             <arg value="-Wl,--no-whole-archive"/>
             <arg value="-g -ggdb"/>
             <arg value="-o"/>
