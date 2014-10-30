@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
+import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
@@ -141,6 +142,7 @@ public class GdxTests {
 		LightsTest.class,
 		MaterialTest.class,
 		MatrixJNITest.class,
+		MeshBuilderTest.class,
 		MeshShaderTest.class,
 		MipMapTest.class,
 		ModelTest.class,
@@ -222,7 +224,8 @@ public class GdxTests {
 		ViewportTest2.class,
 		ViewportTest3.class,
 		YDownTest.class,
-		FreeTypeFontLoaderTest.class
+		FreeTypeFontLoaderTest.class,
+		PngTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
