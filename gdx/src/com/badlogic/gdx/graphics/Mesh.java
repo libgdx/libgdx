@@ -24,15 +24,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.glutils.IndexArray;
-import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
-import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
-import com.badlogic.gdx.graphics.glutils.IndexData;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.VertexArray;
-import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
-import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
-import com.badlogic.gdx.graphics.glutils.VertexData;
+import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -65,7 +57,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class Mesh implements Disposable {
 	public enum VertexDataType {
-		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
+		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
 	}
 
 	/** list of all meshes **/
@@ -84,7 +76,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
@@ -99,7 +91,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
@@ -117,11 +109,19 @@ public class Mesh implements Disposable {
 	 * 
 	 * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> **/
 	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
+		vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
 		indices = new IndexBufferObject(staticIndices, maxIndices);
 		isVertexArray = false;
 
 		addManagedMesh(Gdx.app, this);
+	}
+
+	private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
+		if(Gdx.gl30 != null) {
+			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
+		} else {
+			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
+		}
 	}
 
 	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
@@ -133,19 +133,30 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		if (type == VertexDataType.VertexBufferObject) {
-			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObject(isStatic, maxIndices);
-			isVertexArray = false;
-		} else if (type == VertexDataType.VertexBufferObjectSubData) {
-			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-			isVertexArray = false;
-		} else {
-			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexArray(maxIndices);
-			isVertexArray = true;
+		switch(type) {
+			case VertexBufferObject:
+				vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObject(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexBufferObjectSubData:
+				vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexBufferObjectWithVAO:
+				vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexArray:
+			default:
+				vertices = new VertexArray(maxVertices, attributes);
+				indices = new IndexArray(maxIndices);
+				isVertexArray = true;
+				break;
 		}
+
 		addManagedMesh(Gdx.app, this);
 	}
 
@@ -826,6 +837,8 @@ public class Mesh implements Disposable {
 		for (int i = 0; i < meshesArray.size; i++) {
 			if (meshesArray.get(i).vertices instanceof VertexBufferObject) {
 				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
+			} else if(meshesArray.get(i).vertices instanceof VertexBufferObjectWithVAO) {
+				((VertexBufferObjectWithVAO) meshesArray.get(i).vertices).invalidate();
 			}
 			meshesArray.get(i).indices.invalidate();
 		}
