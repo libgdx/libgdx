@@ -395,7 +395,7 @@ public class TexturePacker {
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
-			writer.write("mask: " + settings.maskFormat + "\n");
+			if (!settings.maskFormat.equals("none")) writer.write("mask: " + settings.maskFormat + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");

@@ -19,10 +19,10 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** CompositingTexture wraps two textures as a single Texture, binding them on separate texture units. The textures may be
+/** CompositeTexture wraps two textures as a single Texture, binding them on separate texture units. The textures may be
  * processed using a custom shader for various blending and lighting effects.
  *
- * @see com.badlogic.gdx.graphics.g2d.MaskShader MaskedShader
+ * @see com.badlogic.gdx.graphics.g2d.MaskShader MaskShader
  * @author Valentin Milea */
 public class CompositeTexture extends Texture {
 
