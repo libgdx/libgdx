@@ -41,6 +41,7 @@ extern "C" {
 #define GDX2D_FORMAT_RGBA8888			4
 #define GDX2D_FORMAT_RGB565				5
 #define GDX2D_FORMAT_RGBA4444			6
+#define GDX2D_FORMAT_LUMINANCE			7
 
 /**
  * blending modes, to be extended

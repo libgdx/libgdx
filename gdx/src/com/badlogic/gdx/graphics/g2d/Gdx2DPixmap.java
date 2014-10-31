@@ -92,17 +92,13 @@ public class Gdx2DPixmap implements Disposable {
 
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
-		pixelPtr = newPixmap(nativeData, width, height, (format == GDX2D_FORMAT_LUMINANCE ? GDX2D_FORMAT_ALPHA : format));
+		pixelPtr = newPixmap(nativeData, width, height, format);
 		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
-
-		// formats LUMINANCE and ALPHA are encoded the same, but we have to make a distinction when uploading image data
-		if (this.format == GDX2D_FORMAT_ALPHA && format == GDX2D_FORMAT_LUMINANCE) //
-			this.format = GDX2D_FORMAT_LUMINANCE;
 	}
 
 	public Gdx2DPixmap (ByteBuffer pixelPtr, long[] nativeData) {
