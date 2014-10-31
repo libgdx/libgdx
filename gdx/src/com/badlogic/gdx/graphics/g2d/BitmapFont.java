@@ -731,7 +731,10 @@ public class BitmapFont implements Disposable {
 	}
 
 	public String toString () {
-		return data.fontFile.nameWithoutExtension();
+		if (data.fontFile != null) {
+			return data.fontFile.nameWithoutExtension();
+		}
+		return super.toString();
 	}
 
 	/** Represents a single character in a font page. */
