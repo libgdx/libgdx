@@ -29,7 +29,6 @@ import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
-import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
@@ -116,15 +115,19 @@ public class IOSApplication implements Application {
 		// enable or disable screen dimming
 		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
 
+		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
-		if (UIScreen.getMainScreen().getScale() == 2.0f) {
-			// we have a retina device!
+
+		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
+			.getScale());
+		if (scale >= 2.0f) {
+			Gdx.app.debug("IOSApplication", "scale: " + scale);
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
 			} else {
 				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
 			}
 		} else {
 			// no retina screen: no scaling!
@@ -144,7 +147,7 @@ public class IOSApplication implements Application {
 
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(null), scale, this, config, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
@@ -162,6 +165,12 @@ public class IOSApplication implements Application {
 		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
+	}
+
+	private int getIosVersion () {
+		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
+		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
+		return version;
 	}
 
 	/** Return the UI view controller of IOSApplication
@@ -205,12 +214,18 @@ public class IOSApplication implements Application {
 		case LandscapeRight:
 			height = (int)bounds.width();
 			width = (int)bounds.height();
+			if (width < height) {
+				width = (int)bounds.width();
+				height = (int)bounds.height();
+			}
 			break;
 		default:
 			// assume portrait
 			width = (int)bounds.width();
 			height = (int)bounds.height();
 		}
+
+		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
 
 		// update width/height depending on display scaling selected
 		width *= displayScaleFactor;
@@ -229,7 +244,7 @@ public class IOSApplication implements Application {
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		OALAudioSession.sharedInstance().forceEndInterruption();
 		if (config.allowIpod) {
-			 OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+			OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
 		}
 		graphics.makeCurrent();
 		graphics.resume();
@@ -387,6 +402,7 @@ public class IOSApplication implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -439,11 +455,9 @@ public class IOSApplication implements Application {
 		}
 	}
 
-	/**
-	 * Add a listener to handle events from the libgdx root view controller
-	 * @param listener The {#link IOSViewControllerListener} to add
-	 */
-	public void addViewControllerListener(IOSViewControllerListener listener) {
+	/** Add a listener to handle events from the libgdx root view controller
+	 * @param listener The {#link IOSViewControllerListener} to add */
+	public void addViewControllerListener (IOSViewControllerListener listener) {
 		viewControllerListener = listener;
 	}
 }

@@ -70,11 +70,15 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
+		static final int TOUCH_SCROLLED = 3;
+		static final int TOUCH_MOVED = 4;
 
 		long timeStamp;
 		int type;
 		int x;
 		int y;
+		int scrollAmount;
+		int button;
 		int pointer;
 	}
 
@@ -100,6 +104,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	int[] deltaX = new int[NUM_TOUCHES];
 	int[] deltaY = new int[NUM_TOUCHES];
 	boolean[] touched = new boolean[NUM_TOUCHES];
+	int[] button = new int[NUM_TOUCHES];
 	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private int keyCount = 0;
@@ -146,7 +151,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
 			v.requestFocus();
-			v.requestFocusFromTouch();
 		}
 		this.config = config;
 		this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
@@ -325,7 +329,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public boolean isTouched() {
+	public boolean isTouched () {
 		synchronized (this) {
 			if (hasMultitouch) {
 				for (int pointer = 0; pointer < NUM_TOUCHES; pointer++) {
@@ -382,14 +386,20 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						processor.touchDown(e.x, e.y, e.pointer, Buttons.LEFT);
+						processor.touchDown(e.x, e.y, e.pointer, e.button);
 						justTouched = true;
 						break;
 					case TouchEvent.TOUCH_UP:
-						processor.touchUp(e.x, e.y, e.pointer, Buttons.LEFT);
+						processor.touchUp(e.x, e.y, e.pointer, e.button);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_MOVED:
+						processor.mouseMoved(e.x, e.y);
+						break;
+					case TouchEvent.TOUCH_SCROLLED:
+						processor.scrolled(e.scrollAmount);
 					}
 					usedTouchEvents.free(e);
 				}
@@ -424,8 +434,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public boolean onTouch (View view, MotionEvent event) {
 		if (requestFocus && view != null) {
+			view.setFocusableInTouchMode(true);
 			view.requestFocus();
-			view.requestFocusFromTouch();
 			requestFocus = false;
 		}
 
@@ -618,10 +628,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		if (button == Buttons.LEFT)
-			return isTouched();
-		else
-			return false;
+		synchronized (this) {
+			if (hasMultitouch) {
+				for (int pointer = 0; pointer < NUM_TOUCHES; pointer++) {
+					if (touched[pointer] && (this.button[pointer] == button)) {
+						return true;
+					}
+				}
+			}
+			return (touched[0] && (this.button[0] == button));
+		}
 	}
 
 	final float[] R = new float[9];
@@ -743,6 +759,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		deltaX = resize(deltaX);
 		deltaY = resize(deltaY);
 		touched = resize(touched);
+		button = resize(button);
 
 		return len;
 	}

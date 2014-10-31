@@ -64,6 +64,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
 	static boolean debug;
+	static boolean actionsRequestRendering;
 
 	private Viewport viewport;
 	private final Batch batch;
@@ -218,7 +219,10 @@ public class Stage extends InputAdapter implements Disposable {
 		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
+		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		root.act(delta);
+		if (actionsRequestRendering && Actor.actionsChanged) Gdx.graphics.requestRendering();
+		Actor.actionsChanged = false;
 	}
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
@@ -463,17 +467,46 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
+	/** Cancels touch focus for the specified actor.
+	 * @see #cancelTouchFocus() */
+	public void cancelTouchFocus (Actor actor) {
+		InputEvent event = Pools.obtain(InputEvent.class);
+		event.setStage(this);
+		event.setType(InputEvent.Type.touchUp);
+		event.setStageX(Integer.MIN_VALUE);
+		event.setStageY(Integer.MIN_VALUE);
+
+		// Cancel all current touch focuses for the specified listener, allowing for concurrent modification, and never cancel the
+		// same focus twice.
+		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
+		TouchFocus[] items = touchFocuses.begin();
+		for (int i = 0, n = touchFocuses.size; i < n; i++) {
+			TouchFocus focus = items[i];
+			if (focus.listenerActor != actor) continue;
+			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
+			event.setTarget(focus.target);
+			event.setListenerActor(focus.listenerActor);
+			event.setPointer(focus.pointer);
+			event.setButton(focus.button);
+			focus.listener.handle(event);
+			// Cannot return TouchFocus to pool, as it may still be in use (eg if cancelTouchFocus is called from touchDragged).
+		}
+		touchFocuses.end();
+
+		Pools.free(event);
+	}
+
 	/** Sends a touchUp event to all listeners that are registered to receive touchDragged and touchUp events and removes their
 	 * touch focus. This method removes all touch focus listeners, but sends a touchUp event so that the state of the listeners
 	 * remains consistent (listeners typically expect to receive touchUp eventually). The location of the touchUp is
 	 * {@link Integer#MIN_VALUE}. Listeners can use {@link InputEvent#isTouchFocusCancel()} to ignore this event if needed. */
 	public void cancelTouchFocus () {
-		cancelTouchFocus(null, null);
+		cancelTouchFocusExcept(null, null);
 	}
 
 	/** Cancels touch focus for all listeners except the specified listener.
 	 * @see #cancelTouchFocus() */
-	public void cancelTouchFocus (EventListener listener, Actor actor) {
+	public void cancelTouchFocusExcept (EventListener exceptListener, Actor exceptActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
@@ -486,7 +519,7 @@ public class Stage extends InputAdapter implements Disposable {
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = items[i];
-			if (focus.listener == listener && focus.listenerActor == actor) continue;
+			if (focus.listener == exceptListener && focus.listenerActor == exceptActor) continue;
 			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
@@ -558,6 +591,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Removes the touch, keyboard, and scroll focus for the specified actor and any descendants. */
 	public void unfocus (Actor actor) {
+		cancelTouchFocus(actor);
 		if (scrollFocus != null && scrollFocus.isDescendantOf(actor)) scrollFocus = null;
 		if (keyboardFocus != null && keyboardFocus.isDescendantOf(actor)) keyboardFocus = null;
 	}
@@ -759,6 +793,11 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #setDebugAll(boolean)}. */
 	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
 		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
+	}
+	
+	/** If true, any actions executed during a call to Stage.act() will result in a call to Gdx.graphics.requestRendering(). */
+	public static void setActionsRequestRendering (boolean actionsRequestRendering) {
+		Stage.actionsRequestRendering = actionsRequestRendering;
 	}
 
 	public void dispose () {

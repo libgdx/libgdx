@@ -33,8 +33,14 @@ public class TextureAttribute extends Attribute {
 	public final static long Bump = register(BumpAlias);
 	public final static String NormalAlias = "normalTexture";
 	public final static long Normal = register(NormalAlias);
-
-	protected static long Mask = Diffuse | Specular | Bump | Normal;
+	public final static String AmbientAlias = "ambientTexture";
+	public final static long Ambient = register(AmbientAlias);
+	public final static String EmissiveAlias = "emissiveTexture";
+	public final static long Emissive = register(EmissiveAlias);
+	public final static String ReflectionAlias = "reflectionTexture";
+	public final static long Reflection = register(ReflectionAlias);
+	
+	protected static long Mask = Diffuse | Specular | Bump | Normal | Ambient | Emissive | Reflection;
 
 	public final static boolean is (final long mask) {
 		return (mask & Mask) != 0;
@@ -67,12 +73,44 @@ public class TextureAttribute extends Attribute {
 	public static TextureAttribute createBump (final Texture texture) {
 		return new TextureAttribute(Bump, texture);
 	}
+	
+	public static TextureAttribute createBump (final TextureRegion region) {
+		return new TextureAttribute(Bump, region);
+	}
+	
+	public static TextureAttribute createAmbient (final Texture texture) {
+		return new TextureAttribute(Ambient, texture);
+	}
+	
+	public static TextureAttribute createAmbient (final TextureRegion region) {
+		return new TextureAttribute(Ambient, region);
+	}
+	
+	public static TextureAttribute createEmissive (final Texture texture) {
+		return new TextureAttribute(Emissive, texture);
+	}
+	
+	public static TextureAttribute createEmissive (final TextureRegion region) {
+		return new TextureAttribute(Emissive, region);
+	}
+	
+	public static TextureAttribute createReflection (final Texture texture) {
+		return new TextureAttribute(Reflection, texture);
+	}
+	
+	public static TextureAttribute createReflection (final TextureRegion region) {
+		return new TextureAttribute(Reflection, region);
+	}
 
 	public final TextureDescriptor<Texture> textureDescription;
 	public float offsetU = 0;
 	public float offsetV = 0;
 	public float scaleU = 1;
 	public float scaleV = 1;
+	/** The index of the texture coordinate vertex attribute to use for this TextureAttribute. Whether this value is used, depends
+	 * on the shader and {@link Attribute#type} value. For basic (model specific) types (e.g. {@link #Diffuse}, {@link #Normal},
+	 * etc.), this value is usually ignored and the first texture coordinate vertex attribute is used. */
+	public int uvIndex = 0;
 
 	public TextureAttribute (final long type) {
 		super(type);
@@ -84,14 +122,20 @@ public class TextureAttribute extends Attribute {
 		this(type);
 		this.textureDescription.set(textureDescription);
 	}
-	
+
 	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float offsetU,
-		float offsetV, float scaleU, float scaleV) {
+		float offsetV, float scaleU, float scaleV, int uvIndex) {
 		this(type, textureDescription);
 		this.offsetU = offsetU;
 		this.offsetV = offsetV;
 		this.scaleU = scaleU;
 		this.scaleV = scaleV;
+		this.uvIndex = uvIndex;
+	}
+
+	public <T extends Texture> TextureAttribute (final long type, final TextureDescriptor<T> textureDescription, float offsetU,
+		float offsetV, float scaleU, float scaleV) {
+		this(type, textureDescription, offsetU, offsetV, scaleU, scaleV, 0);
 	}
 
 	public TextureAttribute (final long type, final Texture texture) {
@@ -105,7 +149,8 @@ public class TextureAttribute extends Attribute {
 	}
 
 	public TextureAttribute (final TextureAttribute copyFrom) {
-		this(copyFrom.type, copyFrom.textureDescription, copyFrom.offsetU, copyFrom.offsetV, copyFrom.scaleU, copyFrom.scaleV);
+		this(copyFrom.type, copyFrom.textureDescription, copyFrom.offsetU, copyFrom.offsetV, copyFrom.scaleU, copyFrom.scaleV,
+			copyFrom.uvIndex);
 	}
 
 	public void set (final TextureRegion region) {
@@ -129,6 +174,7 @@ public class TextureAttribute extends Attribute {
 		result = 991 * result + NumberUtils.floatToRawIntBits(offsetV);
 		result = 991 * result + NumberUtils.floatToRawIntBits(scaleU);
 		result = 991 * result + NumberUtils.floatToRawIntBits(scaleV);
+		result = 991 * result + NumberUtils.floatToRawIntBits(uvIndex);
 		return result;
 	}
 }

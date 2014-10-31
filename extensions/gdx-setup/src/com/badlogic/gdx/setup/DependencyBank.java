@@ -7,12 +7,12 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.3.1";
+	static String libgdxVersion = "1.4.1";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.3.2-SNAPSHOT";
-	static String roboVMVersion = "0.0.14";
-	static String buildToolsVersion = "19.1.0";
-	static String androidAPILevel = "19";
+	static String libgdxNightlyVersion = "1.4.2-SNAPSHOT";
+	static String roboVMVersion = "1.0.0-alpha-04";
+	static String buildToolsVersion = "20.0.0";
+	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
 
 	//Repositories
@@ -23,8 +23,13 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.5";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.10+";
-	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.10";
+	static String androidPluginImport = "com.android.tools.build:gradle:0.13+";
+	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:1.0.0-alpha-04";
+	
+	//Extension versions
+	static String box2DLightsVersion = "1.2";
+	static String ashleyVersion = "1.3.1";
+	static String aiVersion = "1.4.0";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -44,6 +49,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
+		gwtInheritances.put(ProjectDependency.AI, new String[]{"com.badlogic.gdx.ai"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -117,22 +123,31 @@ public class DependencyBank {
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
 			
 			"Lightweight Entity framework"
+		),
+		AI(
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
+			
+			"Artificial Intelligence framework"
 		);
 
 		private String[] coreDependencies;

@@ -51,6 +51,7 @@ import com.badlogic.gdx.tests.BlitTest;
 import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
 import com.badlogic.gdx.tests.DecalTest;
@@ -481,6 +482,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new Box2DTestCollection();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new BufferUtilsTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {

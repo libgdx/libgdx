@@ -22,20 +22,32 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
  * @author Nathan Sweet
- * @author Matthias Mann */
+ * @author Matthias Mann
+ * @author davebaol */
 public class BitmapFontCache {
 
 	private final BitmapFont font;
 
 	private float[][] vertexData;
+
+	private static final Pool<ColorChunk> colorChunkPool = new Pool<ColorChunk>(32) {
+		protected ColorChunk newObject () {
+			return new ColorChunk();
+		}
+	};
+
+	private Array<ColorChunk> colorChunks;
 
 	private int[] idx;
 	/** Used internally to ensure a correct capacity for multi-page font vertex data. */
@@ -43,7 +55,6 @@ public class BitmapFontCache {
 
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
-	private float previousColor = color;
 	private final Color tempColor = new Color(1, 1, 1, 1);
 	private final Color hexColor = new Color();
 	private final StringBuilder colorBuffer = new StringBuilder();
@@ -54,6 +65,11 @@ public class BitmapFontCache {
 	/** An array for each page containing an entry for each glyph from that page, where the entry is the index of the character in
 	 * the full text being cached. */
 	private IntArray[] glyphIndices;
+
+	private boolean textChanged;
+	private float oldTint = 0;
+	private final Color currentChunkColor = new Color();
+	private int currentChunkEndIndex = 0;
 
 	public BitmapFontCache (BitmapFont font) {
 		this(font, font.usesIntegerPositions());
@@ -70,6 +86,7 @@ public class BitmapFontCache {
 		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 
 		this.vertexData = new float[regionsLength][];
+		this.colorChunks = new Array<ColorChunk>();
 
 		this.idx = new int[regionsLength];
 		int vertexDataLength = vertexData.length;
@@ -108,6 +125,65 @@ public class BitmapFontCache {
 			for (int i = 0, n = idx[j]; i < n; i += 5) {
 				vertices[i] += xAmount;
 				vertices[i + 1] += yAmount;
+			}
+		}
+	}
+
+	private Color setColor (Color color, float floatColor) {
+		int intBits = NumberUtils.floatToIntColor(floatColor);
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+
+	private int updateCurrentChunk (int lastChunkIndex, Color tint) {
+		lastChunkIndex++;
+		if (colorChunks.size <= lastChunkIndex) {
+			if (colorChunks.size <= 0) currentChunkColor.set(tint);
+			currentChunkEndIndex = Integer.MAX_VALUE;
+		} else {
+			ColorChunk cc = colorChunks.get(lastChunkIndex);
+			if (currentChunkEndIndex == cc.endIndex)
+				lastChunkIndex = updateCurrentChunk(lastChunkIndex, tint);
+			else {
+				setColor(currentChunkColor, cc.color).mul(tint);
+				currentChunkEndIndex = cc.endIndex;
+			}
+		}
+		return lastChunkIndex;
+	}
+
+	/** Tints all text currently in the cache. Does not affect subsequently added text. */
+	public void tint (Color tint) {
+		float floatTint = tint.toFloatBits();
+		if (textChanged || oldTint != floatTint) {
+			textChanged = false;
+			oldTint = floatTint;
+			if (font.markupEnabled) {
+				int lastChunkIndex = updateCurrentChunk(-1, tint);
+				float color = currentChunkColor.toFloatBits();
+				int ci = 0; // character index
+				for (int j = 0, length = vertexData.length; j < length; j++) {
+					float[] vertices = vertexData[j];
+					for (int i = 2, n = idx[j]; i < n; i += 5) {
+						if ((i % 20) == 2) {
+							if (++ci > currentChunkEndIndex) {
+								lastChunkIndex = updateCurrentChunk(lastChunkIndex, tint);
+								color = currentChunkColor.toFloatBits();
+							}
+						}
+						vertices[i] = color;
+					}
+				}
+			} else {
+				for (int j = 0, length = vertexData.length; j < length; j++) {
+					float[] vertices = vertexData[j];
+					for (int i = 2, n = idx[j]; i < n; i += 5) {
+						vertices[i] = floatTint;
+					}
+				}
 			}
 		}
 	}
@@ -281,6 +357,13 @@ public class BitmapFontCache {
 			if (glyphIndices != null) glyphIndices[i].clear();
 			idx[i] = 0;
 		}
+
+		// Remove all the color chunks from the list and releases them to the internal pool
+		for (int i = 0; i < colorChunks.size; i++) {
+			colorChunkPool.free(colorChunks.get(i));
+			colorChunks.set(i, null);
+		}
+		colorChunks.size = 0;
 	}
 
 	/** Counts the actual glyphs excluding characters used to markup the text. */
@@ -361,7 +444,6 @@ public class BitmapFontCache {
 					if (ch == ']') {
 						if (i < start + 2 || i > start + 9)
 							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits");
-						this.previousColor = this.color;
 						if (i <= start + 7) { // RRGGBB
 							Color.rgb888ToColor(hexColor, colorInt);
 							hexColor.a = 1f;
@@ -369,6 +451,7 @@ public class BitmapFontCache {
 							Color.rgba8888ToColor(hexColor, colorInt);
 						}
 						this.color = hexColor.toFloatBits();
+						addColorChunk(this.color, false);
 						return i - start;
 					}
 					if (ch >= '0' && ch <= '9')
@@ -386,14 +469,16 @@ public class BitmapFontCache {
 				for (int i = start; i < end; i++) {
 					char ch = str.charAt(i);
 					if (ch == ']') {
-						if (colorBuffer.length() == 0) {
-							this.color = previousColor;
+						if (colorBuffer.length() == 0) { // end tag []
+							int popIndex = Math.max(0, colorChunks.peek().popIndex);
+							this.color = colorChunks.get(popIndex).color;
+							addColorChunk(this.color, true);
 						} else {
 							String colorString = colorBuffer.toString();
 							Color newColor = Colors.get(colorString);
 							if (newColor == null) throw new GdxRuntimeException("Unknown color '" + colorString + "'");
-							this.previousColor = this.color;
 							this.color = newColor.toFloatBits();
+							addColorChunk(this.color, false);
 						}
 						return i - start;
 					} else {
@@ -405,11 +490,34 @@ public class BitmapFontCache {
 		throw new GdxRuntimeException("Unclosed color tag");
 	}
 
+	private void addColorChunk (float color, boolean isPop) {
+		int popIndex = -1;
+		if (colorChunks.size > 0) {
+			ColorChunk last = colorChunks.peek();
+			last.endIndex = (glyphIndices != null ? glyphCount : this.idx[0] / 20);
+			if (isPop)
+				popIndex = colorChunks.get(Math.max(0, last.popIndex)).popIndex;
+			else
+				popIndex = colorChunks.size - 1;
+		}
+		colorChunks.add(obtainColorChunk(color, popIndex));
+	}
+
+	private ColorChunk obtainColorChunk (float color, int popIndex) {
+		// Get a color chunk from the pool
+		ColorChunk colorChunk = colorChunkPool.obtain();
+		colorChunk.color = color;
+		colorChunk.popIndex = popIndex;
+		return colorChunk;
+	}
+
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
 		BitmapFontData data = font.data;
+		textChanged = start < end;
+		if (font.markupEnabled && colorChunks.size == 0) colorChunks.add(obtainColorChunk(this.color, -1));
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
 				char ch = str.charAt(start++);
@@ -757,5 +865,28 @@ public class BitmapFontCache {
 
 	public float[] getVertices (int page) {
 		return vertexData[page];
+	}
+
+	private static class ColorChunk implements Poolable {
+		float color;
+		int endIndex;
+		int popIndex; // needed to emulate the color stack
+
+		ColorChunk () {
+			this.endIndex = Integer.MAX_VALUE;
+		}
+
+		ColorChunk (float color, int popIndex) {
+			this.color = color;
+			this.endIndex = Integer.MAX_VALUE;
+			this.popIndex = popIndex;
+		}
+
+		@Override
+		public void reset () {
+			this.color = 0f;
+			this.endIndex = Integer.MAX_VALUE;
+			this.popIndex = 0;
+		}
 	}
 }

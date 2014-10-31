@@ -25,61 +25,154 @@ import com.badlogic.gdx.math.Vector3;
 /** Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the
  * bounding box's center, dimensions and corner points.
  * 
- * @author badlogicgames@gmail.com */
+ * @author badlogicgames@gmail.com, Xoppa */
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
-	final Vector3 crn[] = new Vector3[8];
+
+	private final static Vector3 tmpVector = new Vector3();
+
 	public final Vector3 min = new Vector3();
 	public final Vector3 max = new Vector3();
-	final Vector3 cnt = new Vector3();
-	final Vector3 dim = new Vector3();
-	boolean crn_dirty = true;
 
-	/** @return the center of the bounding box */
+	private final Vector3 cnt = new Vector3();
+	private final Vector3 dim = new Vector3();
+
+	@Deprecated private Vector3[] corners;
+
+	/** @deprecated Use {@link #getCenter(Vector3)}
+	 * @return the center of the bounding box */
+	@Deprecated
 	public Vector3 getCenter () {
 		return cnt;
 	}
 
+	/** @param out The {@link Vector3} to receive the center of the bounding box.
+	 * @return The vector specified with the out argument. */
+	public Vector3 getCenter (Vector3 out) {
+		return out.set(cnt);
+	}
+
+	public float getCenterX () {
+		return cnt.x;
+	}
+
+	public float getCenterY () {
+		return cnt.y;
+	}
+
+	public float getCenterZ () {
+		return cnt.z;
+	}
+
+	@Deprecated
 	protected void updateCorners () {
-		if (!crn_dirty) return;
-
-		crn[0].set(min.x, min.y, min.z);
-		crn[1].set(max.x, min.y, min.z);
-		crn[2].set(max.x, max.y, min.z);
-		crn[3].set(min.x, max.y, min.z);
-		crn[4].set(min.x, min.y, max.z);
-		crn[5].set(max.x, min.y, max.z);
-		crn[6].set(max.x, max.y, max.z);
-		crn[7].set(min.x, max.y, max.z);
-		crn_dirty = false;
 	}
 
-	/** @return the corners of this bounding box */
+	/** @deprecated Use the getCornerXYZ methods instead
+	 * @return the corners of this bounding box */
+	@Deprecated
 	public Vector3[] getCorners () {
-		updateCorners();
-		return crn;
+		if (corners == null) {
+			corners = new Vector3[8];
+			for (int i = 0; i < 8; i++)
+				corners[i] = new Vector3();
+		}
+		corners[0].set(min.x, min.y, min.z);
+		corners[1].set(max.x, min.y, min.z);
+		corners[2].set(max.x, max.y, min.z);
+		corners[3].set(min.x, max.y, min.z);
+		corners[4].set(min.x, min.y, max.z);
+		corners[5].set(max.x, min.y, max.z);
+		corners[6].set(max.x, max.y, max.z);
+		corners[7].set(min.x, max.y, max.z);
+		return corners;
 	}
 
-	/** @return The dimensions of this bounding box on all three axis */
+	public Vector3 getCorner000 (final Vector3 out) {
+		return out.set(min.x, min.y, min.z);
+	}
+
+	public Vector3 getCorner001 (final Vector3 out) {
+		return out.set(min.x, min.y, max.z);
+	}
+
+	public Vector3 getCorner010 (final Vector3 out) {
+		return out.set(min.x, max.y, min.z);
+	}
+
+	public Vector3 getCorner011 (final Vector3 out) {
+		return out.set(min.x, max.y, max.z);
+	}
+
+	public Vector3 getCorner100 (final Vector3 out) {
+		return out.set(max.x, min.y, min.z);
+	}
+
+	public Vector3 getCorner101 (final Vector3 out) {
+		return out.set(max.x, min.y, max.z);
+	}
+
+	public Vector3 getCorner110 (final Vector3 out) {
+		return out.set(max.x, max.y, min.z);
+	}
+
+	public Vector3 getCorner111 (final Vector3 out) {
+		return out.set(max.x, max.y, max.z);
+	}
+
+	/** @deprecated Use {@link #getDimensions(Vector3)} instead
+	 * @return The dimensions of this bounding box on all three axis */
+	@Deprecated
 	public Vector3 getDimensions () {
 		return dim;
 	}
 
-	/** @return The minimum vector */
+	/** @param out The {@link Vector3} to receive the dimensions of this bounding box on all three axis.
+	 * @return The vector specified with the out argument */
+	public Vector3 getDimensions (final Vector3 out) {
+		return out.set(dim);
+	}
+
+	public float getWidth () {
+		return dim.x;
+	}
+
+	public float getHeight () {
+		return dim.y;
+	}
+
+	public float getDepth () {
+		return dim.z;
+	}
+
+	/** @deprecated Use {@link #getMin(Vector3)} instead.
+	 * @return The minimum vector */
+	@Deprecated
 	public Vector3 getMin () {
 		return min;
 	}
 
-	/** @return The maximum vector */
-	public synchronized Vector3 getMax () {
+	/** @param out The {@link Vector3} to receive the minimum values.
+	 * @return The vector specified with the out argument */
+	public Vector3 getMin (final Vector3 out) {
+		return out.set(min);
+	}
+
+	/** @deprecated Use {@link #getMax(Vector3)} instead
+	 * @return The maximum vector */
+	@Deprecated
+	public Vector3 getMax () {
 		return max;
+	}
+
+	/** @param out The {@link Vector3} to receive the maximum values.
+	 * @return The vector specified with the out argument */
+	public Vector3 getMax (final Vector3 out) {
+		return out.set(max);
 	}
 
 	/** Constructs a new bounding box with the minimum and maximum vector set to zeros. */
 	public BoundingBox () {
-		crn_dirty = true;
-		for (int l_idx = 0; l_idx < 8; l_idx++)
-			crn[l_idx] = new Vector3();
 		clr();
 	}
 
@@ -87,9 +180,6 @@ public class BoundingBox implements Serializable {
 	 * 
 	 * @param bounds The bounding box to copy */
 	public BoundingBox (BoundingBox bounds) {
-		crn_dirty = true;
-		for (int l_idx = 0; l_idx < 8; l_idx++)
-			crn[l_idx] = new Vector3();
 		this.set(bounds);
 	}
 
@@ -98,9 +188,6 @@ public class BoundingBox implements Serializable {
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector */
 	public BoundingBox (Vector3 minimum, Vector3 maximum) {
-		crn_dirty = true;
-		for (int l_idx = 0; l_idx < 8; l_idx++)
-			crn[l_idx] = new Vector3();
 		this.set(minimum, maximum);
 	}
 
@@ -109,7 +196,6 @@ public class BoundingBox implements Serializable {
 	 * @param bounds The bounds.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (BoundingBox bounds) {
-		crn_dirty = true;
 		return this.set(bounds.min, bounds.max);
 	}
 
@@ -125,7 +211,6 @@ public class BoundingBox implements Serializable {
 			minimum.z > maximum.z ? minimum.z : maximum.z);
 		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
-		crn_dirty = true;
 		return this;
 	}
 
@@ -137,7 +222,6 @@ public class BoundingBox implements Serializable {
 		this.inf();
 		for (Vector3 l_point : points)
 			this.ext(l_point);
-		crn_dirty = true;
 		return this;
 	}
 
@@ -149,7 +233,6 @@ public class BoundingBox implements Serializable {
 		this.inf();
 		for (Vector3 l_point : points)
 			this.ext(l_point);
-		crn_dirty = true;
 		return this;
 	}
 
@@ -161,30 +244,24 @@ public class BoundingBox implements Serializable {
 		max.set(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
 		cnt.set(0, 0, 0);
 		dim.set(0, 0, 0);
-		crn_dirty = true;
 		return this;
 	}
 
 	/** Extends the bounding box to incorporate the given {@link Vector3}.
-	 * 
 	 * @param point The vector
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (Vector3 point) {
-		crn_dirty = true;
 		return this.set(min.set(min(min.x, point.x), min(min.y, point.y), min(min.z, point.z)),
 			max.set(Math.max(max.x, point.x), Math.max(max.y, point.y), Math.max(max.z, point.z)));
 	}
 
-	/** Sets the minimum and maximum vector to zeros
-	 * 
+	/** Sets the minimum and maximum vector to zeros.
 	 * @return This bounding box for chaining. */
 	public BoundingBox clr () {
-		crn_dirty = true;
 		return this.set(min.set(0, 0, 0), max.set(0, 0, 0));
 	}
 
-	/** Returns whether this bounding box is valid. This means that min != max and min < max.
-	 * 
+	/** Returns whether this bounding box is valid. This means that {@link #max} is greater than {@link #min}.
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
 		return min.x < max.x && min.y < max.y && min.z < max.z;
@@ -195,7 +272,6 @@ public class BoundingBox implements Serializable {
 	 * @param a_bounds The bounding box
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (BoundingBox a_bounds) {
-		crn_dirty = true;
 		return this.set(min.set(min(min.x, a_bounds.min.x), min(min.y, a_bounds.min.y), min(min.z, a_bounds.min.z)),
 			max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
@@ -206,32 +282,34 @@ public class BoundingBox implements Serializable {
 	 * @param transform The transformation matrix to apply to bounds, before using it to extend this bounding box.
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (BoundingBox bounds, Matrix4 transform) {
-		bounds.updateCorners();
-		for (Vector3 pnt : crn) {
-			pnt.mul(transform);
-			min.set(min(min.x, pnt.x), min(min.y, pnt.y), min(min.z, pnt.z));
-			max.set(max(max.x, pnt.x), max(max.y, pnt.y), max(max.z, pnt.z));
-		}
-		crn_dirty = true;
-		bounds.crn_dirty = true;
-		return this.set(min, max);
+		ext(tmpVector.set(bounds.min.x, bounds.min.y, bounds.min.z).mul(transform));
+		ext(tmpVector.set(bounds.min.x, bounds.min.y, bounds.max.z).mul(transform));
+		ext(tmpVector.set(bounds.min.x, bounds.max.y, bounds.min.z).mul(transform));
+		ext(tmpVector.set(bounds.min.x, bounds.max.y, bounds.max.z).mul(transform));
+		ext(tmpVector.set(bounds.max.x, bounds.min.y, bounds.min.z).mul(transform));
+		ext(tmpVector.set(bounds.max.x, bounds.min.y, bounds.max.z).mul(transform));
+		ext(tmpVector.set(bounds.max.x, bounds.max.y, bounds.min.z).mul(transform));
+		ext(tmpVector.set(bounds.max.x, bounds.max.y, bounds.max.z).mul(transform));
+		return this;
 	}
 
 	/** Multiplies the bounding box by the given matrix. This is achieved by multiplying the 8 corner points and then calculating
 	 * the minimum and maximum vectors from the transformed points.
 	 * 
-	 * @param matrix The matrix
+	 * @param transform The matrix
 	 * @return This bounding box for chaining. */
-	public BoundingBox mul (Matrix4 matrix) {
-		updateCorners();
-		this.inf();
-		for (Vector3 l_pnt : crn) {
-			l_pnt.mul(matrix);
-			min.set(min(min.x, l_pnt.x), min(min.y, l_pnt.y), min(min.z, l_pnt.z));
-			max.set(max(max.x, l_pnt.x), max(max.y, l_pnt.y), max(max.z, l_pnt.z));
-		}
-		crn_dirty = true;
-		return this.set(min, max);
+	public BoundingBox mul (Matrix4 transform) {
+		final float x0 = min.x, y0 = min.y, z0 = min.z, x1 = max.x, y1 = max.y, z1 = max.z;
+		inf();
+		ext(tmpVector.set(x0, y0, z0).mul(transform));
+		ext(tmpVector.set(x0, y0, z1).mul(transform));
+		ext(tmpVector.set(x0, y1, z0).mul(transform));
+		ext(tmpVector.set(x0, y1, z1).mul(transform));
+		ext(tmpVector.set(x1, y0, z0).mul(transform));
+		ext(tmpVector.set(x1, y0, z1).mul(transform));
+		ext(tmpVector.set(x1, y1, z0).mul(transform));
+		ext(tmpVector.set(x1, y1, z1).mul(transform));
+		return this;
 	}
 
 	/** Returns whether the given bounding box is contained in this bounding box.
@@ -282,15 +360,14 @@ public class BoundingBox implements Serializable {
 	 * @param z The z-coordinate
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (float x, float y, float z) {
-		crn_dirty = true;
 		return this.set(min.set(min(min.x, x), min(min.y, y), min(min.z, z)), max.set(max(max.x, x), max(max.y, y), max(max.z, z)));
 	}
 
-	static float min (float a, float b) {
+	static final float min (final float a, final float b) {
 		return a > b ? b : a;
 	}
 
-	static float max (float a, float b) {
+	static final float max (final float a, final float b) {
 		return a > b ? a : b;
 	}
 }

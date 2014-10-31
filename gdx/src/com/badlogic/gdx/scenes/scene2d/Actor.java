@@ -69,6 +69,8 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
+	
+	static boolean actionsChanged;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -87,15 +89,18 @@ public class Actor {
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
-		for (int i = 0; i < actions.size; i++) {
-			Action action = actions.get(i);
-			if (action.act(delta) && i < actions.size) {
-				Action current = actions.get(i);
-				int actionIndex = current == action ? i : actions.indexOf(action, true);
-				if (actionIndex != -1) {
-					actions.removeIndex(actionIndex);
-					action.setActor(null);
-					i--;
+		if (actions.size > 0) {
+			actionsChanged = true;
+			for (int i = 0; i < actions.size; i++) {
+				Action action = actions.get(i);
+				if (action.act(delta) && i < actions.size) {
+					Action current = actions.get(i);
+					int actionIndex = current == action ? i : actions.indexOf(action, true);
+					if (actionIndex != -1) {
+						actions.removeIndex(actionIndex);
+						action.setActor(null);
+						i--;
+					}
 				}
 			}
 		}
@@ -251,6 +256,7 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
+		actionsChanged = true;
 	}
 
 	public void removeAction (Action action) {
@@ -799,7 +805,7 @@ public class Actor {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(stage.getDebugColor());
-		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+		shapes.rect(x, y, originX, originY, width - 1, height - 1, scaleX, scaleY, rotation);
 	}
 
 	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */

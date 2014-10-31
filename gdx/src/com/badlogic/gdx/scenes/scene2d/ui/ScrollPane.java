@@ -233,7 +233,7 @@ public class ScrollPane extends WidgetGroup {
 	void cancelTouchFocusedChild (InputEvent event) {
 		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
-		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
+		if (stage != null) stage.cancelTouchFocusExcept(flickScrollListener, this);
 	}
 
 	/** If currently scrolling by tracking a touch down, stop scrolling. */
@@ -556,6 +556,7 @@ public class ScrollPane extends WidgetGroup {
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawChildren(batch, parentAlpha);
+			batch.flush();
 			ScissorStack.popScissors();
 		}
 

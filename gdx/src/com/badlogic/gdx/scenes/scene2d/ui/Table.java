@@ -112,6 +112,7 @@ public class Table extends WidgetGroup {
 				}
 				if (clipBegin(x, y, width, height)) {
 					drawChildren(batch, parentAlpha);
+					batch.flush();
 					clipEnd();
 				}
 			} else
