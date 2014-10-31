@@ -23,6 +23,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
@@ -39,6 +40,7 @@ import com.google.gwt.logging.client.ConsoleLogHandler;
 public class GwtInput implements Input {
 	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
+	private IntMap<Integer> touchMap = new IntMap<Integer>(20);
 	private boolean[] touched = new boolean[MAX_TOUCHES];
 	private int[] touchX = new int[MAX_TOUCHES];
 	private int[] touchY = new int[MAX_TOUCHES];
@@ -618,7 +620,9 @@ public class GwtInput implements Input {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
-				int touchId = touch.getIdentifier();
+				int real = touch.getIdentifier();
+				int touchId;
+				touchMap.put(real, touchId = getAvailablePointer());
 				touched[touchId] = true;
 				touchX[touchId] = getRelativeX(touch, canvas);
 				touchY[touchId] = getRelativeY(touch, canvas);
@@ -635,7 +639,8 @@ public class GwtInput implements Input {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
-				int touchId = touch.getIdentifier();
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
 				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
 				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
 				touchX[touchId] = getRelativeX(touch, canvas);
@@ -651,7 +656,9 @@ public class GwtInput implements Input {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
-				int touchId = touch.getIdentifier();
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
+				touchMap.remove(real);
 				touched[touchId] = false;
 				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
 				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
@@ -668,7 +675,9 @@ public class GwtInput implements Input {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
-				int touchId = touch.getIdentifier();
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
+				touchMap.remove(real);
 				touched[touchId] = false;
 				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
 				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
@@ -682,6 +691,13 @@ public class GwtInput implements Input {
 			e.preventDefault();
 		}
 // if(hasFocus) e.preventDefault();
+	}
+	
+	private int getAvailablePointer () {
+		for (int i = 0; i < MAX_TOUCHES; i++) {
+			if (!touchMap.containsValue(i, false)) return i;
+		}
+		return -1;
 	}
 
 	/** borrowed from PlayN, thanks guys **/
