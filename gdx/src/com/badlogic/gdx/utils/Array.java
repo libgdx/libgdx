@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
@@ -506,6 +506,8 @@ public class Array<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
+// ArrayIterable<T> iterable;
+
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
 		}
@@ -516,13 +518,19 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return index < array.size;
 		}
 
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return array.items[index++];
 		}
 
@@ -546,6 +554,8 @@ public class Array<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
 
+//		java.io.StringWriter lastAcquire = new java.io.StringWriter();
+
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
 		}
@@ -556,9 +566,13 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public Iterator<T> iterator () {
+// lastAcquire.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
+//				iterator1.iterable = this;
+//				iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;

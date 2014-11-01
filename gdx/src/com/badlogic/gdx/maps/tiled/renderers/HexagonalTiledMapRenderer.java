@@ -21,7 +21,6 @@ import static com.badlogic.gdx.graphics.g2d.Batch.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -159,11 +158,5 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				}
 			}
 		}
-
-	}
-
-	@Override
-	public void renderObject (MapObject object) {
-
 	}
 }

@@ -108,9 +108,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
 				} else {
-					for (MapObject object : layer.getObjects()) {
-						renderObject(object);
-					}
+					renderObjects(layer);
 				}
 			}
 		}
@@ -126,13 +124,23 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
 				} else {
-					for (MapObject object : layer.getObjects()) {
-						renderObject(object);
-					}
+					renderObjects(layer);
 				}
 			}
 		}
 		endRender();
+	}
+
+	@Override
+	public void renderObjects(MapLayer layer) {
+		for (MapObject object : layer.getObjects()) {
+			renderObject(object);
+		}
+	}
+
+	@Override
+	public void renderObject(MapObject object) {
+
 	}
 
 	/** Called before the rendering of all layers starts. */

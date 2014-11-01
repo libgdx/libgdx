@@ -16,27 +16,22 @@
 
 package com.badlogic.gdx;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
-import java.lang.IllegalArgumentException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.net.HttpRequestHeader;
+import com.badlogic.gdx.net.HttpResponseHeader;
 import com.badlogic.gdx.net.HttpStatus;
+import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -62,13 +57,17 @@ public interface Net {
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
-		 * <p><b>Note</b>: This method may only be called once per response.</p>
+		 * <p>
+		 * <b>Note</b>: This method may only be called once per response.
+		 * </p>
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
-		 * <p><b>Note</b>: This method may only be called once per response.</p>
+		 * <p>
+		 * <b>Note</b>: This method may only be called once per response.
+		 * </p>
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		String getResultAsString ();
@@ -83,11 +82,12 @@ public interface Net {
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
 
-		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. See
+		 * {@link HttpResponseHeader}. */
 		String getHeader (String name);
 
 		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
-		 * represent the corresponding header values. */
+		 * represent the corresponding header values. See {@link HttpResponseHeader}. */
 		Map<String, List<String>> getHeaders ();
 	}
 
@@ -139,9 +139,9 @@ public interface Net {
 	 * 	}
 	 * });
 	 * </pre> */
-	public static class HttpRequest {
+	public static class HttpRequest implements Poolable {
 
-		private final String httpMethod;
+		private String httpMethod;
 		private String url;
 		private Map<String, String> headers;
 		private int timeOut = 0;
@@ -149,14 +149,18 @@ public interface Net {
 		private String content;
 		private InputStream contentStream;
 		private long contentLength;
-		
+
 		private boolean followRedirects = true;
+
+		public HttpRequest () {
+			this.headers = new HashMap<String, String>();
+		}
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
 		 * @param httpMethod This is the HTTP method for the request, see {@link HttpMethods} */
 		public HttpRequest (String httpMethod) {
+			this();
 			this.httpMethod = httpMethod;
-			this.headers = new HashMap<String, String>();
 		}
 
 		/** Sets the URL of the HTTP request.
@@ -165,8 +169,7 @@ public interface Net {
 			this.url = url;
 		}
 
-		/** Sets a header to this HTTP request. Headers definition could be found at <a
-		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
+		/** Sets a header to this HTTP request, see {@link HttpRequestHeader}.
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
 		public void setHeader (String name, String value) {
@@ -194,18 +197,22 @@ public interface Net {
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
-		
-		/** Sets whether 301 and 302 redirects are followed. By default true.
-		 * Can't be changed in the GWT backend because this uses XmlHttpRequests which always redirect.
+
+		/** Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the GWT backend because this uses
+		 * XmlHttpRequests which always redirect.
 		 * @param followRedirects whether to follow redirects.
-		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend.*/
+		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend. */
 		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
 			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
 				this.followRedirects = followRedirects;
-			}
-			else {
+			} else {
 				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");
 			}
+		}
+
+		/** Sets the HTTP method of the HttpRequest. */
+		public void setMethod (String httpMethod) {
+			this.httpMethod = httpMethod;
 		}
 
 		/** Returns the timeOut of the HTTP request.
@@ -243,11 +250,24 @@ public interface Net {
 		public Map<String, String> getHeaders () {
 			return headers;
 		}
-		
-		/** Returns whether 301 and 302 redirects are followed. By default true.
-		 *  Whether to follow redirects. */
-		public boolean getFollowRedirects() {
+
+		/** Returns whether 301 and 302 redirects are followed. By default true. Whether to follow redirects. */
+		public boolean getFollowRedirects () {
 			return followRedirects;
+		}
+
+		@Override
+		public void reset () {
+			httpMethod = null;
+			url = null;
+			headers.clear();
+			timeOut = 0;
+
+			content = null;
+			contentStream = null;
+			contentLength = 0;
+
+			followRedirects = true;
 		}
 
 	}

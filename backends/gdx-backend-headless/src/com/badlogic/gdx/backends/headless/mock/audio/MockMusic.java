@@ -66,6 +66,11 @@ public class MockMusic implements Music {
 	public void setPan(float pan, float volume) {
 
 	}
+	
+	@Override
+	public void setPosition (float position) {
+		
+	}
 
 	@Override
 	public float getPosition() {

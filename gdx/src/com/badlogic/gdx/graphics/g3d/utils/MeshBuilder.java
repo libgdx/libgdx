@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -60,6 +61,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final Vector3 tempV6 = new Vector3();
 	private final Vector3 tempV7 = new Vector3();
 	private final Vector3 tempV8 = new Vector3();
+	
+	private final Color tempC1 = new Color();
 
 	/** The vertex attributes of the resulting mesh */
 	private VertexAttributes attributes;
@@ -92,9 +95,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	/** The parts created between begin and end */
 	private Array<MeshPart> parts = new Array<MeshPart>();
 	/** The color used if no vertex color is specified. */
-	private final Color color = new Color();
-	/** Whether to apply the default color. */
-	private boolean colorSet;
+	private final Color color = new Color(Color.WHITE);
 	/** The current primitiveType */
 	private int primitiveType;
 	/** The UV range used when building */
@@ -103,7 +104,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	private boolean vertexTransformationEnabled = false;
 	private final Matrix4 positionTransform = new Matrix4();
-	private final Matrix4 normalTransform = new Matrix4();
+	private final Matrix3 normalTransform = new Matrix3();
 	private final Vector3 tempVTransformed = new Vector3();
 
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal and
@@ -170,6 +171,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		a = attributes.findByUsage(Usage.TextureCoordinates);
 		uvOffset = a == null ? -1 : a.offset / 4;
 		setColor(null);
+		setVertexTransform(null);
 		this.primitiveType = primitiveType;
 	}
 
@@ -182,7 +184,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 	}
 
-	/** Starts a new MeshPart. The mesh part is not usable until end() is called */
+	/** Starts a new MeshPart. The mesh part is not usable until end() is called.
+	 * This will reset the current color and vertex transformation. */
 	public MeshPart part (final String id, int primitiveType) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 		endpart();
@@ -193,6 +196,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		parts.add(part);
 
 		setColor(null);
+		setVertexTransform(null);
 
 		return part;
 	}
@@ -274,12 +278,11 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setColor (float r, float g, float b, float a) {
 		color.set(r, g, b, a);
-		colorSet = true;
 	}
 
 	@Override
 	public void setColor (final Color color) {
-		if ((colorSet = color != null) == true) this.color.set(color);
+		this.color.set(color == null ? Color.WHITE : color);
 	}
 
 	@Override
@@ -391,7 +394,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		if (vindex >= Short.MAX_VALUE) throw new GdxRuntimeException("Too many vertices used");
-		if (col == null && colorSet) col = color;
+		tempC1.set(color);
+		if (col != null) tempC1.mul(col);
 		if (pos != null) {
 			if (vertexTransformationEnabled) {
 				tempVTransformed.set(pos).mul(positionTransform);
@@ -416,14 +420,12 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertex[norOffset + 2] = nor.z;
 			}
 		}
-		if (col != null) {
-			if (colOffset >= 0) {
-				vertex[colOffset] = col.r;
-				vertex[colOffset + 1] = col.g;
-				vertex[colOffset + 2] = col.b;
-				if (colSize > 3) vertex[colOffset + 3] = col.a;
-			} else if (cpOffset > 0) vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
-		}
+		if (colOffset >= 0) {
+			vertex[colOffset] = tempC1.r;
+			vertex[colOffset + 1] = tempC1.g;
+			vertex[colOffset + 2] = tempC1.b;
+			if (colSize > 3) vertex[colOffset + 3] = tempC1.a;
+		} else if (cpOffset > 0) vertex[cpOffset] = tempC1.toFloatBits(); // FIXME cache packed color?
 		if (uv != null && uvOffset >= 0) {
 			vertex[uvOffset] = uv.x;
 			vertex[uvOffset + 1] = uv.y;
@@ -1103,8 +1105,11 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setVertexTransform (Matrix4 transform) {
 		if ((vertexTransformationEnabled = (transform != null)) == true) {
-			this.positionTransform.set(transform);
-			this.normalTransform.set(transform).inv().tra();
+			positionTransform.set(transform);
+			normalTransform.set(transform).inv().transpose();
+		} else {
+			positionTransform.idt();
+			normalTransform.idt();
 		}
 	}
 
