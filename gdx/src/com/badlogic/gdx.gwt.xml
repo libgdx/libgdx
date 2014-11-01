@@ -95,6 +95,7 @@
 		<include name="graphics/g2d/ParticleEmitter.java"/>
 		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>		
 		<include name="graphics/g2d/PixmapPacker.java"/>
+		<exclude name="graphics/g2d/PixmapPackerIO.java"/>
 		<include name="graphics/g2d/PolygonRegion.java"/>
 		<include name="graphics/g2d/PolygonRegionLoader.java"/>
 		<include name="graphics/g2d/PolygonSprite.java"/>
