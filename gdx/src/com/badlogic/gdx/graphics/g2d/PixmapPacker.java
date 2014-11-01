@@ -16,9 +16,14 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -397,6 +402,33 @@ public class PixmapPacker implements Disposable {
 
 	public boolean duplicateBorder () {
 		return duplicateBorder;
+	}
+
+	public void save (FileHandle file, TextureFilter minFilter, TextureFilter magFilter) throws IOException {
+		Writer writer = file.writer(false);
+		for (Page page : pages) {
+			if (page.rects.size > 0) {
+				FileHandle pageFile = file.sibling(file.nameWithoutExtension() + ".cim");
+				PixmapIO.writeCIM(pageFile, page.image);
+				writer.write("\n");
+				writer.write(pageFile.name() + "\n");
+				writer.write("size: " + page.image.getWidth() + "," + page.image.getHeight() + "\n");
+				writer.write("format: " + pageFormat.name()  + "\n");
+				writer.write("filter: " + minFilter.name() + "," + magFilter.name() + "\n");
+				writer.write("repeat: none" + "\n");
+				for (String name : page.rects.keys()) {
+					writer.write(name + "\n");
+					Rectangle rect = page.rects.get(name);
+					writer.write("rotate: false" + "\n");
+					writer.write("xy: " + (int) rect.x + "," + (int) rect.y + "\n");
+					writer.write("size: " + (int) rect.width + "," + (int) rect.height + "\n");
+					writer.write("orig: " + (int) rect.width + "," + (int) rect.height + "\n");
+					writer.write("offset: 0, 0" + "\n");
+					writer.write("index: -1" + "\n");
+				}
+			}
+		}
+		writer.close();
 	}
 
 }
