@@ -110,7 +110,6 @@ public class JsonReader implements BaseJsonReader {
 			}
 			action string {
 				String value = new String(data, s, p - s);
-				s = p;
 				if (needsUnescape) value = unescape(value);
 				outer:
 				if (stringIsName) {
@@ -131,24 +130,57 @@ public class JsonReader implements BaseJsonReader {
 						} else if (value.equals("null")) {
 							string(name, null);
 							break outer;
-						} else if (value.indexOf('.') != -1) {
+						}
+						boolean couldBeDouble = false, couldBeLong = true;
+						outer2:
+						for (int i = s; i < p; i++) {
+							switch (data[i]) {
+							case '0':
+							case '1':
+							case '2':
+							case '3':
+							case '4':
+							case '5':
+							case '6':
+							case '7':
+							case '8':
+							case '9':
+							case '-':
+							case '+':
+								break;
+							case '.':
+							case 'e':
+							case 'E':
+								couldBeDouble = true;
+								couldBeLong = false;
+								break;
+							default:
+								couldBeDouble = false;
+								couldBeLong = false;
+								break outer2;
+							}
+						}
+						if (couldBeDouble) {
 							try {
 								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 								number(name, Double.parseDouble(value));
 								break outer;
-							} catch (NumberFormatException ignored) {}
-						} else {
+							} catch (NumberFormatException ignored) {
+							}
+						} else if (couldBeLong) {
+							if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 							try {
-								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 								number(name, Long.parseLong(value));
 								break outer;
-							} catch (NumberFormatException ignored) {}
+							} catch (NumberFormatException ignored) {
+							}
 						}
 					}
 					if (debug) System.out.println("string: " + name + "=" + value);
 					string(name, value);
 				}
 				stringIsUnquoted = false;
+				s = p;
 			}
 			action startObject {
 				String name = names.size > 0 ? names.pop() : null;
