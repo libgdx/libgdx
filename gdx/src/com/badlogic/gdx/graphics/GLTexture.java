@@ -196,11 +196,11 @@ public abstract class GLTexture implements Disposable {
 	protected static int createGLHandle () {
 		return Gdx.gl.glGenTexture ();
 	}
-	
+
 	protected static void uploadImageData (int target, TextureData data) {
 		uploadImageData(target, data, 0);
 	}
-	
+
 	public static void uploadImageData (int target, TextureData data, int miplevel) {
 		if (data == null) {
 			// FIXME: remove texture on target?
@@ -217,18 +217,7 @@ public abstract class GLTexture implements Disposable {
 
 		Pixmap pixmap = data.consumePixmap();
 		boolean disposePixmap = data.disposePixmap();
-		if (data.getFormat() != pixmap.getFormat()) {
-			Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data.getFormat());
-			Blending blend = Pixmap.getBlending();
-			Pixmap.setBlending(Blending.None);
-			tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-			Pixmap.setBlending(blend);
-			if (data.disposePixmap()) {
-				pixmap.dispose();
-			}
-			pixmap = tmp;
-			disposePixmap = true;
-		}
+		if (pixmap.ensureFormat(data.getFormat(), disposePixmap)) disposePixmap = true;
 
 		Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 		if (data.useMipMaps()) {

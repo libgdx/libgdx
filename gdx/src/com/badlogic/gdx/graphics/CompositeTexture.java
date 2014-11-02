@@ -167,18 +167,18 @@ public class CompositeTexture extends Texture {
 	/** Unsupported. */
 	@Override
 	public TextureData getTextureData () {
-		throw new GdxRuntimeException("CompositingTexture doesn't own texure data, use texture0 or texture1 instead");
+		throw new GdxRuntimeException("CompositeTexture doesn't own texure data, use texture0 or texture1 instead");
 	}
 
 	/** Unsupported. */
 	@Override
 	public void load (TextureData data) {
-		throw new GdxRuntimeException("CompositingTexture doesn't own texure data, use texture0 or texture1 instead");
+		throw new GdxRuntimeException("CompositeTexture doesn't own texure data, use texture0 or texture1 instead");
 	}
 
 	/** Unsupported. */
 	@Override
 	public int getTextureObjectHandle () {
-		throw new GdxRuntimeException("CompositingTexture doesn't own texure data, use texture0 or texture1 instead");
+		throw new GdxRuntimeException("CompositeTexture doesn't own texure data, use texture0 or texture1 instead");
 	}
 }

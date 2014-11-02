@@ -167,10 +167,10 @@ public class TexturePacker {
 			new FileHandle(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
-			BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));
-			Graphics2D g = (Graphics2D)canvas.getGraphics();
+			System.out.println("Writing " + width + "x" + height + ": " + outputFile);
 
-			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
+			BufferedImage canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = (Graphics2D)canvas.getGraphics();
 
 			for (Rect rect : page.outputRects) {
 				BufferedImage image = rect.getImage(imageProcessor);
@@ -243,11 +243,11 @@ public class TexturePacker {
 			}
 
 			if (!settings.maskFormat.equalsIgnoreCase("none")) {
-				// extract alpha channel into a gray byte buffer
+				// extract alpha channel as grayscale
 				BufferedImage maskImage = extractAlpha(canvas, true);
 
 				File maskFile = new File(outputFile.getPath() + ".mask." + settings.maskFormat);
-				System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + maskFile);
+				System.out.println("Writing " + width + "x" + height + ": " + maskFile);
 
 				try {
 					if (settings.maskFormat.equalsIgnoreCase("png")) {
@@ -255,7 +255,6 @@ public class TexturePacker {
 					} else if (settings.maskFormat.equalsIgnoreCase("jpg")) {
 						writeJPEG(maskImage, maskFile, settings.jpegQuality);
 					} else if (settings.maskFormat.equalsIgnoreCase("etc1")) {
-						maskImage = convertToRGB888(maskImage); // ETC1 encoder needs RGB565 or RGB888
 						writePKM(maskImage, maskFile);
 					} else {
 						throw new RuntimeException("Unsupported mask format: " + settings.maskFormat);
@@ -265,15 +264,17 @@ public class TexturePacker {
 				}
 			}
 
+			if (settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
+
+			// keep INT_ARGB, or convert to 3BYTE_RGB / BYTE_GRAY depending on format
+			canvas = convertToFormat(canvas, settings.format);
+
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("png")) {
-					if (settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
 					writePNG(canvas, outputFile);
 				} else if (settings.outputFormat.equalsIgnoreCase("jpg")) {
-					canvas = convertToRGB888(canvas); // JPEG doesn't play nicely with INT_(A)RGB
 					writeJPEG(canvas, outputFile, settings.jpegQuality);
 				} else if (settings.outputFormat.equalsIgnoreCase("etc1")) {
-					canvas = convertToRGB888(canvas); // ETC1 encoder needs RGB565 or RGB888
 					writePKM(canvas, outputFile);
 				} else {
 					throw new RuntimeException("Unsupported output format: " + settings.outputFormat);
@@ -284,39 +285,54 @@ public class TexturePacker {
 		}
 	}
 
-	private static BufferedImage convertToRGB888 (BufferedImage image) {
-		ColorModel colorModel = image.getColorModel();
-
-		if (colorModel.getNumComponents() == 3 && colorModel.getPixelSize() == 24 && colorModel.getColorSpace().isCS_sRGB()) {
-			return image; // already RGB888
-		} else {
-			ColorModel rgbColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), null, false, false,
-				Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
-			WritableRaster rgbRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 3,
-				null);
-			BufferedImage rgbImage = new BufferedImage(rgbColorModel, rgbRaster, false, null);
-			rgbImage.getGraphics().drawImage(image, 0, 0, null);
-			return rgbImage;
-		}
-	}
-
 	private static BufferedImage extractAlpha (BufferedImage image, boolean grayscale) {
 		BufferedImage maskImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D maskGraphics = (Graphics2D)maskImage.getGraphics();
 		// copy original image
 		maskGraphics.drawImage(image, 0, 0, null);
-		// strip color, keep transparency
+		// strip color, keep alpha channel
 		maskGraphics.setComposite(AlphaComposite.SrcIn);
 		maskGraphics.setColor(Color.WHITE);
 		maskGraphics.fillRect(0, 0, image.getWidth(), image.getHeight());
 
-		if (grayscale) {
-			// convert alpha to grayscale. white is opaque, black is transparent
-			BufferedImage grayImage = new BufferedImage(maskImage.getWidth(), maskImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-			grayImage.getGraphics().drawImage(maskImage, 0, 0, null);
-			maskImage = grayImage;
-		}
+		if (grayscale) // convert from INT_ARGB to BYTE_GRAY
+			maskImage = convertToFormat(maskImage, Format.Alpha);
+
 		return maskImage;
+	}
+
+	private static BufferedImage convertToFormat (BufferedImage image, Format format) {
+		BufferedImage formatImage = image;
+
+		switch (format) {
+		case RGBA8888:
+		case RGBA4444:
+			if (image.getType() != BufferedImage.TYPE_INT_ARGB)
+				formatImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			break;
+		case RGB565:
+		case RGB888:
+			// prefer 3BYTE_RGB over INT_RGB for compatibility with ETC1 encoder
+			ColorModel rgbColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), null, false, false,
+				Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+			WritableRaster rgbRaster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 3,
+				null);
+
+			// convert image if in 3BYTE_BGR or some other incompatible format
+			if (image.getType() != BufferedImage.TYPE_CUSTOM || !image.getColorModel().isCompatibleRaster(rgbRaster))
+				formatImage = new BufferedImage(rgbColorModel, rgbRaster, false, null);
+			break;
+		case Alpha:
+			if (image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+				formatImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+			break;
+		default:
+			throw new RuntimeException("Unsupported format: " + format);
+		}
+
+		if (formatImage != image) formatImage.getGraphics().drawImage(image, 0, 0, null);
+
+		return formatImage;
 	}
 
 	private static void writePNG (BufferedImage image, File outputFile) throws IOException {
@@ -324,6 +340,9 @@ public class TexturePacker {
 	}
 
 	private static void writeJPEG (BufferedImage image, File outputFile, float quality) throws IOException {
+		if (image.getType() == BufferedImage.TYPE_INT_ARGB) // JPEG writer doesn't play nicely with INT_ARGB
+			image = convertToFormat(image, Format.RGB888);
+
 		ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
 		ImageWriteParam param = writer.getDefaultWriteParam();
 		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
@@ -340,7 +359,10 @@ public class TexturePacker {
 	}
 
 	private static void writePKM (BufferedImage image, File outputFile) {
-		// image data is assumed to be 3-byte RGB888, load it into a native buffer
+		// ETC1 encoder needs RGB565 or RGB888
+		image = convertToFormat(image, Format.RGB888);
+
+		// load 3BYTE_RGB data into a native buffer
 		byte[] rgbData = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(rgbData.length);
 		BufferUtils.copy(rgbData, 0, buffer, rgbData.length);
@@ -437,21 +459,6 @@ public class TexturePacker {
 		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
 		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
 		return "none";
-	}
-
-	private int getBufferedImageType (Format format) {
-		switch (settings.format) {
-		case RGBA8888:
-		case RGBA4444:
-			return BufferedImage.TYPE_INT_ARGB;
-		case RGB565:
-		case RGB888:
-			return BufferedImage.TYPE_INT_RGB;
-		case Alpha:
-			return BufferedImage.TYPE_BYTE_GRAY;
-		default:
-			throw new RuntimeException("Unsupported format: " + settings.format);
-		}
 	}
 
 	/** @author Nathan Sweet */

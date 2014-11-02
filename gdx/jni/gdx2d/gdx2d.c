@@ -53,8 +53,7 @@ static inline uint32_t to_format(uint32_t format, uint32_t color) {
 	uint32_t r, g, b, a, l;
 
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:
+		case GDX2D_FORMAT_ALPHA: 
 			return color & 0xff;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
 			r = (color & 0xff000000) >> 24;
@@ -101,8 +100,7 @@ static inline uint32_t to_RGBA8888(uint32_t format, uint32_t color) {
 	if(!lu5) generate_look_ups();
 
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:
+		case GDX2D_FORMAT_ALPHA: 
 			return (color & 0xff) | 0xffffff00;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
 			return ((color & 0xff00) << 16) | ((color & 0xff00) << 8) | (color & 0xffff);
@@ -158,8 +156,7 @@ static inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color)
 
 static inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:		return &set_pixel_alpha;
+		case GDX2D_FORMAT_ALPHA:			return &set_pixel_alpha;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:	return &set_pixel_luminance_alpha;
 		case GDX2D_FORMAT_RGB888:			return &set_pixel_RGB888;
 		case GDX2D_FORMAT_RGBA8888:			return &set_pixel_RGBA8888;
@@ -213,8 +210,7 @@ static inline uint32_t get_pixel_RGBA4444(unsigned char *pixel_addr) {
 
 static inline get_pixel_func get_pixel_func_ptr(uint32_t format) {
 	switch(format) {
-		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:		return &get_pixel_alpha;
+		case GDX2D_FORMAT_ALPHA:			return &get_pixel_alpha;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:	return &get_pixel_luminance_alpha;
 		case GDX2D_FORMAT_RGB888:			return &get_pixel_RGB888;
 		case GDX2D_FORMAT_RGBA8888:			return &get_pixel_RGBA8888;
@@ -246,7 +242,6 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
 	switch(format) {
 		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:
 			return 1;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
 		case GDX2D_FORMAT_RGB565:
@@ -368,7 +363,6 @@ void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {
 
 	switch(pixmap->format) {
 		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE:
 			clear_alpha(pixmap, col);
 			break;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
