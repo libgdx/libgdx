@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,6 +52,7 @@ public class Json {
 	private boolean quoteLongValues;
 	private boolean ignoreUnknownFields;
 	private boolean enumNames = true;
+    private boolean emitDefaults;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
@@ -66,6 +67,19 @@ public class Json {
 	public Json (OutputType outputType) {
 		this.outputType = outputType;
 	}
+
+    /** Allows to emit values on serialization even if they are equal to object instance defaults.
+    Useful to e.g. create initial JSON for user editing or for debugging purposes.
+    @param emitDefaults */
+    public void setEmitDefaults( boolean emitDefaults ) {
+        this.emitDefaults = emitDefaults;
+    }
+
+    /** Defaults to <code>false</code> for newly created Json instances.
+    @return true if this Json instance is emitting values on serialization even if they are equal to object instance defaults. */
+    public boolean isEmitDefaults() {
+        return emitDefaults;
+    }
 
 	/** When true, fields in the JSON that are not found on the class will not throw a {@link SerializationException}. Default is
 	 * false. */
@@ -253,9 +267,9 @@ public class Json {
 
 	/** Writes all fields of the specified object to the current JSON object. */
 	public void writeFields (Object object) {
-		Class type = object.getClass();
+		Class<?> type = object.getClass();
 
-		Object[] defaultValues = getDefaultValues(type);
+        Object[] defaultValues = emitDefaults ? null : getDefaultValues( type );
 
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
