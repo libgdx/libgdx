@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -229,21 +229,39 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return x_d * x_d + y_d * y_d;
 	}
 
+
+	/** Limits the length of this vector, based on the desired length.
+	 * @param limit desired length for this vector
+	 * @return this vector for chaining */
 	@Override
 	public Vector2 limit (float limit) {
-		if (len2() > limit * limit) {
-			nor();
-			scl(limit);
-		}
+		return limit2(limit * limit);
+	}
+
+	/** Limits the length of this vector, based on the desired length squared.
+	 * <p />
+	 * This method is slightly faster than limit().
+	 * @param limit2 squared desired length for this vector
+	 * @return this vector for chaining */
+	public Vector2 limit2 (float limit2) {
+		float len2 = len2();
+		if (len2 > limit2) {
+            return scl((float)Math.sqrt(limit2 / len2));
+        }
 		return this;
 	}
 
 	@Override
 	public Vector2 clamp (float min, float max) {
-		final float l2 = len2();
-		if (l2 == 0f) return this;
-		if (l2 > max * max) return nor().scl(max);
-		if (l2 < min * min) return nor().scl(min);
+		final float len2 = len2();
+		if (len2 == 0f)
+            return this;
+        float max2 = max * max;
+		if (len2 > max2)
+            return scl((float)Math.sqrt(max2 / len2));
+        float min2 = min * min;
+		if (len2 < min2)
+            return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 

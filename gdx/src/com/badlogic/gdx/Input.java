@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,27 +24,27 @@ import com.badlogic.gdx.utils.ObjectIntMap;
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
  * all backends.
  * </p>
- * 
+ *
  * <p>
  * Instead of polling for events, one can process all input events with an {@link InputProcessor}. You can set the InputProcessor
  * via the {@link #setInputProcessor(InputProcessor)} method. It will be called before the {@link ApplicationListener#render()}
  * method in each frame.
  * </p>
- * 
+ *
  * <p>
  * Keyboard keys are translated to the constants in {@link Keys} transparently on all systems. Do not use system specific key
  * constants.
  * </p>
- * 
+ *
  * <p>
  * The class also offers methods to use (and test for the presence of) other input systems like vibration, compass, on-screen
  * keyboards, and cursor capture. Support for simple input dialogs is also provided.
  * </p>
- * 
+ *
  * @author mzechner */
 public interface Input {
 	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
-	 * 
+	 *
 	 * @author mzechner */
 	static public interface TextInputListener {
 		public void input (String text);
@@ -63,7 +63,7 @@ public interface Input {
 	}
 
 	/** Keys.
-	 * 
+	 *
 	 * @author mzechner */
 	static public class Keys {
 		public static final int ANY_KEY = -1;
@@ -209,6 +209,17 @@ public interface Input {
 		public static final int NUMPAD_7 = 151;
 		public static final int NUMPAD_8 = 152;
 		public static final int NUMPAD_9 = 153;
+
+        public static final int NUMPAD_DIVIDE = 154;
+        public static final int NUMPAD_MULTIPLY = 155;
+        public static final int NUMPAD_SUBTRACT = 156;
+        public static final int NUMPAD_ADD = 157;
+        public static final int NUMPAD_DOT = 158;
+        public static final int NUMPAD_COMMA = 159;
+        public static final int NUMPAD_ENTER = 160;
+        public static final int NUMPAD_EQUALS = 161;
+
+        public static final int NUMLOCK = NUM;
 
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
@@ -578,7 +589,7 @@ public interface Input {
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer id.
 	 * @return the x coordinate */
 	public int getX (int pointer);
@@ -597,7 +608,7 @@ public interface Input {
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer id.
 	 * @return the y coordinate */
 	public int getY (int pointer);
@@ -618,7 +629,7 @@ public interface Input {
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer
 	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
@@ -630,13 +641,13 @@ public interface Input {
 	public boolean isButtonPressed (int button);
 
 	/** Returns whether the key is pressed.
-	 * 
+	 *
 	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
 	/** Returns whether the key has just been pressed.
-	 * 
+	 *
 	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return true or false. */
 	public boolean isKeyJustPressed (int key);
@@ -644,7 +655,7 @@ public interface Input {
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
 	 * thread.
-	 * 
+	 *
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
@@ -653,20 +664,20 @@ public interface Input {
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
 	 * rendering thread.
-	 * 
+	 *
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param placeholder The placeholder text presented to the user. */
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder);
 
 	/** Sets the on-screen keyboard visible if available.
-	 * 
+	 *
 	 * @param visible visible or not */
 	public void setOnscreenKeyboardVisible (boolean visible);
 
 	/** Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
-	 * 
+	 *
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
@@ -682,7 +693,7 @@ public interface Input {
 
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
-	 * 
+	 *
 	 * @see <a
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
 	 * @return the azimuth in degrees */
@@ -714,7 +725,7 @@ public interface Input {
 
 	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.
-	 * 
+	 *
 	 * @param catchBack whether to catch the back button */
 	public void setCatchBackKey (boolean catchBack);
 
@@ -723,13 +734,13 @@ public interface Input {
 
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
-	 * 
+	 *
 	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
-	 * 
+	 *
 	 * @param processor the InputProcessor */
 	public void setInputProcessor (InputProcessor processor);
 
@@ -738,7 +749,7 @@ public interface Input {
 
 	/** Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
 	 * this returns the whether the keyboard is currently slid out or not.
-	 * 
+	 *
 	 * @param peripheral the {@link Peripheral}
 	 * @return whether the peripheral is available or not. */
 	public boolean isPeripheralAvailable (Peripheral peripheral);
@@ -770,7 +781,7 @@ public interface Input {
 	 * {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format, width & height must be powers-of-two
 	 * greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). To revert to
 	 * the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
-	 * 
+	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default
 	 *           operating system cursor
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)

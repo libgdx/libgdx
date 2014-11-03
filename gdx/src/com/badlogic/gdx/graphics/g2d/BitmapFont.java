@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2008-2010, Matthias Mann
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
  * conditions are met:
- * 
+ *
  * * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided with the distribution. * Neither the name of Matthias Mann nor
  * the names of its contributors may be used to endorse or promote products derived from this software without specific prior
  * written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
  * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
  * SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
@@ -83,12 +83,24 @@ public class BitmapFont implements Disposable {
 			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), flip, true);
 	}
 
+    /** Creates a new copy of a given BitmapFont, sharing the TextureRegion, but having a new, independent copy of data.
+     * @param bf BitmapFont to be copied */
+    public BitmapFont( BitmapFont bf ) {
+        this( bf.data.cpy(), bf.getRegion(), false );
+    }
+
+    /** Creates a copy of this BitmapFont, sharing the TextureRegion, but having a new, independent copy of data.
+     * @return copy of this BitmapFont */
+    public BitmapFont cpy() {
+        return new BitmapFont( this );
+    }
+
 	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
 	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
 	 * case!
-	 * 
+	 *
 	 * The font data is not flipped.
-	 * 
+	 *
 	 * @param fontFile the font definition file
 	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
 	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file. */
@@ -138,11 +150,11 @@ public class BitmapFont implements Disposable {
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and {@link TextureRegion}. If the TextureRegion is null,
 	 * the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture of the region(s)
 	 * if the region is != null.
-	 * 
+	 *
 	 * Passing a single TextureRegion assumes that your font only needs a single texture page. If you need to support multiple
 	 * pages, either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page
 	 * manually with the TextureRegion[] constructor.
-	 * 
+	 *
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
 		this(data, region != null ? new TextureRegion[] {region} : null, integer);
@@ -151,7 +163,7 @@ public class BitmapFont implements Disposable {
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
-	 * 
+	 *
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, TextureRegion[] regions, boolean integer) {
 		if (regions == null || regions.length == 0) {
@@ -555,24 +567,10 @@ public class BitmapFont implements Disposable {
 	 * <br>
 	 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}. The
 	 * default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
-	 * 
+	 *
 	 * @throws IllegalArgumentException When scaleXY is zero */
 	public void setScale (float scaleX, float scaleY) {
-		if (scaleX == 0 || scaleY == 0) {
-			throw new IllegalArgumentException("Scale must not be zero");
-		}
-		BitmapFontData data = this.data;
-		float x = scaleX / data.scaleX;
-		float y = scaleY / data.scaleY;
-		data.lineHeight = data.lineHeight * y;
-		data.spaceWidth = data.spaceWidth * x;
-		data.xHeight = data.xHeight * y;
-		data.capHeight = data.capHeight * y;
-		data.ascent = data.ascent * y;
-		data.descent = data.descent * y;
-		data.down = data.down * y;
-		data.scaleX = scaleX;
-		data.scaleY = scaleY;
+		data.setScale( scaleX, scaleY );
 	}
 
 	/** Scales the font by the specified amount in both directions.
@@ -834,6 +832,22 @@ public class BitmapFont implements Disposable {
 		public BitmapFontData () {
 		}
 
+        public BitmapFontData( BitmapFontData bfd ) {
+            this.imagePath = bfd.imagePath;
+            this.imagePaths = bfd.imagePaths;
+            this.fontFile = bfd.fontFile;
+            this.flipped = bfd.flipped;
+            this.lineHeight = bfd.lineHeight;
+            this.ascent = bfd.ascent;
+            this.descent = bfd.descent;
+            this.down = bfd.down;
+            this.spaceWidth = bfd.spaceWidth;
+        }
+
+        public BitmapFontData cpy() {
+            return new BitmapFontData( this );
+        }
+
 		@SuppressWarnings("deprecation")
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
@@ -1065,5 +1079,22 @@ public class BitmapFont implements Disposable {
 		public FileHandle getFontFile () {
 			return fontFile;
 		}
+
+        public void setScale( float scaleX, float scaleY ) {
+            if ( scaleX <= 0 || scaleY <= 0 ) {
+                throw new IllegalArgumentException( "scale factors must be both positive" );
+            }
+            float x = scaleX / this.scaleX;
+            float y = scaleY / this.scaleY;
+            lineHeight *= y;
+            spaceWidth *= x;
+            xHeight *= y;
+            capHeight *= y;
+            ascent *= y;
+            descent *= y;
+            down *= y;
+            this.scaleX = scaleX;
+            this.scaleY = scaleY;
+        }
 	}
 }
