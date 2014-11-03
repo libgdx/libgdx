@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
@@ -66,7 +67,7 @@ public class Actions {
 	static public MoveToAction moveTo (float x, float y) {
 		return moveTo(x, y, 0, null);
 	}
-
+	
 	static public MoveToAction moveTo (float x, float y, float duration) {
 		return moveTo(x, y, duration, null);
 	}
@@ -74,6 +75,22 @@ public class Actions {
 	static public MoveToAction moveTo (float x, float y, float duration, Interpolation interpolation) {
 		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y);
+		action.setDuration(duration);
+		action.setInterpolation(interpolation);
+		return action;
+	}
+	
+	static public MoveToAction moveTo (float x, float y, int align) {
+		return moveTo(x, y, 0, align, null);
+	}
+	
+	static public MoveToAction moveTo (float x, float y, int align, float duration) {
+		return moveTo(x, y, duration, align, null);
+	}
+	
+	static public MoveToAction moveTo (float x, float y, float duration, int align, Interpolation interpolation) {
+		MoveToAction action = action(MoveToAction.class);
+		action.setPosition(x, y, align);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
 		return action;
