@@ -69,7 +69,7 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
-	
+
 	static boolean actionsChanged;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
@@ -373,11 +373,11 @@ public class Actor {
 	}
 
 	/** Returns the X position of the specified {@link Align alignment}. */
-	public float getX (int align) {
+	public float getX (int alignment) {
 		float x = this.x;
-		if ((align & right) != 0)
+		if ((alignment & right) != 0)
 			x += width;
-		else if ((align & left) == 0) //
+		else if ((alignment & left) == 0) //
 			x += width / 2;
 		return x;
 	}
@@ -402,11 +402,11 @@ public class Actor {
 	}
 
 	/** Returns the Y position of the specified {@link Align alignment}. */
-	public float getY (int align) {
+	public float getY (int alignment) {
 		float y = this.y;
-		if ((align & top) != 0)
+		if ((alignment & top) != 0)
 			y += height;
-		else if ((align & bottom) == 0) //
+		else if ((alignment & bottom) == 0) //
 			y += height / 2;
 		return y;
 	}
@@ -421,15 +421,15 @@ public class Actor {
 	}
 
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
-	public void setPosition (float x, float y, int align) {
-		if ((align & right) != 0)
+	public void setPosition (float x, float y, int alignment) {
+		if ((alignment & right) != 0)
 			x -= width;
-		else if ((align & left) == 0) //
+		else if ((alignment & left) == 0) //
 			x -= width / 2;
 
-		if ((align & top) != 0)
+		if ((alignment & top) != 0)
 			y -= height;
-		else if ((align & bottom) == 0) //
+		else if ((alignment & bottom) == 0) //
 			y -= height / 2;
 
 		if (this.x != x || this.y != y) {
@@ -546,17 +546,17 @@ public class Actor {
 	}
 
 	/** Sets the origin position to the specified {@link Align alignment}. */
-	public void setOrigin (int align) {
-		if ((align & left) != 0)
+	public void setOrigin (int alignment) {
+		if ((alignment & left) != 0)
 			originX = 0;
-		else if ((align & right) != 0)
+		else if ((alignment & right) != 0)
 			originX = width;
 		else
 			originX = width / 2;
 
-		if ((align & bottom) != 0)
+		if ((alignment & bottom) != 0)
 			originY = 0;
-		else if ((align & top) != 0)
+		else if ((alignment & top) != 0)
 			originY = height;
 		else
 			originY = height / 2;

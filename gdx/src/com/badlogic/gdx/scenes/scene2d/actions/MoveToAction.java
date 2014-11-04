@@ -21,6 +21,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 public class MoveToAction extends TemporalAction {
 	private float startX, startY;
 	private float endX, endY;
+	private int alignment;
 
 	protected void begin () {
 		startX = actor.getX();
@@ -34,6 +35,12 @@ public class MoveToAction extends TemporalAction {
 	public void setPosition (float x, float y) {
 		endX = x;
 		endY = y;
+	}
+
+	public void setPosition (float x, float y, int alignment) {
+		endX = x;
+		endY = y;
+		this.alignment = alignment;
 	}
 
 	public float getX () {
@@ -50,5 +57,13 @@ public class MoveToAction extends TemporalAction {
 
 	public void setY (float y) {
 		endY = y;
+	}
+
+	public int getAlignment () {
+		return alignment;
+	}
+
+	public void setAlignment (int alignment) {
+		this.alignment = alignment;
 	}
 }
