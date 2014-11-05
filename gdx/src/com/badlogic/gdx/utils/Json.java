@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.security.AccessControlException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.ObjectMap.Values;
+import com.badlogic.gdx.utils.OrderedMap.OrderedMapValues;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
@@ -53,11 +54,12 @@ public class Json {
 	private boolean ignoreUnknownFields;
 	private boolean enumNames = true;
 	private Serializer defaultSerializer;
-	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
+	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
 	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
+	private final Object[] equals1 = {null}, equals2 = {null};
 
 	public Json () {
 		outputType = OutputType.minimal;
@@ -142,14 +144,16 @@ public class Json {
 	/** Sets the type of elements in a collection. When the element type is known, the class for each element in the collection does
 	 * not need to be written unless different from the element type. */
 	public void setElementType (Class type, String fieldName, Class elementType) {
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		FieldMetadata metadata = fields.get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		metadata.elementType = elementType;
 	}
 
-	private ObjectMap<String, FieldMetadata> cacheFields (Class type) {
+	private OrderedMap<String, FieldMetadata> getFields (Class type) {
+		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
+		if (fields != null) return fields;
+
 		ArrayList<Field> allFields = new ArrayList();
 		Class nextClass = type;
 		while (nextClass != Object.class) {
@@ -157,7 +161,7 @@ public class Json {
 			nextClass = nextClass.getSuperclass();
 		}
 
-		ObjectMap<String, FieldMetadata> nameToField = new ObjectMap();
+		OrderedMap<String, FieldMetadata> nameToField = new OrderedMap();
 		for (int i = 0, n = allFields.size(); i < n; i++) {
 			Field field = allFields.get(i);
 
@@ -257,17 +261,23 @@ public class Json {
 
 		Object[] defaultValues = getDefaultValues(type);
 
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		OrderedMap<String, FieldMetadata> fields = getFields(type);
 		int i = 0;
-		for (FieldMetadata metadata : new Values<FieldMetadata>(fields)) {
+		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
 			Field field = metadata.field;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {
 					Object defaultValue = defaultValues[i++];
 					if (value == null && defaultValue == null) continue;
-					if (value != null && defaultValue != null && value.equals(defaultValue)) continue;
+					if (value != null && defaultValue != null) {
+						if (value.equals(defaultValue)) continue;
+						if (value.getClass().isArray() && defaultValue.getClass().isArray()) {
+							equals1[0] = value;
+							equals2[0] = defaultValue;
+							if (Arrays.deepEquals(equals1, equals2)) continue;
+						}
+					}
 				}
 
 				if (debug) System.out.println("Writing field: " + field.getName() + " (" + type.getName() + ")");
@@ -297,9 +307,7 @@ public class Json {
 			return null;
 		}
 
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
-
+		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		Object[] values = new Object[fields.size];
 		classToDefaultValues.put(type, values);
 
@@ -342,8 +350,7 @@ public class Json {
 	 * @param elementType May be null if the type is unknown. */
 	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		FieldMetadata metadata = fields.get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
@@ -731,8 +738,7 @@ public class Json {
 	/** @param elementType May be null if the type is unknown. */
 	public void readField (Object object, String fieldName, String jsonName, Class elementType, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		FieldMetadata metadata = fields.get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
@@ -755,8 +761,7 @@ public class Json {
 
 	public void readFields (Object object, JsonValue jsonMap) {
 		Class type = object.getClass();
-		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
 			FieldMetadata metadata = fields.get(child.name());
 			if (metadata == null) {
