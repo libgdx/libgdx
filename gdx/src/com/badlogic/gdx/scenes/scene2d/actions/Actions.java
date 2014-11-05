@@ -79,15 +79,15 @@ public class Actions {
 		return action;
 	}
 
-	static public MoveToAction moveTo (float x, float y, int alignment) {
-		return moveTo(x, y, alignment, 0, null);
+	static public MoveToAction moveToAligned (float x, float y, int alignment) {
+		return moveToAligned(x, y, alignment, 0, null);
 	}
 
-	static public MoveToAction moveTo (float x, float y, int alignment, float duration) {
-		return moveTo(x, y, alignment, duration, null);
+	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration) {
+		return moveToAligned(x, y, alignment, duration, null);
 	}
 
-	static public MoveToAction moveTo (float x, float y, int alignment, float duration, Interpolation interpolation) {
+	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration, Interpolation interpolation) {
 		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y, alignment);
 		action.setDuration(duration);
