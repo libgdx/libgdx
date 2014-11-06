@@ -154,12 +154,15 @@ public class Json {
 		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields != null) return fields;
 
-		ArrayList<Field> allFields = new ArrayList();
+		Array<Class> classHierarchy = new Array();
 		Class nextClass = type;
 		while (nextClass != Object.class) {
-			Collections.addAll(allFields, ClassReflection.getDeclaredFields(nextClass));
+			classHierarchy.add(nextClass);
 			nextClass = nextClass.getSuperclass();
 		}
+		ArrayList<Field> allFields = new ArrayList();
+		for (int i = classHierarchy.size - 1; i >= 0; i--)
+			Collections.addAll(allFields, ClassReflection.getDeclaredFields(classHierarchy.get(i)));
 
 		OrderedMap<String, FieldMetadata> nameToField = new OrderedMap();
 		for (int i = 0, n = allFields.size(); i < n; i++) {
