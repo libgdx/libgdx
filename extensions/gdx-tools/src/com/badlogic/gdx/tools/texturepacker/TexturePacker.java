@@ -615,7 +615,7 @@ public class TexturePacker {
 			});
 			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
-			throw new RuntimeException("Error packing files.", ex);
+			throw new RuntimeException("Error packing images.", ex);
 		}
 	}
 
