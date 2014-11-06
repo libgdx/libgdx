@@ -47,6 +47,7 @@ public abstract class OpenALMusic implements Music {
 	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
+	protected int bufferOverhead = 0;
 
 	private OnCompletionListener onCompletionListener;
 
@@ -59,7 +60,7 @@ public abstract class OpenALMusic implements Music {
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
-		secondsPerBuffer = (float)bufferSize / bytesPerSample / channels / sampleRate;
+		secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
 	}
 
 	public void play () {
@@ -155,7 +156,8 @@ public abstract class OpenALMusic implements Music {
 		boolean wasPlaying = isPlaying;
 		isPlaying = false;
 		alSourceStop(sourceID);
-		renderedSeconds += secondsPerBuffer;
+		alSourceUnqueueBuffers(sourceID, buffers);
+		renderedSeconds += (secondsPerBuffer * bufferCount);
 		if (position <= renderedSeconds) {
 			reset();
 			renderedSeconds = 0;
@@ -164,7 +166,17 @@ public abstract class OpenALMusic implements Music {
 			if (read(tempBytes) <= 0) break;
 			renderedSeconds += secondsPerBuffer;
 		}
-		update();
+		boolean filled = false;
+		for (int i = 0; i < bufferCount; i++) {
+			int bufferID = buffers.get(i);
+			if (!fill(bufferID)) break;
+			filled = true;
+			alSourceQueueBuffers(sourceID, bufferID);
+		}
+		if (!filled) {
+			stop();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+		}
 		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
 		if (wasPlaying) {
 			alSourcePlay(sourceID);

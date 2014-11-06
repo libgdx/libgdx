@@ -35,6 +35,7 @@ public class MusicTest extends GdxTest {
 
 	Music music;
 	float songDuration = 183;
+	float currentPosition;
 
 	TextureRegion buttons;
 	SpriteBatch batch;
@@ -80,13 +81,15 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void render () {
+		currentPosition = music.getPosition();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
+		font.draw(batch, String.format("%02d:%02d", (int)currentPosition / 60, (int)currentPosition % 60), 365, 35);
 		batch.end();
 
 		sliderUpdating = true;
-		//slider.setValue((music.getPosition() / songDuration) * 100f);
+		slider.setValue((currentPosition / songDuration) * 100f);
 		sliderUpdating = false;
 		stage.act();
 		stage.draw();
