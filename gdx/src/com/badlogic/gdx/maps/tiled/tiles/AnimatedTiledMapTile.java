@@ -128,7 +128,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
-		this.loopDuration = (long)(frameTiles.size * interval * 1000f);
+		this.loopDuration = frameTiles.size * (long)(interval * 1000f);
 		this.animationIntervals = new long[frameTiles.size];
 		for (int i = 0; i < frameTiles.size; ++i){
 			this.frameTiles[i] = frameTiles.get(i);
