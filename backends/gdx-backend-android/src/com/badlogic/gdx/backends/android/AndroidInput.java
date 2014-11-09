@@ -193,15 +193,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		getTextInput(listener, title, text, null);
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		getTextInput(listener, title, null, placeholder);
-	}
-	
-	@Override
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		handle.post(new Runnable() {
 			public void run () {

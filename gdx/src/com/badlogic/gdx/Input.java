@@ -641,26 +641,6 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyJustPressed (int key);
 
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
-	 * thread.
-	 * 
-	 * @param listener The TextInputListener.
-	 * @param title The title of the text input dialog.
-	 * @param text The message presented to the user.
-	 * @deprecated Use {@link #getTextInput(TextInputListener, String, String, String)} instead. */
-	public void getTextInput (TextInputListener listener, String title, String text);
-
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
-	 * rendering thread.
-	 * 
-	 * @param listener The TextInputListener.
-	 * @param title The title of the text input dialog.
-	 * @param placeholder The placeholder text presented to the user.
-	 * @deprecated Use {@link #getTextInput(TextInputListener, String, String, String)} instead. */
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder);
-
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and have a text input
 	 * with the given text and hint. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
 	 * rendering thread.

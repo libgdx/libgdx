@@ -304,16 +304,6 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void getTextInput (TextInputListener listener, String title, String text) {
-			input.getTextInput(listener, title, text);
-		}
-
-		@Override
-		public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-			input.getPlaceholderTextInput(listener, title, placeholder);
-		}
-
-		@Override
 		public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 			input.getTextInput(listener, title, text, hint);
 		}

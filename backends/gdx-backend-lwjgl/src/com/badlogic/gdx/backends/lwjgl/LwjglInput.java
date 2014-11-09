@@ -105,14 +105,6 @@ final public class LwjglInput implements Input {
 		return 0;
 	}
 
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		getTextInput(listener, title, text, null);
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		getTextInput(listener, title, null, placeholder);
-	}
-
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

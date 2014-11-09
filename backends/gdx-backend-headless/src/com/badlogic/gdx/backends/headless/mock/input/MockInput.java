@@ -113,16 +113,6 @@ public class MockInput implements Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text) {
-
-	}
-
-	@Override
-	public void getPlaceholderTextInput(TextInputListener listener, String title, String hint) {
-
-	}
-
-	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		
 	}

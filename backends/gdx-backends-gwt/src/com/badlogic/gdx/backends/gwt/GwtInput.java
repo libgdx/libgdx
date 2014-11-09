@@ -175,16 +175,6 @@ public class GwtInput implements Input {
 		return justPressedKeys[key];
 	}
 
-	@Override	
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		getTextInput(listener, title, text, null);
-	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String hint) {
-		getTextInput(listener, title, null, hint);
-	}
-
 	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		TextInputDialogBox dialog = new TextInputDialogBox(title, text, hint);
 		final TextInputListener capturedListener = listener;

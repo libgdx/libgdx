@@ -298,14 +298,6 @@ public class JglfwInput implements Input {
 	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		getTextInput(listener, title, text, null);
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		getTextInput(listener, title, null, placeholder);
-	}
-
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {

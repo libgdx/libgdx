@@ -266,16 +266,6 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		getTextInput(listener, title, text, null);
-	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		getTextInput(listener, title, null, placeholder);
-	}
-
-	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		buildUIAlertView(listener, title, text, hint).show();
 	}	

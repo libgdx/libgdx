@@ -389,16 +389,6 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		Gdx.app.getInput().getTextInput(listener, title, text);
-	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		Gdx.app.getInput().getPlaceholderTextInput(listener, title, placeholder);
-	}
-
-	@Override
 	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		Gdx.app.getInput().getTextInput(listener, title, text, hint);
 	}
