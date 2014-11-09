@@ -120,8 +120,8 @@ public final class AndroidAudio implements Audio {
 	/** {@inheritDoc} */
 	@Override
 	public Sound newSound (FileHandle file) {
-		AndroidFileHandle aHandle = (AndroidFileHandle)file;
-		if (aHandle.type() == FileType.Internal) {
+		if (file.type() == FileType.Internal) {
+			AndroidFileHandle aHandle = (AndroidFileHandle)file;
 			try {
 				AssetFileDescriptor descriptor = aHandle.assets.openFd(aHandle.path());
 				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
@@ -133,7 +133,7 @@ public final class AndroidAudio implements Audio {
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
+				return new AndroidSound(soundPool, manager, soundPool.load(file.file().getPath(), 1));
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
