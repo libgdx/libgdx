@@ -106,28 +106,14 @@ final public class LwjglInput implements Input {
 	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run () {
-				final String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null)
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.input(output);
-						}
-					});
-				else
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.canceled();
-						}
-					});
-			}
-		});
+		getTextInput(listener, title, text, null);
 	}
 
 	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+		getTextInput(listener, title, null, placeholder);
+	}
+
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
@@ -143,10 +129,11 @@ final public class LwjglInput implements Input {
 				panel.add(textPanel);
 
 				final JTextField textField = new JTextField(20);
+				textField.setText(text);
 				textField.setAlignmentX(0.0f);
 				textPanel.add(textField);
 
-				final JLabel placeholderLabel = new JLabel(placeholder);
+				final JLabel placeholderLabel = new JLabel(hint);
 				placeholderLabel.setForeground(Color.GRAY);
 				placeholderLabel.setAlignmentX(0.0f);
 				textPanel.add(placeholderLabel, 0);

@@ -52,6 +52,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
@@ -266,9 +267,18 @@ public class IOSInput implements Input {
 
 	@Override
 	public void getTextInput (TextInputListener listener, String title, String text) {
-		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text, null);
-		uiAlertView.show();
+		getTextInput(listener, title, text, null);
 	}
+
+	@Override
+	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
+		getTextInput(listener, title, null, placeholder);
+	}
+
+	@Override
+	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+		buildUIAlertView(listener, title, text, hint).show();
+	}	
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
@@ -402,12 +412,6 @@ public class IOSInput implements Input {
 		textField.setText(text);
 
 		return uiAlertView;
-	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
-		uiAlertView.show();
 	}
 
 	@Override

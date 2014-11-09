@@ -24,6 +24,7 @@ import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -395,6 +396,11 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
 		Gdx.app.getInput().getPlaceholderTextInput(listener, title, placeholder);
+	}
+
+	@Override
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint);
 	}
 
 	@Override
