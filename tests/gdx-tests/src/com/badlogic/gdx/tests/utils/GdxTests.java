@@ -166,6 +166,7 @@ public class GdxTests {
 		ProjectTest.class,
 		ProjectiveTextureTest.class,
 		ReflectionTest.class,
+		RepeatingTextureTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
 		StageDebugTest.class,
