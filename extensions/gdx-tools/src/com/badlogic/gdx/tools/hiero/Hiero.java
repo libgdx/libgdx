@@ -246,7 +246,7 @@ public class Hiero extends JFrame {
 		fontSizeSpinner.setValue((int)(0.5f + Math.max(4, scale * ((Integer)fontSizeSpinner.getValue()))));
 	}
 
-	private void updateFontSelector () {
+	void updateFontSelector () {
 		final boolean use2 = fontFileRadio.isSelected();
 		fontList.setEnabled(!use2);
 		fontFileText.setEnabled(use2);
