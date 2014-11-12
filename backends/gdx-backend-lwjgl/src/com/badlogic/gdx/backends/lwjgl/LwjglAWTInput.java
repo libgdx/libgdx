@@ -57,6 +57,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
@@ -159,22 +160,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		return 0;
 	}
 
-	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null)
-					listener.input(output);
-				else
-					listener.canceled();
-
-			}
-		});
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
@@ -190,10 +176,11 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 				panel.add(textPanel);
 
 				final JTextField textField = new JTextField(20);
+				textField.setText(text);
 				textField.setAlignmentX(0.0f);
 				textPanel.add(textField);
 
-				final JLabel placeholderLabel = new JLabel(placeholder);
+				final JLabel placeholderLabel = new JLabel(hint);
 				placeholderLabel.setForeground(Color.GRAY);
 				placeholderLabel.setAlignmentX(0.0f);
 				textPanel.add(placeholderLabel, 0);

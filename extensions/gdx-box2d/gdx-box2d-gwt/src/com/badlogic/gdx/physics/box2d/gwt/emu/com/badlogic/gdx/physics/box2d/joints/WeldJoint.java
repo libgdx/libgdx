@@ -47,6 +47,23 @@ public class WeldJoint extends Joint {
 	}
 
 	public float getReferenceAngle () {
-		return 0;
+		return joint.getReferenceAngle();
 	}
+	
+	public float getFrequency () {
+		return joint.getFrequency();
+	}
+	
+	public void setFrequency (float frequencyHz) {
+		joint.setFrequency(frequencyHz);
+	}
+	
+	public float getDampingRatio () {
+		return joint.getDampingRatio();
+	}
+	
+	public void setDampingRatio (float dampingRatio) {
+		joint.setDampingRatio(dampingRatio);
+	}
+	
 }
