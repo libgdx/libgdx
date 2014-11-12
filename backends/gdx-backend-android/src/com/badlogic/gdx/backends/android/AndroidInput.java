@@ -44,6 +44,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -192,13 +193,14 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
-				input.setText(text);
+				input.setHint(hint);
+				input.setText(text);				
 				input.setSingleLine();
 				alert.setView(input);
 				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -217,41 +219,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 							@Override
 							public void run () {
 								listener.canceled();
-							}
-						});
-					}
-				});
-				alert.setOnCancelListener(new OnCancelListener() {
-					@Override
-					public void onCancel (DialogInterface arg0) {
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								listener.canceled();
-							}
-						});
-					}
-				});
-				alert.show();
-			}
-		});
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		handle.post(new Runnable() {
-			public void run () {
-				AlertDialog.Builder alert = new AlertDialog.Builder(context);
-				alert.setTitle(title);
-				final EditText input = new EditText(context);
-				input.setHint(placeholder);
-				input.setSingleLine();
-				alert.setView(input);
-				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-					public void onClick (DialogInterface dialog, int whichButton) {
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								listener.input(input.getText().toString());
 							}
 						});
 					}

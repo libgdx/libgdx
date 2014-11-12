@@ -175,9 +175,8 @@ public class GwtInput implements Input {
 		return justPressedKeys[key];
 	}
 
-	@Override
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		TextInputDialogBox dialog = new TextInputDialogBox(title, text, null);
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		TextInputDialogBox dialog = new TextInputDialogBox(title, text, hint);
 		final TextInputListener capturedListener = listener;
 		dialog.setListener(new TextInputDialogListener() {
 			@Override
@@ -195,28 +194,7 @@ public class GwtInput implements Input {
 			}
 		});
 	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		TextInputDialogBox dialog = new TextInputDialogBox(title, null, placeholder);
-		final TextInputListener capturedListener = listener;
-		dialog.setListener(new TextInputDialogListener() {
-			@Override
-			public void onPositive (String text) {
-				if (capturedListener != null) {
-					capturedListener.input(text);
-				}
-			}
-
-			@Override
-			public void onNegative () {
-				if (capturedListener != null) {
-					capturedListener.canceled();
-				}
-			}
-		});
-	}
-
+	
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}

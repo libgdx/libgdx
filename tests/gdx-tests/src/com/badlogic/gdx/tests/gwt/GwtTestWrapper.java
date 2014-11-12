@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -303,13 +304,8 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void getTextInput (TextInputListener listener, String title, String text) {
-			input.getTextInput(listener, title, text);
-		}
-
-		@Override
-		public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-			input.getPlaceholderTextInput(listener, title, placeholder);
+		public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+			input.getTextInput(listener, title, text, hint);
 		}
 
 		@Override

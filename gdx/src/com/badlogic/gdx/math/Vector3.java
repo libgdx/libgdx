@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,14 +58,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Creates a vector from the given array. The array must have at least 3 elements.
-	 * 
+	 *
 	 * @param values The array */
 	public Vector3 (final float[] values) {
 		this.set(values[0], values[1], values[2]);
 	}
 
 	/** Creates a vector from the given vector and z-component
-	 * 
+	 *
 	 * @param vector The vector
 	 * @param z The z-component */
 	public Vector3 (final Vector2 vector, float z) {
@@ -73,7 +73,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Sets the vector to the given components
-	 * 
+	 *
 	 * @param x The x-component
 	 * @param y The y-component
 	 * @param z The z-component
@@ -91,7 +91,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Sets the components from the array. The array must have at least 3 elements
-	 * 
+	 *
 	 * @param values The array
 	 * @return this vector for chaining */
 	public Vector3 set (final float[] values) {
@@ -99,7 +99,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Sets the components of the given vector and z-component
-	 * 
+	 *
 	 * @param vector The vector
 	 * @param z The z-component
 	 * @return This vector for chaining */
@@ -127,7 +127,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Adds the given value to all three components of the vector.
-	 * 
+	 *
 	 * @param values The value
 	 * @return This vector for chaining */
 	public Vector3 add (float values) {
@@ -140,7 +140,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Subtracts the other vector from this vector.
-	 * 
+	 *
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
 	 * @param z The z-component of the other vector
@@ -150,7 +150,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Subtracts the given value from all components of this vector
-	 * 
+	 *
 	 * @param value The value
 	 * @return This vector for chaining */
 	public Vector3 sub (float value) {
@@ -367,7 +367,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	/** Multiplies this vector by the given matrix dividing by w, assuming the fourth (w) component of the vector is 1. This is
 	 * mostly used to project/unproject vectors via a perspective projection matrix.
-	 * 
+	 *
 	 * @param matrix The matrix.
 	 * @return This vector for chaining */
 	public Vector3 prj (final Matrix4 matrix) {
@@ -379,7 +379,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Multiplies this vector by the first three columns of the matrix, essentially only applying rotation and scaling.
-	 * 
+	 *
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 rot (final Matrix4 matrix) {
@@ -413,7 +413,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Rotates this vector by the given angle in degrees around the given axis.
-	 * 
+	 *
 	 * @param degrees the angle in degrees
 	 * @param axisX the x-component of the axis
 	 * @param axisY the y-component of the axis
@@ -424,7 +424,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Rotates this vector by the given angle in radians around the given axis.
-	 * 
+	 *
 	 * @param radians the angle in radians
 	 * @param axisX the x-component of the axis
 	 * @param axisY the y-component of the axis
@@ -435,7 +435,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Rotates this vector by the given angle in degrees around the given axis.
-	 * 
+	 *
 	 * @param axis the axis
 	 * @param degrees the angle in degrees
 	 * @return This vector for chaining */
@@ -445,7 +445,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Rotates this vector by the given angle in radians around the given axis.
-	 * 
+	 *
 	 * @param axis the axis
 	 * @param radians the angle in radians
 	 * @return This vector for chaining */
@@ -478,12 +478,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public boolean isOnLine (Vector3 other, float epsilon) {
 		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= epsilon;
 	}
-	
+
 	@Override
 	public boolean isOnLine (Vector3 other) {
 		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= MathUtils.FLOAT_ROUNDING_ERROR;
 	}
-	
+
 	@Override
 	public boolean isCollinear (Vector3 other, float epsilon) {
 		return isOnLine(other, epsilon) && hasSameDirection(other);
@@ -534,10 +534,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
 	}
-	
+
 	/** Spherically interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is
 	 * stored in this vector.
-	 * 
+	 *
 	 * @param target The target vector
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */
@@ -561,22 +561,50 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
 
+    @Override
 	public String toString () {
 		return "[" + x + ", " + y + ", " + z + "]";
 	}
 
+
 	@Override
 	public Vector3 limit (float limit) {
-		if (len2() > limit * limit) nor().scl(limit);
+		return limit2(limit * limit);
+	}
+
+	@Override
+	public Vector3 limit2 (float limit2) {
+		float len2 = len2();
+		if (len2 > limit2) {
+			scl(limit2 / len2);
+		}
 		return this;
 	}
 
 	@Override
+	public Vector3 setLength ( float len ) {
+		return setLength2( len * len );
+	}
+
+	@Override
+	public Vector3 setLength2 ( float len2 ) {
+		float oldLen2 = len2();
+		return ( oldLen2 == 0 || oldLen2 == len2 )
+				? this
+				: scl((float) Math.sqrt( len2 / oldLen2 ));
+	}
+
+	@Override
 	public Vector3 clamp (float min, float max) {
-		final float l2 = len2();
-		if (l2 == 0f) return this;
-		if (l2 > max * max) return nor().scl(max);
-		if (l2 < min * min) return nor().scl(min);
+		final float len2 = len2();
+		if (len2 == 0f)
+			return this;
+		float max2 = max * max;
+		if (len2 > max2)
+			return scl((float)Math.sqrt(max2 / len2));
+		float min2 = min * min;
+		if (len2 < min2)
+			return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 

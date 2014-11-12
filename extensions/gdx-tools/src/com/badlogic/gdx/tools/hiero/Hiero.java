@@ -118,6 +118,7 @@ public class Hiero extends JFrame {
 	List<EffectPanel> effectPanels = new ArrayList<EffectPanel>();
 	Preferences prefs;
 	ColorEffect colorEffect;
+	boolean batchMode = false;
 
 	JScrollPane appliedEffectsScroll;
 	JPanel appliedEffectsPanel;
@@ -163,7 +164,7 @@ public class Hiero extends JFrame {
 	File saveBmFontFile;
 	String lastSaveFilename = "", lastSaveBMFilename = "", lastOpenFilename = "";
 
-	public Hiero () {
+	public Hiero(String [] args) {
 		super("Hiero v3.0 - Bitmap Font Tool");
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
@@ -191,6 +192,8 @@ public class Hiero extends JFrame {
 		effectsListModel.addElement(new DistanceFieldEffect());
 		new EffectPanel(colorEffect);
 
+		parseArgs(args);
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
@@ -198,6 +201,7 @@ public class Hiero extends JFrame {
 			}
 		});
 
+		updateFontSelector();
 		setVisible(true);
 	}
 
@@ -213,37 +217,70 @@ public class Hiero extends JFrame {
 		sampleNeheButton.doClick();
 	}
 
-	void updateFont () {
-		updateFont(false);
+	private void parseArgs (String[] args) {
+		float scale = 1f;
+
+		for (int i = 0; i < args.length; i++) {
+			final String param = args[i];
+			final boolean more = i < args.length - 1;
+
+			if (param.equals("-b") || param.equals("--batch")) {
+				batchMode = true;
+			} else if (more && (param.equals("-s") || param.equals("--scale"))) {
+				scale = Float.parseFloat(args[++i]);
+			} else if (more && (param.equals("-i") || param.equals("--input"))) {
+				File f = new File(args[++i]);
+				open(f);
+				fontFileRadio.setText("");
+				updateFont();
+			} else if (more && (param.equals("-o") || param.equals("--output"))) {
+				File f = new File(args[++i]);
+				saveBm(f);
+			} else {
+				System.err.println("Unknown parameter: " + param);
+				System.exit(3);
+			}
+		}
+
+		// update scale:
+		fontSizeSpinner.setValue((int)(0.5f + Math.max(4, scale * ((Integer)fontSizeSpinner.getValue()))));
 	}
 
-	private void updateFont (boolean ignoreFileText) {
-		UnicodeFont unicodeFont;
+	void updateFontSelector () {
+		final boolean use2 = fontFileRadio.isSelected();
+		fontList.setEnabled(!use2);
+		fontFileText.setEnabled(use2);
+		browseButton.setEnabled(use2);
+	}
+
+	void updateFont () {
+		final boolean useFont2 = fontFileRadio.isSelected();
+		UnicodeFont unicodeFont = null;
 
 		int fontSize = ((Integer)fontSizeSpinner.getValue()).intValue();
 
-		File file = new File(fontFileText.getText());
-		if (!ignoreFileText && file.exists() && file.isFile()) {
-			// Load from file.
-			fontFileRadio.setSelected(true);
-			fontList.setEnabled(false);
-			systemFontRadio.setEnabled(false);
-			try {
-				unicodeFont = new UnicodeFont(fontFileText.getText(), fontSize, boldCheckBox.isSelected(),
-					italicCheckBox.isSelected());
-			} catch (Throwable ex) {
-				ex.printStackTrace();
-				updateFont(true);
-				return;
+		
+		 
+		if (useFont2) {
+			File file = new File(fontFileText.getText());
+			if (file.exists() && file.isFile()) {
+				// Load from file.
+				try {
+					unicodeFont = new UnicodeFont(fontFileText.getText(), fontSize, boldCheckBox.isSelected(),
+						italicCheckBox.isSelected());
+				} catch (Throwable ex) {
+					ex.printStackTrace();
+					fontFileRadio.setSelected(false);
+				}
 			}
-		} else {
+		}
+		
+		if(unicodeFont == null) {
 			// Load from java.awt.Font (kerning not available!).
-			fontList.setEnabled(true);
-			systemFontRadio.setEnabled(true);
-			systemFontRadio.setSelected(true);
 			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
 				italicCheckBox.isSelected());
 		}
+
 		unicodeFont.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
 		unicodeFont.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
 		unicodeFont.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
@@ -264,12 +301,19 @@ public class Hiero extends JFrame {
 		sampleTextPane.setFont(unicodeFont.getFont().deriveFont((float)size));
 
 		this.newUnicodeFont = unicodeFont;
+		updateFontSelector();
+	}
+
+	void saveBm (File file) {
+		saveBmFontFile = file;
 	}
 
 	void save (File file) throws IOException {
 		HieroSettings settings = new HieroSettings();
 		settings.setFontName((String)fontList.getSelectedValue());
 		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
+		settings.setFont2File(fontFileText.getText());
+	settings.setFont2Active(fontFileRadio.isSelected());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
 		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
@@ -310,7 +354,16 @@ public class Hiero extends JFrame {
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
 		}
+		
+		final String font2 = settings.getFont2File();
+		if (font2.length() > 0)
+			fontFileText.setText(font2);
+		else
+			fontFileText.setText(prefs.get("font.file", ""));
 
+		fontFileRadio.setSelected(settings.isFont2Active());
+		systemFontRadio.setSelected(!settings.isFont2Active());
+ 
 		for (Iterator iter = settings.getEffects().iterator(); iter.hasNext();) {
 			ConfigurableEffect settingsEffect = (ConfigurableEffect)iter.next();
 			for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
@@ -414,11 +467,15 @@ public class Hiero extends JFrame {
 			}
 		});
 
-		fontFileRadio.addActionListener(new ActionListener() {
+		final ActionListener al = new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
-				if (fontList.isEnabled()) systemFontRadio.setSelected(true);
+				updateFontSelector();
+				updateFont();
 			}
-		});
+		};
+		
+		systemFontRadio.addActionListener(al);
+		fontFileRadio.addActionListener(al);
 
 		browseButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
@@ -546,7 +603,7 @@ public class Hiero extends JFrame {
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				lastSaveBMFilename = fileName;
-				saveBmFontFile = new File(dialog.getDirectory(), fileName);
+				saveBm(new File(dialog.getDirectory(), fileName));
 			}
 		});
 
@@ -1297,18 +1354,6 @@ public class Hiero extends JFrame {
 				glyphsTotalLabel.setText(String.valueOf(glyphCount));
 			}
 
-			if (saveBmFontFile != null) {
-				try {
-					BMFontUtil bmFont = new BMFontUtil(unicodeFont);
-					bmFont.save(saveBmFontFile);
-				} catch (Throwable ex) {
-					System.out.println("Error saving BMFont files: " + saveBmFontFile.getAbsolutePath());
-					ex.printStackTrace();
-				} finally {
-					saveBmFontFile = null;
-				}
-			}
-
 			if (unicodeFont == null) return;
 
 			try {
@@ -1363,6 +1408,22 @@ public class Hiero extends JFrame {
 					glEnd();
 				}
 			}
+
+			if (saveBmFontFile != null) {
+				try {
+					BMFontUtil bmFont = new BMFontUtil(unicodeFont);
+					bmFont.save(saveBmFontFile);
+
+					if (batchMode) {
+						System.exit(0);
+					}
+				} catch (Throwable ex) {
+					System.out.println("Error saving BMFont files: " + saveBmFontFile.getAbsolutePath());
+					ex.printStackTrace();
+				} finally {
+					saveBmFontFile = null;
+				}
+			}
 		}
 
 		@Override
@@ -1378,7 +1439,7 @@ public class Hiero extends JFrame {
 		}
 	}
 
-	public static void main (String[] args) throws Exception {
+	public static void main (final String[] args) throws Exception {
 // LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
 // for (int i = 0, n = lookAndFeels.length; i < n; i++) {
 // if ("Nimbus".equals(lookAndFeels[i].getName())) {
@@ -1393,7 +1454,7 @@ public class Hiero extends JFrame {
 
 			@Override
 			public void run () {
-				new Hiero();
+				new Hiero(args);
 			}
 		});
 	}
