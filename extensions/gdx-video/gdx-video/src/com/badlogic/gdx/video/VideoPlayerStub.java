@@ -14,15 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.video;
 
 import java.io.FileNotFoundException;
 
 import com.badlogic.gdx.files.FileHandle;
 
-public class VideoPlayerStub
-implements VideoPlayer {
+class VideoPlayerStub
+		implements VideoPlayer {
 
 	@Override
 	public boolean play(FileHandle file) throws FileNotFoundException {
