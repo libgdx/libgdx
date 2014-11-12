@@ -575,8 +575,10 @@ public class TexturePacker {
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
+			grid = settings.grid;
 			scale = settings.scale;
 			scaleSuffix = settings.scaleSuffix;
+			atlasExtension = settings.atlasExtension;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
