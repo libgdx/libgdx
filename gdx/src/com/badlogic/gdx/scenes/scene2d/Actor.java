@@ -70,7 +70,7 @@ public class Actor {
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 
-	static boolean actionsChanged;
+	protected static boolean actionsChanged;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
