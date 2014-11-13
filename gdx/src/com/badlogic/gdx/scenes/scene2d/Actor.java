@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import static com.badlogic.gdx.scenes.scene2d.utils.Align.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -70,8 +71,6 @@ public class Actor {
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 
-	static boolean actionsChanged;
-
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
 	 * This draw method} is convenient to draw a rotated and scaled TextureRegion. {@link Batch#begin()} has already been called on
@@ -90,7 +89,8 @@ public class Actor {
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
 		if (actions.size > 0) {
-			actionsChanged = true;
+			Stage stage = getStage();
+			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 			for (int i = 0; i < actions.size; i++) {
 				Action action = actions.get(i);
 				if (action.act(delta) && i < actions.size) {
@@ -256,7 +256,6 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
-		actionsChanged = true;
 	}
 
 	public void removeAction (Action action) {

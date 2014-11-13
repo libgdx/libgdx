@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -268,10 +269,12 @@ public class ScrollPane extends WidgetGroup {
 		super.act(delta);
 
 		boolean panning = flickScrollListener.getGestureDetector().isPanning();
+		boolean animating = false;
 
 		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
 			fadeDelay -= delta;
 			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - delta);
+			animating = true;
 		}
 
 		if (flingTimer > 0) {
@@ -293,6 +296,8 @@ public class ScrollPane extends WidgetGroup {
 				velocityX = 0;
 				velocityY = 0;
 			}
+
+			animating = true;
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
@@ -301,12 +306,14 @@ public class ScrollPane extends WidgetGroup {
 					visualScrollX(Math.min(amountX, visualAmountX + Math.max(200 * delta, (amountX - visualAmountX) * 7 * delta)));
 				else
 					visualScrollX(Math.max(amountX, visualAmountX - Math.max(200 * delta, (visualAmountX - amountX) * 7 * delta)));
+				animating = true;
 			}
 			if (visualAmountY != amountY) {
 				if (visualAmountY < amountY)
 					visualScrollY(Math.min(amountY, visualAmountY + Math.max(200 * delta, (amountY - visualAmountY) * 7 * delta)));
 				else
 					visualScrollY(Math.max(amountY, visualAmountY - Math.max(200 * delta, (visualAmountY - amountY) * 7 * delta)));
+				animating = true;
 			}
 		} else {
 			if (visualAmountX != amountX) visualScrollX(amountX);
@@ -320,12 +327,14 @@ public class ScrollPane extends WidgetGroup {
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
 						* delta;
 					if (amountX > 0) scrollX(0);
+					animating = true;
 				} else if (amountX > maxX) {
 					resetFade();
 					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX)
 						/ overscrollDistance)
 						* delta;
 					if (amountX < maxX) scrollX(maxX);
+					animating = true;
 				}
 			}
 			if (overscrollY && scrollY) {
@@ -334,14 +343,21 @@ public class ScrollPane extends WidgetGroup {
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
 						* delta;
 					if (amountY > 0) scrollY(0);
+					animating = true;
 				} else if (amountY > maxY) {
 					resetFade();
 					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY)
 						/ overscrollDistance)
 						* delta;
 					if (amountY < maxY) scrollY(maxY);
+					animating = true;
 				}
 			}
+		}
+
+		if (animating) {
+			Stage stage = getStage();
+			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -777,11 +793,11 @@ public class ScrollPane extends WidgetGroup {
 		scrollTo(x, y, width, height, false, false);
 	}
 
-	/** Sets the scroll offset so the specified rectangle is fully in view, and optionally centered vertically and/or horizontally, if possible.
-	 * Coordinates are in the scroll pane widget's coordinate system. */
-	public void scrollTo(float x, float y, float width, float height, boolean centerHorizontal, boolean centerVertical) {
+	/** Sets the scroll offset so the specified rectangle is fully in view, and optionally centered vertically and/or horizontally,
+	 * if possible. Coordinates are in the scroll pane widget's coordinate system. */
+	public void scrollTo (float x, float y, float width, float height, boolean centerHorizontal, boolean centerVertical) {
 		float amountX = this.amountX;
-		if(centerHorizontal) {
+		if (centerHorizontal) {
 			amountX = x - areaWidth / 2 + width / 2;
 		} else {
 			if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
@@ -790,7 +806,7 @@ public class ScrollPane extends WidgetGroup {
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
 		float amountY = this.amountY;
-		if(centerVertical) {
+		if (centerVertical) {
 			amountY = maxY - y + areaHeight / 2 - height / 2;
 		} else {
 			if (amountY > maxY - y - height + areaHeight) amountY = maxY - y - height + areaHeight;

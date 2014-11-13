@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -98,7 +99,11 @@ public class ProgressBar extends Widget implements Disableable {
 	@Override
 	public void act (float delta) {
 		super.act(delta);
-		animateTime -= delta;
+		if (animateTime > 0) {
+			animateTime -= delta;
+			Stage stage = getStage();
+			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
+		}
 	}
 
 	@Override
