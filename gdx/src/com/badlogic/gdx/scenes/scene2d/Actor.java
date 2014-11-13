@@ -89,7 +89,6 @@ public class Actor {
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
 		if (actions.size > 0) {
-			Stage stage = getStage();
 			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 			for (int i = 0; i < actions.size; i++) {
 				Action action = actions.get(i);
@@ -256,6 +255,8 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
+
+		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
 
 	public void removeAction (Action action) {
