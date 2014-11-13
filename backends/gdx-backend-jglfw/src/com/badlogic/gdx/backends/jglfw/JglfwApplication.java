@@ -203,11 +203,14 @@ public class JglfwApplication implements Application {
 	protected void frame () {
 		if (!running) return;
 
-		if (executeRunnables()) graphics.requestRendering();
+		boolean shouldRender = false;
+
+		if (executeRunnables()) shouldRender = true;
 
 		if (!running) return;
 
 		input.update();
+		shouldRender |= graphics.shouldRender();
 
 		long frameStartTime = System.nanoTime();
 		int targetFPS = (graphics.isHidden() || graphics.isMinimized()) ? hiddenFPS : //
@@ -219,7 +222,10 @@ public class JglfwApplication implements Application {
 		} else {
 			if (isPaused) listener.resume();
 			isPaused = false;
-			if (graphics.shouldRender()) render(frameStartTime);
+			if (shouldRender)
+				render(frameStartTime);
+			else
+				targetFPS = backgroundFPS;
 		}
 
 		if (targetFPS != 0) {
