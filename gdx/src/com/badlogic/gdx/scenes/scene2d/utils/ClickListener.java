@@ -147,7 +147,7 @@ public class ClickListener extends InputListener {
 	public boolean isVisualPressed () {
 		if (pressed) return true;
 		if (visualPressedTime <= 0) return false;
-		if (visualPressedTime > TimeUtils.millis() && Gdx.graphics.isContinuousRendering()) return true;
+		if (visualPressedTime > TimeUtils.millis()) return true;
 		visualPressedTime = 0;
 		return false;
 	}
