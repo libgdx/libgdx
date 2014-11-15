@@ -25,6 +25,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -37,10 +39,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 /** @author Nathan Sweet */
@@ -414,6 +419,7 @@ public class TexturePacker {
 		private boolean isPatch;
 		private BufferedImage image;
 		private File file;
+		int fileImageIndex;
 		int score1, score2;
 
 		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
@@ -440,10 +446,21 @@ public class TexturePacker {
 			if (image != null) return image;
 
 			BufferedImage image;
+			ImageReader imageReader = null;
 			try {
-				image = ImageIO.read(file);
+				if (fileImageIndex==0)
+					image = ImageIO.read(file);
+				else {
+					ImageInputStream inputStream = ImageIO.createImageInputStream(file);
+					imageReader = ImageIO.getImageReaders(inputStream).next();
+					imageReader.setInput(inputStream);
+					image = imageReader.read(fileImageIndex);
+				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error reading image: " + file, ex);
+			} finally {
+				if (imageReader != null)
+					imageReader.setInput(null);
 			}
 			if (image == null) throw new RuntimeException("Unable to read image: " + file);
 			String name = this.name;
@@ -483,6 +500,7 @@ public class TexturePacker {
 			score1 = rect.score1;
 			score2 = rect.score2;
 			file = rect.file;
+			fileImageIndex = rect.fileImageIndex;
 			isPatch = rect.isPatch;
 		}
 
@@ -524,6 +542,7 @@ public class TexturePacker {
 		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
 		public Format format = Format.RGBA8888;
 		public boolean alias = true;
+		public float maxAnimationDelayError = 1/60f;
 		public String outputFormat = "png";
 		public float jpegQuality = 0.9f;
 		public boolean ignoreBlankImages = true;
@@ -560,6 +579,7 @@ public class TexturePacker {
 			stripWhitespaceX = settings.stripWhitespaceX;
 			stripWhitespaceY = settings.stripWhitespaceY;
 			alias = settings.alias;
+			maxAnimationDelayError = settings.maxAnimationDelayError;
 			format = settings.format;
 			jpegQuality = settings.jpegQuality;
 			outputFormat = settings.outputFormat;

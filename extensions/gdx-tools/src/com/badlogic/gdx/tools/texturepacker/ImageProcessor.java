@@ -20,6 +20,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -31,12 +33,22 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
 
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
@@ -47,6 +59,8 @@ public class ImageProcessor {
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 	private float scale = 1;
+	
+	private Rect tmpMostRecentAliasedRect; //used for addImagesWithDelays method only
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public ImageProcessor (File rootDir, Settings settings) {
@@ -64,13 +78,6 @@ public class ImageProcessor {
 
 	/** The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true. */
 	public void addImage (File file) {
-		BufferedImage image;
-		try {
-			image = ImageIO.read(file);
-		} catch (IOException ex) {
-			throw new RuntimeException("Error reading image: " + file, ex);
-		}
-		if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
 		String name = file.getAbsolutePath().replace('\\', '/');
 
@@ -83,10 +90,67 @@ public class ImageProcessor {
 		// Strip extension.
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
+		
+		if (isAnimated(file)){
+			ImageReader imageReader = null;
+			try {
+				ImageInputStream inputStream = ImageIO.createImageInputStream(file);
+				imageReader = ImageIO.getImageReaders(inputStream).next();
+				imageReader.setInput(inputStream);
+				int numImages = imageReader.getNumImages(true);
+				LinkedHashMap<BufferedImage, Float> images = new LinkedHashMap<BufferedImage, Float>(numImages);
+				for (int i = 0; i < numImages; i++) {
+					IIOMetadata imageMetaData =  imageReader.getImageMetadata(i);
 
-		Rect rect = addImage(image, name);
-		if (rect != null && settings.limitMemory) rect.unloadImage(file);
+					String metaFormatName = imageMetaData.getNativeMetadataFormatName();
+					IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
+					
+					//TODO add .apng support.
+					IIOMetadataNode graphicsControlExtensionNode = getMetaDataNode(root, "GraphicControlExtension");
+					float frameDelay = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime"))/100f;
+					BufferedImage image = imageReader.read(i);
+	            
+					images.put(image, frameDelay);
+				}
+				addImagesWithDelays(file, images, name);
+			} catch (IOException ex) {
+				throw new RuntimeException("Error reading image: " + file, ex);
+			} finally {
+				if (imageReader != null)
+					imageReader.setInput(null);
+			}
+         
+		} else { //Static image
+			BufferedImage image;
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException ex) {
+				throw new RuntimeException("Error reading image: " + file, ex);
+			}
+			if (image == null) throw new RuntimeException("Unable to read image: " + file);
+
+
+			Rect rect = addImage(image, name);
+			if (rect != null && settings.limitMemory) rect.unloadImage(file);
+		}
+		
 	}
+	
+	private static boolean isAnimated(File file){
+		return file.getName().endsWith(".gif") || file.getName().endsWith(".GIF"); //FIXME
+	}
+	
+	private static IIOMetadataNode getMetaDataNode(IIOMetadataNode rootNode, String nodeName) {
+      int nNodes = rootNode.getLength();
+      for (int i = 0; i < nNodes; i++) {
+          if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)== 0) {
+              return((IIOMetadataNode) rootNode.item(i));
+          }
+      }
+      IIOMetadataNode node = new IIOMetadataNode(nodeName);
+      rootNode.appendChild(node);
+      return(node);
+  }
 
 	/** The image will be kept in-memory during packing.
 	 * @see #addImage(File) */
@@ -104,6 +168,7 @@ public class ImageProcessor {
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
 				existing.aliases.add(new Alias(rect));
+				tmpMostRecentAliasedRect = existing;
 				return null;
 			}
 			crcs.put(crc, rect);
@@ -111,6 +176,67 @@ public class ImageProcessor {
 
 		rects.add(rect);
 		return rect;
+	}
+	
+	/** 
+	 * Add a group of images representing frames of animation, with each image repeated (aliased) as many times 
+	 * as necessary to achieve a given animation delay per frame of animation. The delay is approximate, based 
+	 * on the maxAnimationDelayError setting. The repeated images are aliased regardless of the alias setting,
+	 * but are compared against other images only if aliasing is set. 
+	 * 
+	 * The images won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
+	 * 
+	 * @param images The images, in order, mapped to their respective time delays.
+	 * @author CypherDare */
+	public List<Rect> addImagesWithDelays (File file, LinkedHashMap<BufferedImage, Float> images, String name){
+		
+		List<Rect> newRects = new ArrayList<Rect>(images.size());
+		
+		Float[] delays = new Float[images.size()];
+		float delay = FloatingPointGCD.findFloatingPointGCD(images.values().toArray(delays), settings.maxAnimationDelayError);
+		System.out.println("Animation \"" + name + "\" uses delay of " + delay);
+		
+		//Cannot ignore blank images in an animation. Turn off setting while the animation is processed.
+		boolean ignoreBlankImages = settings.ignoreBlankImages;
+		settings.ignoreBlankImages = false;
+		
+		//Can't add animation with indexing. Turn on setting while the animation is processed.
+		boolean useIndexes = settings.useIndexes;
+		settings.useIndexes = true;
+		
+		int frameIndex = -1;
+		int fileImageIndex = 0;
+		for (Map.Entry<BufferedImage, Float> entry : images.entrySet()){
+			int count = Math.round(entry.getValue() / delay);
+			Rect rect = addImage(entry.getKey(), name + "_" + ++frameIndex);
+			if (rect != null) {
+				if(settings.limitMemory) rect.unloadImage(file);
+				rect.fileImageIndex = fileImageIndex;
+			}
+			fileImageIndex++;
+			count--;
+			if (count>0 && rect==null){ 
+				//Became an alias. Need to reference existing for additional aliases
+				rect = tmpMostRecentAliasedRect;
+			}
+			
+			//Add remaining copies of frame as aliases
+			while (count>0){
+				Alias alias = new Alias(rect);
+				alias.index = ++frameIndex;
+				rect.aliases.add(alias);
+				count--;
+			}
+			newRects.add(rect);
+			
+		}
+		
+		//cleanup
+		settings.ignoreBlankImages = ignoreBlankImages;
+		settings.useIndexes = useIndexes;
+		tmpMostRecentAliasedRect = null; 
+		
+		return newRects;
 	}
 
 	public void setScale (float scale) {
