@@ -105,7 +105,6 @@ public class ImageProcessor {
 					String metaFormatName = imageMetaData.getNativeMetadataFormatName();
 					IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
 					
-					//TODO add .apng support.
 					IIOMetadataNode graphicsControlExtensionNode = getMetaDataNode(root, "GraphicControlExtension");
 					float frameDelay = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime"))/100f;
 					BufferedImage image = imageReader.read(i);
