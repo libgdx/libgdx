@@ -52,6 +52,7 @@ import javax.imageio.stream.ImageInputStream;
 
 public class ImageProcessor {
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
+	static final float GIF_DELAYTIME_TO_SECONDS = 0.01f;
 
 	private String rootPath;
 	private final Settings settings;
@@ -105,7 +106,8 @@ public class ImageProcessor {
 					IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
 					
 					IIOMetadataNode graphicsControlExtensionNode = getMetaDataNode(root, "GraphicControlExtension");
-					float frameDelay = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime"))/100f;
+					float frameDelay = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime"))
+						* GIF_DELAYTIME_TO_SECONDS;
 					BufferedImage image = imageReader.read(i);
 	            
 					images.put(image, frameDelay);
@@ -187,7 +189,7 @@ public class ImageProcessor {
 	 * The images won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
 	 * 
 	 * @param images The images, in order, mapped to their respective time delays.
-	 * @author CypherDare */
+	 * @author Darren Keese */
 	public void addImagesWithDelays (File file, LinkedHashMap<BufferedImage, Float> images, String name){
 		if (images.size()==1){
 			//Don't treat as animation
@@ -195,9 +197,14 @@ public class ImageProcessor {
 			if (rect != null && settings.limitMemory) rect.unloadImage(file);
 		}
 		
+		boolean duplicateFramesForVariableDelay = (settings.maxAnimationDelayError > 0);
+		
 		Float[] delays = new Float[images.size()];
-		float delay = FloatingPointGCD.findFloatingPointGCD(images.values().toArray(delays), settings.maxAnimationDelayError);
-		System.out.println("Animation \"" + name + "\" uses delay of " + delay);
+		float delay = duplicateFramesForVariableDelay ? 
+			FloatingPointGCD.findFloatingPointGCD(images.values().toArray(delays), settings.maxAnimationDelayError)
+			: 1;
+		if (duplicateFramesForVariableDelay)
+			System.out.println("Animation \"" + name + "\" uses delay of " + delay);
 		
 		//Cannot ignore blank images in an animation. Turn off setting while the animation is processed.
 		boolean ignoreBlankImages = settings.ignoreBlankImages;
@@ -210,7 +217,7 @@ public class ImageProcessor {
 		int frameIndex = -1;
 		int fileImageIndex = 0;
 		for (Map.Entry<BufferedImage, Float> entry : images.entrySet()){
-			int count = Math.round(entry.getValue() / delay);
+			int count = duplicateFramesForVariableDelay ? Math.round(entry.getValue() / delay) : 1;
 			Rect rect = addImage(entry.getKey(), name + "_" + ++frameIndex);
 			if (rect != null) {
 				if(settings.limitMemory) rect.unloadImage(file);
