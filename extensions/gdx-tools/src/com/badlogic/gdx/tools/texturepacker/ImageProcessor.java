@@ -51,7 +51,6 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 
 public class ImageProcessor {
-	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
 	private String rootPath;
@@ -91,7 +90,7 @@ public class ImageProcessor {
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
 		
-		if (isAnimated(file)){
+		if (isGif(file)){
 			ImageReader imageReader = null;
 			try {
 				ImageInputStream inputStream = ImageIO.createImageInputStream(file);
@@ -135,8 +134,8 @@ public class ImageProcessor {
 		
 	}
 	
-	private static boolean isAnimated(File file){
-		return file.getName().endsWith(".gif") || file.getName().endsWith(".GIF"); //FIXME
+	private static boolean isGif(File file){
+		return file.getName().toLowerCase().endsWith(".gif");
 	}
 	
 	private static IIOMetadataNode getMetaDataNode(IIOMetadataNode rootNode, String nodeName) {
@@ -183,13 +182,18 @@ public class ImageProcessor {
 	 * on the maxAnimationDelayError setting. The repeated images are aliased regardless of the alias setting,
 	 * but are compared against other images only if aliasing is set. 
 	 * 
+	 * If only a single image is provided, the delay is ignored and it is treated as any static image.
+	 * 
 	 * The images won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
 	 * 
 	 * @param images The images, in order, mapped to their respective time delays.
 	 * @author CypherDare */
-	public List<Rect> addImagesWithDelays (File file, LinkedHashMap<BufferedImage, Float> images, String name){
-		
-		List<Rect> newRects = new ArrayList<Rect>(images.size());
+	public void addImagesWithDelays (File file, LinkedHashMap<BufferedImage, Float> images, String name){
+		if (images.size()==1){
+			//Don't treat as animation
+			Rect rect = addImage(images.keySet().iterator().next(), name);
+			if (rect != null && settings.limitMemory) rect.unloadImage(file);
+		}
 		
 		Float[] delays = new Float[images.size()];
 		float delay = FloatingPointGCD.findFloatingPointGCD(images.values().toArray(delays), settings.maxAnimationDelayError);
@@ -199,7 +203,7 @@ public class ImageProcessor {
 		boolean ignoreBlankImages = settings.ignoreBlankImages;
 		settings.ignoreBlankImages = false;
 		
-		//Can't add animation with indexing. Turn on setting while the animation is processed.
+		//Cannot add animation without indexing. Turn on setting while the animation is processed.
 		boolean useIndexes = settings.useIndexes;
 		settings.useIndexes = true;
 		
@@ -215,18 +219,17 @@ public class ImageProcessor {
 			fileImageIndex++;
 			count--;
 			if (count>0 && rect==null){ 
-				//Became an alias. Need to reference existing for additional aliases
+				//Became an alias. Need to reference existing for additional aliases.
 				rect = tmpMostRecentAliasedRect;
 			}
 			
-			//Add remaining copies of frame as aliases
+			//Add remaining copies of frame as aliases, regardless of alias setting
 			while (count>0){
 				Alias alias = new Alias(rect);
 				alias.index = ++frameIndex;
 				rect.aliases.add(alias);
 				count--;
 			}
-			newRects.add(rect);
 			
 		}
 		
@@ -234,8 +237,6 @@ public class ImageProcessor {
 		settings.ignoreBlankImages = ignoreBlankImages;
 		settings.useIndexes = useIndexes;
 		tmpMostRecentAliasedRect = null; 
-		
-		return newRects;
 	}
 
 	public void setScale (float scale) {
@@ -382,7 +383,7 @@ public class ImageProcessor {
 			if (settings.ignoreBlankImages)
 				return null;
 			else
-				return new Rect(emptyImage, 0, 0, 1, 1, false);
+				return Rect.newEmptyRect();
 		}
 		return new Rect(source, left, top, newWidth, newHeight, false);
 	}

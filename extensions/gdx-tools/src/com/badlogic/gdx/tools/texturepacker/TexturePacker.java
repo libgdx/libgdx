@@ -402,6 +402,8 @@ public class TexturePacker {
 
 	/** @author Nathan Sweet */
 	static public class Rect {
+		static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+		
 		public String name;
 		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
 		public int x, y;
@@ -417,6 +419,7 @@ public class TexturePacker {
 		private BufferedImage image;
 		private File file;
 		int fileImageIndex;
+		private boolean isEmpty = false;
 		int score1, score2;
 
 		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
@@ -432,11 +435,18 @@ public class TexturePacker {
 			height = newHeight;
 			this.isPatch = isPatch;
 		}
+		
+		public static Rect newEmptyRect () {
+			Rect rect = new Rect(emptyImage, 0, 0, 1, 1, false);
+			rect.isEmpty = true;
+			return rect;
+		}
 
 		/** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
 		public void unloadImage (File file) {
 			this.file = file;
-			image = null;
+			if (!isEmpty) //Remember empty image to avoid re-processing.
+				image = null; 
 		}
 
 		public BufferedImage getImage (ImageProcessor imageProcessor) {
@@ -498,6 +508,7 @@ public class TexturePacker {
 			score2 = rect.score2;
 			file = rect.file;
 			fileImageIndex = rect.fileImageIndex;
+			isEmpty = rect.isEmpty;
 			isPatch = rect.isPatch;
 		}
 
