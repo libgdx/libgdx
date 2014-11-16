@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.video;
 
 import java.io.FileNotFoundException;
@@ -52,7 +51,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 public class VideoPlayerAndroid
-implements VideoPlayer, OnFrameAvailableListener {
+		implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -97,6 +96,7 @@ implements VideoPlayer, OnFrameAvailableListener {
 
 	VideoSizeListener sizeListener;
 	CompletionListener completionListener;
+	private int primitiveType = GL20.GL_TRIANGLES;
 
 	public VideoPlayerAndroid() {
 		this(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -118,9 +118,10 @@ implements VideoPlayer, OnFrameAvailableListener {
 		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 	}
 
-	public VideoPlayerAndroid(Camera cam, Mesh mesh) {
+	public VideoPlayerAndroid(Camera cam, Mesh mesh, int primitiveType) {
 		this.cam = cam;
 		this.mesh = mesh;
+		this.primitiveType = primitiveType;
 		customMesh = true;
 		setupRenderTexture();
 	}
@@ -182,7 +183,7 @@ implements VideoPlayer, OnFrameAvailableListener {
 				player.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 			} else {
 				player.setDataSource(file.file()
-				                     .getAbsolutePath());
+											.getAbsolutePath());
 			}
 			player.setSurface(new Surface(videoTexture));
 			player.prepareAsync();
@@ -220,7 +221,7 @@ implements VideoPlayer, OnFrameAvailableListener {
 		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0]);
 		shader.begin();
 		shader.setUniformMatrix(UNIFORM_CAMERATRANSFORM, cam.combined);
-		mesh.render(shader, GL20.GL_TRIANGLES);
+		mesh.render(shader, primitiveType);
 		shader.end();
 
 		return !done;

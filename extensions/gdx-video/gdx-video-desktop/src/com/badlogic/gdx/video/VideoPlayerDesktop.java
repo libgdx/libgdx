@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.video;
 
 import java.io.BufferedInputStream;
@@ -45,7 +44,7 @@ import com.badlogic.gdx.video.VideoDecoder.VideoDecoderBuffers;
  *
  */
 public class VideoPlayerDesktop
-implements VideoPlayer {
+		implements VideoPlayer {
 
 	//@formatter:off
 	private static final String vertexShader =
@@ -95,6 +94,7 @@ implements VideoPlayer {
 	FileHandle currentFile;
 
 	boolean playing = false;
+	private int primitiveMode = GL20.GL_TRIANGLES;
 
 	public VideoPlayerDesktop() {
 		this(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -109,9 +109,10 @@ implements VideoPlayer {
 		cam = viewport.getCamera();
 	}
 
-	public VideoPlayerDesktop(Camera cam, Mesh mesh) {
+	public VideoPlayerDesktop(Camera cam, Mesh mesh, int renderMode) {
 		this.cam = cam;
 		this.mesh = mesh;
+		this.primitiveMode = renderMode;
 		customMesh = true;
 	}
 
@@ -135,8 +136,8 @@ implements VideoPlayer {
 			stop();
 		}
 
-		inputStream = file.read(1024*1024);
-		fileChannel = Channels.newChannel(inputStream);;
+		inputStream = file.read(1024 * 1024);
+		fileChannel = Channels.newChannel(inputStream);
 
 		decoder = new VideoDecoder();
 		VideoDecoderBuffers buffers = null;
@@ -166,13 +167,15 @@ implements VideoPlayer {
 		float height = buffers.getVideoHeight();
 
 		//@formatter:off
-		mesh.setVertices(new float[] {x, y, 0, 0, 1,
-		                              x+width, y, 0, 1, 1,
-		                              x+width, y + height, 0, 1, 0,
-		                              x, y + height, 0, 0, 0});
+		if(!customMesh)
+			mesh.setVertices(new float[] {x, y, 0, 0, 1,
+			                              x+width, y, 0, 1, 1,
+			                              x+width, y + height, 0, 1, 0,
+			                              x, y + height, 0, 0, 0});
 		//@formatter:on
 
-		viewport.setWorldSize(width, height);
+		if (viewport != null)
+			viewport.setWorldSize(width, height);
 		playing = true;
 		return true;
 	}
@@ -231,6 +234,7 @@ implements VideoPlayer {
 						completionListener.onCompletionListener(currentFile);
 					}
 					playing = false;
+					renderTexture();
 					return false;
 				}
 			}
@@ -244,15 +248,19 @@ implements VideoPlayer {
 				showAlreadyDecodedFrame = true;
 			}
 
-			texture.bind();
-			shader.begin();
-			shader.setUniformMatrix("u_worldView", cam.combined);
-			shader.setUniformi("u_texture", 0);
-			mesh.render(shader, GL20.GL_TRIANGLES);
-			shader.end();
+			renderTexture();
 
 		}
 		return true;
+	}
+
+	private void renderTexture() {
+		texture.bind();
+		shader.begin();
+		shader.setUniformMatrix("u_worldView", cam.combined);
+		shader.setUniformi("u_texture", 0);
+		mesh.render(shader, primitiveMode);
+		shader.end();
 	}
 
 	/**

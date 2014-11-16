@@ -14,8 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.video;
+
+import java.lang.reflect.InvocationTargetException;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -24,8 +25,6 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class is used to provide a way of creating a VideoPlayer, without knowing the platform the program is running
@@ -73,7 +72,7 @@ public class VideoPlayerCreator {
 
 		try {
 			return videoPlayerClass.getConstructor(Viewport.class)
-					.newInstance(viewport);
+									.newInstance(viewport);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -100,14 +99,14 @@ public class VideoPlayerCreator {
 	 *            A mesh used to draw the texture on.
 	 * @return A new instance of VideoPlayer
 	 */
-	public static VideoPlayer createVideoPlayer(Camera cam, Mesh mesh) {
+	public static VideoPlayer createVideoPlayer(Camera cam, Mesh mesh, int primitiveType) {
 		initialize();
 		if (videoPlayerClass == null)
 			return new VideoPlayerStub();
 
 		try {
-			return videoPlayerClass.getConstructor(Camera.class, Mesh.class)
-					.newInstance(cam, mesh);
+			return videoPlayerClass.getConstructor(Camera.class, Mesh.class, Integer.TYPE)
+									.newInstance(cam, mesh, primitiveType);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {

@@ -32,6 +32,7 @@ static int readFunction(void* opaque, uint8_t* buffer, int bufferSize)
 
 VideoDecoder::VideoDecoder() : videoBufferMutex(true), videoBufferConditional(videoBufferMutex), listMutex(true){
     fileLoaded = false;
+    videoOutputEnded = false;
 
     formatContext = NULL;
     videoCodecContext = NULL;
