@@ -62,7 +62,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
 	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
 	 * kill the current process to avoid ANR */
-	static boolean enforceContinuousRenderingOnPause = false;
+	static volatile boolean enforceContinuousRenderingOnPause = false;
 
 	final View view;
 	int width;
