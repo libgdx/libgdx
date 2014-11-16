@@ -46,10 +46,9 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
@@ -368,7 +367,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					if (animationElement != null) {
 
 						Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
-						LongArray intervals = new LongArray();
+						IntArray intervals = new IntArray();
 						for (Element frameElement: animationElement.getChildrenByName("frame")) {
 							staticTiles.add((StaticTiledMapTile) tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
 							intervals.add(frameElement.getIntAttribute("duration"));
