@@ -18,14 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.AssetManagerTest;
-import com.badlogic.gdx.tests.BitmapFontAtlasRegionTest;
-import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.FreeTypeFontLoaderTest;
-import com.badlogic.gdx.tests.Issue2465;
-import com.badlogic.gdx.tests.SpriteBatchTest;
-import com.badlogic.gdx.tests.StageDebugTest;
-import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
