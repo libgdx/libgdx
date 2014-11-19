@@ -42,4 +42,17 @@ public class ALSource extends NSObject {
 
 	@Property(selector = "setPaused:")
 	public native void setPaused (boolean paused);
+	
+	@Method(selector = "setVolume:")
+	public native void setVolume (float volume);
+
+	@Method(selector = "setPitch:")
+	public native void setPitch (float pitch);
+	
+	@Method(selector = "setPan:")
+	public native void setPan (float pan);
+	
+	@Method(selector = "setLooping:")
+	public native void setLooping (boolean shouldLoop);
+	
 }

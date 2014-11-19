@@ -89,25 +89,25 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
-		// TODO Auto-generated method stub
+		if (soundSource != null) soundSource.setLooping(looping);
 	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {
-		// TODO Auto-generated method stub
-
+		if (soundSource != null) soundSource.setPitch(pitch);
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
-		// TODO Auto-generated method stub
-
+		if (soundSource != null) soundSource.setVolume(volume);
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
-		// TODO Auto-generated method stub
-
+		if (soundSource != null) {
+			soundSource.setPan(pan);
+			soundSource.setVolume(volume);
+		}
 	}
 
 	@Override
