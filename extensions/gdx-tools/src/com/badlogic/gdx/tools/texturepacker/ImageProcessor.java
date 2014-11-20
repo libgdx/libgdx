@@ -20,8 +20,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
-import com.sun.imageio.plugins.gif.GIFImageReader;
-import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -33,17 +31,11 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
@@ -53,14 +45,15 @@ import javax.imageio.stream.ImageInputStream;
 public class ImageProcessor {
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 	static final float GIF_DELAYTIME_TO_SECONDS = 0.01f;
+	static final java.awt.Color TRANSPARENT = new java.awt.Color(0x00000000, true);
 
 	private String rootPath;
 	private final Settings settings;
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 	private float scale = 1;
-	
-	private Rect tmpMostRecentAliasedRect; //used for addImagesWithDelays method only
+
+	private Rect tmpMostRecentAliasedRect; // used for addImagesWithDelays method only
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public ImageProcessor (File rootDir, Settings settings) {
@@ -90,37 +83,16 @@ public class ImageProcessor {
 		// Strip extension.
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
-		
-		if (isGif(file)){
-			ImageReader imageReader = null;
-			try {
-				ImageInputStream inputStream = ImageIO.createImageInputStream(file);
-				imageReader = ImageIO.getImageReaders(inputStream).next();
-				imageReader.setInput(inputStream);
-				int numImages = imageReader.getNumImages(true);
-				LinkedHashMap<BufferedImage, Float> images = new LinkedHashMap<BufferedImage, Float>(numImages);
-				for (int i = 0; i < numImages; i++) {
-					IIOMetadata imageMetaData =  imageReader.getImageMetadata(i);
 
-					String metaFormatName = imageMetaData.getNativeMetadataFormatName();
-					IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
-					
-					IIOMetadataNode graphicsControlExtensionNode = getMetaDataNode(root, "GraphicControlExtension");
-					float frameDelay = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime"))
-						* GIF_DELAYTIME_TO_SECONDS;
-					BufferedImage image = imageReader.read(i);
-	            
-					images.put(image, frameDelay);
-				}
-				addImagesWithDelays(file, images, name);
+		if (isGif(file)) {
+			Array<AnimationFrame> frames = null;
+			try {
+				frames = getGifAnimationFrames(file);
 			} catch (IOException ex) {
-				throw new RuntimeException("Error reading image: " + file, ex);
-			} finally {
-				if (imageReader != null)
-					imageReader.setInput(null);
+				throw new RuntimeException("Error reading gif image: " + file, ex);
 			}
-         
-		} else { //Static image
+			addAnimation(frames, name, file);
+		} else { // Static image
 			BufferedImage image;
 			try {
 				image = ImageIO.read(file);
@@ -129,28 +101,11 @@ public class ImageProcessor {
 			}
 			if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
-
 			Rect rect = addImage(image, name);
 			if (rect != null && settings.limitMemory) rect.unloadImage(file);
 		}
-		
+
 	}
-	
-	private static boolean isGif(File file){
-		return file.getName().toLowerCase().endsWith(".gif");
-	}
-	
-	private static IIOMetadataNode getMetaDataNode(IIOMetadataNode rootNode, String nodeName) {
-      int nNodes = rootNode.getLength();
-      for (int i = 0; i < nNodes; i++) {
-          if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName)== 0) {
-              return((IIOMetadataNode) rootNode.item(i));
-          }
-      }
-      IIOMetadataNode node = new IIOMetadataNode(nodeName);
-      rootNode.appendChild(node);
-      return(node);
-  }
 
 	/** The image will be kept in-memory during packing.
 	 * @see #addImage(File) */
@@ -177,73 +132,167 @@ public class ImageProcessor {
 		rects.add(rect);
 		return rect;
 	}
-	
-	/** 
-	 * Add a group of images representing frames of animation, with each image repeated (aliased) as many times 
-	 * as necessary to achieve a given animation delay per frame of animation. The delay is approximate, based 
-	 * on the maxAnimationDelayError setting. The repeated images are aliased regardless of the alias setting,
-	 * but are compared against other images only if aliasing is set. 
+
+	public static boolean isGif (File file) {
+		return file.getName().toLowerCase().endsWith(".gif");
+	}
+
+	/** Retrieves whole images of all frames of a GIF, each taking into account previous underlying frames. Also retrieves delay
+	 * times for each frame.
+	 * @author Darren Keese */
+	private Array<AnimationFrame> getGifAnimationFrames (File gifFile) throws IOException {
+		ImageInputStream inputStream = ImageIO.createImageInputStream(gifFile);
+		ImageReader imageReader = ImageIO.getImageReaders(inputStream).next();
+		imageReader.setInput(inputStream);
+		int numImages = imageReader.getNumImages(true);
+		Array<AnimationFrame> frames = new Array<AnimationFrame>(numImages);
+		BufferedImage previousImage = null;
+		int width = 1, height = 1;
+		for (int i = 0; i < numImages; i++) {
+			AnimationFrame frame = new AnimationFrame();
+			IIOMetadata imageMetaData = imageReader.getImageMetadata(i);
+
+			String metaFormatName = imageMetaData.getNativeMetadataFormatName();
+			IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
+
+			BufferedImage image = imageReader.read(i);
+			if (i == 0) { // first frame
+				width = image.getWidth();
+				height = image.getHeight();
+				frame.image = image;
+				previousImage = image;
+			} else { // need to overlay new image on copy of previous image
+				IIOMetadataNode imageDescriptorNode = getMetaDataNode(root, "ImageDescriptor");
+				int left = Integer.parseInt(imageDescriptorNode.getAttribute("imageLeftPosition"));
+				int top = Integer.parseInt(imageDescriptorNode.getAttribute("imageTopPosition"));
+				BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+				Graphics2D graphics = combinedImage.createGraphics();
+				graphics.drawImage(previousImage, 0, 0, null);
+				graphics.setBackground(TRANSPARENT);
+				graphics.clearRect(left, top, image.getWidth(), image.getHeight());
+				graphics.drawImage(image, left, top, null);
+				frame.image = combinedImage;
+				previousImage = combinedImage;
+			}
+
+			IIOMetadataNode graphicsControlExtensionNode = getMetaDataNode(root, "GraphicControlExtension");
+			frame.delayTime = Float.parseFloat(graphicsControlExtensionNode.getAttribute("delayTime")) * GIF_DELAYTIME_TO_SECONDS;
+
+			frames.add(frame);
+		}
+		return frames;
+	}
+
+	/** Retrieves a whole image of one frame of a GIF, taking into account previous underlying frames.
+	 * @author Darren Keese */
+	public static BufferedImage getGifFrame (File gifFile, int index) throws IOException {
+		ImageInputStream inputStream = ImageIO.createImageInputStream(gifFile);
+		ImageReader imageReader = ImageIO.getImageReaders(inputStream).next();
+		imageReader.setInput(inputStream);
+		BufferedImage previousImage = null;
+		int width = 1, height = 1;
+		for (int i = 0; i < index; i++) {
+			IIOMetadata imageMetaData = imageReader.getImageMetadata(i);
+			String metaFormatName = imageMetaData.getNativeMetadataFormatName();
+			IIOMetadataNode root = (IIOMetadataNode)imageMetaData.getAsTree(metaFormatName);
+
+			BufferedImage image = imageReader.read(i);
+			if (i == 0) { // first frame
+				width = image.getWidth();
+				height = image.getHeight();
+				previousImage = image;
+			} else { // need to overlay new image on copy of previous image
+				IIOMetadataNode imageDescriptorNode = ImageProcessor.getMetaDataNode(root, "ImageDescriptor");
+				int left = Integer.parseInt(imageDescriptorNode.getAttribute("imageLeftPosition"));
+				int top = Integer.parseInt(imageDescriptorNode.getAttribute("imageTopPosition"));
+				BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+				Graphics2D graphics = combinedImage.createGraphics();
+				graphics.drawImage(previousImage, 0, 0, null);
+				graphics.setBackground(TRANSPARENT);
+				graphics.clearRect(left, top, image.getWidth(), image.getHeight());
+				graphics.drawImage(image, left, top, null);
+				previousImage = combinedImage;
+			}
+		}
+		return previousImage;
+	}
+
+	/* From http://stackoverflow.com/a/20079110/506796 */
+	public static IIOMetadataNode getMetaDataNode (IIOMetadataNode rootNode, String nodeName) {
+		int nNodes = rootNode.getLength();
+		for (int i = 0; i < nNodes; i++) {
+			if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName) == 0) {
+				return ((IIOMetadataNode)rootNode.item(i));
+			}
+		}
+		IIOMetadataNode node = new IIOMetadataNode(nodeName);
+		rootNode.appendChild(node);
+		return (node);
+	}
+
+	/** Add a group of images representing frames of animation, with each image repeated (aliased) as many times as necessary to
+	 * achieve a given animation delay per frame of animation. The delay is approximate, based on the maxAnimationDelayError
+	 * setting. The repeated images are aliased regardless of the alias setting, but are compared against other images only if
+	 * aliasing is set. The corresponding the delay to use per frame for the Animation is printed to the console.
 	 * 
 	 * If only a single image is provided, the delay is ignored and it is treated as any static image.
 	 * 
 	 * The images won't be kept in-memory during packing if {@link Settings#limitMemory} is true.
 	 * 
-	 * @param images The images, in order, mapped to their respective time delays.
 	 * @author Darren Keese */
-	public void addImagesWithDelays (File file, LinkedHashMap<BufferedImage, Float> images, String name){
-		if (images.size()==1){
-			//Don't treat as animation
-			Rect rect = addImage(images.keySet().iterator().next(), name);
+	private void addAnimation (Array<AnimationFrame> frames, String name, File file) {
+		if (frames.size == 1) {
+			// Don't treat as animation
+			Rect rect = addImage(frames.get(0).image, name);
 			if (rect != null && settings.limitMemory) rect.unloadImage(file);
 		}
-		
+
 		boolean duplicateFramesForVariableDelay = (settings.maxAnimationDelayError > 0);
-		
-		Float[] delays = new Float[images.size()];
-		float delay = duplicateFramesForVariableDelay ? 
-			FloatingPointGCD.findFloatingPointGCD(images.values().toArray(delays), settings.maxAnimationDelayError)
-			: 1;
-		if (duplicateFramesForVariableDelay)
-			System.out.println("Animation \"" + name + "\" uses delay of " + delay);
-		
-		//Cannot ignore blank images in an animation. Turn off setting while the animation is processed.
+		Float[] delays = new Float[frames.size];
+		for (int i = 0; i < frames.size; i++)
+			delays[i] = frames.get(i).delayTime;
+		float delay = duplicateFramesForVariableDelay ? FloatingPointGCD.findFloatingPointGCD(delays,
+			settings.maxAnimationDelayError) : 1;
+		if (duplicateFramesForVariableDelay) System.out.println("Animation \"" + name + "\" uses delay of " + delay);
+
+		// Cannot ignore blank images in an animation. Turn off setting while the animation is processed.
 		boolean ignoreBlankImages = settings.ignoreBlankImages;
 		settings.ignoreBlankImages = false;
-		
-		//Cannot add animation without indexing. Turn on setting while the animation is processed.
+
+		// Cannot add animation without indexing. Turn on setting while the animation is processed.
 		boolean useIndexes = settings.useIndexes;
 		settings.useIndexes = true;
-		
+
 		int frameIndex = -1;
 		int fileImageIndex = 0;
-		for (Map.Entry<BufferedImage, Float> entry : images.entrySet()){
-			int count = duplicateFramesForVariableDelay ? Math.round(entry.getValue() / delay) : 1;
-			Rect rect = addImage(entry.getKey(), name + "_" + ++frameIndex);
+		for (AnimationFrame frame : frames) {
+			int count = duplicateFramesForVariableDelay ? Math.round(frame.delayTime / delay) : 1;
+			Rect rect = addImage(frame.image, name + "_" + ++frameIndex);
 			if (rect != null) {
-				if(settings.limitMemory) rect.unloadImage(file);
+				if (settings.limitMemory) rect.unloadImage(file);
 				rect.fileImageIndex = fileImageIndex;
 			}
 			fileImageIndex++;
 			count--;
-			if (count>0 && rect==null){ 
-				//Became an alias. Need to reference existing for additional aliases.
+			if (count > 0 && rect == null) {
+				// Became an alias. Need to reference existing for additional aliases.
 				rect = tmpMostRecentAliasedRect;
 			}
-			
-			//Add remaining copies of frame as aliases, regardless of alias setting
-			while (count>0){
+
+			// Add remaining copies of frame as aliases, regardless of alias setting
+			while (count > 0) {
 				Alias alias = new Alias(rect);
 				alias.index = ++frameIndex;
 				rect.aliases.add(alias);
 				count--;
 			}
-			
+
 		}
-		
-		//cleanup
+
+		// cleanup
 		settings.ignoreBlankImages = ignoreBlankImages;
 		settings.useIndexes = useIndexes;
-		tmpMostRecentAliasedRect = null; 
+		tmpMostRecentAliasedRect = null;
 	}
 
 	public void setScale (float scale) {
@@ -576,5 +625,13 @@ public class ImageProcessor {
 		digest.update((byte)(value >> 16));
 		digest.update((byte)(value >> 8));
 		digest.update((byte)value);
+	}
+
+	private static class AnimationFrame {
+		BufferedImage image;
+		float delayTime;
+
+		public AnimationFrame () {
+		}
 	}
 }

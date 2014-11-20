@@ -42,7 +42,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 /** @author Nathan Sweet */
@@ -403,7 +402,7 @@ public class TexturePacker {
 	/** @author Nathan Sweet */
 	static public class Rect {
 		static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
-		
+
 		public String name;
 		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
 		public int x, y;
@@ -435,7 +434,7 @@ public class TexturePacker {
 			height = newHeight;
 			this.isPatch = isPatch;
 		}
-		
+
 		public static Rect newEmptyRect () {
 			Rect rect = new Rect(emptyImage, 0, 0, 1, 1, false);
 			rect.isEmpty = true;
@@ -445,8 +444,8 @@ public class TexturePacker {
 		/** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
 		public void unloadImage (File file) {
 			this.file = file;
-			if (!isEmpty) //Remember empty image to avoid re-processing.
-				image = null; 
+			if (!isEmpty) // Remember empty image to avoid re-processing.
+				image = null;
 		}
 
 		public BufferedImage getImage (ImageProcessor imageProcessor) {
@@ -455,19 +454,15 @@ public class TexturePacker {
 			BufferedImage image;
 			ImageReader imageReader = null;
 			try {
-				if (fileImageIndex==0)
+				if (fileImageIndex == 0)
 					image = ImageIO.read(file);
 				else {
-					ImageInputStream inputStream = ImageIO.createImageInputStream(file);
-					imageReader = ImageIO.getImageReaders(inputStream).next();
-					imageReader.setInput(inputStream);
-					image = imageReader.read(fileImageIndex);
+					image = ImageProcessor.getGifFrame(file, fileImageIndex);
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error reading image: " + file, ex);
 			} finally {
-				if (imageReader != null)
-					imageReader.setInput(null);
+				if (imageReader != null) imageReader.setInput(null);
 			}
 			if (image == null) throw new RuntimeException("Unable to read image: " + file);
 			String name = this.name;
