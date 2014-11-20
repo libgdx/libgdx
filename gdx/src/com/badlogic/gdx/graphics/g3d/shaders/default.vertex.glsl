@@ -6,6 +6,14 @@
 #define specularFlag
 #endif
 
+#if (defined(bumpTextureFlag) || (defined(normalTextureFlag) && ((defined(numDirectionalLights) && (numDirectionalLights > 0)) || (defined(numPointLights) && (numPointLights > 0))))) && defined(normalFlag) && defined(binormalFlag) && defined(tangentFlag)
+#define fragmentLightingFlag
+#endif
+
+#if defined(bumpTextureFlag)
+#define cameraPositionFlag
+#endif
+
 #if defined(specularFlag) || defined(fogFlag)
 #define cameraPositionFlag
 #endif
@@ -24,6 +32,20 @@ uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
 #endif // normalFlag
 
+#if defined(tangentFlag)
+attribute vec3 a_tangent;
+#if defined(fragmentLightingFlag)
+varying vec3 v_tangent;
+#endif
+#endif
+
+#if defined(binormalFlag)
+attribute vec3 a_binormal;
+#if defined(fragmentLightingFlag)
+varying vec3 v_binormal;
+#endif
+#endif
+
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
 #endif // textureFlag
@@ -36,6 +58,16 @@ varying vec2 v_diffuseUV;
 #ifdef specularTextureFlag
 uniform vec4 u_specularUVTransform;
 varying vec2 v_specularUV;
+#endif
+
+#ifdef normalTextureFlag
+uniform vec4 u_normalUVTransform;
+varying vec2 v_normalUV;
+#endif
+
+#ifdef bumpTextureFlag
+uniform vec4 u_bumpUVTransform;
+varying vec2 v_bumpUV;
 #endif
 
 #ifdef boneWeight0Flag
@@ -106,12 +138,6 @@ uniform mat4 u_bones[numBones];
 #endif //numBones
 #endif
 
-#ifdef shininessFlag
-uniform float u_shininess;
-#else
-const float u_shininess = 20.0;
-#endif // shininessFlag
-
 #ifdef blendedFlag
 uniform float u_opacity;
 varying float v_opacity;
@@ -139,6 +165,9 @@ uniform vec3 u_sphericalHarmonics[9];
 
 #ifdef specularFlag
 varying vec3 v_lightSpecular;
+#if defined(fragmentLightingFlag)
+varying vec3 v_viewVec;
+#endif
 #endif // specularFlag
 
 #ifdef cameraPositionFlag
@@ -149,6 +178,14 @@ uniform vec4 u_cameraPosition;
 varying float v_fog;
 #endif // fogFlag
 
+#if defined(fragmentLightingFlag)
+varying vec4 v_pos;
+#else // !fragmentLightingFlag
+#ifdef shininessFlag
+uniform float u_shininess;
+#else
+const float u_shininess = 20.0;
+#endif // shininessFlag
 
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
@@ -167,6 +204,7 @@ struct PointLight
 };
 uniform PointLight u_pointLights[numPointLights];
 #endif // numPointLights
+#endif // !fragmentLightingFlag
 
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
 #define ambientFlag
@@ -192,7 +230,15 @@ void main() {
 	#ifdef specularTextureFlag
 		v_specularUV = u_specularUVTransform.xy + a_texCoord0 * u_specularUVTransform.zw;
 	#endif //specularTextureFlag
-	
+
+	#if defined(normalTextureFlag) && defined(fragmentLightingFlag)
+		v_normalUV = u_normalUVTransform.xy + a_texCoord0 * u_normalUVTransform.zw;
+	#endif //normalTextureFlag
+
+	#if defined(bumpTextureFlag) && defined(fragmentLightingFlag)
+		v_bumpUV = u_bumpUVTransform.xy + a_texCoord0 * u_bumpUVTransform.zw;
+	#endif //bumpTextureFlag
+
 	#if defined(colorFlag)
 		v_color = a_color;
 	#endif // colorFlag
@@ -255,17 +301,17 @@ void main() {
 		v_normal = normal;
 	#endif // normalFlag
 
-    #ifdef fogFlag
-        vec3 flen = u_cameraPosition.xyz - pos.xyz;
-        float fog = dot(flen, flen) * u_cameraPosition.w;
-        v_fog = min(fog, 1.0);
-    #endif
+	#ifdef fogFlag
+		vec3 flen = u_cameraPosition.xyz - pos.xyz;
+		float fog = dot(flen, flen) * u_cameraPosition.w;
+		v_fog = min(fog, 1.0);
+	#endif
 
 	#ifdef lightingFlag
 		#if	defined(ambientLightFlag)
-        	vec3 ambientLight = u_ambientLight;
+			vec3 ambientLight = u_ambientLight;
 		#elif defined(ambientFlag)
-        	vec3 ambientLight = vec3(0.0);
+			vec3 ambientLight = vec3(0.0);
 		#endif
 			
 		#ifdef ambientCubemapFlag 		
@@ -299,38 +345,54 @@ void main() {
 	        v_lightDiffuse = vec3(0.0);
 		#endif //ambientFlag
 
-			
+
 		#ifdef specularFlag
 			v_lightSpecular = vec3(0.0);
 			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+			#if defined(fragmentLightingFlag)
+				v_viewVec = viewVec;
+			#endif
 		#endif // specularFlag
-			
-		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
-			for (int i = 0; i < numDirectionalLights; i++) {
-				vec3 lightDir = -u_dirLights[i].direction;
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
-				vec3 value = u_dirLights[i].color * NdotL;
-				v_lightDiffuse += value;
-				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
-					v_lightSpecular += value * pow(halfDotView, u_shininess);
-				#endif // specularFlag
-			}
-		#endif // numDirectionalLights
 
-		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
-			for (int i = 0; i < numPointLights; i++) {
-				vec3 lightDir = u_pointLights[i].position - pos.xyz;
-				float dist2 = dot(lightDir, lightDir);
-				lightDir *= inversesqrt(dist2);
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
-				vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
-				v_lightDiffuse += value;
-				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
-					v_lightSpecular += value * pow(halfDotView, u_shininess);
-				#endif // specularFlag
-			}
-		#endif // numPointLights
+		#if defined(fragmentLightingFlag)
+			v_pos = pos;
+			#if defined(tangentFlag)
+				v_tangent = a_tangent;
+			#endif
+
+			#if defined(binormalFlag)
+				v_binormal = a_binormal;
+			#endif
+		#endif
+
+		#if !defined(fragmentLightingFlag)
+			#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+				for (int i = 0; i < numDirectionalLights; i++) {
+					vec3 lightDir = -u_dirLights[i].direction;
+					float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+					vec3 value = u_dirLights[i].color * NdotL;
+					v_lightDiffuse += value;
+					#ifdef specularFlag
+						float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+						v_lightSpecular += value * pow(halfDotView, u_shininess);
+					#endif // specularFlag
+				}
+			#endif // numDirectionalLights
+
+			#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+				for (int i = 0; i < numPointLights; i++) {
+					vec3 lightDir = u_pointLights[i].position - pos.xyz;
+					float dist2 = dot(lightDir, lightDir);
+					lightDir *= inversesqrt(dist2);
+					float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+					vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
+					v_lightDiffuse += value;
+					#ifdef specularFlag
+						float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+						v_lightSpecular += value * pow(halfDotView, u_shininess);
+					#endif // specularFlag
+				}
+			#endif // numPointLights
+		#endif // !fragmentLighting
 	#endif // lightingFlag
 }

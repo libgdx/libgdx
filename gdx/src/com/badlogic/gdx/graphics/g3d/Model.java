@@ -426,4 +426,10 @@ public class Model implements Disposable {
 	public Node getNode (final String id, boolean recursive, boolean ignoreCase) {
 		return Node.getNode(nodes, id, recursive, ignoreCase);
 	}
+
+	public void calculateTangentsAndBitangents() {
+		for (Mesh m : meshes) {
+			m.calculateTangentsAndBitangents();
+		}
+	}
 }

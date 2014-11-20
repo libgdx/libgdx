@@ -35,6 +35,20 @@ public class FloatAttribute extends Attribute {
 		return new FloatAttribute(AlphaTest, value);
 	}
 
+	public static final String BumpScaleAlias = "bumpScale";
+	public static final long BumpScale = register(BumpScaleAlias);
+
+	public static FloatAttribute createBumpScale(float value) {
+		return new FloatAttribute(BumpScale, value);
+	}
+
+	public static final String BumpBiasAlias = "bumpBias";
+	public static final long BumpBias = register(BumpBiasAlias);
+
+	public static FloatAttribute createBumpBias(float value) {
+		return new FloatAttribute(BumpBias, value);
+	}
+
 	public float value;
 
 	public FloatAttribute (long type) {
