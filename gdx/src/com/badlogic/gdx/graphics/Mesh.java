@@ -24,6 +24,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.utils.TangentCalculator;
 import com.badlogic.gdx.graphics.glutils.IndexArray;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
@@ -1106,5 +1107,9 @@ public class Mesh implements Disposable {
 	 * @return the copy of this mesh */
 	public Mesh copy (boolean isStatic) {
 		return copy(isStatic, false, null);
+	}
+
+	public void calculateTangentsAndBitangents() {
+		new TangentCalculator(this, GL20.GL_TRIANGLES).calculate();
 	}
 }

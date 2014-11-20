@@ -106,6 +106,10 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform reflectionUVTransform = new Uniform("u_reflectionUVTransform", TextureAttribute.Reflection);
 		public final static Uniform normalTexture = new Uniform("u_normalTexture", TextureAttribute.Normal);
 		public final static Uniform normalUVTransform = new Uniform("u_normalUVTransform", TextureAttribute.Normal);
+		public final static Uniform bumpTexture = new Uniform("u_bumpTexture", TextureAttribute.Bump);
+		public final static Uniform bumpUVTransform = new Uniform("u_bumpUVTransform", TextureAttribute.Bump);
+		public final static Uniform bumpScale = new Uniform("u_bumpScale", FloatAttribute.BumpScale);
+		public final static Uniform bumpBias = new Uniform("u_bumpBias", FloatAttribute.BumpBias);
 		public final static Uniform ambientTexture = new Uniform("u_ambientTexture", TextureAttribute.Ambient);
 		public final static Uniform ambientUVTransform = new Uniform("u_ambientUVTransform", TextureAttribute.Ambient);
 		public final static Uniform alphaTest = new Uniform("u_alphaTest");
@@ -305,7 +309,35 @@ public class DefaultShader extends BaseShader {
 				final TextureAttribute ta = (TextureAttribute)(combinedAttributes.get(TextureAttribute.Normal));
 				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
+               };
+		public final static Setter bumpTexture = new LocalSetter() {
+			@Override
+			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+						.get(TextureAttribute.Bump))).textureDescription);
+				shader.set(inputID, unit);
+			}
 		};
+		public final static Setter bumpUVTransform = new LocalSetter() {
+			@Override
+			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Bump));
+				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
+			}
+		};
+		public final static Setter bumpScale = new LocalSetter() {
+			@Override
+			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((FloatAttribute) (combinedAttributes.get(FloatAttribute.BumpScale))).value);
+			}
+		};
+		public final static Setter bumpBias = new LocalSetter() {
+			@Override
+			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((FloatAttribute) (combinedAttributes.get(FloatAttribute.BumpBias))).value);
+			}
+		};
+
 		public final static Setter ambientTexture = new LocalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
@@ -387,7 +419,7 @@ public class DefaultShader extends BaseShader {
 	}
 
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
-		| ColorAttribute.Specular | FloatAttribute.Shininess;
+		| ColorAttribute.Specular | FloatAttribute.Shininess | TextureAttribute.Specular | TextureAttribute.Normal | TextureAttribute.Bump;
 
 	/** @deprecated Replaced by {@link Config#defaultCullFace} Set to 0 to disable culling */
 	@Deprecated public static int defaultCullFace = GL20.GL_BACK;
@@ -425,6 +457,10 @@ public class DefaultShader extends BaseShader {
 	public final int u_reflectionUVTransform;
 	public final int u_normalTexture;
 	public final int u_normalUVTransform;
+	public final int u_bumpTexture;
+	public final int u_bumpUVTransform;
+	public final int u_bumpScale;
+	public final int u_bumpBias;
 	public final int u_ambientTexture;
 	public final int u_ambientUVTransform;
 	public final int u_alphaTest;
@@ -543,6 +579,10 @@ public class DefaultShader extends BaseShader {
 		u_reflectionUVTransform = register(Inputs.reflectionUVTransform, Setters.reflectionUVTransform);
 		u_normalTexture = register(Inputs.normalTexture, Setters.normalTexture);
 		u_normalUVTransform = register(Inputs.normalUVTransform, Setters.normalUVTransform);
+		u_bumpTexture = register(Inputs.bumpTexture, Setters.bumpTexture);
+		u_bumpUVTransform = register(Inputs.bumpUVTransform, Setters.bumpUVTransform);
+		u_bumpScale = register(Inputs.bumpScale, Setters.bumpScale);
+		u_bumpBias = register(Inputs.bumpBias, Setters.bumpBias);
 		u_ambientTexture = register(Inputs.ambientTexture, Setters.ambientTexture);
 		u_ambientUVTransform = register(Inputs.ambientUVTransform, Setters.ambientUVTransform);
 		u_alphaTest = register(Inputs.alphaTest);
@@ -636,6 +676,10 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
+		if ((mask & TextureAttribute.Bump) == TextureAttribute.Bump) {
+			prefix += "#define " + TextureAttribute.BumpAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.BumpAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
@@ -648,6 +692,10 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
 		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 			prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
+		if ((mask & FloatAttribute.BumpScale) == FloatAttribute.BumpScale)
+			prefix += "#define " + FloatAttribute.BumpScaleAlias + "Flag\n";
+		if ((mask & FloatAttribute.BumpBias) == FloatAttribute.BumpBias)
+			prefix += "#define " + FloatAttribute.BumpBiasAlias + "Flag\n";
 		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
 		return prefix;
 	}
