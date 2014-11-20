@@ -545,7 +545,7 @@ public class TexturePacker {
 		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
 		public Format format = Format.RGBA8888;
 		public boolean alias = true;
-		public float maxAnimationDelayError = 0.0167f;
+		public float maxAnimationDelayError = 0f;
 		public String outputFormat = "png";
 		public float jpegQuality = 0.9f;
 		public boolean ignoreBlankImages = true;
