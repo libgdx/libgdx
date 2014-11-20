@@ -94,7 +94,7 @@ public class VideoPlayerDesktop
 	FileHandle currentFile;
 
 	boolean playing = false;
-	private int primitiveMode = GL20.GL_TRIANGLES;
+	private int primitiveType = GL20.GL_TRIANGLES;
 
 	public VideoPlayerDesktop() {
 		this(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -109,10 +109,10 @@ public class VideoPlayerDesktop
 		cam = viewport.getCamera();
 	}
 
-	public VideoPlayerDesktop(Camera cam, Mesh mesh, int renderMode) {
+	public VideoPlayerDesktop(Camera cam, Mesh mesh, int primitiveType) {
 		this.cam = cam;
 		this.mesh = mesh;
-		this.primitiveMode = renderMode;
+		this.primitiveType = primitiveType;
 		customMesh = true;
 	}
 
@@ -259,7 +259,7 @@ public class VideoPlayerDesktop
 		shader.begin();
 		shader.setUniformMatrix("u_worldView", cam.combined);
 		shader.setUniformi("u_texture", 0);
-		mesh.render(shader, primitiveMode);
+		mesh.render(shader, primitiveType);
 		shader.end();
 	}
 
