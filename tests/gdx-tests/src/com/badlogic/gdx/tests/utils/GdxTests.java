@@ -33,6 +33,7 @@ import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.extensions.GdxVideoTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
@@ -118,6 +119,7 @@ public class GdxTests {
 		FullscreenTest.class,
 		ControllersTest.class,
 		Gdx2DTest.class,
+		GdxVideoTest.class,
 		GestureDetectorTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
