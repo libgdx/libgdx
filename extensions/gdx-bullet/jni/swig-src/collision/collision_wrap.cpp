@@ -1424,7 +1424,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass &gdx_getClassbtBroadphasePair(JNIEnv * jenv) {
+	SWIGINTERN inline jclass &gdx_getClassbtBroadphasePair(JNIEnv * const &jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btBroadphasePair"));
@@ -2262,72 +2262,6 @@ SWIGINTERN void btManifoldPoint_setLateralFrictionDir2(btManifoldPoint *self,btV
 
 #include <gdx/collision/ContactListener.h>
 bool custom_ContactListener_setEvents(ContactListener *listener);
-
-
-	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass &gdx_getClassbtCollisionObjectWrapper(JNIEnv * jenv) {
-		static jclass cls = NULL;
-		if (cls == NULL)
-			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper"));
-		return cls;
-	}
-	
-	// Inline method to get the termporary instance
-	SWIGINTERN inline jobject gdx_getTempbtCollisionObjectWrapper(JNIEnv * jenv, void *cPtr, bool ownMem) {
-	  static jobject ret = NULL;
-	  jclass &clazz = gdx_getClassbtCollisionObjectWrapper(jenv);
-	  if (ret == NULL) {
-	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;");
-	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
-	  }
-	  
-	  static jmethodID reuseMethod = NULL;
-	  if (reuseMethod == NULL)
-		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
-	  
-	  long ptr;
-	  *(const void **)&ptr = cPtr;
-	  jenv->CallVoidMethod(ret, reuseMethod, ptr, (jboolean)ownMem);
-	  return ret;
-	}
-
-	// Inline method to obtain an instance from the pool
-	SWIGINTERN inline jobject gdx_obtainbtCollisionObjectWrapper(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
-		static jmethodID obtainMethod = NULL;
-		if (obtainMethod == NULL)
-			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;");
-		
-		long ptr;
-		*(const void **)&ptr = cPtr; 
-		jobject ret = jenv->CallStaticObjectMethod(clazz, obtainMethod, ptr, (jboolean)ownMem);
-		
-		return ret;
-	}
-	
-	// Inline method to free an instance from the pool
-	SWIGINTERN inline void gdx_freebtCollisionObjectWrapper(JNIEnv * jenv, const jclass clazz, const jobject obj) {
-		static jmethodID freeMethod = NULL;
-		if (freeMethod == NULL)
-			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;)V");
-		
-		jenv->CallStaticVoidMethod(clazz, freeMethod, obj);
-		
-		jenv->DeleteLocalRef(obj);
-	}
-	
-	// Simple raii class to auto free the instance from the pool 
-	class gdxAutoFreebtCollisionObjectWrapper {
-	private:
-		JNIEnv * jenv;
-		jobject jbtCollisionObjectWrapper;
-		jclass jclazz;
-	public:
-		gdxAutoFreebtCollisionObjectWrapper(JNIEnv * jenv, jclass jclazz, jobject jbtCollisionObjectWrapper) : 
-			jenv(jenv), jbtCollisionObjectWrapper(jbtCollisionObjectWrapper), jclazz(jclazz) { }
-		virtual ~gdxAutoFreebtCollisionObjectWrapper() {
-			gdx_freebtCollisionObjectWrapper(this->jenv, this->jclazz, this->jbtCollisionObjectWrapper);
-		}
-	};
 
 SWIGINTERN bool ContactListener_setEvents(ContactListener *self){
 		return custom_ContactListener_setEvents(self);
@@ -4338,10 +4272,10 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
   jlong jcp = 0 ;
-  jobject jcolObj0Wrap = 0 ;
+  jlong jcolObj0Wrap = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
-  jobject jcolObj1Wrap = 0 ;
+  jlong jcolObj1Wrap = 0 ;
   jint jpartId1  ;
   jint jindex1  ;
   
@@ -4352,14 +4286,10 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
-    jclass jccolObj0Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj0Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj0Wrap, (void*)&colObj0Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj0Wrap(jenv, jccolObj0Wrap, jcolObj0Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj0Wrap = (btCollisionObjectWrapper *) &colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
-    jclass jccolObj1Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj1Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj1Wrap, (void*)&colObj1Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj1Wrap = (btCollisionObjectWrapper *) &colObj1Wrap; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[32], swigjobj, jcp, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
@@ -4468,11 +4398,11 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
   jlong jcp = 0 ;
-  jobject jcolObj0Wrap = 0 ;
+  jlong jcolObj0Wrap = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
   jboolean jmatch0  ;
-  jobject jcolObj1Wrap = 0 ;
+  jlong jcolObj1Wrap = 0 ;
   jint jpartId1  ;
   jint jindex1  ;
   jboolean jmatch1  ;
@@ -4484,15 +4414,11 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
-    jclass jccolObj0Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj0Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj0Wrap, (void*)&colObj0Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj0Wrap(jenv, jccolObj0Wrap, jcolObj0Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj0Wrap = (btCollisionObjectWrapper *) &colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
     jmatch0 = (jboolean) match0;
-    jclass jccolObj1Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj1Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj1Wrap, (void*)&colObj1Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj1Wrap = (btCollisionObjectWrapper *) &colObj1Wrap; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
@@ -4609,10 +4535,10 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jobject jcolObj0Wrap = 0 ;
+  jlong jcolObj0Wrap = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
-  jobject jcolObj1Wrap = 0 ;
+  jlong jcolObj1Wrap = 0 ;
   jint jpartId1  ;
   jint jindex1  ;
   
@@ -4622,14 +4548,10 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jccolObj0Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj0Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj0Wrap, (void*)&colObj0Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj0Wrap(jenv, jccolObj0Wrap, jcolObj0Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj0Wrap = (btCollisionObjectWrapper *) &colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
-    jclass jccolObj1Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj1Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj1Wrap, (void*)&colObj1Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj1Wrap = (btCollisionObjectWrapper *) &colObj1Wrap; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[38], swigjobj, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
@@ -4733,11 +4655,11 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jobject jcolObj0Wrap = 0 ;
+  jlong jcolObj0Wrap = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
   jboolean jmatch0  ;
-  jobject jcolObj1Wrap = 0 ;
+  jlong jcolObj1Wrap = 0 ;
   jint jpartId1  ;
   jint jindex1  ;
   jboolean jmatch1  ;
@@ -4748,15 +4670,11 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jccolObj0Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj0Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj0Wrap, (void*)&colObj0Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj0Wrap(jenv, jccolObj0Wrap, jcolObj0Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj0Wrap = (btCollisionObjectWrapper *) &colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
     jmatch0 = (jboolean) match0;
-    jclass jccolObj1Wrap = gdx_getClassbtCollisionObjectWrapper(jenv);
-    jcolObj1Wrap = gdx_obtainbtCollisionObjectWrapper(jenv, jccolObj1Wrap, (void*)&colObj1Wrap, false);
-    gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
+    *(btCollisionObjectWrapper **)&jcolObj1Wrap = (btCollisionObjectWrapper *) &colObj1Wrap; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
@@ -44073,7 +43991,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jint jarg4, jint jarg5, jobject jarg6, jint jarg7, jint jarg8) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jlong jarg6, jobject jarg6_, jint jarg7, jint jarg8) {
   jboolean jresult = 0 ;
   ContactListener *arg1 = (ContactListener *) 0 ;
   btManifoldPoint *arg2 = 0 ;
@@ -44089,6 +44007,8 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
+  (void)jarg3_;
+  (void)jarg6_;
   arg1 = *(ContactListener **)&jarg1; 
   arg2 = *(btManifoldPoint **)&jarg2;
   if (!arg2) {
@@ -44185,7 +44105,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jint jarg4, jint jarg5, jboolean jarg6, jobject jarg7, jint jarg8, jint jarg9, jboolean jarg10) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jboolean jarg6, jlong jarg7, jobject jarg7_, jint jarg8, jint jarg9, jboolean jarg10) {
   jboolean jresult = 0 ;
   ContactListener *arg1 = (ContactListener *) 0 ;
   btManifoldPoint *arg2 = 0 ;
@@ -44203,6 +44123,8 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jcls;
   (void)jarg1_;
   (void)jarg2_;
+  (void)jarg3_;
+  (void)jarg7_;
   arg1 = *(ContactListener **)&jarg1; 
   arg2 = *(btManifoldPoint **)&jarg2;
   if (!arg2) {
@@ -44309,7 +44231,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_16(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jobject jarg5, jint jarg6, jint jarg7) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_16(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jint jarg4, jlong jarg5, jobject jarg5_, jint jarg6, jint jarg7) {
   jboolean jresult = 0 ;
   ContactListener *arg1 = (ContactListener *) 0 ;
   btCollisionObjectWrapper *arg2 = 0 ;
@@ -44323,6 +44245,8 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg5_;
   arg1 = *(ContactListener **)&jarg1; 
   arg2 = *(btCollisionObjectWrapper **)&jarg2;
   if (!arg2) {
@@ -44400,7 +44324,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_19(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jboolean jarg5, jobject jarg6, jint jarg7, jint jarg8, jboolean jarg9) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_ContactListener_1onContactAdded_1_1SWIG_19(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jint jarg4, jboolean jarg5, jlong jarg6, jobject jarg6_, jint jarg7, jint jarg8, jboolean jarg9) {
   jboolean jresult = 0 ;
   ContactListener *arg1 = (ContactListener *) 0 ;
   btCollisionObjectWrapper *arg2 = 0 ;
@@ -44416,6 +44340,8 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg6_;
   arg1 = *(ContactListener **)&jarg1; 
   arg2 = *(btCollisionObjectWrapper **)&jarg2;
   if (!arg2) {
@@ -46325,7 +46251,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_CustomCollisionDispatcher_needsResponse", "(Lcom/badlogic/gdx/physics/bullet/collision/CustomCollisionDispatcher;JJ)Z" 
     },
     {
-      "SwigDirector_ContactListener_onContactAdded__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JLcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IILcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;II)Z" 
+      "SwigDirector_ContactListener_onContactAdded__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JJIIJII)Z" 
     },
     {
       "SwigDirector_ContactListener_onContactAdded__SWIG_1", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JJIIJII)Z" 
@@ -46334,7 +46260,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_ContactListener_onContactAdded__SWIG_2", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIIIII)Z" 
     },
     {
-      "SwigDirector_ContactListener_onContactAdded__SWIG_3", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JLcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IIZLcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IIZ)Z" 
+      "SwigDirector_ContactListener_onContactAdded__SWIG_3", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JJIIZJIIZ)Z" 
     },
     {
       "SwigDirector_ContactListener_onContactAdded__SWIG_4", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JJIIZJIIZ)Z" 
@@ -46343,7 +46269,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_ContactListener_onContactAdded__SWIG_5", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIIZIIIZ)Z" 
     },
     {
-      "SwigDirector_ContactListener_onContactAdded__SWIG_6", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IILcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;II)Z" 
+      "SwigDirector_ContactListener_onContactAdded__SWIG_6", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIJII)Z" 
     },
     {
       "SwigDirector_ContactListener_onContactAdded__SWIG_7", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIJII)Z" 
@@ -46352,7 +46278,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_ContactListener_onContactAdded__SWIG_8", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;IIIIII)Z" 
     },
     {
-      "SwigDirector_ContactListener_onContactAdded__SWIG_9", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IIZLcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IIZ)Z" 
+      "SwigDirector_ContactListener_onContactAdded__SWIG_9", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIZJIIZ)Z" 
     },
     {
       "SwigDirector_ContactListener_onContactAdded__SWIG_10", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;JIIZJIIZ)Z" 

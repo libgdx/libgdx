@@ -17,8 +17,6 @@ import com.badlogic.gdx.utils.Pool;
 
 public class LinearMathJNI {
   public final static native int btGetVersion();
-  public final static native void btInfinityMask_set(int jarg1);
-  public final static native int btInfinityMask_get();
   public final static native float btSqrt(float jarg1);
   public final static native float btFabs(float jarg1);
   public final static native float btCos(float jarg1);

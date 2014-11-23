@@ -156,11 +156,11 @@ public class LwjglApplication implements Application {
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
-				listener.resume();
 				synchronized (lifecycleListeners) {
 					for (LifecycleListener listener : lifecycleListeners)
 						listener.resume();
 				}
+				listener.resume();				
 			}
 
 			boolean shouldRender = false;
@@ -230,13 +230,13 @@ public class LwjglApplication implements Application {
 
 	public boolean executeRunnables () {
 		synchronized (runnables) {
-			executedRunnables.addAll(runnables);
+			for (int i = runnables.size - 1; i >= 0; i--)
+				executedRunnables.addAll(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = 0; i < executedRunnables.size; i++)
-			executedRunnables.get(i).run();
-		executedRunnables.clear();
+		for (int i = executedRunnables.size - 1; i >= 0; i--)
+			executedRunnables.removeIndex(i).run();
 		return true;
 	}
 

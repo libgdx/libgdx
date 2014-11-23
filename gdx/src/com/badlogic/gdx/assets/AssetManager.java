@@ -337,21 +337,6 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Disposes the given asset and all its dependencies recursively, depth first.
-	 * @param fileName */
-	private void disposeDependencies (String fileName) {
-		Array<String> dependencies = assetDependencies.get(fileName);
-		if (dependencies != null) {
-			for (String dependency : dependencies) {
-				disposeDependencies(dependency);
-			}
-		}
-
-		Class type = assetTypes.get(fileName);
-		Object asset = assets.get(type).get(fileName).getObject(Object.class);
-		if (asset instanceof Disposable) ((Disposable)asset).dispose();
-	}
-
 	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {

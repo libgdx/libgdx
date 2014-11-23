@@ -322,7 +322,7 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 
-		if (stub.enclosingType.startsWith("java") || stub.enclosingType.contains("google")) {
+		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util")) || stub.enclosingType.contains("google")) {
 			logger.log(Type.INFO, "not emitting code for accessing method " + stub.name + " in class '" + stub.enclosingType
 				+ ", either in java.* or GWT related class");
 			return "";

@@ -2412,16 +2412,16 @@ public class CollisionJNI {
   public final static native void ContactListener_enableOnAdded(long jarg1, ContactListener jarg1_);
   public final static native void ContactListener_disableOnAdded(long jarg1, ContactListener jarg1_);
   public final static native boolean ContactListener_isOnAddedEnabled(long jarg1, ContactListener jarg1_);
-  public final static native boolean ContactListener_onContactAdded__SWIG_0(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, btCollisionObjectWrapper jarg3, int jarg4, int jarg5, btCollisionObjectWrapper jarg6, int jarg7, int jarg8);
+  public final static native boolean ContactListener_onContactAdded__SWIG_0(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, long jarg6, btCollisionObjectWrapper jarg6_, int jarg7, int jarg8);
   public final static native boolean ContactListener_onContactAdded__SWIG_1(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObject jarg3_, int jarg4, int jarg5, long jarg6, btCollisionObject jarg6_, int jarg7, int jarg8);
   public final static native boolean ContactListener_onContactAdded__SWIG_2(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, int jarg4, int jarg5, int jarg6, int jarg7, int jarg8);
-  public final static native boolean ContactListener_onContactAdded__SWIG_3(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, btCollisionObjectWrapper jarg3, int jarg4, int jarg5, boolean jarg6, btCollisionObjectWrapper jarg7, int jarg8, int jarg9, boolean jarg10);
+  public final static native boolean ContactListener_onContactAdded__SWIG_3(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObjectWrapper jarg7_, int jarg8, int jarg9, boolean jarg10);
   public final static native boolean ContactListener_onContactAdded__SWIG_4(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObject jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObject jarg7_, int jarg8, int jarg9, boolean jarg10);
   public final static native boolean ContactListener_onContactAdded__SWIG_5(long jarg1, ContactListener jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, int jarg4, int jarg5, boolean jarg6, int jarg7, int jarg8, int jarg9, boolean jarg10);
-  public final static native boolean ContactListener_onContactAdded__SWIG_6(long jarg1, ContactListener jarg1_, btCollisionObjectWrapper jarg2, int jarg3, int jarg4, btCollisionObjectWrapper jarg5, int jarg6, int jarg7);
+  public final static native boolean ContactListener_onContactAdded__SWIG_6(long jarg1, ContactListener jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, int jarg3, int jarg4, long jarg5, btCollisionObjectWrapper jarg5_, int jarg6, int jarg7);
   public final static native boolean ContactListener_onContactAdded__SWIG_7(long jarg1, ContactListener jarg1_, long jarg2, btCollisionObject jarg2_, int jarg3, int jarg4, long jarg5, btCollisionObject jarg5_, int jarg6, int jarg7);
   public final static native boolean ContactListener_onContactAdded__SWIG_8(long jarg1, ContactListener jarg1_, int jarg2, int jarg3, int jarg4, int jarg5, int jarg6, int jarg7);
-  public final static native boolean ContactListener_onContactAdded__SWIG_9(long jarg1, ContactListener jarg1_, btCollisionObjectWrapper jarg2, int jarg3, int jarg4, boolean jarg5, btCollisionObjectWrapper jarg6, int jarg7, int jarg8, boolean jarg9);
+  public final static native boolean ContactListener_onContactAdded__SWIG_9(long jarg1, ContactListener jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, int jarg3, int jarg4, boolean jarg5, long jarg6, btCollisionObjectWrapper jarg6_, int jarg7, int jarg8, boolean jarg9);
   public final static native boolean ContactListener_onContactAdded__SWIG_10(long jarg1, ContactListener jarg1_, long jarg2, btCollisionObject jarg2_, int jarg3, int jarg4, boolean jarg5, long jarg6, btCollisionObject jarg6_, int jarg7, int jarg8, boolean jarg9);
   public final static native boolean ContactListener_onContactAdded__SWIG_11(long jarg1, ContactListener jarg1_, int jarg2, int jarg3, int jarg4, boolean jarg5, int jarg6, int jarg7, int jarg8, boolean jarg9);
   public final static native void ContactListener_enableOnProcessed(long jarg1, ContactListener jarg1_);
@@ -2659,7 +2659,7 @@ public class CollisionJNI {
     return self.needsCollision((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false));
   }
   public static float SwigDirector_ContactResultCallback_addSingleResult(ContactResultCallback self, long cp, long colObj0Wrap, int partId0, int index0, long colObj1Wrap, int partId1, int index1) {
-    return self.addSingleResult(new btManifoldPoint(cp, false), (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1);
+    return self.addSingleResult(new btManifoldPoint(cp, false), btCollisionObjectWrapper.obtainForArgument(colObj0Wrap, false), partId0, index0, btCollisionObjectWrapper.obtainForArgument(colObj1Wrap, false), partId1, index1);
   }
   public static void SwigDirector_btTriangleRaycastCallback_processTriangle(btTriangleRaycastCallback self, long triangle, int partId, int triangleIndex) {
     self.processTriangle((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
@@ -2679,8 +2679,8 @@ public class CollisionJNI {
   public static boolean SwigDirector_CustomCollisionDispatcher_needsResponse(CustomCollisionDispatcher self, long body0, long body1) {
     return self.needsResponse(btCollisionObject.getInstance(body0, false), btCollisionObject.getInstance(body1, false));
   }
-  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_0(ContactListener self, long cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
+  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_0(ContactListener self, long cp, long colObj0Wrap, int partId0, int index0, long colObj1Wrap, int partId1, int index1) {
+    return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), btCollisionObjectWrapper.obtainForArgument(colObj0Wrap, false), partId0, index0, btCollisionObjectWrapper.obtainForArgument(colObj1Wrap, false), partId1, index1);
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_1(ContactListener self, long cp, long colObj0, int partId0, int index0, long colObj1, int partId1, int index1) {
     return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), btCollisionObject.getInstance(colObj0, false), partId0, index0, btCollisionObject.getInstance(colObj1, false), partId1, index1);
@@ -2688,8 +2688,8 @@ public class CollisionJNI {
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_2(ContactListener self, long cp, int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
     return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), userValue0, partId0, index0, userValue1, partId1, index1);
   }
-  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_3(ContactListener self, long cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, boolean match0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), colObj0Wrap, partId0, index0, match0, colObj1Wrap, partId1, index1, match1);
+  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_3(ContactListener self, long cp, long colObj0Wrap, int partId0, int index0, boolean match0, long colObj1Wrap, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), btCollisionObjectWrapper.obtainForArgument(colObj0Wrap, false), partId0, index0, match0, btCollisionObjectWrapper.obtainForArgument(colObj1Wrap, false), partId1, index1, match1);
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_4(ContactListener self, long cp, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
     return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), btCollisionObject.getInstance(colObj0, false), partId0, index0, match0, btCollisionObject.getInstance(colObj1, false), partId1, index1, match1);
@@ -2697,8 +2697,8 @@ public class CollisionJNI {
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_5(ContactListener self, long cp, int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
     return self.onContactAdded(btManifoldPoint.obtainForArgument(cp, false), userValue0, partId0, index0, match0, userValue1, partId1, index1, match1);
   }
-  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_6(ContactListener self, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return self.onContactAdded(colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
+  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_6(ContactListener self, long colObj0Wrap, int partId0, int index0, long colObj1Wrap, int partId1, int index1) {
+    return self.onContactAdded(btCollisionObjectWrapper.obtainForArgument(colObj0Wrap, false), partId0, index0, btCollisionObjectWrapper.obtainForArgument(colObj1Wrap, false), partId1, index1);
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_7(ContactListener self, long colObj0, int partId0, int index0, long colObj1, int partId1, int index1) {
     return self.onContactAdded(btCollisionObject.getInstance(colObj0, false), partId0, index0, btCollisionObject.getInstance(colObj1, false), partId1, index1);
@@ -2706,8 +2706,8 @@ public class CollisionJNI {
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_8(ContactListener self, int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
     return self.onContactAdded(userValue0, partId0, index0, userValue1, partId1, index1);
   }
-  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_9(ContactListener self, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, boolean match0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(colObj0Wrap, partId0, index0, match0, colObj1Wrap, partId1, index1, match1);
+  public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_9(ContactListener self, long colObj0Wrap, int partId0, int index0, boolean match0, long colObj1Wrap, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(btCollisionObjectWrapper.obtainForArgument(colObj0Wrap, false), partId0, index0, match0, btCollisionObjectWrapper.obtainForArgument(colObj1Wrap, false), partId1, index1, match1);
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_10(ContactListener self, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
     return self.onContactAdded(btCollisionObject.getInstance(colObj0, false), partId0, index0, match0, btCollisionObject.getInstance(colObj1, false), partId1, index1, match1);

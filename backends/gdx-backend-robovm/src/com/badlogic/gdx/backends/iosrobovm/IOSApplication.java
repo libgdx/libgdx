@@ -431,12 +431,12 @@ public class IOSApplication implements Application {
 		return new Clipboard() {
 			@Override
 			public void setContents (String content) {
-				UIPasteboard.getGeneral().setString(content);
+				UIPasteboard.getGeneralPasteboard().setString(content);
 			}
 
 			@Override
 			public String getContents () {
-				return UIPasteboard.getGeneral().getString();
+				return UIPasteboard.getGeneralPasteboard().getString();
 			}
 		};
 	}

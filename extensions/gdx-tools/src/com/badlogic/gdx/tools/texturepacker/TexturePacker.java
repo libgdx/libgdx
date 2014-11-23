@@ -575,8 +575,10 @@ public class TexturePacker {
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
+			grid = settings.grid;
 			scale = settings.scale;
 			scaleSuffix = settings.scaleSuffix;
+			atlasExtension = settings.atlasExtension;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
@@ -615,7 +617,7 @@ public class TexturePacker {
 			});
 			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
-			throw new RuntimeException("Error packing files.", ex);
+			throw new RuntimeException("Error packing images.", ex);
 		}
 	}
 
