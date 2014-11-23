@@ -106,10 +106,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
-
-		View view = getApplicationWindow().getDecorView();
-
+		
 		try {
+			View view = this.graphics.getView();
+
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
 			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -119,7 +119,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
+			log("AndroidApplication", "Failed to setup immersive mode, a throwable has occurred.", e);
 		}
 	}
 
