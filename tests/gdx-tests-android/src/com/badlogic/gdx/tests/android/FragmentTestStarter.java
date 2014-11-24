@@ -132,7 +132,9 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 
 		@Override
 		public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			return initializeForView(test, new AndroidApplicationConfiguration());
+			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+			config.useImmersiveMode = true;
+			return initializeForView(test, config);
 		}
 		
 	}
