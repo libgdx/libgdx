@@ -14,6 +14,8 @@ public class DependencyBank {
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
+	static String jUnitVersion = "4.+";
+	static String mockitoVersion = "1.9.+";
 
 	//Repositories
 	static String mavenCentral = "mavenCentral()";
