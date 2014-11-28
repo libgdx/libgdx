@@ -6,7 +6,7 @@ import org.junit.Test;
 public class JUnitSampleTest {
 
 	@Test
-	public void thisTestFailsOnPurpose() {
+	public void testTheUnitTest() {
 		Assert.assertTrue("This test will pass", true);
 	}
 }
