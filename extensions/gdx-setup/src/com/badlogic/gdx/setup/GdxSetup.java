@@ -320,6 +320,14 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
 		}
+		
+		// tests project
+		if (builder.modules.contains(ProjectType.TESTS)) {
+			project.files.add(new ProjectFile("tests/src/GdxTestRunner", "tests/src/" + packageDir + "/GdxTestRunner.java", true));
+			project.files.add(new ProjectFile("tests/src/JUnitSampleTest", "tests/src/" + packageDir + "/core/sampletest/JUnitSampleTest.java", true));
+			
+			project.files.add(new ProjectFile("tests/build.gradle", false));
+		}
 
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
@@ -333,6 +341,11 @@ public class GdxSetup {
 		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
+		}
+		
+		if (builder.modules.contains(ProjectType.TESTS)) {
+			values.put("%JUNIT_VERSION%", DependencyBank.jUnitVersion);
+			values.put("%MOCKITO_VERSION%", DependencyBank.mockitoVersion);
 		}
 
 		copyAndReplace(outputDir, project, values);
@@ -555,6 +568,7 @@ public class GdxSetup {
 			projects.add(ProjectType.ANDROID);
 			projects.add(ProjectType.IOS);
 			projects.add(ProjectType.HTML);
+			projects.add(ProjectType.TESTS);
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
 			dependencies.add(bank.getDependency(ProjectDependency.GDX));
