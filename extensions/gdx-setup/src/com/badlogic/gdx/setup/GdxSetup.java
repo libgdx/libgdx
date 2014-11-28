@@ -324,9 +324,17 @@ public class GdxSetup {
 		// tests project
 		if (builder.modules.contains(ProjectType.TESTS)) {
 			project.files.add(new ProjectFile("tests/src/GdxTestRunner", "tests/src/" + packageDir + "/GdxTestRunner.java", true));
-			project.files.add(new ProjectFile("tests/src/JUnitSampleTest", "tests/src/" + packageDir + "/core/sampletest/JUnitSampleTest.java", true));
-			
+			project.files.add(new ProjectFile("tests/src/SimpleJUnitTest", "tests/src/" + packageDir + "/tests/unit/SimpleJUnitTest.java", true));
+			project.files.add(new ProjectFile("tests/src/SimpleMockitoTest", "tests/src/" + packageDir + "/tests/functional/SimpleMockitoTest.java", true));
+
 			project.files.add(new ProjectFile("tests/build.gradle", false));
+			
+			
+			// create Android test files
+			if (builder.modules.contains(ProjectType.ANDROID)) {
+//				project.files.add(new ProjectFile("tests/src/AndroidLauncherMockTest", "tests/src/" + packageDir + "/core/sampletest/JUnitSampleTest.java", true));
+				
+			}
 		}
 
 		Map<String, String> values = new HashMap<String, String>();

@@ -1,0 +1,22 @@
+package %PACKAGE%.tests.functional;
+
+import org.junit.Test;
+import org.mockito.Mockito;
+
+public class SimpleMockitoTest {
+
+	@Test
+	public void thatRunOnlyOnceMethodIsCalledOnlyOnce() {
+		TestClass fixture = Mockito.mock(TestClass.class);
+
+		fixture.runOnlyOnce();
+
+		Mockito.verify(fixture, Mockito.times(1)).runOnlyOnce();
+	}
+
+	public class TestClass {
+		public void runOnlyOnce() {
+			// this method should only run once.
+		}
+	}
+}
