@@ -7,6 +7,6 @@ public class JUnitSampleTest {
 
 	@Test
 	public void testTheUnitTest() {
-		Assert.assertTrue("This test will pass", true);
+		Assert.assertTrue("This test cannot fail.", true);
 	}
 }
