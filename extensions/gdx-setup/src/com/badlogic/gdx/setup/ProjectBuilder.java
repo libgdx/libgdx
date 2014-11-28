@@ -68,6 +68,11 @@ public class ProjectBuilder {
 			for (ProjectType module : modules) {
 				BuildScriptHelper.addProject(module, dependencies, buildBw);
 			}
+			
+			if(modules.contains(ProjectType.TESTS)) {
+				BuildScriptHelper.addTestsProject(modules, dependencies, buildBw);
+			}
+			
 
 			//Add task here for now
 			buildBw.write("\n");
