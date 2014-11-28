@@ -41,7 +41,9 @@ public class DependencyBank {
 					projectDep.getDependencies(ProjectType.DESKTOP),
 					projectDep.getDependencies(ProjectType.ANDROID),
 					projectDep.getDependencies(ProjectType.IOS),
-					projectDep.getDependencies(ProjectType.HTML));
+					projectDep.getDependencies(ProjectType.HTML),
+					projectDep.getDependencies(ProjectType.TESTS)
+					);
 			gdxDependencies.put(projectDep, dependency);
 		}
 		gwtInheritances.put(ProjectDependency.GDX, new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"});
@@ -74,6 +76,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"},
 			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
+			new String[]{},
 			
 			"Core Library for LibGDX"
 		),
@@ -83,6 +86,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
 			null,
+			new String[]{},
 			
 			"3D Collision Detection and Rigid Body Dynamics"
 		),
@@ -92,12 +96,14 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
 			null,
+			new String[]{},
 			
 			"Generate BitmapFonts from .ttf font files"
 		),
 		TOOLS(
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
+			new String[]{},
 			new String[]{},
 			new String[]{},
 			new String[]{},
@@ -110,6 +116,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
 			new String[] {}, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"},
+			new String[]{},
 			
 			"Controller/Gamepad API"
 		),
@@ -119,6 +126,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
+			new String[]{},
 			
 			"2D Physics Library"
 		),	
@@ -128,6 +136,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
+			new String[]{},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
@@ -137,6 +146,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
+			new String[]{},
 			
 			"Lightweight Entity framework"
 		),
@@ -146,6 +156,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
+			new String[]{},
 			
 			"Artificial Intelligence framework"
 		);
@@ -155,14 +166,17 @@ public class DependencyBank {
 		private String[] androidDependencies;
 		private String[] iosDependencies;
 		private String[] gwtDependencies;
+		private String[] testsDependencies;
+		
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String description) {
+		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] testsDeps, String description) {
 			this.coreDependencies = coreDeps;
 			this.desktopDependencies = desktopDeps;
 			this.androidDependencies = androidDeps;
 			this.iosDependencies = iosDeps;
 			this.gwtDependencies = gwtDeps;
+			this.testsDependencies = testsDeps;
 			this.description = description;
 		}
 
@@ -178,6 +192,8 @@ public class DependencyBank {
 					return iosDependencies;
 				case HTML:
 					return gwtDependencies;
+				case TESTS:
+					return testsDependencies;
 			}
 			return null;
 		}
@@ -193,7 +209,8 @@ public class DependencyBank {
 		DESKTOP("desktop", new String[]{"java"}),
 		ANDROID("android", new String[]{"android"}),
 		IOS("ios", new String[]{"java", "robovm"}),
-		HTML("html", new String[]{"gwt", "war"});
+		HTML("html", new String[]{"gwt", "war"}),
+		TESTS("tests", new String[]{"java"});
 
 		private final String name;
 		private final String[] plugins;
