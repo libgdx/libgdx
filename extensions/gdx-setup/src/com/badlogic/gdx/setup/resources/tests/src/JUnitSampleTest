@@ -1,0 +1,12 @@
+package %PACKAGE%.core.sampletest;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class JUnitSampleTest {
+
+	@Test
+	public void thisTestFailsOnPurpose() {
+		Assert.assertTrue("This test will pass", true);
+	}
+}
