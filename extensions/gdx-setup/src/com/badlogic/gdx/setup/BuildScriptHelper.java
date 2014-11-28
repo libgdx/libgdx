@@ -114,6 +114,8 @@ public class BuildScriptHelper {
 		space(wr);
 		addConfigurations(ProjectType.TESTS, wr);
 		space(wr);
+		write(wr, "sourceSets.test.java.srcDirs = [\"src/\"]");
+		
 		addTestDependencies(projects, dependencyList, wr);
 		
 		
@@ -129,8 +131,11 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.ANDROID)) {
 			write(wr, "compile project(\":" + ProjectType.ANDROID.getName() + "\")");				
 		}
+		
 		if (projects.contains(ProjectType.IOS)) {
-			write(wr, "compile project(\":" + ProjectType.IOS.getName() + "\")");				
+			write(wr, "// uncomment only on iOS platforms");	
+			write(wr, "// uncomment on other platforms will cause test fail: superClassName is empty!");	
+			write(wr, "//compile project(\":" + ProjectType.IOS.getName() + "\")");				
 		}
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "compile project(\":" + ProjectType.HTML.getName() + "\")");				
