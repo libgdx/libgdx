@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
  * 
  * @author mzechner */
 public interface Input {
-	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
+	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String, String)}
 	 * 
 	 * @author mzechner */
 	static public interface TextInputListener {
