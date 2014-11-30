@@ -21,8 +21,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.LongArray;
-import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -39,9 +38,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private StaticTiledMapTile[] frameTiles;
 
-	private long[] animationIntervals;
-	private long frameCount = 0;
-	private long loopDuration;
+	private int[] animationIntervals;
+	private int frameCount = 0;
+	private int loopDuration;
 	private static final long initialTimeOffset = TimeUtils.millis();
 
 	@Override
@@ -65,10 +64,10 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	private TiledMapTile getCurrentFrame() {
-		long currentTime = lastTiledMapRenderTime % loopDuration;
+		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 
 		for (int i = 0; i < animationIntervals.length; ++i){
-			long animationInterval = animationIntervals[i];
+			int animationInterval = animationIntervals[i];
 			if (currentTime<=animationInterval) return frameTiles[i];
 			currentTime -= animationInterval;
 		}
@@ -128,11 +127,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
-		this.loopDuration = (long)(frameTiles.size * interval * 1000f);
-		this.animationIntervals = new long[frameTiles.size];
+		this.loopDuration = frameTiles.size * (int)(interval * 1000f);
+		this.animationIntervals = new int[frameTiles.size];
 		for (int i = 0; i < frameTiles.size; ++i){
 			this.frameTiles[i] = frameTiles.get(i);
-			this.animationIntervals[i] = (long)(interval * 1000f);
+			this.animationIntervals[i] = (int)(interval * 1000f);
 		}
 	}
 
@@ -140,7 +139,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	 *
 	 * @param intervals The intervals between each individual frame tile in milliseconds.
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
-	public AnimatedTiledMapTile (LongArray intervals, Array<StaticTiledMapTile> frameTiles) {
+	public AnimatedTiledMapTile (IntArray intervals, Array<StaticTiledMapTile> frameTiles) {
 		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 

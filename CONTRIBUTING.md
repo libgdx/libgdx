@@ -26,7 +26,7 @@ see: [this article](http://blog.jetbrains.com/idea/2014/01/intellij-idea-13-impo
 
 ### Code Style
 
-Libgdx does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconv-138413.html), and so should you.
+Libgdx does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html), and so should you.
 
 A few things we'd rather not like to see:
 

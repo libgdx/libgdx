@@ -41,8 +41,7 @@ public class FreeTypeFontGeneratorLoader extends
 	@Override
 	public FreeTypeFontGenerator load (AssetManager assetManager, String fileName, FileHandle file,
 		FreeTypeFontGeneratorParameters parameter) {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
-
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file.sibling(file.name().substring(0, file.name().length() - 4)));
 		return generator;
 	}
 

@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
  * 
  * @author mzechner */
 public interface Input {
-	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String, String)}
+	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
 	 * 
 	 * @author mzechner */
 	static public interface TextInputListener {
@@ -641,16 +641,15 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyJustPressed (int key);
 
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and have a text input
-	 * with the given text and hint. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
-	 * rendering thread.
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
+	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
+	 * thread.
 	 * 
-	 * @param listener The TextInputListener to call when the the dialog has been closed
-	 * @param title The title of the text input dialog
-	 * @param text The text presented to the user, may be null if no text is desired
-	 * @param hint The hint text presented to the user when no text has been entered, may be null if no hint is desired */	
+	 * @param listener The TextInputListener.
+	 * @param title The title of the text input dialog.
+	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text, String hint);
-	
+
 	/** Sets the on-screen keyboard visible if available.
 	 * 
 	 * @param visible visible or not */

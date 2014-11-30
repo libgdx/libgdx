@@ -156,11 +156,11 @@ public class LwjglApplication implements Application {
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
-				listener.resume();
 				synchronized (lifecycleListeners) {
 					for (LifecycleListener listener : lifecycleListeners)
 						listener.resume();
 				}
+				listener.resume();				
 			}
 
 			boolean shouldRender = false;

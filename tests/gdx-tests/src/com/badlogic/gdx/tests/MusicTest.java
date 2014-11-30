@@ -85,7 +85,7 @@ public class MusicTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-		font.draw(batch, String.format("%02d:%02d", (int)currentPosition / 60, (int)currentPosition % 60), 365, 35);
+		font.draw(batch, (int)currentPosition / 60 + ":" + (int)currentPosition % 60, 365, 35);
 		batch.end();
 
 		sliderUpdating = true;
