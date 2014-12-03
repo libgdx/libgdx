@@ -142,6 +142,16 @@ public final class MathUtils {
 		return start + random.nextInt(end - start + 1);
 	}
 
+	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
+	static public long random (long range) {
+		return (long)(random.nextDouble() * range);
+	}
+
+	/** Returns a random number between start (inclusive) and end (inclusive). */
+	static public long random (long start, long end) {
+		return start + (long)(random.nextDouble() * (end - start));
+	}
+
 	/** Returns a random boolean value. */
 	static public boolean randomBoolean () {
 		return random.nextBoolean();

@@ -89,7 +89,7 @@ public class TexturePacker {
 
 	public void pack (File outputDir, String packFileName) {
 		if (packFileName.endsWith(settings.atlasExtension))
-			packFileName = packFileName.substring(packFileName.length() - settings.atlasExtension.length());
+			packFileName = packFileName.substring(0, packFileName.length() - settings.atlasExtension.length());
 		outputDir.mkdirs();
 
 		for (int i = 0, n = settings.scale.length; i < n; i++) {
