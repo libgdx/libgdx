@@ -89,4 +89,7 @@ public class IOSApplicationConfiguration {
 
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = false;
+	
+	/** whether or not the onScreenKeyboard should be closed on return key **/
+	public boolean keyboardCloseOnReturn = true;
 }
