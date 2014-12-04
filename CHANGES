@@ -1,4 +1,6 @@
 [1.4.2]
+- API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
+- API Addition: Added getter for UITextField on IOS for keyboard customization 
 - API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
 - API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
 - API Addition: HttpRequest is now poolable.
@@ -9,6 +11,7 @@
 - API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
 - Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
 - iOS backend now supports sound ids, thanks Tomski!
+
 
 [1.4.1]
 - Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
