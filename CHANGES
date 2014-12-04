@@ -1,4 +1,5 @@
 [1.4.2]
+- API Addition: 3D ParticleEffects now have their ParticleEffectLoader registered by default.
 - API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
 - API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
 - API Addition: HttpRequest is now poolable.
