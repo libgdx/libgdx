@@ -81,6 +81,8 @@ public class IOSApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
+	/** the update interval to poll the magnetometer with, in seconds **/
+	public float magnetometerUpdate = 0.05f;
 
 	/** whether to use the compass, default true **/
 	public boolean useCompass = true;
