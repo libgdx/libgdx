@@ -8,6 +8,7 @@
 - API Change: ScrollPane#scrollToCenter -> ScrollPane#scrollTo; see optional boolean arguments centerHorizontal and centerVertical (scrollToCenter centered vertically only).
 - API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
 - Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
+- iOS backend now supports sound ids, thanks Tomski!
 
 [1.4.1]
 - Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
