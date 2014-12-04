@@ -118,10 +118,12 @@ public class IOSInput implements Input {
 	boolean hasVibrator;
 	CMMotionManager motionManager;
 	boolean compassSupported;
+	boolean keyboardCloseOnReturn;
 
 	public IOSInput (IOSApplication app) {
 		this.app = app;
 		this.config = app.config;
+		this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
 	}
 
 	void setupPeripherals () {
@@ -386,7 +388,9 @@ public class IOSInput implements Input {
 
 		@Override
 		public boolean shouldReturn (UITextField textField) {
-			textField.resignFirstResponder();
+			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
+			app.input.inputProcessor.keyDown(Keys.ENTER);
+			app.input.inputProcessor.keyTyped((char)13);
 			Gdx.graphics.requestRendering();
 			return false;
 		}
@@ -394,20 +398,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
-		if (textfield == null) {
-			// Making simple textField
-			textfield = new UITextField(new CGRect(10, 10, 100, 50));
-			// Setting parameters
-			textfield.setKeyboardType(UIKeyboardType.Default);
-			textfield.setReturnKeyType(UIReturnKeyType.Done);
-			textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
-			textfield.setAutocorrectionType(UITextAutocorrectionType.No);
-			textfield.setSpellCheckingType(UITextSpellCheckingType.No);
-			textfield.setHidden(true);
-			// Text field needs to have at least one symbol - so we can use backspace
-			textfield.setText("x");
-			app.getUIViewController().getView().addSubview(textfield);
-		}
+		if (textfield == null) createDefaultTextField();
 		if (visible) {
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
@@ -415,7 +406,35 @@ public class IOSInput implements Input {
 			textfield.resignFirstResponder();
 		}
 	}
-
+	
+	/**
+	 * Set the keyboard to close when the UITextField return key is pressed
+	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
+	 */
+	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
+		keyboardCloseOnReturn = shouldClose;
+	}
+	
+	public UITextField getKeyboardTextField () {
+		if (textfield == null) createDefaultTextField();
+		return textfield;
+	}
+	
+	private void createDefaultTextField () {
+		textfield = new UITextField(new CGRect(10, 10, 100, 50));
+		//Parameters
+		// Setting parameters
+		textfield.setKeyboardType(UIKeyboardType.Default);
+		textfield.setReturnKeyType(UIReturnKeyType.Done);
+		textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
+		textfield.setAutocorrectionType(UITextAutocorrectionType.No);
+		textfield.setSpellCheckingType(UITextSpellCheckingType.No);
+		textfield.setHidden(true);
+		// Text field needs to have at least one symbol - so we can use backspace
+		textfield.setText("x");
+		app.getUIViewController().getView().addSubview(textfield);
+	}
+	
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
 
