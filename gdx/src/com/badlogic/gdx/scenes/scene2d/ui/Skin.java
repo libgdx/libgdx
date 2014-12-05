@@ -21,6 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -103,8 +104,27 @@ public class Skin implements Disposable {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			add(region.name, region, TextureRegion.class);
+			String name = region.name;
+			if (region.index != -1) {
+				name += String.valueOf(region.index);
+			}
+			add(name, region, TextureRegion.class);
 		}
+	}
+
+	/** Returns an array with the regions that have an index != -1 with the provided name, or null if none are found. */
+	Array<TextureRegion> findRegionsWithIndex (String regionName) {
+		Array<TextureRegion> regions = null;
+		int i = 0;
+		TextureRegion region = optional(regionName + (i++), TextureRegion.class);
+		if (region != null) {
+			regions = new Array<TextureRegion>(true, 5, TextureRegion.class);
+			while (region != null) {
+				regions.add(region);
+				region = optional(regionName + (i++), TextureRegion.class);
+			}
+		}
+		return regions;
 	}
 
 	public void add (String name, Object resource) {
@@ -469,11 +489,16 @@ public class Skin implements Disposable {
 					if (region != null)
 						font = new BitmapFont(fontFile, region, flip);
 					else {
-						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
-						if (imageFile.exists())
-							font = new BitmapFont(fontFile, imageFile, flip);
-						else
-							font = new BitmapFont(fontFile, flip);
+						Array<TextureRegion> regions = findRegionsWithIndex(regionName);
+						if (regions != null) {
+							font = new BitmapFont(new BitmapFontData(fontFile, flip), regions.items, true);
+						} else {
+							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+							if (imageFile.exists())
+								font = new BitmapFont(fontFile, imageFile, flip);
+							else
+								font = new BitmapFont(fontFile, flip);
+						}
 					}
 					// Scaled size is the desired cap height to scale the font to.
 					if (scaledSize != -1) font.setScale(scaledSize / font.getCapHeight());
