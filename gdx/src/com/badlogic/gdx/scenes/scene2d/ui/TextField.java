@@ -186,7 +186,7 @@ public class TextField extends Widget implements Disableable {
 						// paste
 						if (keycode == Keys.V) {
 							paste();
-							return true;
+							repeat = true;
 						}
 						// copy
 						if (keycode == Keys.C || keycode == Keys.INSERT) {
