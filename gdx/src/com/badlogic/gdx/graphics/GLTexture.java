@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.nio.IntBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -25,19 +23,13 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
-import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
 /** Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.
  * Also provides some (protected) static methods to create TextureData and upload image data.
  * @author badlogic, Xoppa */
 public abstract class GLTexture implements Disposable {
-	private static final IntBuffer buffer = BufferUtils.newIntBuffer(1);
-
 	/** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
 	public final int glTarget;
 	protected int glHandle;
@@ -177,10 +169,7 @@ public abstract class GLTexture implements Disposable {
 	/** Destroys the OpenGL Texture as specified by the glHandle. */
 	protected void delete () {
 		if (glHandle != 0) {
-			buffer.put(0, glHandle);
-			buffer.position(0);
-			buffer.limit(1);
-			Gdx.gl.glDeleteTextures(1, buffer);
+			Gdx.gl.glDeleteTexture (glHandle);
 			glHandle = 0;
 		}
 	}
@@ -201,10 +190,7 @@ public abstract class GLTexture implements Disposable {
 	}
 
 	protected static int createGLHandle () {
-		buffer.position(0);
-		buffer.limit(buffer.capacity());
-		Gdx.gl.glGenTextures(1, buffer);
-		return buffer.get(0);
+		return Gdx.gl.glGenTexture ();
 	}
 	
 	protected static void uploadImageData (int target, TextureData data) {
