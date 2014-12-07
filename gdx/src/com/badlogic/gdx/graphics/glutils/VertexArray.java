@@ -173,4 +173,8 @@ public class VertexArray implements VertexData {
 	public VertexAttributes getAttributes () {
 		return attributes;
 	}
+	
+	@Override
+	public void invalidate () {
+	}
 }

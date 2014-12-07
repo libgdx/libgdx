@@ -1469,4 +1469,118 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 		calls++;
 		gl30.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
 	}
+	
+	@Override
+	public void glDeleteTexture (int texture) {
+		calls++;
+		gl30.glDeleteTexture(texture);
+	}
+
+	@Override
+	public int glGenTexture () {
+		calls++;
+		return gl30.glGenTexture();
+	}
+
+	@Override
+	public void glDeleteBuffer (int buffer) {
+		calls++;
+		gl30.glDeleteBuffer(buffer);
+	}
+
+	@Override
+	public void glDeleteFramebuffer (int framebuffer) {
+		calls++;
+		gl30.glDeleteFramebuffer(framebuffer);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer (int renderbuffer) {
+		calls++;
+		gl30.glDeleteRenderbuffer(renderbuffer);
+	}
+
+	@Override
+	public int glGenBuffer () {
+		calls++;
+		return gl30.glGenBuffer();
+	}
+
+	@Override
+	public int glGenFramebuffer () {
+		calls++;
+		return gl30.glGenFramebuffer();
+	}
+
+	@Override
+	public int glGenRenderbuffer () {
+		calls++;
+		return gl30.glGenRenderbuffer();
+	}
+
+	@Override
+	public void glUniform1fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl30.glUniform1fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform1iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl30.glUniform1iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform2fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl30.glUniform2fv(location, count, v, offset);	
+	}
+
+	@Override
+	public void glUniform2iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl30.glUniform2iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform3fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl30.glUniform3fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform3iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl30.glUniform3iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform4fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl30.glUniform4fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform4iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl30.glUniform4iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniformMatrix2fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl30.glUniformMatrix2fv(location, count, transpose, value, offset);
+	}
+
+	@Override
+	public void glUniformMatrix3fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl30.glUniformMatrix3fv(location, count, transpose, value, offset);
+	}
+
+	@Override
+	public void glUniformMatrix4fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl30.glUniformMatrix4fv(location, count, transpose, value, offset);
+	}
 }

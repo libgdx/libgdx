@@ -760,7 +760,7 @@ public class TextField extends Widget implements Disableable {
 			if (ctrl) {
 				if (keycode == Keys.V) {
 					paste();
-					return true;
+					repeat = true;
 				}
 				if (keycode == Keys.C || keycode == Keys.INSERT) {
 					copy();
