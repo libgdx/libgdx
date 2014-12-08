@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.4.1";
+	static String libgdxVersion = "1.5.0";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.4.2-SNAPSHOT";
 	static String roboVMVersion = "1.0.0-beta-01";
