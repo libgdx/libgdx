@@ -99,8 +99,8 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	float keyRepeatInitialTime = 0.4f;
-	float keyRepeatTime = 0.1f;
+	public static float keyRepeatInitialTime = 0.4f;
+	public static float keyRepeatTime = 0.1f;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -513,6 +513,14 @@ public class TextField extends Widget implements Disableable {
 	 * @param messageText may be null. */
 	public void setMessageText (String messageText) {
 		this.messageText = messageText;
+	}
+
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
 	}
 
 	public void setText (String str) {
