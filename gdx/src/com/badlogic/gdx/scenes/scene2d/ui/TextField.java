@@ -515,6 +515,14 @@ public class TextField extends Widget implements Disableable {
 		this.messageText = messageText;
 	}
 
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
+	}
+
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
 		if (str.equals(text)) return;
