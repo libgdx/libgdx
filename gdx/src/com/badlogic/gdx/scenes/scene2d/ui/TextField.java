@@ -99,8 +99,8 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	float keyRepeatInitialTime = 0.4f;
-	float keyRepeatTime = 0.1f;
+	public static float keyRepeatInitialTime = 0.4f;
+	public static float keyRepeatTime = 0.1f;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
