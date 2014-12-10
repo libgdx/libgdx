@@ -31,10 +31,10 @@ abstract public class EventAction<T extends Event> extends Action {
 		active = false;
 	}
 
-	public void setActor (Actor actor) {
-		if (getActor() != null) getActor().removeListener(listener);
-		super.setActor(actor);
-		if (actor != null) actor.addListener(listener);
+	public void setTarget (Actor newTarget) {
+		if (target != null) target.removeListener(listener);
+		super.setTarget(newTarget);
+		if (newTarget != null) newTarget.addListener(listener);
 	}
 
 	/** Called when the specific type of event occurs on the actor.
