@@ -179,9 +179,8 @@ public class LwjglGraphics implements Graphics {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
 						config.samples), context);
 				} catch (Exception e) {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
-						config.samples), context);
 					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
+					throw e;
 				}
 				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
 			} else {
