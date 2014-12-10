@@ -239,7 +239,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Get the set of selected items, useful when multiple items are selected
 	 * @return a Selection object containing the selected elements */
-	public Selection<T> getSelection () {
+	public ArraySelection<T> getSelection () {
 		return selection;
 	}
 
@@ -412,6 +412,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 			stage.setScrollFocus(this);
 
+			list.selection.set(selectBox.getSelected());
 			list.setTouchable(Touchable.enabled);
 			clearActions();
 			selectBox.onShow(this, below);
