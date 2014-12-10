@@ -1,4 +1,7 @@
-[1.4.2]
+[1.5.1]
+
+
+[1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
 - API Addition: Added getter for UITextField on IOS for keyboard customization 
 - API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
