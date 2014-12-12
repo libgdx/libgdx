@@ -307,11 +307,11 @@
 
 	<target name="link-fat">
 		<exec executable="lipo" failonerror="true" dir="${libsDir}">
-			<arg line="-create -output ${libName} ${libName}.386 ${libName}.x86_64 ${libName}.armv7 ${libName}.arm64"/>
+			<arg line="-create -output ${libName} ${libName}.386 ${libName}.x86_64 ${libName}.armv7"/>
 		</exec>
 	</target>
 
-	<target name="postcompile" depends="link-386,link-x86_64,link-arm,link-arm64,link-fat">
+	<target name="postcompile" depends="link-386,link-x86_64,link-arm,link-fat">
 		
 	</target>
 </project>
