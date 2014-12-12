@@ -43,15 +43,11 @@ public class ButtonGroup<T extends Button> {
 	public void add (T button) {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
 		button.buttonGroup = null;
-		boolean wasChecked = button.isChecked();
 		boolean shouldCheck = button.isChecked() || buttons.size < minCheckCount;
-		if (wasChecked != shouldCheck) button.setChecked(false);
+		button.setChecked(false);
 		button.buttonGroup = this;
 		buttons.add(button);
-		if (wasChecked != shouldCheck)
-			button.setChecked(true);
-		else if (shouldCheck) //
-			checkedButtons.add(button);
+		button.setChecked(shouldCheck);
 	}
 
 	public void add (T... buttons) {
