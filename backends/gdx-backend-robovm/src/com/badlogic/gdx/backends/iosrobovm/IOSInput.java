@@ -136,10 +136,13 @@ public class IOSInput implements Input {
 		}
 	}
 
+	// need to retain a reference so GC doesn't get right of the
+	// object passed to the native thread
+	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;	
 	private void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);			
-			VoidBlock2<CMAccelerometerData, NSError> accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
+			accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
 				@Override
 				public void invoke(CMAccelerometerData accelData, NSError error) {
 					updateAccelerometer(accelData);					
@@ -149,11 +152,14 @@ public class IOSInput implements Input {
 		}
 	}
 	
+	// need to retain a reference so GC doesn't get right of the
+	// object passed to the native thread
+	VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
 	private void setupMagnetometer () {
 		if (motionManager.isMagnetometerAvailable() && config.useCompass) compassSupported = true;
 		else return;
 		motionManager.setMagnetometerUpdateInterval(config.magnetometerUpdate);
-		VoidBlock2<CMMagnetometerData, NSError> magnetVoid = new VoidBlock2<CMMagnetometerData, NSError>() {
+		magnetVoid = new VoidBlock2<CMMagnetometerData, NSError>() {
 			@Override
 			public void invoke(CMMagnetometerData magnetData, NSError error) {
 				updateRotation(magnetData);
