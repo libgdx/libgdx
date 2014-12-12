@@ -29,6 +29,7 @@ import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
+import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
@@ -43,7 +44,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIScreen;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.GL20;
@@ -192,7 +192,7 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
+		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().getSize();
 
 		// determine orientation and resulting width + height
 		UIInterfaceOrientation orientation;
@@ -213,17 +213,17 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
+			height = (int)bounds.getWidth();
+			width = (int)bounds.getHeight();
 			if (width < height) {
-				width = (int)bounds.width();
-				height = (int)bounds.height();
+				width = (int)bounds.getWidth();
+				height = (int)bounds.getHeight();
 			}
 			break;
 		default:
 			// assume portrait
-			width = (int)bounds.width();
-			height = (int)bounds.height();
+			width = (int)bounds.getWidth();
+			height = (int)bounds.getHeight();
 		}
 
 		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
