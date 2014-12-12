@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.Array;
 
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
  * functionality and more. A button may only be in one group at a time.
+ * <p>
+ * The {@link #canCheck(Button, boolean)} method can be overridden for notification when any button in the group is checked.
  * @author Nathan Sweet */
 public class ButtonGroup {
 	private final Array<Button> buttons = new Array();
@@ -84,7 +86,7 @@ public class ButtonGroup {
 		}
 	}
 
-	/** Called when a button is checked or unchecked.
+	/** Called when a button is checked or unchecked. If overridden, first call super and return false if it returned false.
 	 * @return True if the new state should be allowed. */
 	protected boolean canCheck (Button button, boolean newState) {
 		if (button.isChecked == newState) return false;
