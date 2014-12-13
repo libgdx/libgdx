@@ -380,6 +380,8 @@ public class LwjglGraphics implements Graphics {
 
 			Display.setDisplayMode(targetDisplayMode);
 			Display.setFullscreen(fullscreen);
+			Display.setResizable(!fullscreen && config.resizable);
+			
 			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, targetDisplayMode.getWidth(), targetDisplayMode.getHeight());
 			config.width = targetDisplayMode.getWidth();
 			config.height = targetDisplayMode.getHeight();
