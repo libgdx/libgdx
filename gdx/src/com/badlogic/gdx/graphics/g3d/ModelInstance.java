@@ -16,20 +16,17 @@
 
 package com.badlogic.gdx.graphics.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -118,13 +115,13 @@ public class ModelInstance implements RenderableProvider {
 		this.transform = transform == null ? new Matrix4() : transform;
 		nodePartBones.clear();
 		Node copy, node = model.getNode(nodeId, recursive);
-		this.nodes.add(copy = copyNode(null, node));
+		this.nodes.add(copy = copyNode(node));
 		if (mergeTransform) {
 			this.transform.mul(parentTransform ? node.globalTransform : node.localTransform);
 			copy.translation.set(0, 0, 0);
 			copy.rotation.idt();
 			copy.scale.set(1, 1, 1);
-		} else if (parentTransform && copy.parent != null) this.transform.mul(node.parent.globalTransform);
+		} else if (parentTransform && copy.hasParent()) this.transform.mul(node.getParent().globalTransform);
 		setBones();
 		copyAnimations(model.animations);
 		calculateTransforms();
@@ -203,7 +200,7 @@ public class ModelInstance implements RenderableProvider {
 		nodePartBones.clear();
 		for (int i = 0, n = nodes.size; i < n; ++i) {
 			final Node node = nodes.get(i);
-			this.nodes.add(copyNode(null, node));
+			this.nodes.add(copyNode(node));
 		}
 		setBones();
 	}
@@ -214,7 +211,7 @@ public class ModelInstance implements RenderableProvider {
 			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
-					this.nodes.add(copyNode(null, node));
+					this.nodes.add(copyNode(node));
 					break;
 				}
 			}
@@ -228,7 +225,7 @@ public class ModelInstance implements RenderableProvider {
 			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
-					this.nodes.add(copyNode(null, node));
+					this.nodes.add(copyNode(node));
 					break;
 				}
 			}
@@ -251,11 +248,10 @@ public class ModelInstance implements RenderableProvider {
 		}
 	}
 
-	private Node copyNode (Node parent, Node node) {
+	private Node copyNode (Node node) {
 		Node copy = new Node();
 		copy.id = node.id;
-		// copy.boneId = node.boneId;
-		copy.parent = parent;
+		copy.inheritTransform = node.inheritTransform;
 		copy.translation.set(node.translation);
 		copy.rotation.set(node.rotation);
 		copy.scale.set(node.scale);
@@ -264,8 +260,8 @@ public class ModelInstance implements RenderableProvider {
 		for (NodePart nodePart : node.parts) {
 			copy.parts.add(copyNodePart(nodePart));
 		}
-		for (Node child : node.children) {
-			copy.children.add(copyNode(copy, child));
+		for (Node child : node.getChildren()) {
+			copy.addChild(copyNode(child));
 		}
 		return copy;
 	}
@@ -354,7 +350,7 @@ public class ModelInstance implements RenderableProvider {
 			}
 		}
 
-		for (Node child : node.children) {
+		for (Node child : node.getChildren()) {
 			getRenderables(child, renderables, pool);
 		}
 	}
