@@ -1,6 +1,7 @@
 [1.5.1]
 - API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
 - Added 64-bit support for iOS sim and device
+- Deprecated Node#children and Node#parent, added inheritTransform flag and methods to add/get/remove children
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
