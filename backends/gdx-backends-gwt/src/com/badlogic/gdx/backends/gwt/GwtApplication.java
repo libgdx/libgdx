@@ -94,6 +94,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		this.log = config.log;
 
+		addEventListeners();
+
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
 		} else {
@@ -518,6 +520,27 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
+	
+	private native void addEventListeners () /*-{
+		var self = this;
+		$doc.addEventListener('visibilitychange', function (e) {
+			self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
+		});
+	}-*/;
+
+	private void onVisibilityChange (boolean visible) {
+		if (visible) {
+			for (LifecycleListener listener : lifecycleListeners) {
+				listener.resume();
+			}
+			listener.resume();
+		} else {
+			for (LifecycleListener listener : lifecycleListeners) {
+				listener.pause();
+			}
+			listener.pause();
+		}
+	}
 	
 	/**
 	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
