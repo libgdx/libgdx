@@ -38,6 +38,10 @@ import com.badlogic.gdx.utils.Pool;
  * The ModelInstance creates a full copy of all materials, nodes and animations.
  * @author badlogic, xoppa */
 public class ModelInstance implements RenderableProvider {
+	/** Whether, by default, {@link NodeKeyframe}'s are shared amongst {@link Model} and ModelInstance. Can be overridden per
+	 * ModelInstance using the constructor argument. */
+	public static boolean defaultShareKeyframes = true;
+
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows
 	 * modification of materials without having to traverse the nodes **/
 	public final Array<Material> materials = new Array();
@@ -111,6 +115,17 @@ public class ModelInstance implements RenderableProvider {
 	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
 	public ModelInstance (final Model model, final Matrix4 transform, final String nodeId, boolean recursive,
 		boolean parentTransform, boolean mergeTransform) {
+		this(model, transform, nodeId, recursive, parentTransform, mergeTransform, defaultShareKeyframes);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance (final Model model, final Matrix4 transform, final String nodeId, boolean recursive,
+		boolean parentTransform, boolean mergeTransform, boolean shareKeyframes) {
 		this.model = model;
 		this.transform = transform == null ? new Matrix4() : transform;
 		nodePartBones.clear();
@@ -123,7 +138,7 @@ public class ModelInstance implements RenderableProvider {
 			copy.scale.set(1, 1, 1);
 		} else if (parentTransform && copy.hasParent()) this.transform.mul(node.getParent().globalTransform);
 		setBones();
-		copyAnimations(model.animations);
+		copyAnimations(model.animations, shareKeyframes);
 		calculateTransforms();
 	}
 
@@ -140,7 +155,7 @@ public class ModelInstance implements RenderableProvider {
 			copyNodes(model.nodes);
 		else
 			copyNodes(model.nodes, rootNodeIds);
-		copyAnimations(model.animations);
+		copyAnimations(model.animations, defaultShareKeyframes);
 		calculateTransforms();
 	}
 
@@ -151,10 +166,15 @@ public class ModelInstance implements RenderableProvider {
 
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
 	public ModelInstance (final Model model, final Matrix4 transform, final Array<String> rootNodeIds) {
+		this(model, transform, rootNodeIds, defaultShareKeyframes);
+	}
+		
+	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
+	public ModelInstance (final Model model, final Matrix4 transform, final Array<String> rootNodeIds, boolean shareKeyframes) {
 		this.model = model;
 		this.transform = transform == null ? new Matrix4() : transform;
 		copyNodes(model.nodes, rootNodeIds);
-		copyAnimations(model.animations);
+		copyAnimations(model.animations, shareKeyframes);
 		calculateTransforms();
 	}
 
@@ -182,10 +202,15 @@ public class ModelInstance implements RenderableProvider {
 
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
 	public ModelInstance (ModelInstance copyFrom, final Matrix4 transform) {
+		this(copyFrom, transform, defaultShareKeyframes);
+	}
+	
+	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
+	public ModelInstance (ModelInstance copyFrom, final Matrix4 transform, boolean shareKeyframes) {
 		this.model = copyFrom.model;
 		this.transform = transform == null ? new Matrix4() : transform;
 		copyNodes(copyFrom.nodes);
-		copyAnimations(copyFrom.animations);
+		copyAnimations(copyFrom.animations, shareKeyframes);
 		calculateTransforms();
 	}
 
@@ -286,7 +311,7 @@ public class ModelInstance implements RenderableProvider {
 		return copy;
 	}
 
-	private void copyAnimations (final Iterable<Animation> source) {
+	private void copyAnimations (final Iterable<Animation> source, boolean shareKeyframes) {
 		for (final Animation anim : source) {
 			Animation animation = new Animation();
 			animation.id = anim.id;
@@ -296,13 +321,18 @@ public class ModelInstance implements RenderableProvider {
 				if (node == null) continue;
 				NodeAnimation nodeAnim = new NodeAnimation();
 				nodeAnim.node = node;
-				for (final NodeKeyframe kf : nanim.keyframes) {
-					NodeKeyframe keyframe = new NodeKeyframe();
-					keyframe.keytime = kf.keytime;
-					keyframe.rotation.set(kf.rotation);
-					keyframe.scale.set(kf.scale);
-					keyframe.translation.set(kf.translation);
-					nodeAnim.keyframes.add(keyframe);
+				if (shareKeyframes)
+					nodeAnim.keyframes = nanim.keyframes;
+				else {
+					for (final NodeKeyframe kf : nanim.keyframes) {
+						
+						NodeKeyframe keyframe = new NodeKeyframe();
+						keyframe.keytime = kf.keytime;
+						keyframe.rotation.set(kf.rotation);
+						keyframe.scale.set(kf.scale);
+						keyframe.translation.set(kf.translation);
+						nodeAnim.keyframes.add(keyframe);
+					}
 				}
 				if (nodeAnim.keyframes.size > 0) animation.nodeAnimations.add(nodeAnim);
 			}
