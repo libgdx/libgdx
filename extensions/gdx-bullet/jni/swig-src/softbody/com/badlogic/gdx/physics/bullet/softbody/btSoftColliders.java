@@ -354,7 +354,7 @@ public class btSoftColliders extends BulletBase {
     }
   
     public btRigidBody getRigidBody() {
-  	return (btRigidBody)btCollisionObject.getInstance(SoftbodyJNI.btSoftColliders_CollideSDF_RS_rigidBody_get(swigCPtr, this), false);
+  	return btRigidBody.getInstance(SoftbodyJNI.btSoftColliders_CollideSDF_RS_rigidBody_get(swigCPtr, this), false);
   }
   
     public void setDynmargin(float value) {

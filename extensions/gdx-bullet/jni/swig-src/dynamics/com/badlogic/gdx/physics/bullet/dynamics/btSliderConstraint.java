@@ -76,11 +76,11 @@ public class btSliderConstraint extends btTypedConstraint {
   }
 
   public btRigidBody getRigidBodyA() {
-	return (btRigidBody)btCollisionObject.getInstance(DynamicsJNI.btSliderConstraint_getRigidBodyA(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btSliderConstraint_getRigidBodyA(swigCPtr, this), false);
 }
 
   public btRigidBody getRigidBodyB() {
-	return (btRigidBody)btCollisionObject.getInstance(DynamicsJNI.btSliderConstraint_getRigidBodyB(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btSliderConstraint_getRigidBodyB(swigCPtr, this), false);
 }
 
   public Matrix4 getCalculatedTransformA() {

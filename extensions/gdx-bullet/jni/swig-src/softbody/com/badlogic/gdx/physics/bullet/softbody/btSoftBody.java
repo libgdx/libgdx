@@ -1657,7 +1657,7 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btRigidBody getBody() {
-  	return (btRigidBody)btCollisionObject.getInstance(SoftbodyJNI.btSoftBody_Anchor_body_get(swigCPtr, this), false);
+  	return btRigidBody.getInstance(SoftbodyJNI.btSoftBody_Anchor_body_get(swigCPtr, this), false);
   }
   
     public void setInfluence(float value) {
@@ -2313,7 +2313,7 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btRigidBody getRigid() {
-  	return (btRigidBody)btCollisionObject.getInstance(SoftbodyJNI.btSoftBody_Body_rigid_get(swigCPtr, this), false);
+  	return btRigidBody.getInstance(SoftbodyJNI.btSoftBody_Body_rigid_get(swigCPtr, this), false);
   }
   
     public void setCollisionObject(btCollisionObject value) {

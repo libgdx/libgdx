@@ -80,11 +80,11 @@ public class btConeTwistConstraint extends btTypedConstraint {
   }
 
   public btRigidBody getRigidBodyA() {
-	return (btRigidBody)btCollisionObject.getInstance(DynamicsJNI.btConeTwistConstraint_getRigidBodyA(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btConeTwistConstraint_getRigidBodyA(swigCPtr, this), false);
 }
 
   public btRigidBody getRigidBodyB() {
-	return (btRigidBody)btCollisionObject.getInstance(DynamicsJNI.btConeTwistConstraint_getRigidBodyB(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btConeTwistConstraint_getRigidBodyB(swigCPtr, this), false);
 }
 
   public void setAngularOnly(boolean angularOnly) {

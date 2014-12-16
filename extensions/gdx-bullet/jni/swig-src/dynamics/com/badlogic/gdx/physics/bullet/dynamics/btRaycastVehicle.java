@@ -246,7 +246,7 @@ public class btRaycastVehicle extends btActionInterface {
   }
 
   public btRigidBody getRigidBody() {
-	return (btRigidBody)btCollisionObject.getInstance(DynamicsJNI.btRaycastVehicle_getRigidBody__SWIG_0(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btRaycastVehicle_getRigidBody__SWIG_0(swigCPtr, this), false);
 }
 
   public int getRightAxis() {
