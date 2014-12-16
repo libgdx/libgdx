@@ -53,7 +53,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
-		addInputSuffix(".png", ".jpg");
+		addInputSuffix(".png", ".jpg", ".gif");
 	}
 
 	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {

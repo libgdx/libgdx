@@ -39,6 +39,7 @@ import java.util.Set;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
@@ -400,6 +401,8 @@ public class TexturePacker {
 
 	/** @author Nathan Sweet */
 	static public class Rect {
+		static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+
 		public String name;
 		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
 		public int x, y;
@@ -414,6 +417,8 @@ public class TexturePacker {
 		private boolean isPatch;
 		private BufferedImage image;
 		private File file;
+		int fileImageIndex;
+		private boolean isEmpty = false;
 		int score1, score2;
 
 		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
@@ -430,20 +435,34 @@ public class TexturePacker {
 			this.isPatch = isPatch;
 		}
 
+		public static Rect newEmptyRect () {
+			Rect rect = new Rect(emptyImage, 0, 0, 1, 1, false);
+			rect.isEmpty = true;
+			return rect;
+		}
+
 		/** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
 		public void unloadImage (File file) {
 			this.file = file;
-			image = null;
+			if (!isEmpty) // Remember empty image to avoid re-processing.
+				image = null;
 		}
 
 		public BufferedImage getImage (ImageProcessor imageProcessor) {
 			if (image != null) return image;
 
 			BufferedImage image;
+			ImageReader imageReader = null;
 			try {
-				image = ImageIO.read(file);
+				if (fileImageIndex == 0)
+					image = ImageIO.read(file);
+				else {
+					image = ImageProcessor.getGifFrame(file, fileImageIndex);
+				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error reading image: " + file, ex);
+			} finally {
+				if (imageReader != null) imageReader.setInput(null);
 			}
 			if (image == null) throw new RuntimeException("Unable to read image: " + file);
 			String name = this.name;
@@ -483,6 +502,8 @@ public class TexturePacker {
 			score1 = rect.score1;
 			score2 = rect.score2;
 			file = rect.file;
+			fileImageIndex = rect.fileImageIndex;
+			isEmpty = rect.isEmpty;
 			isPatch = rect.isPatch;
 		}
 
@@ -524,6 +545,7 @@ public class TexturePacker {
 		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
 		public Format format = Format.RGBA8888;
 		public boolean alias = true;
+		public float maxAnimationDelayError = 0f;
 		public String outputFormat = "png";
 		public float jpegQuality = 0.9f;
 		public boolean ignoreBlankImages = true;
@@ -560,6 +582,7 @@ public class TexturePacker {
 			stripWhitespaceX = settings.stripWhitespaceX;
 			stripWhitespaceY = settings.stripWhitespaceY;
 			alias = settings.alias;
+			maxAnimationDelayError = settings.maxAnimationDelayError;
 			format = settings.format;
 			jpegQuality = settings.jpegQuality;
 			outputFormat = settings.outputFormat;
