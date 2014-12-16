@@ -14,6 +14,16 @@
 %ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape);
 %ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia);
 
+%typemap(javaout) 	btRigidBody *, const btRigidBody *, btRigidBody * const & {
+	return (btRigidBody)btCollisionObject.getInstance($jnicall, $owner);
+}
+
+%typemap(javaout) 	btRigidBody, const btRigidBody, btRigidBody & {
+	return (btRigidBody)btCollisionObject.getInstance($jnicall, $owner);
+}
+
+%typemap(javadirectorin) btRigidBody *, const btRigidBody *, btRigidBody * const &	"(btRigidBody)btCollisionObject.getInstance($1, false)"
+
 %typemap(javacode) btRigidBody::btRigidBodyConstructionInfo %{
 	protected btMotionState motionState;
 	

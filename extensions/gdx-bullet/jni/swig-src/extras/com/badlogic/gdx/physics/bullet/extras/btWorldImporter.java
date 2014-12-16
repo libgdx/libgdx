@@ -126,9 +126,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody getRigidBodyByName(String name) {
-    long cPtr = ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return (btRigidBody)btCollisionObject.getInstance(ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name), false);
+}
 
   public btTypedConstraint getConstraintByName(String name) {
     long cPtr = ExtrasJNI.btWorldImporter_getConstraintByName(swigCPtr, this, name);
@@ -144,9 +143,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody createRigidBody(boolean isDynamic, float mass, Matrix4 startTransform, btCollisionShape shape, String bodyName) {
-    long cPtr = ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return (btRigidBody)btCollisionObject.getInstance(ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
+}
 
   public btCollisionObject createCollisionObject(Matrix4 startTransform, btCollisionShape shape, String bodyName) {
 	return btCollisionObject.getInstance(ExtrasJNI.btWorldImporter_createCollisionObject(swigCPtr, this, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
