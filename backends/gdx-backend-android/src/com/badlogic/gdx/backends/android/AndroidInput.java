@@ -95,7 +95,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	};
 
-	public static final int NUM_TOUCHES = 40;
+	public static final int NUM_TOUCHES = 20;
 
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();
 	ArrayList<KeyEvent> keyEvents = new ArrayList();

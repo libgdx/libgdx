@@ -125,8 +125,8 @@ public class btTypedConstraint extends btTypedObject {
   }
 
   public static btRigidBody getFixedBody() {
-    return new btRigidBody(DynamicsJNI.btTypedConstraint_getFixedBody(), false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btTypedConstraint_getFixedBody(), false);
+}
 
   static public class btConstraintInfo2 extends BulletBase {
   	private long swigCPtr;
@@ -351,12 +351,12 @@ public class btTypedConstraint extends btTypedObject {
   }
 
   public btRigidBody getRigidBodyA() {
-    return new btRigidBody(DynamicsJNI.btTypedConstraint_getRigidBodyA__SWIG_0(swigCPtr, this), false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btTypedConstraint_getRigidBodyA__SWIG_0(swigCPtr, this), false);
+}
 
   public btRigidBody getRigidBodyB() {
-    return new btRigidBody(DynamicsJNI.btTypedConstraint_getRigidBodyB__SWIG_0(swigCPtr, this), false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btTypedConstraint_getRigidBodyB__SWIG_0(swigCPtr, this), false);
+}
 
   public int getUserConstraintType() {
     return DynamicsJNI.btTypedConstraint_getUserConstraintType(swigCPtr, this);

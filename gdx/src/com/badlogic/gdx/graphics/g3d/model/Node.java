@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes a transform relative to its parents. A Node can have
  * child nodes. Optionally a node can specify a {@link MeshPart} and a {@link Material} to be applied to the mesh part.
@@ -30,10 +31,14 @@ import com.badlogic.gdx.utils.Array;
 public class Node {
 	/** the id, may be null, FIXME is this unique? **/
 	public String id;
-	/** parent node, may be null **/
-	public Node parent;
-	/** child nodes **/
-	public final Array<Node> children = new Array<Node>(2);
+	/** @deprecated Use {@link #getParent()} instead. **/
+	@Deprecated public Node parent; // TODO: Make private
+	/** @deprecated Use {@link #getChildren()} instead. **/
+	@Deprecated public final Array<Node> children = new Array<Node>(2); // TODO: Make private
+	/** Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
+	 * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
+	 * of its parent transform. */
+	public boolean inheritTransform = true;
 	/** Whether this node is currently being animated, if so the translation, rotation and scale values are not used. */
 	public boolean isAnimated;
 	/** the translation, relative to the parent, not modified by animations **/
@@ -60,10 +65,10 @@ public class Node {
 	/** Calculates the world transform; the product of local transform and the parent's world transform.
 	 * @return the world transform */
 	public Matrix4 calculateWorldTransform () {
-		if (parent == null)
-			globalTransform.set(localTransform);
-		else
+		if (inheritTransform && parent != null)
 			globalTransform.set(parent.globalTransform).mul(localTransform);
+		else
+			globalTransform.set(localTransform);
 		return globalTransform;
 	}
 
@@ -134,10 +139,119 @@ public class Node {
 		return out;
 	}
 
+	/** Adds this node as child to specified parent Node, synonym for: <code>parent.addChild(this)</code>
+	 * @param parent The Node to attach this Node to. */
+	public <T extends Node> void attachTo (T parent) {
+		parent.addChild(this);
+	}
+
+	/** Removes this node from its current parent, if any. Short for: <code>this.getParent().removeChild(this)</code> */
+	public void detach () {
+		if (parent != null) {
+			parent.removeChild(this);
+			parent = null;
+		}
+	}
+
+	/** @return whether this Node has one or more children (true) or not (false) */
+	public boolean hasChildren () {
+		return children != null && children.size > 0;
+	}
+
+	/** @return The number of child nodes that this Node current contains.
+	 * @see #getChild(int) */
+	public int getChildCount () {
+		return children.size;
+	}
+
+	/** @param index The zero-based index of the child node to get, must be: 0 <= index < {@link #getChildCount()}.
+	 * @return The child node at the specified index */
+	public Node getChild (final int index) {
+		return children.get(index);
+	}
+
 	/** @param recursive false to fetch a root child only, true to search the entire node tree for the specified node.
 	 * @return The node with the specified id, or null if not found. */
 	public Node getChild (final String id, boolean recursive, boolean ignoreCase) {
 		return getNode(children, id, recursive, ignoreCase);
+	}
+
+	/** Adds the specified node as the currently last child of this node. If the node is already a child of another node, then it is
+	 * removed from its current parent.
+	 * @param child The Node to add as child of this Node
+	 * @return the zero-based index of the child */
+	public <T extends Node> int addChild (final T child) {
+		return insertChild(-1, child);
+	}
+
+	/** Adds the specified nodes as the currently last child of this node. If the node is already a child of another node, then it
+	 * is removed from its current parent.
+	 * @param nodes The Node to add as child of this Node
+	 * @return the zero-based index of the first added child */
+	public <T extends Node> int addChildren (final Iterable<T> nodes) {
+		return insertChildren(-1, nodes);
+	}
+
+	/** Insert the specified node as child of this node at the specified index. If the node is already a child of another node, then
+	 * it is removed from its current parent. If the specified index is less than zero or equal or greater than
+	 * {@link #getChildCount()} then the Node is added as the currently last child.
+	 * @param index The zero-based index at which to add the child
+	 * @param child The Node to add as child of this Node
+	 * @return the zero-based index of the child */
+	public <T extends Node> int insertChild (int index, final T child) {
+		for (Node p = this; p != null; p = child.getParent()) {
+			if (p == child) throw new GdxRuntimeException("Cannot add a parent as a child");
+		}
+		Node p = child.getParent();
+		if (p != null && !p.removeChild(child)) throw new GdxRuntimeException("Could not remove child from its current parent");
+		if (index < 0 || index >= children.size) {
+			index = children.size;
+			children.add(child);
+		} else
+			children.insert(index, child);
+		child.parent = this;
+		return index;
+	}
+
+	/** Insert the specified nodes as children of this node at the specified index. If the node is already a child of another node,
+	 * then it is removed from its current parent. If the specified index is less than zero or equal or greater than
+	 * {@link #getChildCount()} then the Node is added as the currently last child.
+	 * @param index The zero-based index at which to add the child
+	 * @param nodes The nodes to add as child of this Node
+	 * @return the zero-based index of the first inserted child */
+	public <T extends Node> int insertChildren (int index, final Iterable<T> nodes) {
+		if (index < 0 || index > children.size)
+			index = children.size;
+		int i = index;
+		for (T child : nodes)
+			insertChild(i++, child);
+		return index;
+	}
+
+	/** Removes the specified node as child of this node. On success, the child node will be not attached to any parent node (its
+	 * {@link #getParent()} method will return null). If the specified node currently isn't a child of this node then the removal
+	 * is considered to be unsuccessful and the method will return false.
+	 * @param child The child node to remove.
+	 * @return Whether the removal was successful. */
+	public <T extends Node> boolean removeChild (final T child) {
+		if (!children.removeValue(child, true)) return false;
+		child.parent = null;
+		return true;
+	}
+
+	/** @return An {@link Iterable} to all child nodes that this node contains. */
+	public Iterable<Node> getChildren () {
+		return children;
+	}
+
+	/** @return The parent node that holds this node as child node, may be null. */
+	public Node getParent () {
+		return parent;
+	}
+
+	/** @return Whether (true) is this Node is a child node of another node or not (false). */
+	public boolean hasParent () {
+		return parent != null;
 	}
 
 	/** Helper method to recursive fetch a node from an array

@@ -14,6 +14,16 @@
 %ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape);
 %ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia);
 
+%typemap(javaout) 	btRigidBody *, const btRigidBody *, btRigidBody * const & {
+	return btRigidBody.getInstance($jnicall, $owner);
+}
+
+%typemap(javaout) 	btRigidBody, const btRigidBody, btRigidBody & {
+	return btRigidBody.getInstance($jnicall, $owner);
+}
+
+%typemap(javadirectorin) btRigidBody *, const btRigidBody *, btRigidBody * const &	"btRigidBody.getInstance($1, false)"
+
 %typemap(javacode) btRigidBody::btRigidBodyConstructionInfo %{
 	protected btMotionState motionState;
 	
@@ -111,6 +121,21 @@
 
 %typemap(javacode) btRigidBody %{
 	protected btMotionState motionState;
+	
+	/** @return The existing instance for the specified pointer, or null if the instance doesn't exist */
+	public static btRigidBody getInstance(final long swigCPtr) {
+		return (btRigidBody)btCollisionObject.getInstance(swigCPtr);
+	}
+		
+	/** @return The existing instance for the specified pointer, or a newly created instance if the instance didn't exist */
+	public static btRigidBody getInstance(final long swigCPtr, boolean owner) {
+		if (swigCPtr == 0)
+			return null;
+		btRigidBody result = getInstance(swigCPtr);
+		if (result == null)
+				result = new btRigidBody(swigCPtr, owner);
+		return result;
+	}
 	
 	public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
 		this(false, constructionInfo);

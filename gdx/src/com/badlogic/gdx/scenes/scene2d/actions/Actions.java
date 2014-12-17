@@ -44,7 +44,7 @@ public class Actions {
 
 	static public AddAction addAction (Action action, Actor targetActor) {
 		AddAction addAction = action(AddAction.class);
-		addAction.setTargetActor(targetActor);
+		addAction.setTarget(targetActor);
 		addAction.setAction(action);
 		return addAction;
 	}
@@ -57,7 +57,7 @@ public class Actions {
 
 	static public RemoveAction removeAction (Action action, Actor targetActor) {
 		RemoveAction removeAction = action(RemoveAction.class);
-		removeAction.setTargetActor(targetActor);
+		removeAction.setTarget(targetActor);
 		removeAction.setAction(action);
 		return removeAction;
 	}
@@ -306,7 +306,7 @@ public class Actions {
 
 	static public RemoveActorAction removeActor (Actor removeActor) {
 		RemoveActorAction action = action(RemoveActorAction.class);
-		action.setRemoveActor(removeActor);
+		action.setTarget(removeActor);
 		return action;
 	}
 
@@ -473,7 +473,7 @@ public class Actions {
 
 	static public AddListenerAction addListener (EventListener listener, boolean capture, Actor targetActor) {
 		AddListenerAction addAction = action(AddListenerAction.class);
-		addAction.setTargetActor(targetActor);
+		addAction.setTarget(targetActor);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
 		return addAction;
@@ -488,7 +488,7 @@ public class Actions {
 
 	static public RemoveListenerAction removeListener (EventListener listener, boolean capture, Actor targetActor) {
 		RemoveListenerAction addAction = action(RemoveListenerAction.class);
-		addAction.setTargetActor(targetActor);
+		addAction.setTarget(targetActor);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
 		return addAction;
