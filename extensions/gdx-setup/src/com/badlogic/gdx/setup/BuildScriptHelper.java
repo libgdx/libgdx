@@ -49,6 +49,8 @@ public class BuildScriptHelper {
 		write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");
 		write(wr, "ashleyVersion = '" + DependencyBank.ashleyVersion + "'");
 		write(wr, "aiVersion = '" + DependencyBank.aiVersion + "'");
+		write(wr, "jUnitVersion = '" + DependencyBank.jUnitVersion + "'");
+		write(wr, "mockitoVersion = '" + DependencyBank.mockitoVersion + "'");
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
@@ -60,6 +62,10 @@ public class BuildScriptHelper {
 	}
 
 	public static void addProject(ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
+		if(project.equals(ProjectType.TESTS)) {
+			return;
+		}
+		
 		space(wr);
 		write(wr, "project(\":" + project.getName() + "\") {");
 		for (String plugin : project.getPlugins()) {
@@ -71,12 +77,16 @@ public class BuildScriptHelper {
 		addDependencies(project, dependencies, wr);
 		write(wr, "}");
 	}
-
+	
 	private static void addDependencies(ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
-			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");				
 		}
+		
+		
+		
+		
 		for (Dependency dep : dependencyList) {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
@@ -89,6 +99,62 @@ public class BuildScriptHelper {
 			}
 		}
 		write(wr, "}");
+	}
+	
+	public static void addTestsProject(List<ProjectType> projects, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+		if(!projects.contains(ProjectType.TESTS)) {
+			return;
+		}
+		
+		space(wr);
+		write(wr, "project(\":" + ProjectType.TESTS.getName() + "\") {");
+		for (String plugin : ProjectType.TESTS.getPlugins()) {
+			write(wr, "apply plugin: \"" + plugin + "\"");
+		}
+		space(wr);
+		addConfigurations(ProjectType.TESTS, wr);
+		space(wr);
+		write(wr, "sourceSets.test.java.srcDirs = [\"src/\"]");
+		
+		addTestDependencies(projects, dependencyList, wr);
+		
+		
+		write(wr, "}");
+	}
+	
+
+	private static void addTestDependencies(List<ProjectType> projects,	List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+		write(wr, "dependencies {");
+		
+		write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
+		
+		if (projects.contains(ProjectType.ANDROID)) {
+			write(wr, "compile project(\":" + ProjectType.ANDROID.getName() + "\")");				
+		}
+		
+		if (projects.contains(ProjectType.IOS)) {
+			write(wr, "// uncomment only on iOS platforms");	
+			write(wr, "// uncomment on other platforms will cause test fail: superClassName is empty!");	
+			write(wr, "//compile project(\":" + ProjectType.IOS.getName() + "\")");				
+		}
+		if (projects.contains(ProjectType.HTML)) {
+			write(wr, "compile project(\":" + ProjectType.HTML.getName() + "\")");				
+		}
+		if (projects.contains(ProjectType.DESKTOP)) {
+			write(wr, "compile project(\":" + ProjectType.DESKTOP.getName() + "\")");				
+		}
+		
+		
+		
+		for (Dependency dep : dependencyList) {
+			if (dep.getDependencies(ProjectType.TESTS) == null) continue;
+			for (String moduleDependency : dep.getDependencies(ProjectType.TESTS)) {
+				if (moduleDependency == null) continue;
+					write(wr, "compile \"" + moduleDependency + "\"");
+			}
+		}
+		write(wr, "}");
+		
 	}
 
 	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {

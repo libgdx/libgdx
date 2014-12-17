@@ -1,0 +1,12 @@
+package %PACKAGE%.tests;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class SimpleJUnitTest {
+
+	@Test
+	public void thatOneIsOne() {
+		Assert.assertEquals(1, 1);
+	}
+}
