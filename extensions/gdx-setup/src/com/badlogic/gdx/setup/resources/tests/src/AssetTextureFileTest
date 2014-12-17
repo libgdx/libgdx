@@ -1,0 +1,27 @@
+package %PACKAGE%.tests;
+
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.badlogic.gdx.Gdx;
+import com.mygdx.game.GdxTestRunner;
+
+/**
+ * Run your tests with GdxTestRunner if your tests require libgdx headless
+ * environment.
+ *
+ */
+@RunWith(GdxTestRunner.class)
+public class AssetTextureFileTest {
+
+	public static String relativeAssetFolderPath = "../android/assets/";
+
+	@Test
+	public void thatTextureFileExists() {
+		Assert.assertTrue(Gdx.files.internal(relativeAssetFolderPath + "badlogic.jpg").exists());
+	}
+
+}
