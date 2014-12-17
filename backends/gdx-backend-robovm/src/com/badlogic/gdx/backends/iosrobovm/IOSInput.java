@@ -169,18 +169,18 @@ public class IOSInput implements Input {
 	}
 	
 	private void updateAccelerometer (CMAccelerometerData data) {
-		float x = (float) data.getAcceleration().getX() * 10f;
-		float y = (float) data.getAcceleration().getY() * 10f;
-		float z = (float) data.getAcceleration().getZ() * 10f;
+		float x = (float) data.getAcceleration().x() * 10f;
+		float y = (float) data.getAcceleration().y() * 10f;
+		float z = (float) data.getAcceleration().z() * 10f;
 		acceleration[0] = -x;
 		acceleration[1] = -y;
 		acceleration[2] = -z;
 	}
 	
 	private void updateRotation (CMMagnetometerData data) {
-		final float eX = (float) data.getMagneticField().getX();
-		final float eY = (float) data.getMagneticField().getY();
-		final float eZ = (float) data.getMagneticField().getZ();
+		final float eX = (float) data.getMagneticField().x();
+		final float eY = (float) data.getMagneticField().y();
+		final float eZ = (float) data.getMagneticField().z();
 				
 		float gX = acceleration[0];
 		float gY = acceleration[1];
@@ -359,12 +359,12 @@ public class IOSInput implements Input {
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
-			for (int i = 0; i < range.getLength(); i++) {
+			for (int i = 0; i < range.length(); i++) {
 				app.input.inputProcessor.keyTyped((char)8);
 			}
 
 			if (string.isEmpty()) {
-				if (range.getLength() > 0) Gdx.graphics.requestRendering();
+				if (range.length() > 0) Gdx.graphics.requestRendering();
 				return false;
 			}
 
@@ -647,8 +647,8 @@ public class IOSInput implements Input {
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.getX() * app.displayScaleFactor);
-				event.y = (int)(loc.getY() * app.displayScaleFactor);
+				event.x = (int)(loc.x() * app.displayScaleFactor);
+				event.y = (int)(loc.y() * app.displayScaleFactor);
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);

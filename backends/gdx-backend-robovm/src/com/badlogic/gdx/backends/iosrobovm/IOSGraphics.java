@@ -84,8 +84,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			// FIXME screen orientation needs to be stored for
 			// Input#getNativeOrientation
 			CGSize bounds = app.getBounds(this);
-			graphics.width = (int)bounds.getWidth();
-			graphics.height = (int)bounds.getHeight();
+			graphics.width = (int)bounds.width();
+			graphics.height = (int)bounds.height();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
 		}
@@ -167,9 +167,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
-		width = (int)bounds.getWidth();
-		height = (int)bounds.getHeight();
-		app.debug(tag, bounds.getWidth() + "x" + bounds.getHeight() + ", " + scale);
+		width = (int)bounds.width();
+		height = (int)bounds.height();
+		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + scale);
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
