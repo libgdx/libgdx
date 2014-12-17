@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.GdxTestRunner;
+import %PACKAGE%.GdxTestRunner;
 
 /**
  * Run your tests with GdxTestRunner if your tests require libgdx headless
