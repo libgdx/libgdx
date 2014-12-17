@@ -67,8 +67,8 @@ public abstract class  Emitter extends ParticleControllerComponent implements Js
 	
 	@Override
 	public void read (Json json, JsonValue jsonData) {
-		minParticleCount = json.readValue("minParticleCount", Integer.class, jsonData);
-		maxParticleCount = json.readValue("maxParticleCount", Integer.class, jsonData);
+		minParticleCount = json.readValue("minParticleCount", int.class, jsonData);
+		maxParticleCount = json.readValue("maxParticleCount", int.class, jsonData);
 	}
 
 }

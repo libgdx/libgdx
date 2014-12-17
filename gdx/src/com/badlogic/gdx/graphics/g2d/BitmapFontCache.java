@@ -75,23 +75,21 @@ public class BitmapFontCache {
 		this(font, font.usesIntegerPositions());
 	}
 
-	/** Creates a new BitmapFontCache
-	 * @param font the font to use
-	 * @param integer whether to use integer positions and sizes. */
+	/** @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFontCache (BitmapFont font, boolean integer) {
 		this.font = font;
 		this.integer = integer;
 
 		int regionsLength = font.regions.length;
-		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
+		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least one texture page.");
 
 		this.vertexData = new float[regionsLength][];
 		this.colorChunks = new Array<ColorChunk>();
 
 		this.idx = new int[regionsLength];
 		int vertexDataLength = vertexData.length;
-		if (vertexDataLength > 1) { // if we have multiple pages...
-			// contains the indices of the glyph in the Cache as they are added
+		if (vertexDataLength > 1) { // If we have multiple pages...
+			// Contains the indices of the glyph in the Cache as they are added.
 			glyphIndices = new IntArray[vertexDataLength];
 			for (int i = 0, n = glyphIndices.length; i < n; i++) {
 				glyphIndices[i] = new IntArray();
@@ -443,7 +441,7 @@ public class BitmapFontCache {
 					char ch = str.charAt(i);
 					if (ch == ']') {
 						if (i < start + 2 || i > start + 9)
-							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits");
+							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits.");
 						if (i <= start + 7) { // RRGGBB
 							Color.rgb888ToColor(hexColor, colorInt);
 							hexColor.a = 1f;
@@ -461,7 +459,7 @@ public class BitmapFontCache {
 					else if (ch >= 'A' && ch <= 'F')
 						colorInt = colorInt * 16 + (ch - ('A' - 10));
 					else
-						throw new GdxRuntimeException("Unexpected '" + ch + "' in hex color");
+						throw new GdxRuntimeException("Unexpected character in hex color: " + ch);
 				}
 			} else {
 				// Parse named color
@@ -476,7 +474,7 @@ public class BitmapFontCache {
 						} else {
 							String colorString = colorBuffer.toString();
 							Color newColor = Colors.get(colorString);
-							if (newColor == null) throw new GdxRuntimeException("Unknown color '" + colorString + "'");
+							if (newColor == null) throw new GdxRuntimeException("Unknown color: " + colorString);
 							this.color = newColor.toFloatBits();
 							addColorChunk(this.color, false);
 						}
@@ -487,7 +485,7 @@ public class BitmapFontCache {
 				}
 			}
 		}
-		throw new GdxRuntimeException("Unclosed color tag");
+		throw new GdxRuntimeException("Unclosed color tag.");
 	}
 
 	private void addColorChunk (float color, boolean isPop) {

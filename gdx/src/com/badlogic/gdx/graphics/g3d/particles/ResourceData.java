@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -36,19 +37,19 @@ public class ResourceData<T> implements Json.Serializable{
 	 * {@link com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData} in the {@link ResourceData} */
 	public static class SaveData implements Json.Serializable{
 		ObjectMap<String, Object> data;
-		Array<Integer> assets;
+		IntArray assets;
 		private int loadIndex;
 		protected ResourceData resources;
 		
 		public SaveData(){
 			data = new ObjectMap<String, Object>();
-			assets = new Array<Integer>();
+			assets = new IntArray();
 			loadIndex = 0;
 		}
 		
 		public SaveData(ResourceData resources){
 			data = new ObjectMap<String, Object>();
-			assets = new Array<Integer>();
+			assets = new IntArray();
 			loadIndex = 0;
 			this.resources = resources;
 		}
@@ -79,13 +80,13 @@ public class ResourceData<T> implements Json.Serializable{
 		@Override
 		public void write (Json json) {
 			json.writeValue("data", data, ObjectMap.class);
-			json.writeValue("indices", assets.toArray(Integer.class), Integer[].class);
+			json.writeValue("indices", assets.toArray(), int[].class);
 		}
 
 		@Override
 		public void read (Json json, JsonValue jsonData) {
 			data = json.readValue("data", ObjectMap.class, jsonData);
-			assets.addAll(json.readValue("indices", Integer[].class, jsonData));
+			assets.addAll(json.readValue("indices", int[].class, jsonData));
 		}
 	}
 	

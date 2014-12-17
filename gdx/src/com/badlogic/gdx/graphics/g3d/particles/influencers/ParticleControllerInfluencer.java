@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Pool;
 
 /** It's an {@link Influencer} which controls which {@link ParticleController} will be assigned to a particle.
@@ -187,19 +188,19 @@ public abstract class ParticleControllerInfluencer extends Influencer{
 		Array<ParticleEffect> effects = manager.getAll(ParticleEffect.class, new Array<ParticleEffect>());
 		
 		Array<ParticleController> controllers = new Array<ParticleController>(templates);
-		Array<Array<Integer>>effectsIndices = new Array<Array<Integer>>();
+		Array<IntArray>effectsIndices = new Array<IntArray>();
 		
 		for(int i=0; i < effects.size && controllers.size >0; ++i){
 			ParticleEffect effect = effects.get(i);
 			Array<ParticleController> effectControllers = effect.getControllers();
 			Iterator<ParticleController> iterator = controllers.iterator();
-			Array<Integer> indices = null;
+			IntArray indices = null;
 			while(iterator.hasNext()){
 				ParticleController controller = iterator.next();
 				int index = -1;
 				if( (index = effectControllers.indexOf(controller, true)) >-1){
 					if(indices == null){
-						indices = new Array<Integer>();
+						indices = new IntArray();
 					}
 					iterator.remove();
 					indices.add(index);
@@ -217,18 +218,18 @@ public abstract class ParticleControllerInfluencer extends Influencer{
 	@Override
 	public void load (AssetManager manager, ResourceData resources) {
 		SaveData data = resources.getSaveData();
-		Array<Array<Integer>>effectsIndices = data.load("indices");
+		Array<IntArray>effectsIndices = data.load("indices");
 		AssetDescriptor descriptor;
-		Iterator<Array<Integer>> iterator = effectsIndices.iterator();
+		Iterator<IntArray> iterator = effectsIndices.iterator();
 		while((descriptor = data.loadAsset()) != null){
 			ParticleEffect effect = (ParticleEffect)manager.get(descriptor);
 			if(effect == null)
 				throw new RuntimeException("Template is null");
 			Array<ParticleController> effectControllers = effect.getControllers();
-			Array<Integer> effectIndices = iterator.next();
+			IntArray effectIndices = iterator.next();
 			
-			for(Integer index : effectIndices){
-					templates.add(effectControllers.get(index));
+			for (int i = 0, n = effectIndices.size; i < n; i++) {
+				templates.add(effectControllers.get(effectIndices.get(i)));
 			}
 		}
 	}

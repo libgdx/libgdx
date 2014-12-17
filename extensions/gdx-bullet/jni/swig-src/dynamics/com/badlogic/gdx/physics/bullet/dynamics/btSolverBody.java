@@ -172,9 +172,8 @@ public class btSolverBody extends BulletBase {
   }
 
   public btRigidBody getOriginalBody() {
-    long cPtr = DynamicsJNI.btSolverBody_originalBody_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btSolverBody_originalBody_get(swigCPtr, this), false);
+}
 
   public void getVelocityInLocalPointNoDelta(Vector3 rel_pos, Vector3 velocity) {
     DynamicsJNI.btSolverBody_getVelocityInLocalPointNoDelta(swigCPtr, this, rel_pos, velocity);

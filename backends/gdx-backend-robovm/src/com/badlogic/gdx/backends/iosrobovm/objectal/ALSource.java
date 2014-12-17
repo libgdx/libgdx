@@ -21,6 +21,7 @@ import org.robovm.objc.ObjCRuntime;
 import org.robovm.objc.annotation.Method;
 import org.robovm.objc.annotation.NativeClass;
 import org.robovm.objc.annotation.Property;
+import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.Library;
 
 /**
@@ -33,6 +34,9 @@ public class ALSource extends NSObject {
 	static {
 		ObjCRuntime.bind(ALSource.class);
 	}
+	
+	@Property(selector = "sourceId")
+	public native int getSourceId ();
 
 	@Method(selector = "stop")
 	public native void stop ();

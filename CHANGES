@@ -1,4 +1,14 @@
-[1.4.2]
+[1.5.1]
+- API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
+- API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
+- API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
+- Added 64-bit support for iOS sim and device
+- Deprecated Node#children and Node#parent, added inheritTransform flag and methods to add/get/remove children
+- API Change: By default keyframes are no longer copied from Model to ModelInstance but shared instead, can be changed using the `ModelInstance.defaultShareKeyframes` flag or `shareKeyframes` constructor argument.
+
+[1.5.0]
+- API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
+- API Addition: Added getter for UITextField on IOS for keyboard customization 
 - API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
 - API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
 - API Addition: HttpRequest is now poolable.
@@ -8,6 +18,8 @@
 - API Change: ScrollPane#scrollToCenter -> ScrollPane#scrollTo; see optional boolean arguments centerHorizontal and centerVertical (scrollToCenter centered vertically only).
 - API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
 - Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
+- iOS backend now supports sound ids, thanks Tomski!
+
 
 [1.4.1]
 - Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
