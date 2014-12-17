@@ -320,6 +320,26 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
 		}
+		
+		// tests project
+		if (builder.modules.contains(ProjectType.TESTS)) {
+			project.files.add(new ProjectFile("tests/src/GdxTestRunner", "tests/src/" + packageDir + "/GdxTestRunner.java", true));
+			project.files.add(new ProjectFile("tests/src/SimpleJUnitTest", "tests/src/" + packageDir + "/tests/SimpleJUnitTest.java", true));
+			project.files.add(new ProjectFile("tests/src/SimpleMockitoTest", "tests/src/" + packageDir + "/tests/SimpleMockitoTest.java", true));
+			
+			if (builder.modules.contains(ProjectType.ANDROID)) {
+				project.files.add(new ProjectFile("tests/src/AssetTextureFileTest", "tests/src/" + packageDir + "/tests/AssetTextureFileTest.java", true));
+			}
+			
+			project.files.add(new ProjectFile("tests/build.gradle", false));
+			
+			
+			// create Android test files
+			if (builder.modules.contains(ProjectType.ANDROID)) {
+//				project.files.add(new ProjectFile("tests/src/AndroidLauncherMockTest", "tests/src/" + packageDir + "/core/sampletest/JUnitSampleTest.java", true));
+				
+			}
+		}
 
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
@@ -333,6 +353,11 @@ public class GdxSetup {
 		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
+		}
+		
+		if (builder.modules.contains(ProjectType.TESTS)) {
+			values.put("%JUNIT_VERSION%", DependencyBank.jUnitVersion);
+			values.put("%MOCKITO_VERSION%", DependencyBank.mockitoVersion);
 		}
 
 		copyAndReplace(outputDir, project, values);
@@ -555,6 +580,7 @@ public class GdxSetup {
 			projects.add(ProjectType.ANDROID);
 			projects.add(ProjectType.IOS);
 			projects.add(ProjectType.HTML);
+			projects.add(ProjectType.TESTS);
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
 			dependencies.add(bank.getDependency(ProjectDependency.GDX));
