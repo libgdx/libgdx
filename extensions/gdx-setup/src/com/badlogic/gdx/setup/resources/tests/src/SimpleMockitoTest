@@ -1,4 +1,4 @@
-package %PACKAGE%.tests.functional;
+package %PACKAGE%.tests;
 
 import org.junit.Test;
 import org.mockito.Mockito;

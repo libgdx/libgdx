@@ -1,4 +1,4 @@
-package %PACKAGE%.tests.unit;
+package %PACKAGE%.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
