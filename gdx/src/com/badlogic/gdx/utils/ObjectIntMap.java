@@ -718,6 +718,13 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 			return array;
 		}
 
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
+			while (hasNext)
+				array.add(next());
+			return array;
+		}
+
 		public void remove () {
 			super.remove();
 		}
