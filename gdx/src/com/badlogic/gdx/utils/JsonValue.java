@@ -894,7 +894,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		if (isValue())
 			return name == null ? asString() : name + ": " + asString();
 		else
-			return prettyPrint(OutputType.minimal, 0);
+			return name == null ? asString() : name + ": " + prettyPrint(OutputType.minimal, 0);
 	}
 
 	public String prettyPrint (OutputType outputType, int singleLineColumns) {
