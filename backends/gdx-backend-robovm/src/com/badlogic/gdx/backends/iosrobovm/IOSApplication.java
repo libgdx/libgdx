@@ -192,7 +192,7 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().getSize();
+		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
 
 		// determine orientation and resulting width + height
 		UIInterfaceOrientation orientation;
@@ -213,17 +213,17 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.getWidth();
-			width = (int)bounds.getHeight();
+			height = (int)bounds.width();
+			width = (int)bounds.height();
 			if (width < height) {
-				width = (int)bounds.getWidth();
-				height = (int)bounds.getHeight();
+				width = (int)bounds.width();
+				height = (int)bounds.height();
 			}
 			break;
 		default:
 			// assume portrait
-			width = (int)bounds.getWidth();
-			height = (int)bounds.getHeight();
+			width = (int)bounds.width();
+			height = (int)bounds.height();
 		}
 
 		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
