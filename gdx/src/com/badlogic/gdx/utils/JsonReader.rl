@@ -209,6 +209,7 @@ public class JsonReader implements BaseJsonReader {
 				if (data[p++] == '/') {
 					while (data[p] != '\n')
 						p++;
+					p--;
 				} else {
 					while (data[p] != '*' || data[p + 1] != '/')
 						p++;
@@ -282,12 +283,15 @@ public class JsonReader implements BaseJsonReader {
 				p--;
 			}
 
-			ws = [ \r\n\t] | (('//' | '/*') @comment);
+			comment = ('//' | '/*') @comment;
+			ws = [ \r\n\t] | comment;
+			ws2 = [ \r\t] | comment;
+			comma = ',' | '\n';
 			string = '"' @quotedChars %string '"' | ^[/{}\[\],:"\r\n\t ] >unquotedChars %string;
 			value = '{' @startObject | '[' @startArray | string;
 			nameValue = string >name ws* ':' ws* value;
-			object := ws* nameValue? ws* (',' ws* nameValue ws*)** ','? ws* '}' @endObject;
-			array := ws* value? ws* (',' ws* value ws*)** ','? ws* ']' @endArray;
+			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
+			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (','? ws* ']' @endArray);
 			main := ws* value ws*;
 
 			write init;
