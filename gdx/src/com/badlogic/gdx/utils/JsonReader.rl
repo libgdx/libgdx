@@ -293,7 +293,7 @@ public class JsonReader implements BaseJsonReader {
 			comma = ',' | '\n';
 			quotedString = '"' @quotedChars %string '"';
 			nameString = quotedString | ^[":}/\r\n\t ] >unquotedChars %string;
-			valueString = quotedString | ^["{[/\r\n\t ] >unquotedChars %string;
+			valueString = quotedString | ^["{[\]/\r\n\t ] >unquotedChars %string;
 			value = '{' @startObject | '[' @startArray | valueString;
 			nameValue = nameString >name ws* ':' ws* value;
 			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
