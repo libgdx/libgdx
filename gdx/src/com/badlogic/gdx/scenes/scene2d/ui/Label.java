@@ -86,14 +86,14 @@ public class Label extends Widget {
 		return style;
 	}
 
-	/** @param newText May be null. */
+	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
+		if (newText == null) newText = "";
 		if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
 			text.setLength(0);
 			text.append((StringBuilder)newText);
 		} else {
-			if (newText == null) newText = "";
 			if (textEquals(newText)) return;
 			text.setLength(0);
 			text.append(newText);
@@ -194,6 +194,7 @@ public class Label extends Widget {
 				x += (int)((width - bounds.width) / 2);
 		}
 
+		cache.setColor(Color.WHITE);
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
 		else
