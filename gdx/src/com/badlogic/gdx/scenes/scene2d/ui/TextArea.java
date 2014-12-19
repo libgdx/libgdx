@@ -192,6 +192,8 @@ public class TextArea extends TextField {
 
 	@Override
 	protected void sizeChanged () {
+		lastText = null; // Cause calculateOffsets to recalculate the line breaks.
+
 		// The number of lines showed must be updated whenever the height is updated
 		BitmapFont font = style.font;
 		Drawable background = style.background;
@@ -329,7 +331,7 @@ public class TextArea extends TextField {
 	protected boolean continueCursor (int index, int offset) {
 		int pos = calculateCurrentLineIndex(index + offset);
 		return super.continueCursor(index, offset)
-			&& (pos < 0 || pos >= linesBreak.size || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
+			&& (pos < 0 || pos >= linesBreak.size - 2 || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
 	}
 
 	public int getCursorLine () {
