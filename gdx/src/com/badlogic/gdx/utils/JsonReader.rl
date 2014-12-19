@@ -203,13 +203,13 @@ public class JsonReader implements BaseJsonReader {
 			action comment {
 				if (debug) System.out.println("comment /" + data[p]);
 				if (data[p++] == '/') {
-					while (data[p] != '\n')
+					while (p != eof && data[p] != '\n')
 						p++;
 					p--;
 				} else {
-					while (data[p] != '*' || data[p + 1] != '/')
+					while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
 						p++;
-					p++;
+					p += 2;
 				}
 			}
 			action unquotedChars {
@@ -224,8 +224,12 @@ public class JsonReader implements BaseJsonReader {
 						case '\\':
 							needsUnescape = true;
 							break;
-						case ':':
 						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
+						case ':':
 						case '\r':
 						case '\n':
 							break outer;
@@ -241,10 +245,14 @@ public class JsonReader implements BaseJsonReader {
 						case '\\':
 							needsUnescape = true;
 							break;
+						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
 						case '}':
 						case ']':
 						case ',':
-						case '/':
 						case '\r':
 						case '\n':
 							break outer;
