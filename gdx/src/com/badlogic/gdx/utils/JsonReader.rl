@@ -101,10 +101,6 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			action buffer {
-				s = p;
-				needsUnescape = false;
-			}
 			action name {
 				stringIsName = true;
 			}
@@ -229,13 +225,12 @@ public class JsonReader implements BaseJsonReader {
 							needsUnescape = true;
 							break;
 						case ':':
-						case ' ':
+						case '/':
 						case '\r':
 						case '\n':
-						case '\t':
 							break outer;
 						}
-						// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
+						if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
 						p++;
 						if (p == eof) break;
 					}
@@ -249,18 +244,19 @@ public class JsonReader implements BaseJsonReader {
 						case '}':
 						case ']':
 						case ',':
-						case ' ':
+						case '/':
 						case '\r':
 						case '\n':
-						case '\t':
 							break outer;
 						}
-						// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
+						if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
 						p++;
 						if (p == eof) break;
 					}
 				}
 				p--;
+				while (data[p] == ' ')
+					p--;
 			}
 			action quotedChars {
 				if (debug) System.out.println("quotedChars");
@@ -284,12 +280,14 @@ public class JsonReader implements BaseJsonReader {
 			}
 
 			comment = ('//' | '/*') @comment;
-			ws = [ \r\n\t] | comment;
-			ws2 = [ \r\t] | comment;
+			ws = [\r\n\t ] | comment;
+			ws2 = [\r\t ] | comment;
 			comma = ',' | '\n';
-			string = '"' @quotedChars %string '"' | ^[/{}\[\],:"\r\n\t ] >unquotedChars %string;
-			value = '{' @startObject | '[' @startArray | string;
-			nameValue = string >name ws* ':' ws* value;
+			quotedString = '"' @quotedChars %string '"';
+			nameString = quotedString | ^[":}/\r\n\t ] >unquotedChars %string;
+			valueString = quotedString | ^["{[/\r\n\t ] >unquotedChars %string;
+			value = '{' @startObject | '[' @startArray | valueString;
+			nameValue = nameString >name ws* ':' ws* value;
 			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
 			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (','? ws* ']' @endArray);
 			main := ws* value ws*;
@@ -310,8 +308,8 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
-				parseRuntimeEx);
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
+				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();

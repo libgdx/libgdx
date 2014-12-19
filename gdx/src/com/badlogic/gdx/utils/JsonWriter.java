@@ -171,14 +171,19 @@ public class JsonWriter extends Writer {
 		json,
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
-		/** Like JSON, but names and values are only quoted if they don't contain <code>\r\n\t</code> or <code>space</code> and don't
-		 * begin with <code>/{}[]:,"</code>. Additionally, names cannot contain <code>:</code> and values cannot contain
-		 * <code>}],</code>. */
+		/** Like JSON, but:
+		 * <ul>
+		 * <li>Names only require quotes if they start with <code>space</code> or <code>":}/</code> or they contain <code>:</code>.
+		 * <li>Values only require quotes if they start with <code>space</code> or <code>"{[/</code> or they contain
+		 * <code>}]/,</code> or they are equal to <code>true</code>, <code>false</code>, or <code>null</code>.
+		 * <li>Newlines are treated as commas, making commas optional in many cases.
+		 * <li>C style comments may be used: <code>//...</code> or <code>/*...*<b></b>/</code>
+		 * </ul> */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-		static private Pattern minimalNamePattern = Pattern.compile("[^/{}\\[\\],\":\\r\\n\\t ][^:\\r\\n\\t ]*");
-		static private Pattern minimalValuePattern = Pattern.compile("[^/{}\\[\\],\":\\r\\n\\t ][^}\\],\\r\\n\\t ]*");
+		static private Pattern minimalNamePattern = Pattern.compile("[^\":}/ ][^:]*");
+		static private Pattern minimalValuePattern = Pattern.compile("[^\"{\\[/ ][^}\\]/,]*");
 
 		public String quoteValue (Object value) {
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);

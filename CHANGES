@@ -6,6 +6,7 @@
 - Deprecated Node#children and Node#parent, added inheritTransform flag and methods to add/get/remove children
 - API Change: By default keyframes are no longer copied from Model to ModelInstance but shared instead, can be changed using the `ModelInstance.defaultShareKeyframes` flag or `shareKeyframes` constructor argument.
 - JSON minimal format now makes commas optional: newline can be used in place of any comma.
+- JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
