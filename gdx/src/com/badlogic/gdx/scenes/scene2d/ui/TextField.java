@@ -858,6 +858,7 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
+			if (character == 0) return false;
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
