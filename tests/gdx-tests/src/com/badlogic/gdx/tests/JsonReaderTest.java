@@ -14,6 +14,11 @@ public class JsonReaderTest extends GdxTest {
 	public void create () {
 		json = new Json();
 
+// json.fromJson(Test1.class, //
+// "{byteArrayField:[-1\n,-2]}"
+// );
+// if (true) return;
+
 		Test1 test = new Test1();
 		test.booleanField = true;
 		test.byteField = 123;
@@ -49,6 +54,8 @@ public class JsonReaderTest extends GdxTest {
 		roundTrip(test);
 
 		test.array.add("meow");
+		roundTrip(test);
+
 		test.array.add("moo");
 		roundTrip(test);
 
@@ -57,6 +64,8 @@ public class JsonReaderTest extends GdxTest {
 		roundTrip(test);
 
 		test.map.put("one", 1);
+		roundTrip(test);
+
 		test.map.put("two", 2);
 		test.map.put("nine", 9);
 		roundTrip(test);
@@ -68,16 +77,44 @@ public class JsonReaderTest extends GdxTest {
 	private void roundTrip (Object object) {
 		String text = json.toJson(object);
 		System.out.println(text);
-		Object object2 = json.fromJson(object.getClass(), text);
-		if (!object.equals(object2)) {
-			throw new RuntimeException("Fail!");
-		}
+		test(text, object);
 
 		text = json.prettyPrint(object, 130);
-		object2 = json.fromJson(object.getClass(), text);
-		if (!object.equals(object2)) {
-			throw new RuntimeException("Fail!");
-		}
+		test(text, object);
+	}
+
+	private void test (String text, Object object) {
+		check(text, object);
+
+		text = text.replace("{", "/*moo*/{/*moo*/");
+		check(text, object);
+
+		text = text.replace("}", "/*moo*/}/*moo*/");
+		text = text.replace("[", "/*moo*/[/*moo*/");
+		text = text.replace("]", "/*moo*/]/*moo*/");
+		text = text.replace(":", "/*moo*/:/*moo*/");
+		text = text.replace(",", "/*moo*/,/*moo*/");
+		check(text, object);
+
+		text = text.replace("/*moo*/", " /*moo*/ ");
+		check(text, object);
+
+		text = text.replace("/*moo*/", "// moo\n");
+		check(text, object);
+
+		text = text.replace("\n", "\r\n");
+		check(text, object);
+
+		text = text.replace(",", "\n");
+		check(text, object);
+
+		text = text.replace("\n", "\r\n");
+		check(text, object);
+	}
+
+	private void check (String text, Object object) {
+		Object object2 = json.fromJson(object.getClass(), text);
+		if (!object.equals(object2)) throw new RuntimeException("Fail!");
 	}
 
 	static public class Test1 {

@@ -201,7 +201,7 @@ public class JsonReader implements BaseJsonReader {
 				fret;
 			}
 			action comment {
-				if (debug) System.out.println("comment /" + data[p]);
+				int start = p - 1;
 				if (data[p++] == '/') {
 					while (p != eof && data[p] != '\n')
 						p++;
@@ -209,8 +209,9 @@ public class JsonReader implements BaseJsonReader {
 				} else {
 					while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
 						p++;
-					p += 2;
+					p++;
 				}
+				if (debug) System.out.println("comment " + new String(data, start, p - start));
 			}
 			action unquotedChars {
 				if (debug) System.out.println("unquotedChars");
@@ -290,10 +291,10 @@ public class JsonReader implements BaseJsonReader {
 			comment = ('//' | '/*') @comment;
 			ws = [\r\n\t ] | comment;
 			ws2 = [\r\t ] | comment;
-			comma = ',' | '\n';
+			comma = ',' | ('\n' ws* ','?);
 			quotedString = '"' @quotedChars %string '"';
-			nameString = quotedString | ^[":}/\r\n\t ] >unquotedChars %string;
-			valueString = quotedString | ^["{[\]/\r\n\t ] >unquotedChars %string;
+			nameString = quotedString | ^[":,}/\r\n\t ] >unquotedChars %string;
+			valueString = quotedString | ^[":,{[\]/\r\n\t ] >unquotedChars %string;
 			value = '{' @startObject | '[' @startArray | valueString;
 			nameValue = nameString >name ws* ':' ws* value;
 			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
