@@ -1,4 +1,7 @@
 [1.5.1]
+- Gradle updated to 2.2
+- GWT updated to 2.7.0
+- Android Gradle tooling updated to 1.0.0
 - API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
 - API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
 - API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
