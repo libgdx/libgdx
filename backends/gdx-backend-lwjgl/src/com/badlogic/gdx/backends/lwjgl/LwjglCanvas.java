@@ -206,7 +206,9 @@ public class LwjglCanvas implements Application {
 					return;
 				}
 				try {
-					graphics.updateTime();
+					Display.processMessages();
+
+					boolean shouldRender = false;
 
 					int width = Math.max(1, graphics.getWidth());
 					int height = Math.max(1, graphics.getHeight());
@@ -216,17 +218,28 @@ public class LwjglCanvas implements Application {
 						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 						resize(width, height);
 						listener.resize(width, height);
+						shouldRender = true;
 					}
 
-					executeRunnables();
+					if (executeRunnables()) shouldRender = true;
+
+					// If one of the runnables set running to false, for example after an exit().
+					if (!running) return;
 
 					input.update();
+					shouldRender |= graphics.shouldRender();
 					input.processEvents();
-					graphics.frameId++;
-					listener.render();
 					if (audio != null) audio.update();
-					Display.update();
+
+					if (shouldRender) {
+						graphics.updateTime();
+						graphics.frameId++;
+						listener.render();
+						Display.update(false);
+					}
+
 					canvas.setCursor(cursor);
+
 					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
 					exception(ex);
@@ -238,13 +251,13 @@ public class LwjglCanvas implements Application {
 
 	public boolean executeRunnables () {
 		synchronized (runnables) {
-			executedRunnables.addAll(runnables);
+			for (int i = runnables.size - 1; i >= 0; i--)
+				executedRunnables.addAll(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = 0; i < executedRunnables.size; i++)
-			executedRunnables.get(i).run();
-		executedRunnables.clear();
+		for (int i = executedRunnables.size - 1; i >= 0; i--)
+			executedRunnables.removeIndex(i).run();
 		return true;
 	}
 
@@ -328,6 +341,7 @@ public class LwjglCanvas implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -381,7 +395,7 @@ public class LwjglCanvas implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

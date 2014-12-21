@@ -289,7 +289,7 @@ public class SuperKoalio extends GdxTest {
 		// draw the koala, depending on the current velocity
 		// on the x-axis, draw the koala facing either right
 		// or left
-		Batch batch = renderer.getSpriteBatch();
+		Batch batch = renderer.getBatch();
 		batch.begin();
 		if (koala.facesRight) {
 			batch.draw(frame, koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);

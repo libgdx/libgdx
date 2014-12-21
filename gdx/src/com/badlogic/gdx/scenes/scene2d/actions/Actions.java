@@ -79,6 +79,22 @@ public class Actions {
 		return action;
 	}
 
+	static public MoveToAction moveToAligned (float x, float y, int alignment) {
+		return moveToAligned(x, y, alignment, 0, null);
+	}
+
+	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration) {
+		return moveToAligned(x, y, alignment, duration, null);
+	}
+
+	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration, Interpolation interpolation) {
+		MoveToAction action = action(MoveToAction.class);
+		action.setPosition(x, y, alignment);
+		action.setDuration(duration);
+		action.setInterpolation(interpolation);
+		return action;
+	}
+
 	/** Moves the actor instantly. */
 	static public MoveByAction moveBy (float amountX, float amountY) {
 		return moveBy(amountX, amountY, 0, null);

@@ -43,6 +43,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIScreen;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.GL20;
@@ -431,12 +432,12 @@ public class IOSApplication implements Application {
 		return new Clipboard() {
 			@Override
 			public void setContents (String content) {
-				UIPasteboard.getGeneral().setString(content);
+				UIPasteboard.getGeneralPasteboard().setString(content);
 			}
 
 			@Override
 			public String getContents () {
-				return UIPasteboard.getGeneral().getString();
+				return UIPasteboard.getGeneralPasteboard().getString();
 			}
 		};
 	}

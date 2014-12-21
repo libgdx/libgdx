@@ -23,13 +23,27 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MusicTest extends GdxTest {
+
 	Music music;
+	float songDuration = 183;
+	float currentPosition;
+
 	TextureRegion buttons;
 	SpriteBatch batch;
 	BitmapFont font;
+
+	Stage stage;
+	Slider slider;
+	boolean sliderUpdating = false;
 
 	@Override
 	public void create () {
@@ -39,13 +53,27 @@ public class MusicTest extends GdxTest {
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+
+		stage = new Stage();
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		slider = new Slider(0, 100, 0.1f, false, skin);
+		slider.setPosition(200, 20);
+		slider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				if (!sliderUpdating && slider.isDragging()) music.setPosition((slider.getValue() / 100f) * songDuration);
+			}
+		});
+		stage.addActor(slider);
+
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
-	
+
 	@Override
 	public void resume () {
 		System.out.println(Gdx.graphics.getDeltaTime());
@@ -53,10 +81,18 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void render () {
+		currentPosition = music.getPosition();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
+		font.draw(batch, (int)currentPosition / 60 + ":" + (int)currentPosition % 60, 365, 35);
 		batch.end();
+
+		sliderUpdating = true;
+		slider.setValue((currentPosition / songDuration) * 100f);
+		sliderUpdating = false;
+		stage.act();
+		stage.draw();
 
 		if (Gdx.input.justTouched()) {
 			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {

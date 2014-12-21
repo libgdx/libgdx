@@ -13,9 +13,5 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="lib" path="/gdx-backend-android/libs/support-v4-19.0.1.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay-android"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay-android-openiab"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-pay-android-ouya"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

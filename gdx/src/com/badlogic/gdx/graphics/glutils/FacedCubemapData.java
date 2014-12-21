@@ -2,15 +2,22 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
 import com.badlogic.gdx.graphics.CubemapData;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** A FacedCubemapData holds a cubemap data definition based on a {@link TextureData} per face.
+ * 
+ * @author Vincent Nousquet */
 public class FacedCubemapData implements CubemapData {
 
 	protected final TextureData[] data = new TextureData[6];
@@ -19,6 +26,24 @@ public class FacedCubemapData implements CubemapData {
 	 * before it can be used. */
 	public FacedCubemapData () {
 		this((TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null);
+	}
+
+	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
+	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
+		FileHandle positiveZ, FileHandle negativeZ) {
+		this(TextureData.Factory.loadFromFile(positiveX, false), TextureData.Factory.loadFromFile(negativeX,
+			false), TextureData.Factory.loadFromFile(positiveY, false), TextureData.Factory.loadFromFile(
+			negativeY, false), TextureData.Factory.loadFromFile(positiveZ, false), TextureData.Factory
+			.loadFromFile(negativeZ, false));
+	}
+
+	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
+	public FacedCubemapData (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY,
+		FileHandle positiveZ, FileHandle negativeZ, boolean useMipMaps) {
+		this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(
+			negativeX, useMipMaps), TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory
+			.loadFromFile(negativeY, useMipMaps), TextureData.Factory.loadFromFile(positiveZ, useMipMaps),
+			TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
 
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
@@ -61,6 +86,24 @@ public class FacedCubemapData implements CubemapData {
 		for (TextureData data : this.data)
 			if (!data.isManaged()) return false;
 		return true;
+	}
+
+	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set to
+	 * that side. Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change
+	 * to be taken in account.
+	 * @param side The {@link CubemapSide}
+	 * @param file The texture {@link FileHandle} */
+	public void load (CubemapSide side, FileHandle file) {
+		data[side.index] = TextureData.Factory.loadFromFile(file, false);
+	}
+
+	/** Sets the specified side of this cubemap to the specified {@link Pixmap}, overwriting any previous data set to that side.
+	 * Note that you need to reload through {@link Cubemap#load(CubemapData)} any cubemap using this data for the change to be
+	 * taken in account.
+	 * @param side The {@link CubemapSide}
+	 * @param pixmap The {@link Pixmap} */
+	public void load (CubemapSide side, Pixmap pixmap) {
+		data[side.index] = pixmap == null ? null : new PixmapTextureData(pixmap, null, false, false);
 	}
 
 	/** @return True if all sides of this cubemap are set, false otherwise. */
@@ -108,7 +151,7 @@ public class FacedCubemapData implements CubemapData {
 	public void prepare () {
 		if (!isComplete()) throw new GdxRuntimeException("You need to complete your cubemap data before using it");
 		for (int i = 0; i < data.length; i++)
-			data[i].prepare();
+			if (!data[i].isPrepared()) data[i].prepare();
 	}
 
 	@Override

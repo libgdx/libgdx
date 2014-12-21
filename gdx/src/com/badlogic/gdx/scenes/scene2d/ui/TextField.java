@@ -364,6 +364,10 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	private void blink () {
+		if (!Gdx.graphics.isContinuousRendering()) {
+			cursorOn = true;
+			return;
+		}
 		long time = TimeUtils.nanoTime();
 		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
 			cursorOn = !cursorOn;
@@ -756,7 +760,7 @@ public class TextField extends Widget implements Disableable {
 			if (ctrl) {
 				if (keycode == Keys.V) {
 					paste();
-					return true;
+					repeat = true;
 				}
 				if (keycode == Keys.C || keycode == Keys.INSERT) {
 					copy();

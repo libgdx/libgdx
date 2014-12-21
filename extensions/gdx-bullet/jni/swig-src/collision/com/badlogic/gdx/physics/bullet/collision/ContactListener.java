@@ -106,7 +106,7 @@ public class ContactListener extends BulletBase {
   }
 
   public boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return CollisionJNI.ContactListener_onContactAdded__SWIG_0(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
+    return CollisionJNI.ContactListener_onContactAdded__SWIG_0(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1);
   }
 
   public boolean onContactAdded(btManifoldPoint cp, btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
@@ -118,7 +118,7 @@ public class ContactListener extends BulletBase {
   }
 
   public boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, boolean match0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1, boolean match1) {
-    return CollisionJNI.ContactListener_onContactAdded__SWIG_3(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, colObj0Wrap, partId0, index0, match0, colObj1Wrap, partId1, index1, match1);
+    return CollisionJNI.ContactListener_onContactAdded__SWIG_3(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, match0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1, match1);
   }
 
   public boolean onContactAdded(btManifoldPoint cp, btCollisionObject colObj0, int partId0, int index0, boolean match0, btCollisionObject colObj1, int partId1, int index1, boolean match1) {
@@ -130,7 +130,7 @@ public class ContactListener extends BulletBase {
   }
 
   public boolean onContactAdded(btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return CollisionJNI.ContactListener_onContactAdded__SWIG_6(swigCPtr, this, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
+    return CollisionJNI.ContactListener_onContactAdded__SWIG_6(swigCPtr, this, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1);
   }
 
   public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
@@ -142,7 +142,7 @@ public class ContactListener extends BulletBase {
   }
 
   public boolean onContactAdded(btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, boolean match0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1, boolean match1) {
-    return CollisionJNI.ContactListener_onContactAdded__SWIG_9(swigCPtr, this, colObj0Wrap, partId0, index0, match0, colObj1Wrap, partId1, index1, match1);
+    return CollisionJNI.ContactListener_onContactAdded__SWIG_9(swigCPtr, this, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, match0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1, match1);
   }
 
   public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, boolean match0, btCollisionObject colObj1, int partId1, int index1, boolean match1) {

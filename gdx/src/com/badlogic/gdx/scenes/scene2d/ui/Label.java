@@ -44,7 +44,7 @@ public class Label extends Widget {
 	private float lastPrefHeight;
 	private boolean sizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
-	private boolean ellipse;
+	private boolean ellipsis;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -158,7 +158,7 @@ public class Label extends Widget {
 
 		float width = getWidth(), height = getHeight();
 		StringBuilder text;
-		if (ellipse && width < bounds.width) {
+		if (ellipsis && width < bounds.width) {
 			float ellipseWidth = font.getBounds("...").width;
 			text = tempText != null ? tempText : (tempText = new StringBuilder());
 			text.setLength(0);
@@ -302,9 +302,9 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is false. */
-	public void setEllipse (boolean ellipse) {
-		this.ellipse = ellipse;
+	/** When true the text will be truncated "..." if it does not fit within the width of the label. Default is false. */
+	public void setEllipsis (boolean ellipsis) {
+		this.ellipsis = ellipsis;
 	}
 
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */

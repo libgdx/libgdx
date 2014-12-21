@@ -63,4 +63,8 @@ public final class OALSimpleAudio extends NSObject {
 
 	@Property
 	public native void setUseHardwareIfAvailable (boolean useHardwareIfAvailable);
+	
+	@Property(selector = "channel")
+	public native ALChannelSource getChannelSource ();
+	
 }
