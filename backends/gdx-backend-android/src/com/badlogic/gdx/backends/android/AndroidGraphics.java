@@ -62,7 +62,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
 	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
 	 * kill the current process to avoid ANR */
-	static volatile boolean enforceContinuousRenderingOnPause = false;
+	static volatile boolean enforceContinuousRendering = false;
 
 	final View view;
 	int width;
@@ -583,7 +583,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public void setContinuousRendering (boolean isContinuous) {
 		if (view != null) {
 			// ignore setContinuousRendering(false) while pausing
-			this.isContinuous = enforceContinuousRenderingOnPause || isContinuous;
+			this.isContinuous = enforceContinuousRendering || isContinuous;
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);

@@ -202,10 +202,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
-		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRenderingOnPause;
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
 
 		// from here we don't want non continuous rendering
-		AndroidGraphics.enforceContinuousRenderingOnPause = true;
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
 		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
 		// will be ignored at this point...
@@ -220,7 +220,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			graphics.destroy();
 		}
 
-		AndroidGraphics.enforceContinuousRenderingOnPause = isContinuousEnforced;
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();

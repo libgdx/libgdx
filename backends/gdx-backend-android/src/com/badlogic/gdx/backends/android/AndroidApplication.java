@@ -257,10 +257,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	protected void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
-		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRenderingOnPause;
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
 
 		// from here we don't want non continuous rendering
-		AndroidGraphics.enforceContinuousRenderingOnPause = true;
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
 		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
 		// will be ignored at this point...
@@ -273,7 +273,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			graphics.destroy();
 		}
 
-		AndroidGraphics.enforceContinuousRenderingOnPause = isContinuousEnforced;
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();
