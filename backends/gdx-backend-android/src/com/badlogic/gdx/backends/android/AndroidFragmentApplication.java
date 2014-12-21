@@ -111,12 +111,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			View view = this.graphics.getView();
 
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Failed to setup immersive mode, a throwable has occurred.", e);
@@ -169,12 +166,12 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			public void resume () {
 				audio.resume();
 			}
-			
+
 			@Override
 			public void pause () {
 				audio.pause();
 			}
-			
+
 			@Override
 			public void dispose () {
 				audio.dispose();
@@ -205,7 +202,13 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
+
+		// from here we don't want non continuous rendering
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
+		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
+		// will be ignored at this point...
 		graphics.pause();
 
 		input.onPause();
@@ -217,6 +220,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			graphics.destroy();
 		}
 
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();
