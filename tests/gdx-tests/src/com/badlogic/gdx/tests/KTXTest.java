@@ -85,6 +85,9 @@ public class KTXTest extends GdxTest {
 			+ "   gl_Position = u_projViewTrans * g_position;\n"//
 			+ "}";
 		String cubemapFS = ""//
+			+ "#ifdef GL_ES\n"//
+			+ "precision mediump float;\n"//
+			+ "#endif\n"//
 			+ "uniform samplerCube u_environmentCubemap;\n"//
 			+ "varying vec3 v_cubeMapUV;\n"//
 			+ "void main() {\n" //
@@ -115,7 +118,6 @@ public class KTXTest extends GdxTest {
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(perspectiveCamera)));
 
 		// 2D texture test
-
 		String etc1aVS = "" //
 			+ "uniform mat4 u_projTrans;\n"//
 			+ "\n"//
@@ -132,6 +134,9 @@ public class KTXTest extends GdxTest {
 			+ "   v_color = a_color;\n"//
 			+ "}\n";//
 		String etc1aFS = ""//
+			+ "#ifdef GL_ES\n"//
+			+ "precision mediump float;\n"//
+			+ "#endif\n"//
 			+ "uniform sampler2D u_texture;\n"//
 			+ "\n"//
 			+ "varying vec4 v_color;\n"//
