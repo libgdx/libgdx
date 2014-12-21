@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -42,7 +44,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -60,8 +61,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
-	private GwtApplicationConfiguration config;
-	private GwtGraphics graphics;
+	GwtApplicationConfiguration config;
+	GwtGraphics graphics;
 	private GwtInput input;
 	private GwtNet net;
 	private Panel root = null;
@@ -93,6 +94,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.listener = getApplicationListener();
 		this.config = getConfig();
 		this.log = config.log;
+
+		addEventListeners();
 
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
@@ -188,18 +191,18 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			throw new RuntimeException(t);
 		}
 
-		// setup rendering timer
-		new Timer() {
+		AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
 			@Override
-			public void run () {
+			public void execute (double timestamp) {
 				try {
 					mainLoop();
 				} catch (Throwable t) {
 					error("GwtApplication", "exception: " + t.getMessage(), t);
 					throw new RuntimeException(t);
 				}
+				AnimationScheduler.get().requestAnimationFrame(this, graphics.canvas);
 			}
-		}.scheduleRepeating((int)((1f / config.fps) * 1000));
+		}, graphics.canvas);
 	}
 
 	void mainLoop() {
@@ -518,6 +521,27 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
+	
+	private native void addEventListeners () /*-{
+		var self = this;
+		$doc.addEventListener('visibilitychange', function (e) {
+			self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
+		});
+	}-*/;
+
+	private void onVisibilityChange (boolean visible) {
+		if (visible) {
+			for (LifecycleListener listener : lifecycleListeners) {
+				listener.resume();
+			}
+			listener.resume();
+		} else {
+			for (LifecycleListener listener : lifecycleListeners) {
+				listener.pause();
+			}
+			listener.pause();
+		}
+	}
 	
 	/**
 	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}

@@ -19,6 +19,8 @@ package com.badlogic.gdx.utils;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+
 /** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead for
  * put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
  * unordered map. Keys can also be accessed and the order changed using {@link #orderedKeys()}.
@@ -73,7 +75,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return keys;
 	}
 
-	public Iterator<Entry<K, V>> iterator () {
+	public Entries<K, V> iterator () {
 		return entries();
 	}
 

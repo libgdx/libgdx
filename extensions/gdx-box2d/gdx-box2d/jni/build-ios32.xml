@@ -70,7 +70,7 @@
 				<exclude name="*.o"/>
 			</fileset>
 		</delete>
-	</target>
+	</target>		
 
 	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
 	<target name="compile-386" depends="clean,create-build-dir">
@@ -124,8 +124,61 @@
 	</target>
 	
 	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
-	<target name="compile-arm" depends="create-build-dir,clean-objfiles">
+	<target name="compile-x86_64" depends="create-build-dir">
 		<mkdir dir="${buildDir}"/>
+		<antcall target="clean-objfiles"/>
+		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 ${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 ${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.c" to="*.o"/>
+			</compositemapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link-x86_64" depends="compile-x86_64">
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg path="${libsDir}/${libName}.x86_64" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
+	</target>
+	
+	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<target name="compile-arm" depends="create-build-dir">
+		<mkdir dir="${buildDir}"/>
+		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
@@ -173,14 +226,66 @@
 			<arg line="${libraries}" />
 		</exec>
 	</target>
+	
+		<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<target name="compile-arm64" depends="create-build-dir,clean-objfiles">
+		<mkdir dir="${buildDir}"/>
+		<antcall target="clean-objfiles"/>
+		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 ${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 ${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+			
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.c" to="*.o"/>
+			</compositemapper>
+		</apply>
+	</target>	
 
-	<target name="link-fat">
-		<exec executable="lipo" failonerror="true" dir="${libsDir}">
-			<arg line="-create -output ${libName} ${libName}.386 ${libName}.armv7"/>
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link-arm64" depends="compile-arm64">
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg path="${libsDir}/${libName}.arm64" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
 		</exec>
 	</target>
 
-	<target name="postcompile" depends="link-386,link-arm,link-fat">
+	<target name="link-fat">
+		<exec executable="lipo" failonerror="true" dir="${libsDir}">
+			<arg line="-create -output ${libName} ${libName}.386 ${libName}.x86_64 ${libName}.armv7 ${libName}.arm64"/>
+		</exec>
+	</target>
+
+	<target name="postcompile" depends="link-386,link-x86_64,link-arm,link-arm64,link-fat">
 		
 	</target>
 </project>

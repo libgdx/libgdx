@@ -137,7 +137,7 @@ public class Model implements Disposable {
 	private void loadNodes (Iterable<ModelNode> modelNodes) {
 		nodePartBones.clear();
 		for (ModelNode node : modelNodes) {
-			nodes.add(loadNode(null, node));
+			nodes.add(loadNode(node));
 		}
 		for (ObjectMap.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
 			if (e.key.invBoneBindTransforms == null)
@@ -148,10 +148,9 @@ public class Model implements Disposable {
 		}
 	}
 
-	private Node loadNode (Node parent, ModelNode modelNode) {
+	private Node loadNode (ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
-		node.parent = parent;
 
 		if (modelNode.translation != null) node.translation.set(modelNode.translation);
 		if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
@@ -194,7 +193,7 @@ public class Model implements Disposable {
 
 		if (modelNode.children != null) {
 			for (ModelNode child : modelNode.children) {
-				node.children.add(loadNode(node, child));
+				node.addChild(loadNode(child));
 			}
 		}
 

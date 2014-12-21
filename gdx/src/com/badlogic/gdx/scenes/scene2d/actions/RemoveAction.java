@@ -22,21 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 /** Removes an action from an actor.
  * @author Nathan Sweet */
 public class RemoveAction extends Action {
-	private Actor targetActor;
 	private Action action;
 
 	public boolean act (float delta) {
-		(targetActor != null ? targetActor : actor).removeAction(action);
+		target.removeAction(action);
 		return true;
-	}
-
-	public Actor getTargetActor () {
-		return targetActor;
-	}
-
-	/** Sets the actor to remove an action from. If null (the default), the {@link #getActor() actor} will be used. */
-	public void setTargetActor (Actor actor) {
-		this.targetActor = actor;
 	}
 
 	public Action getAction () {
@@ -49,7 +39,6 @@ public class RemoveAction extends Action {
 
 	public void reset () {
 		super.reset();
-		targetActor = null;
 		action = null;
 	}
 }
