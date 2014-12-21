@@ -55,6 +55,13 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	private static final String LOG_TAG = "AndroidGraphics";
 
+	/** When {@link AndroidFragmentApplication#onPause()} or {@link AndroidApplication#onPause()} call
+	 * {@link AndroidGraphics#pause()} they <b>MUST</b> enforce continuous rendering. If not, {@link #onDrawFrame(GL10)} will not
+	 * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
+	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
+	 * kill the current process to avoid ANR */
+	static volatile boolean enforceContinuousRendering = false;
+
 	final View view;
 	int width;
 	int height;
@@ -129,8 +136,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 			view.setRenderer(this);
 			return view;
-		}
-		else {
+		} else {
 			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
@@ -320,8 +326,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 					// ~500ms between taps.
 					synch.wait(4000);
 					if (pause) {
-						Gdx.app.error(LOG_TAG, "waiting for pause synchronization took too "
-							+ "long; assuming deadlock and killing");
+						// pause will never go false if onDrawFrame is never called by the GLThread
+						// when entering this method, we MUST enforce continuous rendering
+						Gdx.app.error(LOG_TAG, "waiting for pause synchronization took too long; assuming deadlock and killing");
 						android.os.Process.killProcess(android.os.Process.myPid());
 					}
 				} catch (InterruptedException ignored) {
@@ -482,8 +489,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 		logManagedCachesStatus();
 	}
-	
-	protected void logManagedCachesStatus() {
+
+	protected void logManagedCachesStatus () {
 		Gdx.app.log(LOG_TAG, Mesh.getManagedStatus());
 		Gdx.app.log(LOG_TAG, Texture.getManagedStatus());
 		Gdx.app.log(LOG_TAG, Cubemap.getManagedStatus());
@@ -576,8 +583,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		if (view != null) {
-			this.isContinuous = isContinuous;
-			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+			// ignore setContinuousRendering(false) while pausing
+			this.isContinuous = enforceContinuousRendering || isContinuous;
+			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
