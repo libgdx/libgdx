@@ -49,7 +49,7 @@ public abstract class GLTexture implements Disposable {
 
 	/** Generates a new OpenGL texture with the specified target. */
 	public GLTexture (int glTarget) {
-		this(glTarget, createGLHandle());
+		this(glTarget, Gdx.gl.glGenTexture ());
 	}
 
 	public GLTexture (int glTarget, int glHandle) {
@@ -179,16 +179,20 @@ public abstract class GLTexture implements Disposable {
 		delete();
 	}
 
+	/** @deprecated Use {@link TextureData.Factory#loadFromFile(FileHandle, Format, boolean)} instead. */
 	@Deprecated
 	protected static TextureData createTextureData (FileHandle file, Format format, boolean useMipMaps) {
 		return TextureData.Factory.loadFromFile(file, format, useMipMaps);
 	}
 
+	/** @deprecated Use {@link TextureData.Factory#loadFromFile(FileHandle, boolean)} instead. */
 	@Deprecated
 	protected static TextureData createTextureData (FileHandle file, boolean useMipMaps) {
 		return createTextureData(file, null, useMipMaps);
 	}
 
+	/** @deprecated Use {@link GL20#glGenTexture()} instead. */
+	@Deprecated
 	protected static int createGLHandle () {
 		return Gdx.gl.glGenTexture ();
 	}
