@@ -11,6 +11,8 @@
 - JSON minimal format now makes commas optional: newline can be used in place of any comma.
 - JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
 - API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
+- Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
+- Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
