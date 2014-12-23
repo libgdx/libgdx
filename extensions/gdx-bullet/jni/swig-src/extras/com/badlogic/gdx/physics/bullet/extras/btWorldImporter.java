@@ -210,9 +210,9 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public SWIGTYPE_p_btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
+  public btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
     long cPtr = ExtrasJNI.btWorldImporter_createGimpactShape(swigCPtr, this, btStridingMeshInterface.getCPtr(trimesh), trimesh);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btGImpactMeshShape(cPtr, false);
+    return (cPtr == 0) ? null : new btGImpactMeshShape(cPtr, false);
   }
 
   public btStridingMeshInterfaceData createStridingMeshInterfaceData(btStridingMeshInterfaceData interfaceData) {
