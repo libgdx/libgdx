@@ -36,10 +36,10 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
 	protected final BulletTest[] tests = {new BasicBulletTest(), new ShootTest(), new BasicShapesTest(), new KinematicTest(),
-		new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new ConvexHullDistanceTest(), new RayCastTest(),
-		new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(),
-		new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(), new ContactCacheTest(),
-		new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new CharacterTest(), new ImportTest()};
+		new ConstraintsTest(), new MeshShapeTest(), new GimpactTest(), new ConvexHullTest(), new ConvexHullDistanceTest(),
+		new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(),
+		new FrustumCullingTest(), new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(),
+		new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new CharacterTest(), new ImportTest()};
 
 	protected int testIndex = 0;
 
