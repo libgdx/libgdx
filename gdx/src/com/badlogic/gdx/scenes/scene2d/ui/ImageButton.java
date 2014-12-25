@@ -20,8 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
 
-import com.esotericsoftware.tablelayout.Cell;
-
 /** A button with a child {@link Image} to display an image. This is useful when the button must be larger than the image and the
  * image centered on the button. If the image is the size of the button, a {@link Button} without any children can be used, where
  * the {@link Button.ButtonStyle#up}, {@link Button.ButtonStyle#down}, and {@link Button.ButtonStyle#checked} nine patches define
@@ -72,17 +70,18 @@ public class ImageButton extends Button {
 	}
 
 	private void updateImage () {
-		boolean isPressed = isPressed();
-		if (isDisabled && style.imageDisabled != null)
-			image.setDrawable(style.imageDisabled);
-		else if (isPressed && style.imageDown != null)
-			image.setDrawable(style.imageDown);
+		Drawable drawable = null;
+		if (isDisabled() && style.imageDisabled != null)
+			drawable = style.imageDisabled;
+		else if (isPressed() && style.imageDown != null)
+			drawable = style.imageDown;
 		else if (isChecked && style.imageChecked != null)
-			image.setDrawable((style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked);
+			drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
 		else if (isOver() && style.imageOver != null)
-			image.setDrawable(style.imageOver);
+			drawable = style.imageOver;
 		else if (style.imageUp != null) //
-			image.setDrawable(style.imageUp);
+			drawable = style.imageUp;
+		image.setDrawable(drawable);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {

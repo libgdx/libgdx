@@ -1,7 +1,3 @@
-/*
- *	Interface module for a class with inner structs or classes.
- */
- 
 %module btCollisionObject
 
 %typemap(javainterfaces) btCollisionObject %{
@@ -14,6 +10,10 @@
 %javamethodmodifiers btCollisionObject::getCollisionShape "private";
 
 %typemap(javaout) 	btCollisionObject *, const btCollisionObject *, btCollisionObject * const & {
+	return btCollisionObject.getInstance($jnicall, $owner);
+}
+
+%typemap(javaout) 	btCollisionObject, const btCollisionObject, btCollisionObject & {
 	return btCollisionObject.getInstance($jnicall, $owner);
 }
 

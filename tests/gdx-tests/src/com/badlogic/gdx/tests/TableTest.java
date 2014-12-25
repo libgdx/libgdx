@@ -41,7 +41,7 @@ public class TableTest extends GdxTest {
 
 	@Override
 	public void create () {
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -105,12 +105,11 @@ public class TableTest extends GdxTest {
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 // root.width = width;
 // root.height = height;
 // root.invalidate();

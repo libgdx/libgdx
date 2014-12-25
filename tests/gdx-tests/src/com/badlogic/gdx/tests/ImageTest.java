@@ -37,16 +37,17 @@ public class ImageTest extends GdxTest {
 	public void create () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		ui = new Stage();
 		Gdx.input.setInputProcessor(ui);
 
 		root = new Table();
+		root.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		ui.addActor(root);
 		root.debug();
 
 		Image image = new Image(image2);
 		image.setScaling(Scaling.fill);
-		root.add(image).width(160).height(100);
+		root.add(image).width(image2.getRegionWidth()).height(image2.getRegionHeight());
 	}
 
 	@Override
@@ -62,12 +63,10 @@ public class ImageTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		ui.draw();
-		Table.drawDebug(ui);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		ui.setViewport(width, height, false);
-		root.setSize(width, height);
+		ui.getViewport().update(width, height, true);
 	}
 }

@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 
 /** Provides utility methods to copy streams */
-public class StreamUtils {
+public final class StreamUtils {
 	public static final int DEFAULT_BUFFER_SIZE = 8192;
 	public static final byte[] EMPTY_BYTES = new byte[0];
 
@@ -93,8 +93,8 @@ public class StreamUtils {
 	}
 
 	/** A ByteArrayOutputStream which avoids copying of the byte array if not necessary. */
-	private static class OptimizedByteArrayOutputStream extends ByteArrayOutputStream {
-		OptimizedByteArrayOutputStream (int initialSize) {
+	static public class OptimizedByteArrayOutputStream extends ByteArrayOutputStream {
+		public OptimizedByteArrayOutputStream (int initialSize) {
 			super(initialSize);
 		}
 
@@ -102,6 +102,10 @@ public class StreamUtils {
 		public synchronized byte[] toByteArray () {
 			if (count == buf.length) return buf;
 			return super.toByteArray();
+		}
+
+		public byte[] getBuffer () {
+			return buf;
 		}
 	}
 }

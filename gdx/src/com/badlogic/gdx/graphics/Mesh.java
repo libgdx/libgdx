@@ -44,8 +44,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
- * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is prefered
- * over vertex arrays if hardware supports it.
+ * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is
+ * preferred over vertex arrays if hardware supports it.
  * </p>
  * 
  * <p>
@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * exactly for this to work.
  * </p>
  * 
- * @author mzechner, Dave Clayton <contact@redskyforge.com> */
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa */
 public class Mesh implements Disposable {
 	public enum VertexDataType {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
@@ -75,6 +75,14 @@ public class Mesh implements Disposable {
 	final IndexData indices;
 	boolean autoBind = true;
 	final boolean isVertexArray;
+
+	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
+		this.vertices = vertices;
+		this.indices = indices;
+		this.isVertexArray = isVertexArray;
+
+		addManagedMesh(Gdx.app, this);
+	}
 
 	/** Creates a new Mesh with the given attributes.
 	 * 
@@ -219,21 +227,22 @@ public class Mesh implements Disposable {
 
 		meshes[0].getVertices(vertices);
 		meshes[0].getIndices(indices);
-
-		int voffset = meshes[0].getNumVertices() * vertexSize;
+		int vcount = meshes[0].getNumVertices();
+		if (transformations != null) transform(transformations[0], vertices, vertexSize, offset, numComponents, 0, vcount);
+		int voffset = vcount;
 		int ioffset = meshes[0].getNumIndices();
 		for (int i = 1; i < meshes.length; i++) {
 			final Mesh mesh = meshes[i];
-			final int vsize = mesh.getNumVertices() * vertexSize;
+			vcount = mesh.getNumVertices();
 			final int isize = mesh.getNumIndices();
-			mesh.getVertices(0, vsize, vertices, voffset);
+			mesh.getVertices(0, vcount * vertexSize, vertices, voffset * vertexSize);
 			if (transformations != null)
-				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset / vertexSize, vsize / vertexSize);
+				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset, vcount);
 			mesh.getIndices(indices, ioffset);
 			for (int j = 0; j < isize; j++)
 				indices[ioffset + j] = (short)(indices[ioffset + j] + voffset);
-			voffset += vsize;
 			ioffset += isize;
+			voffset += vcount;
 		}
 
 		final Mesh result = new Mesh(isStatic, vertices.length / vertexSize, indices.length, attributes);
@@ -656,7 +665,9 @@ public class Mesh implements Disposable {
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox (final BoundingBox out, int offset, int count, final Matrix4 transform) {
 		int numIndices = getNumIndices();
-		if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
+		if (offset < 0 || count < 1 || offset + count > numIndices)
+			throw new GdxRuntimeException("Not enough indices ( offset=" + offset + ", count=" + count + ", max=" + numIndices
+				+ " )");
 
 		final FloatBuffer verts = vertices.getBuffer();
 		final ShortBuffer index = indices.getBuffer();
@@ -822,9 +833,7 @@ public class Mesh implements Disposable {
 		Array<Mesh> meshesArray = meshes.get(app);
 		if (meshesArray == null) return;
 		for (int i = 0; i < meshesArray.size; i++) {
-			if (meshesArray.get(i).vertices instanceof VertexBufferObject) {
-				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
-			}
+			meshesArray.get(i).vertices.invalidate();
 			meshesArray.get(i).indices.invalidate();
 		}
 	}

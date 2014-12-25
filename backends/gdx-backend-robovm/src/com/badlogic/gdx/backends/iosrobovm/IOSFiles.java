@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.foundation.NSBundle;
+import org.robovm.apple.foundation.NSBundle;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
@@ -25,15 +25,15 @@ public class IOSFiles implements Files {
 	// TODO: Use NSSearchPathForDirectoriesInDomains instead?
 	// $HOME should point to the app root dir.
 	static final String appDir = System.getenv("HOME");
-	static final String externalPath = appDir + "/Documents";
-	static final String localPath = appDir + "/Library/local";
+	static final String externalPath = appDir + "/Documents/";
+	static final String localPath = appDir + "/Library/local/";
 	static final String internalPath = NSBundle.getMainBundle().getBundlePath();
-	
-	public IOSFiles() {
+
+	public IOSFiles () {
 		new FileHandle(externalPath).mkdirs();
 		new FileHandle(localPath).mkdirs();
 	}
-	
+
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
 		return new IOSFileHandle(fileName, type);
@@ -65,22 +65,22 @@ public class IOSFiles implements Files {
 	}
 
 	@Override
-	public String getExternalStoragePath() {
+	public String getExternalStoragePath () {
 		return externalPath;
 	}
 
 	@Override
-	public boolean isExternalStorageAvailable() {
+	public boolean isExternalStorageAvailable () {
 		return true;
 	}
 
 	@Override
-	public String getLocalStoragePath() {
+	public String getLocalStoragePath () {
 		return localPath;
 	}
 
 	@Override
-	public boolean isLocalStorageAvailable() {
+	public boolean isLocalStorageAvailable () {
 		return true;
 	}
 }

@@ -18,50 +18,54 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.utils.Array;
 
-/** Extend this class to implement a material attribute.
- * Register the attribute type by statically calling the {@link #register(String)} method, 
- * whose return value should be used to instantiate the attribute. 
- * A class can implement multiple types 
+/** Extend this class to implement a material attribute. Register the attribute type by statically calling the
+ * {@link #register(String)} method, whose return value should be used to instantiate the attribute. A class can implement
+ * multiple types
  * @author Xoppa */
 public abstract class Attribute {
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<String>();
-	
+
 	/** @return The ID of the specified attribute type, or zero if not available */
-	public final static long getAttributeType(final String alias) {
+	public final static long getAttributeType (final String alias) {
 		for (int i = 0; i < types.size; i++)
-			if (types.get(i).compareTo(alias)==0)
-				return 1L << i;
+			if (types.get(i).compareTo(alias) == 0) return 1L << i;
 		return 0;
 	}
-	
+
 	/** @return The alias of the specified attribute type, or null if not available. */
-	public final static String getAttributeAlias(final long type) {
+	public final static String getAttributeAlias (final long type) {
 		int idx = -1;
-		while (type != 0 && ++idx < 63 && (((type >> idx) & 1) == 0));
+		while (type != 0 && ++idx < 63 && (((type >> idx) & 1) == 0))
+			;
 		return (idx >= 0 && idx < types.size) ? types.get(idx) : null;
 	}
-	
-	/** Use {@link Attribute#register(String)} instead */ 
-	protected final static long register(final String alias) {
+
+	/** Use {@link Attribute#register(String)} instead */
+	protected final static long register (final String alias) {
 		long result = getAttributeType(alias);
-		if (result > 0)
-			return result;
+		if (result > 0) return result;
 		types.add(alias);
 		return 1L << (types.size - 1);
 	}
-	
+
 	/** The type of this attribute */
 	public final long type;
-	protected Attribute(final long type) {
+	
+	private final int typeBit;
+
+	protected Attribute (final long type) {
 		this.type = type;
+		this.typeBit = Long.numberOfTrailingZeros(type);
 	}
-	
+
 	/** @return An exact copy of this attribute */
-	public abstract Attribute copy();
-	
-	protected abstract boolean equals(Attribute other);
-	
+	public abstract Attribute copy ();
+
+	protected boolean equals (Attribute other) {
+		return other.hashCode() == hashCode();
+	}
+
 	@Override
 	public boolean equals (Object obj) {
 		if (obj == null) return false;
@@ -71,9 +75,14 @@ public abstract class Attribute {
 		if (this.type != other.type) return false;
 		return equals(other);
 	}
-	
+
 	@Override
 	public String toString () {
 		return getAttributeAlias(type);
+	}
+	
+	@Override
+	public int hashCode () {
+		return 7489 * typeBit;
 	}
 }

@@ -11,8 +11,6 @@ DIFFERENCES TO MAIN APIs/UNSUSPECTED BEHAVIOUR
 
 [GwtFileHandle]
 - only internal and defined classpath files are supported.
-- FileHandle#list will not work.
-- Checking FileHandles of directories for their existance will not work, you can however create children etc.
 - if you try to access an audio file or an image file via FileHandle#read() and other such methods,
 you won't get anything sensible.
 - binary files specified in the assets.txt file can be opened but are slow to read, avoid if possible.
@@ -21,12 +19,6 @@ you won't get anything sensible.
 - Reflection is available for defined classes. Please see http://code.google.com/p/libgdx/wiki/Reflection 
 
 DIFFERENCES IN EMULATION
-[Box2D emu]
-- GearJoint, WheelJoint and RopeJoint are not implemented.
-- minor things that could be optimized, e.g. caching of query/contact listeners.
-- PrismaticJoint#getJointTranslation always returns 0, not implemented in JBox2D
-- Contact always reports 2 manifold points, JBox2D doesn't specify the amount of manifold points.
-
 [BufferUtils emu]
 - BufferUtils#newLongBuffer() works but will not return a direct buffer. Since we don't pass long
   buffers to OpenGL ES we should be fine.
@@ -62,6 +54,7 @@ Gdx2DPixmap.java
 PixmapIO.java
 ETC1.java
 ETC1TextureData.java
+KTXTextureData.java
 ScreenUtils.java
 RemoteInput.java
 RemoteSender.java

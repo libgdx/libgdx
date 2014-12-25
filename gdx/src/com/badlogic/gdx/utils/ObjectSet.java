@@ -43,7 +43,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	private int stashCapacity;
 	private int pushIterations;
 
-	private SetIterator iterator1, iterator2;
+	private ObjectSetIterator iterator1, iterator2;
 
 	/** Creates a new set with an initial capacity of 32 and a load factor of 0.8. This set will hold 25 items before growing the
 	 * backing table. */
@@ -84,7 +84,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		size = set.size;
 	}
 
-	/** Returns true if the key was not already in the set. */
+	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
+	 * and returns false. */
 	public boolean add (T key) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
 		T[] keyTable = this.keyTable;
@@ -326,6 +327,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		T[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
 			keyTable[i] = null;
@@ -360,7 +362,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		throw new IllegalStateException("IntSet is empty.");
 	}
 
-	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
@@ -427,11 +429,11 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link SetIterator} constructor for nested or multithreaded iteration. */
-	public SetIterator<T> iterator () {
+	 * this method is called. Use the {@link ObjectSetIterator} constructor for nested or multithreaded iteration. */
+	public ObjectSetIterator<T> iterator () {
 		if (iterator1 == null) {
-			iterator1 = new SetIterator(this);
-			iterator2 = new SetIterator(this);
+			iterator1 = new ObjectSetIterator(this);
+			iterator2 = new ObjectSetIterator(this);
 		}
 		if (!iterator1.valid) {
 			iterator1.reset();
@@ -451,14 +453,14 @@ public class ObjectSet<T> implements Iterable<T> {
 		return set;
 	}
 
-	static public class SetIterator<K> implements Iterable<K>, Iterator<K> {
+	static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K> {
 		public boolean hasNext;
 
 		final ObjectSet<K> set;
 		int nextIndex, currentIndex;
 		boolean valid = true;
 
-		public SetIterator (ObjectSet<K> set) {
+		public ObjectSetIterator (ObjectSet<K> set) {
 			this.set = set;
 			reset();
 		}
@@ -507,16 +509,20 @@ public class ObjectSet<T> implements Iterable<T> {
 			return key;
 		}
 
-		public Iterator<K> iterator () {
+		public ObjectSetIterator<K> iterator () {
 			return this;
 		}
 
-		/** Returns a new array containing the remaining keys. */
-		public Array<K> toArray () {
-			Array array = new Array(true, set.size);
+		/** Adds the remaining values to the array. */
+		public Array<K> toArray (Array<K> array) {
 			while (hasNext)
 				array.add(next());
 			return array;
+		}
+
+		/** Returns a new array containing the remaining values. */
+		public Array<K> toArray () {
+			return toArray(new Array(true, set.size));
 		}
 	}
 }

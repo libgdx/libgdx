@@ -47,6 +47,8 @@ public class TextArea extends TextField {
 	/** Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset **/
 	float moveOffset;
 
+	private float prefRows;
+
 	public TextArea (String text, Skin skin) {
 		super(text, skin);
 	}
@@ -90,6 +92,25 @@ public class TextArea extends TextField {
 			}
 		} else {
 			return 0;
+		}
+	}
+
+	/** Sets the preferred number of rows (lines) for this text area. Used to calculate preferred height */
+	public void setPrefRows (float prefRows) {
+		this.prefRows = prefRows;
+	}
+
+	@Override
+	public float getPrefHeight () {
+		if (prefRows <= 0) {
+			return super.getPrefHeight();
+		} else {
+			float prefHeight = textHeight * prefRows;
+			if (style.background != null) {
+				prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
+					style.background.getMinHeight());
+			}
+			return prefHeight;
 		}
 	}
 
@@ -171,6 +192,8 @@ public class TextArea extends TextField {
 
 	@Override
 	protected void sizeChanged () {
+		lastText = null; // Cause calculateOffsets to recalculate the line breaks.
+
 		// The number of lines showed must be updated whenever the height is updated
 		BitmapFont font = style.font;
 		Drawable background = style.background;
@@ -308,7 +331,7 @@ public class TextArea extends TextField {
 	protected boolean continueCursor (int index, int offset) {
 		int pos = calculateCurrentLineIndex(index + offset);
 		return super.continueCursor(index, offset)
-			&& (pos < 0 || pos >= linesBreak.size || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
+			&& (pos < 0 || pos >= linesBreak.size - 2 || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
 	}
 
 	public int getCursorLine () {

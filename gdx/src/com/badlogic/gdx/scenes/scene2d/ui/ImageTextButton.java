@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.esotericsoftware.tablelayout.Cell;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -85,23 +83,24 @@ public class ImageTextButton extends Button {
 	}
 
 	private void updateImage () {
-		boolean isPressed = isPressed();
-		if (isDisabled && style.imageDisabled != null)
-			image.setDrawable(style.imageDisabled);
-		else if (isPressed && style.imageDown != null)
-			image.setDrawable(style.imageDown);
+		Drawable drawable = null;
+		if (isDisabled() && style.imageDisabled != null)
+			drawable = style.imageDisabled;
+		else if (isPressed() && style.imageDown != null)
+			drawable = style.imageDown;
 		else if (isChecked && style.imageChecked != null)
-			image.setDrawable((style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked);
+			drawable = (style.imageCheckedOver != null && isOver()) ? style.imageCheckedOver : style.imageChecked;
 		else if (isOver() && style.imageOver != null)
-			image.setDrawable(style.imageOver);
+			drawable = style.imageOver;
 		else if (style.imageUp != null) //
-			image.setDrawable(style.imageUp);
+			drawable = style.imageUp;
+		image.setDrawable(drawable);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		Color fontColor;
-		if (isDisabled && style.disabledFontColor != null)
+		if (isDisabled() && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;
 		else if (isPressed() && style.downFontColor != null)
 			fontColor = style.downFontColor;
@@ -131,7 +130,7 @@ public class ImageTextButton extends Button {
 		return getCell(label);
 	}
 
-	public void setText (String text) {
+	public void setText (CharSequence text) {
 		label.setText(text);
 	}
 

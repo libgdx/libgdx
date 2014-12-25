@@ -16,29 +16,30 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.coregraphics.CGPoint;
-import org.robovm.cocoatouch.coregraphics.CGRect;
-import org.robovm.cocoatouch.coregraphics.CGSize;
-import org.robovm.cocoatouch.foundation.NSObject;
-import org.robovm.cocoatouch.foundation.NSSet;
-import org.robovm.cocoatouch.glkit.GLKView;
-import org.robovm.cocoatouch.glkit.GLKViewController;
-import org.robovm.cocoatouch.glkit.GLKViewControllerDelegate;
-import org.robovm.cocoatouch.glkit.GLKViewDelegate;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableMultisample;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
-import org.robovm.cocoatouch.opengles.EAGLContext;
-import org.robovm.cocoatouch.opengles.EAGLRenderingAPI;
-import org.robovm.cocoatouch.uikit.UIDevice;
-import org.robovm.cocoatouch.uikit.UIEvent;
-import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
-import org.robovm.cocoatouch.uikit.UIScreen;
-import org.robovm.cocoatouch.uikit.UIUserInterfaceIdiom;
+import org.robovm.apple.coregraphics.CGPoint;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.glkit.GLKView;
+import org.robovm.apple.glkit.GLKViewController;
+import org.robovm.apple.glkit.GLKViewControllerDelegate;
+import org.robovm.apple.glkit.GLKViewDelegate;
+import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
+import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
+import org.robovm.apple.glkit.GLKViewDrawableMultisample;
+import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
+import org.robovm.apple.opengles.EAGLContext;
+import org.robovm.apple.opengles.EAGLRenderingAPI;
+import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIEvent;
+import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIInterfaceOrientationMask;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
+import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.rt.bro.annotation.Pointer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -47,7 +48,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
 
-// FIXME add GL 1.x support by ripping Android's classes
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
@@ -63,6 +63,19 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
+		public void viewWillAppear (boolean arg0) {
+			super.viewWillAppear(arg0);
+			// start GLKViewController even though we may only draw a single frame
+			// (we may be in non-continuous mode)
+			setPaused(false);
+		}
+
+		@Override
+		public void viewDidAppear (boolean animated) {
+			if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
+		}
+
+		@Override
 		public void didRotate (UIInterfaceOrientation orientation) {
 			super.didRotate(orientation);
 			// get the view size and update graphics
@@ -75,6 +88,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			graphics.height = (int)bounds.height();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
+		}
+
+		@Override
+		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
+			long mask = 0;
+			if (app.config.orientationLandscape) {
+				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
+			}
+			if (app.config.orientationPortrait) {
+				mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
+			}
+			return new UIInterfaceOrientationMask(mask);
+		}
+
+		@Override
+		public boolean shouldAutorotate () {
+			return true;
 		}
 
 		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
@@ -123,45 +153,45 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float ppcY = 0;
 	private float density = 1;
 
-	volatile boolean paused;
+	volatile boolean appPaused;
+	private long frameId = -1;
+	private boolean isContinuous = true;
+	private boolean isFrameRequested = true;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+	public IOSGraphics (CGSize bounds, float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
+		GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
 		width = (int)bounds.width();
 		height = (int)bounds.height();
-		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + UIScreen.getMainScreen().getScale());
+		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + scale);
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
-			@Override
-			public void touchesBegan (NSSet touches, UIEvent event) {
-				super.touchesBegan(touches, event);
+			@Method(selector = "touchesBegan:withEvent:")
+			public void touchesBegan (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
-			@Override
-			public void touchesCancelled (NSSet touches, UIEvent event) {
-				super.touchesCancelled(touches, event);
+			@Method(selector = "touchesCancelled:withEvent:")
+			public void touchesCancelled (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesEnded (NSSet touches, UIEvent event) {
-				super.touchesEnded(touches, event);
+			@Method(selector = "touchesEnded:withEvent:")
+			public void touchesEnded (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesMoved (NSSet touches, UIEvent event) {
-				super.touchesMoved(touches, event);
+			@Method(selector = "touchesMoved:withEvent:")
+			public void touchesMoved (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchMoved(touches, event);
 			}
 
@@ -186,8 +216,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		this.app = app;
 		this.input = input;
 
-		// FIXME fix this if we add rgba/depth/stencil flags to
-		// IOSApplicationConfiguration
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
 		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
 			r = 5;
@@ -197,17 +225,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		} else {
 			r = g = b = a = 8;
 		}
-		if (config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
+		if (config.depthFormat == GLKViewDrawableDepthFormat._16) {
 			depth = 16;
-		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
+		} else if (config.depthFormat == GLKViewDrawableDepthFormat._24) {
 			depth = 24;
 		} else {
 			depth = 0;
 		}
-		if (config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
+		if (config.stencilFormat == GLKViewDrawableStencilFormat._8) {
 			stencil = 8;
 		}
-		if (config.multisample == GLKViewDrawableMultisample.Sample4X) {
+		if (config.multisample == GLKViewDrawableMultisample._4X) {
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
@@ -216,11 +244,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		// determine display density and PPI (PPI values via Wikipedia!)
 		density = 1f;
 
-		// if ((UIScreen.getMainScreen().respondsToSelector(new
-		// Selector("scale")))) {
-		float scale = UIScreen.getMainScreen().getScale();
 		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2f) density = 2f;
+		if (scale == 2) density = 2f;
+		if (scale == 3) density = 3f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -240,12 +266,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
 
-		paused = false;
+		appPaused = false;
 	}
 
 	public void resume () {
-		if (!paused) return;
-		paused = false;
+		if (!appPaused) return;
+		appPaused = false;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
@@ -257,9 +283,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	public void pause () {
-		if (paused) return;
-		paused = true;
-		
+		if (appPaused) return;
+		appPaused = true;
+
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
 			for (LifecycleListener listener : listeners) {
@@ -273,13 +299,18 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void draw (GLKView view, CGRect rect) {
+		makeCurrent();
+		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
+		// stores the last known viewport and we reset it here...
+		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+
 		if (!created) {
-			app.graphics.makeCurrent();
+			gl20.glViewport(0, 0, width, height);
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
 		}
-		if (paused) {
+		if (appPaused) {
 			return;
 		}
 
@@ -294,8 +325,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			frames = 0;
 		}
 
-		makeCurrent();
 		input.processEvents();
+		frameId++;
 		app.listener.render();
 	}
 
@@ -307,17 +338,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
+		// pause the GLKViewController render loop if we are no longer continuous
+		// and if we haven't requested a frame in the last loop iteration
+		if (!isContinuous && !isFrameRequested) {
+			viewController.setPaused(true);
+		}
+		isFrameRequested = false;
 	}
 
 	@Override
 	public void willPause (GLKViewController controller, boolean pause) {
-		if (pause) {
-			if (paused) return;
-			pause();
-		} else {
-			if (!paused) return;
-			resume();
-		}
 	}
 
 	@Override
@@ -436,18 +466,24 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		// FIXME implement this if possible
+		if (isContinuous != this.isContinuous) {
+			this.isContinuous = isContinuous;
+			// start the GLKViewController if we go from non-continuous -> continuous
+			if (isContinuous) viewController.setPaused(false);
+		}
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		// FIXME implement this if possible
-		return true;
+		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering () {
-		// FIXME implement this if possible
+		isFrameRequested = true;
+		// start the GLKViewController if we are in non-continuous mode
+		// (we should already be started in continuous mode)
+		if (!isContinuous) viewController.setPaused(false);
 	}
 
 	@Override
@@ -463,5 +499,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public GL30 getGL30 () {
 		return null;
+	}
+
+	@Override
+	public long getFrameId () {
+		return frameId;
 	}
 }

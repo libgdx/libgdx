@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Disposable;
  * @author mzechner
  * @author Nathan Sweet */
 public interface Batch extends Disposable {
-	/** Sets up the Batch for drawing. This will disable depth buffer writting. It enables blending and texturing. If you have more
+	/** Sets up the Batch for drawing. This will disable depth buffer writing. It enables blending and texturing. If you have more
 	 * texture units enabled than the first one you have to disable them before calling this. Uses a screen coordinate system by
 	 * default where everything is given in pixels. You can specify your own projection and modelview matrices via
 	 * {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
@@ -69,11 +69,15 @@ public interface Batch extends Disposable {
 	/** @return the rendering color of this Batch. Manipulating the returned instance has no effect. */
 	public Color getColor ();
 
+	/** @return the rendering color of this Batch in vertex format
+	 * @see Color#toFloatBits() */
+	public float getPackedColor ();
+
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
 	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
 	 * originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around originX, originY. The
 	 * portion of the {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in
-	 * texels. FlipX and flipY specify whether the texture portion should be fliped horizontally or vertically.
+	 * texels. FlipX and flipY specify whether the texture portion should be flipped horizontally or vertically.
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
 	 * @param originX the x-coordinate of the scaling and rotation origin relative to the screen space coordinates
@@ -94,7 +98,7 @@ public interface Batch extends Disposable {
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in texels. FlipX
-	 * and flipY specify whether the texture portion should be fliped horizontally or vertically.
+	 * and flipY specify whether the texture portion should be flipped horizontally or vertically.
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
 	 * @param width the width in pixels
@@ -161,6 +165,9 @@ public interface Batch extends Disposable {
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise);
 
+	/** Draws a rectangle transformed by the given matrix. */
+	public void draw (TextureRegion region, float width, float height, Affine2 transform);
+
 	/** Causes any pending sprites to be rendered, without ending the Batch. */
 	public void flush ();
 
@@ -196,7 +203,7 @@ public interface Batch extends Disposable {
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
 	 * coordinates attribute is called "a_texCoord0", the color attribute is called "a_color". See
 	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection matrx is
+	 * which gets "0" appended to indicate the use of the first texture unit. The combined transform and projection matrx is
 	 * uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture".
 	 * <p>
 	 * Call this method with a null argument to use the default shader.
@@ -208,6 +215,9 @@ public interface Batch extends Disposable {
 
 	/** @return true if blending for sprites is enabled */
 	public boolean isBlendingEnabled ();
+
+	/** @return true if currently between begin and end. */
+	public boolean isDrawing ();
 
 	static public final int X1 = 0;
 	static public final int Y1 = 1;

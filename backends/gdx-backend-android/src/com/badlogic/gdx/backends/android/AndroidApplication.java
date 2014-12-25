@@ -16,9 +16,12 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -43,12 +46,10 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
@@ -71,6 +72,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
@@ -94,6 +96,40 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		init(listener, config, false);
+	}
+
+	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
+	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
+	 * <p>
+	 * Note: you have to add the returned view to your layout!
+	 * 
+	 * @param listener the {@link ApplicationListener} implementing the program logic
+	 * @return the GLSurfaceView of the application */
+	public View initializeForView (ApplicationListener listener) {
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		return initializeForView(listener, config);
+	}
+
+	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
+	 * input, render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
+	 * {@link AndroidApplicationConfiguration} instance.
+	 * <p>
+	 * Note: you have to add the returned view to your layout!
+	 * 
+	 * @param listener the {@link ApplicationListener} implementing the program logic
+	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
+	 *           etc.).
+	 * @return the GLSurfaceView of the application */
+	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		init(listener, config, true);
+		return graphics.getView();
+	}
+
+	private void init (ApplicationListener listener, AndroidApplicationConfiguration config, boolean isForView) {
+		if (this.getVersion() < MINIMUM_SDK) {
+			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+		}
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
@@ -106,6 +142,25 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				// No need to resume audio here
+			}
+
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -113,20 +168,23 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		try {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception ex) {
-			log("AndroidApplication", "Content already displayed, cannot request FEATURE_NO_TITLE", ex);
+		if (!isForView) {
+			try {
+				requestWindowFeature(Window.FEATURE_NO_TITLE);
+			} catch (Exception ex) {
+				log("AndroidApplication", "Content already displayed, cannot request FEATURE_NO_TITLE", ex);
+			}
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+			setContentView(graphics.getView(), createLayoutParams());
 		}
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		setContentView(graphics.getView(), createLayoutParams());
+
 		createWakeLock(config.useWakelock);
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
-		if (this.useImmersiveMode && getVersion() >= 19) {
+		if (this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
 			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
 				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
@@ -156,7 +214,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
+			if (getVersion() <= 13) m.invoke(rootView, 0x0);
 			m.invoke(rootView, 0x1);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
@@ -179,81 +237,21 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
+	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < 19) return;
+		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
 
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
 		}
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
-	 * <p>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		return initializeForView(listener, config);
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
-	 * {@link AndroidApplicationConfiguration} instance.
-	 * <p>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
-	 *           etc.).
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
-		audio = new AndroidAudio(this, config);
-		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(this);
-		this.listener = listener;
-		this.handler = new Handler();
-		this.useImmersiveMode = config.useImmersiveMode;
-		this.hideStatusBar = config.hideStatusBar;
-
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
-
-		createWakeLock(config.useWakelock);
-		hideStatusBar(this.hideStatusBar);
-		useImmersiveMode(this.useImmersiveMode);
-		if (this.useImmersiveMode && getVersion() >= 19) {
-			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
-				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-				method.invoke(o, this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
-		}
-		return graphics.getView();
 	}
 
 	@Override
@@ -265,27 +263,26 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 
 		boolean isContinuous = graphics.isContinuousRendering();
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
+
+		// from here we don't want non continuous rendering
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
+		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
+		// will be ignored at this point...
 		graphics.pause();
 
-		input.unregisterSensorListeners();
-
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		input.onPause();
 
 		if (isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
+
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onPause();
 	}
@@ -305,10 +302,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		input.onResume();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -350,7 +347,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -479,6 +476,32 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// forward events to our listeners if there are any installed
+		synchronized (androidEventListeners) {
+			for (int i = 0; i < androidEventListeners.size; i++) {
+				androidEventListeners.get(i).onActivityResult(requestCode, resultCode, data);
+			}
+		}
+	}
+
+	/** Adds an event listener for Android specific event such as onActivityResult(...). */
+	public void addAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.add(listener);
+		}
+	}
+
+	/** Removes an event listener for Android specific event such as onActivityResult(...). */
+	public void removeAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.removeValue(listener, true);
+		}
+	}
+
+	@Override
 	public Context getContext () {
 		return this;
 	}
@@ -496,11 +519,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
-	}
-
-	@Override
-	public boolean isFragment () {
-		return false;
 	}
 
 	@Override

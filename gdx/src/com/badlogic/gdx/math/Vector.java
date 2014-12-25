@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,18 +23,39 @@ public interface Vector<T extends Vector<T>> {
 	/** @return a copy of this vector */
 	T cpy ();
 
-	/** @return The euclidian length */
+	/** @return The euclidean length */
 	float len ();
 
-	/** This method is faster than {@link Vector#len()}
-	 * because it avoids calculating a square root. It is useful for comparisons,
-	 * but not for getting accurate lengths, as the return value is the square of the actual length.
-	 * @return The squared euclidian length */
+	/** This method is faster than {@link Vector#len()} because it avoids calculating a square root. It is useful for comparisons,
+	 * but not for getting exact lengths, as the return value is the square of the actual length.
+	 * @return The squared euclidean length */
 	float len2 ();
 
-	/** Limits this vector's length to given value
-	 * @return This vector for chaining */
+	/** Limits the length of this vector, based on the desired maximum length.
+	 * @param limit desired maximum length for this vector
+	 * @return this vector for chaining */
 	T limit (float limit);
+
+	/** Limits the length of this vector, based on the desired maximum length squared.
+	 * <p />
+	 * This method is slightly faster than limit().
+	 * @param limit2 squared desired maximum length for this vector
+	 * @return this vector for chaining
+	 * @see #len2() */
+	T limit2 (float limit2);
+
+	/** Sets the length of this vector. Does nothing is this vector is zero.
+	 * @param len desired length for this vector
+	 * @return this vector for chaining */
+	T setLength (float len);
+
+	/** Sets the length of this vector, based on the square of the desired length. Does nothing is this vector is zero.
+	 * <p />
+	 * This method is slightly faster than setLength().
+	 * @param len2 desired square of the length for this vector
+	 * @return this vector for chaining
+	 * @see #len2() */
+	T setLength2 (float len2);
 
 	/** Clamps this vector's length to given min and max values
 	 * @param min Min length
@@ -47,7 +68,7 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T set (T v);
 
-	/** Substracts the given vector from this vector.
+	/** Subtracts the given vector from this vector.
 	 * @param v The vector
 	 * @return This vector for chaining */
 	T sub (T v);
@@ -78,9 +99,8 @@ public interface Vector<T extends Vector<T>> {
 	 * @return the distance between this and the other vector */
 	float dst (T v);
 
-	/** This method is faster than {@link Vector#dst(Vector)}
-	 * because it avoids calculating a square root. It is useful for comparisons,
-	 * but not for getting accurate distances, as the return value is the square of the actual distance.
+	/** This method is faster than {@link Vector#dst(Vector)} because it avoids calculating a square root. It is useful for
+	 * comparisons, but not for getting accurate distances, as the return value is the square of the actual distance.
 	 * @param v The other vector
 	 * @return the squared distance between this and the other vector */
 	float dst2 (T v);
@@ -92,60 +112,78 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
 
+	/** Interpolates between this vector and the given target vector by alpha (within range [0,1]) using the given Interpolation
+	 * method. the result is stored in this vector.
+	 * @param target The target vector
+	 * @param alpha The interpolation coefficient
+	 * @param interpolator An Interpolation object describing the used interpolation method
+	 * @return This vector for chaining. */
+	T interpolate (T target, float alpha, Interpolation interpolator);
+
 	/** @return Whether this vector is a unit length vector */
-	public boolean isUnit ();
+	boolean isUnit ();
 
 	/** @return Whether this vector is a unit length vector within the given margin. */
-	public boolean isUnit(final float margin);
+	boolean isUnit (final float margin);
 
 	/** @return Whether this vector is a zero vector */
-	public boolean isZero ();
+	boolean isZero ();
 
 	/** @return Whether the length of this vector is smaller than the given margin */
-	public boolean isZero (final float margin);
+	boolean isZero (final float margin);
 
-	/** @return Whether this vector is collinear with the given vector.
-	 * The vectors need to be normalized for this to work.
-	 * True if the normalized dot product is 1.
-	 * @param vector the vector to check
-	 * @param epsilon a positive small number close to zero */
-	public boolean isCollinear(T vector, float epsilon);
-	
-	/** @return Whether this vector is collinear with the given vector.
-	 * The vectors need to be normalized for this to work.
-	 * True if the normalized dot product is 1.
-	 * @param vector the vector to check */
-	public boolean isCollinear(T vector);
-	
-	/** @return Whether this vector is collinear with the given vector but has opposite direction.
-	 * True if the normalized dot product is -1.
-	 * The vectors need to be normalized for this to work.
-	 * @param vector the vector to check
-	 * @param epsilon a positive small number close to zero */
-	public boolean isCollinearOpposite(T vector, float epsilon);
-	
-	/** @return Whether this vector is collinear with the given vector but has opposite direction.
-	 * True if the normalized dot product is -1.
-	 * The vectors need to be normalized for this to work.
-	 * @param vector the vector to check */
-	public boolean isCollinearOpposite(T vector);
-	
-	/** @return Whether this vector is perpendicular with the given vector.
-	 * True if the dot product is 0.*/
-	public boolean isPerpendicular(T vector);
-	
-	/** @return Whether this vector is perpendicular with the given vector.
-	 * True if the dot product is 0.
-	 * @param epsilon a positive small number close to zero */
-	public boolean isPerpendicular(T vector, float epsilon);
-	
-	/** @return Whether this vector has similar direction compared to the given vector.
-	 * True if the normalized dot product is > 0.*/
-	public boolean hasSameDirection(T vector);
+	/** @return true if this vector is in line with the other vector (either in the same or the opposite direction) */
+	boolean isOnLine (T other, float epsilon);
 
-	/** @return Whether this vector has opposite direction compared to the given vector.
-	 * True if the normalized dot product is < 0.*/
-	public boolean hasOppositeDirection(T vector);
-	
-	// TODO: T crs(T v);
+	/** @return true if this vector is in line with the other vector (either in the same or the opposite direction) */
+	boolean isOnLine (T other);
+
+	/** @return true if this vector is collinear with the other vector ({@link #isOnLine(Vector, float)} &&
+	 *         {@link #hasSameDirection(Vector)}). */
+	boolean isCollinear (T other, float epsilon);
+
+	/** @return true if this vector is collinear with the other vector ({@link #isOnLine(Vector)} &&
+	 *         {@link #hasSameDirection(Vector)}). */
+	boolean isCollinear (T other);
+
+	/** @return true if this vector is opposite collinear with the other vector ({@link #isOnLine(Vector, float)} &&
+	 *         {@link #hasOppositeDirection(Vector)}). */
+	boolean isCollinearOpposite (T other, float epsilon);
+
+	/** @return true if this vector is opposite collinear with the other vector ({@link #isOnLine(Vector)} &&
+	 *         {@link #hasOppositeDirection(Vector)}). */
+	boolean isCollinearOpposite (T other);
+
+	/** @return Whether this vector is perpendicular with the other vector. True if the dot product is 0. */
+	boolean isPerpendicular (T other);
+
+	/** @return Whether this vector is perpendicular with the other vector. True if the dot product is 0.
+	 * @param epsilon a positive small number close to zero */
+	boolean isPerpendicular (T other, float epsilon);
+
+	/** @return Whether this vector has similar direction compared to the other vector. True if the normalized dot product is > 0. */
+	boolean hasSameDirection (T other);
+
+	/** @return Whether this vector has opposite direction compared to the other vector. True if the normalized dot product is < 0. */
+	boolean hasOppositeDirection (T other);
+
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+	 * @param other
+	 * @param epsilon
+	 * @return whether the vectors have fuzzy equality. */
+	boolean epsilonEquals (T other, float epsilon);
+
+	/** First scale a supplied vector, then add it to this vector.
+	 * @param v addition vector
+	 * @param scalar for scaling the addition vector */
+	T mulAdd (T v, float scalar);
+
+	/** First scale a supplied vector, then add it to this vector.
+	 * @param v addition vector
+	 * @param mulVec vector by whose values the addition vector will be scaled */
+	T mulAdd (T v, T mulVec);
+
+	/** Sets the components of this vector to 0
+	 * @return This vector for chaining */
+	T setZero ();
 }

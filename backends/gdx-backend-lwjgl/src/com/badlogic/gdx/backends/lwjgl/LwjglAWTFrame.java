@@ -26,10 +26,10 @@ import javax.swing.JFrame;
 public class LwjglAWTFrame extends JFrame {
 	final LwjglAWTCanvas lwjglAWTCanvas;
 
-	public LwjglAWTFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+	public LwjglAWTFrame (ApplicationListener listener, String title, int width, int height) {
 		super(title);
 
-		lwjglAWTCanvas = new LwjglAWTCanvas(listener, useGL2) {
+		lwjglAWTCanvas = new LwjglAWTCanvas(listener) {
 			protected void stopped () {
 				LwjglAWTFrame.this.dispose();
 			}

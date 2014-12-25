@@ -1,9 +1,12 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -27,6 +30,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -59,6 +63,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 
 	protected Callbacks callbacks;
@@ -97,23 +102,21 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
+	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < 19) return;
-
-		View view = getApplicationWindow().getDecorView();
-
+		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+		
 		try {
+			View view = this.graphics.getView();
+
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
+			log("AndroidApplication", "Failed to setup immersive mode, a throwable has occurred.", e);
 		}
 	}
 
@@ -144,6 +147,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		if (this.getVersion() < MINIMUM_SDK) {
+			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+		}
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
@@ -153,6 +159,25 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		this.listener = listener;
 		this.handler = new Handler();
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				audio.resume();
+			}
+
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -161,9 +186,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.net = this.getNet();
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(config.useImmersiveMode);
-		if (config.useImmersiveMode && getVersion() >= 19) {
+		if (config.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
 			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
 				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
@@ -177,23 +202,28 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
+
+		// from here we don't want non continuous rendering
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
+		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
+		// will be ignored at this point...
 		graphics.pause();
 
-		input.unregisterSensorListeners();
+		input.onPause();
 
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		// davebaol & mobidevelop:
+		// This fragment is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || getActivity().isFinishing()) {
+			graphics.clearManagedCaches();
+			graphics.destroy();
+		}
 
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onPause();
 	}
@@ -207,10 +237,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		input.onResume();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -218,13 +248,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		} else
 			firstResume = false;
 		super.onResume();
-	}
-
-	@Override
-	public void onDestroyView () {
-		super.onDestroyView();
-		graphics.clearManagedCaches();
-		graphics.destroy();
 	}
 
 	@Override
@@ -248,7 +271,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -402,8 +425,29 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public boolean isFragment () {
-		return true;
+	public void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		// forward events to our listeners if there are any installed
+		synchronized (androidEventListeners) {
+			for (int i = 0; i < androidEventListeners.size; i++) {
+				androidEventListeners.get(i).onActivityResult(requestCode, resultCode, data);
+			}
+		}
+	}
+
+	/** Adds an event listener for Android specific event such as onActivityResult(...). */
+	public void addAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.add(listener);
+		}
+	}
+
+	/** Removes an event listener for Android specific event such as onActivityResult(...). */
+	public void removeAndroidEventListener (AndroidEventListener listener) {
+		synchronized (androidEventListeners) {
+			androidEventListeners.removeValue(listener, true);
+		}
 	}
 
 	@Override
@@ -414,5 +458,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public WindowManager getWindowManager () {
+		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 	}
 }

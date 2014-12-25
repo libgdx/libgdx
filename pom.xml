@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.5.1-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
@@ -45,23 +45,27 @@
     <android.version>4.4</android.version>
     <gwt.version>2.6.0</gwt.version>
     <lwjgl.version>2.9.1</lwjgl.version>
-    <robovm.version>0.0.9</robovm.version>
+    <jglfw.version>1.1</jglfw.version>
+    <robovm.version>1.0.0-beta-01</robovm.version>
   </properties>
 
   <modules>
     <module>extensions/gdx-jnigen</module>
     <module>gdx</module>
     <module>gdx/jni/maven</module>
-    <module>backends/gdx-openal</module>
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
+    <module>backends/gdx-backend-jglfw</module>
     <module>backends/gdx-backends-gwt</module>
+    <module>backends/gdx-backend-headless</module>
     <module>extensions/gdx-tools</module>
-    <module>extensions/gdx-freetype</module>
-    <module>extensions/gdx-freetype/jni/maven</module>
+	<module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
+    <module>extensions/gdx-controllers</module>
+    <module>extensions/gdx-freetype</module>
+    <module>extensions/gdx-freetype/jni/maven</module>    
   </modules>
 
   <build>
@@ -75,16 +79,12 @@
           <target>1.6</target>
           <fork>true</fork>
           <showWarnings>true</showWarnings>
-<!--
-          <showDeprecation>true</showDeprecation>
-          <compilerArgument>-Xlint" "-Xlint:-serial" "-Xlint:-path</compilerArgument>
--->
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>2.6</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -92,12 +92,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.17</version>
         <configuration>
           <includes><include>**/*Test.java</include></includes>
         </configuration>
@@ -105,7 +105,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.9.1</version>
         <configuration>
           <quiet>true</quiet>
           <show>public</show>

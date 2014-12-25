@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
@@ -109,12 +110,13 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 
 	@Override
 	public void render (ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
+		if (renderMeshes) super.render(batch, lights, entities);
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
-			debugDrawer.begin();
+			batch.flush();
+			debugDrawer.begin(batch.getCamera());
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
-		if (renderMeshes) super.render(batch, lights, entities);
 	}
 
 	@Override
@@ -138,10 +140,9 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		if (collisionConfiguration != null) collisionConfiguration.dispose();
 	}
 
-	public void setDebugMode (final int mode, final Matrix4 projMatrix) {
+	public void setDebugMode (final int mode) {
 		if (mode == btIDebugDraw.DebugDrawModes.DBG_NoDebug && debugDrawer == null) return;
 		if (debugDrawer == null) collisionWorld.setDebugDrawer(debugDrawer = new DebugDrawer());
-		debugDrawer.lineRenderer.setProjectionMatrix(projMatrix);
 		debugDrawer.setDebugMode(mode);
 	}
 

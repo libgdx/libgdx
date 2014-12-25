@@ -80,6 +80,19 @@ class ImagePanel extends EditorPanel {
 					updateIconInfo(null);
 				}
 			});
+			JButton defaultPremultButton = new JButton("Default (Premultiplied Alpha)");
+			contentPanel.add(defaultPremultButton, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 6), 0, 0));
+			defaultPremultButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed (ActionEvent e) {
+					final ParticleEmitter emitter = editor.getEmitter();
+					emitter.setImagePath(ParticleEditor.DEFAULT_PREMULT_PARTICLE);
+					emitter.setSprite(null);
+					editor.setIcon(emitter, null);
+					updateIconInfo(null);
+				}
+			});
 		}
 		{
 			widthLabel = new JLabel();

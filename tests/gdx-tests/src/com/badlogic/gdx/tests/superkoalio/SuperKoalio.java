@@ -87,7 +87,7 @@ public class SuperKoalio extends GdxTest {
 		stand = new Animation(0, regions[0]);
 		jump = new Animation(0, regions[1]);
 		walk = new Animation(0.15f, regions[2], regions[3], regions[4]);
-		walk.setPlayMode(Animation.LOOP_PINGPONG);
+		walk.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
 		// figure out the width and height of the koala for collision
 		// detection and rendering by converting a koala frames pixel
@@ -289,7 +289,7 @@ public class SuperKoalio extends GdxTest {
 		// draw the koala, depending on the current velocity
 		// on the x-axis, draw the koala facing either right
 		// or left
-		Batch batch = renderer.getSpriteBatch();
+		Batch batch = renderer.getBatch();
 		batch.begin();
 		if (koala.facesRight) {
 			batch.draw(frame, koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);

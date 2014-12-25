@@ -23,12 +23,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
 
-/**
- * Takes a {@link Camera} instance and controlls it via w,a,s,d and
- * mouse panning.  
- * @author badlogic
- *
- */
+/** Takes a {@link Camera} instance and controls it via w,a,s,d and mouse panning.
+ * @author badlogic */
 public class FirstPersonCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
@@ -41,12 +37,11 @@ public class FirstPersonCameraController extends InputAdapter {
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
-	private final Vector3 tmp2 = new Vector3();
-	
-	public FirstPersonCameraController(Camera camera) {
+
+	public FirstPersonCameraController (Camera camera) {
 		this.camera = camera;
 	}
-	
+
 	@Override
 	public boolean keyDown (int keycode) {
 		keys.put(keycode, keycode);
@@ -58,20 +53,16 @@ public class FirstPersonCameraController extends InputAdapter {
 		keys.remove(keycode, 0);
 		return true;
 	}
-	
-	/**
-	 * Sets the velocity in units per second for moving forward, backward and strafing left/right.
-	 * @param velocity the velocity in units per second
-	 */
-	public void setVelocity(float velocity) {
+
+	/** Sets the velocity in units per second for moving forward, backward and strafing left/right.
+	 * @param velocity the velocity in units per second */
+	public void setVelocity (float velocity) {
 		this.velocity = velocity;
 	}
-	
-	/**
-	 * Sets how many degrees to rotate per pixel the mouse moved.
-	 * @param degreesPerPixel
-	 */
-	public void setDegreesPerPixel(float degreesPerPixel) {
+
+	/** Sets how many degrees to rotate per pixel the mouse moved.
+	 * @param degreesPerPixel */
+	public void setDegreesPerPixel (float degreesPerPixel) {
 		this.degreesPerPixel = degreesPerPixel;
 	}
 
@@ -82,36 +73,36 @@ public class FirstPersonCameraController extends InputAdapter {
 		camera.direction.rotate(camera.up, deltaX);
 		tmp.set(camera.direction).crs(camera.up).nor();
 		camera.direction.rotate(tmp, deltaY);
-//		camera.up.rotate(tmp, deltaY);
+// camera.up.rotate(tmp, deltaY);
 		return true;
 	}
 
-	public void update() {
+	public void update () {
 		update(Gdx.graphics.getDeltaTime());
 	}
-	
-	public void update(float deltaTime) {
-		if(keys.containsKey(FORWARD)) {
+
+	public void update (float deltaTime) {
+		if (keys.containsKey(FORWARD)) {
 			tmp.set(camera.direction).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if(keys.containsKey(BACKWARD)) {
+		if (keys.containsKey(BACKWARD)) {
 			tmp.set(camera.direction).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if(keys.containsKey(STRAFE_LEFT)) {
+		if (keys.containsKey(STRAFE_LEFT)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if(keys.containsKey(STRAFE_RIGHT)) {
+		if (keys.containsKey(STRAFE_RIGHT)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if(keys.containsKey(UP)) {
+		if (keys.containsKey(UP)) {
 			tmp.set(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if(keys.containsKey(DOWN)) {
+		if (keys.containsKey(DOWN)) {
 			tmp.set(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}

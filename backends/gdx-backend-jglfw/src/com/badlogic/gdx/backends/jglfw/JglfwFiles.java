@@ -16,14 +16,17 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import java.io.File;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
 /** @author mzechner
  * @author Nathan Sweet */
 public final class JglfwFiles implements Files {
-	static public final String externalPath = System.getProperty("user.home") + "/";
-
+	static public final String externalPath = System.getProperty("user.home") + File.separator;
+	static public final String localPath = new File("").getAbsolutePath() + File.separator;
+	
 	public FileHandle getFileHandle (String fileName, FileType type) {
 		return new JglfwFileHandle(fileName, type);
 	}
@@ -57,7 +60,7 @@ public final class JglfwFiles implements Files {
 	}
 
 	public String getLocalStoragePath () {
-		return "";
+		return localPath;
 	}
 
 	public boolean isLocalStorageAvailable () {

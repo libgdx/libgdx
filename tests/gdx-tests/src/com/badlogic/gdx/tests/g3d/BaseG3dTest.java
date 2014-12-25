@@ -109,19 +109,10 @@ public abstract class BaseG3dTest extends GdxTest {
 
 		inputController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 		render(instances);
-	}
-
-	@Override
-	public void resize (int width, int height) {
-		super.resize(width, height);
-		cam.viewportWidth = width;
-		cam.viewportHeight = height;
-		cam.update();
 	}
 
 	@Override

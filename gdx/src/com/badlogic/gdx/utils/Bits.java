@@ -16,21 +16,22 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /** A bitset, without size limitation, allows comparison via bitwise operators to other bitfields.
  * 
  * @author mzechner
  * @author jshapcott */
 public class Bits {
-  
+
 	long[] bits = {0};
 
 	public Bits () {
 	}
 
-	
-	/** Creates a bit set whose initial size is large enough to explicitly represent bits with indices in the range 0 through nbits-1.
-	 * @param nbits the initial size of the bit set
-	 */
+	/** Creates a bit set whose initial size is large enough to explicitly represent bits with indices in the range 0 through
+	 * nbits-1.
+	 * @param nbits the initial size of the bit set */
 	public Bits (int nbits) {
 		checkCapacity(nbits >>> 6);
 	}
@@ -120,7 +121,7 @@ public class Bits {
 	public int length () {
 		long[] bits = this.bits;
 		for (int word = bits.length - 1; word >= 0; --word) {
-			long bitsAtWord = bits[word]; 
+			long bitsAtWord = bits[word];
 			if (bitsAtWord != 0) {
 				for (int bit = 63; bit >= 0; --bit) {
 					if ((bitsAtWord & (1L << (bit & 0x3F))) != 0L) {
@@ -201,53 +202,80 @@ public class Bits {
 		return -1;
 	}
 
-	/** Performs a logical <b>AND</b> of this target bit set with the argument bit set. This bit set is modified so that each bit in it has
-	 * the value true if and only if it both initially had the value true and the corresponding bit in the bit set argument also
-	 * had the value true.
+	/** Performs a logical <b>AND</b> of this target bit set with the argument bit set. This bit set is modified so that each bit in
+	 * it has the value true if and only if it both initially had the value true and the corresponding bit in the bit set argument
+	 * also had the value true.
 	 * @param other a bit set */
 	public void and (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] &= other.bits[i];
+		}
+		
+		if (bits.length > commonWords) {
+			for (int i = commonWords, s = bits.length; s > i; i++) {
+				bits[i] = 0L;
+			}
 		}
 	}
 
 	/** Clears all of the bits in this bit set whose corresponding bit is set in the specified bit set.
 	 * 
-	 * @param other a bit set */	
+	 * @param other a bit set */
 	public void andNot (Bits other) {
 		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
 			bits[i] &= ~other.bits[i];
 		}
 	}
 
-	/** Performs a logical <b>OR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has the value
-	 * true if and only if it either already had the value true or the corresponding bit in the bit set argument has the value
-	 * true.
+	/** Performs a logical <b>OR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has the
+	 * value true if and only if it either already had the value true or the corresponding bit in the bit set argument has the
+	 * value true.
 	 * @param other a bit set */
 	public void or (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] |= other.bits[i];
 		}
+		
+		if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
+		}
 	}
-	
-	/** Performs a logical <b>XOR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has the value true if and only if one of the following statements holds: 
+
+	/** Performs a logical <b>XOR</b> of this bit set with the bit set argument. This bit set is modified so that a bit in it has
+	 * the value true if and only if one of the following statements holds:
 	 * <ul>
-	 * <li>The bit initially has the value true, and the corresponding bit in the argument has the value false.</li> 
-	 * <li>The bit initially has the value false, and the corresponding bit in the argument has the value true. </li>
+	 * <li>The bit initially has the value true, and the corresponding bit in the argument has the value false.</li>
+	 * <li>The bit initially has the value false, and the corresponding bit in the argument has the value true.</li>
 	 * </ul>
-	 * @param other
-	 */
+	 * @param other */
 	public void xor (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] ^= other.bits[i];
+		}
+		
+		if (bits.length > commonWords) {
+			for (int i = other.bits.length, s = bits.length; s > i; i++) {
+				bits[i] = 0L;
+			}
+		} else if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
 		}
 	}
 
 	/** Returns true if the specified BitSet has any bits set to true that are also set to true in this BitSet.
 	 * 
 	 * @param other a bit set
-	 * @return boolean indicating whether this bit set intersects the specified bit set
-	 */
+	 * @return boolean indicating whether this bit set intersects the specified bit set */
 	public boolean intersects (Bits other) {
 		long[] bits = this.bits;
 		long[] otherBits = other.bits;
@@ -281,5 +309,39 @@ public class Bits {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int word = length() >>> 6;
+		int hash = 0;
+		for (int i = 0; word >= i; i++) {
+			hash = 127 * hash + (int)(bits[i] ^ (bits[i] >>> 32));
+		}
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Bits other = (Bits) obj;
+		long[] otherBits = other.bits;
+		
+		int commonWords = Math.min(bits.length, otherBits.length);
+		for (int i = 0; commonWords > i; i++) {
+			if (bits[i] != otherBits[i])
+				return false;
+		}
+		
+		if (bits.length == otherBits.length)
+			return true;
+		
+		return length() == other.length();
 	}
 }

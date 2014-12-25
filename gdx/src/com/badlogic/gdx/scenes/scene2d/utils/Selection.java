@@ -1,12 +1,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
 import java.util.Iterator;
@@ -15,15 +13,13 @@ import java.util.Iterator;
  * {@link ChangeEvent#cancel()}.
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	private Actor actor;
-	final ObjectSet<T> selected = new ObjectSet();
-	private final ObjectSet<T> old = new ObjectSet();
+	final OrderedSet<T> selected = new OrderedSet();
+	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
 	private boolean toggle;
 	boolean multiple;
-	private boolean required;
+	boolean required;
 	private boolean programmaticChangeEvents = true;
 	T lastSelected;
 
@@ -38,21 +34,25 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		snapshot();
-		if ((toggle || (!required && selected.size == 1) || isCtrlPressed()) && selected.contains(item)) {
-			if (required && selected.size == 1) return;
-			selected.remove(item);
-			lastSelected = null;
-		} else {
-			boolean modified = false;
-			if (!multiple || (!toggle && !isCtrlPressed())) {
-				modified = selected.size > 0;
-				selected.clear();
+		try {
+			if ((toggle || (!required && selected.size == 1) || UIUtils.ctrl()) && selected.contains(item)) {
+				if (required && selected.size == 1) return;
+				selected.remove(item);
+				lastSelected = null;
+			} else {
+				boolean modified = false;
+				if (!multiple || (!toggle && !UIUtils.ctrl())) {
+					if (selected.size == 1 && selected.contains(item)) return;
+					modified = selected.size > 0;
+					selected.clear();
+				}
+				if (!selected.add(item) && !modified) return;
+				lastSelected = item;
 			}
-			if (!selected.add(item) && !modified) return;
-			lastSelected = item;
+			if (fireChangeEvent()) revert();
+		} finally {
+			cleanup();
 		}
-		if (fireChangeEvent()) revert();
-		cleanup();
 	}
 
 	public boolean hasItems () {
@@ -67,7 +67,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.size;
 	}
 
-	public ObjectSet<T> items () {
+	public OrderedSet<T> items () {
 		return selected;
 	}
 
@@ -180,9 +180,11 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		cleanup();
 	}
 
-	/** Called when the selection changes.
+	/** Fires a change event on the selection's actor, if any. Called internally when the selection changes, depending on
+	 * {@link #setProgrammaticChangeEvents(boolean)}.
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
+		if (actor == null) return false;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
@@ -209,6 +211,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.iterator().toArray();
 	}
 
+	public Array<T> toArray (Array<T> array) {
+		return selected.iterator().toArray(array);
+	}
+
 	/** If true, prevents {@link #choose(Object)} from changing the selection. Default is false. */
 	public void setDisabled (boolean isDisabled) {
 		this.isDisabled = isDisabled;
@@ -231,7 +237,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return multiple;
 	}
 
-	/** If true, prevents {@link #choose(Object)} from selecting multiple. Default is false. */
+	/** If true, allows {@link #choose(Object)} to select multiple items. Default is false. */
 	public void setMultiple (boolean multiple) {
 		this.multiple = multiple;
 	}
@@ -250,11 +256,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
-	/** Returns true if ctrl is currently pressed, except on Mac OS X where it returns true if command is currently pressed. */
-	static public boolean isCtrlPressed () {
-		if (isMac)
-			return Gdx.input.isKeyPressed(Keys.SYM);
-		else
-			return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+	public String toString () {
+		return selected.toString();
 	}
 }

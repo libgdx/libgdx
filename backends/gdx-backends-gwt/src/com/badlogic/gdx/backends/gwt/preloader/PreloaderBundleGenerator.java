@@ -118,7 +118,7 @@ public class PreloaderBundleGenerator extends Generator {
 		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
 			StringBuffer buffer = new StringBuffer();
 			for (Asset asset : bundle.getValue()) {
-				String path = asset.file.path().replace('\\', '/').replace(assetOutputPath + "assets/", "").replaceFirst("assets", "");
+				String path = asset.file.path().replace('\\', '/').replace(assetOutputPath, "").replaceFirst("assets/", "");
 				if (path.startsWith("/")) path = path.substring(1);
 				buffer.append(asset.type.code);
 				buffer.append(":");
@@ -229,7 +229,7 @@ public class PreloaderBundleGenerator extends Generator {
 			String[] tokens = paths.split(",");
 			String path = null;
 			for(String token: tokens) {
-				if(new FileWrapper(token).exists()) {
+				if (new FileWrapper(token).exists() || new FileWrapper(token).mkdirs()) {
 					path = token;
 				}
 			}

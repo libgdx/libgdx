@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.zip.CRC32;
@@ -39,7 +40,8 @@ public class SharedLibraryLoader {
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
 	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
-	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
+		|| System.getProperty("os.arch").equals("x86_64");
 
 	// JDK 8 only.
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
@@ -93,7 +95,7 @@ public class SharedLibraryLoader {
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
 		if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
-		if (isMac) return "lib" + libraryName + ".dylib";
+		if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
 		return libraryName;
 	}
 
@@ -189,7 +191,7 @@ public class SharedLibraryLoader {
 		File parent = file.getParentFile();
 		File testFile;
 		if (file.exists()) {
-			if (!file.canWrite() || !file.canExecute()) return false;
+			if (!file.canWrite() || !canExecute(file)) return false;
 			// Don't overwrite existing file just to check if we can write to directory.
 			testFile = new File(parent, UUID.randomUUID().toString());
 		} else {
@@ -199,13 +201,27 @@ public class SharedLibraryLoader {
 		}
 		try {
 			new FileOutputStream(testFile).close();
-			if (!testFile.canExecute()) return false;
+			if (!canExecute(testFile)) return false;
 			return true;
 		} catch (Throwable ex) {
 			return false;
 		} finally {
 			testFile.delete();
 		}
+	}
+
+	private boolean canExecute (File file) {
+		try {
+			Method canExecute = File.class.getMethod("canExecute");
+			if ((Boolean)canExecute.invoke(file)) return true;
+
+			Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
+			setExecutable.invoke(file, true, false);
+
+			return (Boolean)canExecute.invoke(file);
+		} catch (Exception ignored) {
+		}
+		return false;
 	}
 
 	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {

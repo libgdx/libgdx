@@ -91,11 +91,10 @@ public class TableLayoutTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, true);
+		stage.getViewport().update(width, height, true);
 	}
 
 	public void dispose () {

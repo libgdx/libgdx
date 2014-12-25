@@ -21,22 +21,12 @@ import static com.badlogic.gdx.graphics.g2d.Batch.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 
 public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
-	private boolean yDown = false;
-
-	public boolean isYdown () {
-		return yDown;
-	}
-
-	public void setYDown (boolean yDown) {
-		this.yDown = yDown;
-	}
 
 	public HexagonalTiledMapRenderer (TiledMap map) {
 		super(map);
@@ -56,7 +46,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
-		final Color batchColor = spriteBatch.getColor();
+		final Color batchColor = batch.getColor();
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
 		final int layerWidth = layer.getWidth();
@@ -82,7 +72,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		for (int row = row1; row < row2; row++) {
 			for (int col = col1; col < col2; col++) {
 				float x = layerTileWidth75 * col;
-				float y = (col % 2 == (yDown ? 0 : 1) ? 0 : layerTileHeight50) + (layerTileHeight * row);
+				float y = (col % 2 == 1 ? 0 : layerTileHeight50) + (layerTileHeight * row);
 
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 				if (cell == null) {
@@ -99,8 +89,8 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x;
-					float y1 = y;
+					float x1 = x + tile.getOffsetX() * unitScale;
+					float y1 = y + tile.getOffsetY() * unitScale;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 
@@ -164,15 +154,9 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 						vertices[V4] = tempV;
 						break;
 					}
-					spriteBatch.draw(region.getTexture(), vertices, 0, 20);
+					batch.draw(region.getTexture(), vertices, 0, 20);
 				}
 			}
 		}
-
-	}
-
-	@Override
-	public void renderObject (MapObject object) {
-
 	}
 }

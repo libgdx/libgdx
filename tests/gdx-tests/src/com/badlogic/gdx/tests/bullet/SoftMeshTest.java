@@ -49,7 +49,7 @@ public class SoftMeshTest extends BaseBulletTest {
 	public BulletWorld createWorld () {
 		btDefaultCollisionConfiguration collisionConfiguration = new btSoftBodyRigidBodyCollisionConfiguration();
 		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
-		btAxisSweep3 broadphase = new btAxisSweep3(Vector3.tmp.set(-1000, -1000, -1000), Vector3.tmp2.set(1000, 1000, 1000), 1024);
+		btAxisSweep3 broadphase = new btAxisSweep3(tmpV1.set(-1000, -1000, -1000), tmpV2.set(1000, 1000, 1000), 1024);
 		btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
 		btSoftRigidDynamicsWorld dynamicsWorld = new btSoftRigidDynamicsWorld(dispatcher, broadphase, solver,
 			collisionConfiguration);
@@ -86,7 +86,7 @@ public class SoftMeshTest extends BaseBulletTest {
 			normalOffset, meshPart.mesh.getIndicesBuffer(), meshPart.indexOffset, meshPart.numVertices, indexMap, 0);
 		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a fully dynamic body.
 		softBody.setMass(0, 0);
-		com.badlogic.gdx.physics.bullet.softbody.Material pm = softBody.appendMaterial();
+		com.badlogic.gdx.physics.bullet.softbody.btSoftBody.Material pm = softBody.appendMaterial();
 		pm.setKLST(0.2f);
 		pm.setFlags(0);
 		softBody.generateBendingConstraints(2, pm);

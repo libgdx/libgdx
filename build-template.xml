@@ -76,10 +76,11 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/android32" />
 		<mkdir dir="${libs}/armeabi" />
 		<mkdir dir="${libs}/armeabi-v7a" />
-        <mkdir dir="${libs}/x86" />
+		<mkdir dir="${libs}/x86" />
 		<mkdir dir="${libs}/linux32" />
 		<mkdir dir="${libs}/linux64" />
 		<mkdir dir="${libs}/macosx32" />
+		<mkdir dir="${libs}/macosx64" />
 		<mkdir dir="${libs}/windows32" />
 		<mkdir dir="${libs}/windows64" />
 		<mkdir dir="${libs}/ios32"/>
@@ -115,12 +116,12 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
-        <copy failonerror="false" todir="${distDir}/x86">
+		<copy failonerror="false" todir="${distDir}/x86">
 			<fileset dir="${libs}/x86">
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
-        <copy failonerror="false" todir="${distDir}/ios">
+		<copy failonerror="false" todir="${distDir}/ios">
 			<fileset dir="${libs}/ios32">
 				<include name="**/*.a"/>
 			</fileset>
@@ -136,7 +137,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<exclude name="*-debug.jar"/>
 				<exclude name="android-*.jar"/>
 				<exclude name="support-*.jar"/>
-                <exclude name="robovm-*.jar"/>
+				<exclude name="robovm-*.jar"/>
 				<exclude name="gwt*.jar"/>
 			</zipgroupfileset>
 			<!-- merge dependencies specified in parent build.xml -->

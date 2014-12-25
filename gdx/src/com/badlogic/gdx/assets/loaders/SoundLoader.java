@@ -27,9 +27,9 @@ import com.badlogic.gdx.utils.Array;
 /** {@link AssetLoader} to load {@link Sound} instances.
  * @author mzechner */
 public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.SoundParameter> {
-	
+
 	private Sound sound;
-	
+
 	public SoundLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -41,6 +41,8 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
 
 	@Override
 	public Sound loadSync (AssetManager manager, String fileName, FileHandle file, SoundParameter parameter) {
+		Sound sound = this.sound;
+		this.sound = null;
 		return sound;
 	}
 

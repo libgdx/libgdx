@@ -28,8 +28,6 @@ public class GwtApplicationConfiguration {
 	public boolean stencil = false;
 	/** whether to enable antialiasing **/
 	public boolean antialiasing = false;
-	/** the framerate to run the game at **/
-	public int fps = 60;
 	/** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
 	 * DOM **/
 	public Panel rootPanel;
@@ -42,6 +40,8 @@ public class GwtApplicationConfiguration {
 	public boolean useDebugGL = false;
 	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
 	public boolean preferFlash = true;
+	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
+	public boolean preserveDrawingBuffer = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

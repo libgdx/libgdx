@@ -139,14 +139,15 @@ public class NetJavaImpl {
 			} else {
 				url = new URL(httpRequest.getUrl());
 			}
-
+			
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			// should be enabled to upload data.
 			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT);
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
-			
+			HttpURLConnection.setFollowRedirects(httpRequest.getFollowRedirects());
+
 			lock.lock();
 			connections.put(httpRequest, connection);
 			listeners.put(httpRequest, httpResponseListener);
@@ -194,12 +195,12 @@ public class NetJavaImpl {
 						try {
 							lock.lock();
 							HttpResponseListener listener = listeners.get(httpRequest);
-							
+
 							if (listener != null) {
 								listener.handleHttpResponse(clientResponse);
 								listeners.remove(httpRequest);
 							}
-							
+
 							connections.remove(httpRequest);
 						} finally {
 							connection.disconnect();
@@ -208,33 +209,42 @@ public class NetJavaImpl {
 					} catch (final Exception e) {
 						connection.disconnect();
 						lock.lock();
-						httpResponseListener.failed(e);
-						connections.remove(httpRequest);
-						listeners.remove(httpRequest);
-						lock.unlock();
+						try {   
+							httpResponseListener.failed(e);
+						} finally {	
+							connections.remove(httpRequest);
+							listeners.remove(httpRequest);
+							lock.unlock();
+						}
 					}
 				}
 			});
 
 		} catch (Exception e) {
 			lock.lock();
-			httpResponseListener.failed(e);
-			connections.remove(httpRequest);
-			listeners.remove(httpRequest);
-			lock.unlock();
+			try {
+				httpResponseListener.failed(e);
+			} finally {
+				connections.remove(httpRequest);
+				listeners.remove(httpRequest);
+				lock.unlock();
+			}
 			return;
 		}
 	}
+
+	public void cancelHttpRequest (HttpRequest httpRequest) {				
+		try {
+			lock.lock();
+			HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 	
-	public void cancelHttpRequest (HttpRequest httpRequest) {
-		lock.lock();
-		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
-		
-		if (httpResponseListener != null) {
-			httpResponseListener.cancelled();
-			connections.remove(httpRequest);
-			listeners.remove(httpRequest);
+			if (httpResponseListener != null) {
+				httpResponseListener.cancelled();
+				connections.remove(httpRequest);
+				listeners.remove(httpRequest);
+			}
+		} finally {
+			lock.unlock();
 		}
-		lock.unlock();
 	}
 }

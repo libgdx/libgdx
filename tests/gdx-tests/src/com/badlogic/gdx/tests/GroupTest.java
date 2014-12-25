@@ -50,7 +50,7 @@ public class GroupTest extends GdxTest {
 		font = new BitmapFont();
 		renderer = new ShapeRenderer();
 
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		region = new TextureRegion(new Texture(Gdx.files.internal("data/group-debug.png")));
@@ -97,7 +97,7 @@ public class GroupTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	public boolean needsGL20 () {

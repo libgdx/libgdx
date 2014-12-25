@@ -16,24 +16,22 @@
 
 package com.badlogic.gdx;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.net.HttpRequestHeader;
+import com.badlogic.gdx.net.HttpResponseHeader;
 import com.badlogic.gdx.net.HttpStatus;
+import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -56,34 +54,40 @@ import com.badlogic.gdx.utils.JsonWriter;
  * @author arielsan */
 public interface Net {
 
-
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
+		 * <p>
+		 * <b>Note</b>: This method may only be called once per response.
+		 * </p>
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
+		 * <p>
+		 * <b>Note</b>: This method may only be called once per response.
+		 * </p>
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		String getResultAsString ();
 
-		/** Returns the data of the HTTP response as an {@link InputStream}.
-		 * <b><br>Warning:</b> Do not store a reference to this InputStream outside of {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. 
-		 * The underlying HTTP connection will be closed after that callback finishes executing. 
-		 * Reading from the InputStream after it's connection has been closed will lead to exception.
+		/** Returns the data of the HTTP response as an {@link InputStream}. <b><br>
+		 * Warning:</b> Do not store a reference to this InputStream outside of
+		 * {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. The underlying HTTP connection will be closed after that
+		 * callback finishes executing. Reading from the InputStream after it's connection has been closed will lead to exception.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
-		
-		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
-		String getHeader(String name);
 
-		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings
-		 * that represent the corresponding header values. */
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. See
+		 * {@link HttpResponseHeader}. */
+		String getHeader (String name);
+
+		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
+		 * represent the corresponding header values. See {@link HttpResponseHeader}. */
 		Map<String, List<String>> getHeaders ();
 	}
 
@@ -135,9 +139,9 @@ public interface Net {
 	 * 	}
 	 * });
 	 * </pre> */
-	public static class HttpRequest {
+	public static class HttpRequest implements Poolable {
 
-		private final String httpMethod;
+		private String httpMethod;
 		private String url;
 		private Map<String, String> headers;
 		private int timeOut = 0;
@@ -146,11 +150,17 @@ public interface Net {
 		private InputStream contentStream;
 		private long contentLength;
 
+		private boolean followRedirects = true;
+
+		public HttpRequest () {
+			this.headers = new HashMap<String, String>();
+		}
+
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
 		 * @param httpMethod This is the HTTP method for the request, see {@link HttpMethods} */
 		public HttpRequest (String httpMethod) {
+			this();
 			this.httpMethod = httpMethod;
-			this.headers = new HashMap<String, String>();
 		}
 
 		/** Sets the URL of the HTTP request.
@@ -159,8 +169,7 @@ public interface Net {
 			this.url = url;
 		}
 
-		/** Sets a header to this HTTP request. Headers definition could be found at <a
-		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
+		/** Sets a header to this HTTP request, see {@link HttpRequestHeader}.
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
 		public void setHeader (String name, String value) {
@@ -187,6 +196,23 @@ public interface Net {
 		 * @param timeOut the number of milliseconds to wait before giving up, 0 or negative to block until the operation is done */
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
+		}
+
+		/** Sets whether 301 and 302 redirects are followed. By default true. Can't be changed in the GWT backend because this uses
+		 * XmlHttpRequests which always redirect.
+		 * @param followRedirects whether to follow redirects.
+		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend. */
+		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
+			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
+				this.followRedirects = followRedirects;
+			} else {
+				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");
+			}
+		}
+
+		/** Sets the HTTP method of the HttpRequest. */
+		public void setMethod (String httpMethod) {
+			this.httpMethod = httpMethod;
 		}
 
 		/** Returns the timeOut of the HTTP request.
@@ -225,15 +251,34 @@ public interface Net {
 			return headers;
 		}
 
+		/** Returns whether 301 and 302 redirects are followed. By default true. Whether to follow redirects. */
+		public boolean getFollowRedirects () {
+			return followRedirects;
+		}
+
+		@Override
+		public void reset () {
+			httpMethod = null;
+			url = null;
+			headers.clear();
+			timeOut = 0;
+
+			content = null;
+			contentStream = null;
+			contentLength = 0;
+
+			followRedirects = true;
+		}
+
 	}
 
 	/** Listener to be able to do custom logic once the {@link HttpResponse} is ready to be processed, register it with
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
-		 * Passing data to the rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} 
-		 * {@link HttpResponse} contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. Passing data to the
+		 * rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} {@link HttpResponse}
+		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
 		 * {@link HttpStatus#getStatusCode()}). For example:
 		 * 
 		 * <pre>
@@ -256,8 +301,8 @@ public interface Net {
 		 * other reason (not an HTTP error).
 		 * @param t If the HTTP request failed because an Exception, t encapsulates it to give more information. */
 		void failed (Throwable t);
-		
-		void cancelled();
+
+		void cancelled ();
 	}
 
 	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
@@ -266,8 +311,8 @@ public interface Net {
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
-	
-	public void cancelHttpRequest(HttpRequest httpRequest);
+
+	public void cancelHttpRequest (HttpRequest httpRequest);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.

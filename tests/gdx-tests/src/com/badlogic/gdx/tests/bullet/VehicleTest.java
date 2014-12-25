@@ -37,7 +37,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRaycastVehicle;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btVehicleRaycaster;
-import com.badlogic.gdx.physics.bullet.dynamics.btVehicleTuning;
+import com.badlogic.gdx.physics.bullet.dynamics.btRaycastVehicle.btVehicleTuning;
 import com.badlogic.gdx.physics.bullet.dynamics.btWheelInfo;
 
 /** @author Xoppa */

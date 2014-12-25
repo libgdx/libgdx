@@ -34,6 +34,7 @@ public class GwtGraphics implements Graphics {
 	String extensions;
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
+	long frameId = -1;
 	float deltaTime = 0;
 	float time = 0;
 	int frames;
@@ -54,6 +55,7 @@ public class GwtGraphics implements Graphics {
 		attributes.setStencil(config.stencil);
 		attributes.setAlpha(false);
 		attributes.setPremultipliedAlpha(false);
+		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, config.width, config.height);
@@ -77,6 +79,11 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public int getHeight () {
 		return canvas.getHeight();
+	}
+
+	@Override
+	public long getFrameId () {
+		return frameId;
 	}
 
 	@Override

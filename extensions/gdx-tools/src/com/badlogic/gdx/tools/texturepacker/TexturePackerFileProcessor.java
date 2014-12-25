@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import java.io.File;
 import java.io.FileReader;
@@ -47,10 +48,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName) {
 		this.defaultSettings = defaultSettings;
 
-		if (packFileName.indexOf('.') == -1 || packFileName.toLowerCase().endsWith(".png")
-			|| packFileName.toLowerCase().endsWith(".jpg")) {
-			packFileName += ".atlas";
-		}
+		if (packFileName.toLowerCase().endsWith(defaultSettings.atlasExtension.toLowerCase()))
+			packFileName = packFileName.substring(0, packFileName.length() - defaultSettings.atlasExtension.length());
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
@@ -109,19 +108,6 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
 		if (outputRoot.exists()) {
-			FileProcessor deleteProcessor = new FileProcessor() {
-				protected void processFile (Entry inputFile) throws Exception {
-					inputFile.inputFile.delete();
-				}
-			};
-			deleteProcessor.setRecursive(false);
-
-			String prefix = packFileName;
-			int dotIndex = prefix.lastIndexOf('.');
-			if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "\\d*\\.(png|jpg)");
-			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "\\.(atlas)");
-
 			// Load root settings to get scale.
 			File settingsFile = new File(root, "pack.json");
 			Settings rootSettings = defaultSettings;
@@ -129,13 +115,29 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				rootSettings = new Settings(rootSettings);
 				merge(rootSettings, settingsFile);
 			}
-			if (rootSettings.scale.length == 1)
-				deleteProcessor.process(outputRoot, null);
-			else {
-				for (float scale : rootSettings.scale) {
-					String subdir = scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale);
-					deleteProcessor.process(outputRoot + "/" + subdir, null);
-				}
+
+			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
+				FileProcessor deleteProcessor = new FileProcessor() {
+					protected void processFile (Entry inputFile) throws Exception {
+						inputFile.inputFile.delete();
+					}
+				};
+				deleteProcessor.setRecursive(false);
+
+				String scaledPackFileName = rootSettings.getScaledPackFileName(packFileName, i);
+				File packFile = new File(scaledPackFileName);
+
+				String prefix = packFile.getName();
+				int dotIndex = prefix.lastIndexOf('.');
+				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg)");
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
+
+				String dir = packFile.getParent();
+				if (dir == null)
+					deleteProcessor.process(outputRoot, null);
+				else if (new File(outputRoot + "/" + dir).exists()) //
+					deleteProcessor.process(outputRoot + "/" + dir, null);
 			}
 		}
 		return super.process(files, outputRoot);
