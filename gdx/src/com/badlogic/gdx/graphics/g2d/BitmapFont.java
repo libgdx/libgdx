@@ -432,6 +432,7 @@ public class BitmapFont implements Disposable {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
+					else if (isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -782,6 +783,7 @@ public class BitmapFont implements Disposable {
 	
 	public boolean isBreakChar(char c) {
 		if (breakChars == null) return false;
+
 		for (char br: breakChars) {
 			if (c == br) return true;
 		}
