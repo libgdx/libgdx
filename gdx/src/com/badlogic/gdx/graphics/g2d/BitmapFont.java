@@ -67,6 +67,7 @@ public class BitmapFont implements Disposable {
 	private boolean integer;
 	private boolean ownsTexture;
 	boolean markupEnabled;
+	private char[] breakChars;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering without generating a bitmap font yourself. */
@@ -428,6 +429,7 @@ public class BitmapFont implements Disposable {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
+					else if (isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -767,6 +769,23 @@ public class BitmapFont implements Disposable {
 		for (; start < n; start++)
 			if (text.charAt(start) == ch) return start;
 		return n;
+	}
+	
+	/**
+	 * Provide any additional characters that should act as break characters when the label is wrapped.
+	 * By default, only whitespace characters act as break chars.
+	 */
+	public void setBreakChars(char[] breakChars) {
+		this.breakChars = breakChars;
+	}
+	
+	public boolean isBreakChar(char c) {
+		if (breakChars == null) return false;
+
+		for (char br: breakChars) {
+			if (c == br) return true;
+		}
+		return false;
 	}
 
 	static boolean isWhitespace (char c) {

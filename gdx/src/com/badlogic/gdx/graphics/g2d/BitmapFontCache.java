@@ -793,6 +793,7 @@ public class BitmapFontCache {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
+					else if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -824,6 +825,14 @@ public class BitmapFontCache {
 		textBounds.width = maxWidth;
 		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
+	}
+	
+	/**
+	 * Provide any additional characters that should act as break characters when the label is wrapped.
+	 * By default, only whitespace characters act as break chars.
+	 */
+	public void setBreakChars(char[] breakChars) {
+		font.setBreakChars(breakChars);
 	}
 
 	/** Returns the size of the cached string. The height is the distance from the top of most capital letters in the font (the

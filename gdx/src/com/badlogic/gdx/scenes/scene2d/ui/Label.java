@@ -250,6 +250,15 @@ public class Label extends Widget {
 		this.wrap = wrap;
 		invalidateHierarchy();
 	}
+	
+	/**
+	 * Provide any additional characters that should act as break characters when the label is wrapped.
+	 * By default, only whitespace characters act as break chars.
+	 */
+	public void setBreakChars(char[] breakChars) {
+		cache.setBreakChars(breakChars);
+		invalidateHierarchy();
+	}
 
 	/** @param alignment Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
