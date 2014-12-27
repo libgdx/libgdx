@@ -61,7 +61,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final Vector3 tempV6 = new Vector3();
 	private final Vector3 tempV7 = new Vector3();
 	private final Vector3 tempV8 = new Vector3();
-	
+
 	private final Color tempC1 = new Color();
 
 	/** The vertex attributes of the resulting mesh */
@@ -130,12 +130,12 @@ public class MeshBuilder implements MeshPartBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public void begin (final long attributes) {
-		begin(createAttributes(attributes), 0);
+		begin(createAttributes(attributes), -1);
 	}
 
 	/** Begin building a mesh. Call {@link #part(String, int)} to start a {@link MeshPart}. */
 	public void begin (final VertexAttributes attributes) {
-		begin(attributes, 0);
+		begin(attributes, -1);
 	}
 
 	/** Begin building a mesh.
@@ -184,8 +184,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 	}
 
-	/** Starts a new MeshPart. The mesh part is not usable until end() is called.
-	 * This will reset the current color and vertex transformation. */
+	/** Starts a new MeshPart. The mesh part is not usable until end() is called. This will reset the current color and vertex
+	 * transformation. */
 	public MeshPart part (final String id, int primitiveType) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 		endpart();
@@ -201,12 +201,20 @@ public class MeshBuilder implements MeshPartBuilder {
 		return part;
 	}
 
-	/** End building the mesh and returns the mesh */
-	public Mesh end () {
-		if (this.attributes == null) throw new RuntimeException("Call begin() first");
+	/** End building the mesh and returns the mesh
+	 * @param mesh The mesh to receive the built vertices and indices, must have the same attributes and must be big enough to hold
+	 *           the data, any existing data will be overwritten. */
+	public Mesh end (Mesh mesh) {
 		endpart();
 
-		final Mesh mesh = new Mesh(true, vertices.size / stride, indices.size, attributes);
+		if (attributes == null) throw new GdxRuntimeException("Call begin() first");
+		if (!attributes.equals(mesh.getVertexAttributes())) throw new GdxRuntimeException("Mesh attributes don't match");
+		if ((mesh.getMaxVertices() * stride) < vertices.size)
+			throw new GdxRuntimeException("Mesh can't hold enough vertices: " + mesh.getMaxVertices() + " * " + stride + " < "
+				+ vertices.size);
+		if (mesh.getMaxIndices() < indices.size)
+			throw new GdxRuntimeException("Mesh can't hold enough indices: " + mesh.getMaxIndices() + " < " + indices.size);
+
 		mesh.setVertices(vertices.items, 0, vertices.size);
 		mesh.setIndices(indices.items, 0, indices.size);
 
@@ -219,6 +227,21 @@ public class MeshBuilder implements MeshPartBuilder {
 		indices.clear();
 
 		return mesh;
+	}
+
+	/** End building the mesh and returns the mesh */
+	public Mesh end () {
+		return end(new Mesh(true, vertices.size / stride, indices.size, attributes));
+	}
+
+	/** @return The number of vertices built up until now, only valid in between the call to begin() and end(). */
+	public int getNumVertices () {
+		return vertices.size / stride;
+	}
+
+	/** @return The number of indices built up until now, only valid in between the call to begin() and end(). */
+	public int getNumIndices () {
+		return indices.size;
 	}
 
 	@Override
@@ -327,9 +350,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void ensureTriangleIndices (int numTriangles) {
 		if (primitiveType == GL20.GL_LINES)
 			ensureIndices(6 * numTriangles);
-		else
-			// GL_TRIANGLES || GL_POINTS
+		else if (primitiveType == GL20.GL_TRIANGLES || primitiveType == GL20.GL_POINTS)
 			ensureIndices(3 * numTriangles);
+		else
+			throw new GdxRuntimeException("Incorrect primtive type");
 	}
 
 	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
@@ -647,7 +671,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			ensureRectangleIndices(2);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
-		} else { // GL10.GL_TRIANGLES
+		} else { // GL20.GL_TRIANGLES
 			ensureRectangleIndices(6);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
@@ -1059,7 +1083,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions) {
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions) {
 		Vector3 begin = tmp(x1, y1, z1), end = tmp(x2, y2, z2);
 		float length = begin.dst(end);
 		float coneHeight = length * capLength;
@@ -1077,10 +1102,16 @@ public class MeshBuilder implements MeshPartBuilder {
 		// Matrices
 		Matrix4 userTransform = getVertexTransform(tmp());
 		Matrix4 transform = tmp();
-		float[]val = transform.val;
-		val[Matrix4.M00] = left.x; val[Matrix4.M01] = up.x; val[Matrix4.M02] = forward.x;
-		val[Matrix4.M10] = left.y; val[Matrix4.M11] = up.y; val[Matrix4.M12] = forward.y;
-		val[Matrix4.M20] = left.z; val[Matrix4.M21] = up.z; val[Matrix4.M22] = forward.z;
+		float[] val = transform.val;
+		val[Matrix4.M00] = left.x;
+		val[Matrix4.M01] = up.x;
+		val[Matrix4.M02] = forward.x;
+		val[Matrix4.M10] = left.y;
+		val[Matrix4.M11] = up.y;
+		val[Matrix4.M12] = forward.y;
+		val[Matrix4.M20] = left.z;
+		val[Matrix4.M21] = up.z;
+		val[Matrix4.M22] = forward.z;
 		Matrix4 temp = tmp();
 
 		// Stem
