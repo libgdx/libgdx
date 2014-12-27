@@ -87,6 +87,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		modelBuilder.node().id = "cylinder";
 		mpb = modelBuilder.part("cylinder", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
 			| Usage.ColorPacked, material);
+		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.cylinder(2f, 4f, 3f, 15);
 
 		model = modelBuilder.end();
