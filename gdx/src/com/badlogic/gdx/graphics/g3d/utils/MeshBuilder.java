@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ShortArray;
@@ -43,6 +44,9 @@ import com.badlogic.gdx.utils.ShortArray;
  * {@link #end()}.
  * @author Xoppa */
 public class MeshBuilder implements MeshPartBuilder {
+	private final static ShortArray tmpIndices = new ShortArray();
+	private final static FloatArray tmpVertices = new FloatArray();
+
 	private final VertexInfo vertTmp1 = new VertexInfo();
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
@@ -172,6 +176,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		uvOffset = a == null ? -1 : a.offset / 4;
 		setColor(null);
 		setVertexTransform(null);
+		setUVRange(0f, 0f, 1f, 1f);
 		this.primitiveType = primitiveType;
 	}
 
@@ -197,6 +202,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		setColor(null);
 		setVertexTransform(null);
+		setUVRange(0f, 0f, 1f, 1f);
 
 		return part;
 	}
@@ -319,6 +325,32 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setUVRange (TextureRegion region) {
 		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+	}
+
+	@Override
+	public Matrix4 getVertexTransform (Matrix4 out) {
+		return out.set(positionTransform);
+	}
+
+	@Override
+	public void setVertexTransform (Matrix4 transform) {
+		if ((vertexTransformationEnabled = (transform != null)) == true) {
+			positionTransform.set(transform);
+			normalTransform.set(transform).inv().transpose();
+		} else {
+			positionTransform.idt();
+			normalTransform.idt();
+		}
+	}
+
+	@Override
+	public boolean isVertexTransformationEnabled () {
+		return vertexTransformationEnabled;
+	}
+
+	@Override
+	public void setVertexTransformationEnabled (boolean enabled) {
+		vertexTransformationEnabled = enabled;
 	}
 
 	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
@@ -1062,8 +1094,6 @@ public class MeshBuilder implements MeshPartBuilder {
 		sphere(matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 
-	private static ShortArray tmpIndices;
-
 	@Override
 	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
 		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
@@ -1084,13 +1114,10 @@ public class MeshBuilder implements MeshPartBuilder {
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 
-		if (tmpIndices == null) tmpIndices = new ShortArray(divisionsU * 2);
 		final int s = divisionsU + 3;
-		tmpIndices.ensureCapacity(s);
-		while (tmpIndices.size > s)
-			tmpIndices.pop();
-		while (tmpIndices.size < s)
-			tmpIndices.add(-1);
+		tmpIndices.clear();
+		tmpIndices.ensureCapacity(divisionsU * 2);
+		tmpIndices.size = s;
 		int tempOffset = 0;
 
 		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
@@ -1171,28 +1198,55 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public Matrix4 getVertexTransform (Matrix4 out) {
-		return out.set(positionTransform);
+	public void addMesh (Mesh mesh) {
+		addMesh(mesh, 0, mesh.getNumIndices());
+	}
+	
+	@Override
+	public void addMesh (MeshPart meshpart) {
+		if (meshpart.primitiveType != primitiveType)
+			throw new GdxRuntimeException("Primitive type doesn't match");
+		addMesh(meshpart.mesh, meshpart.indexOffset, meshpart.numVertices);
 	}
 
 	@Override
-	public void setVertexTransform (Matrix4 transform) {
-		if ((vertexTransformationEnabled = (transform != null)) == true) {
-			positionTransform.set(transform);
-			normalTransform.set(transform).inv().transpose();
-		} else {
-			positionTransform.idt();
-			normalTransform.idt();
+	public void addMesh (Mesh mesh, int indexOffset, int numIndices) {
+		if (!attributes.equals(mesh.getVertexAttributes())) throw new GdxRuntimeException("Vertex attributes do not match");
+		if (numIndices <= 0) return; // silently ignore an empty mesh part
+
+		// FIXME don't triple copy, instead move the copy to jni
+		int numFloats = mesh.getNumVertices() * stride;
+		tmpVertices.clear();
+		tmpVertices.ensureCapacity(numFloats);
+		tmpVertices.size = numFloats;
+		mesh.getVertices(tmpVertices.items);
+
+		tmpIndices.clear();
+		tmpIndices.ensureCapacity(numIndices);
+		tmpIndices.size = numIndices;
+		mesh.getIndices(indexOffset, numIndices, tmpIndices.items, 0);
+
+		addMesh(tmpVertices.items, tmpIndices.items, 0, numIndices);
+	}
+
+	private static IntIntMap indicesMap = null;
+	private void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
+		if (indicesMap == null)
+			indicesMap = new IntIntMap(numIndices);
+		else {
+			indicesMap.clear();
+			indicesMap.ensureCapacity(numIndices);
 		}
-	}
-
-	@Override
-	public boolean isVertexTransformationEnabled () {
-		return vertexTransformationEnabled;
-	}
-
-	@Override
-	public void setVertexTransformationEnabled (boolean enabled) {
-		vertexTransformationEnabled = enabled;
+		ensureIndices(numIndices);
+		ensureVertices(vertices.length < numIndices ? vertices.length : numIndices); // a bit naive perhaps?
+		for (int i = 0; i < numIndices; i++) {
+			final int sidx = indices[i];
+			int didx = indicesMap.get(sidx, -1);
+			if (didx < 0) {
+				addVertex(vertices, sidx * stride);
+				indicesMap.put(sidx, didx = lastIndex);
+			}
+			index((short)didx);
+		}
 	}
 }

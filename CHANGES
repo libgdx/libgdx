@@ -12,6 +12,7 @@
 - API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
 - Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
 - Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
+- API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer

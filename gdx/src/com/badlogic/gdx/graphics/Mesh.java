@@ -370,12 +370,35 @@ public class Mesh implements Disposable {
 	 * @param indices the array to copy the indices to
 	 * @param destOffset the offset in the indices array to start copying */
 	public void getIndices (short[] indices, int destOffset) {
-		if ((indices.length - destOffset) < getNumIndices())
-			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs "
-				+ getNumIndices());
+		getIndices(0, indices, destOffset);
+	}
+
+	/** Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold destOffset + all
+	 * the remaining indices.
+	 * @param srcOffset the zero-based offset of the first index to fetch
+	 * @param indices the array to copy the indices to
+	 * @param destOffset the offset in the indices array to start copying */
+	public void getIndices (int srcOffset, short[] indices, int destOffset) {
+		getIndices(srcOffset, -1, indices, destOffset);
+	}
+
+	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset + count
+	 * indices.
+	 * @param srcOffset the zero-based offset of the first index to fetch
+	 * @param count the total amount of indices to copy
+	 * @param indices the array to copy the indices to
+	 * @param destOffset the offset in the indices array to start copying */
+	public void getIndices (int srcOffset, int count, short[] indices, int destOffset) {
+		int max = getNumIndices();
+		if (count < 0) count = max - srcOffset;
+		if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max)
+			throw new IllegalArgumentException("Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: "
+				+ max);
+		if ((indices.length - destOffset) < count)
+			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " shorts, needs " + count);
 		int pos = getIndicesBuffer().position();
-		getIndicesBuffer().position(0);
-		getIndicesBuffer().get(indices, destOffset, getNumIndices());
+		getIndicesBuffer().position(srcOffset);
+		getIndicesBuffer().get(indices, destOffset, count);
 		getIndicesBuffer().position(pos);
 	}
 

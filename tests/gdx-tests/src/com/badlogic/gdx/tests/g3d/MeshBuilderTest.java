@@ -54,19 +54,15 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		Material material = new Material(TextureAttribute.createDiffuse(texture));
 
 		MeshBuilder meshBuilder = new MeshBuilder();
-		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
+		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.ColorPacked | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
 		meshBuilder.box(1f, 1f, 1f);
-		Mesh mesh = new Mesh(true, meshBuilder.getNumVertices(), meshBuilder.getNumIndices(), new VertexAttributes(
-			VertexAttribute.Position(), VertexAttribute.Normal(), VertexAttribute.TexCoords(0)));
+		Mesh mesh = new Mesh(true, meshBuilder.getNumVertices(), meshBuilder.getNumIndices(), meshBuilder.getAttributes());
 		mesh = meshBuilder.end(mesh);
 		
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		modelBuilder.manage(texture);
-
-		modelBuilder.node().id = "mesh";
-		modelBuilder.part("mesh", mesh, GL20.GL_TRIANGLES, material);
-		
+	
 		modelBuilder.node().id = "box";
 		MeshPartBuilder mpb = modelBuilder.part("box", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates
 			| Usage.ColorPacked, material);
@@ -89,6 +85,21 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			| Usage.ColorPacked, material);
 		mpb.setUVRange(1f, 1f, 0f, 0f);
 		mpb.cylinder(2f, 4f, 3f, 15);
+		
+		modelBuilder.node().id = "mesh";
+		mpb = modelBuilder.part("mesh", GL20.GL_TRIANGLES, mesh.getVertexAttributes(), material);
+		Matrix4 transform = new Matrix4();
+		mpb.setVertexTransform(transform.setToTranslation(0, 2, 0));
+		mpb.addMesh(mesh);
+		mpb.setColor(Color.BLUE);
+		mpb.setVertexTransform(transform.setToTranslation(1, 1, 0));
+		mpb.addMesh(mesh);
+		mpb.setColor(null);
+		mpb.setVertexTransform(transform.setToTranslation(-1, 1, 0).rotate(Vector3.X, 45));
+		mpb.addMesh(mesh);
+		mpb.setVertexTransform(transform.setToTranslation(0, 1, 1));
+		mpb.setUVRange(0.75f, 0.75f, 0.25f, 0.25f);
+		mpb.addMesh(mesh);
 
 		model = modelBuilder.end();
 
