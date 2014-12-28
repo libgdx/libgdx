@@ -101,10 +101,12 @@ public class MeshBuilder implements MeshPartBuilder {
 	private Array<MeshPart> parts = new Array<MeshPart>();
 	/** The color used if no vertex color is specified. */
 	private final Color color = new Color(Color.WHITE);
+	private boolean hasColor = false;
 	/** The current primitiveType */
 	private int primitiveType;
 	/** The UV range used when building */
 	private float uOffset = 0f, uScale = 1f, vOffset = 0f, vScale = 1f;
+	private boolean hasUVTransform = false;
 	private float[] vertex;
 
 	private boolean vertexTransformationEnabled = false;
@@ -176,7 +178,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		uvOffset = a == null ? -1 : a.offset / 4;
 		setColor(null);
 		setVertexTransform(null);
-		setUVRange(0f, 0f, 1f, 1f);
+		setUVRange(null);
 		this.primitiveType = primitiveType;
 	}
 
@@ -202,7 +204,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		setColor(null);
 		setVertexTransform(null);
-		setUVRange(0f, 0f, 1f, 1f);
+		setUVRange(null);
 
 		return part;
 	}
@@ -307,11 +309,12 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setColor (float r, float g, float b, float a) {
 		color.set(r, g, b, a);
+		hasColor = !color.equals(Color.WHITE);
 	}
 
 	@Override
 	public void setColor (final Color color) {
-		this.color.set(color == null ? Color.WHITE : color);
+		this.color.set(!(hasColor = (color != null)) ? Color.WHITE : color);
 	}
 
 	@Override
@@ -320,11 +323,16 @@ public class MeshBuilder implements MeshPartBuilder {
 		vOffset = v1;
 		uScale = u2 - u1;
 		vScale = v2 - v1;
+		hasUVTransform = !(MathUtils.isZero(u1) && MathUtils.isZero(v1) && MathUtils.isEqual(u2, 1f) && MathUtils.isEqual(v2, 1f));
 	}
 
 	@Override
 	public void setUVRange (TextureRegion region) {
-		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+		if (!(hasUVTransform = (region != null))) {
+			uOffset = vOffset = 0f;
+			uScale = vScale = 1f;
+		} else
+			setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
 	}
 
 	@Override
@@ -482,17 +490,19 @@ public class MeshBuilder implements MeshPartBuilder {
 			if (norOffset >= 0) transformNormal(vertices.items, o + norOffset, 3, normalTransform);
 		}
 
-		if (colOffset >= 0) {
-			vertices.items[o + colOffset] *= color.r;
-			vertices.items[o + colOffset + 1] *= color.g;
-			vertices.items[o + colOffset + 2] *= color.b;
-			if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
-		} else if (cpOffset >= 0) {
-			vertices.items[o + cpOffset] = tempC1.set(NumberUtils.floatToIntColor(vertices.items[o + cpOffset])).mul(color)
-				.toFloatBits();
+		if (hasColor) {
+			if (colOffset >= 0) {
+				vertices.items[o + colOffset] *= color.r;
+				vertices.items[o + colOffset + 1] *= color.g;
+				vertices.items[o + colOffset + 2] *= color.b;
+				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
+			} else if (cpOffset >= 0) {
+				vertices.items[o + cpOffset] = tempC1.set(NumberUtils.floatToIntColor(vertices.items[o + cpOffset])).mul(color)
+					.toFloatBits();
+			}
 		}
 
-		if (uvOffset >= 0) {
+		if (hasUVTransform && uvOffset >= 0) {
 			vertices.items[o + uvOffset] = uOffset + uScale * vertices.items[o + uvOffset];
 			vertices.items[o + uvOffset + 1] = vOffset + vScale * vertices.items[o + uvOffset + 1];
 		}
@@ -1201,11 +1211,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void addMesh (Mesh mesh) {
 		addMesh(mesh, 0, mesh.getNumIndices());
 	}
-	
+
 	@Override
 	public void addMesh (MeshPart meshpart) {
-		if (meshpart.primitiveType != primitiveType)
-			throw new GdxRuntimeException("Primitive type doesn't match");
+		if (meshpart.primitiveType != primitiveType) throw new GdxRuntimeException("Primitive type doesn't match");
 		addMesh(meshpart.mesh, meshpart.indexOffset, meshpart.numVertices);
 	}
 
@@ -1230,6 +1239,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	private static IntIntMap indicesMap = null;
+
 	private void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
 		if (indicesMap == null)
 			indicesMap = new IntIntMap(numIndices);
