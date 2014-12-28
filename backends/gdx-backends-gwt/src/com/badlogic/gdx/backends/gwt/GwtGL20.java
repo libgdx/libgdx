@@ -495,7 +495,7 @@ public class GwtGL20 implements GL20 {
             gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
         } else {
             Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer) pixels).get(0));
-            gl.texSubImage2D(target, level, xoffset, yoffset, width, height, pixmap.getCanvasElement());
+            gl.texSubImage2D(target, level, xoffset, yoffset, format, type, pixmap.getCanvasElement());
         }
 	}
 
