@@ -271,9 +271,12 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setButton(button);
 
 		Actor target = hit(tempCoords.x, tempCoords.y, true);
-		if (target == null) target = root;
+		if (target == null) {
+			if (root.getTouchable() == Touchable.enabled) root.fire(event);
+		} else {
+			target.fire(event);
+		}
 
-		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
