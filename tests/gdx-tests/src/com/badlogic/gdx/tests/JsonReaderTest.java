@@ -110,6 +110,9 @@ public class JsonReaderTest extends GdxTest {
 
 		text = text.replace("\n", "\r\n");
 		check(text, object);
+
+		text = text.replace("\r\n", "\r\n\r\n");
+		check(text, object);
 	}
 
 	private void check (String text, Object object) {
