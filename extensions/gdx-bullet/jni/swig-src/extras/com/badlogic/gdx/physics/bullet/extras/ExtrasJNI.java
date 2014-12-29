@@ -160,7 +160,7 @@ public class ExtrasJNI {
     return btCollisionShape.getCPtr(self.createConvexTriangleMeshShape((trimesh == 0) ? null : new btStridingMeshInterface(trimesh, false)));
   }
   public static long SwigDirector_btBulletWorldImporter_createGimpactShape(btBulletWorldImporter self, long trimesh) {
-    return SWIGTYPE_p_btGImpactMeshShape.getCPtr(self.createGimpactShape((trimesh == 0) ? null : new btStridingMeshInterface(trimesh, false)));
+    return btGImpactMeshShape.getCPtr(self.createGimpactShape((trimesh == 0) ? null : new btStridingMeshInterface(trimesh, false)));
   }
   public static long SwigDirector_btBulletWorldImporter_createStridingMeshInterfaceData(btBulletWorldImporter self, long interfaceData) {
     return btStridingMeshInterfaceData.getCPtr(self.createStridingMeshInterfaceData((interfaceData == 0) ? null : new btStridingMeshInterfaceData(interfaceData, false)));

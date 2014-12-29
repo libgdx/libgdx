@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -46,8 +45,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public class IndexBufferObjectSubData implements IndexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
 	ShortBuffer buffer;
 	ByteBuffer byteBuffer;
 	int bufferHandle;
@@ -86,11 +83,11 @@ public class IndexBufferObjectSubData implements IndexData {
 	}
 
 	private int createBufferObject () {
-		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, tmpHandle.get(0));
+		int result = Gdx.gl20.glGenBuffer();
+		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, result);
 		Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-		return tmpHandle.get(0);
+		return result;
 	}
 
 	/** @return the number of indices currently stored in this buffer */
@@ -129,6 +126,23 @@ public class IndexBufferObjectSubData implements IndexData {
 		}
 	}
 
+	public void setIndices (ShortBuffer indices) {
+		int pos = indices.position();
+		isDirty = true;
+		buffer.clear();
+		buffer.put(indices);
+		buffer.flip();
+		indices.position(pos);
+		byteBuffer.position(0);
+		byteBuffer.limit(buffer.limit() << 1);
+		
+		if (isBound) {
+			Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			isDirty = false;
+		}
+	}
+
+	
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
 	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
@@ -167,12 +181,9 @@ public class IndexBufferObjectSubData implements IndexData {
 
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	public void dispose () {
-		tmpHandle.clear();
-		tmpHandle.put(bufferHandle);
-		tmpHandle.flip();
 		GL20 gl = Gdx.gl20;
 		gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-		gl.glDeleteBuffers(1, tmpHandle);
+		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
 	}
 }

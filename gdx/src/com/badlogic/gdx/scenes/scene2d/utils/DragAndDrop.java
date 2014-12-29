@@ -46,6 +46,7 @@ public class DragAndDrop {
 	int dragTime = 250;
 	int activePointer = -1;
 	boolean cancelTouchFocus = true;
+	boolean keepWithinStage = true;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
@@ -111,10 +112,12 @@ public class DragAndDrop {
 				}
 				float actorX = event.getStageX() + dragActorX;
 				float actorY = event.getStageY() + dragActorY - actor.getHeight();
-				if (actorX < 0) actorX = 0;
-				if (actorY < 0) actorY = 0;
-				if (actorX + actor.getWidth() > stage.getWidth()) actorX = stage.getWidth() - actor.getWidth();
-				if (actorY + actor.getHeight() > stage.getHeight()) actorY = stage.getHeight() - actor.getHeight();
+				if (keepWithinStage) {
+					if (actorX < 0) actorX = 0;
+					if (actorY < 0) actorY = 0;
+					if (actorX + actor.getWidth() > stage.getWidth()) actorX = stage.getWidth() - actor.getWidth();
+					if (actorY + actor.getHeight() > stage.getHeight()) actorY = stage.getHeight() - actor.getHeight();
+				}
 				actor.setPosition(actorX, actorY);
 			}
 
@@ -206,6 +209,10 @@ public class DragAndDrop {
 	 * touch focus listener, eg when the source is inside a {@link ScrollPane} with flick scroll enabled. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
+	}
+
+	public void setKeepWithinStage (boolean keepWithinStage) {
+		this.keepWithinStage = keepWithinStage;
 	}
 
 	/** A target where a payload can be dragged from.

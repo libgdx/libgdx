@@ -50,7 +50,7 @@ public class BaseBulletTest extends BulletTest {
 
 	private static boolean initialized = false;
 	
-	public static boolean shadows = false;
+	public static boolean shadows = true;
 	
 	public static void init () {
 		if (initialized) return;

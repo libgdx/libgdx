@@ -1,4 +1,6 @@
 [1.5.1]
+- Gradle updated to 2.2
+- Android Gradle tooling updated to 1.0.0
 - API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
 - API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
 - API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
@@ -7,6 +9,10 @@
 - API Change: By default keyframes are no longer copied from Model to ModelInstance but shared instead, can be changed using the `ModelInstance.defaultShareKeyframes` flag or `shareKeyframes` constructor argument.
 - JSON minimal format now makes commas optional: newline can be used in place of any comma.
 - JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
+- API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
+- Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
+- Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
+- API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
