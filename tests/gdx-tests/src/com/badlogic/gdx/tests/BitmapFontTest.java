@@ -139,6 +139,11 @@ public class BitmapFontTest extends GdxTest {
 
 		cache.draw(spriteBatch);
 
+		// tinting
+		cache.tint(new Color(1f, 1f, 1f, 0.3f));
+		cache.translate(0f, 40f);
+		cache.draw(spriteBatch);
+
 		spriteBatch.end();
 		// System.out.println(spriteBatch.renderCalls);
 
