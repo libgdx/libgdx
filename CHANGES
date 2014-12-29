@@ -1,3 +1,5 @@
+[1.5.2]
+
 [1.5.1]
 - Gradle updated to 2.2
 - Android Gradle tooling updated to 1.0.0
@@ -13,6 +15,8 @@
 - Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
 - Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
 - API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
+- Update to LWJGL 2.9.2, fixes fullscreen mode on "retina" displays
+- Fixes to RoboVM backend which would crash if accelerometer is used.
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
