@@ -1,5 +1,6 @@
 [1.5.2]
 - Fixed issue #2433 with color markup and alpha animation. 
+- Fixed natives loading for LWJGL on Mac OS X
 
 [1.5.1]
 - Gradle updated to 2.2
