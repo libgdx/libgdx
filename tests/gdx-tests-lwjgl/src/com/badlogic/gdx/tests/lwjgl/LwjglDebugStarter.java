@@ -39,6 +39,8 @@ public class LwjglDebugStarter {
 //		config.height = 241;
 		config.width = 960;
 		config.height = 600;
+		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
+		config.fullscreen = true;
 		new LwjglApplication(test, config);
 	}
 }
