@@ -1,6 +1,8 @@
 package com.badlogic.gdx.setup;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -30,6 +32,9 @@ public class DependencyBank {
 	static String box2DLightsVersion = "1.3";
 	static String ashleyVersion = "1.3.1";
 	static String aiVersion = "1.4.0";
+	
+	// Android app type
+	static AndroidAppType androidAppType = AndroidAppType.AndroidApplication;
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -55,8 +60,62 @@ public class DependencyBank {
 	public Dependency getDependency(ProjectDependency gdx) {
 		return gdxDependencies.get(gdx);
 	}
-
-
+	
+	public enum AndroidAppType {
+		AndroidApplication
+		(
+			"Fullscreen Android app",
+			"android/res/values/styles_GdxTheme.xml",
+			"android/src/AndroidLauncher_AndroidApplication",
+			"android/AndroidManifest_v8+.xml",
+			((Dependency)null)
+		),
+		
+		FragmentActivity
+		(
+			"FragmentActivity for FragmentApplication",
+			"android/res/values/styles_HoloLightTheme.xml",
+			"android/src/AndroidLauncher_FragmentActivity",
+			"android/AndroidManifest_v11+.xml",
+			new Dependency("support-v4", ProjectType.ANDROID, "com.android.support:support-v4:19.0.+")
+		);
+		
+		
+		public String
+			description,
+			stylesFSpec,
+			classTemplateFSpec,
+			manifestTemplateFSpec;
+		
+		
+		public ArrayList<Dependency> dependencies;
+		
+		AndroidAppType
+		(
+			String description,
+			String stylesFSpec,
+			String classTemplateFSpec,
+			String manifestTemplateFSpec,
+			Dependency dependency
+		) {	this(description, stylesFSpec, classTemplateFSpec, manifestTemplateFSpec, new ArrayList<Dependency>(Arrays.asList(dependency)));	}
+		
+		AndroidAppType
+		(
+			String description,
+			String stylesFSpec,
+			String classTemplateFSpec,
+			String manifestTemplateFSpec,
+			ArrayList<Dependency> dependencies
+		) {
+			this.description = description; 
+			this.stylesFSpec = stylesFSpec;
+			this.classTemplateFSpec = classTemplateFSpec;
+			this.manifestTemplateFSpec = manifestTemplateFSpec;
+			
+			this.dependencies = dependencies;
+		}
+	}
+	
 	/**
 	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
 	 * and allow the option to choose extensions as the user wishes.

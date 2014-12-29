@@ -25,8 +25,11 @@ public class ProjectBuilder {
 	public List<String> buildProject(List<ProjectType> projects, List<Dependency> dependencies) {
 		List<String> incompatibilities = new ArrayList<String>();
 		for (Dependency dep : dependencies) {
+			if(dep == null)
+			{	continue;	}
+			
 			for (ProjectType type : projects) {
-				dep.getDependencies(type);
+				dep.getDependencies(type); // TODO: Remove this useless line?
 				incompatibilities.addAll(dep.getIncompatibilities(type));
 			}
 		}

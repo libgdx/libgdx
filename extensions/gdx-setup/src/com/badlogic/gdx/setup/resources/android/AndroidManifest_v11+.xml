@@ -4,17 +4,17 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="%API_LEVEL%" />
+    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="%API_LEVEL%" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/GdxTheme" >
+        android:theme="@style/HoloLightTheme" >
         <activity
             android:name="%PACKAGE%.android.AndroidLauncher"
             android:label="@string/app_name" 
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
