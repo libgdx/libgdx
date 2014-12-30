@@ -1,3 +1,6 @@
+[1.5.3]
+- API Addition: Added a HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2691
+
 [1.5.2]
 - Fixed issue #2433 with color markup and alpha animation. 
 - Fixed natives loading for LWJGL on Mac OS X
