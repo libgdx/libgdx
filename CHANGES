@@ -1,6 +1,9 @@
+[1.5.2]
+- Fixed issue #2433 with color markup and alpha animation. 
+- Fixed natives loading for LWJGL on Mac OS X
+
 [1.5.1]
 - Gradle updated to 2.2
-- GWT updated to 2.7.0
 - Android Gradle tooling updated to 1.0.0
 - API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
 - API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
@@ -11,6 +14,11 @@
 - JSON minimal format now makes commas optional: newline can be used in place of any comma.
 - JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
 - API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
+- Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
+- Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
+- API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
+- Update to LWJGL 2.9.2, fixes fullscreen mode on "retina" displays
+- Fixes to RoboVM backend which would crash if accelerometer is used.
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer

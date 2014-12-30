@@ -602,7 +602,7 @@ public class GdxSetupUI extends JFrame {
 			} else {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				chooser.setDialogTitle("Chose destination");
+				chooser.setDialogTitle("Choose destination");
 				int result = chooser.showOpenDialog(null);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File dir = chooser.getSelectedFile();

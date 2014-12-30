@@ -1008,7 +1008,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
-		drawDebugBounds(shapes);
+		shapes.flush();
 		applyTransform(shapes, computeTransform());
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawDebugChildren(shapes);

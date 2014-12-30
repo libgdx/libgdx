@@ -206,7 +206,7 @@ public final class MathUtils {
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {
-		return randomTriangular(min, max, (max - min) * .5f);
+		return randomTriangular(min, max, min + (max - min) * 0.5f);
 	}
 
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values

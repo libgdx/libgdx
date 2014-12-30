@@ -57,24 +57,27 @@ public class CpuSpriteBatch extends SpriteBatch {
 		super(size, defaultShader);
 	}
 
-	/** Finishes off rendering and realigns the real matrix on the GPU. */
-	@Override
-	public void end () {
-		super.end();
-		flushAndSyncTransformMatrix();
-	}
-
-	/** Flushes the batch and realigns the real matrix on the GPU. Subsequent draws won't need adjustment and will be slightly
+	/** <p>
+	 * Flushes the batch and realigns the real matrix on the GPU. Subsequent draws won't need adjustment and will be slightly
 	 * faster as long as the transform matrix is not {@link #setTransformMatrix(Matrix4) changed}.
+	 * </p>
+	 * <p>
+	 * Note: The real transform matrix <em>must</em> be invertible. If a singular matrix is detected, GdxRuntimeException will be
+	 * thrown.
+	 * </p>
 	 * @see SpriteBatch#flush() */
 	public void flushAndSyncTransformMatrix () {
 		flush();
 
 		if (adjustNeeded) {
-			// done rendering, safe now to replace matrix
+			// vertices flushed, safe now to replace matrix
+			haveIdentityRealMatrix = checkIdt(virtualMatrix);
+
+			if (!haveIdentityRealMatrix && virtualMatrix.det() == 0)
+				throw new GdxRuntimeException("Transform matrix is singular, can't sync");
+
 			adjustNeeded = false;
 			super.setTransformMatrix(virtualMatrix);
-			haveIdentityRealMatrix = checkIdt(virtualMatrix);
 		}
 	}
 
@@ -86,7 +89,7 @@ public class CpuSpriteBatch extends SpriteBatch {
 	/** Sets the transform matrix to be used by this Batch. Even if this is called inside a {@link #begin()}/{@link #end()} block,
 	 * the current batch is <em>not</em> flushed to the GPU. Instead, for every subsequent draw() the vertices will be transformed
 	 * on the CPU to match the original batch matrix. This adjustment must be performed until the matrices are realigned by
-	 * restoring the original matrix, or by calling {@link #flushAndSyncTransformMatrix()} or {@link #end()}. */
+	 * restoring the original matrix, or by calling {@link #flushAndSyncTransformMatrix()}. */
 	@Override
 	public void setTransformMatrix (Matrix4 transform) {
 		Matrix4 realMatrix = super.getTransformMatrix();
@@ -590,6 +593,8 @@ public class CpuSpriteBatch extends SpriteBatch {
 	}
 
 	private void drawAdjusted (Texture texture, float[] spriteVertices, int offset, int count) {
+		if (!drawing) throw new IllegalStateException("CpuSpriteBatch.begin must be called before draw.");
+
 		if (texture != lastTexture) switchTexture(texture);
 
 		Affine2 t = adjustAffine;

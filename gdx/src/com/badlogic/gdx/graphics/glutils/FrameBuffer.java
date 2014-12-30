@@ -33,7 +33,6 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
@@ -143,20 +142,15 @@ public class FrameBuffer implements Disposable {
 
 		setupTexture();
 
-		IntBuffer handle = BufferUtils.newIntBuffer(1);
-		gl.glGenFramebuffers(1, handle);
-		framebufferHandle = handle.get(0);
+		
+		framebufferHandle = gl.glGenFramebuffer();
 
 		if (hasDepth) {
-			handle.clear();
-			gl.glGenRenderbuffers(1, handle);
-			depthbufferHandle = handle.get(0);
+			depthbufferHandle = gl.glGenRenderbuffer();
 		}
 
 		if (hasStencil) {
-			handle.clear();
-			gl.glGenRenderbuffers(1, handle);
-			stencilbufferHandle = handle.get(0);
+			stencilbufferHandle = gl.glGenRenderbuffer();
 		}
 
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
@@ -191,24 +185,14 @@ public class FrameBuffer implements Disposable {
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			colorTexture.dispose();
-			if (hasDepth) {
-				handle.clear();
-				handle.put(depthbufferHandle);
-				handle.flip();
-				gl.glDeleteRenderbuffers(1, handle);
-			}
+			
+			if (hasDepth)
+				gl.glDeleteRenderbuffer(depthbufferHandle);
 
-			if (hasStencil) {
-				handle.clear();
-				handle.put(stencilbufferHandle);
-				handle.flip();
-				gl.glDeleteRenderbuffers(1, handle);
-			}
+			if (hasStencil)
+				gl.glDeleteRenderbuffer(stencilbufferHandle);
 
-			handle.clear();
-			handle.put(framebufferHandle);
-			handle.flip();
-			gl.glDeleteFramebuffers(1, handle);
+			gl.glDeleteFramebuffer(framebufferHandle);
 
 			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
 				throw new IllegalStateException("frame buffer couldn't be constructed: incomplete attachment");
@@ -229,22 +213,13 @@ public class FrameBuffer implements Disposable {
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
 
 		colorTexture.dispose();
-		if (hasDepth) {
-			handle.put(depthbufferHandle);
-			handle.flip();
-			gl.glDeleteRenderbuffers(1, handle);
-		}
+		if (hasDepth)
+			gl.glDeleteRenderbuffer(depthbufferHandle);
 
-		if (hasStencil) {
-			handle.put(stencilbufferHandle);
-			handle.flip();
-			gl.glDeleteRenderbuffers(1, handle);
-		}
+		if (hasStencil)
+			gl.glDeleteRenderbuffer(stencilbufferHandle);
 
-		handle.clear();
-		handle.put(framebufferHandle);
-		handle.flip();
-		gl.glDeleteFramebuffers(1, handle);
+		gl.glDeleteFramebuffer(framebufferHandle);
 
 		if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
 	}
