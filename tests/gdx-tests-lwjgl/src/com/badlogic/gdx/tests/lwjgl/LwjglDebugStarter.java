@@ -36,6 +36,7 @@ public class LwjglDebugStarter {
 		GdxTest test = new FullscreenTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
+		config.useHDPI = true;
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;

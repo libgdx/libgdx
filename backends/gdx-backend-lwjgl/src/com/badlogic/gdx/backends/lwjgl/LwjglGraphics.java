@@ -328,8 +328,7 @@ public class LwjglGraphics implements Graphics {
 				Display.setDisplayMode(mode);
 			} else {
 				Display.setDisplayModeAndFullscreen(mode);
-			}
-			System.out.println(Display.getPixelScaleFactor());
+			}			
 			float scaleFactor = Display.getPixelScaleFactor();
 			config.width = (int)(mode.getWidth() * scaleFactor);
 			config.height = (int)(mode.getHeight() * scaleFactor);
