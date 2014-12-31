@@ -30,7 +30,7 @@ public final class LwjglNativesLoader {
 	static public boolean load = true;
 
 	static {
-		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
+		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");		
 
 		// Don't extract natives if using JWS.
 		try {
