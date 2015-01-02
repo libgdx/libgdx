@@ -1,4 +1,5 @@
 [1.5.3]
+- API Addition: Added a HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2691
 - Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
 
 [1.5.2]
