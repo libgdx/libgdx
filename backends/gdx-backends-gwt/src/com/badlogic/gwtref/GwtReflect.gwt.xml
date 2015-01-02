@@ -47,11 +47,11 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardControllerRenderData" />
 	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particle.renderers.ModelInstanceControllerRenderData" />
+		value="com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceControllerRenderData" />
 	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particle.renderers.ParticleControllerRenderData" />
+		value="com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleControllerRenderData" />
 	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particle.renderers.PointSpriteControllerRenderData" />
+		value="com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteControllerRenderData" />
     <extend-configuration-property name="gdx.reflect.include"
         value="java.util.Collection" />
 	<extend-configuration-property name="gdx.reflect.include"
