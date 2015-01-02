@@ -1,4 +1,5 @@
 [1.5.3]
+- Fixed GWT reflection includes for 3D particles
 - 3D ParticleEffectLoader registered by default
 - Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
 - Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
