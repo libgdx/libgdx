@@ -36,6 +36,9 @@
 		value="com.badlogic.gdx.graphics.g3d.model" />
 
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.Net" />
+	
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.ParallelArray" />
 		
 	<extend-configuration-property name="gdx.reflect.include"
