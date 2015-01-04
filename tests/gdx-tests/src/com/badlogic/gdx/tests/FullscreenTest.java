@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -27,10 +28,12 @@ public class FullscreenTest extends GdxTest {
 	SpriteBatch batch;
 	Texture tex;
 	boolean fullscreen = false;
+	BitmapFont font;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		font = new BitmapFont();
 		tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		DisplayMode[] modes = Gdx.graphics.getDisplayModes();
 		for (DisplayMode mode : modes) {
@@ -50,20 +53,31 @@ public class FullscreenTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		batch.draw(tex, (float)Math.random() * Gdx.graphics.getWidth(), 0);
+		batch.draw(tex, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+		font.draw(batch, "" + Gdx.graphics.getWidth() + ", " + Gdx.graphics.getHeight(), 0, 20);
 		batch.end();
 		
 		if (Gdx.input.justTouched()) {
 			if (fullscreen) {
 				Gdx.graphics.setDisplayMode(480, 320, false);
-				batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
-				Gdx.gl.glViewport(0, 0, 480, 320);
+				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				fullscreen = false;
 			} else {
-				DisplayMode desktopDisplayMode = Gdx.graphics.getDesktopDisplayMode();
-				Gdx.graphics.setDisplayMode(desktopDisplayMode.width, desktopDisplayMode.height, true);
-				batch.getProjectionMatrix().setToOrtho2D(0, 0, desktopDisplayMode.width, desktopDisplayMode.height);
-				Gdx.gl.glViewport(0, 0, desktopDisplayMode.width, desktopDisplayMode.height);
+				DisplayMode m = null;
+				for(DisplayMode mode: Gdx.graphics.getDisplayModes()) {
+					if(m == null) {
+						m = mode;
+					} else {
+						if(m.width < mode.width) {
+							m = mode;
+						}
+					}
+				}
+				
+				Gdx.graphics.setDisplayMode(m);
+				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				fullscreen = true;
 			}
 		}

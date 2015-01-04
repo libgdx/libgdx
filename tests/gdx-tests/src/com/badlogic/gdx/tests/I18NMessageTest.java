@@ -50,7 +50,7 @@ public class I18NMessageTest extends GdxTest {
 
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message1");
-			rb_root = I18NBundle.createBundle(bfh, Locale.ROOT);
+			rb_root = I18NBundle.createBundle(bfh, new Locale("", "", "")); // Locale.ROOT doesn't exist in Android API level 8
 			rb_default = I18NBundle.createBundle(bfh);
 			rb_en = I18NBundle.createBundle(bfh, new Locale("en", "US"));
 			rb_it = I18NBundle.createBundle(bfh, new Locale("it", "IT"));

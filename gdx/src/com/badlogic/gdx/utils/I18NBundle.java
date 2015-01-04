@@ -67,6 +67,9 @@ public class I18NBundle {
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
+	// Locale.ROOT does not exist in Android API level 8
+	private static final Locale ROOT_LOCALE = new Locale("", "", "");
+
 	private static boolean simpleFormatter = false;
 	private static boolean exceptionOnMissingKey = true;
 
@@ -170,7 +173,7 @@ public class I18NBundle {
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
 				Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
-				boolean isBaseBundle = bundleLocale.equals(Locale.ROOT);
+				boolean isBaseBundle = bundleLocale.equals(ROOT_LOCALE);
 
 				if (!isBaseBundle || bundleLocale.equals(locale)) {
 					// Found the bundle for the requested locale
@@ -267,7 +270,7 @@ public class I18NBundle {
 		if (language.length() > 0) {
 			locales.add((locales.size() == 0) ? locale : new Locale(language));
 		}
-		locales.add(Locale.ROOT);
+		locales.add(ROOT_LOCALE);
 		return locales;
 	}
 
@@ -296,7 +299,7 @@ public class I18NBundle {
 		if (candidateIndex != candidateLocales.size() - 1) {
 			// Load recursively the parent having the next candidate locale
 			parent = loadBundleChain(baseFileHandle, encoding, candidateLocales, candidateIndex + 1, baseBundle);
-		} else if (baseBundle != null && targetLocale.equals(Locale.ROOT)) {
+		} else if (baseBundle != null && targetLocale.equals(ROOT_LOCALE)) {
 			return baseBundle;
 		}
 
@@ -378,7 +381,7 @@ public class I18NBundle {
 	 * @exception NullPointerException if <code>baseFileHandle</code> or <code>locale</code> is <code>null</code> */
 	private static FileHandle toFileHandle (FileHandle baseFileHandle, Locale locale) {
 		StringBuilder sb = new StringBuilder(baseFileHandle.name());
-		if (!locale.equals(Locale.ROOT)) {
+		if (!locale.equals(ROOT_LOCALE)) {
 			String language = locale.getLanguage();
 			String country = locale.getCountry();
 			String variant = locale.getVariant();

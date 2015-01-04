@@ -46,6 +46,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -196,11 +197,11 @@ final public class LwjglInput implements Input {
 	}
 
 	public int getX () {
-		return Mouse.getX();
+		return (int)(Mouse.getX() * Display.getPixelScaleFactor());
 	}
 
 	public int getY () {
-		return Gdx.graphics.getHeight() - 1 - Mouse.getY();
+		return Gdx.graphics.getHeight() - 1 - (int)(Mouse.getY() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isAccelerometerAvailable () {
@@ -771,8 +772,8 @@ final public class LwjglInput implements Input {
 			int events = 0;
 			while (Mouse.next()) {
 				events++;
-				int x = Mouse.getEventX();
-				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
+				int x = (int)(Mouse.getEventX() * Display.getPixelScaleFactor());
+				int y = Gdx.graphics.getHeight() - (int)(Mouse.getEventY() * Display.getPixelScaleFactor()) - 1;
 				int button = Mouse.getEventButton();
 				int gdxButton = toGdxButton(button);
 				if (button != -1 && gdxButton == -1) continue; // Ignore unknown button.
@@ -809,8 +810,8 @@ final public class LwjglInput implements Input {
 				touchEvents.add(event);
 				mouseX = event.x;
 				mouseY = event.y;
-				deltaX = Mouse.getEventDX();
-				deltaY = Mouse.getEventDY();
+				deltaX = (int)(Mouse.getEventDX() * Display.getPixelScaleFactor());
+				deltaY = (int)(Mouse.getEventDY() * Display.getPixelScaleFactor());
 			}
 
 			if (events == 0) {

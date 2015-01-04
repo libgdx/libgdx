@@ -81,14 +81,14 @@ public class LwjglGraphics implements Graphics {
 		if (canvas != null)
 			return Math.max(1, canvas.getHeight());
 		else
-			return Display.getHeight();
+			return (int)(Display.getHeight() * Display.getPixelScaleFactor());
 	}
 
 	public int getWidth () {
 		if (canvas != null)
 			return Math.max(1, canvas.getWidth());
 		else
-			return Display.getWidth();
+			return (int)(Display.getWidth() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isGL20Available () {
@@ -129,10 +129,14 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	void setupDisplay () throws LWJGLException {
+		if(config.useHDPI) {
+			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
+		}
+		
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
-			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);			
 			if (!displayCreated) {
 				if (config.setDisplayModeCallback != null) {
 					config = config.setDisplayModeCallback.onFailure(config);
@@ -318,16 +322,17 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;
+		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;		
 		try {
 			if (!mode.isFullscreenCapable()) {
 				Display.setDisplayMode(mode);
 			} else {
 				Display.setDisplayModeAndFullscreen(mode);
-			}
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, displayMode.width, displayMode.height);
-			config.width = displayMode.width;
-			config.height = displayMode.height;
+			}			
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(mode.getWidth() * scaleFactor);
+			config.height = (int)(mode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {
@@ -382,9 +387,10 @@ public class LwjglGraphics implements Graphics {
 			Display.setFullscreen(fullscreen);
 			Display.setResizable(!fullscreen && config.resizable);
 			
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, targetDisplayMode.getWidth(), targetDisplayMode.getHeight());
-			config.width = targetDisplayMode.getWidth();
-			config.height = targetDisplayMode.getHeight();
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(targetDisplayMode.getWidth() * scaleFactor);
+			config.height = (int)(targetDisplayMode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {

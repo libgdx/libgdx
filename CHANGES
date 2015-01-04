@@ -1,3 +1,10 @@
+[1.5.3]
+- I18NBundle is now compatible with Android 2.2
+- Fixed GWT reflection includes for 3D particles
+- 3D ParticleEffectLoader registered by default
+- Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
+- Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
+
 [1.5.2]
 - Fixed issue #2433 with color markup and alpha animation. 
 - Fixed natives loading for LWJGL on Mac OS X
