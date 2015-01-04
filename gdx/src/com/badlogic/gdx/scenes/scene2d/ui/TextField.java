@@ -351,7 +351,7 @@ public class TextField extends Widget implements Disableable {
 
 		if (passwordMode && font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
-			if (passwordBuffer.length() > textLength) //
+			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
 			else {
 				for (int i = passwordBuffer.length(); i < textLength; i++)
@@ -514,6 +514,14 @@ public class TextField extends Widget implements Disableable {
 	 * @param messageText may be null. */
 	public void setMessageText (String messageText) {
 		this.messageText = messageText;
+	}
+
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
 	}
 
 	public void setText (String str) {
