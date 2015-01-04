@@ -509,7 +509,7 @@ public class ObjectSet<T> implements Iterable<T> {
 			return key;
 		}
 
-		public Iterator<K> iterator () {
+		public ObjectSetIterator<K> iterator () {
 			return this;
 		}
 

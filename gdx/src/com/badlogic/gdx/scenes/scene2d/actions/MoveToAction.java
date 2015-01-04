@@ -26,12 +26,12 @@ public class MoveToAction extends TemporalAction {
 	private int alignment = Align.bottomLeft;
 
 	protected void begin () {
-		startX = actor.getX();
-		startY = actor.getY();
+		startX = target.getX(alignment);
+		startY = target.getY(alignment);
 	}
 
 	protected void update (float percent) {
-		actor.setPosition(startX + (endX - startX) * percent, startY + (endY - startY) * percent, alignment);
+		target.setPosition(startX + (endX - startX) * percent, startY + (endY - startY) * percent, alignment);
 	}
 
 	public void reset () {

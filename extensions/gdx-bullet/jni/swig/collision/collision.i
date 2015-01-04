@@ -538,3 +538,5 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "./ContactCache.i"
 
 %include "./btBroadphasePairArray.i"
+
+%include "./gimpact.i"

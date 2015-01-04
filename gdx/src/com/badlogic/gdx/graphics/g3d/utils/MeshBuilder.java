@@ -33,6 +33,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.NumberUtils;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ShortArray;
 
@@ -42,6 +44,9 @@ import com.badlogic.gdx.utils.ShortArray;
  * {@link #end()}.
  * @author Xoppa */
 public class MeshBuilder implements MeshPartBuilder {
+	private final static ShortArray tmpIndices = new ShortArray();
+	private final static FloatArray tmpVertices = new FloatArray();
+
 	private final VertexInfo vertTmp1 = new VertexInfo();
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
@@ -61,7 +66,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final Vector3 tempV6 = new Vector3();
 	private final Vector3 tempV7 = new Vector3();
 	private final Vector3 tempV8 = new Vector3();
-	
+
 	private final Color tempC1 = new Color();
 
 	/** The vertex attributes of the resulting mesh */
@@ -96,16 +101,17 @@ public class MeshBuilder implements MeshPartBuilder {
 	private Array<MeshPart> parts = new Array<MeshPart>();
 	/** The color used if no vertex color is specified. */
 	private final Color color = new Color(Color.WHITE);
+	private boolean hasColor = false;
 	/** The current primitiveType */
 	private int primitiveType;
 	/** The UV range used when building */
-	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
+	private float uOffset = 0f, uScale = 1f, vOffset = 0f, vScale = 1f;
+	private boolean hasUVTransform = false;
 	private float[] vertex;
 
 	private boolean vertexTransformationEnabled = false;
 	private final Matrix4 positionTransform = new Matrix4();
 	private final Matrix3 normalTransform = new Matrix3();
-	private final Vector3 tempVTransformed = new Vector3();
 
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal and
 	 *           TextureCoordinates is supported. */
@@ -130,12 +136,12 @@ public class MeshBuilder implements MeshPartBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal
 	 *           and TextureCoordinates is supported. */
 	public void begin (final long attributes) {
-		begin(createAttributes(attributes), 0);
+		begin(createAttributes(attributes), -1);
 	}
 
 	/** Begin building a mesh. Call {@link #part(String, int)} to start a {@link MeshPart}. */
 	public void begin (final VertexAttributes attributes) {
-		begin(attributes, 0);
+		begin(attributes, -1);
 	}
 
 	/** Begin building a mesh.
@@ -172,6 +178,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		uvOffset = a == null ? -1 : a.offset / 4;
 		setColor(null);
 		setVertexTransform(null);
+		setUVRange(null);
 		this.primitiveType = primitiveType;
 	}
 
@@ -184,8 +191,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 	}
 
-	/** Starts a new MeshPart. The mesh part is not usable until end() is called.
-	 * This will reset the current color and vertex transformation. */
+	/** Starts a new MeshPart. The mesh part is not usable until end() is called. This will reset the current color and vertex
+	 * transformation. */
 	public MeshPart part (final String id, int primitiveType) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 		endpart();
@@ -197,16 +204,25 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		setColor(null);
 		setVertexTransform(null);
+		setUVRange(null);
 
 		return part;
 	}
 
-	/** End building the mesh and returns the mesh */
-	public Mesh end () {
-		if (this.attributes == null) throw new RuntimeException("Call begin() first");
+	/** End building the mesh and returns the mesh
+	 * @param mesh The mesh to receive the built vertices and indices, must have the same attributes and must be big enough to hold
+	 *           the data, any existing data will be overwritten. */
+	public Mesh end (Mesh mesh) {
 		endpart();
 
-		final Mesh mesh = new Mesh(true, vertices.size / stride, indices.size, attributes);
+		if (attributes == null) throw new GdxRuntimeException("Call begin() first");
+		if (!attributes.equals(mesh.getVertexAttributes())) throw new GdxRuntimeException("Mesh attributes don't match");
+		if ((mesh.getMaxVertices() * stride) < vertices.size)
+			throw new GdxRuntimeException("Mesh can't hold enough vertices: " + mesh.getMaxVertices() + " * " + stride + " < "
+				+ vertices.size);
+		if (mesh.getMaxIndices() < indices.size)
+			throw new GdxRuntimeException("Mesh can't hold enough indices: " + mesh.getMaxIndices() + " < " + indices.size);
+
 		mesh.setVertices(vertices.items, 0, vertices.size);
 		mesh.setIndices(indices.items, 0, indices.size);
 
@@ -219,6 +235,21 @@ public class MeshBuilder implements MeshPartBuilder {
 		indices.clear();
 
 		return mesh;
+	}
+
+	/** End building the mesh and returns the mesh */
+	public Mesh end () {
+		return end(new Mesh(true, vertices.size / stride, indices.size, attributes));
+	}
+
+	/** @return The number of vertices built up until now, only valid in between the call to begin() and end(). */
+	public int getNumVertices () {
+		return vertices.size / stride;
+	}
+
+	/** @return The number of indices built up until now, only valid in between the call to begin() and end(). */
+	public int getNumIndices () {
+		return indices.size;
 	}
 
 	@Override
@@ -278,24 +309,56 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void setColor (float r, float g, float b, float a) {
 		color.set(r, g, b, a);
+		hasColor = !color.equals(Color.WHITE);
 	}
 
 	@Override
 	public void setColor (final Color color) {
-		this.color.set(color == null ? Color.WHITE : color);
+		this.color.set(!(hasColor = (color != null)) ? Color.WHITE : color);
 	}
 
 	@Override
 	public void setUVRange (float u1, float v1, float u2, float v2) {
-		uMin = u1;
-		vMin = v1;
-		uMax = u2;
-		vMax = v2;
+		uOffset = u1;
+		vOffset = v1;
+		uScale = u2 - u1;
+		vScale = v2 - v1;
+		hasUVTransform = !(MathUtils.isZero(u1) && MathUtils.isZero(v1) && MathUtils.isEqual(u2, 1f) && MathUtils.isEqual(v2, 1f));
 	}
 
 	@Override
 	public void setUVRange (TextureRegion region) {
-		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+		if (!(hasUVTransform = (region != null))) {
+			uOffset = vOffset = 0f;
+			uScale = vScale = 1f;
+		} else
+			setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+	}
+
+	@Override
+	public Matrix4 getVertexTransform (Matrix4 out) {
+		return out.set(positionTransform);
+	}
+
+	@Override
+	public void setVertexTransform (Matrix4 transform) {
+		if ((vertexTransformationEnabled = (transform != null)) == true) {
+			positionTransform.set(transform);
+			normalTransform.set(transform).inv().transpose();
+		} else {
+			positionTransform.idt();
+			normalTransform.idt();
+		}
+	}
+
+	@Override
+	public boolean isVertexTransformationEnabled () {
+		return vertexTransformationEnabled;
+	}
+
+	@Override
+	public void setVertexTransformationEnabled (boolean enabled) {
+		vertexTransformationEnabled = enabled;
 	}
 
 	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
@@ -327,9 +390,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void ensureTriangleIndices (int numTriangles) {
 		if (primitiveType == GL20.GL_LINES)
 			ensureIndices(6 * numTriangles);
-		else
-			// GL_TRIANGLES || GL_POINTS
+		else if (primitiveType == GL20.GL_TRIANGLES || primitiveType == GL20.GL_POINTS)
 			ensureIndices(3 * numTriangles);
+		else
+			throw new GdxRuntimeException("Incorrect primtive type");
 	}
 
 	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
@@ -386,50 +450,97 @@ public class MeshBuilder implements MeshPartBuilder {
 		return lastIndex;
 	}
 
+	private final static Vector3 vTmp = new Vector3();
+
+	private final static void transformPosition (final float[] values, final int offset, final int size, Matrix4 transform) {
+		if (size > 2) {
+			vTmp.set(values[offset], values[offset + 1], values[offset + 2]).mul(transform);
+			values[offset] = vTmp.x;
+			values[offset + 1] = vTmp.y;
+			values[offset + 2] = vTmp.z;
+		} else if (size > 1) {
+			vTmp.set(values[offset], values[offset + 1], 0).mul(transform);
+			values[offset] = vTmp.x;
+			values[offset + 1] = vTmp.y;
+		} else
+			values[offset] = vTmp.set(values[offset], 0, 0).mul(transform).x;
+	}
+
+	private final static void transformNormal (final float[] values, final int offset, final int size, Matrix3 transform) {
+		if (size > 2) {
+			vTmp.set(values[offset], values[offset + 1], values[offset + 2]).mul(transform).nor();
+			values[offset] = vTmp.x;
+			values[offset + 1] = vTmp.y;
+			values[offset + 2] = vTmp.z;
+		} else if (size > 1) {
+			vTmp.set(values[offset], values[offset + 1], 0).mul(transform).nor();
+			values[offset] = vTmp.x;
+			values[offset + 1] = vTmp.y;
+		} else
+			values[offset] = vTmp.set(values[offset], 0, 0).mul(transform).nor().x;
+	}
+
 	private final void addVertex (final float[] values, final int offset) {
+		final int o = vertices.size;
 		vertices.addAll(values, offset, stride);
 		lastIndex = (short)(vindex++);
+
+		if (vertexTransformationEnabled) {
+			transformPosition(vertices.items, o + posOffset, posSize, positionTransform);
+			if (norOffset >= 0) transformNormal(vertices.items, o + norOffset, 3, normalTransform);
+		}
+
+		if (hasColor) {
+			if (colOffset >= 0) {
+				vertices.items[o + colOffset] *= color.r;
+				vertices.items[o + colOffset + 1] *= color.g;
+				vertices.items[o + colOffset + 2] *= color.b;
+				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
+			} else if (cpOffset >= 0) {
+				vertices.items[o + cpOffset] = tempC1.set(NumberUtils.floatToIntColor(vertices.items[o + cpOffset])).mul(color)
+					.toFloatBits();
+			}
+		}
+
+		if (hasUVTransform && uvOffset >= 0) {
+			vertices.items[o + uvOffset] = uOffset + uScale * vertices.items[o + uvOffset];
+			vertices.items[o + uvOffset + 1] = vOffset + vScale * vertices.items[o + uvOffset + 1];
+		}
 	}
+
+	private final Vector3 tmpNormal = new Vector3();
 
 	@Override
 	public short vertex (Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		if (vindex >= Short.MAX_VALUE) throw new GdxRuntimeException("Too many vertices used");
-		tempC1.set(color);
-		if (col != null) tempC1.mul(col);
-		if (pos != null) {
-			if (vertexTransformationEnabled) {
-				tempVTransformed.set(pos).mul(positionTransform);
-				vertex[posOffset] = tempVTransformed.x;
-				if (posSize > 1) vertex[posOffset + 1] = tempVTransformed.y;
-				if (posSize > 2) vertex[posOffset + 2] = tempVTransformed.z;
-			} else {
-				vertex[posOffset] = pos.x;
-				if (posSize > 1) vertex[posOffset + 1] = pos.y;
-				if (posSize > 2) vertex[posOffset + 2] = pos.z;
-			}
+
+		vertex[posOffset] = pos.x;
+		if (posSize > 1) vertex[posOffset + 1] = pos.y;
+		if (posSize > 2) vertex[posOffset + 2] = pos.z;
+
+		if (norOffset >= 0) {
+			if (nor == null) nor = tmpNormal.set(pos).nor();
+			vertex[norOffset] = nor.x;
+			vertex[norOffset + 1] = nor.y;
+			vertex[norOffset + 2] = nor.z;
 		}
-		if (nor != null && norOffset >= 0) {
-			if (vertexTransformationEnabled) {
-				tempVTransformed.set(nor).mul(normalTransform).nor();
-				vertex[norOffset] = tempVTransformed.x;
-				vertex[norOffset + 1] = tempVTransformed.y;
-				vertex[norOffset + 2] = tempVTransformed.z;
-			} else {
-				vertex[norOffset] = nor.x;
-				vertex[norOffset + 1] = nor.y;
-				vertex[norOffset + 2] = nor.z;
-			}
-		}
+
 		if (colOffset >= 0) {
-			vertex[colOffset] = tempC1.r;
-			vertex[colOffset + 1] = tempC1.g;
-			vertex[colOffset + 2] = tempC1.b;
-			if (colSize > 3) vertex[colOffset + 3] = tempC1.a;
-		} else if (cpOffset > 0) vertex[cpOffset] = tempC1.toFloatBits(); // FIXME cache packed color?
+			if (col == null) col = Color.WHITE;
+			vertex[colOffset] = col.r;
+			vertex[colOffset + 1] = col.g;
+			vertex[colOffset + 2] = col.b;
+			if (colSize > 3) vertex[colOffset + 3] = col.a;
+		} else if (cpOffset > 0) {
+			if (col == null) col = Color.WHITE;
+			vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
+		}
+
 		if (uv != null && uvOffset >= 0) {
 			vertex[uvOffset] = uv.x;
 			vertex[uvOffset + 1] = uv.y;
 		}
+
 		addVertex(vertex, 0);
 		return lastIndex;
 	}
@@ -575,19 +686,17 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void rect (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal) {
-		rect(vertTmp1.set(corner00, normal, null, null).setUV(uMin, vMax),
-			vertTmp2.set(corner10, normal, null, null).setUV(uMax, vMax),
-			vertTmp3.set(corner11, normal, null, null).setUV(uMax, vMin),
-			vertTmp4.set(corner01, normal, null, null).setUV(uMin, vMin));
+		rect(vertTmp1.set(corner00, normal, null, null).setUV(0f, 1f), vertTmp2.set(corner10, normal, null, null).setUV(1f, 1f),
+			vertTmp3.set(corner11, normal, null, null).setUV(1f, 0f), vertTmp4.set(corner01, normal, null, null).setUV(0f, 0f));
 	}
 
 	@Override
 	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
 		float x01, float y01, float z01, float normalX, float normalY, float normalZ) {
-		rect(vertTmp1.set(null, null, null, null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uMin, vMax),
-			vertTmp2.set(null, null, null, null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uMax, vMax), vertTmp3
-				.set(null, null, null, null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uMax, vMin),
-			vertTmp4.set(null, null, null, null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uMin, vMin));
+		rect(vertTmp1.set(null, null, null, null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(0f, 1f), vertTmp2
+			.set(null, null, null, null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(1f, 1f),
+			vertTmp3.set(null, null, null, null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(1f, 0f), vertTmp4
+				.set(null, null, null, null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(0f, 0f));
 	}
 
 	@Override
@@ -611,18 +720,17 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
 		int divisionsV) {
-		patch(vertTmp1.set(corner00, normal, null, null).setUV(uMin, vMax),
-			vertTmp2.set(corner10, normal, null, null).setUV(uMax, vMax),
-			vertTmp3.set(corner11, normal, null, null).setUV(uMax, vMin),
-			vertTmp4.set(corner01, normal, null, null).setUV(uMin, vMin), divisionsU, divisionsV);
+		patch(vertTmp1.set(corner00, normal, null, null).setUV(0f, 1f), vertTmp2.set(corner10, normal, null, null).setUV(1f, 1f),
+			vertTmp3.set(corner11, normal, null, null).setUV(1f, 0f), vertTmp4.set(corner01, normal, null, null).setUV(0f, 0f),
+			divisionsU, divisionsV);
 	}
 
 	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
 		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
-		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uMin, vMax), vertTmp2.set(null)
-			.setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uMax, vMax), vertTmp3.set(null).setPos(x11, y11, z11)
-			.setNor(normalX, normalY, normalZ).setUV(uMax, vMin),
-			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uMin, vMin), divisionsU, divisionsV);
+		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(0f, 1f),
+			vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(1f, 1f),
+			vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(1f, 0f),
+			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(0f, 0f), divisionsU, divisionsV);
 	}
 
 	@Override
@@ -647,7 +755,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			ensureRectangleIndices(2);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
-		} else { // GL10.GL_TRIANGLES
+		} else { // GL20.GL_TRIANGLES
 			ensureRectangleIndices(6);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
@@ -996,8 +1104,6 @@ public class MeshBuilder implements MeshPartBuilder {
 		sphere(matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 
-	private static ShortArray tmpIndices;
-
 	@Override
 	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
 		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
@@ -1018,13 +1124,10 @@ public class MeshBuilder implements MeshPartBuilder {
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 
-		if (tmpIndices == null) tmpIndices = new ShortArray(divisionsU * 2);
 		final int s = divisionsU + 3;
-		tmpIndices.ensureCapacity(s);
-		while (tmpIndices.size > s)
-			tmpIndices.pop();
-		while (tmpIndices.size < s)
-			tmpIndices.add(-1);
+		tmpIndices.clear();
+		tmpIndices.ensureCapacity(divisionsU * 2);
+		tmpIndices.size = s;
 		int tempOffset = 0;
 
 		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
@@ -1059,7 +1162,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions) {
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions) {
 		Vector3 begin = tmp(x1, y1, z1), end = tmp(x2, y2, z2);
 		float length = begin.dst(end);
 		float coneHeight = length * capLength;
@@ -1077,10 +1181,16 @@ public class MeshBuilder implements MeshPartBuilder {
 		// Matrices
 		Matrix4 userTransform = getVertexTransform(tmp());
 		Matrix4 transform = tmp();
-		float[]val = transform.val;
-		val[Matrix4.M00] = left.x; val[Matrix4.M01] = up.x; val[Matrix4.M02] = forward.x;
-		val[Matrix4.M10] = left.y; val[Matrix4.M11] = up.y; val[Matrix4.M12] = forward.y;
-		val[Matrix4.M20] = left.z; val[Matrix4.M21] = up.z; val[Matrix4.M22] = forward.z;
+		float[] val = transform.val;
+		val[Matrix4.M00] = left.x;
+		val[Matrix4.M01] = up.x;
+		val[Matrix4.M02] = forward.x;
+		val[Matrix4.M10] = left.y;
+		val[Matrix4.M11] = up.y;
+		val[Matrix4.M12] = forward.y;
+		val[Matrix4.M20] = left.z;
+		val[Matrix4.M21] = up.z;
+		val[Matrix4.M22] = forward.z;
 		Matrix4 temp = tmp();
 
 		// Stem
@@ -1098,28 +1208,55 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public Matrix4 getVertexTransform (Matrix4 out) {
-		return out.set(positionTransform);
+	public void addMesh (Mesh mesh) {
+		addMesh(mesh, 0, mesh.getNumIndices());
 	}
 
 	@Override
-	public void setVertexTransform (Matrix4 transform) {
-		if ((vertexTransformationEnabled = (transform != null)) == true) {
-			positionTransform.set(transform);
-			normalTransform.set(transform).inv().transpose();
-		} else {
-			positionTransform.idt();
-			normalTransform.idt();
+	public void addMesh (MeshPart meshpart) {
+		if (meshpart.primitiveType != primitiveType) throw new GdxRuntimeException("Primitive type doesn't match");
+		addMesh(meshpart.mesh, meshpart.indexOffset, meshpart.numVertices);
+	}
+
+	@Override
+	public void addMesh (Mesh mesh, int indexOffset, int numIndices) {
+		if (!attributes.equals(mesh.getVertexAttributes())) throw new GdxRuntimeException("Vertex attributes do not match");
+		if (numIndices <= 0) return; // silently ignore an empty mesh part
+
+		// FIXME don't triple copy, instead move the copy to jni
+		int numFloats = mesh.getNumVertices() * stride;
+		tmpVertices.clear();
+		tmpVertices.ensureCapacity(numFloats);
+		tmpVertices.size = numFloats;
+		mesh.getVertices(tmpVertices.items);
+
+		tmpIndices.clear();
+		tmpIndices.ensureCapacity(numIndices);
+		tmpIndices.size = numIndices;
+		mesh.getIndices(indexOffset, numIndices, tmpIndices.items, 0);
+
+		addMesh(tmpVertices.items, tmpIndices.items, 0, numIndices);
+	}
+
+	private static IntIntMap indicesMap = null;
+
+	private void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
+		if (indicesMap == null)
+			indicesMap = new IntIntMap(numIndices);
+		else {
+			indicesMap.clear();
+			indicesMap.ensureCapacity(numIndices);
 		}
-	}
-
-	@Override
-	public boolean isVertexTransformationEnabled () {
-		return vertexTransformationEnabled;
-	}
-
-	@Override
-	public void setVertexTransformationEnabled (boolean enabled) {
-		vertexTransformationEnabled = enabled;
+		ensureIndices(numIndices);
+		ensureVertices(vertices.length < numIndices ? vertices.length : numIndices); // a bit naive perhaps?
+		for (int i = 0; i < numIndices; i++) {
+			final int sidx = indices[i];
+			int didx = indicesMap.get(sidx, -1);
+			if (didx < 0) {
+				addVertex(vertices, sidx * stride);
+				indicesMap.put(sidx, didx = lastIndex);
+			}
+			index((short)didx);
+		}
 	}
 }

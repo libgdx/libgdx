@@ -442,8 +442,8 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = disableX ? width : Math.max(areaWidth, widgetWidth);
-		widgetHeight = disableY ? height : Math.max(areaHeight, widgetHeight);
+		widgetWidth = disableX ? areaWidth : Math.max(areaWidth, widgetWidth);
+		widgetHeight = disableY ? areaHeight : Math.max(areaHeight, widgetHeight);
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
@@ -614,6 +614,12 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
 			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			if (forceScrollY) {
+				float scrollbarWidth = 0;
+				if (style.vScrollKnob != null) scrollbarWidth = style.vScrollKnob.getMinWidth();
+				if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+				width += scrollbarWidth;
+			}
 			return width;
 		}
 		return 150;
@@ -623,6 +629,12 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float height = ((Layout)widget).getPrefHeight();
 			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			if (forceScrollX) {
+				float scrollbarHeight = 0;
+				if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+				if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+				height += scrollbarHeight;
+			}
 			return height;
 		}
 		return 150;
@@ -859,6 +871,22 @@ public class ScrollPane extends WidgetGroup {
 		disableY = y;
 	}
 
+	public boolean isLeftEdge () {
+		return !scrollX || amountX <= 0;
+	}
+
+	public boolean isRightEdge () {
+		return !scrollX || amountX >= maxX;
+	}
+
+	public boolean isTopEdge () {
+		return !scrollY || amountY <= 0;
+	}
+
+	public boolean isBottomEdge () {
+		return !scrollY || amountY >= maxY;
+	}
+
 	public boolean isDragging () {
 		return draggingPointer != -1;
 	}
@@ -980,7 +1008,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
-		drawDebugBounds(shapes);
+		shapes.flush();
 		applyTransform(shapes, computeTransform());
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawDebugChildren(shapes);

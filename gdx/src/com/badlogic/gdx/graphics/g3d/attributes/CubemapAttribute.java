@@ -17,7 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -67,6 +67,6 @@ public class CubemapAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 967 * result + textureDescription.hashCode();
-		return result; 
+		return result;
 	}
 }

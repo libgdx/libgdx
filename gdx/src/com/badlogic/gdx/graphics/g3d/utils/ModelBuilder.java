@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -116,7 +115,7 @@ public class ModelBuilder {
 	public Node node (final String id, final Model model) {
 		final Node node = new Node();
 		node.id = id;
-		node.children.addAll(model.nodes);
+		node.addChildren(model.nodes);
 		node(node);
 		for (final Disposable disposable : model.getManagedDisposables())
 			manage(disposable);
@@ -377,7 +376,7 @@ public class ModelBuilder {
 				model.manageDisposable(mpm.meshPart.mesh);
 			}
 		}
-		for (final Node child : node.children)
+		for (final Node child : node.getChildren())
 			rebuildReferences(model, child);
 	}
 

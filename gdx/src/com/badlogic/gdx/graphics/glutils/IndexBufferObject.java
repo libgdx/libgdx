@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -46,8 +45,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public class IndexBufferObject implements IndexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
 	ShortBuffer buffer;
 	ByteBuffer byteBuffer;
 	int bufferHandle;
@@ -67,7 +64,7 @@ public class IndexBufferObject implements IndexData {
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 	}
 
@@ -81,13 +78,8 @@ public class IndexBufferObject implements IndexData {
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = GL20.GL_STATIC_DRAW;
-	}
-
-	private int createBufferObject () {
-		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
 	}
 
 	/** @return the number of indices currently stored in this buffer */
@@ -125,6 +117,23 @@ public class IndexBufferObject implements IndexData {
 			isDirty = false;
 		}
 	}
+	
+	public void setIndices (ShortBuffer indices) {
+		isDirty = true;
+		int pos = indices.position();
+		buffer.clear();
+		buffer.put(indices);
+		buffer.flip();
+		indices.position(pos);
+		byteBuffer.position(0);
+		byteBuffer.limit(buffer.limit() << 1);
+		
+		if (isBound) {
+			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+			isDirty = false;
+		}
+	}
+
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
@@ -158,17 +167,14 @@ public class IndexBufferObject implements IndexData {
 
 	/** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	public void dispose () {
-		tmpHandle.clear();
-		tmpHandle.put(bufferHandle);
-		tmpHandle.flip();
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-		Gdx.gl20.glDeleteBuffers(1, tmpHandle);
+		Gdx.gl20.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
 
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);

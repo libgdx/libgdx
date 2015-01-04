@@ -16,7 +16,12 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.content.Context;
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
+
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -32,6 +37,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -42,20 +48,19 @@ import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
-
 /** An implementation of {@link Graphics} for Android.
  * 
  * @author mzechner */
 public class AndroidGraphics implements Graphics, Renderer {
 
 	private static final String LOG_TAG = "AndroidGraphics";
+
+	/** When {@link AndroidFragmentApplication#onPause()} or {@link AndroidApplication#onPause()} call
+	 * {@link AndroidGraphics#pause()} they <b>MUST</b> enforce continuous rendering. If not, {@link #onDrawFrame(GL10)} will not
+	 * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
+	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
+	 * kill the current process to avoid ANR */
+	static volatile boolean enforceContinuousRendering = false;
 
 	final View view;
 	int width;
@@ -131,8 +136,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 			view.setRenderer(this);
 			return view;
-		}
-		else {
+		} else {
 			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
@@ -252,6 +256,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
+		Cubemap.invalidateAllCubemaps(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
@@ -321,8 +326,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 					// ~500ms between taps.
 					synch.wait(4000);
 					if (pause) {
-						Gdx.app.error(LOG_TAG, "waiting for pause synchronization took too "
-							+ "long; assuming deadlock and killing");
+						// pause will never go false if onDrawFrame is never called by the GLThread
+						// when entering this method, we MUST enforce continuous rendering
+						Gdx.app.error(LOG_TAG, "waiting for pause synchronization took too long; assuming deadlock and killing");
 						android.os.Process.killProcess(android.os.Process.myPid());
 					}
 				} catch (InterruptedException ignored) {
@@ -477,15 +483,17 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public void clearManagedCaches () {
 		Mesh.clearAllMeshes(app);
 		Texture.clearAllTextures(app);
+		Cubemap.clearAllCubemaps(app);
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 
 		logManagedCachesStatus();
 	}
-	
-	protected void logManagedCachesStatus() {
+
+	protected void logManagedCachesStatus () {
 		Gdx.app.log(LOG_TAG, Mesh.getManagedStatus());
 		Gdx.app.log(LOG_TAG, Texture.getManagedStatus());
+		Gdx.app.log(LOG_TAG, Cubemap.getManagedStatus());
 		Gdx.app.log(LOG_TAG, ShaderProgram.getManagedStatus());
 		Gdx.app.log(LOG_TAG, FrameBuffer.getManagedStatus());
 	}
@@ -575,8 +583,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		if (view != null) {
-			this.isContinuous = isContinuous;
-			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+			// ignore setContinuousRendering(false) while pausing
+			this.isContinuous = enforceContinuousRendering || isContinuous;
+			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();

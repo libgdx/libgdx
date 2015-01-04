@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.5.0";
+	static String libgdxVersion = "1.5.2";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.5.1-SNAPSHOT";
+	static String libgdxNightlyVersion = "1.5.3-SNAPSHOT";
 	static String roboVMVersion = "1.0.0-beta-01";
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";
@@ -22,8 +22,8 @@ public class DependencyBank {
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.5";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.13+";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.0.0";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions

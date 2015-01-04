@@ -23,8 +23,6 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -51,7 +49,7 @@ public abstract class GLTexture implements Disposable {
 
 	/** Generates a new OpenGL texture with the specified target. */
 	public GLTexture (int glTarget) {
-		this(glTarget, createGLHandle());
+		this(glTarget, Gdx.gl.glGenTexture ());
 	}
 
 	public GLTexture (int glTarget, int glHandle) {
@@ -181,16 +179,20 @@ public abstract class GLTexture implements Disposable {
 		delete();
 	}
 
+	/** @deprecated Use {@link TextureData.Factory#loadFromFile(FileHandle, Format, boolean)} instead. */
+	@Deprecated
 	protected static TextureData createTextureData (FileHandle file, Format format, boolean useMipMaps) {
-		if (file == null) return null;
-		if (file.name().endsWith(".etc1")) return new ETC1TextureData(file, useMipMaps);
-		return new FileTextureData(file, null, format, useMipMaps);
+		return TextureData.Factory.loadFromFile(file, format, useMipMaps);
 	}
 
+	/** @deprecated Use {@link TextureData.Factory#loadFromFile(FileHandle, boolean)} instead. */
+	@Deprecated
 	protected static TextureData createTextureData (FileHandle file, boolean useMipMaps) {
 		return createTextureData(file, null, useMipMaps);
 	}
 
+	/** @deprecated Use {@link GL20#glGenTexture()} instead. */
+	@Deprecated
 	protected static int createGLHandle () {
 		return Gdx.gl.glGenTexture ();
 	}

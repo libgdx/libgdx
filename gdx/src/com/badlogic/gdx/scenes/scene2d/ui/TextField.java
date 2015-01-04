@@ -68,6 +68,9 @@ public class TextField extends Widget implements Disableable {
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
 
+	static public float keyRepeatInitialTime = 0.4f;
+	static public float keyRepeatTime = 0.1f;
+
 	protected String text;
 	protected int cursor, selectionStart;
 	protected boolean hasSelection;
@@ -99,9 +102,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	float keyRepeatInitialTime = 0.4f;
-	float keyRepeatTime = 0.1f;
-
+	
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
@@ -350,7 +351,7 @@ public class TextField extends Widget implements Disableable {
 
 		if (passwordMode && font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
-			if (passwordBuffer.length() > textLength) //
+			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
 			else {
 				for (int i = passwordBuffer.length(); i < textLength; i++)
@@ -513,6 +514,14 @@ public class TextField extends Widget implements Disableable {
 	 * @param messageText may be null. */
 	public void setMessageText (String messageText) {
 		this.messageText = messageText;
+	}
+
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
 	}
 
 	public void setText (String str) {
@@ -857,6 +866,7 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
+			if (character == 0) return false;
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;

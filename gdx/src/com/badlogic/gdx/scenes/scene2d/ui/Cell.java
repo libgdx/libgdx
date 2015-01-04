@@ -846,8 +846,8 @@ public class Cell<T extends Actor> implements Poolable {
 		return computedPadRight;
 	}
 
-	public Cell<T> row () {
-		return table.row();
+	public void row () {
+		table.row();
 	}
 
 	public Table getTable () {
