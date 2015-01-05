@@ -225,6 +225,11 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		horizOnlyBottom.add(horizOnlyBottomScroll).expand().fill().colspan(4);
 		vertOnlyLeft.add(vertOnlyLeftScroll).expand().fill().colspan(4);
 		vertOnlyRight.add(vertOnlyRightScroll).expand().fill().colspan(4);
+
+		for (ScrollPane pane : scrollPanes) {
+			pane.setFadeScrollBars(doFade);
+			pane.setScrollbarsOnTop(doOnTop);
+		}
 	}
 
 	public void render () {
