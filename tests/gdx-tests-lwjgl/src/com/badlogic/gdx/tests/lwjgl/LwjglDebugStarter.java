@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.FullscreenTest;
-import com.badlogic.gdx.tests.JsonReaderTest;
+import com.badlogic.gdx.tests.JsonTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 

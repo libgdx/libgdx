@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class JsonReaderTest extends GdxTest {
+public class JsonTest extends GdxTest {
 	Json json;
 
 	public void create () {
@@ -70,17 +70,33 @@ public class JsonReaderTest extends GdxTest {
 		test.map.put("nine", 9);
 		roundTrip(test);
 
+		test.map.put("\nst\nuff\n", 9);
+		test.map.put("\r\nst\r\nuff\r\n", 9);
+		roundTrip(test);
+
+		equals(json.toJson("meow"), "meow");
+		equals(json.toJson("meow "), "\"meow \"");
+		equals(json.toJson(" meow"), "\" meow\"");
+		equals(json.toJson(" meow "), "\" meow \"");
+		equals(json.toJson("\nmeow\n"), "\\nmeow\\n");
+		equals(json.toJson(Array.with(1, 2, 3), null, int.class), "[1,2,3]");
+		equals(json.toJson(Array.with("1", "2", "3"), null, String.class), "[1,2,3]");
+		equals(json.toJson(Array.with(" 1", "2 ", " 3 "), null, String.class), "[\" 1\",\"2 \",\" 3 \"]");
+		equals(json.toJson(Array.with("1", "", "3"), null, String.class), "[1,\"\",3]");
+
 		System.out.println();
 		System.out.println("Success!");
 	}
 
-	private void roundTrip (Object object) {
+	private String roundTrip (Object object) {
 		String text = json.toJson(object);
 		System.out.println(text);
 		test(text, object);
 
 		text = json.prettyPrint(object, 130);
 		test(text, object);
+
+		return text;
 	}
 
 	private void test (String text, Object object) {
@@ -117,7 +133,11 @@ public class JsonReaderTest extends GdxTest {
 
 	private void check (String text, Object object) {
 		Object object2 = json.fromJson(object.getClass(), text);
-		if (!object.equals(object2)) throw new RuntimeException("Fail!");
+		equals(object, object2);
+	}
+
+	private void equals (Object a, Object b) {
+		if (!a.equals(b)) throw new RuntimeException("Fail!\n" + a + "\n!=\n" + b);
 	}
 
 	static public class Test1 {
