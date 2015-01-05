@@ -431,8 +431,8 @@ public class ScrollPane extends WidgetGroup {
 		} else {
 			if (scrollbarsOnTop) {
 				// Make sure widget is drawn under non-fading scrollbars.
-				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
 				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
+				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
 			} else {
 				// Offset widget area y for horizontal scrollbar at bottom.
 				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
@@ -538,15 +538,24 @@ public class ScrollPane extends WidgetGroup {
 		else
 			y -= (int)(maxY - visualAmountY);
 
-		if (!fadeScrollBars && scrollbarsOnTop && scrollX) {
-			float scrollbarHeight = 0;
-			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
-			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
-			y += scrollbarHeight;
-		}
-
 		float x = widgetAreaBounds.x;
 		if (scrollX) x -= (int)visualAmountX;
+
+		if (!fadeScrollBars && scrollbarsOnTop) {
+			if (scrollX && hScrollOnBottom) {
+				float scrollbarHeight = 0;
+				if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+				if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+				y += scrollbarHeight;
+			}
+			if (scrollY && !vScrollOnRight) {
+				float scrollbarWidth = 0;
+				if (style.hScrollKnob != null) scrollbarWidth = style.hScrollKnob.getMinWidth();
+				if (style.hScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.hScroll.getMinWidth());
+				x += scrollbarWidth;
+			}
+		}
+
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
@@ -1015,6 +1024,13 @@ public class ScrollPane extends WidgetGroup {
 			ScissorStack.popScissors();
 		}
 		resetTransform(shapes);
+	}
+
+	public String toString () {
+		if (widget == null)
+			return super.toString();
+		else
+			return super.toString() + ": " + widget.toString();
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
