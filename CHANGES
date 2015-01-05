@@ -4,6 +4,7 @@
 - 3D ParticleEffectLoader registered by default
 - Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
 - Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
+- Changed Skin#newDrawable(Drawable, Color) and 4-float versions to static
 
 [1.5.2]
 - Fixed issue #2433 with color markup and alpha animation. 
