@@ -426,13 +426,15 @@ public class ScrollPane extends WidgetGroup {
 
 		if (fade) {
 			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) areaHeight -= scrollbarHeight;
-			if (scrollY) areaWidth -= scrollbarWidth;
+			if (scrollX && scrollY) {
+				areaHeight -= scrollbarHeight;
+				areaWidth -= scrollbarWidth;
+			}
 		} else {
 			if (scrollbarsOnTop) {
 				// Make sure widget is drawn under non-fading scrollbars.
-				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
+				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 			} else {
 				// Offset widget area y for horizontal scrollbar at bottom.
 				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
