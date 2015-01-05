@@ -26,8 +26,8 @@ public class MoveToAction extends TemporalAction {
 	private int alignment = Align.bottomLeft;
 
 	protected void begin () {
-		startX = target.getX();
-		startY = target.getY();
+		startX = target.getX(alignment);
+		startY = target.getY(alignment);
 	}
 
 	protected void update (float percent) {
