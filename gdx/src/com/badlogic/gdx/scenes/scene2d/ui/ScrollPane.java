@@ -425,9 +425,11 @@ public class ScrollPane extends WidgetGroup {
 		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		if (fade) {
-			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) areaHeight -= scrollbarHeight;
-			if (scrollY) areaWidth -= scrollbarWidth;
+			if (!scrollbarsOnTop) {
+				// Make sure widget is drawn under fading scrollbars.
+				if (scrollX) areaHeight -= scrollbarHeight;
+				if (scrollY) areaWidth -= scrollbarWidth;
+			}
 		} else {
 			if (scrollbarsOnTop) {
 				// Make sure widget is drawn under non-fading scrollbars.
