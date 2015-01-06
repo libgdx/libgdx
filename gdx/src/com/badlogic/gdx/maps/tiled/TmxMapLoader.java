@@ -327,12 +327,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			}
 
 			TiledMapTileSet tileset = new TiledMapTileSet();
+			tileset.setName(name);
+			tileset.getProperties().put("firstgid", firstgid);
 			if (image != null) {
 				TextureRegion texture = imageResolver.getImage(image.path());
 	
 				MapProperties props = tileset.getProperties();
-				tileset.setName(name);
-				props.put("firstgid", firstgid);
 				props.put("imagesource", imageSource);
 				props.put("imagewidth", imageWidth);
 				props.put("imageheight", imageHeight);
@@ -373,8 +373,6 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 					tile.setOffsetY(-offsetY);
 					tileset.putTile(tile.getId(), tile);
 				}
-				if (name != null)
-					tileset.setName(name);
 			}
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
