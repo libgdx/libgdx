@@ -373,6 +373,8 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 					tile.setOffsetY(-offsetY);
 					tileset.putTile(tile.getId(), tile);
 				}
+				if (name != null)
+					tileset.setName(name);
 			}
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
