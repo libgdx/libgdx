@@ -341,6 +341,46 @@ public class UBJsonWriter implements Closeable {
 		return this;
 	}
 
+	/** Appends the given JsonValue, including all its fields recursively, to the stream.
+	 * @return this writer, for chaining */
+	public UBJsonWriter value (JsonValue value) throws IOException {
+		if (value.isObject()) {
+			if (value.name != null)
+				object(value.name);
+			else
+				object();
+			for (JsonValue child = value.child; child != null; child = child.next)
+				value(child);
+			pop();
+		} else if (value.isArray()) {
+			if (value.name != null)
+				array(value.name);
+			else
+				array();
+			for (JsonValue child = value.child; child != null; child = child.next)
+				value(child);
+			pop();
+		} else if (value.isBoolean()) {
+			if (value.name != null) name(value.name);
+			value(value.asBoolean());
+		} else if (value.isDouble()) {
+			if (value.name != null) name(value.name);
+			value(value.asDouble());
+		} else if (value.isLong()) {
+			if (value.name != null) name(value.name);
+			value(value.asLong());
+		} else if (value.isString()) {
+			if (value.name != null) name(value.name);
+			value(value.asString());
+		} else if (value.isNull()) {
+			if (value.name != null) name(value.name);
+			value();
+		} else {
+			throw new IOException("Unhandled JsonValue type");
+		}
+		return this;
+	}
+
 	/** Appends the object to the stream, if it is a known value type. This is a convenience method that calls through to the
 	 * appropriate value method.
 	 * @return this writer, for chaining */

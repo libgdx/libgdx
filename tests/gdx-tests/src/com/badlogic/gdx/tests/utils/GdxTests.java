@@ -227,7 +227,7 @@ public class GdxTests {
 		YDownTest.class,
 		FreeTypeFontLoaderTest.class,
 		PngTest.class,
-		JsonReaderTest.class
+		JsonTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,

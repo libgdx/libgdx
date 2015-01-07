@@ -138,6 +138,10 @@ public class ImageTextButton extends Button {
 		return label.getText();
 	}
 
+	public String toString () {
+		return super.toString() + ": " + label.getText();
+	}
+
 	/** The style for an image text button, see {@link ImageTextButton}.
 	 * @author Nathan Sweet */
 	static public class ImageTextButtonStyle extends TextButtonStyle {

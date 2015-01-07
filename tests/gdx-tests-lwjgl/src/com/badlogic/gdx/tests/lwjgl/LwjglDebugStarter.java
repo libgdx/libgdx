@@ -19,8 +19,7 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.FullscreenTest;
-import com.badlogic.gdx.tests.InputTest;
-import com.badlogic.gdx.tests.JsonReaderTest;
+import com.badlogic.gdx.tests.JsonTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -32,11 +31,10 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
-		
-		GdxTest test = new FullscreenTest();		
+
+		GdxTest test = new ControllersTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
-		config.useHDPI = true;
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;

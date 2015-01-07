@@ -250,12 +250,10 @@ public class Label extends Widget {
 		this.wrap = wrap;
 		invalidateHierarchy();
 	}
-	
-	/**
-	 * Provide any additional characters that should act as break characters when the label is wrapped.
-	 * By default, only whitespace characters act as break chars.
-	 */
-	public void setBreakChars(char[] breakChars) {
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
 		cache.setBreakChars(breakChars);
 		invalidateHierarchy();
 	}
@@ -320,6 +318,10 @@ public class Label extends Widget {
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
 	protected BitmapFontCache getBitmapFontCache () {
 		return cache;
+	}
+
+	public String toString () {
+		return super.toString() + ": " + text;
 	}
 
 	/** The style for a label, see {@link Label}.

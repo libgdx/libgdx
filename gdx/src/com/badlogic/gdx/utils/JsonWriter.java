@@ -185,14 +185,17 @@ public class JsonWriter extends Writer {
 
 		static private Pattern javascriptPattern = Pattern.compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");
 		static private Pattern minimalNamePattern = Pattern.compile("^[^\":,}/ ][^:]*$");
-		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[]/ ][^}\\],]*$");
+		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
 
 		public String quoteValue (Object value) {
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
 			String string = String.valueOf(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
 				.replace("\t", "\\t");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
-				&& !string.contains("//") && !string.contains("/*") && minimalValuePattern.matcher(string).matches()) return string;
+				&& !string.contains("//") && !string.contains("/*")) {
+				int length = string.length();
+				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
+			}
 			return '"' + string.replace("\"", "\\\"") + '"';
 		}
 
