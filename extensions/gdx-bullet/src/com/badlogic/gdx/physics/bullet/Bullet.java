@@ -18,8 +18,8 @@ package com.badlogic.gdx.physics.bullet;
 
 import java.util.Arrays;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -27,7 +27,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 
 public class Bullet {
 	protected static boolean useRefCounting = false;
@@ -93,10 +92,10 @@ public class Bullet {
 			for (int i = 0, n = node.parts.size; i < n; i++)
 				part.parts.add(node.parts.get(i).meshPart);
 		}
-		if (node.children.size > 0) {
+		if (node.hasChildren()) {
 			final boolean transformed = applyTransform && !Arrays.equals(transform.val, idt.val); 
 			final int o = transformed ? out.size : offset;
-			getShapeParts(node.children, out, o, pool);
+			getShapeParts(node.getChildren(), out, o, pool);
 			if (transformed) {
 				for (int i = o, n = out.size; i < n; i++) {
 					final ShapePart part = out.get(i);
@@ -107,10 +106,9 @@ public class Bullet {
 		}
 	}
 	
-	public static void getShapeParts(final Array<Node> nodes, final Array<ShapePart> out, final int offset, final Pool<ShapePart> pool) {
-		final int n = nodes.size;
-		for (int i = 0; i < n; i++)
-			getShapeParts(nodes.get(i), true, out, offset, pool);
+	public static <T extends Node> void getShapeParts(final Iterable<T> nodes, final Array<ShapePart> out, final int offset, final Pool<ShapePart> pool) {
+		for (T node : nodes)
+			getShapeParts(node, true, out, offset, pool);
 	}
 
 	public static btCollisionShape obtainStaticNodeShape(final Node node, final boolean applyTransform) {

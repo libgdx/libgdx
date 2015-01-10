@@ -331,30 +331,13 @@ public class Skin implements Disposable {
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
 		Drawable newDrawable;
-		if (drawable instanceof TextureRegionDrawable) {
-			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
-			Sprite sprite;
-			if (region instanceof AtlasRegion)
-				sprite = new AtlasSprite((AtlasRegion)region);
-			else
-				sprite = new Sprite(region);
-			sprite.setColor(tint);
-			newDrawable = new SpriteDrawable(sprite);
-		} else if (drawable instanceof NinePatchDrawable) {
-			NinePatchDrawable patchDrawable = new NinePatchDrawable((NinePatchDrawable)drawable);
-			patchDrawable.setPatch(new NinePatch(patchDrawable.getPatch(), tint));
-			newDrawable = patchDrawable;
-		} else if (drawable instanceof SpriteDrawable) {
-			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
-			Sprite sprite = spriteDrawable.getSprite();
-			if (sprite instanceof AtlasSprite)
-				sprite = new AtlasSprite((AtlasSprite)sprite);
-			else
-				sprite = new Sprite(sprite);
-			sprite.setColor(tint);
-			spriteDrawable.setSprite(sprite);
-			newDrawable = spriteDrawable;
-		} else
+		if (drawable instanceof TextureRegionDrawable)
+			newDrawable = ((TextureRegionDrawable)drawable).tint(tint);
+		else if (drawable instanceof NinePatchDrawable)
+			newDrawable = ((NinePatchDrawable)drawable).tint(tint);
+		else if (drawable instanceof SpriteDrawable)
+			newDrawable = ((SpriteDrawable)drawable).tint(tint);
+		else
 			throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
 
 		if (newDrawable instanceof BaseDrawable) {

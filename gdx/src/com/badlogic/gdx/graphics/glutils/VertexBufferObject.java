@@ -18,13 +18,11 @@ package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /** <p>
@@ -51,8 +49,6 @@ import com.badlogic.gdx.utils.BufferUtils;
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class VertexBufferObject implements VertexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
 	final ByteBuffer byteBuffer;
@@ -84,13 +80,8 @@ public class VertexBufferObject implements VertexData {
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
-	}
-
-	private int createBufferObject () {
-		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
 	}
 
 	@Override
@@ -214,19 +205,16 @@ public class VertexBufferObject implements VertexData {
 
 	/** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		tmpHandle.clear();
-		tmpHandle.put(bufferHandle);
-		tmpHandle.flip();
 		GL20 gl = Gdx.gl20;
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-		gl.glDeleteBuffers(1, tmpHandle);
+		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}

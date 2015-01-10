@@ -48,7 +48,8 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		public int readerBuffer = 1024;
 
 		/** the possible file name extensions of the texture file */
-		public String[] textureExtensions = new String[] {"png", "PNG", "jpeg", "JPEG", "jpg", "JPG", "cim", "CIM", "etc1", "ETC1"};
+		public String[] textureExtensions = new String[] {"png", "PNG", "jpeg", "JPEG", "jpg", "JPG", "cim", "CIM", "etc1", "ETC1",
+			"ktx", "KTX", "zktx", "ZKTX"};
 
 	}
 

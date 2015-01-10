@@ -86,14 +86,14 @@ public class Label extends Widget {
 		return style;
 	}
 
-	/** @param newText May be null. */
+	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
+		if (newText == null) newText = "";
 		if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
 			text.setLength(0);
 			text.append((StringBuilder)newText);
 		} else {
-			if (newText == null) newText = "";
 			if (textEquals(newText)) return;
 			text.setLength(0);
 			text.append(newText);
@@ -194,6 +194,7 @@ public class Label extends Widget {
 				x += (int)((width - bounds.width) / 2);
 		}
 
+		cache.setColor(Color.WHITE);
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
 		else
@@ -247,6 +248,13 @@ public class Label extends Widget {
 	 * height. */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
+		invalidateHierarchy();
+	}
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
+		cache.setBreakChars(breakChars);
 		invalidateHierarchy();
 	}
 
@@ -310,6 +318,10 @@ public class Label extends Widget {
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
 	protected BitmapFontCache getBitmapFontCache () {
 		return cache;
+	}
+
+	public String toString () {
+		return super.toString() + ": " + text;
 	}
 
 	/** The style for a label, see {@link Label}.

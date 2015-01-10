@@ -92,7 +92,7 @@ public class Array<T> implements Iterable<T> {
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
-		System.arraycopy(array, 0, items, 0, size);
+		System.arraycopy(array, start, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -105,22 +105,22 @@ public class Array<T> implements Iterable<T> {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
-		if (offset + length > array.size)
-			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+	public void addAll (Array<? extends T> array, int start, int count) {
+		if (start + count > array.size)
+			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
+		addAll((T[])array.items, start, count);
 	}
 
 	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
-	public void addAll (T[] array, int offset, int length) {
+	public void addAll (T[] array, int start, int count) {
 		T[] items = this.items;
-		int sizeNeeded = size + length;
+		int sizeNeeded = size + count;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array, offset, items, size, length);
-		size += length;
+		System.arraycopy(array, start, items, size, count);
+		size += count;
 	}
 
 	public T get (int index) {

@@ -426,8 +426,10 @@ public class ScrollPane extends WidgetGroup {
 
 		if (fade) {
 			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) areaHeight -= scrollbarHeight;
-			if (scrollY) areaWidth -= scrollbarWidth;
+			if (scrollX && scrollY) {
+				areaHeight -= scrollbarHeight;
+				areaWidth -= scrollbarWidth;
+			}
 		} else {
 			if (scrollbarsOnTop) {
 				// Make sure widget is drawn under non-fading scrollbars.
@@ -442,8 +444,8 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = disableX ? width : Math.max(areaWidth, widgetWidth);
-		widgetHeight = disableY ? height : Math.max(areaHeight, widgetHeight);
+		widgetWidth = disableX ? areaWidth : Math.max(areaWidth, widgetWidth);
+		widgetHeight = disableY ? areaHeight : Math.max(areaHeight, widgetHeight);
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
@@ -538,15 +540,24 @@ public class ScrollPane extends WidgetGroup {
 		else
 			y -= (int)(maxY - visualAmountY);
 
-		if (!fadeScrollBars && scrollbarsOnTop && scrollX) {
-			float scrollbarHeight = 0;
-			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
-			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
-			y += scrollbarHeight;
-		}
-
 		float x = widgetAreaBounds.x;
 		if (scrollX) x -= (int)visualAmountX;
+
+		if (!fadeScrollBars && scrollbarsOnTop) {
+			if (scrollX && hScrollOnBottom) {
+				float scrollbarHeight = 0;
+				if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+				if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+				y += scrollbarHeight;
+			}
+			if (scrollY && !vScrollOnRight) {
+				float scrollbarWidth = 0;
+				if (style.hScrollKnob != null) scrollbarWidth = style.hScrollKnob.getMinWidth();
+				if (style.hScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.hScroll.getMinWidth());
+				x += scrollbarWidth;
+			}
+		}
+
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
@@ -614,6 +625,12 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
 			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			if (forceScrollY) {
+				float scrollbarWidth = 0;
+				if (style.vScrollKnob != null) scrollbarWidth = style.vScrollKnob.getMinWidth();
+				if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+				width += scrollbarWidth;
+			}
 			return width;
 		}
 		return 150;
@@ -623,6 +640,12 @@ public class ScrollPane extends WidgetGroup {
 		if (widget instanceof Layout) {
 			float height = ((Layout)widget).getPrefHeight();
 			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			if (forceScrollX) {
+				float scrollbarHeight = 0;
+				if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+				if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+				height += scrollbarHeight;
+			}
 			return height;
 		}
 		return 150;
@@ -859,6 +882,22 @@ public class ScrollPane extends WidgetGroup {
 		disableY = y;
 	}
 
+	public boolean isLeftEdge () {
+		return !scrollX || amountX <= 0;
+	}
+
+	public boolean isRightEdge () {
+		return !scrollX || amountX >= maxX;
+	}
+
+	public boolean isTopEdge () {
+		return !scrollY || amountY <= 0;
+	}
+
+	public boolean isBottomEdge () {
+		return !scrollY || amountY >= maxY;
+	}
+
 	public boolean isDragging () {
 		return draggingPointer != -1;
 	}
@@ -980,13 +1019,20 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void drawDebug (ShapeRenderer shapes) {
-		drawDebugBounds(shapes);
+		shapes.flush();
 		applyTransform(shapes, computeTransform());
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawDebugChildren(shapes);
 			ScissorStack.popScissors();
 		}
 		resetTransform(shapes);
+	}
+
+	public String toString () {
+		if (widget == null)
+			return super.toString();
+		else
+			return super.toString() + ": " + widget.toString();
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.

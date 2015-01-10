@@ -174,6 +174,11 @@ public class Button extends Table implements Disableable {
 		return style;
 	}
 
+	/** @return May be null. */
+	public ButtonGroup getButtonGroup () {
+		return buttonGroup;
+	}
+
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 

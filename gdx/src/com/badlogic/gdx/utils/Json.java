@@ -97,20 +97,14 @@ public class Json {
 		classToTag.put(type, tag);
 	}
 
-	public Class getClass (String tagOrClassName) {
-		Class type = tagToClass.get(tagOrClassName);
-		if (type != null) return type;
-		try {
-			return ClassReflection.forName(tagOrClassName);
-		} catch (ReflectionException ex) {
-			throw new SerializationException(ex);
-		}
+	/** Returns the class for the specified tag, or null. */
+	public Class getClass (String tag) {
+		return tagToClass.get(tag);
 	}
 
+	/** Returns the tag for the specified class, or null. */
 	public String getTag (Class type) {
-		String tag = classToTag.get(type);
-		if (tag != null) return tag;
-		return type.getName();
+		return classToTag.get(type);
 	}
 
 	/** Sets the name of the JSON field to store the Java class name or class tag when required to avoid ambiguity during
@@ -644,7 +638,7 @@ public class Json {
 
 	public void writeType (Class type) {
 		if (typeName == null) return;
-		String className = classToTag.get(type);
+		String className = getTag(type);
 		if (className == null) className = type.getName();
 		try {
 			writer.set(typeName, className);
@@ -745,19 +739,26 @@ public class Json {
 		FieldMetadata metadata = fields.get(fieldName);
 		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
+		if (elementType == null) elementType = metadata.elementType;
+		readField(object, field, jsonName, elementType, jsonMap);
+	}
+
+	/** @param object May be null if the field is static.
+	 * @param elementType May be null if the type is unknown. */
+	public void readField (Object object, Field field, String jsonName, Class elementType, JsonValue jsonMap) {
 		JsonValue jsonValue = jsonMap.get(jsonName);
 		if (jsonValue == null) return;
-		if (elementType == null) elementType = metadata.elementType;
 		try {
 			field.set(object, readValue(field.getType(), elementType, jsonValue));
 		} catch (ReflectionException ex) {
-			throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
+			throw new SerializationException("Error accessing field: " + field.getName() + " ("
+				+ field.getDeclaringClass().getName() + ")", ex);
 		} catch (SerializationException ex) {
-			ex.addTrace(field.getName() + " (" + type.getName() + ")");
+			ex.addTrace(field.getName() + " (" + field.getDeclaringClass().getName() + ")");
 			throw ex;
 		} catch (RuntimeException runtimeEx) {
 			SerializationException ex = new SerializationException(runtimeEx);
-			ex.addTrace(field.getName() + " (" + type.getName() + ")");
+			ex.addTrace(field.getName() + " (" + field.getDeclaringClass().getName() + ")");
 			throw ex;
 		}
 	}
@@ -843,7 +844,7 @@ public class Json {
 			String className = typeName == null ? null : jsonData.getString(typeName, null);
 			if (className != null) {
 				jsonData.remove(typeName);
-				type = tagToClass.get(className);
+				type = getClass(className);
 				if (type == null) {
 					try {
 						type = (Class<T>)ClassReflection.forName(className);

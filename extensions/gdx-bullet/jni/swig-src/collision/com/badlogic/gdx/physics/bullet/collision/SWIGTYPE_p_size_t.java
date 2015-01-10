@@ -6,20 +6,20 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
-package com.badlogic.gdx.physics.bullet.extras;
+package com.badlogic.gdx.physics.bullet.collision;
 
-public class SWIGTYPE_p_btGImpactMeshShape {
+public class SWIGTYPE_p_size_t {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_btGImpactMeshShape(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_size_t(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_btGImpactMeshShape() {
+  protected SWIGTYPE_p_size_t() {
     swigCPtr = 0;
   }
 
-  protected static long getCPtr(SWIGTYPE_p_btGImpactMeshShape obj) {
+  protected static long getCPtr(SWIGTYPE_p_size_t obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

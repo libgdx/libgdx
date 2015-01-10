@@ -710,6 +710,11 @@ b2ContactFilter defaultFilter;
 		b2World* world = (b2World*)addr;
 		return world->GetBodyCount();
 	*/
+	
+	/** Get the number of fixtures. */
+	public int getFixtureCount () {
+		return fixtures.size;
+	}
 
 	/** Get the number of joints. */
 	public int getJointCount () {
@@ -866,6 +871,15 @@ b2ContactFilter defaultFilter;
 		bodies.ensureCapacity(this.bodies.size);
 		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
 			bodies.add(iter.next());
+		}		
+	}
+
+	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
+	public void getFixtures (Array<Fixture> fixtures) {
+		fixtures.clear();
+		fixtures.ensureCapacity(this.fixtures.size);
+		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
+			fixtures.add(iter.next());
 		}		
 	}
 

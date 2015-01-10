@@ -44,8 +44,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
- * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is preferred
- * over vertex arrays if hardware supports it.
+ * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is
+ * preferred over vertex arrays if hardware supports it.
  * </p>
  * 
  * <p>
@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * exactly for this to work.
  * </p>
  * 
- * @author mzechner, Dave Clayton <contact@redskyforge.com> */
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa */
 public class Mesh implements Disposable {
 	public enum VertexDataType {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
@@ -75,6 +75,14 @@ public class Mesh implements Disposable {
 	final IndexData indices;
 	boolean autoBind = true;
 	final boolean isVertexArray;
+
+	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
+		this.vertices = vertices;
+		this.indices = indices;
+		this.isVertexArray = isVertexArray;
+
+		addManagedMesh(Gdx.app, this);
+	}
 
 	/** Creates a new Mesh with the given attributes.
 	 * 
@@ -220,8 +228,7 @@ public class Mesh implements Disposable {
 		meshes[0].getVertices(vertices);
 		meshes[0].getIndices(indices);
 		int vcount = meshes[0].getNumVertices();
-		if (transformations != null)
-			transform(transformations[0], vertices, vertexSize, offset, numComponents, 0, vcount);
+		if (transformations != null) transform(transformations[0], vertices, vertexSize, offset, numComponents, 0, vcount);
 		int voffset = vcount;
 		int ioffset = meshes[0].getNumIndices();
 		for (int i = 1; i < meshes.length; i++) {
@@ -363,12 +370,35 @@ public class Mesh implements Disposable {
 	 * @param indices the array to copy the indices to
 	 * @param destOffset the offset in the indices array to start copying */
 	public void getIndices (short[] indices, int destOffset) {
-		if ((indices.length - destOffset) < getNumIndices())
-			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs "
-				+ getNumIndices());
+		getIndices(0, indices, destOffset);
+	}
+
+	/** Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold destOffset + all
+	 * the remaining indices.
+	 * @param srcOffset the zero-based offset of the first index to fetch
+	 * @param indices the array to copy the indices to
+	 * @param destOffset the offset in the indices array to start copying */
+	public void getIndices (int srcOffset, short[] indices, int destOffset) {
+		getIndices(srcOffset, -1, indices, destOffset);
+	}
+
+	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset + count
+	 * indices.
+	 * @param srcOffset the zero-based offset of the first index to fetch
+	 * @param count the total amount of indices to copy
+	 * @param indices the array to copy the indices to
+	 * @param destOffset the offset in the indices array to start copying */
+	public void getIndices (int srcOffset, int count, short[] indices, int destOffset) {
+		int max = getNumIndices();
+		if (count < 0) count = max - srcOffset;
+		if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max)
+			throw new IllegalArgumentException("Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: "
+				+ max);
+		if ((indices.length - destOffset) < count)
+			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " shorts, needs " + count);
 		int pos = getIndicesBuffer().position();
-		getIndicesBuffer().position(0);
-		getIndicesBuffer().get(indices, destOffset, getNumIndices());
+		getIndicesBuffer().position(srcOffset);
+		getIndicesBuffer().get(indices, destOffset, count);
 		getIndicesBuffer().position(pos);
 	}
 
@@ -658,7 +688,9 @@ public class Mesh implements Disposable {
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox (final BoundingBox out, int offset, int count, final Matrix4 transform) {
 		int numIndices = getNumIndices();
-		if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices ( offset="+offset+", count="+count+", max="+numIndices+" )");
+		if (offset < 0 || count < 1 || offset + count > numIndices)
+			throw new GdxRuntimeException("Not enough indices ( offset=" + offset + ", count=" + count + ", max=" + numIndices
+				+ " )");
 
 		final FloatBuffer verts = vertices.getBuffer();
 		final ShortBuffer index = indices.getBuffer();
@@ -824,9 +856,7 @@ public class Mesh implements Disposable {
 		Array<Mesh> meshesArray = meshes.get(app);
 		if (meshesArray == null) return;
 		for (int i = 0; i < meshesArray.size; i++) {
-			if (meshesArray.get(i).vertices instanceof VertexBufferObject) {
-				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
-			}
+			meshesArray.get(i).vertices.invalidate();
 			meshesArray.get(i).indices.invalidate();
 		}
 	}

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,6 +47,18 @@ public interface MeshPartBuilder {
 
 	/** Set range of texture coordinates from the specified TextureRegion. */
 	public void setUVRange (TextureRegion r);
+
+	/** Get the current vertex transformation matrix. */
+	public Matrix4 getVertexTransform (Matrix4 out);
+
+	/** Set the current vertex transformation matrix and enables vertex transformation. */
+	public void setVertexTransform (Matrix4 transform);
+
+	/** Indicates whether vertex transformation is enabled. */
+	public boolean isVertexTransformationEnabled ();
+
+	/** Sets whether vertex transformation is enabled. */
+	public void setVertexTransformationEnabled (boolean enabled);
 
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex (final float... values);
@@ -273,17 +286,19 @@ public interface MeshPartBuilder {
 	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
 		int divisions);
 
-	/** Get the current vertex transformation matrix. */
-	public Matrix4 getVertexTransform (Matrix4 out);
+	/** Copies a mesh to the mesh (part) currently being build.
+	 * @param mesh The mesh to copy, must have the same vertex attributes and must be indexed. */
+	public void addMesh (Mesh mesh);
+	
+	/** Copies a MeshPart to the mesh (part) currently being build.
+	 * @param meshpart The MeshPart to copy, must have the same vertex attributes, primitive type and must be indexed. */
+	public void addMesh (MeshPart meshpart);
 
-	/** Set the current vertex transformation matrix and enables vertex transformation. */
-	public void setVertexTransform (Matrix4 transform);
-
-	/** Indicates whether vertex transformation is enabled. */
-	public boolean isVertexTransformationEnabled ();
-
-	/** Sets whether vertex transformation is enabled. */
-	public void setVertexTransformationEnabled (boolean enabled);
+	/** Copies a (part of a) mesh to the mesh (part) currently being build.
+	 * @param mesh The mesh to (partly) copy, must have the same vertex attributes and must be indexed.
+	 * @param indexOffset The zero-based offset of the first index of the part of the mesh to copy.
+	 * @param numIndices The number of indices of the part of the mesh to copy. */
+	public void addMesh (Mesh mesh, int indexOffset, int numIndices);
 
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */

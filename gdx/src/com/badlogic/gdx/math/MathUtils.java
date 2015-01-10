@@ -142,6 +142,16 @@ public final class MathUtils {
 		return start + random.nextInt(end - start + 1);
 	}
 
+	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
+	static public long random (long range) {
+		return (long)(random.nextDouble() * range);
+	}
+
+	/** Returns a random number between start (inclusive) and end (inclusive). */
+	static public long random (long start, long end) {
+		return start + (long)(random.nextDouble() * (end - start));
+	}
+
 	/** Returns a random boolean value. */
 	static public boolean randomBoolean () {
 		return random.nextBoolean();
@@ -196,7 +206,7 @@ public final class MathUtils {
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {
-		return randomTriangular(min, max, (max - min) * .5f);
+		return randomTriangular(min, max, min + (max - min) * 0.5f);
 	}
 
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values
@@ -231,19 +241,31 @@ public final class MathUtils {
 
 	// ---
 
-	static public int clamp (int value, int min, int max) {
-		if (value < min) return min;
-		if (value > max) return max;
-		return value;
-	}
-
 	static public short clamp (short value, short min, short max) {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
 	}
 
+	static public int clamp (int value, int min, int max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
+	static public long clamp (long value, long min, long max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
 	static public float clamp (float value, float min, float max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
+	static public double clamp (double value, double min, double max) {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;

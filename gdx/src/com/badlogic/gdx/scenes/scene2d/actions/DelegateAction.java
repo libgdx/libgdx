@@ -60,6 +60,11 @@ abstract public class DelegateAction extends Action {
 		super.setActor(actor);
 	}
 
+	public void setTarget (Actor target) {
+		if (action != null) action.setTarget(target);
+		super.setTarget(target);
+	}
+
 	public String toString () {
 		return super.toString() + (action == null ? "" : "(" + action + ")");
 	}

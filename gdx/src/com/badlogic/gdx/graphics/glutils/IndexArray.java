@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
@@ -66,6 +67,17 @@ public class IndexArray implements IndexData {
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
+	}
+	
+	public void setIndices (ShortBuffer indices) {
+		int pos = indices.position();
+		buffer.clear();
+		buffer.limit(indices.remaining());
+		buffer.put(indices);
+		buffer.flip();
+		indices.position(pos);
+		byteBuffer.position(0);
+		byteBuffer.limit(buffer.limit() << 1);
 	}
 
 	/** <p>
