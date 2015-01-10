@@ -114,6 +114,7 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (audio != null) audio.dispose();
+					Gdx.input.setCursorCatched(false);
 					if (t instanceof RuntimeException)
 						throw (RuntimeException)t;
 					else
