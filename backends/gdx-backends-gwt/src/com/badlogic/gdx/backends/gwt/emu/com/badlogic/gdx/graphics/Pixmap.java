@@ -21,7 +21,6 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.backends.gwt.Base64Utils;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
