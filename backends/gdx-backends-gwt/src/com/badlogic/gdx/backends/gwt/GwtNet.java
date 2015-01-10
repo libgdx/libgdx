@@ -116,13 +116,14 @@ public class GwtNet implements Net {
 			return;
 		}
 		final String acceptHeader = httpRequest.getHeaders().get("Accept");
-		if("image/png".equals(acceptHeader) || "image/jpeg".equals(acceptHeader) || "image/jpg".equals(acceptHeader) || "image/gif".equals(acceptHeader)) {
+		if ("image/png".equals(acceptHeader) || "image/jpeg".equals(acceptHeader) || "image/jpg".equals(acceptHeader)
+			|| "image/gif".equals(acceptHeader)) {
 			final String url = httpRequest.getUrl();
-		   final Image img = new Image();
-		   img.setVisible(false);
-		   RootPanel.get().add(img);
-		   ImageElement.as(img.getElement()).setAttribute("crossOrigin", "Anonymous");
-		   img.addLoadHandler(new LoadHandler() {
+			final Image img = new Image();
+			img.setVisible(false);
+			RootPanel.get().add(img);
+			ImageElement.as(img.getElement()).setAttribute("crossOrigin", "Anonymous");
+			img.addLoadHandler(new LoadHandler() {
 				@Override
 				public void onLoad (LoadEvent event) {
 					Canvas canvas = Canvas.createIfSupported();
@@ -165,7 +166,7 @@ public class GwtNet implements Net {
 					});
 				}
 			});
-		   img.setUrl(url);
+			img.setUrl(url);
 		} else {
 
 			final String method = httpRequest.getMethod();
@@ -206,16 +207,16 @@ public class GwtNet implements Net {
 
 					@Override
 					public void onResponseReceived (Request request, Response response) {
-							httpResultListener.handleHttpResponse(new HttpClientResponse(response));
-							requests.remove(httpRequest);
-							listeners.remove(httpRequest);
+						httpResultListener.handleHttpResponse(new HttpClientResponse(response));
+						requests.remove(httpRequest);
+						listeners.remove(httpRequest);
 					}
 
 					@Override
 					public void onError (Request request, Throwable exception) {
-							httpResultListener.failed(exception);
-							requests.remove(httpRequest);
-							listeners.remove(httpRequest);
+						httpResultListener.failed(exception);
+						requests.remove(httpRequest);
+						listeners.remove(httpRequest);
 					}
 				});
 				requests.put(httpRequest, request);
