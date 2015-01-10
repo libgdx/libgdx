@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.backends.gwt.Base64Utils;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -32,13 +33,14 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.user.client.ui.Image;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
 	static int nextId = 0;
 
 	/** Different pixel formats.
-	 * 
+	 *
 	 * @author mzechner */
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
@@ -51,7 +53,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Filters to be used with {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
-	 * 
+	 *
 	 * @author mzechner */
 	public enum Filter {
 		NearestNeighbour, BiLinear
@@ -87,6 +89,17 @@ public class Pixmap implements Disposable {
 	public Pixmap (ImageElement img) {
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.drawImage(img, 0, 0);
+	}
+
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
+	 * @param encodedData the encoded image data
+	 * @param offset the offset
+	 * @param len the length */
+	public Pixmap (byte[] encodedData, int offset, int len) {
+		String base64 = new String(encodedData);
+	   Image img = new Image(base64);
+	   create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		context.drawImage(ImageElement.as(img.getElement()), 0, 0);
 	}
 
 	public Pixmap (int width, int height, Format format) {
@@ -183,7 +196,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Sets the color for the following drawing operations.
-	 * 
+	 *
 	 * @param r The red component.
 	 * @param g The green component.
 	 * @param b The blue component.
@@ -217,7 +230,7 @@ public class Pixmap implements Disposable {
 // public void setStrokeWidth (int width);
 
 	/** Draws a line between the given coordinates using the currently set color.
-	 * 
+	 *
 	 * @param x The x-coodinate of the first point
 	 * @param y The y-coordinate of the first point
 	 * @param x2 The x-coordinate of the first point
@@ -232,7 +245,7 @@ public class Pixmap implements Disposable {
 
 	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
 	 * using the current color.
-	 * 
+	 *
 	 * @param x The x coordinate
 	 * @param y The y coordinate
 	 * @param width The width in pixels
@@ -245,7 +258,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
-	 * 
+	 *
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner) */
@@ -254,7 +267,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
-	 * 
+	 *
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner)
@@ -269,7 +282,7 @@ public class Pixmap implements Disposable {
 	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
 	 * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
 	 * neighbour or bilinear).
-	 * 
+	 *
 	 * @param pixmap The other Pixmap
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
@@ -286,7 +299,7 @@ public class Pixmap implements Disposable {
 
 	/** Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
 	 * the current color.
-	 * 
+	 *
 	 * @param x The x coordinate
 	 * @param y The y coordinate
 	 * @param width The width in pixels
@@ -296,7 +309,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Draws a circle outline with the center at x,y and a radius using the current color and stroke width.
-	 * 
+	 *
 	 * @param x The x-coordinate of the center
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
@@ -308,7 +321,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Fills a circle with the center at x,y and a radius using the current color.
-	 * 
+	 *
 	 * @param x The x-coordinate of the center
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
@@ -320,7 +333,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
-	 * 
+	 *
 	 * @param x1 The x-coordinate of vertex 1
 	 * @param y1 The y-coordinate of vertex 1
 	 * @param x2 The x-coordinate of vertex 2
@@ -338,7 +351,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
-	 * 
+	 *
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
@@ -353,7 +366,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Draws a pixel at the given location with the current color.
-	 * 
+	 *
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate */
 	public void drawPixel (int x, int y) {
@@ -361,7 +374,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Draws a pixel at the given location with the given color.
-	 * 
+	 *
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate
 	 * @param color the color in RGBA8888 format. */
