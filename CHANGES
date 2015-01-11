@@ -1,5 +1,5 @@
 [1.5.3]
-- API Change: TextField#setRightAlign -> TextField#setTextAlignment
+- API Change: TextField#setRightAlign -> TextField#setAlignment
 - I18NBundle is now compatible with Android 2.2
 - Fixed GWT reflection includes for 3D particles
 - 3D ParticleEffectLoader registered by default

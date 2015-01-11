@@ -100,7 +100,7 @@ public class UITest extends GdxTest {
 		slider.setAnimateDuration(0.3f);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		textfield.setTextAlignment(Align.center);
+		textfield.setAlignment(Align.center);
 		final SelectBox dropdown = new SelectBox(skin);
 		dropdown.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {

@@ -252,7 +252,7 @@ public class TextField extends Widget implements Disableable {
 
 		if (textHAlign == Align.center || textHAlign == Align.right) {
 			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startPos);
-			if (textHAlign == Align.center) textOffset *= .5f;
+			if (textHAlign == Align.center) textOffset = Math.round(textOffset * 0.5f);
 			if (hasSelection) selectionX += textOffset;
 		}
 	}
@@ -617,7 +617,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	/** Sets text horizontal alignment (left, center or right). */
-	public void setTextAlignment (int alignment) {
+	public void setAlignment (int alignment) {
 		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) 
 			this.textHAlign = alignment;
 	}
