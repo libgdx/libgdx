@@ -1015,6 +1015,12 @@ public class BitmapFont implements Disposable {
 				StreamUtils.closeQuietly(reader);
 			}
 		}
+		
+		/** Sets the line height, which is the distance from one line of text to the next. */
+		public void setLineHeight (float height) {
+			lineHeight = height * scaleY;
+			down = flipped ? lineHeight : -lineHeight;
+		}
 
 		public void setGlyph (int ch, Glyph glyph) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
