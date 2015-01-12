@@ -380,12 +380,12 @@ public class IOSInput implements Input {
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
-			for (int i = 0; i < range.length(); i++) {
+			for (int i = 0; i < range.getLength(); i++) {
 				app.input.inputProcessor.keyTyped((char)8);
 			}
 
 			if (string.isEmpty()) {
-				if (range.length() > 0) Gdx.graphics.requestRendering();
+				if (range.getLength() > 0) Gdx.graphics.requestRendering();
 				return false;
 			}
 
@@ -668,8 +668,8 @@ public class IOSInput implements Input {
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.x() * app.displayScaleFactor);
-				event.y = (int)(loc.y() * app.displayScaleFactor);
+				event.x = (int)(loc.getX() * app.displayScaleFactor);
+				event.y = (int)(loc.getY() * app.displayScaleFactor);
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
