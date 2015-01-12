@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,17 +35,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 
 public class Preloader {
-	
+
 	public interface PreloaderCallback {
-		
+
 		public void update(PreloaderState state);
-		
+
 		public void error (String file);
-		
+
 	}
 
 	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
-	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
+	public static final ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
 	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
@@ -66,13 +66,13 @@ public class Preloader {
 		public final long size;
 		public final String mimeType;
 	}
-	
+
 	public static class PreloaderState {
-		
+
 		public PreloaderState(Array<Asset> assets) {
 			this.assets = assets;
 		}
-		
+
 		public long getDownloadedSize() {
 			long size = 0;
 			for (int i = 0; i < assets.size; i++) {
@@ -81,7 +81,7 @@ public class Preloader {
 			}
 			return size;
 		}
-		
+
 		public long getTotalSize() {
 			long size = 0;
 			for (int i = 0; i < assets.size; i++) {
@@ -90,34 +90,34 @@ public class Preloader {
 			}
 			return size;
 		}
-		
+
 		public float getProgress() {
 			long total = getTotalSize();
 			return total == 0 ? 1 : (getDownloadedSize() / (float) total);
 		}
-		
+
 		public boolean hasEnded() {
 			return getDownloadedSize() == getTotalSize();
 		}
-		
+
 		public final Array<Asset> assets;
-		
+
 	}
 
 	public final String baseUrl;
 
-	
+
 	public Preloader (String newBaseURL) {
-		
+
 		baseUrl = newBaseURL;
-	
+
 		// trigger copying of assets and creation of assets.txt
 		GWT.create(PreloaderBundle.class);
 	}
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
 		final AssetDownloader loader = new AssetDownloader();
-		
+
 		loader.loadText(baseUrl + assetFileUrl, new AssetLoaderListener<String>() {
 			@Override
 			public void onProgress (double amount) {
@@ -149,13 +149,13 @@ public class Preloader {
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
 					final Asset asset = assets.get(i);
-					
+
 					if (contains(asset.url)) {
 						asset.loaded = asset.size;
 						asset.succeed = true;
 						continue;
 					}
-					
+
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
 						public void onProgress (double amount) {
@@ -172,7 +172,7 @@ public class Preloader {
 						public void onSuccess (Object result) {
 							switch (asset.type) {
 							case Text:
-								texts.put(asset.url, (String) result);					
+								texts.put(asset.url, (String) result);
 								break;
 							case Image:
 								images.put(asset.url, (ImageElement) result);
@@ -196,7 +196,7 @@ public class Preloader {
 			}
 		});
 	}
-	
+
 	public InputStream read (String url) {
 		if (texts.containsKey(url)) {
 			try {

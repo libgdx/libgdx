@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -130,9 +131,11 @@ public class GwtNet implements Net {
 					canvas.getCanvasElement().setWidth(img.getWidth());
 					canvas.getCanvasElement().setHeight(img.getHeight());
 					Context2d context = canvas.getContext2d();
-					context.drawImage(ImageElement.as(img.getElement()), 0, 0);
+					ImageElement imageElement = ImageElement.as(img.getElement());
+					context.drawImage(imageElement, 0, 0);
 					final String dataUrl = canvas.toDataUrl(acceptHeader);
 					img.removeFromParent();
+					Preloader.images.put(dataUrl, imageElement);
 					httpResultListener.handleHttpResponse(new HttpResponse() {
 						@Override
 						public HttpStatus getStatus () {

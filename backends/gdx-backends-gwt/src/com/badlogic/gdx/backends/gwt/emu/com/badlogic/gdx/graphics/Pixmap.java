@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -32,7 +33,6 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.user.client.ui.Image;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -73,7 +73,7 @@ public class Pixmap implements Disposable {
 
 	public Pixmap (FileHandle file) {
 		GwtFileHandle gwtFile = (GwtFileHandle)file;
-		ImageElement img = gwtFile.preloader.images.get(file.path());
+		ImageElement img = Preloader.images.get(file.path());
 		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.setGlobalCompositeOperation(Composite.COPY);
@@ -96,9 +96,12 @@ public class Pixmap implements Disposable {
 	 * @param len the length */
 	public Pixmap (byte[] encodedData, int offset, int len) {
 		String base64 = new String(encodedData);
-	   Image img = new Image(base64);
-	   create(img.getWidth(), img.getHeight(), Format.RGBA8888);
-		context.drawImage(ImageElement.as(img.getElement()), 0, 0);
+		ImageElement img = Preloader.images.get(base64);
+		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + base64 + "', file does not exist in Preloader images");
+		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		context.setGlobalCompositeOperation(Composite.COPY);
+		context.drawImage(img, 0, 0);
+		context.setGlobalCompositeOperation(getComposite());
 	}
 
 	public Pixmap (int width, int height, Format format) {
