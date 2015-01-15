@@ -434,8 +434,10 @@ public class BitmapFont implements Disposable {
 					nextStart = lineEnd;
 					// Eat whitespace at start of wrapped line.
 					while (nextStart < length) {
-						if (!BitmapFont.isWhitespace(str.charAt(nextStart))) break;
+						char c = str.charAt(nextStart);
+						if (!BitmapFont.isWhitespace(c)) break;
 						nextStart++;
+						if (c == '\n') break; // Eat only the first wrapped newline.
 					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
@@ -779,10 +781,8 @@ public class BitmapFont implements Disposable {
 
 	public boolean isBreakChar (char c) {
 		if (breakChars == null) return false;
-
-		for (char br : breakChars) {
+		for (char br : breakChars)
 			if (c == br) return true;
-		}
 		return false;
 	}
 
@@ -1023,7 +1023,7 @@ public class BitmapFont implements Disposable {
 				StreamUtils.closeQuietly(reader);
 			}
 		}
-		
+
 		/** Sets the line height, which is the distance from one line of text to the next. */
 		public void setLineHeight (float height) {
 			lineHeight = height * scaleY;

@@ -674,8 +674,10 @@ public class BitmapFontCache {
 					nextStart = lineEnd;
 					// Eat whitespace at start of wrapped line.
 					while (nextStart < length) {
-						if (!BitmapFont.isWhitespace(str.charAt(nextStart))) break;
+						char c = str.charAt(nextStart);
+						if (!BitmapFont.isWhitespace(c)) break;
 						nextStart++;
+						if (c == '\n') break; // Eat only the first wrapped newline.
 					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
