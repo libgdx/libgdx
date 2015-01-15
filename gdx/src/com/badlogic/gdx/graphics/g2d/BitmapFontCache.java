@@ -658,18 +658,13 @@ public class BitmapFontCache {
 		int numLines = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
-			// Eat whitespace at start of line.
-			while (start < newLine) {
-				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
-				start++;
-			}
 			int lineEnd = start + font.computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
-					else if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
+					if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -677,6 +672,11 @@ public class BitmapFontCache {
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
+					// Eat whitespace at start of wrapped line.
+					while (nextStart < length) {
+						if (!BitmapFont.isWhitespace(str.charAt(nextStart))) break;
+						nextStart++;
+					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
 						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
@@ -702,12 +702,10 @@ public class BitmapFontCache {
 		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
 	}
-	
-	/**
-	 * Provide any additional characters that should act as break characters when the label is wrapped.
-	 * By default, only whitespace characters act as break chars.
-	 */
-	public void setBreakChars(char[] breakChars) {
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
 		font.setBreakChars(breakChars);
 	}
 
