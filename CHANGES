@@ -5,6 +5,7 @@
 - 3D ParticleEffectLoader registered by default
 - Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
 - Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
+- Updated RoboVM to 1.0.0-beta-03
 
 [1.5.2]
 - Fixed issue #2433 with color markup and alpha animation. 
