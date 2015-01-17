@@ -849,11 +849,19 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getScrollBarHeight () {
-		return style.hScrollKnob == null || !scrollX ? 0 : style.hScrollKnob.getMinHeight();
+		if (!scrollX) return 0;
+		float height = 0;
+		if (style.hScrollKnob != null) height = style.hScrollKnob.getMinHeight();
+		if (style.hScroll != null) height = Math.max(height, style.hScroll.getMinHeight());
+		return height;
 	}
 
 	public float getScrollBarWidth () {
-		return style.vScrollKnob == null || !scrollY ? 0 : style.vScrollKnob.getMinWidth();
+		if (!scrollY) return 0;
+		float width = 0;
+		if (style.vScrollKnob != null) width = style.vScrollKnob.getMinWidth();
+		if (style.vScroll != null) width = Math.max(width, style.vScroll.getMinWidth());
+		return width;
 	}
 
 	/** Returns the width of the scrolled viewport. */

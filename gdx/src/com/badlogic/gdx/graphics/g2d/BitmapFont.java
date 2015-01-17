@@ -418,18 +418,13 @@ public class BitmapFont implements Disposable {
 		float maxWidth = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
-			// Eat whitespace at start of line.
-			while (start < newLine) {
-				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
-				start++;
-			}
 			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
-					else if (isBreakChar(str.charAt(lineEnd - 1))) break;
+					if (isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -437,6 +432,13 @@ public class BitmapFont implements Disposable {
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
+					// Eat whitespace at start of wrapped line.
+					while (nextStart < length) {
+						char c = str.charAt(nextStart);
+						if (!BitmapFont.isWhitespace(c)) break;
+						nextStart++;
+						if (c == '\n') break; // Eat only the first wrapped newline.
+					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
 						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
@@ -770,21 +772,17 @@ public class BitmapFont implements Disposable {
 			if (text.charAt(start) == ch) return start;
 		return n;
 	}
-	
-	/**
-	 * Provide any additional characters that should act as break characters when the label is wrapped.
-	 * By default, only whitespace characters act as break chars.
-	 */
-	public void setBreakChars(char[] breakChars) {
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
 		this.breakChars = breakChars;
 	}
-	
-	public boolean isBreakChar(char c) {
-		if (breakChars == null) return false;
 
-		for (char br: breakChars) {
+	public boolean isBreakChar (char c) {
+		if (breakChars == null) return false;
+		for (char br : breakChars)
 			if (c == br) return true;
-		}
 		return false;
 	}
 
@@ -1025,7 +1023,7 @@ public class BitmapFont implements Disposable {
 				StreamUtils.closeQuietly(reader);
 			}
 		}
-		
+
 		/** Sets the line height, which is the distance from one line of text to the next. */
 		public void setLineHeight (float height) {
 			lineHeight = height * scaleY;

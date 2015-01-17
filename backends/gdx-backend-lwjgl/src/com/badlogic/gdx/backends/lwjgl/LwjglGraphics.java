@@ -383,9 +383,15 @@ public class LwjglGraphics implements Graphics {
 				return false;
 			}
 
+			boolean resizable = !fullscreen && config.resizable;
+			
 			Display.setDisplayMode(targetDisplayMode);
 			Display.setFullscreen(fullscreen);
-			Display.setResizable(!fullscreen && config.resizable);
+			// Workaround for bug in LWJGL whereby resizable state is lost on DisplayMode change
+			if (resizable == Display.isResizable()) {
+				Display.setResizable(!resizable);
+			}
+			Display.setResizable(resizable);
 			
 			float scaleFactor = Display.getPixelScaleFactor();
 			config.width = (int)(targetDisplayMode.getWidth() * scaleFactor);
