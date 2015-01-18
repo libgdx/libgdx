@@ -25,4 +25,5 @@ public interface TiledMapRenderer extends MapRenderer {
 	public void renderObject (MapObject object);
 
 	public void renderTileLayer (TiledMapTileLayer layer);
+	public void renderImageLayer(TiledMapImageLayer layer);
 }

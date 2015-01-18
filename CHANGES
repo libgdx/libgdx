@@ -1,4 +1,5 @@
 [1.5.4]
+- Added support for image layers in Tiled maps (TiledMapImageLayer)
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment

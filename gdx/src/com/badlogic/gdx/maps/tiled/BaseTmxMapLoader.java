@@ -12,6 +12,8 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -64,17 +66,13 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
 	protected void loadTileLayer (TiledMap map, Element element) {
 		if (element.getName().equals("layer")) {
-			String name = element.getAttribute("name", null);
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			int tileWidth = element.getParent().getIntAttribute("tilewidth", 0);
 			int tileHeight = element.getParent().getIntAttribute("tileheight", 0);
-			boolean visible = element.getIntAttribute("visible", 1) == 1;
-			float opacity = element.getFloatAttribute("opacity", 1.0f);
 			TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
-			layer.setVisible(visible);
-			layer.setOpacity(opacity);
-			layer.setName(name);
+
+			loadBasicLayerInfo(layer, element);
 
 			int[] ids = getTileIds(element, width, height);
 			TiledMapTileSets tilesets = map.getTileSets();
@@ -118,6 +116,44 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
 			map.getLayers().add(layer);
 		}
+	}
+	
+	protected void loadImageLayer (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+		if (element.getName().equals("imagelayer")) {
+			int x = Integer.parseInt(element.getAttribute("x", "0"));
+			int y = mapHeightInPixels - Integer.parseInt(element.getAttribute("y", "0"));
+			TextureRegion texture = null;
+			
+			Element image = element.getChildByName("image");
+			
+			if (image != null) {
+				String source = image.getAttribute("source");
+				FileHandle handle = getRelativeFileHandle(tmxFile, source);
+				texture = imageResolver.getImage(handle.path());
+				y -= texture.getRegionHeight();
+			}
+			
+			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y);
+			
+			loadBasicLayerInfo(layer, element);
+			
+			Element properties = element.getChildByName("properties");
+			if (properties != null) {
+				loadProperties(layer.getProperties(), properties);
+			}
+			
+			map.getLayers().add(layer);
+		}
+	}
+	
+	protected void loadBasicLayerInfo(MapLayer layer, Element element) {
+		String name = element.getAttribute("name", null);
+		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
+		boolean visible = element.getIntAttribute("visible", 1) == 1;
+		
+		layer.setName(name);
+		layer.setOpacity(opacity);
+		layer.setVisible(visible);
 	}
 	
 	protected void loadObject (MapLayer layer, Element element) {
