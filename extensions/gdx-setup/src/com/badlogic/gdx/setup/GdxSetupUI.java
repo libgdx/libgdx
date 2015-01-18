@@ -96,7 +96,8 @@ public class GdxSetupUI extends JFrame {
 		add(ui, BorderLayout.CENTER);
 		setSize(620, 720);
 		setLocationRelativeTo(null);
-		setUndecorated(true);
+		setUndecorated(true);		
+		pack();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		addMouseListener(new MouseAdapter() {
@@ -283,7 +284,7 @@ public class GdxSetupUI extends JFrame {
 		SetupButton generateButton = new SetupButton("Generate");
 		SetupButton advancedButton = new SetupButton("Advanced");
 		JPanel buttonPanel = new JPanel();
-		JTextArea textArea = new JTextArea();
+		JTextArea textArea = new JTextArea(8, 40);
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
 		JPanel topBar = new JPanel();
@@ -681,6 +682,11 @@ public class GdxSetupUI extends JFrame {
 	}
 
 	public static void main (String[] args) throws Exception {
-		new GdxSetupUI();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				new GdxSetupUI();				
+			}			
+		});
 	}
 }
