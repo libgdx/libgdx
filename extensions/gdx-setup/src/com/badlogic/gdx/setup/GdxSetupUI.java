@@ -97,6 +97,7 @@ public class GdxSetupUI extends JFrame {
 		setSize(620, 720);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
+		pack();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		addMouseListener(new MouseAdapter() {
