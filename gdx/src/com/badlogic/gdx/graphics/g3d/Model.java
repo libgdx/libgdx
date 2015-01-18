@@ -137,7 +137,7 @@ public class Model implements Disposable {
 	private void loadNodes (Iterable<ModelNode> modelNodes) {
 		nodePartBones.clear();
 		for (ModelNode node : modelNodes) {
-			nodes.add(loadNode(null, node));
+			nodes.add(loadNode(node));
 		}
 		for (ObjectMap.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
 			if (e.key.invBoneBindTransforms == null)
@@ -148,10 +148,9 @@ public class Model implements Disposable {
 		}
 	}
 
-	private Node loadNode (Node parent, ModelNode modelNode) {
+	private Node loadNode (ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
-		node.parent = parent;
 
 		if (modelNode.translation != null) node.translation.set(modelNode.translation);
 		if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
@@ -194,7 +193,7 @@ public class Model implements Disposable {
 
 		if (modelNode.children != null) {
 			for (ModelNode child : modelNode.children) {
-				node.children.add(loadNode(node, child));
+				node.addChild(loadNode(child));
 			}
 		}
 
@@ -273,10 +272,10 @@ public class Model implements Disposable {
 				descriptor.uWrap = texture.getUWrap();
 				descriptor.vWrap = texture.getVWrap();
 				
-				float offsetU = tex.uvTranslation.x;
-				float offsetV = tex.uvTranslation.y;
-				float scaleU = tex.uvScaling.x;
-				float scaleV = tex.uvScaling.y;
+				float offsetU = tex.uvTranslation == null ? 0f : tex.uvTranslation.x;
+				float offsetV = tex.uvTranslation == null ? 0f : tex.uvTranslation.y;
+				float scaleU = tex.uvScaling == null ? 1f : tex.uvScaling.x;
+				float scaleV = tex.uvScaling == null ? 1f : tex.uvScaling.y;
 				
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:

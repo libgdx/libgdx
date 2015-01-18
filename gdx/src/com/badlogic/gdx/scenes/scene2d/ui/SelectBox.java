@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -239,7 +239,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Get the set of selected items, useful when multiple items are selected
 	 * @return a Selection object containing the selected elements */
-	public Selection<T> getSelection () {
+	public ArraySelection<T> getSelection () {
 		return selection;
 	}
 
@@ -404,7 +404,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setSize(Math.max(getPrefWidth(), selectBox.getWidth()), height);
 
 			validate();
-			scrollToCenter(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
+			scrollTo(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0, true, true);
 			updateVisualScroll();
 
 			previousScrollFocus = null;
@@ -412,6 +412,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 			stage.setScrollFocus(this);
 
+			list.selection.set(selectBox.getSelected());
 			list.setTouchable(Touchable.enabled);
 			clearActions();
 			selectBox.onShow(this, below);

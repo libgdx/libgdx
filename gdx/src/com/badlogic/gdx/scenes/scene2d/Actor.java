@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import static com.badlogic.gdx.scenes.scene2d.utils.Align.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -69,8 +70,6 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
-	
-	static boolean actionsChanged;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -90,7 +89,7 @@ public class Actor {
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
 		if (actions.size > 0) {
-			actionsChanged = true;
+			if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 			for (int i = 0; i < actions.size; i++) {
 				Action action = actions.get(i);
 				if (action.act(delta) && i < actions.size) {
@@ -256,7 +255,8 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
-		actionsChanged = true;
+
+		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
 
 	public void removeAction (Action action) {
@@ -373,11 +373,11 @@ public class Actor {
 	}
 
 	/** Returns the X position of the specified {@link Align alignment}. */
-	public float getX (int align) {
+	public float getX (int alignment) {
 		float x = this.x;
-		if ((align & right) != 0)
+		if ((alignment & right) != 0)
 			x += width;
-		else if ((align & left) == 0) //
+		else if ((alignment & left) == 0) //
 			x += width / 2;
 		return x;
 	}
@@ -402,11 +402,11 @@ public class Actor {
 	}
 
 	/** Returns the Y position of the specified {@link Align alignment}. */
-	public float getY (int align) {
+	public float getY (int alignment) {
 		float y = this.y;
-		if ((align & top) != 0)
+		if ((alignment & top) != 0)
 			y += height;
-		else if ((align & bottom) == 0) //
+		else if ((alignment & bottom) == 0) //
 			y += height / 2;
 		return y;
 	}
@@ -421,15 +421,15 @@ public class Actor {
 	}
 
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
-	public void setPosition (float x, float y, int align) {
-		if ((align & right) != 0)
+	public void setPosition (float x, float y, int alignment) {
+		if ((alignment & right) != 0)
 			x -= width;
-		else if ((align & left) == 0) //
+		else if ((alignment & left) == 0) //
 			x -= width / 2;
 
-		if ((align & top) != 0)
+		if ((alignment & top) != 0)
 			y -= height;
-		else if ((align & bottom) == 0) //
+		else if ((alignment & bottom) == 0) //
 			y -= height / 2;
 
 		if (this.x != x || this.y != y) {
@@ -546,17 +546,17 @@ public class Actor {
 	}
 
 	/** Sets the origin position to the specified {@link Align alignment}. */
-	public void setOrigin (int align) {
-		if ((align & left) != 0)
+	public void setOrigin (int alignment) {
+		if ((alignment & left) != 0)
 			originX = 0;
-		else if ((align & right) != 0)
+		else if ((alignment & right) != 0)
 			originX = width;
 		else
 			originX = width / 2;
 
-		if ((align & bottom) != 0)
+		if ((alignment & bottom) != 0)
 			originY = 0;
-		else if ((align & top) != 0)
+		else if ((alignment & top) != 0)
 			originY = height;
 		else
 			originY = height / 2;
@@ -712,8 +712,7 @@ public class Actor {
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
 	public Vector2 stageToLocalCoordinates (Vector2 stageCoords) {
-		if (parent == null) return stageCoords;
-		parent.stageToLocalCoordinates(stageCoords);
+		if (parent != null) parent.stageToLocalCoordinates(stageCoords);
 		parentToLocalCoordinates(stageCoords);
 		return stageCoords;
 	}

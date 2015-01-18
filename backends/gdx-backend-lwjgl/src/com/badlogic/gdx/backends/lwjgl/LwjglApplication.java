@@ -114,6 +114,7 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (audio != null) audio.dispose();
+					Gdx.input.setCursorCatched(false);
 					if (t instanceof RuntimeException)
 						throw (RuntimeException)t;
 					else
@@ -156,11 +157,11 @@ public class LwjglApplication implements Application {
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
-				listener.resume();
 				synchronized (lifecycleListeners) {
 					for (LifecycleListener listener : lifecycleListeners)
 						listener.resume();
 				}
+				listener.resume();				
 			}
 
 			boolean shouldRender = false;
@@ -178,13 +179,13 @@ public class LwjglApplication implements Application {
 			} else {
 				graphics.config.x = Display.getX();
 				graphics.config.y = Display.getY();
-				if (graphics.resize || Display.wasResized() || Display.getWidth() != graphics.config.width
-					|| Display.getHeight() != graphics.config.height) {
-					graphics.resize = false;
-					Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-					graphics.config.width = Display.getWidth();
-					graphics.config.height = Display.getHeight();
-					if (listener != null) listener.resize(Display.getWidth(), Display.getHeight());
+				if (graphics.resize || Display.wasResized() || (int)(Display.getWidth() * Display.getPixelScaleFactor()) != graphics.config.width
+					|| (int)(Display.getHeight() * Display.getPixelScaleFactor()) != graphics.config.height) {
+					graphics.resize = false;					
+					graphics.config.width = (int)(Display.getWidth() * Display.getPixelScaleFactor());
+					graphics.config.height = (int)(Display.getHeight() * Display.getPixelScaleFactor());
+					Gdx.gl.glViewport(0, 0, graphics.config.width, graphics.config.height);
+					if (listener != null) listener.resize(graphics.config.width, graphics.config.height);
 					graphics.requestRendering();
 				}
 			}
@@ -230,13 +231,13 @@ public class LwjglApplication implements Application {
 
 	public boolean executeRunnables () {
 		synchronized (runnables) {
-			executedRunnables.addAll(runnables);
+			for (int i = runnables.size - 1; i >= 0; i--)
+				executedRunnables.addAll(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = 0; i < executedRunnables.size; i++)
-			executedRunnables.get(i).run();
-		executedRunnables.clear();
+		for (int i = executedRunnables.size - 1; i >= 0; i--)
+			executedRunnables.removeIndex(i).run();
 		return true;
 	}
 

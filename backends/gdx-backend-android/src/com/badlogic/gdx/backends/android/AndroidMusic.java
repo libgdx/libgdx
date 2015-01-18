@@ -42,7 +42,6 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	public void dispose () {
 		if (player == null) return;
 		try {
-			if (player.isPlaying()) player.stop();
 			player.release();
 		} catch (Throwable t) {
 			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");

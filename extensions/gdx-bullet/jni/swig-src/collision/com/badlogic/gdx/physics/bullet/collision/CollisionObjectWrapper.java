@@ -63,13 +63,13 @@ public class CollisionObjectWrapper extends BulletBase {
 	@Override
 	protected void construct() {
 		super.construct();
-		wrapper = btCollisionObjectWrapper.obtain(getWrapper().getCPointer(), false);
+		wrapper = new btCollisionObjectWrapper(getWrapper().getCPointer(), false);
 	}
 
 	@Override
 	public void dispose() {
 		if (wrapper != null) {
-			btCollisionObjectWrapper.free(wrapper);
+			wrapper.dispose();
 			wrapper = null;
 		}
 		super.dispose();

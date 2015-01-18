@@ -2775,7 +2775,7 @@ void SwigDirector_btBulletWorldImporter::swig_connect_director(JNIEnv *jenv, job
       "createConvexTriangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createGimpactShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/extras/SWIGTYPE_p_btGImpactMeshShape;", NULL 
+      "createGimpactShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/collision/btGImpactMeshShape;", NULL 
     },
     {
       "createStridingMeshInterfaceData", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterfaceData;)Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterfaceData;", NULL 

@@ -901,4 +901,117 @@ public class GL20Profiler extends GLProfiler implements GL20 {
 		gl20.glVertexAttribPointer(indx, size, type, normalized, stride, ptr);
 	}
 
+	@Override
+	public void glDeleteTexture (int texture) {
+		calls++;
+		gl20.glDeleteTexture(texture);
+	}
+
+	@Override
+	public int glGenTexture () {
+		calls++;
+		return gl20.glGenTexture();
+	}
+
+	@Override
+	public void glDeleteBuffer (int buffer) {
+		calls++;
+		gl20.glDeleteBuffer(buffer);
+	}
+
+	@Override
+	public void glDeleteFramebuffer (int framebuffer) {
+		calls++;
+		gl20.glDeleteFramebuffer(framebuffer);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer (int renderbuffer) {
+		calls++;
+		gl20.glDeleteRenderbuffer(renderbuffer);
+	}
+
+	@Override
+	public int glGenBuffer () {
+		calls++;
+		return gl20.glGenBuffer();
+	}
+
+	@Override
+	public int glGenFramebuffer () {
+		calls++;
+		return gl20.glGenFramebuffer();
+	}
+
+	@Override
+	public int glGenRenderbuffer () {
+		calls++;
+		return gl20.glGenRenderbuffer();
+	}
+
+	@Override
+	public void glUniform1fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl20.glUniform1fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform1iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl20.glUniform1iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform2fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl20.glUniform2fv(location, count, v, offset);	
+	}
+
+	@Override
+	public void glUniform2iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl20.glUniform2iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform3fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl20.glUniform3fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform3iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl20.glUniform3iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform4fv (int location, int count, float[] v, int offset) {
+		calls++;
+		gl20.glUniform4fv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniform4iv (int location, int count, int[] v, int offset) {
+		calls++;
+		gl20.glUniform4iv(location, count, v, offset);
+	}
+
+	@Override
+	public void glUniformMatrix2fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl20.glUniformMatrix2fv(location, count, transpose, value, offset);
+	}
+
+	@Override
+	public void glUniformMatrix3fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl20.glUniformMatrix3fv(location, count, transpose, value, offset);
+	}
+
+	@Override
+	public void glUniformMatrix4fv (int location, int count, boolean transpose, float[] value, int offset) {
+		calls++;
+		gl20.glUniformMatrix4fv(location, count, transpose, value, offset);
+	}
 }

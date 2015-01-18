@@ -70,6 +70,9 @@ public interface VertexData extends Disposable {
 	/** Unbinds this VertexData.
 	 * @param locations array containing the attribute locations. */
 	public void unbind (ShaderProgram shader, int[] locations);
+	
+	/** Invalidates the VertexData if applicable. Use this in case of a context loss. */
+	public void invalidate ();
 
 	/** Disposes this VertexData and all its associated OpenGL resources. */
 	public void dispose ();

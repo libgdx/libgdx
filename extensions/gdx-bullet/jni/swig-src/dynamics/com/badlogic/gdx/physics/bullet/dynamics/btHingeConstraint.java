@@ -112,12 +112,12 @@ public class btHingeConstraint extends btTypedConstraint {
   }
 
   public btRigidBody getRigidBodyA() {
-    return new btRigidBody(DynamicsJNI.btHingeConstraint_getRigidBodyA__SWIG_0(swigCPtr, this), false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btHingeConstraint_getRigidBodyA__SWIG_0(swigCPtr, this), false);
+}
 
   public btRigidBody getRigidBodyB() {
-    return new btRigidBody(DynamicsJNI.btHingeConstraint_getRigidBodyB__SWIG_0(swigCPtr, this), false);
-  }
+	return btRigidBody.getInstance(DynamicsJNI.btHingeConstraint_getRigidBodyB__SWIG_0(swigCPtr, this), false);
+}
 
   public Matrix4 getFrameOffsetA() {
 	return DynamicsJNI.btHingeConstraint_getFrameOffsetA(swigCPtr, this);

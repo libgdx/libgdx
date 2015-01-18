@@ -187,7 +187,7 @@ public class ShapeRenderer implements Disposable {
 	/** Begins a new batch without specifying a shape type.
 	 * @throws IllegalStateException if {@link #autoShapeType} is false. */
 	public void begin () {
-		if (!autoShapeType) throw new IllegalStateException("");
+		if (!autoShapeType) throw new IllegalStateException("autoShapeType must be true to use this method.");
 		begin(ShapeType.Line);
 	}
 

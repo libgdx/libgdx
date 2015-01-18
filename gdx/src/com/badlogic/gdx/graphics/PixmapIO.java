@@ -21,12 +21,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.ByteArray;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -36,7 +42,7 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class PixmapIO {
 	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. First three integers define the width, height
 	 * and format, remaining bytes are zlib compressed pixels. To be able to load the Pixmap to a Texture, use ".cim" as the file
-	 * suffix! Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
+	 * suffix. Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
 	 * @param file the file to write the Pixmap to */
 	static public void writeCIM (FileHandle file, Pixmap pixmap) {
 		CIM.write(file, pixmap);
@@ -49,11 +55,17 @@ public class PixmapIO {
 		return CIM.read(file);
 	}
 
-	/** Writes the pixmap as a PNG. Note this method uses quite a bit of working memory. {@link #writeCIM(FileHandle, Pixmap)} is
-	 * faster if the file does not need to be read outside of libgdx. */
+	/** Writes the pixmap as a PNG with compression. See {@link PNG} to configure the compression level, more efficiently flip the
+	 * pixmap vertically, and to write out multiple PNGs with minimal allocation. */
 	static public void writePNG (FileHandle file, Pixmap pixmap) {
 		try {
-			file.writeBytes(PNG.write(pixmap), false);
+			PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f)); // Guess at deflated size.
+			try {
+				writer.setFlipY(false);
+				writer.write(file, pixmap);
+			} finally {
+				writer.dispose();
+			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
@@ -138,161 +150,195 @@ public class PixmapIO {
 		}
 	}
 
-	/** Minimal PNG encoder to create PNG streams (and MIDP images) from RGBA arrays.<br>
-	 * Copyright 2006-2009 Christian Fröschlin www.chrfr.de<br>
-	 * Terms of Use: You may use the PNG encoder free of charge for any purpose you desire, as long as you do not claim credit for
-	 * the original sources and agree not to hold me responsible for any damage arising out of its use.<br>
-	 * If you have a suitable location in GUI or documentation for giving credit, I'd appreciate a non-mandatory mention of:<br>
-	 * PNG encoder (C) 2006-2009 by Christian Fröschlin, www.chrfr.de */
-	static private class PNG {
-		static int[] crcTable;
-		static final int ZLIB_BLOCK_SIZE = 32000;
+	/** PNG encoder with compression. An instance can be reused to encode multiple PNGs with minimal allocation.
+	 * 
+	 * <pre>
+	 * Copyright (c) 2007 Matthias Mann - www.matthiasmann.de
+	 * Copyright (c) 2014 Nathan Sweet
+	 * 
+	 * Permission is hereby granted, free of charge, to any person obtaining a copy
+	 * of this software and associated documentation files (the "Software"), to deal
+	 * in the Software without restriction, including without limitation the rights
+	 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 * copies of the Software, and to permit persons to whom the Software is
+	 * furnished to do so, subject to the following conditions:
+	 * 
+	 * The above copyright notice and this permission notice shall be included in
+	 * all copies or substantial portions of the Software.
+	 * 
+	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	 * THE SOFTWARE.
+	 * </pre>
+	 * @author Matthias Mann
+	 * @author Nathan Sweet */
+	static public class PNG implements Disposable {
+		static private final byte[] SIGNATURE = {(byte)137, 80, 78, 71, 13, 10, 26, 10};
+		static private final int IHDR = 0x49484452, IDAT = 0x49444154, IEND = 0x49454E44;
+		static private final byte COLOR_ARGB = 6;
+		static private final byte COMPRESSION_DEFLATE = 0;
+		static private final byte FILTER_NONE = 0;
+		static private final byte INTERLACE_NONE = 0;
+		static private final byte PAETH = 4;
 
-		static byte[] write (Pixmap pixmap) throws IOException {
-			byte[] signature = new byte[] {(byte)137, (byte)80, (byte)78, (byte)71, (byte)13, (byte)10, (byte)26, (byte)10};
-			byte[] header = PNG.createHeaderChunk(pixmap.getWidth(), pixmap.getHeight());
-			byte[] data = PNG.createDataChunk(pixmap);
-			byte[] trailer = PNG.createTrailerChunk();
+		private final ChunkBuffer buffer;
+		private final DeflaterOutputStream deflaterOutput;
+		private final Deflater deflater;
+		private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
+		private boolean flipY = true;
+		private int lastLineLen;
 
-			ByteArrayOutputStream png = new ByteArrayOutputStream(signature.length + header.length + data.length + trailer.length);
-			png.write(signature);
-			png.write(header);
-			png.write(data);
-			png.write(trailer);
-			return png.toByteArray();
+		public PNG () {
+			this(128 * 128);
 		}
 
-		static private byte[] createHeaderChunk (int width, int height) throws IOException {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(13);
-			DataOutputStream chunk = new DataOutputStream(baos);
-			chunk.writeInt(width);
-			chunk.writeInt(height);
-			chunk.writeByte(8); // Bitdepth
-			chunk.writeByte(6); // Colortype ARGB
-			chunk.writeByte(0); // Compression
-			chunk.writeByte(0); // Filter
-			chunk.writeByte(0); // Interlace
-			return toChunk("IHDR", baos.toByteArray());
+		public PNG (int initialBufferSize) {
+			buffer = new ChunkBuffer(initialBufferSize);
+			deflater = new Deflater();
+			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 		}
 
-		static private byte[] createDataChunk (Pixmap pixmap) throws IOException {
-			int width = pixmap.getWidth();
-			int height = pixmap.getHeight();
-			int dest = 0;
-			byte[] raw = new byte[4 * width * height + height];
-			for (int y = 0; y < height; y++) {
-				raw[dest++] = 0; // No filter
-				for (int x = 0; x < width; x++) {
-					// 32-bit RGBA8888
-					int pixel = pixmap.getPixel(x, y);
+		/** If true, the resulting PNG is flipped vertically. Default is true. */
+		public void setFlipY (boolean flipY) {
+			this.flipY = flipY;
+		}
 
-					int mask = pixel & 0xFFFFFFFF;
-					int rr = mask >> 24 & 0xff;
-					int gg = mask >> 16 & 0xff;
-					int bb = mask >> 8 & 0xff;
-					int aa = mask & 0xff;
+		/** Sets the deflate compression level. Default is {@link Deflater#DEFAULT_COMPRESSION}. */
+		public void setCompression (int level) {
+			deflater.setLevel(level);
+		}
 
-					raw[dest++] = (byte)rr;
-					raw[dest++] = (byte)gg;
-					raw[dest++] = (byte)bb;
-					raw[dest++] = (byte)aa;
+		public void write (FileHandle file, Pixmap pixmap) throws IOException {
+			OutputStream output = file.write(false);
+			try {
+				write(output, pixmap);
+			} finally {
+				StreamUtils.closeQuietly(output);
+			}
+		}
+
+		/** Writes the pixmap to the stream without closing the stream. */
+		public void write (OutputStream output, Pixmap pixmap) throws IOException {
+			DataOutputStream dataOutput = new DataOutputStream(output);
+			dataOutput.write(SIGNATURE);
+
+			buffer.writeInt(IHDR);
+			buffer.writeInt(pixmap.getWidth());
+			buffer.writeInt(pixmap.getHeight());
+			buffer.writeByte(8); // 8 bits per component.
+			buffer.writeByte(COLOR_ARGB);
+			buffer.writeByte(COMPRESSION_DEFLATE);
+			buffer.writeByte(FILTER_NONE);
+			buffer.writeByte(INTERLACE_NONE);
+			buffer.endChunk(dataOutput);
+
+			buffer.writeInt(IDAT);
+			deflater.reset();
+
+			int lineLen = pixmap.getWidth() * 4;
+			byte[] lineOut, curLine, prevLine;
+			if (lineOutBytes == null) {
+				lineOut = (lineOutBytes = new ByteArray(lineLen)).items;
+				curLine = (curLineBytes = new ByteArray(lineLen)).items;
+				prevLine = (prevLineBytes = new ByteArray(lineLen)).items;
+			} else {
+				lineOut = lineOutBytes.ensureCapacity(lineLen);
+				curLine = curLineBytes.ensureCapacity(lineLen);
+				prevLine = prevLineBytes.ensureCapacity(lineLen);
+				for (int i = 0, n = lastLineLen; i < n; i++)
+					prevLine[i] = 0;
+			}
+			lastLineLen = lineLen;
+
+			ByteBuffer pixels = pixmap.getPixels();
+			int oldPosition = pixels.position();
+			boolean rgba8888 = pixmap.getFormat() == Format.RGBA8888;
+			for (int y = 0, h = pixmap.getHeight(); y < h; y++) {
+				int py = flipY ? (h - y - 1) : y;
+				if (rgba8888) {
+					pixels.position(py * lineLen);
+					pixels.get(curLine, 0, lineLen);
+				} else {
+					for (int px = 0, x = 0; px < pixmap.getWidth(); px++) {
+						int pixel = pixmap.getPixel(px, py);
+						curLine[x++] = (byte)((pixel >> 24) & 0xff);
+						curLine[x++] = (byte)((pixel >> 16) & 0xff);
+						curLine[x++] = (byte)((pixel >> 8) & 0xff);
+						curLine[x++] = (byte)(pixel & 0xff);
+					}
 				}
+
+				lineOut[0] = (byte)(curLine[0] - prevLine[0]);
+				lineOut[1] = (byte)(curLine[1] - prevLine[1]);
+				lineOut[2] = (byte)(curLine[2] - prevLine[2]);
+				lineOut[3] = (byte)(curLine[3] - prevLine[3]);
+
+				for (int x = 4; x < lineLen; x++) {
+					int a = curLine[x - 4] & 0xff;
+					int b = prevLine[x] & 0xff;
+					int c = prevLine[x - 4] & 0xff;
+					int p = a + b - c;
+					int pa = p - a;
+					if (pa < 0) pa = -pa;
+					int pb = p - b;
+					if (pb < 0) pb = -pb;
+					int pc = p - c;
+					if (pc < 0) pc = -pc;
+					if (pa <= pb && pa <= pc)
+						c = a;
+					else if (pb <= pc) //
+						c = b;
+					lineOut[x] = (byte)(curLine[x] - c);
+				}
+
+				deflaterOutput.write(PAETH);
+				deflaterOutput.write(lineOut, 0, lineLen);
+
+				byte[] temp = curLine;
+				curLine = prevLine;
+				prevLine = temp;
 			}
-			return toChunk("IDAT", toZLIB(raw));
+			pixels.position(oldPosition);
+			deflaterOutput.finish();
+			buffer.endChunk(dataOutput);
+
+			buffer.writeInt(IEND);
+			buffer.endChunk(dataOutput);
+
+			output.flush();
 		}
 
-		static private byte[] createTrailerChunk () throws IOException {
-			return toChunk("IEND", new byte[] {});
+		/** Disposal will happen automatically in {@link #finalize()} but can be done explicitly if desired. */
+		public void dispose () {
+			deflater.end();
 		}
 
-		static private byte[] toChunk (String id, byte[] raw) throws IOException {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(raw.length + 12);
-			DataOutputStream chunk = new DataOutputStream(baos);
+		static class ChunkBuffer extends DataOutputStream {
+			final ByteArrayOutputStream buffer;
+			final CRC32 crc;
 
-			chunk.writeInt(raw.length);
-
-			byte[] bid = new byte[4];
-			for (int i = 0; i < 4; i++) {
-				bid[i] = (byte)id.charAt(i);
-			}
-
-			chunk.write(bid);
-
-			chunk.write(raw);
-
-			int crc = 0xFFFFFFFF;
-			crc = updateCRC(crc, bid);
-			crc = updateCRC(crc, raw);
-			chunk.writeInt(~crc);
-
-			return baos.toByteArray();
-		}
-
-		static private void createCRCTable () {
-			crcTable = new int[256];
-			for (int i = 0; i < 256; i++) {
-				int c = i;
-				for (int k = 0; k < 8; k++)
-					c = (c & 1) > 0 ? 0xedb88320 ^ c >>> 1 : c >>> 1;
-				crcTable[i] = c;
-			}
-		}
-
-		static private int updateCRC (int crc, byte[] raw) {
-			if (crcTable == null) createCRCTable();
-			for (byte element : raw)
-				crc = crcTable[(crc ^ element) & 0xFF] ^ crc >>> 8;
-			return crc;
-		}
-
-		/*
-		 * This method is called to encode the image data as a zlib block as required by the PNG specification. This file comes with
-		 * a minimal ZLIB encoder which uses uncompressed deflate blocks (fast, short, easy, but no compression). If you want
-		 * compression, call another encoder (such as JZLib?) here.
-		 */
-		static private byte[] toZLIB (byte[] raw) throws IOException {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(raw.length + 6 + raw.length / ZLIB_BLOCK_SIZE * 5);
-			DataOutputStream zlib = new DataOutputStream(baos);
-
-			byte tmp = (byte)8;
-			zlib.writeByte(tmp); // CM = 8, CMINFO = 0
-			zlib.writeByte((31 - (tmp << 8) % 31) % 31); // FCHECK
-			// (FDICT/FLEVEL=0)
-
-			int pos = 0;
-			while (raw.length - pos > ZLIB_BLOCK_SIZE) {
-				writeUncompressedDeflateBlock(zlib, false, raw, pos, (char)ZLIB_BLOCK_SIZE);
-				pos += ZLIB_BLOCK_SIZE;
+			ChunkBuffer (int initialSize) {
+				this(new ByteArrayOutputStream(initialSize), new CRC32());
 			}
 
-			writeUncompressedDeflateBlock(zlib, true, raw, pos, (char)(raw.length - pos));
-
-			// zlib check sum of uncompressed data
-			zlib.writeInt(calcADLER32(raw));
-
-			return baos.toByteArray();
-		}
-
-		static private void writeUncompressedDeflateBlock (DataOutputStream zlib, boolean last, byte[] raw, int off, char len)
-			throws IOException {
-			zlib.writeByte((byte)(last ? 1 : 0)); // Final flag, Compression type 0
-			zlib.writeByte((byte)(len & 0xFF)); // Length LSB
-			zlib.writeByte((byte)((len & 0xFF00) >> 8)); // Length MSB
-			zlib.writeByte((byte)(~len & 0xFF)); // Length 1st complement LSB
-			zlib.writeByte((byte)((~len & 0xFF00) >> 8)); // Length 1st complement
-			// MSB
-			zlib.write(raw, off, len); // Data
-		}
-
-		private static int calcADLER32 (final byte[] raw) {
-			int s1 = 1;
-			int s2 = 0;
-			for (int i = 0; i < raw.length; i++) {
-				final int abs = raw[i] >= 0 ? raw[i] : (raw[i] + 256);
-				s1 = (s1 + abs) % 65521;
-				s2 = (s2 + s1) % 65521;
+			private ChunkBuffer (ByteArrayOutputStream buffer, CRC32 crc) {
+				super(new CheckedOutputStream(buffer, crc));
+				this.buffer = buffer;
+				this.crc = crc;
 			}
-			return (s2 << 16) + s1;
+
+			public void endChunk (DataOutputStream target) throws IOException {
+				flush();
+				target.writeInt(buffer.size() - 4);
+				buffer.writeTo(target);
+				target.writeInt((int)crc.getValue());
+				buffer.reset();
+				crc.reset();
+			}
 		}
 	}
 }

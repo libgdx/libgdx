@@ -81,14 +81,14 @@ public class LwjglGraphics implements Graphics {
 		if (canvas != null)
 			return Math.max(1, canvas.getHeight());
 		else
-			return Display.getHeight();
+			return (int)(Display.getHeight() * Display.getPixelScaleFactor());
 	}
 
 	public int getWidth () {
 		if (canvas != null)
 			return Math.max(1, canvas.getWidth());
 		else
-			return Display.getWidth();
+			return (int)(Display.getWidth() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isGL20Available () {
@@ -129,10 +129,14 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	void setupDisplay () throws LWJGLException {
+		if(config.useHDPI) {
+			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
+		}
+		
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
-			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);			
 			if (!displayCreated) {
 				if (config.setDisplayModeCallback != null) {
 					config = config.setDisplayModeCallback.onFailure(config);
@@ -179,9 +183,8 @@ public class LwjglGraphics implements Graphics {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
 						config.samples), context);
 				} catch (Exception e) {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
-						config.samples), context);
 					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
+					throw e;
 				}
 				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
 			} else {
@@ -319,16 +322,17 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;
+		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;		
 		try {
 			if (!mode.isFullscreenCapable()) {
 				Display.setDisplayMode(mode);
 			} else {
 				Display.setDisplayModeAndFullscreen(mode);
-			}
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, displayMode.width, displayMode.height);
-			config.width = displayMode.width;
-			config.height = displayMode.height;
+			}			
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(mode.getWidth() * scaleFactor);
+			config.height = (int)(mode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {
@@ -379,11 +383,20 @@ public class LwjglGraphics implements Graphics {
 				return false;
 			}
 
+			boolean resizable = !fullscreen && config.resizable;
+			
 			Display.setDisplayMode(targetDisplayMode);
 			Display.setFullscreen(fullscreen);
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, targetDisplayMode.getWidth(), targetDisplayMode.getHeight());
-			config.width = targetDisplayMode.getWidth();
-			config.height = targetDisplayMode.getHeight();
+			// Workaround for bug in LWJGL whereby resizable state is lost on DisplayMode change
+			if (resizable == Display.isResizable()) {
+				Display.setResizable(!resizable);
+			}
+			Display.setResizable(resizable);
+			
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(targetDisplayMode.getWidth() * scaleFactor);
+			config.height = (int)(targetDisplayMode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {

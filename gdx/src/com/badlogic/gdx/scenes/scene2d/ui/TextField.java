@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -68,6 +69,9 @@ public class TextField extends Widget implements Disableable {
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
 
+	static public float keyRepeatInitialTime = 0.4f;
+	static public float keyRepeatTime = 0.1f;
+
 	protected String text;
 	protected int cursor, selectionStart;
 	protected boolean hasSelection;
@@ -82,7 +86,8 @@ public class TextField extends Widget implements Disableable {
 	TextFieldListener listener;
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
-	boolean focusTraversal = true, onlyFontChars = true, disabled, rightAligned;
+	boolean focusTraversal = true, onlyFontChars = true, disabled;
+	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
 
 	boolean passwordMode;
@@ -99,9 +104,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	float keyRepeatInitialTime = 0.4f;
-	float keyRepeatTime = 0.1f;
-
+	
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
@@ -247,8 +250,9 @@ public class TextField extends Widget implements Disableable {
 			selectionWidth = maxX - minX;
 		}
 
-		if (rightAligned) {
+		if (textHAlign == Align.center || textHAlign == Align.right) {
 			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startPos);
+			if (textHAlign == Align.center) textOffset = Math.round(textOffset * 0.5f);
 			if (hasSelection) selectionX += textOffset;
 		}
 	}
@@ -350,7 +354,7 @@ public class TextField extends Widget implements Disableable {
 
 		if (passwordMode && font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
-			if (passwordBuffer.length() > textLength) //
+			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
 			else {
 				for (int i = passwordBuffer.length(); i < textLength; i++)
@@ -364,6 +368,10 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	private void blink () {
+		if (!Gdx.graphics.isContinuousRendering()) {
+			cursorOn = true;
+			return;
+		}
 		long time = TimeUtils.nanoTime();
 		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
 			cursorOn = !cursorOn;
@@ -511,6 +519,14 @@ public class TextField extends Widget implements Disableable {
 		this.messageText = messageText;
 	}
 
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
+	}
+
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
 		if (str.equals(text)) return;
@@ -600,8 +616,10 @@ public class TextField extends Widget implements Disableable {
 		return prefHeight;
 	}
 
-	public void setRightAligned (boolean rightAligned) {
-		this.rightAligned = rightAligned;
+	/** Sets text horizontal alignment (left, center or right). */
+	public void setAlignment (int alignment) {
+		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) 
+			this.textHAlign = alignment;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters.
@@ -756,7 +774,7 @@ public class TextField extends Widget implements Disableable {
 			if (ctrl) {
 				if (keycode == Keys.V) {
 					paste();
-					return true;
+					repeat = true;
 				}
 				if (keycode == Keys.C || keycode == Keys.INSERT) {
 					copy();
@@ -853,6 +871,7 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
+			if (character == 0) return false;
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;

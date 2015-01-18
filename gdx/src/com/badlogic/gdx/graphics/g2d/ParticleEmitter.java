@@ -1253,10 +1253,12 @@ public class ParticleEmitter {
 			this.timeline = timeline;
 		}
 
+		/** @return the r, g and b values for every timeline position */
 		public float[] getColors () {
 			return colors;
 		}
 
+		/** @param colors the r, g and b values for every timeline position */
 		public void setColors (float[] colors) {
 			this.colors = colors;
 		}

@@ -62,15 +62,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * @author mzechner
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
-	static private final Vector2 actorCoords = new Vector2();
+	/** True if any actor has ever had debug enabled. */
 	static boolean debug;
-	static boolean actionsRequestRendering;
 
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
 	private final Group root;
-	private final Vector2 stageCoords = new Vector2();
+	private final Vector2 tempCoords = new Vector2();
 	private final Actor[] pointerOverActors = new Actor[20];
 	private final boolean[] pointerTouched = new boolean[20];
 	private final int[] pointerScreenX = new int[20];
@@ -79,6 +78,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	private boolean actionsRequestRendering = true;
 
 	private ShapeRenderer debugShapes;
 	private boolean debugInvisible, debugAll, debugUnderMouse, debugParentUnderMouse;
@@ -139,8 +139,8 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 
 		if (debugUnderMouse || debugParentUnderMouse || debugTableUnderMouse != Debug.none) {
-			screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-			Actor actor = hit(stageCoords.x, stageCoords.y, true);
+			screenToStageCoordinates(tempCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			Actor actor = hit(tempCoords.x, tempCoords.y, true);
 			if (actor == null) return;
 
 			if (debugParentUnderMouse && actor.parent != null) actor = actor.parent;
@@ -197,13 +197,13 @@ public class Stage extends InputAdapter implements Disposable {
 			if (!pointerTouched[pointer]) {
 				if (overLast != null) {
 					pointerOverActors[pointer] = null;
-					screenToStageCoordinates(stageCoords.set(pointerScreenX[pointer], pointerScreenY[pointer]));
+					screenToStageCoordinates(tempCoords.set(pointerScreenX[pointer], pointerScreenY[pointer]));
 					// Exit over last.
 					InputEvent event = Pools.obtain(InputEvent.class);
 					event.setType(InputEvent.Type.exit);
 					event.setStage(this);
-					event.setStageX(stageCoords.x);
-					event.setStageY(stageCoords.y);
+					event.setStageX(tempCoords.x);
+					event.setStageY(tempCoords.y);
 					event.setRelatedActor(overLast);
 					event.setPointer(pointer);
 					overLast.fire(event);
@@ -221,20 +221,18 @@ public class Stage extends InputAdapter implements Disposable {
 
 		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		root.act(delta);
-		if (actionsRequestRendering && Actor.actionsChanged) Gdx.graphics.requestRendering();
-		Actor.actionsChanged = false;
 	}
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
-		screenToStageCoordinates(stageCoords.set(screenX, screenY));
-		Actor over = hit(stageCoords.x, stageCoords.y, true);
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
+		Actor over = hit(tempCoords.x, tempCoords.y, true);
 		if (over == overLast) return overLast;
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 		event.setPointer(pointer);
 		// Exit overLast.
 		if (overLast != null) {
@@ -262,20 +260,23 @@ public class Stage extends InputAdapter implements Disposable {
 		pointerScreenX[pointer] = screenX;
 		pointerScreenY[pointer] = screenY;
 
-		screenToStageCoordinates(stageCoords.set(screenX, screenY));
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setType(Type.touchDown);
 		event.setStage(this);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 		event.setPointer(pointer);
 		event.setButton(button);
 
-		Actor target = hit(stageCoords.x, stageCoords.y, true);
-		if (target == null) target = root;
+		Actor target = hit(tempCoords.x, tempCoords.y, true);
+		if (target == null) {
+			if (root.getTouchable() == Touchable.enabled) root.fire(event);
+		} else {
+			target.fire(event);
+		}
 
-		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
@@ -291,13 +292,13 @@ public class Stage extends InputAdapter implements Disposable {
 
 		if (touchFocuses.size == 0) return false;
 
-		screenToStageCoordinates(stageCoords.set(screenX, screenY));
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setType(Type.touchDragged);
 		event.setStage(this);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 		event.setPointer(pointer);
 
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
@@ -305,6 +306,7 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer) continue;
+			if (!touchFocuses.contains(focus, true)) continue; // Touch focus already gone.
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
 			if (focus.listener.handle(event)) event.handle();
@@ -325,13 +327,13 @@ public class Stage extends InputAdapter implements Disposable {
 
 		if (touchFocuses.size == 0) return false;
 
-		screenToStageCoordinates(stageCoords.set(screenX, screenY));
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setType(Type.touchUp);
 		event.setStage(this);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 		event.setPointer(pointer);
 		event.setButton(button);
 
@@ -363,15 +365,15 @@ public class Stage extends InputAdapter implements Disposable {
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
 
-		screenToStageCoordinates(stageCoords.set(screenX, screenY));
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(Type.mouseMoved);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 
-		Actor target = hit(stageCoords.x, stageCoords.y, true);
+		Actor target = hit(tempCoords.x, tempCoords.y, true);
 		if (target == null) target = root;
 
 		target.fire(event);
@@ -385,14 +387,14 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean scrolled (int amount) {
 		Actor target = scrollFocus == null ? root : scrollFocus;
 
-		screenToStageCoordinates(stageCoords.set(mouseScreenX, mouseScreenY));
+		screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.scrolled);
 		event.setScrollAmount(amount);
-		event.setStageX(stageCoords.x);
-		event.setStageY(stageCoords.y);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
 		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
@@ -696,8 +698,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
 	public Actor hit (float stageX, float stageY, boolean touchable) {
-		root.parentToLocalCoordinates(actorCoords.set(stageX, stageY));
-		return root.hit(actorCoords.x, actorCoords.y, touchable);
+		root.parentToLocalCoordinates(tempCoords.set(stageX, stageY));
+		return root.hit(tempCoords.x, tempCoords.y, touchable);
 	}
 
 	/** Transforms the screen coordinates to stage coordinates.
@@ -733,6 +735,17 @@ public class Stage extends InputAdapter implements Disposable {
 		else
 			transformMatrix = batch.getTransformMatrix();
 		viewport.calculateScissors(transformMatrix, localRect, scissorRect);
+	}
+
+	/** If true, any actions executed during a call to {@link #act()}) will result in a call to {@link Graphics#requestRendering()}.
+	 * Widgets that animate or otherwise require additional rendering may check this setting before calling
+	 * {@link Graphics#requestRendering()}. Default is true. */
+	public void setActionsRequestRendering (boolean actionsRequestRendering) {
+		this.actionsRequestRendering = actionsRequestRendering;
+	}
+
+	public boolean getActionsRequestRendering () {
+		return actionsRequestRendering;
 	}
 
 	/** The default color that can be used by actors to draw debug lines. */
@@ -793,11 +806,6 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #setDebugAll(boolean)}. */
 	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
 		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
-	}
-	
-	/** If true, any actions executed during a call to Stage.act() will result in a call to Gdx.graphics.requestRendering(). */
-	public static void setActionsRequestRendering (boolean actionsRequestRendering) {
-		Stage.actionsRequestRendering = actionsRequestRendering;
 	}
 
 	public void dispose () {

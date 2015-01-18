@@ -2943,28 +2943,6 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btInfinityMask_1set(JNIEnv *jenv, jclass jcls, jint jarg1) {
-  int arg1 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = (int)jarg1; 
-  btInfinityMask = arg1;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btInfinityMask_1get(JNIEnv *jenv, jclass jcls) {
-  jint jresult = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (int)btInfinityMask;
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btSqrt(JNIEnv *jenv, jclass jcls, jfloat jarg1) {
   jfloat jresult = 0 ;
   btScalar arg1 ;

@@ -93,6 +93,8 @@ public class AssetManager implements Disposable {
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+		setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
+			new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
 		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
 		setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
@@ -127,13 +129,13 @@ public class AssetManager implements Disposable {
 		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		return asset;
 	}
-	
+
 	/** @param type the asset type
 	 * @return all the assets matching the specified type */
 	public synchronized <T> Array<T> getAll (Class<T> type, Array<T> out) {
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
-		if (assetsByType != null){
-			for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
+		if (assetsByType != null) {
+			for (ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()) {
 				out.add(asset.value.getObject(type));
 			}
 		}
@@ -337,21 +339,6 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Disposes the given asset and all its dependencies recursively, depth first.
-	 * @param fileName */
-	private void disposeDependencies (String fileName) {
-		Array<String> dependencies = assetDependencies.get(fileName);
-		if (dependencies != null) {
-			for (String dependency : dependencies) {
-				disposeDependencies(dependency);
-			}
-		}
-
-		Class type = assetTypes.get(fileName);
-		Object asset = assets.get(type).get(fileName).getObject(Object.class);
-		if (asset instanceof Disposable) ((Disposable)asset).dispose();
-	}
-
 	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {
@@ -438,9 +425,9 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(assetDesc.fileName);
-            if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
-                assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
-            }
+			if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
+				assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
+			}
 			loaded++;
 		} else {
 			// else add a new task for the asset.
@@ -587,6 +574,7 @@ public class AssetManager implements Disposable {
 	}
 
 	/** Disposes all assets in the manager and stops all asynchronous loading. */
+	@Override
 	public synchronized void dispose () {
 		log.debug("Disposing.");
 		clear();

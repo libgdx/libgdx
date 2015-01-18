@@ -107,7 +107,7 @@ class Sync {
 				}
 			});
 
-			timerAccuracyThread.setName("LWJGL Sync");
+			timerAccuracyThread.setName("JGLFW Sync");
 			timerAccuracyThread.setDaemon(true);
 			timerAccuracyThread.start();
 		}
