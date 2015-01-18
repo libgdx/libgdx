@@ -1,11 +1,5 @@
-package com.badlogic.gdx.maps.tiled;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
+package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
@@ -30,6 +24,12 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>> extends AsynchronousAssetLoader<TiledMap, P> {
 
@@ -43,23 +43,23 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
 		public boolean convertObjectToTileSpace = false;
 	}
-	
+
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
 	protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
 	protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
 	protected static final int MASK_CLEAR = 0xE0000000;
-	
+
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
 	protected boolean convertObjectToTileSpace;
-	
+
 	protected int mapTileWidth;
 	protected int mapTileHeight;
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
 
 	protected TiledMap map;
-	
+
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -99,7 +99,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			map.getLayers().add(layer);
 		}
 	}
-	
+
 	protected void loadObjectGroup (TiledMap map, Element element) {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
@@ -111,52 +111,52 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(layer, objectElement);
+				loadObject(map, layer, objectElement);
 			}
 
 			map.getLayers().add(layer);
 		}
 	}
-	
+
 	protected void loadImageLayer (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			int x = Integer.parseInt(element.getAttribute("x", "0"));
 			int y = mapHeightInPixels - Integer.parseInt(element.getAttribute("y", "0"));
 			TextureRegion texture = null;
-			
+
 			Element image = element.getChildByName("image");
-			
+
 			if (image != null) {
 				String source = image.getAttribute("source");
 				FileHandle handle = getRelativeFileHandle(tmxFile, source);
 				texture = imageResolver.getImage(handle.path());
 				y -= texture.getRegionHeight();
 			}
-			
+
 			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y);
-			
+
 			loadBasicLayerInfo(layer, element);
-			
+
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-			
+
 			map.getLayers().add(layer);
 		}
 	}
-	
-	protected void loadBasicLayerInfo(MapLayer layer, Element element) {
+
+	protected void loadBasicLayerInfo (MapLayer layer, Element element) {
 		String name = element.getAttribute("name", null);
 		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
-		
+
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 	}
-	
-	protected void loadObject (MapLayer layer, Element element) {
+
+	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 
@@ -198,7 +198,19 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				}
 			}
 			if (object == null) {
-				object = new RectangleMapObject(x, y - height, width, height);
+				int gid = -1;
+				if ((gid = element.getIntAttribute("gid", -1)) != -1) {
+					TiledMapTile tile = map.getTileSets().getTile(gid);
+					TextureMapObject textureMapObject = new TextureMapObject(tile.getTextureRegion());
+					textureMapObject.setX(x);
+					textureMapObject.setY(y - height);
+					textureMapObject.setScaleX(scaleX);
+					textureMapObject.setScaleY(scaleY);
+					textureMapObject.setRotation(element.getFloatAttribute("rotation", 0));
+					object = textureMapObject;
+				} else {
+					object = new RectangleMapObject(x, y - height, width, height);
+				}
 			}
 			object.setName(element.getAttribute("name", null));
 			String rotation = element.getAttribute("rotation", null);
@@ -223,7 +235,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			layer.getObjects().add(object);
 		}
 	}
-	
+
 	protected void loadProperties (MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
@@ -318,7 +330,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected static int unsignedByteToInt (byte b) {
 		return (int)b & 0xFF;
 	}
-	
+
 	protected static FileHandle getRelativeFileHandle (FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
@@ -332,5 +344,5 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		}
 		return result;
 	}
-	
+
 }
