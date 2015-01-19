@@ -240,11 +240,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 		this.gl20 = gl20;
 
-		density = scale;
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = IOSDevice.getDevice(machineString);
 		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
+		density = device != null ? device.ppi/160f : scale;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -394,9 +394,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return ppcY;
 	}
 
-	/** Returns the display density.
-	 * 
-	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
 	public float getDensity () {
 		return density;
