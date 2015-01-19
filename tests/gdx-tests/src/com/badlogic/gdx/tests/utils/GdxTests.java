@@ -51,6 +51,7 @@ import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
+import com.badlogic.gdx.tests.scenes.scene2d.ui.DynamicChildActorsTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -150,6 +151,7 @@ public class GdxTests {
 		MoveSpriteExample.class,
 		MultitouchTest.class,
 		MusicTest.class,
+		DynamicChildActorsTest.class,
 		NetAPITest.class,
 		NinePatchTest.class,
 		OnscreenKeyboardTest.class,
