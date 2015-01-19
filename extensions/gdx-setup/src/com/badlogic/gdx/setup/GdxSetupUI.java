@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.setup;
 
-import static java.awt.GridBagConstraints.*;
 
 import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
@@ -28,6 +27,7 @@ import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
+import static java.awt.GridBagConstraints.*;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -36,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -146,18 +147,21 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
-		if (sdkLocation.length() == 0 && modules.contains(ProjectType.ANDROID)) {
-			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
-			return;
-		}
-		if (!GdxSetup.isSdkLocationValid(sdkLocation) && modules.contains(ProjectType.ANDROID)) {
-			JOptionPane
-					.showMessageDialog(this,
-							"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
-			return;
-		}
+		if(modules.contains(ProjectType.ANDROID)) {
+			// Qualify Android SDK.
+			String sdkMessage = "";
+			
+			if (sdkLocation.length() == 0)
+			{	sdkMessage += "Please enter your Android SDK's path.\n";	}
+			
+			if (!GdxSetup.isSdkLocationValid(sdkLocation))
+			{	sdkMessage += "Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!\n";	}
 
-		if (modules.contains(ProjectType.ANDROID)) {
+			if(sdkMessage.length() != 0) {
+				JOptionPane.showMessageDialog(this, sdkMessage.trim());
+				return;
+			}
+			
 			if (!GdxSetup.isSdkUpToDate(sdkLocation)) { 
 				try {  //give them a poke in the right direction
 					if (System.getProperty("os.name").contains("Windows")) {
@@ -171,10 +175,13 @@ public class GdxSetupUI extends JFrame {
 				}
 				return;
 			}
+			
+			// Use Android app type dependencies.
+			dependencies.addAll(DependencyBank.androidAppType.dependencies);
 		}
-
+		
 		if (!GdxSetup.isEmptyDirectory(destination)) {
-			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
+			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.	YES_NO_OPTION);
 			if (value != 0) {
 				return;
 			}
@@ -294,6 +301,9 @@ public class GdxSetupUI extends JFrame {
 		JLabel logo;
 
 		{
+			advancedButton.setMnemonic(KeyEvent.VK_A);
+			generateButton.setMnemonic(KeyEvent.VK_G);
+
 			setBackground(new Color(36, 36, 36));
 			topBar.setBackground(new Color(64, 67, 69));
 			title.setBackground(new Color(94, 97, 99));
@@ -400,9 +410,10 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog();;
+					settings.showDialog();
 				}
 			});
+			
 			generateButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					generate();
@@ -427,12 +438,15 @@ public class GdxSetupUI extends JFrame {
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel versionLabel = new JLabel("LibGDX Version");
-		JComboBox versionButton = new JComboBox(new String[] {"Release " + DependencyBank.libgdxVersion});
+		JComboBox<String> versionButton = new JComboBox<String>(new String[] {"Release " + DependencyBank.libgdxVersion});
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
 
 		{
+			destinationButton.setMnemonic(KeyEvent.VK_B);
+			sdkLocationButton.setMnemonic(KeyEvent.VK_R);
+
 			uiLayout();
 			uiEvents();
 			uiStyle();
@@ -523,6 +537,7 @@ public class GdxSetupUI extends JFrame {
 						SetupCheckBox box = (SetupCheckBox) e.getSource();
 						if (projectType.equals(ProjectType.ANDROID)) {
 							sdkLocationText.setEnabled(box.isSelected());
+							GdxSetupUI.this.ui.settings.setAndroidProjectTypeEnabled(box.isSelected());
 						}
 						if (box.isSelected()) {
 							modules.add(projectType);

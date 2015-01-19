@@ -16,7 +16,19 @@
 
 package com.badlogic.gdx.setup;
 
-import java.io.*;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +36,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import com.badlogic.gdx.setup.DependencyBank.AndroidAppType;
 import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 import com.badlogic.gdx.setup.Executor.CharCallback;
@@ -272,14 +285,15 @@ public class GdxSetup {
 
 		// android project
 		if (builder.modules.contains(ProjectType.ANDROID)) {
+			AndroidAppType androidAppType = DependencyBank.androidAppType;
 			project.files.add(new ProjectFile("android/res/values/strings.xml"));
-			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
+			project.files.add(new ProjectFile(androidAppType.stylesFSpec, "android/res/values/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
-			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
-			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
+			project.files.add(new ProjectFile(androidAppType.classTemplateFSpec, "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
+			project.files.add(new ProjectFile(androidAppType.manifestTemplateFSpec, "android/AndroidManifest.xml", true));
 			project.files.add(new ProjectFile("android/build.gradle", true));
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 			project.files.add(new ProjectFile("android/proguard-project.txt", false));
@@ -384,7 +398,7 @@ public class GdxSetup {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024 * 10];
 			in = new FileInputStream(file);
-			if (in == null) throw new RuntimeException("Couldn't read resource '" + file.getAbsoluteFile() + "'");
+			//if (in == null) throw new RuntimeException("Couldn't read resource '" + file.getAbsoluteFile() + "'"); // Constructor throws exception instead.
 			int read = 0;
 			while ((read = in.read(buffer)) > 0) {
 				bytes.write(buffer, 0, read);

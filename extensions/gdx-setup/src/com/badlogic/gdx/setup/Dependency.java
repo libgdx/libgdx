@@ -19,6 +19,19 @@ public class Dependency {
             subDependencyMap.put(type, subDependencies[type.ordinal()]);
         }
     }
+    
+    public Dependency(String name, ProjectType dependentType, String subDependency)
+    {	this(name, dependentType, new String[] {subDependency});	}
+    
+    public Dependency(String name, ProjectType dependentType, String[] subDependencies) {
+    	this.name = name;
+        for (ProjectType type : ProjectType.values()) {
+        	if(type.equals(dependentType))
+        	{	subDependencyMap.put(type, subDependencies);	}
+        	else
+        	{	subDependencyMap.put(type, new String[] {});	}
+    	}
+    }
 
     public String[] getDependencies(ProjectType type) {
     	return subDependencyMap.get(type);

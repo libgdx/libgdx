@@ -5,6 +5,8 @@ import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class BuildScriptHelper {
@@ -77,10 +79,21 @@ public class BuildScriptHelper {
 		if (!project.equals(ProjectType.CORE)) {
 			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
 		}
-		for (Dependency dep : dependencyList) {
-			if (dep.getDependencies(project) == null) continue;
+		
+		HashSet<String> alreadyPendents = new HashSet<String>();
+		for (Iterator<Dependency> iterator = dependencyList.iterator(); iterator.hasNext();) {
+			Dependency dep = iterator.next();
+			if(dep == null) {
+				iterator.remove();
+				continue;
+			}
+			
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
+				if(alreadyPendents.contains(moduleDependency))
+				{	continue;	}
+				else
+				{	alreadyPendents.add(moduleDependency);	}
 				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOS)) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
