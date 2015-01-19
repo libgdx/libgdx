@@ -1,5 +1,8 @@
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
+- API Change: Skin.get now also returns resource that are subclasses of the given type.
+- API Addition: implemented methods createLabel and copy in Label.LabelStyle.
+- API Addition: Added a labelStyle field to TextButton.TextButtonStyle.
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment
