@@ -16,5 +16,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
 	<classpathentry kind="lib" path="/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"/>
 	<classpathentry kind="lib" path="/gdx-box2d/libs/gdx-box2d-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-video-desktop/libs/gdx-video-desktop-natives.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-video"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-video-desktop"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

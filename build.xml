@@ -258,6 +258,46 @@
 		</ant>
 	</target>    	
 
+	<!-- gdx video -->
+	<target name="gdx-video" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-video/gdx-video">
+			<property name="distDir" value="${distDir}/extensions/gdx-video"/>
+			<property name="jar" value="gdx-video"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
+	<target name="gdx-video-desktop" depends="gdx-core,gdx-backend-lwjgl,gdx-jnigen,gdx-video">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-video/gdx-video.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-video/gdx-video-desktop">
+			<property name="distDir" value="${distDir}/extensions/gdx-video/"/>
+			<property name="jar" value="gdx-video-desktop"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
+	<target name="gdx-video-android" depends="gdx-core,gdx-backend-android,gdx-video">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-android.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-video/gdx-video.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-video/gdx-video-android">
+			<property name="distDir" value="${distDir}/extensions/gdx-video"/>
+			<property name="jar" value="gdx-video-android"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"

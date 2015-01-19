@@ -48,6 +48,7 @@ libgdx-*.zip.MD5
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
+/extensions/gdx-video/gdx-video-desktop/libs/
 /extensions/gdx-setup/gdx-setup.jar
 
 #ensure gdx-setup.jar works properly
