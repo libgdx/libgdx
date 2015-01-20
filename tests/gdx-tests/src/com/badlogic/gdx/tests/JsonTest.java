@@ -7,6 +7,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 public class JsonTest extends GdxTest {
 	Json json;
@@ -236,9 +237,9 @@ public class JsonTest extends GdxTest {
 
 	static Object arrayToList (Object array) {
 		if (array == null || !array.getClass().isArray()) return array;
-		ArrayList list = new ArrayList(java.lang.reflect.Array.getLength(array));
-		for (int i = 0, n = java.lang.reflect.Array.getLength(array); i < n; i++)
-			list.add(arrayToList(java.lang.reflect.Array.get(array, i)));
+		ArrayList list = new ArrayList(ArrayReflection.getLength(array));
+		for (int i = 0, n = ArrayReflection.getLength(array); i < n; i++)
+			list.add(arrayToList(ArrayReflection.get(array, i)));
 		return list;
 	}
 }
