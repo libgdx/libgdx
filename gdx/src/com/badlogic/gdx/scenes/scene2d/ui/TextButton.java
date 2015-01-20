@@ -47,10 +47,7 @@ public class TextButton extends Button {
 		if (style.labelStyle == null) {
 			labelStyle = new LabelStyle(style.font, style.fontColor);
 		} else {
-			labelStyle = style.labelStyle.copy();
-			// Let TextButtonStyle override its labelStyle attributes
-			if (style.font != null) labelStyle.font = style.font;
-			if (style.fontColor != null) labelStyle.fontColor = style.fontColor;
+			labelStyle = style.labelStyle;
 		}
 		label = labelStyle.createLabel(text);	// Let the style instantiate a derived class
 		label.setAlignment(Align.center);
