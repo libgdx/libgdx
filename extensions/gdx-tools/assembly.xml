@@ -15,6 +15,7 @@
       <scope>runtime</scope>
       <excludes>
         <exclude>com.badlogicgames.gdx:gdx-backend-lwjgl</exclude>
+        <exclude>com.badlogicgames.gdx:gdx-backend-headless</exclude>
       </excludes>
     </dependencySet>
     <dependencySet>

@@ -22,6 +22,12 @@
       <artifactId>gdx-backend-lwjgl</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-backend-headless</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>de.matthiasmann</groupId>
