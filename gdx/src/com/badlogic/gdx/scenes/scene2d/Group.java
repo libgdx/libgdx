@@ -41,7 +41,7 @@ public class Group extends Actor implements Cullable {
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
-	private Rectangle cullingArea;
+	protected Rectangle cullingArea;
 
 	public void act (float delta) {
 		super.act(delta);
