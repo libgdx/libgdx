@@ -4,12 +4,15 @@
 .DS_STORE
 
 bin/
+out/
+classes/
 target/
 obj/
 .gwt/
 gwt-unitCache/
 war/
 gen/
+gen-external-apklibs/
 armeabi/
 armeabi-v7a/
 linux32/
