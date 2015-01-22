@@ -4,6 +4,8 @@
 .DS_STORE
 
 bin/
+out/
+classes/
 target/
 obj/
 .gwt/
