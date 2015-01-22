@@ -12,6 +12,7 @@ obj/
 gwt-unitCache/
 war/
 gen/
+gen-external-apklibs/
 armeabi/
 armeabi-v7a/
 linux32/
