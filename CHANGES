@@ -1,5 +1,6 @@
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
+- Added support for loading texture objects from TMX Maps (TextureMapObject)
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment
