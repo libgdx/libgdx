@@ -23,26 +23,15 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 /** Removes a listener from an actor.
  * @author Nathan Sweet */
 public class RemoveListenerAction extends Action {
-	private Actor targetActor;
 	private EventListener listener;
 	private boolean capture;
 
 	public boolean act (float delta) {
-		Actor actor = (targetActor != null ? targetActor : this.actor);
 		if (capture)
-			actor.removeCaptureListener(listener);
+			target.removeCaptureListener(listener);
 		else
-			actor.removeListener(listener);
+			target.removeListener(listener);
 		return true;
-	}
-
-	public Actor getTargetActor () {
-		return targetActor;
-	}
-
-	/** Sets the actor to remove a listner from. If null (the default), the {@link #getActor() actor} will be used. */
-	public void setTargetActor (Actor actor) {
-		this.targetActor = actor;
 	}
 
 	public EventListener getListener () {
@@ -63,7 +52,6 @@ public class RemoveListenerAction extends Action {
 
 	public void reset () {
 		super.reset();
-		targetActor = null;
 		listener = null;
 	}
 }

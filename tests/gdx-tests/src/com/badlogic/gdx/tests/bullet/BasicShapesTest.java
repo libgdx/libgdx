@@ -48,7 +48,7 @@ public class BasicShapesTest extends BaseBulletTest {
 
 		final Model cylinder = modelBuilder.createCylinder(4f, 6f, 4f, 16, material, attributes);
 		disposables.add(cylinder);
-		world.addConstructor("cylinder", new BulletConstructor(cylinder, 10f, new btCylinderShape(Vector3.tmp.set(2f, 3f, 2f))));
+		world.addConstructor("cylinder", new BulletConstructor(cylinder, 10f, new btCylinderShape(tmpV1.set(2f, 3f, 2f))));
 
 		final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
 		disposables.add(capsule);
@@ -56,7 +56,7 @@ public class BasicShapesTest extends BaseBulletTest {
 
 		final Model box = modelBuilder.createBox(4f, 4f, 2f, material, attributes);
 		disposables.add(box);
-		world.addConstructor("box2", new BulletConstructor(box, 10f, new btBoxShape(Vector3.tmp.set(2f, 2f, 1f))));
+		world.addConstructor("box2", new BulletConstructor(box, 10f, new btBoxShape(tmpV1.set(2f, 2f, 1f))));
 
 		final Model cone = modelBuilder.createCone(4f, 6f, 4f, 16, material, attributes);
 		disposables.add(cone);

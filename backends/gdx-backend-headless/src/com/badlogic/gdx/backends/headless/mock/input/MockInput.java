@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.headless.mock.input;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -105,15 +106,15 @@ public class MockInput implements Input {
 	public boolean isKeyPressed(int key) {
 		return false;
 	}
-
+	
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text) {
-
+	public boolean isKeyJustPressed(int key) {
+		return false;
 	}
 
 	@Override
-	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
-
+	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+		
 	}
 
 	@Override
@@ -164,6 +165,11 @@ public class MockInput implements Input {
 	@Override
 	public void setCatchBackKey(boolean catchBack) {
 
+	}
+
+	@Override
+	public boolean isCatchBackKey() {
+		return false;
 	}
 
 	@Override

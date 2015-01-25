@@ -39,7 +39,7 @@ public class PixmapTextureData implements TextureData {
 		this.disposePixmap = disposePixmap;
 		this.managed = managed;
 	}
-	
+
 	@Override
 	public boolean disposePixmap () {
 		return disposePixmap;
@@ -81,7 +81,7 @@ public class PixmapTextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData (int target) {
+	public void consumeCustomData (int target) {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 

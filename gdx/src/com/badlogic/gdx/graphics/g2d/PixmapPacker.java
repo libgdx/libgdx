@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -46,7 +52,7 @@ import com.badlogic.gdx.utils.OrderedMap;
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
  * packer.pack(&quot;First Pixmap&quot;, pixmap1);
  * packer.pack(&quot;Second Pixmap&quot;, pixmap2);
- * TextureAtlas altas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
+ * TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
  * </pre>
  * 
  * Note that you should not dispose the packer in this usage pattern. Instead, dispose the TextureAtlas if no longer needed.
@@ -113,6 +119,10 @@ public class PixmapPacker implements Disposable {
 
 		public Pixmap getPixmap () {
 			return image;
+		}
+		
+		public OrderedMap<String, Rectangle> getRects () {
+			return rects;
 		}
 	}
 

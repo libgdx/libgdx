@@ -92,7 +92,8 @@ public class BuildTarget {
 			// Windows 32-Bit
 			return new BuildTarget(TargetOs.Windows, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "i686-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
-				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", "-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++");
+				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", 
+				"-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++");
 		}
 
 		if (type == TargetOs.Windows && is64Bit) {
@@ -100,7 +101,7 @@ public class BuildTarget {
 			return new BuildTarget(TargetOs.Windows, true, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "x86_64-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
 				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
-				"-Wl,--kill-at -shared -static-libgcc -static-libstdc++ -m64");
+				"-Wl,--kill-at -shared -static -static-libgcc -static-libstdc++ -m64");
 		}
 
 		if (type == TargetOs.Linux && !is64Bit) {
@@ -117,13 +118,23 @@ public class BuildTarget {
 				"-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC", "-shared -m64 -Wl,-wrap,memcpy");
 		}
 
-		if (type == TargetOs.MacOsX) {
+		if (type == TargetOs.MacOsX && !is64Bit) {
 			// Mac OS X x86 & x86_64
 			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, false, new String[] {"**/*.c"}, new String[0],
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5");
+				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-shared -arch i386 -mmacosx-version-min=10.5");
+			return mac;
+		}
+		
+		if (type == TargetOs.MacOsX && is64Bit) {
+			// Mac OS X x86 & x86_64
+			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, true, new String[] {"**/*.c"}, new String[0],
+				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-shared -arch x86_64 -mmacosx-version-min=10.5");
 			return mac;
 		}
 

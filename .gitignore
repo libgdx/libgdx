@@ -43,10 +43,12 @@ libgdx-*.zip.MD5
 /backends/gdx-backend-jglfw/libs/
 /backends/gdx-backend-robovm/libs/
 /extensions/gdx-audio/libs/
+/extensions/gdx-box2d/gdx-box2d/libs/
 /extensions/gdx-bullet/libs/
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
+/extensions/gdx-setup/gdx-setup.jar
 
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war

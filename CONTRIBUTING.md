@@ -1,7 +1,7 @@
 Contributing to libgdx is easy:
 
   * Fork libgdx on http://github.com/libgdx/libgdx
-  * Learn how to [[Work with the source | Running Demos & Tests]]
+  * Learn how to [Work with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
   * Hack away and sent a pull request on Github!
 
 ### API Changes & Additions
@@ -26,7 +26,7 @@ see: [this article](http://blog.jetbrains.com/idea/2014/01/intellij-idea-13-impo
 
 ### Code Style
 
-Libgdx does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconv-138413.html), and so should you.
+Libgdx does not have an official coding standard. We mostly follow the usual [Java style](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html), and so should you.
 
 A few things we'd rather not like to see:
 

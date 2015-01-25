@@ -324,9 +324,60 @@ public class UBJsonWriter implements Closeable {
 		out.writeByte('#');
 		value(values.length);
 		for (int i = 0, n = values.length; i < n; i++) {
-			value(values[i]);
+			byte[] bytes = values[i].getBytes("UTF-8");
+			if (bytes.length <= Byte.MAX_VALUE) {
+				out.writeByte('i');
+				out.writeByte(bytes.length);
+			} else if (bytes.length <= Short.MAX_VALUE) {
+				out.writeByte('I');
+				out.writeShort(bytes.length);
+			} else {
+				out.writeByte('l');
+				out.writeInt(bytes.length);
+			}
+			out.write(bytes);
 		}
 		pop(true);
+		return this;
+	}
+
+	/** Appends the given JsonValue, including all its fields recursively, to the stream.
+	 * @return this writer, for chaining */
+	public UBJsonWriter value (JsonValue value) throws IOException {
+		if (value.isObject()) {
+			if (value.name != null)
+				object(value.name);
+			else
+				object();
+			for (JsonValue child = value.child; child != null; child = child.next)
+				value(child);
+			pop();
+		} else if (value.isArray()) {
+			if (value.name != null)
+				array(value.name);
+			else
+				array();
+			for (JsonValue child = value.child; child != null; child = child.next)
+				value(child);
+			pop();
+		} else if (value.isBoolean()) {
+			if (value.name != null) name(value.name);
+			value(value.asBoolean());
+		} else if (value.isDouble()) {
+			if (value.name != null) name(value.name);
+			value(value.asDouble());
+		} else if (value.isLong()) {
+			if (value.name != null) name(value.name);
+			value(value.asLong());
+		} else if (value.isString()) {
+			if (value.name != null) name(value.name);
+			value(value.asString());
+		} else if (value.isNull()) {
+			if (value.name != null) name(value.name);
+			value();
+		} else {
+			throw new IOException("Unhandled JsonValue type");
+		}
 		return this;
 	}
 
@@ -490,7 +541,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter pop () throws IOException {
 		return pop(false);
 	}
-	
+
 	protected UBJsonWriter pop (boolean silent) throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
 		if (silent)

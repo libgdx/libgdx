@@ -102,7 +102,7 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 
 	public void setupUI () {
-		ui = new Stage(480, 320, true);
+		ui = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		TextButton reload = new TextButton("Reload Shaders", skin.get(TextButtonStyle.class));
 		camera = new SelectBox(skin.get(SelectBoxStyle.class));
@@ -170,7 +170,6 @@ public class ProjectiveTextureTest extends GdxTest {
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.act();
 		ui.draw();
-		Table.drawDebug(ui);
 	}
 
 	Vector3 position = new Vector3();

@@ -36,10 +36,10 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
 	protected final BulletTest[] tests = {new BasicBulletTest(), new ShootTest(), new BasicShapesTest(), new KinematicTest(),
-		new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new ConvexHullDistanceTest(), new RayCastTest(),
-		new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(),
-		new ContactCallbackTest(), new ContactCallbackTest2(), new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(),
-		new VehicleTest(), new CharacterTest(), new ImportTest()};
+		new ConstraintsTest(), new MeshShapeTest(), new GimpactTest(), new ConvexHullTest(), new ConvexHullDistanceTest(),
+		new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(),
+		new FrustumCullingTest(), new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(),
+		new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new CharacterTest(), new ImportTest()};
 
 	protected int testIndex = 0;
 
@@ -77,7 +77,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		Gdx.input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
 
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
-		hud = new Stage(480, 320, true);
+		hud = new Stage();
 		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
 		fpsLabel.setPosition(0, 0);
 		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));
@@ -86,6 +86,11 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		instructLabel.setY(titleLabel.getY() - instructLabel.getHeight());
 		instructLabel.setAlignment(Align.top | Align.left);
 		instructLabel.setText(tests[testIndex].instructions);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+		hud.getViewport().update(width, height, true);
 	}
 
 	@Override

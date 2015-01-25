@@ -249,11 +249,27 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDele
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glDeleteBuffer
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteBuffer
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glDeleteFramebuffers
  * Signature: (ILjava/nio/IntBuffer;)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteFramebuffers
   (JNIEnv *, jobject, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glDeleteFramebuffer
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteFramebuffer
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -273,6 +289,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDele
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glDeleteRenderbuffer
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteRenderbuffer
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glDeleteShader
  * Signature: (I)V
  */
@@ -286,6 +310,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDele
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteTextures
   (JNIEnv *, jobject, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glDeleteTexture
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glDeleteTexture
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -425,6 +457,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenB
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glGenBuffer
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenBuffer
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glGenerateMipmap
  * Signature: (I)V
  */
@@ -441,6 +481,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenF
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glGenFramebuffer
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenFramebuffer
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glGenRenderbuffers
  * Signature: (ILjava/nio/IntBuffer;)V
  */
@@ -449,11 +497,27 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenR
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glGenRenderbuffer
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenRenderbuffer
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glGenTextures
  * Signature: (ILjava/nio/IntBuffer;)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenTextures
   (JNIEnv *, jobject, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glGenTexture
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glGenTexture
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -924,8 +988,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform1fv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1fv__IILjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform1fv
+ * Signature: (II[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1fv__II_3FI
+  (JNIEnv *, jobject, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -940,8 +1012,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform1iv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1iv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1iv__IILjava_nio_IntBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform1iv
+ * Signature: (II[II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform1iv__II_3II
+  (JNIEnv *, jobject, jint, jint, jintArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -956,8 +1036,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform2fv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2fv__IILjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform2fv
+ * Signature: (II[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2fv__II_3FI
+  (JNIEnv *, jobject, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -972,8 +1060,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform2iv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2iv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2iv__IILjava_nio_IntBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform2iv
+ * Signature: (II[II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform2iv__II_3II
+  (JNIEnv *, jobject, jint, jint, jintArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -988,8 +1084,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform3fv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3fv__IILjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform3fv
+ * Signature: (II[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3fv__II_3FI
+  (JNIEnv *, jobject, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -1004,8 +1108,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform3iv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3iv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3iv__IILjava_nio_IntBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform3iv
+ * Signature: (II[II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform3iv__II_3II
+  (JNIEnv *, jobject, jint, jint, jintArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -1020,8 +1132,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform4fv
  * Signature: (IILjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4fv__IILjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform4fv
+ * Signature: (II[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4fv__II_3FI
+  (JNIEnv *, jobject, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -1036,32 +1156,64 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUnif
  * Method:    glUniform4iv
  * Signature: (IILjava/nio/IntBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4iv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4iv__IILjava_nio_IntBuffer_2
   (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniform4iv
+ * Signature: (II[II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniform4iv__II_3II
+  (JNIEnv *, jobject, jint, jint, jintArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glUniformMatrix2fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix2fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix2fv__IIZLjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jboolean, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniformMatrix2fv
+ * Signature: (IIZ[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix2fv__IIZ_3FI
+  (JNIEnv *, jobject, jint, jint, jboolean, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glUniformMatrix3fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix3fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix3fv__IIZLjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jboolean, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniformMatrix3fv
+ * Signature: (IIZ[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix3fv__IIZ_3FI
+  (JNIEnv *, jobject, jint, jint, jboolean, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
  * Method:    glUniformMatrix4fv
  * Signature: (IIZLjava/nio/FloatBuffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix4fv
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix4fv__IIZLjava_nio_FloatBuffer_2
   (JNIEnv *, jobject, jint, jint, jboolean, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
+ * Method:    glUniformMatrix4fv
+ * Signature: (IIZ[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glUniformMatrix4fv__IIZ_3FI
+  (JNIEnv *, jobject, jint, jint, jboolean, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
@@ -1161,10 +1313,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glVert
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
- * Method:    glViewport
+ * Method:    glViewportJni
  * Signature: (IIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glViewport
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glViewportJni
   (JNIEnv *, jobject, jint, jint, jint, jint);
 
 #ifdef __cplusplus

@@ -120,8 +120,4 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 		instances.clear();
 		assets.dispose();
 	}
-
-	public boolean needsGL20 () {
-		return true;
-	}
 }

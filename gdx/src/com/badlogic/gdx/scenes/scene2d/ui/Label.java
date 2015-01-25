@@ -44,7 +44,7 @@ public class Label extends Widget {
 	private float lastPrefHeight;
 	private boolean sizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
-	private boolean ellipse;
+	private boolean ellipsis;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -86,14 +86,14 @@ public class Label extends Widget {
 		return style;
 	}
 
-	/** @param newText May be null. */
+	/** @param newText May be null, "" will be used. */
 	public void setText (CharSequence newText) {
+		if (newText == null) newText = "";
 		if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
 			text.setLength(0);
 			text.append((StringBuilder)newText);
 		} else {
-			if (newText == null) newText = "";
 			if (textEquals(newText)) return;
 			text.setLength(0);
 			text.append(newText);
@@ -110,7 +110,7 @@ public class Label extends Widget {
 		return true;
 	}
 
-	public CharSequence getText () {
+	public StringBuilder getText () {
 		return text;
 	}
 
@@ -158,7 +158,7 @@ public class Label extends Widget {
 
 		float width = getWidth(), height = getHeight();
 		StringBuilder text;
-		if (ellipse && width < bounds.width) {
+		if (ellipsis && width < bounds.width) {
 			float ellipseWidth = font.getBounds("...").width;
 			text = tempText != null ? tempText : (tempText = new StringBuilder());
 			text.setLength(0);
@@ -194,6 +194,7 @@ public class Label extends Widget {
 				x += (int)((width - bounds.width) / 2);
 		}
 
+		cache.setColor(Color.WHITE);
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
 		else
@@ -211,7 +212,7 @@ public class Label extends Widget {
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 		if (style.fontColor != null) color.mul(style.fontColor);
-		cache.setColors(color);
+		cache.tint(color);
 		cache.setPosition(getX(), getY());
 		cache.draw(batch);
 	}
@@ -247,6 +248,13 @@ public class Label extends Widget {
 	 * height. */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
+		invalidateHierarchy();
+	}
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
+		cache.setBreakChars(breakChars);
 		invalidateHierarchy();
 	}
 
@@ -302,14 +310,18 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is false. */
-	public void setEllipse (boolean ellipse) {
-		this.ellipse = ellipse;
+	/** When true the text will be truncated "..." if it does not fit within the width of the label. Default is false. */
+	public void setEllipsis (boolean ellipsis) {
+		this.ellipsis = ellipsis;
 	}
 
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
 	protected BitmapFontCache getBitmapFontCache () {
 		return cache;
+	}
+
+	public String toString () {
+		return super.toString() + ": " + text;
 	}
 
 	/** The style for a label, see {@link Label}.

@@ -42,9 +42,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class UITest extends GdxTest {
 	Object[] listEntries = {"This is a list entry1", "And another one1", "The meaning of life1", "Is hard to come by1",
@@ -69,7 +71,7 @@ public class UITest extends GdxTest {
 		imageFlipped.flip(true, true);
 		TextureRegion image2 = new TextureRegion(texture2);
 		// stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, new PolygonSpriteBatch());
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
 		// Group.debug = true;
@@ -92,14 +94,23 @@ public class UITest extends GdxTest {
 
 		t.layout();
 
-		CheckBox checkBox = new CheckBox("Check me", skin);
+		final CheckBox checkBox = new CheckBox(" Continuous rendering", skin);
+		checkBox.setChecked(true);
 		final Slider slider = new Slider(0, 10, 1, false, skin);
+		slider.setAnimateDuration(0.3f);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		SelectBox dropdown = new SelectBox(skin);
+		textfield.setAlignment(Align.center);
+		final SelectBox dropdown = new SelectBox(skin);
+		dropdown.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				System.out.println(dropdown.getSelected());
+			}
+		});
 		dropdown.setItems("Android1", "Windows1", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
 			"Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5", "OSX5",
 			"Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
+		dropdown.setSelected("Linux6");
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
 		List list = new List(skin);
@@ -169,6 +180,12 @@ public class UITest extends GdxTest {
 					.key(Keys.ESCAPE, false).show(stage);
 			}
 		});
+
+		checkBox.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.graphics.setContinuousRendering(checkBox.isChecked());
+			}
+		});
 	}
 
 	@Override
@@ -180,12 +197,11 @@ public class UITest extends GdxTest {
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

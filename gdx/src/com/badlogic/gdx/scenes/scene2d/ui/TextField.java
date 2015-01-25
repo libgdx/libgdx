@@ -29,9 +29,11 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
@@ -56,8 +58,6 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	static private final char BACKSPACE = 8;
 	static protected final char ENTER_DESKTOP = '\r';
 	static protected final char ENTER_ANDROID = '\n';
@@ -68,6 +68,9 @@ public class TextField extends Widget implements Disableable {
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
+
+	static public float keyRepeatInitialTime = 0.4f;
+	static public float keyRepeatTime = 0.1f;
 
 	protected String text;
 	protected int cursor, selectionStart;
@@ -83,7 +86,8 @@ public class TextField extends Widget implements Disableable {
 	TextFieldListener listener;
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
-	boolean focusTraversal = true, onlyFontChars = true, disabled, rightAligned;
+	boolean focusTraversal = true, onlyFontChars = true, disabled;
+	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
 
 	boolean passwordMode;
@@ -100,9 +104,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	float keyRepeatInitialTime = 0.4f;
-	float keyRepeatTime = 0.1f;
-
+	
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
@@ -248,8 +250,9 @@ public class TextField extends Widget implements Disableable {
 			selectionWidth = maxX - minX;
 		}
 
-		if (rightAligned) {
+		if (textHAlign == Align.center || textHAlign == Align.right) {
 			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startPos);
+			if (textHAlign == Align.center) textOffset = Math.round(textOffset * 0.5f);
 			if (hasSelection) selectionX += textOffset;
 		}
 	}
@@ -328,7 +331,7 @@ public class TextField extends Widget implements Disableable {
 			textHeight + font.getDescent() / 2);
 	}
 
-	protected void drawText(Batch batch, BitmapFont font, float x, float y) {
+	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd);
 	}
 
@@ -351,7 +354,7 @@ public class TextField extends Widget implements Disableable {
 
 		if (passwordMode && font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
-			if (passwordBuffer.length() > textLength) //
+			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
 			else {
 				for (int i = passwordBuffer.length(); i < textLength; i++)
@@ -365,6 +368,10 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	private void blink () {
+		if (!Gdx.graphics.isContinuousRendering()) {
+			cursorOn = true;
+			return;
+		}
 		long time = TimeUtils.nanoTime();
 		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
 			cursorOn = !cursorOn;
@@ -512,8 +519,17 @@ public class TextField extends Widget implements Disableable {
 		this.messageText = messageText;
 	}
 
+	public void appendText (String str) {
+		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+
+		clearSelection();
+		cursor = text.length();
+		paste(str, onlyFontChars);
+	}
+
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+		if (str.equals(text)) return;
 
 		clearSelection();
 		text = "";
@@ -600,8 +616,10 @@ public class TextField extends Widget implements Disableable {
 		return prefHeight;
 	}
 
-	public void setRightAligned (boolean rightAligned) {
-		this.rightAligned = rightAligned;
+	/** Sets text horizontal alignment (left, center or right). */
+	public void setAlignment (int alignment) {
+		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) 
+			this.textHAlign = alignment;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters.
@@ -750,17 +768,13 @@ public class TextField extends Widget implements Disableable {
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
 			boolean repeat = false;
-			boolean ctrl;
-			if (isMac)
-				ctrl = Gdx.input.isKeyPressed(Keys.SYM);
-			else
-				ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+			boolean ctrl = UIUtils.ctrl();
 			boolean jump = ctrl && !passwordMode;
 
 			if (ctrl) {
 				if (keycode == Keys.V) {
 					paste();
-					return true;
+					repeat = true;
 				}
 				if (keycode == Keys.C || keycode == Keys.INSERT) {
 					copy();
@@ -776,7 +790,7 @@ public class TextField extends Widget implements Disableable {
 				}
 			}
 
-			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+			if (UIUtils.shift()) {
 				if (keycode == Keys.INSERT) paste();
 				if (keycode == Keys.FORWARD_DEL && hasSelection) {
 					copy();
@@ -857,12 +871,13 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
+			if (character == 0) return false;
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
 			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
-				next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
@@ -883,11 +898,13 @@ public class TextField extends Widget implements Disableable {
 					}
 					if (add && !remove) {
 						// Character may be added to the text.
-						if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+						boolean isEnter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
+						if (!isEnter) {
 							if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						}
 						if (!withinMaxLength(text.length())) return true;
-						text = insert(cursor++, String.valueOf(character), text);
+						String insertion = isEnter ? "\n" : String.valueOf(character);
+						text = insert(cursor++, insertion, text);
 					}
 					updateDisplayText();
 				}

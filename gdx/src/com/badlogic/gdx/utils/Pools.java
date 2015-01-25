@@ -16,31 +16,42 @@
 
 package com.badlogic.gdx.utils;
 
-/** Stores a map of {@link ReflectionPool}s by type for convenient static access.
+/** Stores a map of {@link Pool}s (usually {@link ReflectionPool}s) by type for convenient static access.
  * @author Nathan Sweet */
 public class Pools {
-	static private final ObjectMap<Class, ReflectionPool> typePools = new ObjectMap();
+	static private final ObjectMap<Class, Pool> typePools = new ObjectMap();
 
-	/** Returns a new or existing pool for the specified type, stored in a a Class to {@link ReflectionPool} map. The max size of
-	 * the pool used is 100. */
-	static public <T> Pool<T> get (Class<T> type) {
-		ReflectionPool pool = typePools.get(type);
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
+	 * if this is not the first time this pool has been requested. */
+	static public <T> Pool<T> get (Class<T> type, int max) {
+		Pool pool = typePools.get(type);
 		if (pool == null) {
-			pool = new ReflectionPool(type, 4, 100);
+			pool = new ReflectionPool(type, 4, max);
 			typePools.put(type, pool);
 		}
 		return pool;
 	}
 
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
+	 * is 100. */
+	static public <T> Pool<T> get (Class<T> type) {
+		return get(type, 100);
+	}
+
+	/** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
+	static public <T> void set (Class<T> type, Pool<T> pool) {
+		typePools.put(type, pool);
+	}
+
 	/** Obtains an object from the {@link #get(Class) pool}. */
 	static public <T> T obtain (Class<T> type) {
-		return (T)get(type).obtain();
+		return get(type).obtain();
 	}
 
 	/** Frees an object from the {@link #get(Class) pool}. */
 	static public void free (Object object) {
-		if (object == null) throw new IllegalArgumentException("object cannot be null.");
-		ReflectionPool pool = typePools.get(object.getClass());
+		if (object == null) throw new IllegalArgumentException("Object cannot be null.");
+		Pool pool = typePools.get(object.getClass());
 		if (pool == null) return; // Ignore freeing an object that was never retained.
 		pool.free(object);
 	}
@@ -48,13 +59,23 @@ public class Pools {
 	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
 	 * don't need to be from the same pool. */
 	static public void freeAll (Array objects) {
-		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
+		freeAll(objects, false);
+	}
+
+	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored.
+	 * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object. */
+	static public void freeAll (Array objects, boolean samePool) {
+		if (objects == null) throw new IllegalArgumentException("Objects cannot be null.");
+		Pool pool = null;
 		for (int i = 0, n = objects.size; i < n; i++) {
 			Object object = objects.get(i);
 			if (object == null) continue;
-			ReflectionPool pool = typePools.get(object.getClass());
-			if (pool == null) continue; // Ignore freeing an object that was never retained.
+			if (pool == null) {
+				pool = typePools.get(object.getClass());
+				if (pool == null) continue; // Ignore freeing an object that was never retained.
+			}
 			pool.free(object);
+			if (!samePool) pool = null;
 		}
 	}
 

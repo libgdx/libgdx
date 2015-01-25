@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.JsonValue.ValueType;
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
-public class JsonReader {
+public class JsonReader implements BaseJsonReader {
 	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
@@ -55,24 +55,23 @@ public class JsonReader {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 	}
 
 	public JsonValue parse (InputStream input) {
 		try {
-			return parse(new InputStreamReader(input, "ISO-8859-1"));
+			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
+		} finally {
+			StreamUtils.closeQuietly(input);
 		}
 	}
 
 	public JsonValue parse (FileHandle file) {
 		try {
-			return parse(file.read());
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}
@@ -84,8 +83,7 @@ public class JsonReader {
 
 		int s = 0;
 		Array<String> names = new Array(8);
-		boolean needsUnescape = false;
-		boolean discardBuffer = false; // When unquotedString and true/false/null both match, this discards unquotedString.
+		boolean needsUnescape = false, stringIsName = false, stringIsUnquoted = false;
 		RuntimeException parseRuntimeEx = null;
 
 		boolean debug = false;
@@ -103,62 +101,82 @@ public class JsonReader {
 				}
 			}
 
-			action buffer {
-				s = p;
-				needsUnescape = false;
-				discardBuffer = false;
-			}
-			action needsUnescape {
-				needsUnescape = true;
-			}
 			action name {
-				String name = new String(data, s, p - s);
-				s = p;
-				if (needsUnescape) name = unescape(name);
-				if (debug) System.out.println("name: " + name);
-				names.add(name);
+				stringIsName = true;
 			}
 			action string {
-				if (!discardBuffer) {
-					String value = new String(data, s, p - s);
-					s = p;
-					if (needsUnescape) value = unescape(value);
+				String value = new String(data, s, p - s);
+				if (needsUnescape) value = unescape(value);
+				outer:
+				if (stringIsName) {
+					stringIsName = false;
+					if (debug) System.out.println("name: " + value);
+					names.add(value);
+				} else {
 					String name = names.size > 0 ? names.pop() : null;
+					if (stringIsUnquoted) {
+						if (value.equals("true")) {
+							if (debug) System.out.println("boolean: " + name + "=true");
+							bool(name, true);
+							break outer;
+						} else if (value.equals("false")) {
+							if (debug) System.out.println("boolean: " + name + "=false");
+							bool(name, false);
+							break outer;
+						} else if (value.equals("null")) {
+							string(name, null);
+							break outer;
+						}
+						boolean couldBeDouble = false, couldBeLong = true;
+						outer2:
+						for (int i = s; i < p; i++) {
+							switch (data[i]) {
+							case '0':
+							case '1':
+							case '2':
+							case '3':
+							case '4':
+							case '5':
+							case '6':
+							case '7':
+							case '8':
+							case '9':
+							case '-':
+							case '+':
+								break;
+							case '.':
+							case 'e':
+							case 'E':
+								couldBeDouble = true;
+								couldBeLong = false;
+								break;
+							default:
+								couldBeDouble = false;
+								couldBeLong = false;
+								break outer2;
+							}
+						}
+						if (couldBeDouble) {
+							try {
+								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+								number(name, Double.parseDouble(value));
+								break outer;
+							} catch (NumberFormatException ignored) {
+							}
+						} else if (couldBeLong) {
+							if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+							try {
+								number(name, Long.parseLong(value));
+								break outer;
+							} catch (NumberFormatException ignored) {
+							}
+						}
+					}
 					if (debug) System.out.println("string: " + name + "=" + value);
 					string(name, value);
 				}
-			}
-			action double {
-				String value = new String(data, s, p - s);
+				stringIsUnquoted = false;
 				s = p;
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-				number(name, Double.parseDouble(value));
-			}
-			action long {
-				String value = new String(data, s, p - s);
-				s = p;
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
-				number(name, Long.parseLong(value));
-			}
-			action trueValue {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("boolean: " + name + "=true");
-				bool(name, true);
-				discardBuffer = true;
-			}
-			action falseValue {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("boolean: " + name + "=false");
-				bool(name, false);
-				discardBuffer = true;
-			}
-			action null {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("null: " + name);
-				string(name, null);
-				discardBuffer = true;
 			}
 			action startObject {
 				String name = names.size > 0 ? names.pop() : null;
@@ -182,30 +200,106 @@ public class JsonReader {
 				pop();
 				fret;
 			}
+			action comment {
+				int start = p - 1;
+				if (data[p++] == '/') {
+					while (p != eof && data[p] != '\n')
+						p++;
+					p--;
+				} else {
+					while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
+						p++;
+					p++;
+				}
+				if (debug) System.out.println("comment " + new String(data, start, p - start));
+			}
+			action unquotedChars {
+				if (debug) System.out.println("unquotedChars");
+				s = p;
+				needsUnescape = false;
+				stringIsUnquoted = true;
+				if (stringIsName) {
+					outer:
+					while (true) {
+						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
+						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
+						case ':':
+						case '\r':
+						case '\n':
+							break outer;
+						}
+						if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
+						p++;
+						if (p == eof) break;
+					}
+				} else {
+					outer:
+					while (true) {
+						switch (data[p]) {
+						case '\\':
+							needsUnescape = true;
+							break;
+						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
+						case '}':
+						case ']':
+						case ',':
+						case '\r':
+						case '\n':
+							break outer;
+						}
+						if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
+						p++;
+						if (p == eof) break;
+					}
+				}
+				p--;
+				while (data[p] == ' ')
+					p--;
+			}
+			action quotedChars {
+				if (debug) System.out.println("quotedChars");
+				s = ++p;
+				needsUnescape = false;
+				outer:
+				while (true) {
+					switch (data[p]) {
+					case '\\':
+						needsUnescape = true;
+						p++;
+						break;
+					case '"':
+						break outer;
+					}
+					// if (debug) System.out.println("quotedChar: '" + data[p] + "'");
+					p++;
+					if (p == eof) break;
+				}
+				p--;
+			}
 
-			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
-			longChars = '-'? [0-9]+;
-			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
-			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | doubleChars >buffer %name;
-
-			startObject = '{' @startObject;
-			startArray = '[' @startArray;
-			string = '"' quotedChars >buffer %string '"';
-			unquotedString = unquotedValueChars >buffer %string;
-			number = longChars >buffer %long | doubleChars >buffer %double $-1;
-			nullValue = 'null' %null;
-			booleanValue = 'true' %trueValue | 'false' %falseValue;
-			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
-
-			nameValue = name space* ':' space* value;
-
-			object := space* (nameValue space*)? (',' space* nameValue space*)** ','? space* '}' @endObject;
-
-			array := space* (value space*)? (',' space* value space*)** ','? space* ']' @endArray;
-
-			main := space* value space*;
+			comment = ('//' | '/*') @comment;
+			ws = [\r\n\t ] | comment;
+			ws2 = [\r\t ] | comment;
+			comma = ',' | ('\n' ws* ','?);
+			quotedString = '"' @quotedChars %string '"';
+			nameString = quotedString | ^[":,}/\r\n\t ] >unquotedChars %string;
+			valueString = quotedString | ^[":,{[\]/\r\n\t ] >unquotedChars %string;
+			value = '{' @startObject | '[' @startArray | valueString;
+			nameValue = nameString >name ws* ':' ws* value;
+			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
+			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (','? ws* ']' @endArray);
+			main := ws* value ws*;
 
 			write init;
 			write exec;
@@ -214,12 +308,17 @@ public class JsonReader {
 			parseRuntimeEx = ex;
 		}
 
+		JsonValue root = this.root;
+		this.root = null;
+		current = null;
+		lastChild.clear();
+
 		if (p < pe) {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
-				parseRuntimeEx);
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
+				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -230,14 +329,13 @@ public class JsonReader {
 		} else if (parseRuntimeEx != null) {
 			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
-		JsonValue root = this.root;
-		this.root = null;
 		return root;
 	}
 
 	%% write data;
 
 	private final Array<JsonValue> elements = new Array(8);
+	private final Array<JsonValue> lastChild = new Array(8);
 	private JsonValue root, current;
 
 	private void addChild (String name, JsonValue child) {
@@ -245,9 +343,17 @@ public class JsonReader {
 		if (current == null) {
 			current = child;
 			root = child;
-		} else if (current.isArray() || current.isObject())
-			current.addChild(child);
-		else
+		} else if (current.isArray() || current.isObject()) {
+			if (current.size == 0)
+				current.child = child;
+			else {
+				JsonValue last = lastChild.pop();
+				last.next = child;
+				child.prev = last;
+			}
+			lastChild.add(child);
+			current.size++;
+		} else
 			root = current;
 	}
 
@@ -267,6 +373,7 @@ public class JsonReader {
 
 	protected void pop () {
 		root = elements.pop();
+		if (current.size > 0) lastChild.pop();
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 

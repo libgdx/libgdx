@@ -47,6 +47,8 @@ public class LwjglApplicationConfiguration {
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
+	/** used to emulate screen densities **/
+	public int overrideDensity = -1;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
@@ -71,6 +73,10 @@ public class LwjglApplicationConfiguration {
 	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
+	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
+	/** enable HDPI mode on Mac OS X **/
+	public boolean useHDPI = false;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();	

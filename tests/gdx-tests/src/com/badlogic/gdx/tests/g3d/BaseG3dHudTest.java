@@ -18,10 +18,6 @@ package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -36,7 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
 public abstract class BaseG3dHudTest extends BaseG3dTest {
 	public final static int PREF_HUDWIDTH = 640;
@@ -55,7 +53,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected float moveRadius = 2f;
 
 	protected String models[] = new String[] {"car.obj", "cube.obj", "scene.obj", "scene2.obj", "wheel.obj", "g3d/invaders.g3dj",
-		"g3d/head.g3db", "g3d/house.g3dj", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/ship.obj", "g3d/shapes/cube_1.0x1.0.g3dj",
+		"g3d/head.g3db", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/monkey.g3db", "g3d/ship.obj", "g3d/shapes/cube_1.0x1.0.g3dj",
 		"g3d/shapes/cube_1.5x1.5.g3dj", "g3d/shapes/sphere.g3dj", "g3d/shapes/teapot.g3dj", "g3d/shapes/torus.g3dj"};
 
 	@Override
@@ -68,7 +66,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	}
 
 	protected void createHUD () {
-		hud = new Stage(PREF_HUDWIDTH, PREF_HUDHEIGHT, true);
+		hud = new Stage(new ScalingViewport(Scaling.fit, PREF_HUDWIDTH, PREF_HUDHEIGHT));
 		hudWidth = hud.getWidth();
 		hudHeight = hud.getHeight();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -164,7 +162,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	@Override
 	public void resize (int width, int height) {
 		super.resize(width, height);
-		hud.setViewport(PREF_HUDWIDTH, PREF_HUDHEIGHT, true);
+		hud.getViewport().update(width, height, true);
 		hudWidth = hud.getWidth();
 		hudHeight = hud.getHeight();
 	}

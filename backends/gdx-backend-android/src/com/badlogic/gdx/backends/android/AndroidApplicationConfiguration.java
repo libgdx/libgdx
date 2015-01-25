@@ -67,4 +67,10 @@ public class AndroidApplicationConfiguration {
 
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = false;
+
+	/** whether to use {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} in place of the classic
+	 * {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20} on Android API 10 and lower.
+	 * In case this is true {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} will be used.
+	 * This implementation properly supports attach to and detach from window. default: false */
+	public boolean useGLSurfaceView20API18 = false;
 }

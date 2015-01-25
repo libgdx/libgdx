@@ -34,6 +34,10 @@ import java.awt.Toolkit;
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
+	static final boolean isMac = System.getProperty("os.name").contains("OS X");
+	static final boolean isWindows = System.getProperty("os.name").contains("Windows");
+	static final boolean isLinux = System.getProperty("os.name").contains("Linux");
+
 	static int glMajorVersion, glMinorVersion;
 
 	long window;
@@ -49,6 +53,7 @@ public class JglfwGraphics implements Graphics {
 	private volatile boolean isContinuous = true, renderRequested;
 	volatile boolean foreground, minimized;
 
+	private long frameId = -1;
 	private float deltaTime;
 	private long frameStart, lastTime = -1;
 	private int frames, fps;
@@ -151,10 +156,13 @@ public class JglfwGraphics implements Graphics {
 			frameStart = time;
 		}
 		frames++;
+		frameId++;
 	}
 
 	void sizeChanged (int width, int height) {
-		glfwShowWindow(window); // This is required to refresh the NSOpenGLContext on OSX!
+		if (isMac) {
+			glfwShowWindow(window); // This is required to refresh the NSOpenGLContext on OSX!
+		}
 		width = Math.max(1, width);
 		height = Math.max(1, height);
 		this.width = width;
@@ -184,6 +192,10 @@ public class JglfwGraphics implements Graphics {
 
 	public int getHeight () {
 		return height;
+	}
+
+	public long getFrameId () {
+		return frameId;
 	}
 
 	public float getDeltaTime () {

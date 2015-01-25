@@ -33,7 +33,7 @@ public class ScrollPane2Test extends GdxTest {
 	Skin skin;
 
 	public void create () {
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -82,11 +82,10 @@ public class ScrollPane2Test extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

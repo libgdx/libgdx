@@ -36,7 +36,7 @@ public class LabelScaleTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		Table table = new Table();
@@ -70,11 +70,10 @@ public class LabelScaleTest extends GdxTest {
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 }

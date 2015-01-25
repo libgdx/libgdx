@@ -16,6 +16,6 @@ public class CountdownEventAction<T extends Event> extends EventAction<T> {
 
 	public boolean handle (T event) {
 		current++;
-		return current > count;
+		return current >= count;
 	}
 }

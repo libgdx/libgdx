@@ -26,9 +26,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.dynamics.btConeTwistConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
@@ -92,16 +92,16 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (button == Buttons.LEFT) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).scl(10f).add(ray.origin);
-			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
-			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
+			tmpV1.set(ray.direction).scl(10f).add(ray.origin);
+			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, tmpV1);
+			world.collisionWorld.rayTest(ray.origin, tmpV1, cb);
 			if (cb.hasHit()) {
 				btRigidBody body = (btRigidBody)(cb.getCollisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
 					body.setActivationState(Collision.DISABLE_DEACTIVATION);
 
-					tmpV.set(cb.getHitPointWorld().getFloats());
+					cb.getHitPointWorld(tmpV);
 					tmpV.mul(body.getCenterOfMassTransform().inv());
 
 					pickConstraint = new btPoint2PointConstraint(body, tmpV);
@@ -112,7 +112,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 
 					((btDynamicsWorld)world.collisionWorld).addConstraint(pickConstraint);
 
-					pickDistance = Vector3.tmp.sub(camera.position).len();
+					pickDistance = tmpV1.sub(camera.position).len();
 					result = true;
 				}
 			}
@@ -145,8 +145,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (pickConstraint != null) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).scl(pickDistance).add(camera.position);
-			pickConstraint.setPivotB(Vector3.tmp);
+			tmpV1.set(ray.direction).scl(pickDistance).add(camera.position);
+			pickConstraint.setPivotB(tmpV1);
 			result = true;
 		}
 		return result ? result : super.touchDragged(screenX, screenY, pointer);

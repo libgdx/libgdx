@@ -31,7 +31,7 @@ public class TextButtonTest extends GdxTest {
 
 	@Override
 	public void create () {
-		stage = new Stage(0, 0, false, new SpriteBatch());
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		for (int i = 0; i < 1; i++) {
@@ -50,14 +50,14 @@ public class TextButtonTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		Gdx.app.log("X", "FPS: " + Gdx.graphics.getFramesPerSecond());
-		SpriteBatch spriteBatch = (SpriteBatch)stage.getSpriteBatch();
+		SpriteBatch spriteBatch = (SpriteBatch)stage.getBatch();
 		Gdx.app.log("X", "render calls: " + spriteBatch.totalRenderCalls);
 		spriteBatch.totalRenderCalls = 0;
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

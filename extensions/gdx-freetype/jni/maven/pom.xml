@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.5.4-SNAPSHOT</version>
         <relativePath>../../../../</relativePath>
     </parent>
     
@@ -41,6 +41,16 @@
                         </configuration>
                     </execution>
                     
+                    <execution>
+                        <id>x86-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx-freetype.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
+                        </configuration>
+                    </execution>
 
                     <execution>
                         <id>armeabi-gdx</id>
@@ -93,10 +103,25 @@
                                 <resource><directory>${basedir}/../../libs/linux32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/desktop</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-local-x86</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86</outputDirectory>
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
@@ -151,7 +176,8 @@
                 <version>2.4</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>desktop.xml</descriptor>                        
+                        <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>                        
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>

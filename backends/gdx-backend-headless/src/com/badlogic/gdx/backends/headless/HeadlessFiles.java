@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.headless;
 
+import java.io.File;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -23,6 +25,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author Nathan Sweet */
 public final class HeadlessFiles implements Files {
 	static public final String externalPath = System.getProperty("user.home") + "/";
+	static public final String localPath = new File("").getAbsolutePath() + File.separator;
 
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
@@ -66,7 +69,7 @@ public final class HeadlessFiles implements Files {
 
 	@Override
 	public String getLocalStoragePath () {
-		return "";
+		return localPath;
 	}
 
 	@Override

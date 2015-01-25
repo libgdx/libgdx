@@ -23,8 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import com.esotericsoftware.tablelayout.Cell;
-
 /** A button with a child {@link Label} to display text.
  * @author Nathan Sweet */
 public class TextButton extends Button {
@@ -73,7 +71,7 @@ public class TextButton extends Button {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Color fontColor;
-		if (isDisabled && style.disabledFontColor != null)
+		if (isDisabled() && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;
 		else if (isPressed() && style.downFontColor != null)
 			fontColor = style.downFontColor;
@@ -101,6 +99,10 @@ public class TextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
+	}
+
+	public String toString () {
+		return super.toString() + ": " + label.getText();
 	}
 
 	/** The style for a text button, see {@link TextButton}.

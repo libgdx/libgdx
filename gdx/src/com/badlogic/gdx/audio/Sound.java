@@ -34,7 +34,9 @@ import com.badlogic.gdx.utils.Disposable;
  * can use this id to modify the playback of that sound instance.
  * </p>
  * 
- * <p><b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so</p>
+ * <p>
+ * <b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so
+ * </p>
  * 
  * @author badlogicgames@gmail.com */
 public interface Sound extends Disposable {
@@ -74,10 +76,10 @@ public interface Sound extends Disposable {
 
 	/** Stops playing all instances of this sound. */
 	public void stop ();
-	
+
 	/** Pauses all instances of this sound. */
 	public void pause ();
-	
+
 	/** Resumes all paused instances of this sound. */
 	public void resume ();
 
@@ -89,16 +91,16 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id */
 	public void stop (long soundId);
 
-	/** Pauses the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no longer
-	 * playing, this has no effect.
+	/** Pauses the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no
+	 * longer playing, this has no effect.
 	 * @param soundId the sound id */
 	public void pause (long soundId);
-	
+
 	/** Resumes the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is not
 	 * paused, this has no effect.
 	 * @param soundId the sound id */
 	public void resume (long soundId);
-	
+
 	/** Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
 	 * @param soundId the sound id
 	 * @param looping whether to loop or not. */
@@ -122,13 +124,10 @@ public interface Sound extends Disposable {
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
 	public void setPan (long soundId, float pan, float volume);
-	
-	/**
-	 * Sets the priority of a sound currently being played back. Higher priority sounds will be considered last
-	 * if the maximum number of concurrently playing sounds is exceeded. This is only a 
-	 * hint and might not be honored by a backend implementation.
+
+	/** Sets the priority of a sound currently being played back. Higher priority sounds will be considered last if the maximum
+	 * number of concurrently playing sounds is exceeded. This is only a hint and might not be honored by a backend implementation.
 	 * @param soundId the sound id as returned by {@link #play()} or {@link #loop()} and their overloaded equivalents.
-	 * @param priority the priority (0 == lowest)
-	 */
-	public void setPriority(long soundId, int priority);
+	 * @param priority the priority (0 == lowest) */
+	public void setPriority (long soundId, int priority);
 }

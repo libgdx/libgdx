@@ -35,7 +35,7 @@ public final class ClassReflection {
 	static public String getSimpleName (Class c) {
 		return c.getSimpleName();
 	}
-	
+
 	/** Determines if the supplied Object is assignment-compatible with the object represented by supplied Class. */
 	static public boolean isInstance (Class c, Object obj) {
 		return c.isInstance(obj);
@@ -78,18 +78,21 @@ public final class ClassReflection {
 		return result;
 	}
 
-	/** Returns a {@link Constructor} that represents the public constructor for the supplied class which takes the supplied parameter types. */
+	/** Returns a {@link Constructor} that represents the public constructor for the supplied class which takes the supplied
+	 * parameter types. */
 	static public Constructor getConstructor (Class c, Class... parameterTypes) throws ReflectionException {
 		try {
 			return new Constructor(c.getConstructor(parameterTypes));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting constructor for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation occurred while getting constructor for class: '" + c.getName() + "'.",
+				e);
 		} catch (NoSuchMethodException e) {
 			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
 
-	/** Returns a {@link Constructor} that represents the constructor for the supplied class which takes the supplied parameter types. */
+	/** Returns a {@link Constructor} that represents the constructor for the supplied class which takes the supplied parameter
+	 * types. */
 	static public Constructor getDeclaredConstructor (Class c, Class... parameterTypes) throws ReflectionException {
 		try {
 			return new Constructor(c.getDeclaredConstructor(parameterTypes));
@@ -110,7 +113,8 @@ public final class ClassReflection {
 		return result;
 	}
 
-	/** Returns a {@link Method} that represents the public member method for the supplied class which takes the supplied parameter types. */
+	/** Returns a {@link Method} that represents the public member method for the supplied class which takes the supplied parameter
+	 * types. */
 	static public Method getMethod (Class c, String name, Class... parameterTypes) throws ReflectionException {
 		try {
 			return new Method(c.getMethod(name, parameterTypes));
@@ -184,4 +188,32 @@ public final class ClassReflection {
 		}
 	}
 
+	/** Returns true if the supplied class includes an annotation of the given class type. */
+	static public boolean isAnnotationPresent (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
+		return c.isAnnotationPresent(annotationType);
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class,
+	 * or an empty array if there are none. Does not include inherited annotations. */
+	static public Annotation[] getDeclaredAnnotations (Class c) {
+		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
+
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this field doesn't
+	 * have such an annotation. This is a convenience function if the caller knows already which annotation
+	 * type he's looking for. */
+	static public Annotation getDeclaredAnnotation (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return new Annotation(annotation);
+			}
+		}
+		return null;
+	}
 }

@@ -21,15 +21,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
  * @author Nathan Sweet
- * @author Matthias Mann */
+ * @author Matthias Mann
+ * @author davebaol
+ * @author Alexander Dorokhov */
 public class BitmapFontCache {
+
 	private final BitmapFont font;
 
 	private float[][] vertexData;
@@ -49,26 +51,31 @@ public class BitmapFontCache {
 	 * the full text being cached. */
 	private IntArray[] glyphIndices;
 
+	private boolean textChanged;
+	private float oldTint = 0;
+
+	private TextMarkup markup = new TextMarkup();
+
+	private int charsCount;
+
 	public BitmapFontCache (BitmapFont font) {
 		this(font, font.usesIntegerPositions());
 	}
 
-	/** Creates a new BitmapFontCache
-	 * @param font the font to use
-	 * @param integer whether to use integer positions and sizes. */
+	/** @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFontCache (BitmapFont font, boolean integer) {
 		this.font = font;
 		this.integer = integer;
 
 		int regionsLength = font.regions.length;
-		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
+		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least one texture page.");
 
 		this.vertexData = new float[regionsLength][];
 
 		this.idx = new int[regionsLength];
 		int vertexDataLength = vertexData.length;
-		if (vertexDataLength > 1) { // if we have multiple pages...
-			// contains the indices of the glyph in the Cache as they are added
+		if (vertexDataLength > 1) { // If we have multiple pages...
+			// Contains the indices of the glyph in the Cache as they are added.
 			glyphIndices = new IntArray[vertexDataLength];
 			for (int i = 0, n = glyphIndices.length; i < n; i++) {
 				glyphIndices[i] = new IntArray();
@@ -80,7 +87,7 @@ public class BitmapFontCache {
 
 	/** Sets the position of the text, relative to the position when the cached text was created.
 	 * @param x The x coordinate
-	 * @param y The y coodinate */
+	 * @param y The y coordinate */
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
 	}
@@ -102,6 +109,46 @@ public class BitmapFontCache {
 			for (int i = 0, n = idx[j]; i < n; i += 5) {
 				vertices[i] += xAmount;
 				vertices[i + 1] += yAmount;
+			}
+		}
+	}
+
+	private Color setColor (Color color, float floatColor) {
+		int intBits = NumberUtils.floatToIntColor(floatColor);
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+
+	/** Tints all text currently in the cache. Does not affect subsequently added text. */
+	public void tint (Color tint) {
+		final float floatTint = tint.toFloatBits();
+		if (textChanged || oldTint != floatTint) {
+			textChanged = false;
+			oldTint = floatTint;
+			markup.tint(this, tint);
+		}
+	}
+
+	/** Sets the alpha component of all text currently in the cache. Does not affect subsequently added text. */
+	public void setAlphas (float alpha) {
+		int alphaBits = ((int)(254 * alpha)) << 24;
+		float prev = 0, newColor = 0;
+		for (int j = 0, length = vertexData.length; j < length; j++) {
+			float[] vertices = vertexData[j];
+			for (int i = 2, n = idx[j]; i < n; i += 5) {
+				float c = vertices[i];
+				if (c == prev && i != 2) {
+					vertices[i] = newColor;
+				} else {
+					prev = c;
+					int rgba = NumberUtils.floatToIntColor(c);
+					rgba = (rgba & 0x00FFFFFF) | alphaBits;
+					newColor = NumberUtils.intToFloatColor(rgba);
+					vertices[i] = newColor;
+				}
 			}
 		}
 	}
@@ -139,8 +186,12 @@ public class BitmapFontCache {
 	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
 	 * is reset every time setText is called. */
 	public void setColors (Color tint, int start, int end) {
-		final float color = tint.toFloatBits();
+		setColors(tint.toFloatBits(), start, end);
+	}
 
+	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
+	 * is reset every time setText is called. */
+	public void setColors (float color, int start, int end) {
 		if (vertexData.length == 1) { // only one page...
 			float[] vertices = vertexData[0];
 			for (int i = start * 20 + 2, n = end * 20; i < n; i += 5)
@@ -174,17 +225,20 @@ public class BitmapFontCache {
 	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
+		markup.setDefaultChunk(tint, charsCount);
 	}
 
 	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
 		color = NumberUtils.intToFloatColor(intBits);
+		markup.setDefaultChunk(intBits, charsCount);
 	}
 
 	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (float color) {
 		this.color = color;
+		markup.setDefaultChunk(color, charsCount);
 	}
 
 	public Color getColor () {
@@ -271,23 +325,56 @@ public class BitmapFontCache {
 		x = 0;
 		y = 0;
 		glyphCount = 0;
+		charsCount = 0;
+		markup.clear();
 		for (int i = 0, n = idx.length; i < n; i++) {
 			if (glyphIndices != null) glyphIndices[i].clear();
 			idx[i] = 0;
 		}
 	}
 
+	/** Counts the actual glyphs excluding characters used to markup the text. */
+	private int countGlyphs (CharSequence seq, int start, int end) {
+		int count = end - start;
+		while (start < end) {
+			char ch = seq.charAt(start++);
+			if (ch == '[') {
+				count--;
+				if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
+					while (start < end && seq.charAt(start) != ']') {
+						start++;
+						count--;
+					}
+					count--;
+				}
+				start++;
+			}
+		}
+		return count;
+	}
+
 	private void requireSequence (CharSequence seq, int start, int end) {
-		int newGlyphCount = end - start;
 		if (vertexData.length == 1) {
-			require(0, newGlyphCount); // don't scan sequence if we just have one page
+			// don't scan sequence if we just have one page and markup is disabled
+			int newGlyphCount = font.markupEnabled ? countGlyphs(seq, start, end) : end - start;
+			require(0, newGlyphCount);
 		} else {
 			for (int i = 0, n = tmpGlyphCount.length; i < n; i++)
 				tmpGlyphCount[i] = 0;
 
 			// determine # of glyphs in each page
 			while (start < end) {
-				Glyph g = font.data.getGlyph(seq.charAt(start++));
+				char ch = seq.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
+						while (start < end && seq.charAt(start) != ']')
+							start++;
+						start++;
+						continue;
+					}
+					start++;
+				}
+				Glyph g = font.data.getGlyph(ch);
 				if (g == null) continue;
 				tmpGlyphCount[g.page]++;
 			}
@@ -319,9 +406,19 @@ public class BitmapFontCache {
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
 		BitmapFontData data = font.data;
+		textChanged = start < end;
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
+						color = markup.getLastColor().toFloatBits();
+						continue;
+					}
+					start++;
+				}
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
 					x += lastGlyph.xadvance;
@@ -330,6 +427,14 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
+						color = markup.getLastColor().toFloatBits();
+						continue;
+					}
+					start++;
+				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch);
@@ -341,7 +446,16 @@ public class BitmapFontCache {
 		} else {
 			float scaleX = data.scaleX, scaleY = data.scaleY;
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
+						color = markup.getLastColor().toFloatBits();
+						continue;
+					}
+					start++;
+				}
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
 						x + lastGlyph.xoffset * scaleX, //
@@ -354,6 +468,14 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
+						color = markup.getLastColor().toFloatBits();
+						continue;
+					}
+					start++;
+				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch) * scaleX;
@@ -419,6 +541,8 @@ public class BitmapFontCache {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx] = v;
+
+		charsCount++;
 	}
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.
@@ -555,17 +679,13 @@ public class BitmapFontCache {
 		int numLines = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
-			// Eat whitespace at start of line.
-			while (start < newLine) {
-				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
-				start++;
-			}
 			int lineEnd = start + font.computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
+					if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -573,6 +693,13 @@ public class BitmapFontCache {
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
+					// Eat whitespace at start of wrapped line.
+					while (nextStart < length) {
+						char c = str.charAt(nextStart);
+						if (!BitmapFont.isWhitespace(c)) break;
+						nextStart++;
+						if (c == '\n') break; // Eat only the first wrapped newline.
+					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
 						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
@@ -597,6 +724,12 @@ public class BitmapFontCache {
 		textBounds.width = maxWidth;
 		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
+	}
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
+		font.setBreakChars(breakChars);
 	}
 
 	/** Returns the size of the cached string. The height is the distance from the top of most capital letters in the font (the
@@ -636,5 +769,10 @@ public class BitmapFontCache {
 
 	public float[] getVertices (int page) {
 		return vertexData[page];
+	}
+
+	/** Count of characters currently being in cache */
+	public int getCharsCount () {
+		return charsCount;
 	}
 }

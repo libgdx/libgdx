@@ -16,11 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-public class NumberUtils {
-	/** When false, the mask in {@link #intToFloatColor(int)} will not be used. This must only be used when the resulting floats
-	 * will not be used with {@link #floatToIntColor(float)}. */
-	static public boolean intToFloatColorMask = true;
-
+public final class NumberUtils {
 	public static int floatToIntBits (float value) {
 		return Float.floatToIntBits(value);
 	}
@@ -36,7 +32,7 @@ public class NumberUtils {
 	/** Encodes the ABGR int color as a float. The high bits are masked to avoid using floats in the NaN range, which unfortunately
 	 * means the full range of alpha cannot be used. See {@link Float#intBitsToFloat(int)} javadocs. */
 	public static float intToFloatColor (int value) {
-		return Float.intBitsToFloat(intToFloatColorMask ? (value & 0xfeffffff) : value);
+		return Float.intBitsToFloat(value & 0xfeffffff);
 	}
 
 	public static float intBitsToFloat (int value) {

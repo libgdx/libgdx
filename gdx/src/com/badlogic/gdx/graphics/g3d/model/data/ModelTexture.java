@@ -30,7 +30,7 @@ public class ModelTexture {
 	public final static int USAGE_BUMP = 8;
 	public final static int USAGE_TRANSPARENCY = 9;
 	public final static int USAGE_REFLECTION = 10;
-	
+
 	public String id;
 	public String fileName;
 	public Vector2 uvTranslation;

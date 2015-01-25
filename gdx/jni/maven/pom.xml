@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.5.4-SNAPSHOT</version>
         <relativePath>../../..</relativePath>
     </parent>
     
@@ -115,10 +115,25 @@
                                 <resource><directory>${basedir}/../../libs/linux32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/desktop</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                     <execution>
+                        <id>copy-local-x86</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86</outputDirectory>
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>

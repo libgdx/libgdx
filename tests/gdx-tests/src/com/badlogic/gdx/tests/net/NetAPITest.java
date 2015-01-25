@@ -44,6 +44,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	Stage stage;
 	TextButton btnDownloadImage;
 	TextButton btnDownloadText;
+	TextButton btnDownloadLarge;
 	TextButton btnDownloadError;
 	TextButton btnPost;
 	TextButton btnCancel;
@@ -74,7 +75,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont();
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		{
@@ -106,6 +107,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 						url = "http://i.imgur.com/vxomF.jpg";
 					else if (clickedButton == btnDownloadText)
 						url = "http://www.apache.org/licenses/LICENSE-2.0.txt";
+					else if (clickedButton == btnDownloadLarge)
+						url = "http://libgdx.badlogicgames.com/releases/libgdx-1.2.0.zip";
 					else if (clickedButton == btnDownloadError)
 						url = "http://www.badlogicgames.com/doesnotexist";
 					else {
@@ -127,13 +130,16 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
-					Gdx.net.cancelHttpRequest(httpRequest);
-					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
+					if (httpRequest != null) {
+						Gdx.net.cancelHttpRequest(httpRequest);
+						Gdx.app.log("NetAPITest", "Cancelling request " + httpRequest.getUrl());
+						statusLabel.setText("Cancelling request " + httpRequest.getUrl());
+					}
 				}
 			};
 
 			btnCancel = new TextButton("Cancel", skin);
-			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.5f - btnCancel.getWidth() * 1.5f, 60f);
+			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.35f - btnCancel.getWidth() * 1.5f, 60f);
 			btnCancel.addListener(cancelListener);
 			stage.addActor(btnCancel);
 
@@ -147,8 +153,13 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			btnDownloadText.addListener(clickListener);
 			stage.addActor(btnDownloadText);
 
+			btnDownloadLarge = new TextButton("GET Large", skin);
+			btnDownloadLarge.setPosition(btnDownloadText.getX() + btnDownloadText.getWidth() + 10, 60f);
+			btnDownloadLarge.addListener(clickListener);
+			stage.addActor(btnDownloadLarge);
+
 			btnDownloadError = new TextButton("GET Error", skin);
-			btnDownloadError.setPosition(btnDownloadText.getX() + btnDownloadText.getWidth() + 10, 60f);
+			btnDownloadError.setPosition(btnDownloadLarge.getX() + btnDownloadLarge.getWidth() + 10, 60f);
 			btnDownloadError.addListener(clickListener);
 			stage.addActor(btnDownloadError);
 
@@ -187,6 +198,20 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					texture = new Texture(pixmap);
 				}
 			});
+
+		} else if (clickedButton == btnDownloadLarge) {
+			Gdx.app.postRunnable(new Runnable() {
+				public void run () {
+					text = "Retrieving large file...";
+				}
+			});
+			final byte[] rawFileBytes = httpResponse.getResult();
+			Gdx.app.postRunnable(new Runnable() {
+				public void run () {
+					text = "Retrieved large file: " + rawFileBytes.length;
+				}
+			});
+
 		} else {
 			setText(httpResponse);
 		}
@@ -245,7 +270,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -253,6 +278,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		Gdx.app.postRunnable(new Runnable() {
 			public void run () {
 				setButtonDisabled(false);
+				Gdx.app.log("NetAPITest", "HTTP request cancelled");
 				statusLabel.setText("HTTP request cancelled");
 			}
 		});

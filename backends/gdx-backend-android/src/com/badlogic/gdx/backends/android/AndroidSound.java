@@ -50,7 +50,7 @@ final class AndroidSound implements Sound {
 		int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
 		// standardise error code with other backends
 		if (streamId == 0) return -1;
-		streamIds.add(streamId);
+		streamIds.insert(0, streamId);
 		return streamId;
 	}
 
@@ -105,7 +105,7 @@ final class AndroidSound implements Sound {
 		int streamId = soundPool.play(soundId, volume, volume, 1, -1, 1);
 		// standardise error code with other backends
 		if (streamId == 0) return -1;
-		streamIds.add(streamId);
+		streamIds.insert(0, streamId);
 		return streamId;
 	}
 
@@ -141,7 +141,7 @@ final class AndroidSound implements Sound {
 		int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, 0, pitch);
 		// standardise error code with other backends
 		if (streamId == 0) return -1;
-		streamIds.add(streamId);
+		streamIds.insert(0, streamId);
 		return streamId;
 	}
 
@@ -158,7 +158,7 @@ final class AndroidSound implements Sound {
 		int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, -1, pitch);
 		// standardise error code with other backends
 		if (streamId == 0) return -1;
-		streamIds.add(streamId);
+		streamIds.insert(0, streamId);
 		return streamId;
 	}
 

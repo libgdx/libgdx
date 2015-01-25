@@ -23,26 +23,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 
-/**
- * Used by {@link Model} to load textures from {@link ModelData}.
- * @author badlogic
- *
- */
+/** Used by {@link Model} to load textures from {@link ModelData}.
+ * @author badlogic */
 public interface TextureProvider {
-	public Texture load(String fileName);
-	
+	public Texture load (String fileName);
+
 	public static class FileTextureProvider implements TextureProvider {
 		@Override
 		public Texture load (String fileName) {
-			return new Texture(Gdx.files.internal(fileName));
+			Texture result = new Texture(Gdx.files.internal(fileName));
+			result.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			result.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+			return result;
 		}
 	}
-	
+
 	public static class AssetTextureProvider implements TextureProvider {
 		public final AssetManager assetManager;
-		public AssetTextureProvider(final AssetManager assetManager) {
+
+		public AssetTextureProvider (final AssetManager assetManager) {
 			this.assetManager = assetManager;
 		}
+
 		@Override
 		public Texture load (String fileName) {
 			return assetManager.get(fileName, Texture.class);

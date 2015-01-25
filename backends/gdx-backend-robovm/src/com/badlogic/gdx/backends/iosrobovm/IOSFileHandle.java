@@ -31,11 +31,13 @@ public class IOSFileHandle extends FileHandle {
 		super(file, type);
 	}
 
+	@Override
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new IOSFileHandle(new File(name), type);
 		return new IOSFileHandle(new File(file, name), type);
 	}
 
+	@Override
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
@@ -47,11 +49,13 @@ public class IOSFileHandle extends FileHandle {
 		return new IOSFileHandle(parent, type);
 	}
 
+	@Override
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new IOSFileHandle(new File(file.getParent(), name), type);
 	}
 
+	@Override
 	public File file () {
 		if (type == FileType.Internal) return new File(IOSFiles.internalPath, file.getPath());
 		if (type == FileType.External) return new File(IOSFiles.externalPath, file.getPath());

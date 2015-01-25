@@ -147,6 +147,7 @@ public class PolygonSprite {
 	}
 
 	public void setColor (Color tint) {
+		color.set(tint);
 		float color = tint.toFloatBits();
 
 		final float[] vertices = this.vertices;
@@ -155,6 +156,7 @@ public class PolygonSprite {
 	}
 
 	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
 		final float[] vertices = this.vertices;
@@ -311,6 +313,12 @@ public class PolygonSprite {
 	/** Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
 	 * {@link #setColor(float, float, float, float)} must be used. */
 	public Color getColor () {
+		return color;
+	}
+
+	/** Returns the actual color used in the vertices of this sprite. Changing the returned color will have no affect,
+	 * {@link #setColor(Color)} or {@link #setColor(float, float, float, float)} must be used. */
+	public Color getVertexColor () {
 		int intBits = NumberUtils.floatToIntColor(vertices[2]);
 		Color color = this.color;
 		color.r = (intBits & 0xff) / 255f;
@@ -337,5 +345,9 @@ public class PolygonSprite {
 		}
 
 		dirty = true;
+	}
+
+	public PolygonRegion getRegion () {
+		return region;
 	}
 }

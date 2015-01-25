@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.math;
 
-public class Polyline {
+public class Polyline implements Shape2D {
 	private final float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -28,7 +28,7 @@ public class Polyline {
 	private boolean calculateScaledLength = true;
 	private boolean calculateLength = true;
 	private boolean dirty = true;
-	
+
 	public Polyline () {
 		this.localVertices = new float[0];
 	}
@@ -37,12 +37,12 @@ public class Polyline {
 		if (vertices.length < 4) throw new IllegalArgumentException("polylines must contain at least 2 points.");
 		this.localVertices = vertices;
 	}
-	
+
 	/** Returns vertices without scaling or rotation and without being offset by the polyline position. */
 	public float[] getVertices () {
 		return localVertices;
 	}
-	
+
 	/** Returns vertices scaled, rotated, and offset by the polygon position. */
 	public float[] getTransformedVertices () {
 		if (!dirty) return worldVertices;
@@ -85,37 +85,37 @@ public class Polyline {
 		}
 		return worldVertices;
 	}
-	
-	/** Returns the euclidian length of the polyline without scaling */
+
+	/** Returns the euclidean length of the polyline without scaling */
 	public float getLength () {
 		if (!calculateLength) return length;
 		calculateLength = false;
-		
+
 		length = 0;
-		for (int i = 0, n = localVertices.length - 2; i < n ; i += 2) {
-			float x = localVertices[i + 2] -  localVertices[i];
-			float y = localVertices[i + 1] -  localVertices[i + 3];
+		for (int i = 0, n = localVertices.length - 2; i < n; i += 2) {
+			float x = localVertices[i + 2] - localVertices[i];
+			float y = localVertices[i + 1] - localVertices[i + 3];
 			length += (float)Math.sqrt(x * x + y * y);
 		}
-		
+
 		return length;
 	}
-	
-	/** Returns the euclidian length of the polyline */
+
+	/** Returns the euclidean length of the polyline */
 	public float getScaledLength () {
 		if (!calculateScaledLength) return scaledLength;
 		calculateScaledLength = false;
-		
+
 		scaledLength = 0;
-		for (int i = 0, n = localVertices.length - 2; i < n ; i += 2) {
+		for (int i = 0, n = localVertices.length - 2; i < n; i += 2) {
 			float x = localVertices[i + 2] * scaleX - localVertices[i] * scaleX;
 			float y = localVertices[i + 1] * scaleY - localVertices[i + 3] * scaleY;
 			scaledLength += (float)Math.sqrt(x * x + y * y);
 		}
-		
+
 		return scaledLength;
 	}
-	
+
 	public float getX () {
 		return x;
 	}
@@ -149,13 +149,13 @@ public class Polyline {
 		this.originY = originY;
 		dirty = true;
 	}
-	
+
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
 		dirty = true;
 	}
-	
+
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
 		dirty = true;
@@ -183,11 +183,11 @@ public class Polyline {
 	public void calculateLength () {
 		calculateLength = true;
 	}
-	
+
 	public void calculateScaledLength () {
 		calculateScaledLength = true;
 	}
-	
+
 	public void dirty () {
 		dirty = true;
 	}

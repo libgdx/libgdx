@@ -22,6 +22,7 @@
 			<fileset dir="../libs/linux32" includes="libgdx-controllers-desktop.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-controllers-desktop64.so"/>
 			<fileset dir="../libs/macosx32" includes="libgdx-controllers-desktop.dylib"/>
+			<fileset dir="../libs/macosx64" includes="libgdx-controllers-desktop64.dylib"/>
 
 		</jar>
 	</target>

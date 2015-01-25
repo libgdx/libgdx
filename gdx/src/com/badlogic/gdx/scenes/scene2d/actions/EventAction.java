@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -16,7 +17,7 @@ abstract public class EventAction<T extends Event> extends Action {
 	private final EventListener listener = new EventListener() {
 		public boolean handle (Event event) {
 			if (!active || !ClassReflection.isInstance(eventClass, event)) return false;
-			result = EventAction.this.handle((T) event);
+			result = EventAction.this.handle((T)event);
 			return result;
 		}
 	};
@@ -30,10 +31,10 @@ abstract public class EventAction<T extends Event> extends Action {
 		active = false;
 	}
 
-	public void setActor (Actor actor) {
-		if (getActor() != null) getActor().removeListener(listener);
-		super.setActor(actor);
-		if (actor != null) actor.addListener(listener);
+	public void setTarget (Actor newTarget) {
+		if (target != null) target.removeListener(listener);
+		super.setTarget(newTarget);
+		if (newTarget != null) newTarget.addListener(listener);
 	}
 
 	/** Called when the specific type of event occurs on the actor.

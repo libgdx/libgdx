@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.5.4-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -20,6 +20,12 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>gdx-backend-lwjgl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-backend-headless</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -125,6 +131,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 

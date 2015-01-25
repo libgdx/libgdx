@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -26,9 +27,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
+	private Stage stage;
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
@@ -41,8 +47,30 @@ public class BitmapFontTest extends GdxTest {
 
 		multiPageFont = new BitmapFont(Gdx.files.internal("data/multipagefont.fnt"));
 
+		// Add user defined color
+		Colors.put("PERU", Color.valueOf("CD853F"));
+
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+
+		stage = new Stage();
+
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+		BitmapFont labelFont = skin.get("default-font", BitmapFont.class);
+		labelFont.setMarkupEnabled(true);
+
+		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations.
+		// They are silently ignored, as expected.
+		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[GREEN]t[OLIVE]ic[]o[]l[]o[]r[]*[MAROON]Label[][]>>", skin);
+
+		label.setPosition(200, 200);
+		stage.addActor(label);
+
+		Window window = new Window("[RED]Multicolor[GREEN] Title", skin);
+		window.setPosition(400, 200);
+		window.pack();
+		stage.addActor(window);
 	}
 
 	@Override
@@ -99,13 +127,21 @@ public class BitmapFontTest extends GdxTest {
 		cache.clear();
 		cache.setColor(Color.BLACK);
 		float textX = 10;
-		textX += cache.setText("black ", textX, 150).width;
-		cache.setColor(Color.PINK);
-		textX += cache.addText("pink ", textX, 150).width;
-		cache.setColor(Color.ORANGE);
-		textX += cache.addText("orange ", textX, 150).width;
+		textX += cache.setText("[black] ", textX, 150).width;
+		multiPageFont.setMarkupEnabled(true);
+		textX += cache.addText("[[[PINK]pink[]] ", textX, 150).width;
+		textX += cache.addText("[PERU][[peru] ", textX, 150).width;
 		cache.setColor(Color.GREEN);
 		textX += cache.addText("green ", textX, 150).width;
+		textX += cache.addText("[#A52A2A]br[#A52A2ADF]ow[#A52A2ABF]n f[#A52A2A9F]ad[#A52A2A7F]in[#A52A2A5F]g o[#A52A2A3F]ut ",
+			textX, 150).width;
+		multiPageFont.setMarkupEnabled(false);
+
+		cache.draw(spriteBatch);
+
+		// tinting
+		cache.tint(new Color(1f, 1f, 1f, 0.3f));
+		cache.translate(0f, 40f);
 		cache.draw(spriteBatch);
 
 		spriteBatch.end();
@@ -115,6 +151,9 @@ public class BitmapFontTest extends GdxTest {
 		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
+
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 	}
 
 	@Override
@@ -122,5 +161,8 @@ public class BitmapFontTest extends GdxTest {
 		spriteBatch.dispose();
 		renderer.dispose();
 		font.dispose();
+
+		// Restore predefined colors
+		Colors.reset();
 	}
 }

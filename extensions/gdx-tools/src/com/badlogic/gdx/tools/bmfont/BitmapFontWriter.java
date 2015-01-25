@@ -212,7 +212,7 @@ public class BitmapFontWriter {
 		// CHAR definitions
 		for (int i = 0; i < glyphs.size; i++) {
 			Glyph g = glyphs.get(i);
-			buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-5s", g.id), true)).append("x=")
+			buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-6s", g.id), true)).append("x=")
 				.append(quote(String.format("%-5s", g.srcX), true)).append("y=").append(quote(String.format("%-5s", g.srcY), true))
 				.append("width=").append(quote(String.format("%-5s", g.width), true)).append("height=")
 				.append(quote(String.format("%-5s", g.height), true)).append("xoffset=")

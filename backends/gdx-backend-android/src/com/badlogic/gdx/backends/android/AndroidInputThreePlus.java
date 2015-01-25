@@ -25,10 +25,11 @@ import android.view.View.OnGenericMotionListener;
 
 import com.badlogic.gdx.Application;
 
-/** Subclass of AndroidInput, used on Androd +3.x to get generic motion events for things like gampads/joysticks and so on.
+/** Subclass of AndroidInput, used on Android +3.x to get generic motion events for things like gamepads/joysticks and so on.
  * @author mzechner */
 public class AndroidInputThreePlus extends AndroidInput implements OnGenericMotionListener {
 	ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
+	private final AndroidMouseHandler mouseHandler;
 
 	public AndroidInputThreePlus (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		super(activity, context, view, config);
@@ -38,10 +39,12 @@ public class AndroidInputThreePlus extends AndroidInput implements OnGenericMoti
 			View v = (View)view;
 			v.setOnGenericMotionListener(this);
 		}
+		mouseHandler = new AndroidMouseHandler();
 	}
 
 	@Override
 	public boolean onGenericMotion (View view, MotionEvent event) {
+		if (mouseHandler.onGenericMotion(event, this)) return true;
 		for (int i = 0, n = genericMotionListeners.size(); i < n; i++)
 			if (genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
 		return false;

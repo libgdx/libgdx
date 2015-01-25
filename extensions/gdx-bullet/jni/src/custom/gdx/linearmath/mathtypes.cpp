@@ -1,4 +1,6 @@
 #include "mathtypes.h"
+#include <stdio.h>
+#include <string.h>
 
 ////////////////////////////////
 //////// btVector3      ////////
@@ -159,7 +161,10 @@ void btTransform_to_Matrix4(JNIEnv * const &jenv, jobject &target, const btTrans
 	jfloatArray valArray = (jfloatArray) jenv->GetObjectField(target, matrix4_val);
 	jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
 
-	source.getOpenGLMatrix(elements);
+    ATTRIBUTE_ALIGNED16(btScalar dst[16]);
+	source.getOpenGLMatrix(dst);
+    
+    memcpy(elements, dst, sizeof(btScalar)*16);
 	
 	jenv->ReleaseFloatArrayElements(valArray, elements, 0);
 	jenv->DeleteLocalRef(valArray);

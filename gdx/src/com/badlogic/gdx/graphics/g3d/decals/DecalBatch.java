@@ -61,11 +61,11 @@ public class DecalBatch implements Disposable {
 	};
 	private final Array<Array<Decal>> usedGroups = new Array<Array<Decal>>(16);
 
-	/** Creates a new batch using the {@link DefaultGroupStrategy} */
-	public DecalBatch () {
-		this(DEFAULT_SIZE, new DefaultGroupStrategy());
-	}
-
+	/**
+	 * Creates a new DecalBatch using the given {@link GroupStrategy}. The most
+	 * commong strategy to use is a {@link CameraGroupStrategy}
+	 * @param groupStrategy
+	 */
 	public DecalBatch (GroupStrategy groupStrategy) {
 		this(DEFAULT_SIZE, groupStrategy);
 	}

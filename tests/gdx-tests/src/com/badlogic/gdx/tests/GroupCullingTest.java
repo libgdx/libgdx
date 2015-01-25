@@ -36,7 +36,7 @@ public class GroupCullingTest extends GdxTest {
 	int drawn;
 
 	public void create () {
-		stage = new Stage(0, 0, true);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		root = new Table();
@@ -68,7 +68,7 @@ public class GroupCullingTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, true);
+		stage.getViewport().update(width, height, true);
 		root.invalidate();
 	}
 

@@ -32,9 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -86,7 +86,7 @@ public class MipMapTest extends GdxTest {
 
 	private void createUI () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		ui = new Stage();
 
 		String[] filters = new String[TextureFilter.values().length];
 		int idx = 0;

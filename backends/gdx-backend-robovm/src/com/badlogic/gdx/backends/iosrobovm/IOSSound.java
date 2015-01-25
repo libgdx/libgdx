@@ -16,34 +16,44 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.robovm.apple.foundation.NSArray;
+
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALBuffer;
+import com.badlogic.gdx.backends.iosrobovm.objectal.ALChannelSource;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALSource;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.IntArray;
 
 /** @author tescott
+ *  @author Tomski
  * 
  *         First pass at implementing OALSimpleAudio support. */
 public class IOSSound implements Sound {
 
-	private ALSource soundSource;
 	private ALBuffer soundBuffer;
 	private String soundPath;
-
+	
+	private ALChannelSource channel;
+	private NSArray<ALSource> sourcePool;
+	private IntArray streamIds = new IntArray(8);
+	
 	public IOSSound (FileHandle filePath) {
 		soundPath = filePath.file().getPath().replace('\\', '/');
 		soundBuffer = OALSimpleAudio.sharedInstance().preloadEffect(soundPath);
+		channel = OALSimpleAudio.sharedInstance().getChannelSource();
+		sourcePool = channel.getSourcePool().getSources();
 	}
 
 	@Override
 	public long play () {
-		return play(1, 1, 1, false);
+		return play(1, 1, 0, false);
 	}
 
 	@Override
 	public long play (float volume) {
-		return play(volume, 1, 1, false);
+		return play(volume, 1, 0, false);
 	}
 
 	@Override
@@ -52,18 +62,21 @@ public class IOSSound implements Sound {
 	}
 
 	public long play (float volume, float pitch, float pan, boolean loop) {
-		soundSource = OALSimpleAudio.sharedInstance().playEffect(soundPath, volume, pitch, pan, loop);
-		return 0;
+		if (streamIds.size == 8) streamIds.pop();
+		ALSource soundSource = OALSimpleAudio.sharedInstance().playEffect(soundPath, volume, pitch, pan, loop);
+		if (soundSource.getSourceId() == -1) return -1;
+		streamIds.insert(0, soundSource.getSourceId());
+		return soundSource.getSourceId();
 	}
 
 	@Override
 	public long loop () {
-		return play(1, 1, 1, true);
+		return play(1, 1, 0, true);
 	}
 
 	@Override
 	public long loop (float volume) {
-		return play(volume, 1, 1, true);
+		return play(volume, 1, 0, true);
 	}
 
 	@Override
@@ -73,7 +86,10 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void stop () {
-		if (soundSource != null) soundSource.stop();
+		ALSource source;
+		for (int i = 0; i < streamIds.size; i++) {
+			if ((source = getSoundSource(streamIds.get(i))) != null) source.stop();
+		}
 	}
 
 	@Override
@@ -83,58 +99,74 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void stop (long soundId) {
-		// we should do something to give an id for each sound.
-		stop();
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.stop();
 	}
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
-		// TODO Auto-generated method stub
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.setLooping(looping);
 	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {
-		// TODO Auto-generated method stub
-
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.setPitch(pitch);
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
-		// TODO Auto-generated method stub
-
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.setVolume(volume);
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
-		// TODO Auto-generated method stub
-
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) {
+			source.setPan(pan);
+			source.setVolume(volume);
+		}
 	}
 
 	@Override
 	public void setPriority (long soundId, int priority) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause () {
-		if (soundSource != null) soundSource.setPaused(true);
+		ALSource source;
+		for (int i = 0; i < streamIds.size; i++) {
+			if ((source = getSoundSource(streamIds.get(i))) != null) source.setPaused(true);
+		}
 	}
 
 	@Override
 	public void resume () {
-		if (soundSource != null) soundSource.setPaused(false);
+		ALSource source;
+		for (int i = 0; i < streamIds.size; i++) {
+			if ((source = getSoundSource(streamIds.get(i))) != null) source.setPaused(false);
+		}
 	}
 
 	@Override
 	public void pause (long soundId) {
-		// we should do something to give an id for each sound.
-		pause();
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.setPaused(true);
 	}
 
 	@Override
 	public void resume (long soundId) {
-		// we should do something to give an id for each sound.
-		resume();
+		ALSource source;
+		if ((source = getSoundSource(soundId)) != null) source.setPaused(false);
+	}
+	
+	private ALSource getSoundSource (long soundId) {	
+		for (ALSource source : sourcePool) {
+			if (source.getSourceId() == soundId) return source;			
+		}
+		return null;
 	}
 }

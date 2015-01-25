@@ -16,18 +16,14 @@
 
 package com.badlogic.gdx.files;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +32,12 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -158,9 +160,11 @@ public class FileHandle {
 	/** Returns a reader for reading this file as characters.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
+		InputStream stream = read();
 		try {
-			return new InputStreamReader(read(), charset);
+			return new InputStreamReader(stream, charset);
 		} catch (UnsupportedEncodingException ex) {
+			StreamUtils.closeQuietly(stream);
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
@@ -335,7 +339,7 @@ public class FileHandle {
 		writeString(string, append, null);
 	}
 
-	/** Writes the specified string to the file as UTF-8. Parent directories will be created if necessary.
+	/** Writes the specified string to the file using the specified charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -393,6 +397,59 @@ public class FileHandle {
 		FileHandle[] handles = new FileHandle[relativePaths.length];
 		for (int i = 0, n = relativePaths.length; i < n; i++)
 			handles[i] = child(relativePaths[i]);
+		return handles;
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @param filter the {@link FileFilter} to filter files
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FileFilter filter) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		File file = file();
+		String[] relativePaths = file.list();
+		if (relativePaths == null) return new FileHandle[0];
+		FileHandle[] handles = new FileHandle[relativePaths.length];
+		int count = 0;
+		for (int i = 0, n = relativePaths.length; i < n; i++) {
+			String path = relativePaths[i];
+			FileHandle child = child(path);
+			if (!filter.accept(child.file())) continue;
+			handles[count] = child;
+			count++;
+		}
+		if (count < relativePaths.length) {
+			FileHandle[] newHandles = new FileHandle[count];
+			System.arraycopy(handles, 0, newHandles, 0, count);
+			handles = newHandles;
+		}
+		return handles;
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @param filter the {@link FilenameFilter} to filter files
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FilenameFilter filter) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		File file = file();
+		String[] relativePaths = file.list();
+		if (relativePaths == null) return new FileHandle[0];
+		FileHandle[] handles = new FileHandle[relativePaths.length];
+		int count = 0;
+		for (int i = 0, n = relativePaths.length; i < n; i++) {
+			String path = relativePaths[i];
+			if (!filter.accept(file, path)) continue;
+			handles[count] = child(path);
+			count++;
+		}
+		if (count < relativePaths.length) {
+			FileHandle[] newHandles = new FileHandle[count];
+			System.arraycopy(handles, 0, newHandles, 0, count);
+			handles = newHandles;
+		}
 		return handles;
 	}
 

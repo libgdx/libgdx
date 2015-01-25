@@ -20,33 +20,25 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
 
-/**
- * @brief Collection of TiledMapTileSet
- */
+/** @brief Collection of {@link TiledMapTileSet} */
 public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
-	
+
 	private Array<TiledMapTileSet> tilesets;
-	
-	/**
-	 * Creates empty collection of tilesets
-	 */
-	public TiledMapTileSets() {
+
+	/** Creates an empty collection of tilesets. */
+	public TiledMapTileSets () {
 		tilesets = new Array<TiledMapTileSet>();
 	}
-	
-	/**
-	 * @param index
-	 * @return tileset at index
-	 */
-	public TiledMapTileSet getTileSet(int index) {
+
+	/** @param index index to get the desired {@link TiledMapTileSet} at.
+	 * @return tileset at index */
+	public TiledMapTileSet getTileSet (int index) {
 		return tilesets.get(index);
 	}
-	
-	/**
-	 * @param name
-	 * @return tileset with matching name, null if it doesn't exist
-	 */
-	public TiledMapTileSet getTileSet(String name) {
+
+	/** @param name Name of the {@link TiledMapTileSet} to retrieve.
+	 * @return tileset with matching name, null if it doesn't exist */
+	public TiledMapTileSet getTileSet (String name) {
 		for (TiledMapTileSet tileset : tilesets) {
 			if (name.equals(tileset.getName())) {
 				return tileset;
@@ -54,35 +46,27 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 		}
 		return null;
 	}
-	
-	/**
-	 * @param tileset set to be added to the collection
-	 */
-	public void addTileSet(TiledMapTileSet tileset) {
+
+	/** @param tileset set to be added to the collection */
+	public void addTileSet (TiledMapTileSet tileset) {
 		tilesets.add(tileset);
 	}
-	
-	/**
-	 * Removes tileset at index
+
+	/** Removes tileset at index
 	 * 
-	 * @param index
-	 */
-	public void removeTileSet(int index) {
+	 * @param index index at which to remove a tileset. */
+	public void removeTileSet (int index) {
 		tilesets.removeIndex(index);
 	}
-	
-	/**
-	 * @param tileset set to be removed
-	 */
-	public void removeTileSet(TiledMapTileSet tileset) {
+
+	/** @param tileset set to be removed */
+	public void removeTileSet (TiledMapTileSet tileset) {
 		tilesets.removeValue(tileset, true);
 	}
-	
-	/**
-	 * @param id
-	 * @return tile with matching id, null if it doesn't exist
-	 */
-	public TiledMapTile getTile(int id) {
+
+	/** @param id id of the {@link TiledMapTile} to get.
+	 * @return tile with matching id, null if it doesn't exist */
+	public TiledMapTile getTile (int id) {
 		for (TiledMapTileSet tileset : tilesets) {
 			TiledMapTile tile = tileset.getTile(id);
 			if (tile != null) {
@@ -91,13 +75,11 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 		}
 		return null;
 	}
-	
-	/**
-	 * @return iterator to tilesets
-	 */
+
+	/** @return iterator to tilesets */
 	@Override
-	public Iterator<TiledMapTileSet> iterator() {
+	public Iterator<TiledMapTileSet> iterator () {
 		return tilesets.iterator();
 	}
-	
+
 }

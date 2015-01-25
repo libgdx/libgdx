@@ -42,14 +42,16 @@ public class HieroSettings {
 	private String glyphText = "";
 	private final List effects = new ArrayList();
 	private boolean nativeRendering;
-
+	private boolean font2Active = false;
+	private String font2File = "";
+	
 	public HieroSettings () {
 	}
 
 	/** @param hieroFileRef The file system or classpath location of the Hiero settings file. */
 	public HieroSettings (String hieroFileRef) {
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read(), "UTF-8"));
 			while (true) {
 				String line = reader.readLine();
 				if (line == null) break;
@@ -66,6 +68,10 @@ public class HieroSettings {
 					bold = Boolean.parseBoolean(value);
 				} else if (name.equals("font.italic")) {
 					italic = Boolean.parseBoolean(value);
+				} else if (name.equals("font2.file")) {
+					font2File = value;
+				} else if (name.equals("font2.use")) {
+					font2Active = Boolean.parseBoolean(value);
 				} else if (name.equals("pad.top")) {
 					paddingTop = Integer.parseInt(value);
 				} else if (name.equals("pad.right")) {
@@ -262,14 +268,33 @@ public class HieroSettings {
 		this.glyphText = text.replace("\n", "\\n");
 	}
 
+	public String getFont2File () {
+		return font2File;
+	}
+
+	public void setFont2File (String filename) {
+		this.font2File = filename;
+	}
+
+	public boolean isFont2Active () {
+		return font2Active;
+	}
+
+	public void setFont2Active (boolean active) {
+		this.font2Active = active;
+	}
+
 	/** Saves the settings to a file.
 	 * @throws IOException if the file could not be saved. */
 	public void save (File file) throws IOException {
-		PrintStream out = new PrintStream(new FileOutputStream(file));
+		PrintStream out = new PrintStream(file, "UTF-8");
 		out.println("font.name=" + fontName);
 		out.println("font.size=" + fontSize);
 		out.println("font.bold=" + bold);
 		out.println("font.italic=" + italic);
+		out.println();
+		out.println("font2.file=" + font2File);
+		out.println("font2.use=" + font2Active);
 		out.println();
 		out.println("pad.top=" + paddingTop);
 		out.println("pad.right=" + paddingRight);

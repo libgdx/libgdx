@@ -24,25 +24,25 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
 	public final DefaultShader.Config config;
-	
-	public DefaultShaderProvider(final DefaultShader.Config config) {
+
+	public DefaultShaderProvider (final DefaultShader.Config config) {
 		this.config = (config == null) ? new DefaultShader.Config() : config;
 	}
-	
-	public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
+
+	public DefaultShaderProvider (final String vertexShader, final String fragmentShader) {
 		this(new DefaultShader.Config(vertexShader, fragmentShader));
 	}
-	
-	public DefaultShaderProvider(final FileHandle vertexShader, final FileHandle fragmentShader) {
+
+	public DefaultShaderProvider (final FileHandle vertexShader, final FileHandle fragmentShader) {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
-	
-	public DefaultShaderProvider() {
+
+	public DefaultShaderProvider () {
 		this(null);
 	}
-	
+
 	@Override
-	protected Shader createShader(final Renderable renderable) {
-	   return new DefaultShader(renderable, config);
+	protected Shader createShader (final Renderable renderable) {
+		return new DefaultShader(renderable, config);
 	}
 }
