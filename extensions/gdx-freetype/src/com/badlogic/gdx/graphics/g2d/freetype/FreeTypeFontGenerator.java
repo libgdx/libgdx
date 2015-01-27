@@ -443,11 +443,13 @@ public class FreeTypeFontGenerator implements Disposable {
 				mainPixmap.setColor(Color.CLEAR);
 				mainPixmap.fill();
 				ByteBuffer buf = mainBitmap.getBuffer();
+				int whiteIntBits = Color.WHITE.toIntBits();
+				int clearIntBits = Color.CLEAR.toIntBits();
 				for (int h = 0; h < glyph.height; h++) {
 					int idx = h * mainBitmap.getPitch();
 					for (int w = 0; w < (glyph.width + glyph.xoffset); w++) {
 						int bit = (buf.get(idx + (w / 8)) >>> (7 - (w % 8))) & 1;
-						mainPixmap.drawPixel(w, h, ((bit == 1) ? Color.WHITE.toIntBits() : Color.CLEAR.toIntBits()));
+						mainPixmap.drawPixel(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
 					}
 				}
 

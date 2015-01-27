@@ -602,16 +602,25 @@ public class FreeType {
 		}
 
 		public Pixmap getPixmap(Format format, Color color) {
-			Pixmap pixmap = new Pixmap(getWidth(), getRows(), Format.RGBA8888);
+			int width = getWidth();
 			ByteBuffer src = getBuffer();
-			int srcPitch = getPitch();
-			IntBuffer dst = pixmap.getPixels().asIntBuffer();
-			for (int y = 0; y < getRows(); y++) {
-				for (int x = 0; x < getWidth(); x++) {
-					//use the color value of the foreground color, blend alpha
-					byte alpha = src.get(y*srcPitch + x);
-					int srcRGBA = Color.rgba8888(color);
-					dst.put(y*getWidth() + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * (alpha & 0xff)/255f));
+			Pixmap pixmap;
+			if (color == Color.WHITE) {
+				pixmap = new Pixmap(width, getRows(), Format.Alpha);
+				BufferUtils.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
+			} else {
+				pixmap = new Pixmap(width, getRows(), Format.RGBA8888);
+				int srcPitch = getPitch();
+				int srcRGBA = Color.rgba8888(color);
+				IntBuffer dst = pixmap.getPixels().asIntBuffer();
+				for (int y = 0; y < getRows(); y++) {
+					int ySrcPitch = y * srcPitch;
+					int yWidth = y * width;
+					for (int x = 0; x < width; x++) {
+						//use the color value of the foreground color, blend alpha
+						byte alpha = src.get(ySrcPitch + x);
+						dst.put(yWidth + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * (alpha & 0xff)/255f));
+					}
 				}
 			}
 
