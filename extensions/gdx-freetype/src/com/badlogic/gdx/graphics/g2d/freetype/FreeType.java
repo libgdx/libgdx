@@ -625,7 +625,7 @@ public class FreeType {
 			}
 
 			Pixmap converted = pixmap;
-			if (format != Format.RGBA8888) {
+			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
 				Blending blending = Pixmap.getBlending();
 				Pixmap.setBlending(Blending.None);
