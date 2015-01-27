@@ -16,42 +16,27 @@
 
 package com.badlogic.gdx.maps.tiled;
 
-import java.io.IOException;
-import java.util.StringTokenizer;
-
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import java.io.IOException;
 
 /** @brief synchronous loader for TMX maps created with the Tiled tool */
 public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
@@ -91,11 +76,15 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
-			for (FileHandle textureFile : loadTilesets(root, tmxFile)) {
+			Array<FileHandle> textureFiles = loadTilesets(root, tmxFile);
+			textureFiles.addAll(loadImages(root, tmxFile));
+			
+			for (FileHandle textureFile : textureFiles) {
 				Texture texture = new Texture(textureFile, parameters.generateMipMaps);
 				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
 				textures.put(textureFile.path(), texture);
 			}
+
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile, imageResolver);
 			map.setOwnedResources(textures.values().toArray());
@@ -144,6 +133,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				texParams.magFilter = parameter.textureMagFilter;
 			}
 			for (FileHandle image : loadTilesets(root, tmxFile)) {
+				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
+			}
+			for (FileHandle image : loadImages(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
 			}
 			return dependencies;
@@ -200,6 +192,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			} else if (name.equals("objectgroup")) {
 				loadObjectGroup(map, element);
 			}
+			else if (name.equals("imagelayer")) {
+				loadImageLayer(map, element, tmxFile, imageResolver);
+			}
 		}
 		return map;
 	}
@@ -242,6 +237,29 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				}
 			}
 		}
+		return images;
+	}
+	
+	/** Loads the images in image layers
+	 * @param root the root XML element
+	 * @return a list of filenames for images inside image layers
+	 * @throws IOException */
+	protected Array<FileHandle> loadImages (Element root, FileHandle tmxFile) throws IOException {
+		Array<FileHandle> images = new Array<FileHandle>();
+		
+		for (Element imageLayer : root.getChildrenByName("imagelayer")) {
+			Element image = imageLayer.getChildByName("image");
+			String source = image.getAttribute("source", null);
+
+			if (source != null) {
+				FileHandle handle = getRelativeFileHandle(tmxFile, source);
+				
+				if (!images.contains(handle, false)) {
+					images.add(handle);
+				}
+			}
+		}
+		
 		return images;
 	}
 

@@ -154,7 +154,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 						vertices[V4] = tempV;
 						break;
 					}
-					batch.draw(region.getTexture(), vertices, 0, 20);
+					batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
 				}
 			}
 		}

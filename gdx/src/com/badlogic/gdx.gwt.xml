@@ -268,6 +268,7 @@
 		<include name="maps/tiled/TiledMapTileLayer.java"/>
 		<include name="maps/tiled/TiledMapTileSet.java"/>
 		<include name="maps/tiled/TiledMapTileSets.java"/>
+		<include name="maps/tiled/TiledMapImageLayer.java"/>
 		<include name="maps/tiled/TmxMapHelper.java"/>
 		<include name="maps/tiled/TmxMapLoader.java"/>
 		

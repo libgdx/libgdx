@@ -177,7 +177,7 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 						}
 						}
 					}
-					batch.draw(region.getTexture(), vertices, 0, 20);
+					batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
 				}
 			}
 		}
