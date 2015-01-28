@@ -120,8 +120,11 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
 	protected void loadImageLayer (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
+			String mapOrientation = (String)map.getProperties().get("orientation");
 			int x = Integer.parseInt(element.getAttribute("x", "0"));
-			int y = mapHeightInPixels - Integer.parseInt(element.getAttribute("y", "0"));
+			int y = ((mapOrientation != null && mapOrientation.equals("staggered")) ? (mapHeightInPixels >> 1)
+				: mapHeightInPixels)
+				- Integer.parseInt(element.getAttribute("y", "0"));
 			TextureRegion texture = null;
 
 			Element image = element.getChildByName("image");
