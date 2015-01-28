@@ -54,7 +54,7 @@ abstract public class Action implements Poolable {
 	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#begin(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
-		if (target == null) target = actor;
+		if (target == null) setTarget(actor);
 		if (actor == null) {
 			if (pool != null) {
 				pool.free(this);
