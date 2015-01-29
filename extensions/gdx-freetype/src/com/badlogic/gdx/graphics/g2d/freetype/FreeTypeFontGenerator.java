@@ -16,10 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -35,14 +38,13 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType font files.</p>
  * 
@@ -101,18 +103,18 @@ public class FreeTypeFontGenerator implements Disposable {
 		filePath = font.pathWithoutExtension();
 		library = FreeType.initFreeType();
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
-		face = FreeType.newFace(library, font, 0);
+		face = library.newFace(font, 0);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font '" + font + "'");
 		if (checkForBitmapFont()) {
 			return;
 		}
-		if (!FreeType.setPixelSizes(face, 0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
+		if (!face.setPixelSizes(0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
 	}
 
 	private boolean checkForBitmapFont () {
 		if (((face.getFaceFlags() & FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
 			&& ((face.getFaceFlags() & FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL)) {
-			if (FreeType.loadChar(face, 32, FreeType.FT_LOAD_DEFAULT)) {
+			if (face.loadChar(32, FreeType.FT_LOAD_DEFAULT)) {
 				GlyphSlot slot = face.getGlyph();
 				if (slot.getFormat() == 1651078259) {
 					bitmapped = true;
@@ -159,7 +161,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
 	public int scaleForPixelHeight (int height) {
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
@@ -176,7 +178,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		int descent = FreeType.toInt(fontMetrics.getDescender());
 		int unscaledHeight = ascent - descent;
 		int height = unscaledHeight * width / (advance * numChars);
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
 		return height;
 	}
 	
@@ -196,19 +198,19 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Returns null if glyph was not found. If there is nothing to render, for example with various space characters, then bitmap
 	 * is null. */
 	public GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
 
 		// Check if character exists in this font.
 		// 0 means 'undefined character code'
-		if (FreeType.getCharIndex(face, c) == 0) {
+		if (face.getCharIndex(c) == 0) {
 			return null;
 		}
 
 		// Try to load character
-		if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+		if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 			throw new GdxRuntimeException("Unable to load character!");
 		}
 
@@ -218,7 +220,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Bitmap bitmap;
 		if (bitmapped) {
 			bitmap = slot.getBitmap();
-		} else if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
+		} else if (!slot.renderGlyph(FreeType.FT_RENDER_MODE_LIGHT)) {
 			bitmap = null;
 		} else {
 			bitmap = slot.getBitmap();
@@ -290,7 +292,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, parameter.size))
+		if (!bitmapped && !face.setPixelSizes(0, parameter.size))
 			throw new GdxRuntimeException("Couldn't set size for font");
 
 		// set general font data
@@ -304,7 +306,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
 			for (int c = 32; c < (32 + face.getNumGlyphs()); c++) {
-				if (FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+				if (face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight;
 				}
@@ -312,7 +314,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// determine space width and set glyph
-		if (FreeType.loadChar(face, ' ', FreeType.FT_LOAD_DEFAULT)) {
+		if (face.loadChar(' ', FreeType.FT_LOAD_DEFAULT)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // FIXME possibly very wrong :)
@@ -324,13 +326,13 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine x-height
 		for (char xChar : BitmapFont.xChars) {
-			if (!FreeType.loadChar(face, xChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!face.loadChar(xChar, FreeType.FT_LOAD_DEFAULT)) continue;
 			data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
 		if (data.xHeight == 0) throw new GdxRuntimeException("No x-height character found in font");
 		for (char capChar : BitmapFont.capChars) {
-			if (!FreeType.loadChar(face, capChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!face.loadChar(capChar, FreeType.FT_LOAD_DEFAULT)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -363,45 +365,98 @@ public class FreeTypeFontGenerator implements Disposable {
 		// to minimize collisions we'll use this format : pathWithoutExtension_size[_flip]_glyph
 		String packPrefix = ownsAtlas ? "" : (filePath + '_' + parameter.size + (parameter.flip ? "_flip_" : '_'));
 
+		Stroker stroker = null;
+		if (parameter.borderWidth > 0) {
+			stroker = library.createStroker();
+			stroker.set((int)(parameter.borderWidth * 64f),
+					parameter.borderStraight ? FreeType.FT_STROKER_LINECAP_BUTT : FreeType.FT_STROKER_LINECAP_ROUND,
+					parameter.borderStraight ? FreeType.FT_STROKER_LINEJOIN_MITER_FIXED : FreeType.FT_STROKER_LINEJOIN_ROUND, 0);
+		}
+
 		for (int i = 0; i < parameter.characters.length(); i++) {
 			char c = parameter.characters.charAt(i);
-			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+			if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char '" + c + "'");
 				continue;
 			}
-			if (!FreeType.renderGlyph(face.getGlyph(), FreeType.FT_RENDER_MODE_NORMAL)) {
+			GlyphSlot slot = face.getGlyph();
+			com.badlogic.gdx.graphics.g2d.freetype.FreeType.Glyph mainGlyph = slot.getGlyph();
+			try {
+				mainGlyph.toBitmap(FreeType.FT_RENDER_MODE_NORMAL);
+			} catch (GdxRuntimeException e) {
+				mainGlyph.dispose();
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't render char '" + c + "'");
 				continue;
 			}
-			GlyphSlot slot = face.getGlyph();
+			Bitmap mainBitmap = mainGlyph.getBitmap();
+			Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color);
+
+			if (parameter.borderWidth > 0 || parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0) {
+				com.badlogic.gdx.graphics.g2d.freetype.FreeType.Glyph borderGlyph = mainGlyph;
+				Bitmap borderBitmap = mainBitmap;
+
+				if (parameter.borderWidth > 0) {
+					//execute stroker; this generates a glyph "extended" along the outline
+					borderGlyph = slot.getGlyph();
+					borderGlyph.strokeBorder(stroker, false);
+					borderGlyph.toBitmap(FreeType.FT_RENDER_MODE_NORMAL);
+					borderBitmap = borderGlyph.getBitmap();
+
+					//render border (pixmap is bigger than main)
+					Pixmap borderPixmap = borderBitmap.getPixmap(Format.RGBA8888, parameter.borderColor);
+					//draw main glyph on top of border
+					borderPixmap.drawPixmap(mainPixmap, mainGlyph.getLeft() - borderGlyph.getLeft(),
+						-(mainGlyph.getTop() - borderGlyph.getTop()));
+					mainPixmap.dispose();
+					mainGlyph.dispose();
+					mainPixmap = borderPixmap;
+					mainGlyph = borderGlyph;
+				}
+				if (parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0) {
+					//render the shadow
+					Pixmap shadowPixmapSrc = borderBitmap.getPixmap(Format.RGBA8888, parameter.shadowColor);
+					//create a new bigger Pixmap with shadowOffset applied, and draw shadow glyph
+					Pixmap shadowPixmap = new Pixmap(shadowPixmapSrc.getWidth() + Math.abs(parameter.shadowOffsetX),
+						shadowPixmapSrc.getHeight() + Math.abs(parameter.shadowOffsetY), Format.RGBA8888);
+					Blending blending = Pixmap.getBlending();
+					Pixmap.setBlending(Blending.None);
+					shadowPixmap.drawPixmap(shadowPixmapSrc, Math.max(parameter.shadowOffsetX, 0), Math.max(parameter.shadowOffsetY, 0));
+					Pixmap.setBlending(blending);
+					//draw main glyph (with border) on top of shadow
+					shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
+					mainPixmap.dispose();
+					mainPixmap = shadowPixmap;
+				}
+			}
+
 			GlyphMetrics metrics = slot.getMetrics();
-			Bitmap bitmap = slot.getBitmap();
-			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
 			Glyph glyph = new Glyph();
-			glyph.id = (int)c;
-			glyph.width = pixmap.getWidth();
-			glyph.height = pixmap.getHeight();
-			glyph.xoffset = slot.getBitmapLeft();
-			glyph.yoffset = parameter.flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop())
+			glyph.id = c;
+			glyph.width = mainPixmap.getWidth();
+			glyph.height = mainPixmap.getHeight();
+			glyph.xoffset = mainGlyph.getLeft();
+			glyph.yoffset = parameter.flip ? -mainGlyph.getTop() + (int)baseLine : -(glyph.height - mainGlyph.getTop())
 				- (int)baseLine;
-			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
+			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth;
 
 			if (bitmapped) {
-				pixmap.setColor(Color.CLEAR);
-				pixmap.fill();
-				ByteBuffer buf = bitmap.getBuffer();
+				mainPixmap.setColor(Color.CLEAR);
+				mainPixmap.fill();
+				ByteBuffer buf = mainBitmap.getBuffer();
+				int whiteIntBits = Color.WHITE.toIntBits();
+				int clearIntBits = Color.CLEAR.toIntBits();
 				for (int h = 0; h < glyph.height; h++) {
-					int idx = h * bitmap.getPitch();
+					int idx = h * mainBitmap.getPitch();
 					for (int w = 0; w < (glyph.width + glyph.xoffset); w++) {
 						int bit = (buf.get(idx + (w / 8)) >>> (7 - (w % 8))) & 1;
-						pixmap.drawPixel(w, h, ((bit == 1) ? Color.WHITE.toIntBits() : Color.CLEAR.toIntBits()));
+						mainPixmap.drawPixel(w, h, ((bit == 1) ? whiteIntBits : clearIntBits));
 					}
 				}
 
 			}
 
 			String name = packPrefix + c;
-			Rectangle rect = packer.pack(name, pixmap);
+			Rectangle rect = packer.pack(name, mainPixmap);
 
 			// determine which page it was packed into
 			int pIndex = packer.getPageIndex(name);
@@ -413,7 +468,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			glyph.srcY = (int)rect.y;
 
 			data.setGlyph(c, glyph);
-			pixmap.dispose();
+			mainPixmap.dispose();
+			mainGlyph.dispose();
+		}
+
+		if (stroker != null) {
+			stroker.dispose();
 		}
 
 		// generate kerning
@@ -426,8 +486,8 @@ public class FreeTypeFontGenerator implements Disposable {
 					char secondChar = parameter.characters.charAt(j);
 					Glyph second = data.getGlyph(secondChar);
 					if (second == null) continue;
-					int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
-						FreeType.getCharIndex(face, secondChar), 0);
+					int kerning = face.getKerning(face.getCharIndex(firstChar),
+						face.getCharIndex(secondChar), 0);
 					if (kerning == 0) continue;
 					first.setKerning(secondChar, FreeType.toInt(kerning));
 				}
@@ -459,8 +519,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
 	@Override
 	public void dispose () {
-		FreeType.doneFace(face);
-		FreeType.doneFreeType(library);
+		face.dispose();
+		library.dispose();
 	}
 
 	/** {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is held
@@ -494,6 +554,20 @@ public class FreeTypeFontGenerator implements Disposable {
 	public static class FreeTypeFontParameter {
 		/** The size in pixels */
 		public int size = 16;
+		/** Foreground color (required for non-black borders) */
+		public Color color = Color.WHITE;
+		/** Border width in pixels, 0 to disable */
+		public float borderWidth = 0;
+		/** Border color; only used if borderWidth > 0 */
+		public Color borderColor = Color.BLACK;
+		/** true for straight (mitered), false for rounded borders */
+		public boolean borderStraight = false;
+		/** Offset of text shadow on X axis in pixels, 0 to disable */
+		public int shadowOffsetX = 0;
+		/** Offset of text shadow on Y axis in pixels, 0 to disable */
+		public int shadowOffsetY = 0;
+		/** Shadow color; only used if shadowOffset > 0 */
+		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
