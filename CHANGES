@@ -1,7 +1,7 @@
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
 - Added support for loading texture objects from TMX Maps (TextureMapObject)
-- Added support for outline and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
+- Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment
