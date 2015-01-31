@@ -43,6 +43,8 @@ public class OisControllers {
 	long hwnd = getWindowHandle();
 	Ois ois = new Ois(hwnd);
 	OisController[] controllers;
+	
+	private static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
 
 	public OisControllers (final DesktopControllerManager manager) {
 		this.manager = manager;
@@ -217,7 +219,7 @@ public class OisControllers {
 	/** Returns the window handle from LWJGL needed by OIS. */
 	static public long getWindowHandle () {
 		// don't need a window handle for Mac OS X
-		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+		if (IS_MAC) {
 			return 0;
 		}
 
