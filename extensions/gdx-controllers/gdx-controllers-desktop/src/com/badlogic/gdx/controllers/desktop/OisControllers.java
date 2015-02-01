@@ -16,13 +16,6 @@
 
 package com.badlogic.gdx.controllers.desktop;
 
-import java.awt.Component;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-
-import javax.swing.SwingUtilities;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.controllers.ControlType;
@@ -36,6 +29,13 @@ import com.badlogic.gdx.controllers.desktop.ois.OisListener;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.awt.Component;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import javax.swing.SwingUtilities;
 
 /** @author Nathan Sweet */
 public class OisControllers {
@@ -99,63 +99,51 @@ public class OisControllers {
 			joystick.setListener(new OisListener() {
 				public void buttonReleased (OisJoystick joystick, int buttonIndex) {
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).buttonUp(OisController.this, buttonIndex);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).buttonUp(OisController.this, buttonIndex);
-					}
 				}
 
 				public void buttonPressed (OisJoystick joystick, int buttonIndex) {
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).buttonDown(OisController.this, buttonIndex);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).buttonDown(OisController.this, buttonIndex);
-					}
 				}
 
 				public void axisMoved (OisJoystick joystick, int axisIndex, float value) {
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).axisMoved(OisController.this, axisIndex, value);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).axisMoved(OisController.this, axisIndex, value);
-					}
 				}
 
 				public void povMoved (OisJoystick joystick, int povIndex, OisPov ignored) {
 					PovDirection value = getPov(povIndex);
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).povMoved(OisController.this, povIndex, value);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).povMoved(OisController.this, povIndex, value);
-					}
 				}
 
 				public void xSliderMoved (OisJoystick joystick, int sliderIndex, boolean value) {
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).xSliderMoved(OisController.this, sliderIndex, value);
-					}
 				}
 
 				public void ySliderMoved (OisJoystick joystick, int sliderIndex, boolean value) {
 					Array<ControllerListener> allListeners = manager.listeners;
-					for (int ii = 0, nn = allListeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = allListeners.size; ii < nn; ii++)
 						allListeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value);
-					}
-					for (int ii = 0, nn = listeners.size; ii < nn; ii++) {
+					for (int ii = 0, nn = listeners.size; ii < nn; ii++)
 						listeners.get(ii).ySliderMoved(OisController.this, sliderIndex, value);
-					}
 				}
 			});
 		}
@@ -234,7 +222,6 @@ public class OisControllers {
 			return joystick.getName();
 		}
 
-		@Override
 		public String toString () {
 			return joystick.getName();
 		}
@@ -248,9 +235,8 @@ public class OisControllers {
 		}
 
 		try {
-			if (Gdx.graphics.getType() == GraphicsType.JGLFW) {
+			if (Gdx.graphics.getType() == GraphicsType.JGLFW)
 				return (Long)Gdx.graphics.getClass().getDeclaredMethod("getWindow").invoke(null);
-			}
 
 			if (Gdx.graphics.getType() == GraphicsType.LWJGL) {
 				if (Gdx.app.getClass().getName().equals("com.badlogic.gdx.backends.lwjgl.LwjglCanvas")) {
@@ -275,11 +261,8 @@ public class OisControllers {
 	}
 
 	static private Object invokeMethod (Object object, String methodName) throws Exception {
-		for (Method m : object.getClass().getMethods()) {
-			if (m.getName().equals(methodName)) {
-				return m.invoke(object);
-			}
-		}
+		for (Method m : object.getClass().getMethods())
+			if (m.getName().equals(methodName)) return m.invoke(object);
 		throw new RuntimeException("Could not find method '" + methodName + "' on class: " + object.getClass());
 	}
 
