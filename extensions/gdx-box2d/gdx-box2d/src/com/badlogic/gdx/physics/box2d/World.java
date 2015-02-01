@@ -348,7 +348,6 @@ b2ContactFilter defaultFilter;
 	 * @param fixture */
 	void destroyFixture(Body body, Fixture fixture) {
 		jniDestroyFixture(addr, body.addr, fixture.addr);
-		fixture.setUserData(null);
 	}
 	
 	private native void jniDestroyFixture(long addr, long bodyAddr, long fixtureAddr); /*
