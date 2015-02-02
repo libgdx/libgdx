@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.os.Environment;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -35,15 +36,18 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class AndroidFileHandle extends FileHandle {
 	// The asset manager, or null if this is not an internal file.
 	final AssetManager assets;
-
+   final AndroidFiles files;
+   
 	AndroidFileHandle (AssetManager assets, String fileName, FileType type) {
 		super(fileName.replace('\\', '/'), type);
 		this.assets = assets;
+		this.files = (AndroidFiles)Gdx.files;
 	}
 
 	AndroidFileHandle (AssetManager assets, File file, FileType type) {
 		super(file, type);
 		this.assets = assets;
+		this.files = (AndroidFiles)Gdx.files;
 	}
 
 	public FileHandle child (String name) {
@@ -226,6 +230,23 @@ public class AndroidFileHandle extends FileHandle {
 
 	public File file () {
 		if (type == FileType.Local) return new File(Gdx.files.getLocalStoragePath(), file.getPath());
+		if (type == FileType.External) {
+			File tempFile = new File(Environment.getExternalStorageDirectory(), this.file.getPath());
+			File tempFile2 = new File(this.files.getModernSdcardPath(), this.file.getPath());
+			
+			if (this.files.getModernSdcardPath() == null) {
+				throw new GdxRuntimeException("External storage has not been mounted.");
+			}
+			if (tempFile.exists()) {
+				if (tempFile2.exists()) {
+					// They both exist. Oh shoot. Use new apis
+					return tempFile2;
+				}
+				return tempFile;
+			} else {
+				return tempFile2;
+			}
+		}
 		return super.file();
 	}
 

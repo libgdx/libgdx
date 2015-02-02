@@ -135,7 +135,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath(), this);
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
