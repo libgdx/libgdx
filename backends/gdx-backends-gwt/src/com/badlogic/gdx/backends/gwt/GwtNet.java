@@ -36,6 +36,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.http.client.Header;
@@ -52,6 +54,7 @@ public class GwtNet implements Net {
 
 	ObjectMap<HttpRequest, Request> requests;
 	ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	Preloader preloader;
 
 	private final class HttpClientResponse implements HttpResponse {
 
@@ -105,7 +108,8 @@ public class GwtNet implements Net {
 		}
 	}
 
-	public GwtNet () {
+	public GwtNet (Preloader preloader) {
+		this.preloader = preloader;
 		requests = new ObjectMap<HttpRequest, Request>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -121,6 +125,12 @@ public class GwtNet implements Net {
 			|| "image/gif".equals(acceptHeader)) {
 			final String url = httpRequest.getUrl();
 			final Image img = new Image();
+			img.addErrorHandler(new ErrorHandler() {
+				@Override
+				public void onError (ErrorEvent event) {
+					httpResultListener.failed(new Exception(event.toString()));
+				}
+			});
 			img.setVisible(false);
 			RootPanel.get().add(img);
 			ImageElement.as(img.getElement()).setAttribute("crossOrigin", "Anonymous");
@@ -135,7 +145,7 @@ public class GwtNet implements Net {
 					context.drawImage(imageElement, 0, 0);
 					final String dataUrl = canvas.toDataUrl(acceptHeader);
 					img.removeFromParent();
-					Preloader.images.put(dataUrl, imageElement);
+					preloader.images.put(dataUrl, imageElement);
 					httpResultListener.handleHttpResponse(new HttpResponse() {
 						@Override
 						public HttpStatus getStatus () {
