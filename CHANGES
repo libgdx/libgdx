@@ -1,5 +1,7 @@
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
+- Added support for loading texture objects from TMX Maps (TextureMapObject)
+- Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
 - API Change: Skin.get now also returns resource that are subclasses of the given type.
 - API Addition: implemented methods createLabel and copy in Label.LabelStyle.
 - API Addition: Added a labelStyle field to TextButton.TextButtonStyle.
