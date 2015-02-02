@@ -973,26 +973,17 @@ public class Matrix4 implements Serializable {
 	 * @param w Weight of this transform; weight of the other transform is (1 - w)
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4 other, float w) {
-
-		//Get this and other matrix's scale component
 		getScale(tmpVec);
 		other.getScale(tmpForward);
 		
-		//Get this and other matrix's rotation component
 		getRotation(quat);
 		other.getRotation(quat2);
 		
-		//Get this and other matrix's translation component
 		getTranslation(tmpUp);
 		other.getTranslation(right);
 		
-		//Calculate scale components
 		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
-
-		//Calculate rotation components
 		rotate(quat.slerp(quat2, 1 - w));
-
-		//Calculate translation components
 		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
 		
 		return this;
@@ -1007,30 +998,17 @@ public class Matrix4 implements Serializable {
 	public Matrix4 avg (Matrix4[] t) {
 		final float w = 1.0f/t.length;
 
-		//Initialize scale components
 		tmpVec.set(t[0].getScale(tmpUp).scl(w));
-		
-		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w));
-		
-		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
 		
-		//Continue calculating
 		for(int i=1;i<t.length;i++){
-			
-			//Calculate scale components
 			tmpVec.add(t[i].getScale(tmpUp).scl(w));
-			
-			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w));
-			
-			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
 		}
 		quat.nor();
 		
-		//Set calculated components to this matrix
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
@@ -1047,31 +1025,17 @@ public class Matrix4 implements Serializable {
 	 * @param w List of weights
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4[] t, float[] w) {
-
-		//Initialize scale components
 		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
-		
-		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w[0]));
-		
-		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
 		
-		//Continue calculating
 		for(int i=1;i<t.length;i++){
-			
-			//Calculate scale components
 			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
-			
-			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w[i]));
-			
-			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
 		}
 		quat.nor();
 		
-		//Set calculated components to this matrix
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);

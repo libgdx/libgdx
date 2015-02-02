@@ -1407,6 +1407,12 @@ public class DynamicsJNI {
   public final static native void btHinge2Constraint_setUpperLimit(long jarg1, btHinge2Constraint jarg1_, float jarg2);
   public final static native void btHinge2Constraint_setLowerLimit(long jarg1, btHinge2Constraint jarg1_, float jarg2);
   public final static native void delete_btHinge2Constraint(long jarg1);
+  public final static native long new_btFixedConstraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+  public final static native void delete_btFixedConstraint(long jarg1);
+  public final static native void btFixedConstraint_setParam__SWIG_0(long jarg1, btFixedConstraint jarg1_, int jarg2, float jarg3, int jarg4);
+  public final static native void btFixedConstraint_setParam__SWIG_1(long jarg1, btFixedConstraint jarg1_, int jarg2, float jarg3);
+  public final static native float btFixedConstraint_getParam__SWIG_0(long jarg1, btFixedConstraint jarg1_, int jarg2, int jarg3);
+  public final static native float btFixedConstraint_getParam__SWIG_1(long jarg1, btFixedConstraint jarg1_, int jarg2);
   public final static native void delete_btVehicleRaycaster(long jarg1);
   public final static native long new_btVehicleRaycaster_btVehicleRaycasterResult();
   public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
@@ -1584,6 +1590,7 @@ public class DynamicsJNI {
   public final static native long btGeneric6DofSpringConstraint_SWIGUpcast(long jarg1);
   public final static native long btHingeConstraint_SWIGUpcast(long jarg1);
   public final static native long btHinge2Constraint_SWIGUpcast(long jarg1);
+  public final static native long btFixedConstraint_SWIGUpcast(long jarg1);
   public final static native long btRaycastVehicle_SWIGUpcast(long jarg1);
   public final static native long btDefaultVehicleRaycaster_SWIGUpcast(long jarg1);
 

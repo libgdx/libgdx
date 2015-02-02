@@ -161,7 +161,7 @@ public class GwtNet implements Net {
 			requests.put(httpRequest, request);
 			listeners.put(httpRequest, httpResultListener);
 
-		} catch (RequestException e) {
+		} catch (Throwable e) {
 			httpResultListener.failed(e);
 		}
 

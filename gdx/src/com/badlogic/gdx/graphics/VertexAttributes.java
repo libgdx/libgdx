@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
