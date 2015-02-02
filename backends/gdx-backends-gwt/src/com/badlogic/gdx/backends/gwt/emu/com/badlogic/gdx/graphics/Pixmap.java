@@ -97,7 +97,8 @@ public class Pixmap implements Disposable {
 	public Pixmap (byte[] encodedData, int offset, int len) {
 		String base64 = new String(encodedData);
 		ImageElement img = Preloader.images.get(base64);
-		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + base64 + "', file does not exist in Preloader images");
+		if (img == null)
+			throw new GdxRuntimeException("Couldn't load image '" + base64 + "', file does not exist in Preloader images");
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.setGlobalCompositeOperation(Composite.COPY);
 		context.drawImage(img, 0, 0);
@@ -344,10 +345,10 @@ public class Pixmap implements Disposable {
 	 * @param y3 The y-coordinate of vertex 3 */
 	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
 		context.beginPath();
-		context.moveTo(x1,y1);
-		context.lineTo(x2,y2);
-		context.lineTo(x3,y3);
-		context.lineTo(x1,y1);
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x1, y1);
 		context.fill();
 		context.closePath();
 	}
