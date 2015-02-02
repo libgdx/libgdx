@@ -78,9 +78,15 @@ public class LwjglApplication implements Application {
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
 		this.graphics = graphics;
-		if (!LwjglApplicationConfiguration.disableAudio)
-			audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-				config.audioDeviceBufferSize);
+		if (!LwjglApplicationConfiguration.disableAudio) {
+			try {
+				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+					config.audioDeviceBufferSize);
+			} catch(Throwable t) {
+				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
+				LwjglApplicationConfiguration.disableAudio = true;
+			}
+		}
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();

@@ -98,7 +98,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 				for (JsonValue meshPart = meshParts.child; meshPart != null; meshPart = meshPart.next) {
 					ModelMeshPart jsonPart = new ModelMeshPart();
 					String partId = meshPart.getString("id", null);
-					if (id == null) {
+					if (partId == null) {
 						throw new GdxRuntimeException("Not id given for mesh part");
 					}
 					for (ModelMeshPart other : parts) {
