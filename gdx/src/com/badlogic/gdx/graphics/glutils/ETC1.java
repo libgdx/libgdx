@@ -245,7 +245,7 @@ public class ETC1 {
 	 * @param width the width in pixels
 	 * @param height the height in pixels
 	 * @param pixelSize the pixel size, either 2 (RBG565) or 3 (RGB888) */
-	private static native void decodeImage (ByteBuffer compressedData, int offset, ByteBuffer decodedData, int offsetDec,
+	public static native void decodeImage (ByteBuffer compressedData, int offset, ByteBuffer decodedData, int offsetDec,
 		int width, int height, int pixelSize); /*
 		etc1_decode_image((etc1_byte*)compressedData + offset, (etc1_byte*)decodedData + offsetDec, width, height, pixelSize, width * pixelSize);
 	*/
@@ -257,7 +257,7 @@ public class ETC1 {
 	 * @param height the height in pixels
 	 * @param pixelSize the pixel size, either 2 (RGB565) or 3 (RGB888)
 	 * @return a new direct native order ByteBuffer containing the compressed image data */
-	private static native ByteBuffer encodeImage (ByteBuffer imageData, int offset, int width, int height, int pixelSize); /*
+	public static native ByteBuffer encodeImage (ByteBuffer imageData, int offset, int width, int height, int pixelSize); /*
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressedData = (etc1_byte*)malloc(compressedSize);
 		etc1_encode_image((etc1_byte*)imageData + offset, width, height, pixelSize, width * pixelSize, compressedData);
@@ -271,7 +271,7 @@ public class ETC1 {
 	 * @param height the height in pixels
 	 * @param pixelSize the pixel size, either 2 (RGB565) or 3 (RGB888)
 	 * @return a new direct native order ByteBuffer containing the compressed image data */
-	private static native ByteBuffer encodeImagePKM (ByteBuffer imageData, int offset, int width, int height, int pixelSize); /*
+	public static native ByteBuffer encodeImagePKM (ByteBuffer imageData, int offset, int width, int height, int pixelSize); /*
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressed = (etc1_byte*)malloc(compressedSize + ETC_PKM_HEADER_SIZE);
 		etc1_pkm_format_header(compressed, width, height);

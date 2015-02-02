@@ -21,7 +21,9 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.CompositeTexture;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
@@ -41,8 +43,14 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 	@Override
 	public TextureAtlas load (AssetManager assetManager, String fileName, FileHandle file, TextureAtlasParameter parameter) {
 		for (Page page : data.getPages()) {
-			Texture texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
-			page.texture = texture;
+			if (page.textureMaskFile == null) {
+				Texture texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
+				page.texture = texture;
+			} else {
+				Texture colorTexture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
+				Texture maskTexture = assetManager.get(page.textureMaskFile.path().replaceAll("\\\\", "/"), Texture.class);
+				page.texture = new CompositeTexture(colorTexture, maskTexture);
+			}
 		}
 
 		return new TextureAtlas(data);
@@ -66,6 +74,15 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			params.minFilter = page.minFilter;
 			params.magFilter = page.magFilter;
 			dependencies.add(new AssetDescriptor(page.textureFile, Texture.class, params));
+
+			if (page.textureMaskFile != null) {
+				params = new TextureParameter();
+				params.format = Format.Luminance;
+				params.genMipMaps = page.useMipMaps;
+				params.minFilter = page.minFilter;
+				params.magFilter = page.magFilter;
+				dependencies.add(new AssetDescriptor(page.textureMaskFile, Texture.class, params));
+			}
 		}
 		return dependencies;
 	}

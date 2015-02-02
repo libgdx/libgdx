@@ -47,11 +47,14 @@ public class Pixmap implements Disposable {
 	 * 
 	 * @author mzechner */
 	public enum Format {
-		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
+		Alpha, Luminance, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888,
+		/** @deprecated Use {@link Format#Luminance} or {@link Format#Alpha} instead */
+		Intensity;
 
 		public static int toGdx2DPixmapFormat (Format format) {
 			if (format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
 			if (format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
+			if (format == Luminance) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
 			if (format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
 			if (format == RGB565) return Gdx2DPixmap.GDX2D_FORMAT_RGB565;
 			if (format == RGBA4444) return Gdx2DPixmap.GDX2D_FORMAT_RGBA4444;
@@ -87,9 +90,10 @@ public class Pixmap implements Disposable {
 	/** global blending state **/
 	private static Blending blending = Blending.SourceOver;
 
-	final Gdx2DPixmap pixmap;
+	Gdx2DPixmap pixmap;
 	int color = 0;
 
+	private Format format;
 	private boolean disposed;
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
@@ -112,6 +116,8 @@ public class Pixmap implements Disposable {
 	 * @param format the {@link Format} */
 	public Pixmap (int width, int height, Format format) {
 		pixmap = new Gdx2DPixmap(width, height, Format.toGdx2DPixmapFormat(format));
+		this.format = format;
+
 		setColor(0, 0, 0, 0);
 		fill();
 	}
@@ -123,6 +129,7 @@ public class Pixmap implements Disposable {
 	public Pixmap (byte[] encodedData, int offset, int len) {
 		try {
 			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+			format = Format.fromGdx2DPixmapFormat(pixmap.getFormat());
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
 		}
@@ -136,6 +143,7 @@ public class Pixmap implements Disposable {
 		try {
 			byte[] bytes = file.readBytes();
 			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
+			format = Format.fromGdx2DPixmapFormat(pixmap.getFormat());
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
 		}
@@ -145,6 +153,7 @@ public class Pixmap implements Disposable {
 	 * @param pixmap */
 	public Pixmap (Gdx2DPixmap pixmap) {
 		this.pixmap = pixmap;
+		format = Format.fromGdx2DPixmapFormat(pixmap.getFormat());
 	}
 
 	/** Sets the color for the following drawing operations
@@ -330,14 +339,30 @@ public class Pixmap implements Disposable {
 	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLFormat () {
-		return pixmap.getGLFormat();
+		return getGLInternalFormat();
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
 	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLInternalFormat () {
-		return pixmap.getGLInternalFormat();
+		switch (format) {
+		case Alpha:
+		case Intensity:
+			return GL20.GL_ALPHA;
+		case Luminance:
+			return GL20.GL_LUMINANCE;
+		case LuminanceAlpha:
+			return GL20.GL_LUMINANCE_ALPHA;
+		case RGB888:
+		case RGB565:
+			return GL20.GL_RGB;
+		case RGBA8888:
+		case RGBA4444:
+			return GL20.GL_RGBA;
+		default:
+			throw new IllegalStateException();
+		}
 	}
 
 	/** Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
@@ -359,7 +384,34 @@ public class Pixmap implements Disposable {
 
 	/** @return the {@link Format} of this Pixmap. */
 	public Format getFormat () {
-		return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
+		return format;
+	}
+
+	/** Converts the internal pixmap to the desired format. Some formats, such as Alpha and Luminance, have identical
+	 * representation, in which case the conversion is nominal.
+	 * @param newFormat desired format
+	 * @param dispose whether the old pixmap should be disposed after being replaced
+	 * @return true if the internal pixmap has changed */
+	public boolean ensureFormat (Format newFormat, boolean dispose) {
+		if (disposed) throw new GdxRuntimeException("Pixmap disposed!");
+
+		int gdx2DFormat = Format.toGdx2DPixmapFormat(newFormat);
+
+		if (Format.toGdx2DPixmapFormat(format) != gdx2DFormat) {
+			Gdx2DPixmap tmp = new Gdx2DPixmap(getWidth(), getHeight(), gdx2DFormat);
+			Blending blend = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
+			tmp.drawPixmap(pixmap, 0, 0, 0, 0, getWidth(), getHeight());
+			Pixmap.setBlending(blend);
+			if (dispose) pixmap.dispose();
+			pixmap = tmp;
+			format = newFormat;
+			return true;
+		} else {
+			// identical storage format
+			format = newFormat;
+			return false;
+		}
 	}
 
 	/** @return the currently set {@link Blending} */
