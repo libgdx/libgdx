@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -99,6 +100,7 @@ public class UITest extends GdxTest {
 		slider.setAnimateDuration(0.3f);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
+		textfield.setAlignment(Align.center);
 		final SelectBox dropdown = new SelectBox(skin);
 		dropdown.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {

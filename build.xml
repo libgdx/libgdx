@@ -131,10 +131,11 @@
 
 	<!-- build the extensions -->
 	<!-- gdx tools -->
-	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl">
+	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl,gdx-backend-headless">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
+			<pathelement location="${distDir}/gdx-backend-headless.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="extensions/gdx-tools/assets"/>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-tools">

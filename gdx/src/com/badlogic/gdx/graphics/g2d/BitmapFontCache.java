@@ -132,6 +132,27 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the alpha component of all text currently in the cache. Does not affect subsequently added text. */
+	public void setAlphas (float alpha) {
+		int alphaBits = ((int)(254 * alpha)) << 24;
+		float prev = 0, newColor = 0;
+		for (int j = 0, length = vertexData.length; j < length; j++) {
+			float[] vertices = vertexData[j];
+			for (int i = 2, n = idx[j]; i < n; i += 5) {
+				float c = vertices[i];
+				if (c == prev && i != 2) {
+					vertices[i] = newColor;
+				} else {
+					prev = c;
+					int rgba = NumberUtils.floatToIntColor(c);
+					rgba = (rgba & 0x00FFFFFF) | alphaBits;
+					newColor = NumberUtils.intToFloatColor(rgba);
+					vertices[i] = newColor;
+				}
+			}
+		}
+	}
+
 	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
 	public void setColors (float color) {
 		for (int j = 0, length = vertexData.length; j < length; j++) {
@@ -658,18 +679,13 @@ public class BitmapFontCache {
 		int numLines = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
-			// Eat whitespace at start of line.
-			while (start < newLine) {
-				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
-				start++;
-			}
 			int lineEnd = start + font.computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
 					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
-					else if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
+					if (font.isBreakChar(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start) {
@@ -677,6 +693,13 @@ public class BitmapFontCache {
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
+					// Eat whitespace at start of wrapped line.
+					while (nextStart < length) {
+						char c = str.charAt(nextStart);
+						if (!BitmapFont.isWhitespace(c)) break;
+						nextStart++;
+						if (c == '\n') break; // Eat only the first wrapped newline.
+					}
 					// Eat whitespace at end of line.
 					while (lineEnd > start) {
 						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
@@ -702,12 +725,10 @@ public class BitmapFontCache {
 		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
 	}
-	
-	/**
-	 * Provide any additional characters that should act as break characters when the label is wrapped.
-	 * By default, only whitespace characters act as break chars.
-	 */
-	public void setBreakChars(char[] breakChars) {
+
+	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
+	 * characters act as break chars. */
+	public void setBreakChars (char[] breakChars) {
 		font.setBreakChars(breakChars);
 	}
 

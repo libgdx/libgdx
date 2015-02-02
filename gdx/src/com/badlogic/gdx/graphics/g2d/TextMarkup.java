@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.utils.Array;
@@ -29,12 +31,6 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author davebaol
  * @author Alexander Dorokhov */
 class TextMarkup {
-	private static final Pool<ColorChunk> colorChunkPool = new Pool<ColorChunk>(32) {
-		protected ColorChunk newObject () {
-			return new ColorChunk();
-		}
-	};
-
 	private static final Color tempColor = new Color();
 	private static final com.badlogic.gdx.utils.StringBuilder tempColorBuffer = new StringBuilder();
 
@@ -91,10 +87,24 @@ class TextMarkup {
 		throw new GdxRuntimeException("Unclosed color tag.");
 	}
 
+	private static Pool<ColorChunk> colorChunkPool;
+	private static Application app = null;
+	
 	private Array<ColorChunk> colorChunks = new Array<ColorChunk>();
 	private Array<Color> currentColorStack = new Array<Color>();
 	private Color lastColor = Color.WHITE;
 	private Color defaultColor = Color.WHITE;
+	
+	public TextMarkup() {
+		if(Gdx.app != app) {
+			colorChunkPool = new Pool<ColorChunk>(32) {
+				protected ColorChunk newObject () {
+					return new ColorChunk();
+				}
+			};
+			app = Gdx.app;
+		}
+	}
 
 	public void beginChunk (Color color, int start) {
 		ColorChunk newChunk = colorChunkPool.obtain();

@@ -33,6 +33,7 @@ import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
+import org.robovm.rt.bro.Bro;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -119,6 +120,8 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
 
+		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
+
 		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
 			.getScale());
 		if (scale >= 2.0f) {
@@ -192,7 +195,7 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
+		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().getSize();
 
 		// determine orientation and resulting width + height
 		UIInterfaceOrientation orientation;
@@ -213,17 +216,17 @@ public class IOSApplication implements Application {
 		switch (orientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
+			height = (int)bounds.getWidth();
+			width = (int)bounds.getHeight();
 			if (width < height) {
-				width = (int)bounds.width();
-				height = (int)bounds.height();
+				width = (int)bounds.getWidth();
+				height = (int)bounds.getHeight();
 			}
 			break;
 		default:
 			// assume portrait
-			width = (int)bounds.width();
-			height = (int)bounds.height();
+			width = (int)bounds.getWidth();
+			height = (int)bounds.getHeight();
 		}
 
 		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
@@ -310,14 +313,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel > LOG_NONE) {
-			Foundation.log("[info] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
-			Foundation.log("[info] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
 			exception.printStackTrace();
 		}
 	}
@@ -325,14 +328,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			Foundation.log("[error] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			Foundation.log("[error] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
 			exception.printStackTrace();
 		}
 	}
@@ -340,14 +343,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("[debug] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("[error] " + tag + ": " + message);
+			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
 			exception.printStackTrace();
 		}
 	}

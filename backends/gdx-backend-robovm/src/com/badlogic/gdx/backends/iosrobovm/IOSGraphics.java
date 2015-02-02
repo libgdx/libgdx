@@ -30,11 +30,9 @@ import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
-import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
-import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
@@ -44,6 +42,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
@@ -84,8 +83,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			// FIXME screen orientation needs to be stored for
 			// Input#getNativeOrientation
 			CGSize bounds = app.getBounds(this);
-			graphics.width = (int)bounds.width();
-			graphics.height = (int)bounds.height();
+			graphics.width = (int)bounds.getWidth();
+			graphics.height = (int)bounds.getHeight();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
 		}
@@ -133,7 +132,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			super(frame, context);
 		}
 	}
-
+	
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
@@ -167,9 +166,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
-		width = (int)bounds.width();
-		height = (int)bounds.height();
-		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + scale);
+		width = (int)bounds.getWidth();
+		height = (int)bounds.getHeight();
+		app.debug(tag, bounds.getWidth() + "x" + bounds.getHeight() + ", " + scale);
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -241,21 +240,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 		this.gl20 = gl20;
 
-		// determine display density and PPI (PPI values via Wikipedia!)
-		density = 1f;
-
-		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2) density = 2f;
-		if (scale == 3) density = 3f;
-
-		int ppi;
-		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-			// iPad
-			ppi = Math.round(density * 132);
-		} else {
-			// iPhone or iPodTouch
-			ppi = Math.round(density * 163);
-		}
+		String machineString = HWMachine.getMachineString();
+		IOSDevice device = IOSDevice.getDevice(machineString);
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		int ppi = device != null ? device.ppi : 163;
+		density = device != null ? device.ppi/160f : scale;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -405,9 +394,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return ppcY;
 	}
 
-	/** Returns the display density.
-	 * 
-	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
 	public float getDensity () {
 		return density;

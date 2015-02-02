@@ -234,6 +234,11 @@ public class Group extends Actor implements Cullable {
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
+	
+	/** @see #setCullingArea(Rectangle) */
+	public Rectangle getCullingArea () {
+		return cullingArea;
+	}
 
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
