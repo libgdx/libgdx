@@ -383,7 +383,6 @@ public class PixmapPacker implements Disposable {
 						atlas.addRegion(name, region);
 					}
 					page.addedRects.clear();
-					return;
 				}
 			}
 		}
