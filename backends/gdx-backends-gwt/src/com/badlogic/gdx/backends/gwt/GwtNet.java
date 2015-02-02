@@ -128,7 +128,7 @@ public class GwtNet implements Net {
 			img.addErrorHandler(new ErrorHandler() {
 				@Override
 				public void onError (ErrorEvent event) {
-					httpResultListener.failed(new Exception(event.toString()));
+					httpResultListener.failed(new GdxRuntimeException(event.toString()));
 				}
 			});
 			img.setVisible(false);
