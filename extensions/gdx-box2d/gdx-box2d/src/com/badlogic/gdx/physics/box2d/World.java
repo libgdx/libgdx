@@ -204,7 +204,7 @@ b2ContactFilter defaultFilter;
 	};
 
 	/** the address of the world instance **/
-	private final long addr;
+	protected final long addr;
 
 	/** all known bodies **/
 	protected final LongMap<Body> bodies = new LongMap<Body>(100);
@@ -338,6 +338,46 @@ b2ContactFilter defaultFilter;
 		world->SetContactFilter(&contactFilter);
 		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for fixture destruction with notifying custom
+	 * contact listener
+	 * @param body
+	 * @param fixture */
+	void destroyFixture(Body body, Fixture fixture) {
+		jniDestroyFixture(addr, body.addr, fixture.addr);
+	}
+	
+	private native void jniDestroyFixture(long addr, long bodyAddr, long fixtureAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);
+		b2Fixture* fixture = (b2Fixture*)(fixtureAddr);
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->DestroyFixture(fixture);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for body deactivation with notifying custom
+	 * contact listener
+	 * @param body */
+	void deactivateBody(Body body) {
+		jniDeactivateBody(addr, body.addr);
+	}
+	
+	private native void jniDeactivateBody(long addr, long bodyAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);	
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->SetActive(false);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
 	*/
