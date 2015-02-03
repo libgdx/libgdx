@@ -548,6 +548,8 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use
 	 * @param autoBind overrides the autoBind member of this Mesh */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
+               if (shader == null) throw new IllegalArgumentException("shader cannot be null.");
+
 		if (count == 0) return;
 
 		if (autoBind) bind(shader);
