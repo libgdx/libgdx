@@ -175,6 +175,15 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		mapWidthInPixels = mapWidth * tileWidth;
 		mapHeightInPixels = mapHeight * tileHeight;
 
+		if (mapOrientation != null) {
+			if ("staggered".equals(mapOrientation)) {
+				if (mapHeight > 1) {
+					mapWidthInPixels += tileWidth / 2;
+					mapHeightInPixels = mapHeightInPixels / 2 + tileHeight / 2;
+				}
+			}
+		}
+		
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
 			loadProperties(map.getProperties(), properties);
