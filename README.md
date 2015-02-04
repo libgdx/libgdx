@@ -1,4 +1,5 @@
-![logo](http://libgdx.badlogicgames.com/img/logo.png)
+[![AndroidLibs](https://img.shields.io/badge/AndroidLibs-libgdx-brightgreen.svg?style=flat)](https://www.android-libs.com/lib/libgdx?utm_source=github-badge&utm_medium=github-badge&utm_campaign=github-badge)
+			![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
 [![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx)](http://144.76.220.132:8080/job/libgdx/)
 
