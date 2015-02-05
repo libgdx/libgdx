@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="assets"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-box2d"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-bullet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-freetype"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
+	<classpathentry kind="lib" path="/gdx-box2d/libs/gdx-box2d-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-freetype/libs/gdx-freetype-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

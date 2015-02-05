@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/gdx/libs/gdx-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-lwjgl3-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/D:/Dev/Projects/Libgdx/backends/gdx-backend-lwjgl3/libs/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
