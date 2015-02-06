@@ -569,18 +569,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public Vector3 limit (float limit) {
-		float len2 = len2();
-		if (len2 > limit * limit) {
-			scl(limit / (float) Math.sqrt(len2));
-		}
-		return this;
+		return limit2(limit * limit);
 	}
 
 	@Override
 	public Vector3 limit2 (float limit2) {
 		float len2 = len2();
 		if (len2 > limit2) {
-			scl(limit2 / len2);
+			scl((float) Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}
