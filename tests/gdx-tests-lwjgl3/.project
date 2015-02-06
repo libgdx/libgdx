@@ -16,9 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>assets</name>
+			<name>tests-assets</name>
 			<type>2</type>
-			<location>D:/Dev/Projects/Libgdx/tests/gdx-tests-android/assets</location>
+			<locationURI>PARENT-1-PROJECT_LOC/gdx-tests-android/assets</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
