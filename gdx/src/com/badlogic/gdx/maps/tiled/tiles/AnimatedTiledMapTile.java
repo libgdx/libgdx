@@ -63,16 +63,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
-	private TiledMapTile getCurrentFrame() {
+	public int getCurrentFrameIndex() {
 		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 
 		for (int i = 0; i < animationIntervals.length; ++i){
 			int animationInterval = animationIntervals[i];
-			if (currentTime<=animationInterval) return frameTiles[i];
+			if (currentTime <= animationInterval) return i;
 			currentTime -= animationInterval;
 		}
 
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+	}
+
+	public TiledMapTile getCurrentFrame() {
+		return frameTiles[getCurrentFrameIndex()];
 	}
 
 	@Override
