@@ -176,8 +176,6 @@ public class Lwjgl3Graphics implements Graphics
 		// GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
 
 		setVSync(vSync);
-		if (visible)
-			glfwShowWindow(window);
 
 		return true;
 	}
@@ -461,6 +459,8 @@ public class Lwjgl3Graphics implements Graphics
 	public void show()
 	{
 		visible = true;
+		
+		Lwjgl3WindowController.currentWindow = window;
 		glfwShowWindow(window);
 
 		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);

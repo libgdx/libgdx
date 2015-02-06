@@ -194,6 +194,9 @@ public class Lwjgl3Application implements Application
 			public void invoke(long window, int focused)
 			{
 				boolean focus = focused == GL11.GL_TRUE ? true : false;
+				
+				if(focus)
+					Lwjgl3WindowController.currentWindow = window;
 				graphics.foreground = focus;
 			}
 		};
@@ -550,6 +553,14 @@ public class Lwjgl3Application implements Application
 	public String getId()
 	{
 		return id;
+	}
+	
+	/**
+	 * Get GLFW window so you can use it for GLFW commands.
+	 */
+	public long getWindow()
+	{
+		return graphics.window;
 	}
 
 }
