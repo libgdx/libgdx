@@ -6,6 +6,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
@@ -56,6 +58,10 @@ public class Lwjgl3Application implements Application
 	Lwjgl3Input input;
 	Lwjgl3Net net;
 	
+	Object SYNC = new Object();
+	boolean toRefresh = true;
+	
+	
 	private final Array<Runnable> runnables = new Array();
 	private final Array<Runnable> executedRunnables = new Array();
 	private final Array<LifecycleListener> lifecycleListeners = new Array();
@@ -64,7 +70,7 @@ public class Lwjgl3Application implements Application
 	volatile boolean running = true;
 	boolean isPaused;
 	protected String preferencesdir;
-	private int foregroundFPS, backgroundFPS, hiddenFPS = -1;
+	private int foregroundFPS, backgroundFPS, hiddenFPS;
 	private boolean forceExit = false;
 	final ApplicationListener listener;
 	private boolean disposed;
@@ -77,16 +83,23 @@ public class Lwjgl3Application implements Application
 	int audioDeviceBufferCount;
 	int audioDeviceBufferSize;
 	
+	
+	
+	boolean init;
+	
 	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config)
 	{
 		this(listener, config, true);
 	}
 	
-	boolean init;
 	
+	/**
+	 * Autoloop true will block to run on main thread to be compatible with mac. False is usefull to use it with {@link Lwjgl3WindowController}
+	 */
 	public Lwjgl3Application(ApplicationListener listener, final Lwjgl3ApplicationConfiguration config, boolean autoloop)
 	{
 		Lwjgl3NativesLoader.load();
+		
 		
 		if (glfwInit() != GL11.GL_TRUE)
 			throw new IllegalStateException("Unable to initialize GLFW");
@@ -98,16 +111,56 @@ public class Lwjgl3Application implements Application
 		audioDeviceSimultaneousSources = config.audioDeviceSimultaneousSources;
 		audioDeviceBufferCount = config.audioDeviceBufferCount;
 		audioDeviceBufferSize = config.audioDeviceBufferSize;
+		backgroundFPS = config.backgroundFPS;
+		hiddenFPS = config.hiddenFPS;
+		foregroundFPS = config.foregroundFPS;
+		
 		
 		graphics = new Lwjgl3Graphics(Lwjgl3Application.this, config);
 		
-		if(autoloop)
+		final Runnable appRunnable;
+		Runnable mainRunnable;
+		
+		appRunnable = new Runnable()
 		{
-			Runnable run = new Runnable()
+			
+			public void run()
 			{
+//				glfwMakeContextCurrent(graphics.window);
+//				GLContext.createFromCurrent();
 				
-				public void run()
+				while(running)
 				{
+					try
+					{
+//						if(toRefresh == false) // simple sync logic to refresh window when there is a refresh call
+//							continue;
+//						synchronized (SYNC) {
+							loop();
+//						}
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						running = false;
+					}
+					glfwPollEvents();
+				}
+				
+			}
+		};
+		
+		mainRunnable = new Runnable() {
+			
+			@Override
+			public void run () {
+				
+				Thread thread = null;
+				
+				if(init == false)
+				{
+					init = true;
+					
 					graphics.initWindow();
 					glfwMakeContextCurrent(graphics.window);
 					context = GLContext.createFromCurrent();
@@ -119,30 +172,42 @@ public class Lwjgl3Application implements Application
 					input.addCallBacks();
 					addCallBacks();
 					
-					while(running)
-					{
-						try
-						{
-							loop();
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-							running = false;
-						}
-						
-						glfwPollEvents();
-					}
-					end();
+					appRunnable.run();
+					
+//					thread = new Thread(appRunnable);
+//					thread.start();
 				}
-			};
 
+				while(running)
+				{
+					glfwWaitEvents();;
+				}
+//				if(running)
+//				{
+//					glfwPollEvents();
+//					SwingUtilities.invokeLater(mainRunnable);
+//					return;
+//				}
+//				
+				try {
+					thread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				end();
+			}
+		};
+		
+		
+		if(autoloop)
+		{
 			if(Lwjgl3Graphics.isMac)
 			{
-				run.run();
+//				SwingUtilities.invokeLater(mainRunnable);
+				mainRunnable.run();
 			}
 			else
-				new Thread(run).start(); 
+				new Thread(appRunnable).start(); 
 		}
 	}
 	
@@ -184,7 +249,11 @@ public class Lwjgl3Application implements Application
 			@Override
 			public void invoke(long window)
 			{
-				loop();
+//				toRefresh = false; // simple sync logic to refresh window when there is a refresh call
+//				synchronized (SYNC) {
+					loop();
+//					toRefresh = true;
+//				}
 			}
 		};
 		
@@ -349,7 +418,12 @@ public class Lwjgl3Application implements Application
 		
 		if(window != graphics.window)
 			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
-
+//		if(context == null)
+//			context = GLContext.createFromCurrent();
+//		if(GL.getCurrent() != context)
+//			GL.setCurrent(context);
+		
+		
 		
 		if (audio != null && Gdx.audio == null)
 			Gdx.audio = audio;

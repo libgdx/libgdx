@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowController;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -36,41 +37,44 @@ public class TestApp implements ApplicationListener, InputProcessor
 	float b = MathUtils.random();
 	
 	
+	FPSLogger logger = new FPSLogger();
+	
 	public static void main(String[] args)
 	{
 		/// On TestApp window
 		//KEY: "C" Create a new Window
 		//KEY: "D" Delete the current window
 		//*******
-		Lwjgl3WindowController controller = new Lwjgl3WindowController(true);
+//		Lwjgl3WindowController controller = new Lwjgl3WindowController(true);
 		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
 		config.title = "ID 0";
-		
+		config.vSyncEnabled = true;
 		ApplicationListener listener = null;
-		listener = new TestApp(controller);  // example of sharing context
+//		listener = new TestApp(controller);  // example of sharing context
 //		listener = new UITest();
-		Lwjgl3Application app = new Lwjgl3Application(listener, config, false);
-		controller.addWindow("0", app);
-		
-		listener = new UITest();
-		config.title = "ID 1";
-		app = new Lwjgl3Application(listener, config, false);
-		controller.addWindow("1", app);
-		
-		listener = new AnimationTest();
-		config.title = "ID 2";
-		app = new Lwjgl3Application(listener, config, false);
-		controller.addWindow("2", app);
-		
 		listener = new LightsTest();
-		config.title = "ID 3";
-		app = new Lwjgl3Application(listener, config, false);
-		controller.addWindow("3", app);
-		nextID += 3;
-		controller.start();
+		Lwjgl3Application app = new Lwjgl3Application(listener, config, true);
+//		controller.addWindow("0", app);
+		
+//		listener = new UITest();
+//		config.title = "ID 1";
+//		app = new Lwjgl3Application(listener, config, false);
+//		controller.addWindow("1", app);
+//		
+//		listener = new AnimationTest();
+//		config.title = "ID 2";
+//		app = new Lwjgl3Application(listener, config, false);
+//		controller.addWindow("2", app);
+//		
+//		listener = new LightsTest();
+//		config.title = "ID 3";
+//		app = new Lwjgl3Application(listener, config, false);
+//		controller.addWindow("3", app);
+//		nextID += 3;
+//		controller.start();
 		
 	}
 	
@@ -121,7 +125,7 @@ public class TestApp implements ApplicationListener, InputProcessor
 		}
 		
 		batch.end();
-		
+		logger.log();
 	}
 
 	public void pause()

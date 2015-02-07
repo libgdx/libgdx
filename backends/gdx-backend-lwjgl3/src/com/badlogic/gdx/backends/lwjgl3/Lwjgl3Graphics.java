@@ -175,6 +175,7 @@ public class Lwjgl3Graphics implements Graphics
 		// if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE,
 		// GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
 
+		glfwMakeContextCurrent(window); // needed before setting vsync after creation
 		setVSync(vSync);
 
 		return true;

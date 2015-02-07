@@ -27,6 +27,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Nathan Sweet */
 public class Lwjgl3ApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
 	 * natives are not needed. */
@@ -62,10 +63,12 @@ public class Lwjgl3ApplicationConfiguration {
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
-	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
+	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. Default: 60**/
 	public int foregroundFPS = 60;
-	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. Default: 60**/
 	public int backgroundFPS = 60;
+	/** Target framerate when the window is hidden or minimized. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. Default: 60 **/
+	public int hiddenFPS = 60;
 	/** Allows software OpenGL rendering if hardware acceleration was not available.
 	 * @see LwjglGraphics#isSoftwareMode() */
 	public boolean allowSoftwareMode = false;

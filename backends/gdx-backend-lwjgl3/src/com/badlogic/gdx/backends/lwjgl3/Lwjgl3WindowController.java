@@ -36,8 +36,12 @@ public class Lwjgl3WindowController {
 	Array<Lwjgl3Application> windows;
 
 	Runnable runnable;
-
+	
+	int targetFPS = 60;
+	
+	boolean running = true;
 	boolean shareContext;
+	Thread thread;
 
 	/** Sharecontext is for object sharing with multiple windows (1 Texture for all windows for example). <br>
 	 * <br>
@@ -49,34 +53,79 @@ public class Lwjgl3WindowController {
 
 		if (glfwInit() != GL11.GL_TRUE) throw new IllegalStateException("Unable to initialize GLFW");
 
-		this.shareContext = shareContext;
 		windows = new Array<Lwjgl3Application>();
+		
+		this.shareContext = shareContext;
+		
+		runnable = new Runnable() {
+			
+			@Override
+			public void run () {
+				
+				while(running)
+				{
+					for (int i = 0; i < windows.size; i++) {
+						Lwjgl3Application app = windows.get(i);
+	
+						if (app.running) {
+							
+							if (app.init == false) 
+								continue;
+							
+							if(app.toRefresh == false) // simple sync logic to refresh window when there is a refresh call
+								continue;
+							synchronized (app.SYNC) {
+								app.loop();
+							}
+//							app.loop();
+						} else {
+							app.dispose();
+							windows.removeIndex(i);
+							i--;
+						}
+					}
+					
+					if (targetFPS != 0) {
+						if (targetFPS == -1)
+							Lwjgl3Application.sleep(100);
+						else
+							Sync.sync(targetFPS);
+					}
+				}
+			}
+		};
+		
+		thread = new Thread(runnable);
 	}
+	
+	boolean added = false;
 
 	/** Main Loop for GLFW. This call will block <br> */
 	public void start () {
+		thread.start();
 		while (windows.size > 0) {
-			glfwPollEvents();
-
-			for (int i = 0; i < windows.size; i++) {
-				Lwjgl3Application app = windows.get(i);
-
-				if (app.running) {
-
+			
+			if(added)
+			{
+				for(int i = 0; i < windows.size; i++)
+				{
+					Lwjgl3Application app = windows.get(i);
+					
 					if (app.init == false) {
-						app.init = true;
-
 						app.graphics.initWindow();
 						glfwMakeContextCurrent(app.graphics.window);
-
-						if (shareContext == false)
-							app.context = GLContext.createFromCurrent();
-						else {
-							if (Lwjgl3Graphics.contextShare == 0) {
-								app.context = GLContext.createFromCurrent();
-								Lwjgl3Graphics.contextShare = app.graphics.window;
-							}
+						app.context = GLContext.createFromCurrent();
+						if (shareContext == true && Lwjgl3Graphics.contextShare == 0)
+						{
+							Lwjgl3Graphics.contextShare = app.graphics.window;
 						}
+//							app.context = GLContext.createFromCurrent();
+//						else {
+//							if (Lwjgl3Graphics.contextShare == 0) {
+//								app.context = GLContext.createFromCurrent();
+//								Lwjgl3Graphics.contextShare = app.graphics.window;
+//							}
+//						}
 
 						app.graphics.initGL();
 						app.graphics.show();
@@ -85,15 +134,20 @@ public class Lwjgl3WindowController {
 
 						app.input.addCallBacks();
 						app.addCallBacks();
+						
+						app.init = true;
 					}
-
-					app.loop();
-				} else {
-					app.dispose();
-					windows.removeIndex(i);
-					i--;
 				}
+				added = false;
 			}
+			
+			glfwWaitEvents();
+		}
+		running = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		glfwTerminate();
 	}
@@ -109,6 +163,7 @@ public class Lwjgl3WindowController {
 		if (getWindow(id) == null) {
 			app.id = id;
 			windows.add(app);
+			added = true;
 		}
 	}
 
