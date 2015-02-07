@@ -45,36 +45,35 @@ public class TestApp implements ApplicationListener, InputProcessor
 		//KEY: "C" Create a new Window
 		//KEY: "D" Delete the current window
 		//*******
-//		Lwjgl3WindowController controller = new Lwjgl3WindowController(true);
-		
+		Lwjgl3WindowController controller = new Lwjgl3WindowController(true);
+		Lwjgl3Application app = null;
+		ApplicationListener listener = null;
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
 		config.title = "ID 0";
 		config.vSyncEnabled = true;
-		ApplicationListener listener = null;
-//		listener = new TestApp(controller);  // example of sharing context
+		listener = new TestApp(controller);  // example of sharing context
 //		listener = new UITest();
-		listener = new LightsTest();
-		Lwjgl3Application app = new Lwjgl3Application(listener, config, true);
-//		controller.addWindow("0", app);
+		app = new Lwjgl3Application(listener, config, false);
+		controller.addWindow("0", app);
 		
-//		listener = new UITest();
-//		config.title = "ID 1";
-//		app = new Lwjgl3Application(listener, config, false);
-//		controller.addWindow("1", app);
-//		
-//		listener = new AnimationTest();
-//		config.title = "ID 2";
-//		app = new Lwjgl3Application(listener, config, false);
-//		controller.addWindow("2", app);
-//		
-//		listener = new LightsTest();
-//		config.title = "ID 3";
-//		app = new Lwjgl3Application(listener, config, false);
-//		controller.addWindow("3", app);
-//		nextID += 3;
-//		controller.start();
+		listener = new UITest();
+		config.title = "ID 1";
+		app = new Lwjgl3Application(listener, config, false);
+		controller.addWindow("1", app);
+
+		listener = new AnimationTest();
+		config.title = "ID 2";
+		app = new Lwjgl3Application(listener, config, false);
+		controller.addWindow("2", app);
+
+		listener = new LightsTest();
+		config.title = "ID 3";
+		app = new Lwjgl3Application(listener, config, false);
+		controller.addWindow("3", app);
+		nextID += 3;
+		controller.start();
 		
 	}
 	
@@ -116,7 +115,6 @@ public class TestApp implements ApplicationListener, InputProcessor
 		Gdx.gl.glClearColor(r,g, b, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		
 		batch.begin();
 		
 		if(texture != null)
@@ -125,7 +123,6 @@ public class TestApp implements ApplicationListener, InputProcessor
 		}
 		
 		batch.end();
-		logger.log();
 	}
 
 	public void pause()
@@ -151,6 +148,7 @@ public class TestApp implements ApplicationListener, InputProcessor
 		
 		if(keycode == Keys.C && controller != null)
 		{
+			
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 			config.width = 640;
 			config.height = 480;

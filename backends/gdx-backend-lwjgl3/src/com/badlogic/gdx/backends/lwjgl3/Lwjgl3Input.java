@@ -46,6 +46,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
 import com.badlogic.gdx.graphics.Pixmap;
+
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
  * @author mzechner
  * @author Nathan Sweet */
@@ -61,10 +62,11 @@ public class Lwjgl3Input implements Input {
 	long currentEventTime;
 
 	int mouseX, mouseY;
-	
+
 	InputProcessor inputProcessor; // make it class object so i can call from other class
-	
+
 	Lwjgl3InputProcessor inputProc;
+
 	public Lwjgl3Input (final Lwjgl3Application app, boolean queueEvents) {
 		this.app = app;
 
@@ -72,6 +74,8 @@ public class Lwjgl3Input implements Input {
 			private int mouseX, mouseY;
 
 			public boolean keyDown (int keycode) {
+				app.setGlobals();
+				Lwjgl3WindowController.toRefresh = true;
 				pressedKeys++;
 				keyJustPressed = true;
 				justPressedKeys[keycode] = true;
@@ -80,28 +84,35 @@ public class Lwjgl3Input implements Input {
 			}
 
 			public boolean keyUp (int keycode) {
+				app.setGlobals();
+
 				pressedKeys--;
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.keyUp(keycode) : false;
 			}
 
 			public boolean keyTyped (char character) {
+				app.setGlobals();
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.keyTyped(character) : false;
 			}
 
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+
+				app.setGlobals();
 				justTouched = true;
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.touchDown(screenX, screenY, pointer, button) : false;
 			}
 
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+				app.setGlobals();
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.touchUp(screenX, screenY, pointer, button) : false;
 			}
 
 			public boolean touchDragged (int screenX, int screenY, int pointer) {
+				app.setGlobals();
 				deltaX = screenX - mouseX;
 				deltaY = screenY - mouseY;
 				mouseX = screenX;
@@ -111,6 +122,8 @@ public class Lwjgl3Input implements Input {
 			}
 
 			public boolean mouseMoved (int screenX, int screenY) {
+
+				app.setGlobals();
 				deltaX = screenX - mouseX;
 				deltaY = screenY - mouseY;
 				mouseX = screenX;
@@ -120,6 +133,9 @@ public class Lwjgl3Input implements Input {
 			}
 
 			public boolean scrolled (int amount) {
+				app.setGlobals();
+
+				Lwjgl3WindowController.toRefresh = true;
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.scrolled(amount) : false;
 			}
@@ -132,17 +148,15 @@ public class Lwjgl3Input implements Input {
 
 		inputProc = new Lwjgl3InputProcessor();
 	}
-	
-	public void addCallBacks()
-	{
+
+	public void addCallBacks () {
 		inputProc.addCallback();
 	}
-	
-	public void removeCallBacks()
-	{
+
+	public void removeCallBacks () {
 		inputProc.removeCallback();
 	}
-	
+
 	public void update () {
 		deltaX = 0;
 		deltaY = 0;
@@ -157,7 +171,7 @@ public class Lwjgl3Input implements Input {
 			processorQueue.drain(); // Main loop is handled elsewhere and events are queued.
 		else {
 			currentEventTime = System.nanoTime();
-//			glfwPollEvents(); // Use GLFW main loop to process events.
+// glfwPollEvents(); // Use GLFW main loop to process events.
 		}
 	}
 
@@ -172,7 +186,7 @@ public class Lwjgl3Input implements Input {
 	public float getAccelerometerZ () {
 		return 0;
 	}
-	
+
 	public int getX () {
 		return mouseX;
 	}
@@ -225,7 +239,8 @@ public class Lwjgl3Input implements Input {
 	public boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) return pressedKeys > 0;
 		if (key == Input.Keys.SYM)
-			return glfwGetKey(app.graphics.window, GLFW_KEY_LEFT_SUPER)  == GLFW_PRESS || glfwGetKey(app.graphics.window, GLFW_KEY_RIGHT_SUPER)  == GLFW_PRESS;
+			return glfwGetKey(app.graphics.window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS
+				|| glfwGetKey(app.graphics.window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS;
 		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key)) == GLFW_PRESS;
 	}
 
@@ -302,14 +317,14 @@ public class Lwjgl3Input implements Input {
 	}
 
 	public void setCursorCatched (boolean captured) {
-		//TODO Not sure how is equal to lwgl3
-//		glfwSetInputMode(app.graphics.window, GLFW_CURSOR, captured ? GLFW_CURSOR_CAPTURED : GLFW_CURSOR_NORMAL);
+		// TODO Not sure how is equal to lwgl3
+// glfwSetInputMode(app.graphics.window, GLFW_CURSOR, captured ? GLFW_CURSOR_CAPTURED : GLFW_CURSOR_NORMAL);
 	}
 
 	public boolean isCursorCatched () {
-		//TODO Not sure how is equal to lwgl3
+		// TODO Not sure how is equal to lwgl3
 		return false;
-//		return glfwGetInputMode(app.graphics.window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
+// return glfwGetInputMode(app.graphics.window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
 	}
 
 	public void setCursorPosition (int x, int y) {
@@ -388,7 +403,7 @@ public class Lwjgl3Input implements Input {
 			}
 		});
 	}
-	
+
 	static char characterForKeyCode (int key) {
 		// Map certain key codes to character codes.
 		switch (key) {
@@ -827,140 +842,115 @@ public class Lwjgl3Input implements Input {
 		}
 	}
 
-	class Lwjgl3InputProcessor
-	{
+	class Lwjgl3InputProcessor {
 		private int mousePressed;
 		private char lastCharacter;
-		
+
 		// MUST HAVE CALLBACK POINTER OR ERROR OCCUR
 		GLFWCursorPosCallback cursorPosCallBack;
 		GLFWMouseButtonCallback mouseCallBack;
 		GLFWScrollCallback scrollCallBack;
 		GLFWCharCallback characterCallBack;
 		GLFWKeyCallback keyCallBack;
-		
-		public Lwjgl3InputProcessor()
-		{
+
+		public Lwjgl3InputProcessor () {
 			final InputProcessor processor = inputProcessor;
-			
-			mouseCallBack = new GLFWMouseButtonCallback()
-			{
+
+			mouseCallBack = new GLFWMouseButtonCallback() {
 				@Override
-				public void invoke(long window, int button, int action, int mods)
-				{
+				public void invoke (long window, int button, int action, int mods) {
 					int gdxButton = toGdxButton(button);
 					if (button != -1 && gdxButton == -1) return; // Ignore unknown button.
-					
+
 					boolean pressed = action == GLFW.GLFW_PRESS ? true : false;
 					boolean released = action == GLFW.GLFW_RELEASE ? true : false;
 					if (pressed) {
-						app.setGlobals();
 						mousePressed++;
 						processor.touchDown(mouseX, mouseY, 0, gdxButton);
-					} else if(released){
-						app.setGlobals();
+					} else if (released) {
 						mousePressed = Math.max(0, mousePressed - 1);
 						processor.touchUp(mouseX, mouseY, 0, gdxButton);
 					}
 				}
 			};
-			
-			cursorPosCallBack = new GLFWCursorPosCallback()
-			{
+
+			cursorPosCallBack = new GLFWCursorPosCallback() {
 
 				@Override
-				public void invoke(long window, double xpos, double ypos)
-				{
-					app.setGlobals();
-					
-					mouseX = (int) xpos;
-					mouseY = (int) ypos;
+				public void invoke (long window, double xpos, double ypos) {
+					mouseX = (int)xpos;
+					mouseY = (int)ypos;
 					if (mousePressed > 0)
 						processor.touchDragged(mouseX, mouseY, 0);
 					else
 						processor.mouseMoved(mouseX, mouseY);
 				}
-				
+
 			};
-			
-			scrollCallBack = new GLFWScrollCallback()
-			{
+
+			scrollCallBack = new GLFWScrollCallback() {
 
 				@Override
-				public void invoke(long window, double xoffset, double yoffset)
-				{
-					app.setGlobals();
+				public void invoke (long window, double xoffset, double yoffset) {
 					processor.scrolled((int)-Math.signum(yoffset));
 				}
 			};
-			
-			characterCallBack = new GLFWCharCallback()
-			{
-				
+
+			characterCallBack = new GLFWCharCallback() {
+
 				@Override
-				public void invoke(long window, int codepoint)
-				{
-					app.setGlobals();
+				public void invoke (long window, int codepoint) {
 					char character = (char)codepoint;
 					lastCharacter = character;
 					processor.keyTyped(character);
 				}
 			};
-			
-			
-			keyCallBack = new GLFWKeyCallback()
-			{
+
+			keyCallBack = new GLFWKeyCallback() {
 
 				@Override
-				public void invoke(long window, int key, int scancode, int action, int mods)
-				{
-					app.setGlobals();
-					
+				public void invoke (long window, int key, int scancode, int action, int mods) {
 					switch (action) {
-						case GLFW_PRESS:
+					case GLFW_PRESS:
 
-							key = getGdxKeyCode(key);
-							processor.keyDown(key);
+						key = getGdxKeyCode(key);
+						processor.keyDown(key);
 
-							lastCharacter = 0;
-							char character = characterForKeyCode(key);
-							if (character != 0) characterCallBack.invoke(window, character);
-							break;
+						lastCharacter = 0;
+						char character = characterForKeyCode(key);
+						if (character != 0) characterCallBack.invoke(window, character);
+						break;
 
-						case GLFW_RELEASE:
-							processor.keyUp(getGdxKeyCode(key));
-							break;
+					case GLFW_RELEASE:
+						processor.keyUp(getGdxKeyCode(key));
+						break;
 
-						case GLFW_REPEAT:
-							if (lastCharacter != 0) processor.keyTyped(lastCharacter);
-							break;
-						}
+					case GLFW_REPEAT:
+						if (lastCharacter != 0) processor.keyTyped(lastCharacter);
+						break;
+					}
 				}
-				
+
 			};
-			
+
 		}
-		
-		
-		
-		public void addCallback()
-		{
+
+		public void addCallback () {
 			glfwSetCallback(app.graphics.window, mouseCallBack);
 			glfwSetCallback(app.graphics.window, cursorPosCallBack);
 			glfwSetCallback(app.graphics.window, scrollCallBack);
 			glfwSetCallback(app.graphics.window, characterCallBack);
 			glfwSetCallback(app.graphics.window, keyCallBack);
 		}
-		
-		public void removeCallback()
-		{
+
+		public void removeCallback () {
 			cursorPosCallBack.release();
 			mouseCallBack.release();
 			scrollCallBack.release();
 			characterCallBack.release();
 			keyCallBack.release();
 		}
-		
+
 		private int toGdxButton (int button) {
 			if (button == 0) return Buttons.LEFT;
 			if (button == 1) return Buttons.RIGHT;
@@ -969,7 +959,7 @@ public class Lwjgl3Input implements Input {
 			if (button == 4) return Buttons.FORWARD;
 			return -1;
 		}
-		
+
 	}
-	
+
 }

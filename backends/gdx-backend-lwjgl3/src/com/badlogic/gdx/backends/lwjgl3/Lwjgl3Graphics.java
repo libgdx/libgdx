@@ -152,7 +152,7 @@ public class Lwjgl3Graphics implements Graphics
 
 		// boolean mouseCaptured = window != 0 && glfwGetInputMode(window,
 		// GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
-
+		
 		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, contextShare);
 		if (newWindow == 0)
 			return false;
@@ -211,13 +211,14 @@ public class Lwjgl3Graphics implements Graphics
 		}
 		width = newWidth;
 		height = newHeight;
+		app.setGlobals();
 		
 		Gdx.gl.glViewport(0, 0, width, height);
 		ApplicationListener listener = Gdx.app.getApplicationListener();
 
 		if (listener != null)
 		{
-			app.setGlobals();
+		
 			listener.resize(width, height);
 		}
 		requestRendering();

@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -26,23 +27,38 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 
+import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryUtil.*;
+
 /** A simple controller that updates and control all GLFW window/Gdx Application. <br>
  * 
  * @author Natan Guilherme */
 public class Lwjgl3WindowController {
 
+	private GLFWErrorCallback errorCallback;
 	static long currentWindow;
 
+	Array<Lwjgl3Application> queuewindows;
 	Array<Lwjgl3Application> windows;
 
 	Runnable runnable;
-	
+
 	int targetFPS = 60;
-	
+
 	boolean running = true;
 	boolean shareContext;
 	Thread thread;
 
+	static Object SYNC = new Object();
+	static Object SYNC2 = new Object();
+	static Object SYNC3 = new Object();
+	static boolean toRefresh = true;
+
+	boolean toRefresh2 = true;
+	boolean toRefresh3 = true;
+	
 	/** Sharecontext is for object sharing with multiple windows (1 Texture for all windows for example). <br>
 	 * <br>
 	 * 
@@ -51,97 +67,88 @@ public class Lwjgl3WindowController {
 	public Lwjgl3WindowController (boolean shareContext) {
 		Lwjgl3NativesLoader.load();
 
+		
 		if (glfwInit() != GL11.GL_TRUE) throw new IllegalStateException("Unable to initialize GLFW");
 
+		glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
 		windows = new Array<Lwjgl3Application>();
-		
+		queuewindows = new Array<Lwjgl3Application>();
+
 		this.shareContext = shareContext;
-		
+
 		runnable = new Runnable() {
-			
+
 			@Override
 			public void run () {
-				
-				while(running)
-				{
-					for (int i = 0; i < windows.size; i++) {
-						Lwjgl3Application app = windows.get(i);
-	
-						if (app.running) {
-							
-							if (app.init == false) 
-								continue;
-							
-							if(app.toRefresh == false) // simple sync logic to refresh window when there is a refresh call
-								continue;
-							synchronized (app.SYNC) {
-								app.loop();
-							}
-//							app.loop();
-						} else {
-							app.dispose();
-							windows.removeIndex(i);
-							i--;
-						}
-					}
+
+				while (running) {
 					
-					if (targetFPS != 0) {
-						if (targetFPS == -1)
-							Lwjgl3Application.sleep(100);
-						else
-							Sync.sync(targetFPS);
+					if(toRefresh2 == false)
+						continue;
+					synchronized (SYNC3) {
+						for (int i = 0; i < windows.size; i++) {
+							Lwjgl3Application app = windows.get(i);
+
+							if (app.running) {
+
+								if (app.init == false) continue;
+
+								if (toRefresh == false) // simple sync logic to refresh window when there is a refresh call
+									continue;
+								synchronized (SYNC) {
+									app.loop();
+								}
+							} else {
+								app.dispose();
+								windows.removeIndex(i);
+								i--;
+							}
+						}
+
+						if (targetFPS != 0) {
+							if (targetFPS == -1)
+								Lwjgl3Application.sleep(100);
+							else
+								Sync.sync(targetFPS);
+						}
+
 					}
 				}
 			}
 		};
-		
-		thread = new Thread(runnable);
+
+		thread = new Thread(runnable,"Lwjgl3WindowController");
 	}
-	
-	boolean added = false;
 
 	/** Main Loop for GLFW. This call will block <br> */
 	public void start () {
 		thread.start();
-		while (windows.size > 0) {
-			
-			if(added)
-			{
-				for(int i = 0; i < windows.size; i++)
-				{
-					Lwjgl3Application app = windows.get(i);
-					
-					if (app.init == false) {
-						app.graphics.initWindow();
-						glfwMakeContextCurrent(app.graphics.window);
-						app.context = GLContext.createFromCurrent();
-						if (shareContext == true && Lwjgl3Graphics.contextShare == 0)
-						{
-							Lwjgl3Graphics.contextShare = app.graphics.window;
-						}
-//							app.context = GLContext.createFromCurrent();
-//						else {
-//							if (Lwjgl3Graphics.contextShare == 0) {
-//								app.context = GLContext.createFromCurrent();
-//								Lwjgl3Graphics.contextShare = app.graphics.window;
-//							}
-//						}
-
-						app.graphics.initGL();
-						app.graphics.show();
-
-						app.initStaticVariables();
-
-						app.input.addCallBacks();
-						app.addCallBacks();
-						
-						app.init = true;
-					}
-				}
-				added = false;
-			}
+		running = true;
+		while (running) {
 			
 			glfwWaitEvents();
+			if(toRefresh3 == false)
+				continue;
+			
+			synchronized (SYNC2) {
+
+				for (int i = 0; i < queuewindows.size; i++) {
+					Lwjgl3Application app = queuewindows.removeIndex(i);
+					i--;
+					
+					initWindow(app);
+					
+					toRefresh2 = false;
+					synchronized (SYNC3) {
+						windows.add(app);
+						
+						toRefresh2 = true;
+					}
+
+				}
+			}
+
+			if (windows.size == 0) running = false;
 		}
 		running = false;
 		try {
@@ -150,6 +157,32 @@ public class Lwjgl3WindowController {
 			e.printStackTrace();
 		}
 		glfwTerminate();
+		if(errorCallback != null)
+			errorCallback.release();
+	}
+	
+	void initWindow(Lwjgl3Application app)
+	{
+		if (app.init == false) {
+			
+			glfwMakeContextCurrent(0); // null the context so it dont pop up a error
+			app.graphics.initWindow();
+			glfwMakeContextCurrent(app.graphics.window);
+			app.context = GLContext.createFromCurrent();
+			if (shareContext == true && Lwjgl3Graphics.contextShare == 0) {
+				Lwjgl3Graphics.contextShare = app.graphics.window;
+			}
+			
+			app.graphics.initGL();
+			app.graphics.show();
+
+			app.initStaticVariables();
+
+			app.input.addCallBacks();
+			app.addCallBacks();
+
+			app.init = true;
+		}
 	}
 
 	public void addWindow (String id, ApplicationListener listener, final Lwjgl3ApplicationConfiguration config) {
@@ -159,11 +192,14 @@ public class Lwjgl3WindowController {
 	public void addWindow (String id, Lwjgl3Application app) {
 		if (app.autoloop) // cannot have a running loop
 			return;
-
-		if (getWindow(id) == null) {
-			app.id = id;
-			windows.add(app);
-			added = true;
+		
+		toRefresh3 = false;
+		synchronized (SYNC2) {
+			if (getWindow(id) == null) {
+				app.id = id;
+				queuewindows.add(app);
+				toRefresh3 = true;
+			}
 		}
 	}
 
@@ -193,7 +229,7 @@ public class Lwjgl3WindowController {
 		Lwjgl3Graphics.contextShare = firstWindow;
 	}
 
-	/** The last focus window so you can use Glfw calls to manipulate it.*/
+	/** The last focus window so you can use Glfw calls to manipulate it. */
 	public static long getCurrentWindow () {
 		return currentWindow;
 	}
