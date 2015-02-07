@@ -83,15 +83,16 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		System.arraycopy(array.values, 0, values, 0, size);
 	}
 
-	public void put (K key, V value) {
+	public int put (K key, V value) {
 		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
 		int index = indexOfKey(key);
 		if (index == -1) index = size++;
 		keys[index] = key;
 		values[index] = value;
+		return index;
 	}
 
-	public void put (K key, V value, int index) {
+	public int put (K key, V value, int index) {
 		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
 		int existingIndex = indexOfKey(key);
 		if (existingIndex != -1) removeIndex(existingIndex);
@@ -100,6 +101,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		keys[index] = key;
 		values[index] = value;
 		size++;
+		return index;
 	}
 
 	public void putAll (ArrayMap map) {
