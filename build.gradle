@@ -50,24 +50,24 @@ allprojects {
 
 project(":gdx") {
     dependencies {
-        optional project(":extensions/gdx-jnigen")        
+        optional project(":extensions:gdx-jnigen")        
     }
 }
 
-project(":backends/gdx-backend-android") {
+project(":backends:gdx-backend-android") {
     dependencies {
         compile project(":gdx")
         optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
 
-project(":backends/gdx-backend-headless") {
+project(":backends:gdx-backend-headless") {
     dependencies {
         compile project(":gdx")        
     }
 }
 
-project(":backends/gdx-backend-jglfw") {
+project(":backends:gdx-backend-jglfw") {
     dependencies {
         compile project(":gdx")
         compile "com.badlogicgames.jglfw:jglfw:$jglfwVersion"
@@ -75,7 +75,7 @@ project(":backends/gdx-backend-jglfw") {
     }
 }
 
-project(":backends/gdx-backend-lwjgl") {
+project(":backends:gdx-backend-lwjgl") {
     dependencies {
         compile project(":gdx")
         compile "org.lwjgl.lwjgl:lwjgl:$lwjglVersion"        
@@ -85,7 +85,7 @@ project(":backends/gdx-backend-lwjgl") {
     }
 }
 
-project(":backends/gdx-backend-robovm") {
+project(":backends:gdx-backend-robovm") {
     dependencies {
         compile project(":gdx")
         optional "org.robovm:robovm-rt:$robovmVersion"
@@ -94,7 +94,7 @@ project(":backends/gdx-backend-robovm") {
     }
 }
 
-project(":backends/gdx-backends-gwt") {
+project(":backends:gdx-backends-gwt") {    
     sourceSets.main.java.exclude "**/System.java"
 
     dependencies {
@@ -102,22 +102,36 @@ project(":backends/gdx-backends-gwt") {
         optional "com.google.gwt:gwt-user:$gwtVersion"
         optional "com.google.gwt:gwt-dev:$gwtVersion"
     }
+	
+	eclipse {		
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/backends/gwt/emu"		
+		classpath.file.whenMerged { classpath -> 
+			classpath.entries.find { it.path == 'src' }*.excludes = [ "com/badlogic/gdx/backends/gwt/emu/" ]					
+		}		
+	}
 }
 
-project(":extensions/gdx-box2d/gdx-box2d") {
+project(":extensions:gdx-box2d:gdx-box2d") {
     dependencies {
         compile project(":gdx")
-        optional project(":extensions/gdx-jnigen")
+        optional project(":extensions:gdx-jnigen")
     }
 }
 
-project(":extensions/gdx-box2d/gdx-box2d-gwt") {
+project(":extensions:gdx-box2d:gdx-box2d-gwt") {		
     dependencies {
         compile project(":gdx")        
     }
+	
+	eclipse {
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/physics/box2d/gwt/emu"
+		classpath.file.whenMerged { classpath ->
+			classpath.entries.find { it.path == 'src' }*.excludes = [ "com/badlogic/gdx/physics/box2d/gwt/emu/" ]
+		}
+	}
 }
 
-project(":extensions/gdx-bullet") {
+project(":extensions:gdx-bullet") {
     sourceSets.main.java.srcDirs = [         
         "jni/swig-src/collision",
         "jni/swig-src/dynamics",
@@ -132,55 +146,62 @@ project(":extensions/gdx-bullet") {
     }
 }
 
-project(":extensions/gdx-controllers/gdx-controllers") {
+project(":extensions:gdx-controllers:gdx-controllers") {
     dependencies {
         compile project(":gdx");
     }
 }
 
-project(":extensions/gdx-controllers/gdx-controllers-android") {
+project(":extensions:gdx-controllers:gdx-controllers-android") {
     dependencies {
         compile project(":gdx");
-        compile project(":extensions/gdx-controllers/gdx-controllers");
-        compile project(":backends/gdx-backend-android");
+        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":backends:gdx-backend-android");
     }
 }
 
-project(":extensions/gdx-controllers/gdx-controllers-desktop") {
+project(":extensions:gdx-controllers:gdx-controllers-desktop") {
     dependencies {
         compile project(":gdx");
-        compile project(":extensions/gdx-controllers/gdx-controllers");
-        compile project(":backends/gdx-backend-lwjgl");
+        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":backends:gdx-backend-lwjgl");
     }
 }
 
-project(":extensions/gdx-controllers/gdx-controllers-gwt") {
+project(":extensions:gdx-controllers:gdx-controllers-gwt") {	
     dependencies {
         compile project(":gdx");
-        compile project(":extensions/gdx-controllers/gdx-controllers");
-        compile project(":backends/gdx-backends-gwt");
+        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":backends:gdx-backends-gwt");
+    }
+	
+	eclipse {
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/controllers/gwt/emu"
+		classpath.file.whenMerged { classpath ->
+			classpath.entries.find { it.path == 'src' }*.excludes = [ "com/badlogic/gdx/controllers/gwt/emu/" ]
+		}
+	}
+}
+
+project(":extensions:gdx-freetype") {
+    dependencies {
+        compile project(":gdx");
     }
 }
 
-project(":extensions/gdx-freetype") {
-    dependencies {
-        compile project(":gdx");
-    }
-}
-
-project(":extensions/gdx-jnigen") {
+project(":extensions:gdx-jnigen") {
     dependencies {
         compile "com.google.code.javaparser:javaparser:1.0.8"
     }
 }
 
-project(":extensions/gdx-setup") {
+project(":extensions:gdx-setup") {
 }
 
-project(":extensions/gdx-tools") {
+project(":extensions:gdx-tools") {
     dependencies {
-        compile project(":backends/gdx-backend-lwjgl")
-        compile project(":backends/gdx-backend-headless")
+        compile project(":backends:gdx-backend-lwjgl")
+        compile project(":backends:gdx-backend-headless")
         optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
