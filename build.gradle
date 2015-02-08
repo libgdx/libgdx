@@ -1,6 +1,6 @@
 
 ext {
-	GROUPID = "com.badlogicgames.gdxpay"
+	GROUPID = "com.badlogicgames.gdx"
 	VERSION = "1.5.4-SNAPSHOT"
 	robovmVersion = "1.0.0-beta-03"
 	androidVersion = "4.4"
