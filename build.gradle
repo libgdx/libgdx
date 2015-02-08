@@ -1,0 +1,67 @@
+
+ext {
+    GROUPID = "com.badlogicgames.gdxpay"
+    VERSION = "1.5.4-SNAPSHOT"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:1.0.0"
+        classpath "org.robovm:robovm-gradle-plugin:1.0.0-beta-03"
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "java"
+    
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    
+    group = GROUPID
+    version = VERSION
+
+    // set source Java version
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    sourceSets.main.java.srcDirs = [ "src" ]
+
+    // create a custom configuration for local dependencies such as Android runtime
+    configurations {
+        optional
+        custom.extendsFrom optional
+        compile.extendsFrom custom
+    }
+}
+
+project(":extensions/gdx-jnigen") {
+    apply plugin: "java"    
+
+    dependencies {
+        compile "com.google.code.javaparser:javaparser:1.0.8"
+    }
+}
+
+project(":gdx") {
+    apply plugin: "java"    
+
+    dependencies {
+        compile project(":extensions/gdx-jnigen")        
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption("Xdoclint:none", "-quiet")
+        }
+    }
+}
