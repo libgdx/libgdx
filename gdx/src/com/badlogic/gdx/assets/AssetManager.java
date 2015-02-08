@@ -379,6 +379,17 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
+       /** blocks until the specified aseet is loaded.
+        * @param fileName The filename of the asset */
+	public void finishLoadingAsset (String fileName) {
+		log.debug("Waiting for loading " + fileName + " to complete...");
+		while (!isLoaded(fileName)) {
+			update();
+			ThreadUtils.yield();
+		}
+		log.debug("Loading " + fileName + " complete.");
+	}
+
 	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
 		ObjectSet<String> injected = this.injected;
 		for (AssetDescriptor desc : dependendAssetDescs) {
