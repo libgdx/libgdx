@@ -127,13 +127,16 @@ public class Lwjgl3WindowController {
 						else
 							Sync.sync(targetFPS);
 					}
+					
 				}
 			}
 		};
 
 		windowThread = new Thread(runnable,"Lwjgl3WindowController");
 	}
-
+	boolean tmpfirst;
+	
+	
 	/** Main Loop for GLFW. This call will block <br> */
 	public void start () {
 		mainThread = Thread.currentThread();
@@ -142,7 +145,7 @@ public class Lwjgl3WindowController {
 		while (running) {
 			executeMainRunnables();
 			
-			for(int i = 0; i < queueWindows.size;i++)
+			for(int i = 0; i < queueWindows.size; )
 			{
 				final Lwjgl3Application app = queueWindows.removeIndex(i);
 				i--;
@@ -167,6 +170,7 @@ public class Lwjgl3WindowController {
 					{
 						initContext(app);
 						windows.add(app);
+						tmpfirst = true;
 					}
 				};
 				postWindowRunnable(run2);
@@ -174,7 +178,11 @@ public class Lwjgl3WindowController {
 				break;
 			}
 			
-			if (windows.size == 0 && queueWindows.size == 0) running = false;
+			if (tmpfirst && windows.size == 0) 
+			{
+				running = false;
+			}
+			
 			glfwWaitEvents();
 		}
 		try {
@@ -243,75 +251,6 @@ public class Lwjgl3WindowController {
 			};
 			postMainRunnable(run);
 		}
-			
-//			Runnable run = new Runnable() {
-//				
-//				@Override
-//				public void run () {
-//					
-//					
-//					if (getWindow(id) == null)
-//					{
-//						app.id = id;
-//						Runnable run = new Runnable() {
-//							
-//							@Override
-//							public void run () 
-//							{
-//								
-//								glfwMakeContextCurrent(0);
-//								System.out.println("22222");
-//							}
-//						};
-//						
-//						jumpLoop = true; // dont let Window thread loop to let window creation successfull.
-//						System.out.println("1111");
-//						if(windowThread == Thread.currentThread())
-//						{
-//							postWindowRunnableAndWait(run);
-//						}
-//						else
-//							run.run();
-//						
-//						
-//						System.out.println("3333: " + jumpLoop);
-//						System.out.println("Thread: " + Thread.currentThread());
-//						app.id = id;
-//						initWindow(app);
-//						
-//						windows.add(app);
-//						
-//						
-//						
-//						Runnable run2 = new Runnable() {
-//							
-//							@Override
-//							public void run () 
-//							{
-//								initContext(app);
-//							}
-//						};
-//						postWindowRunnable(run2);
-//					
-//						System.out.println("444: " + jumpLoop);
-//						jumpLoop = false;
-//					}
-//				}
-//			};
-//			jumpLoop = true;
-//			
-//			if(mainThread == Thread.currentThread())
-//				run.run();
-//			else 
-//				postMainRunnable(run);
-//			
-				
-//				initWindow(app);
-//				windows.add(app);
-				
-				
-//				glfwPostEmptyEvent();
-//				toRefresh3 = true;
 	}
 
 	public boolean removeWindow (String id) {

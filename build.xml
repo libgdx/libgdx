@@ -78,6 +78,17 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
+	
+	<!-- gdx lwjgl3 backend -->
+	<target name="gdx-backend-lwjgl3" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
+			<property name="jar" value="gdx-backend-lwjgl3"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
 
 	<!-- gdx jglfw backend -->
 	<target name="gdx-backend-jglfw" depends="gdx-core">
