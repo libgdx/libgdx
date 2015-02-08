@@ -237,6 +237,25 @@ project(":tests:gdx-tests-jglfw") {
 	dependencies {
 		compile project(":tests:gdx-tests")
 		compile project(":backends:gdx-backend-jglfw")
+		compile files("../../gdx/libs/gdx-natives.jar")
+		compile files("../../backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar")
+		compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
+		compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
+		compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
+		compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+		compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
+	}
+	
+	eclipse.project.linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/gdx-tests-android/assets'
+	task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
+		doLast {
+			def classpath = new XmlParser().parse(file(".classpath"))
+			new Node(classpath, "classpathentry", [ kind: 'src', path: 'assets' ]);
+			def writer = new FileWriter(file(".classpath"))
+			def printer = new XmlNodePrinter(new PrintWriter(writer))
+			printer.setPreserveWhitespace(true)
+			printer.print(classpath)
+		}
 	}
 }
 
