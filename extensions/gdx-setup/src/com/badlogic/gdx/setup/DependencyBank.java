@@ -30,6 +30,7 @@ public class DependencyBank {
 	static String box2DLightsVersion = "1.3";
 	static String ashleyVersion = "1.3.1";
 	static String aiVersion = "1.5.0";
+	static String overlap2dVersion = "0.0.8";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -50,6 +51,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
 		gwtInheritances.put(ProjectDependency.AI, new String[]{"com.badlogic.gdx.ai"});
+		gwtInheritances.put(ProjectDependency.OVERLAP2D, new String[]{"com.underwaterapps.overlap2druntime"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -148,6 +150,15 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
 			
 			"Artificial Intelligence framework"
+		),
+		OVERLAP2D(
+				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
+				new String[]{},
+				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
+				new String[]{},
+				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion:sources"},
+
+				"Lightweight Entity framework"
 		);
 
 		private String[] coreDependencies;
