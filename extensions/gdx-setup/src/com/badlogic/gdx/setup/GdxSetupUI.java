@@ -568,7 +568,7 @@ public class GdxSetupUI extends JFrame {
 								}
 							}
 						});
-						if (depCounter % 5 == 0) {
+						if (depCounter % 6 == 0) {
 							depCounter++;
 							break;
 						}
@@ -576,7 +576,7 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 				
-				for (int left = depCounter - 5; left > 1; left--) {
+				for (int left = depCounter - 6; left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
 
