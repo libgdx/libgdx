@@ -3,6 +3,8 @@
 .*.swp
 .DS_STORE
 
+.gradle/
+build/
 bin/
 target/
 obj/
