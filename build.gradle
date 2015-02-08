@@ -19,7 +19,10 @@ buildscript {
 	}
 }
 
-allprojects {
+// apply the following to all projects, except the
+// Android test project, that one has its own
+// build.gradle file cause Android is special...
+configure(allprojects - project(':tests:gdx-tests-android')) {
 	apply plugin: "eclipse"
 	apply plugin: "idea"
 	apply plugin: "java"
@@ -209,6 +212,10 @@ project(":tests:gdx-tests") {
 }
 
 project(":tests:gdx-tests-android") {
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "android"
+	
 	dependencies {
 		compile project(":tests:gdx-tests")
 		compile project(":backends:gdx-backend-android")
