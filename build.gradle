@@ -2,6 +2,13 @@
 ext {
     GROUPID = "com.badlogicgames.gdxpay"
     VERSION = "1.5.4-SNAPSHOT"
+    robovmVersion = "1.0.0-beta-03"
+    androidVersion = "4.4"
+    gwtVersion = "2.6.0"
+    jglfwVersion = "1.1"
+    lwjglVersion = "2.9.2"
+    jlayerVersion = "1.0.1-gdx"
+    jorbisVersion = "0.0.17"
 }
 
 buildscript {
@@ -36,25 +43,145 @@ allprojects {
 
     // create a custom configuration for local dependencies such as Android runtime
     configurations {
-        optional
-        custom.extendsFrom optional
-        compile.extendsFrom custom
+        optional        
+        compile.extendsFrom optional
+    }
+}
+
+project(":gdx") {
+    dependencies {
+        optional project(":extensions/gdx-jnigen")        
+    }
+}
+
+project(":backends/gdx-backend-android") {
+    dependencies {
+        compile project(":gdx")
+        optional fileTree(dir: 'libs', include: ['*.jar'])
+    }
+}
+
+project(":backends/gdx-backend-headless") {
+    dependencies {
+        compile project(":gdx")        
+    }
+}
+
+project(":backends/gdx-backend-jglfw") {
+    dependencies {
+        compile project(":gdx")
+        compile "com.badlogicgames.jglfw:jglfw:$jglfwVersion"
+        compile "com.badlogicgames.jglfw:jglfw-platform:$jglfwVersion:natives-desktop"
+    }
+}
+
+project(":backends/gdx-backend-lwjgl") {
+    dependencies {
+        compile project(":gdx")
+        compile "org.lwjgl.lwjgl:lwjgl:$lwjglVersion"        
+        compile "org.lwjgl.lwjgl:lwjgl_util:$lwjglVersion"
+        compile "com.badlogicgames.jlayer:jlayer:$jlayerVersion"
+        compile "org.jcraft:jorbis:$jorbisVersion"
+    }
+}
+
+project(":backends/gdx-backend-robovm") {
+    dependencies {
+        compile project(":gdx")
+        optional "org.robovm:robovm-rt:$robovmVersion"
+        optional "org.robovm:robovm-objc:$robovmVersion"
+        optional "org.robovm:robovm-cocoatouch:$robovmVersion"
+    }
+}
+
+project(":backends/gdx-backends-gwt") {
+    sourceSets.main.java.exclude "**/System.java"
+
+    dependencies {
+        compile project(":gdx")
+        optional "com.google.gwt:gwt-user:$gwtVersion"
+        optional "com.google.gwt:gwt-dev:$gwtVersion"
+    }
+}
+
+project(":extensions/gdx-box2d/gdx-box2d") {
+    dependencies {
+        compile project(":gdx")
+        optional project(":extensions/gdx-jnigen")
+    }
+}
+
+project(":extensions/gdx-box2d/gdx-box2d-gwt") {
+    dependencies {
+        compile project(":gdx")        
+    }
+}
+
+project(":extensions/gdx-bullet") {
+    sourceSets.main.java.srcDirs = [         
+        "jni/swig-src/collision",
+        "jni/swig-src/dynamics",
+        "jni/swig-src/extras",
+        "jni/swig-src/linearmath",
+        "jni/swig-src/softbody",
+        "src"
+    ]
+
+    dependencies {
+        compile project(":gdx")        
+    }
+}
+
+project(":extensions/gdx-controllers/gdx-controllers") {
+    dependencies {
+        compile project(":gdx");
+    }
+}
+
+project(":extensions/gdx-controllers/gdx-controllers-android") {
+    dependencies {
+        compile project(":gdx");
+        compile project(":extensions/gdx-controllers/gdx-controllers");
+        compile project(":backends/gdx-backend-android");
+    }
+}
+
+project(":extensions/gdx-controllers/gdx-controllers-desktop") {
+    dependencies {
+        compile project(":gdx");
+        compile project(":extensions/gdx-controllers/gdx-controllers");
+        compile project(":backends/gdx-backend-lwjgl");
+    }
+}
+
+project(":extensions/gdx-controllers/gdx-controllers-gwt") {
+    dependencies {
+        compile project(":gdx");
+        compile project(":extensions/gdx-controllers/gdx-controllers");
+        compile project(":backends/gdx-backends-gwt");
+    }
+}
+
+project(":extensions/gdx-freetype") {
+    dependencies {
+        compile project(":gdx");
     }
 }
 
 project(":extensions/gdx-jnigen") {
-    apply plugin: "java"    
-
     dependencies {
         compile "com.google.code.javaparser:javaparser:1.0.8"
     }
 }
 
-project(":gdx") {
-    apply plugin: "java"    
+project(":extensions/gdx-setup") {
+}
 
+project(":extensions/gdx-tools") {
     dependencies {
-        compile project(":extensions/gdx-jnigen")        
+        compile project(":backends/gdx-backend-lwjgl")
+        compile project(":backends/gdx-backend-headless")
+        optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
 
