@@ -23,6 +23,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import sun.tools.jar.Main;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
@@ -37,11 +39,22 @@ import static org.lwjgl.system.MemoryUtil.*;
  * @author Natan Guilherme */
 public class Lwjgl3WindowController {
 
+	Object SYNC = new Object();
+	
+	private Runnable windowRunnablesWait;
+	private Runnable executedWindowRunnablesWait;
+	
+	private final Array<Runnable> mainRunnables = new Array();
+	private final Array<Runnable> executedMainRunnables = new Array();
+	private final Array<Runnable> windowRunnables = new Array();
+	private final Array<Runnable> executedWindowRunnables = new Array();
+	
+	
 	private GLFWErrorCallback errorCallback;
 	static long currentWindow;
 
-	Array<Lwjgl3Application> queuewindows;
 	Array<Lwjgl3Application> windows;
+	Array<Lwjgl3Application> queueWindows;
 
 	Runnable runnable;
 
@@ -49,15 +62,10 @@ public class Lwjgl3WindowController {
 
 	boolean running = true;
 	boolean shareContext;
-	Thread thread;
+	Thread windowThread;
+	Thread mainThread;
 
-	static Object SYNC = new Object();
-	static Object SYNC2 = new Object();
-	static Object SYNC3 = new Object();
-	static boolean toRefresh = true;
-
-	boolean toRefresh2 = true;
-	boolean toRefresh3 = true;
+	boolean jumpLoop;
 	
 	/** Sharecontext is for object sharing with multiple windows (1 Texture for all windows for example). <br>
 	 * <br>
@@ -72,7 +80,7 @@ public class Lwjgl3WindowController {
 
 		glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
 		windows = new Array<Lwjgl3Application>();
-		queuewindows = new Array<Lwjgl3Application>();
+		queueWindows = new Array<Lwjgl3Application>();
 
 		this.shareContext = shareContext;
 
@@ -83,76 +91,94 @@ public class Lwjgl3WindowController {
 
 				while (running) {
 					
-					if(toRefresh2 == false)
+					executeWindowRunnablesAndWait();
+					executeWindowRunnables();
+					if(jumpLoop)
 						continue;
-					synchronized (SYNC3) {
-						for (int i = 0; i < windows.size; i++) {
-							Lwjgl3Application app = windows.get(i);
+					for (int i = 0; i < windows.size; i++) {
+						final Lwjgl3Application app = windows.get(i);
 
-							if (app.running) {
-
-								if (app.init == false) continue;
-
-								if (toRefresh == false) // simple sync logic to refresh window when there is a refresh call
-									continue;
-								synchronized (SYNC) {
-									app.loop();
+						if (app.running) {
+							
+							if(app.init)
+								app.loop();
+						} else {
+							app.setGlobals();
+							app.disposeListener();
+							windows.removeIndex(i);
+							i--;
+							
+							Runnable run = new Runnable() {
+								
+								@Override
+								public void run () {
+									app.dispose();
 								}
-							} else {
-								app.dispose();
-								windows.removeIndex(i);
-								i--;
-							}
+							};
+							postMainRunnable(run);
+							
+							glfwPostEmptyEvent();
 						}
-
-						if (targetFPS != 0) {
-							if (targetFPS == -1)
-								Lwjgl3Application.sleep(100);
-							else
-								Sync.sync(targetFPS);
-						}
-
+					}
+					
+					if (targetFPS != 0) {
+						if (targetFPS == -1)
+							Lwjgl3Application.sleep(100);
+						else
+							Sync.sync(targetFPS);
 					}
 				}
 			}
 		};
 
-		thread = new Thread(runnable,"Lwjgl3WindowController");
+		windowThread = new Thread(runnable,"Lwjgl3WindowController");
 	}
 
 	/** Main Loop for GLFW. This call will block <br> */
 	public void start () {
-		thread.start();
+		mainThread = Thread.currentThread();
+		windowThread.start();
 		running = true;
 		while (running) {
+			executeMainRunnables();
 			
-			glfwWaitEvents();
-			if(toRefresh3 == false)
-				continue;
-			
-			synchronized (SYNC2) {
-
-				for (int i = 0; i < queuewindows.size; i++) {
-					Lwjgl3Application app = queuewindows.removeIndex(i);
-					i--;
-					
-					initWindow(app);
-					
-					toRefresh2 = false;
-					synchronized (SYNC3) {
-						windows.add(app);
-						
-						toRefresh2 = true;
+			for(int i = 0; i < queueWindows.size;i++)
+			{
+				final Lwjgl3Application app = queueWindows.removeIndex(i);
+				i--;
+				
+				Runnable run = new Runnable() {
+					@Override
+					public void run () 
+					{
+						glfwMakeContextCurrent(0);
+						jumpLoop = true;
 					}
-
-				}
+				};
+				postWindowRunnableAndWait(run);
+				
+				initWindow(app);
+				glfwShowWindow(app.graphics.window);
+				
+				
+				Runnable run2 = new Runnable() {
+					@Override
+					public void run () 
+					{
+						initContext(app);
+						windows.add(app);
+					}
+				};
+				postWindowRunnable(run2);
+				jumpLoop = false;
+				break;
 			}
-
-			if (windows.size == 0) running = false;
+			
+			if (windows.size == 0 && queueWindows.size == 0) running = false;
+			glfwWaitEvents();
 		}
-		running = false;
 		try {
-			thread.join();
+			windowThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -160,27 +186,24 @@ public class Lwjgl3WindowController {
 		if(errorCallback != null)
 			errorCallback.release();
 	}
-	
 	void initWindow(Lwjgl3Application app)
+	{
+		app.graphics.initWindow();
+		if (shareContext == true && Lwjgl3Graphics.contextShare == 0) {
+			Lwjgl3Graphics.contextShare = app.graphics.window;
+		}
+		app.initStaticVariables();
+		app.input.addCallBacks();
+		app.addCallBacks();
+	}
+	void initContext(Lwjgl3Application app)
 	{
 		if (app.init == false) {
 			
-			glfwMakeContextCurrent(0); // null the context so it dont pop up a error
-			app.graphics.initWindow();
 			glfwMakeContextCurrent(app.graphics.window);
 			app.context = GLContext.createFromCurrent();
-			if (shareContext == true && Lwjgl3Graphics.contextShare == 0) {
-				Lwjgl3Graphics.contextShare = app.graphics.window;
-			}
-			
 			app.graphics.initGL();
 			app.graphics.show();
-
-			app.initStaticVariables();
-
-			app.input.addCallBacks();
-			app.addCallBacks();
-
 			app.init = true;
 		}
 	}
@@ -189,18 +212,106 @@ public class Lwjgl3WindowController {
 		addWindow(id, new Lwjgl3Application(listener, config, false));
 	}
 
-	public void addWindow (String id, Lwjgl3Application app) {
+	public void addWindow (final String id, final Lwjgl3Application app) {
 		if (app.autoloop) // cannot have a running loop
 			return;
 		
-		toRefresh3 = false;
-		synchronized (SYNC2) {
-			if (getWindow(id) == null) {
+		Thread thisThread = Thread.currentThread();
+		
+		
+		if(thisThread == mainThread)
+		{
+			if (getWindow(id) == null)
+			{
 				app.id = id;
-				queuewindows.add(app);
-				toRefresh3 = true;
+				queueWindows.add(app);
 			}
 		}
+		else
+		{
+			Runnable run = new Runnable() {
+				
+				@Override
+				public void run () 
+				{
+					if (getWindow(id) == null)
+					{
+						app.id = id;
+						queueWindows.add(app);
+					}
+				}
+			};
+			postMainRunnable(run);
+		}
+			
+//			Runnable run = new Runnable() {
+//				
+//				@Override
+//				public void run () {
+//					
+//					
+//					if (getWindow(id) == null)
+//					{
+//						app.id = id;
+//						Runnable run = new Runnable() {
+//							
+//							@Override
+//							public void run () 
+//							{
+//								
+//								glfwMakeContextCurrent(0);
+//								System.out.println("22222");
+//							}
+//						};
+//						
+//						jumpLoop = true; // dont let Window thread loop to let window creation successfull.
+//						System.out.println("1111");
+//						if(windowThread == Thread.currentThread())
+//						{
+//							postWindowRunnableAndWait(run);
+//						}
+//						else
+//							run.run();
+//						
+//						
+//						System.out.println("3333: " + jumpLoop);
+//						System.out.println("Thread: " + Thread.currentThread());
+//						app.id = id;
+//						initWindow(app);
+//						
+//						windows.add(app);
+//						
+//						
+//						
+//						Runnable run2 = new Runnable() {
+//							
+//							@Override
+//							public void run () 
+//							{
+//								initContext(app);
+//							}
+//						};
+//						postWindowRunnable(run2);
+//					
+//						System.out.println("444: " + jumpLoop);
+//						jumpLoop = false;
+//					}
+//				}
+//			};
+//			jumpLoop = true;
+//			
+//			if(mainThread == Thread.currentThread())
+//				run.run();
+//			else 
+//				postMainRunnable(run);
+//			
+				
+//				initWindow(app);
+//				windows.add(app);
+				
+				
+//				glfwPostEmptyEvent();
+//				toRefresh3 = true;
 	}
 
 	public boolean removeWindow (String id) {
@@ -233,5 +344,86 @@ public class Lwjgl3WindowController {
 	public static long getCurrentWindow () {
 		return currentWindow;
 	}
+	
+	
+	public void postMainRunnable (Runnable runnable) {
+		synchronized (mainRunnables) {
+			mainRunnables.add(runnable);
+		}
+	}
+	
+	
+	public void postWindowRunnable (Runnable runnable) {
+		synchronized (windowRunnables) {
+			windowRunnables.add(runnable);
+		}
+	}
+	public void postWindowRunnableAndWait (Runnable runnable) {
+		synchronized (SYNC) {
+			windowRunnablesWait = runnable;
+		}
+		
+		while(windowRunnablesWait != null)
+		{
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	private void executeMainRunnables () {
+		synchronized (mainRunnables) {
+			for (int i = mainRunnables.size - 1; i >= 0; i--)
+				executedMainRunnables.addAll(mainRunnables.get(i));
+			mainRunnables.clear();
+		}
+		
+		if (executedMainRunnables.size == 0) return;
+		for (int i = executedMainRunnables.size - 1; i >= 0; i--)
+			executedMainRunnables.removeIndex(i).run();
+	}
+	
+	private void executeWindowRunnables () {
+		synchronized (windowRunnables) {
+			for (int i = windowRunnables.size - 1; i >= 0; i--)
+				executedWindowRunnables.addAll(windowRunnables.get(i));
+			windowRunnables.clear();
+		}
+		
+		if (executedWindowRunnables.size == 0) return;
+		for (int i = executedWindowRunnables.size - 1; i >= 0; i--)
+			executedWindowRunnables.removeIndex(i).run();
+	}
+	
+	
+	private void executeWindowRunnablesAndWait () {
+		
+		if(windowRunnablesWait == null)
+			return;
+		
+		synchronized (SYNC) {
+			executedWindowRunnablesWait = windowRunnablesWait ;
+		}
+		executedWindowRunnablesWait.run();
+		executedWindowRunnablesWait = null;
+		windowRunnablesWait = null;
+	}
+	
+	
+//	public boolean executeRunnables () {
+//		synchronized (runnables) {
+//			for (int i = runnables.size - 1; i >= 0; i--)
+//				executedRunnables.addAll(runnables.get(i));
+//			runnables.clear();
+//		}
+//		if (executedRunnables.size == 0) return false;
+//		for (int i = executedRunnables.size - 1; i >= 0; i--)
+//			executedRunnables.removeIndex(i).run();
+//		return true;
+//	}
 
 }

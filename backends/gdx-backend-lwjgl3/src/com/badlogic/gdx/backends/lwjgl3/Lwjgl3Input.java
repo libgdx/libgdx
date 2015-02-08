@@ -75,7 +75,6 @@ public class Lwjgl3Input implements Input {
 
 			public boolean keyDown (int keycode) {
 				app.setGlobals();
-				Lwjgl3WindowController.toRefresh = true;
 				pressedKeys++;
 				keyJustPressed = true;
 				justPressedKeys[keycode] = true;
@@ -134,8 +133,6 @@ public class Lwjgl3Input implements Input {
 
 			public boolean scrolled (int amount) {
 				app.setGlobals();
-
-				Lwjgl3WindowController.toRefresh = true;
 				app.graphics.requestRendering();
 				return processorr != null ? processorr.scrolled(amount) : false;
 			}
@@ -843,8 +840,8 @@ public class Lwjgl3Input implements Input {
 	}
 
 	class Lwjgl3InputProcessor {
-		private int mousePressed;
-		private char lastCharacter;
+		int mousePressed;
+		char lastCharacter;
 
 		// MUST HAVE CALLBACK POINTER OR ERROR OCCUR
 		GLFWCursorPosCallback cursorPosCallBack;
@@ -951,7 +948,7 @@ public class Lwjgl3Input implements Input {
 			keyCallBack.release();
 		}
 
-		private int toGdxButton (int button) {
+		int toGdxButton (int button) {
 			if (button == 0) return Buttons.LEFT;
 			if (button == 1) return Buttons.RIGHT;
 			if (button == 2) return Buttons.MIDDLE;

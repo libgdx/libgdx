@@ -130,6 +130,8 @@ public class Lwjgl3Graphics implements Graphics
 			Gdx.gl = gl20;
 			Gdx.gl20 = gl20;
 		}
+		
+		setVSync(vSync);
 	}
 	
 	private boolean createWindow(int width, int height, boolean fullscreen)
@@ -152,8 +154,10 @@ public class Lwjgl3Graphics implements Graphics
 
 		// boolean mouseCaptured = window != 0 && glfwGetInputMode(window,
 		// GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
+
+		long newWindow = 0;
 		
-		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, contextShare);
+		newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, contextShare);
 		if (newWindow == 0)
 			return false;
 		window = newWindow;
@@ -175,8 +179,6 @@ public class Lwjgl3Graphics implements Graphics
 		// if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE,
 		// GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
 
-		glfwMakeContextCurrent(window); // needed before setting vsync after creation
-		setVSync(vSync);
 
 		return true;
 	}
@@ -211,17 +213,17 @@ public class Lwjgl3Graphics implements Graphics
 		}
 		width = newWidth;
 		height = newHeight;
-		app.setGlobals();
-		
-		Gdx.gl.glViewport(0, 0, width, height);
-		ApplicationListener listener = Gdx.app.getApplicationListener();
-
-		if (listener != null)
-		{
-		
-			listener.resize(width, height);
-		}
-		requestRendering();
+//		app.setGlobals();
+//		
+//		Gdx.gl.glViewport(0, 0, width, height);
+//		ApplicationListener listener = Gdx.app.getApplicationListener();
+//
+//		if (listener != null)
+//		{
+//		
+//			listener.resize(width, height);
+//		}
+//		requestRendering();
 	}
 
 	void positionChanged(int x, int y)
@@ -463,7 +465,7 @@ public class Lwjgl3Graphics implements Graphics
 		visible = true;
 		
 		Lwjgl3WindowController.currentWindow = window;
-		glfwShowWindow(window);
+//		glfwShowWindow(window);
 
 		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

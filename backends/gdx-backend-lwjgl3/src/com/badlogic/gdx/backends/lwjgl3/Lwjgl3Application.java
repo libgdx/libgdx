@@ -66,6 +66,7 @@ public class Lwjgl3Application implements Application {
 	private boolean forceExit = false;
 	final ApplicationListener listener;
 	private boolean disposed;
+	private boolean disposed2;
 
 	boolean create = false;
 
@@ -75,12 +76,15 @@ public class Lwjgl3Application implements Application {
 	int audioDeviceBufferSize;
 
 	boolean init;
+	
+	int lastWidth;
+	int lastHeight;
 
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		this(listener, config, true);
 	}
 
-	/** Autoloop true will block to run on main thread to be compatible with mac. False is usefull to use it with
+	/** Autoloop true creates a thread (will block on mac). False is usefull to use it with
 	 * {@link Lwjgl3WindowController} */
 	public Lwjgl3Application (ApplicationListener listener, final Lwjgl3ApplicationConfiguration config, boolean autoloop) {
 		Lwjgl3NativesLoader.load();
@@ -106,23 +110,23 @@ public class Lwjgl3Application implements Application {
 		appRunnable = new Runnable() {
 
 			public void run () {
-// glfwMakeContextCurrent(graphics.window);
-// GLContext.createFromCurrent();
+				
+				glfwMakeContextCurrent(graphics.window);
+				context = GLContext.createFromCurrent();
+				graphics.initGL();
+				glfwShowWindow(graphics.window);
+				graphics.show();
+				
 
 				while (running) {
 					try {
-						if (Lwjgl3WindowController.toRefresh == false) // simple sync logic to refresh window when there is a refresh
-// call
-							continue;
-						synchronized (Lwjgl3WindowController.SYNC) {
 							loop();
-						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						running = false;
 					}
 				}
-
+				disposeListener();
 			}
 		};
 
@@ -137,11 +141,7 @@ public class Lwjgl3Application implements Application {
 					init = true;
 
 					graphics.initWindow();
-					glfwMakeContextCurrent(graphics.window);
-					context = GLContext.createFromCurrent();
-					graphics.initGL();
-					graphics.show();
-
+					
 					initStaticVariables();
 
 					input.addCallBacks();
@@ -153,23 +153,22 @@ public class Lwjgl3Application implements Application {
 
 				while (running) {
 					glfwWaitEvents();
-					;
 				}
 				try {
 					thread.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				dispose();
 				end();
 			}
 		};
 
 		if (autoloop) {
 			if (Lwjgl3Graphics.isMac) {
-// SwingUtilities.invokeLater(mainRunnable);
 				mainRunnable.run();
 			} else
-				new Thread(appRunnable).start();
+				new Thread(mainRunnable).start();
 		}
 	}
 
@@ -185,23 +184,14 @@ public class Lwjgl3Application implements Application {
 		closeCallBack = new GLFWWindowCloseCallback() {
 			@Override
 			public void invoke (long window) {
-				Lwjgl3WindowController.toRefresh = false; // simple sync logic to refresh window when there is a refresh call
-				synchronized (Lwjgl3WindowController.SYNC) {
 					exit();
-					Lwjgl3WindowController.toRefresh = true;
-				}
-
 			}
 		};
 
 		sizeCallBack = new GLFWWindowSizeCallback() {
 			@Override
 			public void invoke (long window, int width, int height) {
-				Lwjgl3WindowController.toRefresh = false; // simple sync logic to refresh window when there is a refresh call
-				synchronized (Lwjgl3WindowController.SYNC) {
 					graphics.sizeChanged(width, height);
-					Lwjgl3WindowController.toRefresh = true;
-				}
 			}
 		};
 
@@ -209,11 +199,11 @@ public class Lwjgl3Application implements Application {
 
 			@Override
 			public void invoke (long window) {
-				Lwjgl3WindowController.toRefresh = false; // simple sync logic to refresh window when there is a refresh call
-				synchronized (Lwjgl3WindowController.SYNC) {
-					loop();
-					Lwjgl3WindowController.toRefresh = true;
-				}
+//				Lwjgl3WindowController.toRefresh = false; // simple sync logic to refresh window when there is a refresh call
+//				synchronized (Lwjgl3WindowController.SYNC) {
+//					loop();
+//					Lwjgl3WindowController.toRefresh = true;
+//				}
 			}
 		};
 
@@ -282,9 +272,17 @@ public class Lwjgl3Application implements Application {
 		if (create == false) {
 			create = true;
 			Lwjgl3Application.this.listener.create();
-			Lwjgl3Application.this.listener.resize(graphics.getWidth(), graphics.getHeight());
 		}
-
+		
+		int width = Math.max(1, graphics.getWidth());
+		int height = Math.max(1, graphics.getHeight());
+		if (lastWidth != width || lastHeight != height) {
+			lastWidth = width;
+			lastHeight = height;
+			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+			listener.resize(width, height);
+		}
+		
 		boolean shouldRender = false;
 
 		if (executeRunnables()) shouldRender = true;
@@ -352,10 +350,10 @@ public class Lwjgl3Application implements Application {
 	void setGlobals () {
 		long window = glfwGetCurrentContext();
 
-// if(window != graphics.window)
-		glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
-// if(GL.getCurrent() != context)
-		GL.setCurrent(context);
+		if(window != graphics.window)
+			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
+//		if(GL.getCurrent() != context)
+//			GL.setCurrent(context);
 
 		if (audio != null && Gdx.audio == null) Gdx.audio = audio;
 		if (files != null && Gdx.files == null) Gdx.files = files;
@@ -476,11 +474,16 @@ public class Lwjgl3Application implements Application {
 			graphics.requestRendering();
 		}
 	}
-
-	public void dispose () {
-		if (disposed) return;
-		exit();
-
+	
+	/**
+	 * Call this on listener window
+	 */
+	public void disposeListener()
+	{
+		if(disposed2)
+			return;
+		disposed2 = true;
+		
 		synchronized (lifecycleListeners) {
 			for (LifecycleListener listener : lifecycleListeners) {
 				listener.pause();
@@ -489,6 +492,15 @@ public class Lwjgl3Application implements Application {
 		}
 		listener.pause();
 		listener.dispose();
+	}
+	
+	
+	/**
+	 * Call this on GLFW main thread.
+	 */
+	public void dispose () {
+		if (disposed) return;
+		exit();
 
 		if (audio != null) {
 			audio.dispose();
@@ -522,7 +534,6 @@ public class Lwjgl3Application implements Application {
 
 	void end () // used for this application thread only
 	{
-		dispose();
 		glfwTerminate();
 		if (forceExit) System.exit(-1);
 	}
