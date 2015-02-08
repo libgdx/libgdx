@@ -3,6 +3,7 @@
 .*.swp
 .DS_STORE
 
+robovm-logs/
 .classpath
 .project
 .settings
