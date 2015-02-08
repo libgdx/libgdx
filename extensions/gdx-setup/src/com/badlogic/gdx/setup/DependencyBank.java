@@ -152,13 +152,13 @@ public class DependencyBank {
 			"Artificial Intelligence framework"
 		),
 		OVERLAP2D(
-				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
-				new String[]{},
-				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
-				new String[]{},
-				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion:sources"},
+			new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
+			new String[]{},
+			new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion"},
+			new String[]{},
+			new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion:sources"},
 
-				"Overlap2D level and ui editor runtime"
+			"Overlap2D level and ui editor runtime"
 		);
 
 		private String[] coreDependencies;
