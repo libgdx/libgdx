@@ -158,7 +158,7 @@ public class DependencyBank {
 				new String[]{},
 				new String[]{"com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:$overlap2dVersion:sources"},
 
-				"Lightweight Entity framework"
+				"Overlap2D level and ui editor runtime"
 		);
 
 		private String[] coreDependencies;
