@@ -50,6 +50,7 @@ public interface GL30 extends GL20 {
 	public final int GL_TEXTURE_MAX_LEVEL = 0x813D;
 	public final int GL_MIN = 0x8007;
 	public final int GL_MAX = 0x8008;
+	public final int GL_LOGIC_OP = 0x0BF1;
 	public final int GL_DEPTH_COMPONENT24 = 0x81A6;
 	public final int GL_MAX_TEXTURE_LOD_BIAS = 0x84FD;
 	public final int GL_TEXTURE_COMPARE_MODE = 0x884C;
