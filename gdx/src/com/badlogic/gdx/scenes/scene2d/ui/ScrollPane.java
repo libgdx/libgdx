@@ -322,6 +322,7 @@ public class ScrollPane extends WidgetGroup {
 
 		if (!panning) {
 			if (overscrollX && scrollX) {
+				Gdx.graphics.requestRendering();
 				if (amountX < 0) {
 					resetFade();
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
@@ -338,6 +339,7 @@ public class ScrollPane extends WidgetGroup {
 				}
 			}
 			if (overscrollY && scrollY) {
+				Gdx.graphics.requestRendering();
 				if (amountY < 0) {
 					resetFade();
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
