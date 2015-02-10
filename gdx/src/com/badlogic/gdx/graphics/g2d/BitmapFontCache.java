@@ -16,11 +16,13 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 
@@ -336,18 +338,21 @@ public class BitmapFontCache {
 	/** Counts the actual glyphs excluding characters used to markup the text. */
 	private int countGlyphs (CharSequence seq, int start, int end) {
 		int count = end - start;
-		while (start < end) {
-			char ch = seq.charAt(start++);
-			if (ch == '[') {
-				count--;
-				if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
-					while (start < end && seq.charAt(start) != ']') {
+		if (font.markupEnabled) {
+			while (start < end) {
+				char ch = seq.charAt(start++);
+				if (ch == '[') {
+					if (start < end && seq.charAt(start) == '[') { // escaped '['
 						start++;
 						count--;
+					} else { // non escaped '['
+						int colorTagLen = markup.parseColorTag(seq, -1, start, end);
+						if (colorTagLen >= 0) {
+							start += colorTagLen + 1;
+							count -= colorTagLen + 2;
+						}
 					}
-					count--;
 				}
-				start++;
 			}
 		}
 		return count;
@@ -356,7 +361,7 @@ public class BitmapFontCache {
 	private void requireSequence (CharSequence seq, int start, int end) {
 		if (vertexData.length == 1) {
 			// don't scan sequence if we just have one page and markup is disabled
-			int newGlyphCount = font.markupEnabled ? countGlyphs(seq, start, end) : end - start;
+			int newGlyphCount = countGlyphs(seq, start, end);
 			require(0, newGlyphCount);
 		} else {
 			for (int i = 0, n = tmpGlyphCount.length; i < n; i++)
@@ -367,10 +372,11 @@ public class BitmapFontCache {
 				char ch = seq.charAt(start++);
 				if (ch == '[' && font.markupEnabled) {
 					if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
-						while (start < end && seq.charAt(start) != ']')
-							start++;
-						start++;
-						continue;
+						int colorTagLen = markup.parseColorTag(seq, -1, start, end);
+						if (colorTagLen >= 0) {
+							start += colorTagLen + 1;
+							continue;
+						}
 					}
 					start++;
 				}
@@ -411,12 +417,16 @@ public class BitmapFontCache {
 			while (start < end) {
 				char ch = str.charAt(start++);
 				if (ch == '[' && font.markupEnabled) {
-					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
-						color = markup.getLastColor().toFloatBits();
-						continue;
+					if (start < end && str.charAt(start) == '[') // escaped '['
+						start++;
+					else { // non escaped '['
+						int colorTagLen = markup.parseColorTag(str, charsCount, start, end);
+						if (colorTagLen >= 0) {
+							color = markup.getLastColor().toFloatBits();
+							start += colorTagLen + 1;
+							continue;
+						}
 					}
-					start++;
 				}
 				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
@@ -428,12 +438,16 @@ public class BitmapFontCache {
 			while (start < end) {
 				char ch = str.charAt(start++);
 				if (ch == '[' && font.markupEnabled) {
-					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
-						color = markup.getLastColor().toFloatBits();
-						continue;
+					if (start < end && str.charAt(start) == '[') // escaped '['
+						start++;
+					else { // non escaped '['
+						int colorTagLen = markup.parseColorTag(str, charsCount, start, end);
+						if (colorTagLen >= 0) {
+							color = markup.getLastColor().toFloatBits();
+							start += colorTagLen + 1;
+							continue;
+						}
 					}
-					start++;
 				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
@@ -448,12 +462,16 @@ public class BitmapFontCache {
 			while (start < end) {
 				char ch = str.charAt(start++);
 				if (ch == '[' && font.markupEnabled) {
-					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
-						color = markup.getLastColor().toFloatBits();
-						continue;
+					if (start < end && str.charAt(start) == '[') // escaped '['
+						start++;
+					else { // non escaped '['
+						int colorTagLen = markup.parseColorTag(str, charsCount, start, end);
+						if (colorTagLen >= 0) {
+							color = markup.getLastColor().toFloatBits();
+							start += colorTagLen + 1;
+							continue;
+						}
 					}
-					start++;
 				}
 				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
@@ -469,12 +487,16 @@ public class BitmapFontCache {
 			while (start < end) {
 				char ch = str.charAt(start++);
 				if (ch == '[' && font.markupEnabled) {
-					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-						start += TextMarkup.parseColorTag(markup, str, charsCount, start, end) + 1;
-						color = markup.getLastColor().toFloatBits();
-						continue;
+					if (start < end && str.charAt(start) == '[') // escaped '['
+						start++;
+					else { // non escaped '['
+						int colorTagLen = markup.parseColorTag(str, charsCount, start, end);
+						if (colorTagLen >= 0) {
+							color = markup.getLastColor().toFloatBits();
+							start += colorTagLen + 1;
+							continue;
+						}
 					}
-					start++;
 				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {

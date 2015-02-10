@@ -32,9 +32,16 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author Alexander Dorokhov */
 class TextMarkup {
 	private static final Color tempColor = new Color();
-	private static final com.badlogic.gdx.utils.StringBuilder tempColorBuffer = new StringBuilder();
+	private static final StringBuilder tempColorBuffer = new StringBuilder();
 
-	public static int parseColorTag (TextMarkup markup, CharSequence str, int nomarkupStart, int start, int end) {
+	/** Parses a color tag.
+	 * @param str the input string
+	 * @param nomarkupStart the index of the string, excluding characters used to markup the text, where color info will be added.
+	 *           if it's negative color info is not set.
+	 * @param start the begin index
+	 * @param end the end index
+	 * @return the number of characters in the tag; {@code -1} in case of unknown color. */
+	public int parseColorTag (CharSequence str, int nomarkupStart, int start, int end) {
 		if (start < end) {
 			final Color hexColor = tempColor;
 			if (str.charAt(start) == '#') {
@@ -43,15 +50,14 @@ class TextMarkup {
 				for (int i = start + 1; i < end; i++) {
 					char ch = str.charAt(i);
 					if (ch == ']') {
-						if (i < start + 2 || i > start + 9)
-							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits.");
+						if (i < start + 2 || i > start + 9) return -1; // Illegal number of hex digits
 						if (i <= start + 7) { // RRGGBB
 							Color.rgb888ToColor(hexColor, colorInt);
 							hexColor.a = 1f;
 						} else { // RRGGBBAA
 							Color.rgba8888ToColor(hexColor, colorInt);
 						}
-						markup.beginChunk(hexColor, nomarkupStart);
+						if (nomarkupStart >= 0) beginChunk(hexColor, nomarkupStart);
 						return i - start;
 					}
 					if (ch >= '0' && ch <= '9')
@@ -61,7 +67,7 @@ class TextMarkup {
 					else if (ch >= 'A' && ch <= 'F')
 						colorInt = colorInt * 16 + (ch - ('A' - 10));
 					else
-						throw new GdxRuntimeException("Unexpected character in hex color: " + ch);
+						return -1; // Unexpected character in hex color
 				}
 			} else {
 				// Parse named color
@@ -69,13 +75,13 @@ class TextMarkup {
 				for (int i = start; i < end; i++) {
 					char ch = str.charAt(i);
 					if (ch == ']') {
-						if (tempColorBuffer.length() == 0) { // end tag []
-							markup.endChunk(nomarkupStart);
+						if (i == start) { // end tag []
+							if (nomarkupStart >= 0) endChunk(nomarkupStart);
 						} else {
 							String colorString = tempColorBuffer.toString();
 							Color newColor = Colors.get(colorString);
-							if (newColor == null) throw new GdxRuntimeException("Unknown color: " + colorString);
-							markup.beginChunk(newColor, nomarkupStart);
+							if (newColor == null) return -1; // Unknown color
+							if (nomarkupStart >= 0) beginChunk(newColor, nomarkupStart);
 						}
 						return i - start;
 					} else {
@@ -84,19 +90,19 @@ class TextMarkup {
 				}
 			}
 		}
-		throw new GdxRuntimeException("Unclosed color tag.");
+		return -1; // Unclosed color tag
 	}
 
 	private static Pool<ColorChunk> colorChunkPool;
 	private static Application app = null;
-	
+
 	private Array<ColorChunk> colorChunks = new Array<ColorChunk>();
 	private Array<Color> currentColorStack = new Array<Color>();
 	private Color lastColor = Color.WHITE;
 	private Color defaultColor = Color.WHITE;
-	
-	public TextMarkup() {
-		if(Gdx.app != app) {
+
+	public TextMarkup () {
+		if (Gdx.app != app) {
 			colorChunkPool = new Pool<ColorChunk>(32) {
 				protected ColorChunk newObject () {
 					return new ColorChunk();
