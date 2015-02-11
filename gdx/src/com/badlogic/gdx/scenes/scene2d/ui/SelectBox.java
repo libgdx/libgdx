@@ -134,7 +134,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
 	}
 
-	/** Set the backing Array that makes up the choices available in the SelectBox */
+	/** Sets the items visible in the select box. */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
@@ -155,8 +155,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		invalidateHierarchy();
 	}
 
-	/** Retrieve the backing Array that makes up the chocies available in the SelectBox
-	 * @see SelectBox#setItems(Array) */
+	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
 	public Array<T> getItems () {
 		return items;
 	}

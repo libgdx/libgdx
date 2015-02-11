@@ -121,6 +121,10 @@ public class KTXTextureData implements TextureData, CubemapData {
 		numberOfArrayElements = compressedData.getInt();
 		numberOfFaces = compressedData.getInt();
 		numberOfMipmapLevels = compressedData.getInt();
+		if (numberOfMipmapLevels == 0) {
+			numberOfMipmapLevels = 1;
+			useMipMaps = true;
+		}
 		int bytesOfKeyValueData = compressedData.getInt();
 		imagePos = compressedData.position() + bytesOfKeyValueData;
 		if (!compressedData.isDirect()) {
@@ -271,7 +275,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 			}
 		}
 		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
-		if (useMipMaps && numberOfMipmapLevels == 1) Gdx.gl.glGenerateMipmap(target);
+		if (useMipMaps()) Gdx.gl.glGenerateMipmap(target);
 
 		// dispose data once transfered to GPU
 		disposePreparedData();

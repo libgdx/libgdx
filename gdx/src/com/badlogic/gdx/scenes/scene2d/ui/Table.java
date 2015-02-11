@@ -84,7 +84,6 @@ public class Table extends WidgetGroup {
 		this.skin = skin;
 
 		cellDefaults = obtainCell();
-		cellDefaults.defaults();
 
 		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
@@ -322,7 +321,7 @@ public class Table extends WidgetGroup {
 		padRight = backgroundRight;
 		align = Align.center;
 		debug(Debug.none);
-		cellDefaults.defaults();
+		cellDefaults.reset();
 		for (int i = 0, n = columnDefaults.size; i < n; i++) {
 			Cell columnCell = columnDefaults.get(i);
 			if (columnCell != null) cellPool.free(columnCell);
