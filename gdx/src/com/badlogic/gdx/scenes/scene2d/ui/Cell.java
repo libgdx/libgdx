@@ -889,7 +889,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	/** Set all constraints to cell default values. */
-	void defaults () {
+	public void defaults () {
 		minWidth = Value.minWidth;
 		minHeight = Value.minHeight;
 		prefWidth = Value.prefWidth;
