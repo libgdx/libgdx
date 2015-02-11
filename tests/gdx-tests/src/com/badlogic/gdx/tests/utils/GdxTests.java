@@ -212,6 +212,7 @@ public class GdxTests {
 		TiledMapAssetManagerTest.class,
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapDirectLoaderTest.class,
+		TiledMapMultipleExternalTilesetsTest.class,
 		TiledMapObjectLoadingTest.class,
 		TiledMapBench.class,
 		TimerTest.class,

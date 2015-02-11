@@ -67,10 +67,13 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 	/** @param id id of the {@link TiledMapTile} to get.
 	 * @return tile with matching id, null if it doesn't exist */
 	public TiledMapTile getTile (int id) {
-		for (TiledMapTileSet tileset : tilesets) {
-			TiledMapTile tile = tileset.getTile(id);
-			if (tile != null) {
-				return tile;
+		for (int i=tilesets.size-1; i>=0; i--) {
+			TiledMapTileSet tileset = tilesets.get(i);
+			if (id >= tileset.getFirstgid()) {
+				TiledMapTile tile = tileset.getTile(id);
+				if (tile != null) {
+					return tile;
+				}
 			}
 		}
 		return null;
