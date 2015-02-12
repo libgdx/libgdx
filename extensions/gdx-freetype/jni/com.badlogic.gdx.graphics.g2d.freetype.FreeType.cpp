@@ -41,8 +41,8 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_000
 
 //@line:100
 
-         FT_Stroker stroker;
-         FT_Error error = FT_Stroker_New((FT_Library)library, &stroker);
+			FT_Stroker stroker;
+			FT_Error error = FT_Stroker_New((FT_Library)library, &stroker);
 			if(error) return 0;
 			else return (jlong)stroker;
 		
@@ -234,8 +234,8 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_
 
 //@line:270
 
-	   	return FT_HAS_KERNING(((FT_Face)face));
-	   
+			return FT_HAS_KERNING(((FT_Face)face));
+		
 
 }
 
@@ -244,11 +244,11 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 
 //@line:278
 
-	   	FT_Vector kerning;
-	   	FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
-	   	if(error) return 0;
-	   	return kerning.x;
-	   
+			FT_Vector kerning;
+			FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
+			if(error) return 0;
+			return kerning.x;
+		
 
 }
 
@@ -257,8 +257,8 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 
 //@line:289
 
-	   	return FT_Get_Char_Index((FT_Face)face, charCode);
-	   
+			return FT_Get_Char_Index((FT_Face)face, charCode);
+		
 
 }
 
@@ -567,7 +567,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getBuffer(JNIEnv* env, jclass clazz, jlong bitmap) {
 
 
-//@line:630
+//@line:639
 
 			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
 			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
@@ -578,7 +578,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getNumGray(JNIEnv* env, jclass clazz, jlong bitmap) {
 
 
-//@line:639
+//@line:648
 
 			return ((FT_Bitmap*)bitmap)->num_grays;
 		
@@ -588,7 +588,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getPixelMode(JNIEnv* env, jclass clazz, jlong bitmap) {
 
 
-//@line:647
+//@line:656
 
 			return ((FT_Bitmap*)bitmap)->pixel_mode;
 		
@@ -598,7 +598,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getWidth(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:661
+//@line:670
 
 			return ((FT_Glyph_Metrics*)metrics)->width;
 		
@@ -608,7 +608,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHeight(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:669
+//@line:678
 
 			return ((FT_Glyph_Metrics*)metrics)->height;
 		
@@ -618,7 +618,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingX(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:677
+//@line:686
 
 			return ((FT_Glyph_Metrics*)metrics)->horiBearingX;
 		
@@ -628,7 +628,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingY(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:685
+//@line:694
 
 			return ((FT_Glyph_Metrics*)metrics)->horiBearingY;
 		
@@ -638,7 +638,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriAdvance(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:693
+//@line:702
 
 			return ((FT_Glyph_Metrics*)metrics)->horiAdvance;
 		
@@ -648,7 +648,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingX(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:701
+//@line:710
 
 			return ((FT_Glyph_Metrics*)metrics)->vertBearingX;
 		
@@ -658,7 +658,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingY(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:709
+//@line:718
 
 			return ((FT_Glyph_Metrics*)metrics)->vertBearingY;
 		 
@@ -668,7 +668,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertAdvance(JNIEnv* env, jclass clazz, jlong metrics) {
 
 
-//@line:717
+//@line:726
 
 			return ((FT_Glyph_Metrics*)metrics)->vertAdvance;
 		
@@ -678,7 +678,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Stroker_set(JNIEnv* env, jclass clazz, jlong stroker, jint radius, jint lineCap, jint lineJoin, jint miterLimit) {
 
 
-//@line:731
+//@line:740
 
 			FT_Stroker_Set((FT_Stroker)stroker, radius, (FT_Stroker_LineCap)lineCap, (FT_Stroker_LineJoin)lineJoin, miterLimit);
 		
@@ -688,7 +688,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Stroker_done(JNIEnv* env, jclass clazz, jlong stroker) {
 
 
-//@line:740
+//@line:749
 
 			FT_Stroker_Done((FT_Stroker)stroker);
 		
@@ -698,7 +698,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_initFreeTypeJni(JNIEnv* env, jclass clazz) {
 
 
-//@line:834
+//@line:843
 
 		FT_Library library = 0;
 		FT_Error error = FT_Init_FreeType(&library);
