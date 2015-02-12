@@ -447,8 +447,23 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	@Override
-	public boolean supportsExtension (String extension) {
-		if (extensions == null) extensions = gl20.glGetString(GL20.GL_EXTENSIONS);
+	public boolean supportsExtension(String extension) {
+		if (extensions == null) {
+			if(gl30 != null) {
+				//old style glGetString(GL_EXTENSIONS) is not valid in 3.2 core:
+				StringBuilder extensionsBuilder = new StringBuilder();
+
+				int numExtensions = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+				for (int i = 0; i < numExtensions; ++i) {
+					extensionsBuilder.append(gl30.glGetStringi(GL20.GL_EXTENSIONS, i));
+					extensionsBuilder.append(" ");
+				}
+				extensions = extensionsBuilder.toString();
+			} else {
+				extensions = gl20.glGetString(GL20.GL_EXTENSIONS);
+			}
+		}
+
 		return extensions.contains(extension);
 	}
 
