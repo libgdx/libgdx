@@ -355,7 +355,6 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 
 			TiledMapTileSet tileset = new TiledMapTileSet();
 			tileset.setName(name);
-			tileset.setFirstgid(firstgid);
 			tileset.getProperties().put("firstgid", firstgid);
 			if (image != null) {
 				TextureRegion texture = imageResolver.getImage(image.path());

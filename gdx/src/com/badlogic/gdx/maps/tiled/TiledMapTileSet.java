@@ -24,12 +24,10 @@ import com.badlogic.gdx.utils.IntMap;
 public class TiledMapTileSet implements Iterable<TiledMapTile> {
 
 	private String name;
-	
+
 	private IntMap<TiledMapTile> tiles;
 
 	private MapProperties properties;
-
-	private int firstgid;
 
 	/** @return tileset's name */
 	public String getName () {
@@ -83,15 +81,4 @@ public class TiledMapTileSet implements Iterable<TiledMapTile> {
 	public int size () {
 		return tiles.size;
 	}
-
-	/** @param gid new firstgid for the tileset */
-	public void setFirstgid (int gid) {
-		firstgid = gid;
-	}
-	
-	/** @return the firstgid of this TiledMapTileSet. */
-	public int getFirstgid () {
-		return firstgid;
-	}
-	
 }
