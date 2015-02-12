@@ -53,8 +53,8 @@ public class GwtGraphics implements Graphics {
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
 		attributes.setAntialias(config.antialiasing);
 		attributes.setStencil(config.stencil);
-		attributes.setAlpha(false);
-		attributes.setPremultipliedAlpha(false);
+		attributes.setAlpha(config.alpha);
+		attributes.setPremultipliedAlpha(config.premultipliedAlpha);
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);

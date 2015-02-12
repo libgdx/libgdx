@@ -42,6 +42,11 @@ public class GwtApplicationConfiguration {
 	public boolean preferFlash = true;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
+	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
+	 * effectively allows transparent backgrounds in GWT, at a performance cost. **/
+	public boolean alpha = false;
+	/** wether to use premultipliedalpha, may have performance impact  **/
+	public boolean premultipliedAlpha = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
