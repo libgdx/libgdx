@@ -24,7 +24,16 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.glutils.*;
+import com.badlogic.gdx.graphics.glutils.IndexArray;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.IndexData;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectWithVAO;
+import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -867,9 +876,11 @@ public class Mesh implements Disposable {
 		Array<Mesh> meshesArray = meshes.get(app);
 		if (meshesArray == null) return;
 		for (int i = 0; i < meshesArray.size; i++) {
-			meshesArray.get(i).vertices.invalidate();
+			if(meshesArray.get(i).vertices instanceof VertexBufferObject) {
+				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
 			} else if(meshesArray.get(i).vertices instanceof VertexBufferObjectWithVAO) {
 				((VertexBufferObjectWithVAO) meshesArray.get(i).vertices).invalidate();
+			}
 			meshesArray.get(i).indices.invalidate();
 		}
 	}
