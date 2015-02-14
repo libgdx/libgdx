@@ -4,6 +4,8 @@
 - Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
 - Now unknown markup colors are silently ignored and considered as normal text.
 - Updated freetype from version 2.4.10 to 2.5.5
+- Added 3rd party extensions to setup application, see 
+- Updated to RoboVM 1.0.0-beta-04
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment
