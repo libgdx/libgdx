@@ -6,6 +6,7 @@
 - Updated freetype from version 2.4.10 to 2.5.5
 - Added 3rd party extensions to setup application, see 
 - Updated to RoboVM 1.0.0-beta-04
+- Updated to GWT 2.6.1, sadly GWT 2.7.0 isn't production ready yet.
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment
