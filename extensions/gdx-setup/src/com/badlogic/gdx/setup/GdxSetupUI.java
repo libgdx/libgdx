@@ -87,7 +87,7 @@ public class GdxSetupUI extends JFrame {
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
-	ArrayList<ExternalExtension> externalExtensions = new ArrayList<ExternalExtension>();
+	List<ExternalExtension> externalExtensions = new ArrayList<ExternalExtension>();
 
 	UI ui = new UI();
 	static Point point = new Point();
@@ -580,7 +580,7 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 				
-				for (int left = depCounter - 5; left > 1; left--) {
+				for (int left = ((depCounter - 1) % 5); left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
 
@@ -696,7 +696,7 @@ public class GdxSetupUI extends JFrame {
 			@Override
 			public void run() {
 				new GdxSetupUI();				
-			}			
+			}
 		});
 	}
 }

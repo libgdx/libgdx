@@ -19,50 +19,46 @@ package com.badlogic.gdx.setup;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by azakhary on 2/9/2015.
- */
 public class ExternalExtension {
 
-	 private String name;
-	 private String description;
-	 private String version;
+	private String name;
+	private String description;
+	private String version;
 
-	 private Map<String, List<String>> dependencies;
+	private Map<String, List<String>> dependencies;
 
-	 public ExternalExtension (String name, String description, String version) {
-		  this.name = name;
-		  this.description = description;
-		  this.version = version;
-	 }
+	public ExternalExtension (String name, String description, String version) {
+		this.name = name;
+		this.description = description;
+		this.version = version;
+	}
 
-	 public void setDependencies (Map<String, List<String>> dependencies) {
-		  this.dependencies = dependencies;
-	 }
+	public void setDependencies (Map<String, List<String>> dependencies) {
+		this.dependencies = dependencies;
+	}
 
-	 public Dependency generateDependency () {
+	public Dependency generateDependency () {
+		Dependency dep = new Dependency(name, getPlatformDependencies("core"), getPlatformDependencies("desktop"),
+			getPlatformDependencies("android"), getPlatformDependencies("ios"), getPlatformDependencies("html"));
 
-		  Dependency dep = new Dependency(name, getPlatformDependencies("core"), getPlatformDependencies("desktop"),
-			  getPlatformDependencies("android"), getPlatformDependencies("ios"), getPlatformDependencies("html"));
+		return dep;
+	}
 
-		  return dep;
-	 }
+	private String[] getPlatformDependencies (String platformName) {
+		if (dependencies.get(platformName) == null) {
+			return null;
+		} else if (dependencies.get(platformName) != null && dependencies.get(platformName).size() == 0) {
+			return new String[] {};
+		} else {
+			String[] arr = new String[dependencies.get(platformName).size()];
+			for (int i = 0; i < dependencies.get(platformName).size(); i++) {
+				arr[i] = dependencies.get(platformName).get(i) + ":" + version;
+			}
+			return arr;
+		}
+	}
 
-	 private String[] getPlatformDependencies (String platformName) {
-		  if (dependencies.get(platformName) == null) {
-				return null;
-		  } else if (dependencies.get(platformName) != null && dependencies.get(platformName).size() == 0) {
-				return new String[] {};
-		  } else {
-				String[] arr = new String[dependencies.get(platformName).size()];
-				for (int i = 0; i < dependencies.get(platformName).size(); i++) {
-					 arr[i] = dependencies.get(platformName).get(i) + ":" + version;
-				}
-				return arr;
-		  }
-	 }
-
-	 public String getName () {
-		  return name;
-	 }
+	public String getName () {
+		return name;
+	}
 }

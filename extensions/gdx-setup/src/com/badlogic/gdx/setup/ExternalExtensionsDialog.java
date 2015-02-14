@@ -23,15 +23,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,239 +43,346 @@ import java.util.Map;
 
 import static java.awt.GridBagConstraints.*;
 
-/**
- * Created by azakhary on 2/9/2015.
- */
 public class ExternalExtensionsDialog extends JDialog {
 
-	 private JPanel contentPane;
-	 private JButton buttonOK;
-	 private JButton buttonCancel;
-	 private JPanel topPanel;
-	 private JPanel content;
-	 private JPanel bottomPanel;
-	 private JPanel buttonPanel;
-	 private JScrollPane scrollPane;
+	private JPanel contentPane;
+	private JButton buttonOK;
+	private JButton buttonCancel;
+	private JPanel topPanel;
+	private ExtensionTableModel tableModel;
+	private JTable table;
+	private JPanel bottomPanel;
+	private JPanel buttonPanel;
+	private JScrollPane scrollPane;
 
-	 private JLabel warningNotice;
+	private JLabel warningNotice;
+	private JLabel warningNotice2;
 
-	 private HashMap<String, ExtensionRowCheckbox> checkBoxesMap = new HashMap<String, ExtensionRowCheckbox>();
+	private List<Dependency> mainDependenciesSnapshot = new ArrayList<Dependency>();
+	private List<Dependency> mainDependencies;
 
-	 private List<Dependency> mainDependenciesSnapshot = new ArrayList<Dependency>();
-	 private List<Dependency> mainDependencies;
+	public ExternalExtensionsDialog (List<Dependency> mainDependencies) {
+		this.mainDependencies = mainDependencies;
 
-	 public ExternalExtensionsDialog (List<Dependency> mainDependencies) {
-		  this.mainDependencies = mainDependencies;
+		contentPane = new JPanel(new GridBagLayout());
+		setContentPane(contentPane);
+		setModal(true);
+		getRootPane().setDefaultButton(buttonOK);
 
-		  contentPane = new JPanel(new GridBagLayout());
-		  setContentPane(contentPane);
-		  setModal(true);
-		  getRootPane().setDefaultButton(buttonOK);
+		uiLayout();
+		uiStyle();
 
-		  uiLayout();
-		  uiStyle();
+		buttonOK.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				onOK();
+			}
+		});
+		buttonCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed (ActionEvent e) {
+				onCancel();
+			}
+		});
 
-		  buttonOK.addActionListener(new ActionListener() {
-				public void actionPerformed (ActionEvent e) {
-					 onOK();
-				}
-		  });
-		  buttonCancel.addActionListener(new ActionListener() {
-				@Override public void actionPerformed (ActionEvent e) {
-					 onCancel();
-				}
-		  });
+		setTitle("Third party external extensions");
+		setSize(600, 300);
+		setLocationRelativeTo(null);
+	}
 
-		  setTitle("Third party external extensions");
-		  setSize(400, 240);
-		  setLocationRelativeTo(null);
-	 }
+	public void showDialog () {
+		takeSnapshot();
+		setVisible(true);
+	}
 
-	 public void showDialog () {
-		  takeSnapshot();
-		  setVisible(true);
-	 }
+	private void uiLayout () {
 
-	 private void uiLayout () {
+		topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		warningNotice = new JLabel("List of third party extensions for LibGDX");
+		warningNotice2 = new JLabel("These are not maintained by the LibGDX team, please see the support links for info and help");
+		warningNotice.setHorizontalAlignment(JLabel.CENTER);
+		warningNotice2.setHorizontalAlignment(JLabel.CENTER);
 
-		  topPanel = new JPanel(new GridBagLayout());
-		  topPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		topPanel.add(warningNotice, new GridBagConstraints(0, 0, 1, 1, 1, 0, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		topPanel.add(warningNotice2, new GridBagConstraints(0, 1, 1, 1, 1, 0, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-		  content = new JPanel(new GridBagLayout());
-		  content.setBorder(BorderFactory.createEmptyBorder(20, 20, 5, 5));
+		JSeparator separator = new JSeparator();
+		separator.setForeground(new Color(85, 85, 85));
+		separator.setBackground(new Color(85, 85, 85));
 
-		  scrollPane = new JScrollPane(content);
+		topPanel.add(separator, new GridBagConstraints(0, 2, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-		  bottomPanel = new JPanel(new GridBagLayout());
+		tableModel = new ExtensionTableModel();
+		table = new JTable(tableModel) {
+			@Override
+			public String getToolTipText (MouseEvent e) {
+				return ((ExtensionTableModel)getModel()).getToolTip(e);
+			}
+		};
+		table.getColumnModel().getColumn(0).setPreferredWidth(10);
+		table.getColumnModel().getColumn(1).setPreferredWidth(50);
+		table.getColumnModel().getColumn(2).setPreferredWidth(100);
+		table.getColumnModel().getColumn(3).setPreferredWidth(20);
+		table.getColumnModel().getColumn(4).setPreferredWidth(30);
 
-		  buttonPanel = new JPanel(new GridBagLayout());
-		  buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		  buttonOK = new JButton("Save");
-		  buttonCancel = new JButton("Cancel");
-		  buttonPanel.add(buttonOK, new GridBagConstraints(0, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		  buttonPanel.add(buttonCancel, new GridBagConstraints(1, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		  bottomPanel.add(buttonPanel, new GridBagConstraints(3, 0, 1, 1, 1, 1, SOUTHEAST, NONE, new Insets(0, 0, 0, 0), 0, 0));
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-		  contentPane.add(topPanel, new GridBagConstraints(0, 0, 1, 1, 1, 1, NORTH, BOTH, new Insets(0, 0, 0, 0), 0, 0));
-		  contentPane.add(scrollPane, new GridBagConstraints(0, 1, 1, 1, 1, 1, NORTH, BOTH, new Insets(0, 0, 0, 0), 0, 0));
-		  contentPane.add(bottomPanel, new GridBagConstraints(0, 2, 4, 1, 1, 1, SOUTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		table.getTableHeader().setReorderingAllowed(false);
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked (MouseEvent e) {
+				int row = table.getSelectedRow();
+				int column = table.getSelectedColumn();
 
-		  warningNotice = new JLabel("List of third party extensions, not maintained by libGDX team");
-		  warningNotice.setHorizontalAlignment(JLabel.CENTER);
-		  topPanel.add(warningNotice, new GridBagConstraints(0, 0, 1, 1, 1, 0, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-
-		  JSeparator separator = new JSeparator();
-		  separator.setForeground(new Color(85, 85, 85));
-		  separator.setBackground(new Color(85, 85, 85));
-
-		  topPanel.add(separator, new GridBagConstraints(0, 1, 4, 1, 1, 1, NORTH, HORIZONTAL, new Insets(10, 0, 0, 0), 0, 0));
-
-		  try {
-				initData();
-		  } catch (Exception e) {
-				e.printStackTrace();
-		  }
-
-	 }
-
-	 private void initData () throws ParserConfigurationException, IOException, SAXException {
-		  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		  DocumentBuilder builder = dbFactory.newDocumentBuilder();
-		  Document doc = builder
-			  .parse(ExternalExtensionsDialog.class.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
-
-		  doc.getDocumentElement().normalize();
-
-		  NodeList nList = doc.getElementsByTagName("extension");
-
-		  for (int i = 0; i < nList.getLength(); i++) {
-				Node nNode = nList.item(i);
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-					 Element eElement = (Element)nNode;
-					 String name = eElement.getElementsByTagName("name").item(0).getTextContent();
-					 String description = eElement.getElementsByTagName("description").item(0).getTextContent();
-					 String version = eElement.getElementsByTagName("version").item(0).getTextContent();
-
-					 String rowText = name + " - " + description + " (v" + version + ")";
-
-					 final HashMap<String, List<String>> dependencies = new HashMap<String, List<String>>();
-
-					 addToDependencyMapFromXML(dependencies, eElement, "core");
-					 addToDependencyMapFromXML(dependencies, eElement, "desktop");
-					 addToDependencyMapFromXML(dependencies, eElement, "android");
-					 addToDependencyMapFromXML(dependencies, eElement, "ios");
-					 addToDependencyMapFromXML(dependencies, eElement, "html");
-
-					 ExtensionRowCheckbox checkBox = new ExtensionRowCheckbox(rowText);
-					 checkBoxesMap.put(name, checkBox);
-
-					 content.add(checkBox, new GridBagConstraints(0, i, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-
-					 final ExternalExtension extension = new ExternalExtension(name, description, version);
-					 extension.setDependencies(dependencies);
-
-					 checkBox.addItemListener(new ItemListener() {
-						  @Override public void itemStateChanged (ItemEvent e) {
-								ExtensionRowCheckbox box = (ExtensionRowCheckbox)e.getSource();
-								Dependency dep = extension.generateDependency();
-								if (box.isSelected()) {
-									 if(!mainDependencies.contains(dep)) {
-										  mainDependencies.add(dep);
-									 }
-								} else {
-									 mainDependencies.remove(dep);
-								}
-						  }
-					 });
-				}
-		  }
-	 }
-
-	 private void uiStyle () {
-		  contentPane.setBackground(new Color(36, 36, 36));
-
-		  topPanel.setBackground(new Color(36, 36, 36));
-		  topPanel.setForeground(new Color(255, 255, 255));
-		  content.setBackground(new Color(36, 36, 36));
-		  content.setForeground(new Color(255, 255, 255));
-		  bottomPanel.setBackground(new Color(36, 36, 36));
-		  bottomPanel.setForeground(new Color(255, 255, 255));
-		  buttonPanel.setBackground(new Color(36, 36, 36));
-		  buttonPanel.setForeground(new Color(255, 255, 255));
-
-		  scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-		  warningNotice.setForeground(new Color(200, 20, 20));
-	 }
-
-	 void onOK () {
-		  setVisible(false);
-	 }
-
-	 void onCancel () {
-		  setVisible(false);
-		  restore();
-	 }
-
-	 private void takeSnapshot () {
-		  mainDependenciesSnapshot.clear();
-		  for (int i = 0; i < mainDependencies.size(); i++) {
-				mainDependenciesSnapshot.add(mainDependencies.get(i));
-		  }
-	 }
-
-	 private void restore () {
-		  mainDependencies.clear();
-		  for (ExtensionRowCheckbox checkBox : checkBoxesMap.values()) {
-				checkBox.setSelected(false);
-		  }
-		  for (int i = 0; i < mainDependenciesSnapshot.size(); i++) {
-				mainDependencies.add(mainDependenciesSnapshot.get(i));
-				String extensionName = mainDependenciesSnapshot.get(i).getName();
-				if(checkBoxesMap.containsKey(extensionName)) {
-					 checkBoxesMap.get(extensionName).setSelected(true);
-				}
-		  }
-	 }
-
-	 private void addToDependencyMapFromXML (Map<String, List<String>> dependencies, Element eElement, String platform) {
-		  if (eElement.getElementsByTagName(platform).item(0) != null) {
-				Element project = (Element)eElement.getElementsByTagName(platform).item(0);
-
-				ArrayList<String> deps = new ArrayList<String>();
-
-				if (project.getTextContent().trim().equals("")) {
-					 // No dependencies required
-				} else if (project.getTextContent().trim().equals("null")) {
-					 // Not supported
-					 deps = null;
-				} else {
-					 NodeList nList = project.getElementsByTagName("dependency");
-
-					 for (int i = 0; i < nList.getLength(); i++) {
-						  Node nNode = nList.item(i);
-						  if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-								Element dependencyNode = (Element)nNode;
-								deps.add(dependencyNode.getTextContent());
-						  }
-
-					 }
+				if (column == 0) {
+					ExternalExtension extension = ((ExtensionTableModel)table.getModel()).getExtension(row);
+					Dependency dep = extension.generateDependency();
+					boolean selected = (boolean)table.getModel().getValueAt(row, 0);
+					if (selected) {
+						if (!mainDependencies.contains(dep)) {
+							mainDependencies.add(dep);
+						}
+					} else {
+						mainDependencies.remove(dep);
+					}
 				}
 
-				dependencies.put(platform, deps);
-		  }
-	 }
+				if (column == 5) {
+					URI uri = ((ExtensionTableModel)table.getModel()).getURI(row, column);
+					if (uri != null) {
+						try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		});
 
-	 class ExtensionRowCheckbox extends JCheckBox {
+		scrollPane = new JScrollPane(table);
 
-		  ExtensionRowCheckbox (String selectName) {
-				super(selectName);
-				setOpaque(false);
-				setBackground(new Color(0, 0, 0));
-				setForeground(new Color(255, 255, 255));
-				setFocusPainted(false);
-		  }
+		bottomPanel = new JPanel(new GridBagLayout());
 
-	 }
+		buttonPanel = new JPanel(new GridBagLayout());
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		buttonOK = new JButton("Save");
+		buttonCancel = new JButton("Cancel");
+		buttonPanel.add(buttonOK, new GridBagConstraints(0, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		buttonPanel.add(buttonCancel, new GridBagConstraints(1, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		bottomPanel.add(buttonPanel, new GridBagConstraints(3, 0, 1, 1, 1, 1, SOUTHEAST, NONE, new Insets(0, 0, 0, 0), 0, 0));
+
+		contentPane.add(topPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, NORTH, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(scrollPane, new GridBagConstraints(0, 1, 1, 1, 1, 1, NORTH, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+		contentPane.add(bottomPanel, new GridBagConstraints(0, 2, 1, 1, 1, 0, SOUTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+
+		try {
+			initData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void initData () throws ParserConfigurationException, IOException, SAXException {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = dbFactory.newDocumentBuilder();
+		Document doc = builder.parse(ExternalExtensionsDialog.class
+			.getResourceAsStream("/com/badlogic/gdx/setup/data/extensions.xml"));
+
+		doc.getDocumentElement().normalize();
+
+		NodeList nList = doc.getElementsByTagName("extension");
+
+		for (int i = 0; i < nList.getLength(); i++) {
+			Node nNode = nList.item(i);
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element eElement = (Element)nNode;
+				String name = eElement.getElementsByTagName("name").item(0).getTextContent();
+				String description = eElement.getElementsByTagName("description").item(0).getTextContent();
+				String version = eElement.getElementsByTagName("version").item(0).getTextContent();
+				String compatibility = eElement.getElementsByTagName("compatibility").item(0).getTextContent();
+				String url = eElement.getElementsByTagName("website").item(0).getTextContent();
+
+				final HashMap<String, List<String>> dependencies = new HashMap<String, List<String>>();
+
+				addToDependencyMapFromXML(dependencies, eElement, "core");
+				addToDependencyMapFromXML(dependencies, eElement, "desktop");
+				addToDependencyMapFromXML(dependencies, eElement, "android");
+				addToDependencyMapFromXML(dependencies, eElement, "ios");
+				addToDependencyMapFromXML(dependencies, eElement, "html");
+
+				URI uri = null;
+				try {
+					uri = new URI(url);
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+
+				if (uri != null) {
+					final ExternalExtension extension = new ExternalExtension(name, description, version);
+					extension.setDependencies(dependencies);
+					tableModel.addExtension(extension, false, name, description, version, compatibility, uri);
+				}
+			}
+		}
+	}
+
+	private void uiStyle () {
+		contentPane.setBackground(new Color(36, 36, 36));
+
+		topPanel.setBackground(new Color(36, 36, 36));
+		topPanel.setForeground(new Color(255, 255, 255));
+		table.setBackground(new Color(46, 46, 46));
+		table.setForeground(new Color(255, 255, 255));
+		bottomPanel.setBackground(new Color(36, 36, 36));
+		bottomPanel.setForeground(new Color(255, 255, 255));
+		buttonPanel.setBackground(new Color(36, 36, 36));
+		buttonPanel.setForeground(new Color(255, 255, 255));
+
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBackground(new Color(36, 36, 36));
+		scrollPane.getViewport().setBackground(new Color(36, 36, 36));
+
+		warningNotice.setForeground(new Color(200, 20, 20));
+		warningNotice2.setForeground(new Color(200, 20, 20));
+	}
+
+	void onOK () {
+		setVisible(false);
+	}
+
+	void onCancel () {
+		setVisible(false);
+		restore();
+	}
+
+	private void takeSnapshot () {
+		mainDependenciesSnapshot.clear();
+		for (int i = 0; i < mainDependencies.size(); i++) {
+			mainDependenciesSnapshot.add(mainDependencies.get(i));
+		}
+	}
+
+	private void restore () {
+		mainDependencies.clear();
+		((ExtensionTableModel)table.getModel()).unselectAll();
+		for (int i = 0; i < mainDependenciesSnapshot.size(); i++) {
+			mainDependencies.add(mainDependenciesSnapshot.get(i));
+			String extensionName = mainDependenciesSnapshot.get(i).getName();
+			if (((ExtensionTableModel)table.getModel()).hasExtension(extensionName)) {
+				((ExtensionTableModel)table.getModel()).setSelected(extensionName, true);
+			} else {
+			}
+		}
+	}
+
+	private void addToDependencyMapFromXML (Map<String, List<String>> dependencies, Element eElement, String platform) {
+		if (eElement.getElementsByTagName(platform).item(0) != null) {
+			Element project = (Element)eElement.getElementsByTagName(platform).item(0);
+
+			ArrayList<String> deps = new ArrayList<String>();
+
+			if (project.getTextContent().trim().equals("")) {
+				// No dependencies required
+			} else if (project.getTextContent().trim().equals("null")) {
+				// Not supported
+				deps = null;
+			} else {
+				NodeList nList = project.getElementsByTagName("dependency");
+
+				for (int i = 0; i < nList.getLength(); i++) {
+					Node nNode = nList.item(i);
+					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+						Element dependencyNode = (Element)nNode;
+						deps.add(dependencyNode.getTextContent());
+					}
+
+				}
+			}
+
+			dependencies.put(platform, deps);
+		}
+	}
+
+	class ExtensionTableModel extends DefaultTableModel {
+
+		private HashMap<Integer, ExternalExtension> extensions = new HashMap<Integer, ExternalExtension>();
+		private int rowCount = 0;
+
+		public ExtensionTableModel () {
+			addColumn("Use");
+			addColumn("Extension");
+			addColumn("Description");
+			addColumn("Version");
+			addColumn("Compatibility");
+			addColumn("Support");
+		}
+
+		public ExternalExtension getExtension (int row) {
+			return extensions.get(row);
+		}
+
+		public URI getURI (int row, int column) {
+			if (column != 5) return null;
+			return (URI)getValueAt(row, column);
+		}
+
+		@Override
+		public Class getColumnClass (int column) {
+			if (column == 0) return Boolean.class;
+			if (column == 5) return URI.class;
+			return super.getColumnClass(column);
+		}
+
+		@Override
+		public boolean isCellEditable (int x, int y) {
+			return y == 0;
+		}
+
+		public String getToolTip (MouseEvent e) {
+			int row = table.rowAtPoint(e.getPoint());
+			int column = table.columnAtPoint(e.getPoint());
+
+			if (column == 5) {
+				return "Click me!";
+			} else if (column != 0) {
+				return getValueAt(row, column).toString();
+			} else {
+				return "Select if you want to use this extension!";
+			}
+		}
+
+		public void unselectAll () {
+			for (int row : extensions.keySet()) {
+				table.setValueAt(false, row, 0);
+			}
+		}
+
+		public boolean hasExtension (String extensionName) {
+			for (ExternalExtension extension : extensions.values()) {
+				if (extension.getName().equals(extensionName)) return true;
+			}
+			return false;
+		}
+
+		public void setSelected (String extensionName, boolean selected) {
+			int row = -1;
+			for (int i : extensions.keySet()) {
+				if (extensions.get(i).getName().equals(extensionName)) {
+					row = i;
+					break;
+				}
+			}
+			if (row != -1) table.setValueAt(selected, row, 0);
+		}
+
+		public void addExtension (ExternalExtension extension, Boolean checkbox, String name, String description, String version,
+			String compatibility, URI support) {
+			addRow(new Object[] {checkbox, name, description, version, compatibility, support});
+			extensions.put(rowCount++, extension);
+		}
+
+	}
+
 }
