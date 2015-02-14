@@ -136,7 +136,7 @@ public class ExternalExtensionsDialog extends JDialog {
 				if (column == 0) {
 					ExternalExtension extension = ((ExtensionTableModel)table.getModel()).getExtension(row);
 					Dependency dep = extension.generateDependency();
-					boolean selected = (boolean)table.getModel().getValueAt(row, 0);
+					boolean selected = (Boolean)table.getModel().getValueAt(row, 0);
 					if (selected) {
 						if (!mainDependencies.contains(dep)) {
 							mainDependencies.add(dep);
