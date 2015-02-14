@@ -150,7 +150,7 @@ public class NetJavaImpl {
 			connection.setRequestMethod(method);
 			HttpURLConnection.setFollowRedirects(httpRequest.getFollowRedirects());
 
-			put(httpRequest, httpResponseListener, connection);
+			putIntoConnectionsAndListeners(httpRequest, httpResponseListener, connection);
 
 			// Headers get set regardless of the method
 			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
@@ -192,12 +192,12 @@ public class NetJavaImpl {
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 						try {
-							HttpResponseListener listener = get(httpRequest);
+							HttpResponseListener listener = getFromListeners(httpRequest);
 
 							if (listener != null) {
 								listener.handleHttpResponse(clientResponse);
 							}
-							remove(httpRequest);
+							removeFromConnectionsAndListeners(httpRequest);
 						} finally {
 							connection.disconnect();
 						}
@@ -206,7 +206,7 @@ public class NetJavaImpl {
 						try {
 							httpResponseListener.failed(e);
 						} finally {
-							remove(httpRequest);
+							removeFromConnectionsAndListeners(httpRequest);
 						}
 					}
 				}
@@ -215,33 +215,33 @@ public class NetJavaImpl {
 			try {
 				httpResponseListener.failed(e);
 			} finally {
-				remove(httpRequest);
+				removeFromConnectionsAndListeners(httpRequest);
 			}
 			return;
 		}
 	}
 
 	public void cancelHttpRequest (HttpRequest httpRequest) {
-		HttpResponseListener httpResponseListener = get(httpRequest);
+		HttpResponseListener httpResponseListener = getFromListeners(httpRequest);
 
 		if (httpResponseListener != null) {
 			httpResponseListener.cancelled();
-			remove(httpRequest);
+			removeFromConnectionsAndListeners(httpRequest);
 		}
 	}
 
-	synchronized void remove (final HttpRequest httpRequest) {
+	synchronized void removeFromConnectionsAndListeners (final HttpRequest httpRequest) {
 		connections.remove(httpRequest);
 		listeners.remove(httpRequest);
 	}
 
-	synchronized void put (final HttpRequest httpRequest, final HttpResponseListener httpResponseListener,
-		final HttpURLConnection connection) {
+	synchronized void putIntoConnectionsAndListeners (final HttpRequest httpRequest,
+		final HttpResponseListener httpResponseListener, final HttpURLConnection connection) {
 		connections.put(httpRequest, connection);
 		listeners.put(httpRequest, httpResponseListener);
 	}
 
-	synchronized HttpResponseListener get (HttpRequest httpRequest) {
+	synchronized HttpResponseListener getFromListeners (HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 		return httpResponseListener;
 	}
