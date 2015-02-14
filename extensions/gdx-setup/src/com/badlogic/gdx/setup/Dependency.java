@@ -37,4 +37,17 @@ public class Dependency {
         return name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(((Dependency)obj).getName().equals(getName())) {
+            return true;
+        }
+
+        return false;
+    }
+
+	 @Override
+	 public int hashCode () {
+		  return name.hashCode();
+	 }
 }
