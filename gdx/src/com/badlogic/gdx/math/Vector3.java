@@ -576,7 +576,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 limit2 (float limit2) {
 		float len2 = len2();
 		if (len2 > limit2) {
-			scl(limit2 / len2);
+			scl((float) Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}

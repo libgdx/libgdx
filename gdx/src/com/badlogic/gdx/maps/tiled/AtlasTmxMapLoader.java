@@ -250,6 +250,15 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		mapWidthInPixels = mapWidth * tileWidth;
 		mapHeightInPixels = mapHeight * tileHeight;
 
+		if (mapOrientation != null) {
+			if ("staggered".equals(mapOrientation)) {
+				if (mapHeight > 1) {
+					mapWidthInPixels += tileWidth / 2;
+					mapHeightInPixels = mapHeightInPixels / 2 + tileHeight / 2;
+				}
+			}
+		}
+
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
 			Element element = root.getChild(i);
 			String elementName = element.getName();

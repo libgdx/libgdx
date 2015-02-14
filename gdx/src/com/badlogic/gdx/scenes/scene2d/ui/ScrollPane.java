@@ -451,8 +451,10 @@ public class ScrollPane extends WidgetGroup {
 		maxY = widgetHeight - areaHeight;
 		if (fade) {
 			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) maxY -= scrollbarHeight;
-			if (scrollY) maxX -= scrollbarWidth;
+			if (scrollX && scrollY) {
+				maxY -= scrollbarHeight;
+				maxX -= scrollbarWidth;
+			}
 		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 		scrollY(MathUtils.clamp(amountY, 0, maxY));

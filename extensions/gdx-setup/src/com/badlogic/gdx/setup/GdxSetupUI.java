@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.setup;
 
 import static java.awt.GridBagConstraints.*;
@@ -86,6 +87,7 @@ public class GdxSetupUI extends JFrame {
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
+	List<ExternalExtension> externalExtensions = new ArrayList<ExternalExtension>();
 
 	UI ui = new UI();
 	static Point point = new Point();
@@ -400,7 +402,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog();;
+					settings.showDialog();
 				}
 			});
 			generateButton.addActionListener(new ActionListener() {
@@ -412,6 +414,7 @@ public class GdxSetupUI extends JFrame {
 	}
 
 	class Form extends JPanel {
+		ExternalExtensionsDialog externalExtensionsDialog = new ExternalExtensionsDialog(dependencies);
 		JLabel nameLabel = new JLabel("Name:");
 		JTextField nameText = new JTextField("my-gdx-game");
 		JLabel packageLabel = new JLabel("Package:");
@@ -431,6 +434,7 @@ public class GdxSetupUI extends JFrame {
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
+		SetupButton showMoreExtensionsButton = new SetupButton("Show Third Party Extensions");
 
 		{
 			uiLayout();
@@ -576,7 +580,7 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 				
-				for (int left = depCounter - 5; left > 1; left--) {
+				for (int left = ((depCounter - 1) % 5); left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
 
@@ -589,6 +593,7 @@ public class GdxSetupUI extends JFrame {
 				add(extensionsPanel, new GridBagConstraints(0, rowCounter, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
 				rowCounter++;
 			}
+			add(showMoreExtensionsButton, new GridBagConstraints(0, 12, 0, 1, 0, 0, CENTER, WEST, new Insets(20, 0, 30, 0), 0, 0));
 		}
 
 		File getDirectory () {
@@ -633,6 +638,11 @@ public class GdxSetupUI extends JFrame {
 						sdkLocationText.setText(path.getAbsolutePath());
 					}
 				}
+			});
+			showMoreExtensionsButton.addActionListener(new ActionListener() {
+				 public void actionPerformed (ActionEvent e) {
+					  externalExtensionsDialog.showDialog();
+				 }
 			});
 		}
 	}
@@ -686,7 +696,7 @@ public class GdxSetupUI extends JFrame {
 			@Override
 			public void run() {
 				new GdxSetupUI();				
-			}			
+			}
 		});
 	}
 }
