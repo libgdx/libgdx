@@ -1,3 +1,6 @@
+[1.5.5]
+- API Change: 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
 - Added support for loading texture objects from TMX Maps (TextureMapObject)
