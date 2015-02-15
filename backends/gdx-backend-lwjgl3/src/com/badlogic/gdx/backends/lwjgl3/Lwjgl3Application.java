@@ -371,8 +371,8 @@ public class Lwjgl3Application implements Application {
 	void setGlobals () {
 		long window = glfwGetCurrentContext();
 
-//		if(window != graphics.window)
-//			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
+		if(window != graphics.window)
+			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
 //		if(GL.getCurrent() != context)
 //			GL.setCurrent(context);
 
