@@ -49,7 +49,6 @@ public class Lwjgl3WindowController {
 	private final Array<Runnable> windowRunnables = new Array();
 	private final Array<Runnable> executedWindowRunnables = new Array();
 	
-	
 	private GLFWErrorCallback errorCallback;
 	static long currentWindow;
 
@@ -101,7 +100,7 @@ public class Lwjgl3WindowController {
 						if (app.running) {
 							
 							if(app.init)
-								app.loop();
+								app.loop(true);
 						} else {
 							app.setGlobals();
 							app.disposeListener();
@@ -196,13 +195,19 @@ public class Lwjgl3WindowController {
 	}
 	void initWindow(Lwjgl3Application app)
 	{
+
+		
 		app.graphics.initWindow();
 		if (shareContext == true && Lwjgl3Graphics.contextShare == 0) {
 			Lwjgl3Graphics.contextShare = app.graphics.window;
 		}
 		app.initStaticVariables();
+		
+		
+		
 		app.input.addCallBacks();
 		app.addCallBacks();
+		app.windowListener = listener;
 	}
 	void initContext(Lwjgl3Application app)
 	{
@@ -353,16 +358,27 @@ public class Lwjgl3WindowController {
 	}
 	
 	
-//	public boolean executeRunnables () {
-//		synchronized (runnables) {
-//			for (int i = runnables.size - 1; i >= 0; i--)
-//				executedRunnables.addAll(runnables.get(i));
-//			runnables.clear();
-//		}
-//		if (executedRunnables.size == 0) return false;
-//		for (int i = executedRunnables.size - 1; i >= 0; i--)
-//			executedRunnables.removeIndex(i).run();
-//		return true;
-//	}
-
+	
+	Lwjgl3WindowListener listener = new Lwjgl3WindowListener() {
+		
+		@Override
+		public void size (Lwjgl3Application app, int width, int height) {
+		}
+		
+		@Override
+		public void refresh (final Lwjgl3Application app) {
+		}
+		
+		@Override
+		public void position (Lwjgl3Application app, int x, int y) {
+		}
+		
+		@Override
+		public void focus (Lwjgl3Application app, boolean focused) {
+		}
+		
+		@Override
+		public void exit (Lwjgl3Application app) {
+		}
+	};
 }

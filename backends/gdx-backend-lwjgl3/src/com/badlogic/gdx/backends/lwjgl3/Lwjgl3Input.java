@@ -157,7 +157,7 @@ public class Lwjgl3Input implements Input {
 	public void update () {
 		deltaX = 0;
 		deltaY = 0;
-		justTouched = false;
+		
 		if (keyJustPressed) {
 			keyJustPressed = false;
 			for (int i = 0; i < justPressedKeys.length; i++) {

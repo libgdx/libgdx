@@ -120,7 +120,7 @@ public class Lwjgl3Application implements Application {
 
 				while (running) {
 					try {
-							loop();
+							loop(true);
 					} catch (Exception e) {
 						e.printStackTrace();
 						running = false;
@@ -180,11 +180,16 @@ public class Lwjgl3Application implements Application {
 	GLFWWindowPosCallback posCallBack;
 	GLFWWindowIconifyCallback iconifyCallBack;
 
+	Lwjgl3WindowListener windowListener;
+	
 	void initCallBacks () {
 		closeCallBack = new GLFWWindowCloseCallback() {
 			@Override
 			public void invoke (long window) {
-					exit();
+				exit();
+				
+				if(windowListener != null)
+					windowListener.exit(Lwjgl3Application.this);
 			}
 		};
 
@@ -192,6 +197,9 @@ public class Lwjgl3Application implements Application {
 			@Override
 			public void invoke (long window, int width, int height) {
 					graphics.sizeChanged(width, height);
+					
+					if(windowListener != null)
+						windowListener.size(Lwjgl3Application.this, width, height);
 			}
 		};
 
@@ -203,7 +211,11 @@ public class Lwjgl3Application implements Application {
 //				synchronized (Lwjgl3WindowController.SYNC) {
 //					loop();
 //					Lwjgl3WindowController.toRefresh = true;
+				
+//				glfwSwapBuffers(window);
 //				}
+				if(windowListener != null)
+					windowListener.refresh(Lwjgl3Application.this);
 			}
 		};
 
@@ -213,6 +225,9 @@ public class Lwjgl3Application implements Application {
 				boolean focus = focused == GL11.GL_TRUE ? true : false;
 				if (focus) Lwjgl3WindowController.currentWindow = window;
 				graphics.foreground = focus;
+				
+				if(windowListener != null)
+					windowListener.focus(Lwjgl3Application.this, focus);
 			}
 		};
 
@@ -220,6 +235,9 @@ public class Lwjgl3Application implements Application {
 			@Override
 			public void invoke (long window, int xpos, int ypos) {
 				graphics.positionChanged(xpos, ypos);
+				
+				if(windowListener != null)
+					windowListener.position(Lwjgl3Application.this, xpos, ypos);
 			}
 		};
 
@@ -264,7 +282,7 @@ public class Lwjgl3Application implements Application {
 		iconifyCallBack.release();
 	}
 
-	void loop () {
+	void loop (boolean swap) {
 		if (!running) return;
 
 		setGlobals();
@@ -273,6 +291,7 @@ public class Lwjgl3Application implements Application {
 			create = true;
 			Lwjgl3Application.this.listener.create();
 		}
+		input.update(); // becuase of the order of the glfwPollEvents() and input.update() logic. It needs to be after render
 		
 		int width = Math.max(1, graphics.getWidth());
 		int height = Math.max(1, graphics.getHeight());
@@ -304,12 +323,13 @@ public class Lwjgl3Application implements Application {
 			if (isPaused) listener.resume();
 			isPaused = false;
 			if (shouldRender)
-				render(frameStartTime);
+				render(frameStartTime, swap);
 			else
 				targetFPS = backgroundFPS;
 		}
+		
+		input.justTouched = false;
 
-		input.update(); // becuase of the order of the glfwPollEvents() and input.update() logic. It needs to be after render
 // becuase Gdx.##.justTouched() method wont work well.
 
 		if (autoloop) {
@@ -329,10 +349,11 @@ public class Lwjgl3Application implements Application {
 		}
 	}
 
-	void render (long time) {
+	void render (long time, boolean swap) {
 		graphics.frameStart(time);
 		listener.render();
-		glfwSwapBuffers(graphics.window);
+		if(swap)
+			glfwSwapBuffers(graphics.window);
 	}
 
 	public boolean executeRunnables () {
@@ -350,8 +371,8 @@ public class Lwjgl3Application implements Application {
 	void setGlobals () {
 		long window = glfwGetCurrentContext();
 
-		if(window != graphics.window)
-			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
+//		if(window != graphics.window)
+//			glfwMakeContextCurrent(graphics.window); // for every call needs to make sure its context is set
 //		if(GL.getCurrent() != context)
 //			GL.setCurrent(context);
 
