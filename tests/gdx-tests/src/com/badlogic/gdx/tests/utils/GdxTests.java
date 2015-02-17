@@ -219,6 +219,7 @@ public class GdxTests {
 		TimeUtilsTest.class,
 		TouchpadTest.class,
 		TreeTest.class,
+		TweenTest.class,
 		UISimpleTest.class,
 		UITest.class,
 		Vector2dTest.class,
