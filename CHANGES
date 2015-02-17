@@ -1,5 +1,6 @@
 [1.5.5]
 - API Change: 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+- API Addition: Added new class Tween to gdx.utils package
 
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
