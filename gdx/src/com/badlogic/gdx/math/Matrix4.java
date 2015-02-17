@@ -74,6 +74,9 @@ public class Matrix4 implements Serializable {
 	@Deprecated public static final float tmp[] = new float[16]; // FIXME Change to private access
 	public final float val[] = new float[16];
 
+	private static final Quaternion quat = new Quaternion();
+	private static final Quaternion quat2 = new Quaternion();
+
 	/** Constructs an identity matrix */
 	public Matrix4 () {
 		val[M00] = 1f;
@@ -330,9 +333,26 @@ public class Matrix4 implements Serializable {
 	 * @param matrix The other matrix to multiply by.
 	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix4 mulLeft (Matrix4 matrix) {
-		tmpMat.set(matrix);
-		mul(tmpMat.val, this.val);
-		return set(tmpMat);
+		float tmpM00 = val[M00];
+		float tmpM10 = val[M10];
+		float tmpM20 = val[M20];
+		float tmpM30 = val[M30];
+		float tmpM01 = val[M01];
+		float tmpM11 = val[M11];
+		float tmpM21 = val[M21];
+		float tmpM31 = val[M31];
+		float tmpM02 = val[M02];
+		float tmpM12 = val[M12];
+		float tmpM22 = val[M22];
+		float tmpM32 = val[M32];
+		float tmpM03 = val[M03];
+		float tmpM13 = val[M13];
+		float tmpM23 = val[M23];
+		float tmpM33 = val[M33];
+		set(matrix);
+		mulLocal(tmpM00, tmpM10, tmpM20, tmpM30, tmpM01, tmpM11, tmpM21, tmpM31, tmpM02, tmpM12, tmpM22, tmpM32, tmpM03, tmpM13,
+			tmpM23, tmpM33);
+		return this;
 	}
 
 	/** Transposes the matrix.
@@ -684,9 +704,6 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	static Quaternion quat = new Quaternion();
-	static Quaternion quat2 = new Quaternion();
-
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axis The axis
@@ -799,10 +816,6 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	static final Vector3 l_vez = new Vector3();
-	static final Vector3 l_vex = new Vector3();
-	static final Vector3 l_vey = new Vector3();
-
 	/** Sets the matrix to a look at matrix with a direction and an up vector. Multiply with a translation matrix to get a camera
 	 * model view matrix.
 	 * 
@@ -810,26 +823,37 @@ public class Matrix4 implements Serializable {
 	 * @param up The up vector
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToLookAt (Vector3 direction, Vector3 up) {
-		l_vez.set(direction).nor();
-		l_vex.set(direction).nor();
-		l_vex.crs(up).nor();
-		l_vey.set(l_vex).crs(l_vez).nor();
+		float invlen = 1.0f / direction.len();
+		float zx = direction.x * invlen;
+		float zy = direction.y * invlen;
+		float zz = direction.z * invlen;
+	
+		invlen = 1.0f / up.len();
+		float ux = up.x * invlen;
+		float uy = up.y * invlen;
+		float uz = up.z * invlen;
+		
+		float xx = zy * uz - zz * uy;
+		float xy = zz * ux - zx * uz;
+		float xz = zx * uy - zy * ux;
+
+		float yx = xy * zz - xz * zy;
+		float yy = xz * zx - xx * zz;
+		float yz = xx * zy - xy * zx;
+		
 		idt();
-		val[M00] = l_vex.x;
-		val[M01] = l_vex.y;
-		val[M02] = l_vex.z;
-		val[M10] = l_vey.x;
-		val[M11] = l_vey.y;
-		val[M12] = l_vey.z;
-		val[M20] = -l_vez.x;
-		val[M21] = -l_vez.y;
-		val[M22] = -l_vez.z;
+		val[M00] = xx;
+		val[M01] = xy;
+		val[M02] = xz;
+		val[M10] = yx;
+		val[M11] = yy;
+		val[M12] = yz;
+		val[M20] = -zx;
+		val[M21] = -zy;
+		val[M22] = -zz;
 
 		return this;
 	}
-
-	static final Vector3 tmpVec = new Vector3();
-	static final Matrix4 tmpMat = new Matrix4();
 
 	/** Sets this matrix to a look at matrix with the given position, target and up vector.
 	 * 
@@ -838,23 +862,40 @@ public class Matrix4 implements Serializable {
 	 * @param up the up vector
 	 * @return This matrix */
 	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
-		tmpVec.set(target).sub(position);
-		setToLookAt(tmpVec, up);
-		this.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
+		float px = position.x;
+		float py = position.y;
+		float pz = position.z;
+
+		position.set(target).sub(px, py, pz);
+		setToLookAt(position, up);
+		translate(-px, -py, -pz);
+
+		position.set(px, py, pz);
 
 		return this;
 	}
 
-	static final Vector3 right = new Vector3();
-	static final Vector3 tmpForward = new Vector3();
-	static final Vector3 tmpUp = new Vector3();
-
 	public Matrix4 setToWorld (Vector3 position, Vector3 forward, Vector3 up) {
-		tmpForward.set(forward).nor();
-		right.set(tmpForward).crs(up).nor();
-		tmpUp.set(right).crs(tmpForward).nor();
+		float invlen = forward.len();
+		float fx = forward.x * invlen;
+		float fy = forward.y * invlen;
+		float fz = forward.z * invlen;
 
-		this.set(right, tmpUp, tmpForward.scl(-1), position);
+		invlen = 1.0f / up.len();
+		float ux = up.x * invlen;
+		float uy = up.y * invlen;
+		float uz = up.z * invlen;
+
+		float rx = fy * uz - fz * uy;
+		float ry = fz * ux - fx * uz;
+		float rz = fx * uy - fy * ux;
+
+		ux = ry * fz - rz * fy;
+		uy = rz * fx - rx * fz;
+		uz = rx * fy - ry * fx;
+
+		set(rx, ux, -fx, 0, ry, uy, -fy, 0, rz, uz, -fz, position.x, position.y, position.z, 1);
+
 		return this;
 	}
 
@@ -880,18 +921,28 @@ public class Matrix4 implements Serializable {
 	 * @param w Weight of this transform; weight of the other transform is (1 - w)
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4 other, float w) {
-		getScale(tmpVec);
-		other.getScale(tmpForward);
+		float sx = getScaleX();
+		float sy = getScaleY();
+		float sz = getScaleZ();
+
+		float sx2 = other.getScaleX();
+		float sy2 = other.getScaleY();
+		float sz2 = other.getScaleZ();
 
 		getRotation(quat);
 		other.getRotation(quat2);
 
-		getTranslation(tmpUp);
-		other.getTranslation(right);
+		float tx = val[M03];
+		float ty = val[M13];
+		float tz = val[M23];
 
-		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
+		float tx2 = other.val[M03];
+		float ty2 = other.val[M13];
+		float tz2 = other.val[M23];
+
+		setToScaling(sx * w + sx2 * (1 - w), sy * w + sy2 * (1 - w), sz * w + sz2 * (1 - w));
 		rotate(quat.slerp(quat2, 1 - w));
-		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
+		setTranslation(tx * w + tx2 * (1 - w), ty * w + ty2 * (1 - w), tz * w + tz2 * (1 - w));
 
 		return this;
 	}
@@ -903,20 +954,33 @@ public class Matrix4 implements Serializable {
 	public Matrix4 avg (Matrix4[] t) {
 		final float w = 1.0f / t.length;
 
-		tmpVec.set(t[0].getScale(tmpUp).scl(w));
+		float sx = t[0].getScaleX() * w;
+		float sy = t[0].getScaleY() * w;
+		float sz = t[0].getScaleZ() * w;
+
 		quat.set(t[0].getRotation(quat2).exp(w));
-		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
+
+		float tx = t[0].val[M03] * w;
+		float ty = t[0].val[M13] * w;
+		float tz = t[0].val[M23] * w;
 
 		for (int i = 1; i < t.length; i++) {
-			tmpVec.add(t[i].getScale(tmpUp).scl(w));
+			sx += t[i].getScaleX() * w;
+			sy += t[i].getScaleY() * w;
+			sz += t[i].getScaleZ() * w;
+
 			quat.mul(t[i].getRotation(quat2).exp(w));
-			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
+
+			tx += t[i].val[M03] * w;
+			ty += t[i].val[M13] * w;
+			tz += t[i].val[M23] * w;
 		}
+
 		quat.nor();
 
-		setToScaling(tmpVec);
+		setToScaling(sx, sy, sz);
 		rotate(quat);
-		setTranslation(tmpForward);
+		setTranslation(tx, ty, tz);
 
 		return this;
 	}
@@ -928,20 +992,32 @@ public class Matrix4 implements Serializable {
 	 * @param w List of weights
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4[] t, float[] w) {
-		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
+		float sx = t[0].getScaleX() * w[0];
+		float sy = t[0].getScaleY() * w[0];
+		float sz = t[0].getScaleZ() * w[0];
+
 		quat.set(t[0].getRotation(quat2).exp(w[0]));
-		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
+
+		float tx = t[0].val[M03] * w[0];
+		float ty = t[0].val[M13] * w[0];
+		float tz = t[0].val[M23] * w[0];
 
 		for (int i = 1; i < t.length; i++) {
-			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
+			sx += t[i].getScaleX() * w[i];
+			sy += t[i].getScaleY() * w[i];
+			sz += t[i].getScaleZ() * w[i];
+
 			quat.mul(t[i].getRotation(quat2).exp(w[i]));
-			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
+
+			tx += t[i].val[M03] * w[i];
+			ty += t[i].val[M13] * w[i];
+			tz += t[i].val[M23] * w[i];
 		}
 		quat.nor();
 
-		setToScaling(tmpVec);
+		setToScaling(sx, sy, sz);
 		rotate(quat);
-		setTranslation(tmpForward);
+		setTranslation(tx, ty, tz);
 
 		return this;
 	}
