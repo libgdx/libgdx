@@ -46,6 +46,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntSet;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
  * @author mzechner
@@ -157,6 +158,7 @@ public class Lwjgl3Input implements Input {
 	public void update () {
 		deltaX = 0;
 		deltaY = 0;
+		justTouched = false;
 		
 		if (keyJustPressed) {
 			keyJustPressed = false;
@@ -840,7 +842,7 @@ public class Lwjgl3Input implements Input {
 	}
 
 	class Lwjgl3InputProcessor {
-		int mousePressed;
+		IntSet pressedButtons = new IntSet();
 		char lastCharacter;
 
 		// MUST HAVE CALLBACK POINTER OR ERROR OCCUR
@@ -862,10 +864,10 @@ public class Lwjgl3Input implements Input {
 					boolean pressed = action == GLFW.GLFW_PRESS ? true : false;
 					boolean released = action == GLFW.GLFW_RELEASE ? true : false;
 					if (pressed) {
-						mousePressed++;
+						pressedButtons.add(gdxButton);
 						processor.touchDown(mouseX, mouseY, 0, gdxButton);
 					} else if (released) {
-						mousePressed = Math.max(0, mousePressed - 1);
+						pressedButtons.remove(gdxButton);
 						processor.touchUp(mouseX, mouseY, 0, gdxButton);
 					}
 				}
@@ -877,7 +879,8 @@ public class Lwjgl3Input implements Input {
 				public void invoke (long window, double xpos, double ypos) {
 					mouseX = (int)xpos;
 					mouseY = (int)ypos;
-					if (mousePressed > 0)
+					
+					if (pressedButtons.size > 0)
 						processor.touchDragged(mouseX, mouseY, 0);
 					else
 						processor.mouseMoved(mouseX, mouseY);
