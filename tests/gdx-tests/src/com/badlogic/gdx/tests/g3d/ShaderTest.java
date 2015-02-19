@@ -66,14 +66,20 @@ public class ShaderTest extends GdxTest {
 			  "attribute vec3 a_position;\n"
 			+ "uniform mat4 u_projTrans;\n"
 			+ "uniform mat4 u_worldTrans;\n"
-			+ "uniform mediump float u_test;\n"
-			+ "varying mediump float v_test;\n"
+			+ "uniform float u_test;\n"
+			+ "varying float v_test;\n"
 			+ "void main() {\n"
 			+ "	v_test = u_test;\n"
 			+ "	gl_Position = u_projTrans * u_worldTrans * vec4(a_position, 1.0);\n"
 			+ "}\n";
 		public final static String fragmentShader =
-			  "varying mediump float v_test;\n"
+			  "#ifdef GL_ES\n"
+			+ "#define LOWP lowp\n"
+			+ "precision mediump float;\n"
+			+ "#else\n"
+			+ "#define LOWP\n"
+			+ "#endif\n"
+			+ "varying float v_test;\n"
 			+ "void main() {\n"
 			+ "	gl_FragColor.rgb = vec3(v_test);\n"
 			+ "}\n";
