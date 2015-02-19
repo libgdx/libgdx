@@ -123,6 +123,7 @@ public class ParticleEmitter {
 		aligned = emitter.aligned;
 		behind = emitter.behind;
 		additive = emitter.additive;
+		premultipliedAlpha = emitter.premultipliedAlpha;
 	}
 
 	private void initialize () {
