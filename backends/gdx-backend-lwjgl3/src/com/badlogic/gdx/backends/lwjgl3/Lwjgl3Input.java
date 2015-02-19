@@ -412,6 +412,8 @@ public class Lwjgl3Input implements Input {
 			return '\t';
 		case Keys.FORWARD_DEL:
 			return 127;
+		case Keys.ENTER:
+			return '\r';
 		}
 		return 0;
 	}
