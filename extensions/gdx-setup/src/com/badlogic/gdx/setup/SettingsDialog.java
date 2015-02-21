@@ -16,12 +16,18 @@
 
 package com.badlogic.gdx.setup;
 
+import static java.awt.GridBagConstraints.BOTH;
+import static java.awt.GridBagConstraints.CENTER;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
+import static java.awt.GridBagConstraints.NORTH;
+import static java.awt.GridBagConstraints.SOUTH;
+import static java.awt.GridBagConstraints.SOUTHEAST;
+import static java.awt.GridBagConstraints.WEST;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
-
-import static java.awt.GridBagConstraints.*;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -48,20 +53,23 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import com.badlogic.gdx.setup.GdxSetupUI.SetupButton;
+import com.badlogic.gdx.setup.GdxSetupUI.SetupCheckBox;
+
 public class SettingsDialog extends JDialog {
 
 	private JPanel contentPane;
-	private JButton buttonOK;
-	private JButton buttonCancel;
+	private SetupButton buttonOK;
+	private SetupButton buttonCancel;
 	private JLabel linkText;
 	private JPanel content;
 	private JPanel bottomPanel;
 	private JPanel buttonPanel;
 
 	private JTextField mavenTextField;
-	private JCheckBox ideaBox;
-	private JCheckBox eclipseBox;
-	JCheckBox offlineBox;
+	private SetupCheckBox ideaBox;
+	private SetupCheckBox eclipseBox;
+	SetupCheckBox offlineBox;
 	private String mavenSnapshot;
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
@@ -129,8 +137,8 @@ public class SettingsDialog extends JDialog {
 		buttonPanel = new JPanel(new GridBagLayout());
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-		buttonOK = new JButton("Save");
-		buttonCancel = new JButton("Cancel");
+		buttonOK = new SetupButton("Save");
+		buttonCancel = new SetupButton("Cancel");
 		buttonPanel.add(buttonOK, new GridBagConstraints(0, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		buttonPanel.add(buttonCancel, new GridBagConstraints(1, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
@@ -155,19 +163,19 @@ public class SettingsDialog extends JDialog {
 		mavenDesc.setForeground(new Color(170, 170, 170));
 		JLabel ideaLabel = new JLabel("IDEA");
 		JLabel ideaDesc = new JLabel("Generates Intellij IDEA project files");
-		ideaBox = new JCheckBox();
+		ideaBox = new SetupCheckBox();
 		ideaLabel.setForeground(new Color(170, 170, 170));
 		ideaDesc.setForeground(new Color(170, 170, 170));
 		ideaBox.setBackground(new Color(36, 36, 36));
 		JLabel eclipseLabel = new JLabel("Eclipse");
 		JLabel eclipseDesc = new JLabel("Generates Eclipse project files");
-		eclipseBox = new JCheckBox();
+		eclipseBox = new SetupCheckBox();
 		eclipseLabel.setForeground(new Color(170, 170, 170));
 		eclipseDesc.setForeground(new Color(170, 170, 170));
 		eclipseBox.setBackground(new Color(36, 36, 36));
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
-		offlineBox = new JCheckBox();
+		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
