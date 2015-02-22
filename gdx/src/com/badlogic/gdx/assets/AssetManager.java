@@ -421,6 +421,7 @@ public class AssetManager implements Disposable {
 		else {
 			log.info("Loading dependency: " + dependendAssetDesc);
 			addTask(dependendAssetDesc);
+            toLoad++;
 		}
 	}
 
@@ -478,7 +479,7 @@ public class AssetManager implements Disposable {
 			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
 
 			// increase the number of loaded assets and pop the task from the stack
-			if (tasks.size() == 1) loaded++;
+			if(tasks.size() >= 1) loaded++;
 			tasks.pop();
 
 			// remove the asset if it was canceled.
