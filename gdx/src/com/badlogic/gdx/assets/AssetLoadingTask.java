@@ -39,6 +39,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 	final long startTime;
 
 	volatile boolean asyncDone = false;
+	volatile boolean dependenciesInjected = false;
 	volatile boolean dependenciesLoaded = false;
 	volatile Array<AssetDescriptor> dependencies;
 	volatile AsyncResult<Void> depsFuture = null;
@@ -64,6 +65,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 			if (dependencies != null) {
 				manager.injectDependencies(assetDesc.fileName, dependencies);
+				dependenciesInjected = true;
 			} else {
 				// if we have no dependencies, we load the async part of the task immediately.
 				asyncLoader.loadAsync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
@@ -101,6 +103,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 				return;
 			}
 			manager.injectDependencies(assetDesc.fileName, dependencies);
+			dependenciesInjected = true;
 		} else {
 			asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 		}
