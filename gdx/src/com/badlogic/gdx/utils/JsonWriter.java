@@ -210,10 +210,4 @@ public class JsonWriter extends Writer {
 			return '"' + value.replace("\"", "\\\"") + '"';
 		}
 	}
-
-	public static void main (String args[]) {
-		JsonReader json = new JsonReader();
-		json.parse("{a: 'hello'}"); // OK
-		json.parse("{a: \"http://www.google.es\"}"); // Exception
-	}
 }
