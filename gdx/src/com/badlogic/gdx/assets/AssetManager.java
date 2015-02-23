@@ -584,7 +584,7 @@ public class AssetManager implements Disposable {
 			progressForCurrentAsset = 0.9f / (tasksLength * toLoad);
 		} else if(tasksLength == 1) {
 			AssetLoadingTask task = tasks.peek();
-			if(task.dependenciesLoaded || task.dependenciesInjected) {
+			if(task.dependenciesInjected) {
 				progressForCurrentAsset = 0.9f / toLoad;
 			}
 		}
