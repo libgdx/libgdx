@@ -50,7 +50,7 @@ public class ExternalExtensionsDialog extends JDialog {
 	private JButton buttonCancel;
 	private JPanel topPanel;
 	private ExtensionTableModel tableModel;
-	private JTable table;
+	JTable table;
 	private JPanel bottomPanel;
 	private JPanel buttonPanel;
 	private JScrollPane scrollPane;
@@ -59,7 +59,7 @@ public class ExternalExtensionsDialog extends JDialog {
 	private JLabel warningNotice2;
 
 	private List<Dependency> mainDependenciesSnapshot = new ArrayList<Dependency>();
-	private List<Dependency> mainDependencies;
+	List<Dependency> mainDependencies;
 
 	public ExternalExtensionsDialog (List<Dependency> mainDependencies) {
 		this.mainDependencies = mainDependencies;
