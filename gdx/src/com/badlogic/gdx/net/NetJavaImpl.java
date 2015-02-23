@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -118,13 +116,11 @@ public class NetJavaImpl {
 	private final ExecutorService executorService;
 	final ObjectMap<HttpRequest, HttpURLConnection> connections;
 	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
-	final Lock lock;
 
 	public NetJavaImpl () {
 		executorService = Executors.newCachedThreadPool();
 		connections = new ObjectMap<HttpRequest, HttpURLConnection>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
-		lock = new ReentrantLock();
 	}
 
 	public void sendHttpRequest (final HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
@@ -154,10 +150,7 @@ public class NetJavaImpl {
 			connection.setRequestMethod(method);
 			HttpURLConnection.setFollowRedirects(httpRequest.getFollowRedirects());
 
-			lock.lock();
-			connections.put(httpRequest, connection);
-			listeners.put(httpRequest, httpResponseListener);
-			lock.unlock();
+			putIntoConnectionsAndListeners(httpRequest, httpResponseListener, connection);
 
 			// Headers get set regardless of the method
 			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
@@ -199,19 +192,13 @@ public class NetJavaImpl {
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 						try {
-							lock.lock();
-							HttpResponseListener listener = listeners.get(httpRequest);
+							HttpResponseListener listener = getFromListeners(httpRequest);
 
 							if (listener != null) {
-								lock.unlock();
 								listener.handleHttpResponse(clientResponse);
-								lock.lock();
-								listeners.remove(httpRequest);
 							}
-
-							connections.remove(httpRequest);
+							removeFromConnectionsAndListeners(httpRequest);
 						} finally {
-							lock.unlock();
 							connection.disconnect();
 						}
 					} catch (final Exception e) {
@@ -219,10 +206,7 @@ public class NetJavaImpl {
 						try {
 							httpResponseListener.failed(e);
 						} finally {
-							lock.lock();
-							connections.remove(httpRequest);
-							listeners.remove(httpRequest);
-							lock.unlock();
+							removeFromConnectionsAndListeners(httpRequest);
 						}
 					}
 				}
@@ -231,29 +215,34 @@ public class NetJavaImpl {
 			try {
 				httpResponseListener.failed(e);
 			} finally {
-				lock.lock();
-				connections.remove(httpRequest);
-				listeners.remove(httpRequest);
-				lock.unlock();
+				removeFromConnectionsAndListeners(httpRequest);
 			}
 			return;
 		}
 	}
 
 	public void cancelHttpRequest (HttpRequest httpRequest) {
-		try {
-			lock.lock();
-			HttpResponseListener httpResponseListener = listeners.get(httpRequest);
+		HttpResponseListener httpResponseListener = getFromListeners(httpRequest);
 
-			if (httpResponseListener != null) {
-				lock.unlock();
-				httpResponseListener.cancelled();
-				lock.lock();
-				connections.remove(httpRequest);
-				listeners.remove(httpRequest);
-			}
-		} finally {
-			lock.unlock();
+		if (httpResponseListener != null) {
+			httpResponseListener.cancelled();
+			removeFromConnectionsAndListeners(httpRequest);
 		}
+	}
+
+	synchronized void removeFromConnectionsAndListeners (final HttpRequest httpRequest) {
+		connections.remove(httpRequest);
+		listeners.remove(httpRequest);
+	}
+
+	synchronized void putIntoConnectionsAndListeners (final HttpRequest httpRequest,
+		final HttpResponseListener httpResponseListener, final HttpURLConnection connection) {
+		connections.put(httpRequest, connection);
+		listeners.put(httpRequest, httpResponseListener);
+	}
+
+	synchronized HttpResponseListener getFromListeners (HttpRequest httpRequest) {
+		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
+		return httpResponseListener;
 	}
 }
