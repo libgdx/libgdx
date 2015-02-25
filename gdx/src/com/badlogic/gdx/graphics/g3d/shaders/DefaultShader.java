@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -39,7 +38,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -340,8 +338,8 @@ public class DefaultShader extends BaseShader {
 					shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
 				else {
 					renderable.worldTransform.getTranslation(tmpV1);
-					if (renderable.environment.has(ColorAttribute.AmbientLight))
-						cacheAmbientCubemap.set(((ColorAttribute)renderable.environment.get(ColorAttribute.AmbientLight)).color);
+					if (combinedAttributes.has(ColorAttribute.AmbientLight))
+						cacheAmbientCubemap.set(((ColorAttribute)combinedAttributes.get(ColorAttribute.AmbientLight)).color);
 
 					for (int i = dirLightsOffset; i < renderable.environment.directionalLights.size; i++)
 						cacheAmbientCubemap.add(renderable.environment.directionalLights.get(i).color,
@@ -457,18 +455,17 @@ public class DefaultShader extends BaseShader {
 	protected final boolean lighting;
 	protected final boolean environmentCubemap;
 	protected final boolean shadowMap;
-	protected final boolean fog;
 	protected final AmbientCubemap ambientCubemap = new AmbientCubemap();
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
 
 	/** The renderable used to create this shader, invalid after the call to init */
 	private Renderable renderable;
-	/** The material attributes that this shader supports */
-	protected final long materialMask;
+	/** The attributes that this shader supports */
+	protected final long attributesMask;
 	private long vertexMask;
 	protected final Config config;
-	/** Material attributes which are not required but always supported. */
+	/** Attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
 
 	public DefaultShader (final Renderable renderable) {
@@ -483,22 +480,22 @@ public class DefaultShader extends BaseShader {
 		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
 			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
 	}
-
+	
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
 		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
-
+	
 	public DefaultShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
+		final Attributes attributes = combineAttributes(renderable);
 		this.config = config;
 		this.program = shaderProgram;
 		this.lighting = renderable.environment != null;
-		this.environmentCubemap = renderable.material.has(CubemapAttribute.EnvironmentMap)
-			|| (lighting && renderable.environment.has(CubemapAttribute.EnvironmentMap));
+		this.environmentCubemap = attributes.has(CubemapAttribute.EnvironmentMap)
+			|| (lighting && attributes.has(CubemapAttribute.EnvironmentMap));
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
-		this.fog = lighting && renderable.environment.has(ColorAttribute.Fog);
 		this.renderable = renderable;
-		materialMask = renderable.material.getMask() | optionalAttributes;
+		attributesMask = attributes.getMask() | optionalAttributes;
 		vertexMask = renderable.mesh.getVertexAttributes().getMask();
 
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
@@ -508,8 +505,8 @@ public class DefaultShader extends BaseShader {
 		for (int i = 0; i < pointLights.length; i++)
 			pointLights[i] = new PointLight();
 
-		if (!config.ignoreUnimplemented && (implementedFlags & materialMask) != materialMask)
-			throw new GdxRuntimeException("Some attributes not implemented yet (" + materialMask + ")");
+		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
+			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
 		// Global uniforms
 		u_projTrans = register(Inputs.projTrans, Setters.projTrans);
@@ -580,28 +577,38 @@ public class DefaultShader extends BaseShader {
 	private static final boolean or (final long mask, final long flag) {
 		return (mask & flag) != 0;
 	}
+	
+	private final static Attributes tmpAttributes = new Attributes();
+	// TODO: Move responsibility for combining attributes to RenderableProvider
+	private static final Attributes combineAttributes(final Renderable renderable) {
+		tmpAttributes.clear();
+		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
+		if (renderable.material != null) tmpAttributes.set(renderable.material);
+		return tmpAttributes;
+	}
 
 	public static String createPrefix (final Renderable renderable, final Config config) {
+		final Attributes attributes = combineAttributes(renderable);
 		String prefix = "";
-		final long mask = renderable.material.getMask();
-		final long attributes = renderable.mesh.getVertexAttributes().getMask();
-		if (and(attributes, Usage.Position)) prefix += "#define positionFlag\n";
-		if (or(attributes, Usage.Color | Usage.ColorPacked)) prefix += "#define colorFlag\n";
-		if (and(attributes, Usage.BiNormal)) prefix += "#define binormalFlag\n";
-		if (and(attributes, Usage.Tangent)) prefix += "#define tangentFlag\n";
-		if (and(attributes, Usage.Normal)) prefix += "#define normalFlag\n";
-		if (and(attributes, Usage.Normal) || and(attributes, Usage.Tangent | Usage.BiNormal)) {
+		final long attributesMask = attributes.getMask();
+		final long vertexMask = renderable.mesh.getVertexAttributes().getMask();
+		if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
+		if (or(vertexMask, Usage.Color | Usage.ColorPacked)) prefix += "#define colorFlag\n";
+		if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
+		if (and(vertexMask, Usage.Tangent)) prefix += "#define tangentFlag\n";
+		if (and(vertexMask, Usage.Normal)) prefix += "#define normalFlag\n";
+		if (and(vertexMask, Usage.Normal) || and(vertexMask, Usage.Tangent | Usage.BiNormal)) {
 			if (renderable.environment != null) {
 				prefix += "#define lightingFlag\n";
 				prefix += "#define ambientCubemapFlag\n";
 				prefix += "#define numDirectionalLights " + config.numDirectionalLights + "\n";
 				prefix += "#define numPointLights " + config.numPointLights + "\n";
-				if (renderable.environment.has(ColorAttribute.Fog)) {
+				if (attributes.has(ColorAttribute.Fog)) {
 					prefix += "#define fogFlag\n";
 				}
 				if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
-				if (renderable.material.has(CubemapAttribute.EnvironmentMap)
-					|| renderable.environment.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
+				if (attributes.has(CubemapAttribute.EnvironmentMap)
+					|| attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
 			}
 		}
 		final int n = renderable.mesh.getVertexAttributes().size();
@@ -611,42 +618,42 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define boneWeight" + attr.unit + "Flag\n";
 			else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
 		}
-		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
-		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
+		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
+		if ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & TextureAttribute.Specular) == TextureAttribute.Specular) {
+		if ((attributesMask & TextureAttribute.Specular) == TextureAttribute.Specular) {
 			prefix += "#define " + TextureAttribute.SpecularAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.SpecularAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & TextureAttribute.Normal) == TextureAttribute.Normal) {
+		if ((attributesMask & TextureAttribute.Normal) == TextureAttribute.Normal) {
 			prefix += "#define " + TextureAttribute.NormalAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.NormalAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & TextureAttribute.Emissive) == TextureAttribute.Emissive) {
+		if ((attributesMask & TextureAttribute.Emissive) == TextureAttribute.Emissive) {
 			prefix += "#define " + TextureAttribute.EmissiveAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.EmissiveAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & TextureAttribute.Reflection) == TextureAttribute.Reflection) {
+		if ((attributesMask & TextureAttribute.Reflection) == TextureAttribute.Reflection) {
 			prefix += "#define " + TextureAttribute.ReflectionAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.ReflectionAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & TextureAttribute.Ambient) == TextureAttribute.Ambient) {
+		if ((attributesMask & TextureAttribute.Ambient) == TextureAttribute.Ambient) {
 			prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
-		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
+		if ((attributesMask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
-		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
+		if ((attributesMask & ColorAttribute.Specular) == ColorAttribute.Specular)
 			prefix += "#define " + ColorAttribute.SpecularAlias + "Flag\n";
-		if ((mask & ColorAttribute.Emissive) == ColorAttribute.Emissive)
+		if ((attributesMask & ColorAttribute.Emissive) == ColorAttribute.Emissive)
 			prefix += "#define " + ColorAttribute.EmissiveAlias + "Flag\n";
-		if ((mask & ColorAttribute.Reflection) == ColorAttribute.Reflection)
+		if ((attributesMask & ColorAttribute.Reflection) == ColorAttribute.Reflection)
 			prefix += "#define " + ColorAttribute.ReflectionAlias + "Flag\n";
-		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
+		if ((attributesMask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
-		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+		if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 			prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
 		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
 		return prefix;
@@ -654,9 +661,9 @@ public class DefaultShader extends BaseShader {
 
 	@Override
 	public boolean canRender (final Renderable renderable) {
-		return (materialMask == (renderable.material.getMask() | optionalAttributes))
-			&& (vertexMask == renderable.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting
-			&& ((renderable.environment != null && renderable.environment.has(ColorAttribute.Fog)) == fog);
+		final Attributes attributes = combineAttributes(renderable);
+		return (attributesMask == (attributes.getMask() | optionalAttributes))
+			&& (vertexMask == renderable.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting;
 	}
 
 	@Override
@@ -692,35 +699,29 @@ public class DefaultShader extends BaseShader {
 
 		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
 	}
-
+	
 	@Override
-	public void render (final Renderable renderable) {
-		if (!renderable.material.has(BlendingAttribute.Type))
+	public void render (Renderable renderable, Attributes combinedAttributes) {
+		if (!combinedAttributes.has(BlendingAttribute.Type))
 			context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		bindMaterial(renderable);
-		if (lighting) bindLights(renderable);
-		super.render(renderable);
+		bindMaterial(combinedAttributes);
+		if (lighting) bindLights(renderable, combinedAttributes);
+		super.render(renderable, combinedAttributes);
 	}
 
 	@Override
 	public void end () {
-		currentMaterial = null;
 		super.end();
 	}
 
-	Material currentMaterial;
-
-	protected void bindMaterial (final Renderable renderable) {
-		if (currentMaterial == renderable.material) return;
-
+	protected void bindMaterial (final Attributes attributes) {
 		int cullFace = config.defaultCullFace == -1 ? defaultCullFace : config.defaultCullFace;
 		int depthFunc = config.defaultDepthFunc == -1 ? defaultDepthFunc : config.defaultDepthFunc;
 		float depthRangeNear = 0f;
 		float depthRangeFar = 1f;
 		boolean depthMask = true;
 
-		currentMaterial = renderable.material;
-		for (final Attribute attr : currentMaterial) {
+		for (final Attribute attr : attributes) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
@@ -745,7 +746,7 @@ public class DefaultShader extends BaseShader {
 
 	private final Vector3 tmpV1 = new Vector3();
 
-	protected void bindLights (final Renderable renderable) {
+	protected void bindLights (final Renderable renderable, final Attributes attributes) {
 		final Environment lights = renderable.environment;
 		final Array<DirectionalLight> dirs = lights.directionalLights;
 		final Array<PointLight> points = lights.pointLights;
@@ -789,8 +790,8 @@ public class DefaultShader extends BaseShader {
 			}
 		}
 
-		if (lights.has(ColorAttribute.Fog)) {
-			set(u_fogColor, ((ColorAttribute)lights.get(ColorAttribute.Fog)).color);
+		if (attributes.has(ColorAttribute.Fog)) {
+			set(u_fogColor, ((ColorAttribute)attributes.get(ColorAttribute.Fog)).color);
 		}
 
 		if (lights.shadowMap != null) {
