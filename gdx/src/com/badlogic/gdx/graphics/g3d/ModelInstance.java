@@ -54,7 +54,7 @@ public class ModelInstance implements RenderableProvider {
 	public final Model model;
 	/** the world transform **/
 	public Matrix4 transform;
-	/** user definable value, which is passed to the shader. */
+	/** user definable value, which is passed to the {@link Shader}. */
 	public Object userData;
 
 	/** Constructs a new ModelInstance with all nodes and materials of the given model.
