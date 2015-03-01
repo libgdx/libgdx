@@ -3,6 +3,7 @@
 - Added capability to enable color markup from inside skin json file.
 - API Change: Exposed method ControllerManager#clearListeners on Controllers class
 - API Change: Net#openURI now returns a boolean to indicate whether the uri was actually opened.
+- API Change: DefaultShader now always combines material and environment attributes
 
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)

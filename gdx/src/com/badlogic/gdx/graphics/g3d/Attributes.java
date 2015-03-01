@@ -78,7 +78,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	}
 
 	private final void disable (final long mask) {
-		this.mask &= -1L ^ mask;
+		this.mask &= ~mask;
 	}
 
 	/** Add a attribute to this material. If the material already contains an attribute of the same type it is overwritten. */
