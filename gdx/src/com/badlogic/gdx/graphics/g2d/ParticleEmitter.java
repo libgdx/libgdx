@@ -84,6 +84,7 @@ public class ParticleEmitter {
 	private boolean behind;
 	private boolean additive = true;
 	private boolean premultipliedAlpha = false;
+	boolean cleansUpBlendFunction = true;
 
 	public ParticleEmitter () {
 		initialize();
@@ -124,6 +125,7 @@ public class ParticleEmitter {
 		behind = emitter.behind;
 		additive = emitter.additive;
 		premultipliedAlpha = emitter.premultipliedAlpha;
+		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 	}
 
 	private void initialize () {
@@ -236,6 +238,8 @@ public class ParticleEmitter {
 		} else {
 			if (additive) {
 				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+			} else {
+				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
 		Particle[] particles = this.particles;
@@ -245,7 +249,8 @@ public class ParticleEmitter {
 			if (active[i]) particles[i].draw(batch);
 		}
 
-		if (additive || premultipliedAlpha) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha)) 
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 	}
 
@@ -265,6 +270,8 @@ public class ParticleEmitter {
 		} else {
 			if (additive) {
 				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+			} else {
+				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
 
@@ -284,7 +291,8 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive || premultipliedAlpha) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha)) 
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
@@ -731,8 +739,30 @@ public class ParticleEmitter {
 	public void setAdditive (boolean additive) {
 		this.additive = additive;
 	}
+	
+	/**
+	 * @return Whether this ParticleEmitter automatically returns the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s 
+	 * blend function to the alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. 
+	 */
+	public boolean cleansUpBlendFunction () {
+		return cleansUpBlendFunction;
+	}
 
-
+	/**
+	 * Set whether to automatically return the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s 
+	 * blend function to the alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when 
+	 * done drawing. Is true by default. If set to false, the Batch's blend function is left as it
+	 * was for drawing this ParticleEmitter, which prevents the Batch from being flushed repeatedly 
+	 * if consecutive ParticleEmitters with the same additive or pre-multiplied alpha state are drawn 
+	 * in a row. 
+	 * <p> IMPORTANT: If set to false and if the next object to use this Batch expects alpha blending,
+	 * you are responsible for setting the Batch's blend function to (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) 
+	 * before that next object is drawn.
+	 * @param cleansUpBlendFunction
+	 */
+	public void setCleansUpBlendFunction (boolean cleansUpBlendFunction) {
+		this.cleansUpBlendFunction = cleansUpBlendFunction;
+	}
 
 	public boolean isBehind () {
 		return behind;
