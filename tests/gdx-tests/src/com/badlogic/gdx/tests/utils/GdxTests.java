@@ -130,6 +130,7 @@ public class GdxTests {
 		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
+		GLDebuggerTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
 		GroupTest.class,
