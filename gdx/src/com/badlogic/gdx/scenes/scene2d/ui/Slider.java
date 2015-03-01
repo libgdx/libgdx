@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -35,6 +36,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class Slider extends ProgressBar {
 	int draggingPointer = -1;
+	private Interpolation visualInterpolationInverse = Interpolation.linear;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -110,14 +112,14 @@ public class Slider extends ProgressBar {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
 			position = y - bg.getBottomHeight() - knobHeight * 0.5f;
-			value = min + (max - min) * (position / (height - knobHeight));
+			value = visualInterpolationInverse.apply(min, max, position / (height - knobHeight));
 			position = Math.max(0, position);
 			position = Math.min(height - knobHeight, position);
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
 			position = x - bg.getLeftWidth() - knobWidth * 0.5f;
-			value = min + (max - min) * (position / (width - knobWidth));
+			value = visualInterpolationInverse.apply(min, max, position / (width - knobWidth));
 			position = Math.max(0, position);
 			position = Math.min(width - knobWidth, position);
 		}
@@ -131,6 +133,12 @@ public class Slider extends ProgressBar {
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
 		return draggingPointer != -1;
+	}
+
+	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
+	 * {@link #setVisualInterpolation(Interpolation) visual interpolation}. */
+	public void setVisualInterpolationInverse (Interpolation interpolation) {
+		this.visualInterpolationInverse = interpolation;
 	}
 
 	/** The style for a slider, see {@link Slider}.
