@@ -45,9 +45,8 @@ public class Container<T extends Actor> extends WidgetGroup {
 			if (clip) {
 				batch.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
-				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
-					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
-				if (draw) {
+				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+					getHeight() - padBottom - padTop.get(this))) {
 					drawChildren(batch, parentAlpha);
 					batch.flush();
 					clipEnd();
