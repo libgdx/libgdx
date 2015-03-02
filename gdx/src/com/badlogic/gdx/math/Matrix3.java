@@ -509,24 +509,56 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Multiplies matrix a with matrix b in the following manner:
+	 *
+	 * <pre>
+	 * mul(A, B) => A := AB
+	 * </pre>
+	 * @param mata The float array representing the first matrix. Must have at least 9 elements.
+	 * @param matb The float array representing the second matrix. Must have at least 9 elements. */
+	private static void mul (float[] mata, float[] matb) {
+		float v00 = mata[M00] * matb[M00] + mata[M01] * matb[M10] + mata[M02] * matb[M20];
+		float v01 = mata[M00] * matb[M01] + mata[M01] * matb[M11] + mata[M02] * matb[M21];
+		float v02 = mata[M00] * matb[M02] + mata[M01] * matb[M12] + mata[M02] * matb[M22];
+
+		float v10 = mata[M10] * matb[M00] + mata[M11] * matb[M10] + mata[M12] * matb[M20];
+		float v11 = mata[M10] * matb[M01] + mata[M11] * matb[M11] + mata[M12] * matb[M21];
+		float v12 = mata[M10] * matb[M02] + mata[M11] * matb[M12] + mata[M12] * matb[M22];
+
+		float v20 = mata[M20] * matb[M00] + mata[M21] * matb[M10] + mata[M22] * matb[M20];
+		float v21 = mata[M20] * matb[M01] + mata[M21] * matb[M11] + mata[M22] * matb[M21];
+		float v22 = mata[M20] * matb[M02] + mata[M21] * matb[M12] + mata[M22] * matb[M22];
+
+		mata[M00] = v00;
+		mata[M10] = v10;
+		mata[M20] = v20;
+		mata[M01] = v01;
+		mata[M11] = v11;
+		mata[M21] = v21;
+		mata[M02] = v02;
+		mata[M12] = v12;
+		mata[M22] = v22;
+	}
+
+	/** Multiplies matrix a with matrix b in the following manner:
 	 * 
 	 * <pre>
 	 * mul(A, B) => A := AB
 	 * </pre>
 	 * @param mata The float array representing the first matrix. Must have at least 9 elements.
-	 * @param matb List of floats representing the second matrix. At least 9 arguments must be passed. */
-	private static void mul (float[] mata, float... matb) {
-		float v00 = mata[M00] * matb[0] + mata[M01] * matb[1] + mata[M02] * matb[2];
-		float v01 = mata[M00] * matb[3] + mata[M01] * matb[4] + mata[M02] * matb[5];
-		float v02 = mata[M00] * matb[6] + mata[M01] * matb[7] + mata[M02] * matb[8];
+	 * @param matb00 to matb22 List of floats representing the second matrix. */
+	private static void mul (float[] mata, float matb00, float matb10, float matb20, float matb01, float matb11, float matb21,
+		float matb02, float matb12, float matb22) {
+		float v00 = mata[M00] * matb00 + mata[M01] * matb10 + mata[M02] * matb20;
+		float v01 = mata[M00] * matb01 + mata[M01] * matb11 + mata[M02] * matb21;
+		float v02 = mata[M00] * matb02 + mata[M01] * matb12 + mata[M02] * matb22;
 
-		float v10 = mata[M10] * matb[0] + mata[M11] * matb[1] + mata[M12] * matb[2];
-		float v11 = mata[M10] * matb[3] + mata[M11] * matb[4] + mata[M12] * matb[5];
-		float v12 = mata[M10] * matb[6] + mata[M11] * matb[7] + mata[M12] * matb[8];
+		float v10 = mata[M10] * matb00 + mata[M11] * matb10 + mata[M12] * matb20;
+		float v11 = mata[M10] * matb01 + mata[M11] * matb11 + mata[M12] * matb21;
+		float v12 = mata[M10] * matb02 + mata[M11] * matb12 + mata[M12] * matb22;
 
-		float v20 = mata[M20] * matb[0] + mata[M21] * matb[1] + mata[M22] * matb[2];
-		float v21 = mata[M20] * matb[3] + mata[M21] * matb[4] + mata[M22] * matb[5];
-		float v22 = mata[M20] * matb[6] + mata[M21] * matb[7] + mata[M22] * matb[8];
+		float v20 = mata[M20] * matb00 + mata[M21] * matb10 + mata[M22] * matb20;
+		float v21 = mata[M20] * matb01 + mata[M21] * matb11 + mata[M22] * matb21;
+		float v22 = mata[M20] * matb02 + mata[M21] * matb12 + mata[M22] * matb22;
 
 		mata[M00] = v00;
 		mata[M10] = v10;

@@ -127,8 +127,34 @@ public class Matrix4 implements Serializable {
 	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
 	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 set (float... values) {
+	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
+		return this;
+	}
+
+	/** Sets the matrix to the given matrix as an array of floats.
+	 * 
+	 * @param mat00 to mat33 The matrix, in float form, that is to be copied. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 set (float mat00, float mat10, float mat20, float mat30, float mat01, float mat11, float mat21, float mat31,
+		float mat02, float mat12, float mat22, float mat32, float mat03, float mat13, float mat23, float mat33) {
+		val[M00] = mat00;
+		val[M10] = mat10;
+		val[M20] = mat20;
+		val[M30] = mat30;
+		val[M01] = mat01;
+		val[M11] = mat11;
+		val[M21] = mat21;
+		val[M31] = mat31;
+		val[M02] = mat02;
+		val[M12] = mat12;
+		val[M22] = mat22;
+		val[M32] = mat32;
+		val[M03] = mat03;
+		val[M13] = mat13;
+		val[M23] = mat23;
+		val[M33] = mat33;
 		return this;
 	}
 
@@ -350,7 +376,7 @@ public class Matrix4 implements Serializable {
 		float tmpM23 = val[M23];
 		float tmpM33 = val[M33];
 		set(matrix);
-		mulLocal(tmpM00, tmpM10, tmpM20, tmpM30, tmpM01, tmpM11, tmpM21, tmpM31, tmpM02, tmpM12, tmpM22, tmpM32, tmpM03, tmpM13,
+		mul(val, tmpM00, tmpM10, tmpM20, tmpM30, tmpM01, tmpM11, tmpM21, tmpM31, tmpM02, tmpM12, tmpM22, tmpM32, tmpM03, tmpM13,
 			tmpM23, tmpM33);
 		return this;
 	}
@@ -894,7 +920,7 @@ public class Matrix4 implements Serializable {
 		uy = rz * fx - rx * fz;
 		uz = rx * fy - ry * fx;
 
-		set(rx, ux, -fx, 0, ry, uy, -fy, 0, rz, uz, -fz, position.x, position.y, position.z, 1);
+		set(rx, ux, -fx, 0, ry, uy, -fy, 0, rz, uz, -fz, 0, position.x, position.y, position.z, 1);
 
 		return this;
 	}
@@ -1356,6 +1382,23 @@ public class Matrix4 implements Serializable {
 		matrix4_mul(mata, matb);
 	*/
 
+	/** Multiplies the matrix mata with matrix matb, passed as array of float parameters, storing the result in mata. The arrays
+	 *  are assumed to hold 4x4 column major matrices as you can get from {@link Matrix4#val}. This is the same as
+	 *  {@link Matrix4#mul(Matrix4)}.
+	 * 
+	 * @param mata the first matrix.
+	 * @param matb00 to matb33 the second matrix. */
+	public static native void mul (float[] mata, float matb00, float matb10, float matb20, float matb30, float matb01,
+		float matb11, float matb21, float matb31, float matb02, float matb12, float matb22, float matb32, float matb03,
+		float matb13, float matb23, float matb33) /*-{ }-*/; /*
+		float matb[16];
+		matb[M00] = matb00; matb[M01] = matb01; matb[M02] = matb02; matb[M03] = matb03;
+		matb[M10] = matb10; matb[M11] = matb11; matb[M12] = matb12; matb[M13] = matb13;
+		matb[M20] = matb20; matb[M21] = matb21; matb[M22] = matb22; matb[M23] = matb23;
+		matb[M30] = matb30; matb[M31] = matb31; matb[M32] = matb32; matb[M33] = matb33;
+		matrix4_mul(mata, matb);
+	*/
+
 	/** Multiplies the vector with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
 	 * from {@link Matrix4#val}. The vector array is assumed to hold a 3-component vector, with x being the first element, y being
 	 * the second and z being the last component. The result is stored in the vector array. This is the same as
@@ -1475,7 +1518,7 @@ public class Matrix4 implements Serializable {
 	 * @param z Translation in the z-axis.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 translate (float x, float y, float z) {
-		mulLocal(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1);
+		mul(val, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1);
 		return this;
 	}
 
@@ -1546,7 +1589,7 @@ public class Matrix4 implements Serializable {
 		final float zz = rotation.z * rotation.z;
 		final float zw = rotation.z * rotation.w;
 
-		mulLocal(1 - 2 * (yy + zz), 2 * (xy + zw), 2 * (xz - yw), 0, 2 * (xy - zw), 1 - 2 * (xx + zz), 2 * (yz + xw), 0,
+		mul(val, 1 - 2 * (yy + zz), 2 * (xy + zw), 2 * (xz - yw), 0, 2 * (xy - zw), 1 - 2 * (xx + zz), 2 * (yz + xw), 0,
 			2 * (xz + yw), 2 * (yz - xw), 1 - 2 * (xx + yy), 0, 0, 0, 0, 1);
 		
 		return this;
@@ -1567,7 +1610,7 @@ public class Matrix4 implements Serializable {
 	 * @param scaleZ The scale in the z-axis.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 scale (float scaleX, float scaleY, float scaleZ) {
-		mulLocal(scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1);
+		mul(val, scaleX, 0, 0, 0, 0, scaleY, 0, 0, 0, 0, scaleZ, 0, 0, 0, 0, 1);
 		return this;
 	}
 
@@ -1586,17 +1629,5 @@ public class Matrix4 implements Serializable {
 		dst[9] = val[M03];
 		dst[10] = val[M13];
 		dst[11] = val[M23];
-	}
-
-	/** Multiplies this matrix with matrix matb, storing the result in this matrix.
-	 * 
-	 * This is a private helper function to pass the second matrix as list of float parameters, which is then forwarded to
-	 * {@link Matrix4#mul(float[], float[])} as float[] array.
-	 * 
-	 * Note: The order of parameters needs to match the ordinals of the MXX constants. Use with care!
-	 * 
-	 * @param matb The second matrix. */
-	private void mulLocal (float... matb) {
-		mul(val, matb);
 	}
 }
