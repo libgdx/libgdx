@@ -108,7 +108,15 @@ public class ShapeRenderer implements Disposable {
 	}
 
 	public ShapeRenderer (int maxVertices) {
-		renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
+		this(maxVertices, null);
+	}
+
+	public ShapeRenderer (int maxVertices, ShaderProgram defaultShader) {
+		if (defaultShader == null) {
+			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
+		} else {
+			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0, defaultShader);
+		}
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		matrixDirty = true;
 	}

@@ -124,6 +124,14 @@ public class Texture extends GLTexture {
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
 	}
+
+	public Texture (TextureData data, int glHandle) {
+		super(GL20.GL_TEXTURE_2D, glHandle);
+		load(data);
+		if (data.isManaged()) {
+			addManagedTexture(Gdx.app, this);
+		}
+	}
 	
 	public void load (TextureData data) {
 		if (this.data != null && data.isManaged() != this.data.isManaged())
