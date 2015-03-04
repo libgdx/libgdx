@@ -1,7 +1,20 @@
+[1.5.5]
+- API Change: 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+- Added capability to enable color markup from inside skin json file.
+- API Change: Exposed method ControllerManager#clearListeners on Controllers class
+- API Change: Net#openURI now returns a boolean to indicate whether the uri was actually opened.
+- API Change: DefaultShader now always combines material and environment attributes
+- API Change: Added ShapeRenderer constructor to pass a custom shader program to ImmediateModeRenderer20.
+
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
 - Added support for loading texture objects from TMX Maps (TextureMapObject)
 - Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
+- Now unknown markup colors are silently ignored and considered as normal text.
+- Updated freetype from version 2.4.10 to 2.5.5
+- Added 3rd party extensions to setup application, see 
+- Updated to RoboVM 1.0.0-beta-04
+- Updated to GWT 2.6.1, sadly GWT 2.7.0 isn't production ready yet.
 
 [1.5.3]
 - API Change: TextField#setRightAlign -> TextField#setAlignment

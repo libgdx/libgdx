@@ -62,9 +62,9 @@ public class BitmapFontTest extends GdxTest {
 
 		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations.
 		// They are silently ignored, as expected.
-		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[GREEN]t[OLIVE]ic[]o[]l[]o[]r[]*[MAROON]Label[][]>>", skin);
+		Label label = new Label("<<[BLUE]M[RED]u[YELLOW]l[GREEN]t[OLIVE]ic[]o[]l[]o[]r[]*[MAROON]Label[][] [Unknown Color]>>", skin);
 
-		label.setPosition(200, 200);
+		label.setPosition(100, 200);
 		stage.addActor(label);
 
 		Window window = new Window("[RED]Multicolor[GREEN] Title", skin);

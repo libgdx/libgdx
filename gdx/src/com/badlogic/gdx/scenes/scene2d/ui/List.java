@@ -213,7 +213,7 @@ public class List<T> extends Widget implements Cullable {
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
 	}
 
-	/** Sets the current items, clearing the selection if it is no longer valid. If a selection is
+	/** Sets the items visible in the list, clearing the selection if it is no longer valid. If a selection is
 	 * {@link ArraySelection#getRequired()}, the first item is selected. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
@@ -234,6 +234,7 @@ public class List<T> extends Widget implements Cullable {
 		invalidateHierarchy();
 	}
 
+	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
 	public Array<T> getItems () {
 		return items;
 	}

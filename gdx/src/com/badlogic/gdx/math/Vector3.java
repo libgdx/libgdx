@@ -526,10 +526,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public Vector3 lerp (final Vector3 target, float alpha) {
-		scl(1.0f - alpha);
-		add(target.x * alpha, target.y * alpha, target.z * alpha);
+		x += alpha * (target.x - x);
+		y += alpha * (target.y - y);
+		z += alpha * (target.z - z);
 		return this;
 	}
+	
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
@@ -576,7 +578,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 limit2 (float limit2) {
 		float len2 = len2();
 		if (len2 > limit2) {
-			scl(limit2 / len2);
+			scl((float) Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}

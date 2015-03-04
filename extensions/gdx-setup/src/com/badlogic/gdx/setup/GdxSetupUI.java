@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.setup;
 
 import static java.awt.GridBagConstraints.*;
@@ -25,8 +26,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -51,7 +55,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -71,8 +75,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.ColorUIResource;
@@ -86,6 +88,7 @@ public class GdxSetupUI extends JFrame {
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
+	List<ExternalExtension> externalExtensions = new ArrayList<ExternalExtension>();
 
 	UI ui = new UI();
 	static Point point = new Point();
@@ -382,15 +385,19 @@ public class GdxSetupUI extends JFrame {
 
 		private void uiLayout () {
 			title.setLayout(new GridLayout(1, 2));
+			
+			minimize.setPreferredSize(new Dimension(50, 26));
+			exit.setPreferredSize(new Dimension(50, 26));
+
 			title.add(minimize);
 			title.add(exit);
 
 			topBar.setLayout(new GridLayout(1, 1));
-			topBar.add(windowLabel, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTHWEST, NORTHWEST, new Insets(0, 0, 0, 0), 0, 0));
+			topBar.add(windowLabel, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTHWEST, VERTICAL, new Insets(0, 0, 0, 0), 0, 0));
 
 			setLayout(new GridBagLayout());
 			add(topBar, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTH, HORIZONTAL, new Insets(0, 0, 0, 100), 0, 10));
-			add(title, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTHEAST, NORTHEAST, new Insets(0, 0, 0, 0), 0, 0));
+			add(title, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTHEAST, NONE, new Insets(0, 0, 0, 0), 0, 0));
 			add(logo, new GridBagConstraints(0, 0, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(40, 6, 12, 6), 0, 0));
 			add(form, new GridBagConstraints(0, 1, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(6, 6, 12, 6), 0, 0));
 			add(buttonPanel, new GridBagConstraints(0, 2, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -400,7 +407,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog();;
+					settings.showDialog();
 				}
 			});
 			generateButton.addActionListener(new ActionListener() {
@@ -412,6 +419,7 @@ public class GdxSetupUI extends JFrame {
 	}
 
 	class Form extends JPanel {
+		ExternalExtensionsDialog externalExtensionsDialog = new ExternalExtensionsDialog(dependencies);
 		JLabel nameLabel = new JLabel("Name:");
 		JTextField nameText = new JTextField("my-gdx-game");
 		JLabel packageLabel = new JLabel("Package:");
@@ -431,6 +439,7 @@ public class GdxSetupUI extends JFrame {
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
+		SetupButton showMoreExtensionsButton = new SetupButton("Show Third Party Extensions");
 
 		{
 			uiLayout();
@@ -450,7 +459,7 @@ public class GdxSetupUI extends JFrame {
 			gameClassLabel.setForeground(Color.WHITE);
 			destinationLabel.setForeground(Color.WHITE);
 			sdkLocationLabel.setForeground(Color.WHITE);
-			sdkLocationText.setDisabledTextColor(Color.BLACK);
+			sdkLocationText.setDisabledTextColor(Color.GRAY);
 
 			versionLabel.setForeground(new Color(255, 20, 20));
 			UIManager.put("ComboBox.selectionBackground", new ColorUIResource(new Color(70, 70, 70)));
@@ -471,8 +480,8 @@ public class GdxSetupUI extends JFrame {
 				}
 			});
 
-			projectsLabel.setForeground(new Color(200, 20, 20));
-			extensionsLabel.setForeground(new Color(200, 20, 20));
+			projectsLabel.setForeground(new Color(255, 20, 20));
+			extensionsLabel.setForeground(new Color(255, 20, 20));
 
 			subProjectsPanel.setOpaque(true);
 			subProjectsPanel.setBackground(new Color(46, 46, 46));
@@ -576,7 +585,7 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 				
-				for (int left = depCounter - 5; left > 1; left--) {
+				for (int left = ((depCounter - 1) % 5); left > 1; left--) {
 					extensionPanel.add(Box.createHorizontalBox());
 				}
 
@@ -589,6 +598,7 @@ public class GdxSetupUI extends JFrame {
 				add(extensionsPanel, new GridBagConstraints(0, rowCounter, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
 				rowCounter++;
 			}
+			add(showMoreExtensionsButton, new GridBagConstraints(0, 12, 0, 1, 0, 0, CENTER, WEST, new Insets(20, 0, 30, 0), 0, 0));
 		}
 
 		File getDirectory () {
@@ -634,50 +644,110 @@ public class GdxSetupUI extends JFrame {
 					}
 				}
 			});
+			showMoreExtensionsButton.addActionListener(new ActionListener() {
+				 public void actionPerformed (ActionEvent e) {
+					  externalExtensionsDialog.showDialog();
+				 }
+			});
 		}
 	}
 
-	class SetupCheckBox extends JCheckBox {
+	public static class SetupCheckBox extends JCheckBox {
 
-		SetupCheckBox(String selectName) {
+		static Icon icon;
+		static Icon iconOver;
+		static Icon iconPressed;
+		static Icon iconPressedSelected;
+		static Icon iconSelected;
+		static Icon iconOverSelected;
+
+		static {
+			try {
+				BufferedImage iconImg = getCheckboxImage("checkbox");
+				BufferedImage iconOverImg = getCheckboxImage("checkboxover");
+				BufferedImage iconPressedImg = getCheckboxImage("checkboxpressed");
+				BufferedImage iconPressedSelectedImg = getCheckboxImage("checkboxpressedselected");
+				BufferedImage iconSelectedImg = getCheckboxImage("checkboxselected");
+				BufferedImage iconOverSelectedImg = getCheckboxImage("checkboxoverselected");
+
+				icon = new ImageIcon(iconImg);
+				iconOver = new ImageIcon(iconOverImg);
+				iconPressed = new ImageIcon(iconPressedImg);
+				iconPressedSelected = new ImageIcon(iconPressedSelectedImg);
+				iconSelected = new ImageIcon(iconSelectedImg);
+				iconOverSelected = new ImageIcon(iconOverSelectedImg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		private static BufferedImage getCheckboxImage (String imageName) throws IOException {
+			return ImageIO.read(GdxSetupUI.class.getResourceAsStream("/com/badlogic/gdx/setup/data/" + imageName + ".png"));
+		}
+
+		SetupCheckBox () {
+			super();
+			initUI();
+		}
+		
+		SetupCheckBox (String selectName) {
 			super(selectName);
+			initUI();
+		}
+
+		private void initUI() {
 			setOpaque(false);
 			setBackground(new Color(0, 0, 0));
 			setForeground(new Color(255, 255, 255));
 			setFocusPainted(false);
+
+			setIcon(icon);
+			setRolloverIcon(iconOver);
+			setPressedIcon(iconPressed);
+			setSelectedIcon(iconSelected);
+			setRolloverSelectedIcon(iconOverSelected);
+		}
+		
+		public Icon getPressedIcon () {
+			//checkbox is missing 'pressed selected' icon, this allows us to add it
+			if (isSelected())
+				return iconPressedSelected;
+			else
+				return super.getPressedIcon();
 		}
 
 	}
 
-	public class SetupButton extends JButton {
+	public static class SetupButton extends JButton {
+		private Color textColor = Color.WHITE;
+		private Color backgroundColor = new Color(18, 18, 18);
+		private Color overColor = new Color(120, 20, 20);
+		private Color pressedColor = new Color(240, 40, 40);
 
-		SetupButton(String buttonTag) {
+		SetupButton (String buttonTag) {
 			super(buttonTag);
-			setForeground(new Color(255, 255, 255));
-			setBackground(new Color(18, 18, 18));
-			setContentAreaFilled(true);
+			setBackground(backgroundColor);
+			setForeground(textColor);
+			setContentAreaFilled(false);
 			setFocusPainted(false);
 
 			Border line = BorderFactory.createLineBorder(new Color(80, 80, 80));
 			Border empty = new EmptyBorder(4, 4, 4, 4);
 			CompoundBorder border = new CompoundBorder(line, empty);
 			setBorder(border);
+		}
 
-			getModel().addChangeListener(new ChangeListener() {
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					ButtonModel model = (ButtonModel) e.getSource();
-					if (model.isRollover()) {
-						setBackground(new Color(120, 20, 20));
-					} else if (model.isArmed() || model.isPressed()) {
-						setBackground(new Color(0, 0, 0));
-					} else if (model.isSelected()) {
-						setBackground(new Color(0, 0, 0));
-					} else {
-						setBackground(new Color(38, 38, 38));
-					}
-				}
-			});
+		@Override
+		protected void paintComponent (Graphics g) {
+			if (getModel().isPressed()) {
+				g.setColor(pressedColor);
+			} else if (getModel().isRollover()) {
+				g.setColor(overColor);
+			} else {
+				g.setColor(getBackground());
+			}
+			g.fillRect(0, 0, getWidth(), getHeight());
+			super.paintComponent(g);
 		}
 	}
 
@@ -686,7 +756,7 @@ public class GdxSetupUI extends JFrame {
 			@Override
 			public void run() {
 				new GdxSetupUI();				
-			}			
+			}
 		});
 	}
 }

@@ -264,7 +264,8 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
+	public boolean openURI (String URI) {
 		Window.open(URI, "_blank", null);
+		return true;
 	}
 }
