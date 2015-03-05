@@ -198,10 +198,17 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				}
 			}
 			if (object == null) {
-				int gid = -1;
-				if ((gid = element.getIntAttribute("gid", -1)) != -1) {
-					TiledMapTile tile = map.getTileSets().getTile(gid);
-					TextureMapObject textureMapObject = new TextureMapObject(tile.getTextureRegion());
+				String gid = null;
+				if ((gid = element.getAttribute("gid", null)) != null) {
+					int id = (int)Long.parseLong(gid);
+					boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+					boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+
+					TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
+					TextureRegion textureRegion = new TextureRegion(tile.getTextureRegion());
+					textureRegion.flip(flipHorizontally, flipVertically);
+					TextureMapObject textureMapObject = new TextureMapObject(textureRegion);
+					textureMapObject.getProperties().put("gid", id);
 					textureMapObject.setX(x);
 					textureMapObject.setY(y - height);
 					textureMapObject.setScaleX(scaleX);
@@ -220,10 +227,6 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
-			}
-			int gid = element.getIntAttribute("gid", -1);
-			if (gid != -1) {
-				object.getProperties().put("gid", gid);
 			}
 			object.getProperties().put("x", x * scaleX);
 			object.getProperties().put("y", (y - height) * scaleY);

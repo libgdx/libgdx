@@ -102,14 +102,9 @@ public class Table extends WidgetGroup {
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
 				batch.flush();
-				float x = 0, y = 0, width = getWidth(), height = getHeight();
-				if (background != null) {
-					x = padLeft.get(this);
-					y = padBottom.get(this);
-					width -= x + padRight.get(this);
-					height -= y + padTop.get(this);
-				}
-				if (clipBegin(x, y, width, height)) {
+				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
+				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+					getHeight() - padBottom - padTop.get(this))) {
 					drawChildren(batch, parentAlpha);
 					batch.flush();
 					clipEnd();

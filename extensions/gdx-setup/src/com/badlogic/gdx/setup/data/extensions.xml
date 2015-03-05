@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensions>
+    <extension>
+       <name>Overlap2D</name>
+       <description>Level and UI Editor Runtime</description>
+       <package>com.underwaterapps.overlap2druntime</package>
+       <version>0.0.8</version>
+       <compatibility>1.5.3</compatibility>
+       <website>http://overlap2d.com/</website>
+       <projects>
+           <core>
+               <dependency>com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx</dependency>
+           </core>
+           <desktop></desktop>
+           <android></android>
+           <ios></ios>
+           <html>null</html>
+       </projects>
+    </extension>
+</extensions>

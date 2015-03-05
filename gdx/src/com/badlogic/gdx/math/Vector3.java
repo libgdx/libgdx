@@ -526,10 +526,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public Vector3 lerp (final Vector3 target, float alpha) {
-		scl(1.0f - alpha);
-		add(target.x * alpha, target.y * alpha, target.z * alpha);
+		x += alpha * (target.x - x);
+		y += alpha * (target.y - y);
+		z += alpha * (target.z - z);
 		return this;
 	}
+	
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));

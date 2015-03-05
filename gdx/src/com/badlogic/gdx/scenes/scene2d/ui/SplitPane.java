@@ -251,7 +251,7 @@ public class SplitPane extends WidgetGroup {
 				ScissorStack.popScissors();
 			}
 		}
-		batch.setColor(color.r, color.g, color.b, color.a);
+		batch.setColor(color.r, color.g, color.b, parentAlpha * color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}
