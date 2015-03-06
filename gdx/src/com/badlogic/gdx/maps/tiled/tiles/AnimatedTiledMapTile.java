@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private long lastTiledMapRenderTime = 0;
-
+	private long timeOffset = 0;
 	private int id;
 
 	private BlendMode blendMode = BlendMode.ALPHA;
@@ -75,9 +75,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
 	
-	public void restartAnimation(){
-		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
-		lastTiledMapRenderTime -= currentTime;
+		public void restartAnimation(){
+		currentTime = lastTiledMapRenderTime % loopDuration;
+		timeOffset -= currentTime;
 	}
 
 	public void setFrame(int f){
@@ -94,13 +94,12 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		
 		restartAnimation();
 		if(f > 0){
-			int timestep = 0;
 			for (int i = 0 ; i < f ; i++) {
-				timestep += animationIntervals[i-1]
+				timeOffset += animationIntervals[i-1]
 			}
-			lastTiledMapRenderTime -= timestep;
 		}
 	}
+	
 	
 	public TiledMapTile getCurrentFrame() {
 		return frameTiles[getCurrentFrameIndex()];
@@ -164,7 +163,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
 	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
 	public static void updateAnimationBaseTime () {
-		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
+		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset + timeOffset;
 	}
 
 	/** Creates an animated tile with the given animation interval and frame tiles.
