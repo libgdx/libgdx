@@ -75,7 +75,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
 	
-		public void restartAnimation(){
+	public void restartAnimation(){
 		currentTime = lastTiledMapRenderTime % loopDuration;
 		timeOffset -= currentTime;
 	}
