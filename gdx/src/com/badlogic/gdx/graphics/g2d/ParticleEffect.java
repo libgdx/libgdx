@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.HashMap;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -186,12 +187,18 @@ public class ParticleEffect implements Disposable {
 
 	public void loadEmitterImages (FileHandle imagesDir) {
 		ownsTexture = true;
+		HashMap<String, Sprite> loadedSprites = new HashMap<String, Sprite>(emitters.size);
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
-			emitter.setSprite(new Sprite(loadTexture(imagesDir.child(imageName))));
+			Sprite sprite = loadedSprites.get(imageName);
+			if (sprite == null) {
+				sprite = new Sprite(loadTexture(imagesDir.child(imageName)));
+				loadedSprites.put(imageName, sprite);
+			}
+			emitter.setSprite(sprite);
 		}
 	}
 
@@ -218,30 +225,56 @@ public class ParticleEffect implements Disposable {
 			bounds.ext(emitter.getBoundingBox());
 		return bounds;
 	}
-	
-    public void scaleEffect(float scaleFactor) {
-        for (ParticleEmitter particleEmitter : emitters) {
-            particleEmitter.getScale().setHigh(particleEmitter.getScale().getHighMin() * scaleFactor, particleEmitter.getScale().getHighMax() * scaleFactor);
-            particleEmitter.getScale().setLow(particleEmitter.getScale().getLowMin() * scaleFactor, particleEmitter.getScale().getLowMax() * scaleFactor);
-            
-            particleEmitter.getVelocity().setHigh(particleEmitter.getVelocity().getHighMin() * scaleFactor, particleEmitter.getVelocity().getHighMax() * scaleFactor);
-            particleEmitter.getVelocity().setLow(particleEmitter.getVelocity().getLowMin() * scaleFactor, particleEmitter.getVelocity().getLowMax() * scaleFactor);
-            
-            particleEmitter.getGravity().setHigh(particleEmitter.getGravity().getHighMin() * scaleFactor, particleEmitter.getGravity().getHighMax() * scaleFactor);
-            particleEmitter.getGravity().setLow(particleEmitter.getGravity().getLowMin() * scaleFactor, particleEmitter.getGravity().getLowMax() * scaleFactor);
-            
-            particleEmitter.getWind().setHigh(particleEmitter.getWind().getHighMin() * scaleFactor, particleEmitter.getWind().getHighMax() * scaleFactor);
-            particleEmitter.getWind().setLow(particleEmitter.getWind().getLowMin() * scaleFactor, particleEmitter.getWind().getLowMax() * scaleFactor);
-            
-            particleEmitter.getSpawnWidth().setHigh(particleEmitter.getSpawnWidth().getHighMin() * scaleFactor, particleEmitter.getSpawnWidth().getHighMax() * scaleFactor);
-            particleEmitter.getSpawnWidth().setLow(particleEmitter.getSpawnWidth().getLowMin() * scaleFactor, particleEmitter.getSpawnWidth().getLowMax() * scaleFactor);
-            
-            particleEmitter.getSpawnHeight().setHigh(particleEmitter.getSpawnHeight().getHighMin() * scaleFactor, particleEmitter.getSpawnHeight().getHighMax() * scaleFactor);
-            particleEmitter.getSpawnHeight().setLow(particleEmitter.getSpawnHeight().getLowMin() * scaleFactor, particleEmitter.getSpawnHeight().getLowMax() * scaleFactor);
-            
-            particleEmitter.getXOffsetValue().setLow(particleEmitter.getXOffsetValue().getLowMin() * scaleFactor, particleEmitter.getXOffsetValue().getLowMax() * scaleFactor);
-            
-            particleEmitter.getYOffsetValue().setLow(particleEmitter.getYOffsetValue().getLowMin() * scaleFactor, particleEmitter.getYOffsetValue().getLowMax() * scaleFactor);
-        }
-    }
+
+	public void scaleEffect (float scaleFactor) {
+		for (ParticleEmitter particleEmitter : emitters) {
+			particleEmitter.getScale().setHigh(particleEmitter.getScale().getHighMin() * scaleFactor,
+				particleEmitter.getScale().getHighMax() * scaleFactor);
+			particleEmitter.getScale().setLow(particleEmitter.getScale().getLowMin() * scaleFactor,
+				particleEmitter.getScale().getLowMax() * scaleFactor);
+
+			particleEmitter.getVelocity().setHigh(particleEmitter.getVelocity().getHighMin() * scaleFactor,
+				particleEmitter.getVelocity().getHighMax() * scaleFactor);
+			particleEmitter.getVelocity().setLow(particleEmitter.getVelocity().getLowMin() * scaleFactor,
+				particleEmitter.getVelocity().getLowMax() * scaleFactor);
+
+			particleEmitter.getGravity().setHigh(particleEmitter.getGravity().getHighMin() * scaleFactor,
+				particleEmitter.getGravity().getHighMax() * scaleFactor);
+			particleEmitter.getGravity().setLow(particleEmitter.getGravity().getLowMin() * scaleFactor,
+				particleEmitter.getGravity().getLowMax() * scaleFactor);
+
+			particleEmitter.getWind().setHigh(particleEmitter.getWind().getHighMin() * scaleFactor,
+				particleEmitter.getWind().getHighMax() * scaleFactor);
+			particleEmitter.getWind().setLow(particleEmitter.getWind().getLowMin() * scaleFactor,
+				particleEmitter.getWind().getLowMax() * scaleFactor);
+
+			particleEmitter.getSpawnWidth().setHigh(particleEmitter.getSpawnWidth().getHighMin() * scaleFactor,
+				particleEmitter.getSpawnWidth().getHighMax() * scaleFactor);
+			particleEmitter.getSpawnWidth().setLow(particleEmitter.getSpawnWidth().getLowMin() * scaleFactor,
+				particleEmitter.getSpawnWidth().getLowMax() * scaleFactor);
+
+			particleEmitter.getSpawnHeight().setHigh(particleEmitter.getSpawnHeight().getHighMin() * scaleFactor,
+				particleEmitter.getSpawnHeight().getHighMax() * scaleFactor);
+			particleEmitter.getSpawnHeight().setLow(particleEmitter.getSpawnHeight().getLowMin() * scaleFactor,
+				particleEmitter.getSpawnHeight().getLowMax() * scaleFactor);
+
+			particleEmitter.getXOffsetValue().setLow(particleEmitter.getXOffsetValue().getLowMin() * scaleFactor,
+				particleEmitter.getXOffsetValue().getLowMax() * scaleFactor);
+
+			particleEmitter.getYOffsetValue().setLow(particleEmitter.getYOffsetValue().getLowMin() * scaleFactor,
+				particleEmitter.getYOffsetValue().getLowMax() * scaleFactor);
+		}
+	}
+
+	/** Sets the {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#setCleansUpBlendFunction(boolean) cleansUpBlendFunction}
+	 * parameter on all {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter ParticleEmitters} currently in this ParticleEffect.
+	 * <p>
+	 * IMPORTANT: If set to false and if the next object to use this Batch expects alpha blending, you are responsible for setting
+	 * the Batch's blend function to (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) before that next object is drawn.
+	 * @param cleanUpBlendFunction */
+	public void setEmittersCleanUpBlendFunction (boolean cleanUpBlendFunction) {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			emitters.get(i).setCleansUpBlendFunction(cleanUpBlendFunction);
+		}
+	}
 }

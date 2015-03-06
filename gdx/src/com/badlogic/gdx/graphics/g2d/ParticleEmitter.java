@@ -26,7 +26,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
 	static private final int UPDATE_ANGLE = 1 << 1;
@@ -84,6 +83,7 @@ public class ParticleEmitter {
 	private boolean behind;
 	private boolean additive = true;
 	private boolean premultipliedAlpha = false;
+	boolean cleansUpBlendFunction = true;
 
 	public ParticleEmitter () {
 		initialize();
@@ -124,6 +124,7 @@ public class ParticleEmitter {
 		behind = emitter.behind;
 		additive = emitter.additive;
 		premultipliedAlpha = emitter.premultipliedAlpha;
+		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 	}
 
 	private void initialize () {
@@ -233,10 +234,10 @@ public class ParticleEmitter {
 	public void draw (Batch batch) {
 		if (premultipliedAlpha) {
 			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		} else {
-			if (additive) {
-				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-			}
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		}
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -245,7 +246,8 @@ public class ParticleEmitter {
 			if (active[i]) particles[i].draw(batch);
 		}
 
-		if (additive || premultipliedAlpha) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 	}
 
@@ -262,10 +264,10 @@ public class ParticleEmitter {
 
 		if (premultipliedAlpha) {
 			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		} else {
-			if (additive) {
-				batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-			}
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		Particle[] particles = this.particles;
@@ -284,7 +286,8 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive || premultipliedAlpha) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
@@ -732,7 +735,23 @@ public class ParticleEmitter {
 		this.additive = additive;
 	}
 
+	/** @return Whether this ParticleEmitter automatically returns the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend
+	 *         function to the alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. */
+	public boolean cleansUpBlendFunction () {
+		return cleansUpBlendFunction;
+	}
 
+	/** Set whether to automatically return the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend function to the
+	 * alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. Is true by default. If set to false, the
+	 * Batch's blend function is left as it was for drawing this ParticleEmitter, which prevents the Batch from being flushed
+	 * repeatedly if consecutive ParticleEmitters with the same additive or pre-multiplied alpha state are drawn in a row.
+	 * <p>
+	 * IMPORTANT: If set to false and if the next object to use this Batch expects alpha blending, you are responsible for setting
+	 * the Batch's blend function to (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) before that next object is drawn.
+	 * @param cleansUpBlendFunction */
+	public void setCleansUpBlendFunction (boolean cleansUpBlendFunction) {
+		this.cleansUpBlendFunction = cleansUpBlendFunction;
+	}
 
 	public boolean isBehind () {
 		return behind;
@@ -886,7 +905,7 @@ public class ParticleEmitter {
 		output.write("behind: " + behind + "\n");
 		output.write("premultipliedAlpha: " + premultipliedAlpha + "\n");
 		output.write("- Image Path -\n");
-		output.write(imagePath + "\n");		
+		output.write(imagePath + "\n");
 	}
 
 	public void load (BufferedReader reader) throws IOException {
@@ -937,20 +956,20 @@ public class ParticleEmitter {
 			aligned = readBoolean(reader, "aligned");
 			additive = readBoolean(reader, "additive");
 			behind = readBoolean(reader, "behind");
-			
+
 			// Backwards compatibility
 			String line = reader.readLine();
 			if (line.startsWith("premultipliedAlpha")) {
 				premultipliedAlpha = readBoolean(line);
 				reader.readLine();
 			}
-			setImagePath(reader.readLine());		
+			setImagePath(reader.readLine());
 		} catch (RuntimeException ex) {
 			if (name == null) throw ex;
 			throw new RuntimeException("Error parsing emitter: " + name, ex);
 		}
 	}
-	
+
 	static String readString (String line) throws IOException {
 		return line.substring(line.indexOf(":") + 1).trim();
 	}
