@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private static long lastTiledMapRenderTime = 0;
-
+	private long timeOffset = 0;
 	private int id;
 
 	private BlendMode blendMode = BlendMode.ALPHA;
@@ -74,7 +74,33 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
+	
+	public void restartAnimation(){
+		currentTime = lastTiledMapRenderTime % loopDuration;
+		timeOffset -= currentTime;
+	}
 
+	public void setFrame(int f){
+		
+		if(f > animationIntervals.length){
+			throw new GdxRuntimeException("Index out of Bounds: " + f + "/ " + frameTiles.length)
+			return;	
+		}
+
+		else if(f<0){
+			throw new GdxRuntimeException("Index out of Bounds: " + f + "/ " + frameTiles.length + ". Cannot set to a frame index which is less than 0");
+			return;	
+		} 
+		
+		restartAnimation();
+		if(f > 0){
+			for (int i = 0 ; i < f ; i++) {
+				timeOffset += animationIntervals[i-1]
+			}
+		}
+	}
+	
+	
 	public TiledMapTile getCurrentFrame() {
 		return frameTiles[getCurrentFrameIndex()];
 	}
@@ -82,6 +108,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	@Override
 	public TextureRegion getTextureRegion () {
 		return getCurrentFrame().getTextureRegion();
+	}
+	
+	public TextureRegion getTextureRegionAtIndex (int i) {
+		if(i <= frameTiles.length && i > 0) return frameTiles[i];
+		else throw new GdxRuntimeException("Index out of Bounds: " + i + "/ " + frameTiles.length);
 	}
 
 	@Override
@@ -140,7 +171,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
 	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
 	public static void updateAnimationBaseTime () {
-		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
+		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset + timeOffset;
 	}
 
 	/** Creates an animated tile with the given animation interval and frame tiles.
