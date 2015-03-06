@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 /** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile {
 
-	private long lastTiledMapRenderTime = 0;
+	private static long lastTiledMapRenderTime = 0;
 	private long timeOffset = 0;
 	private int id;
 
