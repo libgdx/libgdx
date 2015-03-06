@@ -83,6 +83,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	public TextureRegion getTextureRegion () {
 		return getCurrentFrame().getTextureRegion();
 	}
+	
+	public TextureRegion getTextureRegionFromIndex (int i) {
+		if(i <= frameTiles.length) return frameTiles[i];
+		else throw new GdxRuntimeException("Index out of Bounds: " + i + "/ " + frameTiles.length);
+	}
 
 	@Override
 	public void setTextureRegion(TextureRegion textureRegion) {
