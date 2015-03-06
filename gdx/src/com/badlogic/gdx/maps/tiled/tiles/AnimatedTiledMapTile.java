@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 /** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile {
 
-	private static long lastTiledMapRenderTime = 0;
+	private long lastTiledMapRenderTime = 0;
 
 	private int id;
 
@@ -75,7 +75,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
 	
-		public void restartAnimation(){
+	public void restartAnimation(){
 		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 		lastTiledMapRenderTime -= currentTime;
 	}
@@ -112,7 +112,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 	
 	public TextureRegion getTextureRegionAtIndex (int i) {
-		if(i <= frameTiles.length) return frameTiles[i];
+		if(i <= frameTiles.length && i > 0) return frameTiles[i];
 		else throw new GdxRuntimeException("Index out of Bounds: " + i + "/ " + frameTiles.length);
 	}
 
