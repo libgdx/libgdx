@@ -109,12 +109,10 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
 	}
 
-	@Override
 	public int[] getAnimationIntervals(){
 		return animationIntervals;
 	}
 	
-	@Override
 	public void setAnimationIntervals(int[] intervals){
 		if(intervals.length == animationIntervals.length) this.animationIntervals = intervals;
 		else throw new GdxRuntimeException("Cannot set " + intervals.length + " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");
