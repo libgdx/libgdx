@@ -113,21 +113,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		return animationIntervals;
 	}
 	
-	public void setAnimationIntervals(int[] intervals){
-		if(intervals.length == animationIntervals.length){
+	public void setAnimationIntervals (int[] intervals) {
+		if (intervals.length == animationIntervals.length) {
 			this.animationIntervals = intervals;
-			
-			loopduration = 0;
-			for(int i = 0; i < intervals.length; i++){
-				loopduration += intervals[i];	
-			}
-			 
-		} 
-		else{
-			throw new GdxRuntimeException("Cannot set " + intervals.length + " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");	
-		} 
-	}
 
+			loopDuration = 0;
+			for (int i = 0; i < intervals.length; i++) {
+				loopDuration += intervals[i];
+			}
+
+		} else {
+			throw new GdxRuntimeException("Cannot set " + intervals.length
+				+ " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");
+		}
+	}
 
 	@Override
 	public MapProperties getProperties () {
