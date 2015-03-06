@@ -80,7 +80,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		lastTiledMapRenderTime -= currentTime;
 	}
 
-	public void setFrameIndex(int f){
+	public void setFrame(int f){
 		
 		if(f > animationIntervals.length){
 			throw new GdxRuntimeException("Index out of Bounds: " + f + "/ " + frameTiles.length)
