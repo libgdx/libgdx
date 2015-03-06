@@ -118,7 +118,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 			this.animationIntervals = intervals;
 			
 			loopduration = 0;
-			for(int i = 0; i < intervals.length: i++){
+			for(int i = 0; i < intervals.length; i++){
 				loopduration += intervals[i];	
 			}
 			 
