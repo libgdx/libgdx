@@ -74,7 +74,34 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
+	
+		public void restartAnimation(){
+		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
+		lastTiledMapRenderTime -= currentTime;
+	}
 
+	public void setFrameIndex(int f){
+		
+		if(f > animationIntervals.length){
+			throw new GdxRuntimeException("Index out of Bounds: " + f + "/ " + frameTiles.length)
+			return;	
+		}
+
+		else if(f<0){
+			throw new GdxRuntimeException("Index out of Bounds: " + f + "/ " + frameTiles.length + ". Cannot set to a frame index which is less than 0");
+			return;	
+		} 
+		
+		restartAnimation();
+		if(f > 0){
+			int timestep = 0;
+			for (int i = 0 ; i < f ; i++) {
+				timestep += animationIntervals[i-1]
+			}
+			lastTiledMapRenderTime -= timestep;
+		}
+	}
+	
 	public TiledMapTile getCurrentFrame() {
 		return frameTiles[getCurrentFrameIndex()];
 	}
@@ -84,7 +111,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		return getCurrentFrame().getTextureRegion();
 	}
 	
-	public TextureRegion getTextureRegionFromIndex (int i) {
+	public TextureRegion getTextureRegionAtIndex (int i) {
 		if(i <= frameTiles.length) return frameTiles[i];
 		else throw new GdxRuntimeException("Index out of Bounds: " + i + "/ " + frameTiles.length);
 	}
