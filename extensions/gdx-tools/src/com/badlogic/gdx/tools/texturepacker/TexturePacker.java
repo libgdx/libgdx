@@ -655,7 +655,7 @@ public class TexturePacker {
 		Settings settings = new Settings();
 
 		if (isModified(input, output, packFileName, settings)) {
-			process(input, output, packFileName);
+			process(settings, input, output, packFileName);
 		}
 	}
 
