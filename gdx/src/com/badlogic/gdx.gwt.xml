@@ -335,6 +335,7 @@
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
+		<include name="net/HttpRequestBuilder.java"/>
 	
 	<!-- physics/box2d -->
 	<!-- Box2d is fully emulated in GWT backend -->
