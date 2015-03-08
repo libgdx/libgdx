@@ -16,19 +16,19 @@
 
 package com.badlogic.gdx.setup;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import static java.awt.GridBagConstraints.BOTH;
+import static java.awt.GridBagConstraints.CENTER;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
+import static java.awt.GridBagConstraints.NORTH;
+import static java.awt.GridBagConstraints.SOUTH;
+import static java.awt.GridBagConstraints.SOUTHEAST;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -41,16 +41,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.awt.GridBagConstraints.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.badlogic.gdx.setup.GdxSetupUI.SetupButton;
 
 public class ExternalExtensionsDialog extends JDialog {
 
 	private JPanel contentPane;
-	private JButton buttonOK;
-	private JButton buttonCancel;
+	private SetupButton buttonOK;
+	private SetupButton buttonCancel;
 	private JPanel topPanel;
 	private ExtensionTableModel tableModel;
-	private JTable table;
+	JTable table;
 	private JPanel bottomPanel;
 	private JPanel buttonPanel;
 	private JScrollPane scrollPane;
@@ -59,7 +78,7 @@ public class ExternalExtensionsDialog extends JDialog {
 	private JLabel warningNotice2;
 
 	private List<Dependency> mainDependenciesSnapshot = new ArrayList<Dependency>();
-	private List<Dependency> mainDependencies;
+	List<Dependency> mainDependencies;
 
 	public ExternalExtensionsDialog (List<Dependency> mainDependencies) {
 		this.mainDependencies = mainDependencies;
@@ -165,8 +184,8 @@ public class ExternalExtensionsDialog extends JDialog {
 
 		buttonPanel = new JPanel(new GridBagLayout());
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		buttonOK = new JButton("Save");
-		buttonCancel = new JButton("Cancel");
+		buttonOK = new SetupButton("Save");
+		buttonCancel = new SetupButton("Cancel");
 		buttonPanel.add(buttonOK, new GridBagConstraints(0, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		buttonPanel.add(buttonCancel, new GridBagConstraints(1, 0, 1, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		bottomPanel.add(buttonPanel, new GridBagConstraints(3, 0, 1, 1, 1, 1, SOUTHEAST, NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -244,8 +263,8 @@ public class ExternalExtensionsDialog extends JDialog {
 		scrollPane.setBackground(new Color(36, 36, 36));
 		scrollPane.getViewport().setBackground(new Color(36, 36, 36));
 
-		warningNotice.setForeground(new Color(200, 20, 20));
-		warningNotice2.setForeground(new Color(200, 20, 20));
+		warningNotice.setForeground(new Color(255, 20, 20));
+		warningNotice2.setForeground(new Color(255, 20, 20));
 	}
 
 	void onOK () {

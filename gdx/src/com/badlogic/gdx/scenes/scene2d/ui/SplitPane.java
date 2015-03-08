@@ -163,24 +163,22 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth () {
-		float width = 0;
-		if (firstWidget != null)
-			width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
-		if (secondWidget != null)
-			width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
-		if (!vertical) width += style.handle.getMinWidth();
-		return width;
+		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget
+			.getWidth());
+		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth()
+			: secondWidget.getWidth());
+		if (vertical) return Math.max(first, second);
+		return first + style.handle.getMinWidth() + second;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float height = 0;
-		if (firstWidget != null)
-			height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
-		if (secondWidget != null)
-			height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
-		if (vertical) height += style.handle.getMinHeight();
-		return height;
+		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight()
+			: firstWidget.getHeight());
+		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight()
+			: secondWidget.getHeight());
+		if (!vertical) return Math.max(first, second);
+		return first + style.handle.getMinHeight() + second;
 	}
 
 	public float getMinWidth () {
@@ -251,7 +249,7 @@ public class SplitPane extends WidgetGroup {
 				ScissorStack.popScissors();
 			}
 		}
-		batch.setColor(color.r, color.g, color.b, color.a);
+		batch.setColor(color.r, color.g, color.b, parentAlpha * color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}

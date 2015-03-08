@@ -228,6 +228,10 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			int id = element.getIntAttribute("id", 0);
+			if (id != 0) {
+				object.getProperties().put("id", id);
+			}
 			object.getProperties().put("x", x * scaleX);
 			object.getProperties().put("y", (y - height) * scaleY);
 			object.getProperties().put("width", width);

@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -201,7 +203,20 @@ public class Window extends Table {
 	void keepWithinStage () {
 		if (!keepWithinStage) return;
 		Stage stage = getStage();
-		if (getParent() == stage.getRoot()) {
+		Camera camera = stage.getCamera();
+		if (camera instanceof OrthographicCamera) {
+			OrthographicCamera orthographicCamera = (OrthographicCamera) camera;
+			float parentWidth = stage.getWidth();
+			float parentHeight = stage.getHeight();
+			if (getX(Align.right) - camera.position.x > parentWidth / 2 / orthographicCamera.zoom)
+				setPosition(camera.position.x + parentWidth / 2 / orthographicCamera.zoom, getY(Align.right), Align.right);
+			if (getX(Align.left) - camera.position.x < -parentWidth / 2 / orthographicCamera.zoom)
+				setPosition(camera.position.x - parentWidth / 2 / orthographicCamera.zoom, getY(Align.left), Align.left);
+			if (getY(Align.top) - camera.position.y > parentHeight / 2 / orthographicCamera.zoom)
+				setPosition(getX(Align.top), camera.position.y + parentHeight / 2 / orthographicCamera.zoom, Align.top);
+			if (getY(Align.bottom) - camera.position.y < -parentHeight / 2 / orthographicCamera.zoom)
+				setPosition(getX(Align.bottom), camera.position.y - parentHeight / 2 / orthographicCamera.zoom, Align.bottom);
+		} else if (getParent() == stage.getRoot()) {
 			float parentWidth = stage.getWidth();
 			float parentHeight = stage.getHeight();
 			if (getX() < 0) setX(0);

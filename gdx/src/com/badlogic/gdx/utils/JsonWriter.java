@@ -167,17 +167,17 @@ public class JsonWriter extends Writer {
 	}
 
 	static public enum OutputType {
-		/** Normal JSON, with all its quotes. */
+		/** Normal JSON, with all its double quotes. */
 		json,
-		/** Like JSON, but names are only quoted if necessary. */
+		/** Like JSON, but names are only double quoted if necessary. */
 		javascript,
 		/** Like JSON, but:
 		 * <ul>
-		 * <li>Names only require quotes if they start with <code>space</code> or any of <code>":,}/</code> or they contain
+		 * <li>Names only require double quotes if they start with <code>space</code> or any of <code>":,}/</code> or they contain
 		 * <code>//</code> or <code>/*</code> or <code>:</code>.
-		 * <li>Values only require quotes if they start with <code>space</code> or any of <code>":,{[]/</code> or they contain
-		 * <code>//</code> or <code>/*</code> or any of <code>}],</code> or they are equal to <code>true</code>, <code>false</code>
-		 * , or <code>null</code>.
+		 * <li>Values only require double quotes if they start with <code>space</code> or any of <code>":,{[]/</code> or they
+		 * contain <code>//</code> or <code>/*</code> or any of <code>}],</code> or they are equal to <code>true</code>,
+		 * <code>false</code> , or <code>null</code>.
 		 * <li>Newlines are treated as commas, making commas optional in many cases.
 		 * <li>C style comments may be used: <code>//...</code> or <code>/*...*<b></b>/</code>
 		 * </ul> */

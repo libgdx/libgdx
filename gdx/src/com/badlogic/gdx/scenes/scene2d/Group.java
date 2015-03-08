@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -234,7 +233,7 @@ public class Group extends Actor implements Cullable {
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
-	
+
 	/** @see #setCullingArea(Rectangle) */
 	public Rectangle getCullingArea () {
 		return cullingArea;
@@ -258,10 +257,9 @@ public class Group extends Actor implements Cullable {
 	protected void childrenChanged () {
 	}
 
-	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any.
-	 * @see #remove() */
+	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
 	public void addActor (Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		children.add(actor);
 		actor.setParent(this);
 		actor.setStage(getStage());
@@ -271,7 +269,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
 	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		if (index >= children.size)
 			children.add(actor);
 		else
@@ -284,7 +282,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, immediately before another child actor. The actor is first removed from its parent
 	 * group, if any. */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorBefore, true);
 		children.insert(index, actor);
 		actor.setParent(this);
@@ -295,7 +293,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, immediately after another child actor. The actor is first removed from its parent
 	 * group, if any. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorAfter, true);
 		if (index == children.size)
 			children.add(actor);
@@ -306,13 +304,22 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
+	/** Calls {@link #removeActor(Actor, boolean)} with true. */
+	public boolean removeActor (Actor actor) {
+		return removeActor(actor, true);
+	}
+
 	/** Removes an actor from this group. If the actor will not be used again and has actions, they should be
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
-	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically. */
-	public boolean removeActor (Actor actor) {
+	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
+	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
+	 * @return true if the actor was removed from this group. */
+	public boolean removeActor (Actor actor, boolean unfocus) {
 		if (!children.removeValue(actor, true)) return false;
-		Stage stage = getStage();
-		if (stage != null) stage.unfocus(actor);
+		if (unfocus) {
+			Stage stage = getStage();
+			if (stage != null) stage.unfocus(actor);
+		}
 		actor.setParent(null);
 		actor.setStage(null);
 		childrenChanged();
@@ -432,16 +439,29 @@ public class Group extends Actor implements Cullable {
 		return this;
 	}
 
-	/** Prints the actor hierarchy recursively for debugging purposes. */
-	public void print () {
-		print("");
+	/** Returns a description of the actor hierarchy, recursively. */
+	public String toString () {
+		StringBuilder buffer = new StringBuilder(128);
+		toString(buffer, 1);
+		buffer.setLength(buffer.length() - 1);
+		return buffer.toString();
 	}
 
-	private void print (String indent) {
+	void toString (StringBuilder buffer, int indent) {
+		buffer.append(super.toString());
+		buffer.append('\n');
+
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
-			System.out.println(indent + actors[i]);
-			if (actors[i] instanceof Group) ((Group)actors[i]).print(indent + "|  ");
+			for (int ii = 0; ii < indent; ii++)
+				buffer.append("|  ");
+			Actor actor = actors[i];
+			if (actor instanceof Group)
+				((Group)actor).toString(buffer, indent + 1);
+			else {
+				buffer.append(actor);
+				buffer.append('\n');
+			}
 		}
 		children.end();
 	}

@@ -45,9 +45,8 @@ public class Container<T extends Actor> extends WidgetGroup {
 			if (clip) {
 				batch.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
-				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
-					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
-				if (draw) {
+				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+					getHeight() - padBottom - padTop.get(this))) {
 					drawChildren(batch, parentAlpha);
 					batch.flush();
 					clipEnd();
@@ -154,6 +153,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	/** @param actor May be null. */
 	public void setActor (T actor) {
 		if (actor == this) throw new IllegalArgumentException("actor cannot be the Container.");
+		if (actor == this.actor) return;
 		if (this.actor != null) super.removeActor(this.actor);
 		this.actor = actor;
 		if (actor != null) super.addActor(actor);

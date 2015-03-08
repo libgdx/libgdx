@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
@@ -53,7 +54,7 @@ public class ModelInstance implements RenderableProvider {
 	public final Model model;
 	/** the world transform **/
 	public Matrix4 transform;
-	/** user definable value, which is passed to the shader. */
+	/** user definable value, which is passed to the {@link Shader}. */
 	public Object userData;
 
 	/** Constructs a new ModelInstance with all nodes and materials of the given model.
@@ -117,7 +118,7 @@ public class ModelInstance implements RenderableProvider {
 		boolean parentTransform, boolean mergeTransform) {
 		this(model, transform, nodeId, recursive, parentTransform, mergeTransform, defaultShareKeyframes);
 	}
-	
+
 	/** @param model The source {@link Model}
 	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
 	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
@@ -168,7 +169,7 @@ public class ModelInstance implements RenderableProvider {
 	public ModelInstance (final Model model, final Matrix4 transform, final Array<String> rootNodeIds) {
 		this(model, transform, rootNodeIds, defaultShareKeyframes);
 	}
-		
+
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
 	public ModelInstance (final Model model, final Matrix4 transform, final Array<String> rootNodeIds, boolean shareKeyframes) {
 		this.model = model;
@@ -204,7 +205,7 @@ public class ModelInstance implements RenderableProvider {
 	public ModelInstance (ModelInstance copyFrom, final Matrix4 transform) {
 		this(copyFrom, transform, defaultShareKeyframes);
 	}
-	
+
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
 	public ModelInstance (ModelInstance copyFrom, final Matrix4 transform, boolean shareKeyframes) {
 		this.model = copyFrom.model;
@@ -321,20 +322,29 @@ public class ModelInstance implements RenderableProvider {
 				if (node == null) continue;
 				NodeAnimation nodeAnim = new NodeAnimation();
 				nodeAnim.node = node;
-				if (shareKeyframes)
-					nodeAnim.keyframes = nanim.keyframes;
-				else {
-					for (final NodeKeyframe kf : nanim.keyframes) {
-						
-						NodeKeyframe keyframe = new NodeKeyframe();
-						keyframe.keytime = kf.keytime;
-						keyframe.rotation.set(kf.rotation);
-						keyframe.scale.set(kf.scale);
-						keyframe.translation.set(kf.translation);
-						nodeAnim.keyframes.add(keyframe);
+				if (shareKeyframes) {
+					nodeAnim.translation = nanim.translation;
+					nodeAnim.rotation = nanim.rotation;
+					nodeAnim.scaling = nanim.scaling;
+				} else {
+					if (nanim.translation != null) {
+						nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
+						for (final NodeKeyframe<Vector3> kf : nanim.translation)
+							nodeAnim.translation.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
+					}
+					if (nanim.rotation != null) {
+						nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
+						for (final NodeKeyframe<Quaternion> kf : nanim.rotation)
+							nodeAnim.rotation.add(new NodeKeyframe<Quaternion>(kf.keytime, kf.value));
+					}
+					if (nanim.scaling != null) {
+						nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
+						for (final NodeKeyframe<Vector3> kf : nanim.scaling)
+							nodeAnim.scaling.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
 					}
 				}
-				if (nodeAnim.keyframes.size > 0) animation.nodeAnimations.add(nodeAnim);
+				if (nodeAnim.translation != null || nodeAnim.rotation != null || nodeAnim.scaling != null)
+					animation.nodeAnimations.add(nodeAnim);
 			}
 			if (animation.nodeAnimations.size > 0) animations.add(animation);
 		}

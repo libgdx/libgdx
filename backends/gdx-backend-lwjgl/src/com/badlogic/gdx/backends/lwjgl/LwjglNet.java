@@ -57,8 +57,8 @@ public class LwjglNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
-		Sys.openURL(URI);
+	public boolean openURI (String URI) {
+		return Sys.openURL(URI);
 	}
 
 }

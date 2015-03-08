@@ -33,7 +33,7 @@ public class GridPacker implements Packer {
 	}
 
 	public Array<Page> pack (Array<Rect> inputRects) {
-		System.out.print("Packing");
+		if (!settings.silent) System.out.print("Packing");
 
 		int cellWidth = 0, cellHeight = 0;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
