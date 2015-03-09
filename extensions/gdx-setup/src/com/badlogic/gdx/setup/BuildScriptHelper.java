@@ -16,7 +16,7 @@ public class BuildScriptHelper {
 		//repos
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenCentral);
-		write(wr, "maven { " + DependencyBank.libGDXSnapshotsUrl + " }");
+		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, DependencyBank.jCenter);
 		}
