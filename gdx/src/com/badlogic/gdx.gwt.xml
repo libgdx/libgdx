@@ -147,6 +147,7 @@
 		<include name="graphics/g3d/environment/DirectionalLight.java"/>
 		<include name="graphics/g3d/environment/DirectionalShadowLight.java"/>
 		<include name="graphics/g3d/environment/PointLight.java"/>
+		<include name="graphics/g3d/environment/SpotLight.java"/>
 		<include name="graphics/g3d/environment/ShadowMap.java"/>
 		<include name="graphics/g3d/environment/Sphericalharmonics.java"/>
 				
