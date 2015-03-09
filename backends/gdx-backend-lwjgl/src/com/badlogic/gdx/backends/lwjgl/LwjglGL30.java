@@ -192,13 +192,104 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 	}
 
 	@Override
-	public void glBlitFramebuffer (int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter) {
+	public void glBlitFramebuffer (int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1,
+		int mask, int filter) {
 		GL30.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+	}
+
+	@Override
+	public void glBindFramebuffer (int target, int framebuffer) {
+		GL30.glBindFramebuffer(target, framebuffer);
+	}
+
+	@Override
+	public void glBindRenderbuffer (int target, int renderbuffer) {
+		GL30.glBindRenderbuffer(target, renderbuffer);
+	}
+
+	@Override
+	public int glCheckFramebufferStatus (int target) {
+		return GL30.glCheckFramebufferStatus(target);
+	}
+
+	@Override
+	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
+		GL30.glDeleteFramebuffers(framebuffers);
+	}
+
+	@Override
+	public void glDeleteFramebuffer (int framebuffer) {
+		GL30.glDeleteFramebuffers(framebuffer);
+	}
+
+	@Override
+	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
+		GL30.glDeleteRenderbuffers(renderbuffers);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer (int renderbuffer) {
+		GL30.glDeleteRenderbuffers(renderbuffer);
+	}
+
+	@Override
+	public void glGenerateMipmap (int target) {
+		GL30.glGenerateMipmap(target);
+	}
+
+	@Override
+	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
+		GL30.glGenFramebuffers(framebuffers);
+	}
+
+	@Override
+	public int glGenFramebuffer () {
+		return GL30.glGenFramebuffers();
+	}
+
+	@Override
+	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
+		GL30.glGenRenderbuffers(renderbuffers);
+	}
+
+	@Override
+	public int glGenRenderbuffer () {
+		return GL30.glGenRenderbuffers();
+	}
+
+	@Override
+	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
+		GL30.glGetRenderbufferParameter(target, pname, params);
+	}
+
+	@Override
+	public boolean glIsFramebuffer (int framebuffer) {
+		return GL30.glIsFramebuffer(framebuffer);
+	}
+
+	@Override
+	public boolean glIsRenderbuffer (int renderbuffer) {
+		return GL30.glIsRenderbuffer(renderbuffer);
+	}
+
+	@Override
+	public void glRenderbufferStorage (int target, int internalformat, int width, int height) {
+		GL30.glRenderbufferStorage(target, internalformat, width, height);
 	}
 
 	@Override
 	public void glRenderbufferStorageMultisample (int target, int samples, int internalformat, int width, int height) {
 		GL30.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+	}
+
+	@Override
+	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level) {
+		GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	}
+
+	@Override
+	public void glFramebufferRenderbuffer (int target, int attachment, int renderbuffertarget, int renderbuffer) {
+		GL30.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 	}
 
 	@Override
