@@ -1,4 +1,5 @@
 [1.5.5]
+- Added iOS ARM-64 bit support for Bullet physics
 - 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
 - Added capability to enable color markup from inside skin json file.
 - Exposed method ControllerManager#clearListeners on Controllers class
