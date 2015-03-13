@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -39,23 +40,23 @@ import com.badlogic.gdx.utils.Disposable;
  * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
  * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
- * 
+ *
  * <p>
  * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
  * application or receives an incoming call, the framebuffer will be automatically recreated.
  * </p>
- * 
+ *
  * <p>
  * A FrameBuffer must be disposed if it is no longer needed
  * </p>
- * 
+ *
  * @author mzechner */
 public class FrameBuffer implements Disposable {
 	/** the frame buffers **/
 	private final static Map<Application, Array<FrameBuffer>> buffers = new HashMap<Application, Array<FrameBuffer>>();
 
 	/** the color buffer texture **/
-	protected Texture colorTexture;
+	protected GLTexture colorTexture;
 
 	/** the default framebuffer handle, a.k.a screen. */
 	private static int defaultFramebufferHandle;
@@ -86,9 +87,9 @@ public class FrameBuffer implements Disposable {
 	/** format **/
 	protected final Pixmap.Format format;
 
-	
+
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
-	 * 
+	 *
 	 * @param format
 	 * @param width
 	 * @param height
@@ -97,10 +98,10 @@ public class FrameBuffer implements Disposable {
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
 		this(format, width, height, hasDepth, false);
 	}
-	
-	
+
+
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
-	 * 
+	 *
 	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
 	 *           color-renderable
 	 * @param width the width of the framebuffer in pixels
@@ -142,7 +143,7 @@ public class FrameBuffer implements Disposable {
 
 		setupTexture();
 
-		
+
 		framebufferHandle = gl.glGenFramebuffer();
 
 		if (hasDepth) {
@@ -185,7 +186,7 @@ public class FrameBuffer implements Disposable {
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			colorTexture.dispose();
-			
+
 			if (hasDepth)
 				gl.glDeleteRenderbuffer(depthbufferHandle);
 
@@ -207,6 +208,7 @@ public class FrameBuffer implements Disposable {
 	}
 
 	/** Releases all resources associated with the FrameBuffer. */
+	@Override
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
 
@@ -257,7 +259,7 @@ public class FrameBuffer implements Disposable {
 	}
 
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
-	 * 
+	 *
 	 * @param x the x-axis position of the viewport in pixels
 	 * @param y the y-asis position of the viewport in pixels
 	 * @param width the width of the viewport in pixels
@@ -269,7 +271,7 @@ public class FrameBuffer implements Disposable {
 
 	/** @return the color buffer texture */
 	public Texture getColorBufferTexture () {
-		return colorTexture;
+		return (Texture)colorTexture;
 	}
 
 	/** @return the height of the framebuffer in pixels */
