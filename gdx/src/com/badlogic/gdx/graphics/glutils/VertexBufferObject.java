@@ -84,6 +84,8 @@ public class VertexBufferObject implements VertexData {
 	}
 	
 	protected VertexBufferObject (int usage, ByteBuffer data, boolean ownsBuffer, VertexAttributes attributes) {
+		bufferHandle = Gdx.gl20.glGenBuffer();
+		
 		setBuffer(data, ownsBuffer, attributes);
 		setUsage(usage);
 	}
