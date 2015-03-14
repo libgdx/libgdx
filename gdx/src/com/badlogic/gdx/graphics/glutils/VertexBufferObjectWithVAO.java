@@ -211,10 +211,10 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		isBound = false;
 	}
 
-	//TODO: should invalidate be added to the VertexData interface?
 	/**
 	 * Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
 	 */
+	@Override
 	public void invalidate() {
 		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
