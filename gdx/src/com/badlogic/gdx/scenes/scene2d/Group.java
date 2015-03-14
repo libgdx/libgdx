@@ -439,16 +439,29 @@ public class Group extends Actor implements Cullable {
 		return this;
 	}
 
-	/** Prints the actor hierarchy recursively for debugging purposes. */
-	public void print () {
-		print("");
+	/** Returns a description of the actor hierarchy, recursively. */
+	public String toString () {
+		StringBuilder buffer = new StringBuilder(128);
+		toString(buffer, 1);
+		buffer.setLength(buffer.length() - 1);
+		return buffer.toString();
 	}
 
-	private void print (String indent) {
+	void toString (StringBuilder buffer, int indent) {
+		buffer.append(super.toString());
+		buffer.append('\n');
+
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
-			System.out.println(indent + actors[i]);
-			if (actors[i] instanceof Group) ((Group)actors[i]).print(indent + "|  ");
+			for (int ii = 0; ii < indent; ii++)
+				buffer.append("|  ");
+			Actor actor = actors[i];
+			if (actor instanceof Group)
+				((Group)actor).toString(buffer, indent + 1);
+			else {
+				buffer.append(actor);
+				buffer.append('\n');
+			}
 		}
 		children.end();
 	}

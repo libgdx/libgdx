@@ -64,6 +64,7 @@ public class EarClippingTriangulator {
 	public ShortArray computeTriangles (float[] vertices, int offset, int count) {
 		this.vertices = vertices;
 		int vertexCount = this.vertexCount = count / 2;
+		int vertexOffset = offset / 2;
 
 		ShortArray indicesArray = this.indicesArray;
 		indicesArray.clear();
@@ -72,10 +73,10 @@ public class EarClippingTriangulator {
 		short[] indices = this.indices = indicesArray.items;
 		if (areVerticesClockwise(vertices, offset, count)) {
 			for (short i = 0; i < vertexCount; i++)
-				indices[i] = i;
+				indices[i] = (short)(vertexOffset + i);
 		} else {
 			for (int i = 0, n = vertexCount - 1; i < vertexCount; i++)
-				indices[i] = (short)(n - i); // Reversed.
+				indices[i] = (short)(vertexOffset + n - i); // Reversed.
 		}
 
 		IntArray vertexTypes = this.vertexTypes;
@@ -212,10 +213,10 @@ public class EarClippingTriangulator {
 			p2y = vertices[i + 3];
 			area += p1x * p2y - p2x * p1y;
 		}
-		p1x = vertices[count - 2];
-		p1y = vertices[count - 1];
-		p2x = vertices[0];
-		p2y = vertices[1];
+		p1x = vertices[offset + count - 2];
+		p1y = vertices[offset + count - 1];
+		p2x = vertices[offset];
+		p2y = vertices[offset + 1];
 		return area + p1x * p2y - p2x * p1y < 0;
 	}
 

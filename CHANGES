@@ -1,10 +1,14 @@
 [1.5.5]
-- API Change: 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+- Added iOS ARM-64 bit support for Bullet physics
+- 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
 - Added capability to enable color markup from inside skin json file.
-- API Change: Exposed method ControllerManager#clearListeners on Controllers class
-- API Change: Net#openURI now returns a boolean to indicate whether the uri was actually opened.
-- API Change: DefaultShader now always combines material and environment attributes
-- API Change: Added ShapeRenderer constructor to pass a custom shader program to ImmediateModeRenderer20.
+- Exposed method ControllerManager#clearListeners on Controllers class
+- Net#openURI now returns a boolean to indicate whether the uri was actually opened.
+- DefaultShader now always combines material and environment attributes
+- Added ShapeRenderer constructor to pass a custom shader program to ImmediateModeRenderer20.
+- API Change: Group#toString now returns actor hierarchy. Group#print is gone.
+- Added SpotLight class, see https://github.com/libgdx/libgdx/pull/2907
+- Added support for resolving file handles using classpaths (ClasspathFileHandleResolver)
 
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)

@@ -46,6 +46,9 @@ public final class OALSimpleAudio extends NSObject {
 	@Method(selector = "playEffect:volume:pitch:pan:loop:")
 	public native ALSource playEffect (String filePath, float volume, float pitch, float pan, boolean loop);
 
+	@Method(selector = "playBuffer:volume:pitch:pan:loop:")
+	public native ALSource playBuffer (ALBuffer buffer, float volume, float pitch, float pan, boolean loop);
+	
 	@Property
 	public native boolean isAllowIpod ();
 
