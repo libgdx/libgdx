@@ -881,7 +881,7 @@ public class TextField extends Widget implements Disableable {
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean add = style.font.containsCharacter(character)
+				boolean add = (!onlyFontChars || style.font.containsCharacter(character))
 					|| (writeEnters && (character == ENTER_ANDROID || character == ENTER_DESKTOP));
 				boolean remove = backspace || delete;
 				if (add || remove) {
