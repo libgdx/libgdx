@@ -26,14 +26,17 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class LightsTest extends ModelTest {
 	DirectionalLight dirLight;
 	PointLight pointLight;
+	SpotLight spotLight;
 	Model lightModel;
 	Renderable pLight;
 	Vector3 center = new Vector3(), transformedCenter = new Vector3(), tmpV = new Vector3();
@@ -46,6 +49,7 @@ public class LightsTest extends ModelTest {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.2f, 0.2f, 0.2f, 1.0f));
 		environment.add(dirLight = new DirectionalLight().set(0.8f, 0.2f, 0.2f, -1f, -2f, -0.5f));
 		environment.add(pointLight = new PointLight().set(0.2f, 0.8f, 0.2f, 0f, 0f, 0f, 100f));
+		environment.add(spotLight = new SpotLight().set(0.2f, 0.2f, 0.8f, 0f, 0f, 0f, -1f, -2f, -0.5f, 100f, (float)Math.cos(Math.toRadians(45))));
 
 		ModelBuilder mb = new ModelBuilder();
 		lightModel = mb.createSphere(1, 1, 1, 10, 10, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)), Usage.Position);
@@ -63,6 +67,10 @@ public class LightsTest extends ModelTest {
 		((ColorAttribute)pLight.material.get(ColorAttribute.Diffuse)).color.set(pointLight.color);
 		final float s = 0.2f * radius;
 		pLight.worldTransform.setToScaling(s, s, s);
+
+		spotLight.position.set(0, radius, 0).add(transformedCenter.set(center).mul(transform));
+		spotLight.intensity = radius * radius;
+		spotLight.direction.set(center.cpy().sub(spotLight.position).nor());
 	}
 
 	@Override
@@ -77,6 +85,8 @@ public class LightsTest extends ModelTest {
 		pointLight.position.rotate(Vector3.Y, delta * 13f);
 		pointLight.position.rotate(Vector3.Z, delta * 3f);
 		pointLight.position.add(transformedCenter.set(center).mul(transform));
+
+		spotLight.cutoffAngle = (float)Math.cos(Math.toRadians((TimeUtils.millis()/100)%45));
 
 		pLight.worldTransform.setTranslation(pointLight.position);
 		batch.render(pLight);
