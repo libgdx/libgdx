@@ -30,8 +30,27 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author davebaol
  * @author Alexander Dorokhov */
 class TextMarkup {
-	private static final Color tempColor = new Color();
-	private static final StringBuilder tempColorBuffer = new StringBuilder();
+	static private final Color tempColor = new Color();
+	static private final StringBuilder tempColorBuffer = new StringBuilder();
+
+	static private Pool<ColorChunk> colorChunkPool;
+	static private Application app = null;
+
+	private Array<ColorChunk> colorChunks = new Array<ColorChunk>();
+	private Array<Color> currentColorStack = new Array<Color>();
+	private Color lastColor = Color.WHITE;
+	private Color defaultColor = Color.WHITE;
+
+	public TextMarkup () {
+		if (Gdx.app != app) {
+			colorChunkPool = new Pool<ColorChunk>(32) {
+				protected ColorChunk newObject () {
+					return new ColorChunk();
+				}
+			};
+			app = Gdx.app;
+		}
+	}
 
 	/** Parses a color tag.
 	 * @param str the input string
@@ -90,25 +109,6 @@ class TextMarkup {
 			}
 		}
 		return -1; // Unclosed color tag
-	}
-
-	private static Pool<ColorChunk> colorChunkPool;
-	private static Application app = null;
-
-	private Array<ColorChunk> colorChunks = new Array<ColorChunk>();
-	private Array<Color> currentColorStack = new Array<Color>();
-	private Color lastColor = Color.WHITE;
-	private Color defaultColor = Color.WHITE;
-
-	public TextMarkup () {
-		if (Gdx.app != app) {
-			colorChunkPool = new Pool<ColorChunk>(32) {
-				protected ColorChunk newObject () {
-					return new ColorChunk();
-				}
-			};
-			app = Gdx.app;
-		}
 	}
 
 	public void beginChunk (Color color, int start) {
