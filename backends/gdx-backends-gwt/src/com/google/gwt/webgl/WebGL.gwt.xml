@@ -3,5 +3,4 @@
 <module>
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.canvas.Canvas"/>
-  <inherits name="com.google.gwt.typedarrays.TypedArrays"/>
 </module>

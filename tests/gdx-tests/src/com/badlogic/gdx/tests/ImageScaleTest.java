@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -29,7 +29,7 @@ public class ImageScaleTest extends GdxTest {
 	Texture texture;
 
 	public void create () {
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		texture = new Texture("data/group-debug.png");
@@ -49,7 +49,7 @@ public class ImageScaleTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 	}
 
@@ -60,10 +60,6 @@ public class ImageScaleTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
-	}
-
-	public boolean needsGL20 () {
-		return false;
+		stage.getViewport().update(width, height, true);
 	}
 }

@@ -29,11 +29,6 @@ public class HelloTriangle extends GdxTest {
 	Mesh mesh;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void create () {
 		String vertexShader = "attribute vec4 vPosition;    \n" + "void main()                  \n"
 			+ "{                            \n" + "   gl_Position = vPosition;  \n" + "}                            \n";

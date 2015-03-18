@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-/** A simple linked list that pools its nodes. This is a highly specialized class used in a couple of 2D scene graph classes. I
- * wouldn't use it if i was you :)
- * 
+/** A simple linked list that pools its nodes.
  * @author mzechner */
 public class PooledLinkedList<T> {
 	static final class Item<T> {
@@ -62,9 +60,14 @@ public class PooledLinkedList<T> {
 		size++;
 	}
 
-	/** Starts iterating over the lists items */
+	/** Starts iterating over the list's items from the head of the list */
 	public void iter () {
 		iter = head;
+	}
+	
+	/** Starts iterating over the list's items from the tail of the list */
+	public void iterReverse () {
+		iter = tail;
 	}
 
 	/** Gets the next item in the list
@@ -78,8 +81,20 @@ public class PooledLinkedList<T> {
 		iter = iter.next;
 		return payload;
 	}
+	
+	/** Gets the previous item in the list
+	 * 
+	 * @return the previous item in the list or null if there are no more items */
+	public T previous () {
+		if (iter == null) return null;
 
-	/** Removs the current list item based on the iterator position. */
+		T payload = iter.payload;
+		curr = iter;
+		iter = iter.prev;
+		return payload;
+	}
+
+	/** Removes the current list item based on the iterator position. */
 	public void remove () {
 		if (curr == null) return;
 

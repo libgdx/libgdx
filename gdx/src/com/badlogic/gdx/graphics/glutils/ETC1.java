@@ -23,12 +23,15 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Class for encoding and decoding ETC1 compressed images. Also provides methods to add a PKM header.
  * @author mzechner */
@@ -54,6 +57,7 @@ public class ETC1 {
 			this.height = height;
 			this.compressedData = compressedData;
 			this.dataOffset = dataOffset;
+			checkNPOT();
 		}
 
 		public ETC1Data (FileHandle pkmFile) {
@@ -72,16 +76,20 @@ public class ETC1 {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
 			} finally {
-				if (in != null) try {
-					in.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(in);
 			}
 
 			width = getWidthPKM(compressedData, 0);
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
 			compressedData.position(dataOffset);
+			checkNPOT();
+		}
+
+		private void checkNPOT () {
+			if (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)) {
+				Gdx.app.debug("ETC1Data", "warning: non-power-of-two ETC1 textures may crash the driver of PowerVR GPUs");
+			}
 		}
 
 		/** @return whether this ETC1Data has a PKM header */
@@ -109,10 +117,7 @@ public class ETC1 {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
 			} finally {
-				if (write != null) try {
-					write.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(write);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());

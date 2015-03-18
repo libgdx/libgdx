@@ -16,8 +16,9 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -32,14 +33,14 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author mzechner
  * @author Nathan Sweet */
 public class Group extends Actor implements Cullable {
-	private final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
-	private final Matrix3 localTransform = new Matrix3();
-	private final Matrix3 worldTransform = new Matrix3();
-	private final Matrix4 batchTransform = new Matrix4();
-	private final Matrix4 oldBatchTransform = new Matrix4();
-	private boolean transform = true;
+	static private final Vector2 tmp = new Vector2();
+
+	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
+	private final Affine2 worldTransform = new Affine2();
+	private final Matrix4 computedTransform = new Matrix4();
+	private final Matrix4 oldTransform = new Matrix4();
+	boolean transform = true;
 	private Rectangle cullingArea;
-	private final Vector2 point = new Vector2();
 
 	public void act (float delta) {
 		super.act(delta);
@@ -49,135 +50,184 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch, Matrix4)} if needed,
-	 * then {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	/** Draws the group and its children. The default implementation calls {@link #applyTransform(Batch, Matrix4)} if needed, then
+	 * {@link #drawChildren(Batch, float)}, then {@link #resetTransform(Batch)} if needed. */
+	public void draw (Batch batch, float parentAlpha) {
 		if (transform) applyTransform(batch, computeTransform());
 		drawChildren(batch, parentAlpha);
 		if (transform) resetTransform(batch);
 	}
 
-	/** Draws all children. {@link #applyTransform(SpriteBatch, Matrix4)} should be called before and
-	 * {@link #resetTransform(SpriteBatch)} after this method if {@link #setTransform(boolean) transform} is true. If
-	 * {@link #setTransform(boolean) transform} is false these methods don't need to be called, children positions are temporarily
-	 * offset by the group position when drawn. This method avoids drawing children completely outside the
-	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
-	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
-		parentAlpha *= getColor().a;
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
+	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
+	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
+	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	protected void drawChildren (Batch batch, float parentAlpha) {
+		parentAlpha *= this.color.a;
+		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
+		Rectangle cullingArea = this.cullingArea;
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.
+			float cullLeft = cullingArea.x;
+			float cullRight = cullLeft + cullingArea.width;
+			float cullBottom = cullingArea.y;
+			float cullTop = cullBottom + cullingArea.height;
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
+					float cx = child.x, cy = child.y;
+					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
 						child.draw(batch, parentAlpha);
-					}
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = x, offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
-						child.translate(offsetX, offsetY);
+					float cx = child.x, cy = child.y;
+					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom) {
+						child.x = cx + offsetX;
+						child.y = cy + offsetY;
 						child.draw(batch, parentAlpha);
-						child.setPosition(x, y);
+						child.x = cx;
+						child.y = cy;
 					}
 				}
-				setPosition(offsetX, offsetY);
+				x = offsetX;
+				y = offsetY;
 			}
 		} else {
+			// No culling, draw all children.
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
 				}
-				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = x, offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					child.translate(offsetX, offsetY);
+					float cx = child.x, cy = child.y;
+					child.x = cx + offsetX;
+					child.y = cy + offsetY;
 					child.draw(batch, parentAlpha);
-					child.setPosition(x, y);
+					child.x = cx;
+					child.y = cy;
 				}
-				setPosition(offsetX, offsetY);
+				x = offsetX;
+				y = offsetY;
 			}
 		}
 		children.end();
 	}
 
-	/** Set the SpriteBatch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
-	 * batch to be flushed. {@link #resetTransform(SpriteBatch)} will restore the transform to what it was before this call. */
-	protected void applyTransform (SpriteBatch batch, Matrix4 transform) {
-		batch.end();
-		oldBatchTransform.set(batch.getTransformMatrix());
-		batch.setTransformMatrix(transform);
-		batch.begin();
+	/** Draws this actor's debug lines if {@link #getDebug()} is true and, regardless of {@link #getDebug()}, calls
+	 * {@link Actor#drawDebug(ShapeRenderer)} on each child. */
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
+		if (transform) applyTransform(shapes, computeTransform());
+		drawDebugChildren(shapes);
+		if (transform) resetTransform(shapes);
+	}
+
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
+	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
+	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
+	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	protected void drawDebugChildren (ShapeRenderer shapes) {
+		SnapshotArray<Actor> children = this.children;
+		Actor[] actors = children.begin();
+		// No culling, draw all children.
+		if (transform) {
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (!child.isVisible()) continue;
+				if (!child.getDebug()) continue;
+				child.drawDebug(shapes);
+			}
+			shapes.flush();
+		} else {
+			// No transform for this group, offset each child.
+			float offsetX = x, offsetY = y;
+			x = 0;
+			y = 0;
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (!child.isVisible()) continue;
+				if (!child.getDebug()) continue;
+				float cx = child.x, cy = child.y;
+				child.x = cx + offsetX;
+				child.y = cy + offsetY;
+				child.drawDebug(shapes);
+				child.x = cx;
+				child.y = cy;
+			}
+			x = offsetX;
+			y = offsetY;
+		}
+		children.end();
 	}
 
 	/** Returns the transform for this group's coordinate system. */
 	protected Matrix4 computeTransform () {
-		Matrix3 temp = worldTransform;
+		Affine2 worldTransform = this.worldTransform;
 
-		float originX = getOriginX();
-		float originY = getOriginY();
-		float rotation = getRotation();
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
+		float originX = this.originX;
+		float originY = this.originY;
+		float rotation = this.rotation;
+		float scaleX = this.scaleX;
+		float scaleY = this.scaleY;
 
-		if (originX != 0 || originY != 0)
-			localTransform.setToTranslation(originX, originY);
-		else
-			localTransform.idt();
-		if (rotation != 0) localTransform.mul(temp.setToRotation(rotation));
-		if (scaleX != 1 || scaleY != 1) localTransform.mul(temp.setToScaling(scaleX, scaleY));
-		if (originX != 0 || originY != 0) localTransform.mul(temp.setToTranslation(-originX, -originY));
-		localTransform.trn(getX(), getY());
+		worldTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
+		if (originX != 0 || originY != 0) worldTransform.translate(-originX, -originY);
 
 		// Find the first parent that transforms.
-		Group parentGroup = getParent();
+		Group parentGroup = parent;
 		while (parentGroup != null) {
 			if (parentGroup.transform) break;
-			parentGroup = parentGroup.getParent();
+			parentGroup = parentGroup.parent;
 		}
+		if (parentGroup != null) worldTransform.preMul(parentGroup.worldTransform);
 
-		if (parentGroup != null) {
-			worldTransform.set(parentGroup.worldTransform);
-			worldTransform.mul(localTransform);
-		} else {
-			worldTransform.set(localTransform);
-		}
-
-		batchTransform.set(worldTransform);
-		return batchTransform;
+		computedTransform.set(worldTransform);
+		return computedTransform;
 	}
 
-	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch, Matrix4)}. Note this causes the
-	 * batch to be flushed. */
-	protected void resetTransform (SpriteBatch batch) {
-		batch.end();
-		batch.setTransformMatrix(oldBatchTransform);
-		batch.begin();
+	/** Set the batch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the batch to
+	 * be flushed. {@link #resetTransform(Batch)} will restore the transform to what it was before this call. */
+	protected void applyTransform (Batch batch, Matrix4 transform) {
+		oldTransform.set(batch.getTransformMatrix());
+		batch.setTransformMatrix(transform);
+	}
+
+	/** Restores the batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to be
+	 * flushed. */
+	protected void resetTransform (Batch batch) {
+		batch.setTransformMatrix(oldTransform);
+	}
+
+	/** Set the shape renderer transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
+	 * shape renderer to be flushed. {@link #resetTransform(ShapeRenderer)} will restore the transform to what it was before this
+	 * call. */
+	protected void applyTransform (ShapeRenderer shapes, Matrix4 transform) {
+		oldTransform.set(shapes.getTransformMatrix());
+		shapes.setTransformMatrix(transform);
+	}
+
+	/** Restores the shape renderer transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the
+	 * shape renderer to be flushed. */
+	protected void resetTransform (ShapeRenderer shapes) {
+		shapes.setTransformMatrix(oldTransform);
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
@@ -186,17 +236,23 @@ public class Group extends Actor implements Cullable {
 		this.cullingArea = cullingArea;
 	}
 
-	public Actor hit (float x, float y) {
-		if (getTouchable() == Touchable.disabled) return null;
-		Array<Actor> children = this.children;
+	/** @see #setCullingArea(Rectangle) */
+	public Rectangle getCullingArea () {
+		return cullingArea;
+	}
+
+	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && getTouchable() == Touchable.disabled) return null;
+		Vector2 point = tmp;
+		Actor[] childrenArray = children.items;
 		for (int i = children.size - 1; i >= 0; i--) {
-			Actor child = children.get(i);
+			Actor child = childrenArray[i];
 			if (!child.isVisible()) continue;
 			child.parentToLocalCoordinates(point.set(x, y));
-			Actor hit = child.hit(point.x, point.y);
+			Actor hit = child.hit(point.x, point.y, touchable);
 			if (hit != null) return hit;
 		}
-		return super.hit(x, y);
+		return super.hit(x, y, touchable);
 	}
 
 	/** Called when actors are added to or removed from the group. */
@@ -205,7 +261,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
 	public void addActor (Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		children.add(actor);
 		actor.setParent(this);
 		actor.setStage(getStage());
@@ -215,7 +271,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
 	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		if (index >= children.size)
 			children.add(actor);
 		else
@@ -228,7 +284,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, immediately before another child actor. The actor is first removed from its parent
 	 * group, if any. */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorBefore, true);
 		children.insert(index, actor);
 		actor.setParent(this);
@@ -239,7 +295,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, immediately after another child actor. The actor is first removed from its parent
 	 * group, if any. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		actor.remove();
+		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorAfter, true);
 		if (index == children.size)
 			children.add(actor);
@@ -250,13 +306,22 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
+	/** Calls {@link #removeActor(Actor, boolean)} with true. */
+	public boolean removeActor (Actor actor) {
+		return removeActor(actor, true);
+	}
+
 	/** Removes an actor from this group. If the actor will not be used again and has actions, they should be
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
-	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically. */
-	public boolean removeActor (Actor actor) {
+	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
+	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
+	 * @return true if the actor was removed from this group. */
+	public boolean removeActor (Actor actor, boolean unfocus) {
 		if (!children.removeValue(actor, true)) return false;
-		Stage stage = getStage();
-		if (stage != null) stage.unfocus(actor);
+		if (unfocus) {
+			Stage stage = getStage();
+			if (stage != null) stage.unfocus(actor);
+		}
 		actor.setParent(null);
 		actor.setStage(null);
 		childrenChanged();
@@ -264,7 +329,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Removes all actors from this group. */
-	public void clear () {
+	public void clearChildren () {
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = actors[i];
@@ -276,16 +341,22 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
+	/** Removes all children, actions, and listeners from this group. */
+	public void clear () {
+		super.clear();
+		clearChildren();
+	}
+
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the group. */
-	public Actor findActor (String name) {
+	public <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)
-			if (name.equals(children.get(i).getName())) return children.get(i);
+			if (name.equals(children.get(i).getName())) return (T)children.get(i);
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Group) {
 				Actor actor = ((Group)child).findActor(name);
-				if (actor != null) return actor;
+				if (actor != null) return (T)actor;
 			}
 		}
 		return null;
@@ -293,9 +364,9 @@ public class Group extends Actor implements Cullable {
 
 	protected void setStage (Stage stage) {
 		super.setStage(stage);
-		Array<Actor> children = this.children;
+		Actor[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
-			children.get(i).setStage(stage);
+			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ancestor.
 	}
 
 	/** Swaps two actors by index. Returns false if the swap did not occur because the indexes were out of bounds. */
@@ -321,11 +392,15 @@ public class Group extends Actor implements Cullable {
 		return children;
 	}
 
-	/** When true (the default), the SpriteBatch is transformed so children are drawn in their parent's coordinate system. This has
-	 * a performance impact because {@link SpriteBatch#flush()} must be done before and after the transform. If the actors in a
-	 * group are not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position
-	 * will be offset by the group's position for drawing, causing the children to appear in the correct location even though the
-	 * SpriteBatch has not been transformed. */
+	public boolean hasChildren () {
+		return children.size > 0;
+	}
+
+	/** When true (the default), the Batch is transformed so children are drawn in their parent's coordinate system. This has a
+	 * performance impact because {@link Batch#flush()} must be done before and after the transform. If the actors in a group are
+	 * not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position will be
+	 * offset by the group's position for drawing, causing the children to appear in the correct location even though the Batch has
+	 * not been transformed. */
 	public void setTransform (boolean transform) {
 		this.transform = transform;
 	}
@@ -337,12 +412,59 @@ public class Group extends Actor implements Cullable {
 	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
 	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
 	public Vector2 localToDescendantCoordinates (Actor descendant, Vector2 localCoords) {
-		Group parent = descendant.getParent();
+		Group parent = descendant.parent;
 		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
 		// First convert to the actor's parent coordinates.
 		if (parent != this) localToDescendantCoordinates(parent, localCoords);
 		// Then from each parent down to the descendant.
 		descendant.parentToLocalCoordinates(localCoords);
 		return localCoords;
+	}
+
+	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this group and, optionally, all children recursively. */
+	public void setDebug (boolean enabled, boolean recursively) {
+		setDebug(enabled);
+		if (recursively) {
+			for (Actor child : children) {
+				if (child instanceof Group) {
+					((Group)child).setDebug(enabled, recursively);
+				} else {
+					child.setDebug(enabled);
+				}
+			}
+		}
+	}
+
+	/** Calls {@link #setDebug(boolean, boolean)} with {@code true, true}. */
+	public Group debugAll () {
+		setDebug(true, true);
+		return this;
+	}
+
+	/** Returns a description of the actor hierarchy, recursively. */
+	public String toString () {
+		StringBuilder buffer = new StringBuilder(128);
+		toString(buffer, 1);
+		buffer.setLength(buffer.length() - 1);
+		return buffer.toString();
+	}
+
+	void toString (StringBuilder buffer, int indent) {
+		buffer.append(super.toString());
+		buffer.append('\n');
+
+		Actor[] actors = children.begin();
+		for (int i = 0, n = children.size; i < n; i++) {
+			for (int ii = 0; ii < indent; ii++)
+				buffer.append("|  ");
+			Actor actor = actors[i];
+			if (actor instanceof Group)
+				((Group)actor).toString(buffer, indent + 1);
+			else {
+				buffer.append(actor);
+				buffer.append('\n');
+			}
+		}
+		children.end();
 	}
 }

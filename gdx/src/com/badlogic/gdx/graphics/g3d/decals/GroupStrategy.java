@@ -54,7 +54,7 @@ public interface GroupStrategy {
 	/** Invoked directly before rendering the contents of a group
 	 * 
 	 * @param group Group that will be rendered
-	 * @param contents List of entries of arrays containing all the decals in the group */
+	 * @param contents Array of entries of arrays containing all the decals in the group */
 	public void beforeGroup (int group, Array<Decal> contents);
 
 	/** Invoked directly after rendering of a group has completed

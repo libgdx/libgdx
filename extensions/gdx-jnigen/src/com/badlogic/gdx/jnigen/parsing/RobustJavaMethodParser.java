@@ -162,7 +162,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 			if (arrayDim > 1) return ArgumentType.ObjectArray;
 			ArgumentType arrayType = arrayTypes.get(type);
 			if (arrayType == null) {
-				throw new RuntimeException("Unknown array type " + type);
+				return ArgumentType.ObjectArray;
 			}
 			return arrayType;
 		}

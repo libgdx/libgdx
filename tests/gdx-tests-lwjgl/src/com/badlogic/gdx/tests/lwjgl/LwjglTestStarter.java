@@ -54,13 +54,33 @@ public class LwjglTestStarter extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * Runs the {@link GdxTest} with the given name.
+	 * 
+	 * @param testName the name of a test class
+	 * @return {@code true} if the test was found and run, {@code false} otherwise
+	 */
+	public static boolean runTest (String testName) {
+		GdxTest test = GdxTests.newTest(testName);
+		if (test == null) {
+			return false;
+		}
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 640;
+		config.height = 480;
+		config.title = testName;
+		config.forceExit = false;
+		new LwjglApplication(test, config);
+		return true;
+	}
+
 	class TestList extends JPanel {
 		public TestList () {
 			setLayout(new BorderLayout());
 
 			final JButton button = new JButton("Run Test");
 
-			final JList list = new JList(GdxTests.getNames());
+			final JList list = new JList(GdxTests.getNames().toArray());
 			JScrollPane pane = new JScrollPane(list);
 
 			DefaultListSelectionModel m = new DefaultListSelectionModel();
@@ -88,17 +108,10 @@ public class LwjglTestStarter extends JFrame {
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
-					GdxTest test = GdxTests.newTest(testName);
-					dispose();
-					LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-					config.width = 640;
-					config.height = 480;
-					config.title = testName;
-					config.useGL20 = test.needsGL20();
-					config.forceExit = false;
-					new LwjglApplication(test, config);
 					prefs.putString("last", testName);
 					prefs.flush();
+					dispose();
+					runTest(testName);
 				}
 			});
 
@@ -110,7 +123,21 @@ public class LwjglTestStarter extends JFrame {
 		}
 	}
 
+	/**
+	 * Runs a libgdx test.
+	 * 
+	 * If no arguments are provided on the command line, shows a list of tests to choose from.
+	 * If an argument is present, the test with that name will immediately be run.
+	 * 
+	 * @param argv command line arguments
+	 */
 	public static void main (String[] argv) throws Exception {
+		if (argv.length > 0) {
+			if (runTest(argv[0])) {
+				return;
+				// Otherwise, fall back to showing the list
+			}
+		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		new LwjglTestStarter();
 	}

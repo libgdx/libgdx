@@ -31,7 +31,9 @@ import com.badlogic.gdx.tests.box2d.Cantilever;
 import com.badlogic.gdx.tests.box2d.Chain;
 import com.badlogic.gdx.tests.box2d.CharacterCollision;
 import com.badlogic.gdx.tests.box2d.CollisionFiltering;
+import com.badlogic.gdx.tests.box2d.ContactListenerTest;
 import com.badlogic.gdx.tests.box2d.ContinuousTest;
+import com.badlogic.gdx.tests.box2d.ConveyorBelt;
 import com.badlogic.gdx.tests.box2d.DebugRendererTest;
 import com.badlogic.gdx.tests.box2d.OneSidedPlatform;
 import com.badlogic.gdx.tests.box2d.Prismatic;
@@ -45,7 +47,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class Box2DTestCollection extends GdxTest implements InputProcessor, GestureListener {
 	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new Chain(), new Bridge(),
 		new SphereStack(), new Cantilever(), new ApplyForce(), new ContinuousTest(), new Prismatic(), new CharacterCollision(),
-		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution()};
+		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution(),
+		new ConveyorBelt()};
 
 	private int testIndex = 0;
 
@@ -113,11 +116,6 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
 	public boolean mouseMoved (int x, int y) {
 		return false;
 	}
@@ -146,25 +144,26 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 
 	@Override
 	public boolean longPress (float x, float y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean fling (float velocityX, float velocityY, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean pan (float x, float y, float deltaX, float deltaY) {
-		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean panStop (float x, float y, int pointer, int button) {
 		return false;
 	}
 
 	@Override
 	public boolean zoom (float originalDistance, float currentDistance) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

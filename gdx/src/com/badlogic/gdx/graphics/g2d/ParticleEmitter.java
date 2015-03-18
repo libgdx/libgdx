@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-
-// BOZO - Javadoc.
-// BOZO - Add a duplicate emitter button.
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -68,6 +67,7 @@ public class ParticleEmitter {
 	private boolean flipX, flipY;
 	private int updateFlags;
 	private boolean allowCompletion;
+	private BoundingBox bounds;
 
 	private int emission, emissionDiff, emissionDelta;
 	private int lifeOffset, lifeOffsetDiff;
@@ -82,6 +82,8 @@ public class ParticleEmitter {
 	private boolean aligned;
 	private boolean behind;
 	private boolean additive = true;
+	private boolean premultipliedAlpha = false;
+	boolean cleansUpBlendFunction = true;
 
 	public ParticleEmitter () {
 		initialize();
@@ -95,6 +97,7 @@ public class ParticleEmitter {
 	public ParticleEmitter (ParticleEmitter emitter) {
 		sprite = emitter.sprite;
 		name = emitter.name;
+		imagePath = emitter.imagePath;
 		setMaxParticleCount(emitter.maxParticleCount);
 		minParticleCount = emitter.minParticleCount;
 		delayValue.load(emitter.delayValue);
@@ -120,6 +123,8 @@ public class ParticleEmitter {
 		aligned = emitter.aligned;
 		behind = emitter.behind;
 		additive = emitter.additive;
+		premultipliedAlpha = emitter.premultipliedAlpha;
+		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 	}
 
 	private void initialize () {
@@ -174,13 +179,49 @@ public class ParticleEmitter {
 	}
 
 	public void update (float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+		accumulator += delta * 1000;
 		if (accumulator < 1) return;
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
+		if (delayTimer < delay) {
+			delayTimer += deltaMillis;
+		} else {
+			boolean done = false;
+			if (firstUpdate) {
+				firstUpdate = false;
+				addParticle();
+			}
+
+			if (durationTimer < duration)
+				durationTimer += deltaMillis;
+			else {
+				if (!continuous || allowCompletion)
+					done = true;
+				else
+					restart();
+			}
+
+			if (!done) {
+				emissionDelta += deltaMillis;
+				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
+				if (emissionTime > 0) {
+					emissionTime = 1000 / emissionTime;
+					if (emissionDelta >= emissionTime) {
+						int emitCount = (int)(emissionDelta / emissionTime);
+						emitCount = Math.min(emitCount, maxParticleCount - activeCount);
+						emissionDelta -= emitCount * emissionTime;
+						emissionDelta %= emissionTime;
+						addParticles(emitCount);
+					}
+				}
+				if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
+			}
+		}
+
 		boolean[] active = this.active;
 		int activeCount = this.activeCount;
+		Particle[] particles = this.particles;
 		for (int i = 0, n = active.length; i < n; i++) {
 			if (active[i] && !updateParticle(particles[i], delta, deltaMillis)) {
 				active[i] = false;
@@ -188,65 +229,46 @@ public class ParticleEmitter {
 			}
 		}
 		this.activeCount = activeCount;
-
-		if (delayTimer < delay) {
-			delayTimer += deltaMillis;
-			return;
-		}
-
-		if (firstUpdate) {
-			firstUpdate = false;
-			addParticle();
-		}
-
-		if (durationTimer < duration)
-			durationTimer += deltaMillis;
-		else {
-			if (!continuous || allowCompletion) return;
-			restart();
-		}
-
-		emissionDelta += deltaMillis;
-		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
-		if (emissionTime > 0) {
-			emissionTime = 1000 / emissionTime;
-			if (emissionDelta >= emissionTime) {
-				int emitCount = (int)(emissionDelta / emissionTime);
-				emitCount = Math.min(emitCount, maxParticleCount - activeCount);
-				emissionDelta -= emitCount * emissionTime;
-				emissionDelta %= emissionTime;
-				addParticles(emitCount);
-			}
-		}
-		if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-
+	public void draw (Batch batch) {
+		if (premultipliedAlpha) {
+			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		} else {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
-		int activeCount = this.activeCount;
 
-		for (int i = 0, n = active.length; i < n; i++)
-			if (active[i]) particles[i].draw(spriteBatch);
-		this.activeCount = activeCount;
+		for (int i = 0, n = active.length; i < n; i++) {
+			if (active[i]) particles[i].draw(batch);
+		}
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 	}
 
 	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
-	 * {@link #draw(SpriteBatch)} separately. */
-	public void draw (SpriteBatch spriteBatch, float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+	 * {@link #draw(Batch)} separately. */
+	public void draw (Batch batch, float delta) {
+		accumulator += delta * 1000;
 		if (accumulator < 1) {
-			draw(spriteBatch);
+			draw(batch);
 			return;
 		}
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		if (premultipliedAlpha) {
+			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		} else {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -255,7 +277,7 @@ public class ParticleEmitter {
 			if (active[i]) {
 				Particle particle = particles[i];
 				if (updateParticle(particle, delta, deltaMillis))
-					particle.draw(spriteBatch);
+					particle.draw(batch);
 				else {
 					active[i] = false;
 					activeCount--;
@@ -264,7 +286,8 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
@@ -306,7 +329,11 @@ public class ParticleEmitter {
 
 	public void reset () {
 		emissionDelta = 0;
-		durationTimer = 0;
+		durationTimer = duration;
+		boolean[] active = this.active;
+		for (int i = 0, n = active.length; i < n; i++)
+			active[i] = false;
+		activeCount = 0;
 		start();
 	}
 
@@ -339,7 +366,7 @@ public class ParticleEmitter {
 
 		updateFlags = 0;
 		if (angleValue.active && angleValue.timeline.length > 1) updateFlags |= UPDATE_ANGLE;
-		if (velocityValue.active && velocityValue.active) updateFlags |= UPDATE_VELOCITY;
+		if (velocityValue.active) updateFlags |= UPDATE_VELOCITY;
 		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
 		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
 		if (windValue.active) updateFlags |= UPDATE_WIND;
@@ -547,9 +574,15 @@ public class ParticleEmitter {
 			color = tintValue.getColor(percent);
 		else
 			color = particle.tint;
-		particle.setColor(color[0], color[1], color[2],
-			particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
 
+		if (premultipliedAlpha) {
+			float alphaMultiplier = additive ? 0 : 1;
+			float a = particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent);
+			particle.setColor(color[0] * a, color[1] * a, color[2] * a, a * alphaMultiplier);
+		} else {
+			particle.setColor(color[0], color[1], color[2],
+				particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
+		}
 		return true;
 	}
 
@@ -702,12 +735,38 @@ public class ParticleEmitter {
 		this.additive = additive;
 	}
 
+	/** @return Whether this ParticleEmitter automatically returns the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend
+	 *         function to the alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. */
+	public boolean cleansUpBlendFunction () {
+		return cleansUpBlendFunction;
+	}
+
+	/** Set whether to automatically return the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend function to the
+	 * alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. Is true by default. If set to false, the
+	 * Batch's blend function is left as it was for drawing this ParticleEmitter, which prevents the Batch from being flushed
+	 * repeatedly if consecutive ParticleEmitters with the same additive or pre-multiplied alpha state are drawn in a row.
+	 * <p>
+	 * IMPORTANT: If set to false and if the next object to use this Batch expects alpha blending, you are responsible for setting
+	 * the Batch's blend function to (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) before that next object is drawn.
+	 * @param cleansUpBlendFunction */
+	public void setCleansUpBlendFunction (boolean cleansUpBlendFunction) {
+		this.cleansUpBlendFunction = cleansUpBlendFunction;
+	}
+
 	public boolean isBehind () {
 		return behind;
 	}
 
 	public void setBehind (boolean behind) {
 		this.behind = behind;
+	}
+
+	public boolean isPremultipliedAlpha () {
+		return premultipliedAlpha;
+	}
+
+	public void setPremultipliedAlpha (boolean premultipliedAlpha) {
+		this.premultipliedAlpha = premultipliedAlpha;
 	}
 
 	public int getMinParticleCount () {
@@ -762,6 +821,41 @@ public class ParticleEmitter {
 		}
 	}
 
+	public void flipY () {
+		angleValue.setHigh(-angleValue.getHighMin(), -angleValue.getHighMax());
+		angleValue.setLow(-angleValue.getLowMin(), -angleValue.getLowMax());
+
+		gravityValue.setHigh(-gravityValue.getHighMin(), -gravityValue.getHighMax());
+		gravityValue.setLow(-gravityValue.getLowMin(), -gravityValue.getLowMax());
+
+		windValue.setHigh(-windValue.getHighMin(), -windValue.getHighMax());
+		windValue.setLow(-windValue.getLowMin(), -windValue.getLowMax());
+
+		rotationValue.setHigh(-rotationValue.getHighMin(), -rotationValue.getHighMax());
+		rotationValue.setLow(-rotationValue.getLowMin(), -rotationValue.getLowMax());
+
+		yOffsetValue.setLow(-yOffsetValue.getLowMin(), -yOffsetValue.getLowMax());
+	}
+
+	/** Returns the bounding box for all active particles. z axis will always be zero. */
+	public BoundingBox getBoundingBox () {
+		if (bounds == null) bounds = new BoundingBox();
+
+		Particle[] particles = this.particles;
+		boolean[] active = this.active;
+		BoundingBox bounds = this.bounds;
+
+		bounds.inf();
+		for (int i = 0, n = active.length; i < n; i++)
+			if (active[i]) {
+				Rectangle r = particles[i].getBoundingRectangle();
+				bounds.ext(r.x, r.y, 0);
+				bounds.ext(r.x + r.width, r.y + r.height, 0);
+			}
+
+		return bounds;
+	}
+
 	public void save (Writer output) throws IOException {
 		output.write(name + "\n");
 		output.write("- Delay -\n");
@@ -809,6 +903,9 @@ public class ParticleEmitter {
 		output.write("aligned: " + aligned + "\n");
 		output.write("additive: " + additive + "\n");
 		output.write("behind: " + behind + "\n");
+		output.write("premultipliedAlpha: " + premultipliedAlpha + "\n");
+		output.write("- Image Path -\n");
+		output.write(imagePath + "\n");
 	}
 
 	public void load (BufferedReader reader) throws IOException {
@@ -859,16 +956,32 @@ public class ParticleEmitter {
 			aligned = readBoolean(reader, "aligned");
 			additive = readBoolean(reader, "additive");
 			behind = readBoolean(reader, "behind");
+
+			// Backwards compatibility
+			String line = reader.readLine();
+			if (line.startsWith("premultipliedAlpha")) {
+				premultipliedAlpha = readBoolean(line);
+				reader.readLine();
+			}
+			setImagePath(reader.readLine());
 		} catch (RuntimeException ex) {
 			if (name == null) throw ex;
 			throw new RuntimeException("Error parsing emitter: " + name, ex);
 		}
 	}
 
+	static String readString (String line) throws IOException {
+		return line.substring(line.indexOf(":") + 1).trim();
+	}
+
 	static String readString (BufferedReader reader, String name) throws IOException {
 		String line = reader.readLine();
 		if (line == null) throw new IOException("Missing value: " + name);
-		return line.substring(line.indexOf(":") + 1).trim();
+		return readString(line);
+	}
+
+	static boolean readBoolean (String line) throws IOException {
+		return Boolean.parseBoolean(readString(line));
 	}
 
 	static boolean readBoolean (BufferedReader reader, String name) throws IOException {
@@ -883,17 +996,17 @@ public class ParticleEmitter {
 		return Float.parseFloat(readString(reader, name));
 	}
 
-	static class Particle extends Sprite {
-		int life, currentLife;
-		float scale, scaleDiff;
-		float rotation, rotationDiff;
-		float velocity, velocityDiff;
-		float angle, angleDiff;
-		float angleCos, angleSin;
-		float transparency, transparencyDiff;
-		float wind, windDiff;
-		float gravity, gravityDiff;
-		float[] tint;
+	public static class Particle extends Sprite {
+		protected int life, currentLife;
+		protected float scale, scaleDiff;
+		protected float rotation, rotationDiff;
+		protected float velocity, velocityDiff;
+		protected float angle, angleDiff;
+		protected float angleCos, angleSin;
+		protected float transparency, transparencyDiff;
+		protected float wind, windDiff;
+		protected float gravity, gravityDiff;
+		protected float[] tint;
 
 		public Particle (Sprite sprite) {
 			super(sprite);
@@ -1160,10 +1273,12 @@ public class ParticleEmitter {
 			this.timeline = timeline;
 		}
 
+		/** @return the r, g and b values for every timeline position */
 		public float[] getColors () {
 			return colors;
 		}
 
+		/** @param colors the r, g and b values for every timeline position */
 		public void setColors (float[] colors) {
 			this.colors = colors;
 		}

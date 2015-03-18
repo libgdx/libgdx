@@ -34,11 +34,6 @@ public class MipMap2D extends GdxTest {
 	Mesh mesh;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void create () {
 		String vertexShader = "uniform float u_offset;      \n" + "attribute vec4 a_position;   \n"
 			+ "attribute vec2 a_texCoord;   \n" + "varying vec2 v_texCoord;     \n" + "void main()                  \n"

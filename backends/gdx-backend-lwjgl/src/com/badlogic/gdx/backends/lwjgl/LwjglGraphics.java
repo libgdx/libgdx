@@ -16,35 +16,32 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
 public class LwjglGraphics implements Graphics {
 	static int major, minor;
 
-	GLCommon gl;
-	GL10 gl10;
-	GL11 gl11;
 	GL20 gl20;
-	GLU glu;
+	GL30 gl30;
+	long frameId = -1;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -56,62 +53,50 @@ public class LwjglGraphics implements Graphics {
 	LwjglApplicationConfiguration config;
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 	String extensions;
+	volatile boolean isContinuous = true;
+	volatile boolean requestRendering = false;
+	boolean softwareMode;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
 	}
 
-	LwjglGraphics (Canvas canvas, boolean useGL2IfAvailable) {
+	LwjglGraphics (Canvas canvas) {
 		this.config = new LwjglApplicationConfiguration();
 		config.width = canvas.getWidth();
 		config.height = canvas.getHeight();
-		config.useGL20 = useGL2IfAvailable;
 		this.canvas = canvas;
 	}
 
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
 		this.config = config;
-		this.config.width = canvas.getWidth();
-		this.config.height = canvas.getHeight();
 		this.canvas = canvas;
-	}
-
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	public GL11 getGL11 () {
-		return gl11;
 	}
 
 	public GL20 getGL20 () {
 		return gl20;
 	}
 
-	public GLU getGLU () {
-		return glu;
-	}
-
 	public int getHeight () {
 		if (canvas != null)
-			return canvas.getHeight();
+			return Math.max(1, canvas.getHeight());
 		else
-			return Display.getHeight();
+			return (int)(Display.getHeight() * Display.getPixelScaleFactor());
 	}
 
 	public int getWidth () {
 		if (canvas != null)
-			return canvas.getWidth();
+			return Math.max(1, canvas.getWidth());
 		else
-			return Display.getWidth();
-	}
-
-	public boolean isGL11Available () {
-		return gl11 != null;
+			return (int)(Display.getWidth() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isGL20Available () {
 		return gl20 != null;
+	}
+
+	public long getFrameId () {
+		return frameId;
 	}
 
 	public float getDeltaTime () {
@@ -130,11 +115,6 @@ public class LwjglGraphics implements Graphics {
 		return fps;
 	}
 
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
-	}
-
 	void updateTime () {
 		long time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
@@ -149,49 +129,76 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	void setupDisplay () throws LWJGLException {
+		if(config.useHDPI) {
+			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
+		}
+		
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
-			if (!setDisplayMode(config.width, config.height, config.fullscreen))
-				throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
-					+ config.fullscreen);
+			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);			
+			if (!displayCreated) {
+				if (config.setDisplayModeCallback != null) {
+					config = config.setDisplayModeCallback.onFailure(config);
+					if (config != null) {
+						displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+					}
+				}
+				if (!displayCreated) {
+					throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
+						+ config.fullscreen);
+				}
+			}
+			if (config.iconPaths.size > 0) {
+				ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
+				for (int i = 0, n = config.iconPaths.size; i < n; i++) {
+					Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
+					if (pixmap.getFormat() != Format.RGBA8888) {
+						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+						rgba.drawPixmap(pixmap, 0, 0);
+						pixmap = rgba;
+					}
+					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
+					icons[i].put(pixmap.getPixels()).flip();
+					pixmap.dispose();
+				}
+				Display.setIcon(icons);
+			}
 		}
 		Display.setTitle(config.title);
 		Display.setResizable(config.resizable);
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
 
-		if (config.iconPaths.size > 0) {
-			ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
-			for (int i = 0, n = config.iconPaths.size; i < n; i++) {
-				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
-				if (pixmap.getFormat() != Format.RGBA8888) {
-					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
-					rgba.drawPixmap(pixmap, 0, 0);
-					pixmap = rgba;
-				}
-				icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-				icons[i].put(pixmap.getPixels()).flip();
-				pixmap.dispose();
-			}
-			Display.setIcon(icons);
-		}
-
-		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
+		Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
-		config.x = Display.getX();
-		config.y = Display.getY();
 		initiateGLInstances();
 	}
 
 	private void createDisplayPixelFormat () {
-		int samples = 0;
 		try {
-			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+			if (config.useGL30) {
+				ContextAttribs context = new ContextAttribs(3, 2).withForwardCompatible(false).withProfileCore(true);
+				try {
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
+						config.samples), context);
+				} catch (Exception e) {
+					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
+					throw e;
+				}
+				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
+			} else {
+				Display
+					.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+			}
 			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
 				false);
 		} catch (Exception ex) {
 			Display.destroy();
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ignored) {
+			}
 			try {
 				Display.create(new PixelFormat(0, 16, 8));
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
@@ -206,19 +213,30 @@ public class LwjglGraphics implements Graphics {
 			} catch (Exception ex2) {
 				Display.destroy();
 				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignored) {
+				}
+				try {
 					Display.create(new PixelFormat());
-					if (getDesktopDisplayMode().bitsPerPixel == 16) {
-						bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
-					}
-					if (getDesktopDisplayMode().bitsPerPixel == 24) {
-						bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
-					}
-					if (getDesktopDisplayMode().bitsPerPixel == 32) {
-						bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
-					}
 				} catch (Exception ex3) {
-					if (ex3.getMessage().contains("Pixel format not accelerated"))
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+					if (!softwareMode && config.allowSoftwareMode) {
+						softwareMode = true;
+						System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
+						createDisplayPixelFormat();
+						return;
+					}
+					String glInfo = glInfo();
+					throw new GdxRuntimeException("OpenGL is not supported by the video driver"
+						+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 16) {
+					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 24) {
+					bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 32) {
+					bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
 				}
 			}
 		}
@@ -229,28 +247,36 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (config.useGL20 && (major >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
-			// FIXME add check whether gl 2.0 is supported
-			gl20 = new LwjglGL20();
-			gl = gl20;
+		if (major >= 3) {
+			gl30 = new LwjglGL30();
+			gl20 = gl30;
 		} else {
-			gl20 = null;
-			if (major == 1 && minor < 5) {
-				gl10 = new LwjglGL10();
-			} else {
-				gl11 = new LwjglGL11();
-				gl10 = gl11;
-			}
-			gl = gl10;
+			gl20 = new LwjglGL20();
 		}
 
-		glu = new LwjglGLU();
+		if (major <= 1)
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
+		if (major == 2 || version.contains("2.1")) {
+			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				String glInfo = glInfo();
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
+					+ ", FBO extension: false" + (glInfo.isEmpty() ? "" : ("\n" + glInfo())));
+			}
+		}
 
-		Gdx.glu = glu;
-		Gdx.gl = gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
+		Gdx.gl30 = gl30;
+	}
+
+	private String glInfo () {
+		try {
+			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
+				+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
+				+ GL11.glGetString(GL11.GL_VERSION);
+		} catch (Throwable ignored) {
+		}
+		return "";
 	}
 
 	@Override
@@ -275,6 +301,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
+		if (config.overrideDensity != -1) return config.overrideDensity / 160f;
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
 	}
 
@@ -295,16 +322,17 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;
+		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;		
 		try {
 			if (!mode.isFullscreenCapable()) {
 				Display.setDisplayMode(mode);
 			} else {
 				Display.setDisplayModeAndFullscreen(mode);
-			}
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, displayMode.width, displayMode.height);
-			config.width = displayMode.width;
-			config.height = displayMode.height;
+			}			
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(mode.getWidth() * scaleFactor);
+			config.height = (int)(mode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {
@@ -355,11 +383,20 @@ public class LwjglGraphics implements Graphics {
 				return false;
 			}
 
+			boolean resizable = !fullscreen && config.resizable;
+			
 			Display.setDisplayMode(targetDisplayMode);
 			Display.setFullscreen(fullscreen);
-			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, targetDisplayMode.getWidth(), targetDisplayMode.getHeight());
-			config.width = targetDisplayMode.getWidth();
-			config.height = targetDisplayMode.getHeight();
+			// Workaround for bug in LWJGL whereby resizable state is lost on DisplayMode change
+			if (resizable == Display.isResizable()) {
+				Display.setResizable(!resizable);
+			}
+			Display.setResizable(resizable);
+			
+			float scaleFactor = Display.getPixelScaleFactor();
+			config.width = (int)(targetDisplayMode.getWidth() * scaleFactor);
+			config.height = (int)(targetDisplayMode.getHeight() * scaleFactor);
+			if (Gdx.gl != null) Gdx.gl.glViewport(0, 0, config.width, config.height);
 			resize = true;
 			return true;
 		} catch (LWJGLException e) {
@@ -406,22 +443,29 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setVSync (boolean vsync) {
 		this.vsync = vsync;
-		if (vsync && !config.useCPUSynch) Display.setVSyncEnabled(true);
-		if (!vsync && !config.useCPUSynch) Display.setVSyncEnabled(false);
+		Display.setVSyncEnabled(vsync);
 	}
 
 	@Override
-	public boolean supportsExtension (String extension) {
-		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+	public boolean supportsExtension(String extension) {
+		if (extensions == null) {
+			if(gl30 != null) {
+				//old style glGetString(GL_EXTENSIONS) is not valid in 3.2 core:
+				StringBuilder extensionsBuilder = new StringBuilder();
+
+				int numExtensions = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
+				for (int i = 0; i < numExtensions; ++i) {
+					extensionsBuilder.append(gl30.glGetStringi(GL20.GL_EXTENSIONS, i));
+					extensionsBuilder.append(" ");
+				}
+				extensions = extensionsBuilder.toString();
+			} else {
+				extensions = gl20.glGetString(GL20.GL_EXTENSIONS);
+			}
+		}
+
 		return extensions.contains(extension);
 	}
-
-	public LwjglApplicationConfiguration getConfig () {
-		return config;
-	}
-
-	volatile boolean isContinuous = true;
-	volatile boolean requestRendering = false;
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
@@ -444,12 +488,35 @@ public class LwjglGraphics implements Graphics {
 		synchronized (this) {
 			boolean rq = requestRendering;
 			requestRendering = false;
-			return rq || isContinuous;
+			return rq || isContinuous || Display.isDirty();
 		}
 	}
 
 	@Override
 	public boolean isFullscreen () {
 		return Display.isFullscreen();
+	}
+
+	public boolean isSoftwareMode () {
+		return softwareMode;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	/** A callback used by LwjglApplication when trying to create the display */
+	public interface SetDisplayModeCallback {
+		/** If the display creation fails, this method will be called. Suggested usage is to modify the passed configuration to use a
+		 * common width and height, and set fullscreen to false.
+		 * @return the configuration to be used for a second attempt at creating a display. A null value results in NOT attempting
+		 *         to create the display a second time */
+		public LwjglApplicationConfiguration onFailure (LwjglApplicationConfiguration initialConfig);
 	}
 }

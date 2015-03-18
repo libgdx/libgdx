@@ -38,7 +38,7 @@ public class AtomicQueue<T> {
 	}
 
 	private int next (int idx) {
-		return idx + 1 & queue.length() - 1;
+		return (idx + 1) % queue.length();
 	}
 
 	public boolean put (T value) {

@@ -18,16 +18,12 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	BitmapFont font;
 	String text;
@@ -42,7 +38,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch, "input: " + text, 0, Gdx.graphics.getHeight());
 		batch.end();

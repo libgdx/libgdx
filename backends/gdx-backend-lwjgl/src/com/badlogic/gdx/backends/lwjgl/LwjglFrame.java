@@ -17,6 +17,8 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Point;
 
 import javax.swing.JFrame;
 
@@ -24,16 +26,25 @@ import com.badlogic.gdx.ApplicationListener;
 
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
-	final LwjglCanvas lwjglCanvas;
+	LwjglCanvas lwjglCanvas;
+	private Thread shutdownHook;
 
-	public LwjglFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+	public LwjglFrame (ApplicationListener listener, String title, int width, int height) {
 		super(title);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		getContentPane().setPreferredSize(new Dimension(width, height));
-		pack();
-		setLocationRelativeTo(null);
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = title;
+		config.width = width;
+		config.height = height;
+		construct(listener, config);
+	}
 
-		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
+	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config) {
+		super(config.title);
+		construct(listener, config);
+	}
+
+	private void construct (ApplicationListener listener, LwjglApplicationConfiguration config) {
+		lwjglCanvas = new LwjglCanvas(listener, config) {
 			protected void stopped () {
 				LwjglFrame.this.dispose();
 			}
@@ -53,19 +64,82 @@ public class LwjglFrame extends JFrame {
 			protected void resize (int width, int height) {
 				updateSize(width, height);
 			}
-		};
-		getContentPane().add(lwjglCanvas.getCanvas());
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
+			protected void start () {
+				LwjglFrame.this.start();
+			}
+
+			protected void exception (Throwable t) {
+				LwjglFrame.this.exception(t);
+			}
+
+			protected int getFrameRate () {
+				int frameRate = LwjglFrame.this.getFrameRate();
+				return frameRate == 0 ? super.getFrameRate() : frameRate;
+			}
+		};
+
+		setHaltOnShutdown(true);
+
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		getContentPane().setPreferredSize(new Dimension(config.width, config.height));
+
+		initialize();
+		pack();
+		Point location = getLocation();
+		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
+		lwjglCanvas.getCanvas().setSize(getSize());
+
+		// Finish with invokeLater so any LwjglFrame super constructor has a chance to initialize.
+		EventQueue.invokeLater(new Runnable() {
 			public void run () {
-				Runtime.getRuntime().halt(0); // Because fuck you, Swing shutdown hooks.
+				addCanvas();
+				setVisible(true);
+				lwjglCanvas.getCanvas().requestFocus();
 			}
 		});
-
-		setVisible(true);
-		lwjglCanvas.getCanvas().requestFocus();
 	}
 
+	/** When true, <code>Runtime.getRuntime().halt(0);</code> is used when the JVM shuts down. This prevents Swing shutdown hooks
+	 * from causing a deadlock and keeping the JVM alive indefinitely. Default is true. */
+	public void setHaltOnShutdown (boolean halt) {
+		if (halt) {
+			if (shutdownHook != null) return;
+			shutdownHook = new Thread() {
+				public void run () {
+					Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
+				}
+			};
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+		} else if (shutdownHook != null) {
+			Runtime.getRuntime().removeShutdownHook(shutdownHook);
+			shutdownHook = null;
+		}
+	}
+
+	protected int getFrameRate () {
+		return 0;
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		lwjglCanvas.stop();
+	}
+
+	/** Called before the JFrame is made displayable. */
+	protected void initialize () {
+	}
+
+	/** Adds the canvas to the content pane. This triggers addNotify and starts the canvas' game loop. */
+	protected void addCanvas () {
+		getContentPane().add(lwjglCanvas.getCanvas());
+	}
+
+	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
+	protected void start () {
+	}
+
+	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
 	}
 

@@ -16,17 +16,22 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
+
+import java.io.File;
 import java.lang.reflect.Method;
 
-import com.badlogic.gdx.utils.GdxNativesLoader;
-
-import static com.badlogic.gdx.utils.GdxNativesLoader.*;
-
-final class LwjglNativesLoader {
+public final class LwjglNativesLoader {
 	static public boolean load = true;
 
 	static {
-		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
+		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");		
+
 		// Don't extract natives if using JWS.
 		try {
 			Method method = Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup", new Class[] {String.class});
@@ -37,19 +42,29 @@ final class LwjglNativesLoader {
 		}
 	}
 
-	static void load () {
+	/** Extracts the LWJGL native libraries from the classpath and sets the "org.lwjgl.librarypath" system property. */
+	static public void load () {
 		GdxNativesLoader.load();
 		if (GdxNativesLoader.disableNativesLoading) return;
 		if (!load) return;
-		if (isWindows) {
-			extractLibrary("OpenAL32.dll", "OpenAL64.dll");
-			extractLibrary("lwjgl.dll", "lwjgl64.dll");
-		} else if (isMac) {
-			extractLibrary("openal.dylib", "openal.dylib");
-			extractLibrary("liblwjgl.jnilib", "liblwjgl.jnilib");
-		} else if (isLinux) {
-			extractLibrary("libopenal.so", "libopenal64.so");
-			extractLibrary("liblwjgl.so", "liblwjgl64.so");
+
+		SharedLibraryLoader loader = new SharedLibraryLoader();
+		File nativesDir = null;
+		try {
+			if (isWindows) {
+				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
+				if (!LwjglApplicationConfiguration.disableAudio)
+					loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
+			} else if (isMac) {
+				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
+				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFile("openal.dylib", nativesDir.getName());
+			} else if (isLinux) {
+				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
+				if (!LwjglApplicationConfiguration.disableAudio)
+					loader.extractFile(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir.getName());
+			}
+		} catch (Throwable ex) {
+			throw new GdxRuntimeException("Unable to extract LWJGL natives.", ex);
 		}
 		System.setProperty("org.lwjgl.librarypath", nativesDir.getAbsolutePath());
 		load = false;

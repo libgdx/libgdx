@@ -30,6 +30,24 @@ public class StringBuilder implements Appendable, CharSequence {
 	public char[] chars;
 	public int length;
 
+	private static final char[] digits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+	/** @return the number of characters required to represent the specified value with the specified radix */
+	public static int numChars (int value, int radix) {
+		int result = (value < 0) ? 2 : 1;
+		while ((value /= radix) != 0)
+			++result;
+		return result;
+	}
+
+	/** @return the number of characters required to represent the specified value with the specified radix */
+	public static int numChars (long value, int radix) {
+		int result = (value < 0) ? 2 : 1;
+		while ((value /= radix) != 0)
+			++result;
+		return result;
+	}
+
 	/*
 	 * Returns the character array.
 	 */
@@ -102,10 +120,10 @@ public class StringBuilder implements Appendable, CharSequence {
 
 	final void append0 (char[] value) {
 		int newSize = length + value.length;
-		if (newSize > value.length) {
+		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
 		}
-		System.arraycopy(value, 0, value, length, value.length);
+		System.arraycopy(value, 0, chars, length, value.length);
 		length = newSize;
 	}
 
@@ -119,7 +137,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 
 		int newSize = this.length + length;
-		if (newSize > value.length) {
+		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
 		}
 		System.arraycopy(value, offset, chars, this.length, length);
@@ -254,8 +272,8 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (start >= 0 && 0 <= length && length <= value.length - start) {
 				if (length != 0) {
 					move(length, index);
-					System.arraycopy(value, start, value, index, length);
-					length += length;
+					System.arraycopy(value, start, chars, index, length);
+					this.length += length;
 				}
 				return;
 			}
@@ -703,25 +721,123 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
-	 * according to the rule defined by {@link String#valueOf(int)}.
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
 	 * 
-	 * @param i the {@code int} value to append.
+	 * @param value the {@code int} value to append.
 	 * @return this builder.
 	 * @see String#valueOf(int) */
-	public StringBuilder append (int i) {
-		append0(Integer.toString(i));
+	public StringBuilder append (int value) {
+		return append(value, 0);
+	}
+
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
+	 * 
+	 * @param value the {@code int} value to append.
+	 * @param minLength the minimum number of characters to add
+	 * @return this builder.
+	 * @see String#valueOf(int) */
+	public StringBuilder append (int value, int minLength) {
+		return append(value, minLength, '0');
+	}
+
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
+	 * 
+	 * @param value the {@code int} value to append.
+	 * @param minLength the minimum number of characters to add
+	 * @param prefix the character to use as prefix
+	 * @return this builder.
+	 * @see String#valueOf(int) */
+	public StringBuilder append (int value, final int minLength, final char prefix) {
+		if (value == Integer.MIN_VALUE) {
+			append0("-2147483648");
+			return this;
+		}
+		if (value < 0) {
+			append0('-');
+			value = -value;
+		}
+		if (minLength > 1) {
+			for (int j = minLength - numChars(value, 10); j > 0; --j)
+				append(prefix);
+		}
+		if (value >= 10000) {
+			if (value >= 1000000000) append0(digits[(int)((long)value % 10000000000L / 1000000000L)]);
+			if (value >= 100000000) append0(digits[value % 1000000000 / 100000000]);
+			if (value >= 10000000) append0(digits[value % 100000000 / 10000000]);
+			if (value >= 1000000) append0(digits[value % 10000000 / 1000000]);
+			if (value >= 100000) append0(digits[value % 1000000 / 100000]);
+			append0(digits[value % 100000 / 10000]);
+		}
+		if (value >= 1000) append0(digits[value % 10000 / 1000]);
+		if (value >= 100) append0(digits[value % 1000 / 100]);
+		if (value >= 10) append0(digits[value % 100 / 10]);
+		append0(digits[value % 10]);
 		return this;
 	}
 
 	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
-	 * according to the rule defined by {@link String#valueOf(long)}.
+	 * without memory allocation.
 	 * 
-	 * @param lng the {@code long} value.
-	 * @return this builder.
-	 * @see String#valueOf(long) */
-	public StringBuilder append (long lng) {
-		append0(Long.toString(lng));
+	 * @param value the {@code long} value.
+	 * @return this builder. */
+	public StringBuilder append (long value) {
+		return append(value, 0);
+	}
+
+	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code long} value.
+	 * @param minLength the minimum number of characters to add
+	 * @return this builder. */
+	public StringBuilder append (long value, int minLength) {
+		return append(value, minLength, '0');
+	}
+
+	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code long} value.
+	 * @param minLength the minimum number of characters to add
+	 * @param prefix the character to use as prefix
+	 * @return this builder. */
+	public StringBuilder append (long value, int minLength, char prefix) {
+		if (value == Long.MIN_VALUE) {
+			append0("-9223372036854775808");
+			return this;
+		}
+		if (value < 0L) {
+			append0('-');
+			value = -value;
+		}
+		if (minLength > 1) {
+			for (int j = minLength - numChars(value, 10); j > 0; --j)
+				append(prefix);
+		}
+		if (value >= 10000) {
+			if (value >= 1000000000000000000L) append0(digits[(int)(value % 10000000000000000000D / 1000000000000000000L)]);
+			if (value >= 100000000000000000L) append0(digits[(int)(value % 1000000000000000000L / 100000000000000000L)]);
+			if (value >= 10000000000000000L) append0(digits[(int)(value % 100000000000000000L / 10000000000000000L)]);
+			if (value >= 1000000000000000L) append0(digits[(int)(value % 10000000000000000L / 1000000000000000L)]);
+			if (value >= 100000000000000L) append0(digits[(int)(value % 1000000000000000L / 100000000000000L)]);
+			if (value >= 10000000000000L) append0(digits[(int)(value % 100000000000000L / 10000000000000L)]);
+			if (value >= 1000000000000L) append0(digits[(int)(value % 10000000000000L / 1000000000000L)]);
+			if (value >= 100000000000L) append0(digits[(int)(value % 1000000000000L / 100000000000L)]);
+			if (value >= 10000000000L) append0(digits[(int)(value % 100000000000L / 10000000000L)]);
+			if (value >= 1000000000L) append0(digits[(int)(value % 10000000000L / 1000000000L)]);
+			if (value >= 100000000L) append0(digits[(int)(value % 1000000000L / 100000000L)]);
+			if (value >= 10000000L) append0(digits[(int)(value % 100000000L / 10000000L)]);
+			if (value >= 1000000L) append0(digits[(int)(value % 10000000L / 1000000L)]);
+			if (value >= 100000L) append0(digits[(int)(value % 1000000L / 100000L)]);
+			append0(digits[(int)(value % 100000L / 10000L)]);
+		}
+		if (value >= 1000L) append0(digits[(int)(value % 10000L / 1000L)]);
+		if (value >= 100L) append0(digits[(int)(value % 1000L / 100L)]);
+		if (value >= 10L) append0(digits[(int)(value % 100L / 10L)]);
+		append0(digits[(int)(value % 10L)]);
 		return this;
 	}
 
@@ -729,8 +845,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	 * according to the rule defined by {@link String#valueOf(float)}.
 	 * 
 	 * @param f the {@code float} value to append.
-	 * @return this builder.
-	 * @see String#valueOf(float) */
+	 * @return this builder. */
 	public StringBuilder append (float f) {
 		append0(Float.toString(f));
 		return this;

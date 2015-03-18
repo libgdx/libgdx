@@ -20,6 +20,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -27,8 +28,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 public class LwjglApplicationConfiguration {
-	/** whether to use OpenGL ES 2.0 or not. default: false **/
-	public boolean useGL20 = false;
+	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
+	 * natives are not needed. */
+	static public boolean disableAudio;
+
+	/** whether to attempt use OpenGL ES 3.0. **/
+	public boolean useGL30 = false;
+	
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
 	/** number of bits for depth and stencil buffer **/
@@ -36,29 +42,44 @@ public class LwjglApplicationConfiguration {
 	/** number of samples for MSAA **/
 	public int samples = 0;
 	/** width & height of application window **/
-	public int width = 480, height = 320;
+	public int width = 640, height = 480;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
-	/** whether to use CPU synching or not. If this is false display vsynching is used, which might not work in windowed mode **/
-	public boolean useCPUSynch = true;
+	/** used to emulate screen densities **/
+	public int overrideDensity = -1;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
-	public String title = "Lwjgl Application";
+	public String title;
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
+	/** the maximum number of sources that can be played simultaneously */
+	public int audioDeviceSimultaneousSources = 16;
 	/** the audio device buffer size in samples **/
 	public int audioDeviceBufferSize = 512;
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
+	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
+	public int foregroundFPS = 60;
+	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	public int backgroundFPS = 60;
+	/** Allows software OpenGL rendering if hardware acceleration was not available.
+	 * @see LwjglGraphics#isSoftwareMode() */
+	public boolean allowSoftwareMode = false;
+	/** Preferences directory on the desktop. Default is ".prefs/". */
+	public String preferencesDirectory = ".prefs/";
+	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
+	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
+	/** enable HDPI mode on Mac OS X **/
+	public boolean useHDPI = false;
 
 	Array<String> iconPaths = new Array();
-	Array<FileType> iconFileTypes = new Array();
+	Array<FileType> iconFileTypes = new Array();	
 
 	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
 	 * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */

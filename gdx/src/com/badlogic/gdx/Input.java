@@ -16,32 +16,37 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.ObjectIntMap;
+
 /** <p>
- * Interface to the input facilities. This allows to poll the state of the keyboard, touch screen and accelerometer. On the
- * desktop the touch screen is replaced by mouse input, the accelerometer is of course not available.
+ * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
+ * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
+ * all backends.
  * </p>
  * 
  * <p>
- * Additionally one can process events with an {@link InputProcessor} with this module. You can set the InputProcessor via the
- * {@link #setInputProcessor(InputProcessor)} method. It will be called before the {@link ApplicationListener#render()} method in
- * each frame.
+ * Instead of polling for events, one can process all input events with an {@link InputProcessor}. You can set the InputProcessor
+ * via the {@link #setInputProcessor(InputProcessor)} method. It will be called before the {@link ApplicationListener#render()}
+ * method in each frame.
  * </p>
  * 
  * <p>
- * Keyboard keys are translated to the constants in {@link Keys} transparantely on all systems. Do not use system specific key
+ * Keyboard keys are translated to the constants in {@link Keys} transparently on all systems. Do not use system specific key
  * constants.
  * </p>
  * 
  * <p>
- * The class also offers methods to let the phone vibrate as well as getting compass readings.
+ * The class also offers methods to use (and test for the presence of) other input systems like vibration, compass, on-screen
+ * keyboards, and cursor capture. Support for simple input dialogs is also provided.
  * </p>
  * 
  * @author mzechner */
 public interface Input {
-	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
+	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String, String)}
 	 * 
 	 * @author mzechner */
-	public interface TextInputListener {
+	static public interface TextInputListener {
 		public void input (String text);
 
 		public void canceled ();
@@ -49,16 +54,18 @@ public interface Input {
 
 	/** Mouse buttons.
 	 * @author mzechner */
-	public class Buttons {
+	static public class Buttons {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
+		public static final int BACK = 3;
+		public static final int FORWARD = 4;
 	}
 
 	/** Keys.
 	 * 
 	 * @author mzechner */
-	public class Keys {
+	static public class Keys {
 		public static final int ANY_KEY = -1;
 		public static final int NUM_0 = 7;
 		public static final int NUM_1 = 8;
@@ -192,6 +199,17 @@ public interface Input {
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
 
+		public static final int NUMPAD_0 = 144;
+		public static final int NUMPAD_1 = 145;
+		public static final int NUMPAD_2 = 146;
+		public static final int NUMPAD_3 = 147;
+		public static final int NUMPAD_4 = 148;
+		public static final int NUMPAD_5 = 149;
+		public static final int NUMPAD_6 = 150;
+		public static final int NUMPAD_7 = 151;
+		public static final int NUMPAD_8 = 152;
+		public static final int NUMPAD_9 = 153;
+
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
 // public static final int UNDERSCORE = 0;
@@ -223,6 +241,318 @@ public interface Input {
 		public static final int F10 = 253;
 		public static final int F11 = 254;
 		public static final int F12 = 255;
+
+		/** @return a human readable representation of the keycode. The returned value can be used in
+		 *         {@link Input.Keys#valueOf(String)} */
+		public static String toString (int keycode) {
+			if (keycode < 0) throw new IllegalArgumentException("keycode cannot be negative, keycode: " + keycode);
+			if (keycode > 255) throw new IllegalArgumentException("keycode cannot be greater than 255, keycode: " + keycode);
+			switch (keycode) {
+			// META* variables should not be used with this method.
+			case UNKNOWN:
+				return "Unknown";
+			case SOFT_LEFT:
+				return "Soft Left";
+			case SOFT_RIGHT:
+				return "Soft Right";
+			case HOME:
+				return "Home";
+			case BACK:
+				return "Back";
+			case CALL:
+				return "Call";
+			case ENDCALL:
+				return "End Call";
+			case NUM_0:
+				return "0";
+			case NUM_1:
+				return "1";
+			case NUM_2:
+				return "2";
+			case NUM_3:
+				return "3";
+			case NUM_4:
+				return "4";
+			case NUM_5:
+				return "5";
+			case NUM_6:
+				return "6";
+			case NUM_7:
+				return "7";
+			case NUM_8:
+				return "8";
+			case NUM_9:
+				return "9";
+			case STAR:
+				return "*";
+			case POUND:
+				return "#";
+			case UP:
+				return "Up";
+			case DOWN:
+				return "Down";
+			case LEFT:
+				return "Left";
+			case RIGHT:
+				return "Right";
+			case CENTER:
+				return "Center";
+			case VOLUME_UP:
+				return "Volume Up";
+			case VOLUME_DOWN:
+				return "Volume Down";
+			case POWER:
+				return "Power";
+			case CAMERA:
+				return "Camera";
+			case CLEAR:
+				return "Clear";
+			case A:
+				return "A";
+			case B:
+				return "B";
+			case C:
+				return "C";
+			case D:
+				return "D";
+			case E:
+				return "E";
+			case F:
+				return "F";
+			case G:
+				return "G";
+			case H:
+				return "H";
+			case I:
+				return "I";
+			case J:
+				return "J";
+			case K:
+				return "K";
+			case L:
+				return "L";
+			case M:
+				return "M";
+			case N:
+				return "N";
+			case O:
+				return "O";
+			case P:
+				return "P";
+			case Q:
+				return "Q";
+			case R:
+				return "R";
+			case S:
+				return "S";
+			case T:
+				return "T";
+			case U:
+				return "U";
+			case V:
+				return "V";
+			case W:
+				return "W";
+			case X:
+				return "X";
+			case Y:
+				return "Y";
+			case Z:
+				return "Z";
+			case COMMA:
+				return ",";
+			case PERIOD:
+				return ".";
+			case ALT_LEFT:
+				return "L-Alt";
+			case ALT_RIGHT:
+				return "R-Alt";
+			case SHIFT_LEFT:
+				return "L-Shift";
+			case SHIFT_RIGHT:
+				return "R-Shift";
+			case TAB:
+				return "Tab";
+			case SPACE:
+				return "Space";
+			case SYM:
+				return "SYM";
+			case EXPLORER:
+				return "Explorer";
+			case ENVELOPE:
+				return "Envelope";
+			case ENTER:
+				return "Enter";
+			case DEL:
+				return "Delete"; // also BACKSPACE
+			case GRAVE:
+				return "`";
+			case MINUS:
+				return "-";
+			case EQUALS:
+				return "=";
+			case LEFT_BRACKET:
+				return "[";
+			case RIGHT_BRACKET:
+				return "]";
+			case BACKSLASH:
+				return "\\";
+			case SEMICOLON:
+				return ";";
+			case APOSTROPHE:
+				return "'";
+			case SLASH:
+				return "/";
+			case AT:
+				return "@";
+			case NUM:
+				return "Num";
+			case HEADSETHOOK:
+				return "Headset Hook";
+			case FOCUS:
+				return "Focus";
+			case PLUS:
+				return "Plus";
+			case MENU:
+				return "Menu";
+			case NOTIFICATION:
+				return "Notification";
+			case SEARCH:
+				return "Search";
+			case MEDIA_PLAY_PAUSE:
+				return "Play/Pause";
+			case MEDIA_STOP:
+				return "Stop Media";
+			case MEDIA_NEXT:
+				return "Next Media";
+			case MEDIA_PREVIOUS:
+				return "Prev Media";
+			case MEDIA_REWIND:
+				return "Rewind";
+			case MEDIA_FAST_FORWARD:
+				return "Fast Forward";
+			case MUTE:
+				return "Mute";
+			case PAGE_UP:
+				return "Page Up";
+			case PAGE_DOWN:
+				return "Page Down";
+			case PICTSYMBOLS:
+				return "PICTSYMBOLS";
+			case SWITCH_CHARSET:
+				return "SWITCH_CHARSET";
+			case BUTTON_A:
+				return "A Button";
+			case BUTTON_B:
+				return "B Button";
+			case BUTTON_C:
+				return "C Button";
+			case BUTTON_X:
+				return "X Button";
+			case BUTTON_Y:
+				return "Y Button";
+			case BUTTON_Z:
+				return "Z Button";
+			case BUTTON_L1:
+				return "L1 Button";
+			case BUTTON_R1:
+				return "R1 Button";
+			case BUTTON_L2:
+				return "L2 Button";
+			case BUTTON_R2:
+				return "R2 Button";
+			case BUTTON_THUMBL:
+				return "Left Thumb";
+			case BUTTON_THUMBR:
+				return "Right Thumb";
+			case BUTTON_START:
+				return "Start";
+			case BUTTON_SELECT:
+				return "Select";
+			case BUTTON_MODE:
+				return "Button Mode";
+			case FORWARD_DEL:
+				return "Forward Delete";
+			case CONTROL_LEFT:
+				return "L-Ctrl";
+			case CONTROL_RIGHT:
+				return "R-Ctrl";
+			case ESCAPE:
+				return "Escape";
+			case END:
+				return "End";
+			case INSERT:
+				return "Insert";
+			case NUMPAD_0:
+				return "Numpad 0";
+			case NUMPAD_1:
+				return "Numpad 1";
+			case NUMPAD_2:
+				return "Numpad 2";
+			case NUMPAD_3:
+				return "Numpad 3";
+			case NUMPAD_4:
+				return "Numpad 4";
+			case NUMPAD_5:
+				return "Numpad 5";
+			case NUMPAD_6:
+				return "Numpad 6";
+			case NUMPAD_7:
+				return "Numpad 7";
+			case NUMPAD_8:
+				return "Numpad 8";
+			case NUMPAD_9:
+				return "Numpad 9";
+			case COLON:
+				return ":";
+			case F1:
+				return "F1";
+			case F2:
+				return "F2";
+			case F3:
+				return "F3";
+			case F4:
+				return "F4";
+			case F5:
+				return "F5";
+			case F6:
+				return "F6";
+			case F7:
+				return "F7";
+			case F8:
+				return "F8";
+			case F9:
+				return "F9";
+			case F10:
+				return "F10";
+			case F11:
+				return "F11";
+			case F12:
+				return "F12";
+				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
+			default:
+				// key name not found
+				return null;
+			}
+		}
+
+		private static ObjectIntMap<String> keyNames;
+
+		/** @param keyname the keyname returned by the {@link Keys#toString(int)} method
+		 * @return the int keycode */
+		public static int valueOf (String keyname) {
+			if (keyNames == null) initializeKeyNames();
+			return keyNames.get(keyname, -1);
+		}
+
+		/** lazily intialized in {@link Keys#valueOf(String)} */
+		private static void initializeKeyNames () {
+			keyNames = new ObjectIntMap<String>();
+			for (int i = 0; i < 256; i++) {
+				String name = toString(i);
+				if (name != null) keyNames.put(name, i);
+			}
+		}
 	}
 
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
@@ -240,7 +570,8 @@ public interface Input {
 	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerZ ();
 
-	/** @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner. */
+	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
+	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
 
 	/** Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
@@ -258,7 +589,8 @@ public interface Input {
 	/** @return the different between the current pointer location and the last pointer location on the x-axis. */
 	public int getDeltaX (int pointer);
 
-	/** @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner. */
+	/** @return The y coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
+	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getY ();
 
 	/** Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
@@ -279,7 +611,7 @@ public interface Input {
 	/** @return whether the screen is currently touched. */
 	public boolean isTouched ();
 
-	/** @return whether a new touch down event just occured. */
+	/** @return whether a new touch down event just occurred. */
 	public boolean justTouched ();
 
 	/** Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
@@ -292,7 +624,7 @@ public interface Input {
 	public boolean isTouched (int pointer);
 
 	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
-	 * constant is meaningful.
+	 * constant is meaningful before version 4.0.
 	 * @param button the button to check.
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
@@ -303,6 +635,12 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
+	/** Returns whether the key has just been pressed.
+	 * 
+	 * @param key The key code as found in {@link Input.Keys}.
+	 * @return true or false. */
+	public boolean isKeyJustPressed (int key);
+
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
 	 * thread.
@@ -310,16 +648,7 @@ public interface Input {
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
-	public void getTextInput (TextInputListener listener, String title, String text);
-
-	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
-	 * rendering thread.
-	 * 
-	 * @param listener The TextInputListener.
-	 * @param title The title of the text input dialog.
-	 * @param placeholder The placeholder text presented to the user. */
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder);
+	public void getTextInput (TextInputListener listener, String title, String text, String hint);
 
 	/** Sets the on-screen keyboard visible if available.
 	 * 
@@ -380,10 +709,13 @@ public interface Input {
 	 * @param catchBack whether to catch the back button */
 	public void setCatchBackKey (boolean catchBack);
 
+	/** @return whether the back button is currently being caught */
+	public boolean isCatchBackKey ();
+
 	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
 	 * effect on the desktop.
 	 * 
-	 * @param catchMenu whether to catch the back button */
+	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
@@ -412,7 +744,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
+	 * coordinates are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 
@@ -423,4 +756,15 @@ public interface Input {
 	 * @param x the x-position
 	 * @param y the y-position */
 	public void setCursorPosition (int x, int y);
+
+	/** Only viable on the desktop. Will set the mouse cursor image to the image represented by the
+	 * {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format, width & height must be powers-of-two
+	 * greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). To revert to
+	 * the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
+	 * 
+	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default
+	 *           operating system cursor
+	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
+	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner) */
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot);
 }

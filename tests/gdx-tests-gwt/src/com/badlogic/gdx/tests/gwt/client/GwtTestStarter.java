@@ -19,13 +19,15 @@ package com.badlogic.gdx.tests.gwt.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 
 public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
-		return new GwtApplicationConfiguration(640, 640);
+		return new GwtApplicationConfiguration(480, 320);
 	}
 
 	@Override

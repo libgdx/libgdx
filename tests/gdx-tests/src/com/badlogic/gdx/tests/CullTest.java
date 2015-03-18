@@ -22,30 +22,36 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class CullTest extends GdxTest implements ApplicationListener {
 
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	Mesh sphere;
+	Model sphere;
 	Camera cam;
 	SpriteBatch batch;
+	ModelBatch modelBatch;
 	BitmapFont font;
-	Vector3[] positions = new Vector3[100];
+	ModelInstance[] instances = new ModelInstance[100];
+	final Vector3 pos = new Vector3();
 
 	@Override
 	public void create () {
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		ModelBuilder builder = new ModelBuilder();
+		sphere = builder.createSphere(2f, 2f, 2f, 16, 16, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)),
+			Usage.Position | Usage.Normal);
 		// cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam = new OrthographicCamera(45, 45 * (Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight()));
 
@@ -53,10 +59,13 @@ public class CullTest extends GdxTest implements ApplicationListener {
 		cam.far = 200;
 
 		Random rand = new Random();
-		for (int i = 0; i < positions.length; i++) {
-			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat()
-				* 100, rand.nextFloat() * -100 - 3);
+		for (int i = 0; i < instances.length; i++) {
+			pos.set(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat() * 100,
+				rand.nextFloat() * -100 - 3);
+			instances[i] = new ModelInstance(sphere, pos);
 		}
+		modelBatch = new ModelBatch();
+
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		// Gdx.graphics.setVSync(true);
@@ -65,33 +74,32 @@ public class CullTest extends GdxTest implements ApplicationListener {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.gl10;
+		GL20 gl = Gdx.gl20;
 
 		gl.glClearColor(0, 0, 0, 0);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		cam.update();
-		cam.apply(gl);
+		modelBatch.begin(cam);
 
 		int visible = 0;
-		for (int i = 0; i < positions.length; i++) {
-			if (cam.frustum.sphereInFrustum(positions[i], 1)) {
-				gl.glColor4f(1, 1, 1, 1);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i].transform.getTranslation(pos);
+			if (cam.frustum.sphereInFrustum(pos, 1)) {
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.WHITE);
 				visible++;
 			} else {
-				gl.glColor4f(1, 0, 0, 1);
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.RED);
 			}
-			gl.glPushMatrix();
-			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render(GL10.GL_TRIANGLES);
-			gl.glPopMatrix();
+			modelBatch.render(instances[i]);
 		}
+		modelBatch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 
-		gl.glDisable(GL10.GL_DEPTH_TEST);
+		gl.glDisable(GL20.GL_DEPTH_TEST);
 		batch.begin();
 		font.draw(batch, "visible: " + visible + "/100" + ", fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
 		batch.end();

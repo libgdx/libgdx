@@ -2,12 +2,13 @@
 <classpath>
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
 	<classpathentry excluding="**/.svn/*" kind="src" path="assets"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry kind="lib" path="libs/JavaFreeType.jar"/>
 	<classpathentry kind="lib" path="libs/jna.jar"/>
 	<classpathentry kind="lib" path="libs/TWLThemeEditor.jar"/>
 	<classpathentry kind="lib" path="libs/xpp3-1.1.4c.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-headless"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

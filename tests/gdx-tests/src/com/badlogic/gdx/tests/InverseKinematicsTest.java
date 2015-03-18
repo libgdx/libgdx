@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -26,11 +26,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class InverseKinematicsTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	static class Bone {
 		final float len;
@@ -78,7 +73,7 @@ public class InverseKinematicsTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
 		renderer.setProjectionMatrix(camera.combined);
@@ -117,12 +112,12 @@ public class InverseKinematicsTest extends GdxTest {
 			diff.set(endPoint.x, endPoint.y).sub(bones[i + 1].position.x, bones[i + 1].position.y);
 			diff.add(0, gravity);
 			diff.add(bones[i + 1].inertia.x, bones[i + 1].inertia.y);
-			diff.nor().mul(bones[i + 1].len);
+			diff.nor().scl(bones[i + 1].len);
 
 			float x = endPoint.x - diff.x;
 			float y = endPoint.y - diff.y;
 			float delta = Gdx.graphics.getDeltaTime();
-			bones[i + 1].inertia.add((bones[i + 1].position.x - x) * delta, (bones[i + 1].position.y - y) * delta, 0).mul(0.99f);
+			bones[i + 1].inertia.add((bones[i + 1].position.x - x) * delta, (bones[i + 1].position.y - y) * delta, 0).scl(0.99f);
 			bones[i + 1].position.set(x, y, 0);
 		}
 	}

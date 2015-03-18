@@ -33,6 +33,8 @@ public class BuildConfig {
 	public final FileDescriptor libsDir;
 	/** the directory containing the native code **/
 	public final FileDescriptor jniDir;
+	/** additional shared library files to be packed into the natives jar, relative to the jni dir **/
+	public String[] sharedLibs;
 
 	/** Creates a new BuildConfig. The build directory, the libs directory and the jni directory are assumed to be "target", "libs"
 	 * and "jni". All paths are relative to the application's working directory.

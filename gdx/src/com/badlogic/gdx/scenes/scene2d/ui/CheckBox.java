@@ -17,8 +17,8 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Nathan Sweet */
 public class CheckBox extends TextButton {
 	private Image image;
+	private Cell imageCell;
 	private CheckBoxStyle style;
 
 	public CheckBox (String text, Skin skin) {
@@ -38,13 +39,12 @@ public class CheckBox extends TextButton {
 
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
-		clear();
-		add(image = new Image(style.checkboxOff));
+		clearChildren();
+		imageCell = add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
 		add(label);
 		label.setAlignment(Align.left);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {
@@ -59,8 +59,23 @@ public class CheckBox extends TextButton {
 		return style;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
-		image.setDrawable(isChecked ? style.checkboxOn : style.checkboxOff);
+	public void draw (Batch batch, float parentAlpha) {
+		Drawable checkbox = null;
+		if (isDisabled()) {
+			if (isChecked && style.checkboxOnDisabled != null)
+				checkbox = style.checkboxOnDisabled;
+			else
+				checkbox = style.checkboxOffDisabled;
+		}
+		if (checkbox == null) {
+			if (isChecked && style.checkboxOn != null)
+				checkbox = style.checkboxOn;
+			else if (isOver() && style.checkboxOver != null && !isDisabled())
+				checkbox = style.checkboxOver;
+			else
+				checkbox = style.checkboxOff;
+		}
+		image.setDrawable(checkbox);
 		super.draw(batch, parentAlpha);
 	}
 
@@ -68,10 +83,16 @@ public class CheckBox extends TextButton {
 		return image;
 	}
 
+	public Cell getImageCell () {
+		return imageCell;
+	}
+
 	/** The style for a select box, see {@link CheckBox}.
 	 * @author Nathan Sweet */
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
+		/** Optional. */
+		public Drawable checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
 
 		public CheckBoxStyle () {
 		}
@@ -86,6 +107,9 @@ public class CheckBox extends TextButton {
 		public CheckBoxStyle (CheckBoxStyle style) {
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;
+			this.checkboxOver = style.checkboxOver;
+			this.checkboxOffDisabled = style.checkboxOffDisabled;
+			this.checkboxOnDisabled = style.checkboxOnDisabled;
 			this.font = style.font;
 			this.fontColor = new Color(style.fontColor);
 		}

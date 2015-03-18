@@ -50,6 +50,19 @@ public class FileProcessor {
 		}
 	};
 
+	public FileProcessor () {
+	}
+
+	/** Copy constructor. */
+	public FileProcessor (FileProcessor processor) {
+		inputFilter = processor.inputFilter;
+		comparator = processor.comparator;
+		inputRegex.addAll(processor.inputRegex);
+		outputSuffix = processor.outputSuffix;
+		recursive = processor.recursive;
+		flattenOutput = processor.flattenOutput;
+	}
+
 	public FileProcessor setInputFilter (FilenameFilter inputFilter) {
 		this.inputFilter = inputFilter;
 		return this;
@@ -61,9 +74,10 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** Adds a case insensitive suffix for matching input files. */
 	public FileProcessor addInputSuffix (String... suffixes) {
 		for (String suffix : suffixes)
-			addInputRegex(".*" + Pattern.quote(suffix));
+			addInputRegex("(?i).*" + Pattern.quote(suffix));
 		return this;
 	}
 
@@ -88,6 +102,12 @@ public class FileProcessor {
 	public FileProcessor setRecursive (boolean recursive) {
 		this.recursive = recursive;
 		return this;
+	}
+
+	/** @param outputRoot May be null.
+	 * @see #process(File, File) */
+	public ArrayList<Entry> process (String inputFile, String outputRoot) throws Exception {
+		return process(new File(inputFile), outputRoot == null ? null : new File(outputRoot));
 	}
 
 	/** Processes the specified input file or directory.
@@ -117,7 +137,11 @@ public class FileProcessor {
 			if (comparator != null) Collections.sort(dirEntries, entryComparator);
 
 			File inputDir = mapEntry.getKey();
-			File newOutputDir = flattenOutput ? outputRoot : dirEntries.get(0).outputDir;
+			File newOutputDir = null;
+			if (flattenOutput)
+				newOutputDir = outputRoot;
+			else if (!dirEntries.isEmpty()) //
+				newOutputDir = dirEntries.get(0).outputDir;
 			String outputName = inputDir.getName();
 			if (outputSuffix != null) outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
@@ -149,6 +173,16 @@ public class FileProcessor {
 
 	private void process (File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<Entry>> dirToEntries,
 		int depth) {
+		// Store empty entries for every directory.
+		for (File file : files) {
+			File dir = file.getParentFile();
+			ArrayList<Entry> entries = dirToEntries.get(dir);
+			if (entries == null) {
+				entries = new ArrayList();
+				dirToEntries.put(dir, entries);
+			}
+		}
+
 		for (File file : files) {
 			if (file.isFile()) {
 				if (inputRegex.size > 0) {
@@ -174,17 +208,12 @@ public class FileProcessor {
 				entry.outputDir = outputDir;
 
 				if (flattenOutput) {
-					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+					entry.outputFile = new File(outputRoot, outputName);
 				} else {
-					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
+					entry.outputFile = new File(outputDir, outputName);
 				}
 
-				ArrayList<Entry> entries = dirToEntries.get(dir);
-				if (entries == null) {
-					entries = new ArrayList();
-					dirToEntries.put(dir, entries);
-				}
-				entries.add(entry);
+				dirToEntries.get(dir).add(entry);
 			}
 			if (recursive && file.isDirectory()) {
 				File subdir = outputDir.getPath().length() == 0 ? new File(file.getName()) : new File(outputDir, file.getName());
@@ -221,6 +250,10 @@ public class FileProcessor {
 		public Entry (File inputFile, File outputFile) {
 			this.inputFile = inputFile;
 			this.outputFile = outputFile;
+		}
+
+		public String toString () {
+			return inputFile.toString();
 		}
 	}
 }

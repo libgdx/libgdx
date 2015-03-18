@@ -17,15 +17,16 @@
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 
 /** Drawable for a {@link Sprite}.
  * @author Nathan Sweet */
-public class SpriteDrawable extends BaseDrawable {
+public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	private Sprite sprite;
 
-	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */
+	/** Creates an uninitialized SpriteDrawable. The sprite must be set before use. */
 	public SpriteDrawable () {
 	}
 
@@ -38,7 +39,15 @@ public class SpriteDrawable extends BaseDrawable {
 		setSprite(drawable.sprite);
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
+		draw(batch, x, y, width / 2f, height / 2f, width, height, 1f, 1f, 0f);
+	}
+
+	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
+		float scaleY, float rotation) {
+		sprite.setOrigin(originX, originY);
+		sprite.setRotation(rotation);
+		sprite.setScale(scaleX, scaleY);
 		sprite.setBounds(x, y, width, height);
 		Color color = sprite.getColor();
 		sprite.setColor(Color.tmp.set(color).mul(batch.getColor()));
@@ -54,5 +63,18 @@ public class SpriteDrawable extends BaseDrawable {
 
 	public Sprite getSprite () {
 		return sprite;
+	}
+
+	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
+	public SpriteDrawable tint (Color tint) {
+		SpriteDrawable drawable = new SpriteDrawable(this);
+		Sprite sprite = drawable.getSprite();
+		if (sprite instanceof AtlasSprite)
+			sprite = new AtlasSprite((AtlasSprite)sprite);
+		else
+			sprite = new Sprite(sprite);
+		sprite.setColor(tint);
+		drawable.setSprite(sprite);
+		return drawable;
 	}
 }

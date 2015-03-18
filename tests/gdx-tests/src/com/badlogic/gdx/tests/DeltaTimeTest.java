@@ -22,11 +22,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class DeltaTimeTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	long lastFrameTime;
 
 	@Override

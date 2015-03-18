@@ -1,249 +1,472 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="com.badlogic.gdx">
-	<inherits name="com.esotericsoftware.TableLayout"/>
 	<source path="gdx">
-		<include name="graphics/g3d/Animation.java"/>
-		<include name="graphics/g3d/Animator.java"/>
+	    
+	<!--  --> 
 		<include name="Application.java"/>
 		<include name="ApplicationAdapter.java"/>
 		<include name="ApplicationListener.java"/>
-		<include name="assets/AssetDescriptor.java"/>
-		<include name="assets/AssetErrorListener.java"/>
-		<include name="assets/loaders/AssetLoader.java"/>
-		<include name="assets/AssetLoaderParameters.java"/>
-		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
 		<include name="Audio.java"/>
-		<include name="audio/AudioDevice.java"/>
-		<include name="audio/AudioRecorder.java"/>
-		<include name="utils/Base64Coder.java"/>
-		<include name="src/com/esotericsoftware/tablelayout/BaseTableLayout.java"/>
-		<include name="utils/BinaryHeap.java"/>
-		<include name="graphics/g2d/BitmapFont.java"/>
-		<include name="graphics/g2d/BitmapFontCache.java"/>
-		<include name="graphics/g2d/Polygon*.java"/>
-		<include name="assets/loaders/BitmapFontLoader.java"/>
-		<include name="utils/BooleanArray.java"/>
-		<include name="math/collision/BoundingBox.java"/>
-		<include name="graphics/Camera.java"/>
-		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
-		<include name="math/CatmullRomSpline.java"/>
-		<include name="src/com/esotericsoftware/tablelayout/Cell.java"/>
-		<include name="utils/CharArray.java"/>
-		<include name="math/Circle.java"/>
-		<include name="graphics/Color.java"/>
-		<include name="utils/ComparableTimSort.java"/>
-		<include name="graphics/g3d/decals/Decal.java"/>
-		<include name="graphics/g3d/decals/DecalBatch.java"/>
-		<include name="graphics/g3d/decals/DecalMaterial.java"/>
-		<include name="graphics/g3d/decals/DefaultGroupStrategy.java"/>
-		<include name="utils/Disposable.java"/>
-		<include name="math/EarClippingTriangulator.java"/>
-		<include name="graphics/g2d/EmptyNinePatch.java"/>
-		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
-		<include name="graphics/FPSLogger.java"/>
-		<include name="assets/loaders/FileHandleResolver.java"/>
 		<include name="Files.java"/>
-		<include name="utils/FloatArray.java"/>
-		<include name="graphics/glutils/FrameBuffer.java"/>
-		<include name="math/Frustum.java"/>
-		<include name="graphics/GL10.java"/>
-		<include name="graphics/GL11.java"/>
-		<include name="graphics/GL20.java"/>
-		<include name="graphics/GLCommon.java"/>
-		<include name="graphics/GLU.java"/>
 		<include name="Game.java"/>
 		<include name="Gdx.java"/>
-		<include name="utils/GdxRuntimeException.java"/>
-		<include name="input/GestureDetector.java"/>
 		<include name="Graphics.java"/>
-		<include name="graphics/g3d/decals/GroupPlug.java"/>
-		<include name="graphics/g3d/decals/GroupStrategy.java"/>
-		<include name="utils/IdentityMap.java"/>
-		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
-		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>
-		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>
-		<include name="graphics/glutils/IndexBufferObjectSubData.java"/>
-		<include name="graphics/glutils/IndexData.java"/>
-		<include name="graphics/glutils/ShaderProgram.java"/>
 		<include name="Input.java"/>
 		<include name="InputAdapter.java"/>
 		<include name="InputMultiplexer.java"/>
 		<include name="InputProcessor.java"/>
-		<include name="utils/IntArray.java"/>
-		<include name="utils/IntMap.java"/>
-		<include name="assets/loaders/resolvers/InternalFileHandleResolver.java"/>
-		<include name="math/Interpolation.java"/>
-		<include name="math/Intersector.java"/>
-		<include name="utils/JsonReader.java"/>
-		<include name="utils/JsonWriter.java"/>
-		<include name="graphics/g3d/keyframed/Keyframe.java"/>
-		<include name="graphics/g3d/keyframed/KeyframeAnimation.java"/>
-		<include name="graphics/g3d/keyframed/KeyframeAnimator.java"/>
-		<include name="graphics/g3d/keyframed/KeyframedModel.java"/>
-		<include name="utils/Logger.java"/>
-		<include name="utils/LongArray.java"/>
-		<include name="utils/LongMap.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Animation.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5AnimationInfo.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Animator.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Jni.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Joints.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Loader.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Mesh.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Model.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Quaternion.java"/>
-		<include name="graphics/g3d/loaders/md5/MD5Renderer.java"/>
-		<include name="graphics/g3d/Material.java"/>
-		<include name="math/MathUtils.java"/>
-		<include name="math/Matrix3.java"/>
-		<include name="graphics/Mesh.java"/>
-		<include name="graphics/glutils/MipMapGenerator.java"/>
-		<include name="graphics/g3d/loaders/ModelLoaderOld.java"/>
-		<include name="audio/Music.java"/>
+		<include name="InputProcessorQueue.java"/>
+		<include name="LifecycleListener.java"/>
+		<include name="Net.java"/>
+		<include name="Preferences.java"/>
+		<include name="Screen.java"/>
+		<include name="ScreenAdapter.java"/>
+		<include name="Version.java"/>
+		
+	<!-- assets -->		
+		<include name="assets/AssetDescriptor.java"/>
+		<include name="assets/AssetErrorListener.java"/>
+		<include name="assets/AssetLoaderParameters.java"/>
+		<include name="assets/AssetLoadingTask.java"/>
+		<include name="assets/AssetManager.java"/>
+		<include name="assets/RefCountedContainer.java"/>
+
+	<!-- assets/loaders -->
+		<include name="assets/loaders/AssetLoader.java"/>
+		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
+		<include name="assets/loaders/BitmapFontLoader.java"/>
+		<exclude name="assets/loaders/CubemapLoader.java"/> <!--  relies on KTXTextureData -->
+		<include name="assets/loaders/FileHandleResolver.java"/>
+		<include name="assets/loaders/I18NBundleLoader.java"/>
+		<include name="assets/loaders/ModelLoader.java"/>
 		<include name="assets/loaders/MusicLoader.java"/>
-		<include name="graphics/g2d/NinePatch.java"/>
-		<include name="graphics/g3d/loaders/obj/ObjLoader.java"/>
-		<include name="utils/ObjectIntMap.java"/>
-		<include name="utils/ObjectMap.java"/>
-		<include name="utils/OrderedMap.java"/>
+		<include name="assets/loaders/ParticleEffectLoader.java"/>
+		<include name="assets/loaders/PixmapLoader.java"/>
+		<include name="assets/loaders/SkinLoader.java"/>
+		<include name="assets/loaders/SoundLoader.java"/>
+		<include name="assets/loaders/SynchronousAssetLoader.java"/>
+		<include name="assets/loaders/TextureAtlasLoader.java"/>
+		<include name="assets/loaders/TextureLoader.java"/> <!-- Emulated -->
+		
+	<!-- assets/loaders/resolvers -->		
+		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
+		<include name="assets/loaders/resolvers/InternalFileHandleResolver.java"/>
+		<include name="assets/loaders/resolvers/ResolutionFileResolver.java"/> <!-- Emulated -->
+
+	<!-- audio -->		
+		<include name="audio/AudioDevice.java"/>
+		<include name="audio/AudioRecorder.java"/>
+		<include name="audio/Music.java"/>
+		<include name="audio/Sound.java"/>
+
+	<!-- files -->
+		<include name="files/FileHandle.java"/> <!-- Emulated -->
+		<include name="files/FileHandleStream.java"/> <!-- Emulated -->
+		
+	<!-- graphics -->		
+		<include name="graphics/Camera.java"/>
+		<include name="graphics/Color.java"/>
+		<include name="graphics/Colors.java"/>
+		<include name="graphics/Cubemap.java"/>
+		<include name="graphics/CubemapData.java"/>
+		<include name="graphics/FPSLogger.java"/>
+		<include name="graphics/GL20.java"/>
+		<include name="graphics/GL30.java"/>
+		<include name="graphics/GLCommon.java"/>
+		<include name="graphics/GLTexture.java"/>
+		<include name="graphics/Mesh.java"/>
 		<include name="graphics/OrthographicCamera.java"/>
-		<include name="src/com/esotericsoftware/tablelayout/Value.java"/>
+		<include name="graphics/PerspectiveCamera.java"/>
+		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
+		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
+		<include name="graphics/Texture.java"/>
+		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
+		<include name="graphics/VertexAttribute.java"/>
+		<include name="graphics/VertexAttributes.java"/>
+		
+	<!-- graphics/g2d -->
+		<include name="graphics/g2d/Animation.java"/>
+		<include name="graphics/g2d/Batch.java"/>
+		<include name="graphics/g2d/BitmapFont.java"/>
+		<include name="graphics/g2d/BitmapFontCache.java"/>
+		<include name="graphics/g2d/CpuSpriteBatch.java"/>
+		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
+		<include name="graphics/g2d/NinePatch.java"/>
+		<include name="graphics/g2d/ParticleEffect.java"/> <!-- Emulated: Not supporting save -->
 		<include name="graphics/g2d/ParticleEffectPool.java"/>
 		<include name="graphics/g2d/ParticleEmitter.java"/>
-		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>
-		<include name="graphics/PerspectiveCamera.java"/>
-		<include name="assets/loaders/PixmapLoader.java"/>
+		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>		
 		<include name="graphics/g2d/PixmapPacker.java"/>
-		<include name="graphics/glutils/PixmapTextureData.java"/>
-		<include name="math/Plane.java"/>
-		<include name="graphics/g3d/decals/PluggableGroupStrategy.java"/>
-		<include name="math/Polygon.java"/>
-		<include name="utils/Pool.java"/>
-		<include name="utils/Pools.java"/>
-		<include name="utils/SnapshotArray.java"/>
-		<include name="utils/PooledLinkedList.java"/>
-		<include name="utils/DelayedRemovalArray.java"/>
-		<include name="utils/Timer.java"/>
-		<include name="Preferences.java"/>
-		<include name="math/Quaternion.java"/>
-		<include name="math/collision/Ray.java"/>
-		<include name="math/Rectangle.java"/>
-		<include name="assets/RefCountedContainer.java"/>
-		<include name="utils/Scaling.java"/>
-		<include name="Screen.java"/>
-		<include name="math/collision/Segment.java"/>
-		<include name="graphics/glutils/ShapeRenderer.java"/>
-		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
-		<include name="graphics/g2d/tiled/SimpleTileAtlas.java"/>
-		<include name="assets/loaders/SkinLoader.java"/>
-		<include name="utils/Sort.java"/>
-		<include name="utils/SortedIntList.java"/>
-		<include name="audio/Sound.java"/>
-		<include name="assets/loaders/SoundLoader.java"/>
-		<include name="math/collision/Sphere.java"/>
+		<exclude name="graphics/g2d/PixmapPackerIO.java"/>
+		<include name="graphics/g2d/PolygonRegion.java"/>
+		<include name="graphics/g2d/PolygonRegionLoader.java"/>
+		<include name="graphics/g2d/PolygonSprite.java"/>
+		<include name="graphics/g2d/PolygonSpriteBatch.java"/>
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
 		<include name="graphics/g2d/SpriteCache.java"/>
-		<include name="assets/loaders/SynchronousAssetLoader.java"/>
+		<include name="graphics/g2d/TextMarkup.java"/>
 		<include name="graphics/g2d/TextureAtlas.java"/>
-		<include name="assets/loaders/TextureAtlasLoader.java"/>
-		<include name="graphics/TextureData.java"/>
-		<include name="graphics/TextureDict.java"/>
-		<include name="graphics/TextureRef.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
-		<include name="graphics/g2d/tiled/TileAtlas.java"/>
-		<include name="assets/loaders/TileAtlasLoader.java"/>
-		<include name="graphics/g2d/tiled/TileMapRenderer.java"/>
-		<include name="graphics/g2d/tiled/TileSet.java"/>
-		<include name="graphics/g2d/tiled/TiledLayer.java"/>
-		<include name="graphics/g2d/tiled/TiledMap.java"/>
-		<include name="graphics/g2d/tiled/TiledObject.java"/>
-		<include name="graphics/g2d/tiled/TiledObjectGroup.java"/>
-		<include name="utils/TimSort.java"/>
-		<include name="src/com/esotericsoftware/tablelayout/Toolkit.java"/>
-		<include name="math/Vector2.java"/>
-		<include name="math/Vector3.java"/>
-		<include name="Version.java"/>
-		<include name="graphics/VertexAttribute.java"/>
-		<include name="graphics/VertexAttributes.java"/>
+		
+	<!-- graphics/g3d -->
+		<include name="graphics/g3d/Attribute.java"/>
+		<include name="graphics/g3d/Attributes.java"/>
+		<include name="graphics/g3d/Environment.java"/>
+		<include name="graphics/g3d/Material.java"/>
+		<include name="graphics/g3d/Model.java"/>
+		<include name="graphics/g3d/ModelBatch.java"/>
+		<include name="graphics/g3d/ModelInstance.java"/>
+		<include name="graphics/g3d/Renderable.java"/>
+		<include name="graphics/g3d/RenderableProvider.java"/>
+		<include name="graphics/g3d/Shader.java"/>
+		
+	<!-- graphics/g3d/attributes -->
+		<include name="graphics/g3d/attributes/BlendingAttribute.java"/>
+		<include name="graphics/g3d/attributes/ColorAttribute.java"/>
+		<include name="graphics/g3d/attributes/CubemapAttribute.java"/>
+		<include name="graphics/g3d/attributes/DepthTestAttribute.java"/>
+		<include name="graphics/g3d/attributes/FloatAttribute.java"/>
+		<include name="graphics/g3d/attributes/IntAttribute.java"/>
+		<include name="graphics/g3d/attributes/TextureAttribute.java"/>
+		
+	<!-- graphics/g3d/decals -->
+		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
+		<include name="graphics/g3d/decals/Decal.java"/>
+		<include name="graphics/g3d/decals/DecalBatch.java"/>
+		<include name="graphics/g3d/decals/DecalMaterial.java"/>
+		<include name="graphics/g3d/decals/DefaultGroupStrategy.java"/>
+		<include name="graphics/g3d/decals/GroupPlug.java"/>
+		<include name="graphics/g3d/decals/GroupStrategy.java"/>
+		<include name="graphics/g3d/decals/PluggableGroupStrategy.java"/>
+		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
+
+	<!-- graphics/g3d/environment -->		
+		<include name="graphics/g3d/environment/AmbientCubemap.java"/>
+		<include name="graphics/g3d/environment/BaseLight.java"/>
+		<include name="graphics/g3d/environment/DirectionalLight.java"/>
+		<include name="graphics/g3d/environment/DirectionalShadowLight.java"/>
+		<include name="graphics/g3d/environment/PointLight.java"/>
+		<include name="graphics/g3d/environment/SpotLight.java"/>
+		<include name="graphics/g3d/environment/ShadowMap.java"/>
+		<include name="graphics/g3d/environment/Sphericalharmonics.java"/>
+				
+	<!-- graphics/g3d/loader -->		
+		<include name="graphics/g3d/loader/G3dModelLoader.java"/>
+		<include name="graphics/g3d/loader/ObjLoader.java"/>
+		
+	<!-- graphics/g3d/model -->
+		<include name="graphics/g3d/model/Animation.java"/>
+		<include name="graphics/g3d/model/MeshPart.java"/>
+		<include name="graphics/g3d/model/Node.java"/>
+		<include name="graphics/g3d/model/NodeAnimation.java"/>
+		<include name="graphics/g3d/model/NodeKeyframe.java"/>
+		<include name="graphics/g3d/model/NodePart.java"/>
+
+	<!-- graphics/g3d/model/data -->
+		<include name="graphics/g3d/model/data/ModelAnimation.java"/>
+		<include name="graphics/g3d/model/data/ModelData.java"/>
+		<include name="graphics/g3d/model/data/ModelMaterial.java"/>
+		<include name="graphics/g3d/model/data/ModelMesh.java"/>
+		<include name="graphics/g3d/model/data/ModelMeshPart.java"/>
+		<include name="graphics/g3d/model/data/ModelNode.java"/>
+		<include name="graphics/g3d/model/data/ModelNodeAnimation.java"/>
+		<include name="graphics/g3d/model/data/ModelNodeKeyframe.java"/>
+		<include name="graphics/g3d/model/data/ModelNodePart.java"/>
+		<include name="graphics/g3d/model/data/ModelTexture.java"/>
+	
+	<!-- graphics/g3d/particles -->
+		<include name="graphics/g3d/particles/**/*.java"/>
+		
+	<!-- graphics/g3d/shaders -->
+		<include name="graphics/g3d/shaders/BaseShader.java"/>
+		<include name="graphics/g3d/shaders/DefaultShader.java"/>
+		<include name="graphics/g3d/shaders/DepthShader.java"/>
+		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
+
+	<!-- graphics/g3d/utils -->
+		<include name="graphics/g3d/utils/AnimationController.java"/>
+		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
+		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
+		<include name="graphics/g3d/utils/CameraInputController.java"/>
+		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
+		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
+		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
+		<include name="graphics/g3d/utils/DepthShaderProvider.java"/>
+		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
+		<include name="graphics/g3d/utils/GLES10ShaderProvider.java"/>
+		<include name="graphics/g3d/utils/MeshBuilder.java"/>
+		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
+		<include name="graphics/g3d/utils/ModelBuilder.java"/>
+		<include name="graphics/g3d/utils/RenderableSorter.java"/>
+		<include name="graphics/g3d/utils/RenderContext.java"/>
+		<include name="graphics/g3d/utils/ShaderProvider.java"/>
+		<include name="graphics/g3d/utils/TextureBinder.java"/>
+		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
+		<include name="graphics/g3d/utils/TextureProvider.java"/>
+		
+	<!-- graphics/glutils -->
+		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
+		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
+		<include name="graphics/glutils/FacedCubemapData.java"/>
+		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
+		<include name="graphics/glutils/FloatFrameBuffer.java"/>
+		<include name="graphics/glutils/FloatTextureData.java"/>
+		<include name="graphics/glutils/FrameBuffer.java"/>
+		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
+		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>
+		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>
+		<include name="graphics/glutils/IndexArray.java"/>  <!-- Emulated -->
+		<include name="graphics/glutils/IndexBufferObject.java"/> <!-- Emulated -->
+		<include name="graphics/glutils/IndexBufferObjectSubData.java"/>
+		<include name="graphics/glutils/IndexData.java"/>
+		<exclude name="graphics/glutils/KTXTextureData.java"/>  <!-- Rely on ETC1 -->
+		<include name="graphics/glutils/MipMapGenerator.java"/>
+		<include name="graphics/glutils/PixmapTextureData.java"/>
+		<include name="graphics/glutils/ShaderProgram.java"/>
+		<include name="graphics/glutils/ShapeRenderer.java"/>
+		<include name="graphics/glutils/VertexArray.java"/> <!-- Emulated -->
+		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
-		<include name="scenes/scene2d/ui/Widget.java"/>
-		<include name="scenes/scene2d/ui/WidgetGroup.java"/>
-		<include name="scenes/scene2d/ui/Window.java"/>
+
+	<!-- graphics/profiling -->
+		<include name="graphics/profiling/GL20Profiler.java"/>
+		<include name="graphics/profiling/GL30Profiler.java"/>
+		<include name="graphics/profiling/GLProfiler.java"/>
+		
+						
+	<!-- input -->
+		<include name="input/GestureDetector.java"/>
+		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
+		<exclude name="input/RemoteSender.java"/> <!-- Reason: Networking -->
+		
+	<!-- maps -->
+		<include name="maps/ImageResolver.java"/>
+		<include name="maps/Map.java"/>
+		<include name="maps/MapLayer.java"/>
+		<include name="maps/MapLayers.java"/>
+		<include name="maps/MapObject.java"/>
+		<include name="maps/MapObjects.java"/>
+		<include name="maps/MapProperties.java"/>
+		<include name="maps/MapRenderer.java"/>
+		
+	<!-- maps/objects -->
+		<include name="maps/objects/CircleMapObject.java"/>
+		<include name="maps/objects/EllipseMapObject.java"/>
+		<include name="maps/objects/PolygonMapObject.java"/>
+		<include name="maps/objects/PolylineMapObject.java"/>
+		<include name="maps/objects/RectangleMapObject.java"/>
+		<include name="maps/objects/TextureMapObject.java"/>
+	
+	<!-- maps/tiled -->
+		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/BaseTmxMapLoader.java"/>
+		<include name="maps/tiled/TideMapLoader.java"/>
+		<include name="maps/tiled/TiledMap.java"/>
+		<include name="maps/tiled/TiledMapRenderer.java"/>
+		<include name="maps/tiled/TiledMapTile.java"/>
+		<include name="maps/tiled/TiledMapTileLayer.java"/>
+		<include name="maps/tiled/TiledMapTileSet.java"/>
+		<include name="maps/tiled/TiledMapTileSets.java"/>
+		<include name="maps/tiled/TiledMapImageLayer.java"/>
+		<include name="maps/tiled/TmxMapHelper.java"/>
+		<include name="maps/tiled/TmxMapLoader.java"/>
+		
+	<!-- maps/tiled/renderers -->
+		<include name="maps/tiled/renderers/BatchTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/HexagonalTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/IsometricStaggeredTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/IsometricTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
+
+	<!-- maps/tiles/tiles -->
+		<include name="maps/tiled/tiles/AnimatedTiledMapTile.java"/>
+		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
+	
+	<!-- math -->
+		<include name="math/Affine2.java"/>
+		<include name="math/Bezier.java"/>
+		<include name="math/Bresenham2.java"/>
+		<include name="math/BSpline.java"/>
+		<include name="math/CatmullRomSpline.java"/>
+		<include name="math/Circle.java"/>
+		<include name="math/ConvexHull.java"/>
+		<include name="math/CumulativeDistribution.java"/>
+		<include name="math/DelaunayTriangulator.java"/>
+		<include name="math/EarClippingTriangulator.java"/>
+		<include name="math/Ellipse.java"/>
+		<include name="math/FloatCounter.java"/>
+		<include name="math/Frustum.java"/>
+		<include name="math/GeometryUtils.java"/>
+		<include name="math/GridPoint2.java"/>
+		<include name="math/GridPoint3.java"/>
+		<include name="math/Interpolation.java"/>
+		<include name="math/Intersector.java"/>
+		<include name="math/MathUtils.java"/>
+		<include name="math/Matrix3.java"/>
+		<include name="math/Matrix4.java"/> <!-- Emulated: JNI -->
+		<include name="math/Path.java"/>
+		<include name="math/Plane.java"/>
+		<include name="math/Polygon.java"/>
+		<include name="math/Polyline.java"/>
+		<include name="math/Quaternion.java"/>
+		<include name="math/RandomXS128.java"/>
+		<include name="math/Rectangle.java"/>
+		<include name="math/Shape2D.java"/>
+		<include name="math/Vector.java"/>
+		<include name="math/Vector2.java"/>
+		<include name="math/Vector3.java"/>		
 		<include name="math/WindowedMean.java"/>
+				
+	<!-- math/collision -->								
+		<include name="math/collision/BoundingBox.java"/>
+		<include name="math/collision/Ray.java"/>
+		<include name="math/collision/Segment.java"/>
+		<include name="math/collision/Sphere.java"/>		
+		
+	<!-- net -->
+		<include name="net/HttpParametersUtils.java"/>
+		<include name="net/HttpStatus.java"/>
+		<exclude name="net/NetJavaImpl.java"/> <!-- Reason: Networking -->
+		<exclude name="net/NetJavaServerSocketImpl.java"/> <!-- Reason: Networking -->
+		<exclude name="net/NetJavaSocketImpl.java"/> <!-- Reason: Networking -->
+		<include name="net/ServerSocket.java"/>
+		<include name="net/ServerSocketHints.java"/>
+		<include name="net/Socket.java"/>
+		<include name="net/SocketHints.java"/>
+		<include name="net/HttpRequestBuilder.java"/>
+	
+	<!-- physics/box2d -->
+	<!-- Box2d is fully emulated in GWT backend -->
+	
+	<!-- physics/box2d/joints -->
+	<!-- Box2d is fully emulated in GWT backend -->
+		
+	<!-- scenes/scene2d -->
+		<include name="scenes/scene2d/**/*.java"/>
+
+	<!-- utils -->
+		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
+		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
+		<exclude name="utils/AtomicQueue.java"/> <!-- Reason: No atomic support -->
+		<include name="utils/Base64Coder.java"/>
+		<include name="utils/BaseJsonReader.java"/>
+		<include name="utils/BinaryHeap.java"/>
+		<include name="utils/Bits.java"/>
+		<include name="utils/BooleanArray.java"/>
+		<include name="utils/BufferUtils.java"/> <!-- Emulated -->
+		<include name="utils/ByteArray.java"/>
+		<include name="utils/CharArray.java"/>
+		<include name="utils/Clipboard.java"/>
+		<include name="utils/ComparableTimSort.java"/>
+		<include name="utils/DataInput.java"/>
+		<include name="utils/DataOutput.java"/>
+		<include name="utils/DelayedRemovalArray.java"/>
+		<include name="utils/Disposable.java"/>
+		<include name="utils/FloatArray.java"/>
+		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
+		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
+		<include name="utils/GdxRuntimeException.java"/>
+		<include name="utils/I18NBundle.java"/>
+		<include name="utils/IdentityMap.java"/>
+		<include name="utils/IntArray.java"/>
+		<include name="utils/IntFloatMap.java"/>
+		<include name="utils/IntIntMap.java"/>
+		<include name="utils/IntMap.java"/>
+		<include name="utils/IntSet.java"/>
+		<include name="utils/Json.java"/>
+		<include name="utils/JsonReader.java"/>
+		<include name="utils/JsonValue.java"/>
+		<include name="utils/JsonWriter.java"/>
+		<include name="utils/LittleEndianInputStream.java"/>
+		<include name="utils/Logger.java"/>
+		<include name="utils/LongArray.java"/>
+		<include name="utils/LongMap.java"/>
+		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
+		<include name="utils/ObjectFloatMap.java"/>
+		<include name="utils/ObjectIntMap.java"/>
+		<include name="utils/ObjectMap.java"/>
+		<include name="utils/ObjectSet.java"/>
+		<include name="utils/OrderedMap.java"/>
+		<include name="utils/OrderedSet.java"/>
+		<include name="utils/PausableThread.java"/>
+		<include name="utils/PerformanceCounter.java"/>
+		<include name="utils/PerformanceCounters.java"/>
+		<include name="utils/Pool.java"/>
+		<include name="utils/PooledLinkedList.java"/>
+		<include name="utils/Pools.java"/>
+		<include name="utils/Predicate.java"/>
+		<include name="utils/PropertiesUtils.java"/>
+		<include name="utils/QuickSelect.java"/>
+		<include name="utils/ReflectionPool.java"/>
+		<include name="utils/Scaling.java"/>
+		<exclude name="utils/ScreenUtils.java"/> <!-- Reason: Type mismatch Buffer->ByteBuffer -->
+		<include name="utils/Select.java"/>
+		<include name="utils/SerializationException.java"/> <!-- Emulated: Reflection -->
+		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
+		<include name="utils/ShortArray.java"/>
+		<include name="utils/SnapshotArray.java"/>
+		<include name="utils/Sort.java"/>
+		<include name="utils/SortedIntList.java"/>
+		<include name="utils/StreamUtils.java"/>
+		<include name="utils/StringBuilder.java"/>
+		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
+		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
+		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
+		<include name="utils/TimSort.java"/>
+		<include name="utils/UBJsonReader.java"/>
+		<include name="utils/UBJsonWriter.java"/>		
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
-		<include name="utils/Clipboard.java"/>
-		<include name="graphics/g2d/Animation.java"/>
-		<include name="graphics/g3d/Animation.java"/>
-		
-		<include name="utils/StringBuilder.java"/>
+
+	<!-- utils/async -->
+		<include name="utils/async/AsyncExecutor.java"/> <!-- Emulated: Threading -->
+		<include name="utils/async/AsyncResult.java"/> <!-- Emulated: Threading -->
+		<include name="utils/async/AsyncTask.java"/> <!-- Emulated: Threading -->
+		<include name="utils/async/ThreadUtils.java"/> <!-- Emulated: Threading -->	
+
+	<!-- utils/compression -->
 		<include name="utils/compression/CRC.java"/>
 		<include name="utils/compression/ICodeProgress.java"/>
 		<include name="utils/compression/Lzma.java"/>
+		
+	<!-- utils/compression/lz -->
 		<include name="utils/compression/lz/BinTree.java"/>
 		<include name="utils/compression/lz/InWindow.java"/>
-		<include name="utils/compression/lz/OutWindow.java"/>		
+		<include name="utils/compression/lz/OutWindow.java"/>
+		
+	<!-- utils/compression/lzma -->
 		<include name="utils/compression/lzma/Base.java"/>
 		<include name="utils/compression/lzma/Decoder.java"/>
 		<include name="utils/compression/lzma/Encoder.java"/>
+		
+	<!-- utils/compression/rangecoder -->
 		<include name="utils/compression/rangecoder/BitTreeDecoder.java"/>
 		<include name="utils/compression/rangecoder/BitTreeEncoder.java"/>
 		<include name="utils/compression/rangecoder/Decoder.java"/>
-		<include name="utils/compression/rangecoder/Encoder.java"/>		
+		<include name="utils/compression/rangecoder/Encoder.java"/>
 		
-		<include name="scenes/scene2d/Action.java"/>
-		<include name="scenes/scene2d/actions/*.java"/>
-		<include name="scenes/scene2d/Actor.java"/>
-		<include name="scenes/scene2d/InputEvent.java"/>
-		<include name="scenes/scene2d/Touchable.java"/>
-		<include name="scenes/scene2d/InputListener.java"/>
-		<include name="scenes/scene2d/Event.java"/>
-		<include name="scenes/scene2d/EventListener.java"/>
-		<include name="scenes/scene2d/Group.java"/>
-		<include name="scenes/scene2d/Stage.java"/>
-		<include name="scenes/scene2d/ui/Button.java"/>
-		<include name="scenes/scene2d/ui/ButtonGroup.java"/>
-		<include name="scenes/scene2d/ui/CheckBox.java"/>
-		<include name="scenes/scene2d/ui/Dialog.java"/>
-		<include name="scenes/scene2d/ui/Image.java"/>
-		<include name="scenes/scene2d/ui/ImageButton.java"/>
-		<include name="scenes/scene2d/ui/Label.java"/>		
-		<include name="scenes/scene2d/ui/List.java"/>
-		<include name="scenes/scene2d/ui/ScrollPane.java"/>
-		<include name="scenes/scene2d/ui/SelectBox.java"/>
-		<include name="scenes/scene2d/ui/Slider.java"/>
-		<include name="scenes/scene2d/ui/SplitPane.java"/>
-		<include name="scenes/scene2d/ui/Stack.java"/>
-		<include name="scenes/scene2d/ui/Table.java"/>
-		<include name="scenes/scene2d/ui/TableLayout.java"/>
-		<include name="scenes/scene2d/ui/TextButton.java"/>
-		<include name="scenes/scene2d/ui/TextField.java"/>
-		<include name="scenes/scene2d/ui/Tree.java"/>
-		<include name="scenes/scene2d/ui/VerticalGroup.java"/>
-		<include name="scenes/scene2d/ui/Widget.java"/>
-		<include name="scenes/scene2d/ui/WidgetGroup.java"/>
-		<include name="scenes/scene2d/ui/Window.java"/>
-		<include name="scenes/scene2d/ui/Touchpad.java"/>
-		<include name="scenes/scene2d/utils/ActorGestureListener.java"/>
-		<include name="scenes/scene2d/utils/Align.java"/>
-		<include name="scenes/scene2d/utils/BaseDrawable.java"/>
-		<include name="scenes/scene2d/utils/ChangeListener.java"/>
-		<include name="scenes/scene2d/utils/ClickListener.java"/>
-		<include name="scenes/scene2d/utils/Cullable.java"/>
-		<include name="scenes/scene2d/utils/Drawable.java"/>
-		<include name="scenes/scene2d/utils/EmptyDrawable.java"/>
-		<include name="scenes/scene2d/utils/FocusListener.java"/>
-		<include name="scenes/scene2d/utils/Layout.java"/>
-		<include name="scenes/scene2d/utils/NinePatchDrawable.java"/>
-		<include name="scenes/scene2d/utils/PressedListener.java"/>
-		<include name="scenes/scene2d/utils/ScissorStack.java"/>
-		<include name="scenes/scene2d/utils/SpriteDrawable.java"/>
-		<include name="scenes/scene2d/utils/TextureDrawable.java"/>
-		<include name="scenes/scene2d/utils/TextureRegionDrawable.java"/>		
-		<include name="scenes/scene2d/utils/TiledDrawable.java"/>
-		<include name="scenes/scene2d/utils/DragAndDrop.java"/>
-		<include name="scenes/scene2d/utils/DragListener.java"/>
+	<!-- utils/reflect -->
+		<include name="utils/reflect/ArrayReflection.java"/> <!-- Emulated -->
+		<include name="utils/reflect/ClassReflection.java"/> <!-- Emulated -->
+		<include name="utils/reflect/Constructor.java"/> <!-- Emulated -->
+		<include name="utils/reflect/Field.java"/> <!-- Emulated -->
+		<include name="utils/reflect/Method.java"/>	 <!-- Emulated -->
+		<include name="utils/reflect/ReflectionException.java"/>
+
+	<!-- utils/viewport -->
+		<include name="utils/viewport/**/*.java"/>
 	</source>
+
+	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.fnt" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.png" />
 </module>

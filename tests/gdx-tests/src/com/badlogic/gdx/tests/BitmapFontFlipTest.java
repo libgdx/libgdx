@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -99,7 +99,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	public void render () {
 		red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {
@@ -147,7 +147,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	}
 
 	private void renderCached () {
-		cache5.setColor(red);
+		cache5.setColors(red);
 		cache5.draw(spriteBatch);
 
 		cache1.draw(spriteBatch);
@@ -160,7 +160,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	}
 
 	private void renderCachedScaled () {
-		cacheScaled5.setColor(red);
+		cacheScaled5.setColors(red);
 		cacheScaled5.draw(spriteBatch);
 
 		cacheScaled1.draw(spriteBatch);
@@ -170,10 +170,6 @@ public class BitmapFontFlipTest extends GdxTest {
 		cacheScaled2.draw(spriteBatch);
 		cacheScaled3.draw(spriteBatch);
 		cacheScaled4.draw(spriteBatch);
-	}
-
-	public boolean needsGL20 () {
-		return false;
 	}
 
 	@Override

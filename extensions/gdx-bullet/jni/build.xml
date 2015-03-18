@@ -19,7 +19,13 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-bullet-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-bullet.dll"/>			<fileset dir="../libs/windows64" includes="gdx-bullet64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-bullet.so"/>			<fileset dir="../libs/linux64" includes="libgdx-bullet64.so"/>			<fileset dir="../libs/macosx32" includes="libgdx-bullet.dylib"/>
+			<fileset dir="../libs/windows32" includes="gdx-bullet.dll"/>
+			<fileset dir="../libs/windows64" includes="gdx-bullet64.dll"/>
+			<fileset dir="../libs/linux32" includes="libgdx-bullet.so"/>
+			<fileset dir="../libs/linux64" includes="libgdx-bullet64.so"/>
+			<fileset dir="../libs/macosx32" includes="libgdx-bullet.dylib"/>
+			<fileset dir="../libs/macosx64" includes="libgdx-bullet64.dylib"/>
+
 		</jar>
 	</target>
 

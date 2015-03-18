@@ -16,10 +16,11 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -69,7 +70,7 @@ public class WidgetGroup extends Group implements Layout {
 	}
 
 	private void setLayoutEnabled (Group parent, boolean enabled) {
-		SnapshotArray<Actor> children = getChildren();
+		SnapshotArray<Actor> children = parent.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor actor = children.get(i);
 			if (actor instanceof Layout)
@@ -124,15 +125,19 @@ public class WidgetGroup extends Group implements Layout {
 		invalidateHierarchy();
 	}
 
+	protected void sizeChanged () {
+		invalidate();
+	}
+
 	public void pack () {
-		float newWidth = getPrefWidth();
-		float newHeight = getPrefHeight();
-		if (newWidth != getWidth() || newHeight != getHeight()) {
-			setWidth(newWidth);
-			setHeight(newHeight);
-			invalidate();
-		}
+		setSize(getPrefWidth(), getPrefHeight());
 		validate();
+		// Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
+		// calls invalidateHierarchy() in layout() if its pref height has changed.
+		if (needsLayout) {
+			setSize(getPrefWidth(), getPrefHeight());
+			validate();
+		}
 	}
 
 	public void setFillParent (boolean fillParent) {
@@ -144,7 +149,7 @@ public class WidgetGroup extends Group implements Layout {
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
 	 * out. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		super.draw(batch, parentAlpha);
 	}

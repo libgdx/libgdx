@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -26,11 +26,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class IntegerBitmapFontTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	BitmapFont font;
 	BitmapFontCache singleLineCacheNonInteger;
@@ -57,7 +52,7 @@ public class IntegerBitmapFontTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.setUseIntegerPositions(false);
 		font.setColor(1, 0, 0, 1);
@@ -73,7 +68,7 @@ public class IntegerBitmapFontTest extends GdxTest {
 	}
 
 	private void fillCaches () {
-		String text = "This is a TEST\nxahsdhwekjhasd23�$%$%/%&";
+		String text = "This is a TEST\nxahsdhwekjhasd23���$%$%/%&";
 		singleLineCache.setColor(0, 0, 1, 1);
 		singleLineCache.setText(text, 10.2f, 30.5f);
 		multiLineCache.setColor(0, 0, 1, 1);
@@ -85,7 +80,7 @@ public class IntegerBitmapFontTest extends GdxTest {
 	}
 
 	private void drawTexts () {
-		String text = "This is a TEST\nxahsdhwekjhasd23�$%$%/%&";
+		String text = "This is a TEST\nxahsdhwekjhasd23���$%$%/%&";
 		font.draw(batch, text, 10.2f, 30.5f);
 		font.drawMultiLine(batch, text, 10.5f, 120.5f);
 		font.drawMultiLine(batch, text, 10.5f, 180.5f, 200, HAlignment.CENTER);

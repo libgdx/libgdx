@@ -71,6 +71,7 @@ class TimSort<T> {
 
 	/** Temp storage for merges. */
 	private T[] tmp; // Actual runtime type will be Object[], regardless of T
+	private int tmpCount;
 
 	/** A stack of pending runs yet to be merged. Run i starts at address base[i] and extends for len[i] elements. It's always true
 	 * (so long as the indices are in bounds) that:
@@ -107,6 +108,7 @@ class TimSort<T> {
 
 		this.a = a;
 		this.c = c;
+		tmpCount = 0;
 
 		/** March over the array once, left to right, finding natural runs, extending short natural runs to minRun elements, and
 		 * merging runs to maintain stack invariant. */
@@ -135,6 +137,12 @@ class TimSort<T> {
 		if (DEBUG) assert lo == hi;
 		mergeForceCollapse();
 		if (DEBUG) assert stackSize == 1;
+
+		this.a = null;
+		this.c = null;
+		T[] tmp = this.tmp;
+		for (int i = 0, n = tmpCount; i < n; i++)
+			tmp[i] = null;
 	}
 
 	/** Creates a TimSort instance to maintain the state of an ongoing sort.
@@ -358,21 +366,25 @@ class TimSort<T> {
 
 	/** Examines the stack of runs waiting to be merged and merges adjacent runs until the stack invariants are reestablished:
 	 * 
-	 * 1. runLen[i - 3] > runLen[i - 2] + runLen[i - 1] 2. runLen[i - 2] > runLen[i - 1]
+	 * 1. runLen[n - 2] > runLen[n - 1] + runLen[n] 2. runLen[n - 1] > runLen[n]
+	 * 
+	 * where n is the index of the last run in runLen.
+	 * 
+	 * This method has been formally verified to be correct after checking the last 4 runs.
+	 * Checking for 3 runs results in an exception for large arrays.
+	 * (Source: http://envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/)
 	 * 
 	 * This method is called each time a new run is pushed onto the stack, so the invariants are guaranteed to hold for i <
 	 * stackSize upon entry to the method. */
 	private void mergeCollapse () {
 		while (stackSize > 1) {
 			int n = stackSize - 2;
-			if (n > 0 && runLen[n - 1] <= runLen[n] + runLen[n + 1]) {
+			if ((n >= 1 && runLen[n - 1] <= runLen[n] + runLen[n + 1]) || (n >= 2 && runLen[n - 2] <= runLen[n] + runLen[n - 1])) {
 				if (runLen[n - 1] < runLen[n + 1]) n--;
-				mergeAt(n);
-			} else if (runLen[n] <= runLen[n + 1]) {
-				mergeAt(n);
-			} else {
+			} else if (runLen[n] > runLen[n + 1]) {
 				break; // Invariant is established
 			}
+			mergeAt(n);
 		}
 	}
 
@@ -790,6 +802,7 @@ class TimSort<T> {
 	 * @param minCapacity the minimum required capacity of the tmp array
 	 * @return tmp, whether or not it grew */
 	private T[] ensureCapacity (int minCapacity) {
+		tmpCount = Math.max(tmpCount, minCapacity);
 		if (tmp.length < minCapacity) {
 			// Compute smallest power of 2 > minCapacity
 			int newSize = minCapacity;

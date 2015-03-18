@@ -98,11 +98,7 @@ public class Stack extends WidgetGroup {
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			child.setBounds(0, 0, width, height);
-			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
-				layout.invalidate();
-				layout.validate();
-			}
+			if (child instanceof Layout) ((Layout)child).validate();
 		}
 	}
 

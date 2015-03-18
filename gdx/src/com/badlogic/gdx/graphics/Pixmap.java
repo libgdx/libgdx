@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /** <p>
  * A Pixmap represents an image in memory. It has a width and height expressed in pixels as well as a {@link Format} specifying
@@ -271,6 +271,18 @@ public class Pixmap implements Disposable {
 		pixmap.fillCircle(x, y, radius, color);
 	}
 
+	/** Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
+	 * 
+	 * @param x1 The x-coordinate of vertex 1
+	 * @param y1 The y-coordinate of vertex 1
+	 * @param x2 The x-coordinate of vertex 2
+	 * @param y2 The y-coordinate of vertex 2
+	 * @param x3 The x-coordinate of vertex 3
+	 * @param y3 The y-coordinate of vertex 3 */
+	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
+		pixmap.fillTriangle(x1, y1, x2, y2, x3, y3, color);
+	}
+
 	/** Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
 	 * 
 	 * @param x The x-coordinate
@@ -315,21 +327,21 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLFormat () {
 		return pixmap.getGLFormat();
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLInternalFormat () {
 		return pixmap.getGLInternalFormat();
 	}
 
 	/** Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4 */
 	public int getGLType () {
 		return pixmap.getGLType();

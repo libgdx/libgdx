@@ -22,7 +22,6 @@ import java.util.Map;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.google.gwt.corp.localstorage.LocalStorage;
 
 public class GwtPreferences implements Preferences {
 	final String prefix;
@@ -32,10 +31,10 @@ public class GwtPreferences implements Preferences {
 		this.prefix = prefix + ":";
 		int prefixLength = this.prefix.length();
 		try {
-			for (int i = 0; i < LocalStorage.length(); i++) {
-				String key = LocalStorage.key(i);
+			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+				String key = GwtFiles.LocalStorage.key(i);
 				if (key.startsWith(prefix)) {
-					String value = LocalStorage.getItem(key);
+					String value = GwtFiles.LocalStorage.getItem(key);
 					values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
 				}
 			}
@@ -64,16 +63,16 @@ public class GwtPreferences implements Preferences {
 	public void flush () {
 		try {
 			// remove all old values
-			for (int i = 0; i < LocalStorage.length(); i++) {
-				String key = LocalStorage.key(i);
-				if (key.startsWith(prefix)) LocalStorage.removeItem(key);
+			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+				String key = GwtFiles.LocalStorage.key(i);
+				if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
 			}
 
 			// push new values to LocalStorage
 			for (String key : values.keys()) {
 				String storageKey = toStorageKey(key, values.get(key));
 				String storageValue = "" + values.get(key).toString();
-				LocalStorage.setItem(storageKey, storageValue);
+				GwtFiles.LocalStorage.setItem(storageKey, storageValue);
 			}
 
 		} catch (Exception e) {
@@ -82,35 +81,41 @@ public class GwtPreferences implements Preferences {
 	}
 
 	@Override
-	public void putBoolean (String key, boolean val) {
+	public Preferences putBoolean (String key, boolean val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putInteger (String key, int val) {
+	public Preferences putInteger (String key, int val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putLong (String key, long val) {
+	public Preferences putLong (String key, long val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putFloat (String key, float val) {
+	public Preferences putFloat (String key, float val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putString (String key, String val) {
+	public Preferences putString (String key, String val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void put (Map<String, ?> vals) {
+	public Preferences put (Map<String, ?> vals) {
 		for (String key : vals.keySet()) {
 			values.put(key, vals.get(key));
 		}
+		return this;
 	}
 
 	@Override
@@ -139,7 +144,8 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public String getString (String key) {
-		return (String)values.get(key);
+		String v = (String)values.get(key);
+		return v == null ? "" : v;
 	}
 
 	@Override

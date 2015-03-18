@@ -20,12 +20,12 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> matrix; useful for 2D transforms.
+/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> matrix; useful for 2D
+ * transforms.
  * 
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
-	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
 	public static final int M00 = 0;
 	public static final int M01 = 3;
 	public static final int M02 = 6;
@@ -46,6 +46,14 @@ public class Matrix3 implements Serializable {
 		set(matrix);
 	}
 
+	/** Constructs a matrix from the given float array. The array must have at least 9 elements; the first 9 will be copied.
+	 * @param values The float array to copy. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
+	 *           not modified.) */
+	public Matrix3 (float[] values) {
+		this.set(values);
+	}
+
 	/** Sets this matrix to the identity matrix
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 idt () {
@@ -61,7 +69,7 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Multiplies this matrix with the provided matrix and stores the result in this matrix. For example:
+	/** Postmultiplies this matrix with the provided matrix and stores the result in this matrix. For example:
 	 * 
 	 * <pre>
 	 * A.mul(B) results in A := AB
@@ -94,13 +102,52 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise order around the z-axis.
+	/** Premultiplies this matrix with the provided matrix and stores the result in this matrix. For example:
+	 * 
+	 * <pre>
+	 * A.mulLeft(B) results in A := BA
+	 * </pre>
+	 * @param m The other Matrix to multiply by
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 mulLeft (Matrix3 m) {
+		float v00 = m.val[M00] * val[M00] + m.val[M01] * val[M10] + m.val[M02] * val[M20];
+		float v01 = m.val[M00] * val[M01] + m.val[M01] * val[M11] + m.val[M02] * val[M21];
+		float v02 = m.val[M00] * val[M02] + m.val[M01] * val[M12] + m.val[M02] * val[M22];
+
+		float v10 = m.val[M10] * val[M00] + m.val[M11] * val[M10] + m.val[M12] * val[M20];
+		float v11 = m.val[M10] * val[M01] + m.val[M11] * val[M11] + m.val[M12] * val[M21];
+		float v12 = m.val[M10] * val[M02] + m.val[M11] * val[M12] + m.val[M12] * val[M22];
+
+		float v20 = m.val[M20] * val[M00] + m.val[M21] * val[M10] + m.val[M22] * val[M20];
+		float v21 = m.val[M20] * val[M01] + m.val[M21] * val[M11] + m.val[M22] * val[M21];
+		float v22 = m.val[M20] * val[M02] + m.val[M21] * val[M12] + m.val[M22] * val[M22];
+
+		val[M00] = v00;
+		val[M10] = v10;
+		val[M20] = v20;
+		val[M01] = v01;
+		val[M11] = v11;
+		val[M21] = v21;
+		val[M02] = v02;
+		val[M12] = v12;
+		val[M22] = v22;
+
+		return this;
+	}
+
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
-		float angle = DEGREE_TO_RAD * degrees;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+		return setToRotationRad(MathUtils.degreesToRadians * degrees);
+	}
+
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
+	 * @param radians the angle in radians.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToRotationRad (float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		this.val[M00] = cos;
 		this.val[M10] = sin;
@@ -114,6 +161,24 @@ public class Matrix3 implements Serializable {
 		this.val[M12] = 0;
 		this.val[M22] = 1;
 
+		return this;
+	}
+
+	public Matrix3 setToRotation (Vector3 axis, float degrees) {
+		return setToRotation(axis, MathUtils.cosDeg(degrees), MathUtils.sinDeg(degrees));
+	}
+
+	public Matrix3 setToRotation (Vector3 axis, float cos, float sin) {
+		float oc = 1.0f - cos;
+		val[M00] = oc * axis.x * axis.x + cos;
+		val[M10] = oc * axis.x * axis.y - axis.z * sin;
+		val[M20] = oc * axis.z * axis.x + axis.y * sin;
+		val[M01] = oc * axis.x * axis.y + axis.z * sin;
+		val[M11] = oc * axis.y * axis.y + cos;
+		val[M21] = oc * axis.y * axis.z - axis.x * sin;
+		val[M02] = oc * axis.z * axis.x - axis.y * sin;
+		val[M12] = oc * axis.y * axis.z + axis.x * sin;
+		val[M22] = oc * axis.z * axis.z + cos;
 		return this;
 	}
 
@@ -174,9 +239,25 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Sets this matrix to a scaling matrix.
+	 * @param scale The scale vector.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToScaling (Vector2 scale) {
+		val[M00] = scale.x;
+		val[M10] = 0;
+		val[M20] = 0;
+		val[M01] = 0;
+		val[M11] = scale.y;
+		val[M21] = 0;
+		val[M02] = 0;
+		val[M12] = 0;
+		val[M22] = 1;
+		return this;
+	}
+
 	public String toString () {
 		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
-				+ val[2] + "|" + val[5] + "|" + val[8] + "]";
+			+ val[2] + "|" + val[5] + "|" + val[8] + "]";
 	}
 
 	/** @return The determinant of this matrix */
@@ -186,7 +267,8 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
-	 * @return This matrix for the purpose of chaining operations. */
+	 * @return This matrix for the purpose of chaining operations.
+	 * @throws GdxRuntimeException if the matrix is singular (not invertible) */
 	public Matrix3 inv () {
 		float det = det();
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
@@ -224,6 +306,23 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Copies the values from the provided affine matrix to this matrix. The last row is set to (0, 0, 1).
+	 * @param affine The affine matrix to copy.
+	 * @return This matrix for the purposes of chaining. */
+	public Matrix3 set (Affine2 affine) {
+		val[M00] = affine.m00;
+		val[M10] = affine.m10;
+		val[M20] = 0;
+		val[M01] = affine.m01;
+		val[M11] = affine.m11;
+		val[M21] = 0;
+		val[M02] = affine.m02;
+		val[M12] = affine.m12;
+		val[M22] = 1;
+
+		return this;
+	}
+
 	/** Sets this 3x3 matrix to the top left 3x3 corner of the provided 4x4 matrix.
 	 * @param mat The matrix whose top left corner will be copied. This matrix will not be modified.
 	 * @return This matrix for the purpose of chaining operations. */
@@ -237,6 +336,17 @@ public class Matrix3 implements Serializable {
 		val[M02] = mat.val[Matrix4.M02];
 		val[M12] = mat.val[Matrix4.M12];
 		val[M22] = mat.val[Matrix4.M22];
+		return this;
+	}
+
+	/** Sets the matrix to the given matrix as a float array. The float array must have at least 9 elements; the first 9 will be
+	 * copied.
+	 * 
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix3 set (float[] values) {
+		System.arraycopy(values, 0, val, 0, val.length);
 		return this;
 	}
 
@@ -311,13 +421,20 @@ public class Matrix3 implements Serializable {
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
-	 * @param angle The angle in degrees
+	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
-	public Matrix3 rotate (float angle) {
-		if (angle == 0) return this;
-		angle = DEGREE_TO_RAD * angle;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+	public Matrix3 rotate (float degrees) {
+		return rotateRad(MathUtils.degreesToRadians * degrees);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param radians The angle in radians
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 rotateRad (float radians) {
+		if (radians == 0) return this;
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;
@@ -375,6 +492,26 @@ public class Matrix3 implements Serializable {
 	 * @return The float values that make up this matrix in column-major order. */
 	public float[] getValues () {
 		return val;
+	}
+
+	public Vector2 getTranslation (Vector2 position) {
+		position.x = val[M02];
+		position.y = val[M12];
+		return position;
+	}
+
+	public Vector2 getScale (Vector2 scale) {
+		scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);
+		scale.y = (float)Math.sqrt(val[M10] * val[M10] + val[M11] * val[M11]);
+		return scale;
+	}
+
+	public float getRotation () {
+		return MathUtils.radiansToDegrees * (float)Math.atan2(val[M10], val[M00]);
+	}
+
+	public float getRotationRad () {
+		return (float)Math.atan2(val[M10], val[M00]);
 	}
 
 	/** Scale the matrix in the both the x and y components by the scalar value.

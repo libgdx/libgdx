@@ -18,8 +18,23 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** Listener for actor input events. */
+/** EventListener for low-level input events. Unpacks {@link InputEvent}s and calls the appropriate method. By default the methods
+ * here do nothing with the event. Users are expected to override the methods they are interested in, like this:
+ * 
+ * <pre>
+ * actor.addListener(new InputListener() {
+ * 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+ * 		Gdx.app.log(&quot;Example&quot;, &quot;touch started at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
+ * 	}
+ * 
+ * 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+ * 		Gdx.app.log(&quot;Example&quot;, &quot;touch done at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
+ * 	}
+ * });
+ * </pre> */
 public class InputListener implements EventListener {
+	static private final Vector2 tmpCoords = new Vector2();
+
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
@@ -31,29 +46,28 @@ public class InputListener implements EventListener {
 			return keyUp(event, event.getKeyCode());
 		case keyTyped:
 			return keyTyped(event, event.getCharacter());
-		case scrolled:
-			return scrolled(event, event.getScrollAmount());
 		}
 
-		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
-		event.getListenerActor().stageToLocalCoordinates(coords);
+		event.toCoordinates(event.getListenerActor(), tmpCoords);
 
 		switch (event.getType()) {
 		case touchDown:
-			return touchDown(event, coords.x, coords.y, event.getPointer(), event.getButton());
+			return touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 		case touchUp:
-			touchUp(event, coords.x, coords.y, event.getPointer(), event.getButton());
+			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
-			touchDragged(event, coords.x, coords.y, event.getPointer());
+			touchDragged(event, tmpCoords.x, tmpCoords.y, event.getPointer());
 			return true;
 		case mouseMoved:
-			return mouseMoved(event, coords.x, coords.y);
+			return mouseMoved(event, tmpCoords.x, tmpCoords.y);
+		case scrolled:
+			return scrolled(event, tmpCoords.x, tmpCoords.y, event.getScrollAmount());
 		case enter:
-			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
+			enter(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getRelatedActor());
 			return false;
 		case exit:
-			exit(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
+			exit(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getRelatedActor());
 			return false;
 		}
 		return false;
@@ -88,18 +102,20 @@ public class InputListener implements EventListener {
 
 	/** Called any time the mouse cursor or a finger touch is moved over an actor. On the desktop, this event occurs even when no
 	 * mouse buttons are pressed (pointer will be -1).
+	 * @param fromActor May be null.
 	 * @see InputEvent */
 	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
 	}
 
 	/** Called any time the mouse cursor or a finger touch is moved out of an actor. On the desktop, this event occurs even when no
 	 * mouse buttons are pressed (pointer will be -1).
+	 * @param toActor May be null.
 	 * @see InputEvent */
 	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 	}
 
 	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean scrolled (InputEvent event, int amount) {
+	public boolean scrolled (InputEvent event, float x, float y, int amount) {
 		return false;
 	}
 

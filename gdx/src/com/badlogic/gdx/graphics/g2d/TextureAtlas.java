@@ -16,12 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -36,8 +31,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.Sort;
+import com.badlogic.gdx.utils.StreamUtils;
 
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 /** Loads images from texture atlases created by TexturePacker.<br>
  * <br>
@@ -46,13 +49,14 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 public class TextureAtlas implements Disposable {
 	static final String[] tuple = new String[4];
 
-	private final HashSet<Texture> textures = new HashSet(4);
-	private final Array<AtlasRegion> regions = new Array<AtlasRegion>();
+	private final ObjectSet<Texture> textures = new ObjectSet(4);
+	private final Array<AtlasRegion> regions = new Array();
 
 	public static class TextureAtlasData {
 		public static class Page {
 			public final FileHandle textureFile;
 			public Texture texture;
+			public final float width, height;
 			public final boolean useMipMaps;
 			public final Format format;
 			public final TextureFilter minFilter;
@@ -60,8 +64,10 @@ public class TextureAtlas implements Disposable {
 			public final TextureWrap uWrap;
 			public final TextureWrap vWrap;
 
-			public Page (FileHandle handle, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter,
-				TextureWrap uWrap, TextureWrap vWrap) {
+			public Page (FileHandle handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
+				TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+				this.width = width;
+				this.height = height;
 				this.textureFile = handle;
 				this.useMipMaps = useMipMaps;
 				this.format = format;
@@ -87,10 +93,11 @@ public class TextureAtlas implements Disposable {
 			public int height;
 			public boolean flip;
 			public int[] splits;
+			public int[] pads;
 		}
 
-		final Array<Page> pages = new Array<Page>();
-		final Array<Region> regions = new Array<Region>();
+		final Array<Page> pages = new Array();
+		final Array<Region> regions = new Array();
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
@@ -104,7 +111,13 @@ public class TextureAtlas implements Disposable {
 					else if (pageImage == null) {
 						FileHandle file = imagesDir.child(line);
 
-						Format format = Format.valueOf(readValue(reader));
+						float width = 0, height = 0;
+						if (readTuple(reader) == 2) { // size is only optional for an atlas packed with an old TexturePacker.
+							width = Integer.parseInt(tuple[0]);
+							height = Integer.parseInt(tuple[1]);
+							readTuple(reader);
+						}
+						Format format = Format.valueOf(tuple[0]);
 
 						readTuple(reader);
 						TextureFilter min = TextureFilter.valueOf(tuple[0]);
@@ -122,7 +135,7 @@ public class TextureAtlas implements Disposable {
 							repeatY = Repeat;
 						}
 
-						pageImage = new Page(file, min.isMipMap(), format, min, max, repeatX, repeatY);
+						pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
 						pages.add(pageImage);
 					} else {
 						boolean rotate = Boolean.valueOf(readValue(reader));
@@ -147,7 +160,13 @@ public class TextureAtlas implements Disposable {
 						if (readTuple(reader) == 4) { // split is optional
 							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
 								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-							readTuple(reader);
+
+							if (readTuple(reader) == 4) { // pad is optional, but only present with splits
+								region.pads = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
+									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+
+								readTuple(reader);
+							}
 						}
 
 						region.originalWidth = Integer.parseInt(tuple[0]);
@@ -167,10 +186,7 @@ public class TextureAtlas implements Disposable {
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error reading pack file: " + packFile, ex);
 			} finally {
-				try {
-					reader.close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(reader);
 			}
 
 			regions.sort(indexComparator);
@@ -215,8 +231,9 @@ public class TextureAtlas implements Disposable {
 		this(new TextureAtlasData(packFile, imagesDir, flip));
 	}
 
+	/** @param data May be null. */
 	public TextureAtlas (TextureAtlasData data) {
-		load(data);
+		if (data != null) load(data);
 	}
 
 	private void load (TextureAtlasData data) {
@@ -249,6 +266,7 @@ public class TextureAtlas implements Disposable {
 			atlasRegion.originalWidth = region.originalWidth;
 			atlasRegion.rotate = region.rotate;
 			atlasRegion.splits = region.splits;
+			atlasRegion.pads = region.pads;
 			if (region.flip) atlasRegion.flip(false, true);
 			regions.add(atlasRegion);
 		}
@@ -380,14 +398,16 @@ public class TextureAtlas implements Disposable {
 			if (region.name.equals(name)) {
 				int[] splits = region.splits;
 				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
-				return new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
+				return patch;
 			}
 		}
 		return null;
 	}
 
 	/** @return the textures of the pages, unordered */
-	public Set<Texture> getTextures () {
+	public ObjectSet<Texture> getTextures () {
 		return textures;
 	}
 
@@ -416,7 +436,7 @@ public class TextureAtlas implements Disposable {
 		return line.substring(colon + 1).trim();
 	}
 
-	/** Returns the number of tuple values read (2 or 4). */
+	/** Returns the number of tuple values read (1, 2 or 4). */
 	static int readTuple (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
@@ -424,10 +444,7 @@ public class TextureAtlas implements Disposable {
 		int i = 0, lastMatch = colon + 1;
 		for (i = 0; i < 3; i++) {
 			int comma = line.indexOf(',', lastMatch);
-			if (comma == -1) {
-				if (i == 0) throw new GdxRuntimeException("Invalid line: " + line);
-				break;
-			}
+			if (comma == -1) break;
 			tuple[i] = line.substring(lastMatch, comma).trim();
 			lastMatch = comma + 1;
 		}
@@ -461,7 +478,7 @@ public class TextureAtlas implements Disposable {
 		/** The height of the image, after whitespace was removed for packing. */
 		public int packedHeight;
 
-		/** The width of the image, before whitespace was removed for packing. */
+		/** The width of the image, before whitespace was removed and rotation was applied for packing. */
 		public int originalWidth;
 
 		/** The height of the image, before whitespace was removed for packing. */
@@ -473,8 +490,13 @@ public class TextureAtlas implements Disposable {
 		/** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
 		public int[] splits;
 
+		/** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
+		public int[] pads;
+
 		public AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);
+			originalWidth = width;
+			originalHeight = height;
 			packedWidth = width;
 			packedHeight = height;
 		}
@@ -493,12 +515,28 @@ public class TextureAtlas implements Disposable {
 			splits = region.splits;
 		}
 
-		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for
-		 * packing. */
+		@Override
+		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
-			if (x) offsetX = originalWidth - offsetX - packedWidth;
-			if (y) offsetY = originalHeight - offsetY - packedHeight;
+			if (x) offsetX = originalWidth - offsetX - getRotatedPackedWidth();
+			if (y) offsetY = originalHeight - offsetY - getRotatedPackedHeight();
+		}
+
+		/** Returns the packed width considering the rotate value, if it is true then it returns the packedHeight, otherwise it
+		 * returns the packedWidth. */
+		public float getRotatedPackedWidth () {
+			return rotate ? packedHeight : packedWidth;
+		}
+
+		/** Returns the packed height considering the rotate value, if it is true then it returns the packedWidth, otherwise it
+		 * returns the packedHeight. */
+		public float getRotatedPackedHeight () {
+			return rotate ? packedWidth : packedHeight;
+		}
+
+		public String toString () {
+			return name;
 		}
 	}
 
@@ -524,10 +562,29 @@ public class TextureAtlas implements Disposable {
 			setColor(1, 1, 1, 1);
 		}
 
+		public AtlasSprite (AtlasSprite sprite) {
+			region = sprite.region;
+			this.originalOffsetX = sprite.originalOffsetX;
+			this.originalOffsetY = sprite.originalOffsetY;
+			set(sprite);
+		}
+
+		@Override
 		public void setPosition (float x, float y) {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
 		}
 
+		@Override
+		public void setX (float x) {
+			super.setX(x + region.offsetX);
+		}
+
+		@Override
+		public void setY (float y) {
+			super.setY(y + region.offsetY);
+		}
+
+		@Override
 		public void setBounds (float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
 			float heightRatio = height / region.originalHeight;
@@ -538,25 +595,36 @@ public class TextureAtlas implements Disposable {
 			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight * heightRatio);
 		}
 
+		@Override
 		public void setSize (float width, float height) {
 			setBounds(getX(), getY(), width, height);
 		}
 
+		@Override
 		public void setOrigin (float originX, float originY) {
 			super.setOrigin(originX - region.offsetX, originY - region.offsetY);
 		}
 
+		@Override
+		public void setOriginCenter () {
+			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
+		}
+
+		@Override
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
-			super.flip(x, y);
+			if (region.rotate)
+				super.flip(y, x);
+			else
+				super.flip(x, y);
 
 			float oldOriginX = getOriginX();
 			float oldOriginY = getOriginY();
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
-			float widthRatio = getWidth() / region.originalWidth;
-			float heightRatio = getHeight() / region.originalHeight;
+			float widthRatio = getWidthRatio();
+			float heightRatio = getHeightRatio();
 
 			region.offsetX = originalOffsetX;
 			region.offsetY = originalOffsetY;
@@ -571,6 +639,7 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
+		@Override
 		public void rotate90 (boolean clockwise) {
 			// Rotate texture.
 			super.rotate90(clockwise);
@@ -580,8 +649,8 @@ public class TextureAtlas implements Disposable {
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
-			float widthRatio = getWidth() / region.originalWidth;
-			float heightRatio = getHeight() / region.originalHeight;
+			float widthRatio = getWidthRatio();
+			float heightRatio = getHeightRatio();
 
 			if (clockwise) {
 				region.offsetX = oldOffsetY;
@@ -596,34 +665,50 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
+		@Override
 		public float getX () {
 			return super.getX() - region.offsetX;
 		}
 
+		@Override
 		public float getY () {
 			return super.getY() - region.offsetY;
 		}
 
+		@Override
 		public float getOriginX () {
 			return super.getOriginX() + region.offsetX;
 		}
 
+		@Override
 		public float getOriginY () {
 			return super.getOriginY() + region.offsetY;
 		}
 
+		@Override
 		public float getWidth () {
-			float packedWidth = region.rotate ? region.packedHeight : region.packedWidth;
-			return super.getWidth() / packedWidth * region.originalWidth;
+			return super.getWidth() / region.getRotatedPackedWidth() * region.originalWidth;
 		}
 
+		@Override
 		public float getHeight () {
-			float packedHeight = region.rotate ? region.packedWidth : region.packedHeight;
-			return super.getHeight() / packedHeight * region.originalHeight;
+			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
+		}
+
+		public float getWidthRatio () {
+			return super.getWidth() / region.getRotatedPackedWidth();
+		}
+
+		public float getHeightRatio () {
+			return super.getHeight() / region.getRotatedPackedHeight();
 		}
 
 		public AtlasRegion getAtlasRegion () {
 			return region;
+		}
+
+		public String toString () {
+			return region.toString();
 		}
 	}
 }

@@ -34,11 +34,6 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	IndexBufferObject ibo;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void dispose () {
 		texture.dispose();
 		shader.dispose();
@@ -50,17 +45,16 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	public void render () {
 // System.out.println( "render");
 
-		GL20 gl = Gdx.gl20;
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		gl.glEnable(GL20.GL_TEXTURE_2D);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 		shader.begin();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();
 		vbo.bind(shader);
 		ibo.bind();
-		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, 0);
+		Gdx.gl20.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, 0);
 		ibo.unbind();
 		vbo.unbind(shader);
 		shader.end();

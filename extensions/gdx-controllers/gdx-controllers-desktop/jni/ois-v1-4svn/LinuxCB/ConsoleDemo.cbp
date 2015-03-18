@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="Demo_Console" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="../demos/Console" />
+				<Option working_dir="../demos" />
+				<Option object_output="../demos/obj/release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add directory="../includes" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Linker>
+			<Add library="~/libs/OIS.so" />
+		</Linker>
+		<Unit filename="../demos/OISConsole.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Release" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

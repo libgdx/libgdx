@@ -16,10 +16,8 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -31,13 +29,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
+
+import java.util.Random;
 
 public class StagePerformanceTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 
 	Texture texture;
 	TextureRegion[] regions;
@@ -51,7 +48,7 @@ public class StagePerformanceTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		stage = new Stage(24, 12, true);
+		stage = new Stage(new ScalingViewport(Scaling.fit, 24, 12));
 		regions = new TextureRegion[8 * 8];
 		sprites = new Sprite[24 * 12];
 
@@ -78,11 +75,11 @@ public class StagePerformanceTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (useStage) {
 			stage.act(Gdx.graphics.getDeltaTime());
-			stage.getSpriteBatch().disableBlending();
+			stage.getBatch().disableBlending();
 			Group root = stage.getRoot();
 			Array<Actor> actors = root.getChildren();
 // for(int i = 0; i < actors.size(); i++) {

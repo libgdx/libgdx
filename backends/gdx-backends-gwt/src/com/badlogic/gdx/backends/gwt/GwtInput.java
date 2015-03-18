@@ -16,29 +16,41 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
-	boolean touched = false;
-	int mouseX, mouseY;
-	int deltaX, deltaY;
+	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
-	Set<Integer> pressedButtons = new HashSet<Integer>();
-	Set<Integer> pressedKeys = new HashSet<Integer>();
+	private IntMap<Integer> touchMap = new IntMap<Integer>(20);
+	private boolean[] touched = new boolean[MAX_TOUCHES];
+	private int[] touchX = new int[MAX_TOUCHES];
+	private int[] touchY = new int[MAX_TOUCHES];
+	private int[] deltaX = new int[MAX_TOUCHES];
+	private int[] deltaY = new int[MAX_TOUCHES];
+	IntSet pressedButtons = new IntSet();
+	int pressedKeyCount = 0;
+	boolean[] pressedKeys = new boolean[256];
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
@@ -49,6 +61,16 @@ public class GwtInput implements Input {
 	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
 		hookEvents();
+	}
+
+	void reset () {
+		justTouched = false;
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 	}
 
 	@Override
@@ -68,51 +90,52 @@ public class GwtInput implements Input {
 
 	@Override
 	public int getX () {
-		return mouseX;
+		return touchX[0];
 	}
 
 	@Override
 	public int getX (int pointer) {
-		if (pointer != 0) return 0;
-		return mouseX;
+		return touchX[pointer];
 	}
 
 	@Override
 	public int getDeltaX () {
-		return deltaX;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX (int pointer) {
-		if (pointer != 0) return 0;
-		return deltaX;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getY () {
-		return mouseY;
+		return touchY[0];
 	}
 
 	@Override
 	public int getY (int pointer) {
-		if (pointer != 0) return 0;
-		return mouseY;
+		return touchY[pointer];
 	}
 
 	@Override
 	public int getDeltaY () {
-		return deltaY;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
-		if (pointer != 0) return 0;
-		return deltaY;
+		return deltaY[pointer];
 	}
 
 	@Override
 	public boolean isTouched () {
-		return touched;
+		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
+			if (touched[pointer]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -122,24 +145,38 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isTouched (int pointer) {
-		if (pointer != 0) return false;
-		return touched;
+		return touched[pointer];
 	}
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched;
+		return button == Buttons.LEFT && touched[0];
 	}
 
 	@Override
 	public boolean isKeyPressed (int key) {
-		if (key == Keys.ANY_KEY) return pressedKeys.size() > 0;
-		return pressedKeys.contains(key);
+		if (key == Keys.ANY_KEY) {
+			return pressedKeyCount > 0;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return pressedKeys[key];
 	}
 
 	@Override
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		TextInputDialogBox dialog = new TextInputDialogBox(title, text, null);
+	public boolean isKeyJustPressed (int key) {
+		if (key == Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
+	}
+
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		TextInputDialogBox dialog = new TextInputDialogBox(title, text, hint);
 		final TextInputListener capturedListener = listener;
 		dialog.setListener(new TextInputDialogListener() {
 			@Override
@@ -157,28 +194,7 @@ public class GwtInput implements Input {
 			}
 		});
 	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		TextInputDialogBox dialog = new TextInputDialogBox(title, null, placeholder);
-		final TextInputListener capturedListener = listener;
-		dialog.setListener(new TextInputDialogListener() {
-			@Override
-			public void onPositive (String text) {
-				if (capturedListener != null) {
-					capturedListener.input(text);
-				}
-			}
-
-			@Override
-			public void onNegative () {
-				if (capturedListener != null) {
-					capturedListener.canceled();
-				}
-			}
-		});
-	}
-
+	
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
@@ -224,6 +240,11 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public boolean isCatchBackKey () {
+		return false;
+	}
+
+	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
 
@@ -242,7 +263,7 @@ public class GwtInput implements Input {
 		if (peripheral == Peripheral.Accelerometer) return false;
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return true;
-		if (peripheral == Peripheral.MultitouchScreen) return false;
+		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return false;
 		if (peripheral == Peripheral.Vibrator) return false;
 		return false;
@@ -261,76 +282,78 @@ public class GwtInput implements Input {
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched */
 	private native boolean isCursorCatchedJSNI () /*-{
-																	if(!navigator.pointer) {
-																	navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
-																	}
-																	if(navigator.pointer) {
-																	if(typeof(navigator.pointer.isLocked) === "boolean") {
-																	// Chrome initially launched with this interface
-																	return navigator.pointer.isLocked;
-																	} else if(typeof(navigator.pointer.isLocked) === "function") {
-																	// Some older builds might provide isLocked as a function
-																	return navigator.pointer.isLocked();
-																	} else if(typeof(navigator.pointer.islocked) === "function") {
-																	// For compatibility with early Firefox build
-																	return navigator.pointer.islocked();
-																	}
-																	}
-																	return false;
-																	}-*/;
+		if (!navigator.pointer) {
+			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+		}
+		if (navigator.pointer) {
+			if (typeof (navigator.pointer.isLocked) === "boolean") {
+				// Chrome initially launched with this interface
+				return navigator.pointer.isLocked;
+			} else if (typeof (navigator.pointer.isLocked) === "function") {
+				// Some older builds might provide isLocked as a function
+				return navigator.pointer.isLocked();
+			} else if (typeof (navigator.pointer.islocked) === "function") {
+				// For compatibility with early Firefox build
+				return navigator.pointer.islocked();
+			}
+		}
+		return false;
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @param element Canvas */
 	private native void setCursorCatchedJSNI (CanvasElement element) /*-{
-																							// Navigator pointer is not the right interface according to spec.
-																							// Here for backwards compatibility only
-																							if(!navigator.pointer) {
-																							navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
-																							}
-																							// element.requestPointerLock
-																							if(!element.requestPointerLock) {
-																							element.requestPointerLock = (function() {
-																							return  element.webkitRequestPointerLock ||
-																							element.mozRequestPointerLock    ||
-																							function(){
-																							if(navigator.pointer) {
-																							navigator.pointer.lock(element);
-																							}
-																							};
-																							})();
-																							}
-																							element.requestPointerLock();
-																							}-*/;
+		// Navigator pointer is not the right interface according to spec.
+		// Here for backwards compatibility only
+		if (!navigator.pointer) {
+			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+		}
+		// element.requestPointerLock
+		if (!element.requestPointerLock) {
+			element.requestPointerLock = (function() {
+				return element.webkitRequestPointerLock
+						|| element.mozRequestPointerLock || function() {
+							if (navigator.pointer) {
+								navigator.pointer.lock(element);
+							}
+						};
+			})();
+		}
+		element.requestPointerLock();
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js */
 	private native void exitCursorCatchedJSNI () /*-{
-																if(!$doc.exitPointerLock) {
-																$doc.exitPointerLock = (function() {
-																return  $doc.webkitExitPointerLock ||
-																$doc.mozExitPointerLock ||
-																function(){
-																if(navigator.pointer) {
-																var elem = this;
-																navigator.pointer.unlock();
-																}
-																};
-																})();
-																}
-																}-*/;
+		if (!$doc.exitPointerLock) {
+			$doc.exitPointerLock = (function() {
+				return $doc.webkitExitPointerLock || $doc.mozExitPointerLock
+						|| function() {
+							if (navigator.pointer) {
+								var elem = this;
+								navigator.pointer.unlock();
+							}
+						};
+			})();
+		}
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @param event JavaScript Mouse Event
 	 * @return movement in x direction */
 	private native float getMovementXJSNI (NativeEvent event) /*-{
-																					return event.movementX || event.webkitMovementX || 0;
-																					}-*/;
+		return event.movementX || event.webkitMovementX || 0;
+	}-*/;
 
 	/** from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @param event JavaScript Mouse Event
 	 * @return movement in y direction */
 	private native float getMovementYJSNI (NativeEvent event) /*-{
-																					return event.movementY || event.webkitMovementY || 0;
-																					}-*/;
+		return event.movementY || event.webkitMovementY || 0;
+	}-*/;
+
+	private static native boolean isTouchScreen () /*-{
+		return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+	}-*/;
 
 	/** works only for Chrome > Version 18 with enabled Mouse Lock enable in about:flags or start Chrome with the
 	 * --enable-pointer-lock flag */
@@ -352,64 +375,82 @@ public class GwtInput implements Input {
 		// FIXME??
 	}
 
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+	}
+
 	// kindly borrowed from our dear playn friends...
 	static native void addEventListener (JavaScriptObject target, String name, GwtInput handler, boolean capture) /*-{
-																																						target
-																																						.addEventListener(
-																																						name,
-																																						function(e) {
-																																						handler.@com.badlogic.gdx.backends.gwt.GwtInput::handleEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
-																																						}, capture);
-																																						}-*/;
+		target
+				.addEventListener(
+						name,
+						function(e) {
+							handler.@com.badlogic.gdx.backends.gwt.GwtInput::handleEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
+						}, capture);
+	}-*/;
 
 	private static native float getMouseWheelVelocity (NativeEvent evt) /*-{
-																								var delta = 0.0;
-																								var agentInfo = @com.badlogic.gdx.backends.gwt.GwtApplication::agentInfo()();
+		var delta = 0.0;
+		var agentInfo = @com.badlogic.gdx.backends.gwt.GwtApplication::agentInfo()();
 
-																								if (agentInfo.isFirefox) {
-																								if (agentInfo.isMacOS) {
-																								delta = 1.0 * evt.detail;
-																								} else {
-																								delta = 1.0 * evt.detail / 3;
-																								}
-																								} else if (agentInfo.isOpera) {
-																								if (agentInfo.isLinux) {
-																								delta = -1.0 * evt.wheelDelta / 80;
-																								} else {
-																								// on mac
-																								delta = -1.0 * evt.wheelDelta / 40;
-																								}
-																								} else if (agentInfo.isChrome || agentInfo.isSafari) {
-																								delta = -1.0 * evt.wheelDelta / 120;
-																								// handle touchpad for chrome
-																								if (Math.abs(delta) < 1) {
-																								if (agentInfo.isWindows) {
-																								delta = -1.0 * evt.wheelDelta;
-																								} else if (agentInfo.isMacOS) {
-																								delta = -1.0 * evt.wheelDelta / 3;
-																								}
-																								}
-																								}
-																								return delta;
-																								}-*/;
+		if (agentInfo.isFirefox) {
+			if (agentInfo.isMacOS) {
+				delta = 1.0 * evt.detail;
+			} else {
+				delta = 1.0 * evt.detail / 3;
+			}
+		} else if (agentInfo.isOpera) {
+			if (agentInfo.isLinux) {
+				delta = -1.0 * evt.wheelDelta / 80;
+			} else {
+				// on mac
+				delta = -1.0 * evt.wheelDelta / 40;
+			}
+		} else if (agentInfo.isChrome || agentInfo.isSafari) {
+			delta = -1.0 * evt.wheelDelta / 120;
+			// handle touchpad for chrome
+			if (Math.abs(delta) < 1) {
+				if (agentInfo.isWindows) {
+					delta = -1.0 * evt.wheelDelta;
+				} else if (agentInfo.isMacOS) {
+					delta = -1.0 * evt.wheelDelta / 3;
+				}
+			}
+		}
+		return delta;
+	}-*/;
 
 	/** Kindly borrowed from PlayN. **/
 	protected static native String getMouseWheelEvent () /*-{
-																			if (navigator.userAgent.toLowerCase().indexOf('firefox') != -1) {
-																			return "DOMMouseScroll";
-																			} else {
-																			return "mousewheel";
-																			}
-																			}-*/;
+		if (navigator.userAgent.toLowerCase().indexOf('firefox') != -1) {
+			return "DOMMouseScroll";
+		} else {
+			return "mousewheel";
+		}
+	}-*/;
 
 	/** Kindly borrowed from PlayN. **/
-	protected static float getRelativeX (NativeEvent e, Element target) {
-		return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
+	protected int getRelativeX (NativeEvent e, CanvasElement target) {
+		float xScaleRatio = target.getWidth() * 1f / target.getClientWidth(); // Correct for canvas CSS scaling
+		return Math.round(xScaleRatio
+			* (e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft()));
 	}
 
 	/** Kindly borrowed from PlayN. **/
-	protected static float getRelativeY (NativeEvent e, Element target) {
-		return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
+	protected int getRelativeY (NativeEvent e, CanvasElement target) {
+		float yScaleRatio = target.getHeight() * 1f / target.getClientHeight(); // Correct for canvas CSS scaling
+		return Math.round(yScaleRatio
+			* (e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop()));
+	}
+
+	protected int getRelativeX (Touch touch, CanvasElement target) {
+		float xScaleRatio = target.getWidth() * 1f / target.getClientWidth(); // Correct for canvas CSS scaling
+		return Math.round(xScaleRatio * touch.getRelativeX(target));
+	}
+
+	protected int getRelativeY (Touch touch, CanvasElement target) {
+		float yScaleRatio = target.getHeight() * 1f / target.getClientHeight(); // Correct for canvas CSS scaling
+		return Math.round(yScaleRatio * touch.getRelativeY(target));
 	}
 
 	private void hookEvents () {
@@ -423,6 +464,12 @@ public class GwtInput implements Input {
 		addEventListener(Document.get(), "keydown", this, false);
 		addEventListener(Document.get(), "keyup", this, false);
 		addEventListener(Document.get(), "keypress", this, false);
+
+		addEventListener(canvas, "touchstart", this, true);
+		addEventListener(canvas, "touchmove", this, true);
+		addEventListener(canvas, "touchcancel", this, true);
+		addEventListener(canvas, "touchend", this, true);
+
 	}
 
 	private int getButton (int button) {
@@ -433,11 +480,10 @@ public class GwtInput implements Input {
 	}
 
 	private void handleEvent (NativeEvent e) {
-
 		if (e.getType().equals("mousedown")) {
-			if (!e.getEventTarget().equals(canvas) || touched) {
-				float mouseX = (int)getRelativeX(e, canvas);
-				float mouseY = (int)getRelativeY(e, canvas);
+			if (!e.getEventTarget().equals(canvas) || touched[0]) {
+				float mouseX = getRelativeX(e, canvas);
+				float mouseY = getRelativeY(e, canvas);
 				if (mouseX < 0 || mouseX > Gdx.graphics.getWidth() || mouseY < 0 || mouseY > Gdx.graphics.getHeight()) {
 					hasFocus = false;
 				}
@@ -445,64 +491,70 @@ public class GwtInput implements Input {
 			}
 			hasFocus = true;
 			this.justTouched = true;
-			this.touched = true;
+			this.touched[0] = true;
 			this.pressedButtons.add(getButton(e.getButton()));
-			this.deltaX = 0;
-			this.deltaY = 0;
+			this.deltaX[0] = 0;
+			this.deltaY[0] = 0;
 			if (isCursorCatched()) {
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.touchX[0] = getRelativeX(e, canvas);
+				this.touchY[0] = getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
-			if (processor != null) processor.touchDown(mouseX, mouseY, 0, getButton(e.getButton()));
+			if (processor != null) processor.touchDown(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
 
 		if (e.getType().equals("mousemove")) {
 			if (isCursorCatched()) {
-				this.deltaX = (int)getMovementXJSNI(e);
-				this.deltaY = (int)getMovementYJSNI(e);
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.deltaX[0] = (int)getMovementXJSNI(e);
+				this.deltaY[0] = (int)getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.deltaX[0] = getRelativeX(e, canvas) - touchX[0];
+				this.deltaY[0] = getRelativeY(e, canvas) - touchY[0];
+				this.touchX[0] = getRelativeX(e, canvas);
+				this.touchY[0] = getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if (processor != null) {
-				if (touched)
-					processor.touchDragged(mouseX, mouseY, 0);
+				if (touched[0])
+					processor.touchDragged(touchX[0], touchY[0], 0);
 				else
-					processor.mouseMoved(mouseX, mouseY);
+					processor.mouseMoved(touchX[0], touchY[0]);
 			}
 		}
 
 		if (e.getType().equals("mouseup")) {
-			if (!touched) return;
+			if (!touched[0]) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
-			this.touched = pressedButtons.size() > 0;
+			this.touched[0] = pressedButtons.size > 0;
 			if (isCursorCatched()) {
-				this.deltaX = (int)getMovementXJSNI(e);
-				this.deltaY = (int)getMovementYJSNI(e);
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.deltaX[0] = (int)getMovementXJSNI(e);
+				this.deltaY[0] = (int)getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.deltaX[0] = getRelativeX(e, canvas) - touchX[0];
+				this.deltaY[0] = getRelativeY(e, canvas) - touchY[0];
+				this.touchX[0] = getRelativeX(e, canvas);
+				this.touchY[0] = getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
-			this.touched = false;
-			if (processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
+			this.touched[0] = false;
+			if (processor != null) processor.touchUp(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
-
+		if (e.getType().equals(getMouseWheelEvent())) {
+			if (processor != null) {
+				processor.scrolled((int)getMouseWheelVelocity(e));
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
 		if (e.getType().equals("keydown") && hasFocus) {
-			System.out.println("keydown");
+			// System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
 			if (code == 67) {
 				e.preventDefault();
@@ -511,25 +563,119 @@ public class GwtInput implements Input {
 					processor.keyTyped('\b');
 				}
 			} else {
-				this.pressedKeys.add(code);
-				if (processor != null) processor.keyDown(code);
+				if (!pressedKeys[code]) {
+					pressedKeyCount++;
+					pressedKeys[code] = true;
+					keyJustPressed = true;
+					justPressedKeys[code] = true;
+					if (processor != null) {
+						processor.keyDown(code);
+					}
+				}
 			}
 		}
 
 		if (e.getType().equals("keypress") && hasFocus) {
-			System.out.println("keypress");
+			// System.out.println("keypress");
 			char c = (char)e.getCharCode();
 			if (processor != null) processor.keyTyped(c);
 		}
 
 		if (e.getType().equals("keyup") && hasFocus) {
-			System.out.println("keyup");
+			// System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
-			this.pressedKeys.remove(code);
-			if (processor != null) processor.keyUp(code);
+			if (pressedKeys[code]) {
+				pressedKeyCount--;
+				pressedKeys[code] = false;
+			}
+			if (processor != null) {
+				processor.keyUp(code);
+			}
 		}
 
+		if (e.getType().equals("touchstart")) {
+			this.justTouched = true;
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int real = touch.getIdentifier();
+				int touchId;
+				touchMap.put(real, touchId = getAvailablePointer());
+				touched[touchId] = true;
+				touchX[touchId] = getRelativeX(touch, canvas);
+				touchY[touchId] = getRelativeY(touch, canvas);
+				deltaX[touchId] = 0;
+				deltaY[touchId] = 0;
+				if (processor != null) {
+					processor.touchDown(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchmove")) {
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
+				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
+				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
+				touchX[touchId] = getRelativeX(touch, canvas);
+				touchY[touchId] = getRelativeY(touch, canvas);
+				if (processor != null) {
+					processor.touchDragged(touchX[touchId], touchY[touchId], touchId);
+				}
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchcancel")) {
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
+				touchMap.remove(real);
+				touched[touchId] = false;
+				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
+				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
+				touchX[touchId] = getRelativeX(touch, canvas);
+				touchY[touchId] = getRelativeY(touch, canvas);
+				if (processor != null) {
+					processor.touchUp(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchend")) {
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int real = touch.getIdentifier();
+				int touchId = touchMap.get(real);
+				touchMap.remove(real);
+				touched[touchId] = false;
+				deltaX[touchId] = getRelativeX(touch, canvas) - touchX[touchId];
+				deltaY[touchId] = getRelativeY(touch, canvas) - touchY[touchId];
+				touchX[touchId] = getRelativeX(touch, canvas);
+				touchY[touchId] = getRelativeY(touch, canvas);
+				if (processor != null) {
+					processor.touchUp(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
 // if(hasFocus) e.preventDefault();
+	}
+	
+	private int getAvailablePointer () {
+		for (int i = 0; i < MAX_TOUCHES; i++) {
+			if (!touchMap.containsValue(i, false)) return i;
+		}
+		return -1;
 	}
 
 	/** borrowed from PlayN, thanks guys **/
@@ -654,25 +800,25 @@ public class GwtInput implements Input {
 			return Keys.UNKNOWN; // FIXME
 			// case KEY_SELECT_KEY: return Keys.SELECT_KEY;
 		case KEY_NUMPAD0:
-			return Keys.NUM_0;
+			return Keys.NUMPAD_0;
 		case KEY_NUMPAD1:
-			return Keys.NUM_1;
+			return Keys.NUMPAD_1;
 		case KEY_NUMPAD2:
-			return Keys.NUM_2;
+			return Keys.NUMPAD_2;
 		case KEY_NUMPAD3:
-			return Keys.NUM_3;
+			return Keys.NUMPAD_3;
 		case KEY_NUMPAD4:
-			return Keys.NUM_4;
+			return Keys.NUMPAD_4;
 		case KEY_NUMPAD5:
-			return Keys.NUM_5;
+			return Keys.NUMPAD_5;
 		case KEY_NUMPAD6:
-			return Keys.NUM_6;
+			return Keys.NUMPAD_6;
 		case KEY_NUMPAD7:
-			return Keys.NUM_7;
+			return Keys.NUMPAD_7;
 		case KEY_NUMPAD8:
-			return Keys.NUM_8;
+			return Keys.NUMPAD_8;
 		case KEY_NUMPAD9:
-			return Keys.NUM_9;
+			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
 			return Keys.UNKNOWN; // FIXME
 		case KEY_ADD:

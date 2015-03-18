@@ -16,21 +16,15 @@
 
 package com.badlogic.gdx.tools.particleeditor;
 
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.net.URI;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -41,6 +35,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StreamUtils;
 
 class EffectPanel extends JPanel {
 	ParticleEditor editor;
@@ -55,6 +50,24 @@ class EffectPanel extends JPanel {
 	}
 
 	public ParticleEmitter newEmitter (String name, boolean select) {
+		final ParticleEmitter emitter = new ParticleEmitter();
+
+		emitter.getDuration().setLow(1000);
+		emitter.getEmission().setHigh(50);
+		emitter.getLife().setHigh(500);
+		emitter.getScale().setHigh(32, 32);
+
+		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
+		emitter.getTransparency().setHigh(1);
+
+		emitter.setMaxParticleCount(25);
+		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
+
+		addEmitter(name, select, emitter);
+		return emitter;
+	}
+
+	public ParticleEmitter newExampleEmitter (String name, boolean select) {
 		final ParticleEmitter emitter = new ParticleEmitter();
 
 		emitter.getDuration().setLow(3000);
@@ -88,10 +101,14 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setTimeline(new float[] {0, 0.2f, 0.8f, 1});
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 
-		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(200);
-		emitter.setImagePath("particle.png");
+		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
 
+		addEmitter(name, select, emitter);
+		return emitter;
+	}
+
+	private void addEmitter (String name, boolean select, final ParticleEmitter emitter) {
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
 		if (emitters.size == 0)
 			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
@@ -107,7 +124,6 @@ class EffectPanel extends JPanel {
 			int row = emitterTableModel.getRowCount() - 1;
 			emitterTable.getSelectionModel().setSelectionInterval(row, row);
 		}
-		return emitter;
 	}
 
 	void emitterSelected () {
@@ -131,8 +147,10 @@ class EffectPanel extends JPanel {
 		lastDir = dir;
 		ParticleEffect effect = new ParticleEffect();
 		try {
-			effect.loadEmitters(Gdx.files.absolute(new File(dir, file).getAbsolutePath()));
+			File effectFile = new File(dir, file);
+			effect.loadEmitters(Gdx.files.absolute(effectFile.getAbsolutePath()));
 			editor.effect = effect;
+			editor.effectFile = effectFile;
 			emitterTableModel.getDataVector().removeAllElements();
 			editor.particleData.clear();
 		} catch (Exception ex) {
@@ -159,15 +177,41 @@ class EffectPanel extends JPanel {
 		if (dir == null || file == null || file.trim().length() == 0) return;
 		lastDir = dir;
 		int index = 0;
-		for (ParticleEmitter emitter : editor.effect.getEmitters())
+		File effectFile = new File(dir, file);
+
+		// save each image path as relative path to effect file directory
+		URI effectDirUri = effectFile.getParentFile().toURI();
+		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
 			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
+			String imagePath = emitter.getImagePath();
+			if ((imagePath.contains("/") || imagePath.contains("\\")) && !imagePath.contains("..")) {
+				// it's absolute, make it relative:
+				URI imageUri = new File(emitter.getImagePath()).toURI();
+				emitter.setImagePath(effectDirUri.relativize(imageUri).getPath());
+			}
+		}
+
+		File outputFile = new File(dir, file);
+		Writer fileWriter = null;
 		try {
-			editor.effect.save(new File(dir, file));
+			fileWriter = new FileWriter(outputFile);
+			editor.effect.save(fileWriter);
 		} catch (Exception ex) {
-			System.out.println("Error saving effect: " + new File(dir, file).getAbsolutePath());
+			System.out.println("Error saving effect: " + outputFile.getAbsolutePath());
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(editor, "Error saving effect.");
+		} finally {
+			StreamUtils.closeQuietly(fileWriter);
 		}
+	}
+
+	void duplicateEmitter () {
+		int row = emitterTable.getSelectedRow();
+		if (row == -1) return;
+
+		String name = (String)emitterTableModel.getValueAt(row, 0);
+
+		addEmitter(name, true, new ParticleEmitter(editor.effect.getEmitters().get(row)));
 	}
 
 	void deleteEmitter () {
@@ -216,6 +260,16 @@ class EffectPanel extends JPanel {
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
 						newEmitter("Untitled", true);
+					}
+				});
+			}
+			{
+				JButton newButton = new JButton("Duplicate");
+				sideButtons.add(newButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						duplicateEmitter();
 					}
 				});
 			}

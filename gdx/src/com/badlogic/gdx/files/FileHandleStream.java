@@ -26,6 +26,7 @@ import com.badlogic.gdx.Files.FileType;
  * that would manipulate the file instead throw UnsupportedOperationException.
  * @author Nathan Sweet */
 public abstract class FileHandleStream extends FileHandle {
+	/** Create an {@link FileType#Absolute} file at the given location. */
 	public FileHandleStream (String path) {
 		super(new File(path), FileType.Absolute);
 	}

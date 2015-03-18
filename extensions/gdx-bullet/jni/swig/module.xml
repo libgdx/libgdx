@@ -1,0 +1,82 @@
+<project name="gdx-bullet-module-swig-gen" basedir="." default="all">
+
+    <property name="module.name" value="unknown" />
+    <property name="module.interface" value="${module.name}/${module.name}.i" />
+    <property name="module.package" value="com.badlogic.gdx.physics.bullet.${module.name}" />
+    <property name="module.path" value="com/badlogic/gdx/physics/bullet/${module.name}" />
+    
+	<property name="dir.out" location="${basedir}/../swig-src/${module.name}/" />
+	
+	<property name="module.wrapper" value="${dir.out}/${module.name}_wrap.cpp" />
+
+	<target name="clean">
+		<echo message="Deleting previously generated files in ${dir.out}" level="info" />
+		
+		<mkdir dir="${dir.out}" />
+		<delete>
+			<fileset dir="${dir.out}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="gen">
+
+		<mkdir dir="${dir.out}/${module.path}" />
+		
+		<echo message="Swigging" level="info" />
+
+		<exec executable="swig">
+			<arg value="-java" />
+			<arg value="-c++" />
+			<arg value="-fvirtual" />
+			<arg value="-package" />
+			<arg value="${module.package}" />
+			<arg value="-I${basedir}/../src/bullet" />
+			<arg value="-I${basedir}/../src/custom" />
+			<arg value="-I${basedir}/../src/extras/Serialize" />
+			<!-- Disable Bullet profiling -->
+			<arg value="-DBT_NO_PROFILE" />
+			<arg value="-outdir" />
+			<arg value="${dir.out}/${module.path}" />
+			<arg value="-o" />
+			<arg value="${module.wrapper}" />
+			<arg value="${basedir}/${module.interface}" />
+
+		</exec>
+	</target>
+
+	<target name="fix_casts">
+
+		<echo message="Replacing director dynamic_cast with C-style casts to avoid RTTI" level="info" />
+		<replaceregexp file="${module.wrapper}" flags="g">
+			<regexp pattern="(SwigDirector_[\w]+) \*director = dynamic_cast&lt;(SwigDirector_[\w]+ \*)&gt;\(obj\);" />
+			<substitution expression="\1 *director = (\2)(obj);" />
+		</replaceregexp>
+		
+		<replace file="${module.wrapper}" token="bool ExceptionMatches" value="inline bool ExceptionMatches" />
+
+	</target>
+	
+	<target name="remove_weak_global">
+		<echo message="Remove weak_global" level="info" />
+		<replace file="${module.wrapper}"
+		    token="weak_global_ = weak_global || !mem_own;"
+		    value="weak_global_ = !mem_own;" />
+	</target>
+	
+	<target name="list_classes">
+		<fileset id="classes" dir="${dir.out}" includes="**/*.java" />
+		<pathconvert property="classlist" refid="classes" pathsep="${line.separator}" />
+		<echo file="${dir.out}/classes.i" message="${classlist}" />
+		<replace file="${dir.out}/classes.i" token="${dir.out}" value="" />
+		<replace file="${dir.out}/classes.i" token="/" value="." />
+		<replace file="${dir.out}/classes.i" token="\" value="." />
+		<replaceregexp file="${dir.out}/classes.i" flags="g">
+			<regexp pattern="\.([a-z0-9]+([\.][a-z0-9]+)+)\.([^\.]+)\.java" />
+			<substitution expression="SPECIFY_CLASS(\3, \1)" />
+		</replaceregexp>
+	</target>
+
+	<target name="all" depends="clean,gen,fix_casts,remove_weak_global,list_classes">
+		<echo message="Wrapper files generated for ${module.name}." level="info" />
+	</target>
+</project>

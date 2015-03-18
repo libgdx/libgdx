@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -70,13 +69,13 @@ public class MeshShaderTest extends GdxTest {
 		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
-		Gdx.gl20.glEnable(GL10.GL_BLEND);
-		Gdx.gl20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		texture.bind();
 		shader.begin();
 		shader.setUniformMatrix("u_worldView", matrix);
 		shader.setUniformi("u_texture", 0);
-		mesh.render(shader, GL10.GL_TRIANGLES);
+		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
 	}
 
@@ -85,10 +84,5 @@ public class MeshShaderTest extends GdxTest {
 		mesh.dispose();
 		texture.dispose();
 		shader.dispose();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

@@ -50,7 +50,7 @@ public interface Audio {
 
 	/** Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed after it is no longer used.
 	 * 
-	 * @param samplingRate the sampling rate in Herz
+	 * @param samplingRate the sampling rate in Hertz
 	 * @param isMono whether the recorder records in mono or stereo
 	 * @return the AudioRecorder
 	 * 

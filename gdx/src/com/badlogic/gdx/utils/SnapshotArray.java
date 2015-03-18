@@ -19,11 +19,11 @@ package com.badlogic.gdx.utils;
 import java.util.Comparator;
 
 /** Guarantees that array entries provided by {@link #begin()} between indexes 0 and {@link #size} at the time begin was called
- * will not be modified until {@link #end()} is called. If modification does occur, the backing array is copied prior to the
- * modification, ensuring that the backing array returned by {@link #begin()} is unaffected. To avoid allocation, an attempt is
- * made to reuse the extra array created as a result of this copy on subsequent copies.
+ * will not be modified until {@link #end()} is called. If modification of the SnapshotArray occurs between begin/end, the backing
+ * array is copied prior to the modification, ensuring that the backing array that was returned by {@link #begin()} is unaffected.
+ * To avoid allocation, an attempt is made to reuse any extra array created as a result of this copy on subsequent copies.
  * <p>
- * It is suggested iteration be done in this way:
+ * It is suggested iteration be done in this specific way:
  * 
  * <pre>
  * SnapshotArray array = new SnapshotArray();
@@ -48,7 +48,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super(array);
 	}
 
-	public SnapshotArray (boolean ordered, int capacity, Class<T> arrayType) {
+	public SnapshotArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
 
@@ -56,11 +56,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, capacity);
 	}
 
-	public SnapshotArray (boolean ordered, T[] array) {
-		super(ordered, array);
+	public SnapshotArray (boolean ordered, T[] array, int startIndex, int count) {
+		super(ordered, array, startIndex, count);
 	}
 
-	public SnapshotArray (Class<T> arrayType) {
+	public SnapshotArray (Class arrayType) {
 		super(arrayType);
 	}
 
@@ -74,6 +74,7 @@ public class SnapshotArray<T> extends Array<T> {
 
 	/** Returns the backing array, which is guaranteed to not be modified before {@link #end()}. */
 	public T[] begin () {
+		modified();
 		snapshot = items;
 		snapshots++;
 		return items;
@@ -128,6 +129,16 @@ public class SnapshotArray<T> extends Array<T> {
 		return super.removeIndex(index);
 	}
 
+	public void removeRange (int start, int end) {
+		modified();
+		super.removeRange(start, end);
+	}
+
+	public boolean removeAll (Array<? extends T> array, boolean identity) {
+		modified();
+		return super.removeAll(array, identity);
+	}
+
 	public T pop () {
 		modified();
 		return super.pop();
@@ -143,7 +154,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super.sort();
 	}
 
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		modified();
 		super.sort(comparator);
 	}
@@ -161,5 +172,10 @@ public class SnapshotArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		modified();
 		super.truncate(newSize);
+	}
+
+	/** @see #SnapshotArray(Object[]) */
+	static public <T> SnapshotArray<T> with (T... array) {
+		return new SnapshotArray(array);
 	}
 }

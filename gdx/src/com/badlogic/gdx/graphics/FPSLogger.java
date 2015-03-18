@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** A simple helper class to log the frames per seconds achieved. Just invoke the {@link #log()} method in your rendering method.
  * The output will be logged once per second.
@@ -26,14 +27,14 @@ public class FPSLogger {
 	long startTime;
 
 	public FPSLogger () {
-		startTime = System.currentTimeMillis();
+		startTime = TimeUtils.nanoTime();
 	}
 
 	/** Logs the current frames per second to the console. */
 	public void log () {
-		if (System.currentTimeMillis() - startTime > 1000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) /* 1,000,000,000ns == one second */{
 			Gdx.app.log("FPSLogger", "fps: " + Gdx.graphics.getFramesPerSecond());
-			startTime = System.currentTimeMillis();
+			startTime = TimeUtils.nanoTime();
 		}
 	}
 }

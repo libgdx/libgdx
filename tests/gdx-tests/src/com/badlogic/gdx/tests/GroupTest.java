@@ -17,66 +17,125 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+/** This tests both {@link Actor#parentToLocalCoordinates(Vector2)} and {@link Actor#localToParentCoordinates(Vector2)}. */
 public class GroupTest extends GdxTest {
 	Stage stage;
+	SpriteBatch batch;
+	BitmapFont font;
+	ShapeRenderer renderer;
 	TextureRegion region;
+	TestGroup group1;
+	TestGroup group2;
 
 	public void create () {
-		stage = new Stage(0, 0, false);
+		batch = new SpriteBatch();
+		font = new BitmapFont();
+		renderer = new ShapeRenderer();
+
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		region = new TextureRegion(new Texture(Gdx.files.internal("data/group-debug.png")));
 
-		Group group1 = new ImageGroup();
-		group1.setRotation(30);
+		group2 = new TestGroup("group2");
+		group2.setTransform(true);
+		stage.addActor(group2);
+
+		group1 = new TestGroup("group1");
 		group1.setTransform(true);
-		group1.setBounds(50, 50, 150, 150);
-		stage.addActor(group1);
-
-		Group group2 = new ImageGroup();
-		group2.setTransform(false);
-		group2.setBounds(50, 50, 50, 50);
-		group1.addActor(group2);
-
-		Group group3 = new ImageGroup();
-		group3.setTransform(true);
-		group3.setBounds(10, 10, 35, 35);
-		group3.setOriginX(100);
-		group3.setRotation(45);
-		group2.addActor(group3);
-
-		Group group4 = new ImageGroup();
-		group4.setTransform(false);
-		group4.setBounds(5, 5, 25, 25);
-		group4.setOriginX(100);
-		group4.setRotation(45);
-		group3.addActor(group4);
+		group2.addActor(group1);
 	}
 
 	public void render () {
+		// Vary the transforms to exercise the different code paths.
+		group2.setBounds(150, 150, 150, 150);
+		group2.setRotation(45);
+		group2.setOrigin(150, 150);
+		group2.setScale(1.25f);
+
+		group1.setBounds(150, 150, 50, 50);
+		group1.setRotation(45);
+		group1.setOrigin(25, 25);
+		group1.setScale(1.3f);
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
+
+		renderer.setProjectionMatrix(batch.getProjectionMatrix());
+		renderer.begin(ShapeType.Filled);
+		if (MathUtils.randomBoolean()) { // So we see when they are drawn on top of each other (which should be always).
+			renderer.setColor(Color.GREEN);
+			renderer.circle(group1.toScreenCoordinates.x, Gdx.graphics.getHeight() - group1.toScreenCoordinates.y, 5);
+			renderer.setColor(Color.RED);
+			renderer.circle(group1.localToParentCoordinates.x, Gdx.graphics.getHeight() - group1.localToParentCoordinates.y, 5);
+		} else {
+			renderer.setColor(Color.RED);
+			renderer.circle(group1.localToParentCoordinates.x, Gdx.graphics.getHeight() - group1.localToParentCoordinates.y, 5);
+			renderer.setColor(Color.GREEN);
+			renderer.circle(group1.toScreenCoordinates.x, Gdx.graphics.getHeight() - group1.toScreenCoordinates.y, 5);
+		}
+		renderer.end();
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	public boolean needsGL20 () {
 		return false;
 	}
 
-	class ImageGroup extends Group {
-		public void draw (SpriteBatch batch, float parentAlpha) {
+	class TestGroup extends Group {
+		private String name;
+		Vector2 toScreenCoordinates = new Vector2();
+		Vector2 localToParentCoordinates = new Vector2();
+		float testX = 25;
+		float testY = 25;
+
+		public TestGroup (String name) {
+			this.name = name;
+
+			addListener(new InputListener() {
+				public boolean mouseMoved (InputEvent event, float x, float y) {
+					// These come from Actor#parentToLocalCoordinates.
+					testX = x;
+					testY = y;
+					return true;
+				}
+			});
+		}
+
+		public void draw (Batch batch, float parentAlpha) {
+			// Use Stage#toScreenCoordinates, which we know is correct.
+			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY())
+				.rotate(getRotation()).add(getOriginX(), getOriginY()).add(getX(), getY());
+			getStage().toScreenCoordinates(toScreenCoordinates, batch.getTransformMatrix());
+
+			// Do the same as toScreenCoordinates via Actor#localToParentCoordinates.
+			localToAscendantCoordinates(null, localToParentCoordinates.set(testX, testY));
+			getStage().stageToScreenCoordinates(localToParentCoordinates);
+
+			// System.out.println(name + " " + toScreenCoordinates + " " + localToParentCoordinates);
+
 			batch.setColor(getColor());
 			batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
 				getRotation());

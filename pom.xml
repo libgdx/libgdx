@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
+
+  <groupId>com.badlogicgames.gdx</groupId>
+  <artifactId>gdx-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.5.6-SNAPSHOT</version>
+
+  <name>libGDX Parent</name>
+  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
+  <url>http://libgdx.badlogicgames.com</url>
+  <issueManagement>
+    <url>https://github.com/libgdx/libgdx/issues</url>
+  </issueManagement>
+
+  <licenses>
+    <license>
+      <name>Apache Licence 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>Developers</id>
+      <url>http://code.google.com/p/libgdx/people/list</url>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/libgdx/libgdx.git</connection>
+    <developerConnection>scm:git:https://github.com/libgdx/libgdx.git</developerConnection>
+    <url>http://github.com/libgdx/libgdx</url>
+  </scm>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <android.version>4.4</android.version>
+    <gwt.version>2.6.1</gwt.version>
+    <lwjgl.version>2.9.2</lwjgl.version>
+    <jglfw.version>1.1</jglfw.version>
+    <robovm.version>1.0.0</robovm.version>
+  </properties>
+
+  <modules>
+    <module>extensions/gdx-jnigen</module>
+    <module>gdx</module>
+    <module>gdx/jni/maven</module>
+    <module>backends/gdx-backend-android</module>
+    <module>backends/gdx-backend-robovm</module>
+    <module>backends/gdx-backend-lwjgl</module>
+    <module>backends/gdx-backend-jglfw</module>
+    <module>backends/gdx-backends-gwt</module>
+    <module>backends/gdx-backend-headless</module>
+    <module>extensions/gdx-tools</module>
+	<module>extensions/gdx-box2d</module>
+    <module>extensions/gdx-bullet</module>
+    <module>extensions/gdx-bullet/jni/maven</module>
+    <module>extensions/gdx-controllers</module>
+    <module>extensions/gdx-freetype</module>
+    <module>extensions/gdx-freetype/jni/maven</module>    
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <fork>true</fork>
+          <showWarnings>true</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <includes><include>**/*Test.java</include></includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <quiet>true</quiet>
+          <show>public</show>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.3.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>

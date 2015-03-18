@@ -130,9 +130,4 @@ public class GwtTest extends GdxTest {
 	@Override
 	public void dispose () {
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 }

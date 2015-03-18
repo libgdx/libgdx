@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.badlogicgames.gdx</groupId>
+    <artifactId>gdx-parent</artifactId>
+    <version>1.5.6-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>gdx-tools</artifactId>
+  <packaging>jar</packaging>
+  <name>libGDX Tools</name>
+
+  <properties>
+    <particleClass>com.badlogic.gdx.tools.particleeditor.ParticleEditor</particleClass>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-backend-lwjgl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-backend-headless</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.matthiasmann</groupId>
+      <artifactId>javafreetype</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/JavaFreeType.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>de.matthiasmann</groupId>
+      <artifactId>themeeditor</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/TWLThemeEditor.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>org.xmlpull</groupId>
+      <artifactId>xpp3</artifactId>
+      <version>1.1.4c</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/xpp3-1.1.4c.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>3.0.9</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.badlogicgames.gdx</groupId>
+      <artifactId>gdx-platform</artifactId>
+      <version>${project.version}</version>
+      <classifier>natives-desktop</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>assets</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- the assembly plugin insists on generating a separate artifact, but we want our main
+           artifact to have all the bits included; so we sneakily copy the assembled artifact over
+           the main artifact after the assembly plugin has run -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>replace-main-artifact</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <target>
+                <property name="root" value="${project.artifactId}-${project.version}" />
+                <copy file="${project.build.directory}/${root}-distribution.jar" tofile="${project.build.directory}/${root}.jar" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- unpack natives when running particle editor -->
+      <plugin>
+        <groupId>com.googlecode.mavennatives</groupId>
+        <artifactId>maven-nativedependencies-plugin</artifactId>
+        <version>0.0.6</version>
+        <executions>
+          <execution>
+            <id>unpacknatives</id>
+            <phase>test-compile</phase>
+            <goals><goal>copy</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- allows one to run the particle editor via: mvn test -Pparticles -->
+    <profile>
+      <id>particles</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <configuration>
+                  <target>
+                    <java fork="true" classname="${particleClass}" classpathref="maven.test.classpath">
+                      <sysproperty key="java.library.path" value="target/natives" />
+                    </java>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

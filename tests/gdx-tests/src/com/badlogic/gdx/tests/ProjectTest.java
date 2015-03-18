@@ -21,78 +21,80 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ProjectTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	Mesh sphere;
+	Model sphere;
 	Camera cam;
 	SpriteBatch batch;
 	BitmapFont font;
-	Vector3[] positions = new Vector3[100];
+	ModelInstance[] instances = new ModelInstance[100];
+	ModelBatch modelBatch;
 	Vector3 tmp = new Vector3();
 	TextureRegion logo;
 
 	@Override
 	public void create () {
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		ObjLoader objLoader = new ObjLoader();
+		sphere = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
+		sphere.materials.get(0).set(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.far = 200;
 		Random rand = new Random();
-		for (int i = 0; i < positions.length; i++) {
-			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat()
-				* 100, rand.nextFloat() * -100 - 3);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100
+				- rand.nextFloat() * 100, rand.nextFloat() * -100 - 3);
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		logo = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
+		modelBatch = new ModelBatch();
 	}
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.gl10;
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		cam.update();
-		cam.apply(gl);
+
+		modelBatch.begin(cam);
 
 		int visible = 0;
-		for (int i = 0; i < positions.length; i++) {
-			if (cam.frustum.sphereInFrustum(positions[i], 1)) {
-				gl.glColor4f(1, 1, 1, 1);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i].transform.getTranslation(tmp);
+			if (cam.frustum.sphereInFrustum(tmp, 1)) {
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.WHITE);
 				visible++;
 			} else {
-				gl.glColor4f(1, 0, 0, 1);
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.RED);
 			}
-			gl.glPushMatrix();
-			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render(GL10.GL_TRIANGLES);
-			gl.glPopMatrix();
+			modelBatch.render(instances[i]);
 		}
+		modelBatch.end();
 
 		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 
-		gl.glDisable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		batch.begin();
-		for (int i = 0; i < positions.length; i++) {
-			tmp.set(positions[i]);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i].transform.getTranslation(tmp);
 			cam.project(tmp);
 			if (tmp.z < 0) continue;
 			batch.draw(logo, tmp.x, tmp.y);

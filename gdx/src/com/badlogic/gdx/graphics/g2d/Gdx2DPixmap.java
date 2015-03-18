@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -40,12 +40,12 @@ public class Gdx2DPixmap implements Disposable {
 	public static final int GDX2D_BLEND_NONE = 0;
 	public static final int GDX2D_BLEND_SRC_OVER = 1;
 
-	final long basePtr;
-	final int width;
-	final int height;
-	final int format;
-	final ByteBuffer pixelPtr;
-	final long[] nativeData = new long[4];
+	long basePtr;
+	int width;
+	int height;
+	int format;
+	ByteBuffer pixelPtr;
+	long[] nativeData = new long[4];
 
 	static {
 		setBlend(GDX2D_BLEND_SRC_OVER);
@@ -53,15 +53,19 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
-		pixelPtr = load(nativeData, encodedData, offset, len, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap");
+		pixelPtr = load(nativeData, encodedData, offset, len);
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+		
+		if(requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
-
+	
 	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
@@ -72,18 +76,23 @@ public class Gdx2DPixmap implements Disposable {
 		}
 
 		buffer = bytes.toByteArray();
-		pixelPtr = load(nativeData, buffer, 0, buffer.length, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap");
+		pixelPtr = load(nativeData, buffer, 0, buffer.length);
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+		
+		if(requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
 
-	public Gdx2DPixmap (int width, int height, int format) throws IllegalArgumentException {
+	/** @throws GdxRuntimeException if allocation failed. */
+	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new IllegalArgumentException("couldn't load pixmap");
+		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
@@ -97,6 +106,18 @@ public class Gdx2DPixmap implements Disposable {
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
+	}
+
+	private void convert (int requestedFormat) {
+		Gdx2DPixmap pixmap = new Gdx2DPixmap(width, height, requestedFormat);
+		pixmap.drawPixmap(this, 0, 0, 0, 0, width, height);
+		dispose();
+		this.basePtr = pixmap.basePtr;
+		this.format = pixmap.format;
+		this.height = pixmap.height;
+		this.nativeData = pixmap.nativeData;
+		this.pixelPtr = pixmap.pixelPtr;
+		this.width = pixmap.width;
 	}
 
 	public void dispose () {
@@ -133,6 +154,10 @@ public class Gdx2DPixmap implements Disposable {
 
 	public void fillCircle (int x, int y, int radius, int color) {
 		fillCircle(basePtr, x, y, radius, color);
+	}
+
+	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+		fillTriangle(basePtr, x1, y1, x2, y2, x3, y3, color);
 	}
 
 	public void drawPixmap (Gdx2DPixmap src, int srcX, int srcY, int dstX, int dstY, int width, int height) {
@@ -179,15 +204,15 @@ public class Gdx2DPixmap implements Disposable {
 	public int getGLInternalFormat () {
 		switch (format) {
 		case GDX2D_FORMAT_ALPHA:
-			return GL10.GL_ALPHA;
+			return GL20.GL_ALPHA;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
-			return GL10.GL_LUMINANCE_ALPHA;
+			return GL20.GL_LUMINANCE_ALPHA;
 		case GDX2D_FORMAT_RGB888:
 		case GDX2D_FORMAT_RGB565:
-			return GL10.GL_RGB;
+			return GL20.GL_RGB;
 		case GDX2D_FORMAT_RGBA8888:
 		case GDX2D_FORMAT_RGBA4444:
-			return GL10.GL_RGBA;
+			return GL20.GL_RGBA;
 		default:
 			throw new GdxRuntimeException("unknown format: " + format);
 		}
@@ -203,11 +228,11 @@ public class Gdx2DPixmap implements Disposable {
 		case GDX2D_FORMAT_LUMINANCE_ALPHA:
 		case GDX2D_FORMAT_RGB888:
 		case GDX2D_FORMAT_RGBA8888:
-			return GL10.GL_UNSIGNED_BYTE;
+			return GL20.GL_UNSIGNED_BYTE;
 		case GDX2D_FORMAT_RGB565:
-			return GL10.GL_UNSIGNED_SHORT_5_6_5;
+			return GL20.GL_UNSIGNED_SHORT_5_6_5;
 		case GDX2D_FORMAT_RGBA4444:
-			return GL10.GL_UNSIGNED_SHORT_4_4_4_4;
+			return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
 		default:
 			throw new GdxRuntimeException("unknown format: " + format);
 		}
@@ -238,9 +263,9 @@ public class Gdx2DPixmap implements Disposable {
 	#include <stdlib.h>
 	 */
 	
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*MANUAL	
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL	
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, requestedFormat);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 	
 		if(pixmap==0)
@@ -309,6 +334,10 @@ public class Gdx2DPixmap implements Disposable {
 		gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
 	*/
 
+	private static native void fillTriangle (long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
+		gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
+	*/
+
 	private static native void drawPixmap (long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
 		int dstY, int dstWidth, int dstHeight); /*
 		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
@@ -321,4 +350,8 @@ public class Gdx2DPixmap implements Disposable {
 	public static native void setScale (int scale); /*
 		gdx2d_set_scale(scale);
 	*/
+
+	public static native String getFailureReason (); /*
+     return env->NewStringUTF(gdx2d_get_failure_reason());
+   */
 }

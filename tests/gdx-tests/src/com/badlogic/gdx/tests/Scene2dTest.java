@@ -16,17 +16,23 @@
 
 package com.badlogic.gdx.tests;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -36,8 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class Scene2dTest extends GdxTest {
 	Stage stage;
@@ -50,7 +54,7 @@ public class Scene2dTest extends GdxTest {
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		final Actor actor = new Actor() {
-			public void draw (SpriteBatch batch, float parentAlpha) {
+			public void draw (Batch batch, float parentAlpha) {
 				Color color = getColor();
 				batch.setColor(color.r, color.g, color.b, parentAlpha);
 				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
@@ -73,14 +77,26 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		VerticalGroup g = new VerticalGroup();
-		g.setPosition(100, 100);
-		g.setReverse(true);
-		stage.addActor(g);
-		for (int i = 0; i < 10; i++) {
+		VerticalGroup g = new VerticalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 10; i++)
 			g.addActor(new TextButton("button " + i, skin));
-		}
-		g.pack();
+		g.addActor(new TextButton("longer button", skin));
+		Table table = new Table().debug();
+		table.add(g);
+		table.pack();
+		table.setPosition(5, 100);
+		stage.addActor(table);
+
+		HorizontalGroup h = new HorizontalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 5; i++)
+			h.addActor(new TextButton("button " + i, skin));
+		h.addActor(new TextButton("some taller\nbutton", skin));
+		table = new Table().debug();
+		table.add(h);
+		table.pack();
+		table.setPosition(130, 100);
+		stage.addActor(table);
+		table.toFront();
 
 		final TextButton button = new TextButton("Fancy Background", skin);
 
@@ -96,7 +112,7 @@ public class Scene2dTest extends GdxTest {
 				return true;
 			}
 
-			public void fling (InputEvent event, float velocityX, float velocityY, int pointer, int button) {
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
 				System.out.println("fling " + velocityX + ", " + velocityY);
 			}
 
@@ -105,7 +121,7 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				event.getListenerActor().translate(deltaX, deltaY);
+				event.getListenerActor().moveBy(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}
 		});
@@ -155,22 +171,17 @@ public class Scene2dTest extends GdxTest {
 
 	public void render () {
 		// System.out.println(meow.getValue());
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
 
-		stage.getSpriteBatch().begin();
-		patch.draw(stage.getSpriteBatch(), 300, 100, 126, 126);
-		stage.getSpriteBatch().end();
+		stage.getBatch().begin();
+		patch.draw(stage.getBatch(), 300, 100, 126, 126);
+		stage.getBatch().end();
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, true);
-	}
-
-	public boolean needsGL20 () {
-		return true;
+		stage.getViewport().update(width, height, true);
 	}
 
 	public void dispose () {

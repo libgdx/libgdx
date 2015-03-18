@@ -17,11 +17,16 @@
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener;
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
-import com.badlogic.gdx.backends.gwt.preloader.BinaryLoader.Blob;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -30,145 +35,168 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 
 public class Preloader {
+	
 	public interface PreloaderCallback {
-		public void done ();
-
-		public void loaded (String file, int loaded, int total);
-
+		
+		public void update(PreloaderState state);
+		
 		public void error (String file);
+		
 	}
 
+	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
 	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 
-	private class Asset {
-		String url;
-		AssetType type;
-
-		public Asset (String url, AssetType type) {
+	public static class Asset {
+		public Asset (String url, AssetType type, long size, String mimeType) {
 			this.url = url;
 			this.type = type;
+			this.size = size;
+			this.mimeType = mimeType;
 		}
+
+		public boolean succeed;
+		public boolean failed;
+		public long loaded;
+		public final String url;
+		public final AssetType type;
+		public final long size;
+		public final String mimeType;
+	}
+	
+	public static class PreloaderState {
+		
+		public PreloaderState(Array<Asset> assets) {
+			this.assets = assets;
+		}
+		
+		public long getDownloadedSize() {
+			long size = 0;
+			for (int i = 0; i < assets.size; i++) {
+				Asset asset = assets.get(i);
+				size += (asset.succeed || asset.failed) ? asset.size : Math.min(asset.size, asset.loaded);
+			}
+			return size;
+		}
+		
+		public long getTotalSize() {
+			long size = 0;
+			for (int i = 0; i < assets.size; i++) {
+				Asset asset = assets.get(i);
+				size += asset.size;
+			}
+			return size;
+		}
+		
+		public float getProgress() {
+			long total = getTotalSize();
+			return total == 0 ? 1 : (getDownloadedSize() / (float) total);
+		}
+		
+		public boolean hasEnded() {
+			return getDownloadedSize() == getTotalSize();
+		}
+		
+		public final Array<Asset> assets;
+		
 	}
 
 	public final String baseUrl;
 
-	public Preloader () {
-		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "") + "assets/";
-		// trigger copying of assets creation of assets.txt
+	
+	public Preloader (String newBaseURL) {
+		
+		baseUrl = newBaseURL;
+	
+		// trigger copying of assets and creation of assets.txt
 		GWT.create(PreloaderBundle.class);
 	}
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
-		new TextLoader(baseUrl + assetFileUrl, new LoaderCallback<String>() {
+		final AssetDownloader loader = new AssetDownloader();
+		
+		loader.loadText(baseUrl + assetFileUrl, new AssetLoaderListener<String>() {
 			@Override
-			public void success (String result) {
+			public void onProgress (double amount) {
+			}
+			@Override
+			public void onFailure () {
+				callback.error(assetFileUrl);
+			}
+			@Override
+			public void onSuccess (String result) {
 				String[] lines = result.split("\n");
-				Array<Asset> assets = new Array<Asset>();
+				Array<Asset> assets = new Array<Asset>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
-					if (tokens.length != 2) continue; // FIXME :p
+					if (tokens.length != 4) {
+						throw new GdxRuntimeException("Invalid assets description file.");
+					}
 					AssetType type = AssetType.Text;
 					if (tokens[0].equals("i")) type = AssetType.Image;
 					if (tokens[0].equals("b")) type = AssetType.Binary;
 					if (tokens[0].equals("a")) type = AssetType.Audio;
 					if (tokens[0].equals("d")) type = AssetType.Directory;
-					assets.add(new Asset(tokens[1].trim(), type));
+					long size = Long.parseLong(tokens[2]);
+					if (type == AssetType.Audio && !loader.isUseBrowserCache()) {
+						size = 0;
+					}
+					assets.add(new Asset(tokens[1].trim(), type, size, tokens[3]));
 				}
-
-				loadNextAsset(assets, 0, callback);
-			}
-
-			@Override
-			public void error () {
-				callback.error(assetFileUrl);
+				final PreloaderState state = new PreloaderState(assets);
+				for (int i = 0; i < assets.size; i++) {
+					final Asset asset = assets.get(i);
+					
+					if (contains(asset.url)) {
+						asset.loaded = asset.size;
+						asset.succeed = true;
+						continue;
+					}
+					
+					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
+						@Override
+						public void onProgress (double amount) {
+							asset.loaded = (long) amount;
+							callback.update(state);
+						}
+						@Override
+						public void onFailure () {
+							asset.failed = true;
+							callback.error(asset.url);
+							callback.update(state);
+						}
+						@Override
+						public void onSuccess (Object result) {
+							switch (asset.type) {
+							case Text:
+								texts.put(asset.url, (String) result);					
+								break;
+							case Image:
+								images.put(asset.url, (ImageElement) result);
+								break;
+							case Binary:
+								binaries.put(asset.url, (Blob) result);
+								break;
+							case Audio:
+								audio.put(asset.url, null);
+								break;
+							case Directory:
+								directories.put(asset.url, null);
+								break;
+							}
+							asset.succeed = true;
+							callback.update(state);
+						}
+					});
+				}
+				callback.update(state);
 			}
 		});
 	}
-
-	private void loadNextAsset (final Array<Asset> assets, final int next, final PreloaderCallback callback) {
-
-		if (next == assets.size) {
-			callback.done();
-			return;
-		}
-
-		final Asset asset = assets.get(next);
-		if (asset.type == AssetType.Text) {
-			new TextLoader(baseUrl + asset.url, new LoaderCallback<String>() {
-				@Override
-				public void success (String result) {
-					texts.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
-				}
-
-				@Override
-				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
-				}
-			});
-		}
-
-		if (asset.type == AssetType.Image) {
-			new ImageLoader(baseUrl + asset.url, new LoaderCallback<ImageElement>() {
-				@Override
-				public void success (ImageElement result) {
-					images.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
-				}
-
-				@Override
-				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
-				}
-			});
-		}
-
-		if (asset.type == AssetType.Binary) {
-			new BinaryLoader(baseUrl + asset.url, new LoaderCallback<Blob>() {
-				@Override
-				public void success (Blob result) {
-					binaries.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
-				}
-
-				@Override
-				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
-				}
-			});
-		}
-
-		if (asset.type == AssetType.Audio) {
-			new AudioLoader(baseUrl + asset.url, new LoaderCallback<Void>() {
-				@Override
-				public void success (Void result) {
-					audio.put(asset.url, null);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
-				}
-
-				@Override
-				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
-				}
-			});
-		}
-
-		if (asset.type == AssetType.Directory) {
-			loadNextAsset(assets, next + 1, callback);
-		}
-	}
-
+	
 	public InputStream read (String url) {
 		if (texts.containsKey(url)) {
 			try {
@@ -190,8 +218,7 @@ public class Preloader {
 	}
 
 	public boolean contains (String url) {
-		// FIXME should also check if directory exists
-		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url);
+		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url) || directories.containsKey(url);
 	}
 
 	public boolean isText (String url) {
@@ -210,12 +237,60 @@ public class Preloader {
 		return audio.containsKey(url);
 	}
 
-	public FileHandle[] list (String url) {
-		throw new GdxRuntimeException("Not implemented"); // FIXME
+	public boolean isDirectory (String url) {
+		return directories.containsKey(url);
 	}
 
-	public boolean isDirectory (String url) {
-		throw new GdxRuntimeException("Not implemented"); // FIXME
+	private boolean isChild(String path, String url) {
+		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
+	}
+
+	public FileHandle[] list (String url) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url)) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, FileFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && filter.accept(new File(path))) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, FilenameFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1))) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, String suffix) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && path.endsWith(suffix)) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
 	}
 
 	public long length (String url) {
@@ -237,4 +312,5 @@ public class Preloader {
 		}
 		return 0;
 	}
+
 }

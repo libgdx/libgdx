@@ -1,13 +1,13 @@
 #include <com.badlogic.gdx.graphics.glutils.ETC1.h>
 
-//@line:189
+//@line:196
 
 	#include <etc1/etc1_utils.h>
 	#include <stdlib.h>
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getCompressedDataSize(JNIEnv* env, jclass clazz, jint width, jint height) {
 
 
-//@line:197
+//@line:204
 
 		return etc1_get_encoded_data_size(width, height);
 	
@@ -15,10 +15,10 @@
 }
 
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_formatHeader(JNIEnv* env, jclass clazz, jobject obj_header, jint offset, jint width, jint height) {
-	char* header = (char*)env->GetDirectBufferAddress(obj_header);
+	char* header = (char*)(obj_header?env->GetDirectBufferAddress(obj_header):0);
 
 
-//@line:207
+//@line:214
 
 		etc1_pkm_format_header((etc1_byte*)header + offset, width, height);
 	
@@ -28,14 +28,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_formatHeader(
 static inline jint wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:214
+//@line:221
 
 		return etc1_pkm_get_width((etc1_byte*)header + offset);
 	
 }
 
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM(JNIEnv* env, jclass clazz, jobject obj_header, jint offset) {
-	char* header = (char*)env->GetDirectBufferAddress(obj_header);
+	char* header = (char*)(obj_header?env->GetDirectBufferAddress(obj_header):0);
 
 	jint JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM(env, clazz, obj_header, offset, header);
 
@@ -46,14 +46,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM(J
 static inline jint wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:221
+//@line:228
 
 		return etc1_pkm_get_height((etc1_byte*)header + offset);
 	
 }
 
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM(JNIEnv* env, jclass clazz, jobject obj_header, jint offset) {
-	char* header = (char*)env->GetDirectBufferAddress(obj_header);
+	char* header = (char*)(obj_header?env->GetDirectBufferAddress(obj_header):0);
 
 	jint JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM(env, clazz, obj_header, offset, header);
 
@@ -64,14 +64,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM(
 static inline jboolean wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_isValidPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:228
+//@line:235
 
 		return etc1_pkm_is_valid((etc1_byte*)header + offset) != 0?true:false;
 	
 }
 
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_isValidPKM(JNIEnv* env, jclass clazz, jobject obj_header, jint offset) {
-	char* header = (char*)env->GetDirectBufferAddress(obj_header);
+	char* header = (char*)(obj_header?env->GetDirectBufferAddress(obj_header):0);
 
 	jboolean JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_isValidPKM(env, clazz, obj_header, offset, header);
 
@@ -80,11 +80,11 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_isValidPK
 }
 
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_decodeImage(JNIEnv* env, jclass clazz, jobject obj_compressedData, jint offset, jobject obj_decodedData, jint offsetDec, jint width, jint height, jint pixelSize) {
-	char* compressedData = (char*)env->GetDirectBufferAddress(obj_compressedData);
-	char* decodedData = (char*)env->GetDirectBufferAddress(obj_decodedData);
+	char* compressedData = (char*)(obj_compressedData?env->GetDirectBufferAddress(obj_compressedData):0);
+	char* decodedData = (char*)(obj_decodedData?env->GetDirectBufferAddress(obj_decodedData):0);
 
 
-//@line:242
+//@line:249
 
 		etc1_decode_image((etc1_byte*)compressedData + offset, (etc1_byte*)decodedData + offsetDec, width, height, pixelSize, width * pixelSize);
 	
@@ -94,7 +94,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_decodeImage(J
 static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage
 (JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize, char* imageData) {
 
-//@line:253
+//@line:260
 
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressedData = (etc1_byte*)malloc(compressedSize);
@@ -104,7 +104,7 @@ static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encode
 }
 
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage(JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize) {
-	char* imageData = (char*)env->GetDirectBufferAddress(obj_imageData);
+	char* imageData = (char*)(obj_imageData?env->GetDirectBufferAddress(obj_imageData):0);
 
 	jobject JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage(env, clazz, obj_imageData, offset, width, height, pixelSize, imageData);
 
@@ -115,7 +115,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImag
 static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM
 (JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize, char* imageData) {
 
-//@line:267
+//@line:274
 
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressed = (etc1_byte*)malloc(compressedSize + ETC_PKM_HEADER_SIZE);
@@ -126,7 +126,7 @@ static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encode
 }
 
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM(JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize) {
-	char* imageData = (char*)env->GetDirectBufferAddress(obj_imageData);
+	char* imageData = (char*)(obj_imageData?env->GetDirectBufferAddress(obj_imageData):0);
 
 	jobject JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM(env, clazz, obj_imageData, offset, width, height, pixelSize, imageData);
 

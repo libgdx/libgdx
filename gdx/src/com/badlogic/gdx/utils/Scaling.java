@@ -44,7 +44,7 @@ public enum Scaling {
 	/** The source is not scaled. */
 	none;
 
-	static private Vector2 temp = new Vector2();
+	static private final Vector2 temp = new Vector2();
 
 	/** Returns the size of the source scaled to the target. Note the same Vector2 instance is always returned and should never be
 	 * cached. */
@@ -67,16 +67,12 @@ public enum Scaling {
 			break;
 		}
 		case fillX: {
-			float targetRatio = targetHeight / targetWidth;
-			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetWidth / sourceWidth;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
 			break;
 		}
 		case fillY: {
-			float targetRatio = targetHeight / targetWidth;
-			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;

@@ -143,7 +143,7 @@ public final class System {
     if (src == dest && srcOfs < destOfs) {
       srcOfs += len;
       for (var destEnd = destOfs + len; destEnd-- > destOfs;) {
-        dst[destEnd] = src[--srcOfs];
+        dest[destEnd] = src[--srcOfs];
       }
     } else {
       for (var destEnd = destOfs + len; destOfs < destEnd;) {

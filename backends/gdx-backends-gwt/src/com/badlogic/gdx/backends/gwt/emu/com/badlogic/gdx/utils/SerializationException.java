@@ -17,7 +17,7 @@
 package com.badlogic.gdx.utils;
 
 /** Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.
- * @author Nathan Sweet <misc@n4te.com> */
+ * @author Nathan Sweet */
 public class SerializationException extends RuntimeException {
 	private StringBuffer trace;
 

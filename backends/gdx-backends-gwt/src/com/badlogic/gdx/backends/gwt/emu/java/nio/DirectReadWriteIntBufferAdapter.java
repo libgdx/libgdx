@@ -16,8 +16,9 @@
 
 package java.nio;
 
-import com.google.gwt.typedarrays.client.ArrayBufferView;
-import com.google.gwt.typedarrays.client.Int32Array;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 
 /** This class wraps a byte buffer to be a int buffer.
  * <p>
@@ -42,7 +43,7 @@ final class DirectReadWriteIntBufferAdapter extends IntBuffer implements HasArra
 		super((byteBuffer.capacity() >> 2));
 		this.byteBuffer = byteBuffer;
 		this.byteBuffer.clear();
-		this.intArray = Int32Array.create(byteBuffer.byteArray.getBuffer(), byteBuffer.byteArray.getByteOffset(), capacity);
+		this.intArray = TypedArrays.createInt32Array(byteBuffer.byteArray.buffer(), byteBuffer.byteArray.byteOffset(), capacity);
 	}
 
 	// TODO(haustein) This will be slow

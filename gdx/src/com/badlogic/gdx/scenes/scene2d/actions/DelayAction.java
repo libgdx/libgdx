@@ -21,7 +21,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 public class DelayAction extends DelegateAction {
 	private float duration, time;
 
-	public boolean act (float delta) {
+	public DelayAction () {
+	}
+
+	public DelayAction (float duration) {
+		this.duration = duration;
+	}
+
+	protected boolean delegate (float delta) {
 		if (time < duration) {
 			time += delta;
 			if (time < duration) return false;

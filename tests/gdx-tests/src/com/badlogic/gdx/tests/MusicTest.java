@@ -18,37 +18,55 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MusicTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
+	Music music;
+	float songDuration = 183;
+	float currentPosition;
 
-	static final int NUM_STREAMS = 1;
-	Music[] music = new Music[NUM_STREAMS];
 	TextureRegion buttons;
 	SpriteBatch batch;
 	BitmapFont font;
 
+	Stage stage;
+	Slider slider;
+	boolean sliderUpdating = false;
+
 	@Override
 	public void create () {
-		for (int i = 0; i < music.length; i++) {
-			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-			music[i].setLooping(true);
-			music[i].setLooping(false);
-		}
+		music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
+		music.play();
 
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+
+		stage = new Stage();
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		slider = new Slider(0, 100, 0.1f, false, skin);
+		slider.setPosition(200, 20);
+		slider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				if (!sliderUpdating && slider.isDragging()) music.setPosition((slider.getValue() / 100f) * songDuration);
+			}
+		});
+		stage.addActor(slider);
+
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -57,26 +75,35 @@ public class MusicTest extends GdxTest {
 	}
 
 	@Override
+	public void resume () {
+		System.out.println(Gdx.graphics.getDeltaTime());
+	}
+
+	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		currentPosition = music.getPosition();
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-// font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, (int)currentPosition / 60 + ":" + (int)currentPosition % 60, 365, 35);
 		batch.end();
+
+		sliderUpdating = true;
+		slider.setValue((currentPosition / songDuration) * 100f);
+		sliderUpdating = false;
+		stage.act();
+		stage.draw();
 
 		if (Gdx.input.justTouched()) {
 			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
 				if (Gdx.input.getX() < 64) {
-					for (int i = 0; i < music.length; i++)
-						music[i].play();
+					music.play();
 				}
 				if (Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
-					for (int i = 0; i < music.length; i++)
-						music[i].stop();
+					music.stop();
 				}
 				if (Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
-					for (int i = 0; i < music.length; i++)
-						music[i].pause();
+					music.pause();
 				}
 			}
 		}
@@ -86,7 +113,6 @@ public class MusicTest extends GdxTest {
 	public void dispose () {
 		batch.dispose();
 		buttons.getTexture().dispose();
-		for (Music m : music)
-			m.dispose();
+		music.dispose();
 	}
 }

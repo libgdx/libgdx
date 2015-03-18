@@ -23,7 +23,7 @@ import java.io.Writer;
 /**
  * Builder style API for emitting XML. <pre>
  * StringWriter writer = new StringWriter();
- * XmlBuilder xml = new XmlBuilder(writer);
+ * XmlWriter xml = new XmlWriter(writer);
  * xml.element("meow")
  *	.attribute("moo", "cow")
  *	.element("child")

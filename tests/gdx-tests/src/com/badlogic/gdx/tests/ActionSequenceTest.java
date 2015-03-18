@@ -16,8 +16,12 @@
 
 package com.badlogic.gdx.tests;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,14 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
-
 public class ActionSequenceTest extends GdxTest implements Runnable {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	Image img;
 	Image img2;
@@ -43,7 +40,7 @@ public class ActionSequenceTest extends GdxTest implements Runnable {
 
 	@Override
 	public void create () {
-		stage = new Stage(480, 320, true);
+		stage = new Stage();
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		img = new Image(new TextureRegion(texture));
@@ -72,7 +69,7 @@ public class ActionSequenceTest extends GdxTest implements Runnable {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();

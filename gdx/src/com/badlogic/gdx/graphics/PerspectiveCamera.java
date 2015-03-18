@@ -23,20 +23,21 @@ import com.badlogic.gdx.math.Vector3;
  * 
  * @author mzechner */
 public class PerspectiveCamera extends Camera {
-	/** the field of view in degrees **/
+	/** the field of view of the height, in degrees **/
 	public float fieldOfView = 67;
 
 	public PerspectiveCamera () {
 	}
 
-	/** Constructs a new {@link PerspectiveCamera} with the given field of view and viewport size. The apsect ratio is derrived from
+	/** Constructs a new {@link PerspectiveCamera} with the given field of view and viewport size. The aspect ratio is derived from
 	 * the viewport size.
 	 * 
-	 * @param fieldOfView the field of view in degrees
+	 * @param fieldOfViewY the field of view of the height, in degrees, the field of view for the width will be calculated
+	 *           according to the aspect ratio.
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height */
-	public PerspectiveCamera (float fieldOfView, float viewportWidth, float viewportHeight) {
-		this.fieldOfView = fieldOfView;
+	public PerspectiveCamera (float fieldOfViewY, float viewportWidth, float viewportHeight) {
+		this.fieldOfView = fieldOfViewY;
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		update();
@@ -46,14 +47,7 @@ public class PerspectiveCamera extends Camera {
 
 	@Override
 	public void update () {
-		float aspect = viewportWidth / viewportHeight;
-		projection.setToProjection(Math.abs(near), Math.abs(far), fieldOfView, aspect);
-		view.setToLookAt(position, tmp.set(position).add(direction), up);
-		combined.set(projection);
-		Matrix4.mul(combined.val, view.val);
-		invProjectionView.set(combined);
-		Matrix4.inv(invProjectionView.val);
-		frustum.update(invProjectionView);
+		update(true);
 	}
 
 	@Override

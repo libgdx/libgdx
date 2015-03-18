@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -87,7 +87,16 @@ public class ParticleEmitterTest extends GdxTest {
 				else if (keycode == Input.Keys.SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size;
 					emitter = emitters.get(emitterIndex);
+
+					// if we've previously stopped the emitter reset it
+					if (emitter.isComplete()) emitter.reset();
 					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax() / 1000f);
+				} else if (keycode == Input.Keys.ENTER) {
+					emitter = emitters.get(emitterIndex);
+					if (emitter.isComplete())
+						emitter.reset();
+					else
+						emitter.allowCompletion();
 				} else
 					return false;
 				particleCount = Math.max(0, particleCount);
@@ -121,7 +130,7 @@ public class ParticleEmitterTest extends GdxTest {
 	public void render () {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		float delta = Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		effect.draw(spriteBatch, delta);
 		spriteBatch.end();

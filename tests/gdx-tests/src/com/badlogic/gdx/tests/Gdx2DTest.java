@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
@@ -36,7 +36,7 @@ public class Gdx2DTest extends GdxTest {
 	Texture textureFromPixmap (Gdx2DPixmap pixmap) {
 		Texture texture = new Texture(pixmap.getWidth(), pixmap.getHeight(), Format.RGB565);
 		texture.bind();
-		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+		Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 			pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 		return texture;
 	}
@@ -79,6 +79,7 @@ public class Gdx2DTest extends GdxTest {
 		pixmap.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
 		pixmap.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
 		pixmap.fillCircle(16, 16, 6, Color.rgba8888(0, 1, 0, 0.5f));
+		pixmap.fillTriangle(16, 16, 18, 18, 20, 14, Color.rgba8888(0, 0.5f, 0, 0.5f));
 		pixmap.drawLine(0, -1, 0, 0, Color.rgba8888(1, 1, 0, 1));
 		pixmap.drawLine(41, -10, 31, 0, Color.rgba8888(1, 1, 0, 1));
 		pixmap.drawLine(10, 41, 0, 31, Color.rgba8888(0, 1, 1, 1));
@@ -141,16 +142,11 @@ public class Gdx2DTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		for (int i = 0; i < sprites.size(); i++) {
 			sprites.get(i).draw(batch);
 		}
 		batch.end();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

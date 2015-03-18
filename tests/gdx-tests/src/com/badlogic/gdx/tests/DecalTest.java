@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -48,8 +48,8 @@ public class DecalTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		Gdx.gl.glDepthFunc(GL10.GL_LESS);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glDepthFunc(GL20.GL_LESS);
 
 		egg = new Texture(Gdx.files.internal("data/egg.png"));
 		egg.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -82,7 +82,7 @@ public class DecalTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		float elapsed = Gdx.graphics.getDeltaTime();
 		float scale = timePassed > 0.5 ? 1 - timePassed / 2 : 0.5f + timePassed / 2;

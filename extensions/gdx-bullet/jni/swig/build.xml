@@ -1,47 +1,41 @@
 <project name="gdx-bullet-swig-gen" basedir="." default="all">
 
-	<property name="dir.out" location="${basedir}/../swig-src/" />
+    <target name="linearmath">
+        <echo message="Generating linearmath wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="linearmath" />
+        </ant>
+    </target>
+    
+    <target name="collision" depends="linearmath">
+        <echo message="Generating collision wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="collision" />
+        </ant>
+    </target>
+    
+    <target name="dynamics" depends="collision">
+        <echo message="Generating dynamics wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="dynamics" />
+        </ant>
+    </target>
+    
+    <target name="softbody" depends="dynamics">
+        <echo message="Generating softbody wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="softbody" />
+        </ant>
+    </target>
+    
+    <target name="extras" depends="softbody">
+        <echo message="Generating extras wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="extras" />
+        </ant>
+    </target>
 
-	<target name="clean">
-		<echo message="Deleting previously generated files in ${dir.out}" level="info" />
-		<delete>
-			<fileset dir="${dir.out}" includes="**/*" />
-		</delete>
-	</target>
-
-	<target name="gen">
-
-		<mkdir dir="${dir.out}" />
-
-		<exec executable="swig">
-			<arg value="-java" />
-			<arg value="-c++" />
-			<arg value="-fvirtual" />
-			<arg value="-package" />
-			<arg value="com.badlogic.gdx.physics.bullet" />
-			<arg value="-I${basedir}/../src" />
-			<!-- Disable Bullet profiling -->
-			<arg value="-DBT_NO_PROFILE" />
-			<arg value="-outdir" />
-			<arg value="${dir.out}/com/badlogic/gdx/physics/bullet" />
-			<arg value="-o" />
-			<arg value="${dir.out}/gdxBullet_wrap.cpp" />
-			<arg value="${basedir}/gdxBullet.i" />
-
-		</exec>
-	</target>
-
-	<target name="fix_casts">
-
-		<echo message="Replacing director dynamic_cast with C-style casts to avoid RTTI" level="info" />
-		<replaceregexp file="${dir.out}/gdxBullet_wrap.cpp" flags="g">
-			<regexp pattern="SwigDirector_[\w]+ \*director = dynamic_cast&lt;(SwigDirector_[\w]+ \*)&gt;\(obj\);" />
-			<substitution expression="SwigDirector_btIDebugDraw *director = (\1)(obj);" />
-		</replaceregexp>
-
-	</target>
-
-	<target name="all" depends="clean,gen,fix_casts">
-		<echo message="Wrapper files generated, now rebuild the gdx-bullet project." level="info" />
+	<target name="all" depends="linearmath,collision,dynamics,softbody,extras">
+		<echo message="All wrapper files generated, now rebuild the gdx-bullet project." level="info" />
 	</target>
 </project>

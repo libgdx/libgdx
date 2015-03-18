@@ -16,9 +16,12 @@
 
 package com.google.gwt.corp.compatibility;
 
-import com.google.gwt.typedarrays.client.Float32Array;
-import com.google.gwt.typedarrays.client.Int32Array;
-import com.google.gwt.typedarrays.client.Int8Array;
+import com.google.gwt.typedarrays.client.Float32ArrayNative;
+import com.google.gwt.typedarrays.client.Int32ArrayNative;
+import com.google.gwt.typedarrays.client.Int8ArrayNative;
+import com.google.gwt.typedarrays.shared.Float32Array;
+import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.Int8Array;
 
 public class Numbers {
 
@@ -66,9 +69,9 @@ public class Numbers {
 // return signBit | ((exponent + 127) << 23) | (significand & 0x007fffff);
 	}
 
-	static Int8Array wba = Int8Array.create(4);
-	static Int32Array wia = Int32Array.create(wba.getBuffer(), 0, 1);
-	static Float32Array wfa = Float32Array.create(wba.getBuffer(), 0, 1);
+	static Int8Array wba = Int8ArrayNative.create(4);
+	static Int32Array wia = Int32ArrayNative.create(wba.buffer(), 0, 1);
+	static Float32Array wfa = Float32ArrayNative.create(wba.buffer(), 0, 1);
 
 	public static final float intBitsToFloat (int i) {
 // wba.set(0, (byte) (i >> 24));

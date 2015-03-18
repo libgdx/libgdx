@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests.android;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -36,12 +37,9 @@ public class AndroidTestStarter extends ListActivity {
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ArrayList<String> testNames = new ArrayList<String>();
-		for (String name : GdxTests.getNames()) {
-			testNames.add(name);
-		}
-		testNames.add(MatrixTest.class.getSimpleName());
-		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames.toArray(new String[0])));
+		GdxTests.tests.add(MatrixTest.class);
+		List<String> testNames = GdxTests.getNames();
+		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames));
 
 		prefs = getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
 		getListView().setSelectionFromTop(prefs.getInt("index", 0), prefs.getInt("top", 0));
