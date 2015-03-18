@@ -764,6 +764,10 @@ public class BitmapFont implements Disposable {
 			if (page == null) kerning[ch >>> LOG2_PAGE_SIZE] = page = new byte[PAGE_SIZE];
 			page[ch & PAGE_SIZE - 1] = (byte)value;
 		}
+
+		public String toString () {
+			return Character.toString((char)id);
+		}
 	}
 
 	static int indexOf (CharSequence text, char ch, int start) {
