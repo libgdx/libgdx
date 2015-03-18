@@ -467,8 +467,8 @@ public class BitmapFontCache {
 				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
-						x + lastGlyph.xoffset * scaleX, //
-						y + lastGlyph.yoffset * scaleY, //
+						x + lastGlyph.xoffset, //
+						y + lastGlyph.yoffset, //
 						lastGlyph.width * scaleX, //
 						lastGlyph.height * scaleY);
 					x += lastGlyph.xadvance * scaleX;
@@ -494,8 +494,8 @@ public class BitmapFontCache {
 					x += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
 					addGlyph(lastGlyph, //
-						x + g.xoffset * scaleX, //
-						y + g.yoffset * scaleY, //
+						x + g.xoffset, //
+						y + g.yoffset, //
 						g.width * scaleX, //
 						g.height * scaleY);
 					x += g.xadvance * scaleX;
