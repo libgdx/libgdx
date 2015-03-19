@@ -10,10 +10,12 @@ import java.util.List;
 public class Dependency {
 
 	private HashMap<ProjectType, String[]> subDependencyMap = new HashMap<ProjectType, String[]>();
+	private String[] gwtInherits;
 	private String name;
 
-	public Dependency (String name, String[]... subDependencies) {
+	public Dependency (String name, String[] gwtInherits, String[]... subDependencies) {
 		this.name = name;
+		this.gwtInherits = gwtInherits;
 		for (ProjectType type : ProjectType.values()) {
 			subDependencyMap.put(type, subDependencies[type.ordinal()]);
 		}
@@ -32,6 +34,10 @@ public class Dependency {
 		return incompat;
 	}
 
+	public String[] getGwtInherits () {
+		return gwtInherits;
+	}
+	
 	public String getName () {
 		return name;
 	}

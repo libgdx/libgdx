@@ -31,7 +31,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -42,13 +41,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.setup.GdxSetupUI.SetupButton;
 
-public class ExternalExtensionsDialog extends JDialog {
+public class ExternalExtensionsDialog extends JDialog implements TableModelListener {
 
 	private JPanel contentPane;
 	private SetupButton buttonOK;
@@ -147,36 +147,7 @@ public class ExternalExtensionsDialog extends JDialog {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
 		table.getTableHeader().setReorderingAllowed(false);
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked (MouseEvent e) {
-				int row = table.getSelectedRow();
-				int column = table.getSelectedColumn();
-
-				if (column == 0) {
-					ExternalExtension extension = ((ExtensionTableModel)table.getModel()).getExtension(row);
-					Dependency dep = extension.generateDependency();
-					boolean selected = (Boolean)table.getModel().getValueAt(row, 0);
-					if (selected) {
-						if (!mainDependencies.contains(dep)) {
-							mainDependencies.add(dep);
-						}
-					} else {
-						mainDependencies.remove(dep);
-					}
-				}
-
-				if (column == 5) {
-					URI uri = ((ExtensionTableModel)table.getModel()).getURI(row, column);
-					if (uri != null) {
-						try {
-							Desktop.getDesktop().browse(uri);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
-		});
+		table.getModel().addTableModelListener(this);
 
 		scrollPane = new JScrollPane(table);
 
@@ -223,6 +194,13 @@ public class ExternalExtensionsDialog extends JDialog {
 				String compatibility = eElement.getElementsByTagName("compatibility").item(0).getTextContent();
 				String url = eElement.getElementsByTagName("website").item(0).getTextContent();
 
+				String[] gwtInherits = null;
+				NodeList inheritsNode = eElement.getElementsByTagName("inherit");
+				gwtInherits = new String[inheritsNode.getLength()];
+
+				for (int j = 0; j < inheritsNode.getLength(); j++)
+					gwtInherits[j] = inheritsNode.item(j).getTextContent();
+
 				final HashMap<String, List<String>> dependencies = new HashMap<String, List<String>>();
 
 				addToDependencyMapFromXML(dependencies, eElement, "core");
@@ -239,7 +217,7 @@ public class ExternalExtensionsDialog extends JDialog {
 				}
 
 				if (uri != null) {
-					final ExternalExtension extension = new ExternalExtension(name, description, version);
+					final ExternalExtension extension = new ExternalExtension(name, gwtInherits, description, version);
 					extension.setDependencies(dependencies);
 					tableModel.addExtension(extension, false, name, description, version, compatibility, uri);
 				}
@@ -402,6 +380,36 @@ public class ExternalExtensionsDialog extends JDialog {
 			extensions.put(rowCount++, extension);
 		}
 
+	}
+	
+	@Override
+	public void tableChanged (TableModelEvent e) {
+		int row = e.getFirstRow();
+		int column = e.getColumn();
+
+		if (column == 0) {
+			ExternalExtension extension = ((ExtensionTableModel)table.getModel()).getExtension(row);
+			Dependency dep = extension.generateDependency();
+			boolean selected = (Boolean)table.getModel().getValueAt(row, 0);
+			if (selected) {
+				if (!mainDependencies.contains(dep)) {
+					mainDependencies.add(dep);
+				}
+			} else {
+				mainDependencies.remove(dep);
+			}
+		}
+
+		if (column == 5) {
+			URI uri = ((ExtensionTableModel)table.getModel()).getURI(row, column);
+			if (uri != null) {
+				try {
+					Desktop.getDesktop().browse(uri);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
