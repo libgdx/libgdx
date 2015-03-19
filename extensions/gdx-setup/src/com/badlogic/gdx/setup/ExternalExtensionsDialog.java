@@ -31,6 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -148,6 +149,22 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getModel().addTableModelListener(this);
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked (MouseEvent e) {
+				int row = table.getSelectedRow();
+				int column = table.getSelectedColumn();
+				if (column == 5) {
+					URI uri = ((ExtensionTableModel)table.getModel()).getURI(row, column);
+					if (uri != null) {
+						try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		});
 
 		scrollPane = new JScrollPane(table);
 
@@ -397,17 +414,6 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 				}
 			} else {
 				mainDependencies.remove(dep);
-			}
-		}
-
-		if (column == 5) {
-			URI uri = ((ExtensionTableModel)table.getModel()).getURI(row, column);
-			if (uri != null) {
-				try {
-					Desktop.getDesktop().browse(uri);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 			}
 		}
 	}
