@@ -100,6 +100,11 @@ public class BitmapFontTest extends GdxTest {
 			font.draw(spriteBatch, text, x, viewHeight - y, alignmentWidth, Align.right, true);
 		}
 
+		font.draw(spriteBatch, "[", 50, 60, 100, Align.left, true);
+		font.getData().markupEnabled = true;
+		font.draw(spriteBatch, "[", 100, 60, 100, Align.left, true);
+		font.getData().markupEnabled = false;
+
 		// 'R' and 'p' are in different pages
 		String txt2 = "this font uses " + multiPageFont.getRegions().length + " texture pages: RpRpRpRpRpNM";
 		spriteBatch.renderCalls = 0;

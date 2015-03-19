@@ -201,6 +201,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	private int parseColorMarkup (CharSequence str, int start, int end) {
+		if (start == end) return -1; // String ended with "[".
 		Pool<Color> pool = Pools.get(Color.class);
 		switch (str.charAt(start)) {
 		case '#':
