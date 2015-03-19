@@ -303,52 +303,6 @@ public class BitmapFont implements Disposable {
 		return bounds;
 	}
 
-	/** Computes the glyph advances for the given character sequence and stores them in the provided {@link FloatArray}. The float
-	 * arrays are cleared. An additional element is added at the end.
-	 * @param glyphAdvances the glyph advances output array.
-	 * @param glyphPositions the glyph positions output array. */
-	public void computeGlyphAdvancesAndPositions (CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
-		// BOZO - Replace method with GlyphLayout.
-		glyphAdvances.clear();
-		glyphPositions.clear();
-		int index = 0;
-		int end = str.length();
-		float width = 0;
-		Glyph lastGlyph = null;
-		BitmapFontData data = this.data;
-		if (data.scaleX == 1) {
-			for (; index < end; index++) {
-				char ch = str.charAt(index);
-				Glyph g = data.getGlyph(ch);
-				if (g != null) {
-					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-					lastGlyph = g;
-					glyphAdvances.add(g.xadvance);
-					glyphPositions.add(width);
-					width += g.xadvance;
-				}
-			}
-			glyphAdvances.add(0);
-			glyphPositions.add(width);
-		} else {
-			float scaleX = this.data.scaleX;
-			for (; index < end; index++) {
-				char ch = str.charAt(index);
-				Glyph g = data.getGlyph(ch);
-				if (g != null) {
-					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
-					lastGlyph = g;
-					float xadvance = g.xadvance * scaleX;
-					glyphAdvances.add(xadvance);
-					glyphPositions.add(width);
-					width += xadvance;
-				}
-			}
-			glyphAdvances.add(0);
-			glyphPositions.add(width);
-		}
-	}
-
 	/** Returns the color of text drawn with this font. */
 	public Color getColor () {
 		return cache.getColor();

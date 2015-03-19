@@ -22,6 +22,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -76,7 +78,8 @@ public class TextField extends Widget implements Disableable {
 	protected int cursor, selectionStart;
 	protected boolean hasSelection;
 	protected boolean writeEnters;
-	protected final FloatArray glyphAdvances = new FloatArray(), glyphPositions = new FloatArray();
+	protected final GlyphLayout layout = new GlyphLayout();
+	protected final FloatArray glyphPositions = new FloatArray();
 
 	TextFieldStyle style;
 	private String messageText;
@@ -104,7 +107,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	
+
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
@@ -363,7 +366,20 @@ public class TextField extends Widget implements Disableable {
 			displayText = passwordBuffer;
 		} else
 			displayText = newDisplayText;
-		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+
+		layout.setText(font, displayText);
+		glyphPositions.clear();
+		float x = 0;
+		if (layout.runs.size > 0) {
+			GlyphRun run = layout.runs.first();
+			FloatArray xAdvances = run.xAdvances;
+			for (int i = 0, n = xAdvances.size; i < n; i++) {
+				glyphPositions.add(x);
+				x += xAdvances.get(i);
+			}
+		}
+		glyphPositions.add(x);
+
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
 
@@ -618,8 +634,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Sets text horizontal alignment (left, center or right). */
 	public void setAlignment (int alignment) {
-		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) 
-			this.textHAlign = alignment;
+		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) this.textHAlign = alignment;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters.

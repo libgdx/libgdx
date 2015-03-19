@@ -247,7 +247,7 @@ public class GlyphLayout implements Poolable {
 		return -1; // Unclosed color tag.
 	}
 
-	public void wrap (BitmapFontData fontData, GlyphRun first, GlyphRun second, int wrapIndex, int widthIndex) {
+	private void wrap (BitmapFontData fontData, GlyphRun first, GlyphRun second, int wrapIndex, int widthIndex) {
 		second.color.set(first.color);
 
 		// Reduce first run width by wrapped glyphs.
