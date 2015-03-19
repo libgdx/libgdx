@@ -24,6 +24,9 @@
         <version>0.10.0</version>
         <compatibility>1.5.5</compatibility>
         <website>http://dermetfan.net/libgdx-utils.php</website>
+        <gwtInherits>
+		<inherit>libgdx-utils</inherit>
+	</gwtInherits>
         <projects>
 	        <core>
 		        <dependency>net.dermetfan.libgdx-utils:libgdx-utils</dependency>
@@ -43,6 +46,9 @@
         <version>0.10.0</version>
         <compatibility>1.5.5</compatibility>
         <website>http://dermetfan.net/libgdx-utils.php</website>
+        <gwtInherits>
+		<inherit>libgdx-utils-box2d-gwt</inherit>
+	</gwtInherits>
         <projects>
 	        <core>
 		        <dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d</dependency>
