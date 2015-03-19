@@ -38,6 +38,7 @@ public class BitmapFontCache {
 	private final BitmapFont font;
 	private boolean integer;
 	private final Array<GlyphLayout> layouts = new Array();
+	private final Array<GlyphLayout> pooledLayouts = new Array();
 	private int glyphCount;
 	private float x, y;
 	private final Color color = new Color(1, 1, 1, 1);
@@ -291,7 +292,8 @@ public class BitmapFontCache {
 	public void clear () {
 		x = 0;
 		y = 0;
-		Pools.freeAll(layouts, true);
+		Pools.freeAll(pooledLayouts, true);
+		pooledLayouts.clear();
 		layouts.clear();
 		for (int i = 0, n = idx.length; i < n; i++) {
 			if (pageGlyphIndices != null) pageGlyphIndices[i].clear();
@@ -453,7 +455,8 @@ public class BitmapFontCache {
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */
 	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap) {
 		GlyphLayout layout = Pools.obtain(GlyphLayout.class);
-		layout.setText(font, str, start, end, color, targetWidth, halign, wrap);
+		pooledLayouts.add(layout);
+		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, null);
 		addText(layout, x, y);
 		return layout;
 	}
