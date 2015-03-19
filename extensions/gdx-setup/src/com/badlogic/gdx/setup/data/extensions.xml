@@ -51,6 +51,7 @@
 	        <android></android>
 	        <ios></ios>
 	        <html>
+	        	<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 		        <dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d:sources</dependency>
 		        <dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d-gwt:sources</dependency>
 	        </html>
