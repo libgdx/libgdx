@@ -101,16 +101,16 @@ public class UITest extends GdxTest {
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
 		textfield.setAlignment(Align.center);
-		final SelectBox dropdown = new SelectBox(skin);
-		dropdown.addListener(new ChangeListener() {
+		final SelectBox selectBox = new SelectBox(skin);
+		selectBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				System.out.println(dropdown.getSelected());
+				System.out.println(selectBox.getSelected());
 			}
 		});
-		dropdown.setItems("Android1", "Windows1", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
+		selectBox.setItems("Android1", "Windows1 long text in item", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
 			"Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5", "OSX5",
 			"Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
-		dropdown.setSelected("Linux6");
+		selectBox.setSelected("Linux6");
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
 		List list = new List(skin);
@@ -144,7 +144,7 @@ public class UITest extends GdxTest {
 		window.add(checkBox);
 		window.add(slider).minWidth(100).fillX().colspan(3);
 		window.row();
-		window.add(dropdown);
+		window.add(selectBox).maxWidth(100);
 		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
 		window.add(splitPane).fill().expand().colspan(4).maxHeight(200);

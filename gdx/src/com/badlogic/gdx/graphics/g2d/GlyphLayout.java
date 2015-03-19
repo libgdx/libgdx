@@ -28,24 +28,32 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 
 /** Stores runs of glyphs for a piece of text. The text may contain newlines and color markup tags.
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author davebaol
+ * @author Alexander Dorokhov */
 public class GlyphLayout implements Poolable {
 	static private final Array<Color> colorStack = new Array(4);
 
 	public final Array<GlyphRun> runs = new Array();
 	public float width, height;
 
+	/** @see #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) */
 	public void setText (BitmapFont font, CharSequence str) {
-		setText(font, str, 0, str.length(), Color.WHITE, 0, Align.left, false);
+		setText(font, str, 0, str.length(), Color.WHITE, 0, Align.left, false, null);
 	}
 
+	/** @see #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) */
 	public void setText (BitmapFont font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap) {
-		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap);
+		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
 
+	/** @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
+	 * @param truncate If not null, if the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
+	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
-		boolean wrap) {
+		boolean wrap, String truncate) {
 		if (targetWidth == 0) wrap = false; // Avoid wrapping every character to it's own line/run, which is very inefficient.
+		if (truncate != null) wrap = true; // Causes truncate code to run, doesn't actually cause wrapping.
 
 		BitmapFontData fontData = font.data;
 		boolean markupEnabled = fontData.markupEnabled;
@@ -61,6 +69,7 @@ public class GlyphLayout implements Poolable {
 		colorStack.add(color);
 
 		int runStart = start;
+		outer:
 		while (true) {
 			// Each run is delimited by newline or left square bracket.
 			int runEnd = -1;
@@ -98,11 +107,16 @@ public class GlyphLayout implements Poolable {
 				run.y = y;
 				fontData.getGlyphs(run, str, runStart, runEnd);
 
-				// Compute run width, wrap if necessary, and position the run.
+				// Compute the run width, wrap if necessary, and position the run.
 				for (int i = 0, n = run.xAdvances.size; i < n; i++) {
 					float xAdvance = run.xAdvances.get(i);
 					x += xAdvance;
 					if (wrap && x > targetWidth && i > 0) {
+						if (truncate != null) {
+							truncate(fontData, run, targetWidth, truncate, i);
+							break outer;
+						}
+
 						GlyphRun next = glyphRunPool.obtain();
 						runs.add(next);
 						wrap(fontData, run, next, Math.max(1, fontData.getWrapIndex(run.glyphs, i)), i);
@@ -164,6 +178,28 @@ public class GlyphLayout implements Poolable {
 		this.height = font.data.capHeight + lines * font.data.lineHeight;
 	}
 
+	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex) {
+		// Truncate glyphs to make room for the truncate string.
+		float truncateWidth = targetWidth;
+		int n = truncate.length();
+		for (int i = 0; i < n; i++)
+			truncateWidth -= fontData.getGlyph(truncate.charAt(i)).xadvance;
+		while (run.width > truncateWidth) {
+			widthIndex--;
+			run.width -= run.xAdvances.get(widthIndex);
+		}
+		run.glyphs.truncate(widthIndex);
+		run.xAdvances.truncate(widthIndex);
+
+		// Place truncate string at end of glyphs.
+		for (int i = 0; i < n; i++) {
+			Glyph glyph = fontData.getGlyph(truncate.charAt(i));
+			run.glyphs.add(glyph);
+			run.xAdvances.add(glyph.xadvance);
+			run.width += glyph.xadvance;
+		}
+	}
+
 	private int parseColorMarkup (CharSequence str, int start, int end) {
 		Pool<Color> pool = Pools.get(Color.class);
 		switch (str.charAt(start)) {
@@ -223,8 +259,6 @@ public class GlyphLayout implements Poolable {
 		second.xAdvances.addAll(first.xAdvances, wrapIndex, first.xAdvances.size - wrapIndex);
 		first.glyphs.truncate(wrapIndex);
 		first.xAdvances.truncate(wrapIndex);
-
-		// Reduce width of first run by truncated glyphs.
 
 		// Eat whitespace at end of first run.
 		for (int i = wrapIndex - 1; i >= 0; i--) {

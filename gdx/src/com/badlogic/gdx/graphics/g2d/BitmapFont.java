@@ -349,38 +349,6 @@ public class BitmapFont implements Disposable {
 		}
 	}
 
-	/** Returns the number of glyphs from the substring that can be rendered in the specified width.
-	 * @param start The first character of the string.
-	 * @param end The last character of the string (exclusive).
-	 * @deprecated Characters may not map 1:1 with glyphs. Use {@link GlyphLayout}. */
-	public int computeVisibleGlyphs (CharSequence str, int start, int end, float availableWidth) {
-		BitmapFontData data = this.data;
-		int index = start;
-		float width = 0;
-		Glyph lastGlyph = null;
-		availableWidth /= data.scaleX;
-
-		for (; index < end; index++) {
-			char ch = str.charAt(index);
-			if (ch == '[' && data.markupEnabled) {
-				index++;
-				if (!(index < end && str.charAt(index) == '[')) { // non escaped '['
-					while (index < end && str.charAt(index) != ']')
-						index++;
-					continue;
-				}
-			}
-			Glyph g = data.getGlyph(ch);
-			if (g != null) {
-				if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-				if ((width + g.xadvance) - availableWidth > 0.001f) break;
-				width += g.xadvance;
-				lastGlyph = g;
-			}
-		}
-		return index - start;
-	}
-
 	/** Returns the color of text drawn with this font. */
 	public Color getColor () {
 		return cache.getColor();

@@ -37,7 +37,6 @@ public class Label extends Widget {
 	private final GlyphLayout layout = new GlyphLayout();
 	private final Vector2 bounds = new Vector2();
 	private final StringBuilder text = new StringBuilder();
-	private StringBuilder tempText;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private int lineAlign = Align.left;
@@ -160,19 +159,6 @@ public class Label extends Widget {
 		}
 
 		float width = getWidth(), height = getHeight();
-		StringBuilder text;
-		if (ellipsis && width < bounds.x) {
-			layout.setText(font, "...");
-			float ellipseWidth = layout.width;
-			text = tempText != null ? tempText : (tempText = new StringBuilder());
-			text.setLength(0);
-			if (width > ellipseWidth) {
-				text.append(this.text, 0, font.computeVisibleGlyphs(this.text, 0, this.text.length, width - ellipseWidth));
-				text.append("...");
-			}
-		} else
-			text = this.text;
-
 		Drawable background = style.background;
 		float x = 0, y = 0;
 		if (background != null) {
@@ -198,7 +184,10 @@ public class Label extends Widget {
 				x += (int)((width - bounds.x) / 2);
 		}
 
-		cache.setText(text, x, y, bounds.x, lineAlign, wrap);
+		layout.setText(font, text, 0, text.length, Color.WHITE, //
+			(ellipsis && width < bounds.x) ? width : bounds.x, //
+			lineAlign, wrap, ellipsis ? "..." : null);
+		cache.setText(layout, x, y);
 
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
 	}
