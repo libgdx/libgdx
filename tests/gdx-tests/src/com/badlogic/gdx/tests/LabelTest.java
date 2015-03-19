@@ -45,7 +45,7 @@ public class LabelTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		skin.getFont("default-font").setMarkupEnabled(true);
+		skin.getFont("default-font").getData().markupEnabled = true;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 

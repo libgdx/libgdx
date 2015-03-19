@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -232,7 +233,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			}
 			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), width);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, string, x, y, 0, numGlyphs);
+			font.draw(batch, string, x, y, 0, numGlyphs, 0, Align.left, false);
 		}
 	}
 

@@ -332,7 +332,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
-		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd);
+		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {

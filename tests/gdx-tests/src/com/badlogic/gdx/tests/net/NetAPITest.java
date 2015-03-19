@@ -271,7 +271,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			batch.end();
 		} else if (text != null) {
 			batch.begin();
-			font.drawMultiLine(batch, text, 10, Gdx.graphics.getHeight() - 10);
+			font.draw(batch, text, 10, Gdx.graphics.getHeight() - 10);
 			batch.end();
 		}
 

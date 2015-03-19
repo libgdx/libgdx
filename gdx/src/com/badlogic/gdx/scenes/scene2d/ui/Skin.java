@@ -459,7 +459,7 @@ public class Skin implements Disposable {
 						else
 							font = new BitmapFont(fontFile, flip);
 					}
-					font.setMarkupEnabled(markupEnabled);
+					font.getData().markupEnabled = markupEnabled;
 					// Scaled size is the desired cap height to scale the font to.
 					if (scaledSize != -1) font.setScale(scaledSize / font.getCapHeight());
 					return font;

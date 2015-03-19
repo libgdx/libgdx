@@ -104,7 +104,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		float maxWidth = 0;
 
 		spriteBatch.setShader(null);
-		descriptionFont.drawMultiLine(spriteBatch, description, x, y);
+		descriptionFont.draw(spriteBatch, description, x, y);
 		spriteBatch.flush();
 		y += 10 + 2 * descriptionFont.getLineHeight();
 

@@ -92,6 +92,7 @@ import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.EffectUtil;
 
@@ -986,7 +987,7 @@ public class Hiero4 extends JFrame {
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 				batch.begin();
-				font.drawWrapped(batch, sampleTextPane.getText(), 0, viewHeight, viewWidth);
+				font.draw(batch, sampleTextPane.getText(), 0, viewHeight, viewWidth, Align.left, true);
 				batch.end();
 			} else {
 				glClearColor(1, 1, 1, 1);

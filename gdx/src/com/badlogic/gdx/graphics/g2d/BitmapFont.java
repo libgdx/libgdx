@@ -31,10 +31,15 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
@@ -66,8 +71,7 @@ public class BitmapFont implements Disposable {
 	private boolean flipped;
 	private boolean integer;
 	private boolean ownsTexture;
-	boolean markupEnabled;
-	private char[] breakChars;
+	private final TextBounds bounds = new TextBounds();
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering without generating a bitmap font yourself. */
@@ -253,209 +257,50 @@ public class BitmapFont implements Disposable {
 		}
 	}
 
-	/** Draws a string at the specified position.
-	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
-	public TextBounds draw (Batch batch, CharSequence str, float x, float y) {
+	/** Draws text at the specified position.
+	 * @see BitmapFontCache#addText(CharSequence, float, float) */
+	public GlyphLayout draw (Batch batch, CharSequence str, float x, float y) {
 		cache.clear();
-		TextBounds bounds = cache.addText(str, x, y, 0, str.length());
+		GlyphLayout layout = cache.addText(str, x, y);
 		cache.draw(batch);
-		return bounds;
+		return layout;
 	}
 
-	/** Draws a string at the specified position.
-	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
-	public TextBounds draw (Batch batch, CharSequence str, float x, float y, int start, int end) {
+	/** Draws text at the specified position.
+	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean) */
+	public GlyphLayout draw (Batch batch, CharSequence str, float x, float y, float targetWidth, int halign, boolean wrap) {
 		cache.clear();
-		TextBounds bounds = cache.addText(str, x, y, start, end);
+		GlyphLayout layout = cache.addText(str, x, y, targetWidth, halign, wrap);
 		cache.draw(batch);
-		return bounds;
+		return layout;
 	}
 
-	/** Draws a string, which may contain newlines (\n), at the specified position.
-	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawMultiLine (Batch batch, CharSequence str, float x, float y) {
+	/** Draws text at the specified position.
+	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean) */
+	public GlyphLayout draw (Batch batch, CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap) {
 		cache.clear();
-		TextBounds bounds = cache.addMultiLineText(str, x, y, 0, HAlignment.LEFT);
+		GlyphLayout layout = cache.addText(str, x, y, start, end, targetWidth, halign, wrap);
 		cache.draw(batch);
-		return bounds;
+		return layout;
 	}
 
-	/** Draws a string, which may contain newlines (\n), at the specified position.
-	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawMultiLine (Batch batch, CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
+	/** Draws text at the specified position.
+	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int, float, int, boolean) */
+	public void draw (Batch batch, GlyphLayout layout, float x, float y) {
 		cache.clear();
-		TextBounds bounds = cache.addMultiLineText(str, x, y, alignmentWidth, alignment);
+		cache.addText(layout, x, y);
 		cache.draw(batch);
-		return bounds;
 	}
 
-	/** Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped within the
-	 * specified width.
-	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawWrapped (Batch batch, CharSequence str, float x, float y, float wrapWidth) {
-		cache.clear();
-		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
-		cache.draw(batch);
-		return bounds;
-	}
-
-	/** Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped within the
-	 * specified width.
-	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawWrapped (Batch batch, CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
-		cache.clear();
-		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, alignment);
-		cache.draw(batch);
-		return bounds;
-	}
-
-	/** Returns the bounds of the specified text. Note the returned TextBounds instance is reused.
-	 * @see #getBounds(CharSequence, int, int, TextBounds) */
+	/** @deprecated Use {@link GlyphLayout} directly to avoid computing the glyphs twice. */
 	public TextBounds getBounds (CharSequence str) {
-		return getBounds(str, 0, str.length(), cache.getBounds());
-	}
-
-	/** Returns the bounds of the specified text.
-	 * @see #getBounds(CharSequence, int, int, TextBounds) */
-	public TextBounds getBounds (CharSequence str, TextBounds textBounds) {
-		return getBounds(str, 0, str.length(), textBounds);
-	}
-
-	/** Returns the bounds of the specified text. Note the returned TextBounds instance is reused.
-	 * @see #getBounds(CharSequence, int, int, TextBounds) */
-	public TextBounds getBounds (CharSequence str, int start, int end) {
-		return getBounds(str, start, end, cache.getBounds());
-	}
-
-	/** Returns the size of the specified string. The height is the distance from the top of most capital letters in the font (the
-	 * {@link #getCapHeight() cap height}) to the baseline.
-	 * @param start The first character of the string.
-	 * @param end The last character of the string (exclusive). */
-	public TextBounds getBounds (CharSequence str, int start, int end, TextBounds textBounds) {
-		BitmapFontData data = this.data;
-		int width = 0;
-		Glyph lastGlyph = null;
-		while (start < end) {
-			char ch = str.charAt(start++);
-			if (ch == '[' && markupEnabled) {
-				if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-					while (start < end && str.charAt(start) != ']')
-						start++;
-					start++;
-					continue;
-				}
-				start++;
-			}
-			lastGlyph = data.getGlyph(ch);
-			if (lastGlyph != null) {
-				width = lastGlyph.xadvance;
-				break;
-			}
-		}
-		while (start < end) {
-			char ch = str.charAt(start++);
-			if (ch == '[' && markupEnabled) {
-				if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
-					while (start < end && str.charAt(start) != ']')
-						start++;
-					start++;
-					continue;
-				}
-				start++;
-			}
-			Glyph g = data.getGlyph(ch);
-			if (g != null) {
-				width += lastGlyph.getKerning(ch);
-				lastGlyph = g;
-				width += g.xadvance;
-			}
-		}
-		textBounds.width = width * data.scaleX;
-		textBounds.height = data.capHeight;
-		return textBounds;
-	}
-
-	/** Returns the bounds of the specified text, which may contain newlines.
-	 * @see #getMultiLineBounds(CharSequence, TextBounds) */
-	public TextBounds getMultiLineBounds (CharSequence str) {
-		return getMultiLineBounds(str, cache.getBounds());
-	}
-
-	/** Returns the bounds of the specified text, which may contain newlines. The height is the distance from the top of most
-	 * capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of the last line of text. */
-	public TextBounds getMultiLineBounds (CharSequence str, TextBounds textBounds) {
-		int start = 0;
-		float maxWidth = 0;
-		int numLines = 0;
-		int length = str.length();
-		while (start < length) {
-			int lineEnd = indexOf(str, '\n', start);
-			float lineWidth = getBounds(str, start, lineEnd).width;
-			maxWidth = Math.max(maxWidth, lineWidth);
-			start = lineEnd + 1;
-			numLines++;
-		}
-		textBounds.width = maxWidth;
-		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
-		return textBounds;
-	}
-
-	/** Returns the bounds of the specified text, which may contain newlines and is wrapped within the specified width.
-	 * @see #getWrappedBounds(CharSequence, float, TextBounds) */
-	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
-		return getWrappedBounds(str, wrapWidth, cache.getBounds());
-	}
-
-	/** Returns the bounds of the specified text, which may contain newlines and is wrapped within the specified width. The height
-	 * is the distance from the top of most capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of
-	 * the last line of text.
-	 * @param wrapWidth Width to wrap the bounds within. */
-	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth, TextBounds textBounds) {
-		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
-		int start = 0;
-		int numLines = 0;
-		int length = str.length();
-		float maxWidth = 0;
-		while (start < length) {
-			int newLine = BitmapFont.indexOf(str, '\n', start);
-			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
-			int nextStart = lineEnd + 1;
-			if (lineEnd < newLine) {
-				// Find char to break on.
-				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
-					if (isBreakChar(str.charAt(lineEnd - 1))) break;
-					lineEnd--;
-				}
-				if (lineEnd == start) {
-					if (nextStart > start + 1) nextStart--;
-					lineEnd = nextStart; // If no characters to break, show all.
-				} else {
-					nextStart = lineEnd;
-					// Eat whitespace at start of wrapped line.
-					while (nextStart < length) {
-						char c = str.charAt(nextStart);
-						if (!BitmapFont.isWhitespace(c)) break;
-						nextStart++;
-						if (c == '\n') break; // Eat only the first wrapped newline.
-					}
-					// Eat whitespace at end of line.
-					while (lineEnd > start) {
-						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
-						lineEnd--;
-					}
-				}
-			}
-			if (lineEnd > start) {
-				float lineWidth = getBounds(str, start, lineEnd).width;
-				maxWidth = Math.max(maxWidth, lineWidth);
-			}
-			start = nextStart;
-			numLines++;
-		}
-		textBounds.width = maxWidth;
-		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
-		return textBounds;
+		Pool<GlyphLayout> pool = Pools.get(GlyphLayout.class);
+		GlyphLayout layout = pool.obtain();
+		layout.setText(this, str);
+		bounds.width = layout.width;
+		bounds.height = layout.height;
+		return bounds;
 	}
 
 	/** Computes the glyph advances for the given character sequence and stores them in the provided {@link FloatArray}. The float
@@ -463,6 +308,7 @@ public class BitmapFont implements Disposable {
 	 * @param glyphAdvances the glyph advances output array.
 	 * @param glyphPositions the glyph positions output array. */
 	public void computeGlyphAdvancesAndPositions (CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
+		// BOZO - Replace method with GlyphLayout.
 		glyphAdvances.clear();
 		glyphPositions.clear();
 		int index = 0;
@@ -505,7 +351,8 @@ public class BitmapFont implements Disposable {
 
 	/** Returns the number of glyphs from the substring that can be rendered in the specified width.
 	 * @param start The first character of the string.
-	 * @param end The last character of the string (exclusive). */
+	 * @param end The last character of the string (exclusive).
+	 * @deprecated Characters may not map 1:1 with glyphs. Use {@link GlyphLayout}. */
 	public int computeVisibleGlyphs (CharSequence str, int start, int end, float availableWidth) {
 		BitmapFontData data = this.data;
 		int index = start;
@@ -515,7 +362,7 @@ public class BitmapFont implements Disposable {
 
 		for (; index < end; index++) {
 			char ch = str.charAt(index);
-			if (ch == '[' && markupEnabled) {
+			if (ch == '[' && data.markupEnabled) {
 				index++;
 				if (!(index < end && str.charAt(index) == '[')) { // non escaped '['
 					while (index < end && str.charAt(index) != ']')
@@ -534,22 +381,19 @@ public class BitmapFont implements Disposable {
 		return index - start;
 	}
 
-	public void setColor (float color) {
-		cache.setColor(color);
-	}
-
-	public void setColor (Color color) {
-		cache.setColor(color);
-	}
-
-	public void setColor (float r, float g, float b, float a) {
-		cache.setColor(r, g, b, a);
-	}
-
-	/** Returns the color of this font. Changing the returned color will have no affect, {@link #setColor(Color)} or
-	 * {@link #setColor(float, float, float, float)} must be used. */
+	/** Returns the color of text drawn with this font. */
 	public Color getColor () {
 		return cache.getColor();
+	}
+
+	/** A convenience method for setting the font color. The color can also be set by modifying {@link #getColor()}. */
+	public void setColor (Color color) {
+		cache.getColor().set(color);
+	}
+
+	/** A convenience method for setting the font color. The color can also be set by modifying {@link #getColor()}. */
+	public void setColor (float r, float g, float b, float a) {
+		cache.getColor().set(r, g, b, a);
 	}
 
 	/** Scales the font by the specified amounts on both axes
@@ -597,9 +441,8 @@ public class BitmapFont implements Disposable {
 	}
 
 	/** Returns the first texture region. This is included for backwards compatibility, and for convenience since most fonts only
-	 * use one texture page. For multi-page fonts, use getRegions().
+	 * use one texture page. For multi-page fonts, use {@link #getRegions()}.
 	 * @return the first texture region */
-	// TODO: deprecate?
 	public TextureRegion getRegion () {
 		return regions[0];
 	}
@@ -651,16 +494,6 @@ public class BitmapFont implements Disposable {
 	/** Returns true if this BitmapFont has been flipped for use with a y-down coordinate system. */
 	public boolean isFlipped () {
 		return flipped;
-	}
-
-	/** Returns true if color markup is enabled for this BitmapFont */
-	public boolean isMarkupEnabled () {
-		return markupEnabled;
-	}
-
-	/** Sets color markup on/off for this BitmapFont */
-	public void setMarkupEnabled (boolean markupEnabled) {
-		this.markupEnabled = markupEnabled;
 	}
 
 	/** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
@@ -777,32 +610,8 @@ public class BitmapFont implements Disposable {
 		return n;
 	}
 
-	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
-	 * characters act as break chars. */
-	public void setBreakChars (char[] breakChars) {
-		this.breakChars = breakChars;
-	}
-
-	public boolean isBreakChar (char c) {
-		if (breakChars == null) return false;
-		for (char br : breakChars)
-			if (c == br) return true;
-		return false;
-	}
-
-	static boolean isWhitespace (char c) {
-		switch (c) {
-		case '\n':
-		case '\r':
-		case '\t':
-		case ' ':
-			return true;
-		default:
-			return false;
-		}
-	}
-
-	/** Arbitrarily definable text boundary */
+	/** Container to hold text size.
+	 * @deprecated Use {@link GlyphLayout} and/or store the values in a {@link Vector2}. */
 	static public class TextBounds {
 		public float width;
 		public float height;
@@ -820,17 +629,8 @@ public class BitmapFont implements Disposable {
 		}
 	}
 
-	/** Defines possible horizontal alignments. */
-	static public enum HAlignment {
-		LEFT, CENTER, RIGHT
-	}
-
 	/** Backing data for a {@link BitmapFont}. */
-	public static class BitmapFontData {
-		/** The first image path.
-		 * @deprecated Use imagePaths[0]. */
-		@Deprecated public String imagePath;
-
+	static public class BitmapFontData {
 		/** An array of the image paths, for multiple texture pages. */
 		public String[] imagePaths;
 		public FileHandle fontFile;
@@ -841,10 +641,14 @@ public class BitmapFont implements Disposable {
 		public float descent;
 		public float down;
 		public float scaleX = 1, scaleY = 1;
+		public boolean markupEnabled;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		public float spaceWidth;
 		public float xHeight = 1;
+
+		/** Additional characters besides whitespace where text is wrapped. Eg, a hypen (-). */
+		public char[] breakChars;
 
 		/** Use this if you want to create BitmapFontData yourself, e.g. from stb-truetype or FreeType. */
 		public BitmapFontData () {
@@ -907,9 +711,7 @@ public class BitmapFont implements Disposable {
 						fileName = pageLine[2].substring(5, pageLine[2].length());
 					}
 
-					String path = fontFile.parent().child(fileName).path().replaceAll("\\\\", "/");
-					if (this.imagePath == null) this.imagePath = path;
-					imagePaths[p] = path;
+					imagePaths[p] = fontFile.parent().child(fileName).path().replaceAll("\\\\", "/");
 				}
 				descent = 0;
 
@@ -1058,11 +860,59 @@ public class BitmapFont implements Disposable {
 			return null;
 		}
 
-		/** Returns the first image path.
-		 * @deprecated Use {@link #getImagePath(int)}. */
-		@Deprecated
-		public String getImagePath () {
-			return imagePath;
+		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
+		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
+		 *           square bracket. */
+		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end) {
+			boolean markupEnabled = this.markupEnabled;
+			float scaleX = this.scaleX;
+			Array<Glyph> glyphs = run.glyphs;
+			FloatArray xAdvances = run.xAdvances;
+
+			Glyph lastGlyph = null;
+			while (start < end) {
+				char ch = str.charAt(start++);
+				Glyph glyph = getGlyph(ch);
+				if (glyph == null) continue;
+				glyphs.add(glyph);
+
+				if (lastGlyph != null) xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				lastGlyph = glyph;
+
+				// "[[" is an escaped left square bracket, skip second character.
+				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
+			}
+			if (lastGlyph != null) xAdvances.add(lastGlyph.xadvance * scaleX);
+		}
+
+		public int getWrapIndex (Array<Glyph> glyphs, int start) {
+			char ch = (char)glyphs.get(start).id;
+			if (isWhitespace(ch)) return start + 1;
+			for (int i = start - 1; i >= 1; i--) {
+				ch = (char)glyphs.get(i).id;
+				if (isWhitespace(ch)) return i + 1;
+				if (isBreakChar(ch)) return i;
+			}
+			return start;
+		}
+
+		public boolean isBreakChar (char c) {
+			if (breakChars == null) return false;
+			for (char br : breakChars)
+				if (c == br) return true;
+			return false;
+		}
+
+		public boolean isWhitespace (char c) {
+			switch (c) {
+			case '\n':
+			case '\r':
+			case '\t':
+			case ' ':
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		/** Returns the image path for the texture page at the given index (the "id" in the BMFont file). */

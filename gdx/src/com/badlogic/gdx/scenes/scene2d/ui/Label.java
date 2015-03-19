@@ -19,9 +19,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -34,12 +34,13 @@ public class Label extends Widget {
 	static private final Color tempColor = new Color();
 
 	private LabelStyle style;
-	private final TextBounds bounds = new TextBounds();
+	private final GlyphLayout layout = new GlyphLayout();
+	private final Vector2 bounds = new Vector2();
 	private final StringBuilder text = new StringBuilder();
 	private StringBuilder tempText;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
-	private HAlignment lineAlign = HAlignment.LEFT;
+	private int lineAlign = Align.left;
 	private boolean wrap;
 	private float lastPrefHeight;
 	private boolean sizeInvalid = true;
@@ -135,9 +136,11 @@ public class Label extends Widget {
 		if (wrap) {
 			float width = getWidth();
 			if (style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
-			bounds.set(cache.getFont().getWrappedBounds(text, width));
+			layout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
 		} else
-			bounds.set(cache.getFont().getMultiLineBounds(text));
+			layout.setText(cache.getFont(), text);
+		bounds.set(layout.width, layout.height);
+
 	}
 
 	public void layout () {
@@ -158,8 +161,9 @@ public class Label extends Widget {
 
 		float width = getWidth(), height = getHeight();
 		StringBuilder text;
-		if (ellipsis && width < bounds.width) {
-			float ellipseWidth = font.getBounds("...").width;
+		if (ellipsis && width < bounds.x) {
+			layout.setText(font, "...");
+			float ellipseWidth = layout.width;
 			text = tempText != null ? tempText : (tempText = new StringBuilder());
 			text.setLength(0);
 			if (width > ellipseWidth) {
@@ -178,27 +182,23 @@ public class Label extends Widget {
 			height -= background.getBottomHeight() + background.getTopHeight();
 		}
 		if ((labelAlign & Align.top) != 0) {
-			y += cache.getFont().isFlipped() ? 0 : height - bounds.height;
+			y += cache.getFont().isFlipped() ? 0 : height - bounds.y;
 			y += style.font.getDescent();
 		} else if ((labelAlign & Align.bottom) != 0) {
-			y += cache.getFont().isFlipped() ? height - bounds.height : 0;
+			y += cache.getFont().isFlipped() ? height - bounds.y : 0;
 			y -= style.font.getDescent();
 		} else
-			y += (int)((height - bounds.height) / 2);
-		if (!cache.getFont().isFlipped()) y += bounds.height;
+			y += (int)((height - bounds.y) / 2);
+		if (!cache.getFont().isFlipped()) y += bounds.y;
 
 		if ((labelAlign & Align.left) == 0) {
 			if ((labelAlign & Align.right) != 0)
-				x += width - bounds.width;
+				x += width - bounds.x;
 			else
-				x += (int)((width - bounds.width) / 2);
+				x += (int)((width - bounds.x) / 2);
 		}
 
-		cache.setColor(Color.WHITE);
-		if (wrap)
-			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
-		else
-			cache.setMultiLineText(text, x, y, bounds.width, lineAlign);
+		cache.setText(text, x, y, bounds.x, lineAlign, wrap);
 
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
 	}
@@ -220,7 +220,7 @@ public class Label extends Widget {
 	public float getPrefWidth () {
 		if (wrap) return 0;
 		if (sizeInvalid) scaleAndComputeSize();
-		float width = bounds.width;
+		float width = bounds.x;
 		Drawable background = style.background;
 		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
 		return width;
@@ -228,13 +228,13 @@ public class Label extends Widget {
 
 	public float getPrefHeight () {
 		if (sizeInvalid) scaleAndComputeSize();
-		float height = bounds.height - style.font.getDescent() * 2;
+		float height = bounds.y - style.font.getDescent() * 2;
 		Drawable background = style.background;
 		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
 		return height;
 	}
 
-	public TextBounds getTextBounds () {
+	public Vector2 getTextBounds () {
 		if (sizeInvalid) scaleAndComputeSize();
 		return bounds;
 	}
@@ -251,13 +251,6 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** Provide any additional characters that should act as break characters when the label is wrapped. By default, only whitespace
-	 * characters act as break chars. */
-	public void setBreakChars (char[] breakChars) {
-		cache.setBreakChars(breakChars);
-		invalidateHierarchy();
-	}
-
 	/** @param alignment Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
 	public void setAlignment (int alignment) {
@@ -271,11 +264,11 @@ public class Label extends Widget {
 		this.labelAlign = labelAlign;
 
 		if ((lineAlign & Align.left) != 0)
-			this.lineAlign = HAlignment.LEFT;
+			this.lineAlign = Align.left;
 		else if ((lineAlign & Align.right) != 0)
-			this.lineAlign = HAlignment.RIGHT;
+			this.lineAlign = Align.right;
 		else
-			this.lineAlign = HAlignment.CENTER;
+			this.lineAlign = Align.center;
 
 		invalidate();
 	}
