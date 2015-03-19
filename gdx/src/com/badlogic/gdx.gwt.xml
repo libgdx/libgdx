@@ -228,6 +228,7 @@
 		<include name="graphics/glutils/VertexArray.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
+		<include name="graphics/glutils/VertexBufferObjectWithVAO.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexData.java"/>
 
 	<!-- graphics/profiling -->
