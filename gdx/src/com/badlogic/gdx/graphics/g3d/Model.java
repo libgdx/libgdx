@@ -45,6 +45,8 @@ import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -117,16 +119,40 @@ public class Model implements Disposable {
 				if (node == null) continue;
 				NodeAnimation nodeAnim = new NodeAnimation();
 				nodeAnim.node = node;
-				for (ModelNodeKeyframe kf : nanim.keyframes) {
-					if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-					NodeKeyframe keyframe = new NodeKeyframe();
-					keyframe.keytime = kf.keytime;
-					keyframe.rotation.set(kf.rotation == null ? node.rotation : kf.rotation);
-					keyframe.scale.set(kf.scale == null ? node.scale : kf.scale);
-					keyframe.translation.set(kf.translation == null ? node.translation : kf.translation);
-					nodeAnim.keyframes.add(keyframe);
+
+				if (nanim.translation != null) {
+					nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
+					nodeAnim.translation.ensureCapacity(nanim.translation.size);
+					for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
+						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
+						nodeAnim.translation.add(new NodeKeyframe<Vector3>(kf.keytime, new Vector3(kf.value == null ? node.translation
+							: kf.value)));
+					}
 				}
-				if (nodeAnim.keyframes.size > 0) animation.nodeAnimations.add(nodeAnim);
+
+				if (nanim.rotation != null) {
+					nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
+					nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
+					for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
+						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
+						nodeAnim.rotation.add(new NodeKeyframe<Quaternion>(kf.keytime, new Quaternion(kf.value == null ? node.rotation
+							: kf.value)));
+					}
+				}
+
+				if (nanim.scaling != null) {
+					nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
+					nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
+					for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
+						if (kf.keytime > animation.duration) animation.duration = kf.keytime;
+						nodeAnim.scaling.add(new NodeKeyframe<Vector3>(kf.keytime,
+							new Vector3(kf.value == null ? node.scale : kf.value)));
+					}
+				}
+
+				if ((nodeAnim.translation != null && nodeAnim.translation.size > 0)
+					|| (nodeAnim.rotation != null && nodeAnim.rotation.size > 0)
+					|| (nodeAnim.scaling != null && nodeAnim.scaling.size > 0)) animation.nodeAnimations.add(nodeAnim);
 			}
 			if (animation.nodeAnimations.size > 0) animations.add(animation);
 		}
@@ -271,12 +297,12 @@ public class Model implements Disposable {
 				descriptor.magFilter = texture.getMagFilter();
 				descriptor.uWrap = texture.getUWrap();
 				descriptor.vWrap = texture.getVWrap();
-				
+
 				float offsetU = tex.uvTranslation == null ? 0f : tex.uvTranslation.x;
 				float offsetV = tex.uvTranslation == null ? 0f : tex.uvTranslation.y;
 				float scaleU = tex.uvScaling == null ? 1f : tex.uvScaling.x;
 				float scaleV = tex.uvScaling == null ? 1f : tex.uvScaling.y;
-				
+
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor, offsetU, offsetV, scaleU, scaleV));

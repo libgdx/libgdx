@@ -63,16 +63,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
-	private TiledMapTile getCurrentFrame() {
+	public int getCurrentFrameIndex() {
 		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 
 		for (int i = 0; i < animationIntervals.length; ++i){
 			int animationInterval = animationIntervals[i];
-			if (currentTime<=animationInterval) return frameTiles[i];
+			if (currentTime <= animationInterval) return i;
 			currentTime -= animationInterval;
 		}
 
 		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+	}
+
+	public TiledMapTile getCurrentFrame() {
+		return frameTiles[getCurrentFrameIndex()];
 	}
 
 	@Override
@@ -103,6 +107,25 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	@Override
 	public void setOffsetY (float offsetY) {
 		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
+	}
+
+	public int[] getAnimationIntervals(){
+		return animationIntervals;
+	}
+	
+	public void setAnimationIntervals (int[] intervals) {
+		if (intervals.length == animationIntervals.length) {
+			this.animationIntervals = intervals;
+
+			loopDuration = 0;
+			for (int i = 0; i < intervals.length; i++) {
+				loopDuration += intervals[i];
+			}
+
+		} else {
+			throw new GdxRuntimeException("Cannot set " + intervals.length
+				+ " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");
+		}
 	}
 
 	@Override

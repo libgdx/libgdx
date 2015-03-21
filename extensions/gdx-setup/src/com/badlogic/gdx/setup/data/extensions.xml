@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensions>
+	<extension>
+		<name>Overlap2D</name>
+		<description>Level and UI Editor Runtime</description>
+		<package>com.underwaterapps.overlap2druntime</package>
+		<version>0.0.8</version>
+		<compatibility>1.5.3</compatibility>
+		<website>http://overlap2d.com/</website>
+		<gwtInherits></gwtInherits>
+		<projects>
+			<core>
+				<dependency>com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx</dependency>
+			</core>
+			<desktop></desktop>
+			<android></android>
+			<ios></ios>
+			<html>null</html>
+		</projects>
+	</extension>
+	<extension>
+		<name>VisUI</name>
+		<description>Flat design skin for scene2d.ui and UI toolkit</description>
+		<package>com.kotcrab.vis.ui</package>
+		<version>0.6.1</version>
+		<compatibility>1.5.4</compatibility>
+		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
+		<gwtInherits>
+		    <inherit>com.kotcrab.vis.vis-ui</inherit>
+		</gwtInherits>
+		<projects>
+			<core>
+				<dependency>com.kotcrab.vis:vis-ui</dependency>
+			</core>
+			<desktop></desktop>
+			<android></android>
+			<ios></ios>
+			<html>
+				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
+			</html>
+		</projects>
+	</extension>
+</extensions>
