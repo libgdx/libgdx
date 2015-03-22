@@ -332,7 +332,7 @@ public class GdxSetup {
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
 		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
-			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
+			values.put("%GWT_INHERITS%", parseGwtInherits(builder));
 		}
 
 		copyAndReplace(outputDir, project, values);
@@ -499,15 +499,17 @@ public class GdxSetup {
 		return params;
 	}
 
-	private String parseGwtInherits (HashMap<ProjectDependency, String[]> gwtInheritances, ProjectBuilder builder) {
+	private String parseGwtInherits (ProjectBuilder builder) {
 		String parsed = "";
-		for (ProjectDependency dep : gwtInheritances.keySet()) {
-			if (containsDependency(builder.dependencies, dep)) {
-				for (String inherit : gwtInheritances.get(dep)) {
+		
+		for (Dependency dep : builder.dependencies) {
+			if (dep.getGwtInherits() != null) {
+				for (String inherit : dep.getGwtInherits()) {
 					parsed += "\t<inherits name='" + inherit + "' />\n";
 				}
 			}
 		}
+		
 		return parsed;
 	}
 

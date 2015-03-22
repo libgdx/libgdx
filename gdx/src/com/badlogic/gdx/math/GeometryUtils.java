@@ -165,9 +165,14 @@ public final class GeometryUtils {
 		x += (x0 + x1) * a;
 		y += (y0 + y1) * a;
 
-		signedArea *= 0.5f;
-		centroid.x = x / (6 * signedArea);
-		centroid.y = y / (6 * signedArea);
+		if (signedArea == 0) {
+			centroid.x = 0;
+			centroid.y = 0;
+		} else {
+			signedArea *= 0.5f;
+			centroid.x = x / (6 * signedArea);
+			centroid.y = y / (6 * signedArea);
+		}
 		return centroid;
 	}
 
