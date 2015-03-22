@@ -24,7 +24,8 @@ The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information y
 libGDX game. You can contribute to the Wiki directly here on GitHub!
 
 We also provide [Javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The Javadocs are
-also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE.
+also bundled as source Jars with every libGDX distribution for consumption in your favorite IDE, or
+available [offline here](http://libgdx.badlogicgames.com:8080/job/libgdx/ws/dist/docs/api/*zip*/api.zip).
 
 ### News & Community
 You can follow the latest news about libGDX on the [blog](http://www.badlogicgames.com). Follow
