@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
@@ -33,6 +25,14 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
@@ -247,7 +247,7 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (major >= 3) {
+		if (config.useGL30 && major >= 3) {
 			gl30 = new LwjglGL30();
 			gl20 = gl30;
 		} else {
