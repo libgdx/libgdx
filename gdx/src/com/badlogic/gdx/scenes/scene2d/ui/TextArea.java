@@ -20,13 +20,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField {
@@ -271,6 +273,8 @@ public class TextArea extends TextField {
 			int lineStart = 0;
 			int lastSpace = 0;
 			char lastCharacter;
+			Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);
 				if (lastCharacter == ENTER_DESKTOP || lastCharacter == ENTER_ANDROID) {
@@ -279,8 +283,8 @@ public class TextArea extends TextField {
 					lineStart = i + 1;
 				} else {
 					lastSpace = (continueCursor(i, 0) ? lastSpace : i);
-					TextBounds bounds = font.getBounds(text.subSequence(lineStart, i + 1));
-					if (bounds.width > maxWidthLine) {
+					layout.setText(font, text.subSequence(lineStart, i + 1));
+					if (layout.width > maxWidthLine) {
 						if (lineStart >= lastSpace) {
 							lastSpace = i - 1;
 						}
@@ -291,6 +295,7 @@ public class TextArea extends TextField {
 					}
 				}
 			}
+			layoutPool.free(layout);
 			// Add last line
 			if (lineStart < text.length()) {
 				linesBreak.add(lineStart);

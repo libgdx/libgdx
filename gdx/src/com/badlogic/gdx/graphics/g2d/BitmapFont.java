@@ -33,13 +33,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
@@ -71,7 +68,6 @@ public class BitmapFont implements Disposable {
 	private boolean flipped;
 	private boolean integer;
 	private boolean ownsTexture;
-	private final TextBounds bounds = new TextBounds();
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering without generating a bitmap font yourself. */
@@ -291,16 +287,6 @@ public class BitmapFont implements Disposable {
 		cache.clear();
 		cache.addText(layout, x, y);
 		cache.draw(batch);
-	}
-
-	/** @deprecated Use {@link GlyphLayout} directly to avoid computing the glyphs twice. */
-	public TextBounds getBounds (CharSequence str) {
-		Pool<GlyphLayout> pool = Pools.get(GlyphLayout.class);
-		GlyphLayout layout = pool.obtain();
-		layout.setText(this, str);
-		bounds.width = layout.width;
-		bounds.height = layout.height;
-		return bounds;
 	}
 
 	/** Returns the color of text drawn with this font. */
@@ -532,25 +518,6 @@ public class BitmapFont implements Disposable {
 		return n;
 	}
 
-	/** Container to hold text size.
-	 * @deprecated Use {@link GlyphLayout} and/or store the values in a {@link Vector2}. */
-	static public class TextBounds {
-		public float width;
-		public float height;
-
-		public TextBounds () {
-		}
-
-		public TextBounds (TextBounds bounds) {
-			set(bounds);
-		}
-
-		public void set (TextBounds bounds) {
-			width = bounds.width;
-			height = bounds.height;
-		}
-	}
-
 	/** Backing data for a {@link BitmapFont}. */
 	static public class BitmapFontData {
 		/** An array of the image paths, for multiple texture pages. */
@@ -576,7 +543,6 @@ public class BitmapFont implements Disposable {
 		public BitmapFontData () {
 		}
 
-		@SuppressWarnings("deprecation")
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
 			this.flipped = flip;

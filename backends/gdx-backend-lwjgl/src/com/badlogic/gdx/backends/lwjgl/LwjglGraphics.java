@@ -247,7 +247,7 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (major >= 3) {
+		if (config.useGL30 && major >= 3) {
 			gl30 = new LwjglGL30();
 			gl20 = gl30;
 		} else {

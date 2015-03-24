@@ -23,10 +23,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontDistanceFieldTest extends GdxTest {
@@ -60,6 +62,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 	private BitmapFont regularFont;
 	private BitmapFont distanceFieldFont;
 	private DistanceFieldShader distanceFieldShader;
+	private GlyphLayout layout = new GlyphLayout();
 
 	@Override
 	public void create () {
@@ -123,11 +126,12 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 
 		for (float scale : SCALES) {
 			font.setScale(scale);
-			maxWidth = Math.max(maxWidth, font.getBounds(TEXT).width);
+			layout.setText(font, TEXT);
+			maxWidth = Math.max(maxWidth, layout.width);
 			if (useShader) {
 				distanceFieldShader.setSmoothing(smoothing / scale);
 			}
-			font.draw(spriteBatch, TEXT, x, y + scale * getBaselineShift(font));
+			font.draw(spriteBatch, layout, x, y + scale * getBaselineShift(font));
 			y += font.getLineHeight();
 			spriteBatch.flush();
 		}

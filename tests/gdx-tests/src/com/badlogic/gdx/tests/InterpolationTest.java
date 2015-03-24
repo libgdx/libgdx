@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -146,8 +147,8 @@ public class InterpolationTest extends GdxTest {
 		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getBatch().begin();
-		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2 - list.getStyle().font.getBounds(text).width
-			/ 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
+		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2, bottomLeftY + graphSize
+			+ list.getStyle().font.getLineHeight(), 0, Align.center, false);
 		stage.getBatch().end();
 
 		renderer.begin(ShapeType.Line);

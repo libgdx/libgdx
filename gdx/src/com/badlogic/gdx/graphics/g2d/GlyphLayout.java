@@ -37,18 +37,22 @@ public class GlyphLayout implements Poolable {
 	public final Array<GlyphRun> runs = new Array();
 	public float width, height;
 
-	/** @see #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) */
+	/** Calls {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) setText} with the whole
+	 * string, the font's current color, and no alignment or wrapping. */
 	public void setText (BitmapFont font, CharSequence str) {
-		setText(font, str, 0, str.length(), Color.WHITE, 0, Align.left, false, null);
+		setText(font, str, 0, str.length(), font.getColor(), 0, Align.left, false, null);
 	}
 
-	/** @see #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) */
+	/** Calls {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) setText} with the whole string
+	 * and no truncation. */
 	public void setText (BitmapFont font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap) {
 		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
 
-	/** @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
-	 * @param truncate If not null, if the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
+	/** @param color The default color to use for the text. If {@link BitmapFontData#markupEnabled} is true, color markup tags in the
+	 *           specified string may change the color for portions of the text.
+	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
+	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
 	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, String truncate) {
@@ -113,7 +117,7 @@ public class GlyphLayout implements Poolable {
 					x += xAdvance;
 					if (wrap && x > targetWidth && i > 0) {
 						if (truncate != null) {
-							truncate(fontData, run, targetWidth, truncate, i);
+							truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
 							break outer;
 						}
 
@@ -178,12 +182,17 @@ public class GlyphLayout implements Poolable {
 		this.height = font.data.capHeight + lines * font.data.lineHeight;
 	}
 
-	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex) {
-		// Truncate glyphs to make room for the truncate string.
+	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
+		Pool<GlyphRun> glyphRunPool) {
+
+		GlyphRun truncateRun = glyphRunPool.obtain();
+		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length());
+
+		// Truncate glyphs to make room.
 		float truncateWidth = targetWidth;
-		int n = truncate.length();
+		int n = truncateRun.glyphs.size;
 		for (int i = 0; i < n; i++)
-			truncateWidth -= fontData.getGlyph(truncate.charAt(i)).xadvance;
+			truncateWidth -= truncateRun.xAdvances.get(i);
 		while (run.width > truncateWidth) {
 			widthIndex--;
 			run.width -= run.xAdvances.get(widthIndex);
@@ -191,13 +200,12 @@ public class GlyphLayout implements Poolable {
 		run.glyphs.truncate(widthIndex);
 		run.xAdvances.truncate(widthIndex);
 
-		// Place truncate string at end of glyphs.
-		for (int i = 0; i < n; i++) {
-			Glyph glyph = fontData.getGlyph(truncate.charAt(i));
-			run.glyphs.add(glyph);
-			run.xAdvances.add(glyph.xadvance);
-			run.width += glyph.xadvance;
-		}
+		// Append truncate glyphs.
+		run.glyphs.addAll(truncateRun.glyphs);
+		run.xAdvances.addAll(truncateRun.xAdvances);
+		run.width += truncateWidth;
+
+		glyphRunPool.free(truncateRun);
 	}
 
 	private int parseColorMarkup (CharSequence str, int start, int end) {
