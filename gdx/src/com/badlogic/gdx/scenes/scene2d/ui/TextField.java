@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
@@ -345,17 +346,18 @@ public class TextField extends Widget implements Disableable {
 
 	void updateDisplayText () {
 		BitmapFont font = style.font;
+		BitmapFontData data = font.getData();
 		String text = this.text;
 		int textLength = text.length();
 
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < textLength; i++) {
 			char c = text.charAt(i);
-			buffer.append(font.containsCharacter(c) ? c : ' ');
+			buffer.append(data.hasGlyph(c) ? c : ' ');
 		}
 		String newDisplayText = buffer.toString();
 
-		if (passwordMode && font.containsCharacter(passwordCharacter)) {
+		if (passwordMode && data.hasGlyph(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
 			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
@@ -420,11 +422,12 @@ public class TextField extends Widget implements Disableable {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
+		BitmapFontData data = style.font.getData();
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
 			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
-				if (onlyFontChars && !style.font.containsCharacter(c)) continue;
+				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
 			}
 			buffer.append(c);
@@ -896,7 +899,7 @@ public class TextField extends Widget implements Disableable {
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean add = (!onlyFontChars || style.font.containsCharacter(character))
+				boolean add = (!onlyFontChars || style.font.getData().hasGlyph(character))
 					|| (writeEnters && (character == ENTER_ANDROID || character == ENTER_DESKTOP));
 				boolean remove = backspace || delete;
 				if (add || remove) {

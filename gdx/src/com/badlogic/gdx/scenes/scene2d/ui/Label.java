@@ -123,11 +123,11 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
 
 		computeSize();
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
+		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	private void computeSize () {
@@ -146,7 +146,7 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
 
 		if (sizeInvalid) computeSize();
 
@@ -189,7 +189,7 @@ public class Label extends Widget {
 			lineAlign, wrap, ellipsis ? "..." : null);
 		cache.setText(layout, x, y);
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
+		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {

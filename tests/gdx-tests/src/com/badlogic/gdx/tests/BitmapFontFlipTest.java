@@ -66,7 +66,7 @@ public class BitmapFontFlipTest extends GdxTest {
 		cache5 = new BitmapFontCache(font);
 		createCaches("cached", cache1, cache2, cache3, cache4, cache5);
 
-		font.setScale(1.33f);
+		font.getData().setScale(1.33f);
 		cacheScaled1 = new BitmapFontCache(font);
 		cacheScaled2 = new BitmapFontCache(font);
 		cacheScaled3 = new BitmapFontCache(font);
@@ -104,19 +104,19 @@ public class BitmapFontFlipTest extends GdxTest {
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {
 		case 0:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderNormal("normal");
 			break;
 		case 1:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderCached();
 			break;
 		case 2:
-			font.setScale(red.a + 0.5f);
+			font.getData().setScale(red.a + 0.5f);
 			renderNormal("normal scaled");
 			break;
 		case 3:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderCachedScaled();
 			break;
 		}

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Align;
@@ -449,7 +450,7 @@ public class BitmapFontCache {
 
 	/** Adds glyphs for the the specified text.
 	 * @param x The x position for the left most character.
-	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFontData#capHeight cap height}).
 	 * @param start The first character of the string to draw.
 	 * @param end The last character of the string to draw (exclusive).
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */

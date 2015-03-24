@@ -125,7 +125,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		}
 
 		for (float scale : SCALES) {
-			font.setScale(scale);
+			font.getData().setScale(scale);
 			layout.setText(font, TEXT);
 			maxWidth = Math.max(maxWidth, layout.width);
 			if (useShader) {

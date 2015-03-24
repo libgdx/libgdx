@@ -304,42 +304,6 @@ public class BitmapFont implements Disposable {
 		cache.getColor().set(r, g, b, a);
 	}
 
-	/** Scales the font by the specified amounts on both axes
-	 * <p>
-	 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}. The
-	 * default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
-	 * @throws IllegalArgumentException if scaleX or scaleY is zero. */
-	public void setScale (float scaleX, float scaleY) {
-		if (scaleX == 0) throw new IllegalArgumentException("scaleX cannot be 0.");
-		if (scaleY == 0) throw new IllegalArgumentException("scaleY cannot be 0.");
-		BitmapFontData data = this.data;
-		float x = scaleX / data.scaleX;
-		float y = scaleY / data.scaleY;
-		data.lineHeight = data.lineHeight * y;
-		data.spaceWidth = data.spaceWidth * x;
-		data.xHeight = data.xHeight * y;
-		data.capHeight = data.capHeight * y;
-		data.ascent = data.ascent * y;
-		data.descent = data.descent * y;
-		data.down = data.down * y;
-		data.scaleX = scaleX;
-		data.scaleY = scaleY;
-	}
-
-	/** Scales the font by the specified amount in both directions.
-	 * @see #setScale(float, float)
-	 * @throws IllegalArgumentException if scaleX or scaleY is zero. */
-	public void setScale (float scaleXY) {
-		setScale(scaleXY, scaleXY);
-	}
-
-	/** Sets the font's scale relative to the current scale.
-	 * @see #setScale(float, float)
-	 * @throws IllegalArgumentException if the resulting scale is zero. */
-	public void scale (float amount) {
-		setScale(data.scaleX + amount, data.scaleY + amount);
-	}
-
 	public float getScaleX () {
 		return data.scaleX;
 	}
@@ -430,12 +394,7 @@ public class BitmapFont implements Disposable {
 		}
 	}
 
-	/** Checks whether this BitmapFont data contains a given character. */
-	public boolean containsCharacter (char character) {
-		return data.getGlyph(character) != null;
-	}
-
-	/** Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly. */
+	/** Specifies whether to use integer positions. Default is to use them so filtering doesn't kick in as badly. */
 	public void setUseIntegerPositions (boolean integer) {
 		this.integer = integer;
 		cache.setUseIntegerPositions(integer);
@@ -463,17 +422,15 @@ public class BitmapFont implements Disposable {
 		return ownsTexture;
 	}
 
-	/** Sets whether the font owns the texture or not. In case it does, the font will also dispose of the texture when
-	 * {@link #dispose()} is called. Use with care!
+	/** Sets whether the font owns the texture. In case it does, the font will also dispose of the texture when {@link #dispose()}
+	 * is called. Use with care!
 	 * @param ownsTexture whether the font owns the texture */
 	public void setOwnsTexture (boolean ownsTexture) {
 		this.ownsTexture = ownsTexture;
 	}
 
 	public String toString () {
-		if (data.fontFile != null) {
-			return data.fontFile.nameWithoutExtension();
-		}
+		if (data.fontFile != null) return data.fontFile.nameWithoutExtension();
 		return super.toString();
 	}
 
@@ -524,16 +481,23 @@ public class BitmapFont implements Disposable {
 		public String[] imagePaths;
 		public FileHandle fontFile;
 		public boolean flipped;
+		/** The distance from one line of text to the next. */
 		public float lineHeight;
+		/** The distance from the top of most uppercase characters to the baseline. Since the drawing position is the cap height of
+		 * the first line, the cap height can be used to get the location of the baseline. */
 		public float capHeight = 1;
+		/** The distance from the cap height to the top of the tallest glyph. */
 		public float ascent;
+		/** The distance from the bottom of the glyph that extends the lowest to the baseline. This number is negative. */
 		public float descent;
 		public float down;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
+		/** The width of the space character. */
 		public float spaceWidth;
+		/** The x-height, which is the distance from the top of most lowercase characters to the baseline. */
 		public float xHeight = 1;
 
 		/** Additional characters besides whitespace where text is wrapped. Eg, a hypen (-). */
@@ -741,7 +705,13 @@ public class BitmapFont implements Disposable {
 			throw new GdxRuntimeException("No glyphs found.");
 		}
 
-		/** Returns the glyph for the specified character, or null if no such glyph exists. */
+		public boolean hasGlyph (char ch) {
+			return getGlyph(ch) != null;
+		}
+
+		/** Returns the glyph for the specified character, or null if no such glyph exists. Note that
+		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int)} should be be used to shape a string of characters into a list of
+		 * glyphs. */
 		public Glyph getGlyph (char ch) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page != null) return page[ch & PAGE_SIZE - 1];
@@ -814,6 +784,41 @@ public class BitmapFont implements Disposable {
 
 		public FileHandle getFontFile () {
 			return fontFile;
+		}
+
+		/** Scales the font by the specified amounts on both axes
+		 * <p>
+		 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}.
+		 * The default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
+		 * @throws IllegalArgumentException if scaleX or scaleY is zero. */
+		public void setScale (float scaleX, float scaleY) {
+			if (scaleX == 0) throw new IllegalArgumentException("scaleX cannot be 0.");
+			if (scaleY == 0) throw new IllegalArgumentException("scaleY cannot be 0.");
+			float x = scaleX / scaleX;
+			float y = scaleY / scaleY;
+			lineHeight *= y;
+			spaceWidth *= x;
+			xHeight *= y;
+			capHeight *= y;
+			ascent *= y;
+			descent *= y;
+			down *= y;
+			this.scaleX = scaleX;
+			this.scaleY = scaleY;
+		}
+
+		/** Scales the font by the specified amount in both directions.
+		 * @see #setScale(float, float)
+		 * @throws IllegalArgumentException if scaleX or scaleY is zero. */
+		public void setScale (float scaleXY) {
+			setScale(scaleXY, scaleXY);
+		}
+
+		/** Sets the font's scale relative to the current scale.
+		 * @see #setScale(float, float)
+		 * @throws IllegalArgumentException if the resulting scale is zero. */
+		public void scale (float amount) {
+			setScale(scaleX + amount, scaleY + amount);
 		}
 	}
 }
