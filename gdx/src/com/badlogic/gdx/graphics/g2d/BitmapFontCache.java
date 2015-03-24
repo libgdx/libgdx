@@ -46,9 +46,9 @@ public class BitmapFontCache {
 	private float currentTint;
 
 	/** Vertex data per page. */
-	private final float[][] pageVertices;
+	private float[][] pageVertices;
 	/** Number of vertex data entries per page. */
-	private final int[] idx;
+	private int[] idx;
 	/** For each page, an array with a value for each glyph from that page, where the value is the index of the character in the
 	 * full text being cached. */
 	private IntArray[] pageGlyphIndices;
@@ -64,13 +64,11 @@ public class BitmapFontCache {
 		this.font = font;
 		this.integer = integer;
 
-		int regionsLength = font.regions.length;
-		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least one texture page.");
+		int pageCount = font.regions.size;
+		if (pageCount == 0) throw new IllegalArgumentException("The specified font must contain at least one texture page.");
 
-		this.pageVertices = new float[regionsLength][];
-
-		this.idx = new int[regionsLength];
-		int pageCount = pageVertices.length;
+		pageVertices = new float[pageCount][];
+		idx = new int[pageCount];
 		if (pageCount > 1) {
 			// Contains the indices of the glyph in the cache as they are added.
 			pageGlyphIndices = new IntArray[pageCount];
@@ -231,11 +229,11 @@ public class BitmapFontCache {
 	}
 
 	public void draw (Batch spriteBatch) {
-		TextureRegion[] regions = font.getRegions();
+		Array<TextureRegion> regions = font.getRegions();
 		for (int j = 0, n = pageVertices.length; j < n; j++) {
 			if (idx[j] > 0) { // ignore if this texture has no glyphs
 				float[] vertices = pageVertices[j];
-				spriteBatch.draw(regions[j].getTexture(), vertices, 0, idx[j]);
+				spriteBatch.draw(regions.get(j).getTexture(), vertices, 0, idx[j]);
 			}
 		}
 	}
@@ -247,7 +245,7 @@ public class BitmapFontCache {
 		}
 
 		// Determine vertex offset and count to render for each page. Some pages might not need to be rendered at all.
-		TextureRegion[] regions = font.getRegions();
+		Array<TextureRegion> regions = font.getRegions();
 		for (int i = 0, pageCount = pageVertices.length; i < pageCount; i++) {
 			int offset = -1, count = 0;
 
@@ -271,7 +269,7 @@ public class BitmapFontCache {
 			if (offset == -1 || count == 0) continue;
 
 			// Render the page vertex data with the offset and count.
-			spriteBatch.draw(regions[i].getTexture(), pageVertices[i], offset * 20, count * 20);
+			spriteBatch.draw(regions.get(i).getTexture(), pageVertices[i], offset * 20, count * 20);
 		}
 	}
 
@@ -343,6 +341,30 @@ public class BitmapFontCache {
 	}
 
 	private void addToCache (GlyphLayout layout, float x, float y) {
+		// Check if the number of font pages has changed.
+		int pageCount = font.regions.size;
+		if (pageVertices.length < pageCount) {
+			float[][] newPageVertices = new float[pageCount][];
+			System.arraycopy(pageVertices, 0, newPageVertices, 0, pageVertices.length);
+			pageVertices = newPageVertices;
+
+			int[] newIdx = new int[pageCount];
+			System.arraycopy(idx, 0, newIdx, 0, idx.length);
+			idx = newIdx;
+
+			IntArray[] newPageGlyphIndices = new IntArray[pageCount];
+			int pageGlyphIndicesLength = 0;
+			if (pageGlyphIndices != null) {
+				pageGlyphIndicesLength = pageGlyphIndices.length;
+				System.arraycopy(pageGlyphIndices, 0, newPageGlyphIndices, 0, pageGlyphIndices.length);
+			}
+			for (int i = pageGlyphIndicesLength; i < pageCount; i++)
+				newPageGlyphIndices[i] = new IntArray();
+			pageGlyphIndices = newPageGlyphIndices;
+
+			tempGlyphCount = new int[pageCount];
+		}
+
 		layouts.add(layout);
 		requireGlyphs(layout);
 		for (int i = 0, n = layout.runs.size; i < n; i++) {

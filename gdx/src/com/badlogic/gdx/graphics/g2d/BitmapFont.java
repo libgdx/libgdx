@@ -58,12 +58,8 @@ public class BitmapFont implements Disposable {
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
-	public static final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
-	public static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q',
-		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-
 	final BitmapFontData data;
-	TextureRegion[] regions;
+	Array<TextureRegion> regions;
 	private final BitmapFontCache cache;
 	private boolean flipped;
 	private boolean integer;
@@ -144,33 +140,33 @@ public class BitmapFont implements Disposable {
 	 * manually with the TextureRegion[] constructor.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
-		this(data, region != null ? new TextureRegion[] {region} : null, integer);
+		this(data, region != null ? Array.with(region) : null, integer);
 	}
 
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
-	public BitmapFont (BitmapFontData data, TextureRegion[] regions, boolean integer) {
-		if (regions == null || regions.length == 0) {
+	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
-			this.regions = new TextureRegion[data.imagePaths.length];
-			for (int i = 0; i < this.regions.length; i++) {
-				if (data.fontFile == null) {
-					this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
-				} else {
-					this.regions[i] = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type()),
-						false));
-				}
+			int n = data.imagePaths.length;
+			regions = new Array(n);
+			for (int i = 0; i < n; i++) {
+				FileHandle file;
+				if (data.fontFile == null)
+					file = Gdx.files.internal(data.imagePaths[i]);
+				else
+					file = Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type());
+				regions.add(new TextureRegion(new Texture(file, false)));
 			}
 			ownsTexture = true;
 		} else {
-			this.regions = regions;
+			regions = pageRegions;
 			ownsTexture = false;
 		}
 
-		cache = new BitmapFontCache(this);
-		cache.setUseIntegerPositions(integer);
+		cache = new BitmapFontCache(this, integer);
 
 		this.flipped = data.flipped;
 		this.data = data;
@@ -184,71 +180,13 @@ public class BitmapFont implements Disposable {
 			for (Glyph glyph : page) {
 				if (glyph == null) continue;
 
-				TextureRegion region = regions[glyph.page];
-
+				TextureRegion region = regions.get(glyph.page);
 				if (region == null) {
 					// TODO: support null regions by parsing scaleW / scaleH ?
 					throw new IllegalArgumentException("BitmapFont texture region array cannot contain null elements.");
 				}
 
-				float invTexWidth = 1.0f / region.getTexture().getWidth();
-				float invTexHeight = 1.0f / region.getTexture().getHeight();
-
-				float offsetX = 0, offsetY = 0;
-				float u = region.u;
-				float v = region.v;
-				float regionWidth = region.getRegionWidth();
-				float regionHeight = region.getRegionHeight();
-				if (region instanceof AtlasRegion) {
-					// Compensate for whitespace stripped from left and top edges.
-					AtlasRegion atlasRegion = (AtlasRegion)region;
-					offsetX = atlasRegion.offsetX;
-					offsetY = atlasRegion.originalHeight - atlasRegion.packedHeight - atlasRegion.offsetY;
-				}
-
-				float x = glyph.srcX;
-				float x2 = glyph.srcX + glyph.width;
-				float y = glyph.srcY;
-				float y2 = glyph.srcY + glyph.height;
-
-				// Shift glyph for left and top edge stripped whitespace. Clip glyph for right and bottom edge stripped whitespace.
-				if (offsetX > 0) {
-					x -= offsetX;
-					if (x < 0) {
-						glyph.width += x;
-						glyph.xoffset -= x;
-						x = 0;
-					}
-					x2 -= offsetX;
-					if (x2 > regionWidth) {
-						glyph.width -= x2 - regionWidth;
-						x2 = regionWidth;
-					}
-				}
-				if (offsetY > 0) {
-					y -= offsetY;
-					if (y < 0) {
-						glyph.height += y;
-						y = 0;
-					}
-					y2 -= offsetY;
-					if (y2 > regionHeight) {
-						float amount = y2 - regionHeight;
-						glyph.height -= amount;
-						glyph.yoffset += amount;
-						y2 = regionHeight;
-					}
-				}
-
-				glyph.u = u + x * invTexWidth;
-				glyph.u2 = u + x2 * invTexWidth;
-				if (data.flipped) {
-					glyph.v = v + y * invTexHeight;
-					glyph.v2 = v + y2 * invTexHeight;
-				} else {
-					glyph.v2 = v + y * invTexHeight;
-					glyph.v = v + y2 * invTexHeight;
-				}
+				data.setGlyphRegion(glyph, region);
 			}
 		}
 	}
@@ -316,19 +254,19 @@ public class BitmapFont implements Disposable {
 	 * use one texture page. For multi-page fonts, use {@link #getRegions()}.
 	 * @return the first texture region */
 	public TextureRegion getRegion () {
-		return regions[0];
+		return regions.first();
 	}
 
 	/** Returns the array of TextureRegions that represents each texture page of glyphs.
 	 * @return the array of texture regions; modifying it may produce undesirable results */
-	public TextureRegion[] getRegions () {
+	public Array<TextureRegion> getRegions () {
 		return regions;
 	}
 
 	/** Returns the texture page at the given index.
 	 * @return the texture page at the given index */
 	public TextureRegion getRegion (int index) {
-		return regions[index];
+		return regions.get(index);
 	}
 
 	/** Returns the line height, which is the distance from one line of text to the next. */
@@ -371,8 +309,8 @@ public class BitmapFont implements Disposable {
 	/** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
 	public void dispose () {
 		if (ownsTexture) {
-			for (int i = 0; i < regions.length; i++)
-				regions[i].getTexture().dispose();
+			for (int i = 0; i < regions.size; i++)
+				regions.get(i).getTexture().dispose();
 		}
 	}
 
@@ -502,14 +440,24 @@ public class BitmapFont implements Disposable {
 
 		/** Additional characters besides whitespace where text is wrapped. Eg, a hypen (-). */
 		public char[] breakChars;
+		public char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
+		public char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
+			'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
-		/** Use this if you want to create BitmapFontData yourself, e.g. from stb-truetype or FreeType. */
+		/** Creates an empty BitmapFontData for configuration before calling {@link #load(FileHandle, boolean)}, to subclass, or to
+		 * populate yourself, e.g. using stb-truetype or FreeType. */
 		public BitmapFontData () {
 		}
 
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
 			this.flipped = flip;
+			load(fontFile, flip);
+		}
+
+		public void load (FileHandle fontFile, boolean flip) {
+			if (imagePaths != null) throw new IllegalStateException("Already loaded.");
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 			try {
 				reader.readLine(); // info
@@ -682,6 +630,67 @@ public class BitmapFont implements Disposable {
 			}
 		}
 
+		public void setGlyphRegion (Glyph glyph, TextureRegion region) {
+			float invTexWidth = 1.0f / region.getTexture().getWidth();
+			float invTexHeight = 1.0f / region.getTexture().getHeight();
+
+			float offsetX = 0, offsetY = 0;
+			float u = region.u;
+			float v = region.v;
+			float regionWidth = region.getRegionWidth();
+			float regionHeight = region.getRegionHeight();
+			if (region instanceof AtlasRegion) {
+				// Compensate for whitespace stripped from left and top edges.
+				AtlasRegion atlasRegion = (AtlasRegion)region;
+				offsetX = atlasRegion.offsetX;
+				offsetY = atlasRegion.originalHeight - atlasRegion.packedHeight - atlasRegion.offsetY;
+			}
+
+			float x = glyph.srcX;
+			float x2 = glyph.srcX + glyph.width;
+			float y = glyph.srcY;
+			float y2 = glyph.srcY + glyph.height;
+
+			// Shift glyph for left and top edge stripped whitespace. Clip glyph for right and bottom edge stripped whitespace.
+			if (offsetX > 0) {
+				x -= offsetX;
+				if (x < 0) {
+					glyph.width += x;
+					glyph.xoffset -= x;
+					x = 0;
+				}
+				x2 -= offsetX;
+				if (x2 > regionWidth) {
+					glyph.width -= x2 - regionWidth;
+					x2 = regionWidth;
+				}
+			}
+			if (offsetY > 0) {
+				y -= offsetY;
+				if (y < 0) {
+					glyph.height += y;
+					y = 0;
+				}
+				y2 -= offsetY;
+				if (y2 > regionHeight) {
+					float amount = y2 - regionHeight;
+					glyph.height -= amount;
+					glyph.yoffset += amount;
+					y2 = regionHeight;
+				}
+			}
+
+			glyph.u = u + x * invTexWidth;
+			glyph.u2 = u + x2 * invTexWidth;
+			if (flipped) {
+				glyph.v = v + y * invTexHeight;
+				glyph.v2 = v + y2 * invTexHeight;
+			} else {
+				glyph.v2 = v + y * invTexHeight;
+				glyph.v = v + y2 * invTexHeight;
+			}
+		}
+
 		/** Sets the line height, which is the distance from one line of text to the next. */
 		public void setLineHeight (float height) {
 			lineHeight = height * scaleY;
@@ -743,6 +752,8 @@ public class BitmapFont implements Disposable {
 			if (lastGlyph != null) xAdvances.add(lastGlyph.xadvance * scaleX);
 		}
 
+		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and moving
+		 * toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			char ch = (char)glyphs.get(start).id;
 			if (isWhitespace(ch)) return start + 1;

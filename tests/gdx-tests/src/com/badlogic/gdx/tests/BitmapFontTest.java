@@ -106,7 +106,7 @@ public class BitmapFontTest extends GdxTest {
 		font.getData().markupEnabled = false;
 
 		// 'R' and 'p' are in different pages
-		String txt2 = "this font uses " + multiPageFont.getRegions().length + " texture pages: RpRpRpRpRpNM";
+		String txt2 = "this font uses " + multiPageFont.getRegions().size + " texture pages: RpRpRpRpRpNM";
 		spriteBatch.renderCalls = 0;
 
 		// regular draw function

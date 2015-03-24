@@ -114,7 +114,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		// set filters for each page
 		TextureFilter minFilter = linearFiltering ? TextureFilter.MipMapLinearNearest : TextureFilter.Nearest;
 		TextureFilter magFilter = linearFiltering ? TextureFilter.Linear : TextureFilter.Nearest;
-		for (int i = 0; i < font.getRegions().length; i++) {
+		for (int i = 0; i < font.getRegions().size; i++) {
 			font.getRegion(i).getTexture().setFilter(minFilter, magFilter);
 		}
 
