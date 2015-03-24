@@ -29,8 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 
 public class LabelTest extends GdxTest {
 	Skin skin;
@@ -45,7 +45,7 @@ public class LabelTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		skin.getFont("default-font").setMarkupEnabled(true);
+		skin.getFont("default-font").getData().markupEnabled = true;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 

@@ -21,16 +21,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 
 /** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
@@ -189,7 +189,7 @@ public class Window extends Table {
 		this.style = style;
 		setBackground(style.background);
 		titleCache = new BitmapFontCache(style.titleFont);
-		titleCache.setColor(style.titleFontColor);
+		titleCache.getColor().set(style.titleFontColor);
 		if (title != null) setTitle(title);
 		invalidateHierarchy();
 	}
@@ -262,18 +262,18 @@ public class Window extends Table {
 
 		// Draw the title without the batch transformed or clipping applied.
 		y += height;
-		TextBounds bounds = titleCache.getBounds();
+		GlyphLayout layout = titleCache.getLayouts().first();
 		if ((titleAlignment & Align.left) != 0)
 			x += getPadLeft();
 		else if ((titleAlignment & Align.right) != 0)
-			x += width - bounds.width - getPadRight();
+			x += width - layout.width - getPadRight();
 		else
-			x += (width - bounds.width) / 2;
+			x += (width - layout.width) / 2;
 		if ((titleAlignment & Align.top) == 0) {
 			if ((titleAlignment & Align.bottom) != 0)
-				y -= padTop - bounds.height;
+				y -= padTop - layout.height;
 			else
-				y -= (padTop - bounds.height) / 2;
+				y -= (padTop - layout.height) / 2;
 		}
 		titleCache.tint(Color.tmp.set(getColor()).mul(style.titleFontColor));
 		titleCache.setPosition((int)x, (int)y);
@@ -297,7 +297,7 @@ public class Window extends Table {
 
 	public void setTitle (String title) {
 		this.title = title;
-		titleCache.setMultiLineText(title, 0, 0);
+		titleCache.setText(title, 0, 0);
 	}
 
 	public String getTitle () {
@@ -346,7 +346,7 @@ public class Window extends Table {
 	}
 
 	public float getTitleWidth () {
-		return titleCache.getBounds().width;
+		return titleCache.getLayouts().first().width;
 	}
 
 	public float getPrefWidth () {
