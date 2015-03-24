@@ -17,13 +17,11 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
@@ -43,9 +41,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  * <p>
  * Typical use: <br />
- * FrameBufferCubemap frameBuffer = new FrameBufferCubemap(Format.RGBA8888, width, height, true); <br />
- * frameBuffer.begin(camera); <br />
+ * FrameBufferCubemap frameBuffer = new FrameBufferCubemap(Format.RGBA8888, fSize, fSize, fSize, true); <br />
+ * frameBuffer.begin(); <br />
  * while( frameBuffer.nextSide() ) { <br />
+ * camera.up.set(frameBuffer.getSide().getUp()); <br />
+ * camera.direction.set(frameBuffer.getSide().getDirection()); <br />
+ * camera.update(); <br />
+ *
  * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
  * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
  * modelBatch.begin(camera); <br />
@@ -58,16 +60,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  * @author realitix */
 public class FrameBufferCubemap extends FrameBuffer {
-	/** camera **/
-	protected Camera camera;
-
-	/** cache for re-init camera at end */
-	protected Vector3 cameraDirectionCache = new Vector3();
-	protected Vector3 cameraUpCache = new Vector3();
-
-	/** the number of sides rendered **/
+	/** the index of last side rendered **/
 	protected int nbSides;
-
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 *
@@ -104,70 +98,41 @@ public class FrameBufferCubemap extends FrameBuffer {
 
 	/**
 	 * Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it.
-	 * Initialize the camera and the remaining sides
-	 * @param camera The camera to use for cubemap
 	 */
-	public void begin(final Camera camera) {
-		if (this.camera != null) throw new GdxRuntimeException("Call end() first.");
-		this.camera = camera;
-		cameraDirectionCache.set(camera.direction);
-		cameraUpCache.set(camera.up);
-		nbSides = 0;
-		bind();
-		setFrameBufferViewport();
+	@Override
+	public void begin() {
+		nbSides = -1;
+		super.begin();
 	}
 
 	/** Bind the next side of cubemap and return false if no more side. */
 	public boolean nextSide() {
-		if( nbSides > 6 ) {
+		if( nbSides > 5 ) {
 			throw new GdxRuntimeException("No remaining sides.");
 		}
-		else if ( nbSides == 6 ) {
+		else if ( nbSides == 5 ) {
 			return false;
 		}
 
-		bindSide(Cubemap.CubemapSide.values()[nbSides]);
 		nbSides++;
+		bindSide(getSide());
 		return true;
 	}
 
 	/**
-	 * Bind the side and move the camera.
+	 * Bind the side.
 	 * @param side Side to bind
 	 */
 	protected void bindSide(final Cubemap.CubemapSide side) {
-		switch (side) {
-		case NegativeX:
-			camera.up.set(0, -1, 0);
-			camera.direction.set(-1, 0, 0);
-			break;
-		case NegativeY:
-			camera.up.set(0, 0, -1);
-			camera.direction.set(0, -1, 0);
-			break;
-		case NegativeZ:
-			camera.up.set(0, -1, 0);
-			camera.direction.set(0, 0, -1);
-			break;
-		case PositiveX:
-			camera.up.set(0, -1, 0);
-			camera.direction.set(1, 0, 0);
-			break;
-		case PositiveY:
-			camera.up.set(0, 0, 1);
-			camera.direction.set(0, 1, 0);
-			break;
-		case PositiveZ:
-			camera.up.set(0, -1, 0);
-			camera.direction.set(0, 0, 1);
-			break;
-		default:
-			break;
-		}
-		camera.update();
-
 		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0,
 			side.glEnum, colorTexture.getTextureObjectHandle(), 0);
+	}
+
+	/**
+	 * Get binded side.
+	 */
+	public Cubemap.CubemapSide getSide() {
+		return Cubemap.CubemapSide.values()[nbSides];
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
@@ -185,14 +150,8 @@ public class FrameBufferCubemap extends FrameBuffer {
 	 * @param height the height of the viewport in pixels */
 	@Override
 	public void end (int x, int y, int width, int height) {
-		if( nbSides < 6 ) throw new GdxRuntimeException("Not all sides have been rendered.");
-		camera.direction.set(cameraDirectionCache);
-		camera.up.set(cameraUpCache);
-		camera.update();
-		camera = null;
-
-		unbind();
-		Gdx.gl20.glViewport(x, y, width, height);
+		if( nbSides < 5 ) throw new GdxRuntimeException("Not all sides have been rendered.");
+		super.end(x, y, width, height);
 	}
 
 	/** @return the color buffer cubemap */
