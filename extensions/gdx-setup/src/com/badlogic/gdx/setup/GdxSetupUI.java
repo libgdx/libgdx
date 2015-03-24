@@ -29,7 +29,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -88,7 +87,6 @@ public class GdxSetupUI extends JFrame {
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
-	List<ExternalExtension> externalExtensions = new ArrayList<ExternalExtension>();
 
 	UI ui = new UI();
 	static Point point = new Point();

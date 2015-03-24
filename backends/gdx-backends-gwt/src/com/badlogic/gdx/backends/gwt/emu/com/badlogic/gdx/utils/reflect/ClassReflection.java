@@ -60,6 +60,11 @@ public final class ClassReflection {
 		return ReflectionCache.getType(c).isStatic();
 	}
 
+	/** Determines if the supplied Class object represents an array class. */
+	static public boolean isArray (Class c) {
+		return ReflectionCache.getType(c).isArray();
+	}
+	
 	/** Creates a new instance of the class represented by the supplied Class. */
 	static public <T> T newInstance (Class<T> c) throws ReflectionException {
 		try {
