@@ -71,6 +71,7 @@ public class GlyphLayout implements Poolable {
 
 		Color nextColor = color;
 		colorStack.add(color);
+		Pool<Color> colorPool = Pools.get(Color.class);
 
 		int runStart = start;
 		outer:
@@ -91,7 +92,7 @@ public class GlyphLayout implements Poolable {
 				case '[':
 					// Possible color tag.
 					if (markupEnabled) {
-						int length = parseColorMarkup(str, start, end);
+						int length = parseColorMarkup(str, start, end, colorPool);
 						if (length >= 0) {
 							runEnd = start - 1;
 							start += length + 1;
@@ -152,8 +153,8 @@ public class GlyphLayout implements Poolable {
 		}
 		width = Math.max(width, x);
 
-		Pools.freeAll(colorStack, true);
-		colorStack.clear();
+		for (int i = 1, n = colorStack.size; i < n; i++)
+			colorPool.free(colorStack.get(i));
 
 		// Align runs to center or right of targetWidth.
 		if ((halign & Align.left) == 0) { // Not left aligned, so must be center or right aligned.
@@ -208,9 +209,8 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.free(truncateRun);
 	}
 
-	private int parseColorMarkup (CharSequence str, int start, int end) {
+	private int parseColorMarkup (CharSequence str, int start, int end, Pool<Color> colorPool) {
 		if (start == end) return -1; // String ended with "[".
-		Pool<Color> pool = Pools.get(Color.class);
 		switch (str.charAt(start)) {
 		case '#':
 			// Parse hex color RRGGBBAA where AA is optional and defaults to 0xFF if less than 6 chars are used.
@@ -219,7 +219,7 @@ public class GlyphLayout implements Poolable {
 				char ch = str.charAt(i);
 				if (ch == ']') {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
-					Color color = pool.obtain();
+					Color color = colorPool.obtain();
 					colorStack.add(color);
 					Color.rgb888ToColor(color, colorInt);
 					if (i <= start + 7) color.a = 1f; // RRGGBB
@@ -238,7 +238,7 @@ public class GlyphLayout implements Poolable {
 		case '[': // "[[" is an escaped left square bracket.
 			return -1;
 		case ']': // "[]" is a "pop" color tag.
-			if (colorStack.size > 1) pool.free(colorStack.pop());
+			if (colorStack.size > 1) colorPool.free(colorStack.pop());
 			return 0;
 		}
 		// Parse named color.
@@ -248,7 +248,7 @@ public class GlyphLayout implements Poolable {
 			if (ch != ']') continue;
 			Color namedColor = Colors.get(str.subSequence(colorStart, i).toString());
 			if (namedColor == null) return -1; // Unknown color name.
-			Color color = pool.obtain();
+			Color color = colorPool.obtain();
 			colorStack.add(color);
 			color.set(namedColor);
 			return i - start;
