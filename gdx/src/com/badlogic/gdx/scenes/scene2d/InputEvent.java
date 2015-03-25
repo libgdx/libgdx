@@ -136,7 +136,7 @@ public class InputEvent extends Event {
 		return type.toString();
 	}
 
-	/** Types of low-level input events supported by stage2d. */
+	/** Types of low-level input events supported by scene2d. */
 	static public enum Type {
 		/** A new touch for a pointer on the stage was detected */
 		touchDown,
