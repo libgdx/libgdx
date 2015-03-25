@@ -415,10 +415,10 @@ public class TextField extends Widget implements Disableable {
 
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
 	void paste () {
-		paste(clipboard.getContents(), true);
+		paste(clipboard.getContents());
 	}
 
-	void paste (String content, boolean onlyFontChars) {
+	void paste (String content) {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
@@ -543,7 +543,7 @@ public class TextField extends Widget implements Disableable {
 
 		clearSelection();
 		cursor = text.length();
-		paste(str, onlyFontChars);
+		paste(str);
 	}
 
 	public void setText (String str) {
@@ -552,7 +552,7 @@ public class TextField extends Widget implements Disableable {
 
 		clearSelection();
 		text = "";
-		paste(str, onlyFontChars);
+		paste(str);
 		cursor = 0;
 	}
 
