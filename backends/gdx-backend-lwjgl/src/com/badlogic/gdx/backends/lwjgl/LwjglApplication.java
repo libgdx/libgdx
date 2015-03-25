@@ -73,7 +73,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
-		LwjglNativesLoader.load();		
+		LwjglNativesLoader.load();
 
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
@@ -82,7 +82,7 @@ public class LwjglApplication implements Application {
 			try {
 				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
 					config.audioDeviceBufferSize);
-			} catch(Throwable t) {
+			} catch (Throwable t) {
 				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
 				LwjglApplicationConfiguration.disableAudio = true;
 			}
@@ -167,7 +167,7 @@ public class LwjglApplication implements Application {
 					for (LifecycleListener listener : lifecycleListeners)
 						listener.resume();
 				}
-				listener.resume();				
+				listener.resume();
 			}
 
 			boolean shouldRender = false;
@@ -185,9 +185,10 @@ public class LwjglApplication implements Application {
 			} else {
 				graphics.config.x = Display.getX();
 				graphics.config.y = Display.getY();
-				if (graphics.resize || Display.wasResized() || (int)(Display.getWidth() * Display.getPixelScaleFactor()) != graphics.config.width
+				if (graphics.resize || Display.wasResized()
+					|| (int)(Display.getWidth() * Display.getPixelScaleFactor()) != graphics.config.width
 					|| (int)(Display.getHeight() * Display.getPixelScaleFactor()) != graphics.config.height) {
-					graphics.resize = false;					
+					graphics.resize = false;
 					graphics.config.width = (int)(Display.getWidth() * Display.getPixelScaleFactor());
 					graphics.config.height = (int)(Display.getHeight() * Display.getPixelScaleFactor());
 					Gdx.gl.glViewport(0, 0, graphics.config.width, graphics.config.height);
@@ -242,8 +243,9 @@ public class LwjglApplication implements Application {
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = executedRunnables.size - 1; i >= 0; i--)
-			executedRunnables.removeIndex(i).run();
+		do
+			executedRunnables.pop().run();
+		while (executedRunnables.size > 0);
 		return true;
 	}
 
