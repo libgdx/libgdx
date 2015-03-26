@@ -130,6 +130,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 
 	@Override
 	public boolean equals (final Object obj) {
+		if (obj == this) return true;
 		if (!(obj instanceof VertexAttributes)) return false;
 		VertexAttributes other = (VertexAttributes)obj;
 		if (this.attributes.length != other.size()) return false;
@@ -137,6 +138,14 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 			if (!attributes[i].equals(other.attributes[i])) return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode () {
+		long result = 61 * attributes.length;
+		for (int i = 0; i < attributes.length; i++)
+			result = result * 61 + attributes[i].hashCode();
+		return (int)(result^(result>>32));
 	}
 
 	/** Calculates a mask based on the contained {@link VertexAttribute} instances. The mask is a bit-wise or of each attributes
