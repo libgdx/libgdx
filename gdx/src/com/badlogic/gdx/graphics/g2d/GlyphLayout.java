@@ -175,6 +175,7 @@ public class GlyphLayout implements Poolable {
 
 		for (int i = 1, n = colorStack.size; i < n; i++)
 			colorPool.free(colorStack.get(i));
+		colorStack.clear();
 
 		// Align runs to center or right of targetWidth.
 		if ((halign & Align.left) == 0) { // Not left aligned, so must be center or right aligned.
