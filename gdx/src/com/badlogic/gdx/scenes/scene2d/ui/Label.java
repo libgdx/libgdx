@@ -139,7 +139,6 @@ public class Label extends Widget {
 		} else
 			layout.setText(cache.getFont(), text);
 		bounds.set(layout.width, layout.height);
-
 	}
 
 	public void layout () {
@@ -159,6 +158,7 @@ public class Label extends Widget {
 		}
 
 		float width = getWidth(), height = getHeight();
+		float textWidth = layout.width, textHeight = layout.height;
 		Drawable background = style.background;
 		float x = 0, y = 0;
 		if (background != null) {
@@ -168,24 +168,24 @@ public class Label extends Widget {
 			height -= background.getBottomHeight() + background.getTopHeight();
 		}
 		if ((labelAlign & Align.top) != 0) {
-			y += cache.getFont().isFlipped() ? 0 : height - bounds.y;
+			y += cache.getFont().isFlipped() ? 0 : height - textHeight;
 			y += style.font.getDescent();
 		} else if ((labelAlign & Align.bottom) != 0) {
-			y += cache.getFont().isFlipped() ? height - bounds.y : 0;
+			y += cache.getFont().isFlipped() ? height - textHeight : 0;
 			y -= style.font.getDescent();
 		} else
-			y += (int)((height - bounds.y) / 2);
-		if (!cache.getFont().isFlipped()) y += bounds.y;
+			y += (int)((height - textHeight) / 2);
+		if (!cache.getFont().isFlipped()) y += textHeight;
 
 		if ((labelAlign & Align.left) == 0) {
 			if ((labelAlign & Align.right) != 0)
-				x += width - bounds.x;
+				x += width - textWidth;
 			else
-				x += (int)((width - bounds.x) / 2);
+				x += (int)((width - textWidth) / 2);
 		}
 
 		layout.setText(font, text, 0, text.length, Color.WHITE, //
-			(ellipsis && width < bounds.x) ? width : bounds.x, //
+			(ellipsis && width < textWidth) ? width : textWidth, //
 			lineAlign, wrap, ellipsis ? "..." : null);
 		cache.setText(layout, x, y);
 

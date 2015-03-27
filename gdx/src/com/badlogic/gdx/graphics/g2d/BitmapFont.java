@@ -805,8 +805,8 @@ public class BitmapFont implements Disposable {
 		public void setScale (float scaleX, float scaleY) {
 			if (scaleX == 0) throw new IllegalArgumentException("scaleX cannot be 0.");
 			if (scaleY == 0) throw new IllegalArgumentException("scaleY cannot be 0.");
-			float x = scaleX / scaleX;
-			float y = scaleY / scaleY;
+			float x = scaleX / this.scaleX;
+			float y = scaleY / this.scaleY;
 			lineHeight *= y;
 			spaceWidth *= x;
 			xHeight *= y;
