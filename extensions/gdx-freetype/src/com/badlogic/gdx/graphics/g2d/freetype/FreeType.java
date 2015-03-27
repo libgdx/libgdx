@@ -853,7 +853,7 @@ public class FreeType {
 
 	public static int toInt (int value) {
 		if (value < 0) return (int)((value - 32) >> 6);
-		else return (int)((value + 32) >> 6);
+		return (int)((value + 32) >> 6);
 	}
    
 //	public static void main (String[] args) throws Exception {

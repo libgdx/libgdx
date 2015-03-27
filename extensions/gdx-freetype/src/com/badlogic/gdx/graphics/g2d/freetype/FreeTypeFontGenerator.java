@@ -67,19 +67,21 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class FreeTypeFontGenerator implements Disposable {
-	public static final String DEFAULT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
-	final Library library;
-	final Face face;
-	final String name;
-	boolean bitmapped = false;
+	static public final String DEFAULT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
+
+	/** A hint to scale the texture as needed, without capping it at any maximum size */
+	static public final int NO_MAXIMUM = -1;
 
 	/** The maximum texture size allowed by generateData, when storing in a texture atlas. Multiple texture pages will be created if
 	 * necessary. Default is 1024.
 	 * @see #setMaxTextureSize(int) */
-	private static int maxTextureSize = 1024;
+	static private int maxTextureSize = 1024;
 
-	/** A hint to scale the texture as needed, without capping it at any maximum size */
-	public static final int NO_MAXIMUM = -1;
+	final Library library;
+	final Face face;
+	final String name;
+	boolean bitmapped = false;
+	private int pixelWidth, pixelHeight;
 
 	/** Uses {@link FileHandle#length()} to determine the file size and calls {@link #FreeTypeFontGenerator(FileHandle, int)}. If
 	 * the file length could not be determined or the font file name ends with ".gz", an extra copy of the font bytes is performed. */
@@ -121,7 +123,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font: " + font);
 
 		if (checkForBitmapFont()) return;
-		if (!face.setPixelSizes(0, 15)) throw new GdxRuntimeException("Couldn't set size for font: " + font);
+		setPixelSizes(0, 15);
 	}
 
 	private boolean checkForBitmapFont () {
@@ -178,7 +180,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
 	public int scaleForPixelHeight (int height) {
-		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		setPixelSizes(0, height);
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
@@ -196,7 +198,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		int descent = FreeType.toInt(fontMetrics.getDescender());
 		int unscaledHeight = ascent - descent;
 		int height = unscaledHeight * width / (advance * numChars);
-		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		setPixelSizes(0, height);
 		return height;
 	}
 
@@ -217,7 +219,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Returns null if glyph was not found. If there is nothing to render, for example with various space characters, then bitmap
 	 * is null. */
 	public GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
-		if (!bitmapped && !face.setPixelSizes(0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		setPixelSizes(0, size);
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
@@ -304,6 +306,13 @@ public class FreeTypeFontGenerator implements Disposable {
 		return generateData(parameter, new FreeTypeBitmapFontData());
 	}
 
+	void setPixelSizes (int pixelWidth, int pixelHeight) {
+		this.pixelWidth = pixelWidth;
+		this.pixelHeight = pixelHeight;
+		if (!bitmapped && !face.setPixelSizes(pixelWidth, pixelHeight))
+			throw new GdxRuntimeException("Couldn't set size for font");
+	}
+
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
 	 * @param parameter configures how the font is generated */
 	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
@@ -312,7 +321,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		int charactersLength = characters.length();
 		boolean incremental = parameter.incremental;
 
-		if (!bitmapped && !face.setPixelSizes(0, parameter.size)) throw new GdxRuntimeException("Couldn't set size for font");
+		setPixelSizes(0, parameter.size);
 
 		// set general font data
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
@@ -629,6 +638,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Glyph getGlyph (char ch) {
 			Glyph glyph = super.getGlyph(ch);
 			if (glyph == null && generator != null && ch != 0) {
+				generator.setPixelSizes(0, parameter.size);
 				glyph = generator.createGlyph(ch, this, parameter, stroker, ascent + capHeight, packPrefix, packer);
 				if (glyph == null) return null;
 				setGlyph(ch, glyph);
