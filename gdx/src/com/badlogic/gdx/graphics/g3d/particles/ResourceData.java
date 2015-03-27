@@ -209,7 +209,7 @@ public class ResourceData<T> implements Json.Serializable{
 			saveData.resources = this;
 		}
 		
-		sharedAssets.addAll(json.readValue("assets", AssetData[].class, jsonData));
+		sharedAssets.addAll(json.readValue("assets", Array.class, AssetData.class, jsonData));
 		resource = json.readValue("resource", null, jsonData);
 	}
 
