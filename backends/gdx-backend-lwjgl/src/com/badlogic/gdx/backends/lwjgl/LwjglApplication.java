@@ -239,7 +239,7 @@ public class LwjglApplication implements Application {
 	public boolean executeRunnables () {
 		synchronized (runnables) {
 			for (int i = runnables.size - 1; i >= 0; i--)
-				executedRunnables.addAll(runnables.get(i));
+				executedRunnables.add(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
