@@ -207,6 +207,7 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					Display.processMessages();
+					if (cursor != null) canvas.setCursor(cursor);
 
 					boolean shouldRender = false;
 
@@ -237,8 +238,6 @@ public class LwjglCanvas implements Application {
 						listener.render();
 						Display.update(false);
 					}
-
-					canvas.setCursor(cursor);
 
 					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
