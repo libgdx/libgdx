@@ -782,11 +782,7 @@ public class Mesh implements Disposable {
 		Array<Mesh> meshesArray = meshes.get(app);
 		if (meshesArray == null) return;
 		for (int i = 0; i < meshesArray.size; i++) {
-			if(meshesArray.get(i).vertices instanceof VertexBufferObject) {
-				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
-			} else if(meshesArray.get(i).vertices instanceof VertexBufferObjectWithVAO) {
-				((VertexBufferObjectWithVAO) meshesArray.get(i).vertices).invalidate();
-			}
+			meshesArray.get(i).vertices.invalidate();
 			meshesArray.get(i).indices.invalidate();
 		}
 	}
