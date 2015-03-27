@@ -243,6 +243,7 @@ class GradientPanel extends EditorPanel {
 							colors.add(i, colors.get(i - 1));
 							dragIndex = selectedIndex = i;
 							handleSelected(colors.get(selectedIndex));
+							updateColor();
 							repaint();
 							break;
 						}
@@ -256,6 +257,7 @@ class GradientPanel extends EditorPanel {
 					percent = Math.max(percent, percentages.get(dragIndex - 1) + 0.01f);
 					percent = Math.min(percent, percentages.get(dragIndex + 1) - 0.01f);
 					percentages.set(dragIndex, percent);
+					updateColor();
 					repaint();
 				}
 			});
