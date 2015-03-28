@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics.g2d.freetype;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.zip.GZIPInputStream;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -83,18 +82,12 @@ public class FreeTypeFontGenerator implements Disposable {
 	boolean bitmapped = false;
 	private int pixelWidth, pixelHeight;
 
-	/** Uses {@link FileHandle#length()} to determine the file size and calls {@link #FreeTypeFontGenerator(FileHandle, int)}. If
-	 * the file length could not be determined or the font file name ends with ".gz", an extra copy of the font bytes is performed. */
+	/** Creates a new generator from the given font file. Uses {@link FileHandle#length()} to determine the file size. If the file
+	 * length could not be determined (it was 0), an extra copy of the font bytes is performed. Throws a
+	 * {@link GdxRuntimeException} if loading did not succeed. */
 	public FreeTypeFontGenerator (FileHandle font) {
-		this(font, font.name().endsWith(".gz") ? 0 : (int)font.length()); // GZIP always requires an extra copy.
-	}
-
-	/** Creates a new generator from the given font file. Throws a {@link GdxRuntimeException} if loading did not succeed.
-	 * @param font If the font file name ends with ".gz", GZIP decoding is performed.
-	 * @param fileSize The font file size in bytes (may be larger). If zero, an extra copy of the font bytes is performed. If the
-	 *           font file name ends with ".gz", this must be the uncompressed size. */
-	public FreeTypeFontGenerator (FileHandle font, int fileSize) {
 		name = font.pathWithoutExtension();
+		int fileSize = (int)font.length();
 
 		library = FreeType.initFreeType();
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
@@ -102,7 +95,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		ByteBuffer buffer;
 		InputStream input = font.read();
 		try {
-			if (font.name().endsWith(".gz")) input = new GZIPInputStream(input, 4096);
 			if (fileSize == 0) {
 				// Copy to a byte[] to get the file size, then copy to the buffer.
 				byte[] data = StreamUtils.copyStreamToByteArray(input, fileSize > 0 ? (int)(fileSize * 1.5f) : 1024 * 16);
