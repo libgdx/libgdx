@@ -58,10 +58,7 @@ public class ParticleEffectLoader extends
 
 			// If the asset doesn't exist try to load it from loading effect directory
 			if (!resolve(assetData.filename).exists()) {
-				if (Gdx.app.getType() == ApplicationType.WebGL)
-					Gdx.app.error("ParticleEffectLoader", "Failed to find asset '" + assetData.filename
-						+ "' specified in ParticleEffect file '" + fileName + "'");
-				assetData.filename = file.parent().child(Gdx.files.absolute(assetData.filename).name()).path();
+				assetData.filename = file.parent().child(Gdx.files.internal(assetData.filename).name()).path();
 			}
 
 			if (assetData.type == ParticleEffect.class) {
