@@ -133,8 +133,9 @@ public class GlyphLayout implements Poolable {
 				fontData.getGlyphs(run, str, runStart, runEnd);
 
 				// Compute the run width, wrap if necessary, and position the run.
-				for (int i = 0, n = run.xAdvances.size; i < n; i++) {
-					float xAdvance = run.xAdvances.get(i);
+				FloatArray xAdvances = run.xAdvances;
+				for (int i = 0, n = xAdvances.size; i < n; i++) {
+					float xAdvance = xAdvances.get(i);
 					x += xAdvance;
 					if (wrap && x > targetWidth && i > 0) {
 						if (truncate != null) {
@@ -149,12 +150,13 @@ public class GlyphLayout implements Poolable {
 						// Start the loop over with the new run on the next line.
 						width = Math.max(width, run.width);
 						x = 0;
-						y += font.data.down;
+						y += fontData.down;
 						lines++;
 						next.x = 0;
 						next.y = y;
 						i = -1;
 						n = next.xAdvances.size;
+						xAdvances = next.xAdvances;
 						run = next;
 					} else
 						run.width += xAdvance;
@@ -163,7 +165,7 @@ public class GlyphLayout implements Poolable {
 				if (newline) {
 					width = Math.max(width, x);
 					x = 0;
-					y += font.data.down;
+					y += fontData.down;
 					lines++;
 				}
 
@@ -201,7 +203,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		this.width = width;
-		this.height = font.data.capHeight + lines * font.data.lineHeight;
+		this.height = fontData.capHeight + lines * fontData.lineHeight;
 	}
 
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
@@ -340,6 +342,7 @@ public class GlyphLayout implements Poolable {
 
 		public String toString () {
 			StringBuilder buffer = new StringBuilder(glyphs.size);
+			Array<Glyph> glyphs = this.glyphs;
 			for (int i = 0, n = glyphs.size; i < n; i++) {
 				Glyph g = glyphs.get(i);
 				buffer.append((char)g.id);

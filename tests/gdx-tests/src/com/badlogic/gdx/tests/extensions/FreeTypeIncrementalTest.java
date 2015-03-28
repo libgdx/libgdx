@@ -16,7 +16,12 @@
 
 package com.badlogic.gdx.tests.extensions;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandleStream;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,8 +50,21 @@ public class FreeTypeIncrementalTest extends GdxTest {
 
 		FreeTypeFontGenerator.setMaxTextureSize(128);
 
-		// Specifying the uncompressed font size for a GZIP encoded font avoids one copy of the font bytes.
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/cjsongeb.ttf.gz"), 3275360);
+		// GZIP decode the font. When the font is inside a JAR it is already compressed and this is not needed.
+		FileHandleStream file = new FileHandleStream("data/cjsongeb.ttf.gz") {
+			public InputStream read () {
+				try {
+					return new GZIPInputStream(Gdx.files.internal("data/cjsongeb.ttf.gz").read(), 4096);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			public long length () {
+				return 3275360;
+			}
+		};
+		generator = new FreeTypeFontGenerator(file);
 
 		FreeTypeFontParameter param = new FreeTypeFontParameter();
 		param.incremental = true;

@@ -889,7 +889,17 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
-			if (character == 0) return false;
+
+			// Disallow "typing" most ASCII control characters, which would show up as a space when onlyFontChars is true.
+			switch (character) {
+			case BACKSPACE:
+			case TAB:
+			case ENTER_ANDROID:
+			case ENTER_DESKTOP:
+				break;
+			default:
+				if (character < 32) return false;
+			}
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
