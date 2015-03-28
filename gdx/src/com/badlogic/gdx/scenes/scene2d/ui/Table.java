@@ -1197,6 +1197,11 @@ public class Table extends WidgetGroup {
 		}
 	}
 
+	/** @return The skin that was passed to this table in its constructor, or null if none was given. */
+	public Skin getSkin () {
+		return skin;
+	}
+
 	/** @author Nathan Sweet */
 	static public class DebugRect extends Rectangle {
 		static Pool<DebugRect> pool = Pools.get(DebugRect.class);
