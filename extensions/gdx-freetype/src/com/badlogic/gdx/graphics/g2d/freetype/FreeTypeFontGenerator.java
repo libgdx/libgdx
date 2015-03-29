@@ -631,8 +631,9 @@ public class FreeTypeFontGenerator implements Disposable {
 			Glyph glyph = super.getGlyph(ch);
 			if (glyph == null && generator != null && ch != 0) {
 				generator.setPixelSizes(0, parameter.size);
-				glyph = generator.createGlyph(ch, this, parameter, stroker, ascent + capHeight, packPrefix, packer);
+				glyph = generator.createGlyph(ch, this, parameter, stroker, (ascent + capHeight) / scaleY, packPrefix, packer);
 				if (glyph == null) return null;
+
 				setGlyph(ch, glyph);
 				setGlyphRegion(glyph, regions.get(glyph.page));
 				glyphs.add(glyph);
