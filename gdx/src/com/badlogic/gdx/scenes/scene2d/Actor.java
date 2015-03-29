@@ -804,7 +804,7 @@ public class Actor {
 		if (!debug) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(stage.getDebugColor());
-		shapes.rect(x, y, originX, originY, width - 1, height - 1, scaleX, scaleY, rotation);
+		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 
 	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */
