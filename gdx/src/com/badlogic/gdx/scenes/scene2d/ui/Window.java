@@ -50,7 +50,7 @@ public class Window extends Table {
 	boolean dragging;
 	private int titleAlignment = Align.center;
 	boolean keepWithinStage = true;
-	Table buttonTable;
+	Table titleTable;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -72,8 +72,8 @@ public class Window extends Table {
 		setHeight(150);
 		setTitle(title);
 
-		buttonTable = new Table();
-		addActor(buttonTable);
+		titleTable = new Table();
+		addActor(titleTable);
 
 		addCaptureListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -205,7 +205,7 @@ public class Window extends Table {
 		Stage stage = getStage();
 		Camera camera = stage.getCamera();
 		if (camera instanceof OrthographicCamera) {
-			OrthographicCamera orthographicCamera = (OrthographicCamera) camera;
+			OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
 			float parentWidth = stage.getWidth();
 			float parentHeight = stage.getHeight();
 			if (getX(Align.right) - camera.position.x > parentWidth / 2 / orthographicCamera.zoom)
@@ -255,10 +255,10 @@ public class Window extends Table {
 		super.drawBackground(batch, parentAlpha, x, y);
 
 		// Draw button table.
-		buttonTable.getColor().a = getColor().a;
-		buttonTable.pack();
-		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
-		buttonTable.draw(batch, parentAlpha);
+		titleTable.getColor().a = getColor().a;
+		titleTable.pack();
+		titleTable.setPosition(width - titleTable.getWidth(), Math.min(height - padTop, height - titleTable.getHeight()));
+		titleTable.draw(batch, parentAlpha);
 
 		// Draw the title without the batch transformed or clipping applied.
 		y += height;
@@ -353,8 +353,8 @@ public class Window extends Table {
 		return Math.max(super.getPrefWidth(), getTitleWidth() + getPadLeft() + getPadRight());
 	}
 
-	public Table getButtonTable () {
-		return buttonTable;
+	public Table getTitleTable () {
+		return titleTable;
 	}
 
 	/** The style for a window, see {@link Window}.
