@@ -148,8 +148,8 @@ public class FreeTypeAtlasTest extends GdxTest {
 		// 1. Create a new PixmapPacker big enough to fit all your desired glyphs
 		// 2. Create a new FreeTypeFontGenerator for each TTF file (i.e. font styles/families)
 		// 3. For each size and style, call generator.generateFont() with the packer set on the parameter
-		// 4. Generate the final texture atlas from the packer.
-		// 9. Dispose of the atlas upon application exit or when you are done using the font atlas
+		// 4. Generate the texture atlas using packer.generateTextureAtlas or packer.updateTextureAtlas.
+		// 5. Dispose of the atlas upon application exit or when you are done using the fonts
 		// //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// create the pixmap packer
