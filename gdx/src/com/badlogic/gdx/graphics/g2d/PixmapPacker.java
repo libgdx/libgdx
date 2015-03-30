@@ -363,10 +363,13 @@ public class PixmapPacker implements Disposable {
 
 	/** Return an ordered array of texture regions corresponding with the pages of the packer, creating new textures
 	 * if necessary.  The same array will be returned from successive calls to this method, possibly modified with
-	 * additional texture regions if more pages have been added since the last call.
+	 * additional texture regions if more pages have been added since the last call.  Once this method has been called,
+	 * you must dispose of the resulting texture regions (or equivalently, any atlas generated or updated by this packer)
+	 * yourself - disposing the PixmapPacker will no longer dispose these textures or their backing pixmaps.
 	 */
 	public Array<TextureRegion> getTextureRegions(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		while (textureRegions.size < pages.size) {
+			if (disposed) return null;
 			Page page = pages.get(textureRegions.size);
 			if (page.texture == null) {
 				generatePageTexture(page, minFilter, magFilter, useMipMaps);
