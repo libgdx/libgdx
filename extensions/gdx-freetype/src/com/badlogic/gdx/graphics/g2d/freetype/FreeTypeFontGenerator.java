@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -32,23 +28,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Face;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphMetrics;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
-import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.*;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.</p>
  * 
@@ -164,8 +152,14 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param parameter configures how the font is generated */
 	public BitmapFont generateFont (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
 		generateData(parameter, data);
-		BitmapFont font = new BitmapFont(data, data.regions, false);
-		font.setOwnsTexture(true);
+		Array<TextureRegion> regions;
+		if (parameter.packer != null) {
+			regions = parameter.packer.getTextureRegions(parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+		} else {
+			regions = data.regions;
+		}
+		BitmapFont font = new BitmapFont(data, regions, false);
+		font.setOwnsTexture(parameter.packer == null);
 		return font;
 	}
 
@@ -439,26 +433,10 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// Generate texture regions.
 		if (ownsAtlas) {
-			Array<Page> pages = packer.getPages();
-			data.regions = new Array(pages.size);
-			for (int i = 0; i < pages.size; i++)
-				data.regions.add(createRegion(pages.get(i), parameter));
+			data.regions = packer.getTextureRegions(parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		}
 
 		return data;
-	}
-
-	private TextureRegion createRegion (Page p, FreeTypeFontParameter parameter) {
-		Texture tex = new Texture(
-			new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), parameter.genMipMaps, false, true)) {
-			@Override
-			public void dispose () {
-				super.dispose();
-				getTextureData().consumePixmap().dispose();
-			}
-		};
-		tex.setFilter(parameter.minFilter, parameter.magFilter);
-		return new TextureRegion(tex);
 	}
 
 	Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
@@ -565,7 +543,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// Create a new texture for the new glyph or update the existing texture with the new glyph.
 		if (data.regions != null) {
 			if (pageIndex >= data.regions.size)
-				data.regions.add(createRegion(packer.getPages().get(pageIndex), parameter));
+				data.regions = packer.getTextureRegions(parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 			else {
 				Texture texture = data.regions.get(pageIndex).getTexture();
 				texture.bind();

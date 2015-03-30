@@ -16,15 +16,9 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -32,7 +26,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap.Keys;
 import com.badlogic.gdx.utils.OrderedMap;
 
 /** Packs {@link Pixmap} instances into one more more {@link Page} instances to generate an atlas of Pixmap instances. Provides
@@ -132,6 +125,7 @@ public class PixmapPacker implements Disposable {
 	final int padding;
 	final boolean duplicateBorder;
 	final Array<Page> pages = new Array();
+	final Array<TextureRegion> textureRegions = new Array<TextureRegion>();
 	Page currPage;
 	boolean disposed;
 
@@ -309,13 +303,15 @@ public class PixmapPacker implements Disposable {
 		return -1;
 	}
 
-	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with
-	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
-	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do not call this method if you
-	 * generated or updated a TextureAtlas, instead dispose the TextureAtlas. */
+	/** Disposes any Pixmap instances which haven't been used internally to create a texture (e.g. by
+	 * {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}, {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}
+	 * or {@link #getTextureRegions(TextureFilter, TextureFilter, boolean)}).  If you call one of those three methods, you
+	 * will also need to dispose of the texture atlas or texture regions. */
 	public synchronized void dispose () {
 		for (Page page : pages) {
-			page.image.dispose();
+			if (page.texture == null) {
+				page.image.dispose();
+			}
 		}
 		disposed = true;
 	}
@@ -326,66 +322,58 @@ public class PixmapPacker implements Disposable {
 	 * @return the TextureAtlas */
 	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		TextureAtlas atlas = new TextureAtlas();
-		for (Page page : pages) {
-			if (page.rects.size != 0) {
-				Texture texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
-					@Override
-					public void dispose () {
-						super.dispose();
-						getTextureData().consumePixmap().dispose();
-					}
-				};
-				texture.setFilter(minFilter, magFilter);
-
-				Keys<String> names = page.rects.keys();
-				for (String name : names) {
-					Rectangle rect = page.rects.get(name);
-					TextureRegion region = new TextureRegion(texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
-					atlas.addRegion(name, region);
-				}
-			}
-		}
+		updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps);
 		return atlas;
 	}
 
 	/** Updates the given {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method.
 	 * This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the
-	 * TextureAtlas on the rendering thread. This method must be called on the rendering thread. */
-	public synchronized void updateTextureAtlas (TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
+	 * TextureAtlas on the rendering thread. This method must be called on the rendering thread.
+	 */
+	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
 		boolean useMipMaps) {
 		for (Page page : pages) {
-			if (page.texture == null) {
-				if (page.rects.size != 0 && page.addedRects.size > 0) {
-					page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
-						@Override
-						public void dispose () {
-							super.dispose();
-							getTextureData().consumePixmap().dispose();
-						}
-					};
-					page.texture.setFilter(minFilter, magFilter);
-
-					for (String name : page.addedRects) {
-						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
-							(int)rect.height);
-						atlas.addRegion(name, region);
-					}
-					page.addedRects.clear();
-				}
-			} else {
-				if (page.addedRects.size > 0) {
+			if (page.addedRects.size > 0) {
+				if (page.texture == null) {
+					generatePageTexture(page, minFilter, magFilter, useMipMaps);
+				} else {
 					page.texture.load(page.texture.getTextureData());
-					for (String name : page.addedRects) {
-						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
-							(int)rect.height);
-						atlas.addRegion(name, region);
-					}
-					page.addedRects.clear();
 				}
+				for (String name : page.addedRects) {
+					Rectangle rect = page.rects.get(name);
+					TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
+							(int)rect.height);
+					atlas.addRegion(name, region);
+				}
+				page.addedRects.clear();
 			}
 		}
+	}
+
+	private void generatePageTexture(final Page page, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
+		page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
+			@Override
+			public void dispose() {
+				super.dispose();
+				getTextureData().consumePixmap().dispose();
+			}
+		};
+		page.texture.setFilter(minFilter, magFilter);
+	}
+
+	/** Return an ordered array of texture regions corresponding with the pages of the packer, creating new textures
+	 * if necessary.  The same array will be returned from successive calls to this method, possibly modified with
+	 * additional texture regions if more pages have been added since the last call.
+	 */
+	public Array<TextureRegion> getTextureRegions(TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
+		while (textureRegions.size < pages.size) {
+			Page page = pages.get(textureRegions.size);
+			if (page.texture == null) {
+				generatePageTexture(page, minFilter, magFilter, useMipMaps);
+			}
+			textureRegions.add(new TextureRegion(page.texture));
+		}
+		return textureRegions;
 	}
 
 	public int getPageWidth () {
