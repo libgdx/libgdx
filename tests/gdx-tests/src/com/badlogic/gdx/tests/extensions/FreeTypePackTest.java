@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tests.extensions;
 
+import java.util.EnumMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,8 +31,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.EnumMap;
 
 /** An advanced example of packing many glyphs into a single texture atlas, using FreeTypeFontGenerator.
  * 
