@@ -69,7 +69,7 @@ public class Label extends Widget {
 	public Label (CharSequence text, LabelStyle style) {
 		if (text != null) this.text.append(text);
 		setStyle(style);
-		setSize(getPrefWidth(), getPrefHeight());
+		if (text != null && text.length() > 0) setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (LabelStyle style) {
