@@ -45,6 +45,8 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
+	static boolean isWindows = System.getProperty("os.name").contains("Windows");
+
 	LwjglGraphics graphics;
 	OpenALAudio audio;
 	LwjglFiles files;
@@ -207,7 +209,7 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					Display.processMessages();
-					if (cursor != null) canvas.setCursor(cursor);
+					if (cursor != null || !isWindows) canvas.setCursor(cursor);
 
 					boolean shouldRender = false;
 
