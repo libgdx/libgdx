@@ -138,11 +138,8 @@ public class GlyphLayout implements Poolable {
 					float xAdvance = xAdvances.get(i);
 					x += xAdvance;
 					boolean wrapRun = wrap && x > targetWidth && i > 0;
-					if (wrapRun) {
-						// Don't wrap if the glyph would fit without kerning.
-						float kerning = xAdvance - run.glyphs.get(i).width;
-						if (x - kerning <= targetWidth) wrapRun = false;
-					}
+					// Don't wrap if the glyph would fit with just its width (no x-advance or kerning).
+					if (wrapRun && x - (xAdvance - run.glyphs.get(i).width) <= targetWidth) wrapRun = false;
 					if (wrapRun) {
 						if (truncate != null) {
 							truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
