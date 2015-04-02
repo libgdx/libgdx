@@ -399,7 +399,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.rect(x, y, width, height);
 			fillOrStrokePath(drawType);
