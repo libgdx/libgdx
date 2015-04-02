@@ -27,8 +27,6 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author xoppa */
 public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
-	private static Quaternion tmp1 = new Quaternion(0, 0, 0, 0);
-	private static Quaternion tmp2 = new Quaternion(0, 0, 0, 0);
 
 	public float x;
 	public float y;
@@ -233,13 +231,20 @@ public class Quaternion implements Serializable {
 	 * 
 	 * @param v Vector to transform */
 	public Vector3 transform (Vector3 v) {
-		tmp2.set(this);
-		tmp2.conjugate();
-		tmp2.mulLeft(tmp1.set(v.x, v.y, v.z, 0)).mulLeft(this);
+		float qx = this.x;
+		float qy = this.y;
+		float qz = this.z;
+		float qw = this.w;
 
-		v.x = tmp2.x;
-		v.y = tmp2.y;
-		v.z = tmp2.z;
+		conjugate();
+		mulLeft(v.x, v.y, v.z, 0).mulLeft(qx, qy, qz, qw);
+
+		v.x = x;
+		v.y = y;
+		v.z = z;
+
+		set(qx, qy, qz, qw);
+
 		return v;
 	}
 
@@ -616,12 +621,23 @@ public class Quaternion implements Serializable {
 	 * @param q List of quaternions
 	 * @return This quaternion for chaining */
 	public Quaternion slerp (Quaternion[] q) {
-		
-		//Calculate exponents and multiply everything from left to right
-		final float w = 1.0f/q.length;
+
+		// Calculate exponents and multiply everything from left to right
+		final float w = 1.0f / q.length;
+		float tx, ty, tz, tw, qx, qy, qz, qw;
 		set(q[0]).exp(w);
-		for(int i=1;i<q.length;i++)
-			mul(tmp1.set(q[i]).exp(w));
+		for (int i = 1; i < q.length; i++) {
+			tx = x;
+			ty = y;
+			tz = z;
+			tw = w;
+			set(q[i]).exp(tw);
+			qx = x;
+			qy = y;
+			qz = z;
+			qw = w;
+			set(tx, ty, tz, tw).mul(qx, qy, qz, qw);
+		}
 		nor();
 		return this;
 	}
@@ -635,11 +651,22 @@ public class Quaternion implements Serializable {
 	 * @param w List of weights
 	 * @return This quaternion for chaining */
 	public Quaternion slerp (Quaternion[] q, float[] w) {
-		
-		//Calculate exponents and multiply everything from left to right
+
+		// Calculate exponents and multiply everything from left to right
 		set(q[0]).exp(w[0]);
-		for(int i=1;i<q.length;i++)
-			mul(tmp1.set(q[i]).exp(w[i]));
+		float tx, ty, tz, tw, qx, qy, qz, qw;
+		for (int i = 1; i < q.length; i++) {
+			tx = x;
+			ty = y;
+			tz = z;
+			tw = this.w;
+			set(q[i]).exp(w[i]);
+			qx = x;
+			qy = y;
+			qz = z;
+			qw = this.w;
+			set(tx, ty, tz, tw).mul(qx, qy, qz, qw);
+		}
 		nor();
 		return this;
 	}
