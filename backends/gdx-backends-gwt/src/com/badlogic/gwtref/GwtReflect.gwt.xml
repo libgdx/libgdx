@@ -11,6 +11,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.math" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g2d.GlyphLayout" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.TextureRegion" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.BitmapFont" />
