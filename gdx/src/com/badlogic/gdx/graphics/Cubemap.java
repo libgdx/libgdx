@@ -79,13 +79,13 @@ public class Cubemap extends GLTexture {
 		}
 
 		/** @return The up vector of the side. */
-		public Vector3 getUp () {
-			return up;
+		public Vector3 getUp (Vector3 out) {
+			return out.set(up);
 		}
 
 		/** @return The direction vector of the side. */
-		public Vector3 getDirection () {
-			return direction;
+		public Vector3 getDirection (Vector3 out) {
+			return out.set(direction);
 		}
 	}
 

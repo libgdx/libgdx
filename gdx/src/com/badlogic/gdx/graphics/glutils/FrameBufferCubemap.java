@@ -26,8 +26,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
- * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * texture by {@link FrameBufferCubemap#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * automatically create a cubemap for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
+ * cubemap by {@link FrameBufferCubemap#getColorBufferCubemap()}. This class will only work with OpenGL ES 2.0.
  * </p>
  *
  * <p>
@@ -41,11 +41,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  * <p>
  * Typical use: <br />
- * FrameBufferCubemap frameBuffer = new FrameBufferCubemap(Format.RGBA8888, fSize, fSize, fSize, true); <br />
+ * FrameBufferCubemap frameBuffer = new FrameBufferCubemap(Format.RGBA8888, fSize, fSize, true); <br />
  * frameBuffer.begin(); <br />
  * while( frameBuffer.nextSide() ) { <br />
- * camera.up.set(frameBuffer.getSide().getUp()); <br />
- * camera.direction.set(frameBuffer.getSide().getDirection()); <br />
+ * frameBuffer.getSide().getUp(camera.up); <br />
+ * frameBuffer.getSide().getDirection(camera.direction);<br />
  * camera.update(); <br />
  *
  * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
@@ -59,7 +59,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </p>
  *
  * @author realitix */
-public class FrameBufferCubemap extends FrameBuffer {
+public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
+
 	/** the index of last side rendered **/
 	protected int nbSides;
 
@@ -135,13 +136,6 @@ public class FrameBufferCubemap extends FrameBuffer {
 		return Cubemap.CubemapSide.values()[nbSides];
 	}
 
-	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
-	@Override
-	public void end() {
-		end(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	}
-
-
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
 	 *
 	 * @param x the x-axis position of the viewport in pixels
@@ -156,6 +150,6 @@ public class FrameBufferCubemap extends FrameBuffer {
 
 	/** @return the color buffer cubemap */
 	public Cubemap getColorBufferCubemap () {
-		return (Cubemap) colorTexture;
+		return colorTexture;
 	}
 }
