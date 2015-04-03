@@ -1,5 +1,5 @@
 [1.5.7]
-- API Change: Refactored Window. 
+- API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
 
 [1.5.6]
 - Added VertexBufferObjectWithVAO, see https://github.com/libgdx/libgdx/pull/2527
