@@ -38,6 +38,7 @@ import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
@@ -65,6 +66,13 @@ public class ShaderTest extends GdxTest {
 		@Override
 		protected boolean equals (Attribute other) {
 			return ((TestAttribute)other).value == value;
+		}
+		
+		@Override
+		public int compareTo (Attribute o) {
+			if (type != o.type) return type < o.type ? -1 : 1;
+			float otherValue = ((TestAttribute)o).value;
+			return MathUtils.isEqual(value, otherValue) ? 0 : (value < otherValue ? -1 : 1);
 		}
 	}
 
