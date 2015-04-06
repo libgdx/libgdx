@@ -1342,7 +1342,9 @@ public class Hiero extends JFrame {
 				newUnicodeFont = null;
 			}
 
-			if (!unicodeFont.getEffects().isEmpty() && unicodeFont.loadGlyphs(25)) {
+			unicodeFont.addGlyphs(sampleText);
+
+			if (!unicodeFont.getEffects().isEmpty() && unicodeFont.loadGlyphs()) {
 				glyphPageComboModel.removeAllElements();
 				int pageCount = unicodeFont.getGlyphPages().size();
 				int glyphCount = 0;
@@ -1371,7 +1373,6 @@ public class Hiero extends JFrame {
 			} else {
 				GL11.glClearColor(1, 1, 1, 1);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-				unicodeFont.addGlyphs(sampleText);
 				// GL11.glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
 				// renderingBackgroundColor.a);
 				// fillRect(0, 0, unicodeFont.getGlyphPageWidth() + 2, unicodeFont.getGlyphPageHeight() + 2);
