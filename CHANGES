@@ -4,6 +4,7 @@
 - API Change: Removed Mesh.create(...), use MeshBuilder instead
 - API Change: BitmapFontData, BitmapFont, and BitmapFontCache have been refactored. http://www.badlogicgames.com/wordpress/?p=3658
 - FreeTypeFontGenerator can now render glyphs on the fly.
+- Attribute now implements Comparable, custom attributes might need to be updated, see: https://github.com/libgdx/libgdx/wiki/Material-and-environment#custom-attributes
 
 [1.5.5]
 - Added iOS ARM-64 bit support for Bullet physics
