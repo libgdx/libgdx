@@ -119,6 +119,23 @@ public class JsonWriter extends Writer {
 		return this;
 	}
 
+	/** Can write json value by raw String. */
+	public JsonWriter rawValue(String value) throws IOException {
+		if (current != null) {
+			if (current.array) {
+				if (!current.needsComma)
+					current.needsComma = true;
+				else
+					writer.write(',');
+			} else {
+				if (!named) throw new IllegalStateException("Name must be set.");
+				named = false;
+			}
+		}
+		writer.write(value);
+		return this;
+	}
+
 	public JsonWriter object (String name) throws IOException {
 		return name(name).object();
 	}
