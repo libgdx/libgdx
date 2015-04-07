@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
  * {@link #register(String)} method, whose return value should be used to instantiate the attribute. A class can implement
  * multiple types
  * @author Xoppa */
-public abstract class Attribute {
+public abstract class Attribute implements Comparable<Attribute> {
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<String>();
 

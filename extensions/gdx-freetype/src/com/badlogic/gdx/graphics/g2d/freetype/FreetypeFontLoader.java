@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.Array;
  * file as well the parameters used to generate the BitmapFont (size, characters, etc.) 
  */
 public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, FreetypeFontLoader.FreeTypeFontLoaderParameter>{
-
 	public FreetypeFontLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -40,7 +39,7 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 		if(parameter == null) throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
 		FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);	
 		FreeTypeBitmapFontData data = generator.generateData(parameter.fontParameters);
-		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
+		BitmapFont font = new BitmapFont(data, data.regions, false);
 		font.setOwnsTexture(true);
 		return font;
 	}

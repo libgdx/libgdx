@@ -284,11 +284,13 @@ public class NativeCodeGenerator {
 		Process process = Runtime.getRuntime().exec(command);
 		process.waitFor();
 		if (process.exitValue() != 0) {
+			System.out.println();
 			InputStream errorStream = process.getErrorStream();
 			int c = 0;
 			while ((c = errorStream.read()) != -1) {
 				System.out.print((char)c);
 			}
+			System.out.println("Command: " + command);
 		}
 	}
 
@@ -322,8 +324,8 @@ public class NativeCodeGenerator {
 
 	private CMethod findCMethod (JavaMethod javaMethod, ArrayList<CMethod> cMethods) {
 		for (CMethod cMethod : cMethods) {
-			if (cMethod.getHead().endsWith(javaMethod.getClassName() + "_" + javaMethod.getName()) ||
-				 cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName() + "__")) {
+			if (cMethod.getHead().endsWith(javaMethod.getClassName() + "_" + javaMethod.getName())
+				|| cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName() + "__")) {
 				// FIXME poor man's overloaded method check...
 				// FIXME float test[] won't work, needs to be float[] test.
 				if (cMethod.getArgumentTypes().length - 2 == javaMethod.getArguments().size()) {
@@ -514,8 +516,8 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isBuffer()) {
 				String type = arg.getType().getBufferCType();
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX
-					+ arg.getName() + "?env->GetDirectBufferAddress(" + JNI_ARG_PREFIX	+ arg.getName() + "):0);\n");
+				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
+					+ "?env->GetDirectBufferAddress(" + JNI_ARG_PREFIX + arg.getName() + "):0);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");

@@ -22,6 +22,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -29,11 +32,11 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
@@ -76,7 +79,8 @@ public class TextField extends Widget implements Disableable {
 	protected int cursor, selectionStart;
 	protected boolean hasSelection;
 	protected boolean writeEnters;
-	protected final FloatArray glyphAdvances = new FloatArray(), glyphPositions = new FloatArray();
+	protected final GlyphLayout layout = new GlyphLayout();
+	protected final FloatArray glyphPositions = new FloatArray();
 
 	TextFieldStyle style;
 	private String messageText;
@@ -104,7 +108,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	
+
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
@@ -332,7 +336,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
-		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd);
+		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd, 0, Align.left, false);
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
@@ -342,17 +346,18 @@ public class TextField extends Widget implements Disableable {
 
 	void updateDisplayText () {
 		BitmapFont font = style.font;
+		BitmapFontData data = font.getData();
 		String text = this.text;
 		int textLength = text.length();
 
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < textLength; i++) {
 			char c = text.charAt(i);
-			buffer.append(font.containsCharacter(c) ? c : ' ');
+			buffer.append(data.hasGlyph(c) ? c : ' ');
 		}
 		String newDisplayText = buffer.toString();
 
-		if (passwordMode && font.containsCharacter(passwordCharacter)) {
+		if (passwordMode && data.hasGlyph(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
 			if (passwordBuffer.length() > textLength)
 				passwordBuffer.setLength(textLength);
@@ -363,7 +368,20 @@ public class TextField extends Widget implements Disableable {
 			displayText = passwordBuffer;
 		} else
 			displayText = newDisplayText;
-		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+
+		layout.setText(font, displayText);
+		glyphPositions.clear();
+		float x = 0;
+		if (layout.runs.size > 0) {
+			GlyphRun run = layout.runs.first();
+			FloatArray xAdvances = run.xAdvances;
+			for (int i = 0, n = xAdvances.size; i < n; i++) {
+				glyphPositions.add(x);
+				x += xAdvances.get(i);
+			}
+		}
+		glyphPositions.add(x);
+
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
 
@@ -397,18 +415,19 @@ public class TextField extends Widget implements Disableable {
 
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
 	void paste () {
-		paste(clipboard.getContents(), true);
+		paste(clipboard.getContents());
 	}
 
-	void paste (String content, boolean onlyFontChars) {
+	void paste (String content) {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
+		BitmapFontData data = style.font.getData();
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
 			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
-				if (onlyFontChars && !style.font.containsCharacter(c)) continue;
+				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
 			}
 			buffer.append(c);
@@ -524,7 +543,7 @@ public class TextField extends Widget implements Disableable {
 
 		clearSelection();
 		cursor = text.length();
-		paste(str, onlyFontChars);
+		paste(str);
 	}
 
 	public void setText (String str) {
@@ -533,7 +552,7 @@ public class TextField extends Widget implements Disableable {
 
 		clearSelection();
 		text = "";
-		paste(str, onlyFontChars);
+		paste(str);
 		cursor = 0;
 	}
 
@@ -618,8 +637,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Sets text horizontal alignment (left, center or right). */
 	public void setAlignment (int alignment) {
-		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) 
-			this.textHAlign = alignment;
+		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) this.textHAlign = alignment;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters.
@@ -871,7 +889,17 @@ public class TextField extends Widget implements Disableable {
 
 		public boolean keyTyped (InputEvent event, char character) {
 			if (disabled) return false;
-			if (character == 0) return false;
+
+			// Disallow "typing" most ASCII control characters, which would show up as a space when onlyFontChars is true.
+			switch (character) {
+			case BACKSPACE:
+			case TAB:
+			case ENTER_ANDROID:
+			case ENTER_DESKTOP:
+				break;
+			default:
+				if (character < 32) return false;
+			}
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
@@ -881,7 +909,7 @@ public class TextField extends Widget implements Disableable {
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
-				boolean add = (!onlyFontChars || style.font.containsCharacter(character))
+				boolean add = (!onlyFontChars || style.font.getData().hasGlyph(character))
 					|| (writeEnters && (character == ENTER_ANDROID || character == ENTER_DESKTOP));
 				boolean remove = backspace || delete;
 				if (add || remove) {

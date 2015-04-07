@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -291,7 +292,7 @@ public class FileHandle {
 		OutputStream output = null;
 		try {
 			output = write(append);
-			StreamUtils.copyStream(input, output, 4096);
+			StreamUtils.copyStream(input, output);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {

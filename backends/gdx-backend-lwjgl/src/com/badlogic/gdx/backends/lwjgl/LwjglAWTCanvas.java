@@ -244,10 +244,9 @@ public class LwjglAWTCanvas implements Application {
 			executedRunnables.clear();
 			executedRunnables.addAll(runnables);
 			runnables.clear();
-
-			for (int i = 0; i < executedRunnables.size(); i++) {
+			while (executedRunnables.size() > 0) {
 				try {
-					executedRunnables.get(i).run();
+					executedRunnables.remove(executedRunnables.size() - 1).run();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
@@ -400,7 +399,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

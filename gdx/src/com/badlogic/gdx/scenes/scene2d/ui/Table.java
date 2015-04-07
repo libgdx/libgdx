@@ -25,9 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -282,7 +282,11 @@ public class Table extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
-		if (!super.removeActor(actor)) return false;
+		return removeActor(actor, true);
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		if (!super.removeActor(actor, unfocus)) return false;
 		Cell cell = getCell(actor);
 		if (cell != null) cell.actor = null;
 		return true;
@@ -1195,6 +1199,11 @@ public class Table extends WidgetGroup {
 			shapes.setColor(debugRect.color);
 			shapes.rect(x + debugRect.x, y + debugRect.y, debugRect.width, debugRect.height);
 		}
+	}
+
+	/** @return The skin that was passed to this table in its constructor, or null if none was given. */
+	public Skin getSkin () {
+		return skin;
 	}
 
 	/** @author Nathan Sweet */

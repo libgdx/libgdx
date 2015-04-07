@@ -35,7 +35,7 @@ public class DependencyBank {
 	public DependencyBank() {
 		for (ProjectDependency projectDep : ProjectDependency.values()) {
 			Dependency dependency = new Dependency(projectDep.name(),
-					projectDep.getGwtInehrits(),
+					projectDep.getGwtInherits(),
 					projectDep.getDependencies(ProjectType.CORE),
 					projectDep.getDependencies(ProjectType.DESKTOP),
 					projectDep.getDependencies(ProjectType.ANDROID),
@@ -185,7 +185,7 @@ public class DependencyBank {
 			return null;
 		}
 		
-		public String[] getGwtInehrits() {
+		public String[] getGwtInherits() {
 			return gwtInherits;
 		}
 		
