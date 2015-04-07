@@ -90,9 +90,9 @@ public class JsonWriter extends Writer {
 	}
 
 	/** Writes the specified JSON value, without quoting or escaping. */
-	public JsonWriter json (String value) throws IOException {
+	public JsonWriter json (String json) throws IOException {
 		requireCommaOrName();
-		writer.write(value);
+		writer.write(json);
 		return this;
 	}
 
@@ -119,6 +119,11 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter set (String name, Object value) throws IOException {
 		return name(name).value(value);
+	}
+
+	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter json (String name, String json) throws IOException {
+		return name(name).json(json);
 	}
 
 	public JsonWriter pop () throws IOException {
