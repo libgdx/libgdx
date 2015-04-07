@@ -64,33 +64,13 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter object () throws IOException {
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named && !current.array) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		stack.add(current = new JsonObject(false));
 		return this;
 	}
 
 	public JsonWriter array () throws IOException {
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named && !current.array) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		stack.add(current = new JsonObject(true));
 		return this;
 	}
@@ -104,36 +84,29 @@ public class JsonWriter extends Writer {
 			long longValue = number.longValue();
 			if (number.doubleValue() == longValue) value = longValue;
 		}
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		writer.write(outputType.quoteValue(value));
 		return this;
 	}
 
-	/** Can write json value by raw String. */
-	public JsonWriter rawValue(String value) throws IOException {
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter json (String value) throws IOException {
+		requireCommaOrName();
 		writer.write(value);
 		return this;
+	}
+
+	private void requireCommaOrName () throws IOException {
+		if (current == null) return;
+		if (current.array) {
+			if (!current.needsComma)
+				current.needsComma = true;
+			else
+				writer.write(',');
+		} else {
+			if (!named) throw new IllegalStateException("Name must be set.");
+			named = false;
+		}
 	}
 
 	public JsonWriter object (String name) throws IOException {
