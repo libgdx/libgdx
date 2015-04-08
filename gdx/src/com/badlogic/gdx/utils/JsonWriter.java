@@ -78,7 +78,7 @@ public class JsonWriter extends Writer {
 	public JsonWriter value (Object value) throws IOException {
 		if (quoteLongValues
 			&& (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)) {
-			value = String.valueOf(value);
+			value = value.toString();
 		} else if (value instanceof Number) {
 			Number number = (Number)value;
 			long longValue = number.longValue();
@@ -183,9 +183,10 @@ public class JsonWriter extends Writer {
 		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
 
 		public String quoteValue (Object value) {
-			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
-			String string = String.valueOf(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
-				.replace("\t", "\\t");
+			if (value == null) return "null";
+			String string = value.toString();
+			if (value instanceof Number || value instanceof Boolean) return string;
+			string = string.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
 				int length = string.length();
