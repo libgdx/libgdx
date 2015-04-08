@@ -41,19 +41,26 @@
 		value="com.badlogic.gdx.Net" />
 	
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ParticleEffect" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ParticleController" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ResourceData" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.ParallelArray" />
-		
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.values" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.emitters" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.influencers" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.renderers" />
 	
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardControllerRenderData" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceControllerRenderData" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleControllerRenderData" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteControllerRenderData" />
     <extend-configuration-property name="gdx.reflect.include"
         value="java.util.Collection" />
 	<extend-configuration-property name="gdx.reflect.include"
