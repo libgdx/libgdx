@@ -788,12 +788,16 @@ public class ShaderProgram implements Disposable {
 
 		uniformNames = new String[numUniforms];
 
+		int arrayPos;
 		for (int i = 0; i < numUniforms; i++) {
 			params.clear();
 			params.put(0, 1);
 			type.clear();
 			String name = Gdx.gl20.glGetActiveUniform(program, i, params, type);
 			int location = Gdx.gl20.glGetUniformLocation(program, name);
+			while ((arrayPos = name.indexOf("[0]")) != -1) {
+				name = name.substring(0, arrayPos) + name.substring(arrayPos + 3);
+			}
 			uniforms.put(name, location);
 			uniformTypes.put(name, type.get(0));
 			uniformSizes.put(name, params.get(0));
