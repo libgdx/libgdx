@@ -32,65 +32,65 @@ import com.badlogic.gdx.utils.Pool;
 /** This class is used to render billboard particles.
  * @author Inferno */
 public class BillboardParticleBatch extends BufferedParticleBatch<BillboardControllerRenderData> {
-	protected static final Vector3 TMP_V1 = new Vector3(), 
-		 TMP_V2 = new Vector3(), 
-		 TMP_V3 = new Vector3(), 
-		 TMP_V4 = new Vector3(), 
-		 TMP_V5 = new Vector3(),
-		 TMP_V6 = new Vector3();
+	protected static final Vector3 TMP_V1 = new Vector3(),
+		TMP_V2 = new Vector3(),
+		TMP_V3 = new Vector3(),
+		TMP_V4 = new Vector3(),
+		TMP_V5 = new Vector3(),
+		TMP_V6 = new Vector3();
 	protected static final Matrix3 TMP_M3 = new Matrix3();
-	//Attributes	
+	//Attributes
 	protected static final int sizeAndRotationUsage = 1 << 9, directionUsage = 1 << 10;
-	private static final VertexAttributes 
-		GPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-															new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"), 
-															new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE), 
-															new VertexAttribute(sizeAndRotationUsage, 4, "a_sizeAndRotation")),
-															/*
-		GPU_EXT_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"), 
-									new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE), 
+	private static final VertexAttributes
+	GPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+		new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"),
+		new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		new VertexAttribute(sizeAndRotationUsage, 4, "a_sizeAndRotation")),
+		/*
+		GPU_EXT_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"),
+									new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE),
 									new VertexAttribute(sizeAndRotationUsage, 4, "a_sizeAndRotation"),
 									new VertexAttribute(directionUsage, 3, "a_direction")),
-									*/
-		CPU_ATTRIBUTES = new VertexAttributes(	new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-															new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"), 
-															new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE) );
-	
+		 */
+		CPU_ATTRIBUTES = new VertexAttributes(	new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"),
+			new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE) );
+
 	//Offsets
 	private static final int 	GPU_POSITION_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
-										GPU_UV_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
-										GPU_SIZE_ROTATION_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset/4),
-										GPU_COLOR_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
-										GPU_VERTEX_SIZE = GPU_ATTRIBUTES.vertexSize/4,
+		GPU_UV_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
+		GPU_SIZE_ROTATION_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset/4),
+		GPU_COLOR_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
+		GPU_VERTEX_SIZE = GPU_ATTRIBUTES.vertexSize/4,
 
-										//Ext
-										/*
+		//Ext
+		/*
 										GPU_EXT_POSITION_OFFSET = (short)(GPU_EXT_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
 										GPU_EXT_UV_OFFSET = (short)(GPU_EXT_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
 										GPU_EXT_SIZE_ROTATION_OFFSET = (short)(GPU_EXT_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset/4),
 										GPU_EXT_COLOR_OFFSET = (short)(GPU_EXT_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
 										GPU_EXT_DIRECTION_OFFSET = (short)(GPU_EXT_ATTRIBUTES.findByUsage(directionUsage).offset/4),
 										GPU_EXT_VERTEX_SIZE = GPU_EXT_ATTRIBUTES.vertexSize/4,
-										*/
-										
-										//Cpu
-										CPU_POSITION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
-										CPU_UV_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
-										CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
-										CPU_VERTEX_SIZE= CPU_ATTRIBUTES.vertexSize/4;
+		 */
+
+		//Cpu
+		CPU_POSITION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
+		CPU_UV_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
+		CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
+		CPU_VERTEX_SIZE= CPU_ATTRIBUTES.vertexSize/4;
 	private final static int 	MAX_PARTICLES_PER_MESH = Short.MAX_VALUE/4,
-										MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH*4;
-	
+		MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH*4;
+
 	private class RenderablePool extends Pool<Renderable>{
 		public RenderablePool () {}
 
 		@Override
 		public Renderable newObject () {
 			return allocRenderable();
-		}	
+		}
 	}
-	
+
 	public static class Config{
 		public Config(){}
 		public Config (boolean useGPU, AlignMode mode) {
@@ -100,7 +100,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		boolean useGPU;
 		AlignMode mode;
 	}
-	
+
 	private RenderablePool renderablePool;
 	private Array<Renderable> renderables;
 	private float[] vertices;
@@ -110,9 +110,21 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	protected boolean useGPU = false;
 	protected AlignMode mode = AlignMode.Screen;
 	protected Texture texture;
+	protected BlendingAttribute blendingAttribute;
+	protected DepthTestAttribute depthTestAttribute;
 	Shader shader;
-	
-	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
+
+	/**
+	 * Create a new BillboardParticleBatch
+	 * @param mode
+	 * @param useGPU Allow to use GPU instead of CPU
+	 * @param capacity Max particle displayed
+	 * @param blendingAttribute Blending attribute used by the batch
+	 * @param depthTestAttribute DepthTest attribute used by the batch
+	 */
+	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity,
+		BlendingAttribute blendingAttribute,
+		DepthTestAttribute depthTestAttribute){
 		super(BillboardControllerRenderData.class);
 		renderables = new Array<Renderable>();
 		renderablePool = new RenderablePool();
@@ -121,12 +133,23 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		ensureCapacity(capacity);
 		setUseGpu(useGPU);
 		setAlignMode(mode);
+		this.blendingAttribute = blendingAttribute;
+		this.depthTestAttribute = depthTestAttribute;
+
+		if( this.blendingAttribute == null )
+			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
+		if( this.depthTestAttribute == null )
+			this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
+	}
+
+	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
+		this(mode, useGPU, capacity, null, null);
 	}
 
 	public BillboardParticleBatch () {
 		this(AlignMode.Screen, false, 100);
 	}
-	
+
 	public BillboardParticleBatch (int capacity) {
 		this(AlignMode.Screen, false, capacity);
 	}
@@ -141,15 +164,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		Renderable renderable = new Renderable();
 		renderable.primitiveType = GL20.GL_TRIANGLES;
 		renderable.meshPartOffset = 0;
-		renderable.material = new Material(	new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
-			new DepthTestAttribute(GL20.GL_LEQUAL, false),
+		renderable.material = new Material(this.blendingAttribute, this.depthTestAttribute,
 			TextureAttribute.createDiffuse(texture));
 		renderable.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
 		renderable.mesh.setIndices(indices);
 		renderable.shader = shader;
 		return renderable;
 	}
-	
+
 	private void allocIndices(){
 		int indicesCount = MAX_PARTICLES_PER_MESH * 6;
 		indices = new short[indicesCount];
@@ -162,30 +184,30 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			indices[i+5] = (short)vertex;
 		}
 	}
-	
-	private void allocRenderables(int capacity){			
+
+	private void allocRenderables(int capacity){
 		//Free old meshes
 		int 	meshCount = MathUtils.ceil( capacity/MAX_PARTICLES_PER_MESH),
-				free = renderablePool.getFree();
+			free = renderablePool.getFree();
 		if(free < meshCount){
 			for(int i=0, left = meshCount - free; i < left;++i)
 				renderablePool.free(renderablePool.newObject());
 		}
 	}
-	
+
 	private Shader getShader (Renderable renderable) {
 		Shader shader = useGPU 	? 	new ParticleShader(renderable, new ParticleShader.Config(mode)) :
-								new DefaultShader(renderable);
+			new DefaultShader(renderable);
 		shader.init();
 		return shader;
 	}
-	
+
 	private void allocShader () {
 		Renderable newRenderable = allocRenderable();
 		shader = newRenderable.shader = getShader(newRenderable);
 		renderablePool.free(newRenderable);
 	}
-	
+
 	private void clearRenderablesPool(){
 		renderablePool.freeAll(renderables);
 		for(int i=0, free = renderablePool.getFree(); i < free; ++i){
@@ -194,7 +216,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		}
 		renderables.clear();
 	}
-	
+
 	/** Sets vertex attributes and size */
 	public void setVertexData(){
 		if(useGPU){
@@ -209,14 +231,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				currentAttributes = GPU_ATTRIBUTES;
 				currentVertexSize = GPU_VERTEX_SIZE;
 			}
-			*/
+			 */
 		}
 		else {
 			currentAttributes = CPU_ATTRIBUTES;
 			currentVertexSize = CPU_VERTEX_SIZE;
 		}
 	}
-	
+
 	/** Allocates all the require rendering resources like Renderables,Shaders,Meshes
 	 *  according to the current batch configuration.*/
 	private void initRenderData () {
@@ -225,7 +247,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		allocShader();
 		resetCapacity();
 	}
-	
+
 	/** Sets the current align mode.
 	 *  It will reallocate internal data, use only when necessary. */
 	public void setAlignMode(AlignMode mode){
@@ -237,13 +259,13 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-	
+
 	public AlignMode getAlignMode(){
 		return mode;
 	}
-	
+
 	/** Sets the current align mode.
-	*  It will reallocate internal data, use only when necessary. */
+	 *  It will reallocate internal data, use only when necessary. */
 	public void setUseGpu(boolean useGPU){
 		if(this.useGPU != useGPU){
 			this.useGPU = useGPU;
@@ -255,7 +277,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	public boolean isUseGPU(){
 		return useGPU;
 	}
-	
+
 	public void setTexture(Texture texture){
 		renderablePool.freeAll(renderables);
 		renderables.clear();
@@ -266,18 +288,18 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		}
 		this.texture = texture;
 	}
-	
+
 	public Texture getTexture () {
 		return texture;
 	}
-	
+
 	@Override
 	public void begin () {
 		super.begin();
 		renderablePool.freeAll(renderables);
 		renderables.clear();
 	}
-	
+
 	//GPU
 	//Required + Color + Rotation
 	private static void putVertex( float[] vertices,  int offset, float x, float y, float z, float u, float v, float scaleX, float scaleY,  float cosRotation, float sinRotation, float r, float g, float b, float a) {
@@ -325,9 +347,9 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		vertices[offset + GPU_EXT_DIRECTION_OFFSET +1] = direction.y;
 		vertices[offset + GPU_EXT_DIRECTION_OFFSET +2] = direction.z;
 	}
-	*/
-	
-	
+	 */
+
+
 	//CPU
 	//Required
 	private static void putVertex(float[] vertices, int offset, Vector3 p, float u, float v, float r, float g, float b, float a) {
@@ -360,15 +382,15 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p*positionChannel.strideSize;
 				int colorOffset = p*colorChannel.strideSize;
 				int rotationOffset = p*rotationChannel.strideSize;
-				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset], 
-					py = positionChannel.data[positionOffset + ParticleChannels.YOffset], 
+				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					py = positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset +ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset +ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset +ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset +ParticleChannels.V2Offset];
-				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale, 
-							sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
+				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale,
+					sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
 				float r = colorChannel.data[colorOffset +ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset +ParticleChannels.BlueOffset];
@@ -407,14 +429,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int colorOffset = p*colorChannel.strideSize;
 				int rotationOffset = p*rotationChannel.strideSize;
 				int velocityOffset = p* velocityChannel.strideSize;
-				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset], 
-					py = positionChannel.data[positionOffset + ParticleChannels.YOffset], 
+				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					py = positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset +ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset +ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset +ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset +ParticleChannels.V2Offset];
-				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale, 
+				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale,
 							sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
 				float r = colorChannel.data[colorOffset +ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
@@ -422,10 +444,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float a = colorChannel.data[colorOffset +ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset +ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset +ParticleChannels.SineOffset];
-				float 	vx = velocityChannel.data[velocityOffset + ParticleChannels.XOffset], 
-							vy = velocityChannel.data[velocityOffset + ParticleChannels.YOffset], 
+				float 	vx = velocityChannel.data[velocityOffset + ParticleChannels.XOffset],
+							vy = velocityChannel.data[velocityOffset + ParticleChannels.YOffset],
 							vz = velocityChannel.data[velocityOffset + ParticleChannels.ZOffset];
-				
+
 				//bottom left, bottom right, top right, top left
 				TMP_V1.set(vx, vy, vz).nor();
 				putVertex(vertices, baseOffset, px, py, pz, u, v2, -sx, -sy, cosRotation, sinRotation, r, g, b, a, TMP_V1);
@@ -438,7 +460,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-	
+
 	private void fillVerticesToParticleDirectionCPU (int[] particlesOffset) {
 		int tp=0;
 		for(ParticleController controller : renderData){
@@ -457,14 +479,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int colorOffset = p*colorChannel.strideSize;
 				int rotationOffset = p*rotationChannel.strideSize;
 				int velocityOffset = p* velocityChannel.strideSize;
-				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset], 
-					py = positionChannel.data[positionOffset + ParticleChannels.YOffset], 
+				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					py = positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset +ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset +ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset +ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset +ParticleChannels.V2Offset];
-				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale, 
+				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale,
 							sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
 				float r = colorChannel.data[colorOffset +ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
@@ -472,10 +494,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float a = colorChannel.data[colorOffset +ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset +ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset +ParticleChannels.SineOffset];
-				float 	vx = velocityChannel.data[velocityOffset + ParticleChannels.XOffset], 
-							vy = velocityChannel.data[velocityOffset + ParticleChannels.YOffset], 
+				float 	vx = velocityChannel.data[velocityOffset + ParticleChannels.XOffset],
+							vy = velocityChannel.data[velocityOffset + ParticleChannels.YOffset],
 							vz = velocityChannel.data[velocityOffset + ParticleChannels.ZOffset];
-				Vector3 up = TMP_V1.set(vx,vy,vz).nor(),		
+				Vector3 up = TMP_V1.set(vx,vy,vz).nor(),
 								look = TMP_V3.set(camera.position).sub(px,py,pz).nor(), //normal
 								right = TMP_V2.set(up).crs(look).nor(); //tangent
 				look.set(right).crs(up).nor();
@@ -504,7 +526,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-	*/
+	 */
 
 	private void fillVerticesToViewPointCPU (int[] particlesOffset) {
 		int tp=0;
@@ -522,15 +544,15 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p*positionChannel.strideSize;
 				int colorOffset = p*colorChannel.strideSize;
 				int rotationOffset = p*rotationChannel.strideSize;
-				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset], 
-					py = positionChannel.data[positionOffset + ParticleChannels.YOffset], 
+				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					py = positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset +ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset +ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset +ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset +ParticleChannels.V2Offset];
-				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale, 
-							sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
+				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale,
+					sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
 				float r = colorChannel.data[colorOffset +ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset +ParticleChannels.BlueOffset];
@@ -538,8 +560,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float cosRotation = rotationChannel.data[rotationOffset +ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset +ParticleChannels.SineOffset];
 				Vector3 look = TMP_V3.set(camera.position).sub(px, py, pz).nor(), //normal
-								right = TMP_V1.set(camera.up).crs(look).nor(), //tangent
-								up = TMP_V2.set(look).crs(right);
+					right = TMP_V1.set(camera.up).crs(look).nor(), //tangent
+					up = TMP_V2.set(look).crs(right);
 				right.scl(sx);
 				up.scl(sy);
 
@@ -586,15 +608,15 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p*positionChannel.strideSize;
 				int colorOffset = p*colorChannel.strideSize;
 				int rotationOffset = p*rotationChannel.strideSize;
-				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset], 
-					py = positionChannel.data[positionOffset + ParticleChannels.YOffset], 
+				float 	px = positionChannel.data[positionOffset + ParticleChannels.XOffset],
+					py = positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset +ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset +ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset +ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset +ParticleChannels.V2Offset];
-				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale, 
-							sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
+				float 	sx = regionChannel.data[regionOffset +ParticleChannels.HalfWidthOffset] * scale,
+					sy = regionChannel.data[regionOffset+ParticleChannels.HalfHeightOffset]  * scale;
 				float r = colorChannel.data[colorOffset +ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset +ParticleChannels.BlueOffset];
@@ -626,26 +648,26 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-	
+
 	@Override
 	protected void flush(int[] offsets){
-		
+
 		//fill vertices
 		if(useGPU){
 			//if(mode != AlignMode.ParticleDirection)
-				fillVerticesGPU(offsets);
+			fillVerticesGPU(offsets);
 			//else
-				//fillVerticesToParticleDirectionGPU(offsets);
+			//fillVerticesToParticleDirectionGPU(offsets);
 		}
 		else {
 			if(mode == AlignMode.Screen)
 				fillVerticesToScreenCPU(offsets);
 			else if(mode == AlignMode.ViewPoint)
 				fillVerticesToViewPointCPU(offsets);
-			//else 
-				//fillVerticesToParticleDirectionCPU(offsets);
+			//else
+			//fillVerticesToParticleDirectionCPU(offsets);
 		}
-			
+
 		//send vertices to meshes
 		int addedVertexCount = 0;
 		int vCount = bufferedParticlesCount*4;
@@ -660,8 +682,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
-			for(Renderable renderable : this.renderables)
-				renderables.add(pool.obtain().set(renderable));
+		for(Renderable renderable : this.renderables)
+			renderables.add(pool.obtain().set(renderable));
 	}
 
 	@Override
