@@ -163,7 +163,7 @@ public class CameraInputController extends GestureDetector {
 			startY = screenY;
 			this.button = button;
 		}
-		return super.touchDown(screenX, screenY, pointer, button) || activatePressed;
+		return super.touchDown(screenX, screenY, pointer, button) || (activateKey == 0 || activatePressed);
 	}
 
 	@Override

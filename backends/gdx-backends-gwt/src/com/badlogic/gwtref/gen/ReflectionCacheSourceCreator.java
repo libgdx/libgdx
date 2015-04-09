@@ -147,6 +147,16 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		// gather all types from explicitely requested packages
+		try {
+			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
+			for (String s : prop.getValues()) {
+				JClassType type = typeOracle.findType(s);
+				if (type != null) gatherTypes(type.getErasedType(), types);
+			}
+		} catch (BadPropertyValueException e) {
+		}
+
 		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
