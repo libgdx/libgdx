@@ -44,7 +44,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
- * @author mzechner */
+ * @author mzechner, Thorsten Schleinzer */
 public class IndexBufferObject implements IndexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
@@ -74,7 +74,7 @@ public class IndexBufferObject implements IndexData {
 
 		empty = maxIndices == 0;
 		if (empty) {
-			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART
+			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
 		}
 
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
@@ -141,9 +141,7 @@ public class IndexBufferObject implements IndexData {
 
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	public void bind () {
-		if (bufferHandle == 0) {
-			throw new GdxRuntimeException("No buffer allocated!");
-		}
+		if (bufferHandle == 0) throw new GdxRuntimeException("No buffer allocated!");
 
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {

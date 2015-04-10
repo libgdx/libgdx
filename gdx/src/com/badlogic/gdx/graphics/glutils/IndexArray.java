@@ -38,7 +38,7 @@ public class IndexArray implements IndexData {
 
 		empty = maxIndices == 0;
 		if (empty) {
-			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART
+			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
 		}
 
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
