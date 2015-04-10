@@ -53,7 +53,7 @@ public class ModelTest extends BaseG3dHudTest {
 		onModelClicked("g3d/teapot.g3db");
 	}
 
-	private final Vector3 tmpV = new Vector3();
+	private final Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
 	private final Quaternion tmpQ = new Quaternion();
 	private final BoundingBox bounds = new BoundingBox();
 
@@ -100,10 +100,10 @@ public class ModelTest extends BaseG3dHudTest {
 		currentlyLoading = null;
 
 		instance.calculateBoundingBox(bounds);
-		cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions().len() * 0.75f + bounds.getCenter().len());
+		cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions(tmpV1).len() * 0.75f + bounds.getCenter(tmpV2).len());
 		cam.up.set(0, 1, 0);
 		cam.lookAt(0, 0, 0);
-		cam.far = 50f + bounds.getDimensions().len() * 2.0f;
+		cam.far = 50f + bounds.getDimensions(tmpV1).len() * 2.0f;
 		cam.update();
 	}
 
