@@ -38,7 +38,7 @@ public class ClickListener extends InputListener {
 	private int pressedButton = -1;
 	private int button;
 	private boolean pressed, over, cancelled;
-	private float visualPressedTime;
+	private long visualPressedTime;
 	private long tapCountInterval = (long)(0.4f * 1000000000l);
 	private int tapCount;
 	private long lastTapTime;
@@ -61,7 +61,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
-		visualPressedTime = TimeUtils.nanoTime() + visualPressedDuration * 1000000000;
+		visualPressedTime = TimeUtils.millis() + (long)(visualPressedDuration * 1000);
 		return true;
 	}
 
@@ -147,7 +147,7 @@ public class ClickListener extends InputListener {
 	public boolean isVisualPressed () {
 		if (pressed) return true;
 		if (visualPressedTime <= 0) return false;
-		if (visualPressedTime > TimeUtils.nanoTime() && Gdx.graphics.isContinuousRendering()) return true;
+		if (visualPressedTime > TimeUtils.millis()) return true;
 		visualPressedTime = 0;
 		return false;
 	}

@@ -553,7 +553,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return buffer.toString();
 	}
 
-	public Iterator<Entry<K, V>> iterator () {
+	public Entries<K, V> iterator () {
 		return entries();
 	}
 
@@ -691,7 +691,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return hasNext;
 		}
 
-		public Iterator<Entry<K, V>> iterator () {
+		public Entries<K, V> iterator () {
 			return this;
 		}
 	}
@@ -715,7 +715,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return value;
 		}
 
-		public Iterator<V> iterator () {
+		public Values<V> iterator () {
 			return this;
 		}
 
@@ -751,7 +751,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return key;
 		}
 
-		public Iterator<K> iterator () {
+		public Keys<K> iterator () {
 			return this;
 		}
 

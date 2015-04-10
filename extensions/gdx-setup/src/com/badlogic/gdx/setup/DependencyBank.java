@@ -2,15 +2,14 @@ package com.badlogic.gdx.setup;
 
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.4.1";
+	static String libgdxVersion = "1.5.5";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.4.2-SNAPSHOT";
-	static String roboVMVersion = "1.0.0-alpha-04";
+	static String libgdxNightlyVersion = "1.5.6-SNAPSHOT";
+	static String roboVMVersion = "1.0.0";
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
@@ -22,16 +21,21 @@ public class DependencyBank {
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.5";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.13+";
-	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:1.0.0-alpha-04";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.0.0";
+	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
+	
+	//Extension versions
+	static String box2DLightsVersion = "1.3";
+	static String ashleyVersion = "1.3.1";
+	static String aiVersion = "1.5.0";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
-	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
 
 	public DependencyBank() {
 		for (ProjectDependency projectDep : ProjectDependency.values()) {
 			Dependency dependency = new Dependency(projectDep.name(),
+					projectDep.getGwtInherits(),
 					projectDep.getDependencies(ProjectType.CORE),
 					projectDep.getDependencies(ProjectType.DESKTOP),
 					projectDep.getDependencies(ProjectType.ANDROID),
@@ -39,17 +43,11 @@ public class DependencyBank {
 					projectDep.getDependencies(ProjectType.HTML));
 			gdxDependencies.put(projectDep, dependency);
 		}
-		gwtInheritances.put(ProjectDependency.GDX, new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"});
-		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers.controllers-gwt"});
-		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
-		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
-		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
 		return gdxDependencies.get(gdx);
 	}
-
 
 	/**
 	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
@@ -68,6 +66,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"},
 			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
+			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			
 			"Core Library for LibGDX"
 		),
@@ -76,6 +75,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
+			null,
 			null,
 			
 			"3D Collision Detection and Rigid Body Dynamics"
@@ -86,12 +86,14 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
 			null,
+			null,
 			
 			"Generate BitmapFonts from .ttf font files"
 		),
 		TOOLS(
 			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
+			new String[]{},
 			new String[]{},
 			new String[]{},
 			new String[]{},
@@ -102,9 +104,10 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
-			new String[] {}, // works on iOS but never reports any controllers :)
+			new String[]{}, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"},
-			
+			new String[]{"com.badlogic.gdx.controllers.controllers-gwt"},
+
 			"Controller/Gamepad API"
 		),
 		BOX2D(
@@ -113,26 +116,39 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
+			new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"},
 			
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
+			new String[]{"Box2DLights"},
 			
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"},
+			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
+			new String[]{"com.badlogic.ashley_gwt"},
 			
 			"Lightweight Entity framework"
+		),
+		AI(
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion"},
+			new String[]{},
+			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
+			new String[]{"com.badlogic.gdx.ai"},
+			
+			"Artificial Intelligence framework"
 		);
 
 		private String[] coreDependencies;
@@ -140,14 +156,16 @@ public class DependencyBank {
 		private String[] androidDependencies;
 		private String[] iosDependencies;
 		private String[] gwtDependencies;
+		private String[] gwtInherits;
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String description) {
+		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
 			this.coreDependencies = coreDeps;
 			this.desktopDependencies = desktopDeps;
 			this.androidDependencies = androidDeps;
 			this.iosDependencies = iosDeps;
 			this.gwtDependencies = gwtDeps;
+			this.gwtInherits = gwtInhertis;
 			this.description = description;
 		}
 
@@ -165,6 +183,10 @@ public class DependencyBank {
 					return gwtDependencies;
 			}
 			return null;
+		}
+		
+		public String[] getGwtInherits() {
+			return gwtInherits;
 		}
 		
 		public String getDescription() {

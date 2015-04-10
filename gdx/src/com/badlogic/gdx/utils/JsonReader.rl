@@ -101,16 +101,11 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			action buffer {
-				s = p;
-				needsUnescape = false;
-			}
 			action name {
 				stringIsName = true;
 			}
 			action string {
 				String value = new String(data, s, p - s);
-				s = p;
 				if (needsUnescape) value = unescape(value);
 				outer:
 				if (stringIsName) {
@@ -131,24 +126,57 @@ public class JsonReader implements BaseJsonReader {
 						} else if (value.equals("null")) {
 							string(name, null);
 							break outer;
-						} else if (value.indexOf('.') != -1) {
+						}
+						boolean couldBeDouble = false, couldBeLong = true;
+						outer2:
+						for (int i = s; i < p; i++) {
+							switch (data[i]) {
+							case '0':
+							case '1':
+							case '2':
+							case '3':
+							case '4':
+							case '5':
+							case '6':
+							case '7':
+							case '8':
+							case '9':
+							case '-':
+							case '+':
+								break;
+							case '.':
+							case 'e':
+							case 'E':
+								couldBeDouble = true;
+								couldBeLong = false;
+								break;
+							default:
+								couldBeDouble = false;
+								couldBeLong = false;
+								break outer2;
+							}
+						}
+						if (couldBeDouble) {
 							try {
 								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-								number(name, Double.parseDouble(value));
+								number(name, Double.parseDouble(value), value);
 								break outer;
-							} catch (NumberFormatException ignored) {}
-						} else {
+							} catch (NumberFormatException ignored) {
+							}
+						} else if (couldBeLong) {
+							if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 							try {
-								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-								number(name, Long.parseLong(value));
+								number(name, Long.parseLong(value), value);
 								break outer;
-							} catch (NumberFormatException ignored) {}
+							} catch (NumberFormatException ignored) {
+							}
 						}
 					}
 					if (debug) System.out.println("string: " + name + "=" + value);
 					string(name, value);
 				}
 				stringIsUnquoted = false;
+				s = p;
 			}
 			action startObject {
 				String name = names.size > 0 ? names.pop() : null;
@@ -173,15 +201,17 @@ public class JsonReader implements BaseJsonReader {
 				fret;
 			}
 			action comment {
-				if (debug) System.out.println("comment /" + data[p]);
+				int start = p - 1;
 				if (data[p++] == '/') {
-					while (data[p] != '\n')
+					while (p != eof && data[p] != '\n')
 						p++;
+					p--;
 				} else {
-					while (data[p] != '*' || data[p + 1] != '/')
+					while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
 						p++;
 					p++;
 				}
+				if (debug) System.out.println("comment " + new String(data, start, p - start));
 			}
 			action unquotedChars {
 				if (debug) System.out.println("unquotedChars");
@@ -195,14 +225,17 @@ public class JsonReader implements BaseJsonReader {
 						case '\\':
 							needsUnescape = true;
 							break;
+						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
 						case ':':
-						case ' ':
 						case '\r':
 						case '\n':
-						case '\t':
 							break outer;
 						}
-						// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
+						if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
 						p++;
 						if (p == eof) break;
 					}
@@ -213,21 +246,26 @@ public class JsonReader implements BaseJsonReader {
 						case '\\':
 							needsUnescape = true;
 							break;
+						case '/':
+							if (p + 1 == eof) break;
+							char c = data[p + 1];
+							if (c == '/' || c == '*') break outer;
+							break;
 						case '}':
 						case ']':
 						case ',':
-						case ' ':
 						case '\r':
 						case '\n':
-						case '\t':
 							break outer;
 						}
-						// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
+						if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
 						p++;
 						if (p == eof) break;
 					}
 				}
 				p--;
+				while (data[p] == ' ')
+					p--;
 			}
 			action quotedChars {
 				if (debug) System.out.println("quotedChars");
@@ -250,12 +288,17 @@ public class JsonReader implements BaseJsonReader {
 				p--;
 			}
 
-			ws = [ \r\n\t] | (('//' | '/*') @comment);
-			string = '"' @quotedChars %string '"' | ^[/{}\[\],:"\r\n\t ] >unquotedChars %string;
-			value = '{' @startObject | '[' @startArray | string;
-			nameValue = string >name ws* ':' ws* value;
-			object := ws* nameValue? ws* (',' ws* nameValue ws*)** ','? ws* '}' @endObject;
-			array := ws* value? ws* (',' ws* value ws*)** ','? ws* ']' @endArray;
+			comment = ('//' | '/*') @comment;
+			ws = [\r\n\t ] | comment;
+			ws2 = [\r\t ] | comment;
+			comma = ',' | ('\n' ws* ','?);
+			quotedString = '"' @quotedChars %string '"';
+			nameString = quotedString | ^[":,}/\r\n\t ] >unquotedChars %string;
+			valueString = quotedString | ^[":,{[\]/\r\n\t ] >unquotedChars %string;
+			value = '{' @startObject | '[' @startArray | valueString;
+			nameValue = nameString >name ws* ':' ws* value;
+			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
+			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (','? ws* ']' @endArray);
 			main := ws* value ws*;
 
 			write init;
@@ -274,8 +317,8 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
-				parseRuntimeEx);
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
+				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -338,12 +381,12 @@ public class JsonReader implements BaseJsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, double value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, long value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
 	protected void bool (String name, boolean value) {

@@ -1900,6 +1900,9 @@ SWIGINTERN btRigidBody *new_btRigidBody__SWIG_1(bool dummy,btScalar mass,btMotio
 #include <BulletDynamics/ConstraintSolver/btHinge2Constraint.h>
 
 
+#include <BulletDynamics/ConstraintSolver/btFixedConstraint.h>
+
+
 #include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
 
 
@@ -23331,6 +23334,120 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btFixedConstraint(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  btTransform *arg4 = 0 ;
+  btFixedConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btTransform local_arg4;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitMatrix4 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  result = (btFixedConstraint *)new btFixedConstraint(*arg1,*arg2,(btTransform const &)*arg3,(btTransform const &)*arg4);
+  *(btFixedConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btFixedConstraint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btFixedConstraint **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1setParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3, jint jarg4) {
+  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btFixedConstraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->setParam(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1setParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btFixedConstraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setParam(arg2,arg3);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1getParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  jfloat jresult = 0 ;
+  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btFixedConstraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (btScalar)((btFixedConstraint const *)arg1)->getParam(arg2,arg3);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1getParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
+  int arg2 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btFixedConstraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btScalar)((btFixedConstraint const *)arg1)->getParam(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   btVehicleRaycaster *arg1 = (btVehicleRaycaster *) 0 ;
   
@@ -25784,6 +25901,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     (void)jenv;
     (void)jcls;
     *(btGeneric6DofSpringConstraint **)&baseptr = *(btHinge2Constraint **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btTypedConstraint **)&baseptr = *(btFixedConstraint **)&jarg1;
     return baseptr;
 }
 

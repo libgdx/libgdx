@@ -38,6 +38,8 @@ public class Frustum {
 			clipSpacePlanePointsArray[j++] = v.z;
 		}
 	}
+	
+	private final static Vector3 tmpV = new Vector3();
 
 	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];
@@ -155,16 +157,16 @@ public class Frustum {
 	 * @param bounds The bounding box
 	 * @return Whether the bounding box is in the frustum */
 	public boolean boundsInFrustum (BoundingBox bounds) {
-		Vector3[] corners = bounds.getCorners();
-		int len = corners.length;
-
 		for (int i = 0, len2 = planes.length; i < len2; i++) {
-			int out = 0;
-
-			for (int j = 0; j < len; j++)
-				if (planes[i].testPoint(corners[j]) == PlaneSide.Back) out++;
-
-			if (out == 8) return false;
+			if (planes[i].testPoint(bounds.getCorner000(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner001(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner010(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner011(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner100(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner101(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner110(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner111(tmpV)) != PlaneSide.Back) continue;
+			return false;
 		}
 
 		return true;

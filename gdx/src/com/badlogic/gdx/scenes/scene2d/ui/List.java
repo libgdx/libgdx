@@ -19,7 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -29,6 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -106,10 +108,13 @@ public class List<T> extends Widget implements Cullable {
 		textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
 		prefWidth = 0;
+		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
-			TextBounds bounds = font.getBounds(items.get(i).toString());
-			prefWidth = Math.max(bounds.width, prefWidth);
+			layout.setText(font, items.get(i).toString());
+			prefWidth = Math.max(layout.width, prefWidth);
 		}
+		layoutPool.free(layout);
 		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		prefHeight = items.size * itemHeight;
 
@@ -213,7 +218,7 @@ public class List<T> extends Widget implements Cullable {
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
 	}
 
-	/** Sets the current items, clearing the selection if it is no longer valid. If a selection is
+	/** Sets the items visible in the list, clearing the selection if it is no longer valid. If a selection is
 	 * {@link ArraySelection#getRequired()}, the first item is selected. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
@@ -234,6 +239,7 @@ public class List<T> extends Widget implements Cullable {
 		invalidateHierarchy();
 	}
 
+	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
 	public Array<T> getItems () {
 		return items;
 	}

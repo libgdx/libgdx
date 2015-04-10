@@ -18,12 +18,11 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.AssetManagerTest;
-import com.badlogic.gdx.tests.BitmapFontAtlasRegionTest;
-import com.badlogic.gdx.tests.BulletTestCollection;
-import com.badlogic.gdx.tests.SpriteBatchTest;
-import com.badlogic.gdx.tests.StageDebugTest;
-import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.BitmapFontTest;
+import com.badlogic.gdx.tests.FullscreenTest;
+import com.badlogic.gdx.tests.JsonTest;
+import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -35,7 +34,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new BulletTestCollection();		
+		GdxTest test = new FreeTypeIncrementalTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;

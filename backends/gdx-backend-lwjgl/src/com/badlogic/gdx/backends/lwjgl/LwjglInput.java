@@ -46,6 +46,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -105,29 +106,7 @@ final public class LwjglInput implements Input {
 		return 0;
 	}
 
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run () {
-				final String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null)
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.input(output);
-						}
-					});
-				else
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.canceled();
-						}
-					});
-			}
-		});
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
@@ -143,10 +122,11 @@ final public class LwjglInput implements Input {
 				panel.add(textPanel);
 
 				final JTextField textField = new JTextField(20);
+				textField.setText(text);
 				textField.setAlignmentX(0.0f);
 				textPanel.add(textField);
 
-				final JLabel placeholderLabel = new JLabel(placeholder);
+				final JLabel placeholderLabel = new JLabel(hint);
 				placeholderLabel.setForeground(Color.GRAY);
 				placeholderLabel.setAlignmentX(0.0f);
 				textPanel.add(placeholderLabel, 0);
@@ -217,11 +197,11 @@ final public class LwjglInput implements Input {
 	}
 
 	public int getX () {
-		return Mouse.getX();
+		return (int)(Mouse.getX() * Display.getPixelScaleFactor());
 	}
 
 	public int getY () {
-		return Gdx.graphics.getHeight() - 1 - Mouse.getY();
+		return Gdx.graphics.getHeight() - 1 - (int)(Mouse.getY() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isAccelerometerAvailable () {
@@ -792,8 +772,8 @@ final public class LwjglInput implements Input {
 			int events = 0;
 			while (Mouse.next()) {
 				events++;
-				int x = Mouse.getEventX();
-				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
+				int x = (int)(Mouse.getEventX() * Display.getPixelScaleFactor());
+				int y = Gdx.graphics.getHeight() - (int)(Mouse.getEventY() * Display.getPixelScaleFactor()) - 1;
 				int button = Mouse.getEventButton();
 				int gdxButton = toGdxButton(button);
 				if (button != -1 && gdxButton == -1) continue; // Ignore unknown button.
@@ -830,8 +810,8 @@ final public class LwjglInput implements Input {
 				touchEvents.add(event);
 				mouseX = event.x;
 				mouseY = event.y;
-				deltaX = Mouse.getEventDX();
-				deltaY = Mouse.getEventDY();
+				deltaX = (int)(Mouse.getEventDX() * Display.getPixelScaleFactor());
+				deltaY = (int)(Mouse.getEventDY() * Display.getPixelScaleFactor());
 			}
 
 			if (events == 0) {

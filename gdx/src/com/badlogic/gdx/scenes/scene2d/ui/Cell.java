@@ -3,7 +3,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** A cell for a {@link Table}.
@@ -32,8 +32,12 @@ public class Cell<T extends Actor> implements Poolable {
 	private Table table;
 	boolean endRow;
 	int column, row;
-	int cellAboveIndex = -1;
+	int cellAboveIndex;
 	float computedPadTop, computedPadLeft, computedPadBottom, computedPadRight;
+
+	public Cell () {
+		reset();
+	}
 
 	public void setLayout (Table table) {
 		this.table = table;
@@ -846,8 +850,8 @@ public class Cell<T extends Actor> implements Poolable {
 		return computedPadRight;
 	}
 
-	public Cell<T> row () {
-		return table.row();
+	public void row () {
+		table.row();
 	}
 
 	public Table getTable () {
@@ -880,16 +884,13 @@ public class Cell<T extends Actor> implements Poolable {
 		uniformY = null;
 	}
 
-	/** Reset state so the cell can be reused. Doesn't reset the constraint fields. */
+	/** Reset state so the cell can be reused, setting all constraints to their default values. */
 	public void reset () {
 		actor = null;
 		table = null;
 		endRow = false;
 		cellAboveIndex = -1;
-	}
 
-	/** Set all constraints to cell default values. */
-	void defaults () {
 		minWidth = Value.minWidth;
 		minHeight = Value.minHeight;
 		prefWidth = Value.prefWidth;

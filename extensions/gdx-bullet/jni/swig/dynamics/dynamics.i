@@ -168,6 +168,11 @@ import com.badlogic.gdx.math.Matrix4;
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
 %{
+#include <BulletDynamics/ConstraintSolver/btFixedConstraint.h>
+%}
+%include "BulletDynamics/ConstraintSolver/btFixedConstraint.h"
+
+%{
 #include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
 %}
 %include "BulletDynamics/Vehicle/btVehicleRaycaster.h"

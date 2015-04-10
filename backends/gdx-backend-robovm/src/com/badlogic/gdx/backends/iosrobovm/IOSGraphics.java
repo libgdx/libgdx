@@ -30,11 +30,9 @@ import org.robovm.apple.glkit.GLKViewDrawableMultisample;
 import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.apple.opengles.EAGLContext;
 import org.robovm.apple.opengles.EAGLRenderingAPI;
-import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIInterfaceOrientationMask;
-import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.objc.annotation.Method;
@@ -44,6 +42,7 @@ import org.robovm.rt.bro.annotation.Pointer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
@@ -65,7 +64,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		@Override
 		public void viewWillAppear (boolean arg0) {
 			super.viewWillAppear(arg0);
-			setPaused(!graphics.isContinuous);
+			// start GLKViewController even though we may only draw a single frame
+			// (we may be in non-continuous mode)
+			setPaused(false);
 		}
 
 		@Override
@@ -82,8 +83,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			// FIXME screen orientation needs to be stored for
 			// Input#getNativeOrientation
 			CGSize bounds = app.getBounds(this);
-			graphics.width = (int)bounds.width();
-			graphics.height = (int)bounds.height();
+			graphics.width = (int)bounds.getWidth();
+			graphics.height = (int)bounds.getHeight();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
 		}
@@ -131,7 +132,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			super(frame, context);
 		}
 	}
-
+	
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
@@ -151,9 +152,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float ppcY = 0;
 	private float density = 1;
 
-	volatile boolean paused;
+	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
+	private boolean isFrameRequested = true;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -164,9 +166,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
-		width = (int)bounds.width();
-		height = (int)bounds.height();
-		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + scale);
+		width = (int)bounds.getWidth();
+		height = (int)bounds.getHeight();
+		app.debug(tag, bounds.getWidth() + "x" + bounds.getHeight() + ", " + scale);
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -238,20 +240,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 		this.gl20 = gl20;
 
-		// determine display density and PPI (PPI values via Wikipedia!)
-		density = 1f;
-
-		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2) density = 2f;
-
-		int ppi;
-		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
-			// iPad
-			ppi = Math.round(density * 132);
-		} else {
-			// iPhone or iPodTouch
-			ppi = Math.round(density * 163);
-		}
+		String machineString = HWMachine.getMachineString();
+		IOSDevice device = IOSDevice.getDevice(machineString);
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		int ppi = device != null ? device.ppi : 163;
+		density = device != null ? device.ppi/160f : scale;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -262,12 +255,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
 
-		paused = false;
+		appPaused = false;
 	}
 
 	public void resume () {
-		if (!paused) return;
-		paused = false;
+		if (!appPaused) return;
+		appPaused = false;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
@@ -279,8 +272,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	public void pause () {
-		if (paused) return;
-		paused = true;
+		if (appPaused) return;
+		appPaused = true;
 
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
@@ -306,7 +299,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			app.listener.resize(width, height);
 			created = true;
 		}
-		if (paused) {
+		if (appPaused) {
 			return;
 		}
 
@@ -334,17 +327,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
+		// pause the GLKViewController render loop if we are no longer continuous
+		// and if we haven't requested a frame in the last loop iteration
+		if (!isContinuous && !isFrameRequested) {
+			viewController.setPaused(true);
+		}
+		isFrameRequested = false;
 	}
 
 	@Override
 	public void willPause (GLKViewController controller, boolean pause) {
-		if (pause) {
-			if (paused) return;
-			pause();
-		} else {
-			if (!paused) return;
-			resume();
-		}
 	}
 
 	@Override
@@ -402,9 +394,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return ppcY;
 	}
 
-	/** Returns the display density.
-	 * 
-	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
 	public float getDensity () {
 		return density;
@@ -463,10 +452,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		this.isContinuous = isContinuous;
-		viewController.setPaused(!isContinuous);
-		viewController.setResumeOnDidBecomeActive(isContinuous);
-		view.setEnableSetNeedsDisplay(!isContinuous);
+		if (isContinuous != this.isContinuous) {
+			this.isContinuous = isContinuous;
+			// start the GLKViewController if we go from non-continuous -> continuous
+			if (isContinuous) viewController.setPaused(false);
+		}
 	}
 
 	@Override
@@ -476,7 +466,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void requestRendering () {
-		view.setNeedsDisplay();
+		isFrameRequested = true;
+		// start the GLKViewController if we are in non-continuous mode
+		// (we should already be started in continuous mode)
+		if (!isContinuous) viewController.setPaused(false);
 	}
 
 	@Override

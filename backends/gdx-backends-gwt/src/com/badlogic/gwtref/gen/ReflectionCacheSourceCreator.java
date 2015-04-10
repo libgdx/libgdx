@@ -147,6 +147,16 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		// gather all types from explicitely requested packages
+		try {
+			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
+			for (String s : prop.getValues()) {
+				JClassType type = typeOracle.findType(s);
+				if (type != null) gatherTypes(type.getErasedType(), types);
+			}
+		} catch (BadPropertyValueException e) {
+		}
+
 		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
@@ -322,7 +332,7 @@ public class ReflectionCacheSourceCreator {
 			return "";
 		}
 
-		if (stub.enclosingType.startsWith("java") || stub.enclosingType.contains("google")) {
+		if ((stub.enclosingType.startsWith("java") && !stub.enclosingType.startsWith("java.util")) || stub.enclosingType.contains("google")) {
 			logger.log(Type.INFO, "not emitting code for accessing method " + stub.name + " in class '" + stub.enclosingType
 				+ ", either in java.* or GWT related class");
 			return "";

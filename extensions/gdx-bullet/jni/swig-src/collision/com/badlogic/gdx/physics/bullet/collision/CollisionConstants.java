@@ -54,4 +54,12 @@ public interface CollisionConstants {
   public final static int NO_VIRTUAL_INTERFACE = 1;
   public final static int VORONOI_SIMPLEX_MAX_VERTS = 5;
   public final static double VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD = 0.0001;
+  public final static double BOX_PLANE_EPSILON = 0.000001;
+  public final static double PLANEDIREPSILON = 0.0000001;
+  public final static double PARALELENORMALS = 0.000001;
+  public final static int MAX_TRI_CLIPPING = 16;
+  public final static int NORMAL_CONTACT_AVERAGE = 1;
+  public final static double CONTACT_DIFF_EPSILON = 0.00001;
+  public final static int BT_DEFAULT_MAX_POOLS = 16;
+  public final static int GIMPACT_VS_PLANE_COLLISION = 1;
 }

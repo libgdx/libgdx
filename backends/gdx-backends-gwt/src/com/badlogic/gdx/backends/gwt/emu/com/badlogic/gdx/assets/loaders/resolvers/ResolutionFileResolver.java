@@ -25,12 +25,12 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	public static class Resolution {
 		public final int portraitWidth;
 		public final int portraitHeight;
-		public final String suffix;
+		public final String folder;
 
-		public Resolution (int portraitWidth, int portraitHeight, String suffix) {
+		public Resolution (int portraitWidth, int portraitHeight, String folder) {
 			this.portraitWidth = portraitWidth;
 			this.portraitHeight = portraitHeight;
-			this.suffix = suffix;
+			this.folder = folder;
 		}
 	}
 
@@ -46,7 +46,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	public FileHandle resolve (String fileName) {
 		Resolution bestDesc = choose(descriptors);
 		FileHandle originalHandle = new GwtFileHandle(fileName);
-		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix));
+		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.folder));
 		if (!handle.exists()) handle = baseResolver.resolve(fileName);
 		return handle;
 	}

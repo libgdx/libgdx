@@ -92,7 +92,7 @@ public class Array<T> implements Iterable<T> {
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
-		System.arraycopy(array, 0, items, 0, size);
+		System.arraycopy(array, start, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -105,22 +105,22 @@ public class Array<T> implements Iterable<T> {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
-		if (offset + length > array.size)
-			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+	public void addAll (Array<? extends T> array, int start, int count) {
+		if (start + count > array.size)
+			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
+		addAll((T[])array.items, start, count);
 	}
 
 	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
-	public void addAll (T[] array, int offset, int length) {
+	public void addAll (T[] array, int start, int count) {
 		T[] items = this.items;
-		int sizeNeeded = size + length;
+		int sizeNeeded = size + count;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array, offset, items, size, length);
-		size += length;
+		System.arraycopy(array, start, items, size, count);
+		size += count;
 	}
 
 	public T get (int index) {
@@ -506,8 +506,7 @@ public class Array<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
-// StringWriter acquireStacktrace = new StringWriter();
-// ArrayIterator other;
+// ArrayIterable<T> iterable;
 
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
@@ -520,8 +519,7 @@ public class Array<T> implements Iterable<T> {
 
 		public boolean hasNext () {
 			if (!valid) {
-// System.out.println("1: " + acquireStacktrace.getBuffer());
-// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return index < array.size;
@@ -530,8 +528,7 @@ public class Array<T> implements Iterable<T> {
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) {
-// System.out.println("1: " + acquireStacktrace.getBuffer());
-// System.out.println("2: " + other.acquireStacktrace.getBuffer());
+// System.out.println(iterable.lastAcquire);
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			}
 			return array.items[index++];
@@ -557,6 +554,8 @@ public class Array<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
 
+//		java.io.StringWriter lastAcquire = new java.io.StringWriter();
+
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
 		}
@@ -567,25 +566,23 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public Iterator<T> iterator () {
+// lastAcquire.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
-// iterator1.other = iterator2;
-// iterator2.other = iterator1;
+//				iterator1.iterable = this;
+//				iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;
 				iterator1.valid = true;
 				iterator2.valid = false;
-// iterator1.acquireStacktrace.getBuffer().setLength(0);
-// new Throwable().printStackTrace(new PrintWriter(iterator1.acquireStacktrace));
 				return iterator1;
 			}
 			iterator2.index = 0;
 			iterator2.valid = true;
 			iterator1.valid = false;
-// iterator2.acquireStacktrace.getBuffer().setLength(0);
-// new Throwable().printStackTrace(new PrintWriter(iterator2.acquireStacktrace));
 			return iterator2;
 		}
 	}

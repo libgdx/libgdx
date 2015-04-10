@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,13 +27,35 @@ public interface Vector<T extends Vector<T>> {
 	float len ();
 
 	/** This method is faster than {@link Vector#len()} because it avoids calculating a square root. It is useful for comparisons,
-	 * but not for getting accurate lengths, as the return value is the square of the actual length.
+	 * but not for getting exact lengths, as the return value is the square of the actual length.
 	 * @return The squared euclidean length */
 	float len2 ();
 
-	/** Limits this vector's length to given value
-	 * @return This vector for chaining */
+	/** Limits the length of this vector, based on the desired maximum length.
+	 * @param limit desired maximum length for this vector
+	 * @return this vector for chaining */
 	T limit (float limit);
+
+	/** Limits the length of this vector, based on the desired maximum length squared.
+	 * <p />
+	 * This method is slightly faster than limit().
+	 * @param limit2 squared desired maximum length for this vector
+	 * @return this vector for chaining
+	 * @see #len2() */
+	T limit2 (float limit2);
+
+	/** Sets the length of this vector. Does nothing is this vector is zero.
+	 * @param len desired length for this vector
+	 * @return this vector for chaining */
+	T setLength (float len);
+
+	/** Sets the length of this vector, based on the square of the desired length. Does nothing is this vector is zero.
+	 * <p />
+	 * This method is slightly faster than setLength().
+	 * @param len2 desired square of the length for this vector
+	 * @return this vector for chaining
+	 * @see #len2() */
+	T setLength2 (float len2);
 
 	/** Clamps this vector's length to given min and max values
 	 * @param min Min length

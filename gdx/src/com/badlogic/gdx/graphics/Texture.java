@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
@@ -27,9 +30,6 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /** A Texture wraps a standard OpenGL ES texture.
  * <p>
@@ -97,7 +97,7 @@ public class Texture extends GLTexture {
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		this(createTextureData(file, format, useMipMaps));
+		this(TextureData.Factory.loadFromFile(file, format, useMipMaps));
 	}
 
 	public Texture (Pixmap pixmap) {
@@ -117,11 +117,11 @@ public class Texture extends GLTexture {
 	}
 
 	public Texture (TextureData data) {
-		super(GL20.GL_TEXTURE_2D, createGLHandle());
+		super(GL20.GL_TEXTURE_2D, Gdx.gl.glGenTexture());
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
 	}
-
+	
 	public void load (TextureData data) {
 		if (this.data != null && data.isManaged() != this.data.isManaged())
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");
@@ -142,7 +142,7 @@ public class Texture extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
-		glHandle = createGLHandle();
+		glHandle = Gdx.gl.glGenTexture();
 		load(data);
 	}
 
@@ -258,7 +258,7 @@ public class Texture extends GLTexture {
 
 					// unload the texture, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					texture.glHandle = Texture.createGLHandle();
+					texture.glHandle = Gdx.gl.glGenTexture();
 					assetManager.load(fileName, Texture.class, params);
 				}
 			}

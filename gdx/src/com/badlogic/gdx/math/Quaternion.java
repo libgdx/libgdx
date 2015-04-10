@@ -421,7 +421,7 @@ public class Quaternion implements Serializable {
 		float d = Vector3.len(x, y, z);
 		if (d == 0f) return idt();
 		d = 1f / d;
-		float l_ang = radians;
+		float l_ang = radians < 0 ? MathUtils.PI2 - (-radians % MathUtils.PI2) : radians % MathUtils.PI2;
 		float l_sin = (float)Math.sin(l_ang / 2);
 		float l_cos = (float)Math.cos(l_ang / 2);
 		return this.set(d * x * l_sin, d * y * l_sin, d * z * l_sin, l_cos).nor();
@@ -576,27 +576,27 @@ public class Quaternion implements Serializable {
 	 * @param alpha alpha in the range [0,1]
 	 * @return this quaternion for chaining */
 	public Quaternion slerp (Quaternion end, float alpha) {
-		final float dot = dot(end);
-		float absDot = dot < 0.f ? -dot : dot;
+		final float d = this.x * end.x + this.y * end.y + this.z * end.z + this.w * end.w;
+		float absDot = d < 0.f ? -d : d;
 
 		// Set the first and second scale for the interpolation
-		float scale0 = 1 - alpha;
+		float scale0 = 1f - alpha;
 		float scale1 = alpha;
 
 		// Check if the angle between the 2 quaternions was big enough to
 		// warrant such calculations
 		if ((1 - absDot) > 0.1) {// Get the angle between the 2 quaternions,
 			// and then store the sin() of that angle
-			final double angle = Math.acos(absDot);
-			final double invSinTheta = 1f / Math.sin(angle);
+			final float angle = (float)Math.acos(absDot);
+			final float invSinTheta = 1f / (float)Math.sin(angle);
 
 			// Calculate the scale for q1 and q2, according to the angle and
 			// it's sine value
-			scale0 = (float)(Math.sin((1 - alpha) * angle) * invSinTheta);
-			scale1 = (float)(Math.sin((alpha * angle)) * invSinTheta);
+			scale0 = ((float)Math.sin((1f - alpha) * angle) * invSinTheta);
+			scale1 = ((float)Math.sin((alpha * angle)) * invSinTheta);
 		}
 
-		if (dot < 0.f) scale1 = -scale1;
+		if (d < 0.f) scale1 = -scale1;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.

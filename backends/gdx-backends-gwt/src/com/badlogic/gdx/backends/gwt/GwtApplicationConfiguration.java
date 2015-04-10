@@ -28,8 +28,6 @@ public class GwtApplicationConfiguration {
 	public boolean stencil = false;
 	/** whether to enable antialiasing **/
 	public boolean antialiasing = false;
-	/** the framerate to run the game at **/
-	public int fps = 60;
 	/** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
 	 * DOM **/
 	public Panel rootPanel;
@@ -44,6 +42,11 @@ public class GwtApplicationConfiguration {
 	public boolean preferFlash = true;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
+	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
+	 * effectively allows transparent backgrounds in GWT, at a performance cost. **/
+	public boolean alpha = false;
+	/** wether to use premultipliedalpha, may have performance impact  **/
+	public boolean premultipliedAlpha = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

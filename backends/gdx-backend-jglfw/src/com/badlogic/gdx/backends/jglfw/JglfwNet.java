@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.NetJavaImpl;
@@ -52,16 +53,19 @@ public class JglfwNet implements Net {
 		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
-	public void openURI (String uri) {
-		if (!Desktop.isDesktopSupported()) return;
-
-		Desktop desktop = Desktop.getDesktop();
-		if (!desktop.isSupported(Desktop.Action.BROWSE)) return;
-
-		try {
-			desktop.browse(new URI(uri));
-		} catch (Exception ex) {
-			throw new GdxRuntimeException(ex);
+	public boolean openURI (String uri) {
+		boolean result = false;
+		if (Desktop.isDesktopSupported()) {
+			Desktop desktop = Desktop.getDesktop();
+			if (desktop.isSupported(Desktop.Action.BROWSE)) {
+				try {
+					desktop.browse(new URI(uri));
+					result = true;
+				} catch (Exception e) {
+					Gdx.app.error("JglfwNet", "Unable to open URI:" + uri, e);
+				}
+			}
 		}
+		return result;
 	}
 }

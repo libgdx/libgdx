@@ -89,19 +89,13 @@ public final class VertexAttribute {
 	public static VertexAttribute Normal () {
 		return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 	}
-
-	/** @deprecated use {@link #ColorPacked()} */
-	@Deprecated
-	public static VertexAttribute Color () {
-		return ColorPacked();
-	}
 	
 	public static VertexAttribute ColorPacked () {
 		return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, ShaderProgram.COLOR_ATTRIBUTE);
 	}
 
 	public static VertexAttribute ColorUnpacked () {
-		return new VertexAttribute(Usage.Color, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
+		return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
 	}
 
 	public static VertexAttribute Tangent () {
