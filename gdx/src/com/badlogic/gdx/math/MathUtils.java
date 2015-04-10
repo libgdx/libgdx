@@ -142,6 +142,16 @@ public final class MathUtils {
 		return start + random.nextInt(end - start + 1);
 	}
 
+	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
+	static public long random (long range) {
+		return (long)(random.nextDouble() * range);
+	}
+
+	/** Returns a random number between start (inclusive) and end (inclusive). */
+	static public long random (long start, long end) {
+		return start + (long)(random.nextDouble() * (end - start));
+	}
+
 	/** Returns a random boolean value. */
 	static public boolean randomBoolean () {
 		return random.nextBoolean();
@@ -196,7 +206,7 @@ public final class MathUtils {
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {
-		return randomTriangular(min, max, (max - min) * .5f);
+		return randomTriangular(min, max, min + (max - min) * 0.5f);
 	}
 
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values
@@ -231,19 +241,31 @@ public final class MathUtils {
 
 	// ---
 
-	static public int clamp (int value, int min, int max) {
-		if (value < min) return min;
-		if (value > max) return max;
-		return value;
-	}
-
 	static public short clamp (short value, short min, short max) {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
 	}
 
+	static public int clamp (int value, int min, int max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
+	static public long clamp (long value, long min, long max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
 	static public float clamp (float value, float min, float max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
+	static public double clamp (double value, double min, double max) {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
@@ -266,37 +288,37 @@ public final class MathUtils {
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
-	static public int floor (float x) {
-		return (int)(x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+	static public int floor (float value) {
+		return (int)(value + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats that are
 	 * positive. Note this method simply casts the float to int. */
-	static public int floorPositive (float x) {
-		return (int)x;
+	static public int floorPositive (float value) {
+		return (int)value;
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
-	static public int ceil (float x) {
-		return (int)(x + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
+	static public int ceil (float value) {
+		return (int)(value + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that
 	 * are positive. */
-	static public int ceilPositive (float x) {
-		return (int)(x + CEIL);
+	static public int ceilPositive (float value) {
+		return (int)(value + CEIL);
 	}
 
 	/** Returns the closest integer to the specified float. This method will only properly round floats from -(2^14) to
 	 * (Float.MAX_VALUE - 2^14). */
-	static public int round (float x) {
-		return (int)(x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+	static public int round (float value) {
+		return (int)(value + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the closest integer to the specified float. This method will only properly round floats that are positive. */
-	static public int roundPositive (float x) {
-		return (int)(x + 0.5f);
+	static public int roundPositive (float value) {
+		return (int)(value + 0.5f);
 	}
 
 	/** Returns true if the value is zero (using the default tolerance as upper bound) */
@@ -325,13 +347,13 @@ public final class MathUtils {
 		return Math.abs(a - b) <= tolerance;
 	}
 
-	/** @return the logarithm of x with base a */
-	static public float log (float a, float x) {
-		return (float)(Math.log(x) / Math.log(a));
+	/** @return the logarithm of value with base a */
+	static public float log (float a, float value) {
+		return (float)(Math.log(value) / Math.log(a));
 	}
 
-	/** @return the logarithm of x with base 2 */
-	static public float log2 (float x) {
-		return log(2, x);
+	/** @return the logarithm of value with base 2 */
+	static public float log2 (float value) {
+		return log(2, value);
 	}
 }

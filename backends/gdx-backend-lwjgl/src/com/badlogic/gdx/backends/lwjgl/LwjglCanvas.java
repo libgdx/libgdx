@@ -45,6 +45,8 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
+	static boolean isWindows = System.getProperty("os.name").contains("Windows");
+
 	LwjglGraphics graphics;
 	OpenALAudio audio;
 	LwjglFiles files;
@@ -206,7 +208,10 @@ public class LwjglCanvas implements Application {
 					return;
 				}
 				try {
-					graphics.updateTime();
+					Display.processMessages();
+					if (cursor != null || !isWindows) canvas.setCursor(cursor);
+
+					boolean shouldRender = false;
 
 					int width = Math.max(1, graphics.getWidth());
 					int height = Math.max(1, graphics.getHeight());
@@ -216,17 +221,26 @@ public class LwjglCanvas implements Application {
 						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 						resize(width, height);
 						listener.resize(width, height);
+						shouldRender = true;
 					}
 
-					executeRunnables();
+					if (executeRunnables()) shouldRender = true;
+
+					// If one of the runnables set running to false, for example after an exit().
+					if (!running) return;
 
 					input.update();
+					shouldRender |= graphics.shouldRender();
 					input.processEvents();
-					graphics.frameId++;
-					listener.render();
 					if (audio != null) audio.update();
-					Display.update();
-					canvas.setCursor(cursor);
+
+					if (shouldRender) {
+						graphics.updateTime();
+						graphics.frameId++;
+						listener.render();
+						Display.update(false);
+					}
+
 					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
 					exception(ex);
@@ -238,13 +252,14 @@ public class LwjglCanvas implements Application {
 
 	public boolean executeRunnables () {
 		synchronized (runnables) {
-			executedRunnables.addAll(runnables);
+			for (int i = runnables.size - 1; i >= 0; i--)
+				executedRunnables.addAll(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = 0; i < executedRunnables.size; i++)
-			executedRunnables.get(i).run();
-		executedRunnables.clear();
+		do
+			executedRunnables.pop().run();
+		while (executedRunnables.size > 0);
 		return true;
 	}
 
@@ -328,6 +343,7 @@ public class LwjglCanvas implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -381,7 +397,7 @@ public class LwjglCanvas implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

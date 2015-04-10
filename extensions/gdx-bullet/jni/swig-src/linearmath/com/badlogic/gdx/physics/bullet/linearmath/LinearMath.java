@@ -63,14 +63,6 @@ public class LinearMath implements LinearMathConstants {
     return LinearMathJNI.btGetVersion();
   }
 
-  public static void setBtInfinityMask(int value) {
-    LinearMathJNI.btInfinityMask_set(value);
-  }
-
-  public static int getBtInfinityMask() {
-    return LinearMathJNI.btInfinityMask_get();
-  }
-
   public static float btSqrt(float y) {
     return LinearMathJNI.btSqrt(y);
   }

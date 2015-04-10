@@ -93,6 +93,8 @@ public class AssetManager implements Disposable {
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+		setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
+			new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
 		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
 		setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
@@ -127,13 +129,13 @@ public class AssetManager implements Disposable {
 		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		return asset;
 	}
-	
+
 	/** @param type the asset type
 	 * @return all the assets matching the specified type */
 	public synchronized <T> Array<T> getAll (Class<T> type, Array<T> out) {
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
-		if (assetsByType != null){
-			for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
+		if (assetsByType != null) {
+			for (ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()) {
 				out.add(asset.value.getObject(type));
 			}
 		}
@@ -149,6 +151,17 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
+		// check if it's currently processed (and the first element in the stack, thus not a dependency)
+		// and cancel if necessary
+		if (tasks.size() > 0) {
+			AssetLoadingTask currAsset = tasks.firstElement();
+			if (currAsset.assetDesc.fileName.equals(fileName)) {
+				currAsset.cancel = true;
+				log.debug("Unload (from tasks): " + fileName);
+				return;
+			}
+		}
+
 		// check if it's in the queue
 		int foundIndex = -1;
 		for (int i = 0; i < loadQueue.size; i++) {
@@ -162,17 +175,6 @@ public class AssetManager implements Disposable {
 			loadQueue.removeIndex(foundIndex);
 			log.debug("Unload (from queue): " + fileName);
 			return;
-		}
-
-		// check if it's currently processed (and the first element in the stack, thus not a dependency)
-		// and cancel if necessary
-		if (tasks.size() > 0) {
-			AssetLoadingTask currAsset = tasks.firstElement();
-			if (currAsset.assetDesc.fileName.equals(fileName)) {
-				currAsset.cancel = true;
-				log.debug("Unload (from tasks): " + fileName);
-				return;
-			}
 		}
 
 		// get the asset and its type
@@ -337,21 +339,6 @@ public class AssetManager implements Disposable {
 		load(desc.fileName, desc.type, desc.params);
 	}
 
-	/** Disposes the given asset and all its dependencies recursively, depth first.
-	 * @param fileName */
-	private void disposeDependencies (String fileName) {
-		Array<String> dependencies = assetDependencies.get(fileName);
-		if (dependencies != null) {
-			for (String dependency : dependencies) {
-				disposeDependencies(dependency);
-			}
-		}
-
-		Class type = assetTypes.get(fileName);
-		Object asset = assets.get(type).get(fileName).getObject(Object.class);
-		if (asset instanceof Disposable) ((Disposable)asset).dispose();
-	}
-
 	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update () {
@@ -384,12 +371,23 @@ public class AssetManager implements Disposable {
 		}
 	}
 
-	/** blocks until all assets are loaded. */
+	/** Blocks until all assets are loaded. */
 	public void finishLoading () {
 		log.debug("Waiting for loading to complete...");
 		while (!update())
 			ThreadUtils.yield();
 		log.debug("Loading complete.");
+	}
+
+	/** Blocks until the specified aseet is loaded.
+	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
+	public void finishLoadingAsset (String fileName) {
+		log.debug("Waiting for asset to be loaded: " + fileName);
+		while (!isLoaded(fileName)) {
+			update();
+			ThreadUtils.yield();
+		}
+		log.debug("Asset loaded: " + fileName);
 	}
 
 	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
@@ -438,9 +436,9 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(assetDesc.fileName);
-            if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
-                assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
-            }
+			if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
+				assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
+			}
 			loaded++;
 		} else {
 			// else add a new task for the asset.
@@ -472,34 +470,30 @@ public class AssetManager implements Disposable {
 	}
 
 	/** Updates the current task on the top of the task stack.
-	 * @return true if the asset is loaded. */
+	 * @return true if the asset is loaded or the task was cancelled. */
 	private boolean updateTask () {
 		AssetLoadingTask task = tasks.peek();
-		// if the task has finished loading
-		if (task.update()) {
-			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
-
+		// if the task has been cancelled or has finished loading
+		if (task.cancel || task.update()) {
 			// increase the number of loaded assets and pop the task from the stack
 			if (tasks.size() == 1) loaded++;
 			tasks.pop();
 
-			// remove the asset if it was canceled.
-			if (task.cancel) {
-				unload(task.assetDesc.fileName);
-			} else {
-				// otherwise, if a listener was found in the parameter invoke it
-				if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
-					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
-				}
+			if (task.cancel) return true;
 
-				long endTime = TimeUtils.nanoTime();
-				log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
+			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
+
+			// otherwise, if a listener was found in the parameter invoke it
+			if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
+				task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 			}
 
+			long endTime = TimeUtils.nanoTime();
+			log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
+
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	private void incrementRefCountedDependencies (String parent) {
@@ -571,7 +565,7 @@ public class AssetManager implements Disposable {
 
 	/** @return the number of currently queued assets */
 	public synchronized int getQueuedAssets () {
-		return loadQueue.size + (tasks.size());
+		return loadQueue.size + tasks.size();
 	}
 
 	/** @return the progress in percent of completion. */
@@ -587,6 +581,7 @@ public class AssetManager implements Disposable {
 	}
 
 	/** Disposes all assets in the manager and stops all asynchronous loading. */
+	@Override
 	public synchronized void dispose () {
 		log.debug("Disposing.");
 		clear();

@@ -90,27 +90,6 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		super(resolver);
 	}
 
-	/** @deprecated Use {@link ObjLoader#loadModel(FileHandle)} instead.
-	 *             <p>
-	 *             Loads a Wavefront OBJ file from a given file handle.
-	 * 
-	 * @param file the FileHandle */
-	@Deprecated
- 	public Model loadObj (FileHandle file) {
-		return loadModel(file);
-	}
-
-	/** @deprecated Use {@link ObjLoader#loadModel(FileHandle, boolean)} instead.
-	 *             <p>
-	 *             Loads a Wavefront OBJ file from a given file handle.
-	 * 
-	 * @param file the FileHandle
-	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
-	@Deprecated
- 	public Model loadObj (FileHandle file, boolean flipV) {
-		return loadModel(file, flipV);
-	}
-
 	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
 	public Model loadModel (final FileHandle fileHandle, boolean flipV) {
 		return loadModel(fileHandle, new ObjLoaderParameters(flipV));

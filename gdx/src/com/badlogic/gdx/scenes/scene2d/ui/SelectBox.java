@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,9 +37,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.Selection;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -57,10 +59,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 	final Array<T> items = new Array();
 	final ArraySelection<T> selection = new ArraySelection(items);
 	SelectBoxList<T> selectBoxList;
-	private final TextBounds bounds = new TextBounds();
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	boolean disabled;
+	private GlyphLayout layout = new GlyphLayout();
 
 	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
@@ -134,7 +136,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		if (oldPrefWidth != getPrefWidth()) invalidateHierarchy();
 	}
 
-	/** Set the backing Array that makes up the choices available in the SelectBox */
+	/** Sets the items visible in the select box. */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth();
@@ -155,8 +157,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		invalidateHierarchy();
 	}
 
-	/** Retrieve the backing Array that makes up the chocies available in the SelectBox
-	 * @see SelectBox#setItems(Array) */
+	/** Returns the internal items array. If modified, {@link #setItems(Array)} must be called to reflect the changes. */
 	public Array<T> getItems () {
 		return items;
 	}
@@ -173,8 +174,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
 		float maxItemWidth = 0;
-		for (int i = 0; i < items.size; i++)
-			maxItemWidth = Math.max(font.getBounds(items.get(i).toString()).width, maxItemWidth);
+		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		GlyphLayout layout = layoutPool.obtain();
+		for (int i = 0; i < items.size; i++) {
+			layout.setText(font, items.get(i).toString());
+			maxItemWidth = Math.max(layout.width, maxItemWidth);
+		}
+		layoutPool.free(layout);
 
 		prefWidth = maxItemWidth;
 		if (bg != null) prefWidth += bg.getLeftWidth() + bg.getRightWidth();
@@ -222,24 +228,23 @@ public class SelectBox<T> extends Widget implements Disableable {
 		T selected = selection.first();
 		if (selected != null) {
 			String string = selected.toString();
-			bounds.set(font.getBounds(string));
 			if (background != null) {
 				width -= background.getLeftWidth() + background.getRightWidth();
 				height -= background.getBottomHeight() + background.getTopHeight();
 				x += background.getLeftWidth();
-				y += (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
+				y += (int)(height / 2 + background.getBottomHeight() + font.getData().capHeight / 2);
 			} else {
-				y += (int)(height / 2 + bounds.height / 2);
+				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
-			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), width);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, string, x, y, 0, numGlyphs);
+			layout.setText(font, string, 0, string.length(), Color.WHITE, width, Align.left, false, "...");
+			font.draw(batch, layout, x, y);
 		}
 	}
 
 	/** Get the set of selected items, useful when multiple items are selected
 	 * @return a Selection object containing the selected elements */
-	public Selection<T> getSelection () {
+	public ArraySelection<T> getSelection () {
 		return selection;
 	}
 
@@ -328,6 +333,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			setOverscroll(false, false);
 			setFadeScrollBars(false);
+			setScrollingDisabled(true, false);
 
 			list = new List(selectBox.style.listStyle);
 			list.setTouchable(Touchable.disabled);
@@ -401,10 +407,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 			else
 				setY(screenPosition.y + selectBox.getHeight());
 			setX(screenPosition.x);
-			setSize(Math.max(getPrefWidth(), selectBox.getWidth()), height);
+			setHeight(height);
+			validate();
+			float width = Math.max(getPrefWidth(), selectBox.getWidth());
+			if (getPrefHeight() > height) width += getScrollBarWidth();
+			setWidth(width);
 
 			validate();
-			scrollToCenter(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
+			scrollTo(0, list.getHeight() - selectBox.getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0, true, true);
 			updateVisualScroll();
 
 			previousScrollFocus = null;
@@ -412,6 +422,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 			stage.setScrollFocus(this);
 
+			list.selection.set(selectBox.getSelected());
 			list.setTouchable(Touchable.enabled);
 			clearActions();
 			selectBox.onShow(this, below);

@@ -92,7 +92,11 @@ public class SpriteBatch implements Batch {
 		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
-		mesh = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
+		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
+		if (Gdx.gl30 != null) {
+			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
+		}
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
@@ -132,7 +136,7 @@ public class SpriteBatch implements Batch {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-			+ "   v_color.a = v_color.a * (256.0/255.0);\n" //
+			+ "   v_color.a = v_color.a * (255.0/254.0);\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";

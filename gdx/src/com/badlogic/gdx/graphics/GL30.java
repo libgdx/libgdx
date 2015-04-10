@@ -19,6 +19,8 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.Buffer;
+
 /** OpenGL ES 3.0 */
 public interface GL30 extends GL20 {
 	public final int GL_READ_BUFFER = 0x0C02;
@@ -1395,4 +1397,12 @@ public interface GL30 extends GL20 {
 // java.nio.IntBuffer params
 // );
 
+	@Override
+	@Deprecated
+	/**
+	 * In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid.
+	 * Use the other version of this function instead, pass a zero-based offset which references
+	 * the buffer currently bound to GL_ARRAY_BUFFER.
+	 */
+	void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 }

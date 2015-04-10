@@ -30,7 +30,7 @@ public final class LwjglNativesLoader {
 	static public boolean load = true;
 
 	static {
-		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
+		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");		
 
 		// Don't extract natives if using JWS.
 		try {
@@ -56,9 +56,7 @@ public final class LwjglNativesLoader {
 				if (!LwjglApplicationConfiguration.disableAudio)
 					loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
 			} else if (isMac) {
-				File extractedFile = loader.extractFile("liblwjgl.jnilib", null);
-				nativesDir = extractedFile.getParentFile();
-				new FileHandle(extractedFile).copyTo(new FileHandle(new File(nativesDir, "liblwjgl.dylib")));
+				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
 				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFile("openal.dylib", nativesDir.getName());
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();

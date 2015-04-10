@@ -32,7 +32,6 @@ public class Timer {
 	static Timer instance = new Timer();
 
 	static public Timer instance () {
-		checkStatics();
 		if (instance == null) {
 			instance = new Timer();
 		}
@@ -46,22 +45,22 @@ public class Timer {
 	}
 
 	/** Schedules a task to occur once as soon as possible, but not sooner than the start of the next frame. */
-	public void postTask (Task task) {
-		scheduleTask(task, 0, 0, 0);
+	public Task postTask (Task task) {
+		return scheduleTask(task, 0, 0, 0);
 	}
 
 	/** Schedules a task to occur once after the specified delay. */
-	public void scheduleTask (Task task, float delaySeconds) {
-		scheduleTask(task, delaySeconds, 0, 0);
+	public Task scheduleTask (Task task, float delaySeconds) {
+		return scheduleTask(task, delaySeconds, 0, 0);
 	}
 
 	/** Schedules a task to occur once after the specified delay and then repeatedly at the specified interval until cancelled. */
-	public void scheduleTask (Task task, float delaySeconds, float intervalSeconds) {
-		scheduleTask(task, delaySeconds, intervalSeconds, FOREVER);
+	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds) {
+		return scheduleTask(task, delaySeconds, intervalSeconds, FOREVER);
 	}
 
 	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval. */
-	public void scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
+	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
 		if (task.repeatCount != CANCELLED) throw new IllegalArgumentException("The same task may not be scheduled twice.");
 		task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
 		task.intervalMillis = (long)(intervalSeconds * 1000);
@@ -70,6 +69,8 @@ public class Timer {
 			tasks.add(task);
 		}
 		wake();
+		
+		return task;
 	}
 
 	/** Stops the timer, tasks will not be executed and time that passes will not be applied to the task delays. */
@@ -82,7 +83,6 @@ public class Timer {
 	/** Starts the timer if it was stopped. */
 	public void start () {
 		synchronized (instances) {
-			checkStatics();
 			if (instances.contains(this, true)) return;
 			instances.add(this);
 			if (thread == null) thread = new TimerThread();
@@ -146,26 +146,26 @@ public class Timer {
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #postTask(Task) */
-	static public void post (Task task) {
-		instance().postTask(task);
+	static public Task post (Task task) {
+		return instance().postTask(task);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float) */
-	static public void schedule (Task task, float delaySeconds) {
-		instance().scheduleTask(task, delaySeconds);
+	static public Task schedule (Task task, float delaySeconds) {
+		return instance().scheduleTask(task, delaySeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float) */
-	static public void schedule (Task task, float delaySeconds, float intervalSeconds) {
-		instance().scheduleTask(task, delaySeconds, intervalSeconds);
+	static public Task schedule (Task task, float delaySeconds, float intervalSeconds) {
+		return instance().scheduleTask(task, delaySeconds, intervalSeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float, int) */
-	static public void schedule (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
+	static public Task schedule (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
+		return instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
 	}
 
 	/** Runnable with a cancel method.
@@ -248,27 +248,14 @@ public class Timer {
 				app = null;
 				wake();
 			}
+			thread = null;
 		}
 
 		public void dispose () {
 			pause();
 			Gdx.app.removeLifecycleListener(this);
-			thread = null;
 			instances.clear();
 			instance = null;
-		}
-	}
-
-	private static void checkStatics () {
-		// fix for https://github.com/libgdx/libgdx/issues/1548, in case the statics are left overs...
-		synchronized (instances) {
-			if (thread != null) {
-				if (thread.app != Gdx.app) {
-					thread = null;
-					instances.clear();
-					instance = null;
-				}
-			}
 		}
 	}
 }

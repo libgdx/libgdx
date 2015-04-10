@@ -513,7 +513,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return buffer.toString();
 	}
 
-	public Iterator<Entry<K>> iterator () {
+	public Entries<K> iterator () {
 		return entries();
 	}
 
@@ -650,7 +650,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 			return hasNext;
 		}
 
-		public Iterator<Entry<K>> iterator () {
+		public Entries<K> iterator () {
 			return this;
 		}
 
@@ -706,13 +706,20 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 			return key;
 		}
 
-		public Iterator<K> iterator () {
+		public Keys<K> iterator () {
 			return this;
 		}
 
 		/** Returns a new array containing the remaining keys. */
 		public Array<K> toArray () {
 			Array array = new Array(true, map.size);
+			while (hasNext)
+				array.add(next());
+			return array;
+		}
+
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
 			while (hasNext)
 				array.add(next());
 			return array;

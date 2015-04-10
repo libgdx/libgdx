@@ -126,9 +126,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody getRigidBodyByName(String name) {
-    long cPtr = ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return btRigidBody.getInstance(ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name), false);
+}
 
   public btTypedConstraint getConstraintByName(String name) {
     long cPtr = ExtrasJNI.btWorldImporter_getConstraintByName(swigCPtr, this, name);
@@ -144,9 +143,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody createRigidBody(boolean isDynamic, float mass, Matrix4 startTransform, btCollisionShape shape, String bodyName) {
-    long cPtr = ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return btRigidBody.getInstance(ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
+}
 
   public btCollisionObject createCollisionObject(Matrix4 startTransform, btCollisionShape shape, String bodyName) {
 	return btCollisionObject.getInstance(ExtrasJNI.btWorldImporter_createCollisionObject(swigCPtr, this, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
@@ -212,9 +210,9 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public SWIGTYPE_p_btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
+  public btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
     long cPtr = ExtrasJNI.btWorldImporter_createGimpactShape(swigCPtr, this, btStridingMeshInterface.getCPtr(trimesh), trimesh);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btGImpactMeshShape(cPtr, false);
+    return (cPtr == 0) ? null : new btGImpactMeshShape(cPtr, false);
   }
 
   public btStridingMeshInterfaceData createStridingMeshInterfaceData(btStridingMeshInterfaceData interfaceData) {

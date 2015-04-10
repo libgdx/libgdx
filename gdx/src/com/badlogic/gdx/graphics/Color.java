@@ -43,8 +43,6 @@ public class Color {
 	public static final Color TEAL = new Color(0, 0.5f, 0.5f, 1);
 	public static final Color NAVY = new Color(0, 0, 0.5f, 1);
 
-	@Deprecated public static Color tmp = new Color();
-
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
@@ -376,6 +374,10 @@ public class Color {
 		return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
 	}
 
+	public static int argb8888 (float a, float r, float g, float b) {
+		return ((int)(a * 255) << 24) | ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
+	}
+
 	public static int rgb565 (Color color) {
 		return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
 	}
@@ -390,6 +392,10 @@ public class Color {
 
 	public static int rgba8888 (Color color) {
 		return ((int)(color.r * 255) << 24) | ((int)(color.g * 255) << 16) | ((int)(color.b * 255) << 8) | (int)(color.a * 255);
+	}
+
+	public static int argb8888 (Color color) {
+		return ((int)(color.a * 255) << 24) | ((int)(color.r * 255) << 16) | ((int)(color.g * 255) << 8) | (int)(color.b * 255);
 	}
 
 	/** Sets the Color components using the specified integer value in the format RGB565. This is inverse to the rgb565(r, g, b)
@@ -438,11 +444,16 @@ public class Color {
 		color.a = ((value & 0x000000ff)) / 255f;
 	}
 
-	/** Returns a temporary copy of this color. This is not thread safe, do not save a reference to this instance.
-	 * 
-	 * @return a temporary copy of this color */
-	public Color tmp () {
-		return tmp.set(this);
+	/** Sets the Color components using the specified integer value in the format ARGB8888. This is the inverse to the argb8888(a, r,
+     * g, b) method
+	 *
+	 * @param color The Color to be modified.
+	 * @param value An integer color value in ARGB8888 format. */
+	public static void argb8888ToColor(Color color, int value) {
+		color.a = ((value & 0xff000000) >>> 24) / 255f;
+		color.r = ((value & 0x00ff0000) >>> 16) / 255f;
+		color.g = ((value & 0x0000ff00) >>> 8) / 255f;
+		color.b = ((value & 0x000000ff)) / 255f;
 	}
 
 	/** @return a copy of this color */

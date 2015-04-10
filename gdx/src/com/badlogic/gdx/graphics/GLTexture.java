@@ -17,28 +17,17 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.nio.IntBuffer;
 
 /** Class representing an OpenGL texture by its target and handle. Keeps track of its state like the TextureFilter and TextureWrap.
  * Also provides some (protected) static methods to create TextureData and upload image data.
  * @author badlogic, Xoppa */
 public abstract class GLTexture implements Disposable {
-	private static final IntBuffer buffer = BufferUtils.newIntBuffer(1);
-
 	/** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
 	public final int glTarget;
 	protected int glHandle;
@@ -58,7 +47,7 @@ public abstract class GLTexture implements Disposable {
 
 	/** Generates a new OpenGL texture with the specified target. */
 	public GLTexture (int glTarget) {
-		this(glTarget, createGLHandle());
+		this(glTarget, Gdx.gl.glGenTexture ());
 	}
 
 	public GLTexture (int glTarget, int glHandle) {
@@ -178,10 +167,7 @@ public abstract class GLTexture implements Disposable {
 	/** Destroys the OpenGL Texture as specified by the glHandle. */
 	protected void delete () {
 		if (glHandle != 0) {
-			buffer.put(0, glHandle);
-			buffer.position(0);
-			buffer.limit(1);
-			Gdx.gl.glDeleteTextures(1, buffer);
+			Gdx.gl.glDeleteTexture (glHandle);
 			glHandle = 0;
 		}
 	}
@@ -191,23 +177,6 @@ public abstract class GLTexture implements Disposable {
 		delete();
 	}
 
-	protected static TextureData createTextureData (FileHandle file, Format format, boolean useMipMaps) {
-		if (file == null) return null;
-		if (file.name().endsWith(".etc1")) return new ETC1TextureData(file, useMipMaps);
-		return new FileTextureData(file, null, format, useMipMaps);
-	}
-
-	protected static TextureData createTextureData (FileHandle file, boolean useMipMaps) {
-		return createTextureData(file, null, useMipMaps);
-	}
-
-	protected static int createGLHandle () {
-		buffer.position(0);
-		buffer.limit(buffer.capacity());
-		Gdx.gl.glGenTextures(1, buffer);
-		return buffer.get(0);
-	}
-	
 	protected static void uploadImageData (int target, TextureData data) {
 		uploadImageData(target, data, 0);
 	}

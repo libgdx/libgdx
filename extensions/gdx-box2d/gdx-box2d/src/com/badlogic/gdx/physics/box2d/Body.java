@@ -124,17 +124,12 @@ public class Body {
 	 * @param fixture the fixture to be removed.
 	 * @warning This function is locked during callbacks. */
 	public void destroyFixture (Fixture fixture) {
-		jniDestroyFixture(addr, fixture.addr);
+		this.world.destroyFixture(this, fixture);
+		fixture.setUserData(null);
 		this.world.fixtures.remove(fixture.addr);
 		this.fixtures.removeValue(fixture, true);
 		this.world.freeFixtures.free(fixture);
 	}
-
-	private native void jniDestroyFixture (long addr, long fixtureAddr); /*
-		b2Body* body = (b2Body*)addr;
-		b2Fixture* fixture = (b2Fixture*)fixtureAddr;
-		body->DestroyFixture(fixture);
-	*/
 
 	/** Set the position of the body's origin and rotation. This breaks any contacts and wakes the other bodies. Manipulating a
 	 * body's transform may cause non-physical behavior.
@@ -727,7 +722,11 @@ inline b2BodyType getBodyType( int type )
 	 * participate in collisions, ray-casts, or queries. Joints connected to an inactive body are implicitly inactive. An inactive
 	 * body is still owned by a b2World object and remains in the body list. */
 	public void setActive (boolean flag) {
-		jniSetActive(addr, flag);
+		if (flag) {
+			jniSetActive(addr, flag);
+		} else {
+			this.world.deactivateBody(this);
+		}
 	}
 
 	private native void jniSetActive (long addr, boolean flag); /*

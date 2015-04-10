@@ -61,6 +61,21 @@ public class btRigidBody extends btCollisionObject {
 
 	protected btMotionState motionState;
 	
+	/** @return The existing instance for the specified pointer, or null if the instance doesn't exist */
+	public static btRigidBody getInstance(final long swigCPtr) {
+		return (btRigidBody)btCollisionObject.getInstance(swigCPtr);
+	}
+		
+	/** @return The existing instance for the specified pointer, or a newly created instance if the instance didn't exist */
+	public static btRigidBody getInstance(final long swigCPtr, boolean owner) {
+		if (swigCPtr == 0)
+			return null;
+		btRigidBody result = getInstance(swigCPtr);
+		if (result == null)
+				result = new btRigidBody(swigCPtr, owner);
+		return result;
+	}
+	
 	public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
 		this(false, constructionInfo);
 		refCollisionShape(constructionInfo.getCollisionShape());

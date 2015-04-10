@@ -75,6 +75,8 @@ public class LwjglApplicationConfiguration {
 	public String preferencesDirectory = ".prefs/";
 	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
 	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
+	/** enable HDPI mode on Mac OS X **/
+	public boolean useHDPI = false;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();	

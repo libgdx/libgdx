@@ -51,7 +51,7 @@ public class TextInputDialogTest extends GdxTest {
 				public void canceled () {
 					message = "cancled by user";
 				}
-			}, "enter something funny", "funny");
+			}, "enter something funny", "funny", "something funny");
 		}
 	}
 }

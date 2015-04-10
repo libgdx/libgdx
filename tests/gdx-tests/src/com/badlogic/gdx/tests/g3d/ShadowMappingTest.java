@@ -65,7 +65,7 @@ public class ShadowMappingTest extends GdxTest {
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshPartBuilder mpb = modelBuilder.part("parts", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.Color,
+		MeshPartBuilder mpb = modelBuilder.part("parts", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.ColorUnpacked,
 			new Material(ColorAttribute.createDiffuse(Color.WHITE)));
 		mpb.setColor(1f, 1f, 1f, 1f);
 		mpb.box(0, -1.5f, 0, 10, 1, 10);

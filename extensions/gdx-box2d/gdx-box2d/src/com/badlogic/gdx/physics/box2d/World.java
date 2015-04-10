@@ -204,7 +204,7 @@ b2ContactFilter defaultFilter;
 	};
 
 	/** the address of the world instance **/
-	private final long addr;
+	protected final long addr;
 
 	/** all known bodies **/
 	protected final LongMap<Body> bodies = new LongMap<Body>(100);
@@ -338,6 +338,46 @@ b2ContactFilter defaultFilter;
 		world->SetContactFilter(&contactFilter);
 		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for fixture destruction with notifying custom
+	 * contact listener
+	 * @param body
+	 * @param fixture */
+	void destroyFixture(Body body, Fixture fixture) {
+		jniDestroyFixture(addr, body.addr, fixture.addr);
+	}
+	
+	private native void jniDestroyFixture(long addr, long bodyAddr, long fixtureAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);
+		b2Fixture* fixture = (b2Fixture*)(fixtureAddr);
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->DestroyFixture(fixture);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for body deactivation with notifying custom
+	 * contact listener
+	 * @param body */
+	void deactivateBody(Body body) {
+		jniDeactivateBody(addr, body.addr);
+	}
+	
+	private native void jniDeactivateBody(long addr, long bodyAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);	
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->SetActive(false);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
 	*/
@@ -710,6 +750,11 @@ b2ContactFilter defaultFilter;
 		b2World* world = (b2World*)addr;
 		return world->GetBodyCount();
 	*/
+	
+	/** Get the number of fixtures. */
+	public int getFixtureCount () {
+		return fixtures.size;
+	}
 
 	/** Get the number of joints. */
 	public int getJointCount () {
@@ -866,6 +911,15 @@ b2ContactFilter defaultFilter;
 		bodies.ensureCapacity(this.bodies.size);
 		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
 			bodies.add(iter.next());
+		}		
+	}
+
+	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
+	public void getFixtures (Array<Fixture> fixtures) {
+		fixtures.clear();
+		fixtures.ensureCapacity(this.fixtures.size);
+		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
+			fixtures.add(iter.next());
 		}		
 	}
 

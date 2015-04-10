@@ -67,6 +67,7 @@ public class Pixmap implements Disposable {
 	int r = 255, g = 255, b = 255;
 	float a;
 	String color = make(r, g, b, a);
+	static String clearColor = make(255, 255, 255, 1.0f);
 	static Blending blending;
 	CanvasPixelArray pixels;
 
@@ -81,7 +82,7 @@ public class Pixmap implements Disposable {
 	}
 
 	private static Composite getComposite () {
-		return blending == Blending.None ? Composite.COPY : Composite.SOURCE_OVER;
+		return Composite.SOURCE_OVER;
 	}
 
 	public Pixmap (ImageElement img) {
@@ -206,7 +207,7 @@ public class Pixmap implements Disposable {
 
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill () {
-		context.fillRect(0, 0, getWidth(), getHeight());
+		rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
 	}
 
 // /**
@@ -223,11 +224,7 @@ public class Pixmap implements Disposable {
 	 * @param x2 The x-coordinate of the first point
 	 * @param y2 The y-coordinate of the first point */
 	public void drawLine (int x, int y, int x2, int y2) {
-		context.beginPath();
-		context.moveTo(x, y);
-		context.lineTo(x2, y2);
-		context.stroke();
-		context.closePath();
+		line(x, y, x2, y2, DrawType.STROKE);
 	}
 
 	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
@@ -238,10 +235,7 @@ public class Pixmap implements Disposable {
 	 * @param width The width in pixels
 	 * @param height The height in pixels */
 	public void drawRectangle (int x, int y, int width, int height) {
-		context.beginPath();
-		context.rect(x, y, width, height);
-		context.stroke();
-		context.closePath();
+		rectangle(x, y, width, height, DrawType.STROKE);
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
@@ -250,7 +244,8 @@ public class Pixmap implements Disposable {
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner) */
 	public void drawPixmap (Pixmap pixmap, int x, int y) {
-		context.drawImage(pixmap.getCanvasElement(), x, y);
+		CanvasElement image = pixmap.getCanvasElement();		
+		image(image, 0, 0, image.getWidth(), image.getHeight(), x, y, image.getWidth(), image.getHeight());
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
@@ -262,8 +257,9 @@ public class Pixmap implements Disposable {
 	 * @param srcy The source y-coordinate (top left corner);
 	 * @param srcWidth The width of the area form the other Pixmap in pixels
 	 * @param srcHeight The height of the area form the other Pixmap in pixles */
-	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
-		context.drawImage(pixmap.getCanvasElement(), srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);
+	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {		
+		CanvasElement image = pixmap.getCanvasElement();		
+		image(image, srcx, srcy, srcWidth, srcHeight, x, y, srcWidth, srcHeight);		
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
@@ -281,7 +277,7 @@ public class Pixmap implements Disposable {
 	 * @param dstHeight the target height */
 	public void drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
 		int dstHeight) {
-		context.drawImage(pixmap.getCanvasElement(), srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+		image(pixmap.getCanvasElement(), srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
 	}
 
 	/** Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
@@ -292,7 +288,7 @@ public class Pixmap implements Disposable {
 	 * @param width The width in pixels
 	 * @param height The height in pixels */
 	public void fillRectangle (int x, int y, int width, int height) {
-		context.fillRect(x, y, width, height);
+		rectangle(x, y, width, height, DrawType.FILL);
 	}
 
 	/** Draws a circle outline with the center at x,y and a radius using the current color and stroke width.
@@ -301,10 +297,7 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
 	public void drawCircle (int x, int y, int radius) {
-		context.beginPath();
-		context.arc(x, y, radius, 0, 2 * Math.PI, false);
-		context.stroke();
-		context.closePath();
+		circle(x, y, radius, DrawType.STROKE);
 	}
 
 	/** Fills a circle with the center at x,y and a radius using the current color.
@@ -313,10 +306,7 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
 	public void fillCircle (int x, int y, int radius) {
-		context.beginPath();
-		context.arc(x, y, radius, 0, 2 * Math.PI, false);
-		context.fill();
-		context.closePath();
+		circle(x, y, radius, DrawType.FILL);
 	}
 
 	/** Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
@@ -328,13 +318,7 @@ public class Pixmap implements Disposable {
 	 * @param x3 The x-coordinate of vertex 3
 	 * @param y3 The y-coordinate of vertex 3 */
 	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
-		context.beginPath();
-		context.moveTo(x1,y1);
-		context.lineTo(x2,y2);
-		context.lineTo(x3,y3);
-		context.lineTo(x1,y1);
-		context.fill();
-		context.closePath();
+		triangle(x1, y1, x2, y2, x3, y3, DrawType.FILL);
 	}
 
 	/** Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
@@ -357,7 +341,7 @@ public class Pixmap implements Disposable {
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate */
 	public void drawPixel (int x, int y) {
-		context.fillRect(x, y, 1, 1);
+		rectangle(x, y, 1, 1, DrawType.FILL);
 	}
 
 	/** Draws a pixel at the given location with the given color.
@@ -370,4 +354,123 @@ public class Pixmap implements Disposable {
 		drawPixel(x, y);
 	}
 
+	private void circle (int x, int y, int radius, DrawType drawType) {
+		if (blending == Blending.None) {
+			context.setFillStyle(clearColor);
+			context.setStrokeStyle(clearColor);
+			context.setGlobalCompositeOperation("destination-out");
+			context.beginPath();
+			context.arc(x, y, radius, 0, 2 * Math.PI, false);
+			fillOrStrokePath(drawType);
+			context.closePath();
+			context.setFillStyle(color);
+			context.setStrokeStyle(color);
+			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		}
+		context.beginPath();
+		context.arc(x, y, radius, 0, 2 * Math.PI, false);
+		fillOrStrokePath(drawType);
+		context.closePath();
+		pixels = null;		
+	}
+	
+	private void line(int x, int y, int x2, int y2, DrawType drawType) {
+		if (blending == Blending.None) {
+			context.setFillStyle(clearColor);
+			context.setStrokeStyle(clearColor);
+			context.setGlobalCompositeOperation("destination-out");
+			context.beginPath();
+			context.moveTo(x, y);
+			context.lineTo(x2, y2);
+			fillOrStrokePath(drawType);
+			context.closePath();
+			context.setFillStyle(color);
+			context.setStrokeStyle(color);
+			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		}		
+		context.beginPath();
+		context.moveTo(x, y);
+		context.lineTo(x2, y2);
+		fillOrStrokePath(drawType);
+		context.closePath();
+	}
+	
+	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
+		if (blending == Blending.None) {
+			context.setFillStyle(clearColor);
+			context.setStrokeStyle(clearColor);
+			context.setGlobalCompositeOperation("destination-out");
+			context.beginPath();
+			context.rect(x, y, width, height);
+			fillOrStrokePath(drawType);
+			context.closePath();
+			context.setFillStyle(color);
+			context.setStrokeStyle(color);
+			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		}
+		context.beginPath();
+		context.rect(x, y, width, height);
+		fillOrStrokePath(drawType);
+		context.closePath();
+		pixels = null;
+	}
+	
+	private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
+		if (blending == Blending.None) {
+			context.setFillStyle(clearColor);
+			context.setStrokeStyle(clearColor);
+			context.setGlobalCompositeOperation("destination-out");
+			context.beginPath();
+			context.moveTo(x1,y1);
+			context.lineTo(x2,y2);
+			context.lineTo(x3,y3);
+			context.lineTo(x1,y1);
+			fillOrStrokePath(drawType);
+			context.closePath();
+			context.setFillStyle(color);
+			context.setStrokeStyle(color);
+			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		}		
+		context.beginPath();
+		context.moveTo(x1,y1);
+		context.lineTo(x2,y2);
+		context.lineTo(x3,y3);
+		context.lineTo(x1,y1);
+		fillOrStrokePath(drawType);
+		context.closePath();
+		pixels = null;
+	}
+	
+	private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+		if (blending == Blending.None) {
+			context.setFillStyle(clearColor);
+			context.setStrokeStyle(clearColor);
+			context.setGlobalCompositeOperation("destination-out");
+			context.beginPath();
+			context.rect(dstX, dstY, dstWidth, dstHeight);
+			fillOrStrokePath(DrawType.FILL);
+			context.closePath();
+			context.setFillStyle(color);
+			context.setStrokeStyle(color);
+			context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		}
+		context.drawImage(image, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+		pixels = null;
+	}
+	
+	private void fillOrStrokePath(DrawType drawType) {
+		switch (drawType) {
+			case FILL:
+				context.fill();
+				break;
+			case STROKE:
+				context.stroke();
+				break;
+		}		
+	}
+	
+	private enum DrawType {
+		FILL, STROKE
+	}
+	
 }
