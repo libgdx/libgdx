@@ -78,7 +78,8 @@ public class PixmapPackerTest extends GdxTest {
 		pixmap3.dispose();
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
-		textureRegions = packer.getTextureRegions(TextureFilter.Nearest, TextureFilter.Nearest, false);
+		textureRegions = new Array<TextureRegion>();
+		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false, true);
 		Gdx.app.log("PixmapPackerTest", "Number of updated textures: " + atlas.getTextures().size);
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override

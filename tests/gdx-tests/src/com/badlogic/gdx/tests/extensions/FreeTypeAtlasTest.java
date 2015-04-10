@@ -20,10 +20,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.EnumMap;
 
@@ -34,8 +39,8 @@ import java.util.EnumMap;
  * flexible solution might be to use an ObjectMap and and IntMap instead.
  * <p/>
  * This test uses a less efficient but more convenient way to pack multiple generated fonts into a single texture atlas
- * compared with FreeTypePackTest - the texture atlas pages will be refreshed once for each font generated, which can be
- * slow on mobile devices.
+ * compared with FreeTypePackTest - each texture page will be generated and refreshed once.  Refreshing textures is slow
+ * on mobile devices.
  */
 public class FreeTypeAtlasTest extends GdxTest {
 
@@ -63,9 +68,8 @@ public class FreeTypeAtlasTest extends GdxTest {
 
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	TextureAtlas atlas;
 	String text;
-	TextureRegion firstPage;
+	TextureAtlas atlas;
 
 	FontMap<BitmapFont> fontMap;
 
@@ -89,7 +93,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 		long start = System.currentTimeMillis();
 		int glyphCount = createFonts();
 		long time = System.currentTimeMillis() - start;
-		text = glyphCount + " glyphs packed in " + atlas.getRegions().size + " page(s) in " + time + " ms";
+		text = glyphCount + " glyphs packed in " + atlas.getTextures().size + " page(s) in " + time + " ms";
 
 	}
 
@@ -124,7 +128,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 
 		// draw all glyphs in background
 		batch.setColor(1f, 1f, 1f, 0.15f);
-		batch.draw(firstPage, 0, 0);
+		batch.draw(atlas.getTextures().first(), 0, 0);
 		batch.setColor(1f, 1f, 1f, 1f);
 		batch.end();
 	}
@@ -180,14 +184,10 @@ public class FreeTypeAtlasTest extends GdxTest {
 			gen.dispose();
 		}
 
-		// Generate the atlas.
-		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
+		// Generate a texture atlas, which also finalises the textures.
+		atlas = packer.generateTextureAtlas(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, false);
 
-		// Get the first page's texture region for the demo so we can display it as the background
-		firstPage = packer.getTextureRegions(TextureFilter.Nearest, TextureFilter.Nearest, false).first();
-
-		// No more need for our CPU-based pixmap packer, as our textures are now on GPU
-		packer.dispose();
+		// We don't need to dispose packer, because its Pixmaps are now owned by the atlas.
 
 		// for the demo, show how many glyphs we loaded
 		return fontCount * CHARACTERS.length();
