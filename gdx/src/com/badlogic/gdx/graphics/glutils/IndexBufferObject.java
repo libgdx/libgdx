@@ -119,7 +119,7 @@ public class IndexBufferObject implements IndexData {
 			isDirty = false;
 		}
 	}
-	
+
 	public void setIndices (ShortBuffer indices) {
 		isDirty = true;
 		int pos = indices.position();
@@ -129,13 +129,12 @@ public class IndexBufferObject implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
-		
+
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 	}
-
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
