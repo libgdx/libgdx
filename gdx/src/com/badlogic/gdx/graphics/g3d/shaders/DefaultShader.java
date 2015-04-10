@@ -30,8 +30,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -160,6 +162,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter viewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
@@ -167,6 +170,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter projViewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
@@ -174,6 +178,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter normalMatrix = new LocalSetter() {
 			private final Matrix3 tmpM = new Matrix3();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
@@ -321,7 +326,9 @@ public class DefaultShader extends BaseShader {
 		};
 
 		public static class ACubemap extends LocalSetter {
-			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			//private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			private final static float tmp[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			private final AmbientCubemap cacheAmbientCubemap = new AmbientCubemap();
 			private final static Vector3 tmpV1 = new Vector3();
 			public final int dirLightsOffset;
@@ -335,24 +342,37 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (renderable.environment == null)
-					shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
+					shader.program.setUniform4fv(shader.loc(inputID), ones, 0, ones.length);
 				else {
 					renderable.worldTransform.getTranslation(tmpV1);
 					if (combinedAttributes.has(ColorAttribute.AmbientLight))
 						cacheAmbientCubemap.set(((ColorAttribute)combinedAttributes.get(ColorAttribute.AmbientLight)).color);
 
-					for (int i = dirLightsOffset; i < renderable.environment.directionalLights.size; i++)
-						cacheAmbientCubemap.add(renderable.environment.directionalLights.get(i).color,
-							renderable.environment.directionalLights.get(i).direction);
+					if (combinedAttributes.has(DirectionalLightsAttribute.Type)) {
+						Array<DirectionalLight> lights = ((DirectionalLightsAttribute)combinedAttributes
+							.get(DirectionalLightsAttribute.Type)).lights;
+						for (int i = dirLightsOffset; i < lights.size; i++)
+							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).direction);
+					}
 
-					for (int i = pointLightsOffset; i < renderable.environment.pointLights.size; i++)
-						cacheAmbientCubemap.add(renderable.environment.pointLights.get(i).color,
-							renderable.environment.pointLights.get(i).position, tmpV1,
-							renderable.environment.pointLights.get(i).intensity);
+					if (combinedAttributes.has(PointLightsAttribute.Type)) {
+						Array<PointLight> lights = ((PointLightsAttribute)combinedAttributes.get(PointLightsAttribute.Type)).lights;
+						for (int i = pointLightsOffset; i < lights.size; i++)
+							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).position, tmpV1, lights.get(i).intensity);
+					}
 
 					cacheAmbientCubemap.clamp();
+//					shader.program.setUniform4fv(shader.loc(inputID), cacheAmbientCubemap.data, 0, cacheAmbientCubemap.data.length);
+					
+					final float data[] = cacheAmbientCubemap.data;
+					for (int i = 0; i < 6; i++) {
+						tmp[i*4+0] = data[i*3+0];
+						tmp[i*4+1] = data[i*3+1];
+						tmp[i*4+2] = data[i*3+2];
+						tmp[i*4+3] = 1f;
+					}
 
-					shader.program.setUniform3fv(shader.loc(inputID), cacheAmbientCubemap.data, 0, cacheAmbientCubemap.data.length);
+					shader.program.setUniform4fv(shader.loc(inputID), tmp, 0, tmp.length);
 				}
 			}
 		}
@@ -480,12 +500,12 @@ public class DefaultShader extends BaseShader {
 		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
 			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
 	}
-	
+
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
 		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
-	
+
 	public DefaultShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		final Attributes attributes = combineAttributes(renderable);
 		this.config = config;
@@ -577,10 +597,11 @@ public class DefaultShader extends BaseShader {
 	private static final boolean or (final long mask, final long flag) {
 		return (mask & flag) != 0;
 	}
-	
+
 	private final static Attributes tmpAttributes = new Attributes();
+
 	// TODO: Move responsibility for combining attributes to RenderableProvider
-	private static final Attributes combineAttributes(final Renderable renderable) {
+	private static final Attributes combineAttributes (final Renderable renderable) {
 		tmpAttributes.clear();
 		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
 		if (renderable.material != null) tmpAttributes.set(renderable.material);
@@ -593,7 +614,7 @@ public class DefaultShader extends BaseShader {
 		final long attributesMask = attributes.getMask();
 		final long vertexMask = renderable.mesh.getVertexAttributes().getMask();
 		if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
-		if (or(vertexMask, Usage.Color | Usage.ColorPacked)) prefix += "#define colorFlag\n";
+		if (or(vertexMask, Usage.ColorUnpacked | Usage.ColorPacked)) prefix += "#define colorFlag\n";
 		if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
 		if (and(vertexMask, Usage.Tangent)) prefix += "#define tangentFlag\n";
 		if (and(vertexMask, Usage.Normal)) prefix += "#define normalFlag\n";
@@ -607,8 +628,8 @@ public class DefaultShader extends BaseShader {
 					prefix += "#define fogFlag\n";
 				}
 				if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
-				if (attributes.has(CubemapAttribute.EnvironmentMap)
-					|| attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
+				if (attributes.has(CubemapAttribute.EnvironmentMap) || attributes.has(CubemapAttribute.EnvironmentMap))
+					prefix += "#define environmentCubemapFlag\n";
 			}
 		}
 		final int n = renderable.mesh.getVertexAttributes().size();
@@ -618,7 +639,8 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define boneWeight" + attr.unit + "Flag\n";
 			else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
 		}
-		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
+		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type)
+			prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
 		if ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
@@ -699,7 +721,7 @@ public class DefaultShader extends BaseShader {
 
 		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
 	}
-	
+
 	@Override
 	public void render (Renderable renderable, Attributes combinedAttributes) {
 		if (!combinedAttributes.has(BlendingAttribute.Type))
@@ -748,8 +770,10 @@ public class DefaultShader extends BaseShader {
 
 	protected void bindLights (final Renderable renderable, final Attributes attributes) {
 		final Environment lights = renderable.environment;
-		final Array<DirectionalLight> dirs = lights.directionalLights;
-		final Array<PointLight> points = lights.pointLights;
+		final DirectionalLightsAttribute dla = attributes.get(DirectionalLightsAttribute.class, DirectionalLightsAttribute.Type);
+		final Array<DirectionalLight> dirs = dla == null ? null : dla.lights;
+		final PointLightsAttribute pla = attributes.get(PointLightsAttribute.class, PointLightsAttribute.Type);
+		final Array<PointLight> points = pla == null ? null : pla.lights;
 
 		if (dirLightsLoc >= 0) {
 			for (int i = 0; i < directionalLights.length; i++) {
@@ -763,9 +787,8 @@ public class DefaultShader extends BaseShader {
 					directionalLights[i].set(dirs.get(i));
 
 				int idx = dirLightsLoc + i * dirLightsSize;
-				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.r, directionalLights[i].color.g,
-					directionalLights[i].color.b);
-				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction);
+				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color);
+				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction.x, directionalLights[i].direction.y, directionalLights[i].direction.z, 1f);
 				if (dirLightsSize <= 0) break;
 			}
 		}
@@ -782,10 +805,9 @@ public class DefaultShader extends BaseShader {
 
 				int idx = pointLightsLoc + i * pointLightsSize;
 				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
-					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
-				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position);
-				if (pointLightsIntensityOffset >= 0)
-					program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
+					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity, 1f);
+				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y, pointLights[i].position.z, 1f);
+				if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0) break;
 			}
 		}

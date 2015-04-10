@@ -130,6 +130,9 @@
 		<include name="graphics/g3d/attributes/FloatAttribute.java"/>
 		<include name="graphics/g3d/attributes/IntAttribute.java"/>
 		<include name="graphics/g3d/attributes/TextureAttribute.java"/>
+		<include name="graphics/g3d/attributes/DirectionalLightsAttribute.java"/>
+		<include name="graphics/g3d/attributes/PointLightsAttribute.java"/>
+		<include name="graphics/g3d/attributes/SpotLightsAttribute.java"/>
 		
 	<!-- graphics/g3d/decals -->
 		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
