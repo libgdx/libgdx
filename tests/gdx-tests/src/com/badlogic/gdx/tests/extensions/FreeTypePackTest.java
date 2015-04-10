@@ -151,7 +151,7 @@ public class FreeTypePackTest extends GdxTest {
 		// Keep hold of the returned BitmapFontData for later
 		// 4. Repeat for other sizes.
 		// 5. Dispose the generator and repeat for other font styles/families
-		// 6. Get the TextureRegion(s) from the packer using packer.getTextureRegions()
+		// 6. Get the TextureRegion(s) from the packer using packer.updateTextureRegions()
 		// 7. Dispose the PixmapPacker
 		// 8. Use each BitmapFontData to construct a new BitmapFont, and specify your TextureRegion(s) to the font constructor
 		// 9. Dispose of the Texture upon application exit or when you are done using the font atlas

@@ -169,7 +169,7 @@ public class PixmapPacker implements Disposable {
 	 * and the method {@link #getRect(String)}.
 	 * </p>
 	 * 
-	 * @param name the name of the image.
+	 * @param name the name of the image.  This can be null, in which case the image is packed anonymously (see {@link #pack(Pixmap)}).
 	 * @param image the image
 	 * @return Rectangle describing the area the pixmap was rendered to.
 	 * @throws RuntimeException in case the image did not fit due to the page size being too small or providing a duplicate name */
@@ -207,7 +207,7 @@ public class PixmapPacker implements Disposable {
 	 * followed by generating or updating a TextureAtlas instead.
 	 * </p>
 	 *
-	 * @param name the name of the image.
+	 * @param name the name of the image.  This can be null, in which case the image is packed anonymously (see {@link #packDirectToTexture(Pixmap)}).
 	 * @param image the image
 	 * @return Rectangle describing the area the pixmap was rendered to.
 	 * @throws RuntimeException in case the image did not fit due to the page size being too small or providing a duplicate name */
@@ -413,6 +413,9 @@ public class PixmapPacker implements Disposable {
 				} else {
 					page.texture.load(page.texture.getTextureData());
 				}
+				page.textureNeedsRefresh = false;
+			}
+			if (page.addedRects.size > 0) {
 				for (String name : page.addedRects) {
 					Rectangle rect = page.rects.get(name);
 					TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
@@ -420,7 +423,6 @@ public class PixmapPacker implements Disposable {
 					atlas.addRegion(name, region);
 				}
 				page.addedRects.clear();
-				page.textureNeedsRefresh = false;
 			}
 			atlas.getTextures().add(page.texture);
 		}
