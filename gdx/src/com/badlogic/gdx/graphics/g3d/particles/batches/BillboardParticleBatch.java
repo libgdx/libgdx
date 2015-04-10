@@ -110,9 +110,21 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	protected boolean useGPU = false;
 	protected AlignMode mode = AlignMode.Screen;
 	protected Texture texture;
+	protected BlendingAttribute blendingAttribute;
+	protected DepthTestAttribute depthTestAttribute;
 	Shader shader;
 
-	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
+	/**
+	 * Create a new BillboardParticleBatch
+	 * @param mode
+	 * @param useGPU Allow to use GPU instead of CPU
+	 * @param capacity Max particle displayed
+	 * @param blendingAttribute Blending attribute used by the batch
+	 * @param depthTestAttribute DepthTest attribute used by the batch
+	 */
+	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity,
+		BlendingAttribute blendingAttribute,
+		DepthTestAttribute depthTestAttribute) {
 		super(BillboardControllerRenderData.class);
 		renderables = new Array<Renderable>();
 		renderablePool = new RenderablePool();
@@ -121,6 +133,18 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		ensureCapacity(capacity);
 		setUseGpu(useGPU);
 		setAlignMode(mode);
+
+		this.blendingAttribute = blendingAttribute;
+		this.depthTestAttribute = depthTestAttribute;
+
+		if( this.blendingAttribute == null )
+			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
+		if( this.depthTestAttribute == null )
+			this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
+	}
+
+	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
+		this(mode, useGPU, capacity, null, null);
 	}
 
 	public BillboardParticleBatch () {
@@ -141,8 +165,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		Renderable renderable = new Renderable();
 		renderable.primitiveType = GL20.GL_TRIANGLES;
 		renderable.meshPartOffset = 0;
-		renderable.material = new Material(	new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
-			new DepthTestAttribute(GL20.GL_LEQUAL, false),
+		renderable.material = new Material(this.blendingAttribute, this.depthTestAttribute,
 			TextureAttribute.createDiffuse(texture));
 		renderable.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
 		renderable.mesh.setIndices(indices);
