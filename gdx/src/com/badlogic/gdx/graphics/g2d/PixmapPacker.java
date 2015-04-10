@@ -16,15 +16,10 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -32,7 +27,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap.Keys;
 import com.badlogic.gdx.utils.OrderedMap;
 
 /** Packs {@link Pixmap} instances into one more more {@link Page} instances to generate an atlas of Pixmap instances. Provides
@@ -116,6 +110,7 @@ public class PixmapPacker implements Disposable {
 		Pixmap image;
 		Texture texture;
 		final Array<String> addedRects = new Array();
+		boolean textureNeedsRefresh = false;
 
 		public Pixmap getPixmap () {
 			return image;
@@ -125,6 +120,8 @@ public class PixmapPacker implements Disposable {
 			return rects;
 		}
 	}
+
+	private static final String ANONYMOUS = "ANONYMOUS";
 
 	final int pageWidth;
 	final int pageHeight;
@@ -155,39 +152,109 @@ public class PixmapPacker implements Disposable {
 	}
 
 	/** <p>
-	 * Inserts the given {@link Pixmap}. You can later on retrieve the images position in the output image via the supplied name
+	 * Inserts the given {@link Pixmap} with no name.  You must use the returned Rectangle to later access the
+	 * Pixmap's location in the appropriate page (which will be the last page in the PixmapPacker at the time this
+	 * method returns).
+	 * </p>
+	 *
+	 * @param image the image
+	 * @return Rectangle describing the area the pixmap was rendered to.
+	 * @throws RuntimeException in case the image did not fit due to the page size being too small */
+	public synchronized Rectangle pack(Pixmap image) {
+		return pack(null, image, false);
+	}
+
+	/** <p>
+	 * Inserts the given {@link Pixmap}. You can later retrieve the image's position in the output image via the supplied name
 	 * and the method {@link #getRect(String)}.
 	 * </p>
 	 * 
-	 * @param name the name of the image
+	 * @param name the name of the image.
 	 * @param image the image
-	 * @return Rectangle describing the area the pixmap was rendered to or null.
-	 * @throws RuntimeException in case the image did not fit due to the page size being to small or providing a duplicate name */
+	 * @return Rectangle describing the area the pixmap was rendered to.
+	 * @throws RuntimeException in case the image did not fit due to the page size being too small or providing a duplicate name */
 	public synchronized Rectangle pack (String name, Pixmap image) {
+		return pack(name, image, false);
+	}
+
+	/** <p>
+	 * Inserts the given {@link Pixmap} with no name.  You must use the returned Rectangle to later access the
+	 * Pixmap's location in the appropriate page (which will be the last page in the PixmapPacker at the time this
+	 * method returns).
+	 * </p>
+	 * <p>
+	 * The added pixmap will be directly added to the texture on the graphics card if it has already been generated
+	 * (e.g. if a TextureAtlas or TextureRegions have been built using this packer).  This is more efficient for small
+	 * numbers of small Pixmaps.  If you are packing large Pixmaps or many Pixmaps, use {@link #pack(Pixmap)} followed
+	 * by generating or updating a TextureAtlas instead.
+	 * </p>
+	 *
+	 * @param image the image
+	 * @return Rectangle describing the area the pixmap was rendered to.
+	 * @throws RuntimeException in case the image did not fit due to the page size being too small */
+	public synchronized Rectangle packDirectToTexture(Pixmap image) {
+		return pack(null, image, true);
+	}
+
+	/** <p>
+	 * Inserts the given {@link Pixmap}. You can later retrieve the image's position in the output image via the supplied name
+	 * and the method {@link #getRect(String)}.
+	 * </p>
+	 * <p>
+	 * The added pixmap will be directly added to the texture on the graphics card if it has already been generated
+	 * (e.g. if a TextureAtlas or TextureRegions have been built using this packer).  This is more efficient for small
+	 * numbers of small Pixmaps.  If you are packing large Pixmaps or many Pixmaps, use {@link #pack(String, Pixmap)}
+	 * followed by generating or updating a TextureAtlas instead.
+	 * </p>
+	 *
+	 * @param name the name of the image.
+	 * @param image the image
+	 * @return Rectangle describing the area the pixmap was rendered to.
+	 * @throws RuntimeException in case the image did not fit due to the page size being too small or providing a duplicate name */
+	public synchronized Rectangle packDirectToTexture(String name, Pixmap image) {
+		return pack(name, image, true);
+	}
+
+	private Rectangle pack (String name, Pixmap image, boolean directToTexture) {
 		if (disposed) return null;
-		if (getRect(name) != null) throw new RuntimeException("Key with name '" + name + "' is already in map");
+		if (name != null && getRect(name) != null) throw new RuntimeException("Key with name '" + name + "' is already in map");
 		int borderPixels = padding + (duplicateBorder ? 1 : 0);
 		borderPixels <<= 1;
 
 		Rectangle rect = new Rectangle(0, 0, image.getWidth() + borderPixels, image.getHeight() + borderPixels);
-		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight)
-			throw new GdxRuntimeException("page size for '" + name + "' to small");
+		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight) {
+			if (name == null) {
+				throw new GdxRuntimeException("page size for anonymous pixmap too small");
+			} else {
+				throw new GdxRuntimeException("page size for '" + name + "' too small");
+			}
+		}
 
 		Node node = insert(currPage.root, rect);
 
 		if (node == null) {
 			newPage();
-			return pack(name, image);
+			return pack(name, image, directToTexture);
 		}
 
-		node.leaveName = name;
+		node.leaveName = (name == null) ? ANONYMOUS : name;
 		rect = new Rectangle(node.rect);
 		rect.width -= borderPixels;
 		rect.height -= borderPixels;
 		borderPixels >>= 1;
 		rect.x += borderPixels;
 		rect.y += borderPixels;
-		currPage.rects.put(name, rect);
+		if (name != null) {
+			currPage.rects.put(name, rect);
+			currPage.addedRects.add(name);
+		}
+		if (directToTexture && currPage.texture != null && !currPage.textureNeedsRefresh && !duplicateBorder) {
+			currPage.texture.bind();
+			Gdx.gl.glTexSubImage2D(currPage.texture.glTarget, 0, (int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height,
+					image.getGLFormat(), image.getGLType(), image.getPixels());
+		} else {
+			currPage.textureNeedsRefresh = true;
+		}
 
 		Blending blending = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
@@ -213,7 +280,6 @@ public class PixmapPacker implements Disposable {
 
 		Pixmap.setBlending(blending);
 
-		currPage.addedRects.add(name);
 		return rect;
 	}
 
@@ -309,81 +375,94 @@ public class PixmapPacker implements Disposable {
 		return -1;
 	}
 
-	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with
-	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
-	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do not call this method if you
-	 * generated or updated a TextureAtlas, instead dispose the TextureAtlas. */
+	/** Disposes any Pixmap instances which haven't been used internally to create a texture (e.g. by
+	 * {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)} or
+	 * {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}).  If you call one of those
+	 * methods, you will also need to dispose of the texture atlas. */
 	public synchronized void dispose () {
 		for (Page page : pages) {
-			page.image.dispose();
+			if (page.texture == null) {
+				page.image.dispose();
+			}
 		}
 		disposed = true;
 	}
 
-	/** Generates a new {@link TextureAtlas} from the {@link Pixmap} instances inserted so far.
+	/** Generates a new {@link TextureAtlas} from the {@link Pixmap} instances inserted so far.  After calling this method,
+	 * disposing the PixmapPacker will no longer dispose the atlas' textures or their backing pixmaps.
 	 * @param minFilter
 	 * @param magFilter
 	 * @return the TextureAtlas */
 	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		TextureAtlas atlas = new TextureAtlas();
-		for (Page page : pages) {
-			if (page.rects.size != 0) {
-				Texture texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
-					@Override
-					public void dispose () {
-						super.dispose();
-						getTextureData().consumePixmap().dispose();
-					}
-				};
-				texture.setFilter(minFilter, magFilter);
-
-				Keys<String> names = page.rects.keys();
-				for (String name : names) {
-					Rectangle rect = page.rects.get(name);
-					TextureRegion region = new TextureRegion(texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
-					atlas.addRegion(name, region);
-				}
-			}
-		}
+		updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps);
 		return atlas;
 	}
 
 	/** Updates the given {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method.
 	 * This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the
-	 * TextureAtlas on the rendering thread. This method must be called on the rendering thread. */
-	public synchronized void updateTextureAtlas (TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
+	 * TextureAtlas on the rendering thread. This method must be called on the rendering thread.  After calling this method,
+	 * disposing the PixmapPacker will no longer dispose the atlas' textures or their backing pixmaps.
+	 */
+	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
 		boolean useMipMaps) {
 		for (Page page : pages) {
-			if (page.texture == null) {
-				if (page.rects.size != 0 && page.addedRects.size > 0) {
-					page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
-						@Override
-						public void dispose () {
-							super.dispose();
-							getTextureData().consumePixmap().dispose();
-						}
-					};
-					page.texture.setFilter(minFilter, magFilter);
-
-					for (String name : page.addedRects) {
-						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
-							(int)rect.height);
-						atlas.addRegion(name, region);
-					}
-					page.addedRects.clear();
-				}
-			} else {
-				if (page.addedRects.size > 0) {
+			if (page.textureNeedsRefresh) {
+				if (page.texture == null) {
+					generatePageTexture(page, minFilter, magFilter, useMipMaps);
+				} else {
 					page.texture.load(page.texture.getTextureData());
-					for (String name : page.addedRects) {
-						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
-							(int)rect.height);
-						atlas.addRegion(name, region);
-					}
-					page.addedRects.clear();
 				}
+				for (String name : page.addedRects) {
+					Rectangle rect = page.rects.get(name);
+					TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
+							(int)rect.height);
+					atlas.addRegion(name, region);
+				}
+				page.addedRects.clear();
+				page.textureNeedsRefresh = false;
+			}
+			atlas.getTextures().add(page.texture);
+		}
+	}
+
+	private void generatePageTexture(Page page, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
+		page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
+			@Override
+			public void dispose() {
+				super.dispose();
+				getTextureData().consumePixmap().dispose();
+			}
+		};
+		page.texture.setFilter(minFilter, magFilter);
+	}
+
+	/**
+	 * Update the provided array with texture regions corresponding with the pages of the packer, creating new
+	 * textures as necessary.  When you are finished, you must dispose of the regions or a TextureAtlas created by this
+	 * PixmapPacker - disposing this PixmapPacker will no longer dispose these textures or their backing pixmaps.
+	 *
+	 * @param textureRegions    The array of TextureRegions to refresh.
+	 * @param minFilter         minFilter to use when generating required textures.
+	 * @param magFilter         magFilter to use when generating required textures.
+	 * @param useMipMaps        useMipMaps to use when generating required textures.
+	 * @param refresh           If true, textures will be refreshed if required (i.e. if Pixmaps were added after the
+	 *                          texture was generated).  If false, textures will not be refreshed, and will need to be
+	 *                          refreshed by a final call to this method with this parameter true or by generating or
+	 *                          updating a TextureAtlas before the textures can be correctly drawn.
+	 */
+	public synchronized void updateTextureRegions(Array<TextureRegion> textureRegions, TextureFilter minFilter,
+	                                              TextureFilter magFilter, boolean useMipMaps, boolean refresh) {
+		if (disposed) return;
+		for (Page page : pages) {
+			if (page.texture == null) {
+				generatePageTexture(page, minFilter, magFilter, useMipMaps);
+			} else if (refresh && page.textureNeedsRefresh) {
+				page.texture.load(page.texture.getTextureData());
+				page.textureNeedsRefresh = false;
+			}
+			if (textureRegions.size < pages.size) {
+				textureRegions.add(new TextureRegion(page.texture));
 			}
 		}
 	}
