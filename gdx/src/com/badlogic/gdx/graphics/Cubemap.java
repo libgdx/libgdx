@@ -65,8 +65,7 @@ public class Cubemap extends GLTexture {
 		/** The direction vector to target the side. */
 		public final Vector3 direction;
 
-		CubemapSide (int index, int glEnum, float upX, float upY, float upZ,
-			float directionX, float directionY, float directionZ) {
+		CubemapSide (int index, int glEnum, float upX, float upY, float upZ, float directionX, float directionY, float directionZ) {
 			this.index = index;
 			this.glEnum = glEnum;
 			this.up = new Vector3(upX, upY, upZ);
@@ -107,9 +106,9 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
 	public Cubemap (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ,
 		FileHandle negativeZ, boolean useMipMaps) {
-		this(createTextureData(positiveX, useMipMaps), createTextureData(negativeX, useMipMaps), createTextureData(positiveY,
-			useMipMaps), createTextureData(negativeY, useMipMaps), createTextureData(positiveZ, useMipMaps), createTextureData(
-				negativeZ, useMipMaps));
+		this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
 
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
@@ -122,9 +121,9 @@ public class Cubemap extends GLTexture {
 		boolean useMipMaps) {
 		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
 			: new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
-				null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
-					positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
-						: new PixmapTextureData(negativeZ, null, useMipMaps, false));
+			null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
+			positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
+				: new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
 
 	/** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
@@ -169,7 +168,7 @@ public class Cubemap extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
-		glHandle = createGLHandle();
+		glHandle = Gdx.gl.glGenTexture();
 		load(data);
 	}
 
@@ -262,7 +261,7 @@ public class Cubemap extends GLTexture {
 
 					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					cubemap.glHandle = GLTexture.createGLHandle();
+					cubemap.glHandle = Gdx.gl.glGenTexture();
 					assetManager.load(fileName, Cubemap.class, params);
 				}
 			}

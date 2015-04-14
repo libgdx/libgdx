@@ -1,4 +1,4 @@
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -15,8 +15,6 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.tests.g3d.Animation3DTest;
-import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 
 /**
  * Render a basic scene in a FrameBufferCubemap and displays it
