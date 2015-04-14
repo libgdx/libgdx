@@ -18,6 +18,8 @@
 - API Change: Group#toString now returns actor hierarchy. Group#print is gone.
 - Added SpotLight class, see https://github.com/libgdx/libgdx/pull/2907
 - Added support for resolving file handles using classpaths (ClasspathFileHandleResolver)
+- Added FrameBufferCubemap
+- Added GLFrameBuffer
 
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
