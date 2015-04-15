@@ -42,7 +42,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		camFb.far = 1000f;
 		camFb.update();
 		
-		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, false);
+		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, true);
 		
 		ObjLoader objLoader = new ObjLoader();
 		cubeMesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
