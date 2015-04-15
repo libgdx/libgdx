@@ -12,9 +12,9 @@
 	<!-- the compilerPrefix for the C & C++ compilers -->
 	<property name="compilerPrefix" value=""/>	
 	<property name="iphoneos-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin"/>
-	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/"/>
+	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/"/>
 	<property name="iphonesimulator-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin"/>
-	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.1.sdk"/>
+	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.2.sdk"/>
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"/>	
@@ -307,11 +307,11 @@
 
 	<target name="link-fat">
 		<exec executable="lipo" failonerror="true" dir="${libsDir}">
-			<arg line="-create -output ${libName} ${libName}.386 ${libName}.x86_64 ${libName}.armv7"/>
+			<arg line="-create -output ${libName} ${libName}.386 ${libName}.x86_64 ${libName}.armv7 ${libName}.arm64"/>
 		</exec>
 	</target>
 
-	<target name="postcompile" depends="link-386,link-x86_64,link-arm,link-fat">
+	<target name="postcompile" depends="link-386,link-x86_64,link-arm,link-arm64,link-fat">
 		
 	</target>
 </project>

@@ -882,10 +882,12 @@ static long _mindot_large_sel( const float *vv, const float *vec, unsigned long 
     return _mindot_large(vv, vec, count, dotResult);
 }
 
-
-
-#define vld1q_f32_aligned_postincrement( _ptr ) ({ float32x4_t _r; asm( "vld1.f32  {%0}, [%1, :128]!\n" : "=w" (_r), "+r" (_ptr) ); /*return*/ _r; })
-
+#if defined __arm__
+# define vld1q_f32_aligned_postincrement( _ptr ) ({ float32x4_t _r; asm( "vld1.f32 {%0}, [%1, :128]!\n" : "=w" (_r), "+r" (_ptr) ); /*return*/ _r; })
+#else
+//support 64bit arm
+# define vld1q_f32_aligned_postincrement( _ptr) ({ float32x4_t _r = ((float32x4_t*)(_ptr))[0]; (_ptr) = (const float*) ((const char*)(_ptr) + 16L); /*return*/ _r; })
+#endif
 
 long _maxdot_large_v0( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {

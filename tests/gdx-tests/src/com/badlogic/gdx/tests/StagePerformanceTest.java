@@ -102,7 +102,7 @@ public class StagePerformanceTest extends GdxTest {
 		batch.enableBlending();
 		batch.begin();
 		font.setColor(0, 0, 1, 1);
-		font.setScale(2);
+		font.getData().setScale(2);
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (useStage ? ", stage" : "sprite"), 10, 40);
 		batch.end();
 

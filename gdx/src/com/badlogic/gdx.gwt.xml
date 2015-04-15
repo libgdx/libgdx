@@ -91,6 +91,7 @@
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
+		<include name="graphics/g2d/GlyphLayout.java"/>
 		<include name="graphics/g2d/NinePatch.java"/>
 		<include name="graphics/g2d/ParticleEffect.java"/> <!-- Emulated: Not supporting save -->
 		<include name="graphics/g2d/ParticleEffectPool.java"/>
@@ -230,6 +231,7 @@
 		<include name="graphics/glutils/VertexArray.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
+		<include name="graphics/glutils/VertexBufferObjectWithVAO.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexData.java"/>
 
 	<!-- graphics/profiling -->

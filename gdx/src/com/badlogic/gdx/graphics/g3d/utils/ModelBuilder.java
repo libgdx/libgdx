@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -378,47 +377,6 @@ public class ModelBuilder {
 		}
 		for (final Node child : node.getChildren())
 			rebuildReferences(model, child);
-	}
-
-	// Old code below this line, as for now still useful for testing.
-	@Deprecated
-	public static Model createFromMesh (final Mesh mesh, int primitiveType, final Material material) {
-		return createFromMesh(mesh, 0, mesh.getNumIndices(), primitiveType, material);
-	}
-
-	@Deprecated
-	public static Model createFromMesh (final Mesh mesh, int indexOffset, int vertexCount, int primitiveType,
-		final Material material) {
-		Model result = new Model();
-		MeshPart meshPart = new MeshPart();
-		meshPart.id = "part1";
-		meshPart.indexOffset = indexOffset;
-		meshPart.numVertices = vertexCount;
-		meshPart.primitiveType = primitiveType;
-		meshPart.mesh = mesh;
-
-		NodePart partMaterial = new NodePart();
-		partMaterial.material = material;
-		partMaterial.meshPart = meshPart;
-		Node node = new Node();
-		node.id = "node1";
-		node.parts.add(partMaterial);
-
-		result.meshes.add(mesh);
-		result.materials.add(material);
-		result.nodes.add(node);
-		result.meshParts.add(meshPart);
-		result.manageDisposable(mesh);
-		return result;
-	}
-
-	@Deprecated
-	public static Model createFromMesh (final float[] vertices, final VertexAttribute[] attributes, final short[] indices,
-		int primitiveType, final Material material) {
-		final Mesh mesh = new Mesh(false, vertices.length, indices.length, attributes);
-		mesh.setVertices(vertices);
-		mesh.setIndices(indices);
-		return createFromMesh(mesh, 0, indices.length, primitiveType, material);
 	}
 
 	/** Convenience method to create a model with three orthonormal vectors shapes. The resources the Material might contain are not

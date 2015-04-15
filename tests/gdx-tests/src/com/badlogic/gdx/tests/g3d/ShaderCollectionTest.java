@@ -288,12 +288,12 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			if (instance.animations.size > 0) animationControllers.put(instance, new AnimationController(instance));
 
 			instance.calculateBoundingBox(bounds);
-			cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions().len() * 0.75f).add(bounds.getCenter());
+			cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions(tmpV).len() * 0.75f).add(bounds.getCenter(tmpV));
 			cam.up.set(0, 1, 0);
-			cam.lookAt(inputController.target.set(bounds.getCenter()));
-			cam.far = Math.max(100f, bounds.getDimensions().len() * 2.0f);
+			cam.lookAt(inputController.target.set(bounds.getCenter(tmpV)));
+			cam.far = Math.max(100f, bounds.getDimensions(tmpV).len() * 2.0f);
 			cam.update();
-			moveRadius = bounds.getDimensions().len() * 0.25f;
+			moveRadius = bounds.getDimensions(tmpV).len() * 0.25f;
 		}
 	}
 

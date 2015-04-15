@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
 
-public class TextureDescriptor<T extends GLTexture> {
+public class TextureDescriptor<T extends GLTexture> implements Comparable<TextureDescriptor<T>> {
 	public T texture = null;
 	public Texture.TextureFilter minFilter;
 	public Texture.TextureFilter magFilter;
@@ -65,5 +65,30 @@ public class TextureDescriptor<T extends GLTexture> {
 		final TextureDescriptor<?> other = (TextureDescriptor<?>)obj;
 		return other.texture == texture && other.minFilter == minFilter && other.magFilter == magFilter && other.uWrap == uWrap
 			&& other.vWrap == vWrap;
+	}
+	
+	@Override
+	public int hashCode () {
+		long result = texture.glTarget;
+		result = 811 * result + texture.getTextureObjectHandle();
+		result = 811 * result + minFilter.getGLEnum();
+		result = 811 * result + magFilter.getGLEnum();
+		result = 811 * result + uWrap.getGLEnum();
+		result = 811 * result + vWrap.getGLEnum();
+		return (int)(result ^ (result >> 32));
+	}
+
+	@Override
+	public int compareTo (TextureDescriptor<T> o) {
+		if (o == this) return 0;
+		if (texture.glTarget != o.texture.glTarget)
+			return texture.glTarget - o.texture.glTarget;
+		if (texture.getTextureObjectHandle() != o.texture.getTextureObjectHandle())
+			return texture.getTextureObjectHandle() - o.texture.getTextureObjectHandle();
+		if (minFilter != o.minFilter) return minFilter.getGLEnum() - o.minFilter.getGLEnum();
+		if (magFilter != o.magFilter) return magFilter.getGLEnum() - o.magFilter.getGLEnum();
+		if (uWrap != o.uWrap) return uWrap.getGLEnum() - o.uWrap.getGLEnum();
+		if (vWrap != o.vWrap) return vWrap.getGLEnum() - o.vWrap.getGLEnum();
+		return 0;
 	}
 }
