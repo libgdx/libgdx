@@ -593,7 +593,7 @@ public class DefaultShader extends BaseShader {
 		final long attributesMask = attributes.getMask();
 		final long vertexMask = renderable.mesh.getVertexAttributes().getMask();
 		if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
-		if (or(vertexMask, Usage.Color | Usage.ColorPacked)) prefix += "#define colorFlag\n";
+		if (or(vertexMask, Usage.ColorUnpacked | Usage.ColorPacked)) prefix += "#define colorFlag\n";
 		if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
 		if (and(vertexMask, Usage.Tangent)) prefix += "#define tangentFlag\n";
 		if (and(vertexMask, Usage.Normal)) prefix += "#define normalFlag\n";

@@ -1,6 +1,11 @@
 [1.5.6]
+- API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
 - Added VertexBufferObjectWithVAO, see https://github.com/libgdx/libgdx/pull/2527
 - API Change: Removed Mesh.create(...), use MeshBuilder instead
+- API Change: BitmapFontData, BitmapFont, and BitmapFontCache have been refactored. http://www.badlogicgames.com/wordpress/?p=3658
+- FreeTypeFontGenerator can now render glyphs on the fly.
+- Attribute now implements Comparable, custom attributes might need to be updated, see: https://github.com/libgdx/libgdx/wiki/Material-and-environment#custom-attributes
+- API Change: Removed (previously deprecated) GLTexture#createTextureData/createGLHandle, Ray#getEndPoint(float), Color#tmp, Node#parent/children, VertexAttribute#Color(), Usage#Color, ModelBuilder#createFromMesh, BoundingBox#getCenter()/updateCorners()/getCorners(), Matrix4.tmp
 
 [1.5.5]
 - Added iOS ARM-64 bit support for Bullet physics

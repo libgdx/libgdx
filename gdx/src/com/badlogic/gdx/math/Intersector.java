@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Arrays;
-import java.util.List;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -460,7 +460,7 @@ public final class Intersector {
 	 * @param box The bounding box
 	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		return intersectRayBoundsFast(ray, box.getCenter(), box.getDimensions());
+		return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.

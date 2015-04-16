@@ -43,15 +43,6 @@ public class Ray implements Serializable {
 		return new Ray(this.origin, this.direction);
 	}
 
-	/** @deprecated Use {@link #getEndPoint(Vector3, float)} instead. Returns the endpoint given the distance. This is calculated as
-	 *             startpoint + distance * direction.
-	 * @param distance The distance from the end point to the start point.
-	 * @return The end point */
-	@Deprecated
-	public Vector3 getEndPoint (float distance) {
-		return getEndPoint(new Vector3(), distance);
-	}
-
 	/** Returns the endpoint given the distance. This is calculated as startpoint + distance * direction.
 	 * @param out The vector to set to the result
 	 * @param distance The distance from the end point to the start point.

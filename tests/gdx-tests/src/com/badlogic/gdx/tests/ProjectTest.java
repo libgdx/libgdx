@@ -50,7 +50,7 @@ public class ProjectTest extends GdxTest {
 	@Override
 	public void create () {
 		ObjLoader objLoader = new ObjLoader();
-		sphere = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
+		sphere = objLoader.loadModel(Gdx.files.internal("data/sphere.obj"));
 		sphere.materials.get(0).set(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.far = 200;

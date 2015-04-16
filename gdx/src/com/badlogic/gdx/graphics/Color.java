@@ -43,8 +43,6 @@ public class Color {
 	public static final Color TEAL = new Color(0, 0.5f, 0.5f, 1);
 	public static final Color NAVY = new Color(0, 0, 0.5f, 1);
 
-	@Deprecated public static Color tmp = new Color();
-
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
@@ -456,13 +454,6 @@ public class Color {
 		color.r = ((value & 0x00ff0000) >>> 16) / 255f;
 		color.g = ((value & 0x0000ff00) >>> 8) / 255f;
 		color.b = ((value & 0x000000ff)) / 255f;
-	}
-
-	/** Returns a temporary copy of this color. This is not thread safe, do not save a reference to this instance.
-	 * 
-	 * @return a temporary copy of this color */
-	public Color tmp () {
-		return tmp.set(this);
 	}
 
 	/** @return a copy of this color */
