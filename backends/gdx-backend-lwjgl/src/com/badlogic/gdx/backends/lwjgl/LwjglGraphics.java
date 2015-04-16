@@ -59,6 +59,7 @@ public class LwjglGraphics implements Graphics {
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
 	boolean softwareMode;
+	boolean usingGL30;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -174,7 +175,7 @@ public class LwjglGraphics implements Graphics {
 			config.initialBackgroundColor.b);
 
 		Display.setLocation(config.x, config.y);
-		createDisplayPixelFormat(config.useGL30);
+		createDisplayPixelFormat(config.useGL30, config.gles30ContextMajorVersion, config.gles30ContextMinorVersion);
 		extractVersion();
 		extractExtensions();
 		initiateGLInstances();
@@ -190,7 +191,7 @@ public class LwjglGraphics implements Graphics {
 			minor = Integer.parseInt(v[1]);
 			release = v.length > 2 ? Integer.parseInt(v[2]) : 0;
 		} catch (Throwable t) {
-			throw new GdxRuntimeException("Error extracting the OpenGL version: "+version, t);
+			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
 		}
 	}
 
@@ -211,13 +212,13 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	/** @return whether the supported OpenGL (not ES) version is compatible with OpenGL ES 3.x. */
-	private static boolean compatibleWithGLES3 () {
+	private static boolean fullCompatibleWithGLES3 () {
 		// OpenGL ES 3.0 is compatible with OpenGL 4.3 core, see http://en.wikipedia.org/wiki/OpenGL_ES#OpenGL_ES_3.0
 		return isOpenGLOrHigher(4, 3);
 	}
-	
+
 	/** @return whether the supported OpenGL (not ES) version is compatible with OpenGL ES 2.x. */
-	private static boolean compatibleWithGLES2 () {
+	private static boolean fullCompatibleWithGLES2 () {
 		// OpenGL ES 2.0 is compatible with OpenGL 4.1 core
 		// see https://www.opengl.org/registry/specs/ARB/ES2_compatibility.txt
 		return isOpenGLOrHigher(4, 1) || extensions.contains("GL_ARB_ES2_compatibility", false);
@@ -229,22 +230,25 @@ public class LwjglGraphics implements Graphics {
 			|| extensions.contains("GL_ARB_framebuffer_object", false);
 	}
 
-	private void createDisplayPixelFormat (boolean useGL30) {
+	private void createDisplayPixelFormat (boolean useGL30, int gles30ContextMajor, int gles30ContextMinor) {
 		try {
 			if (useGL30) {
-				ContextAttribs context = new ContextAttribs(4, 3).withForwardCompatible(false).withProfileCore(true);
+				ContextAttribs context = new ContextAttribs(gles30ContextMajor, gles30ContextMinor).withForwardCompatible(false)
+					.withProfileCore(true);
 				try {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
 						config.samples), context);
 				} catch (Exception e) {
 					System.out.println("LwjglGraphics: OpenGL 4.3+ core profile (GLES 3.0) not supported.");
-					createDisplayPixelFormat(false);
+					createDisplayPixelFormat(false, gles30ContextMajor, gles30ContextMinor);
 					return;
 				}
 				System.out.println("LwjglGraphics: created OpenGL 4.3+ core profile context. This is experimental!");
+				usingGL30 = true;
 			} else {
 				Display
 					.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+				usingGL30 = false;
 			}
 			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
 				false);
@@ -277,7 +281,7 @@ public class LwjglGraphics implements Graphics {
 					if (!softwareMode && config.allowSoftwareMode) {
 						softwareMode = true;
 						System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
-						createDisplayPixelFormat(useGL30);
+						createDisplayPixelFormat(useGL30, gles30ContextMajor, gles30ContextMinor);
 						return;
 					}
 					String glInfo = glInfo();
@@ -298,7 +302,7 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	public void initiateGLInstances () {
-		if (config.useGL30 && compatibleWithGLES3()) {
+		if (usingGL30) {
 			gl30 = new LwjglGL30();
 			gl20 = gl30;
 		} else {
