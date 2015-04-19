@@ -45,9 +45,11 @@ public abstract class GLProfiler {
 
 	/** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
 	public static void enable () {
-		Gdx.gl30 = Gdx.gl30 == null ? null : new GL30Profiler(Gdx.gl30);
-		Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : new GL20Profiler(Gdx.gl20);
-		Gdx.gl = Gdx.gl20;
+		if (!isEnabled()) {
+			Gdx.gl30 = Gdx.gl30 == null ? null : new GL30Profiler(Gdx.gl30);
+			Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : new GL20Profiler(Gdx.gl20);
+			Gdx.gl = Gdx.gl20;
+		}
 	}
 
 	/** Disables profiling by resetting the {@code GL20} and {@code GL30} instances with the original ones. */
@@ -55,6 +57,11 @@ public abstract class GLProfiler {
 		if (Gdx.gl30 != null && Gdx.gl30 instanceof GL30Profiler) Gdx.gl30 = ((GL30Profiler)Gdx.gl30).gl30;
 		if (Gdx.gl20 != null && Gdx.gl20 instanceof GL20Profiler) Gdx.gl20 = ((GL20Profiler)Gdx.gl).gl20;
 		if (Gdx.gl != null && Gdx.gl instanceof GL20Profiler) Gdx.gl = ((GL20Profiler)Gdx.gl).gl20;
+	}
+	
+	/** @return Whether profiling is currently enabled */
+	public static boolean isEnabled() {
+		return Gdx.gl30 instanceof GL30Profiler || Gdx.gl20 instanceof GL20Profiler;
 	}
 
 	/** Will reset the statistical information which has been collected so far. This should be called after every frame. */

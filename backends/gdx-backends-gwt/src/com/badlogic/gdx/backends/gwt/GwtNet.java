@@ -79,13 +79,16 @@ public class GwtNet implements Net {
 			Map<String, List<String>> headers = new HashMap<String, List<String>>();
 			Header[] responseHeaders = response.getHeaders();
 			for (int i = 0; i < responseHeaders.length; i++) {
-				String headerName = responseHeaders[i].getName();
-				List<String> headerValues = headers.get(headerName);
-				if (headerValues == null) {
-					headerValues = new ArrayList<String>();
-					headers.put(headerName, headerValues);
+				Header header = responseHeaders[i];
+				if (header != null) {
+					String headerName = responseHeaders[i].getName();
+					List<String> headerValues = headers.get(headerName);
+					if (headerValues == null) {
+						headerValues = new ArrayList<String>();
+						headers.put(headerName, headerValues);
+					}
+					headerValues.add(responseHeaders[i].getValue());
 				}
-				headerValues.add(responseHeaders[i].getValue());
 			}
 			return headers;
 		}
@@ -191,7 +194,8 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
+	public boolean openURI (String URI) {
 		Window.open(URI, "_blank", null);
+		return true;
 	}
 }

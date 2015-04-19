@@ -19,11 +19,11 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 
 public class IntegerBitmapFontTest extends GdxTest {
 
@@ -72,17 +72,17 @@ public class IntegerBitmapFontTest extends GdxTest {
 		singleLineCache.setColor(0, 0, 1, 1);
 		singleLineCache.setText(text, 10.2f, 30.5f);
 		multiLineCache.setColor(0, 0, 1, 1);
-		multiLineCache.setMultiLineText(text, 10.5f, 180.5f, 200, HAlignment.CENTER);
+		multiLineCache.setText(text, 10.5f, 180.5f, 200, Align.center, false);
 		singleLineCacheNonInteger.setColor(0, 1, 0, 1);
 		singleLineCacheNonInteger.setText(text, 10.2f, 30.5f);
 		multiLineCacheNonInteger.setColor(0, 1, 0, 1);
-		multiLineCacheNonInteger.setMultiLineText(text, 10.5f, 180.5f, 200, HAlignment.CENTER);
+		multiLineCacheNonInteger.setText(text, 10.5f, 180.5f, 200, Align.center, false);
 	}
 
 	private void drawTexts () {
 		String text = "This is a TEST\nxahsdhwekjhasd23���$%$%/%&";
 		font.draw(batch, text, 10.2f, 30.5f);
-		font.drawMultiLine(batch, text, 10.5f, 120.5f);
-		font.drawMultiLine(batch, text, 10.5f, 180.5f, 200, HAlignment.CENTER);
+		font.draw(batch, text, 10.5f, 120.5f);
+		font.draw(batch, text, 10.5f, 180.5f, 200, Align.center, false);
 	}
 }

@@ -119,7 +119,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final Array<VertexAttribute> attrs = new Array<VertexAttribute>();
 		if ((usage & Usage.Position) == Usage.Position)
 			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-		if ((usage & Usage.Color) == Usage.Color) attrs.add(new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.ColorUnpacked) == Usage.ColorUnpacked) attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
 			attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.Normal) == Usage.Normal)
@@ -162,14 +162,15 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.istart = 0;
 		this.part = null;
 		this.stride = attributes.vertexSize / 4;
-		this.vertex = new float[stride];
+		if (this.vertex == null || this.vertex.length < stride)
+			this.vertex = new float[stride];
 		VertexAttribute a = attributes.findByUsage(Usage.Position);
 		if (a == null) throw new GdxRuntimeException("Cannot build mesh without position attribute");
 		posOffset = a.offset / 4;
 		posSize = a.numComponents;
 		a = attributes.findByUsage(Usage.Normal);
 		norOffset = a == null ? -1 : a.offset / 4;
-		a = attributes.findByUsage(Usage.Color);
+		a = attributes.findByUsage(Usage.ColorUnpacked);
 		colOffset = a == null ? -1 : a.offset / 4;
 		colSize = a == null ? 0 : a.numComponents;
 		a = attributes.findByUsage(Usage.ColorPacked);
@@ -192,12 +193,22 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	/** Starts a new MeshPart. The mesh part is not usable until end() is called. This will reset the current color and vertex
-	 * transformation. */
+	 * transformation.
+	 * @see #part(String, int, MeshPart) */
 	public MeshPart part (final String id, int primitiveType) {
+		return part(id, primitiveType, new MeshPart());
+	}
+
+	/** Starts a new MeshPart. The mesh part is not usable until end() is called. This will reset the current color and vertex
+	 * transformation.
+	 * @param id The id (name) of the part
+	 * @param primitiveType e.g. {@link GL20#GL_TRIANGLES} or {@link GL20#GL_LINES}
+	 * @param meshPart The part to receive the result */
+	public MeshPart part (final String id, final int primitiveType, MeshPart meshPart) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 		endpart();
 
-		part = new MeshPart();
+		part = meshPart;
 		part.id = id;
 		this.primitiveType = part.primitiveType = primitiveType;
 		parts.add(part);
@@ -365,7 +376,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	 * adding many vertices to avoid multiple backing array resizes.
 	 * @param numVertices The number of vertices you are about to add */
 	public void ensureVertices (int numVertices) {
-		vertices.ensureCapacity(vertex.length * numVertices);
+		vertices.ensureCapacity(stride * numVertices);
 	}
 
 	/** Increases the size of the backing indices array to accommodate the specified number of additional indices. Useful before

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btGImpactCollisionAlgorithm;
 import com.badlogic.gdx.physics.bullet.collision.btGImpactMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btTriangleIndexVertexArray;
 
@@ -34,7 +35,11 @@ public class GimpactTest extends BaseBulletTest {
 		(ground = world.add("ground", 0f, 0f, 0f)).setColor(0.25f + 0.5f * (float)Math.random(),
 			0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
-		world.add("chassis", 3f, 10f, 3f);
+		for (float y = 10f; y < 50f; y += 5f)
+			world.add("chassis", -2f + (float)Math.random() * 4f, y, -2f + (float)Math.random() * 4f).setColor(
+				0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+				
+		btGImpactCollisionAlgorithm.registerAlgorithm(world.dispatcher);
 	}
 
 	@Override

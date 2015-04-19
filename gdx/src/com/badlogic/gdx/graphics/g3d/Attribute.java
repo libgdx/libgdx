@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
  * {@link #register(String)} method, whose return value should be used to instantiate the attribute. A class can implement
  * multiple types
  * @author Xoppa */
-public abstract class Attribute {
+public abstract class Attribute implements Comparable<Attribute> {
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<String>();
 
@@ -41,7 +41,10 @@ public abstract class Attribute {
 		return (idx >= 0 && idx < types.size) ? types.get(idx) : null;
 	}
 
-	/** Use {@link Attribute#register(String)} instead */
+	/** Call this method to register a custom attribute type, see the wiki for an example. If the alias already exists, then that ID
+	 * will be reused. The alias should be unambiguously and will by default be returned by the call to {@link #toString()}.
+	 * @param alias The alias of the type to register, must be different for each dirrect type, will be used for debugging
+	 * @return the ID of the newly registered type, or the ID of the existing type if the alias was already registered */
 	protected final static long register (final String alias) {
 		long result = getAttributeType(alias);
 		if (result > 0) return result;
@@ -51,7 +54,7 @@ public abstract class Attribute {
 
 	/** The type of this attribute */
 	public final long type;
-	
+
 	private final int typeBit;
 
 	protected Attribute (final long type) {
@@ -80,7 +83,7 @@ public abstract class Attribute {
 	public String toString () {
 		return getAttributeAlias(type);
 	}
-	
+
 	@Override
 	public int hashCode () {
 		return 7489 * typeBit;

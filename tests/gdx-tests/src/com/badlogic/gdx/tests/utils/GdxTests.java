@@ -28,11 +28,24 @@
 
 package com.badlogic.gdx.tests.utils;
 
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
+import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeTest;
+import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
@@ -55,14 +68,6 @@ import com.badlogic.gdx.tests.scenes.scene2d.ui.DynamicChildActorsTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -159,6 +164,7 @@ public class GdxTests {
 		ParallaxTest.class,
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
+		ParticleEmittersTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
@@ -214,6 +220,7 @@ public class GdxTests {
 		TiledMapAssetManagerTest.class,
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapDirectLoaderTest.class,
+		TiledMapModifiedExternalTilesetTest.class,
 		TiledMapObjectLoadingTest.class,
 		TiledMapBench.class,
 		TimerTest.class,
@@ -230,12 +237,17 @@ public class GdxTests {
 		ViewportTest3.class,
 		YDownTest.class,
 		FreeTypeFontLoaderTest.class,
+		FreeTypeDisposeTest.class,
+		FreeTypeIncrementalTest.class,
+		FreeTypePackTest.class,
+		FreeTypeTest.class,
+		InternationalFontsTest.class,
 		PngTest.class,
 		JsonTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
-		// InternationalFontsTest.class, VorbisTest.class
+		// VorbisTest.class
 		));
 
 	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();

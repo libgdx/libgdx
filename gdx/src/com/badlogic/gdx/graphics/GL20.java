@@ -664,6 +664,11 @@ public interface GL20 {
 
 	public void glVertexAttrib4fv (int indx, FloatBuffer values);
 
+	/**
+	 * In OpenGl core profiles (3.1+), passing a pointer to client memory is not valid.
+	 * In 3.0 and later, use the other version of this function instead, pass a zero-based
+	 * offset which references the buffer currently bound to GL_ARRAY_BUFFER.
+	 */
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr);

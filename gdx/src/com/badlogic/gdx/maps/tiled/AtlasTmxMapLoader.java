@@ -139,8 +139,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		try {
 			if (parameter != null) {
 				convertObjectToTileSpace = parameter.convertObjectToTileSpace;
+				flipY = parameter.flipY;
 			} else {
 				convertObjectToTileSpace = false;
+				flipY = true;
 			}
 
 			FileHandle tmxFile = resolve(fileName);
@@ -203,8 +205,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		if (parameter != null) {
 			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
+			flipY = parameter.flipY;
 		} else {
 			convertObjectToTileSpace = false;
+			flipY = true;
 		}
 
 		try {
@@ -369,7 +373,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					int tileid = firstgid + region.index;
 					tile.setId(tileid);
 					tile.setOffsetX(offsetX);
-					tile.setOffsetY(-offsetY);
+					tile.setOffsetY(flipY ? -offsetY : offsetY);
 					tileset.putTile(tileid, tile);
 				}
 			}
@@ -388,7 +392,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 						tile = new StaticTiledMapTile(region);
 						tile.setId(tileid);
 						tile.setOffsetX(offsetX);
-						tile.setOffsetY(-offsetY);
+						tile.setOffsetY(flipY ? -offsetY : offsetY);
 						tileset.putTile(tileid, tile);
 					}
 				}

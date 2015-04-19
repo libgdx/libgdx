@@ -164,8 +164,8 @@ public class Hiero extends JFrame {
 	File saveBmFontFile;
 	String lastSaveFilename = "", lastSaveBMFilename = "", lastOpenFilename = "";
 
-	public Hiero(String [] args) {
-		super("Hiero v3.0 - Bitmap Font Tool");
+	public Hiero (String[] args) {
+		super("Hiero v3.1 - Bitmap Font Tool");
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
 		splash.close();
@@ -193,7 +193,7 @@ public class Hiero extends JFrame {
 		new EffectPanel(colorEffect);
 
 		parseArgs(args);
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
@@ -259,8 +259,6 @@ public class Hiero extends JFrame {
 
 		int fontSize = ((Integer)fontSizeSpinner.getValue()).intValue();
 
-		
-		 
 		if (useFont2) {
 			File file = new File(fontFileText.getText());
 			if (file.exists() && file.isFile()) {
@@ -274,8 +272,8 @@ public class Hiero extends JFrame {
 				}
 			}
 		}
-		
-		if(unicodeFont == null) {
+
+		if (unicodeFont == null) {
 			// Load from java.awt.Font (kerning not available!).
 			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
 				italicCheckBox.isSelected());
@@ -313,7 +311,7 @@ public class Hiero extends JFrame {
 		settings.setFontName((String)fontList.getSelectedValue());
 		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
 		settings.setFont2File(fontFileText.getText());
-	settings.setFont2Active(fontFileRadio.isSelected());
+		settings.setFont2Active(fontFileRadio.isSelected());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
 		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
@@ -354,7 +352,7 @@ public class Hiero extends JFrame {
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
 		}
-		
+
 		final String font2 = settings.getFont2File();
 		if (font2.length() > 0)
 			fontFileText.setText(font2);
@@ -363,7 +361,7 @@ public class Hiero extends JFrame {
 
 		fontFileRadio.setSelected(settings.isFont2Active());
 		systemFontRadio.setSelected(!settings.isFont2Active());
- 
+
 		for (Iterator iter = settings.getEffects().iterator(); iter.hasNext();) {
 			ConfigurableEffect settingsEffect = (ConfigurableEffect)iter.next();
 			for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
@@ -473,7 +471,7 @@ public class Hiero extends JFrame {
 				updateFont();
 			}
 		};
-		
+
 		systemFontRadio.addActionListener(al);
 		fontFileRadio.addActionListener(al);
 
@@ -1046,7 +1044,7 @@ public class Hiero extends JFrame {
 		JButton deleteButton;
 		private JPanel valuesPanel;
 		JLabel nameLabel;
-		
+
 		GridBagConstraints constrains = new GridBagConstraints(0, -1, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER,
 			GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
@@ -1073,7 +1071,7 @@ public class Hiero extends JFrame {
 					}
 
 					public void layoutContainer (Container parent) {
-						
+
 						Dimension buttonSize = upButton.getPreferredSize();
 						int upButtonX = getWidth() - buttonSize.width * 3 - 6 - 5;
 						upButton.setBounds(upButtonX, 0, buttonSize.width, buttonSize.height);
@@ -1081,8 +1079,7 @@ public class Hiero extends JFrame {
 						deleteButton.setBounds(getWidth() - buttonSize.width - 5, 0, buttonSize.width, buttonSize.height);
 
 						Dimension labelSize = nameLabel.getPreferredSize();
-						nameLabel.setBounds(5, buttonSize.height / 2 - labelSize.height / 2, getWidth() - 5,
-							labelSize.height);
+						nameLabel.setBounds(5, buttonSize.height / 2 - labelSize.height / 2, getWidth() - 5, labelSize.height);
 					}
 
 					public void addLayoutComponent (String name, Component comp) {
@@ -1143,7 +1140,7 @@ public class Hiero extends JFrame {
 					}
 				}
 			});
-			
+
 			downButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed (ActionEvent evt) {
@@ -1155,7 +1152,7 @@ public class Hiero extends JFrame {
 					}
 				}
 			});
-			
+
 			deleteButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent evt) {
 					remove();
@@ -1183,17 +1180,17 @@ public class Hiero extends JFrame {
 			for (Iterator iter = values.iterator(); iter.hasNext();)
 				addValue((Value)iter.next());
 		}
-		
-		public void updateUpDownButtons() {
 
-			for(int index = 0; index < effectPanels.size(); index++){
+		public void updateUpDownButtons () {
+
+			for (int index = 0; index < effectPanels.size(); index++) {
 				EffectPanel effectPanel = effectPanels.get(index);
 				if (index == 0) {
 					effectPanel.upButton.setEnabled(false);
 				} else {
 					effectPanel.upButton.setEnabled(true);
 				}
-				
+
 				if (index == effectPanels.size() - 1) {
 					effectPanel.downButton.setEnabled(false);
 				} else {
@@ -1201,7 +1198,7 @@ public class Hiero extends JFrame {
 				}
 			}
 		}
-		
+
 		public void moveEffect (int newIndex) {
 			appliedEffectsPanel.remove(this);
 			effectPanels.remove(this);
@@ -1258,7 +1255,7 @@ public class Hiero extends JFrame {
 			} else if (!effect.equals(other.effect)) return false;
 			return true;
 		}
-		
+
 	}
 
 	static private class Splash extends JWindow {
@@ -1342,7 +1339,13 @@ public class Hiero extends JFrame {
 				newUnicodeFont = null;
 			}
 
-			if (!unicodeFont.getEffects().isEmpty() && unicodeFont.loadGlyphs(25)) {
+			try {
+				sampleText = sampleTextPane.getText();
+			} catch (Exception ex) {
+			}
+			unicodeFont.addGlyphs(sampleText);
+
+			if (!unicodeFont.getEffects().isEmpty() && unicodeFont.loadGlyphs(64)) {
 				glyphPageComboModel.removeAllElements();
 				int pageCount = unicodeFont.getGlyphPages().size();
 				int glyphCount = 0;
@@ -1356,11 +1359,6 @@ public class Hiero extends JFrame {
 
 			if (unicodeFont == null) return;
 
-			try {
-				sampleText = sampleTextPane.getText();
-			} catch (Exception ex) {
-			}
-
 			if (sampleTextRadio.isSelected()) {
 				GL11.glClearColor(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
 					renderingBackgroundColor.a);
@@ -1371,7 +1369,6 @@ public class Hiero extends JFrame {
 			} else {
 				GL11.glClearColor(1, 1, 1, 1);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-				unicodeFont.addGlyphs(sampleText);
 				// GL11.glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
 				// renderingBackgroundColor.a);
 				// fillRect(0, 0, unicodeFont.getGlyphPageWidth() + 2, unicodeFont.getGlyphPageHeight() + 2);

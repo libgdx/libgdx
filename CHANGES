@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)
 - Added support for loading texture objects from TMX Maps (TextureMapObject)
@@ -310,3 +311,340 @@
 
 [0.9.6]
 - see http://www.badlogicgames.com/wordpress/?p=2513
+=======
+[1.5.6]
+- API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
+- Added VertexBufferObjectWithVAO, see https://github.com/libgdx/libgdx/pull/2527
+- API Change: Removed Mesh.create(...), use MeshBuilder instead
+- API Change: BitmapFontData, BitmapFont, and BitmapFontCache have been refactored. http://www.badlogicgames.com/wordpress/?p=3658
+- FreeTypeFontGenerator can now render glyphs on the fly.
+- Attribute now implements Comparable, custom attributes might need to be updated, see: https://github.com/libgdx/libgdx/wiki/Material-and-environment#custom-attributes
+- API Change: Removed (previously deprecated) GLTexture#createTextureData/createGLHandle, Ray#getEndPoint(float), Color#tmp, Node#parent/children, VertexAttribute#Color(), Usage#Color, ModelBuilder#createFromMesh, BoundingBox#getCenter()/updateCorners()/getCorners(), Matrix4.tmp
+
+[1.5.5]
+- Added iOS ARM-64 bit support for Bullet physics
+- 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+- Added capability to enable color markup from inside skin json file.
+- Exposed method ControllerManager#clearListeners on Controllers class
+- Net#openURI now returns a boolean to indicate whether the uri was actually opened.
+- DefaultShader now always combines material and environment attributes
+- Added ShapeRenderer constructor to pass a custom shader program to ImmediateModeRenderer20.
+- API Change: Group#toString now returns actor hierarchy. Group#print is gone.
+- Added SpotLight class, see https://github.com/libgdx/libgdx/pull/2907
+- Added support for resolving file handles using classpaths (ClasspathFileHandleResolver)
+
+[1.5.4]
+- Added support for image layers in Tiled maps (TiledMapImageLayer)
+- Added support for loading texture objects from TMX Maps (TextureMapObject)
+- Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
+- Now unknown markup colors are silently ignored and considered as normal text.
+- Updated freetype from version 2.4.10 to 2.5.5
+- Added 3rd party extensions to setup application, see 
+- Updated to RoboVM 1.0.0-beta-04
+- Updated to GWT 2.6.1, sadly GWT 2.7.0 isn't production ready yet.
+
+[1.5.3]
+- API Change: TextField#setRightAlign -> TextField#setAlignment
+- I18NBundle is now compatible with Android 2.2
+- Fixed GWT reflection includes for 3D particles
+- 3D ParticleEffectLoader registered by default
+- Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
+- Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
+- Updated RoboVM to 1.0.0-beta-03
+
+[1.5.2]
+- Fixed issue #2433 with color markup and alpha animation. 
+- Fixed natives loading for LWJGL on Mac OS X
+
+[1.5.1]
+- Gradle updated to 2.2
+- Android Gradle tooling updated to 1.0.0
+- API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
+- API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
+- API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
+- Added 64-bit support for iOS sim and device
+- Deprecated Node#children and Node#parent, added inheritTransform flag and methods to add/get/remove children
+- API Change: By default keyframes are no longer copied from Model to ModelInstance but shared instead, can be changed using the `ModelInstance.defaultShareKeyframes` flag or `shareKeyframes` constructor argument.
+- JSON minimal format now makes commas optional: newline can be used in place of any comma.
+- JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
+- API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
+- Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
+- Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
+- API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
+- Update to LWJGL 2.9.2, fixes fullscreen mode on "retina" displays
+- Fixes to RoboVM backend which would crash if accelerometer is used.
+
+[1.5.0]
+- API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
+- API Addition: Added getter for UITextField on IOS for keyboard customization 
+- API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
+- API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
+- API Addition: HttpRequest is now poolable.
+- New PNG encoder that supports compression, more efficient vertical flipping, and minimal allocation when encoding multiple PNGs.
+- API Change: Label#setEllipse -> Label#setEllipsis.
+- API Change: BatchTiledMapRenderer *SpriteBatch fields and methods renamed to *Batch
+- API Change: ScrollPane#scrollToCenter -> ScrollPane#scrollTo; see optional boolean arguments centerHorizontal and centerVertical (scrollToCenter centered vertically only).
+- API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
+- Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
+- iOS backend now supports sound ids, thanks Tomski!
+
+
+[1.4.1]
+- Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!
+- Update Intellij IDEA to 13.1.5+, because Gradle!
+- Updated to Gradle 2.1 and Android build tools 20, default Android version to 20. You need to install the latest Android build tools via the SDK manager
+- API Change: deprecation of bounding box methods, see https://github.com/libgdx/libgdx/pull/2408
+- Added non-continuous rendering to iOS backend, thanks Dominik!
+- Setup now uses Gradle 2.1 with default Android API level 20, build tools 20.0.0
+- Non-continuous renderering implemented for iOS
+- Added color markup support for scene2d label and window title.
+- API Change: removed default constructor of DecalBatch, removed DefaultGroupStrategy
+- Updated to latests RoboVM release, 1.0.0-alpha-04, please update your RoboVM plugins/installations
+- Reduced I18NBundle loading times on Android and bypassed unclosed stream on iOS. 
+- Removed the gdx-ai extension from the libGDX repository. Now it lives in its own repository under the libGDX umbrella, see https://github.com/libgdx/gdx-ai
+- API Addition: Added randomSign and randomTriangular methods to MathUtils.
+- API Addition: Decal has now a getter for the Color.
+- API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.
+- API Addition: added annotation support in reflection layer, thanks code-disaster! https://github.com/libgdx/libgdx/pull/2215
+- API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178 
+- API Addition: bitmap fonts can now be loaded from an atlas via AssetManager/BitmapFontLoader, see https://github.com/libgdx/libgdx/pull/2110
+- API Change: updated to RoboVM 1.0.0-SNAPSHOT for now until the next alpha is released.
+- API Change: Table now uses padding from its background drawable by default. https://github.com/libgdx/libgdx/issues/2322
+- Drawables now know their names, making debugging easier.
+- API Change: Table fill now respects the widget's minimum size.
+- Texture packer, fixed image size written to atlas file.
+- API Change: Cell no longer uses primitive wrappers in public API and boxing is minimized.
+- API Addition: TextureAttribute now supports uv transform (texture regions).
+- API Change: Added parameters to Elastic Interpolation.
+- API Change: Removed Actor#setCenterPosition, added setPosition(x,y,align).
+- API Change: JsonReader, forward slash added to characters an unquoted strings cannot start with.
+- API Change: Stage#cancelTouchFocus(EventListener,Actor) changed to cancelTouchFocusExcept.
+- API Change: Json/JsonWriter.setQuoteLongValues() quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP.
+
+[1.3.1]
+- API change: Viewport refactoring. https://github.com/libgdx/libgdx/pull/2220
+- Fixed GWT issues
+
+[1.3.0]
+- Added Input.isKeyJustPressed.
+- API Addition: multiple recipients are now supported by MessageDispatcher, see https://github.com/libgdx/libgdx/wiki/Message-Handling#multiple-recipients
+- API Change: State#onMessage now takes the message receiver as argument.
+- API Addition: added StackStateMachine to the gdx-ai extension.
+- API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
+- API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011
+- Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).
+- Fixed and improved xorshift128+ PRNG implementation.
+- Added support for Tiled's animated tiles, and varying frame duration tile animations.
+- Fixed an issue with time granularity in MessageDispatcher.
+- Updated to Android API level 19 and build tools 19.1.0 which will require the latest Eclipse ADT 23.02, see http://stackoverflow.com/questions/24437564/update-eclipse-with-android-development-tools-23 for how things are broken this time...
+- Updated to RoboVM 0.0.14 and RoboVM Gradle plugin version 0.0.10
+- API Addition: added FreeTypeFontLoader so you can transparently load BitmapFonts generated through gdx-freetype via AssetManager, see https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/FreeTypeFontLoaderTest.java
+- Preferences put methods now return "this" for chaining
+- Fixed issue 2048 where MessageDispatcher was dispatching delayed messages immediately.
+- API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
+- API Addition: extended shape classes like Circle, Ellipse etc. with hashcode/equals and other helper methods, see https://github.com/libgdx/libgdx/pull/2018
+- minor API change (will not increase minor revision number): fixed a bug in handling of atlasPrefixes, https://github.com/libgdx/libgdx/pull/2023
+- Bullet: btManifoldPoint member getters/setters changed from btVector3 to Vector3, also it is no longer pooled, instead static instances are used for callback methods
+- Added Intersector#intersectRayRay to detect if two 2D rays intersect, see https://github.com/libgdx/libgdx/pull/2132
+- Bullet: ClosestRayResultCallback, AllHitsRayResultCallback, LocalConvexResult, ClosestConvexResultCallback and subclasses now use getter/setters taking a Vector3 instead of btVector3, see https://github.com/libgdx/libgdx/pull/2176
+- 2d particle system supports pre-multiplied alpha.
+- Bullet: btIDebugDrawer/DebugDrawer now use pooled Vector3 instances instead of btVector3, see https://github.com/libgdx/libgdx/issues/2174
+
+[1.2.0]
+- API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
+- API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
+- API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
+- API Addition: Vector#setZero
+- API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
+- API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
+- API Addition: added equals/hashCode methods to Rectangle, may break old code (very, very unlikely)
+- API Addition: scene2D Actors now have a setCenterPosition method, see https://github.com/libgdx/libgdx/pull/2000
+
+[1.1.0]
+- Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
+- Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
+- Setup now uses android build tools version: 19.1.0
+- BitmapFontCache now supports in-string colored text through a simple markup language, see https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
+- Added i18n localization/internationalization support, thanks davebaol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
+- Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
+- Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
+- Mavenized JGLFW backend
+- Box2D: Added MotorJoint and ghost vertices on EdgeShape
+- Updated GWT Box2D to latest version
+- Updated native Box2D to latest version 2.3.1, no API changes
+- API change: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
+- API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
+- fixed the long standing issue of the alpha=1 not actually being fully opaque, thanks kalle! https://github.com/libgdx/libgdx/issues/1815
+- down to 25 issues on the tracker, 8 bugs, 17 enhancement requests :)
+
+
+[1.0.1]
+- updated to RoboVM 0.12 (and so should you!)
+- fixed GC issues on iOS with regards to touch (thanks Niklas!), see https://github.com/libgdx/libgdx/pull/1758
+- updated gwt gradle plugin to 0.4, android build tools to 0.10, gradle version to 1.11
+- Tiled maps are now always y-up
+- Tiled maps now support drawing offsets for tiles
+- FileHandle#list is now supported in GWT!
+- FileHandle#list now supports FileFilters
+- Controllers now reinitialize on the desktop when switching between windowed/fullscreen
+- added a Texture unpacker that will extract all images from a texture atlas, see https://github.com/libgdx/libgdx/pull/1774
+- updates to gdx-setup
+- CustomCollisionDispatcher in bullet, see https://github.com/libgdx/libgdx/commit/916fc85cecf433c3461b458e00f8afc516ad21e3
+
+[1.0.0]
+- Box2D is no longer in the core, it has been moved to an extension. See http://www.badlogicgames.com/wordpress/?p=3404
+- Merged gdx-openal project into gdx-backend-lwjgl
+- Now LoadedCallback in AssetLoaderParameters is always called after loading an asset from AssetManager, even if the asset is already loaded
+- Added Payload as a new parameter to Source.dragStop, see https://github.com/libgdx/libgdx/pull/1666
+- You can now load PolygonRegions via AssetLoader,  see https://github.com/libgdx/libgdx/pull/1602
+- implemented software keyboard support in RoboVM iOS backend
+- Fixed an issue where key event timestamp is not set by the android backend.
+- scene2d.ui, added to TextArea the preferred number of rows used to calculate the preferred height.
+- scene2d.actions, fixed infinite recursion for event listener's handle(event).
+- Various Quaternion changes.
+- scene2d.ui, fixed a drawing issue with knobBefore when there's no knob (typical progress bar).
+- Various MeshBuilder fixes and additions.
+- Math package: added cumulative distribution.
+- Fixed Music isPlaying() on iOS when is paused.
+- Added support for C-style comments to JsonReader (mainly used for json skin files).
+- Support for resource removal from Skin objects.
+- Added fling gesture to generate fling in scrollpane.
+- Vector classes now have mulAdd method for adding pre-multiplied values
+- Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
+- Vector2 now has isUnit and isZero methods (copied from Vector3)
+- Removed deprecated methods from Vector classes.
+- Added new headless backend for server applications
+- Support 'scaledSize' as a json skin data value for BitmapFont
+- Added setAlpha(float a) method to Sprite class
+- Added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
+- Added Immersive Mode support to Android backend
+- Added userObject to Actor in scene2d, allowing for custom data storage
+- Altered Android's hide status bar behavior
+- Changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+- BitmapFontCache setColor changes to match SpriteBatch and friends. http://www.badlogicgames.com/forum/viewtopic.php?f=23&t=12112
+- Changed ParticleEffect: the ParticleEffect.save method now takes a Writer instead of a File
+- TexturePacker2 renamed to TexturePacker, added grid and scaling settings.
+- Added support for custom prefrences on the desktop backends.
+- Fixed double resume calls on iOS.
+- Android Music no longer throws exceptions if MediaPlayer is null.
+- PolygonSpriteBatch implements Batch.
+- New scene2d actions: EventAction, CountdownEventAction.
+- Adds cancelHttpRequest() method to Net interface
+- Updated GWT/HTML5 Backend to GWT 2.6.0
+- Minimal Android version is 2.2, see http://www.badlogicgames.com/wordpress/?p=3297
+- Updated to LWJGL 2.9.1
+- Can now embed your libgdx app as a fragment, more info on the wiki
+- scene2d.ui, renamed Actor methods translate, rotate, scale, size to moveBy, rotateBy, scaleBy, sizeBy. May have conflicts with Actions static import, eg you'll need to use "Actions.moveBy"
+- scene2d.ui, Table background is now drawn usign the table's transform
+- scene2d.ui, added Container which is similar to a Table with one cell, but more lightweight
+- Added texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
+- scene2d.ui, VerticalGroup and HorizontalGroup got pad, fill and an API similar to Table/Container
+- Removed OpenGL ES 1.0, 1.1 support; see http://www.badlogicgames.com/wordpress/?p=3311
+- Added OpenGL ES 3 support
+- Updated Android backend, demos, tests to 4.4
+- Added Viewport, changed Stage to have a Viewport instead of a Camera (API change, see http://www.badlogicgames.com/wordpress/?p=3322 ).
+- Changed play mode constants of Animation class to enumeration, see http://www.badlogicgames.com/wordpress/?p=3330
+- Updated to RoboVM 0.0.11 and RoboVM Gradle plugin 0.0.6, see http://www.badlogicgames.com/wordpress/?p=3351
+- Updated to Swig 3.0 for Bullet, disabled SIMD on Mac OS X as alignements are broken in Bullet, see https://github.com/libgdx/libgdx/pull/1595
+- TextureData can only be Custom or Pixmap; compressed image files are considered custom
+
+[0.9.9]
+- added setCursorImage method to Input interface to support custom mouse cursors on the desktop
+- removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
+- added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)
+- refactored Box2D to use badlogic Arrays instead of java.util.ArrayLists
+- MipMapGenerator methods now don't take disposePixmap argument anymore
+- added GLTexture, base class for all textures, encapsulates target (2d, cubemap, ...)
+- added CubeMap, 6 sided texture
+- changed TextureData#consumeCompressedData, takes target now
+- added RoboVM backend jar and native libs (libObjectAL, libgdx, in ios/ folder of distribution)
+- added RoboVM backend to build
+- changed Bullet wrapper API, see http://www.badlogicgames.com/wordpress/?p=3150
+- changed MusicLoader and SoundLoader to be asynchronous loaders
+- changed behaviour of Net#sendHttpRequest() so HttpResponseListener#handleHttpResponse() callback is executed in worker thread instead of main thread
+- added Bresenham2, for drawing lines on an integer 2D grid
+- added GridPoint2 and GridPoint3, representing integer points in a 2D or 3D grid
+- added attribute location caching for VertexData/Mesh. Hand vertex attribs to a ShaderProgram, get back int[], pass that to Mesh
+- added Android x86 builds, removed libandroidgl20.so, it's now build as part of gdx-core for Android
+- changed method signature on Box2D World#getBodies and World#getJoints, pass in an Array to fill
+- removed glGetShaderSource from GL20, use ShaderProgram#getVertexShaderSource/getFragmentShaderSource instead
+- added reflection api
+- added AsynchExecutor, execute tasks asynchronously. Used for GWT mainly.
+- removed FileHandle#file(), has no business in there.
+- removed box2deditor
+- removed custom typedarrays in gwt backend
+- added classpath files support for gwt backend (limited)
+- moved AndroidWallpaperListener to Android Backend
+- added new VertexAttribute Usage flags, bone weight, tangent, binormal. previously encoded as Usage.Generic. Also
+  added field "unit" to VertexAttribute, used by texture coordinates and bone weights to specify index/unit.
+- setup-ui template for iOS disables pngcrush, also updated wiki iOS article
+- add Pixmap#fillTriangle via jni gdx2d_fill_triangle() to fill a triangle based on its vertices.
+- add asynchronous download with continuous progress feedback to GWT asset preloader, see https://github.com/libgdx/libgdx/pull/409?w=1
+- add capability to add/exclude package/classes GWT Reflection system, see https://github.com/libgdx/libgdx/pull/409?w=1
+- add updated gdx-tiled-preprocessor, generate one single TextureAtlas for all the specified Tiled maps, see http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=8911
+- maps API, add new AtlasTiledMapLoader for loading maps produced by the tiled preprocessor tool
+- ImageProcessor, TexturePacker2 now accepts BufferedImage objects as input
+- TexturePacker2 now avoids duplicated aliases
+- Updated to LWJGL 2.9.0
+- refactored JSON API, see http://www.badlogicgames.com/wordpress/?p=2993
+- Updated Box2D to the latest trunk. Body#applyXXX methods now take an additional boolean parameter.
+- TmxMapLoader has a flag in Parameters that lets you specify whether to generate mipmaps
+- Animation#isAnimationFinished was fixed to behave as per javadocs (ignores looping)
+- remove GLU interface and implementations. Use Matrix4 et al instead. see http://www.badlogicgames.com/wordpress/?p=2886
+- new maps API, see http://www.badlogicgames.com/wordpress/?p=2870
+- removed static public tmp Vector2 instances, manage such temporary vars yourself, see http://www.badlogicgames.com/wordpress/?p=2840
+- changed Scene2D Group#clear(), see http://www.badlogicgames.com/wordpress/?p=2837
+- changed the build system, natives are now fetched from the build server, see http://www.badlogicgames.com/wordpress/?p=2821
+- freetype extension supported on iOS, see http://www.badlogicgames.com/wordpress/?p=2819
+- changed ShapeRenderer API, see http://www.badlogicgames.com/wordpress/?p=2809
+- changed Actions.add to addAction, changed parameter order, and added removeAction, addListener, removeListener
+- Box2d joints now allow for user data
+- Changes to Intersector, Circle, Rectangle and BoundingBox for consistency in #overlap, #intersect and #contains methods, see https://github.com/libgdx/libgdx/pull/312
+- Removed LwjglApplicationConfiguration CPU sync. Added foreground and background target framerate.
+- scene2d, no longer use getters/setters internally for Actor x, y, width, height, scalex, scaley and rotation.
+- Array, detect nested iterator usage and throw exception.
+- Added getVolume to Music class and Android, IOS and GWT backends
+- 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
+- Changed Array constructors that took an array to have offset and count
+- scene2d, Actor parentToLocalCoordinates and localToParentCoordinates refactoring, see http://www.badlogicgames.com/forum/viewtopic.php?p=40441#p40441
+- scene2d, Action#setActor no longer calls reset if the Action has no pool. This allows non-pooled actions to be add and removed from actors, restarted, and reused.
+- ScrollBar#setForceOverscroll renamed to setForceScroll, as it affects more than just overscroll.
+- ArrayMap#addAll renamed to putAll to match the other maps.
+- Added ObjectSet and IntSet.
+- Added completion listener to Music.
+- Added Music#setPan.
+- Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
+- DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
+- Added pause and resume methods to Sound.
+- Changed AssetErrorListener#error to have AssetDescriptor to enable access to parameters of failed asset.
+- Changed SelectBoxStyle to have ScrollPaneStyle and ListStyle for fully customizing the drop down list. http://www.badlogicgames.com/wordpress/?p=3110
+- AssetLoader now takes a FileHandle that is the resolved file name. The AssetLoader no longer has to resolve the file name, so we can prevent it from being resolved twice.
+- Rewrote EarClippingTriangulator to not allocate (no more Vector2s).
+- Added ParticleEffectLoader to make AssetManager load ParticleEffects
+- Added GeometryUtils, more Intersector functions, DelaunayTriangulator, ConvexHull.
+- Added getBoundingBox to ParticleEffect
+- EarClippingTriangulator changed to return triangle indices.
+- PolygonSpriteBatch and friends refactored to use triangle indices.
+- Added add(T, float), remove(int), remove(T) and clear() methods to BinaryHeap
+- Bitmap Font changes:
+	- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
+	- BitmapFont, BitmapFontCache and FreeTypeFontGenerator now support fonts with multiple texture pages. (see BitmapFontTest and FreeTypePackTest)
+	- BitmapFontData.imagePath and getImagePath() is depreacted, use imagePaths[] and getImagePath(int) instead
+	- Added two BitmapFont constructors for convenience; no need to specify flip boolean
+	- Added getCache() to BitmapFont, for expert users who wish to use the BitmapFontCache (see BitmapFontTest)
+	- FreeTypeFontGenerator now includes setMaxTextureSize and getMaxTextureSize to cap the generated glyph atlas size (default 1024)
+- added render-hooks beginRender() and endRender() to BatchTiledMapRenderer
+- Added panStop to GestureListener interface.
+- ScissorStack#calculateScissors changed to take viewport, enabling it to work with glViewport.
+- Added Bits#getAndClear, Bits#getAndSet and Bits#containsAll
+- Added setX and setY to TextureAtlas.AtlasSprite so it matches expected behavior
+
+[0.9.8]
+- see http://www.badlogicgames.com/wordpress/?p=2791
+
+[0.9.7]
+- see http://www.badlogicgames.com/wordpress/?p=2664
+
+[0.9.6]
+- see http://www.badlogicgames.com/wordpress/?p=2513
+>>>>>>> refs/heads/master

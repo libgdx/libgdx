@@ -211,7 +211,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		});
 
 		// Pack.
-		System.out.println(inputDir.inputFile.getName());
+		if (!settings.silent) System.out.println(inputDir.inputFile.getName());
 		TexturePacker packer = new TexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);

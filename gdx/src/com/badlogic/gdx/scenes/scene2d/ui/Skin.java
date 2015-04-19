@@ -452,6 +452,7 @@ public class Skin implements Disposable {
 				String path = json.readValue("file", String.class, jsonData);
 				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
+				Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
@@ -471,8 +472,9 @@ public class Skin implements Disposable {
 						else
 							font = new BitmapFont(fontFile, flip);
 					}
+					font.getData().markupEnabled = markupEnabled;
 					// Scaled size is the desired cap height to scale the font to.
-					if (scaledSize != -1) font.setScale(scaledSize / font.getCapHeight());
+					if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
 					return font;
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);

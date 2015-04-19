@@ -55,11 +55,19 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	public JsonValue (double value) {
-		set(value);
+		set(value, null);
 	}
 
 	public JsonValue (long value) {
-		set(value);
+		set(value, null);
+	}
+
+	public JsonValue (double value, String stringValue) {
+		set(value, stringValue);
+	}
+
+	public JsonValue (long value, String stringValue) {
+		set(value, stringValue);
 	}
 
 	public JsonValue (boolean value) {
@@ -162,9 +170,9 @@ public class JsonValue implements Iterable<JsonValue> {
 		case stringValue:
 			return stringValue;
 		case doubleValue:
-			return Double.toString(doubleValue);
+			return stringValue != null ? stringValue : Double.toString(doubleValue);
 		case longValue:
-			return Long.toString(longValue);
+			return stringValue != null ? stringValue : Long.toString(longValue);
 		case booleanValue:
 			return longValue != 0 ? "true" : "false";
 		case nullValue:
@@ -314,10 +322,10 @@ public class JsonValue implements Iterable<JsonValue> {
 				v = value.stringValue;
 				break;
 			case doubleValue:
-				v = Double.toString(value.doubleValue);
+				v = stringValue != null ? stringValue : Double.toString(value.doubleValue);
 				break;
 			case longValue:
-				v = Long.toString(value.longValue);
+				v = stringValue != null ? stringValue : Long.toString(value.longValue);
 				break;
 			case booleanValue:
 				v = value.longValue != 0 ? "true" : "false";
@@ -873,15 +881,19 @@ public class JsonValue implements Iterable<JsonValue> {
 		type = value == null ? ValueType.nullValue : ValueType.stringValue;
 	}
 
-	public void set (double value) {
+	/** @param stringValue May be null if the string representation is the string value of the double (eg, no leading zeros). */
+	public void set (double value, String stringValue) {
 		doubleValue = value;
 		longValue = (long)value;
+		this.stringValue = stringValue;
 		type = ValueType.doubleValue;
 	}
 
-	public void set (long value) {
+	/** @param stringValue May be null if the string representation is the string value of the long (eg, no leading zeros). */
+	public void set (long value, String stringValue) {
 		longValue = value;
 		doubleValue = (double)value;
+		this.stringValue = stringValue;
 		type = ValueType.longValue;
 	}
 
