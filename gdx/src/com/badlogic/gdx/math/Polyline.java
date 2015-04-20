@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.math;
 
-public class Polyline {
+public class Polyline implements Shape2D {
 	private final float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -196,5 +196,15 @@ public class Polyline {
 		this.x += x;
 		this.y += y;
 		dirty = true;
+	}
+
+	@Override
+	public boolean contains (Vector2 point) {
+		return false;
+	}
+
+	@Override
+	public boolean contains (float x, float y) {
+		return false;
 	}
 }
