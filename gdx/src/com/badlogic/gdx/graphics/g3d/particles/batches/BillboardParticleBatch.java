@@ -44,7 +44,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	private static final VertexAttributes 
 		GPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
 															new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"), 
-															new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE), 
+															new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE), 
 															new VertexAttribute(sizeAndRotationUsage, 4, "a_sizeAndRotation")),
 															/*
 		GPU_EXT_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
@@ -55,13 +55,13 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 									*/
 		CPU_ATTRIBUTES = new VertexAttributes(	new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
 															new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"), 
-															new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE) );
+															new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE) );
 	
 	//Offsets
 	private static final int 	GPU_POSITION_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
 										GPU_UV_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
 										GPU_SIZE_ROTATION_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset/4),
-										GPU_COLOR_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
+										GPU_COLOR_OFFSET = (short)(GPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset/4),
 										GPU_VERTEX_SIZE = GPU_ATTRIBUTES.vertexSize/4,
 
 										//Ext
@@ -77,7 +77,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 										//Cpu
 										CPU_POSITION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Position).offset/4),
 										CPU_UV_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset/4),
-										CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Color).offset/4),
+										CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset/4),
 										CPU_VERTEX_SIZE= CPU_ATTRIBUTES.vertexSize/4;
 	private final static int 	MAX_PARTICLES_PER_MESH = Short.MAX_VALUE/4,
 										MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH*4;

@@ -80,8 +80,8 @@ public class VehicleTest extends BaseBulletTest {
 		world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
 
 		BoundingBox bounds = new BoundingBox();
-		Vector3 chassisHalfExtents = new Vector3(chassisModel.calculateBoundingBox(bounds).getDimensions()).scl(0.5f);
-		Vector3 wheelHalfExtents = new Vector3(wheelModel.calculateBoundingBox(bounds).getDimensions()).scl(0.5f);
+		Vector3 chassisHalfExtents = chassisModel.calculateBoundingBox(bounds).getDimensions(new Vector3()).scl(0.5f);
+		Vector3 wheelHalfExtents = wheelModel.calculateBoundingBox(bounds).getDimensions(new Vector3()).scl(0.5f);
 
 		world.addConstructor("chassis", new BulletConstructor(chassisModel, 5f, new btBoxShape(chassisHalfExtents)));
 		world.addConstructor("wheel", new BulletConstructor(wheelModel, 0, null));
