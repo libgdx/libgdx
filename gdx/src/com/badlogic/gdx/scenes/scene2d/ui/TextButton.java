@@ -43,7 +43,13 @@ public class TextButton extends Button {
 		super();
 		setStyle(style);
 		this.style = style;
-		label = new Label(text, new LabelStyle(style.font, style.fontColor));
+		LabelStyle labelStyle;
+		if (style.labelStyle == null) {
+			labelStyle = new LabelStyle(style.font, style.fontColor);
+		} else {
+			labelStyle = style.labelStyle;
+		}
+		label = labelStyle.createLabel(text);	// Let the style instantiate a derived class
 		label.setAlignment(Align.center);
 		add(label).expand().fill();
 		setSize(getPrefWidth(), getPrefHeight());
@@ -58,9 +64,14 @@ public class TextButton extends Button {
 		this.style = (TextButtonStyle)style;
 		if (label != null) {
 			TextButtonStyle textButtonStyle = (TextButtonStyle)style;
-			LabelStyle labelStyle = label.getStyle();
-			labelStyle.font = textButtonStyle.font;
-			labelStyle.fontColor = textButtonStyle.fontColor;
+			LabelStyle labelStyle;
+			if (textButtonStyle.labelStyle != null) {
+				labelStyle = textButtonStyle.labelStyle;
+			} else {
+				labelStyle = label.getStyle();
+				labelStyle.font = textButtonStyle.font;
+				labelStyle.fontColor = textButtonStyle.fontColor;
+			}
 			label.setStyle(labelStyle);
 		}
 	}
@@ -111,6 +122,8 @@ public class TextButton extends Button {
 		public BitmapFont font;
 		/** Optional. */
 		public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
+		/** Optional. */
+		public LabelStyle labelStyle = null;
 
 		public TextButtonStyle () {
 		}
@@ -129,6 +142,7 @@ public class TextButton extends Button {
 			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
 			if (style.checkedOverFontColor != null) this.checkedFontColor = new Color(style.checkedOverFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
+			if (style.labelStyle != null) this.labelStyle = style.labelStyle.copy();
 		}
 	}
 }

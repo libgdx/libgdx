@@ -328,5 +328,18 @@ public class Label extends Widget {
 			if (style.fontColor != null) fontColor = new Color(style.fontColor);
 			background = style.background;
 		}
+		
+		/** Creates a new label instance using this style and the given text. 
+		 * @param text The text of the created label.
+		 * @return the new {@link Label} instance */
+		public Label createLabel (CharSequence text) {
+			return new Label(text, this);
+		}
+		
+		/** Creates a copy of this LabelStyle. 
+		 * @return a copy of this object */
+		public LabelStyle copy() {
+			return new LabelStyle(this);
+		}
 	}
 }

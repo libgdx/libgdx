@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -142,6 +144,17 @@ public class Skin implements Disposable {
 		if (type == Sprite.class) return (T)getSprite(name);
 
 		ObjectMap<String, Object> typeResources = resources.get(type);
+		if (typeResources == null) {
+			// Search within derived classes
+			Iterator<Class> typeIterator = resources.keys();
+			while (typeIterator.hasNext()) {
+				Class resourceType = typeIterator.next();
+				if (type.isAssignableFrom(resourceType)) {
+					typeResources = resources.get(resourceType);
+					break;
+				}
+			}
+		}
 		if (typeResources == null) throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
 		Object resource = typeResources.get(name);
 		if (resource == null) throw new GdxRuntimeException("No " + type.getName() + " registered with name: " + name);
