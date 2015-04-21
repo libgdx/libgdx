@@ -73,6 +73,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	public TiledMap load (String fileName, TmxMapLoader.Parameters parameters) {
 		try {
 			this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
+			this.flipY = parameters.flipY;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
@@ -100,8 +101,10 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 
 		if (parameter != null) {
 			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
+			flipY = parameter.flipY;
 		} else {
 			convertObjectToTileSpace = false;
+			flipY = true;
 		}
 		try {
 			map = loadTilemap(root, tmxFile, new AssetManagerImageResolver(manager));
@@ -379,7 +382,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						TiledMapTile tile = new StaticTiledMapTile(tileRegion);
 						tile.setId(id);
 						tile.setOffsetX(offsetX);
-						tile.setOffsetY(-offsetY);
+						tile.setOffsetY(flipY ? -offsetY : offsetY);
 						tileset.putTile(id++, tile);
 					}
 				}
@@ -397,7 +400,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 					TiledMapTile tile = new StaticTiledMapTile(texture);
 					tile.setId(firstgid + tileElement.getIntAttribute("id"));
 					tile.setOffsetX(offsetX);
-					tile.setOffsetY(-offsetY);
+					tile.setOffsetY(flipY ? -offsetY : offsetY);
 					tileset.putTile(tile.getId(), tile);
 				}
 			}

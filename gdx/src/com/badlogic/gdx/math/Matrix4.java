@@ -70,8 +70,7 @@ public class Matrix4 implements Serializable {
 	/** WW: Typically the value one. On Vector3 multiplication this value is ignored. */
 	public static final int M33 = 15;
 
-	/** @Deprecated Do not use this member, instead use a temporary Matrix4 instance, or create a temporary float array. */
-	@Deprecated public static final float tmp[] = new float[16]; // FIXME Change to private access
+	private static final float tmp[] = new float[16];
 	public final float val[] = new float[16];
 
 	/** Constructs an identity matrix */

@@ -73,7 +73,11 @@ public class FreeType {
 		public Face newMemoryFace(byte[] data, int dataSize, int faceIndex) {
 			ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(data.length);
 			BufferUtils.copy(data, 0, buffer, data.length);
-			long face = newMemoryFace(address, buffer, dataSize, faceIndex);
+			return newMemoryFace(buffer, faceIndex);
+		}
+
+		public Face newMemoryFace(ByteBuffer buffer, int faceIndex) {
+			long face = newMemoryFace(address, buffer, buffer.remaining(), faceIndex);
 			if(face == 0) {
 				BufferUtils.disposeUnsafeByteBuffer(buffer);
 				throw new GdxRuntimeException("Couldn't load font");
@@ -849,7 +853,7 @@ public class FreeType {
 
 	public static int toInt (int value) {
 		if (value < 0) return (int)((value - 32) >> 6);
-		else return (int)((value + 32) >> 6);
+		return (int)((value + 32) >> 6);
 	}
    
 //	public static void main (String[] args) throws Exception {

@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectWithVAO;
 import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -65,7 +66,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa */
 public class Mesh implements Disposable {
 	public enum VertexDataType {
-		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
+		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
 	}
 
 	/** list of all meshes **/
@@ -92,7 +93,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
@@ -107,7 +108,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
@@ -125,11 +126,19 @@ public class Mesh implements Disposable {
 	 * 
 	 * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> **/
 	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
+		vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
 		indices = new IndexBufferObject(staticIndices, maxIndices);
 		isVertexArray = false;
 
 		addManagedMesh(Gdx.app, this);
+	}
+
+	private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
+		if(Gdx.gl30 != null) {
+			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
+		} else {
+			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
+		}
 	}
 
 	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
@@ -141,114 +150,31 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		if (type == VertexDataType.VertexBufferObject) {
-			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObject(isStatic, maxIndices);
-			isVertexArray = false;
-		} else if (type == VertexDataType.VertexBufferObjectSubData) {
-			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-			isVertexArray = false;
-		} else {
-			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexArray(maxIndices);
-			isVertexArray = true;
+		switch(type) {
+			case VertexBufferObject:
+				vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObject(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexBufferObjectSubData:
+				vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexBufferObjectWithVAO:
+				vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
+				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+				isVertexArray = false;
+				break;
+			case VertexArray:
+			default:
+				vertices = new VertexArray(maxVertices, attributes);
+				indices = new IndexArray(maxIndices);
+				isVertexArray = true;
+				break;
 		}
+
 		addManagedMesh(Gdx.app, this);
-	}
-
-	/** Create a new Mesh that is a combination of transformations of the supplied base mesh. Not all primitive types, like line
-	 * strip and triangle strip, can be combined.
-	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-	 * @param transformations the transformations to apply to the meshes
-	 * @return the combined mesh */
-	public static Mesh create (boolean isStatic, final Mesh base, final Matrix4[] transformations) {
-		final VertexAttribute posAttr = base.getVertexAttribute(Usage.Position);
-		final int offset = posAttr.offset / 4;
-		final int numComponents = posAttr.numComponents;
-		final int numVertices = base.getNumVertices();
-		final int vertexSize = base.getVertexSize() / 4;
-		final int baseSize = numVertices * vertexSize;
-		final int numIndices = base.getNumIndices();
-
-		final float vertices[] = new float[numVertices * vertexSize * transformations.length];
-		final short indices[] = new short[numIndices * transformations.length];
-
-		base.getIndices(indices);
-
-		for (int i = 0; i < transformations.length; i++) {
-			base.getVertices(0, baseSize, vertices, baseSize * i);
-			transform(transformations[i], vertices, vertexSize, offset, numComponents, numVertices * i, numVertices);
-			if (i > 0) for (int j = 0; j < numIndices; j++)
-				indices[(numIndices * i) + j] = (short)(indices[j] + (numVertices * i));
-		}
-
-		final Mesh result = new Mesh(isStatic, vertices.length / vertexSize, indices.length, base.getVertexAttributes());
-		result.setVertices(vertices);
-		result.setIndices(indices);
-		return result;
-	}
-
-	/** Create a new Mesh that is a combination of the supplied meshes. The meshes must have the same VertexAttributes signature.
-	 * Not all primitive types, like line strip and triangle strip, can be combined.
-	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-	 * @param meshes the meshes to combine
-	 * @return the combined mesh */
-	public static Mesh create (boolean isStatic, final Mesh[] meshes) {
-		return create(isStatic, meshes, null);
-	}
-
-	/** Create a new Mesh that is a combination of the supplied meshes. The meshes must have the same VertexAttributes signature. If
-	 * transformations is supplied, it must have the same length as meshes. Not all primitive types, like line strip and triangle
-	 * strip, can be combined.
-	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-	 * @param meshes the meshes to combine
-	 * @param transformations the transformations to apply to the meshes
-	 * @return the combined mesh */
-	public static Mesh create (boolean isStatic, final Mesh[] meshes, final Matrix4[] transformations) {
-		if (transformations != null && transformations.length < meshes.length)
-			throw new IllegalArgumentException("Not enough transformations specified");
-		final VertexAttributes attributes = meshes[0].getVertexAttributes();
-		int vertCount = meshes[0].getNumVertices();
-		int idxCount = meshes[0].getNumIndices();
-		for (int i = 1; i < meshes.length; i++) {
-			if (!meshes[i].getVertexAttributes().equals(attributes))
-				throw new IllegalArgumentException("Inconsistent VertexAttributes");
-			vertCount += meshes[i].getNumVertices();
-			idxCount += meshes[i].getNumIndices();
-		}
-		final VertexAttribute posAttr = meshes[0].getVertexAttribute(Usage.Position);
-		final int offset = posAttr.offset / 4;
-		final int numComponents = posAttr.numComponents;
-		final int vertexSize = attributes.vertexSize / 4;
-
-		final float vertices[] = new float[vertCount * vertexSize];
-		final short indices[] = new short[idxCount];
-
-		meshes[0].getVertices(vertices);
-		meshes[0].getIndices(indices);
-		int vcount = meshes[0].getNumVertices();
-		if (transformations != null) transform(transformations[0], vertices, vertexSize, offset, numComponents, 0, vcount);
-		int voffset = vcount;
-		int ioffset = meshes[0].getNumIndices();
-		for (int i = 1; i < meshes.length; i++) {
-			final Mesh mesh = meshes[i];
-			vcount = mesh.getNumVertices();
-			final int isize = mesh.getNumIndices();
-			mesh.getVertices(0, vcount * vertexSize, vertices, voffset * vertexSize);
-			if (transformations != null)
-				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset, vcount);
-			mesh.getIndices(indices, ioffset);
-			for (int j = 0; j < isize; j++)
-				indices[ioffset + j] = (short)(indices[ioffset + j] + voffset);
-			ioffset += isize;
-			voffset += vcount;
-		}
-
-		final Mesh result = new Mesh(isStatic, vertices.length / vertexSize, indices.length, attributes);
-		result.setVertices(vertices);
-		result.setIndices(indices);
-		return result;
 	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.

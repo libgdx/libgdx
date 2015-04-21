@@ -21,9 +21,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -32,6 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BitmapFontTest extends GdxTest {
 	private Stage stage;
@@ -39,6 +41,7 @@ public class BitmapFontTest extends GdxTest {
 	private BitmapFont font;
 	private ShapeRenderer renderer;
 	private BitmapFont multiPageFont;
+	private GlyphLayout layout;
 
 	@Override
 	public void create () {
@@ -53,12 +56,12 @@ public class BitmapFontTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		BitmapFont labelFont = skin.get("default-font", BitmapFont.class);
-		labelFont.setMarkupEnabled(true);
+		labelFont.getData().markupEnabled = true;
 
 		// Notice that the last [] has been deliberately added to test the effect of excessive pop operations.
 		// They are silently ignored, as expected.
@@ -71,6 +74,8 @@ public class BitmapFontTest extends GdxTest {
 		window.setPosition(400, 200);
 		window.pack();
 		stage.addActor(window);
+
+		layout = new GlyphLayout();
 	}
 
 	@Override
@@ -79,11 +84,39 @@ public class BitmapFontTest extends GdxTest {
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// Render lines and wrapped text.
+		font.getData().setScale(3f);
+		renderer.begin(ShapeRenderer.ShapeType.Line);
+		renderer.setColor(0, 1, 0, 1);
+		float w = Gdx.input.getX();
+		// w = 255;
+		renderer.rect(10, 10, w, 500);
+		renderer.end();
+
+		spriteBatch.begin();
+		String text = "your new";
+		layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
+		float meowy = (500 / 2 + layout.height / 2 + 5);
+		font.draw(spriteBatch, layout, 10, 10 + meowy);
+		spriteBatch.end();
+
+		renderer.begin(ShapeRenderer.ShapeType.Line);
+		renderer.setColor(0, 1, 0, 1);
+		for (int i = 0, n = layout.runs.size; i < n; i++) {
+			GlyphRun r = layout.runs.get(i);
+			renderer.rect(10 + r.x, 10 + meowy + r.y, r.width, -font.getLineHeight());
+		}
+		renderer.end();
+		font.getData().setScale(1f);
+		if (true) return;
+		//
+
 		spriteBatch.begin();
 
-		String text = "Sphinx of black quartz, judge my vow.";
+		text = "Sphinx of black quartz, judge my vow.";
 		font.setColor(Color.RED);
 
 		float x = 100, y = 20;
@@ -91,23 +124,21 @@ public class BitmapFontTest extends GdxTest {
 
 		if (false) {
 			alignmentWidth = 0;
-			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
-		}
-
-		if (false) {
-			TextBounds bounds = font.getMultiLineBounds(text);
-			alignmentWidth = bounds.width;
-			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
+			font.draw(spriteBatch, text, x, viewHeight - y, alignmentWidth, Align.right, false);
 		}
 
 		if (true) {
 			alignmentWidth = 280;
-			// font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
-			font.drawWrapped(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
+			font.draw(spriteBatch, text, x, viewHeight - y, alignmentWidth, Align.right, true);
 		}
 
+		font.draw(spriteBatch, "[", 50, 60, 100, Align.left, true);
+		font.getData().markupEnabled = true;
+		font.draw(spriteBatch, "[", 100, 60, 100, Align.left, true);
+		font.getData().markupEnabled = false;
+
 		// 'R' and 'p' are in different pages
-		String txt2 = "this font uses " + multiPageFont.getRegions().length + " texture pages: RpRpRpRpRpNM";
+		String txt2 = "this font uses " + multiPageFont.getRegions().size + " texture pages: RpRpRpRpRpNM";
 		spriteBatch.renderCalls = 0;
 
 		// regular draw function
@@ -128,14 +159,14 @@ public class BitmapFontTest extends GdxTest {
 		cache.setColor(Color.BLACK);
 		float textX = 10;
 		textX += cache.setText("[black] ", textX, 150).width;
-		multiPageFont.setMarkupEnabled(true);
+		multiPageFont.getData().markupEnabled = true;
 		textX += cache.addText("[[[PINK]pink[]] ", textX, 150).width;
 		textX += cache.addText("[PERU][[peru] ", textX, 150).width;
 		cache.setColor(Color.GREEN);
 		textX += cache.addText("green ", textX, 150).width;
 		textX += cache.addText("[#A52A2A]br[#A52A2ADF]ow[#A52A2ABF]n f[#A52A2A9F]ad[#A52A2A7F]in[#A52A2A5F]g o[#A52A2A3F]ut ",
 			textX, 150).width;
-		multiPageFont.setMarkupEnabled(false);
+		multiPageFont.getData().markupEnabled = false;
 
 		cache.draw(spriteBatch);
 
@@ -149,11 +180,17 @@ public class BitmapFontTest extends GdxTest {
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.BLACK);
-		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
+		renderer.rect(x, viewHeight - y - 200, alignmentWidth, 200);
 		renderer.end();
 
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+	}
+
+	public void resize (int width, int height) {
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+		stage.getViewport().update(width, height);
 	}
 
 	@Override

@@ -374,7 +374,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.arc(x, y, radius, 0, 2 * Math.PI, false);
 			fillOrStrokePath(drawType);
@@ -394,7 +394,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.moveTo(x, y);
 			context.lineTo(x2, y2);
@@ -415,7 +415,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.rect(x, y, width, height);
 			fillOrStrokePath(drawType);
@@ -435,7 +435,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.moveTo(x1,y1);
 			context.lineTo(x2,y2);
@@ -461,7 +461,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.rect(dstX, dstY, dstWidth, dstHeight);
 			fillOrStrokePath(DrawType.FILL);

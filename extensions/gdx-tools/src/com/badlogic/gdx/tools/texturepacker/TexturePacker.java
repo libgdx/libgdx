@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -625,24 +625,44 @@ public class TexturePacker {
 
 	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of the
 	 *         input file */
-	static public boolean isModified (String input, String output, String packFileName) {
+	static public boolean isModified (String input, String output, String packFileName, Settings settings) {
 		String packFullFileName = output;
-		if (!packFullFileName.endsWith("/")) packFullFileName += "/";
+
+		if (!packFullFileName.endsWith("/")) {
+			packFullFileName += "/";
+		}
+
+		// Check against the only file we know for sure will exist and will be changed if any asset changes:
+		// the atlas file
 		packFullFileName += packFileName;
+		packFullFileName += settings.atlasExtension;
 		File outputFile = new File(packFullFileName);
-		if (!outputFile.exists()) return true;
+
+		if (!outputFile.exists()) {
+			return true;
+		}
 
 		File inputFile = new File(input);
-		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
+		if (!inputFile.exists()) {
+			throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
+		}
+
 		return inputFile.lastModified() > outputFile.lastModified();
 	}
 
 	static public void processIfModified (String input, String output, String packFileName) {
-		if (isModified(input, output, packFileName)) process(input, output, packFileName);
+		// Default settings (Needed to access the default atlas extension string)
+		Settings settings = new Settings();
+
+		if (isModified(input, output, packFileName, settings)) {
+			process(settings, input, output, packFileName);
+		}
 	}
 
 	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
-		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
+		if (isModified(input, output, packFileName, settings)) {
+			 process(settings, input, output, packFileName);
+		}
 	}
 
 	static public interface Packer {

@@ -203,7 +203,7 @@ public class ProgressBar extends Widget implements Disableable {
 	}
 
 	public float getVisualPercent () {
-		return visualInterpolation.apply(getPercent());
+		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
 	/** Returns progress bar visual position within the range. */

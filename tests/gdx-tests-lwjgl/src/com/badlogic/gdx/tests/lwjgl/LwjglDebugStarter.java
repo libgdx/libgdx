@@ -22,6 +22,7 @@ import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.JsonTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {

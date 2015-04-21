@@ -66,7 +66,7 @@ public class FreeTypePackTest extends GdxTest {
 
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	TextureRegion[] regions;
+	Array<TextureRegion> regions;
 	String text;
 
 	FontMap<BitmapFont> fontMap;
@@ -91,7 +91,7 @@ public class FreeTypePackTest extends GdxTest {
 		long start = System.currentTimeMillis();
 		int glyphCount = createFonts();
 		long time = System.currentTimeMillis() - start;
-		text = glyphCount + " glyphs packed in " + regions.length + " page(s) in " + time + " ms";
+		text = glyphCount + " glyphs packed in " + regions.size + " page(s) in " + time + " ms";
 
 	}
 
@@ -126,7 +126,7 @@ public class FreeTypePackTest extends GdxTest {
 
 		// draw all glyphs in background
 		batch.setColor(1f, 1f, 1f, 0.15f);
-		batch.draw(regions[0], 0, 0);
+		batch.draw(regions.first(), 0, 0);
 		batch.setColor(1f, 1f, 1f, 1f);
 		batch.end();
 	}
@@ -187,17 +187,17 @@ public class FreeTypePackTest extends GdxTest {
 		Array<Page> pages = packer.getPages();
 
 		// our resulting regions
-		regions = new TextureRegion[pages.size];
+		regions = new Array(pages.size);
 
 		// Now generate a TextureRegion from each pixmap page
-		for (int i = 0; i < regions.length; i++) {
+		for (int i = 0; i < pages.size; i++) {
 			Page page = pages.get(i);
 
 			// create a Texture from the pixmap
 			Texture tex = new Texture(page.getPixmap());
 			tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-			regions[i] = new TextureRegion(tex);
+			regions.add(new TextureRegion(tex));
 		}
 
 		// No more need for our CPU-based pixmap packer, as our textures are now on GPU

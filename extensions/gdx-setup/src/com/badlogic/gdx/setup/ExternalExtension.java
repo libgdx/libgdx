@@ -22,23 +22,25 @@ import java.util.Map;
 public class ExternalExtension {
 
 	private String name;
+	private String[] gwtInherits;
 	private String description;
 	private String version;
 
 	private Map<String, List<String>> dependencies;
 
-	public ExternalExtension (String name, String description, String version) {
+	public ExternalExtension (String name, String[] gwtInherits, String description, String version) {
 		this.name = name;
+		this.gwtInherits = gwtInherits;
 		this.description = description;
 		this.version = version;
 	}
-
+	
 	public void setDependencies (Map<String, List<String>> dependencies) {
 		this.dependencies = dependencies;
 	}
 
 	public Dependency generateDependency () {
-		Dependency dep = new Dependency(name, getPlatformDependencies("core"), getPlatformDependencies("desktop"),
+		Dependency dep = new Dependency(name, gwtInherits, getPlatformDependencies("core"), getPlatformDependencies("desktop"),
 			getPlatformDependencies("android"), getPlatformDependencies("ios"), getPlatformDependencies("html"));
 
 		return dep;

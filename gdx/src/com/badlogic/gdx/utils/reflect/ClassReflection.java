@@ -56,6 +56,11 @@ public final class ClassReflection {
 	static public boolean isStaticClass (Class c) {
 		return Modifier.isStatic(c.getModifiers());
 	}
+	
+	/** Determines if the supplied Class object represents an array class. */
+	static public boolean isArray (Class c) {
+		return c.isArray();
+	}
 
 	/** Creates a new instance of the class represented by the supplied Class. */
 	static public <T> T newInstance (Class<T> c) throws ReflectionException {
