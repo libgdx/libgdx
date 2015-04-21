@@ -743,13 +743,16 @@ public class BitmapFont implements Disposable {
 				if (glyph == null) continue;
 				glyphs.add(glyph);
 
-				if (lastGlyph != null) xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				if (lastGlyph == null)
+					xAdvances.add(-glyph.xoffset * scaleX); // First glyph.
+				else
+					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
-			if (lastGlyph != null) xAdvances.add(lastGlyph.xadvance * scaleX);
+			if (lastGlyph != null) xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX);
 		}
 
 		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and moving

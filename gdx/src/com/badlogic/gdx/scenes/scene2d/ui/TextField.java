@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
@@ -98,6 +99,7 @@ public class TextField extends Widget implements Disableable {
 	private StringBuilder passwordBuffer;
 	private char passwordCharacter = BULLET;
 
+	private float fontOffset;
 	protected float textHeight, textOffset;
 	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
@@ -330,7 +332,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
-		selection.draw(batch, x + selectionX + renderOffset, y - textHeight - font.getDescent(), selectionWidth,
+		selection.draw(batch, x + selectionX + renderOffset + fontOffset - 1, y - textHeight - font.getDescent(), selectionWidth,
 			textHeight + font.getDescent() / 2);
 	}
 
@@ -339,8 +341,8 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
-		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.items[visibleTextStart] - 1, y
-			- textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight + font.getDescent() / 2);
+		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.items[visibleTextStart] + fontOffset
+			- 1, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight + font.getDescent() / 2);
 	}
 
 	void updateDisplayText () {
@@ -373,8 +375,10 @@ public class TextField extends Widget implements Disableable {
 		float x = 0;
 		if (layout.runs.size > 0) {
 			GlyphRun run = layout.runs.first();
+			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
-			for (int i = 0, n = xAdvances.size; i < n; i++) {
+			fontOffset = xAdvances.first();
+			for (int i = 1, n = xAdvances.size; i < n; i++) {
 				glyphPositions.add(x);
 				x += xAdvances.get(i);
 			}
