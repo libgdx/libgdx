@@ -142,7 +142,7 @@ public class GlyphLayout implements Poolable {
 
 						// Don't wrap if the glyph would fit with just its width (no x-advance or kerning).
 						if (wrap && x > targetWidth && i > 1 && x - xAdvance //
-							+ (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX > targetWidth) {
+							+ (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX - 0.00001f > targetWidth) {
 
 							if (truncate != null) {
 								truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
@@ -234,13 +234,14 @@ public class GlyphLayout implements Poolable {
 			count++;
 		}
 
-		// Append truncate glyphs.
 		run.xAdvances.truncate(count);
 		if (count > 1) {
+			// Append truncate glyphs.
 			run.glyphs.truncate(count - 1);
 			adjustLastGlyph(fontData, run);
 			run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
+			// Use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
