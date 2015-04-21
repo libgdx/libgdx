@@ -755,8 +755,8 @@ public class BitmapFont implements Disposable {
 			if (lastGlyph != null) xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX);
 		}
 
-		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and moving
-		 * toward the beginning of the glyphs array. */
+		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and
+		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			char ch = (char)glyphs.get(start).id;
 			if (isWhitespace(ch)) return start + 1;
