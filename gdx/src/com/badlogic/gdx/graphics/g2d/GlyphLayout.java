@@ -69,8 +69,9 @@ public class GlyphLayout implements Poolable {
 		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
 
-	/** @param color The default color to use for the text. If {@link BitmapFontData#markupEnabled} is true, color markup tags in the
-	 *           specified string may change the color for portions of the text.
+	/** @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
+	 *           {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
+	 *           portions of the text.
 	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
 	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
 	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs. */
