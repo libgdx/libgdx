@@ -237,7 +237,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			layout.setText(font, string, 0, string.length(), Color.WHITE, width, Align.left, false, "...");
+			layout.setText(font, string, 0, string.length(), font.getColor(), width, Align.left, false, "...");
 			font.draw(batch, layout, x, y);
 		}
 	}
