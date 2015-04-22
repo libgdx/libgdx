@@ -43,7 +43,7 @@ public class PingPongSocketExample extends GdxTest {
 			@Override
 			public void run () {
 				ServerSocketHints hints = new ServerSocketHints();
-				ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, 9999, hints);
+				ServerSocket server = Gdx.net.newServerSocket(Protocol.TCP, "localhost", 9999, hints);
 				// wait for the next client connection
 				Socket client = server.accept(null);
 				// read message and send it back

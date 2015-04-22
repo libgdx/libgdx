@@ -64,6 +64,7 @@ import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
+import com.badlogic.gdx.tests.net.PingPongSocketExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -163,6 +164,7 @@ public class GdxTests {
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
+		PingPongSocketExample.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
