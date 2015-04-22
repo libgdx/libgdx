@@ -490,7 +490,7 @@ public class ParticleEmitter {
 				float radius2 = radiusX * radiusX;
 				while (true) {
 					float px = MathUtils.random(width) - radiusX;
-					float py = MathUtils.random(width) - radiusX;
+					float py = MathUtils.random(height) - radiusY;
 					if (px * px + py * py <= radius2) {
 						x += px;
 						y += py / scaleY;
