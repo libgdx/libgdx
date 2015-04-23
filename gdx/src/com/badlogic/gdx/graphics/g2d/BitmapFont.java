@@ -765,7 +765,7 @@ public class BitmapFont implements Disposable {
 				if (isWhitespace(ch)) return i + 1;
 				if (isBreakChar(ch)) return i;
 			}
-			return start;
+			return 0;
 		}
 
 		public boolean isBreakChar (char c) {

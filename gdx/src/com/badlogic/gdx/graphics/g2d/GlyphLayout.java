@@ -136,6 +136,7 @@ public class GlyphLayout implements Poolable {
 					run.x = x;
 					run.y = y;
 					fontData.getGlyphs(run, str, runStart, runEnd);
+					if (run.glyphs.size == 0) System.out.println();
 
 					// Compute the run width, wrap if necessary, and position the run.
 					float[] xAdvances = run.xAdvances.items;
@@ -152,12 +153,13 @@ public class GlyphLayout implements Poolable {
 								break outer;
 							}
 
-							GlyphRun next = glyphRunPool.obtain();
+							int wrapIndex = fontData.getWrapIndex(run.glyphs, i - 1);
+							if (run.x == 0 && wrapIndex == 0) wrapIndex = i - 1; // Require at least one glyph per line.
+							GlyphRun next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 							runs.add(next);
-							wrap(fontData, run, next, Math.max(1, fontData.getWrapIndex(run.glyphs, i - 1)), i);
 
 							// Start the loop over with the new run on the next line.
-							width = Math.max(width, run.width);
+							width = Math.max(width, run.x + run.width);
 							x = 0;
 							y += fontData.down;
 							lines++;
@@ -260,7 +262,8 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.free(truncateRun);
 	}
 
-	private void wrap (BitmapFontData fontData, GlyphRun first, GlyphRun second, int wrapIndex, int widthIndex) {
+	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
+		GlyphRun second = glyphRunPool.obtain();
 		second.color.set(first.color);
 
 		// Copy wrapped glyphs and xAdvances.
@@ -285,10 +288,17 @@ public class GlyphLayout implements Poolable {
 			break;
 		}
 
-		// Truncate wrapped glyphs from first run.
-		first.glyphs.truncate(wrapIndex);
-		first.xAdvances.truncate(wrapIndex + 1);
-		adjustLastGlyph(fontData, first);
+		if (wrapIndex == 0) {
+			// If the first run is now empty, remove it.
+			glyphRunPool.free(first);
+			runs.pop();
+		} else {
+			// Truncate wrapped glyphs from first run.
+			first.glyphs.truncate(wrapIndex);
+			first.xAdvances.truncate(wrapIndex + 1);
+			adjustLastGlyph(fontData, first);
+		}
+		return second;
 	}
 
 	/** Adjusts the xadvance of the last glyph to use its width. */
