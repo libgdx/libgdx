@@ -232,8 +232,8 @@ public class GlyphLayout implements Poolable {
 
 		// Determine visible glyphs.
 		int count = 0;
-		float width = 0;
-		while (true) {
+		float width = run.x;
+		while (count < run.xAdvances.size) {
 			float xAdvance = run.xAdvances.get(count);
 			width += xAdvance;
 			if (width > targetWidth) {
@@ -244,13 +244,13 @@ public class GlyphLayout implements Poolable {
 		}
 
 		if (count > 1) {
-			// Append truncate glyphs.
+			// Some run glyphs fit, append truncate glyphs.
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
 			adjustLastGlyph(fontData, run);
 			run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
-			// Use only truncate glyphs.
+			// No runs glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
