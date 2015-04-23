@@ -152,7 +152,7 @@ public class Group extends Actor implements Cullable {
 			for (int i = 0, n = children.size; i < n; i++) {
 				Actor child = actors[i];
 				if (!child.isVisible()) continue;
-				if (!child.getDebug()) continue;
+				if (!child.getDebug() && !(child instanceof Group)) continue;
 				child.drawDebug(shapes);
 			}
 			shapes.flush();
@@ -164,7 +164,7 @@ public class Group extends Actor implements Cullable {
 			for (int i = 0, n = children.size; i < n; i++) {
 				Actor child = actors[i];
 				if (!child.isVisible()) continue;
-				if (!child.getDebug()) continue;
+				if (!child.getDebug() && !(child instanceof Group)) continue;
 				float cx = child.x, cy = child.y;
 				child.x = cx + offsetX;
 				child.y = cy + offsetY;
