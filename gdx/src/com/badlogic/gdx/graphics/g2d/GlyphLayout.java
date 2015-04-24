@@ -255,7 +255,7 @@ public class GlyphLayout implements Poolable {
 			adjustLastGlyph(fontData, run);
 			run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
-			// No runs glyphs fit, use only truncate glyphs.
+			// No run glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
