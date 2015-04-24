@@ -327,7 +327,7 @@ public class GlyphLayout implements Poolable {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
 					Color color = colorPool.obtain();
 					colorStack.add(color);
-					Color.rgb888ToColor(color, colorInt);
+					Color.rgba8888ToColor(color, colorInt);
 					if (i <= start + 7) color.a = 1f; // RRGGBB
 					return i - start;
 				}
