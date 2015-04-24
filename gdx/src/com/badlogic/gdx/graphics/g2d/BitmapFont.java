@@ -591,7 +591,8 @@ public class BitmapFont implements Disposable {
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
 					setGlyph(' ', spaceGlyph);
 				}
-				spaceWidth = spaceGlyph != null ? spaceGlyph.xadvance + spaceGlyph.width : 1;
+				if (spaceGlyph.width == 0) spaceGlyph.width = spaceGlyph.xoffset + spaceGlyph.xadvance;
+				spaceWidth = spaceGlyph != null ? spaceGlyph.width : 1;
 
 				Glyph xGlyph = null;
 				for (int i = 0; i < xChars.length; i++) {
