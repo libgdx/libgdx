@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -48,6 +49,8 @@ public class BitmapFontTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
+		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf")).generateFont(new FreeTypeFontParameter());
+		font.getData().markupEnabled = true;
 
 		multiPageFont = new BitmapFont(Gdx.files.internal("data/multipagefont.fnt"));
 
@@ -89,7 +92,10 @@ public class BitmapFontTest extends GdxTest {
 
 		// Test wrapping with font.
 		if (false) {
-			font.getData().setScale(3f);
+			BitmapFont font = label.getStyle().font;
+			label.getStyle().font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+			font.getData().setScale(2f);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			renderer.setColor(0, 1, 0, 1);
 			float w = Gdx.input.getX();
@@ -99,7 +105,8 @@ public class BitmapFontTest extends GdxTest {
 
 			spriteBatch.begin();
 			String text = "your new";
-			layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, "...");
+			text = "How quickly [RED]daft jumping zebras vex.";
+			layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, false, "...");
 			// layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			float meowy = (500 / 2 + layout.height / 2 + 5);
 			font.draw(spriteBatch, layout, 10, 10 + meowy);
@@ -119,9 +126,12 @@ public class BitmapFontTest extends GdxTest {
 		// Test wrapping with label.
 		if (true) {
 			label.debug();
-			label.setText("How quickly[RED]daft jumping zebras vex.");
-			//label.setWrap(true);
+			label.getStyle().font = font;
+			label.setStyle(label.getStyle());
+			label.setText("How quickly [RED]daft jumping zebras vex.");
+			label.setWrap(true);
 			label.setEllipsis(true);
+			label.setAlignment(Align.center, Align.right);
 			label.setWidth(Gdx.input.getX() - label.getX());
 			label.setHeight(label.getPrefHeight());
 		} else {
@@ -203,7 +213,7 @@ public class BitmapFontTest extends GdxTest {
 	public void resize (int width, int height) {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
