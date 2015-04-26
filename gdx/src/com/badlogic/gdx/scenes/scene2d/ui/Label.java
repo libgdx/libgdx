@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.DistanceFieldBitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -76,7 +77,7 @@ public class Label extends Widget {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
-		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
+		cache = style.font.isDistanceField() ? new DistanceFieldBitmapFontCache(style.font, style.font.usesIntegerPositions()) : new BitmapFontCache(style.font, style.font.usesIntegerPositions());
 		invalidateHierarchy();
 	}
 
