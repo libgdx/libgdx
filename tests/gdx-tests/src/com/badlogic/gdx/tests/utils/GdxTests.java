@@ -199,6 +199,7 @@ public class GdxTests {
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
 		SpriteCacheTest.class,
+		SpriteDebugRendererTest.class,
 		StagePerformanceTest.class,
 		StageTest.class,
 		SuperKoalio.class,

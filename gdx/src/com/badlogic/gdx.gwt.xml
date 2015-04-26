@@ -106,6 +106,7 @@
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
 		<include name="graphics/g2d/SpriteCache.java"/>
+		<include name="graphics/g2d/SpriteDebugRenderer.java"/>
 		<include name="graphics/g2d/TextMarkup.java"/>
 		<include name="graphics/g2d/TextureAtlas.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
