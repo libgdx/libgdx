@@ -44,20 +44,34 @@ public class DistanceFieldBitmapFontCache extends BitmapFontCache {
 	
 	@Override
 	public void draw (Batch spriteBatch) {
-		spriteBatch.setShader(shader);
-		shader.setUniformf("u_smoothing", getFont().getDistanceFieldSmoothing() * getFont().getScaleX());
+		final ShaderProgram lastShader = spriteBatch.getShader();
 		
+		if (lastShader != shader) {
+			spriteBatch.setShader(shader);
+		}
+		
+		shader.setUniformf("u_smoothing", getFont().getDistanceFieldSmoothing() * getFont().getScaleX());
 		super.draw(spriteBatch);
-		spriteBatch.setShader(null);
+		
+		if (lastShader != shader) {
+			spriteBatch.setShader(lastShader);
+		}
 	}
 	
 	@Override
 	public void draw (Batch spriteBatch, int start, int end) {
-		spriteBatch.setShader(shader);
-		shader.setUniformf("u_smoothing", getFont().getDistanceFieldSmoothing() * getFont().getScaleX());
+		final ShaderProgram lastShader = spriteBatch.getShader();
 		
+		if (lastShader != shader) {
+			spriteBatch.setShader(shader);
+		}
+		
+		shader.setUniformf("u_smoothing", getFont().getDistanceFieldSmoothing() * getFont().getScaleX());
 		super.draw(spriteBatch, start, end);
-		spriteBatch.setShader(null);
+		
+		if (lastShader != shader) {
+			spriteBatch.setShader(lastShader);
+		}
 	}
 	
 	/** Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts. */
