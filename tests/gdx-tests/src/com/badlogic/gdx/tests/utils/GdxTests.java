@@ -82,6 +82,7 @@ public class GdxTests {
 		AlphaTest.class,
 		Animation3DTest.class,
 		AnimationTest.class,
+		AnimationTest2.class,
 		AnnotationTest.class,
 		AssetManagerTest.class,
 		AtlasIssueTest.class,

@@ -29,12 +29,7 @@ public class Animation {
 
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
-		NORMAL,
-		REVERSED,
-		LOOP,
-		LOOP_REVERSED,
-		LOOP_PINGPONG,
-		LOOP_RANDOM,
+		NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM,
 	}
 
 	final TextureRegion[] keyFrames;
@@ -44,6 +39,23 @@ public class Animation {
 	private float lastStateTime;
 
 	private PlayMode playMode = PlayMode.NORMAL;
+
+	/** <p>
+	 * Copy constructor for constructing an animation identical to another.
+	 * </p>
+	 * <p>
+	 * <b>NOTE</b>: All key frames will be copied shallow! Both animations will have frames with the same textures but in memory,
+	 * the regions will be different.
+	 * </p>
+	 * @param animation Animation to be copied */
+	public Animation (Animation animation) {
+		this.keyFrames = TextureRegion.copyRegionArray(animation.keyFrames);
+		this.frameDuration = animation.frameDuration;
+		this.animationDuration = animation.animationDuration;
+		this.lastFrameNumber = animation.lastFrameNumber;
+		this.lastStateTime = animation.lastStateTime;
+		this.playMode = animation.playMode;
+	}
 
 	/** Constructor, storing the frame duration and key frames.
 	 * 
@@ -86,6 +98,15 @@ public class Animation {
 		this.animationDuration = keyFrames.length * frameDuration;
 		this.keyFrames = keyFrames;
 		this.playMode = PlayMode.NORMAL;
+	}
+
+	/** Flips every key frame in this animation.
+	 * @param x Should each key frame be flipped on the x axis?
+	 * @param y Should each key frame be flipped on the y axis? */
+	public void flipKeyFrames (boolean x, boolean y) {
+		for (TextureRegion keyFrame : keyFrames) {
+			keyFrame.flip(x, y);
+		}
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
@@ -146,7 +167,7 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			int lastFrameNumber = (int) ((lastStateTime) / frameDuration);
+			int lastFrameNumber = (int)((lastStateTime) / frameDuration);
 			if (lastFrameNumber != frameNumber) {
 				frameNumber = MathUtils.random(keyFrames.length - 1);
 			} else {

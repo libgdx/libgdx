@@ -199,7 +199,7 @@ public class TextureRegion {
 
 	public void setRegionHeight (int height) {
 		if (isFlipY()) {
-			setV(v2 + height / (float)texture.getHeight());			
+			setV(v2 + height / (float)texture.getHeight());
 		} else {
 			setV2(v + height / (float)texture.getHeight());
 		}
@@ -283,5 +283,19 @@ public class TextureRegion {
 	public static TextureRegion[][] split (Texture texture, int tileWidth, int tileHeight) {
 		TextureRegion region = new TextureRegion(texture);
 		return region.split(tileWidth, tileHeight);
+	}
+
+	/** Copies every {@link TextureRegion} in an array into a new array via shallow copy.
+	 * @param regions {@link TextureRegion} array to copy
+	 * @return An array containing shallow copies of all {@link TextureRegion} that were sent in. */
+	public static TextureRegion[] copyRegionArray (TextureRegion[] regions) {
+		TextureRegion[] copy = new TextureRegion[regions.length];
+
+		int len = regions.length;
+		for (int i = 0; i < len; i++) {
+			copy[i] = new TextureRegion(regions[i]);
+		}
+
+		return copy;
 	}
 }
