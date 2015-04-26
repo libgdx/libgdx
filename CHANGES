@@ -3,6 +3,7 @@
 - API Change: Label#getTextBounds changed to getGlyphLayout. This exposes all the runs, not just the width and height.
 - In the 2D ParticleEditor, all chart points can be dragged at once by holding ctrl. They can be dragged proportionally by holding ctrl-shift.
 - Added Merge button to the 2D ParticleEditor, for merging a loaded particle effect file with the currently open particle effect.
+- Added ability to retrieve method annotations to reflection api
 
 [1.5.6]
 - API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
