@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
 /** SpriteDebugger will draw a rectangle with a specified color around the bounding box of a sprite
@@ -28,6 +29,7 @@ public class SpriteDebugRenderer implements Disposable {
 	/** The shape renderer in which bounding rectangles will be drawn **/
 	private ShapeRenderer renderer;
 
+	private Rectangle tempBounds;
 	private Color tempColor;
 
 	/** Specifies if the rectangles drawn should be filled or outlined **/
@@ -59,11 +61,11 @@ public class SpriteDebugRenderer implements Disposable {
 	 * @param color The color of which the debug box should be drawn */
 	public void debugRender (Sprite sprite, Color color) {
 		tempColor = renderer.getColor();
+		tempBounds = sprite.getBoundingRectangle();
 
 		renderer.setColor(color);
 
-		renderer.rect(sprite.getBoundingRectangle().x, sprite.getBoundingRectangle().y, sprite.getBoundingRectangle().width,
-			sprite.getBoundingRectangle().height);
+		renderer.rect(tempBounds.x, tempBounds.y, tempBounds.width, tempBounds.height);
 
 		renderer.setColor(tempColor);
 	}
