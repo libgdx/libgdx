@@ -16,7 +16,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -277,6 +280,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 	public void setDisabled (boolean disabled) {
 		if (disabled && !this.disabled) hideList();
 		this.disabled = disabled;
+	}
+
+	public boolean isDisabled () {
+		return disabled;
 	}
 
 	public float getPrefWidth () {
