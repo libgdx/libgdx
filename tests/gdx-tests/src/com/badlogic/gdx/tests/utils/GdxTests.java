@@ -118,6 +118,7 @@ public class GdxTests {
 		FilterPerformanceTest.class,
 		FloatTextureTest.class,
 		FogTest.class,
+		FrameBufferCubemapTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
