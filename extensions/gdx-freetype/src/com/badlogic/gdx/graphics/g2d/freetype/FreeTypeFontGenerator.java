@@ -601,7 +601,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				if (glyph == null) return null;
 
 				setGlyph(ch, glyph);
-				setGlyphRegion(glyph, regions.get(glyph.page), packer.getPageWidth(), packer.getPageHeight());
+				setGlyphRegion(glyph, regions.get(glyph.page));
 				glyphs.add(glyph);
 
 				if (parameter.kerning) {

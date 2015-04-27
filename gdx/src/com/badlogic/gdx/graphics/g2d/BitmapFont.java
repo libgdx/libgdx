@@ -186,8 +186,7 @@ public class BitmapFont implements Disposable {
 					throw new IllegalArgumentException("BitmapFont texture region array cannot contain null elements.");
 				}
 
-				Texture texture = region.getTexture();
-				data.setGlyphRegion(glyph, region, texture.getWidth(), texture.getHeight());
+				data.setGlyphRegion(glyph, region);
 			}
 		}
 	}
@@ -632,9 +631,10 @@ public class BitmapFont implements Disposable {
 			}
 		}
 
-		public void setGlyphRegion (Glyph glyph, TextureRegion region, int textureWidth, int textureHeight) {
-			float invTexWidth = 1.0f / textureWidth;
-			float invTexHeight = 1.0f / textureHeight;
+		public void setGlyphRegion (Glyph glyph, TextureRegion region) {
+			Texture texture = region.getTexture();
+			float invTexWidth = 1.0f / texture.getWidth();
+			float invTexHeight = 1.0f / texture.getHeight();
 
 			float offsetX = 0, offsetY = 0;
 			float u = region.u;
