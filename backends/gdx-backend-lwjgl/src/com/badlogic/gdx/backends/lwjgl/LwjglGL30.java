@@ -25,7 +25,6 @@ import java.nio.ShortBuffer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL21;
@@ -35,9 +34,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL41;
-import org.lwjgl.opengl.GL42;
 import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLSync;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -616,21 +613,10 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 		GL41.glProgramParameteri(program, pname, value);
 	}
 
-//	@Override
-//	public void glInvalidateFramebuffer (int target, int numAttachments, int[] attachments, int offset) {
-//		throw new UnsupportedOperationException("not implemented");
-//	}
-
 	@Override
 	public void glInvalidateFramebuffer (int target, int numAttachments, IntBuffer attachments) {
 		GL43.glInvalidateFramebuffer(target, attachments);
 	}
-
-//	@Override
-//	public void glInvalidateSubFramebuffer (int target, int numAttachments, int[] attachments, int offset, int x, int y,
-//		int width, int height) {
-//		throw new UnsupportedOperationException("not implemented");
-//	}
 
 	@Override
 	public void glInvalidateSubFramebuffer (int target, int numAttachments, IntBuffer attachments, int x, int y, int width,
