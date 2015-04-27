@@ -326,9 +326,7 @@ public class DefaultShader extends BaseShader {
 		};
 
 		public static class ACubemap extends LocalSetter {
-			//private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-			private final static float tmp[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			private final AmbientCubemap cacheAmbientCubemap = new AmbientCubemap();
 			private final static Vector3 tmpV1 = new Vector3();
 			public final int dirLightsOffset;
@@ -342,7 +340,7 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (renderable.environment == null)
-					shader.program.setUniform4fv(shader.loc(inputID), ones, 0, ones.length);
+					shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
 				else {
 					renderable.worldTransform.getTranslation(tmpV1);
 					if (combinedAttributes.has(ColorAttribute.AmbientLight))
@@ -362,17 +360,7 @@ public class DefaultShader extends BaseShader {
 					}
 
 					cacheAmbientCubemap.clamp();
-//					shader.program.setUniform4fv(shader.loc(inputID), cacheAmbientCubemap.data, 0, cacheAmbientCubemap.data.length);
-					
-					final float data[] = cacheAmbientCubemap.data;
-					for (int i = 0; i < 6; i++) {
-						tmp[i*4+0] = data[i*3+0];
-						tmp[i*4+1] = data[i*3+1];
-						tmp[i*4+2] = data[i*3+2];
-						tmp[i*4+3] = 1f;
-					}
-
-					shader.program.setUniform4fv(shader.loc(inputID), tmp, 0, tmp.length);
+					shader.program.setUniform3fv(shader.loc(inputID), cacheAmbientCubemap.data, 0, cacheAmbientCubemap.data.length);
 				}
 			}
 		}
@@ -600,7 +588,7 @@ public class DefaultShader extends BaseShader {
 
 	private final static Attributes tmpAttributes = new Attributes();
 
-	// TODO: Move responsibility for combining attributes to RenderableProvider
+	// TODO: Perhaps move responsibility for combining attributes to RenderableProvider?
 	private static final Attributes combineAttributes (final Renderable renderable) {
 		tmpAttributes.clear();
 		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
@@ -628,8 +616,7 @@ public class DefaultShader extends BaseShader {
 					prefix += "#define fogFlag\n";
 				}
 				if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
-				if (attributes.has(CubemapAttribute.EnvironmentMap) || attributes.has(CubemapAttribute.EnvironmentMap))
-					prefix += "#define environmentCubemapFlag\n";
+				if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
 			}
 		}
 		final int n = renderable.mesh.getVertexAttributes().size();
@@ -787,8 +774,10 @@ public class DefaultShader extends BaseShader {
 					directionalLights[i].set(dirs.get(i));
 
 				int idx = dirLightsLoc + i * dirLightsSize;
-				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color);
-				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction.x, directionalLights[i].direction.y, directionalLights[i].direction.z, 1f);
+				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.r, directionalLights[i].color.g,
+					directionalLights[i].color.b);
+				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction.x,
+					directionalLights[i].direction.y, directionalLights[i].direction.z);
 				if (dirLightsSize <= 0) break;
 			}
 		}
@@ -805,8 +794,9 @@ public class DefaultShader extends BaseShader {
 
 				int idx = pointLightsLoc + i * pointLightsSize;
 				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
-					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity, 1f);
-				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y, pointLights[i].position.z, 1f);
+					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
+				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
+					pointLights[i].position.z);
 				if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0) break;
 			}
