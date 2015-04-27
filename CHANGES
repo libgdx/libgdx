@@ -4,6 +4,11 @@
 - In the 2D ParticleEditor, all chart points can be dragged at once by holding ctrl. They can be dragged proportionally by holding ctrl-shift.
 - Added Merge button to the 2D ParticleEditor, for merging a loaded particle effect file with the currently open particle effect.
 - Added ability to retrieve method annotations to reflection api
+- Added PixmapPacker.updateTextureRegions() method.
+- Added ability to pack "anonymous" pixmaps into PixmapPacker, which will appear in the generated texture but not a generated or updated TextureAtlas
+- Added PixmapPacker.packDirectToTexture() methods.
+- API Change: PixmapPacker.generateTextureAtlas(...) now returns an atlas which can be updated with subsequent calls to PixmapPacker.updateTextureAtlas(...)
+- API Change: FreeTypeFontGenerator.generateFont(...) now works with a user-provided PixmapPacker.
 
 [1.5.6]
 - API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
