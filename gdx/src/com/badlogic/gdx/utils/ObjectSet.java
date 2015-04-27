@@ -359,7 +359,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		T[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null) return keyTable[i];
-		throw new IllegalStateException("IntSet is empty.");
+		throw new IllegalStateException("ObjectSet is empty.");
 	}
 
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
