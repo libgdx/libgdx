@@ -375,8 +375,8 @@ public class BitmapFontCache {
 			float gx = x + run.x, gy = y + run.y;
 			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
 				Glyph glyph = glyphs.get(ii);
-				addGlyph(glyph, gx, gy, color);
 				gx += xAdvances.get(ii);
+				addGlyph(glyph, gx, gy, color);
 			}
 		}
 
