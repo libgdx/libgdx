@@ -187,7 +187,7 @@ public class FreeTypePackTest extends GdxTest {
 
 		// Get regions from our packer
 		regions = new Array<TextureRegion>();
-		packer.updateTextureRegions(regions, TextureFilter.Nearest, TextureFilter.Nearest, false, true);
+		packer.updateTextureRegions(regions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 
 		// No more need for our CPU-based pixmap packer, as our textures are now on GPU
 		packer.dispose();

@@ -37,12 +37,12 @@ public class PixmapPackerTest extends GdxTest {
 
 	OrthographicCamera camera;
 	SpriteBatch batch;
-    ShapeRenderer shapeRenderer;
+	ShapeRenderer shapeRenderer;
 
 	TextureAtlas atlas;
 
 	int pageToShow = 0;
-	private Array<TextureRegion> textureRegions;
+	Array<TextureRegion> textureRegions;
 
 	@Override
 	public void create () {
@@ -57,7 +57,7 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 2, true);
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 2, false);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);
@@ -66,6 +66,8 @@ public class PixmapPackerTest extends GdxTest {
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmapPackerTest", "Number of initial textures: " + atlas.getTextures().size);
+
+		packer.setPackToTexture(true);
 
 		for (int count = 4; count <= 10; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
@@ -79,11 +81,11 @@ public class PixmapPackerTest extends GdxTest {
 
 		packer.updateTextureAtlas(atlas, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		textureRegions = new Array<TextureRegion>();
-		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false, true);
+		packer.updateTextureRegions(textureRegions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmapPackerTest", "Number of updated textures: " + atlas.getTextures().size);
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
-			public boolean keyDown(int keycode) {
+			public boolean keyDown (int keycode) {
 				if (keycode >= Input.Keys.NUM_0 && keycode <= Input.Keys.NUM_9) {
 					int number = keycode - Input.Keys.NUM_0;
 					if (number < textureRegions.size) {

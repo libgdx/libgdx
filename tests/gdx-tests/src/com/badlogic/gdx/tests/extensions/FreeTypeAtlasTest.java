@@ -69,8 +69,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 	OrthographicCamera camera;
 	SpriteBatch batch;
 	String text;
-	TextureAtlas atlas;
-
+	PixmapPacker packer;
 	FontMap<BitmapFont> fontMap;
 
 	public static final int FONT_ATLAS_WIDTH = 1024;
@@ -93,7 +92,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 		long start = System.currentTimeMillis();
 		int glyphCount = createFonts();
 		long time = System.currentTimeMillis() - start;
-		text = glyphCount + " glyphs packed in " + atlas.getTextures().size + " page(s) in " + time + " ms";
+		text = glyphCount + " glyphs packed in " + packer.getPages().size + " page(s) in " + time + " ms";
 
 	}
 
@@ -128,7 +127,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 
 		// draw all glyphs in background
 		batch.setColor(1f, 1f, 1f, 0.15f);
-		batch.draw(atlas.getTextures().first(), 0, 0);
+		batch.draw(packer.getPages().first().getTexture(), 0, 0);
 		batch.setColor(1f, 1f, 1f, 1f);
 		batch.end();
 	}
@@ -136,7 +135,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 	@Override
 	public void dispose() {
 		super.dispose();
-		atlas.dispose();
+		packer.dispose();
 		batch.dispose();
 	}
 
@@ -157,7 +156,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 		// //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// create the pixmap packer
-		PixmapPacker packer = new PixmapPacker(FONT_ATLAS_WIDTH, FONT_ATLAS_HEIGHT, Format.RGBA8888, 2, false);
+		packer = new PixmapPacker(FONT_ATLAS_WIDTH, FONT_ATLAS_HEIGHT, Format.RGBA8888, 2, false);
 
 		fontMap = new FontMap<BitmapFont>();
 		int fontCount = 0;
@@ -183,11 +182,6 @@ public class FreeTypeAtlasTest extends GdxTest {
 			// dispose of the generator once we're finished with this family
 			gen.dispose();
 		}
-
-		// Generate a texture atlas, which also finalises the textures.
-		atlas = packer.generateTextureAtlas(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, false);
-
-		// We don't need to dispose packer, because its Pixmaps are now owned by the atlas.
 
 		// for the demo, show how many glyphs we loaded
 		return fontCount * CHARACTERS.length();
