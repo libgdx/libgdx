@@ -234,7 +234,14 @@ public class BitmapFont implements Disposable {
 			ownsTexture = false;
 		}
 
-		cache = (distanceField ? new DistanceFieldBitmapFontCache(this) : new BitmapFontCache(this));
+		if (distanceField) {
+			cache = new DistanceFieldBitmapFontCache(this);
+			for (int i = 0; i < regions.size; i++) {
+				this.regions.get(i).getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			}
+		} else {
+			cache = new BitmapFontCache(this);
+		}
 
 		this.flipped = data.flipped;
 		this.data = data;
