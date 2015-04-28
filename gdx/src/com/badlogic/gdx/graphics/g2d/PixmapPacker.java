@@ -158,7 +158,7 @@ public class PixmapPacker implements Disposable {
 		}
 		int rectX = (int)rect.x, rectY = (int)rect.y, rectWidth = (int)rect.width, rectHeight = (int)rect.height;
 
-		if (packToTexture && current.texture != null && !duplicateBorder) {
+		if (packToTexture && !duplicateBorder && current.texture != null && !current.dirty) {
 			if (debug) System.out.println("Incrementally updated texture.");
 			current.texture.bind();
 			Gdx.gl.glTexSubImage2D(current.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.getGLFormat(),
