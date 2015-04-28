@@ -166,7 +166,7 @@ public class BitmapFont implements Disposable {
 			ownsTexture = false;
 		}
 
-		cache = new BitmapFontCache(this, integer);
+		cache = newFontCache();
 
 		this.flipped = data.flipped;
 		this.data = data;
@@ -365,6 +365,15 @@ public class BitmapFont implements Disposable {
 	 * @param ownsTexture whether the font owns the texture */
 	public void setOwnsTexture (boolean ownsTexture) {
 		this.ownsTexture = ownsTexture;
+	}
+
+	/** Creates a new BitmapFontCache for this font. Using this method allows the font to provide the BitmapFontCache implementation
+	 * to customize rendering.
+	 * <p>
+	 * Note this method is called by the BitmapFont constructors. If a subclass overrides this method, it will be called before the
+	 * subclass constructors. */
+	public BitmapFontCache newFontCache () {
+		return new BitmapFontCache(this, integer);
 	}
 
 	public String toString () {
