@@ -213,6 +213,10 @@ public interface Batch extends Disposable {
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader);
 
+	/**
+	 * @return the current custom shader set with {@link #setShader(ShaderProgram)} */
+	public ShaderProgram getShader();
+	
 	/** @return true if blending for sprites is enabled */
 	public boolean isBlendingEnabled ();
 

@@ -16,7 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.g2d.Sprite.*;
+import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -1299,6 +1300,11 @@ public class PolygonSpriteBatch implements Batch {
 				this.shader.begin();
 			setupMatrices();
 		}
+	}
+	
+	@Override
+	public ShaderProgram getShader () {
+		return customShader;
 	}
 
 	@Override

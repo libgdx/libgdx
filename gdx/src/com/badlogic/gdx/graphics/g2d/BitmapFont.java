@@ -64,6 +64,9 @@ public class BitmapFont implements Disposable {
 	private boolean flipped;
 	private boolean integer;
 	private boolean ownsTexture;
+	
+	private boolean distanceField;
+	private float distanceFieldSmoothing;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering without generating a bitmap font yourself. */
@@ -101,6 +104,18 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (FileHandle fontFile, TextureRegion region, boolean flip) {
 		this(new BitmapFontData(fontFile, flip), region, true);
 	}
+	
+	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
+	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
+	 * case!
+	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
+	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (FileHandle fontFile, TextureRegion region, boolean flip, boolean distanceField, float distanceFieldSmoothing) {
+		this(new BitmapFontData(fontFile, flip), region, true);
+	}
 
 	/** Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
 	 * same directory. The font data is not flipped. */
@@ -114,12 +129,30 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (FileHandle fontFile, boolean flip) {
 		this(new BitmapFontData(fontFile, flip), (TextureRegion)null, true);
 	}
+	
+	/** Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
+	 * same directory.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (FileHandle fontFile, boolean flip, boolean distanceField, float distanceFieldSmoothing) {
+		this(new BitmapFontData(fontFile, flip), (TextureRegion)null, true, distanceField, distanceFieldSmoothing);
+	}
 
 	/** Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
 	 * ignored.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		this(fontFile, imageFile, flip, true);
+	}
+	
+	/** Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
+	 * ignored.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean distanceField, float distanceFieldSmoothing) {
+		this(fontFile, imageFile, flip, true, distanceField, distanceFieldSmoothing);
 	}
 
 	/** Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
@@ -128,6 +161,17 @@ public class BitmapFont implements Disposable {
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
 		this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
+		ownsTexture = true;
+	}
+	
+	/** Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
+	 * ignored.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer, boolean distanceField, float distanceFieldSmoothing) {
+		this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer, distanceField, distanceFieldSmoothing);
 		ownsTexture = true;
 	}
 
@@ -142,12 +186,36 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
 		this(data, region != null ? Array.with(region) : null, integer);
 	}
-
+	
+	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and {@link TextureRegion}. If the TextureRegion is null,
+	 * the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture of the region(s)
+	 * if the region is != null.
+	 * <p>
+	 * Passing a single TextureRegion assumes that your font only needs a single texture page. If you need to support multiple
+	 * pages, either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page
+	 * manually with the TextureRegion[] constructor.
+	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer, boolean distanceField, float distanceFieldSmoothing) {
+		this(data, region != null ? Array.with(region) : null, integer, distanceField, distanceFieldSmoothing);
+	}
+	
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
-	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
+	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.*/ 
 	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		this(data, pageRegions, integer, false, 0);
+	}
+	
+	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
+	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
+	 * of the region(s) if the regions array is != null and not empty.
+	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. 
+	 * @param distanceField If true, font will be rendered with distance field shader
+	 * @param distanceFieldSmoothing Smoothing factor for distance field shader */
+	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer, boolean distanceField, float distanceFieldSmoothing) {
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
 			int n = data.imagePaths.length;
@@ -166,11 +234,22 @@ public class BitmapFont implements Disposable {
 			ownsTexture = false;
 		}
 
-		cache = new BitmapFontCache(this, integer);
+		if (distanceField) {
+			cache = new DistanceFieldBitmapFontCache(this);
+			for (int i = 0; i < regions.size; i++) {
+				this.regions.get(i).getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			}
+		} else {
+			cache = new BitmapFontCache(this);
+		}
 
 		this.flipped = data.flipped;
 		this.data = data;
 		this.integer = integer;
+		
+		this.distanceField = distanceField;
+		this.distanceFieldSmoothing = distanceFieldSmoothing;
+		
 		load(data);
 	}
 
@@ -370,6 +449,25 @@ public class BitmapFont implements Disposable {
 	public String toString () {
 		if (data.fontFile != null) return data.fontFile.nameWithoutExtension();
 		return super.toString();
+	}
+	
+	/**
+	 *  @return The smoothing factor for this font for the distance field shader
+	 */
+	public float getDistanceFieldSmoothing () {
+		return distanceFieldSmoothing;
+	}
+
+	/**
+	 *  @param distanceFieldSmoothing The smoothing factor for this font for the distance field shader*/
+	public void setDistanceFieldSmoothing (float distanceFieldSmoothing) {
+		this.distanceFieldSmoothing = distanceFieldSmoothing;
+	}
+
+	/**
+	 *  @return Is this a distance field font*/
+	public boolean isDistanceField () {
+		return distanceField;
 	}
 
 	/** Represents a single character in a font page. */
@@ -836,5 +934,7 @@ public class BitmapFont implements Disposable {
 		public void scale (float amount) {
 			setScale(scaleX + amount, scaleY + amount);
 		}
+		
+
 	}
 }
