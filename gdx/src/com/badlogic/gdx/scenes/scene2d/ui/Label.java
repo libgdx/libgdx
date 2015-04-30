@@ -196,11 +196,6 @@ public class Label extends Widget {
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
-		if (font.usesIntegerPositions()) {
-			x = Math.round(x);
-			y = Math.round(y);
-		}
-
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis ? "..." : null);
 		cache.setText(layout, x, y);
 
