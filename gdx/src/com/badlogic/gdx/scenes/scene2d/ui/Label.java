@@ -178,7 +178,7 @@ public class Label extends Widget {
 				if ((labelAlign & Align.right) != 0)
 					x += width - textWidth;
 				else
-					x += (int)((width - textWidth) / 2);
+					x += (width - textWidth) / 2;
 			}
 		} else {
 			textWidth = width;
@@ -191,9 +191,15 @@ public class Label extends Widget {
 		} else if ((labelAlign & Align.bottom) != 0) {
 			y += cache.getFont().isFlipped() ? height - textHeight : 0;
 			y -= style.font.getDescent();
-		} else
-			y += (int)((height - textHeight) / 2);
+		} else {
+			y += (height - textHeight) / 2;
+		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
+
+		if (font.usesIntegerPositions()) {
+			x = Math.round(x);
+			y = Math.round(y);
+		}
 
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis ? "..." : null);
 		cache.setText(layout, x, y);
