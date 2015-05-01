@@ -273,7 +273,7 @@ public class GlyphLayout implements Poolable {
 
 		// Copy wrapped glyphs and xAdvances.
 		second.glyphs.addAll(first.glyphs, wrapIndex, first.glyphs.size - wrapIndex);
-		second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX);
+		second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft);
 		second.xAdvances.addAll(first.xAdvances, wrapIndex + 1, first.xAdvances.size - (wrapIndex + 1));
 
 		// Increase first run width up to the wrap index.
@@ -306,11 +306,11 @@ public class GlyphLayout implements Poolable {
 		return second;
 	}
 
-	/** Adjusts the xadvance of the last glyph to use its width. */
+	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
 	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
 		if (fontData.isWhitespace((char)last.id)) return; // Can happen when doing truncate.
-		float width = (last.xoffset + last.width) * fontData.scaleX;
+		float width = (last.xoffset + last.width) * fontData.scaleX - fontData.padRight;
 		run.width += width - run.xAdvances.peek(); // Can cause the run width to be > targetWidth, but the problem is minimal.
 		run.xAdvances.set(run.xAdvances.size - 1, width);
 	}
