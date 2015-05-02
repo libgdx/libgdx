@@ -23,6 +23,7 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
@@ -36,34 +37,50 @@ public class DistanceFieldBitmapFont extends BitmapFont {
 
 	public DistanceFieldBitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
 		super(data, pageRegions, integer);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
 		super(data, region, integer);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile, boolean flip) {
 		super(fontFile, flip);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
 		super(fontFile, imageFile, flip, integer);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		super(fontFile, imageFile, flip);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile, TextureRegion region, boolean flip) {
 		super(fontFile, region, flip);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile, TextureRegion region) {
 		super(fontFile, region);
+		setTextureFilter();
 	}
 
 	public DistanceFieldBitmapFont (FileHandle fontFile) {
 		super(fontFile);
+		setTextureFilter();
+	}
+
+	/** distance field font rendering requires font texture to be filtered linear. */
+	private void setTextureFilter () {
+		final Array<TextureRegion> regions = getRegions();
+		for (TextureRegion region : regions) {
+			region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		}
 	}
 
 	@Override
