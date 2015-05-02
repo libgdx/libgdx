@@ -34,9 +34,9 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
-	Mesh mesh;
+	private Mesh mesh;
 
-	float[] vertices;
+	final float[] vertices;
 	int idx = 0;
 	Texture lastTexture = null;
 	float invTexWidth = 0, invTexHeight = 0;
