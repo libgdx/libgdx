@@ -248,7 +248,7 @@ public class GdxSetupUI extends JFrame {
 					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
 				} else {
 					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-					log("To import to Intellij IDEA: File -> Import -> build.gradle");
+					log("To import to Intellij IDEA: File -> Open -> build.gradle");
 					log("To import to NetBeans: File -> Open Project...");
 				}
 				SwingUtilities.invokeLater(new Runnable() {
