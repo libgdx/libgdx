@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -35,9 +34,9 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
-	private Mesh mesh;
+	Mesh mesh;
 
-	final float[] vertices;
+	float[] vertices;
 	int idx = 0;
 	Texture lastTexture = null;
 	float invTexWidth = 0, invTexHeight = 0;
@@ -219,7 +218,7 @@ public class SpriteBatch implements Batch {
 	}
 
 	@Override
-	public float getPackedColor() {
+	public float getPackedColor () {
 		return color;
 	}
 
@@ -1071,6 +1070,14 @@ public class SpriteBatch implements Batch {
 				this.shader.begin();
 			setupMatrices();
 		}
+	}
+
+	@Override
+	public ShaderProgram getShader () {
+		if (customShader == null) {
+			return shader;
+		}
+		return customShader;
 	}
 
 	@Override

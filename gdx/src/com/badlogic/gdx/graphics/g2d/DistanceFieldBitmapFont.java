@@ -19,22 +19,21 @@
  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
-/** Renders bitmap fonts using distance field textures, @see <a href="https://github.com/libgdx/libgdx/wiki/Distance-field-fonts">Distance Field Fonts Wiki Article</a>
- * For usage init the SpriteBatch with the {@link #getDistanceFieldShader()} shader
- * Attention: Breaks batching!
+/** Renders bitmap fonts using distance field textures, @see <a
+ * href="https://github.com/libgdx/libgdx/wiki/Distance-field-fonts">Distance Field Fonts Wiki Article</a> For usage init the
+ * SpriteBatch with the {@link #getDistanceFieldShader()} shader Attention: Breaks batching!
  * @author Florian Falkner */
 public class DistanceFieldBitmapFont extends BitmapFont {
 	private static final String SMOOTHING_UNIFORM = "u_smoothing";
 	private float distanceFieldSmoothing;
-	private static ShaderProgram shader;
-	
+
 	public DistanceFieldBitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
 		super(data, pageRegions, integer);
 	}
@@ -69,39 +68,23 @@ public class DistanceFieldBitmapFont extends BitmapFont {
 
 	@Override
 	public BitmapFontCache newFontCache () {
-		for (int i = 0; i < regions.size; i++) {
-			getRegion(i).getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		}
-		
 		return new DistanceFieldFontCache(this, integer);
 	}
-	
-	/**
-	 * @return The distance field smoothing factor for this font. */
+
+	/** @return The distance field smoothing factor for this font. */
 	public float getDistanceFieldSmoothing () {
 		return distanceFieldSmoothing;
 	}
 
-	/**
-	 * @param distanceFieldSmoothing Set the distance field smoothing factor for this font. */
+	/** @param distanceFieldSmoothing Set the distance field smoothing factor for this font. SpriteBatch needs to have this shader
+	 *           set for rendering distance field fonts. */
 	public void setDistanceFieldSmoothing (float distanceFieldSmoothing) {
 		this.distanceFieldSmoothing = distanceFieldSmoothing;
 	}
-	
-	/**
-	 * @return ShaderProgram Returns a singleton instance for the distance field shader, SpriteBatch needs to have this shader set for rendering distance field fonts. */
-	public static ShaderProgram getDistanceFieldShader() {
-		if (shader == null) {
-			shader = createDistanceFieldShader();
-			shader.setUniformf(SMOOTHING_UNIFORM, 0);
-		}
-		
-		return shader;
-	}
-	
-	/** Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the u_smoothing uniform > 0.0.
-	 *  Otherwise the same code as the default SpriteBatch shader is used.*/
-	private static ShaderProgram createDistanceFieldShader () {
+
+	/** Returns a new instance of the distance field shader, see https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the
+	 * u_smoothing uniform > 0.0. Otherwise the same code as the default SpriteBatch shader is used. */
+	public static ShaderProgram createDistanceFieldShader () {
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
@@ -116,77 +99,77 @@ public class DistanceFieldBitmapFont extends BitmapFont {
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
-		
-		String fragmentShader = "#ifdef GL_ES\n"
-			+ "	precision mediump float;\n"
-			+ "	precision mediump int;\n"
-			+ "#endif\n"
-			+ "\n"
-			+ "uniform sampler2D u_texture;\n"
-			+ "uniform float u_smoothing;\n"
+
+		String fragmentShader = "#ifdef GL_ES\n" //
+			+ "	precision mediump float;\n" //
+			+ "	precision mediump int;\n" //
+			+ "#endif\n" //
+			+ "\n" //
+			+ "uniform sampler2D u_texture;\n" //
+			+ "uniform float u_smoothing;\n" //
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
-			+ "\n"
-			+ "void main() {\n"
-			+ " 		if (u_smoothing > 0.0) {\n"
-			+ "			float smoothing = 0.25 / u_smoothing;\n"
-			+ "			float distance = texture2D(u_texture, v_texCoords).a;\n"
-			+ "			float alpha = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);\n"
-			+ "			gl_FragColor = vec4(v_color.rgb, alpha * v_color.a);\n"
-			+ "		}\n"
-			+ "		else {\n"
-			+ "			gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n"
-			+ "		}\n"
+			+ "\n" //
+			+ "void main() {\n" //
+			+ " 		if (u_smoothing > 0.0) {\n" //
+			+ "			float smoothing = 0.25 / u_smoothing;\n" //
+			+ "			float distance = texture2D(u_texture, v_texCoords).a;\n" //
+			+ "			float alpha = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);\n" //
+			+ "			gl_FragColor = vec4(v_color.rgb, alpha * v_color.a);\n" //
+			+ "		}\n" //
+			+ "		else {\n" //
+			+ "			gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
+			+ "		}\n" //
 			+ "}\n";
-		
+
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling distance field shader: " + shader.getLog());
+		if (shader.isCompiled() == false)
+			throw new IllegalArgumentException("Error compiling distance field shader: " + shader.getLog());
 		return shader;
 	}
-	
-	/**
-	 * Provides a font cache that uses distance field shader for rendering fonts. 
-	 * Attention: breaks batching because uniform is needed for smoothing factor, so a flush is performed before and after every font rendering.
+
+	/** Provides a font cache that uses distance field shader for rendering fonts. Attention: breaks batching because uniform is
+	 * needed for smoothing factor, so a flush is performed before and after every font rendering.
 	 * @author Florian Falkner */
 	private static class DistanceFieldFontCache extends BitmapFontCache {
-		
+
 		public DistanceFieldFontCache (DistanceFieldBitmapFont font) {
 			super(font, font.usesIntegerPositions());
 		}
-		
+
 		public DistanceFieldFontCache (DistanceFieldBitmapFont font, boolean integer) {
 			super(font, integer);
 		}
 
-		private float getSmoothingFactor() {
+		private float getSmoothingFactor () {
 			final DistanceFieldBitmapFont font = getFont();
 			return font.getDistanceFieldSmoothing() * font.getScaleX();
 		}
-		
+
 		@Override
 		public DistanceFieldBitmapFont getFont () {
 			return (DistanceFieldBitmapFont)super.getFont();
 		}
-		
+
 		private void setSmoothingUniform (Batch spriteBatch) {
-			spriteBatch.flush();		
-			DistanceFieldBitmapFont.getDistanceFieldShader().setUniformf(SMOOTHING_UNIFORM, getSmoothingFactor());
+			spriteBatch.flush();
+			spriteBatch.getShader().setUniformf(SMOOTHING_UNIFORM, getSmoothingFactor());
 		}
-		
+
 		@Override
 		public void draw (Batch spriteBatch) {
 			setSmoothingUniform(spriteBatch);
 			super.draw(spriteBatch);
-			spriteBatch.flush();	
-			DistanceFieldBitmapFont.getDistanceFieldShader().setUniformf(SMOOTHING_UNIFORM, 0);
+			spriteBatch.flush();
+			spriteBatch.getShader().setUniformf(SMOOTHING_UNIFORM, 0);
 		}
-		
+
 		@Override
 		public void draw (Batch spriteBatch, int start, int end) {
 			setSmoothingUniform(spriteBatch);
 			super.draw(spriteBatch, start, end);
-			spriteBatch.flush();	
-			DistanceFieldBitmapFont.getDistanceFieldShader().setUniformf(SMOOTHING_UNIFORM, 0);
+			spriteBatch.flush();
+			spriteBatch.getShader().setUniformf(SMOOTHING_UNIFORM, 0);
 		}
 	}
 }
