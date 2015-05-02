@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** Renders bitmap fonts using distance field textures, @see <a
  * href="https://github.com/libgdx/libgdx/wiki/Distance-field-fonts">Distance Field Fonts Wiki Article</a> For usage init the
- * SpriteBatch with the {@link #getDistanceFieldShader()} shader Attention: Breaks batching!
+ * SpriteBatch with the {@link #createDistanceFieldShader()} shader Attention: Breaks batching!
  * @author Florian Falkner */
 public class DistanceFieldBitmapFont extends BitmapFont {
 	private static final String SMOOTHING_UNIFORM = "u_smoothing";
