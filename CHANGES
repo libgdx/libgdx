@@ -11,6 +11,7 @@
 - API Change: FreeTypeFontGenerator.generateFont(...) now works with a user-provided PixmapPacker.
 - Added DirectionalLightsAttribute, PointLightsAttribute and SpotLightsAttribute, removed Environment#directionalLights/pointLights/spotLights, added Environment#remove, lights are now just like any other attribute. See also https://github.com/libgdx/libgdx/wiki/Material-and-environment#lights
 - API Change: BitmapFont metrics now respect padding. #3074
+- Added AnimatedTiledMapTile.getFrameTiles() method
 
 [1.5.6]
 - API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
