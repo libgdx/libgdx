@@ -16,7 +16,7 @@ The issue tracker is the preferred channel for [bug reports](#bugs),
 requests](#pull-requests), but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
-  [the forum](http://badlogicgames.com/forum/) or IRC). See also [[Getting-Help]].
+  [the forum](http://badlogicgames.com/forum/) or IRC). See also [[Getting Help]].
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
@@ -37,7 +37,7 @@ Guidelines for bug reports:
    latest `master` or development branch in the repository.
 
 3. **Isolate the problem** &mdash; create a [[reduced test
-   case|Getting-Help#executable-example-code]] and a live example.
+   case|Getting Help#executable-example-code]] and a live example.
 
 A good bug report shouldn't leave others needing to chase you up for more
 information. Please try to be as detailed as possible in your report. What is
@@ -45,7 +45,7 @@ your environment? What steps will reproduce the issue? What browser(s) and OS
 experience the problem? What would you expect to be the outcome? All these
 details will help people to fix any potential bugs.
 
-See [[Getting-Help]] for more information and an example.
+See [[Getting Help]] for more information and an example.
 
 
 <a name="features"></a>
