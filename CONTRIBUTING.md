@@ -1,4 +1,4 @@
-# Contributing to this project
+# Contributing to libGDX
 
 Please take a moment to review this document in order to make the contribution
 process easy and effective for everyone involved.
@@ -45,23 +45,7 @@ your environment? What steps will reproduce the issue? What browser(s) and OS
 experience the problem? What would you expect to be the outcome? All these
 details will help people to fix any potential bugs.
 
-Example:
-
-> Short and descriptive example bug report title
->
-> A summary of the issue and the browser/OS environment in which it occurs. If
-> suitable, include the steps required to reproduce the bug.
->
-> 1. This is the first step
-> 2. This is the second step
-> 3. Further steps, etc.
->
-> `<url>` - a link to the reduced test case
->
-> Any other information you want to share that is relevant to the issue being
-> reported. This might include the lines of code that you have identified as
-> causing the bug, and potential solutions (and your opinions on their
-> merits).
+See [[Getting-Help]] for more information and an example.
 
 
 <a name="features"></a>
