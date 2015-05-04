@@ -79,4 +79,32 @@ public class btSequentialImpulseConstraintSolver extends btConstraintSolver {
     return DynamicsJNI.btSequentialImpulseConstraintSolver_getRandSeed(swigCPtr, this);
   }
 
+  public SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar getActiveConstraintRowSolverGeneric() {
+    long cPtr = DynamicsJNI.btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverGeneric(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar(cPtr, false);
+  }
+
+  public void setConstraintRowSolverGeneric(SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar rowSolver) {
+    DynamicsJNI.btSequentialImpulseConstraintSolver_setConstraintRowSolverGeneric(swigCPtr, this, SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar.getCPtr(rowSolver));
+  }
+
+  public SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar getActiveConstraintRowSolverLowerLimit() {
+    long cPtr = DynamicsJNI.btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverLowerLimit(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar(cPtr, false);
+  }
+
+  public void setConstraintRowSolverLowerLimit(SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar rowSolver) {
+    DynamicsJNI.btSequentialImpulseConstraintSolver_setConstraintRowSolverLowerLimit(swigCPtr, this, SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar.getCPtr(rowSolver));
+  }
+
+  public SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar getScalarConstraintRowSolverGeneric() {
+    long cPtr = DynamicsJNI.btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverGeneric(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar(cPtr, false);
+  }
+
+  public SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar getScalarConstraintRowSolverLowerLimit() {
+    long cPtr = DynamicsJNI.btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverLowerLimit(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_r_btSolverBody_r_btSolverBody_r_q_const__btSolverConstraint__btSimdScalar(cPtr, false);
+  }
+
 }

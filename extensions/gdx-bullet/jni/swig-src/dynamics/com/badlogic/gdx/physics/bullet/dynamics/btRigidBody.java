@@ -612,10 +612,6 @@ public class btRigidBody extends btCollisionObject {
     return DynamicsJNI.btRigidBody_isInWorld(swigCPtr, this);
   }
 
-  public boolean checkCollideWithOverride(btCollisionObject co) {
-    return DynamicsJNI.btRigidBody_checkCollideWithOverride(swigCPtr, this, btCollisionObject.getCPtr(co), co);
-  }
-
   public void addConstraintRef(btTypedConstraint c) {
     DynamicsJNI.btRigidBody_addConstraintRef(swigCPtr, this, btTypedConstraint.getCPtr(c), c);
   }
@@ -641,8 +637,20 @@ public class btRigidBody extends btCollisionObject {
     return DynamicsJNI.btRigidBody_getFlags(swigCPtr, this);
   }
 
-  public Vector3 computeGyroscopicForce(float maxGyroscopicForce) {
-	return DynamicsJNI.btRigidBody_computeGyroscopicForce(swigCPtr, this, maxGyroscopicForce);
+  public Vector3 computeGyroscopicImpulseImplicit_World(float dt) {
+	return DynamicsJNI.btRigidBody_computeGyroscopicImpulseImplicit_World(swigCPtr, this, dt);
+}
+
+  public Vector3 computeGyroscopicImpulseImplicit_Body(float step) {
+	return DynamicsJNI.btRigidBody_computeGyroscopicImpulseImplicit_Body(swigCPtr, this, step);
+}
+
+  public Vector3 computeGyroscopicForceExplicit(float maxGyroscopicForce) {
+	return DynamicsJNI.btRigidBody_computeGyroscopicForceExplicit(swigCPtr, this, maxGyroscopicForce);
+}
+
+  public Vector3 getLocalInertia() {
+	return DynamicsJNI.btRigidBody_getLocalInertia(swigCPtr, this);
 }
 
   private btRigidBody(boolean dummy, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {

@@ -15,15 +15,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCompoundCompoundCollisionAlgorithm extends btActivatingCollisionAlgorithm {
+public class btCompoundCompoundCollisionAlgorithm extends BulletBase {
 	private long swigCPtr;
 	
 	protected btCompoundCompoundCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, CollisionJNI.btCompoundCompoundCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btCompoundCompoundCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */
+	/** Construct a new btCompoundCompoundCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */ 
 	public btCompoundCompoundCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
 		this("btCompoundCompoundCollisionAlgorithm", cPtr, cMemoryOwn);
 		construct();
@@ -33,7 +33,7 @@ public class btCompoundCompoundCollisionAlgorithm extends btActivatingCollisionA
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(CollisionJNI.btCompoundCompoundCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
 	
 	public static long getCPtr(btCompoundCompoundCollisionAlgorithm obj) {
@@ -60,6 +60,18 @@ public class btCompoundCompoundCollisionAlgorithm extends btActivatingCollisionA
 
   public btCompoundCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
     this(CollisionJNI.new_btCompoundCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
+  }
+
+  public void processCollision(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+    CollisionJNI.btCompoundCompoundCollisionAlgorithm_processCollision(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
+  }
+
+  public float calculateTimeOfImpact(btCollisionObject body0, btCollisionObject body1, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+    return CollisionJNI.btCompoundCompoundCollisionAlgorithm_calculateTimeOfImpact(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
+  }
+
+  public void getAllContactManifolds(btPersistentManifoldArray manifoldArray) {
+    CollisionJNI.btCompoundCompoundCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, btPersistentManifoldArray.getCPtr(manifoldArray), manifoldArray);
   }
 
   static public class CreateFunc extends BulletBase {
