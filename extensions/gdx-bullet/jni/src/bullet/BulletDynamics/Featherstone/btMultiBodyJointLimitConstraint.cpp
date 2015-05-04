@@ -22,6 +22,7 @@ subject to the following restrictions:
 
 
 btMultiBodyJointLimitConstraint::btMultiBodyJointLimitConstraint(btMultiBody* body, int link, btScalar lower, btScalar upper)
+	//:btMultiBodyConstraint(body,0,link,-1,2,true),
 	:btMultiBodyConstraint(body,body,link,link,2,true),
 	m_lowerBound(lower),
 	m_upperBound(upper)
@@ -32,11 +33,14 @@ btMultiBodyJointLimitConstraint::btMultiBodyJointLimitConstraint(btMultiBody* bo
     // note: we rely on the fact that data.m_jacobians are
     // always initialized to zero by the Constraint ctor
 
-    // row 0: the lower bound
-    jacobianA(0)[6 + link] = 1;
+	unsigned int offset = 6 + (body->isMultiDof() ? body->getLink(link).m_dofOffset : link);
 
-    // row 1: the upper bound
-    jacobianB(1)[6 + link] = -1;
+	// row 0: the lower bound
+	jacobianA(0)[offset] = 1;
+	// row 1: the upper bound
+	//jacobianA(1)[offset] = -1;
+
+	jacobianB(1)[offset] = -1;
 }
 btMultiBodyJointLimitConstraint::~btMultiBodyJointLimitConstraint()
 {
@@ -44,28 +48,34 @@ btMultiBodyJointLimitConstraint::~btMultiBodyJointLimitConstraint()
 
 int btMultiBodyJointLimitConstraint::getIslandIdA() const
 {
-	btMultiBodyLinkCollider* col = m_bodyA->getBaseCollider();
-	if (col)
-		return col->getIslandTag();
-	for (int i=0;i<m_bodyA->getNumLinks();i++)
+	if(m_bodyA)
 	{
-		if (m_bodyA->getLink(i).m_collider)
-			return m_bodyA->getLink(i).m_collider->getIslandTag();
+		btMultiBodyLinkCollider* col = m_bodyA->getBaseCollider();
+		if (col)
+			return col->getIslandTag();
+		for (int i=0;i<m_bodyA->getNumLinks();i++)
+		{
+			if (m_bodyA->getLink(i).m_collider)
+				return m_bodyA->getLink(i).m_collider->getIslandTag();
+		}
 	}
 	return -1;
 }
 
 int btMultiBodyJointLimitConstraint::getIslandIdB() const
 {
-	btMultiBodyLinkCollider* col = m_bodyB->getBaseCollider();
-	if (col)
-		return col->getIslandTag();
-
-	for (int i=0;i<m_bodyB->getNumLinks();i++)
+	if(m_bodyB)
 	{
-		col = m_bodyB->getLink(i).m_collider;
+		btMultiBodyLinkCollider* col = m_bodyB->getBaseCollider();
 		if (col)
 			return col->getIslandTag();
+
+		for (int i=0;i<m_bodyB->getNumLinks();i++)
+		{
+			col = m_bodyB->getLink(i).m_collider;
+			if (col)
+				return col->getIslandTag();
+		}
 	}
 	return -1;
 }
@@ -79,7 +89,7 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
     // directions were set in the ctor and never change.
     
     // row 0: the lower bound
-    setPosition(0, m_bodyA->getJointPos(m_linkA) - m_lowerBound);
+    setPosition(0, m_bodyA->getJointPos(m_linkA) - m_lowerBound);			//multidof: this is joint-type dependent
 
     // row 1: the upper bound
     setPosition(1, m_upperBound - m_bodyA->getJointPos(m_linkA));
@@ -89,8 +99,10 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
 		btMultiBodySolverConstraint& constraintRow = constraintRows.expandNonInitializing();
 		constraintRow.m_multiBodyA = m_bodyA;
 		constraintRow.m_multiBodyB = m_bodyB;
+		const btScalar posError = 0;						//why assume it's zero?
+		const btVector3 dummy(0, 0, 0);
 		
-		btScalar rel_vel = fillConstraintRowMultiBodyMultiBody(constraintRow,data,jacobianA(row),jacobianB(row),infoGlobal,0,-m_maxAppliedImpulse,m_maxAppliedImpulse);
+		btScalar rel_vel = fillMultiBodyConstraint(constraintRow,data,jacobianA(row),jacobianB(row),dummy,dummy,dummy,posError,infoGlobal,0,m_maxAppliedImpulse);
 		{
 			btScalar penetration = getPosition(row);
 			btScalar positionalError = 0.f;

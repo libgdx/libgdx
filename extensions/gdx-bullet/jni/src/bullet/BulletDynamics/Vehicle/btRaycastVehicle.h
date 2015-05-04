@@ -19,7 +19,7 @@ class btDynamicsWorld;
 #include "btWheelInfo.h"
 #include "BulletDynamics/Dynamics/btActionInterface.h"
 
-//class btVehicleTuning;
+class btVehicleTuning;
 
 ///rayCast vehicle, very special constraint that turn a rigidbody into a vehicle.
 class btRaycastVehicle : public btActionInterface

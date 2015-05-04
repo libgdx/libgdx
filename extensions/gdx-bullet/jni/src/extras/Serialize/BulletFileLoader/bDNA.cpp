@@ -19,7 +19,6 @@ subject to the following restrictions:
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdint.h>
 
 //this define will force traversal of structures, to check backward (and forward) compatibility
 //#define TEST_BACKWARD_FORWARD_COMPATIBILITY
@@ -369,8 +368,11 @@ void bDNA::init(char *data, int len, bool swap)
 
 
 	// Parse names
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 	cp = (char*)intPtr;
@@ -388,7 +390,7 @@ void bDNA::init(char *data, int len, bool swap)
 
 	
 	{
-		nr= (long)*(intptr_t*)&cp;
+		nr= (long)cp;
 	//long mask=3;
 		nr= ((nr+3)&~3)-nr;
 		while (nr--)
@@ -408,8 +410,11 @@ void bDNA::init(char *data, int len, bool swap)
 	intPtr = (int*)cp;
 	assert(strncmp(cp, "TYPE", 4)==0); intPtr++;
 
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 	cp = (char*)intPtr;
@@ -421,7 +426,7 @@ void bDNA::init(char *data, int len, bool swap)
 	}
 
 {
-		nr= (long)*(intptr_t*)&cp;
+		nr= (long)cp;
 	//	long mask=3;
 		nr= ((nr+3)&~3)-nr;
 		while (nr--)
@@ -468,8 +473,11 @@ void bDNA::init(char *data, int len, bool swap)
 	cp = (char*)intPtr;
 	assert(strncmp(cp, "STRC", 4)==0); intPtr++;
 
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 

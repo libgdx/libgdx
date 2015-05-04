@@ -73,7 +73,7 @@ public:
 
 	public:
   
-#if defined(BT_USE_SSE) || defined(BT_USE_NEON)
+#if (defined(BT_USE_SSE_IN_API) && defined(BT_USE_SSE)) || defined(BT_USE_NEON)
 
 	// Set Vector 
 	SIMD_FORCE_INLINE btQuadWord(const btSimdFloat4 vec)

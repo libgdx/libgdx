@@ -89,7 +89,7 @@ struct btContactSolverInfo : public btContactSolverInfoData
 		m_solverMode = SOLVER_USE_WARMSTARTING | SOLVER_SIMD;// | SOLVER_RANDMIZE_ORDER;
 		m_restingContactRestitutionThreshold = 2;//unused as of 2.81
 		m_minimumSolverBatchSize = 128; //try to combine islands until the amount of constraints reaches this limit
-		m_maxGyroscopicForce = 100.f; ///only used to clamp forces for bodies that have their BT_ENABLE_GYROPSCOPIC_FORCE flag set (using btRigidBody::setFlag)
+		m_maxGyroscopicForce = 100.f; ///it is only used for 'explicit' version of gyroscopic force
 		m_singleAxisRollingFrictionThreshold = 1e30f;///if the velocity is above this threshold, it will use a single constraint row (axis), otherwise 3 rows.
 	}
 };
@@ -111,7 +111,7 @@ struct btContactSolverInfoDoubleData
 	double		m_splitImpulseTurnErp;
 	double		m_linearSlop;
 	double		m_warmstartingFactor;
-	double		m_maxGyroscopicForce;
+	double		m_maxGyroscopicForce;///it is only used for 'explicit' version of gyroscopic force
 	double		m_singleAxisRollingFrictionThreshold;
 
 	int			m_numIterations;
