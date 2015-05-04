@@ -23,6 +23,7 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 #include "LinearMath/btAlignedAllocator.h"
 #include "LinearMath/btMinMax.h"
+#include <stdint.h>
 
 #define SIZEOFBLENDERHEADER 12
 #define MAX_ARRAY_LENGTH 512
