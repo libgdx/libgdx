@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -129,6 +130,14 @@ public class TextField extends Widget implements Disableable {
 
 	protected void initialize () {
 		addListener(inputListener = createInputListener());
+		addListener(new FocusListener() {
+			@Override
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				if (focused == false) {
+					keyRepeatTask.cancel();
+				}
+			}
+		});
 	}
 
 	protected InputListener createInputListener () {
