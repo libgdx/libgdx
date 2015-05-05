@@ -151,23 +151,23 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public Vector2 scl (float scalar) {
-		x *= scalar;
-		y *= scalar;
+		this.x *= scalar;
+		this.y *= scalar;
 		return this;
 	}
 
 	/** Multiplies this vector by a scalar
 	 * @return This vector for chaining */
-	public Vector2 scl (float x, float y) {
-		this.x *= x;
-		this.y *= y;
+	public Vector2 scl (float scalarX, float scalarY) {
+		this.x *= scalarX;
+		this.y *= scalarY;
 		return this;
 	}
 
 	@Override
-	public Vector2 scl (Vector2 v) {
-		this.x *= v.x;
-		this.y *= v.y;
+	public Vector2 scl (Vector2 vector2) {
+		this.x *= vector2.x;
+		this.y *= vector2.y;
 		return this;
 	}
 
