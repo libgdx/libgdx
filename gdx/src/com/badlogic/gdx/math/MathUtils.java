@@ -278,6 +278,14 @@ public final class MathUtils {
 		return fromValue + (toValue - fromValue) * progress;
 	}
 
+	/**
+	 * Calculates the distance between two points using the distance formula
+	 * @return The distance between two points    
+	 */
+	static public float dst (float x, float y, float x1, float y1) {
+		return (float)(Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2)));
+	}
+	
 	// ---
 
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
