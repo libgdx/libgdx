@@ -428,7 +428,7 @@ public class BitmapFont implements Disposable {
 		public String[] imagePaths;
 		public FileHandle fontFile;
 		public boolean flipped;
-		public int padTop, padRight, padBottom, padLeft;
+		public float padTop, padRight, padBottom, padLeft;
 		/** The distance from one line of text to the next. */
 		public float lineHeight;
 		/** The distance from the top of most uppercase characters to the baseline. Since the drawing position is the cap height of
@@ -480,7 +480,7 @@ public class BitmapFont implements Disposable {
 				padLeft = Integer.parseInt(padding[1]);
 				padBottom = Integer.parseInt(padding[2]);
 				padRight = Integer.parseInt(padding[3]);
-				int padY = padTop + padBottom;
+				float padY = padTop + padBottom;
 
 				line = reader.readLine();
 				if (line == null) throw new GdxRuntimeException("Missing common header.");
