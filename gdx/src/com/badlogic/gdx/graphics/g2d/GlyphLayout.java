@@ -325,10 +325,14 @@ public class GlyphLayout implements Poolable {
 				char ch = str.charAt(i);
 				if (ch == ']') {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
+					if (i - start <= 7) { // RRGGBB or fewer chars.
+						for (int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
+							colorInt = colorInt << 4;
+						colorInt |= 0xff;
+					}
 					Color color = colorPool.obtain();
 					colorStack.add(color);
 					Color.rgba8888ToColor(color, colorInt);
-					if (i <= start + 7) color.a = 1f; // RRGGBB
 					return i - start;
 				}
 				if (ch >= '0' && ch <= '9')
