@@ -62,7 +62,7 @@ public class BitmapFont implements Disposable {
 	Array<TextureRegion> regions;
 	private final BitmapFontCache cache;
 	private boolean flipped;
-	private boolean integer;
+	boolean integer;
 	private boolean ownsTexture;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
