@@ -31,6 +31,7 @@ protected:
 public:
 
 	btMultiBodyJointMotor(btMultiBody* body, int link, btScalar desiredVelocity, btScalar maxMotorImpulse);
+	btMultiBodyJointMotor(btMultiBody* body, int link, int linkDoF, btScalar desiredVelocity, btScalar maxMotorImpulse);
 	virtual ~btMultiBodyJointMotor();
 
 	virtual int getIslandIdA() const;
@@ -40,7 +41,15 @@ public:
 		btMultiBodyJacobianData& data,
 		const btContactSolverInfo& infoGlobal);
 	
-	
+    virtual void setVelocityTarget(btScalar velTarget)
+    {
+        m_desiredVelocity = velTarget;
+    }
+
+	virtual void debugDraw(class btIDebugDraw* drawer)
+	{
+		//todo(erwincoumans)
+	}
 };
 
 #endif //BT_MULTIBODY_JOINT_MOTOR_H

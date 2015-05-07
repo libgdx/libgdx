@@ -1,6 +1,6 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
-[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx)](http://144.76.220.132:8080/job/libgdx/)
+[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx&.png)](http://144.76.220.132:8080/job/libgdx/)
 
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your

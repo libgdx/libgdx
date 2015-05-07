@@ -16,15 +16,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btFixedConstraint extends btTypedConstraint {
+public class btFixedConstraint extends BulletBase {
 	private long swigCPtr;
 	
 	protected btFixedConstraint(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, DynamicsJNI.btFixedConstraint_SWIGUpcast(cPtr), cMemoryOwn);
+		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btFixedConstraint, normally you should not need this constructor it's intended for low-level usage. */
+	/** Construct a new btFixedConstraint, normally you should not need this constructor it's intended for low-level usage. */ 
 	public btFixedConstraint(long cPtr, boolean cMemoryOwn) {
 		this("btFixedConstraint", cPtr, cMemoryOwn);
 		construct();
@@ -34,7 +34,7 @@ public class btFixedConstraint extends btTypedConstraint {
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(DynamicsJNI.btFixedConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
 	
 	public static long getCPtr(btFixedConstraint obj) {
@@ -61,22 +61,6 @@ public class btFixedConstraint extends btTypedConstraint {
 
   public btFixedConstraint(btRigidBody rbA, btRigidBody rbB, Matrix4 frameInA, Matrix4 frameInB) {
     this(DynamicsJNI.new_btFixedConstraint(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, frameInA, frameInB), true);
-  }
-
-  public void setParam(int num, float value, int axis) {
-    DynamicsJNI.btFixedConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
-  }
-
-  public void setParam(int num, float value) {
-    DynamicsJNI.btFixedConstraint_setParam__SWIG_1(swigCPtr, this, num, value);
-  }
-
-  public float getParam(int num, int axis) {
-    return DynamicsJNI.btFixedConstraint_getParam__SWIG_0(swigCPtr, this, num, axis);
-  }
-
-  public float getParam(int num) {
-    return DynamicsJNI.btFixedConstraint_getParam__SWIG_1(swigCPtr, this, num);
   }
 
 }

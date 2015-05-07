@@ -119,7 +119,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final Array<VertexAttribute> attrs = new Array<VertexAttribute>();
 		if ((usage & Usage.Position) == Usage.Position)
 			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-		if ((usage & Usage.Color) == Usage.Color) attrs.add(new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.ColorUnpacked) == Usage.ColorUnpacked) attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
 			attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.Normal) == Usage.Normal)
@@ -170,7 +170,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		posSize = a.numComponents;
 		a = attributes.findByUsage(Usage.Normal);
 		norOffset = a == null ? -1 : a.offset / 4;
-		a = attributes.findByUsage(Usage.Color);
+		a = attributes.findByUsage(Usage.ColorUnpacked);
 		colOffset = a == null ? -1 : a.offset / 4;
 		colSize = a == null ? 0 : a.numComponents;
 		a = attributes.findByUsage(Usage.ColorPacked);

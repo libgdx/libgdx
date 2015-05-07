@@ -3802,6 +3802,16 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_delete_1btSoftBody_1ImplicitFn(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btSoftBody::ImplicitFn *arg1 = (btSoftBody::ImplicitFn *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btSoftBody::ImplicitFn **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1ImplicitFn_1Eval(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jfloat jresult = 0 ;
   btSoftBody::ImplicitFn *arg1 = (btSoftBody::ImplicitFn *) 0 ;
@@ -3819,16 +3829,6 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_Softbody
   result = (btScalar)(arg1)->Eval((btVector3 const &)*arg2);
   jresult = (jfloat)result; 
   return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_delete_1btSoftBody_1ImplicitFn(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btSoftBody::ImplicitFn *arg1 = (btSoftBody::ImplicitFn *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btSoftBody::ImplicitFn **)&jarg1; 
-  delete arg1;
 }
 
 
@@ -8125,6 +8125,16 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_delete_1btSoftBody_1AJoint_1IControl(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btSoftBody::AJoint::IControl *arg1 = (btSoftBody::AJoint::IControl *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btSoftBody::AJoint::IControl **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1AJoint_1IControl_1Prepare(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btSoftBody::AJoint::IControl *arg1 = (btSoftBody::AJoint::IControl *) 0 ;
   btSoftBody::AJoint *arg2 = (btSoftBody::AJoint *) 0 ;
@@ -8180,16 +8190,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   result = (btSoftBody::AJoint::IControl *)new btSoftBody::AJoint::IControl();
   *(btSoftBody::AJoint::IControl **)&jresult = result; 
   return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_delete_1btSoftBody_1AJoint_1IControl(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btSoftBody::AJoint::IControl *arg1 = (btSoftBody::AJoint::IControl *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btSoftBody::AJoint::IControl **)&jarg1; 
-  delete arg1;
 }
 
 
@@ -18576,6 +18576,17 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBodyHelpers_1ReoptimizeLinkOrder(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btSoftBody *arg1 = (btSoftBody *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSoftBody **)&jarg1; 
+  btSoftBodyHelpers::ReoptimizeLinkOrder(arg1);
 }
 
 

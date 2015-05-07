@@ -4,8 +4,8 @@ Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -31,10 +31,11 @@ btCollisionObject::btCollisionObject()
 		m_activationState1(1),
 		m_deactivationTime(btScalar(0.)),
 		m_friction(btScalar(0.5)),
-		m_rollingFriction(0.0f),
 		m_restitution(btScalar(0.)),
+		m_rollingFriction(0.0f),
 		m_internalType(CO_COLLISION_OBJECT),
 		m_userObjectPointer(0),
+		m_userIndex(-1),
 		m_hitFraction(btScalar(1.)),
 		m_ccdSweptSphereRadius(btScalar(0.)),
 		m_ccdMotionThreshold(btScalar(0.)),

@@ -175,6 +175,10 @@ public class btHingeConstraint extends btTypedConstraint {
     DynamicsJNI.btHingeConstraint_setAxis(swigCPtr, this, axisInA);
   }
 
+  public boolean hasLimit() {
+    return DynamicsJNI.btHingeConstraint_hasLimit(swigCPtr, this);
+  }
+
   public float getLowerLimit() {
     return DynamicsJNI.btHingeConstraint_getLowerLimit(swigCPtr, this);
   }

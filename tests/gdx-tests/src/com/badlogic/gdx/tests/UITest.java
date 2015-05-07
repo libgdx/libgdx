@@ -132,7 +132,7 @@ public class UITest extends GdxTest {
 
 		// window.debug();
 		Window window = new Window("Dialog", skin);
-		window.getButtonTable().add(new TextButton("X", skin)).height(window.getPadTop());
+		window.getTitleTable().add(new TextButton("X", skin)).height(window.getPadTop());
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();

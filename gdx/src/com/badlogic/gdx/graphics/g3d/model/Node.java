@@ -31,10 +31,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Node {
 	/** the id, may be null, FIXME is this unique? **/
 	public String id;
-	/** @deprecated Use {@link #getParent()} instead. **/
-	@Deprecated public Node parent; // TODO: Make private
-	/** @deprecated Use {@link #getChildren()} instead. **/
-	@Deprecated public final Array<Node> children = new Array<Node>(2); // TODO: Make private
 	/** Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
 	 * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
 	 * of its parent transform. */
@@ -54,6 +50,9 @@ public class Node {
 	public final Matrix4 globalTransform = new Matrix4();
 
 	public Array<NodePart> parts = new Array<NodePart>(2);
+	
+	protected Node parent;
+	private final Array<Node> children = new Array<Node>(2);
 
 	/** Calculates the local transform based on the translation, scale and rotation
 	 * @return the local transform */

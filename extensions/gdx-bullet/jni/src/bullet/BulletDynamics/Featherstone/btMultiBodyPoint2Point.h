@@ -20,6 +20,8 @@ subject to the following restrictions:
 
 #include "btMultiBodyConstraint.h"
 
+//#define BTMBP2PCONSTRAINT_BLOCK_ANGULAR_MOTION_TEST
+
 class btMultiBodyPoint2Point : public btMultiBodyConstraint
 {
 protected:
@@ -54,6 +56,7 @@ public:
 		m_pivotInB = pivotInB;
 	}
 
+	virtual void debugDraw(class btIDebugDraw* drawer);
 	
 };
 

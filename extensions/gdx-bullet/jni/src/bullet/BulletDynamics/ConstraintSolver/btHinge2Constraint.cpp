@@ -25,7 +25,7 @@ subject to the following restrictions:
 // anchor, axis1 and axis2 are in world coordinate system
 // axis1 must be orthogonal to axis2
 btHinge2Constraint::btHinge2Constraint(btRigidBody& rbA, btRigidBody& rbB, btVector3& anchor, btVector3& axis1, btVector3& axis2)
-: btGeneric6DofSpringConstraint(rbA, rbB, btTransform::getIdentity(), btTransform::getIdentity(), true),
+: btGeneric6DofSpring2Constraint(rbA, rbB, btTransform::getIdentity(), btTransform::getIdentity(),RO_XYZ),
  m_anchor(anchor),
  m_axis1(axis1),
  m_axis2(axis2)
@@ -59,7 +59,7 @@ btHinge2Constraint::btHinge2Constraint(btRigidBody& rbA, btRigidBody& rbB, btVec
 	setAngularUpperLimit(btVector3(-1.f, 0.f,  SIMD_HALF_PI * 0.5f));
 	// enable suspension
 	enableSpring(2, true);
-	setStiffness(2, SIMD_PI * SIMD_PI * 4.f); // period 1 sec for 1 kilogramm weel :-)
+	setStiffness(2, SIMD_PI * SIMD_PI * 4.f);
 	setDamping(2, 0.01f);
 	setEquilibriumPoint();
 }

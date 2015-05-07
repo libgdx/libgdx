@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
 
-public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
+public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, Comparable<Attributes> {
 	protected long mask;
 	protected final Array<Attribute> attributes = new Array<Attribute>();
 
@@ -177,7 +177,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 		return same(other, false);
 	}
 
-	/** Used for sorting attributes */
+	/** Used for sorting attributes by type (not by value) */
 	@Override
 	public final int compare (final Attribute arg0, final Attribute arg1) {
 		return (int)(arg0.type - arg1.type);
@@ -188,23 +188,44 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
 	}
-	
-	@Override
-	public int hashCode () {
+
+	/** @return A hash code based on only the attribute values, which might be different compared to {@link #hashCode()} because the latter
+	 * might include other properties as well, i.e. the material id. */
+	public int attributesHash () {
 		sort();
 		final int n = attributes.size;
-		int result = 71 + (int)mask;
+		long result = 71 + mask;
 		int m = 1;
 		for (int i = 0; i < n; i++)
 			result += mask * attributes.get(i).hashCode() * (m = (m * 7) & 0xFFFF);
-		return result;
+		return (int)(result ^ (result >> 32));
 	}
-	
+
+	@Override
+	public int hashCode () {
+		return attributesHash();
+	}
+
 	@Override
 	public boolean equals (Object other) {
-		if (other == null) return false;
-		if (other == this) return true;
 		if (!(other instanceof Attributes)) return false;
-		return hashCode() == other.hashCode();
+		if (other == this) return true;
+		return same((Attributes)other, true);
+	}
+
+	@Override
+	public int compareTo (Attributes other) {
+		if (other == this)
+			return 0;
+		if (mask != other.mask)
+			return mask < other.mask ? -1 : 1;
+		sort();
+		other.sort();
+		for (int i = 0; i < attributes.size; i++) {
+			final int c = attributes.get(i).compareTo(other.attributes.get(i));
+			if (c != 0)
+				return c;
+		}
+		return 0;
 	}
 }

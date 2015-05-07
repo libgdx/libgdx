@@ -94,6 +94,10 @@ public class btTriangleMesh extends btTriangleIndexVertexArray {
     CollisionJNI.btTriangleMesh_addTriangle__SWIG_1(swigCPtr, this, vertex0, vertex1, vertex2);
   }
 
+  public void addTriangleIndices(int index1, int index2, int index3) {
+    CollisionJNI.btTriangleMesh_addTriangleIndices(swigCPtr, this, index1, index2, index3);
+  }
+
   public int getNumTriangles() {
     return CollisionJNI.btTriangleMesh_getNumTriangles(swigCPtr, this);
   }

@@ -715,6 +715,8 @@ public class CollisionJNI {
   public final static native float btCollisionShape_getMargin(long jarg1, btCollisionShape jarg1_);
   public final static native void btCollisionShape_setUserPointer(long jarg1, btCollisionShape jarg1_, long jarg2);
   public final static native long btCollisionShape_getUserPointer(long jarg1, btCollisionShape jarg1_);
+  public final static native void btCollisionShape_setUserIndex(long jarg1, btCollisionShape jarg1_, int jarg2);
+  public final static native int btCollisionShape_getUserIndex(long jarg1, btCollisionShape jarg1_);
   public final static native int btCollisionShape_calculateSerializeBufferSize(long jarg1, btCollisionShape jarg1_);
   public final static native String btCollisionShape_serialize(long jarg1, btCollisionShape jarg1_, long jarg2, long jarg3);
   public final static native void btCollisionShape_serializeSingleShape(long jarg1, btCollisionShape jarg1_, long jarg2);
@@ -928,6 +930,7 @@ public class CollisionJNI {
   public final static native int btCapsuleShape_getUpAxis(long jarg1, btCapsuleShape jarg1_);
   public final static native float btCapsuleShape_getRadius(long jarg1, btCapsuleShape jarg1_);
   public final static native float btCapsuleShape_getHalfHeight(long jarg1, btCapsuleShape jarg1_);
+  public final static native void btCapsuleShape_deSerializeFloat(long jarg1, btCapsuleShape jarg1_, long jarg2, btCapsuleShapeData jarg2_);
   public final static native void delete_btCapsuleShape(long jarg1);
   public final static native long new_btCapsuleShapeX(float jarg1, float jarg2);
   public final static native void delete_btCapsuleShapeX(long jarg1);
@@ -1227,6 +1230,7 @@ public class CollisionJNI {
   public final static native boolean btTriangleMesh_getUse4componentVertices(long jarg1, btTriangleMesh jarg1_);
   public final static native void btTriangleMesh_addTriangle__SWIG_0(long jarg1, btTriangleMesh jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, boolean jarg5);
   public final static native void btTriangleMesh_addTriangle__SWIG_1(long jarg1, btTriangleMesh jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btTriangleMesh_addTriangleIndices(long jarg1, btTriangleMesh jarg1_, int jarg2, int jarg3, int jarg4);
   public final static native int btTriangleMesh_getNumTriangles(long jarg1, btTriangleMesh jarg1_);
   public final static native int btTriangleMesh_findOrAddVertex(long jarg1, btTriangleMesh jarg1_, Vector3 jarg2, boolean jarg3);
   public final static native void btTriangleMesh_addIndex(long jarg1, btTriangleMesh jarg1_, int jarg2);
@@ -1352,6 +1356,8 @@ public class CollisionJNI {
   public final static native void delete_btCollisionObject(long jarg1);
   public final static native void btCollisionObject_internalSetCollisionShape(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionShape jarg2_);
   public final static native long btCollisionObject_internalGetCollisionShape__SWIG_0(long jarg1, btCollisionObject jarg1_);
+  public final static native void btCollisionObject_setIgnoreCollisionCheck(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_, boolean jarg3);
+  public final static native boolean btCollisionObject_checkCollideWithOverride(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native long btCollisionObject_internalGetExtensionPointer(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_internalSetExtensionPointer(long jarg1, btCollisionObject jarg1_, long jarg2);
   public final static native int btCollisionObject_getActivationState(long jarg1, btCollisionObject jarg1_);
@@ -1640,6 +1646,9 @@ public class CollisionJNI {
   public final static native long gCompoundCompoundChildShapePairCallback_get();
   public final static native long new_btCompoundCompoundCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
   public final static native void delete_btCompoundCompoundCollisionAlgorithm(long jarg1);
+  public final static native void btCompoundCompoundCollisionAlgorithm_processCollision(long jarg1, btCompoundCompoundCollisionAlgorithm jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
+  public final static native float btCompoundCompoundCollisionAlgorithm_calculateTimeOfImpact(long jarg1, btCompoundCompoundCollisionAlgorithm jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_, long jarg4, btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
+  public final static native void btCompoundCompoundCollisionAlgorithm_getAllContactManifolds(long jarg1, btCompoundCompoundCollisionAlgorithm jarg1_, long jarg2, btPersistentManifoldArray jarg2_);
   public final static native long btCompoundCompoundCollisionAlgorithm_CreateFunc_CreateCollisionAlgorithm(long jarg1, btCompoundCompoundCollisionAlgorithm.CreateFunc jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_);
   public final static native long new_btCompoundCompoundCollisionAlgorithm_CreateFunc();
   public final static native void delete_btCompoundCompoundCollisionAlgorithm_CreateFunc(long jarg1);
@@ -2943,7 +2952,6 @@ public class CollisionJNI {
   public final static native long btConvexTriangleCallback_SWIGUpcast(long jarg1);
   public final static native long btConvexConcaveCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btConvexPlaneCollisionAlgorithm_SWIGUpcast(long jarg1);
-  public final static native long btCompoundCompoundCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btDefaultCollisionConfiguration_SWIGUpcast(long jarg1);
   public final static native long btManifoldResult_SWIGUpcast(long jarg1);
   public final static native long btSphereSphereCollisionAlgorithm_SWIGUpcast(long jarg1);

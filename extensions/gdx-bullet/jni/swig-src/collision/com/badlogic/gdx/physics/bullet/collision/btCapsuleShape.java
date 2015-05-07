@@ -74,4 +74,8 @@ public class btCapsuleShape extends btConvexInternalShape {
     return CollisionJNI.btCapsuleShape_getHalfHeight(swigCPtr, this);
   }
 
+  public void deSerializeFloat(btCapsuleShapeData dataBuffer) {
+    CollisionJNI.btCapsuleShape_deSerializeFloat(swigCPtr, this, btCapsuleShapeData.getCPtr(dataBuffer), dataBuffer);
+  }
+
 }

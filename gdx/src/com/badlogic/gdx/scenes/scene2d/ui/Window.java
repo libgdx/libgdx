@@ -21,14 +21,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 
@@ -43,14 +42,13 @@ public class Window extends Table {
 	static private final int MOVE = 1 << 5;
 
 	private WindowStyle style;
-	private String title;
-	private BitmapFontCache titleCache;
 	boolean isMovable = true, isModal, isResizable;
 	int resizeBorder = 8;
 	boolean dragging;
-	private int titleAlignment = Align.center;
 	boolean keepWithinStage = true;
-	Table buttonTable;
+	Label titleLabel;
+	Table titleTable;
+	boolean drawTitleTable;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -64,16 +62,22 @@ public class Window extends Table {
 
 	public Window (String title, WindowStyle style) {
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
-		this.title = title;
 		setTouchable(Touchable.enabled);
 		setClip(true);
+
+		titleLabel = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
+
+		titleTable = new Table() {
+			public void draw (Batch batch, float parentAlpha) {
+				if (drawTitleTable) super.draw(batch, parentAlpha);
+			}
+		};
+		titleTable.add(titleLabel).expandX().fillX();
+		addActor(titleTable);
+
 		setStyle(style);
 		setWidth(150);
 		setHeight(150);
-		setTitle(title);
-
-		buttonTable = new Table();
-		addActor(buttonTable);
 
 		addCaptureListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -188,9 +192,7 @@ public class Window extends Table {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setBackground(style.background);
-		titleCache = new BitmapFontCache(style.titleFont);
-		titleCache.getColor().set(style.titleFontColor);
-		if (title != null) setTitle(title);
+		titleLabel.setStyle(new LabelStyle(style.titleFont, style.titleFontColor));
 		invalidateHierarchy();
 	}
 
@@ -205,7 +207,7 @@ public class Window extends Table {
 		Stage stage = getStage();
 		Camera camera = stage.getCamera();
 		if (camera instanceof OrthographicCamera) {
-			OrthographicCamera orthographicCamera = (OrthographicCamera) camera;
+			OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
 			float parentWidth = stage.getWidth();
 			float parentHeight = stage.getHeight();
 			if (getX(Align.right) - camera.position.x > parentWidth / 2 / orthographicCamera.zoom)
@@ -249,35 +251,16 @@ public class Window extends Table {
 	}
 
 	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
-		float width = getWidth(), height = getHeight();
-		float padTop = getPadTop();
-
 		super.drawBackground(batch, parentAlpha, x, y);
 
-		// Draw button table.
-		buttonTable.getColor().a = getColor().a;
-		buttonTable.pack();
-		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
-		buttonTable.draw(batch, parentAlpha);
-
-		// Draw the title without the batch transformed or clipping applied.
-		y += height;
-		GlyphLayout layout = titleCache.getLayouts().first();
-		if ((titleAlignment & Align.left) != 0)
-			x += getPadLeft();
-		else if ((titleAlignment & Align.right) != 0)
-			x += width - layout.width - getPadRight();
-		else
-			x += (width - layout.width) / 2;
-		if ((titleAlignment & Align.top) == 0) {
-			if ((titleAlignment & Align.bottom) != 0)
-				y -= padTop - layout.height;
-			else
-				y -= (padTop - layout.height) / 2;
-		}
-		titleCache.tint(Color.tmp.set(getColor()).mul(style.titleFontColor));
-		titleCache.setPosition((int)x, (int)y);
-		titleCache.draw(batch, parentAlpha);
+		// Manually draw the title table before clipping is done.
+		titleTable.getColor().a = getColor().a;
+		float padTop = getPadTop(), padLeft = getPadLeft();
+		titleTable.setSize(getWidth() - padLeft - getPadRight(), padTop);
+		titleTable.setPosition(padLeft, getHeight() - padTop);
+		drawTitleTable = true;
+		titleTable.draw(batch, parentAlpha);
+		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {
@@ -293,20 +276,6 @@ public class Window extends Table {
 			if (getCell(current) != null) return this;
 		}
 		return hit;
-	}
-
-	public void setTitle (String title) {
-		this.title = title;
-		titleCache.setText(title, 0, 0);
-	}
-
-	public String getTitle () {
-		return title;
-	}
-
-	/** @param titleAlignment {@link Align} */
-	public void setTitleAlignment (int titleAlignment) {
-		this.titleAlignment = titleAlignment;
 	}
 
 	public boolean isMovable () {
@@ -345,16 +314,16 @@ public class Window extends Table {
 		return dragging;
 	}
 
-	public float getTitleWidth () {
-		return titleCache.getLayouts().first().width;
-	}
-
 	public float getPrefWidth () {
-		return Math.max(super.getPrefWidth(), getTitleWidth() + getPadLeft() + getPadRight());
+		return Math.max(super.getPrefWidth(), titleLabel.getPrefWidth() + getPadLeft() + getPadRight());
 	}
 
-	public Table getButtonTable () {
-		return buttonTable;
+	public Table getTitleTable () {
+		return titleTable;
+	}
+
+	public Label getTitleLabel () {
+		return titleLabel;
 	}
 
 	/** The style for a window, see {@link Window}.
