@@ -20,11 +20,17 @@ subject to the following restrictions:
 
 #include "btMLCPSolverInterface.h"
 
+///This solver is mainly for debug/learning purposes: it is functionally equivalent to the btSequentialImpulseConstraintSolver solver, but much slower (it builds the full LCP matrix)
 class btSolveProjectedGaussSeidel : public btMLCPSolverInterface
 {
 public:
 	virtual bool solveMLCP(const btMatrixXu & A, const btVectorXu & b, btVectorXu& x, const btVectorXu & lo,const btVectorXu & hi,const btAlignedObjectArray<int>& limitDependency, int numIterations, bool useSparsity = true)
 	{
+		if (!A.rows())
+			return true;
+		//the A matrix is sparse, so compute the non-zero elements
+		A.rowComputeNonZeroElements();
+
 		//A is a m-n matrix, m rows, n columns
 		btAssert(A.rows() == b.rows());
 
@@ -56,7 +62,7 @@ public:
 				}
 
 				float aDiag = A(i,i);
-				x [i] = (b [i] - delta) / A(i,i);
+				x [i] = (b [i] - delta) / aDiag;
 				float s = 1.f;
 
 				if (limitDependency[i]>=0)

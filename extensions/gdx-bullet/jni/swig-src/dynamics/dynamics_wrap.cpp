@@ -3496,24 +3496,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynami
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1checkCollideWithOverride(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  btRigidBody *arg1 = (btRigidBody *) 0 ;
-  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btRigidBody **)&jarg1; 
-  arg2 = *(btCollisionObject **)&jarg2; 
-  result = (bool)((btRigidBody const *)arg1)->checkCollideWithOverride((btCollisionObject const *)arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1addConstraintRef(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btTypedConstraint *arg2 = (btTypedConstraint *) 0 ;
@@ -3602,7 +3584,7 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1computeGyroscopicForce(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1computeGyroscopicImpulseImplicit_1World(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btScalar arg2 ;
@@ -3613,7 +3595,59 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
   (void)jarg1_;
   arg1 = *(btRigidBody **)&jarg1; 
   arg2 = (btScalar)jarg2; 
-  result = ((btRigidBody const *)arg1)->computeGyroscopicForce(arg2);
+  result = ((btRigidBody const *)arg1)->computeGyroscopicImpulseImplicit_World(arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1computeGyroscopicImpulseImplicit_1Body(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jobject jresult = 0 ;
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btScalar arg2 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  result = ((btRigidBody const *)arg1)->computeGyroscopicImpulseImplicit_Body(arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1computeGyroscopicForceExplicit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jobject jresult = 0 ;
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btScalar arg2 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  result = ((btRigidBody const *)arg1)->computeGyroscopicForceExplicit(arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLocalInertia(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  result = ((btRigidBody const *)arg1)->getLocalInertia();
   jresult = gdx_getReturnVector3(jenv);
   gdx_setVector3FrombtVector3(jenv, jresult, result);
   return jresult;
@@ -11537,6 +11571,92 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
   result = (unsigned long)((btSequentialImpulseConstraintSolver const *)arg1)->getRandSeed();
   jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1getActiveConstraintRowSolverGeneric(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  result = (btSingleConstraintRowSolver)(arg1)->getActiveConstraintRowSolverGeneric();
+  *(btSingleConstraintRowSolver *)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1setConstraintRowSolverGeneric(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver arg2 = (btSingleConstraintRowSolver) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  arg2 = *(btSingleConstraintRowSolver *)&jarg2; 
+  (arg1)->setConstraintRowSolverGeneric(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1getActiveConstraintRowSolverLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  result = (btSingleConstraintRowSolver)(arg1)->getActiveConstraintRowSolverLowerLimit();
+  *(btSingleConstraintRowSolver *)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1setConstraintRowSolverLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver arg2 = (btSingleConstraintRowSolver) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  arg2 = *(btSingleConstraintRowSolver *)&jarg2; 
+  (arg1)->setConstraintRowSolverLowerLimit(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1getScalarConstraintRowSolverGeneric(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  result = (btSingleConstraintRowSolver)(arg1)->getScalarConstraintRowSolverGeneric();
+  *(btSingleConstraintRowSolver *)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSequentialImpulseConstraintSolver_1getScalarConstraintRowSolverLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btSequentialImpulseConstraintSolver *arg1 = (btSequentialImpulseConstraintSolver *) 0 ;
+  btSingleConstraintRowSolver result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSequentialImpulseConstraintSolver **)&jarg1; 
+  result = (btSingleConstraintRowSolver)(arg1)->getScalarConstraintRowSolverLowerLimit();
+  *(btSingleConstraintRowSolver *)&jresult = result; 
   return jresult;
 }
 
@@ -20992,6 +21112,21 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeConstraint_1hasLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btHingeConstraint *arg1 = (btHingeConstraint *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btHingeConstraint **)&jarg1; 
+  result = (bool)((btHingeConstraint const *)arg1)->hasLimit();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeConstraint_1getLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jfloat jresult = 0 ;
   btHingeConstraint *arg1 = (btHingeConstraint *) 0 ;
@@ -21696,6 +21831,322 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jenv;
   (void)jcls;
   arg1 = *(btHingeConstraintDoubleData **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jobject jarg5, jobject jarg6, jboolean jarg7) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVector3 *arg4 = 0 ;
+  btVector3 *arg5 = 0 ;
+  btVector3 *arg6 = 0 ;
+  bool arg7 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btVector3 local_arg4;
+  gdx_setbtVector3FromVector3(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  btVector3 local_arg5;
+  gdx_setbtVector3FromVector3(jenv, local_arg5, jarg5);
+  arg5 = &local_arg5;
+  gdxAutoCommitVector3 auto_commit_arg5(jenv, jarg5, &local_arg5);
+  btVector3 local_arg6;
+  gdx_setbtVector3FromVector3(jenv, local_arg6, jarg6);
+  arg6 = &local_arg6;
+  gdxAutoCommitVector3 auto_commit_arg6(jenv, jarg6, &local_arg6);
+  arg7 = jarg7 ? true : false; 
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,*arg2,(btVector3 const &)*arg3,(btVector3 const &)*arg4,(btVector3 const &)*arg5,(btVector3 const &)*arg6,arg7);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jobject jarg5, jobject jarg6) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVector3 *arg4 = 0 ;
+  btVector3 *arg5 = 0 ;
+  btVector3 *arg6 = 0 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btVector3 local_arg4;
+  gdx_setbtVector3FromVector3(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  btVector3 local_arg5;
+  gdx_setbtVector3FromVector3(jenv, local_arg5, jarg5);
+  arg5 = &local_arg5;
+  gdxAutoCommitVector3 auto_commit_arg5(jenv, jarg5, &local_arg5);
+  btVector3 local_arg6;
+  gdx_setbtVector3FromVector3(jenv, local_arg6, jarg6);
+  arg6 = &local_arg6;
+  gdxAutoCommitVector3 auto_commit_arg6(jenv, jarg6, &local_arg6);
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,*arg2,(btVector3 const &)*arg3,(btVector3 const &)*arg4,(btVector3 const &)*arg5,(btVector3 const &)*arg6);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jboolean jarg4) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  bool arg4 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  arg4 = jarg4 ? true : false; 
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,(btVector3 const &)*arg2,(btVector3 const &)*arg3,arg4);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,(btVector3 const &)*arg2,(btVector3 const &)*arg3);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_14(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jboolean jarg5) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  btTransform *arg4 = 0 ;
+  bool arg5 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btTransform local_arg4;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitMatrix4 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  arg5 = jarg5 ? true : false; 
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,*arg2,(btTransform const &)*arg3,(btTransform const &)*arg4,arg5);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_15(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  btTransform *arg4 = 0 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btTransform local_arg4;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitMatrix4 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,*arg2,(btTransform const &)*arg3,(btTransform const &)*arg4);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_16(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jboolean jarg3) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btTransform *arg2 = 0 ;
+  bool arg3 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  arg3 = jarg3 ? true : false; 
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,(btTransform const &)*arg2,arg3);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeAccumulatedAngleConstraint_1_1SWIG_17(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btTransform *arg2 = 0 ;
+  btHingeAccumulatedAngleConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btHingeAccumulatedAngleConstraint *)new btHingeAccumulatedAngleConstraint(*arg1,(btTransform const &)*arg2);
+  *(btHingeAccumulatedAngleConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeAccumulatedAngleConstraint_1getAccumulatedHingeAngle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btHingeAccumulatedAngleConstraint *arg1 = (btHingeAccumulatedAngleConstraint *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btHingeAccumulatedAngleConstraint **)&jarg1; 
+  result = (btScalar)(arg1)->getAccumulatedHingeAngle();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeAccumulatedAngleConstraint_1setAccumulatedHingeAngle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btHingeAccumulatedAngleConstraint *arg1 = (btHingeAccumulatedAngleConstraint *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btHingeAccumulatedAngleConstraint **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->setAccumulatedHingeAngle(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btHingeAccumulatedAngleConstraint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btHingeAccumulatedAngleConstraint *arg1 = (btHingeAccumulatedAngleConstraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btHingeAccumulatedAngleConstraint **)&jarg1; 
   delete arg1;
 }
 
@@ -23377,74 +23828,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jcls;
   arg1 = *(btFixedConstraint **)&jarg1; 
   delete arg1;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1setParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3, jint jarg4) {
-  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
-  int arg2 ;
-  btScalar arg3 ;
-  int arg4 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btFixedConstraint **)&jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (btScalar)jarg3; 
-  arg4 = (int)jarg4; 
-  (arg1)->setParam(arg2,arg3,arg4);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1setParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
-  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
-  int arg2 ;
-  btScalar arg3 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btFixedConstraint **)&jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (btScalar)jarg3; 
-  (arg1)->setParam(arg2,arg3);
-}
-
-
-SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1getParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
-  jfloat jresult = 0 ;
-  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  btScalar result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btFixedConstraint **)&jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (int)jarg3; 
-  result = (btScalar)((btFixedConstraint const *)arg1)->getParam(arg2,arg3);
-  jresult = (jfloat)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1getParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jfloat jresult = 0 ;
-  btFixedConstraint *arg1 = (btFixedConstraint *) 0 ;
-  int arg2 ;
-  btScalar result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btFixedConstraint **)&jarg1; 
-  arg2 = (int)jarg2; 
-  result = (btScalar)((btFixedConstraint const *)arg1)->getParam(arg2);
-  jresult = (jfloat)result; 
-  return jresult;
 }
 
 
@@ -25896,19 +26279,11 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     return baseptr;
 }
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHinge2Constraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeAccumulatedAngleConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
     (void)jcls;
-    *(btGeneric6DofSpringConstraint **)&baseptr = *(btHinge2Constraint **)&jarg1;
-    return baseptr;
-}
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-    jlong baseptr = 0;
-    (void)jenv;
-    (void)jcls;
-    *(btTypedConstraint **)&baseptr = *(btFixedConstraint **)&jarg1;
+    *(btHingeConstraint **)&baseptr = *(btHingeAccumulatedAngleConstraint **)&jarg1;
     return baseptr;
 }
 

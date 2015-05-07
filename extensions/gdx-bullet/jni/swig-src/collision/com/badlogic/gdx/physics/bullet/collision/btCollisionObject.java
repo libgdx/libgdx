@@ -230,6 +230,14 @@ public class btCollisionObject extends BulletBase implements
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
+  public void setIgnoreCollisionCheck(btCollisionObject co, boolean ignoreCollisionCheck) {
+    CollisionJNI.btCollisionObject_setIgnoreCollisionCheck(swigCPtr, this, btCollisionObject.getCPtr(co), co, ignoreCollisionCheck);
+  }
+
+  public boolean checkCollideWithOverride(btCollisionObject co) {
+    return CollisionJNI.btCollisionObject_checkCollideWithOverride(swigCPtr, this, btCollisionObject.getCPtr(co), co);
+  }
+
   public long internalGetExtensionPointer() {
     return CollisionJNI.btCollisionObject_internalGetExtensionPointer(swigCPtr, this);
   }

@@ -177,6 +177,10 @@ public class btSoftBodyHelpers extends BulletBase {
     return (cPtr == 0) ? null : new btSoftBody(cPtr, false);
   }
 
+  public static void ReoptimizeLinkOrder(btSoftBody psb) {
+    SoftbodyJNI.btSoftBodyHelpers_ReoptimizeLinkOrder(btSoftBody.getCPtr(psb), psb);
+  }
+
   public btSoftBodyHelpers() {
     this(SoftbodyJNI.new_btSoftBodyHelpers(), true);
   }

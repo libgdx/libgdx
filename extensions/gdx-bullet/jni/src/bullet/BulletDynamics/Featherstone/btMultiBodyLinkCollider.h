@@ -74,14 +74,14 @@ public:
 		if (m_link>=0)
 		{
 			const btMultibodyLink& link = m_multiBody->getLink(this->m_link);
-			if ((link.m_flags&BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && link.parent == other->m_link)
+			if ((link.m_flags&BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && link.m_parent == other->m_link)
 				return false;
 		}
 		
 		if (other->m_link>=0)
 		{
 			const btMultibodyLink& otherLink = other->m_multiBody->getLink(other->m_link);
-			if ((otherLink.m_flags& BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && otherLink.parent == this->m_link)
+			if ((otherLink.m_flags& BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && otherLink.m_parent == this->m_link)
 				return false;
 		}
 		return true;

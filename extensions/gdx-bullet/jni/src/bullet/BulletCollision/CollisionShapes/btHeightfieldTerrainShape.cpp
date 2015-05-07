@@ -365,14 +365,15 @@ void	btHeightfieldTerrainShape::processAllTriangles(btTriangleCallback* callback
 			{
         //first triangle
         getVertex(x,j,vertices[0]);
-        getVertex(x+1,j,vertices[1]);
-        getVertex(x+1,j+1,vertices[2]);
+		getVertex(x, j + 1, vertices[1]);
+		getVertex(x + 1, j + 1, vertices[2]);
         callback->processTriangle(vertices,x,j);
         //second triangle
       //  getVertex(x,j,vertices[0]);//already got this vertex before, thanks to Danny Chapman
         getVertex(x+1,j+1,vertices[1]);
-        getVertex(x,j+1,vertices[2]);
-        callback->processTriangle(vertices,x,j);				
+		getVertex(x + 1, j, vertices[2]);
+		callback->processTriangle(vertices, x, j);
+
 			} else
 			{
         //first triangle

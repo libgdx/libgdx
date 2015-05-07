@@ -27,6 +27,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionObject.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionWorld.cpp\
+	src/bullet/BulletCollision/CollisionDispatch/btCollisionWorldImporter.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.cpp\
@@ -110,9 +111,11 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/ConstraintSolver/btFixedConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGearConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp\
+	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btHinge2Constraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btHingeConstraint.cpp\
+	src/bullet/BulletDynamics/ConstraintSolver/btNNCGConstraintSolver.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btPoint2PointConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btSliderConstraint.cpp\
@@ -122,7 +125,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.cpp\
 	src/bullet/BulletDynamics/Dynamics/btRigidBody.cpp\
 	src/bullet/BulletDynamics/Dynamics/btSimpleDynamicsWorld.cpp\
-	src/bullet/BulletDynamics/Dynamics/Bullet-C-API.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBody.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.cpp\
@@ -131,6 +133,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointMotor.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyPoint2Point.cpp\
 	src/bullet/BulletDynamics/MLCPSolvers/btDantzigLCP.cpp\
+	src/bullet/BulletDynamics/MLCPSolvers/btLemkeAlgorithm.cpp\
 	src/bullet/BulletDynamics/MLCPSolvers/btMLCPSolver.cpp\
 	src/bullet/BulletDynamics/Vehicle/btRaycastVehicle.cpp\
 	src/bullet/BulletDynamics/Vehicle/btWheelInfo.cpp\

@@ -18,6 +18,7 @@ public final class btTypedConstraintType {
   public final static int D6_SPRING_CONSTRAINT_TYPE = CONTACT_CONSTRAINT_TYPE + 1;
   public final static int GEAR_CONSTRAINT_TYPE = D6_SPRING_CONSTRAINT_TYPE + 1;
   public final static int FIXED_CONSTRAINT_TYPE = GEAR_CONSTRAINT_TYPE + 1;
-  public final static int MAX_CONSTRAINT_TYPE = FIXED_CONSTRAINT_TYPE + 1;
+  public final static int D6_SPRING_2_CONSTRAINT_TYPE = FIXED_CONSTRAINT_TYPE + 1;
+  public final static int MAX_CONSTRAINT_TYPE = D6_SPRING_2_CONSTRAINT_TYPE + 1;
 }
 

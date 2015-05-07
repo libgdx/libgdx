@@ -34,7 +34,7 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 #include "BulletCollision/CollisionShapes/btConvexPolyhedron.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+
 //#define DISABLE_DBVT_COMPOUNDSHAPE_RAYCAST_ACCELERATION
 
 
@@ -292,12 +292,13 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 		btGjkConvexCast	gjkConvexCaster(castShape,convexShape,&simplexSolver);
 		
 		//btContinuousConvexCollision convexCaster(castShape,convexShape,&simplexSolver,0);
-		bool condition = true;
+
 		btConvexCast* convexCasterPtr = 0;
-		if (resultCallback.m_flags & btTriangleRaycastCallback::kF_UseSubSimplexConvexCastRaytest)
-			convexCasterPtr = &subSimplexConvexCaster;
-		else
+		//use kF_UseSubSimplexConvexCastRaytest by default
+		if (resultCallback.m_flags & btTriangleRaycastCallback::kF_UseGjkConvexCastRaytest)
 			convexCasterPtr = &gjkConvexCaster;
+		else
+			convexCasterPtr = &subSimplexConvexCaster;
 		
 		btConvexCast& convexCaster = *convexCasterPtr;
 
@@ -308,6 +309,7 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 			{
 				if (castResult.m_fraction < resultCallback.m_closestHitFraction)
 				{
+					//todo: figure out what this is about. When is rayFromTest.getBasis() not identity?
 #ifdef USE_SUBSIMPLEX_CONVEX_CAST
 					//rotate normal into worldspace
 					castResult.m_normal = rayFromTrans.getBasis() * castResult.m_normal;
@@ -387,14 +389,7 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
 				triangleMesh->performRaycast(&rcb,rayFromLocal,rayToLocal);
 			}
-			else if(collisionShape->getShapeType()==GIMPACT_SHAPE_PROXYTYPE)
-			{
-				btGImpactMeshShape* concaveShape = (btGImpactMeshShape*)collisionShape;
-
-				BridgeTriangleRaycastCallback	rcb(rayFromLocal,rayToLocal,&resultCallback,collisionObjectWrap->getCollisionObject(),concaveShape, colObjWorldTransform);
-				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
-				concaveShape->processAllTrianglesRay(&rcb,rayFromLocal,rayToLocal);
-			}else
+			else
 			{
 				//generic (slower) case
 				btConcaveShape* concaveShape = (btConcaveShape*)collisionShape;
@@ -770,7 +765,7 @@ void	btCollisionWorld::objectQuerySingleInternal(const btConvexShape* castShape,
 									hitPointLocal,
 									hitFraction);
 
-								bool	normalInWorldSpace = false;
+								bool	normalInWorldSpace = true;
 
 								return m_resultCallback->addSingleResult(convexResult,normalInWorldSpace);
 							}
@@ -1251,7 +1246,10 @@ public:
 void btCollisionWorld::debugDrawObject(const btTransform& worldTransform, const btCollisionShape* shape, const btVector3& color)
 {
 	// Draw a small simplex at the center of the object
-	getDebugDrawer()->drawTransform(worldTransform,1);
+	if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawFrames)
+	{
+		getDebugDrawer()->drawTransform(worldTransform,1);
+	}
 
 	if (shape->getShapeType() == COMPOUND_SHAPE_PROXYTYPE)
 	{
@@ -1431,19 +1429,22 @@ void	btCollisionWorld::debugDrawWorld()
 {
 	if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)
 	{
-		int numManifolds = getDispatcher()->getNumManifolds();
-		btVector3 color(1,1,0);
-		for (int i=0;i<numManifolds;i++)
+		if (getDispatcher())
 		{
-			btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);
-			//btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-			//btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-
-			int numContacts = contactManifold->getNumContacts();
-			for (int j=0;j<numContacts;j++)
+			int numManifolds = getDispatcher()->getNumManifolds();
+			btVector3 color(1,1,0);
+			for (int i=0;i<numManifolds;i++)
 			{
-				btManifoldPoint& cp = contactManifold->getContactPoint(j);
-				getDebugDrawer()->drawContactPoint(cp.m_positionWorldOnB,cp.m_normalWorldOnB,cp.getDistance(),cp.getLifeTime(),color);
+				btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);
+				//btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+				//btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+
+				int numContacts = contactManifold->getNumContacts();
+				for (int j=0;j<numContacts;j++)
+				{
+					btManifoldPoint& cp = contactManifold->getContactPoint(j);
+					getDebugDrawer()->drawContactPoint(cp.m_positionWorldOnB,cp.m_normalWorldOnB,cp.getDistance(),cp.getLifeTime(),color);
+				}
 			}
 		}
 	}
@@ -1512,15 +1513,6 @@ void	btCollisionWorld::debugDrawWorld()
 void	btCollisionWorld::serializeCollisionObjects(btSerializer* serializer)
 {
 	int i;
-	//serialize all collision objects
-	for (i=0;i<m_collisionObjects.size();i++)
-	{
-		btCollisionObject* colObj = m_collisionObjects[i];
-		if (colObj->getInternalType() == btCollisionObject::CO_COLLISION_OBJECT)
-		{
-			colObj->serializeSingleObject(serializer);
-		}
-	}
 
 	///keep track of shapes already serialized
 	btHashMap<btHashPtr,btCollisionShape*>	serializedShapes;
@@ -1537,6 +1529,15 @@ void	btCollisionWorld::serializeCollisionObjects(btSerializer* serializer)
 		}
 	}
 
+	//serialize all collision objects
+	for (i=0;i<m_collisionObjects.size();i++)
+	{
+		btCollisionObject* colObj = m_collisionObjects[i];
+		if (colObj->getInternalType() == btCollisionObject::CO_COLLISION_OBJECT)
+		{
+			colObj->serializeSingleObject(serializer);
+		}
+	}
 }
 
 
