@@ -266,6 +266,7 @@ public class TextField extends Widget implements Disableable {
 	public void draw (Batch batch, float parentAlpha) {
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		if (!focused) keyRepeatTask.cancel();
 
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
