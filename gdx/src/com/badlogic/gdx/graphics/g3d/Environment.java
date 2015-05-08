@@ -118,7 +118,7 @@ public class Environment extends Attributes {
 			PointLightsAttribute pointLights = ((PointLightsAttribute)get(PointLightsAttribute.Type));
 			pointLights.lights.removeValue(light, false);
 			if (pointLights.lights.size == 0)
-				remove(DirectionalLightsAttribute.Type);
+				remove(PointLightsAttribute.Type);
 		}
 		return this;
 	}
