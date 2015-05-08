@@ -177,14 +177,14 @@ public class GlyphLayout implements Poolable {
 						} else
 							run.width += xAdvance;
 					}
+				}
 
-					if (newline) {
-						// Next run will be on the next line.
-						width = Math.max(width, x);
-						x = 0;
-						y += fontData.down;
-						lines++;
-					}
+				if (newline) {
+					// Next run will be on the next line.
+					width = Math.max(width, x);
+					x = 0;
+					y += fontData.down;
+					lines++;
 				}
 
 				runStart = start;
