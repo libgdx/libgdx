@@ -8,19 +8,17 @@ the developers managing and developing this open source project. In return,
 they should reciprocate that respect in addressing your issue or assessing
 patches and features.
 
-
 ## Using the issue tracker
 
 The issue tracker is the preferred channel for [bug reports](#bugs),
-[features requests](#features) and [submitting pull
-requests](#pull-requests), but please respect the following restrictions:
+[features requests](#features) and [submitting pull requests](#pull-requests),
+but please respect the following restrictions:
 
 * Please **do not** use the issue tracker for personal support requests (use
   [the forum](http://badlogicgames.com/forum/) or IRC). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
 
 * Please **do not** derail or troll issues. Keep the discussion on topic and
   respect the opinions of others.
-
 
 <a name="bugs"></a>
 ## Bug reports
@@ -47,7 +45,6 @@ details will help people to fix any potential bugs.
 
 See [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help) for more information and an example.
 
-
 <a name="features"></a>
 ## Feature requests
 
@@ -68,7 +65,7 @@ Contributing to libgdx is easy:
 ### API Changes & Additions
 If you modify a public API, or add a new one, make sure to add these changes to the [CHANGES](https://github.com/libgdx/libgdx/blob/master/CHANGES) file in the root of the repository. In addition to the CHANGES file, such modifications are also published on the [blog](http://www.badlogicgames.com) and on [Twitter](http://www.twitter.com/badlogicgames) to reach all of the community.
 
-If you want to poll the brains of other devs, either send a pull request and start a conversation on Github, or start a new thread in [this sub-forum](http://www.badlogicgames.com/forum/viewforum.php?f=23). You will need special forum permissions, write an e-mail to contact at badlogicgames dot com and tell me your forum id. You should also subscribe to that forum via e-mail, there's a button at the bottom of the page. You can also drop by on IRC (irc.freenode.org, #libgdx), where most core devs are lurking.
+If you want to poll the brains of other devs, either send a pull request and start a conversation on GitHub, or start a new thread in [this sub-forum](http://www.badlogicgames.com/forum/viewforum.php?f=23). You will need special forum permissions, write an e-mail to contact at badlogicgames dot com and tell me your forum id. You should also subscribe to that forum via e-mail, there's a button at the bottom of the page. You can also drop by on IRC (irc.freenode.org, #libgdx), where most core devs are lurking.
 
 ### Contributor License Agreement
 

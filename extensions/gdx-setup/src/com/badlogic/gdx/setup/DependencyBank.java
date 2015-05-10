@@ -22,7 +22,7 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.0.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.2.3";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
@@ -53,18 +53,18 @@ public class DependencyBank {
 	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
 	 * and allow the option to choose extensions as the user wishes.
 	 * <p/>
-	 * These depedency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
+	 * These dependency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
 	 * project generation
 	 *
 	 * @see Dependency for the object that handles sub-module dependencies. If no dependency is found for a sub-module, ie
-	 * FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatability
+	 * FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatibility
 	 */
 	public enum ProjectDependency {
 		GDX(
 			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"},
-			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
+			new String[]{"org.robovm:robovm-rt:$roboVMVersion", "org.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			
@@ -193,7 +193,6 @@ public class DependencyBank {
 			return description;
 		}
 	}
-
 
 	public enum ProjectType {
 		CORE("core", new String[]{"java"}),
