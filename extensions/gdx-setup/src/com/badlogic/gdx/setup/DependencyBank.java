@@ -22,7 +22,7 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.0.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.2.3";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
@@ -64,7 +64,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"},
-			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
+			new String[]{"org.robovm:robovm-rt:$roboVMVersion", "org.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			
