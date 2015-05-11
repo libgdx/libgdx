@@ -29,7 +29,6 @@ List<String> incompatList = builder.buildProject(modules, dependencies);
 // The setup ui checks for these and pops up a dialog.
 ```
 
-
 The builder will generate the settings.gradle, build.gradle file, as well as alter all the platform specific files that reference dependencies/assets.
 
 Files Altered:

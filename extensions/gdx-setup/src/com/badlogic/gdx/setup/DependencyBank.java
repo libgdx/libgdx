@@ -53,11 +53,11 @@ public class DependencyBank {
 	 * This enum will hold all dependencies available for libgdx, allowing the setup to pick the ones needed by default,
 	 * and allow the option to choose extensions as the user wishes.
 	 * <p/>
-	 * These depedency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
+	 * These dependency strings can be later used in a simple gradle plugin to manipulate the users project either after/before
 	 * project generation
 	 *
 	 * @see Dependency for the object that handles sub-module dependencies. If no dependency is found for a sub-module, ie
-	 * FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatability
+	 * FreeTypeFont for gwt, an exception is thrown so the user can be notified of incompatibility
 	 */
 	public enum ProjectDependency {
 		GDX(
@@ -193,7 +193,6 @@ public class DependencyBank {
 			return description;
 		}
 	}
-
 
 	public enum ProjectType {
 		CORE("core", new String[]{"java"}),
