@@ -29,6 +29,8 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.ByteArray;
@@ -186,7 +188,7 @@ public class PixmapIO {
 		static private final byte PAETH = 4;
 
 		private final ChunkBuffer buffer;
-		private final DeflaterOutputStream deflaterOutput;
+		private DeflaterOutputStream deflaterOutput;
 		private final Deflater deflater;
 		private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
 		private boolean flipY = true;
@@ -199,7 +201,10 @@ public class PixmapIO {
 		public PNG (int initialBufferSize) {
 			buffer = new ChunkBuffer(initialBufferSize);
 			deflater = new Deflater();
-			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
+			if (Gdx.app.getType() != ApplicationType.Android) {
+				// On Android, we need to recreate the stream each time: https://github.com/libgdx/libgdx/issues/3113
+				deflaterOutput = new DeflaterOutputStream(buffer, deflater);
+			}
 		}
 
 		/** If true, the resulting PNG is flipped vertically. Default is true. */
@@ -223,6 +228,10 @@ public class PixmapIO {
 
 		/** Writes the pixmap to the stream without closing the stream. */
 		public void write (OutputStream output, Pixmap pixmap) throws IOException {
+			if (Gdx.app.getType() == ApplicationType.Android) {
+				// On Android, we need to recreate the stream each time: https://github.com/libgdx/libgdx/issues/3113
+				deflaterOutput = new DeflaterOutputStream(buffer, deflater);
+			}
 			DataOutputStream dataOutput = new DataOutputStream(output);
 			dataOutput.write(SIGNATURE);
 
