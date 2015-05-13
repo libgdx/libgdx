@@ -312,6 +312,11 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return True in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
+		if (t1.idt(ray.origin) || t2.idt(ray.origin) || t3.idt(ray.origin)) {
+			if (intersection != null) intersection.set(ray.origin);
+			return true;
+		}
+
 		p.set(t1, t2, t3);
 		if (!intersectRayPlane(ray, p, i)) return false;
 
