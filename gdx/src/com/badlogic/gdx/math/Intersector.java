@@ -377,9 +377,7 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRayBounds (Ray ray, BoundingBox box, Vector3 intersection) {
-		v0.set(ray.origin).sub(box.min);
-		v1.set(ray.origin).sub(box.max);
-		if (v0.x > 0 && v0.y > 0 && v0.z > 0 && v1.x < 0 && v1.y < 0 && v1.z < 0) {
+		if (box.contains(ray.origin)) {
 			if (intersection != null) intersection.set(ray.origin);
 			return true;
 		}
