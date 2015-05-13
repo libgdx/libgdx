@@ -363,6 +363,14 @@ public final class Intersector {
 	}
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
+	 * This intersection is defined as the point on the ray closest to the origin which is within the specified
+	 * bounds.
+	 * 
+	 * <p>The returned intersection (if any) is guaranteed to be within the bounds of the bounding box, but
+	 * it can occasionally diverge slightly from ray, due to small floating-point errors.</p>
+	 * 
+	 * <p>If the origin of the ray is inside the box, this method returns true and the intersection point is
+	 * set to the origin of the ray, accordingly to the definition above.</p>
 	 * 
 	 * @param ray The ray
 	 * @param box The box
@@ -372,6 +380,7 @@ public final class Intersector {
 		v0.set(ray.origin).sub(box.min);
 		v1.set(ray.origin).sub(box.max);
 		if (v0.x > 0 && v0.y > 0 && v0.z > 0 && v1.x < 0 && v1.y < 0 && v1.z < 0) {
+			if (intersection != null) intersection.set(ray.origin);
 			return true;
 		}
 		float lowest = 0, t;
@@ -445,6 +454,21 @@ public final class Intersector {
 		}
 		if (hit && intersection != null) {
 			intersection.set(ray.direction).scl(lowest).add(ray.origin);
+			if (intersection.x < box.min.x) {
+				intersection.x = box.min.x;
+			} else if (intersection.x > box.max.x) {
+				intersection.x = box.max.x;
+			}
+			if (intersection.y < box.min.y) {
+				intersection.y = box.min.y;
+			} else if (intersection.y > box.max.y) {
+				intersection.y = box.max.y;
+			}
+			if (intersection.z < box.min.z) {
+				intersection.z = box.min.z;
+			} else if (intersection.z > box.max.z) {
+				intersection.z = box.max.z;
+			}
 		}
 		return hit;
 	}
