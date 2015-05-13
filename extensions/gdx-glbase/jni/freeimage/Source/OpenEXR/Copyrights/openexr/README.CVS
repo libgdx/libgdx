@@ -1,0 +1,16 @@
+If you're using OpenEXR from CVS, you should run the bootstrap script
+to create the auto* files.  It's a good idea to run this whenever you
+update OpenEXR from CVS.
+
+Then run './configure' and make.
+
+Note that the configure.ac file requires a fairly new version of
+automake.  If you get this error message:
+
+running aclocal ...
+aclocal: configure.ac: 142: macro `AM_CFLAGS' not found in library
+aclocal: configure.ac: 143: macro `AM_CXXFLAGS' not found in library
+failed!
+
+you should upgrade your automake to version 1.6 or better.
+

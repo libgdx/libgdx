@@ -1,0 +1,440 @@
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<HTML><HEAD><TITLE>Manpage of dcraw</TITLE>
+</HEAD><BODY>
+<H1>dcraw</H1>
+Section: User Commands  (1)<BR>Updated: May 14, 2009<BR><A HREF="#index">Index</A>
+<A HREF="../index.html">Return to Main Contents</A><HR>
+
+
+<A NAME="lbAB">&nbsp;</A>
+<H2>NAME</H2>
+
+dcraw - command-line decoder for raw digital photos
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>dcraw</B>
+
+[<I>OPTION</I>]... [<I>FILE</I>]...
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+<B>dcraw</B>
+
+decodes raw photos, displays metadata, and extracts thumbnails.
+<A NAME="lbAE">&nbsp;</A>
+<H2>GENERAL OPTIONS</H2>
+
+<DL COMPACT>
+<DT><B>-v</B>
+
+<DD>
+Print verbose messages, not just warnings and errors.
+<DT><B>-c</B>
+
+<DD>
+Write decoded images or thumbnails to standard output.
+<DT><B>-e</B>
+
+<DD>
+Extract the camera-generated thumbnail, not the raw image.
+You'll get either a JPEG or a PPM file, depending on the camera.
+<DT><B>-z</B>
+
+<DD>
+Change the access and modification times of an AVI, JPEG, TIFF or raw
+file to when the photo was taken, assuming that the camera clock
+was set to Universal Time.
+<DT><B>-i</B>
+
+<DD>
+Identify files but don't decode them.
+Exit status is 0 if
+<B>dcraw</B>
+
+can decode the last file, 1 if it can't.
+<B>-i -v</B>
+
+shows metadata.
+<DT><B></B>
+
+<DD>
+<B>dcraw</B>
+
+cannot decode JPEG files!!
+</DL>
+<A NAME="lbAF">&nbsp;</A>
+<H2>REPAIR OPTIONS</H2>
+
+<DL COMPACT>
+<DT><B>-I</B>
+
+<DD>
+Read the raw pixels from standard input in CPU byte order with
+no header.  Use
+<B>dcraw -E -4</B>
+
+to get the raw pixel values.
+<DT><B>-P deadpixels.txt</B>
+
+<DD>
+Read the dead pixel list from this file instead of &quot;.badpixels&quot;.
+See
+<B>FILES</B>
+
+for a description of the format.
+<DT><B>-K darkframe.pgm</B>
+
+<DD>
+Subtract a dark frame from the raw data.  To generate a
+dark frame, shoot a raw photo with no light and do
+<B>dcraw&nbsp;-D&nbsp;-4&nbsp;-j&nbsp;-t&nbsp;0</B>.
+
+<DT><B>-k darkness</B>
+
+<DD>
+When shadows appear foggy, you need to raise the darkness level.
+To measure this, apply
+<B>pamsumm -mean</B>
+
+to the dark frame generated above.
+<DT><B>-S saturation</B>
+
+<DD>
+When highlights appear pink, you need to lower the saturation level.
+To measure this, take a picture of something shiny and do
+<B>dcraw -D -4 -j -c</B>
+
+photo.raw
+<B>| pamsumm -max</B>
+
+<DT><B></B>
+
+<DD>
+The default darkness and saturation are usually correct.
+<DT><B>-n noise_threshold</B>
+
+<DD>
+Use wavelets to erase noise while preserving real detail.
+The best threshold should be somewhere between 100 and 1000.
+<DT><B>-C red_mag blue_mag</B>
+
+<DD>
+Enlarge the raw red and blue layers by the given factors,
+typically 0.999 to 1.001, to correct chromatic aberration.
+<DT><B>-H 0</B>
+
+<DD>
+Clip all highlights to solid white (default).
+<DT><B>-H 1</B>
+
+<DD>
+Leave highlights unclipped in various shades of pink.
+<DT><B>-H 2</B>
+
+<DD>
+Blend clipped and unclipped values together for a gradual fade
+to white.
+<DT><B>-H 3+</B>
+
+<DD>
+Reconstruct highlights.  Low numbers favor whites; high numbers
+favor colors.  Try
+<B>-H 5</B>
+
+as a compromise.  If that's not good enough, do
+<B>-H&nbsp;9</B>,
+
+cut out the non-white highlights, and paste them into an image
+generated with
+<B>-H&nbsp;3</B>.
+
+</DL>
+<A NAME="lbAG">&nbsp;</A>
+<H2>COLOR OPTIONS</H2>
+
+By default,
+<B>dcraw</B>
+
+uses a fixed white balance based on a color chart illuminated
+with a standard D65 lamp.
+<DL COMPACT>
+<DT><B>-w</B>
+
+<DD>
+Use the white balance specified by the camera.
+If this is not found, print a warning and use another method.
+<DT><B>-a</B>
+
+<DD>
+Calculate the white balance by averaging the entire image.
+<DT><B>-A left top width height</B>
+
+<DD>
+Calculate the white balance by averaging a rectangular area.
+First do
+<B>dcraw&nbsp;-j&nbsp;-t&nbsp;0</B>
+
+and select an area of neutral grey color.
+<DT><B>-r mul0 mul1 mul2 mul3</B>
+
+<DD>
+Specify your own raw white balance.
+These multipliers can be cut and pasted from the output of
+<B>dcraw&nbsp;-v</B>.
+
+<DT><B>+M</B> or <B>-M</B>
+
+<DD>
+Use (or don't use) any color matrix from the camera metadata.
+The default is
+<B>+M</B>
+
+if
+<B>-w</B>
+
+is set,
+<B>-M</B>
+
+otherwise.
+This option only affects Olympus, Leaf, and Phase One cameras.
+<DT><B>-o [0-5]</B>
+
+<DD>
+Select the output colorspace when the
+<B>-p</B>
+
+option is not used:
+<P>
+<B>	0</B>
+
+&nbsp;&nbsp;Raw color (unique to each camera)
+<BR>
+
+<B>	1</B>
+
+&nbsp;&nbsp;sRGB D65 (default)
+<BR>
+
+<B>	2</B>
+
+&nbsp;&nbsp;Adobe RGB (1998) D65
+<BR>
+
+<B>	3</B>
+
+&nbsp;&nbsp;Wide Gamut RGB D65
+<BR>
+
+<B>	4</B>
+
+&nbsp;&nbsp;Kodak ProPhoto RGB D65
+<BR>
+
+<B>	5</B>
+
+&nbsp;&nbsp;XYZ
+<DT><B>-p&nbsp;camera.icm</B>&nbsp;[&nbsp;<B>-o&nbsp;output.icm</B>&nbsp;]
+
+<DD>
+Use ICC profiles to define the camera's raw colorspace and the
+desired output colorspace (sRGB by default).
+<DT><B>-p embed</B>
+
+<DD>
+Use the ICC profile embedded in the raw photo.
+</DL>
+<A NAME="lbAH">&nbsp;</A>
+<H2>INTERPOLATION OPTIONS</H2>
+
+<DL COMPACT>
+<DT><B>-d</B>
+
+<DD>
+Show the raw data as a grayscale image with no interpolation.
+Good for photographing black-and-white documents.
+<DT><B>-D</B>
+
+<DD>
+Same as
+<B>-d</B>,
+
+but with the original unscaled pixel values.
+<DT><B>-E</B>
+
+<DD>
+Same as
+<B>-D</B>,
+
+but masked pixels are not cropped.
+<DT><B>-h</B>
+
+<DD>
+Output a half-size color image.  Twice as fast as
+<B>-q&nbsp;0</B>.
+
+<DT><B>-q 0</B>
+
+<DD>
+Use high-speed, low-quality bilinear interpolation.
+<DT><B>-q 1</B>
+
+<DD>
+Use Variable Number of Gradients (VNG) interpolation.
+<DT><B>-q 2</B>
+
+<DD>
+Use Patterned Pixel Grouping (PPG) interpolation.
+<DT><B>-q 3</B>
+
+<DD>
+Use Adaptive Homogeneity-Directed (AHD) interpolation.
+<DT><B>-f</B>
+
+<DD>
+Interpolate RGB as four colors.  Use this if the output shows
+false 2x2 meshes with VNG or mazes with AHD.
+<DT><B>-m number_of_passes</B>
+
+<DD>
+After interpolation, clean up color artifacts by repeatedly
+applying a 3x3 median filter to the R-G and B-G channels.
+</DL>
+<A NAME="lbAI">&nbsp;</A>
+<H2>OUTPUT OPTIONS</H2>
+
+By default,
+<B>dcraw</B>
+
+writes PGM/PPM/PAM with 8-bit samples, a BT.709 gamma curve,
+a histogram-based white level, and no metadata.
+<DL COMPACT>
+<DT><B>-W</B>
+
+<DD>
+Use a fixed white level, ignoring the image histogram.
+<DT><B>-b brightness</B>
+
+<DD>
+Divide the white level by this number, 1.0 by default.
+<DT><B>-g power toe_slope</B>
+
+<DD>
+Set the gamma curve, by default BT.709
+(<B>-g&nbsp;2.222&nbsp;4.5</B>).
+
+If you prefer sRGB gamma, use
+<B>-g&nbsp;2.4&nbsp;12.92</B>.
+
+For a simple power curve, set the toe slope to zero.
+<DT><B>-6</B>
+
+<DD>
+Write sixteen bits per sample instead of eight.
+<DT><B>-4</B>
+
+<DD>
+Linear 16-bit, same as
+<B>-6&nbsp;-W&nbsp;-g&nbsp;1&nbsp;1</B>.
+
+<DT><B>-T</B>
+
+<DD>
+Write TIFF with metadata instead of PGM/PPM/PAM.
+<DT><B>-t [0-7,90,180,270]</B>
+
+<DD>
+Flip the output image.  By default,
+<B>dcraw</B>
+
+applies the flip specified by the camera.
+<B>-t 0</B>
+
+disables all flipping.
+<DT><B>-j</B>
+
+<DD>
+For Fuji&nbsp;Super&nbsp;CCD cameras, show the image tilted 45 degrees.
+For cameras with non-square pixels, do not stretch the image to
+its correct aspect ratio.  In any case, this option guarantees
+that each output pixel corresponds to one raw pixel.
+<DT><B>-s [0..N-1]</B> or <B>-s all</B>
+
+<DD>
+If a file contains N raw images, choose one or &quot;all&quot; to decode.
+For example, Fuji&nbsp;Super&nbsp;CCD&nbsp;SR cameras generate a second image
+underexposed four stops to show detail in the highlights.
+</DL>
+<A NAME="lbAJ">&nbsp;</A>
+<H2>FILES</H2>
+
+<DL COMPACT>
+<DT>:./.badpixels, ../.badpixels, ../../.badpixels, ...<DD>
+List of your camera's dead pixels, so that
+<B>dcraw</B>
+
+can interpolate around them.  Each line specifies the column,
+row, and UNIX time of death for one pixel.  For example:
+<P>
+<PRE>
+ 962   91 1028350000  # died between August 1 and 4, 2002
+1285 1067 0           # don't know when this pixel died
+</PRE>
+
+<P>
+These coordinates are before any cropping or rotation, so use
+<B>dcraw -j -t 0</B>
+
+to locate dead pixels.
+</DL>
+<A NAME="lbAK">&nbsp;</A>
+<H2>SEE ALSO</H2>
+
+<B><A HREF="../man5/pgm.5.html">pgm</A></B>(5),
+
+<B><A HREF="../man5/ppm.5.html">ppm</A></B>(5),
+
+<B><A HREF="../man5/pam.5.html">pam</A></B>(5),
+
+<B><A HREF="../man1/pamsumm.1.html">pamsumm</A></B>(1),
+
+<B><A HREF="../man1/pnmgamma.1.html">pnmgamma</A></B>(1),
+
+<B><A HREF="../man1/pnmtotiff.1.html">pnmtotiff</A></B>(1),
+
+<B><A HREF="../man1/pnmtopng.1.html">pnmtopng</A></B>(1),
+
+<B><A HREF="../man1/gphoto2.1.html">gphoto2</A></B>(1),
+
+<B><A HREF="../man1/cjpeg.1.html">cjpeg</A></B>(1),
+
+<B><A HREF="../man1/djpeg.1.html">djpeg</A></B>(1)
+
+<A NAME="lbAL">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+Written by David Coffin, dcoffin a cybercom o net
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">GENERAL OPTIONS</A><DD>
+<DT><A HREF="#lbAF">REPAIR OPTIONS</A><DD>
+<DT><A HREF="#lbAG">COLOR OPTIONS</A><DD>
+<DT><A HREF="#lbAH">INTERPOLATION OPTIONS</A><DD>
+<DT><A HREF="#lbAI">OUTPUT OPTIONS</A><DD>
+<DT><A HREF="#lbAJ">FILES</A><DD>
+<DT><A HREF="#lbAK">SEE ALSO</A><DD>
+<DT><A HREF="#lbAL">AUTHOR</A><DD>
+</DL>
+<HR>
+This document was created by
+<A HREF="http://localhost/cgi-bin/man/man2html">man2html</A>,
+using the manual pages.<BR>
+Time: 06:04:09 GMT, June 17, 2013
+</BODY>
+</HTML>

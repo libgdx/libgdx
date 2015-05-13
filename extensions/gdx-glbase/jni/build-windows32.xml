@@ -1,0 +1,706 @@
+<project name="gdx-glbase-Windows-32" basedir="." default="postcompile">
+	<!-- include the environment -->
+	<property environment="env"/>	
+	<!-- output directory for temporary object files -->
+	<property name="buildDir" value="target/windows32" />
+	<!-- output directory for the shared library -->
+	<property name="libsDir" value="../libs/windows32" />
+	<!-- the name of the shared library -->
+	<property name="libName" value="gdx-glbase.dll"/>
+	<!-- the jni header jniPlatform to use -->
+	<property name="jniPlatform" value="win32"/>
+	<!-- the compilerPrefix for the C & C++ compilers -->
+	<property name="compilerPrefix" value="i686-w64-mingw32-"/>
+	<!--  the compilerSuffix for the C & C++ compilers -->	
+	<property name="compilerSuffix" value="" />	
+	
+	<!-- define gcc compiler, options and files to compile -->
+	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
+	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -std=c99 -Wno-error=write-strings -Wno-error=format -ffast-math -funroll-loops -fpic -ffunction-sections -funwind-tables -fno-short-enums -fexceptions -frtti -DBS_ERROR_LOG -DFREEIMAGE_LIB -DGLCORE20 -DOPJ_STATIC -DEXPORT_DLL -fno-stack-protector"/>
+	<fileset id="gcc-files" dir="./">
+		<exclude name="target/"/>		
+				<include name="memcpy_wrap.c"/>
+		<include name="glCore20/*.c"/>
+		<include name="freeimage/Source/FreeImage/BitmapAccess.cpp"/>
+		<include name="freeimage/Source/FreeImage/ColorLookup.cpp"/>
+		<include name="freeimage/Source/FreeImage/FreeImage.cpp"/>
+		<include name="freeimage/Source/FreeImage/FreeImageC.c"/>
+		<include name="freeimage/Source/FreeImage/FreeImageIO.cpp"/>
+		<include name="freeimage/Source/FreeImage/GetType.cpp"/>
+		<include name="freeimage/Source/FreeImage/MemoryIO.cpp"/>
+		<include name="freeimage/Source/FreeImage/PixelAccess.cpp"/>
+		<include name="freeimage/Source/FreeImage/J2KHelper.cpp"/>
+		<include name="freeimage/Source/FreeImage/MNGHelper.cpp"/>
+		<include name="freeimage/Source/FreeImage/Plugin.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginBMP.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginCUT.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginDDS.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginEXR.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginGIF.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginHDR.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginICO.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginIFF.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJ2K.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJP2.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJPEG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginKOALA.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginMNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPCD.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPCX.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPFM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPICT.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPNM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPSD.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginRAS.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginSGI.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginTARGA.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginWBMP.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginXBM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginXPM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PSDParser.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion16_555.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion16_565.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion24.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion32.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion4.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion8.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionFloat.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionRGB16.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionRGBF.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionType.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionUINT16.cpp"/>
+		<include name="freeimage/Source/FreeImage/Halftoning.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoColorConvert.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoDrago03.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoFattal02.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoReinhard05.cpp"/>
+		<include name="freeimage/Source/FreeImage/ToneMapping.cpp"/>
+		<include name="freeimage/Source/FreeImage/NNQuantizer.cpp"/>
+		<include name="freeimage/Source/FreeImage/WuQuantizer.cpp"/>
+		<include name="freeimage/Source/DeprecationManager/Deprecated.cpp"/>
+		<include name="freeimage/Source/DeprecationManager/DeprecationMgr.cpp"/>
+		<include name="freeimage/Source/FreeImage/CacheFile.cpp"/>
+		<include name="freeimage/Source/FreeImage/MultiPage.cpp"/>
+		<include name="freeimage/Source/FreeImage/ZLibInterface.cpp"/>
+		<include name="freeimage/Source/Metadata/Exif.cpp"/>
+		<include name="freeimage/Source/Metadata/FIRational.cpp"/>
+		<include name="freeimage/Source/Metadata/FreeImageTag.cpp"/>
+		<include name="freeimage/Source/Metadata/IPTC.cpp"/>
+		<include name="freeimage/Source/Metadata/TagLib.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Background.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/BSplineRotate.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Channels.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/ClassicRotate.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Colors.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/CopyPaste.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Display.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Flip.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/JPEGTransform.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/MultigridPoissonSolver.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Rescale.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Resize.cpp"/>
+		<include name="freeimage/Source/LibJPEG/jaricom.c"/>
+		<include name="freeimage/Source/LibJPEG/jcapimin.c"/>
+		<include name="freeimage/Source/LibJPEG/jcapistd.c"/>
+		<include name="freeimage/Source/LibJPEG/jcarith.c"/>
+		<include name="freeimage/Source/LibJPEG/jccoefct.c"/>
+		<include name="freeimage/Source/LibJPEG/jccolor.c"/>
+		<include name="freeimage/Source/LibJPEG/jcdctmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jchuff.c"/>
+		<include name="freeimage/Source/LibJPEG/jcinit.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmainct.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmarker.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmaster.c"/>
+		<include name="freeimage/Source/LibJPEG/jcomapi.c"/>
+		<include name="freeimage/Source/LibJPEG/jcparam.c"/>
+		<include name="freeimage/Source/LibJPEG/jcprepct.c"/>
+		<include name="freeimage/Source/LibJPEG/jcsample.c"/>
+		<include name="freeimage/Source/LibJPEG/jctrans.c"/>
+		<include name="freeimage/Source/LibJPEG/jdapimin.c"/>
+		<include name="freeimage/Source/LibJPEG/jdapistd.c"/>
+		<include name="freeimage/Source/LibJPEG/jdarith.c"/>
+		<include name="freeimage/Source/LibJPEG/jdatadst.c"/>
+		<include name="freeimage/Source/LibJPEG/jdatasrc.c"/>
+		<include name="freeimage/Source/LibJPEG/jdcoefct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdcolor.c"/>
+		<include name="freeimage/Source/LibJPEG/jddctmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jdhuff.c"/>
+		<include name="freeimage/Source/LibJPEG/jdinput.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmainct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmarker.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmaster.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmerge.c"/>
+		<include name="freeimage/Source/LibJPEG/jdpostct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdsample.c"/>
+		<include name="freeimage/Source/LibJPEG/jdtrans.c"/>
+		<include name="freeimage/Source/LibJPEG/jerror.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctflt.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctfst.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctint.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctflt.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctfst.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctint.c"/>
+		<include name="freeimage/Source/LibJPEG/jmemmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jmemnobs.c"/>
+		<include name="freeimage/Source/LibJPEG/jquant1.c"/>
+		<include name="freeimage/Source/LibJPEG/jquant2.c"/>
+		<include name="freeimage/Source/LibJPEG/jutils.c"/>
+		<include name="freeimage/Source/LibJPEG/transupp.c"/>
+		<include name="freeimage/Source/LibPNG/png.c"/>
+		<include name="freeimage/Source/LibPNG/pngerror.c"/>
+		<include name="freeimage/Source/LibPNG/pngget.c"/>
+		<include name="freeimage/Source/LibPNG/pngmem.c"/>
+		<include name="freeimage/Source/LibPNG/pngpread.c"/>
+		<include name="freeimage/Source/LibPNG/pngread.c"/>
+		<include name="freeimage/Source/LibPNG/pngrio.c"/>
+		<include name="freeimage/Source/LibPNG/pngrtran.c"/>
+		<include name="freeimage/Source/LibPNG/pngrutil.c"/>
+		<include name="freeimage/Source/LibPNG/pngset.c"/>
+		<include name="freeimage/Source/LibPNG/pngtrans.c"/>
+		<include name="freeimage/Source/LibPNG/pngwio.c"/>
+		<include name="freeimage/Source/LibPNG/pngwrite.c"/>
+		<include name="freeimage/Source/LibPNG/pngwtran.c"/>
+		<include name="freeimage/Source/LibPNG/pngwutil.c"/>
+		<include name="freeimage/Source/ZLib/adler32.c"/>
+		<include name="freeimage/Source/ZLib/compress.c"/>
+		<include name="freeimage/Source/ZLib/crc32.c"/>
+		<include name="freeimage/Source/ZLib/deflate.c"/>
+		<include name="freeimage/Source/ZLib/gzclose.c"/>
+		<include name="freeimage/Source/ZLib/gzlib.c"/>
+		<include name="freeimage/Source/ZLib/gzread.c"/>
+		<include name="freeimage/Source/ZLib/gzwrite.c"/>
+		<include name="freeimage/Source/ZLib/infback.c"/>
+		<include name="freeimage/Source/ZLib/inffast.c"/>
+		<include name="freeimage/Source/ZLib/inflate.c"/>
+		<include name="freeimage/Source/ZLib/inftrees.c"/>
+		<include name="freeimage/Source/ZLib/trees.c"/>
+		<include name="freeimage/Source/ZLib/uncompr.c"/>
+		<include name="freeimage/Source/ZLib/zutil.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/bio.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/cio.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/dwt.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/event.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/function_list.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/image.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/invert.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/j2k.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/jp2.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/mct.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/mqc.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/openjpeg.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/opj_clock.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/pi.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/raw.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/t1.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/t2.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/tcd.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/tgt.c"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfB44Compressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfBoxAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChannelList.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChannelListAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChromaticities.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChromaticitiesAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCompressionAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfConvert.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfDoubleAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfEnvmap.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfEnvmapAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFloatAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFrameBuffer.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFramesPerSecond.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfHeader.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfHuf.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfIntAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfIO.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfKeyCode.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfKeyCodeAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfLineOrderAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfLut.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfMatrixAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfMisc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfOpaqueAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfOutputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPizCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPreviewImage.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPxr24Compressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRational.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRationalAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRgbaYca.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRleCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfScanLineInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStandardAttributes.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStdIO.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStringAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStringVectorAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTestFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfThreading.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTileDescriptionAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledMisc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledOutputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTileOffsets.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTimeCode.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTimeCodeAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfVecAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfVersion.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfWav.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfZipCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathBox.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathColorAlgo.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathFun.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathMatrixAlgo.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathRandom.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathShear.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathVec.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Iex/IexBaseExc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Iex/IexThrowErrnoExc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Half/half.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThread.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadMutex.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadPool.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadSemaphore.cpp"/>
+		<include name="
+"/>
+		<include name="*.cpp"/>
+		<include name="memory_wrap.c"/>
+		<include name="glbase/src/*.cpp"/>
+		<include name="glbase/src/*.c"/>
+
+		
+	</fileset>
+	
+	<!-- define g++ compiler, options and files to compile -->
+	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -std=c99 -Wno-error=write-strings -Wno-error=format -ffast-math -funroll-loops -fpic -ffunction-sections -funwind-tables -fno-short-enums -fexceptions -frtti -DBS_ERROR_LOG -DFREEIMAGE_LIB -DGLCORE20 -DOPJ_STATIC -DEXPORT_DLL -fno-stack-protector"/>
+	<fileset id="g++-files" dir="./">
+		<exclude name="target/"/>
+				<include name="glCore20/*.c"/>
+		<include name="freeimage/Source/FreeImage/BitmapAccess.cpp"/>
+		<include name="freeimage/Source/FreeImage/ColorLookup.cpp"/>
+		<include name="freeimage/Source/FreeImage/FreeImage.cpp"/>
+		<include name="freeimage/Source/FreeImage/FreeImageC.c"/>
+		<include name="freeimage/Source/FreeImage/FreeImageIO.cpp"/>
+		<include name="freeimage/Source/FreeImage/GetType.cpp"/>
+		<include name="freeimage/Source/FreeImage/MemoryIO.cpp"/>
+		<include name="freeimage/Source/FreeImage/PixelAccess.cpp"/>
+		<include name="freeimage/Source/FreeImage/J2KHelper.cpp"/>
+		<include name="freeimage/Source/FreeImage/MNGHelper.cpp"/>
+		<include name="freeimage/Source/FreeImage/Plugin.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginBMP.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginCUT.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginDDS.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginEXR.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginGIF.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginHDR.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginICO.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginIFF.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJ2K.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJP2.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginJPEG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginKOALA.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginMNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPCD.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPCX.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPFM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPICT.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPNG.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPNM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginPSD.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginRAS.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginSGI.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginTARGA.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginWBMP.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginXBM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PluginXPM.cpp"/>
+		<include name="freeimage/Source/FreeImage/PSDParser.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion16_555.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion16_565.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion24.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion32.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion4.cpp"/>
+		<include name="freeimage/Source/FreeImage/Conversion8.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionFloat.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionRGB16.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionRGBF.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionType.cpp"/>
+		<include name="freeimage/Source/FreeImage/ConversionUINT16.cpp"/>
+		<include name="freeimage/Source/FreeImage/Halftoning.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoColorConvert.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoDrago03.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoFattal02.cpp"/>
+		<include name="freeimage/Source/FreeImage/tmoReinhard05.cpp"/>
+		<include name="freeimage/Source/FreeImage/ToneMapping.cpp"/>
+		<include name="freeimage/Source/FreeImage/NNQuantizer.cpp"/>
+		<include name="freeimage/Source/FreeImage/WuQuantizer.cpp"/>
+		<include name="freeimage/Source/DeprecationManager/Deprecated.cpp"/>
+		<include name="freeimage/Source/DeprecationManager/DeprecationMgr.cpp"/>
+		<include name="freeimage/Source/FreeImage/CacheFile.cpp"/>
+		<include name="freeimage/Source/FreeImage/MultiPage.cpp"/>
+		<include name="freeimage/Source/FreeImage/ZLibInterface.cpp"/>
+		<include name="freeimage/Source/Metadata/Exif.cpp"/>
+		<include name="freeimage/Source/Metadata/FIRational.cpp"/>
+		<include name="freeimage/Source/Metadata/FreeImageTag.cpp"/>
+		<include name="freeimage/Source/Metadata/IPTC.cpp"/>
+		<include name="freeimage/Source/Metadata/TagLib.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Background.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/BSplineRotate.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Channels.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/ClassicRotate.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Colors.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/CopyPaste.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Display.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Flip.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/JPEGTransform.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/MultigridPoissonSolver.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Rescale.cpp"/>
+		<include name="freeimage/Source/FreeImageToolkit/Resize.cpp"/>
+		<include name="freeimage/Source/LibJPEG/jaricom.c"/>
+		<include name="freeimage/Source/LibJPEG/jcapimin.c"/>
+		<include name="freeimage/Source/LibJPEG/jcapistd.c"/>
+		<include name="freeimage/Source/LibJPEG/jcarith.c"/>
+		<include name="freeimage/Source/LibJPEG/jccoefct.c"/>
+		<include name="freeimage/Source/LibJPEG/jccolor.c"/>
+		<include name="freeimage/Source/LibJPEG/jcdctmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jchuff.c"/>
+		<include name="freeimage/Source/LibJPEG/jcinit.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmainct.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmarker.c"/>
+		<include name="freeimage/Source/LibJPEG/jcmaster.c"/>
+		<include name="freeimage/Source/LibJPEG/jcomapi.c"/>
+		<include name="freeimage/Source/LibJPEG/jcparam.c"/>
+		<include name="freeimage/Source/LibJPEG/jcprepct.c"/>
+		<include name="freeimage/Source/LibJPEG/jcsample.c"/>
+		<include name="freeimage/Source/LibJPEG/jctrans.c"/>
+		<include name="freeimage/Source/LibJPEG/jdapimin.c"/>
+		<include name="freeimage/Source/LibJPEG/jdapistd.c"/>
+		<include name="freeimage/Source/LibJPEG/jdarith.c"/>
+		<include name="freeimage/Source/LibJPEG/jdatadst.c"/>
+		<include name="freeimage/Source/LibJPEG/jdatasrc.c"/>
+		<include name="freeimage/Source/LibJPEG/jdcoefct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdcolor.c"/>
+		<include name="freeimage/Source/LibJPEG/jddctmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jdhuff.c"/>
+		<include name="freeimage/Source/LibJPEG/jdinput.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmainct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmarker.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmaster.c"/>
+		<include name="freeimage/Source/LibJPEG/jdmerge.c"/>
+		<include name="freeimage/Source/LibJPEG/jdpostct.c"/>
+		<include name="freeimage/Source/LibJPEG/jdsample.c"/>
+		<include name="freeimage/Source/LibJPEG/jdtrans.c"/>
+		<include name="freeimage/Source/LibJPEG/jerror.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctflt.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctfst.c"/>
+		<include name="freeimage/Source/LibJPEG/jfdctint.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctflt.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctfst.c"/>
+		<include name="freeimage/Source/LibJPEG/jidctint.c"/>
+		<include name="freeimage/Source/LibJPEG/jmemmgr.c"/>
+		<include name="freeimage/Source/LibJPEG/jmemnobs.c"/>
+		<include name="freeimage/Source/LibJPEG/jquant1.c"/>
+		<include name="freeimage/Source/LibJPEG/jquant2.c"/>
+		<include name="freeimage/Source/LibJPEG/jutils.c"/>
+		<include name="freeimage/Source/LibJPEG/transupp.c"/>
+		<include name="freeimage/Source/LibPNG/png.c"/>
+		<include name="freeimage/Source/LibPNG/pngerror.c"/>
+		<include name="freeimage/Source/LibPNG/pngget.c"/>
+		<include name="freeimage/Source/LibPNG/pngmem.c"/>
+		<include name="freeimage/Source/LibPNG/pngpread.c"/>
+		<include name="freeimage/Source/LibPNG/pngread.c"/>
+		<include name="freeimage/Source/LibPNG/pngrio.c"/>
+		<include name="freeimage/Source/LibPNG/pngrtran.c"/>
+		<include name="freeimage/Source/LibPNG/pngrutil.c"/>
+		<include name="freeimage/Source/LibPNG/pngset.c"/>
+		<include name="freeimage/Source/LibPNG/pngtrans.c"/>
+		<include name="freeimage/Source/LibPNG/pngwio.c"/>
+		<include name="freeimage/Source/LibPNG/pngwrite.c"/>
+		<include name="freeimage/Source/LibPNG/pngwtran.c"/>
+		<include name="freeimage/Source/LibPNG/pngwutil.c"/>
+		<include name="freeimage/Source/ZLib/adler32.c"/>
+		<include name="freeimage/Source/ZLib/compress.c"/>
+		<include name="freeimage/Source/ZLib/crc32.c"/>
+		<include name="freeimage/Source/ZLib/deflate.c"/>
+		<include name="freeimage/Source/ZLib/gzclose.c"/>
+		<include name="freeimage/Source/ZLib/gzlib.c"/>
+		<include name="freeimage/Source/ZLib/gzread.c"/>
+		<include name="freeimage/Source/ZLib/gzwrite.c"/>
+		<include name="freeimage/Source/ZLib/infback.c"/>
+		<include name="freeimage/Source/ZLib/inffast.c"/>
+		<include name="freeimage/Source/ZLib/inflate.c"/>
+		<include name="freeimage/Source/ZLib/inftrees.c"/>
+		<include name="freeimage/Source/ZLib/trees.c"/>
+		<include name="freeimage/Source/ZLib/uncompr.c"/>
+		<include name="freeimage/Source/ZLib/zutil.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/bio.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/cio.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/dwt.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/event.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/function_list.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/image.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/invert.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/j2k.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/jp2.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/mct.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/mqc.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/openjpeg.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/opj_clock.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/pi.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/raw.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/t1.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/t2.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/tcd.c"/>
+		<include name="freeimage/Source/LibOpenJPEG/tgt.c"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfB44Compressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfBoxAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChannelList.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChannelListAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChromaticities.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfChromaticitiesAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCompressionAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfConvert.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfCRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfDoubleAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfEnvmap.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfEnvmapAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFloatAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFrameBuffer.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfFramesPerSecond.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfHeader.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfHuf.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfIntAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfIO.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfKeyCode.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfKeyCodeAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfLineOrderAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfLut.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfMatrixAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfMisc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfOpaqueAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfOutputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPizCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPreviewImage.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfPxr24Compressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRational.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRationalAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRgbaYca.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfRleCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfScanLineInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStandardAttributes.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStdIO.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStringAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfStringVectorAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTestFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfThreading.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTileDescriptionAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledInputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledMisc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledOutputFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTiledRgbaFile.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTileOffsets.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTimeCode.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfTimeCodeAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfVecAttribute.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfVersion.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfWav.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmImf/ImfZipCompressor.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathBox.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathColorAlgo.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathFun.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathMatrixAlgo.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathRandom.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathShear.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Imath/ImathVec.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Iex/IexBaseExc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Iex/IexThrowErrnoExc.cpp"/>
+		<include name="freeimage/Source/OpenEXR/Half/half.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThread.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadMutex.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadPool.cpp"/>
+		<include name="freeimage/Source/OpenEXR/IlmThread/IlmThreadSemaphore.cpp"/>
+		<include name="
+"/>
+		<include name="*.cpp"/>
+		<include name="memory_wrap.c"/>
+		<include name="glbase/src/*.cpp"/>
+		<include name="glbase/src/*.c"/>
+
+		
+	</fileset>
+
+	<!-- define linker and options -->
+	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++"/>
+	<property name="libraries" value=" -lgdi32 -lopengl32 -lssp"/>
+	
+	<!-- cleans the build directory, removes all object files and shared libs -->
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${buildDir}"/>
+			<fileset dir="${libsDir}" includes="**/*" excludes="**/.svn"/>
+		</delete>
+	</target>
+	
+	<target name="precompile">
+		<condition property="compiler-found">
+			<and>
+				<or>
+					<!-- Include both b/c Windows might be either -->
+					<available file="${g++}" filepath="${env.PATH}"/>
+					<available file="${g++}" filepath="${env.Path}"/>
+				</or>
+				<or>
+					<!-- Include both b/c Windows might be either -->
+					<available file="${gcc}" filepath="${env.PATH}"/>
+					<available file="${gcc}" filepath="${env.Path}"/>
+				</or>
+			</and>
+		</condition>
+		<condition property="has-compiler">
+			<equals arg1="${compiler-found}" arg2="true"/>
+		</condition>
+		
+	</target>
+	
+	<target name="create-build-dir" depends="precompile" if="has-compiler">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
+			<fileset refid="g++-files"/>
+			<fileset refid="gcc-files"/>
+		</copy>
+		<delete>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- compiles all C and C++ files to object files in the build directory -->
+	<target name="compile" depends="create-build-dir" if="has-compiler">
+		<mkdir dir="${buildDir}"/>
+		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
+			<arg line="${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+						<arg value="-IglCore20/"/>
+			<arg value="-Ifreeimage/Source"/>
+			<arg value="-Ifreeimage/Source/Metadata"/>
+			<arg value="-Ifreeimage/Source/FreeImageToolkit"/>
+			<arg value="-Ifreeimage/Source/LibJPEG"/>
+			<arg value="-Ifreeimage/Source/LibPNG"/>
+			<arg value="-Ifreeimage/Source/LibTIFF4"/>
+			<arg value="-Ifreeimage/Source/ZLib"/>
+			<arg value="-Ifreeimage/Source/LibOpenJPEG"/>
+			<arg value="-Ifreeimage/Source/OpenEXR"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Half"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Iex"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/IlmImf"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/IlmThread"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Imath"/>
+			<arg value="-Ifreeimage/Source/LibRawLite"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/dcraw"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/internal"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/libraw"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/src"/>
+			<arg value="-Ifreeimage/Source/LibWebP"/>
+			<arg value="-Ifreeimage/Source/LibJXR"/>
+			<arg value="-Ifreeimage/Source/LibJXR/common/include"/>
+			<arg value="-Ifreeimage/Source/LibJXR/image/sys"/>
+			<arg value="-Ifreeimage/Source/LibJXR/jxrgluelib"/>
+			<arg value="-Iglbase/inc"/>
+			<arg value="-Iglbase/src"/>
+
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+						<arg value="-IglCore20/"/>
+			<arg value="-Ifreeimage/Source"/>
+			<arg value="-Ifreeimage/Source/Metadata"/>
+			<arg value="-Ifreeimage/Source/FreeImageToolkit"/>
+			<arg value="-Ifreeimage/Source/LibJPEG"/>
+			<arg value="-Ifreeimage/Source/LibPNG"/>
+			<arg value="-Ifreeimage/Source/LibTIFF4"/>
+			<arg value="-Ifreeimage/Source/ZLib"/>
+			<arg value="-Ifreeimage/Source/LibOpenJPEG"/>
+			<arg value="-Ifreeimage/Source/OpenEXR"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Half"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Iex"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/IlmImf"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/IlmThread"/>
+			<arg value="-Ifreeimage/Source/OpenEXR/Imath"/>
+			<arg value="-Ifreeimage/Source/LibRawLite"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/dcraw"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/internal"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/libraw"/>
+			<arg value="-Ifreeimage/Source/LibRawLite/src"/>
+			<arg value="-Ifreeimage/Source/LibWebP"/>
+			<arg value="-Ifreeimage/Source/LibJXR"/>
+			<arg value="-Ifreeimage/Source/LibJXR/common/include"/>
+			<arg value="-Ifreeimage/Source/LibJXR/image/sys"/>
+			<arg value="-Ifreeimage/Source/LibJXR/jxrgluelib"/>
+			<arg value="-Iglbase/inc"/>
+			<arg value="-Iglbase/src"/>
+
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.c" to="*.o"/>
+				<mapper type="glob" from="*.m" to="*.o"/>
+			</compositemapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->	
+	<target name="link" depends="compile" if="has-compiler">
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg value="-o" />
+			<arg path="${libsDir}/${libName}" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
+	</target>	
+	
+	<target name="postcompile" depends="link">
+		
+	</target>
+</project>

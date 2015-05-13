@@ -1,0 +1,21 @@
+
+OpenJPEG NEWS - user visible changes
+====================================
+
+Changes from OpenJPEG 1.5.x to OpenJPEG 2.0.0
+----------------------------------------------
+
+New Features:
+
+    * streaming capabilities
+    * merge JP3D
+
+API modifications:
+
+    * Use a 64bits capable API
+    
+Misc:
+
+    * removed autotools build system
+    * folders hierarchies reorganisation
+    * Huge amount of bug fixes. See CHANGES for details.

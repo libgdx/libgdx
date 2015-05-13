@@ -1,0 +1,68 @@
+ABOUT THE OPENEXR LIBRARIES
+----------------------------
+
+IlmImf is our "EXR" file format for storing 16-bit FP images.  Libraries in
+this package depend on the IlmBase library.
+
+See the IlmImfExamples directory for some code that demonstrates how
+to use the IlmImf library to read and write OpenEXR files.  The doc
+directory contains some high-level documentation and history about the
+OpenEXR format.
+
+If you have questions about using the OpenEXR libraries, you may want
+to join our developer mailing list.  See http://www.openexr.com for
+details.
+
+
+LICENSE
+-------
+
+The OpenEXR source code distribution is free software.  See the file
+named COPYING (included in this distribution) for details.
+
+
+BUILDING OPENEXR
+----------------
+
+Building OpenEXR requires the IlmBase and the zlib library.
+
+You can obtain the source code for zlib from:
+
+   http://www.zlib.net
+
+If you're building OpenEXR on a Windows platform, see README.win32 for
+instructions on how to build OpenEXR.  The remainder of this file
+applies only to GNU/Linux or other UNIX-like systems.
+
+After installing the required libraries, to build OpenEXR on
+GNU/Linux or other UNIX-like systems, do this:
+
+./configure
+make
+make install
+
+unless you obtained OpenEXR directly from CVS, in which case you
+should first read README.CVS.
+
+See README.OSX for details on building OpenEXR in MacOS X.
+
+Do `make check` to run the OpenEXR confidence tests.  They should all
+pass; if you find a test that does not pass on your system, please let
+us know.
+
+Other UNIX variants haven't been tested, but should be easy to build.
+Let us know if you're having problems porting OpenEXR to a particular
+platform.
+
+All include files needed to use the OpenEXR libraries are installed in the 
+OpenEXR subdirectory of the install prefix, e.g. /usr/local/include/OpenEXR.
+
+
+USING OPENEXR IN YOUR APPLICATIONS
+----------------------------------
+
+On systems with support for pkg-config, use `pkg-config --cflags
+OpenEXR` for the C++ flags required to compile against OpenEXR
+headers; and `pkg-config --libs OpenEXR` for the linker flags required
+to link against OpenEXR libraries.
+

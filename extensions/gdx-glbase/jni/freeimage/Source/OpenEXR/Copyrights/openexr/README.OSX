@@ -1,0 +1,21 @@
+OpenEXR on MacOS X
+------------------
+
+Building OpenEXR on MacOS X is just like building it on GNU/Linux.
+Follow the instructions in the README file under BUILDLING OPENEXR,
+but see below re: shared libraries.
+
+On OS X 10.4, you can build universal binaries by passing
+'--enable-osx-universal-binaries --disable-dependency-tracking' to the
+configure script.  The default is *not* to build universal binaries.
+
+
+Shared libraries
+----------------
+
+OpenEXR requires the "flat namespace" option when built as a shared
+library.  You may have problems trying to use OpenEXR shared libraries
+with applications that expect OS X's two-level namespace.  We have not
+tested the shared libs extensively, though they appear to work with
+exrdisplay and exrheader, but use them at your own risk.  We will
+support two-level namespace shared libs in a future release.

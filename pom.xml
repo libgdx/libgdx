@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>5</version>
-  </parent>
+  <distributionManagement>
+    <repository>
+        <id>btd</id>
+        <name>BTD Repository</name>
+        <url>http://wheremaphone.orange-airlines.com:8081/nexus/content/repositories/snapshots/</url>
+    </repository>
+	</distributionManagement>
 
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
@@ -60,12 +62,14 @@
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
     <module>extensions/gdx-tools</module>
-	<module>extensions/gdx-box2d</module>
+		<module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
     <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
-    <module>extensions/gdx-freetype/jni/maven</module>    
+    <module>extensions/gdx-freetype/jni/maven</module>
+		<module>extensions/gdx-glbase</module>
+    <module>extensions/gdx-glbase/jni/maven</module>        
   </modules>
 
   <build>

@@ -1,0 +1,184 @@
+Version 1.5.0:
+    - Separated some of the code into other libraries - IlmBase and
+      OpenEXR_Viewers - for easier integration with CTL.
+
+Version 1.4.0a:
+    - Fix for Visual Studio .NET 2003 ReleaseDLL builds.
+
+Version 1.4.0:
+    - Production release.
+    - Bug fix for setFrameBuffer() on a tiled file.
+
+Version 1.3.1:
+    - Fixed the ReleaseDLL targets on Visual Studio 2005.
+      
+Version 1.3.0:
+    - The 1.3.x series is a developer-only release for testing 
+      OpenEXR's new multithreaded I/O support.
+    - Multithread support for reading and writing an OpenEXR
+      file.
+    - Support for Intel-based OS X systems.
+    - Support for Visual Studio 2005.
+    - When compiling against OpenEXR headers, there's no longer any
+      need to define any PLATFORM_* or HAVE_* macros; OpenEXR now
+      supplies an OpenEXRConfig.h header file which is included by
+      the OpenEXR headers that need these special macros.  However,
+      on Windows platforms, when using OpenEXR DLLs, you must still
+      define the OPENEXR_DLL preprocessor directive in your project.
+    - New documentation for multithread support, plus some
+      updates and additions.
+    - Bug fixes releated to better handling of incomplete/damaged 
+      files.
+    - Numerous bug fixes and cleanups to the autoconf-based
+      build system.
+    - Removed support for the following configurations that were
+      previously supported.  Some of these configurations may happen
+      to continue to function, but we can't help you if they don't,
+      largely because we don't have any way to test OpenEXR on these
+      configurations.
+      	   - IRIX 
+      	   - OSF1
+	   - SunOS
+	   - OS X versions prior to 10.3.
+	   - gcc on any platform prior to version 3.3
+
+Version 1.2.2:
+    - New build system for Windows; support for DLLs.
+    - Imath: Removed TMatrix<T> classes; these classes are still
+      under development and are too difficult to keep in sync
+      with OpenEXR CVS.
+    - IlmImf: support for image layers in ChannelList.
+    - IlmImf: added isComplete() method to file classes to check
+      whether a file is complete.
+    - IlmImf: exposed staticInitialize() in ImfHeader.h in
+      order to allow thread-safe library initialization in
+      multithreaded applications.
+    - IlmImf: New "time code" standard attribute.
+    - exrdisplay: support for displaying wrap-around texture map
+      images.
+    - exrmaketiled: can now specify wrap mode.
+    - IlmImf: New "wrapmodes" standard attribute to indicate
+      extrapolation mode for mipmaps and ripmaps.
+    - IlmImf: New "key code" standard attribute to identify motion
+      picture film frames.
+
+Version 1.2.1:
+    - reduced memory footprint of exrenvmap and exrmaketiled 
+      utilities.
+    - IlmImf: new helper functions to determine whether a
+      file is an OpenEXR file, and whether it's scanline- or
+      tile-based.
+    - IlmImf: bug fix for PXR24 compression with ySampling != 1.
+    - Imath: a few new enhancements
+    - Better support for gcc 3.4.
+    - Warning cleanups in Visual C++.
+
+Version 1.2:
+    - Production-ready release.
+    - Support for gcc 3.4.
+    - Supports gcc 2.95 again.
+    - IlmImf: bug fix for handling broken OpenEXR files without
+      crashing.
+
+Version 1.1.1:
+    - Added Pixar's new "slightly lossy" image compression method
+      for FLOAT channels, called PXR24.  HALF and UINT channels
+      are compressed without loss.
+    - Changed top-level LICENSE file to allow for other copyright
+      holders for individual files.
+    - Reading tiled files with the scanline interface is faster.
+    - OpenEXR now supports YCA (luminance/chroma/alpha) images with
+      subsampled chroma channels.
+    - IlmImf: various bug fixes.
+    - The half class is now faster in some expressions.
+    - New tiled file format.  The new format is incompatible with
+      the format used by 1.1.0.
+
+Version 1.1.0:
+    - IlmImfExamples: Updated to include examples of how to use
+      the tiling and mip/ripmapping interfaces.
+    - exrmakepreview: A new utility for embedding preview images
+      in OpenEXR files.
+    - exrenvmap: A new utility for creating OpenEXR environment maps.
+    - exrstdattr: A new utility for manipulating standard attributes.
+    - exrdisplay: Support for tiled, mip/ripmapped images, display
+      windows, and preview images.
+    - exrmaketiled: A new utility which generates tiled versions
+      of OpenEXR images.
+    - exrheader: Support for tiles, mipmaps, environment maps.
+    - IlmImf: Support for environment maps.
+    - IlmImf: Support for abstracted stream I/O.  You can
+      wrap the IStream and OStream classes around your API
+      of choice (FILE *, fd, even an HTTP 1.1 stream) as long
+      as it supports seeking.
+    - IlmImf: Support for tiled and mip/ripmapped files.  This
+      requires a new file format.  Scanline files generated by
+      the 1.1.0 version of the library can be read by older
+      versions, but tiled files can only be read by 1.1.0 or
+      greater.
+    - Imath: added TMatrix*, generic 2D matricies and algorithms.
+    - Imath: various updates and bug fixes.
+
+Version 1.0.7:
+    - Support for "optional standard" attributes:
+	Primary and white point chromaticities.
+	Absolute luminance.
+	Content owner
+	Comments
+	Image acquisition time and place
+	Focus distance
+	Lens aperture
+	Film sensitivity
+      If you want to use these new attributes in your application, see
+      ImfStandardAttributes.h for documentation on what they are and how
+      to use them.
+    - Bug fix in OpaqueAttributes.
+
+Version 1.0.6:
+    - Support for embedded preview images (thumbnails).
+    - Automatic frame buffer type conversion.
+    - Support for Visual Studio .NET 2003 w/ Microsoft's C++ compiler.
+    - Minor bug fixes.
+
+Version 1.0.5:
+    - PIZ decoding should be 20-60% faster on Athlon and Pentium 4
+      systems.
+    - exrdisplay supports hardware rendering with vp30 profile fragment
+      shaders.
+    - Support for Win32 with Visual Studio 6.0 and Intel C++ compiler
+      version 7.0.
+    - Support for gcc 2.95.
+    - New exrheader utility.
+    - exrdisplay works on Win32 and OS X now.
+    - Minor bug fixes.
+
+Version 1.0.4:
+    - Released under the new modified BSD license.
+
+Version 1.0.3:
+    - Even more OS X fixes.
+    - Support for Metrowerks Codewarrior compiler.  Enables OpenEXR code
+      to be used in a MacOS Photoshop plugin, if someone wants to write
+      one. ;)
+    - Fixed a bug in Imath, added some new confidence tests to ImathTest.
+    - Other minor fixes.
+    - Install include files.
+    - exrdisplay requires fltk 1.1+ now.
+
+Version 1.0.2:
+    - More OS X fixes.
+    - Fixed a rotation bug in Imath.
+
+Version 1.0.1:
+    - OS X fixes.
+    - Removed the example images; these are now distributed separately.
+
+Version 1.0:
+    - official release.
+
+Version 0.9:
+    - another limited release.
+    - included exrdisplay viewer and sample EXR images.
+
+Version 0.8:
+    - initial limited release.

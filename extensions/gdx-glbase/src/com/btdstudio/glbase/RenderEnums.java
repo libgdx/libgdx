@@ -1,0 +1,110 @@
+package com.btdstudio.glbase;
+
+public class RenderEnums {
+
+	
+	public enum BlendMode {
+		BLENDMODE_DEFAULT,
+	    BLENDMODE_NONE,
+	    BLENDMODE_DONOTHING,
+	    BLENDMODE_ALPHA_BLEND,
+	    BLENDMODE_ADD,
+	    BLENDMODE_ADDNALPHA,
+	    BLENDMODE_MULTIPLY,
+	    BLENDMODE_NEGATION,
+	    BLENDMODE_SCREEN,
+	    BLENDMODE_SUBTRACT,
+	    BLENDMODE_SUBTRACTNALPHA,
+	    BLENDMODE_MAX,
+	};
+	  	    
+	public enum BlendFunc {
+	    BLENDFUNC_DONOTHING,
+	    BLENDFUNC_ALPHA_BLEND,
+	    BLENDFUNC_ADD,
+	    BLENDFUNC_ADDNALPHA,
+	    BLENDFUNC_MULTIPLY,
+	    BLENDFUNC_NEGATION,
+	    BLENDFUNC_SCREEN,
+	    BLENDFUNC_SUBTRACT,
+	    BLENDFUNC_SUBTRACTNALPHA,
+	    BLENDFUNC_MAX,  
+	};
+	
+	public enum BlendEq {
+		BLENDEQ_ADD,
+	    BLENDEQ_SUBTRACT,
+	    BLENDEQ_REV_SUBTRACT
+	};
+	
+	public enum ClearMode {
+	    CLEARMODE_COLOR_AND_DEPTH,
+	    CLEARMODE_COLOR_ONLY,
+	    CLEARMODE_DEPTH_ONLY,
+	    CLEARMODE_NONE,
+	    CLEARMODE_MAX,
+	};
+	
+	public enum DepthFunc {
+	    DEPTHFUNC_NEVER,
+	    DEPTHFUNC_LESS,
+	    DEPTHFUNC_EQUAL,
+	    DEPTHFUNC_LEQUAL,
+	    DEPTHFUNC_GREATER,
+	    DEPTHFUNC_NOTEQUAL,
+	    DEPTHFUNC_GEQUAL,
+	    DEPTHFUNC_ALWAYS,
+	    DEPTHFUNC_MAX,
+	};
+	
+	public enum ModelType {
+	    MODELTYPE_DEFAULT,
+	    MODELTYPE_TEXTURE_FULL,
+	    MODELTYPE_BBOX,
+	    MODELTYPE_PARTICLE,
+	    MODELTYPE_MAX
+	};
+	
+	public enum CullingMode {
+	    CULLING_DEFAULT,
+	    CULLING_OFF,
+	    CULLING_BACK,
+	    CULLING_FRONT,
+	    CULLING_FRONT_AND_BACK,
+	    CULLING_MAX
+	};
+
+	public enum TextureType {
+	    TEXTYPE_DEFAULT0(0),
+	    TEXTYPE_FBO_1(1),
+	    TEXTYPE_FBO_2(2),
+	    TEXTYPE_FBO_3(3),
+	    TEXTYPE_FBO_4(4),
+	    TEXTYPE_FBO_5(5),
+	    TEXTYPE_FBO_6(6),
+	    TEXTYPE_FBO_7(7),
+	    TEXTYPE_FBO_8(8),
+	    TEXTYPE_FBO_9(9),
+	    TEXTYPE_FBO_10(10),
+	    TEXTYPE_FBO_11(11),
+	    TEXTYPE_FBO_12(12),
+	    TEXTYPE_FBO_13(13),
+	    TEXTYPE_FBO_14(14),
+	    TEXTYPE_FBO_15(15),
+		TEXTYPE_PP_DIV8_WDEPTH_FBO(101),
+		TEXTYPE_PP_DIV8_NODEPTH_FBO(102),
+		TEXTYPE_PP_DIV2_WDEPTH_FBO(103),
+		TEXTYPE_PP_DIV2_NODEPTH_FBO(104);
+	    
+	   int value;
+	   TextureType(int value){
+		   this.value = value;
+	   }
+	};
+	
+	public enum UniformPriority {
+	    UNIPRIORITY_MRF_FIRST,
+	    UNIPRIORITY_MRF_NONE,
+	    UNIPRIORITY_MAX
+	};
+}

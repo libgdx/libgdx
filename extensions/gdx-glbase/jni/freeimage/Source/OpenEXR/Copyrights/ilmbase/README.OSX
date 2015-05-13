@@ -1,0 +1,68 @@
+IlmBase on MacOS X
+------------------
+
+Building IlmBase on MacOS X is just like building it on GNU/Linux. 
+Follow the instructions in the README file under BUILDLING ILMBASE,
+but see below re: shared libraries.
+
+
+Universal Builds on Mac OS X
+------------------
+OS X supports multiple architectures. By default, IlmBase will be built
+for the system doing the building. For example, if you build IlmBase on
+an Intel system, the libraries will be built for Intel.
+
+You can specify building for a different architecture, or multiple architectures,
+by passing the "--enable-osx-arch" flag to configure. Building for multiple
+architectures requires that "--disable-dependency-tracking" be passed as well.
+
+For example, to build for Intel and PowerPC:
+
+./configure --enable-osx-arch="i386 ppc" --disable-dependency-tracking.
+
+To build "4-way universal" for 32-bit and 64-bit Intel and PowerPC:
+
+./configure --enable-osx-arch="i386 ppc x86_64 ppc64" --disable-dependency-tracking.
+
+For more information on universal builds, see:
+
+http://developer.apple.com/documentation/Porting/Conceptual/PortingUNIX/compiling/chapter_4_section_3.html
+
+Earlier releases of IlmBase included an "--enable-osx-universal-binaries" 
+switch, which specifies a two-way universal build: Intel and PowerPC, 32-bit only. 
+This is still available, but deprecated in favor of the more flexible 
+"--enable-osx-arch" and "--enable-osx-sdk" switches.
+
+
+Choosing an SDK on Mac OS X
+------------------
+OS X allows you to specify one of several SDKs, or sysroots. This allows you to 
+target systems other than the system that your build machine runs.
+
+For example, if you are building on Mac OS X 10.4, but you need access to features 
+that were introduced in Mac OS X 10.5, you can build against the Mac OS X 10.5 
+versions of system libraries and headers.
+
+You can choose to build IlmBase with a specific SDK using the "--enable-osx-sdk" 
+switch. For example:
+
+./configure --enable-osx-sdk=MacOSX10.5.sdk
+
+If you are building on Mac OS X 10.4 and want to build universal, you will need to 
+specify the universal version of the 10.4 SDK: MacOSX10.4u.sdk. Otherwise, you probably 
+don't need to specify an SDK.
+
+For more information on sysroots, see:
+
+http://developer.apple.com/documentation/DeveloperTools/gcc-4.2.1/gcc/Directory-Options.html
+
+
+Shared libraries
+----------------
+
+IlmBase requires the "flat namespace" option when built as a shared
+library.  You may have problems trying to use IlmBase shared libraries
+with applications that expect OS X's two-level namespace.  We have not
+tested the shared libs extensively, though they appear to work with
+exrdisplay and exrheader, but use them at your own risk.  We will
+support two-level namespace shared libs in a future release.

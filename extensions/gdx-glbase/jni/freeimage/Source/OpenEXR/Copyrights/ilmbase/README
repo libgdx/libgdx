@@ -1,0 +1,60 @@
+ABOUT THE ILMBASE LIBRARIES 
+----------------------------
+
+Half is a class that encapsulates our 16-bit floating-point format.
+
+IlmThread is a thread abstraction library for use with OpenEXR
+and other software packages.  It currently supports pthreads and
+Windows threads.
+
+Imath implements 2D and 3D vectors, 3x3 and 4x4 matrices, quaternions
+and other useful 2D and 3D math functions.
+
+Iex is an exception-handling library.
+
+If you have questions about using the IlmBase libraries, you may want
+to join our developer mailing list.  See http://www.openexr.com for
+details.
+
+
+LICENSE
+-------
+
+The IlmBase source code distribution is free software.  See the file
+named COPYING (included in this distribution) for details.
+
+
+BUILDING ILMBASE
+----------------
+
+To build IlmBase on GNU/Linux or other UNIX-like systems, do this:
+
+./configure
+make
+make install
+
+unless you obtained IlmBase directly from CVS, in which case you
+should first read README.CVS.
+
+See README.OSX for details on building IlmBase in MacOS X.
+
+Do `make check` to run the IlmBase confidence tests.  They should all
+pass; if you find a test that does not pass on your system, please let
+us know.
+
+Other UNIX variants haven't been tested, but should be easy to build.
+Let us know if you're having problems porting IlmBase to a particular
+platform.
+
+All include files needed to use the IlmBase libraries are installed in the 
+OpenEXR subdirectory of the install prefix, e.g. /usr/local/include/OpenEXR.
+
+
+USING ILMBASE IN YOUR APPLICATIONS
+----------------------------------
+
+On systems with support for pkg-config, use `pkg-config --cflags
+IlmBase` for the C++ flags required to compile against IlmBase
+headers; and `pkg-config --libs IlmBase` for the linker flags required
+to link against IlmBase libraries.
+
