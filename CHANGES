@@ -1,3 +1,6 @@
+[1.6.1]
+- TiledMapPacker outputs one texture atlas per map with default settings, options changed
+
 [1.6.0]
 - API Change: GlyphLayout xAdvances now have an additional entry at the beginning. This was required to implement tighter text bounds. #3034
 - API Change: Label#getTextBounds changed to getGlyphLayout. This exposes all the runs, not just the width and height.
