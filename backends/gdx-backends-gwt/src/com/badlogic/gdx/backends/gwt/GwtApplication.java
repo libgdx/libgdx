@@ -323,7 +323,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.err.println(tag + ": " + message);
 		}
@@ -333,7 +333,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
 			System.out.println(getStackTrace(exception));
