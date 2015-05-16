@@ -782,15 +782,12 @@ public class BitmapFont implements Disposable {
 		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
-			for (int i = start; i >= 1; i--) {
-				char ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch)) {
-					// Skip multiple whitespace.
-					while (--i >= 1)
-						if (!isWhitespace((char)glyphs.get(i).id)) break;
-					return i + 1;
-				}
-				if (i < start && isBreakChar(ch)) return i;
+			char ch = (char)glyphs.get(start).id;
+			if (isWhitespace(ch)) return start;
+			for (int i = start - 1; i >= 1; i--) {
+				ch = (char)glyphs.get(i).id;
+				if (isWhitespace(ch)) return i;
+				if (isBreakChar(ch)) return i + 1;
 			}
 			return 0;
 		}

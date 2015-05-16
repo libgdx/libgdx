@@ -283,10 +283,11 @@ public class TextField extends Widget implements Disableable {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		float bgLeftWidth = 0;
+		float bgLeftWidth = 0, bgRightWidth = 0;
 		if (background != null) {
 			background.draw(batch, x, y, width, height);
 			bgLeftWidth = background.getLeftWidth();
+			bgRightWidth = background.getRightWidth();
 		}
 
 		float textY = getTextY(font, background);
@@ -305,7 +306,8 @@ public class TextField extends Widget implements Disableable {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
+				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth,
+					textHAlign, false);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
@@ -639,7 +641,8 @@ public class TextField extends Widget implements Disableable {
 		return prefHeight;
 	}
 
-	/** Sets text horizontal alignment (left, center or right). */
+	/** Sets text horizontal alignment (left, center or right).
+	 * @see Align */
 	public void setAlignment (int alignment) {
 		if (alignment == Align.left || alignment == Align.center || alignment == Align.right) this.textHAlign = alignment;
 	}

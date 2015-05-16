@@ -52,6 +52,7 @@ public class BitmapFontTest extends GdxTest {
 		font = new BitmapFont(Gdx.files.internal("data/arial-32-pad.fnt"), false);
 		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf")).generateFont(new FreeTypeFontParameter());
 		font.getData().markupEnabled = true;
+		font.getData().breakChars = new char[] {'-'};
 
 		multiPageFont = new BitmapFont(Gdx.files.internal("data/multipagefont.fnt"));
 
@@ -107,8 +108,10 @@ public class BitmapFontTest extends GdxTest {
 
 			spriteBatch.begin();
 			String text = "your new";
-			text = "How quickly [RED]daft jumping zebras vex.";
-			if (false) { // Test wrap.
+			// text = "How quickly [RED]daft jumping zebras vex.";
+			// text = "Another font wrap is-sue, this time with    multiple whitespace characters.";
+			text = "test with AGWlWi AGWlWi issue";
+			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, false, "...");
