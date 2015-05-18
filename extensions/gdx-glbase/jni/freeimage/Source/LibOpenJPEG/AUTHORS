@@ -1,0 +1,15 @@
+Authors of OpenJPEG
+See also the files THANKS and CHANGES
+
+David Janssens designed and implemented the first version of OpenJPEG.
+Kaori Hagihara designed and implemented the first version of OpenJPIP.
+Jerome Fimes implemented the alpha version of OpenJPEG v2.
+Giuseppe Baruffa added the JPWL functionalities.
+Mickaël Savinaud implemented the final OpenJPEG v2 version based on a big merge between 1.5 version and alpha version of v2.
+Mathieu Malaterre  participate to the OpenJPEG v2 version and release the OpenJPEG 1.5 and 1.5.1 version. 
+Yannick Verschueren, 
+Herve Drolon, 
+Francois-Olivier Devaux, 
+Antonin Descampe
+    improved the libraries and utilities.
+

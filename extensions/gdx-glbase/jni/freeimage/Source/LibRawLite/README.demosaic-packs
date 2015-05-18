@@ -1,0 +1,46 @@
+======================= LibRaw demosaic pack(s) ===============================
+
+There are many good interpolation (demosaic) methods implemented in open-source
+world.
+
+Unfortunately, some of these methods are distributed under the terms of 
+different versions of GNU General Public License (GPL). So it is not possible
+to include implementation of these demosaics into the LibRaw distribution 
+because LibRaw is distributed under more liberal licenses (LGPL and CDDL).
+
+Of course, it is possible to distribute these demosaic methods in separate 
+packages and use within LibRaw under following conditions:
+
+ * LibRaw is used under the terms of LGPL license which is GPL-compatible
+ * Resulting product (which uses LibRaw AND LibRaw-demosaic-pack) is licensed
+   under GPL2+ (for GPL2 demosaic-pack) or GPL3+ (if demosaic-pack-GPL3 is used).
+
+For now demosaic packs are available via GitHub only:
+
+    1) LibRaw demosaic pack GPL2+
+       GitHub URL: git://github.com/LibRaw/LibRaw-demosaic-pack-GPL2.git
+       
+       This pack includes these demosaic implementations:
+
+        * AFD and LMMSE implementations from PerfectRaw by Manuel Llorens
+        * VCD, Modified AHD, post-demosaic refinemend and median
+          filters by Paul Lee
+
+    2) LibRaw demosaic pack GPL3+
+       GitHub URL: git://github.com/LibRaw/LibRaw-demosaic-pack-GPL3.git
+
+       This pack includes AMaZe interpolation  by Emil Martinec.
+
+== How To Use (developer only!) ===
+
+1. Get LibRaw-0.12... and unpack it in some folder.
+
+2. Checkout one or both demosaic pack(s) in the same folder (NOT within LibRaw folder).
+
+3. Check Makefile settings:
+CFLAGS_DP1 and CFLAGS_DP2 should point to demosaic pack(s) folder(s)
+CFLAGS should have -DLIBRAW_DEMOSAIC_PACK_GPL2/-DLIBRAW_DEMOSAIC_PACK_GPL3 setting
+
+4. Just run make.
+
+./configure stuff is not supported with demosaic-pack(s) for now.

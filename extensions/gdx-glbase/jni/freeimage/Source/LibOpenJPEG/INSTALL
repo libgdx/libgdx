@@ -1,0 +1,69 @@
+
+How to build and install openjpeg binaries
+==========================================
+
+UNIX/LINUX/MacOSX/Windows systems
+--------------------------
+
+Using cmake (see www.cmake.org)
+
+Type:
+  cmake .
+  make
+
+If you are root:
+  make install
+
+else if you have sudo power:
+  sudo make install
+
+else
+  DESTDIR=$HOME/local make install
+
+To build the Doxygen documentation (Doxygen needs to be found on the system):
+(A 'html' directory is generated in the 'doc' directory)
+  make doc
+
+Binaries are located in the 'bin' directory.
+
+Main available cmake flags:
+* To specify the install path: '-DCMAKE_INSTALL_PREFIX=/path', or use DESTDIR env variable (see above)
+* To build the shared libraries and links the executables against it: '-DBUILD_SHARED_LIBS:bool=on' (default: 'ON')
+  Note: when using this option, static libraries are not built and executables are dynamically linked.
+* To build the CODEC executables: '-DBUILD_CODEC:bool=on' (default: 'ON')
+* To build the documentation: '-DBUILD_DOC:bool=on' (default: 'OFF')
+* To build the MJ2 executables: '-DBUILD_MJ2:bool=on' (default: 'OFF')
+* To build the JPWL executables and JPWL library: '-DBUILD_JPWL:bool=on' (default: 'OFF')
+* To build the JPIP library and utilities: '-DBUILD_JPIP:bool=on' (default: 'OFF')
+** To build the JPIP server: '-DBUILD_JPIP_SERVER:bool=on' (default: 'OFF')
+* To build the JP3D library and utilities: '-DBUILD_JP3D:bool=on' (default: 'OFF') (experimental)
+* To build the Java binding: '-DBUILD_JAVA:bool=on' (default: 'OFF') (experimental).
+** to choose which java implementation, you can set your JAVA_HOME env var.
+* To build the wxWidgets/C++ viewer: 'BUILD_VIEWER:BOOL=ON' (default OFF) (experimental)
+* To enable testing (and automatic result upload to http://my.cdash.org/index.php?project=OPENJPEG):
+    cmake . -DBUILD_TESTING:BOOL=ON -DOPJ_DATA_ROOT:PATH='path/to/the/data/directory'
+    make
+    make Experimental
+  Note : JPEG2000 test files are available with 'svn checkout http://openjpeg.googlecode.com/svn/data' (about 70 Mo).
+  If '-DOPJ_DATA_ROOT:PATH' option is omitted, test files will be automatically searched in '${CMAKE_SOURCE_DIR}/../data',
+  corresponding to the location of the data directory when compiling from the trunk (and assuming the data directory has
+  been checked out of course).
+
+MACOSX
+------
+
+The same building procedures as above work for MACOSX.
+The xcode project file can also be used.
+
+If it does not work, try adding the following flag to the cmake command : 
+  '-DCMAKE_OSX_ARCHITECTURES:STRING=i386'
+
+WINDOWS
+-------
+
+You can use cmake to generate project files for the IDE you are using (VS2010, NMake, etc).
+Type 'cmake --help' for available generators on your platform.
+
+Make sure to build the third party libs (png, zlib ...):
+
+  '-DBUILD_THIRDPARTY:BOOL=ON'

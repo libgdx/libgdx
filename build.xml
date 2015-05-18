@@ -241,6 +241,19 @@
 		</ant>
 	</target>
 
+	<!-- gdx glbase -->
+	<target name="gdx-glbase" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-glbase">
+			<property name="distDir" value="${distDir}/extensions/gdx-glbase"/>
+			<property name="jar" value="gdx-glbase"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- gdx bullet -->
 	<target name="gdx-bullet" depends="gdx-core">
 		<path id="classpath">

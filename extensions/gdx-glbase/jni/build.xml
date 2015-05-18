@@ -1,0 +1,31 @@
+<project name="gdx-glbase-natives" basedir="." default="all">
+	<target name="clean">
+		<ant antfile="build-android32.xml" target="clean"/>
+		<ant antfile="build-linux32.xml" target="clean"/>
+		<ant antfile="build-linux64.xml" target="clean"/>
+		<ant antfile="build-windows32.xml" target="clean"/>
+		<ant antfile="build-windows64.xml" target="clean"/>
+
+	</target>
+	
+	<target name="compile-natives">
+		<ant antfile="build-android32.xml"/>
+		<ant antfile="build-linux32.xml"/>
+		<ant antfile="build-linux64.xml"/>
+		<ant antfile="build-windows32.xml"/>
+		<ant antfile="build-windows64.xml"/>
+
+	</target>
+	
+	<target name="pack-natives">
+		<jar destfile="../libs/gdx-glbase-natives.jar">
+			<fileset dir="../libs/linux32" includes="libgdx-glbase.so"/>
+			<fileset dir="../libs/linux64" includes="libgdx-glbase.so"/>
+			<fileset dir="../libs/windows32" includes="libgdx-glbase64.so"/>
+			<fileset dir="../libs/windows64" includes="gdx-glbase.dll"/>
+
+		</jar>
+	</target>
+
+	<target name="all" depends="compile-natives,pack-natives"/>
+</project>
