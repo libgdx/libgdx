@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math;
 
 public class Polyline implements Shape2D {
-	private final float[] localVertices;
+	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
 	private float originX, originY;
