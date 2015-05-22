@@ -17,6 +17,11 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -146,6 +151,19 @@ public class Table extends WidgetGroup {
 		else if (padTopOld != padTopNew || padLeftOld != padLeftNew || padBottomOld != padBottomNew || padRightOld != padRightNew)
 			invalidate();
 	}
+	
+	/** @param background May be null to clear the background. */
+	public void setBackground(Color color){
+		TextureRegionDrawable d = null;
+		if(color!=null){
+			Pixmap p = new Pixmap(1, 1, Format.RGBA8888);
+			p.setColor(color);
+			p.fill();
+			d = new TextureRegionDrawable(new TextureRegion(new Texture(p)));
+			p.dispose();
+		}
+		setBackground(d);
+	}	
 
 	/** @see #setBackground(Drawable) */
 	public Table background (Drawable background) {
