@@ -125,7 +125,7 @@ public class Bits {
 			if (bitsAtWord != 0) {
 				for (int bit = 63; bit >= 0; --bit) {
 					if ((bitsAtWord & (1L << (bit & 0x3F))) != 0L) {
-						return (word << 6) + bit;
+						return (word << 6) + bit + 1;
 					}
 				}
 			}
