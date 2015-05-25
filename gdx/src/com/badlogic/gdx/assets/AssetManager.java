@@ -486,13 +486,14 @@ public class AssetManager implements Disposable {
 			tasks.pop();
 
 			// if a loading failed listener was found, invoke it
+			// otherwise re throw exception
 			if (task.assetDesc.params != null && task.assetDesc.params.loadingFailedCallback != null) {
 				task.assetDesc.params.loadingFailedCallback.loadingFailed(this, task.assetDesc.fileName, task.assetDesc.type,
 					exception.getCause());
+			} else {
+				throw exception;
 			}
 
-			// re throw exception
-			throw exception;
 		}
 
 		// if the task has been cancelled or has finished loading
