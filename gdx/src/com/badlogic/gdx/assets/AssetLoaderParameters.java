@@ -27,7 +27,7 @@ public class AssetLoaderParameters<T> {
 	/** Callback interface that will be invoked when the {@link AssetManager} failed loading an asset.
 	 * @author gstupar */
 	public interface LoadingFailedCallback {
-		public void loadingFailed (AssetManager assetManager, String filename, Class type);
+		public void loadingFailed (AssetManager assetManager, String filename, Class type, Throwable cause);
 	}
 
 	public LoadedCallback loadedCallback;

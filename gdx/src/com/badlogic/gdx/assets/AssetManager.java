@@ -482,17 +482,17 @@ public class AssetManager implements Disposable {
 			taskFinished = task.update();
 		} catch (GdxRuntimeException exception) {
 
-			// gstupar TODO: check what loaded++ represents?
 			if (tasks.size() == 1) loaded++;
 			tasks.pop();
 
 			// if a loading failed listener was found, invoke it
 			if (task.assetDesc.params != null && task.assetDesc.params.loadingFailedCallback != null) {
-				task.assetDesc.params.loadingFailedCallback.loadingFailed(this, task.assetDesc.fileName, task.assetDesc.type);
+				task.assetDesc.params.loadingFailedCallback.loadingFailed(this, task.assetDesc.fileName, task.assetDesc.type,
+					exception.getCause());
 			}
 
-			// gstupar TODO: what should I return if loading failed!?
-			return true;
+			// re throw exception
+			throw exception;
 		}
 
 		// if the task has been cancelled or has finished loading
