@@ -1,5 +1,7 @@
 [1.6.2]
 - API  Change: TiledMapImageLayer now uses floats instead of ints for positioning
+- Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
+- Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
 
 [1.6.1]
 - Added optional hostname argument to Net.newServerSocket method to allow specific ip bindings for server applications made with gdx.

@@ -348,7 +348,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
 			atlasHandle = resolve(atlasHandle.path());
 			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
-			String regionsName = atlasHandle.nameWithoutExtension();
+			String regionsName = name;
 
 			for (Texture texture : atlas.getTextures()) {
 				trackedTextures.add(texture);
