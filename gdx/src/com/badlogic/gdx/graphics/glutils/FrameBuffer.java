@@ -21,6 +21,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -86,6 +87,24 @@ public class FrameBuffer implements Disposable {
 	/** format **/
 	protected final Pixmap.Format format;
 
+	static private Stack<Integer> frameBufferHandlerStack = new Stack<Integer>();
+
+	static private Stack<ViewPort> viewPortStack = new Stack<ViewPort>();
+
+	class ViewPort {
+		int x;
+		int y;
+		int width;
+		int height;
+
+		public ViewPort (int x, int y, int width, int height) {
+			super();
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+	}
 	
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
@@ -226,12 +245,22 @@ public class FrameBuffer implements Disposable {
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void bind () {
+		IntBuffer intbuf2 = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
+		Gdx.gl20.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf2);
+		int currentFrameBufferHandle = intbuf2.get(0);
+		//if the previous framebuffer being bind again, don't push into the stack
+		if (frameBufferHandlerStack.isEmpty() || currentFrameBufferHandle != framebufferHandle) {
+			frameBufferHandlerStack.push(currentFrameBufferHandle);
+			IntBuffer intbuf = ByteBuffer.allocateDirect(32 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
+			Gdx.gl20.glGetIntegerv(GL20.GL_VIEWPORT, intbuf);
+			viewPortStack.push(new ViewPort(intbuf.get(0), intbuf.get(1), intbuf.get(2), intbuf.get(3)));
+		}
 		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public static void unbind () {
-		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, frameBufferHandlerStack.pop());
 	}
 
 	/** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
@@ -248,12 +277,13 @@ public class FrameBuffer implements Disposable {
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public void end () {
 		unbind();
-		setDefaultFrameBufferViewport();
+		resetPreviousFrameBufferViewport();
 	}
 
 	/** Sets viewport to the dimensions of default framebuffer (window). Called by {@link #end()}. */
-	protected void setDefaultFrameBufferViewport () {
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	protected void resetPreviousFrameBufferViewport () {
+		ViewPort previousViewPort = viewPortStack.pop();
+		Gdx.gl20.glViewport(previousViewPort.x, previousViewPort.y, previousViewPort.width, previousViewPort.height);
 	}
 
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
