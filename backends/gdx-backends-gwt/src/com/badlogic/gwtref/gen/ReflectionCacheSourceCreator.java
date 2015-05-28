@@ -630,8 +630,7 @@ public class ReflectionCacheSourceCreator {
 					}
 					stub.isConstructor = true;
 					stub.returnType = stub.enclosingType;
-				}
-
+				}				
 				stub.jnsi = "";
 				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
@@ -660,7 +659,7 @@ public class ReflectionCacheSourceCreator {
 
 				pb(stub.isAbstract + ", " + stub.isFinal + ", " + stub.isStatic + ", " + m.isDefaultAccess() + ", " + m.isPrivate()
 					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", "
-					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "),");
+					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
 			}
 			pb("};");
 		}

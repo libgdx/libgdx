@@ -28,8 +28,8 @@ struct btSolverInfo;
 struct btMultiBodyJacobianData
 {
 	btAlignedObjectArray<btScalar>		m_jacobians;
-	btAlignedObjectArray<btScalar>		m_deltaVelocitiesUnitImpulse;
-	btAlignedObjectArray<btScalar>		m_deltaVelocities;
+	btAlignedObjectArray<btScalar>		m_deltaVelocitiesUnitImpulse;	//holds the joint-space response of the corresp. tree to the test impulse in each constraint space dimension
+	btAlignedObjectArray<btScalar>		m_deltaVelocities;				//holds joint-space vectors of all the constrained trees accumulating the effect of corrective impulses applied in SI
 	btAlignedObjectArray<btScalar>		scratch_r;
 	btAlignedObjectArray<btVector3>		scratch_v;
 	btAlignedObjectArray<btMatrix3x3>	scratch_m;
@@ -48,10 +48,10 @@ protected:
     int				m_linkA;
     int				m_linkB;
 
-    int				m_num_rows;
-    int				m_jac_size_A;
-    int				m_jac_size_both;
-    int				m_pos_offset;
+    int				m_numRows;
+    int				m_jacSizeA;
+    int				m_jacSizeBoth;
+    int				m_posOffset;
 
 	bool			m_isUnilateral;
 
@@ -66,29 +66,23 @@ protected:
 
 	void	applyDeltaVee(btMultiBodyJacobianData& data, btScalar* delta_vee, btScalar impulse, int velocityIndex, int ndof);
 
-	void fillMultiBodyConstraintMixed(btMultiBodySolverConstraint& solverConstraint, 
-																	btMultiBodyJacobianData& data,
-																 const btVector3& contactNormalOnB,
-																 const btVector3& posAworld, const btVector3& posBworld, 
-																 btScalar position,
-																 const btContactSolverInfo& infoGlobal,
-																 btScalar& relaxation,
-																 bool isFriction, btScalar desiredVelocity=0, btScalar cfmSlip=0);
-
-		btScalar fillConstraintRowMultiBodyMultiBody(btMultiBodySolverConstraint& constraintRow,
-														btMultiBodyJacobianData& data,
-														btScalar* jacOrgA,btScalar* jacOrgB,
-														const btContactSolverInfo& infoGlobal,
-														btScalar desiredVelocity,
-														btScalar lowerLimit,
-														btScalar upperLimit);
+	btScalar fillMultiBodyConstraint(btMultiBodySolverConstraint& solverConstraint, 
+																btMultiBodyJacobianData& data,
+																btScalar* jacOrgA, btScalar* jacOrgB,
+																const btVector3& contactNormalOnB,
+																const btVector3& posAworld, const btVector3& posBworld, 
+																btScalar posError,
+																const btContactSolverInfo& infoGlobal,
+																btScalar lowerLimit, btScalar upperLimit,
+																btScalar relaxation = 1.f,
+																bool isFriction = false, btScalar desiredVelocity=0, btScalar cfmSlip=0);
 
 public:
 
 	btMultiBodyConstraint(btMultiBody* bodyA,btMultiBody* bodyB,int linkA, int linkB, int numRows, bool isUnilateral);
 	virtual ~btMultiBodyConstraint();
 
-
+	void finalizeMultiDof();
 
 	virtual int getIslandIdA() const =0;
 	virtual int getIslandIdB() const =0;
@@ -99,7 +93,7 @@ public:
 
 	int	getNumRows() const
 	{
-		return m_num_rows;
+		return m_numRows;
 	}
 
 	btMultiBody*	getMultiBodyA()
@@ -116,12 +110,12 @@ public:
     // NOTE: ignored position for friction rows.
     btScalar getPosition(int row) const 
 	{ 
-		return m_data[m_pos_offset + row]; 
+		return m_data[m_posOffset + row]; 
 	}
 
     void setPosition(int row, btScalar pos) 
 	{ 
-		m_data[m_pos_offset + row] = pos; 
+		m_data[m_posOffset + row] = pos; 
 	}
 
 	
@@ -135,19 +129,19 @@ public:
     // format: 3 'omega' coefficients, 3 'v' coefficients, then the 'qdot' coefficients.
     btScalar* jacobianA(int row) 
 	{ 
-		return &m_data[m_num_rows + row * m_jac_size_both]; 
+		return &m_data[m_numRows + row * m_jacSizeBoth]; 
 	}
     const btScalar* jacobianA(int row) const 
 	{ 
-		return &m_data[m_num_rows + (row * m_jac_size_both)]; 
+		return &m_data[m_numRows + (row * m_jacSizeBoth)]; 
 	}
     btScalar* jacobianB(int row) 
 	{ 
-		return &m_data[m_num_rows + (row * m_jac_size_both) + m_jac_size_A]; 
+		return &m_data[m_numRows + (row * m_jacSizeBoth) + m_jacSizeA]; 
 	}
     const btScalar* jacobianB(int row) const 
 	{ 
-		return &m_data[m_num_rows + (row * m_jac_size_both) + m_jac_size_A]; 
+		return &m_data[m_numRows + (row * m_jacSizeBoth) + m_jacSizeA]; 
 	}
 
 	btScalar	getMaxAppliedImpulse() const
@@ -159,6 +153,7 @@ public:
 		m_maxAppliedImpulse = maxImp;
 	}
 	
+	virtual void debugDraw(class btIDebugDraw* drawer)=0;
 
 };
 

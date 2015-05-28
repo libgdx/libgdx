@@ -130,6 +130,7 @@ public class btTriangleRaycastCallback extends btTriangleCallback {
     public final static int kF_FilterBackfaces = 1 << 0;
     public final static int kF_KeepUnflippedNormal = 1 << 1;
     public final static int kF_UseSubSimplexConvexCastRaytest = 1 << 2;
+    public final static int kF_UseGjkConvexCastRaytest = 1 << 3;
     public final static int kF_Terminator = 0xFFFFFFFF;
   }
 

@@ -137,7 +137,7 @@ class EffectPanel extends JPanel {
 		editor.reloadRows();
 	}
 
-	void openEffect () {
+	void openEffect (boolean mergeIntoCurrent) {
 		FileDialog dialog = new FileDialog(editor, "Open Effect", FileDialog.LOAD);
 		if (lastDir != null) dialog.setDirectory(lastDir);
 		dialog.setVisible(true);
@@ -149,8 +149,14 @@ class EffectPanel extends JPanel {
 		try {
 			File effectFile = new File(dir, file);
 			effect.loadEmitters(Gdx.files.absolute(effectFile.getAbsolutePath()));
-			editor.effect = effect;
-			editor.effectFile = effectFile;
+			if (mergeIntoCurrent){
+				for (ParticleEmitter emitter : effect.getEmitters()){
+					addEmitter(emitter.getName(), false, emitter);
+				}
+			} else {
+				editor.effect = effect;
+				editor.effectFile = effectFile;
+			}
 			emitterTableModel.getDataVector().removeAllElements();
 			editor.particleData.clear();
 		} catch (Exception ex) {
@@ -159,7 +165,7 @@ class EffectPanel extends JPanel {
 			JOptionPane.showMessageDialog(editor, "Error opening effect.");
 			return;
 		}
-		for (ParticleEmitter emitter : effect.getEmitters()) {
+		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
 			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
 			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
@@ -303,7 +309,17 @@ class EffectPanel extends JPanel {
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 				openButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
-						openEffect();
+						openEffect(false);
+					}
+				});
+			}
+			{
+				JButton mergeButton = new JButton("Merge");
+				sideButtons.add(mergeButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				mergeButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						openEffect(true);
 					}
 				});
 			}

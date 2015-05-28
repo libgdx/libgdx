@@ -63,7 +63,7 @@ long _maxdot_large( const float *vv, const float *vec, unsigned long count, floa
     float4 stack_array[ STACK_ARRAY_COUNT ];
     
 #if DEBUG
-    memset( stack_array, -1, STACK_ARRAY_COUNT * sizeof(stack_array[0]) );
+    //memset( stack_array, -1, STACK_ARRAY_COUNT * sizeof(stack_array[0]) );
 #endif
     
     size_t index;
@@ -448,7 +448,7 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
     float4 stack_array[ STACK_ARRAY_COUNT ];
     
 #if DEBUG
-    memset( stack_array, -1, STACK_ARRAY_COUNT * sizeof(stack_array[0]) );
+    //memset( stack_array, -1, STACK_ARRAY_COUNT * sizeof(stack_array[0]) );
 #endif
     
     size_t index;
@@ -821,6 +821,7 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
 
 
 #elif defined BT_USE_NEON
+
 #define ARM_NEON_GCC_COMPATIBILITY  1
 #include <arm_neon.h>
 #include <sys/types.h>
@@ -882,12 +883,15 @@ static long _mindot_large_sel( const float *vv, const float *vec, unsigned long 
     return _mindot_large(vv, vec, count, dotResult);
 }
 
+
+
 #if defined __arm__
 # define vld1q_f32_aligned_postincrement( _ptr ) ({ float32x4_t _r; asm( "vld1.f32 {%0}, [%1, :128]!\n" : "=w" (_r), "+r" (_ptr) ); /*return*/ _r; })
 #else
 //support 64bit arm
 # define vld1q_f32_aligned_postincrement( _ptr) ({ float32x4_t _r = ((float32x4_t*)(_ptr))[0]; (_ptr) = (const float*) ((const char*)(_ptr) + 16L); /*return*/ _r; })
 #endif
+
 
 long _maxdot_large_v0( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {

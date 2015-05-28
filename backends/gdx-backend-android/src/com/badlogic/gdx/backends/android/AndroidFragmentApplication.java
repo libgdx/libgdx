@@ -214,8 +214,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		input.onPause();
 
 		// davebaol & mobidevelop:
-		// This fragment is currently being removed from its activity or the activity is in the process of finishing
-		if (isRemoving() || getActivity().isFinishing()) {
+		// This fragment (or one of the parent)  is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
@@ -463,5 +463,23 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public WindowManager getWindowManager () {
 		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+	}
+
+	/**
+	* Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
+	*
+	* @return true - one of the parent fragments is being removed
+	*/
+	private boolean isAnyParentFragmentRemoving() {
+		Fragment fragment = getParentFragment();
+
+		 while (fragment != null) {
+			if (fragment.isRemoving())
+				return true;
+
+			fragment = fragment.getParentFragment();
+		}
+
+		return false;
 	}
 }

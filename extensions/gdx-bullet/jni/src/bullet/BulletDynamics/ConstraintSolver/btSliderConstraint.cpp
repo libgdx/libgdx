@@ -539,8 +539,8 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 			btScalar tag_vel = getTargetLinMotorVelocity();
 			btScalar mot_fact = getMotorFactor(m_linPos, m_lowerLinLimit, m_upperLinLimit, tag_vel, info->fps * currERP);
 			info->m_constraintError[srow] -= signFact * mot_fact * getTargetLinMotorVelocity();
-			info->m_lowerLimit[srow] += -getMaxLinMotorForce() * info->fps;
-			info->m_upperLimit[srow] += getMaxLinMotorForce() * info->fps;
+			info->m_lowerLimit[srow] += -getMaxLinMotorForce() / info->fps;
+			info->m_upperLimit[srow] += getMaxLinMotorForce() / info->fps;
 		}
 		if(limit)
 		{
@@ -641,8 +641,8 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 			}
 			btScalar mot_fact = getMotorFactor(m_angPos, m_lowerAngLimit, m_upperAngLimit, getTargetAngMotorVelocity(), info->fps * currERP);
 			info->m_constraintError[srow] = mot_fact * getTargetAngMotorVelocity();
-			info->m_lowerLimit[srow] = -getMaxAngMotorForce() * info->fps;
-			info->m_upperLimit[srow] = getMaxAngMotorForce() * info->fps;
+			info->m_lowerLimit[srow] = -getMaxAngMotorForce() / info->fps;
+			info->m_upperLimit[srow] = getMaxAngMotorForce() / info->fps;
 		}
 		if(limit)
 		{

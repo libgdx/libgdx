@@ -146,8 +146,8 @@ public class SoftbodyJNI {
   public final static native float btSoftBody_sRayCast_fraction_get(long jarg1, btSoftBody.sRayCast jarg1_);
   public final static native long new_btSoftBody_sRayCast();
   public final static native void delete_btSoftBody_sRayCast(long jarg1);
-  public final static native float btSoftBody_ImplicitFn_Eval(long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2);
   public final static native void delete_btSoftBody_ImplicitFn(long jarg1);
+  public final static native float btSoftBody_ImplicitFn_Eval(long jarg1, btSoftBody.ImplicitFn jarg1_, Vector3 jarg2);
   public final static native void btSoftBody_sCti_colObj_set(long jarg1, btSoftBody.sCti jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native long btSoftBody_sCti_colObj_get(long jarg1, btSoftBody.sCti jarg1_);
   public final static native void btSoftBody_sCti_normal_set(long jarg1, btSoftBody.sCti jarg1_, long jarg2, btVector3 jarg2_);
@@ -450,11 +450,11 @@ public class SoftbodyJNI {
   public final static native long btSoftBody_LJoint_rpos_get(long jarg1, btSoftBody.LJoint jarg1_);
   public final static native long new_btSoftBody_LJoint();
   public final static native void delete_btSoftBody_LJoint(long jarg1);
+  public final static native void delete_btSoftBody_AJoint_IControl(long jarg1);
   public final static native void btSoftBody_AJoint_IControl_Prepare(long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2, btSoftBody.AJoint jarg2_);
   public final static native float btSoftBody_AJoint_IControl_Speed(long jarg1, btSoftBody.AJoint.IControl jarg1_, long jarg2, btSoftBody.AJoint jarg2_, float jarg3);
   public final static native long btSoftBody_AJoint_IControl_Default();
   public final static native long new_btSoftBody_AJoint_IControl();
-  public final static native void delete_btSoftBody_AJoint_IControl(long jarg1);
   public final static native long new_btSoftBody_AJoint_Specs();
   public final static native void btSoftBody_AJoint_Specs_axis_set(long jarg1, btSoftBody.AJoint.Specs jarg1_, long jarg2, btVector3 jarg2_);
   public final static native long btSoftBody_AJoint_Specs_axis_get(long jarg1, btSoftBody.AJoint.Specs jarg1_);
@@ -1122,6 +1122,7 @@ public class SoftbodyJNI {
   public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_0(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_, int jarg3, boolean jarg4);
   public final static native long btSoftBodyHelpers_CreateFromConvexHull__SWIG_1(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_, int jarg3);
   public final static native long btSoftBodyHelpers_CreateFromTetGenData(long jarg1, btSoftBodyWorldInfo jarg1_, String jarg2, String jarg3, String jarg4, boolean jarg5, boolean jarg6, boolean jarg7);
+  public final static native void btSoftBodyHelpers_ReoptimizeLinkOrder(long jarg1, btSoftBody jarg1_);
   public final static native long new_btSoftBodyHelpers();
   public final static native void delete_btSoftBodyHelpers(long jarg1);
   public final static native void btSoftBodyCollisionShape_body_set(long jarg1, btSoftBodyCollisionShape jarg1_, long jarg2, btSoftBody jarg2_);

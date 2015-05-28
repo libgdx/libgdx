@@ -18,6 +18,7 @@ SET(BulletCollision_SRCS
 	CollisionDispatch/btCollisionDispatcher.cpp
 	CollisionDispatch/btCollisionObject.cpp
 	CollisionDispatch/btCollisionWorld.cpp
+	CollisionDispatch/btCollisionWorldImporter.cpp
 	CollisionDispatch/btCompoundCollisionAlgorithm.cpp
 	CollisionDispatch/btCompoundCompoundCollisionAlgorithm.cpp
 	CollisionDispatch/btConvexConcaveCollisionAlgorithm.cpp
@@ -126,6 +127,7 @@ SET(CollisionDispatch_HDRS
 	CollisionDispatch/btCollisionObject.h
 	CollisionDispatch/btCollisionObjectWrapper.h
 	CollisionDispatch/btCollisionWorld.h
+	CollisionDispatch/btCollisionWorldImporter.h
 	CollisionDispatch/btCompoundCollisionAlgorithm.h
 	CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h
 	CollisionDispatch/btConvexConcaveCollisionAlgorithm.h

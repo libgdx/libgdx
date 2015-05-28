@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
@@ -239,6 +240,7 @@ public class GdxTests {
 		FreeTypeDisposeTest.class,
 		FreeTypeIncrementalTest.class,
 		FreeTypePackTest.class,
+		FreeTypeAtlasTest.class,
 		FreeTypeTest.class,
 		InternationalFontsTest.class,
 		PngTest.class,

@@ -1,3 +1,64 @@
+# Contributing to libGDX
+
+Please take a moment to review this document in order to make the contribution
+process easy and effective for everyone involved.
+
+Following these guidelines helps to communicate that you respect the time of
+the developers managing and developing this open source project. In return,
+they should reciprocate that respect in addressing your issue or assessing
+patches and features.
+
+
+## Using the issue tracker
+
+The issue tracker is the preferred channel for [bug reports](#bugs),
+[features requests](#features) and [submitting pull
+requests](#pull-requests), but please respect the following restrictions:
+
+* Please **do not** use the issue tracker for personal support requests (use
+  [the forum](http://badlogicgames.com/forum/) or IRC). See also [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help).
+
+* Please **do not** derail or troll issues. Keep the discussion on topic and
+  respect the opinions of others.
+
+
+<a name="bugs"></a>
+## Bug reports
+
+A bug is a _demonstrable problem_ that is caused by the code in the repository.
+Good bug reports are extremely helpful - thank you!
+
+Guidelines for bug reports:
+
+1. **Use the GitHub issue search** &mdash; check if the issue has already been
+   reported. Make sure to search all issues, not only the open issues.
+
+2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
+   latest `master` or development branch in the repository.
+
+3. **Isolate the problem** &mdash; create a [reduced test
+   case](https://github.com/libgdx/libgdx/wiki/Getting-Help#executable-example-code).
+
+A good bug report shouldn't leave others needing to chase you up for more
+information. Please try to be as detailed as possible in your report. What is
+your environment? What steps will reproduce the issue? What browser(s) and OS
+experience the problem? What would you expect to be the outcome? All these
+details will help people to fix any potential bugs.
+
+See [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-Help) for more information and an example.
+
+
+<a name="features"></a>
+## Feature requests
+
+Feature requests are welcome. But take a moment to find out whether your idea
+fits with the scope and aims of the project. It's up to *you* to make a strong
+case to convince the project's developers of the merits of this feature. Please
+provide as much detail and context as possible.
+
+<a name="pull-requests"></a>
+## Pull requests
+
 Contributing to libgdx is easy:
 
   * Fork libgdx on http://github.com/libgdx/libgdx

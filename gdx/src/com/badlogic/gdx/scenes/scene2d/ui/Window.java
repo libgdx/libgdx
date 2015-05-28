@@ -66,13 +66,14 @@ public class Window extends Table {
 		setClip(true);
 
 		titleLabel = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
+		titleLabel.setEllipsis(true);
 
 		titleTable = new Table() {
 			public void draw (Batch batch, float parentAlpha) {
 				if (drawTitleTable) super.draw(batch, parentAlpha);
 			}
 		};
-		titleTable.add(titleLabel).expandX().fillX();
+		titleTable.add(titleLabel).expandX().fillX().minWidth(0);
 		addActor(titleTable);
 
 		setStyle(style);

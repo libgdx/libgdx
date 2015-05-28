@@ -118,14 +118,16 @@ public class DynamicsJNI {
   public final static native void btRigidBody_setAngularFactor__SWIG_1(long jarg1, btRigidBody jarg1_, float jarg2);
   public final static native Vector3 btRigidBody_getAngularFactor(long jarg1, btRigidBody jarg1_);
   public final static native boolean btRigidBody_isInWorld(long jarg1, btRigidBody jarg1_);
-  public final static native boolean btRigidBody_checkCollideWithOverride(long jarg1, btRigidBody jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btRigidBody_addConstraintRef(long jarg1, btRigidBody jarg1_, long jarg2, btTypedConstraint jarg2_);
   public final static native void btRigidBody_removeConstraintRef(long jarg1, btRigidBody jarg1_, long jarg2, btTypedConstraint jarg2_);
   public final static native long btRigidBody_getConstraintRef(long jarg1, btRigidBody jarg1_, int jarg2);
   public final static native int btRigidBody_getNumConstraintRefs(long jarg1, btRigidBody jarg1_);
   public final static native void btRigidBody_setFlags(long jarg1, btRigidBody jarg1_, int jarg2);
   public final static native int btRigidBody_getFlags(long jarg1, btRigidBody jarg1_);
-  public final static native Vector3 btRigidBody_computeGyroscopicForce(long jarg1, btRigidBody jarg1_, float jarg2);
+  public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_World(long jarg1, btRigidBody jarg1_, float jarg2);
+  public final static native Vector3 btRigidBody_computeGyroscopicImpulseImplicit_Body(long jarg1, btRigidBody jarg1_, float jarg2);
+  public final static native Vector3 btRigidBody_computeGyroscopicForceExplicit(long jarg1, btRigidBody jarg1_, float jarg2);
+  public final static native Vector3 btRigidBody_getLocalInertia(long jarg1, btRigidBody jarg1_);
   public final static native long new_btRigidBody__SWIG_0(boolean jarg1, long jarg2, btRigidBody.btRigidBodyConstructionInfo jarg2_);
   public final static native long new_btRigidBody__SWIG_1(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_, Vector3 jarg5);
   public final static native long new_btRigidBody__SWIG_2(boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_, long jarg4, btCollisionShape jarg4_);
@@ -674,6 +676,12 @@ public class DynamicsJNI {
   public final static native int btSequentialImpulseConstraintSolver_btRandInt2(long jarg1, btSequentialImpulseConstraintSolver jarg1_, int jarg2);
   public final static native void btSequentialImpulseConstraintSolver_setRandSeed(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
   public final static native long btSequentialImpulseConstraintSolver_getRandSeed(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
+  public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
+  public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+  public final static native long btSequentialImpulseConstraintSolver_getActiveConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
+  public final static native void btSequentialImpulseConstraintSolver_setConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_, long jarg2);
+  public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverGeneric(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
+  public final static native long btSequentialImpulseConstraintSolver_getScalarConstraintRowSolverLowerLimit(long jarg1, btSequentialImpulseConstraintSolver jarg1_);
   public final static native void btSolverBody_worldTransform_set(long jarg1, btSolverBody jarg1_, long jarg2, btTransform jarg2_);
   public final static native long btSolverBody_worldTransform_get(long jarg1, btSolverBody jarg1_);
   public final static native void btSolverBody_deltaLinearVelocity_set(long jarg1, btSolverBody jarg1_, long jarg2, btVector3 jarg2_);
@@ -1245,6 +1253,7 @@ public class DynamicsJNI {
   public final static native void btHingeConstraint_setLimit__SWIG_2(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3, float jarg4);
   public final static native void btHingeConstraint_setLimit__SWIG_3(long jarg1, btHingeConstraint jarg1_, float jarg2, float jarg3);
   public final static native void btHingeConstraint_setAxis(long jarg1, btHingeConstraint jarg1_, Vector3 jarg2);
+  public final static native boolean btHingeConstraint_hasLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getLowerLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getUpperLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getHingeAngle__SWIG_0(long jarg1, btHingeConstraint jarg1_);
@@ -1293,6 +1302,17 @@ public class DynamicsJNI {
   public final static native float btHingeConstraintDoubleData_relaxationFactor_get(long jarg1, btHingeConstraintDoubleData jarg1_);
   public final static native long new_btHingeConstraintDoubleData();
   public final static native void delete_btHingeConstraintDoubleData(long jarg1);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, boolean jarg7);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_2(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3, boolean jarg4);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_3(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_4(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_5(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_6(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
+  public final static native long new_btHingeAccumulatedAngleConstraint__SWIG_7(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
+  public final static native float btHingeAccumulatedAngleConstraint_getAccumulatedHingeAngle(long jarg1, btHingeAccumulatedAngleConstraint jarg1_);
+  public final static native void btHingeAccumulatedAngleConstraint_setAccumulatedHingeAngle(long jarg1, btHingeAccumulatedAngleConstraint jarg1_, float jarg2);
+  public final static native void delete_btHingeAccumulatedAngleConstraint(long jarg1);
   public final static native void btHingeConstraintFloatData_typeConstraintData_set(long jarg1, btHingeConstraintFloatData jarg1_, long jarg2, btTypedConstraintData jarg2_);
   public final static native long btHingeConstraintFloatData_typeConstraintData_get(long jarg1, btHingeConstraintFloatData jarg1_);
   public final static native void btHingeConstraintFloatData_rbAFrame_set(long jarg1, btHingeConstraintFloatData jarg1_, long jarg2, btTransformFloatData jarg2_);
@@ -1409,10 +1429,6 @@ public class DynamicsJNI {
   public final static native void delete_btHinge2Constraint(long jarg1);
   public final static native long new_btFixedConstraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
   public final static native void delete_btFixedConstraint(long jarg1);
-  public final static native void btFixedConstraint_setParam__SWIG_0(long jarg1, btFixedConstraint jarg1_, int jarg2, float jarg3, int jarg4);
-  public final static native void btFixedConstraint_setParam__SWIG_1(long jarg1, btFixedConstraint jarg1_, int jarg2, float jarg3);
-  public final static native float btFixedConstraint_getParam__SWIG_0(long jarg1, btFixedConstraint jarg1_, int jarg2, int jarg3);
-  public final static native float btFixedConstraint_getParam__SWIG_1(long jarg1, btFixedConstraint jarg1_, int jarg2);
   public final static native void delete_btVehicleRaycaster(long jarg1);
   public final static native long new_btVehicleRaycaster_btVehicleRaycasterResult();
   public final static native void btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set(long jarg1, btVehicleRaycaster.btVehicleRaycasterResult jarg1_, long jarg2, btVector3 jarg2_);
@@ -1589,8 +1605,7 @@ public class DynamicsJNI {
   public final static native long btConeTwistConstraint_SWIGUpcast(long jarg1);
   public final static native long btGeneric6DofSpringConstraint_SWIGUpcast(long jarg1);
   public final static native long btHingeConstraint_SWIGUpcast(long jarg1);
-  public final static native long btHinge2Constraint_SWIGUpcast(long jarg1);
-  public final static native long btFixedConstraint_SWIGUpcast(long jarg1);
+  public final static native long btHingeAccumulatedAngleConstraint_SWIGUpcast(long jarg1);
   public final static native long btRaycastVehicle_SWIGUpcast(long jarg1);
   public final static native long btDefaultVehicleRaycaster_SWIGUpcast(long jarg1);
 

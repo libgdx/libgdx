@@ -38,12 +38,13 @@ public:
     virtual void drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, btTransform const &transform, btVector3 const &color);
     virtual void drawCone(btScalar radius, btScalar height, int upAxis, btTransform const &transform, btVector3 const &color);
     virtual void drawPlane(btVector3 const &planeNormal, btScalar planeConst, btTransform const &transform, btVector3 const &color);
+    virtual void flushLines();
 public:
     bool swig_overrides(int n) {
-      return (n < 24 ? swig_override[n] : false);
+      return (n < 25 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[24];
+    bool swig_override[25];
 };
 
 class SwigDirector_btMotionState : public btMotionState, public Swig::Director {

@@ -1,0 +1,5 @@
+<config>	
+	<libs>
+		<lib>libs/libgdx-box2d.a</lib>		
+	</libs>
+</config>

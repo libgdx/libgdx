@@ -66,29 +66,33 @@ public class TextureDescriptor<T extends GLTexture> implements Comparable<Textur
 		return other.texture == texture && other.minFilter == minFilter && other.magFilter == magFilter && other.uWrap == uWrap
 			&& other.vWrap == vWrap;
 	}
-	
+
 	@Override
 	public int hashCode () {
-		long result = texture.glTarget;
-		result = 811 * result + texture.getTextureObjectHandle();
-		result = 811 * result + minFilter.getGLEnum();
-		result = 811 * result + magFilter.getGLEnum();
-		result = 811 * result + uWrap.getGLEnum();
-		result = 811 * result + vWrap.getGLEnum();
+		long result = (texture == null ? 0 : texture.glTarget);
+		result = 811 * result + (texture == null ? 0 : texture.getTextureObjectHandle());
+		result = 811 * result + (minFilter == null ? 0 : minFilter.getGLEnum());
+		result = 811 * result + (magFilter == null ? 0 : magFilter.getGLEnum());
+		result = 811 * result + (uWrap == null ? 0 : uWrap.getGLEnum());
+		result = 811 * result + (vWrap == null ? 0 : vWrap.getGLEnum());
 		return (int)(result ^ (result >> 32));
 	}
 
 	@Override
 	public int compareTo (TextureDescriptor<T> o) {
 		if (o == this) return 0;
-		if (texture.glTarget != o.texture.glTarget)
-			return texture.glTarget - o.texture.glTarget;
-		if (texture.getTextureObjectHandle() != o.texture.getTextureObjectHandle())
-			return texture.getTextureObjectHandle() - o.texture.getTextureObjectHandle();
-		if (minFilter != o.minFilter) return minFilter.getGLEnum() - o.minFilter.getGLEnum();
-		if (magFilter != o.magFilter) return magFilter.getGLEnum() - o.magFilter.getGLEnum();
-		if (uWrap != o.uWrap) return uWrap.getGLEnum() - o.uWrap.getGLEnum();
-		if (vWrap != o.vWrap) return vWrap.getGLEnum() - o.vWrap.getGLEnum();
+		int t1 = texture == null ? 0 : texture.glTarget;
+		int t2 = o.texture == null ? 0 : o.texture.glTarget;
+		if (t1 != t2) return t1 - t2;
+		int h1 = texture == null ? 0 : texture.getTextureObjectHandle();
+		int h2 = o.texture == null ? 0 : o.texture.getTextureObjectHandle();
+		if (h1 != h2) return h1 - h2;
+		if (minFilter != o.minFilter)
+			return (minFilter == null ? 0 : minFilter.getGLEnum()) - (o.minFilter == null ? 0 : o.minFilter.getGLEnum());
+		if (magFilter != o.magFilter)
+			return (magFilter == null ? 0 : magFilter.getGLEnum()) - (o.magFilter == null ? 0 : o.magFilter.getGLEnum());
+		if (uWrap != o.uWrap) return (uWrap == null ? 0 : uWrap.getGLEnum()) - (o.uWrap == null ? 0 : o.uWrap.getGLEnum());
+		if (vWrap != o.vWrap) return (vWrap == null ? 0 : vWrap.getGLEnum()) - (o.vWrap == null ? 0 : o.vWrap.getGLEnum());
 		return 0;
 	}
 }

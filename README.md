@@ -1,6 +1,6 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
-[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx)](http://144.76.220.132:8080/job/libgdx/)
+[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx&.png)](http://144.76.220.132:8080/job/libgdx/)
 
 libGDX is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
@@ -17,7 +17,7 @@ WebGL enabled browser and iOS.
   * [Read the Wiki](https://github.com/libgdx/libgdx/wiki)
 
 ### Downloads
-As we switched to Gradle, there's no need to download libGDX itself anymore. For those of you who still prefer the old way of doing things, you can get libGDX from the [offical download site](http://libgdx.badlogicgames.com/download.html).
+As we switched to Gradle, there's no need to download libGDX itself anymore. For those of you who still prefer the old way of doing things, you can get libGDX from the [official download site](http://libgdx.badlogicgames.com/download.html).
 
 ### Documentation
 The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a 
@@ -73,6 +73,5 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 <td style="text-align: center;"><a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a></td>
 </tr>
 </table>
-
 
 Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.

@@ -96,12 +96,11 @@ namespace bParse {
 		char* getFileElement(short *firstStruct, char *lookupName, char *lookupType, char *data, short **foundPos);
 
 
-		void swap(char *head, class bChunkInd& ch);
-
-		void swapData(char *data, short type, int arraySize);
-		void swapStruct(int dna_nr, char *data);
-
-
+		void swap(char *head, class bChunkInd& ch, bool ignoreEndianFlag);
+		void swapData(char *data, short type, int arraySize, bool ignoreEndianFlag);
+		void swapStruct(int dna_nr, char *data, bool ignoreEndianFlag);
+		void swapLen(char *dataPtr);
+		void swapDNA(char* ptr);
 
 
 		char* readStruct(char *head, class bChunkInd& chunk);
@@ -155,8 +154,10 @@ namespace bParse {
 		{
 			return mVersion;
 		}
+		//pre-swap the endianness, so that data loaded on a target with different endianness doesn't need to be swapped
+		void preSwap();
+		void writeFile(const char* fileName);
 
-		
 	};
 }
 

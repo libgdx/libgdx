@@ -82,7 +82,7 @@ public class BuildScriptHelper {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOS)) && moduleDependency.contains("native")) {
+				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
 					write(wr, "compile \"" + moduleDependency + "\"");
@@ -93,7 +93,7 @@ public class BuildScriptHelper {
 	}
 
 	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.IOS) || project.equals(ProjectType.ANDROID)) {
+		if (project.equals(ProjectType.ANDROID)) {
 			write(wr, "configurations { natives }");
 		}
 	}
