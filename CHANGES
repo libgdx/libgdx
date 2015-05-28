@@ -1,5 +1,6 @@
 [1.6.2]
-- API  Change: TiledMapImageLayer now uses floats instead of ints for positioning
+- API Change: TiledMapImageLayer now uses floats instead of ints for positioning
+- API Change: Added GLFrameBuffer and FrameBufferCubemap: Framebuffer now extends GLFramebuffer, see #2933
 
 [1.6.1]
 - Added optional hostname argument to Net.newServerSocket method to allow specific ip bindings for server applications made with gdx.
@@ -41,8 +42,6 @@
 - API Change: Group#toString now returns actor hierarchy. Group#print is gone.
 - Added SpotLight class, see https://github.com/libgdx/libgdx/pull/2907
 - Added support for resolving file handles using classpaths (ClasspathFileHandleResolver)
-- Added FrameBufferCubemap
-- Added GLFrameBuffer
 
 [1.5.4]
 - Added support for image layers in Tiled maps (TiledMapImageLayer)

@@ -61,20 +61,18 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author realitix */
 public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 
-	/** the index of last side rendered **/
-	protected int nbSides;
+	/** the zero-based index of the active side **/
+	private int currentSide;
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 *
 	 * @param format
 	 * @param width
 	 * @param height
-	 * @param hasDepth
-	 */
+	 * @param hasDepth */
 	public FrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth) {
 		this(format, width, height, hasDepth, false);
 	}
-
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
 	 *
@@ -97,59 +95,37 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
-	/**
-	 * Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it.
-	 */
+	/** Makes the frame buffer current so everything gets drawn to it, must be followed by call to either {@link #nextSide()} or
+	 * {@link #bindSide(com.badlogic.gdx.graphics.Cubemap.CubemapSide)} to activate the side to render onto. */
 	@Override
-	public void begin() {
-		nbSides = -1;
-		super.begin();
+	public void bind () {
+		currentSide = -1;
+		super.bind();
 	}
 
-	/** Bind the next side of cubemap and return false if no more side. */
-	public boolean nextSide() {
-		if( nbSides > 5 ) {
+	/** Bind the next side of cubemap and return false if no more side. Should be called in between a call to {@link #begin()} and
+	 * #end to cycle to each side of the cubemap to render on. */
+	public boolean nextSide () {
+		if (currentSide > 5) {
 			throw new GdxRuntimeException("No remaining sides.");
-		}
-		else if ( nbSides == 5 ) {
+		} else if (currentSide == 5) {
 			return false;
 		}
 
-		nbSides++;
+		currentSide++;
 		bindSide(getSide());
 		return true;
 	}
 
-	/**
-	 * Bind the side.
-	 * @param side Side to bind
-	 */
-	protected void bindSide(final Cubemap.CubemapSide side) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0,
-			side.glEnum, colorTexture.getTextureObjectHandle(), 0);
+	/** Bind the side, making it active to render on. Should be called in between a call to {@link #begin()} and {@link #end()}.
+	 * @param side The side to bind */
+	protected void bindSide (final Cubemap.CubemapSide side) {
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
+			colorTexture.getTextureObjectHandle(), 0);
 	}
 
-	/**
-	 * Get binded side.
-	 */
-	public Cubemap.CubemapSide getSide() {
-		return Cubemap.CubemapSide.values()[nbSides];
-	}
-
-	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
-	 *
-	 * @param x the x-axis position of the viewport in pixels
-	 * @param y the y-asis position of the viewport in pixels
-	 * @param width the width of the viewport in pixels
-	 * @param height the height of the viewport in pixels */
-	@Override
-	public void end (int x, int y, int width, int height) {
-		if( nbSides < 5 ) throw new GdxRuntimeException("Not all sides have been rendered.");
-		super.end(x, y, width, height);
-	}
-
-	/** @return the color buffer cubemap */
-	public Cubemap getColorBufferCubemap () {
-		return colorTexture;
+	/** Get the currently bound side. */
+	public Cubemap.CubemapSide getSide () {
+		return currentSide < 0 ? null : Cubemap.CubemapSide.values()[currentSide];
 	}
 }

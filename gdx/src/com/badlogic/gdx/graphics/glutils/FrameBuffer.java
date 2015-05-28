@@ -70,9 +70,9 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
-
-	/** @return the color buffer texture */
-	public Texture getColorBufferTexture () {
-		return colorTexture;
+	
+	/** See {@link GLFrameBuffer#unbind()} */
+	public static void unbind () {
+		GLFrameBuffer.unbind();
 	}
 }

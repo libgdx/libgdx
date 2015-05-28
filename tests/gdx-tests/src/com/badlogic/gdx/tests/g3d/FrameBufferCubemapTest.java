@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -40,7 +41,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		camFb.far = 1000f;
 		camFb.update();
 		
-		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, false);
+		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, true);
 		
 		ObjLoader objLoader = new ObjLoader();
 		cubeMesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
@@ -54,7 +55,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		camCube = new PerspectiveCamera(67, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
 		camCube.position.set(0f, 2f, 2f);
 		camCube.lookAt(0, 0, 0);
-		camCube.near = 0.1f;
+		camCube.near = 1f;
 		camCube.far = 300f;
 		camCube.update();
 	}
@@ -92,9 +93,10 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 			modelBatch.end();
 		}
 		fb.end();
-		cubemap = fb.getColorBufferCubemap();
+		cubemap = fb.getColorBufferTexture();
 	}
 	
+	float yaw, pitch, roll;
 	public void renderCube() {
 		int w = Gdx.graphics.getWidth();
 		int h = Gdx.graphics.getHeight();
@@ -109,7 +111,9 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		cubeInstance.transform.rotate(Vector3.Y, 45 * Gdx.graphics.getDeltaTime());
+		pitch += 25 * Gdx.graphics.getDeltaTime();
+		yaw += 45 * Gdx.graphics.getDeltaTime();
+		cubeInstance.transform.setFromEulerAngles(yaw, pitch, roll);
 		cubeBatch.begin(camCube);
 		cubeBatch.render(cubeInstance);
 		cubeBatch.end();
