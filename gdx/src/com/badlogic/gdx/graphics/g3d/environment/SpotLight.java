@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,55 +20,60 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
-/** Note that the default shader doesn't support point lights, you'll have to supply your own shader to use this class.
+/** Note that the default shader doesn't support spot lights, you'll have to supply your own shader to use this class.
  * @author realitix */
 public class SpotLight extends BaseLight {
 	public final Vector3 position = new Vector3();
 	public final Vector3 direction = new Vector3();
 	public float intensity;
 	public float cutoffAngle;
+	public float exponent;
 
 	public SpotLight set (final SpotLight copyFrom) {
-		return set(copyFrom.color, copyFrom.position, copyFrom.direction, copyFrom.intensity, copyFrom.cutoffAngle);
+		return set(copyFrom.color, copyFrom.position, copyFrom.direction, copyFrom.intensity, copyFrom.cutoffAngle, copyFrom.exponent);
 	}
 
 	public SpotLight set (final Color color, final Vector3 position, final Vector3 direction, final float intensity,
-		final float cutoffAngle) {
+		final float cutoffAngle, final float exponent) {
 		if (color != null) this.color.set(color);
 		if (position != null) this.position.set(position);
 		if (direction != null) this.direction.set(direction).nor();
 		this.intensity = intensity;
 		this.cutoffAngle = cutoffAngle;
+		this.exponent = exponent;
 		return this;
 	}
 
 	public SpotLight set (final float r, final float g, final float b, final Vector3 position, final Vector3 direction,
-		final float intensity, final float cutoffAngle) {
+		final float intensity, final float cutoffAngle, final float exponent) {
 		this.color.set(r, g, b, 1f);
 		if (position != null) this.position.set(position);
 		if (direction != null) this.direction.set(direction).nor();
 		this.intensity = intensity;
 		this.cutoffAngle = cutoffAngle;
+		this.exponent = exponent;
 		return this;
 	}
 
 	public SpotLight set (final Color color, final float posX, final float posY, final float posZ, final float dirX,
-		final float dirY, final float dirZ, final float intensity, final float cutoffAngle) {
+		final float dirY, final float dirZ, final float intensity, final float cutoffAngle, final float exponent) {
 		if (color != null) this.color.set(color);
 		this.position.set(posX, posY, posZ);
 		this.direction.set(dirX, dirY, dirZ).nor();
 		this.intensity = intensity;
 		this.cutoffAngle = cutoffAngle;
+		this.exponent = exponent;
 		return this;
 	}
 
 	public SpotLight set (final float r, final float g, final float b, final float posX, final float posY, final float posZ,
-		final float dirX, final float dirY, final float dirZ, final float intensity, final float cutoffAngle) {
+		final float dirX, final float dirY, final float dirZ, final float intensity, final float cutoffAngle, final float exponent) {
 		this.color.set(r, g, b, 1f);
 		this.position.set(posX, posY, posZ);
 		this.direction.set(dirX, dirY, dirZ).nor();
 		this.intensity = intensity;
 		this.cutoffAngle = cutoffAngle;
+		this.exponent = exponent;
 		return this;
 	}
 
@@ -85,6 +90,6 @@ public class SpotLight extends BaseLight {
 	public boolean equals (SpotLight other) {
 		return (other != null && (other == this || (color.equals(other.color) && position.equals(other.position)
 			&& direction.equals(other.direction) && MathUtils.isEqual(intensity, other.intensity) && MathUtils.isEqual(cutoffAngle,
-			other.cutoffAngle))));
+				other.cutoffAngle) && MathUtils.isEqual(exponent, other.exponent) )));
 	}
 }
