@@ -53,6 +53,7 @@ import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
+import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
@@ -130,6 +131,7 @@ public class GdxTests {
 		GroupCullingTest.class,
 		GroupFadeTest.class,
 		GroupTest.class,
+		HeightMapTest.class,
 		HelloTriangle.class,
 		HexagonalTiledMapTest.class,
 		I18NMessageTest.class,
