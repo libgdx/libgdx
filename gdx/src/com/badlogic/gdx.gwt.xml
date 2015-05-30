@@ -218,6 +218,8 @@
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
 		<include name="graphics/glutils/FrameBuffer.java"/>
+		<include name="graphics/glutils/FrameBufferCubemap.java"/>
+		<include name="graphics/glutils/GLFrameBuffer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>

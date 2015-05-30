@@ -49,6 +49,11 @@ public class HeadlessNet implements Net {
 	}
 	
 	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
+	}
+	
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}

@@ -6,9 +6,9 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.6.0";
+	static String libgdxVersion = "1.6.1";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.6.1-SNAPSHOT";
+	static String libgdxNightlyVersion = "1.6.2-SNAPSHOT";
 	static String roboVMVersion = "1.2.0";
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";

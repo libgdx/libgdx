@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math;
 
 public class Polyline implements Shape2D {
-	private final float[] localVertices;
+	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
 	private float originX, originY;
@@ -153,6 +153,12 @@ public class Polyline implements Shape2D {
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
+		dirty = true;
+	}
+
+	public void setVertices (float[] vertices) {
+		if (vertices.length < 4) throw new IllegalArgumentException("polylines must contain at least 2 points.");
+		this.localVertices = vertices;
 		dirty = true;
 	}
 
