@@ -1006,35 +1006,69 @@ public class ShapeRenderer implements Disposable {
 		}
 	}
 
-	/** Draws a polygon in the x/y plane using {@link ShapeType#Line}. The vertices must contain at least 3 points (6 floats x,y). */
+	/** Draws a polygon in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. The vertices must contain at least 3 points (6 floats x,y). */
 	public void polygon (float[] vertices, int offset, int count) {
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
 		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
 
-		check(ShapeType.Line, null, count);
+		check(ShapeType.Line, ShapeType.Filled, count);
 		float colorBits = color.toFloatBits();
 		float firstX = vertices[0];
 		float firstY = vertices[1];
+		if (shapeType == ShapeType.Line) {
+			for (int i = offset, n = offset + count; i < n; i += 2) {
+				float x1 = vertices[i];
+				float y1 = vertices[i + 1];
 
-		for (int i = offset, n = offset + count; i < n; i += 2) {
-			float x1 = vertices[i];
-			float y1 = vertices[i + 1];
+				float x2;
+				float y2;
 
-			float x2;
-			float y2;
+				if (i + 2 >= count) {
+					x2 = firstX;
+					y2 = firstY;
+				} else {
+					x2 = vertices[i + 2];
+					y2 = vertices[i + 3];
+				}
 
-			if (i + 2 >= count) {
-				x2 = firstX;
-				y2 = firstY;
-			} else {
-				x2 = vertices[i + 2];
-				y2 = vertices[i + 3];
+				renderer.color(colorBits);
+				renderer.vertex(x1, y1, 0);
+				renderer.color(colorBits);
+				renderer.vertex(x2, y2, 0);
+
 			}
+		} else {
 
-			renderer.color(colorBits);
-			renderer.vertex(x1, y1, 0);
-			renderer.color(colorBits);
-			renderer.vertex(x2, y2, 0);
+			for (int i = offset, n = offset + count; i < n; i += 4) {
+				float x1 = vertices[i];
+				float y1 = vertices[i + 1];
+
+				if (i + 2 >= count) {
+					break;
+				}
+
+				float x2 = vertices[i + 2];
+				float y2 = vertices[i + 3];
+
+				float x3;
+				float y3;
+
+				if (i + 4 >= count) {
+					x3 = firstX;
+					y3 = firstY;
+				} else {
+					x3 = vertices[i + 4];
+					y3 = vertices[i + 5];
+				}
+
+				renderer.color(colorBits);
+				renderer.vertex(x1, y1, 0);
+				renderer.color(colorBits);
+				renderer.vertex(x2, y2, 0);
+				renderer.color(colorBits);
+				renderer.vertex(x3, y3, 0);
+
+			}
 		}
 	}
 
