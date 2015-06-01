@@ -128,12 +128,6 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		super(BillboardControllerRenderData.class);
 		renderables = new Array<Renderable>();
 		renderablePool = new RenderablePool();
-		allocIndices();
-		initRenderData();
-		ensureCapacity(capacity);
-		setUseGpu(useGPU);
-		setAlignMode(mode);
-
 		this.blendingAttribute = blendingAttribute;
 		this.depthTestAttribute = depthTestAttribute;
 
@@ -141,6 +135,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
 		if( this.depthTestAttribute == null )
 			this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
+
+		allocIndices();
+		initRenderData();
+		ensureCapacity(capacity);
+		setUseGpu(useGPU);
+		setAlignMode(mode);
 	}
 
 	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
