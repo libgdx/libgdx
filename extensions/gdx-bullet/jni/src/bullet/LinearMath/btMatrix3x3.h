@@ -610,6 +610,27 @@ public:
 	/**@brief Return the inverse of the matrix */
 	btMatrix3x3 inverse() const; 
 
+	/// Solve A * x = b, where b is a column vector. This is more efficient
+	/// than computing the inverse in one-shot cases.
+	///Solve33 is from Box2d, thanks to Erin Catto,
+	btVector3 solve33(const btVector3& b) const
+	{
+		btVector3 col1 = getColumn(0);
+		btVector3 col2 = getColumn(1);
+		btVector3 col3 = getColumn(2);
+		
+		btScalar det = btDot(col1, btCross(col2, col3));
+		if (btFabs(det)>SIMD_EPSILON)
+		{
+			det = 1.0f / det;
+		}
+		btVector3 x;
+		x[0] = det * btDot(b, btCross(col2, col3));
+		x[1] = det * btDot(col1, btCross(b, col3));
+		x[2] = det * btDot(col1, btCross(col2, b));
+		return x;
+	}
+
 	btMatrix3x3 transposeTimes(const btMatrix3x3& m) const;
 	btMatrix3x3 timesTranspose(const btMatrix3x3& m) const;
 

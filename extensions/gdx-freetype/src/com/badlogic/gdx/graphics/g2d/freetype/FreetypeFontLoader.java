@@ -37,10 +37,8 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter) {
 		if(parameter == null) throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
-		FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);	
-		FreeTypeBitmapFontData data = generator.generateData(parameter.fontParameters);
-		BitmapFont font = new BitmapFont(data, data.regions, false);
-		font.setOwnsTexture(true);
+		FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);
+		BitmapFont font = generator.generateFont(parameter.fontParameters);
 		return font;
 	}
 

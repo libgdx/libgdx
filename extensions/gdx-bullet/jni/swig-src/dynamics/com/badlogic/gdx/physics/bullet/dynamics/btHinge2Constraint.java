@@ -16,15 +16,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btHinge2Constraint extends btGeneric6DofSpringConstraint {
+public class btHinge2Constraint extends BulletBase {
 	private long swigCPtr;
 	
 	protected btHinge2Constraint(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, DynamicsJNI.btHinge2Constraint_SWIGUpcast(cPtr), cMemoryOwn);
+		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btHinge2Constraint, normally you should not need this constructor it's intended for low-level usage. */
+	/** Construct a new btHinge2Constraint, normally you should not need this constructor it's intended for low-level usage. */ 
 	public btHinge2Constraint(long cPtr, boolean cMemoryOwn) {
 		this("btHinge2Constraint", cPtr, cMemoryOwn);
 		construct();
@@ -34,7 +34,7 @@ public class btHinge2Constraint extends btGeneric6DofSpringConstraint {
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(DynamicsJNI.btHinge2Constraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
 	
 	public static long getCPtr(btHinge2Constraint obj) {

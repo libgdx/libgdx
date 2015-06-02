@@ -52,7 +52,10 @@ class btTriangleMesh : public btTriangleIndexVertexArray
 		///By default addTriangle won't search for duplicate vertices, because the search is very slow for large triangle meshes.
 		///In general it is better to directly use btTriangleIndexVertexArray instead.
 		void	addTriangle(const btVector3& vertex0,const btVector3& vertex1,const btVector3& vertex2, bool removeDuplicateVertices=false);
-		
+
+		///Add a triangle using its indices. Make sure the indices are pointing within the vertices array, so add the vertices first (and to be sure, avoid removal of duplicate vertices)	
+		void	addTriangleIndices(int index1, int index2, int index3 );
+	
 		int getNumTriangles() const;
 
 		virtual void	preallocateVertices(int numverts);

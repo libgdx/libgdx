@@ -46,7 +46,8 @@ class	btIDebugDraw
 		DBG_DrawConstraints = (1 << 11),
 		DBG_DrawConstraintLimits = (1 << 12),
 		DBG_FastWireframe = (1<<13),
-        DBG_DrawNormals = (1<<14),
+		DBG_DrawNormals = (1<<14),
+		DBG_DrawFrames = (1<<15),
 		DBG_MAX_DEBUG_DRAW_MODE
 	};
 
@@ -147,7 +148,7 @@ class	btIDebugDraw
 		const btVector3& vx = axis;
 		btVector3 vy = normal.cross(axis);
 		btScalar step = stepDegrees * SIMD_RADS_PER_DEG;
-		int nSteps = (int)((maxAngle - minAngle) / step);
+		int nSteps = (int)btFabs((maxAngle - minAngle) / step);
 		if(!nSteps) nSteps = 1;
 		btVector3 prev = center + radiusA * vx * btCos(minAngle) + radiusB * vy * btSin(minAngle);
 		if(drawSect)
@@ -437,6 +438,10 @@ class	btIDebugDraw
 		btVector3 pt3 = planeOrigin - vec1*vecLen;
 		drawLine(transform*pt0,transform*pt1,color);
 		drawLine(transform*pt2,transform*pt3,color);
+	}
+
+	virtual void flushLines()
+	{
 	}
 };
 

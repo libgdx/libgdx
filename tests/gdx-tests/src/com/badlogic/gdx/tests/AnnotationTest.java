@@ -28,6 +28,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.Method;
 
 /** Performs some tests with {@link Annotation} and prints the results on the screen.
  * @author dludwig */
@@ -57,7 +58,10 @@ public class AnnotationTest extends GdxTest {
 	/** Sample usage of class and field annotations. */
 	@TestAnnotation(name = "MyAnnotatedClass", someEnum = TestEnum.EnumB)
 	static public class AnnotatedClass {
+		public int unanottatedField;
+		public int unannotatedMethod() { return 0; }
 		@TestAnnotation(name = "MyAnnotatedField", values = {4, 5}) public int annotatedValue;
+		@TestAnnotation(name = "MyAnnotatedMethod", values = {6, 7}) public int annotatedMethod () { return 0; };		
 	}
 
 	@Override
@@ -89,6 +93,22 @@ public class AnnotationTest extends GdxTest {
 			} else {
 				println("ERROR: Field 'annotatedValue' not found.");
 			}
+
+			Method method = ClassReflection.getDeclaredMethod(AnnotatedClass.class, "annotatedMethod");
+			if (method != null) {
+				Annotation[] annotations = method.getDeclaredAnnotations();
+				for (Annotation a : annotations) {
+					if (a.getAnnotationType().equals(TestAnnotation.class)) {
+						TestAnnotation annotationInstance = a.getAnnotation(TestAnnotation.class);
+						println("Method annotation:\n name=" + annotationInstance.name() + ",\n values="
+							+ Arrays.toString(annotationInstance.values()) + ",\n enum=" + annotationInstance.someEnum().toString());
+						break;
+					}
+				}
+			} else {
+				println("ERROR: Method 'annotatedMethod' not found.");
+			}
+			
 		} catch (Exception e) {
 			println("FAILED: " + e.getMessage());
 			message += e.getClass();

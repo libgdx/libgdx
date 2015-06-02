@@ -235,11 +235,13 @@ public class Timer {
 		public void resume () {
 			long delayMillis = System.nanoTime() / 1000000 - pauseMillis;
 			synchronized (instances) {
-				for (int i = 0, n = instances.size; i < n; i++)
+				for (int i = 0, n = instances.size; i < n; i++) {
 					instances.get(i).delay(delayMillis);
+				}
 			}
 			app = Gdx.app;
 			new Thread(this, "Timer").start();
+			thread = this;
 		}
 
 		public void pause () {

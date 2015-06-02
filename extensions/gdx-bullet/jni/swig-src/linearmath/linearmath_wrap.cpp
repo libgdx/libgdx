@@ -598,7 +598,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_LinearMathJNI = NULL;
-    jmethodID director_methids[26];
+    jmethodID director_methids[27];
   }
 }
 
@@ -2718,6 +2718,30 @@ void SwigDirector_btIDebugDraw::drawPlane(btVector3 const &planeNormal, btScalar
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
 
+void SwigDirector_btIDebugDraw::flushLines() {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[24]) {
+    btIDebugDraw::flushLines();
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[24], swigjobj);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in btIDebugDraw::flushLines ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
 void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global) {
   static struct {
     const char *mname;
@@ -2795,6 +2819,9 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
     },
     {
       "drawPlane", "(Lcom/badlogic/gdx/math/Vector3;FLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Vector3;)V", NULL 
+    },
+    {
+      "flushLines", "()V", NULL 
     }
   };
   
@@ -2807,7 +2834,7 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 24; ++i) {
+    for (int i = 0; i < 25; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -2846,7 +2873,7 @@ void SwigDirector_btMotionState::getWorldTransform(btTransform &worldTrans) cons
     jworldTrans = gdx_takePoolObjectMatrix4(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxAutoCommitbtTransformAndReleaseMatrix4 auto_commit_worldTrans(jenv, jworldTrans, &worldTrans, "poolMatrix4");
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[24], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[25], swigjobj, jworldTrans);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -2874,7 +2901,7 @@ void SwigDirector_btMotionState::setWorldTransform(btTransform const &worldTrans
     jworldTrans = gdx_takePoolObjectMatrix4(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxPoolAutoReleaseMatrix4 autoRelease_jworldTrans(jenv, "poolMatrix4", jworldTrans);
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[25], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[26], swigjobj, jworldTrans);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -7777,6 +7804,28 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1flushLines(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  (arg1)->flushLines();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1flushLinesSwigExplicitbtIDebugDraw(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  (arg1)->btIDebugDraw::flushLines();
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btIDebugDraw(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   btIDebugDraw *result = 0 ;
@@ -11948,7 +11997,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   static struct {
     const char *method;
     const char *signature;
-  } methods[26] = {
+  } methods[27] = {
     {
       "SwigDirector_btIDebugDraw_drawLine__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/math/Vector3;)V" 
     },
@@ -12020,6 +12069,9 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
     },
     {
       "SwigDirector_btIDebugDraw_drawPlane", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;Lcom/badlogic/gdx/math/Vector3;FLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Vector3;)V" 
+    },
+    {
+      "SwigDirector_btIDebugDraw_flushLines", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;)V" 
     },
     {
       "SwigDirector_btMotionState_getWorldTransform", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btMotionState;Lcom/badlogic/gdx/math/Matrix4;)V" 

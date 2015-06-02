@@ -16,6 +16,12 @@
 %ignore btSolverBody::getPushVelocity;
 %ignore btSolverBody::getTurnVelocity;
 
+%ignore btSequentialImpulseConstraintSolver::getSSE2ConstraintRowSolverGeneric();
+%ignore btSequentialImpulseConstraintSolver::getSSE2ConstraintRowSolverLowerLimit();
+%ignore btSequentialImpulseConstraintSolver::getSSE4_1ConstraintRowSolverGeneric();
+%ignore btSequentialImpulseConstraintSolver::getSSE4_1ConstraintRowSolverLowerLimit();
+
+
 %typemap(javaimports) SWIGTYPE	%{
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;

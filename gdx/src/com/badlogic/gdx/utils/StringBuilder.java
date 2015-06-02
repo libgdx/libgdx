@@ -919,6 +919,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (CharSequence csq) {
 		if (csq == null) {
 			appendNull();
+		} else if (csq instanceof StringBuilder) {
+			StringBuilder builder = (StringBuilder)csq;
+			append0(builder.chars, 0, builder.length);
 		} else {
 			append0(csq.toString());
 		}

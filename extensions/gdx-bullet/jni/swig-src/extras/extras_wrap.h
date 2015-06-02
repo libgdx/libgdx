@@ -30,6 +30,9 @@ public:
     virtual btCollisionShape *createCylinderShapeX(btScalar radius, btScalar height);
     virtual btCollisionShape *createCylinderShapeY(btScalar radius, btScalar height);
     virtual btCollisionShape *createCylinderShapeZ(btScalar radius, btScalar height);
+    virtual btCollisionShape *createConeShapeX(btScalar radius, btScalar height);
+    virtual btCollisionShape *createConeShapeY(btScalar radius, btScalar height);
+    virtual btCollisionShape *createConeShapeZ(btScalar radius, btScalar height);
     virtual btTriangleIndexVertexArray *createTriangleMeshContainer();
     virtual btBvhTriangleMeshShape *createBvhTriangleMeshShape(btStridingMeshInterface *trimesh, btOptimizedBvh *bvh);
     virtual btCollisionShape *createConvexTriangleMeshShape(btStridingMeshInterface *trimesh);
@@ -50,15 +53,17 @@ public:
     virtual btGeneric6DofConstraint *createGeneric6DofConstraint(btRigidBody &rbA, btRigidBody &rbB, btTransform const &frameInA, btTransform const &frameInB, bool useLinearReferenceFrameA);
     virtual btGeneric6DofConstraint *createGeneric6DofConstraint(btRigidBody &rbB, btTransform const &frameInB, bool useLinearReferenceFrameB);
     virtual btGeneric6DofSpringConstraint *createGeneric6DofSpringConstraint(btRigidBody &rbA, btRigidBody &rbB, btTransform const &frameInA, btTransform const &frameInB, bool useLinearReferenceFrameA);
+    virtual btGeneric6DofSpring2Constraint *createGeneric6DofSpring2Constraint(btRigidBody &rbA, btRigidBody &rbB, btTransform const &frameInA, btTransform const &frameInB, int rotateOrder);
     virtual btSliderConstraint *createSliderConstraint(btRigidBody &rbA, btRigidBody &rbB, btTransform const &frameInA, btTransform const &frameInB, bool useLinearReferenceFrameA);
     virtual btSliderConstraint *createSliderConstraint(btRigidBody &rbB, btTransform const &frameInB, bool useLinearReferenceFrameA);
+    virtual btGearConstraint *createGearConstraint(btRigidBody &rbA, btRigidBody &rbB, btVector3 const &axisInA, btVector3 const &axisInB, btScalar ratio);
     virtual bool convertAllObjects(bParse::btBulletFile *file);
 public:
     bool swig_overrides(int n) {
-      return (n < 38 ? swig_override[n] : false);
+      return (n < 43 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[38];
+    bool swig_override[43];
 };
 
 

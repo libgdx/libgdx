@@ -313,7 +313,7 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 	int edgeB=-1;
 	btVector3 worldEdgeA;
 	btVector3 worldEdgeB;
-	btVector3 witnessPointA,witnessPointB;
+	btVector3 witnessPointA(0,0,0),witnessPointB(0,0,0);
 	
 
 	int curEdgeEdge = 0;

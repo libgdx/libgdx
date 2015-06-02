@@ -69,16 +69,19 @@ public class GlyphLayout implements Poolable {
 		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
 
-	/** @param color The default color to use for the text. If {@link BitmapFontData#markupEnabled} is true, color markup tags in the
-	 *           specified string may change the color for portions of the text.
+	/** @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
+	 *           {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
+	 *           portions of the text.
 	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
 	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
-	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs. */
+	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
+	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, String truncate) {
-		if (targetWidth <= font.data.spaceWidth) // Avoid wrapping every character to it's own line/run, which is very inefficient.
-			wrap = false;
-		if (truncate != null) wrap = true; // Causes truncate code to run, doesn't actually cause wrapping.
+		if (truncate != null)
+			wrap = true; // Causes truncate code to run, doesn't actually cause wrapping.
+		else if (targetWidth <= font.data.spaceWidth) //
+			wrap = false; // Avoid one line per character, which is very inefficient.
 
 		BitmapFontData fontData = font.data;
 		boolean markupEnabled = fontData.markupEnabled;
@@ -144,19 +147,24 @@ public class GlyphLayout implements Poolable {
 
 						// Don't wrap if the glyph would fit with just its width (no xadvance or kerning).
 						if (wrap && x > targetWidth && i > 1 && x - xAdvance //
-							+ (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX - 0.00001f > targetWidth) {
+							+ (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX - 0.0001f > targetWidth) {
 
 							if (truncate != null) {
 								truncate(fontData, run, targetWidth, truncate, i, glyphRunPool);
+								x = run.x + run.width;
 								break outer;
 							}
 
-							GlyphRun next = glyphRunPool.obtain();
+							int wrapIndex = fontData.getWrapIndex(run.glyphs, i - 1);
+							if ((run.x == 0 && wrapIndex == 0) // Require at least one glyph per line.
+								|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
+								wrapIndex = i - 1;
+							}
+							GlyphRun next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 							runs.add(next);
-							wrap(fontData, run, next, Math.max(1, fontData.getWrapIndex(run.glyphs, i - 1)), i);
 
 							// Start the loop over with the new run on the next line.
-							width = Math.max(width, run.width);
+							width = Math.max(width, run.x + run.width);
 							x = 0;
 							y += fontData.down;
 							lines++;
@@ -169,14 +177,14 @@ public class GlyphLayout implements Poolable {
 						} else
 							run.width += xAdvance;
 					}
+				}
 
-					if (newline) {
-						// Next run will be on the next line.
-						width = Math.max(width, x);
-						x = 0;
-						y += fontData.down;
-						lines++;
-					}
+				if (newline) {
+					// Next run will be on the next line.
+					width = Math.max(width, x);
+					x = 0;
+					y += fontData.down;
+					lines++;
 				}
 
 				runStart = start;
@@ -229,25 +237,25 @@ public class GlyphLayout implements Poolable {
 
 		// Determine visible glyphs.
 		int count = 0;
-		float width = 0;
-		while (true) {
+		float width = run.x;
+		while (count < run.xAdvances.size) {
 			float xAdvance = run.xAdvances.get(count);
 			width += xAdvance;
 			if (width > targetWidth) {
-				run.width = width - xAdvance;
+				run.width = width - run.x - xAdvance;
 				break;
 			}
 			count++;
 		}
 
 		if (count > 1) {
-			// Append truncate glyphs.
+			// Some run glyphs fit, append truncate glyphs.
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
 			adjustLastGlyph(fontData, run);
 			run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
-			// Use only truncate glyphs.
+			// No run glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
@@ -259,42 +267,54 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.free(truncateRun);
 	}
 
-	private void wrap (BitmapFontData fontData, GlyphRun first, GlyphRun second, int wrapIndex, int widthIndex) {
+	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
+		GlyphRun second = glyphRunPool.obtain();
 		second.color.set(first.color);
+		int glyphCount = first.glyphs.size;
 
-		// Copy wrapped glyphs and xAdvances.
-		second.glyphs.addAll(first.glyphs, wrapIndex, first.glyphs.size - wrapIndex);
-		second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX);
-		second.xAdvances.addAll(first.xAdvances, wrapIndex + 1, first.xAdvances.size - (wrapIndex + 1));
+		// Determine index where first run ends, ignoring whitespace before the wrap index.
+		int endIndex = wrapIndex;
+		for (; endIndex > 0; endIndex--)
+			if (!fontData.isWhitespace((char)first.glyphs.get(endIndex - 1).id)) break;
 
-		// Increase first run width up to the wrap index.
-		while (widthIndex < wrapIndex)
+		// Determine index where second run starts, ignoring whitespace after the wrap index.
+		int startIndex = wrapIndex;
+		for (; startIndex < glyphCount; startIndex++)
+			if (!fontData.isWhitespace((char)first.glyphs.get(startIndex).id)) break;
+
+		// Copy wrapped glyphs and xAdvances to second run.
+		if (startIndex < glyphCount) {
+			second.glyphs.addAll(first.glyphs, startIndex, glyphCount - startIndex);
+			second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft);
+			second.xAdvances.addAll(first.xAdvances, startIndex + 1, first.xAdvances.size - (startIndex + 1));
+		}
+
+		// Increase first run width up to the end index.
+		while (widthIndex < endIndex)
 			first.width += first.xAdvances.get(widthIndex++);
 
 		// Reduce first run width by the wrapped glyphs that have contributed to the width.
-		while (widthIndex > wrapIndex + 1)
+		while (widthIndex > endIndex + 1)
 			first.width -= first.xAdvances.get(--widthIndex);
 
-		// Eat whitespace at end of first run.
-		for (; wrapIndex > 0; wrapIndex--) {
-			if (fontData.isWhitespace((char)first.glyphs.get(wrapIndex - 1).id)) {
-				first.width -= first.xAdvances.get(wrapIndex);
-				continue;
-			}
-			break;
+		if (endIndex == 0) {
+			// If the first run is now empty, remove it.
+			glyphRunPool.free(first);
+			runs.pop();
+		} else {
+			// Truncate wrapped glyphs from first run.
+			first.glyphs.truncate(endIndex);
+			first.xAdvances.truncate(endIndex + 1);
+			adjustLastGlyph(fontData, first);
 		}
-
-		// Truncate wrapped glyphs from first run.
-		first.glyphs.truncate(wrapIndex);
-		first.xAdvances.truncate(wrapIndex + 1);
-		adjustLastGlyph(fontData, first);
+		return second;
 	}
 
-	/** Adjusts the xadvance of the last glyph to use its width. */
+	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
 	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
 		if (fontData.isWhitespace((char)last.id)) return; // Can happen when doing truncate.
-		float width = (last.xoffset + last.width) * fontData.scaleX;
+		float width = (last.xoffset + last.width) * fontData.scaleX - fontData.padRight;
 		run.width += width - run.xAdvances.peek(); // Can cause the run width to be > targetWidth, but the problem is minimal.
 		run.xAdvances.set(run.xAdvances.size - 1, width);
 	}
@@ -309,10 +329,14 @@ public class GlyphLayout implements Poolable {
 				char ch = str.charAt(i);
 				if (ch == ']') {
 					if (i < start + 2 || i > start + 9) break; // Illegal number of hex digits.
+					if (i - start <= 7) { // RRGGBB or fewer chars.
+						for (int ii = 0, nn = 9 - (i - start); ii < nn; ii++)
+							colorInt = colorInt << 4;
+						colorInt |= 0xff;
+					}
 					Color color = colorPool.obtain();
 					colorStack.add(color);
-					Color.rgb888ToColor(color, colorInt);
-					if (i <= start + 7) color.a = 1f; // RRGGBB
+					Color.rgba8888ToColor(color, colorInt);
 					return i - start;
 				}
 				if (ch >= '0' && ch <= '9')
@@ -357,6 +381,10 @@ public class GlyphLayout implements Poolable {
 	public String toString () {
 		if (runs.size == 0) return "";
 		StringBuilder buffer = new StringBuilder(128);
+		buffer.append(width);
+		buffer.append('x');
+		buffer.append(height);
+		buffer.append('\n');
 		for (int i = 0, n = runs.size; i < n; i++) {
 			buffer.append(runs.get(i).toString());
 			buffer.append('\n');

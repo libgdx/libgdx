@@ -33,7 +33,8 @@
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
   </forceLinkClasses>
-  <libs>      
+  <libs>
+      <lib>z</lib>   
   </libs>
   <frameworks>
     <framework>UIKit</framework>

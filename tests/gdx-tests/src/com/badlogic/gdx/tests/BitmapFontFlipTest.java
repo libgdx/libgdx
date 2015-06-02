@@ -59,19 +59,19 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), true);
 
-		cache1 = new BitmapFontCache(font);
-		cache2 = new BitmapFontCache(font);
-		cache3 = new BitmapFontCache(font);
-		cache4 = new BitmapFontCache(font);
-		cache5 = new BitmapFontCache(font);
+		cache1 = font.newFontCache();
+		cache2 = font.newFontCache();
+		cache3 = font.newFontCache();
+		cache4 = font.newFontCache();
+		cache5 = font.newFontCache();
 		createCaches("cached", cache1, cache2, cache3, cache4, cache5);
 
 		font.getData().setScale(1.33f);
-		cacheScaled1 = new BitmapFontCache(font);
-		cacheScaled2 = new BitmapFontCache(font);
-		cacheScaled3 = new BitmapFontCache(font);
-		cacheScaled4 = new BitmapFontCache(font);
-		cacheScaled5 = new BitmapFontCache(font);
+		cacheScaled1 = font.newFontCache();
+		cacheScaled2 = font.newFontCache();
+		cacheScaled3 = font.newFontCache();
+		cacheScaled4 = font.newFontCache();
+		cacheScaled5 = font.newFontCache();
 		createCaches("cache scaled", cacheScaled1, cacheScaled2, cacheScaled3, cacheScaled4, cacheScaled5);
 	}
 
