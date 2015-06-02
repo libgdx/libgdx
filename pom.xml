@@ -43,7 +43,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <android.version>4.4</android.version>
-    <gwt.version>2.6.1</gwt.version>
+    <gwt.version>2.7.0</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
     <jglfw.version>1.1</jglfw.version>
     <robovm.version>1.2.0</robovm.version>
@@ -65,7 +65,7 @@
     <module>extensions/gdx-bullet/jni/maven</module>
     <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
-    <module>extensions/gdx-freetype/jni/maven</module>    
+    <module>extensions/gdx-freetype/jni/maven</module>
   </modules>
 
   <build>
