@@ -125,7 +125,7 @@ public class Bits {
 			if (bitsAtWord != 0) {
 				for (int bit = 63; bit >= 0; --bit) {
 					if ((bitsAtWord & (1L << (bit & 0x3F))) != 0L) {
-						return (word << 6) + bit;
+						return (word << 6) + bit + 1;
 					}
 				}
 			}
@@ -260,11 +260,7 @@ public class Bits {
 			bits[i] ^= other.bits[i];
 		}
 		
-		if (bits.length > commonWords) {
-			for (int i = other.bits.length, s = bits.length; s > i; i++) {
-				bits[i] = 0L;
-			}
-		} else if (commonWords < other.bits.length) {
+		if (commonWords < other.bits.length) {
 			checkCapacity(other.bits.length);
 			for (int i = commonWords, s = other.bits.length; s > i; i++) {
 				bits[i] = other.bits[i];
