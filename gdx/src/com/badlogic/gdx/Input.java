@@ -570,6 +570,15 @@ public interface Input {
 	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerZ ();
 
+	/** @return The value of the gyroscope on its x-axis. ranges between [-10,10]??? */
+	public float getGyroscopeX ();
+
+	/** @return The value of the gyroscope on its y-axis. ranges between [-10,10]??? */
+	public float getGyroscopeY ();
+
+	/** @return The value of the gyroscope on its y-axis. ranges between [-10,10]??? */
+	public float getGyroscopeZ ();
+	
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
