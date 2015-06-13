@@ -178,7 +178,7 @@ public class Scene2dTest extends GdxTest {
 		buttonLeft.setPosition(300, 400);
 		buttonRight.setPosition(300, 370);		
 		checkBoxLeft.setPosition(150, 400);
-		checkBoxRight.setPosition(150, 370);;
+		checkBoxRight.setPosition(150, 370);
 		
 		stage.addActor(buttonLeft);
 		stage.addActor(buttonRight);
