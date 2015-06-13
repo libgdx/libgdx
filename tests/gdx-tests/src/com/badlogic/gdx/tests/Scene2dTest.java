@@ -32,7 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -167,6 +169,26 @@ public class Scene2dTest extends GdxTest {
 		window.pack();
 		window.pack();
 		stage.addActor(window);
+		
+		ImageTextButton buttonLeft = new ImageTextButton("HI IM LEFT", skin, "default", true);
+		ImageTextButton buttonRight = new ImageTextButton("HI IM RIGHT", skin, "default", false);		
+		CheckBox checkBoxLeft = new CheckBox("HI IM LEFT", skin, "default", true);
+		CheckBox checkBoxRight = new CheckBox("HI IM RIGHT", skin, "default", false);
+		
+		buttonLeft.setPosition(300, 400);
+		buttonRight.setPosition(300, 370);		
+		checkBoxLeft.setPosition(150, 400);
+		checkBoxRight.setPosition(150, 370);;
+		
+		stage.addActor(buttonLeft);
+		stage.addActor(buttonRight);
+		stage.addActor(checkBoxLeft);
+		stage.addActor(checkBoxRight);
+		
+		buttonLeft.debug();
+		buttonRight.debug();
+		checkBoxLeft.debug();
+		checkBoxRight.debug();
 	}
 
 	public void render () {
