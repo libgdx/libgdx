@@ -118,18 +118,7 @@ public class FadingGame extends Game {
 	}
 
 	@Override
-	public void resize (int width, int height) {
-		boolean resize = currentScreenFBO.getHeight() != height || currentScreenFBO.getWidth() != width
-			|| nextScreenFBO.getHeight() != height || nextScreenFBO.getWidth() != width;
-
-		if (false) {
-			currentScreenFBO.dispose();
-			nextScreenFBO.dispose();
-
-			currentScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
-			nextScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, false);
-		}
-
+	public void resize (int width, int height) {				
 		if (screen != null) screen.resize(width, height);
 		if (nextScreen != null) nextScreen.resize(width, height);
 	}
