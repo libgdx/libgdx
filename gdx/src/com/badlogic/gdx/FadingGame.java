@@ -16,12 +16,10 @@
 
 package com.badlogic.gdx;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.transition.ScreenTransition;
 import com.badlogic.gdx.utils.transition.TransitionListener;
 
@@ -34,10 +32,10 @@ public class FadingGame extends Game {
 
 	protected FrameBuffer currentScreenFBO;
 	protected FrameBuffer nextScreenFBO;
+	final protected Batch batch;
 	protected Screen nextScreen;
-	protected Batch batch;
 
-	private List<TransitionListener> listerns;
+	private final Array<TransitionListener> listeners;
 
 	private float transitionDuration;
 	private float currentTransitionTime;
@@ -46,19 +44,22 @@ public class FadingGame extends Game {
 
 	public FadingGame (Batch batch) {
 		this.batch = batch;
+		this.listeners = new Array<TransitionListener>();
 	}
 
 	@Override
 	public void create () {
-		currentScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		nextScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		listerns = new ArrayList<TransitionListener>();
+		this.currentScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		this.nextScreenFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	}
 
 	@Override
 	public void dispose () {
 		if (screen != null) screen.hide();
 		if (nextScreen != null) nextScreen.hide();
+
+		this.currentScreenFBO.dispose();
+		this.nextScreenFBO.dispose();
 
 	}
 
@@ -118,7 +119,7 @@ public class FadingGame extends Game {
 	}
 
 	@Override
-	public void resize (int width, int height) {				
+	public void resize (int width, int height) {
 		if (screen != null) screen.resize(width, height);
 		if (nextScreen != null) nextScreen.resize(width, height);
 	}
@@ -173,26 +174,31 @@ public class FadingGame extends Game {
 		return nextScreen;
 	}
 
-	/** @param listener to get transition events
-	 * @return {@code true} if successful */
-	public boolean addTransitionListener (TransitionListener listener) {
-		return listerns.add(listener);
+	/** @param listener to get transition events */
+	public void addTransitionListener (TransitionListener listener) {
+		listeners.add(listener);
+		return;
 	}
 
 	/** @param listener to remove
 	 * @return {@code true} if successful */
 	public boolean removeTransitionListener (TransitionListener listener) {
-		return listerns.remove(listener);
+		return listeners.removeValue(listener, true);
+	}
+
+	/** Clear listeners */
+	public void clearTransitionListeners () {
+		listeners.clear();
 	}
 
 	private void notifyFinished () {
-		for (TransitionListener transitionListener : listerns) {
+		for (TransitionListener transitionListener : listeners) {
 			transitionListener.onTransitionFinished();
 		}
 	}
 
 	private void notifyStarted () {
-		for (TransitionListener transitionListener : listerns) {
+		for (TransitionListener transitionListener : listeners) {
 			transitionListener.onTransitionStart();
 		}
 	}
