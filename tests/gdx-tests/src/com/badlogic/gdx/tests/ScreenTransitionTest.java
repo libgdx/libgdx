@@ -127,6 +127,15 @@ public class ScreenTransitionTest extends GdxTest {
 
 				}
 			});
+			
+			simpleStage.addListener(new ClickListener(Input.Buttons.MIDDLE) {
+				@Override
+				public void clicked (InputEvent event, float x, float y) {
+					Gdx.app.debug(tag, "Clear Listeners");
+					fadingGame.clearTransitionListeners();
+
+				}
+			});
 
 		}
 
@@ -175,6 +184,7 @@ public class ScreenTransitionTest extends GdxTest {
 		Gdx.app.setLogLevel(Logger.DEBUG);
 		fadingGame = new FadingGame(new SpriteBatch());
 		fadingGame.create();
+		fadingGame.setTransition(new ColorFadeTransition(Color.BLACK, Interpolation.exp10), 3.0f);
 		firstScreen = new SimpleScreen("Screen1", "data/stones.jpg", 10);
 		secondScreen = new SimpleScreen("Screen2", "data/planet_earth.png", 200);
 		transitions.add(new AlphaFadingTransition());
