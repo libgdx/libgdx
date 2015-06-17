@@ -109,6 +109,7 @@ public class GdxTests {
 		CpuSpriteBatchTest.class,
 		ContainerTest.class,
 		CullTest.class,
+		CursorTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
