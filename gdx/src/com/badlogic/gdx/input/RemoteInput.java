@@ -257,6 +257,11 @@ public class RemoteInput implements Runnable, Input {
 					case RemoteSender.SIZE:
 						remoteWidth = in.readFloat();
 						remoteHeight = in.readFloat();
+						break;	
+					case RemoteSender.GYRO:
+						accel[0] = in.readFloat();
+						accel[1] = in.readFloat();
+						accel[2] = in.readFloat();
 						break;
 					case RemoteSender.KEY_DOWN:
 						keyEvent = new KeyEvent();
@@ -321,6 +326,24 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public float getAccelerometerZ () {
 		return accel[2];
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override

@@ -558,7 +558,7 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
 	}
 
 	/** @return The value of the accelerometer on its x-axis. ranges between [-10,10]. */

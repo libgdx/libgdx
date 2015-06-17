@@ -247,6 +247,7 @@ public class IOSInput implements Input {
 	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
+	
 
 	@Override
 	public float getAzimuth () {
@@ -711,4 +712,6 @@ public class IOSInput implements Input {
 		int x, y;
 		int pointer;
 	}
+
+
 }

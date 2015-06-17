@@ -743,6 +743,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
+		if (peripheral == Peripheral.Gyroscope) return gyroscopeAvailable;
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
