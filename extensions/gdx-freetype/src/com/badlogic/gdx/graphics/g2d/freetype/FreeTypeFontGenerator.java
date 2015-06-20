@@ -334,16 +334,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		// determine space width and set glyph
+		// determine space width
 		if (face.loadChar(' ', FreeType.FT_LOAD_DEFAULT)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // FIXME possibly very wrong :)
 		}
-		Glyph spaceGlyph = new Glyph();
-		spaceGlyph.xadvance = (int)data.spaceWidth;
-		spaceGlyph.id = (int)' ';
-		data.setGlyph(' ', spaceGlyph);
 
 		// determine x-height
 		for (char xChar : data.xChars) {
@@ -409,6 +405,16 @@ public class FreeTypeFontGenerator implements Disposable {
 				if (incremental) data.glyphs.add(glyph);
 			}
 		}
+
+		// Set space glyph.
+		Glyph spaceGlyph = data.getGlyph(' ');
+		if (spaceGlyph == null) {
+			spaceGlyph = new Glyph();
+			spaceGlyph.xadvance = (int)data.spaceWidth;
+			spaceGlyph.id = (int)' ';
+			data.setGlyph(' ', spaceGlyph);
+		}
+		if (spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + data.padRight);
 
 		if (stroker != null && !incremental) stroker.dispose();
 
