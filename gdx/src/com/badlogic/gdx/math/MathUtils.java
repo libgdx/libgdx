@@ -182,6 +182,16 @@ public final class MathUtils {
 		return 1 | (random.nextInt() >> 31);
 	}
 
+	/** Returns a random unit vector */
+	static public Vector2 randomVector2 () {
+		return new Vector2(randomSign() * random(), randomSign() * random()).nor();
+	}
+
+	/** Returns a random unit vector */
+	static public Vector3 randomVector3 () {
+		return new Vector3(randomSign() * random(), randomSign() * random(), randomSign() * random()).nor();
+	}
+
 	/** Returns a triangularly distributed random number between -1.0 (exclusive) and 1.0 (exclusive), where values around zero are
 	 * more likely.
 	 * <p>
