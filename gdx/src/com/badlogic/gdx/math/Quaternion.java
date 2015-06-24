@@ -98,12 +98,12 @@ public class Quaternion implements Serializable {
 		return new Quaternion(this);
 	}
 
-	/** @return the euclidian length of the specified quaternion */
+	/** @return the euclidean length of the specified quaternion */
 	public final static float len (final float x, final float y, final float z, final float w) {
 		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	/** @return the euclidian length of this quaternion */
+	/** @return the euclidean length of this quaternion */
 	public float len () {
 		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
 	}
