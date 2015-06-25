@@ -179,8 +179,9 @@ public class Scene2dTest extends GdxTest {
 				add(getImage());
 			}
 		};
-		CheckBox checkBoxLeft = new CheckBox("HI IM LEFT", skin, "default", true);
-		CheckBox checkBoxRight = new CheckBox("HI IM RIGHT", skin, "default", false);
+		CheckBox checkBoxLeft = new CheckBox("HI IM LEFT", skin, "default");
+		CheckBox checkBoxRight = new CheckBox("HI IM RIGHT", skin, "default");
+		checkBoxRight.setCheckBoxRight(true);
 
 		buttonLeft.setPosition(300, 400);
 		buttonRight.setPosition(300, 370);
