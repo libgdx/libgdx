@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author Nathan Sweet */
 public class Label extends Widget {
 	static private final Color tempColor = new Color();
+	static private final GlyphLayout prefSizeLayout = new GlyphLayout();
 
 	private LabelStyle style;
 	private final GlyphLayout layout = new GlyphLayout();
@@ -132,13 +133,14 @@ public class Label extends Widget {
 
 	private void computePrefSize () {
 		prefSizeInvalid = false;
+		GlyphLayout prefSizeLayout = Label.prefSizeLayout;
 		if (wrap && ellipsis == null) {
 			float width = getWidth();
 			if (style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
-			layout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
+			prefSizeLayout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
 		} else
-			layout.setText(cache.getFont(), text);
-		prefSize.set(layout.width, layout.height);
+			prefSizeLayout.setText(cache.getFont(), text);
+		prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
 	}
 
 	public void layout () {
