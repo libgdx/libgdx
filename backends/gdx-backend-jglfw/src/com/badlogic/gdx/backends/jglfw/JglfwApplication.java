@@ -157,6 +157,7 @@ public class JglfwApplication implements Application {
 
 			public void windowFocus (long window, boolean focused) {
 				graphics.foreground = focused;
+				graphics.requestRendering();
 			}
 
 			public void windowIconify (long window, boolean iconified) {
