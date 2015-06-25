@@ -50,6 +50,14 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
+	public static void main (String[] args) throws Exception {
+		ObjectIntMap m = new ObjectIntMap();
+		m.put("Asd", 10);
+		System.out.println(m.containsValue(10));
+		m.remove("Asd", 0);
+		System.out.println(m.containsValue(10));
+	}
+
 	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
 	 * backing table. */
 	public IntIntMap () {
@@ -445,9 +453,9 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	 * an expensive operation. */
 	public boolean containsValue (int value) {
 		if (hasZeroValue && zeroValue == value) return true;
-		int[] valueTable = this.valueTable;
+		int[] keyTable = this.keyTable, valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return true;
+			if (keyTable[i] != 0 && valueTable[i] == value) return true;
 		return false;
 	}
 
@@ -475,9 +483,9 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	 * every value, which may be an expensive operation. */
 	public int findKey (int value, int notFound) {
 		if (hasZeroValue && zeroValue == value) return 0;
-		int[] valueTable = this.valueTable;
+		int[] keyTable = this.keyTable, valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return keyTable[i];
+			if (keyTable[i] != 0 && valueTable[i] == value) return keyTable[i];
 		return notFound;
 	}
 
