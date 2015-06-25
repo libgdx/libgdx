@@ -249,6 +249,14 @@ public class Label extends Widget {
 		this.wrap = wrap;
 		invalidateHierarchy();
 	}
+	
+	public int getLabelAlign () {
+		return labelAlign;
+	}
+
+	public int getLineAlign () {
+		return lineAlign;
+	}
 
 	/** @param alignment Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
