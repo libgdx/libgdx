@@ -378,7 +378,6 @@ public class TextField extends Widget implements Disableable {
 		float x = 0;
 		if (layout.runs.size > 0) {
 			GlyphRun run = layout.runs.first();
-			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 			fontOffset = xAdvances.first();
 			for (int i = 1, n = xAdvances.size; i < n; i++) {
