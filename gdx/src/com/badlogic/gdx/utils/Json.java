@@ -859,18 +859,18 @@ public class Json {
 				return (T)jsonData;
 			}
 
-			if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class || type == Long.class
-				|| type == Double.class || type == Short.class || type == Byte.class || type == Character.class
-				|| ClassReflection.isAssignableFrom(Enum.class, type)) {
-				return readValue("value", type, jsonData);
-			}
-
 			if (typeName != null && ClassReflection.isAssignableFrom(Collection.class, type)) {
 				// JSON object wrapper to specify type.
 				jsonData = jsonData.get("items");
 			} else {
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonData, type);
+
+				if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
+					|| type == Long.class || type == Double.class || type == Short.class || type == Byte.class
+					|| type == Character.class || ClassReflection.isAssignableFrom(Enum.class, type)) {
+					return readValue("value", type, jsonData);
+				}
 
 				Object object = newInstance(type);
 
