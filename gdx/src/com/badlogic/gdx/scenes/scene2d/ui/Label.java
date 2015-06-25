@@ -136,8 +136,10 @@ public class Label extends Widget {
 			float width = getWidth();
 			if (style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
 			layout.setText(cache.getFont(), text, Color.WHITE, width, Align.left, true);
-		} else
+		} else{
+			cache.getFont().setColor(Color.WHITE);
 			layout.setText(cache.getFont(), text);
+		}
 		prefSize.set(layout.width, layout.height);
 	}
 
