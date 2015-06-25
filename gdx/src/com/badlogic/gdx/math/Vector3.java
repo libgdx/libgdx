@@ -192,7 +192,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this;
 	}
 
-	/** @return The euclidian length */
+	/** @return The euclidean length */
 	public static float len (final float x, final float y, final float z) {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
@@ -202,7 +202,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
 
-	/** @return The squared euclidian length */
+	/** @return The squared euclidean length */
 	public static float len2 (final float x, final float y, final float z) {
 		return x * x + y * y + z * z;
 	}
@@ -213,12 +213,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** @param vector The other vector
-	 * @return Wether this and the other vector are equal */
+	 * @return Whether this and the other vector are equal */
 	public boolean idt (final Vector3 vector) {
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
 
-	/** @return The euclidian distance between the two specified vectors */
+	/** @return The euclidean distance between the two specified vectors */
 	public static float dst (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		final float a = x2 - x1;
 		final float b = y2 - y1;

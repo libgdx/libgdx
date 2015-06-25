@@ -13,5 +13,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.robovm.eclipse.RoboVMNature</nature>
 	</natures>
 </projectDescription>

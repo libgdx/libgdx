@@ -62,7 +62,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 
 		createHUD();
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, hud, inputController));
+		Gdx.input.setInputProcessor(new InputMultiplexer(hud, this, inputController));
 	}
 
 	protected void createHUD () {

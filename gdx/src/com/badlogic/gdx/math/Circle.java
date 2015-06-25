@@ -167,13 +167,12 @@ public class Circle implements Serializable, Shape2D {
 	/** @param c the other {@link Circle}
 	 * @return whether this circle contains the other circle. */
 	public boolean contains (Circle c) {
-		float dx = x - c.x;
-		float dy = y - c.y;
-		// The distance to the furthest point on circle c is the distance
-		// between the center of the two circles plus the radius.
-		// We use the squared distance so we can avoid a sqrt.
-		float maxDistanceSqrd = dx * dx + dy * dy + c.radius * c.radius;
-		return maxDistanceSqrd <= radius * radius;
+		final float dx = x - c.x;
+		final float dy = y - c.y;
+		final float dst = dx * dx + dy * dy;
+		final float radiusDiff = radius - c.radius;
+		final float radiusSum = radius + c.radius;
+		return (!(radiusDiff * radiusDiff < dst) && (dst < radiusSum * radiusSum));
 	}
 
 	/** @param c the other {@link Circle}

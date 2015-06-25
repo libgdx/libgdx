@@ -30,19 +30,28 @@ public class CheckBox extends TextButton {
 	private CheckBoxStyle style;
 
 	public CheckBox (String text, Skin skin) {
-		this(text, skin.get(CheckBoxStyle.class));
+		this(text, skin.get(CheckBoxStyle.class), true);
 	}
 
 	public CheckBox (String text, Skin skin, String styleName) {
-		this(text, skin.get(styleName, CheckBoxStyle.class));
+		this(text, skin.get(styleName, CheckBoxStyle.class), true);
+	}
+	
+	public CheckBox (String text, Skin skin, String styleName, boolean checkBoxLeft) {
+		this(text, skin.get(styleName, CheckBoxStyle.class), checkBoxLeft);
 	}
 
-	public CheckBox (String text, CheckBoxStyle style) {
+	public CheckBox (String text, CheckBoxStyle style, boolean checkBoxLeft) {
 		super(text, style);
 		clearChildren();
-		imageCell = add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
-		add(label);
+		if (checkBoxLeft) {
+			imageCell = add(image = new Image(style.checkboxOff));
+			add(label);
+		} else {
+			add(label);
+			imageCell = add(image = new Image(style.checkboxOff));
+		}
 		label.setAlignment(Align.left);
 		setSize(getPrefWidth(), getPrefHeight());
 	}

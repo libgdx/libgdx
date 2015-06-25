@@ -45,6 +45,7 @@ public class Button extends Table implements Disableable {
 	boolean isChecked, isDisabled;
 	ButtonGroup buttonGroup;
 	private ClickListener clickListener;
+	private boolean programmaticChangeEvents = true;
 
 	public Button (Skin skin) {
 		super(skin);
@@ -87,7 +88,7 @@ public class Button extends Table implements Disableable {
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				if (isDisabled()) return;
-				setChecked(!isChecked);
+				setChecked(!isChecked, true);
 			}
 		});
 	}
@@ -109,16 +110,23 @@ public class Button extends Table implements Disableable {
 	}
 
 	public void setChecked (boolean isChecked) {
+		setChecked(isChecked, programmaticChangeEvents);
+	}
+
+	void setChecked (boolean isChecked, boolean fireEvent) {
 		if (this.isChecked == isChecked) return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) this.isChecked = !isChecked;
-		Pools.free(changeEvent);
+
+		if (fireEvent) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) this.isChecked = !isChecked;
+			Pools.free(changeEvent);
+		}
 	}
 
-	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent}, so can be used to
-	 * simulate a button click. */
+	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent} (if programmatic change
+	 * events are enabled), so can be used to simulate a button click. */
 	public void toggle () {
 		setChecked(!isChecked);
 	}
@@ -146,6 +154,11 @@ public class Button extends Table implements Disableable {
 	/** When true, the button will not toggle {@link #isChecked()} when clicked and will not fire a {@link ChangeEvent}. */
 	public void setDisabled (boolean isDisabled) {
 		this.isDisabled = isDisabled;
+	}
+
+	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}, event will be fired only when user clicked the checkbox */
+	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
+		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
 	public void setStyle (ButtonStyle style) {

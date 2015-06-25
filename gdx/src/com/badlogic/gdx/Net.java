@@ -320,6 +320,16 @@ public interface Net {
 	public enum Protocol {
 		TCP
 	}
+	
+	/** Creates a new server socket on the given address and port, using the given {@link Protocol}, waiting for incoming connections.
+	 * 
+	 * @param hostname the hostname or ip address to bind the socket to
+	 * @param port the port to listen on
+	 * @param hints additional {@link ServerSocketHints} used to create the socket. Input null to use the default setting provided
+	 *           by the system.
+	 * @return the {@link ServerSocket}
+	 * @throws GdxRuntimeException in case the socket couldn't be opened */
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints);
 
 	/** Creates a new server socket on the given port, using the given {@link Protocol}, waiting for incoming connections.
 	 * 

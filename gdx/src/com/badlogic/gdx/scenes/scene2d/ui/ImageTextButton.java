@@ -36,16 +36,21 @@ public class ImageTextButton extends Button {
 	private ImageTextButtonStyle style;
 
 	public ImageTextButton (String text, Skin skin) {
-		this(text, skin.get(ImageTextButtonStyle.class));
+		this(text, skin.get(ImageTextButtonStyle.class), true);
 		setSkin(skin);
 	}
 
 	public ImageTextButton (String text, Skin skin, String styleName) {
-		this(text, skin.get(styleName, ImageTextButtonStyle.class));
+		this(text, skin.get(styleName, ImageTextButtonStyle.class), true);
+		setSkin(skin);
+	}
+	
+	public ImageTextButton (String text, Skin skin, String styleName, boolean imageLeft) {
+		this(text, skin.get(styleName, ImageTextButtonStyle.class), imageLeft);
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, ImageTextButtonStyle style) {
+	public ImageTextButton (String text, ImageTextButtonStyle style, boolean imageLeft) {
 		super(style);
 		this.style = style;
 
@@ -53,11 +58,17 @@ public class ImageTextButton extends Button {
 
 		image = new Image();
 		image.setScaling(Scaling.fit);
-		add(image);
 
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
-		add(label);
+		
+		if (imageLeft) {
+			add(image);
+			add(label);
+		} else {
+			add(label);
+			add(image);
+		}
 
 		setStyle(style);
 

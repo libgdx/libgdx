@@ -129,7 +129,7 @@ public class ParticleEmittersTest extends GdxTest {
 	private void setupUI () {
 		ui = new Stage(new ExtendViewport(640, 480));
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		skipCleanup = new CheckBox("Skip blend function clean-up", skin.get(CheckBoxStyle.class));
+		skipCleanup = new CheckBox("Skip blend function clean-up", skin);
 		skipCleanup.setTransform(false);
 		skipCleanup.addListener(listener);
 		logLabel = new Label("", skin.get(LabelStyle.class));

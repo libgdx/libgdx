@@ -4,8 +4,8 @@
 		<name>Overlap2D</name>
 		<description>Level and UI Editor Runtime</description>
 		<package>com.underwaterapps.overlap2druntime</package>
-		<version>0.0.8</version>
-		<compatibility>1.5.3</compatibility>
+		<version>0.1.0</version>
+		<compatibility>1.6.2</compatibility>
 		<website>http://overlap2d.com/</website>
 		<gwtInherits></gwtInherits>
 		<projects>
@@ -22,8 +22,8 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>0.7.4</version>
-		<compatibility>1.5.6</compatibility>
+		<version>0.7.7</version>
+		<compatibility>1.6.1</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
 		    <inherit>com.kotcrab.vis.vis-ui</inherit>

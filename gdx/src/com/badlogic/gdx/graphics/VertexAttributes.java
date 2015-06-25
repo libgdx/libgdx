@@ -66,10 +66,16 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 
 	/** Returns the offset for the first VertexAttribute with the specified usage.
 	 * @param usage The usage of the VertexAttribute. */
-	public int getOffset (int usage) {
+	public int getOffset (int usage, int defaultIfNotFound) {
 		VertexAttribute vertexAttribute = findByUsage(usage);
-		if (vertexAttribute == null) return 0;
+		if (vertexAttribute == null) return defaultIfNotFound;
 		return vertexAttribute.offset / 4;
+	}
+	
+	/** Returns the offset for the first VertexAttribute with the specified usage.
+	 * @param usage The usage of the VertexAttribute. */
+	public int getOffset (int usage) {
+		return getOffset(usage, 0);
 	}
 
 	/** Returns the first VertexAttribute for the given usage.
