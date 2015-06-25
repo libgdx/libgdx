@@ -499,10 +499,10 @@ public class NinePatch {
 		rightWidth *= scaleX;
 		topHeight *= scaleY;
 		bottomHeight *= scaleY;
-		padLeft *= scaleX;
-		padRight *= scaleX;
-		padTop *= scaleY;
-		padBottom *= scaleY;
+		if (padLeft != -1) padLeft *= scaleX;
+		if (padRight != -1) padRight *= scaleX;
+		if (padTop != -1) padTop *= scaleY;
+		if (padBottom != -1) padBottom *= scaleY;
 	}
 
 	public Texture getTexture () {
