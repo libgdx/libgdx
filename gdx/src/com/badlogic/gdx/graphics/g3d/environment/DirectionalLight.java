@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,38 @@ import com.badlogic.gdx.math.Vector3;
 
 public class DirectionalLight extends BaseLight {
 	public final Vector3 direction = new Vector3();
+
+	public static class Builder extends BaseLight.Builder {
+		float directionX;
+		float directionY;
+		float directionZ;
+
+		public Builder direction(float directionX, float directionY, float directionZ) {
+			this.directionX = directionX;
+			this.directionY = directionY;
+			this.directionZ = directionZ;
+			return this;
+		}
+
+		public Builder direction(Vector3 direction) {
+			directionX = direction.x;
+			directionY = direction.y;
+			directionZ = direction.z;
+			return this;
+		}
+
+		public DirectionalLight build() {
+			return new DirectionalLight(this);
+		}
+	}
+
+	public DirectionalLight(Builder builder) {
+		this.color.set(builder.r, builder.g, builder.b, builder.a);
+		this.direction.set(builder.directionX, builder.directionY, builder.directionZ);
+	}
+
+	public DirectionalLight() {
+	}
 
 	public DirectionalLight set (final DirectionalLight copyFrom) {
 		return set(copyFrom.color, copyFrom.direction);

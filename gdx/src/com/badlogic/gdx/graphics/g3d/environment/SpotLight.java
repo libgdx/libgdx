@@ -29,6 +29,77 @@ public class SpotLight extends BaseLight {
 	public float cutoffAngle;
 	public float exponent;
 
+	public static class Builder extends BaseLight.Builder {
+		float positionX;
+		float positionY;
+		float positionZ;
+		float directionX;
+		float directionY;
+		float directionZ;
+		float intensity = 1;
+		float cutoffAngle = 25;
+		float exponent = 1;
+
+		public Builder position(float positionX, float positionY, float positionZ) {
+			this.positionX = positionX;
+			this.positionY = positionY;
+			this.positionZ = positionZ;
+			return this;
+		}
+
+		public Builder position(Vector3 position) {
+			positionX = position.x;
+			positionY = position.y;
+			positionZ = position.z;
+			return this;
+		}
+
+		public Builder direction(float directionX, float directionY, float directionZ) {
+			this.directionX = directionX;
+			this.directionY = directionY;
+			this.directionZ = directionZ;
+			return this;
+		}
+
+		public Builder direction(Vector3 direction) {
+			directionX = direction.x;
+			directionY = direction.y;
+			directionZ = direction.z;
+			return this;
+		}
+
+		public Builder intensity(float intensity) {
+			this.intensity = intensity;
+			return this;
+		}
+
+		public Builder cutoffAngle(float cutoffAngle) {
+			this.cutoffAngle = cutoffAngle;
+			return this;
+		}
+
+		public Builder exponent(float exponent) {
+			this.exponent = exponent;
+			return this;
+		}
+
+		public SpotLight build() {
+			return new SpotLight(this);
+		}
+	}
+
+	public SpotLight(Builder builder) {
+		this.color.set(builder.r, builder.g, builder.b, builder.a);
+		this.position.set(builder.positionX, builder.positionY, builder.positionZ);
+		this.direction.set(builder.directionX, builder.directionY, builder.directionZ);
+		this.intensity = builder.intensity;
+		this.cutoffAngle = builder.cutoffAngle;
+		this.exponent = builder.exponent;
+	}
+
+	public SpotLight() {
+	}
+
 	public SpotLight set (final SpotLight copyFrom) {
 		return set(copyFrom.color, copyFrom.position, copyFrom.direction, copyFrom.intensity, copyFrom.cutoffAngle, copyFrom.exponent);
 	}

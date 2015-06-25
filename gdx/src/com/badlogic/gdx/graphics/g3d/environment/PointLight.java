@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,45 @@ import com.badlogic.gdx.math.Vector3;
 public class PointLight extends BaseLight {
 	public final Vector3 position = new Vector3();
 	public float intensity;
+
+	public static class Builder extends BaseLight.Builder {
+		float positionX;
+		float positionY;
+		float positionZ;
+		float intensity = 1;
+
+		public Builder position(float positionX, float positionY, float positionZ) {
+			this.positionX = positionX;
+			this.positionY = positionY;
+			this.positionZ = positionZ;
+			return this;
+		}
+
+		public Builder position(Vector3 position) {
+			positionX = position.x;
+			positionY = position.y;
+			positionZ = position.z;
+			return this;
+		}
+
+		public Builder intensity(float intensity) {
+			this.intensity = intensity;
+			return this;
+		}
+
+		public PointLight build() {
+			return new PointLight(this);
+		}
+	}
+
+	public PointLight(Builder builder) {
+		this.color.set(builder.r, builder.g, builder.b, builder.a);
+		this.position.set(builder.positionX, builder.positionY, builder.positionZ);
+		this.intensity = builder.intensity;
+	}
+
+	public PointLight() {
+	}
 
 	public PointLight set (final PointLight copyFrom) {
 		return set(copyFrom.color, copyFrom.position, copyFrom.intensity);
