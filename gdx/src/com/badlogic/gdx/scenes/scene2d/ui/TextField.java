@@ -385,7 +385,8 @@ public class TextField extends Widget implements Disableable {
 				glyphPositions.add(x);
 				x += xAdvances.get(i);
 			}
-		}
+		} else
+			fontOffset = 0;
 		glyphPositions.add(x);
 
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
@@ -544,16 +545,18 @@ public class TextField extends Widget implements Disableable {
 		this.messageText = messageText;
 	}
 
+	/** @param str If null, "" is used. */
 	public void appendText (String str) {
-		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+		if (str == null) str = "";
 
 		clearSelection();
 		cursor = text.length();
 		paste(str);
 	}
 
+	/** @param str If null, "" is used. */
 	public void setText (String str) {
-		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+		if (str == null) str = "";
 		if (str.equals(text)) return;
 
 		clearSelection();
