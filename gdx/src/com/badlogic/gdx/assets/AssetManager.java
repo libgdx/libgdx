@@ -473,8 +473,17 @@ public class AssetManager implements Disposable {
 	 * @return true if the asset is loaded or the task was cancelled. */
 	private boolean updateTask () {
 		AssetLoadingTask task = tasks.peek();
+
+		boolean complete = true;
+		try {
+			complete = task.cancel || task.update();
+		} catch (RuntimeException ex) {
+			task.cancel = true;
+			taskFailed(task.assetDesc, ex);
+		}
+
 		// if the task has been cancelled or has finished loading
-		if (task.cancel || task.update()) {
+		if (complete) {
 			// increase the number of loaded assets and pop the task from the stack
 			if (tasks.size() == 1) loaded++;
 			tasks.pop();
@@ -494,6 +503,12 @@ public class AssetManager implements Disposable {
 			return true;
 		}
 		return false;
+	}
+
+	/** Called when a task throws an exception during loading. The default implementation rethrows the exception. A subclass may
+	 * supress the default implementation when loading assets where loading failure is recoverable. */
+	protected void taskFailed (AssetDescriptor assetDesc, RuntimeException ex) {
+		throw ex;
 	}
 
 	private void incrementRefCountedDependencies (String parent) {
