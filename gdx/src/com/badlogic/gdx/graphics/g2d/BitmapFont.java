@@ -441,6 +441,9 @@ public class BitmapFont implements Disposable {
 		public float down;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
+		/** The amount to add to the glyph X position when drawing a cursor between glyphs. This field is not set by the BMFont file,
+		 * it needs to be set manually depending on how the glyphs are rendered on the backing textures. */
+		public float cursorX;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		/** The width of the space character. */

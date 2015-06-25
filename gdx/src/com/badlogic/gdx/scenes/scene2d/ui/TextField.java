@@ -252,7 +252,7 @@ public class TextField extends Widget implements Disableable {
 			float minX = Math.max(glyphPositions[minIndex], startPos);
 			float maxX = Math.min(glyphPositions[maxIndex], glyphPositions[visibleTextEnd]);
 			selectionX = minX;
-			selectionWidth = maxX - minX;
+			selectionWidth = maxX - minX - style.font.getData().cursorX;
 		}
 
 		if (textHAlign == Align.center || textHAlign == Align.right) {
@@ -326,16 +326,17 @@ public class TextField extends Widget implements Disableable {
 		float textY = textHeight / 2 + font.getDescent();
 		if (background != null) {
 			float bottom = background.getBottomHeight();
-			textY = (int)(textY + (height - background.getTopHeight() - bottom) / 2 + bottom);
+			textY = textY + (height - background.getTopHeight() - bottom) / 2 + bottom;
 		} else {
-			textY = (int)(textY + height / 2);
+			textY = textY + height / 2;
 		}
+		if (font.usesIntegerPositions()) textY = (int)textY;
 		return textY;
 	}
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
-		selection.draw(batch, x + selectionX + renderOffset + fontOffset - 1, y - textHeight - font.getDescent(), selectionWidth,
+		selection.draw(batch, x + selectionX + renderOffset + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
 			textHeight + font.getDescent() / 2);
 	}
 
@@ -344,8 +345,9 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
-		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.items[visibleTextStart] + fontOffset
-			- 1, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight + font.getDescent() / 2);
+		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset
+			+ font.getData().cursorX, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight + font.getDescent()
+			/ 2);
 	}
 
 	void updateDisplayText () {
