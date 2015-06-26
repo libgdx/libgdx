@@ -489,6 +489,41 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return (h ^ h >>> hashShift) & mask;
 	}
 
+	public int hashCode () {
+		int h = 0;
+		K[] keyTable = this.keyTable;
+		int[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				h += key.hashCode() * 31;
+
+				int value = valueTable[i];
+				h += value;
+			}
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ObjectIntMap)) return false;
+		ObjectIntMap<K> other = (ObjectIntMap)obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		int[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				int otherValue = other.get(key, 0);
+				if (otherValue == 0 && !other.containsKey(key)) return false;
+				int value = valueTable[i];
+				if (otherValue != value) return false;
+			}
+		}
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "{}";
 		StringBuilder buffer = new StringBuilder(32);

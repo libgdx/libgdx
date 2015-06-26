@@ -309,14 +309,27 @@ public class CharArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		char[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + items[i];
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof CharArray)) return false;
 		CharArray array = (CharArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		char[] items1 = this.items;
+		char[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 
