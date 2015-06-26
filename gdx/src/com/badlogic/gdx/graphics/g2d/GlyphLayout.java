@@ -267,7 +267,7 @@ public class GlyphLayout implements Poolable {
 		glyphRunPool.free(truncateRun);
 	}
 
-	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
+	protected GlyphRun wrap (BitmapFontData fontData, GlyphRun first, Pool<GlyphRun> glyphRunPool, int wrapIndex, int widthIndex) {
 		GlyphRun second = glyphRunPool.obtain();
 		second.color.set(first.color);
 		int glyphCount = first.glyphs.size;
@@ -311,7 +311,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	/** Adjusts the xadvance of the last glyph to use its width instead of xadvance. */
-	private void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
+	protected void adjustLastGlyph (BitmapFontData fontData, GlyphRun run) {
 		Glyph last = run.glyphs.peek();
 		if (fontData.isWhitespace((char)last.id)) return; // Can happen when doing truncate.
 		float width = (last.xoffset + last.width) * fontData.scaleX - fontData.padRight;
