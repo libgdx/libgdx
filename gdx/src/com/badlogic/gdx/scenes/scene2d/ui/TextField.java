@@ -99,8 +99,7 @@ public class TextField extends Widget implements Disableable {
 	private StringBuilder passwordBuffer;
 	private char passwordCharacter = BULLET;
 
-	private float fontOffset;
-	protected float textHeight, textOffset;
+	protected float fontOffset, textHeight, textOffset;
 	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
 	private int maxLength = 0;
