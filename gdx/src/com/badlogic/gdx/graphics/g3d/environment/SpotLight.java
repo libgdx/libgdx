@@ -29,75 +29,51 @@ public class SpotLight extends BaseLight {
 	public float cutoffAngle;
 	public float exponent;
 
-	public static class Builder extends BaseLight.Builder {
-		float positionX;
-		float positionY;
-		float positionZ;
-		float directionX;
-		float directionY;
-		float directionZ;
-		float intensity = 1;
-		float cutoffAngle = 25;
-		float exponent = 1;
-
-		public Builder position(float positionX, float positionY, float positionZ) {
-			this.positionX = positionX;
-			this.positionY = positionY;
-			this.positionZ = positionZ;
-			return this;
-		}
-
-		public Builder position(Vector3 position) {
-			positionX = position.x;
-			positionY = position.y;
-			positionZ = position.z;
-			return this;
-		}
-
-		public Builder direction(float directionX, float directionY, float directionZ) {
-			this.directionX = directionX;
-			this.directionY = directionY;
-			this.directionZ = directionZ;
-			return this;
-		}
-
-		public Builder direction(Vector3 direction) {
-			directionX = direction.x;
-			directionY = direction.y;
-			directionZ = direction.z;
-			return this;
-		}
-
-		public Builder intensity(float intensity) {
-			this.intensity = intensity;
-			return this;
-		}
-
-		public Builder cutoffAngle(float cutoffAngle) {
-			this.cutoffAngle = cutoffAngle;
-			return this;
-		}
-
-		public Builder exponent(float exponent) {
-			this.exponent = exponent;
-			return this;
-		}
-
-		public SpotLight build() {
-			return new SpotLight(this);
-		}
+	@Override
+	public SpotLight setColor(float r, float g, float b, float a) {
+		super.setColor(r, g, b, a);
+		return this;
 	}
 
-	public SpotLight(Builder builder) {
-		this.color.set(builder.r, builder.g, builder.b, builder.a);
-		this.position.set(builder.positionX, builder.positionY, builder.positionZ);
-		this.direction.set(builder.directionX, builder.directionY, builder.directionZ);
-		this.intensity = builder.intensity;
-		this.cutoffAngle = builder.cutoffAngle;
-		this.exponent = builder.exponent;
+	@Override
+	public SpotLight setColor(Color color) {
+		super.setColor(color);
+		return this;
 	}
 
-	public SpotLight() {
+	public SpotLight setPosition(float positionX, float positionY, float positionZ) {
+		this.position.set(positionX, positionY, positionZ);
+		return this;
+	}
+
+	public SpotLight setPosition(Vector3 position) {
+		this.position.set(position);
+		return this;
+	}
+
+	public SpotLight setDirection(float directionX, float directionY, float directionZ) {
+		this.direction.set(directionX, directionY, directionZ);
+		return this;
+	}
+
+	public SpotLight setDirection(Vector3 direction) {
+		this.direction.set(direction);
+		return this;
+	}
+
+	public SpotLight setIntensity(float intensity) {
+		this.intensity = intensity;
+		return this;
+	}
+
+	public SpotLight setCutoffAngle(float cutoffAngle) {
+		this.cutoffAngle = cutoffAngle;
+		return this;
+	}
+
+	public SpotLight setExponent(float exponent) {
+		this.exponent = exponent;
+		return this;
 	}
 
 	public SpotLight set (final SpotLight copyFrom) {

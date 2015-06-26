@@ -23,43 +23,31 @@ public class PointLight extends BaseLight {
 	public final Vector3 position = new Vector3();
 	public float intensity;
 
-	public static class Builder extends BaseLight.Builder {
-		float positionX;
-		float positionY;
-		float positionZ;
-		float intensity = 1;
-
-		public Builder position(float positionX, float positionY, float positionZ) {
-			this.positionX = positionX;
-			this.positionY = positionY;
-			this.positionZ = positionZ;
-			return this;
-		}
-
-		public Builder position(Vector3 position) {
-			positionX = position.x;
-			positionY = position.y;
-			positionZ = position.z;
-			return this;
-		}
-
-		public Builder intensity(float intensity) {
-			this.intensity = intensity;
-			return this;
-		}
-
-		public PointLight build() {
-			return new PointLight(this);
-		}
+	@Override
+	public PointLight setColor(float r, float g, float b, float a) {
+		super.setColor(r, g, b, a);
+		return this;
 	}
 
-	public PointLight(Builder builder) {
-		this.color.set(builder.r, builder.g, builder.b, builder.a);
-		this.position.set(builder.positionX, builder.positionY, builder.positionZ);
-		this.intensity = builder.intensity;
+	@Override
+	public PointLight setColor(Color color) {
+		super.setColor(color);
+		return this;
 	}
 
-	public PointLight() {
+	public PointLight setPosition(float positionX, float positionY, float positionZ) {
+		this.position.set(positionX, positionY, positionZ);
+		return this;
+	}
+
+	public PointLight setPosition(Vector3 position) {
+		this.position.set(position);
+		return this;
+	}
+
+	public PointLight setIntensity(float intensity) {
+		this.intensity = intensity;
+		return this;
 	}
 
 	public PointLight set (final PointLight copyFrom) {

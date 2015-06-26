@@ -22,36 +22,14 @@ import com.badlogic.gdx.math.Vector3;
 public class DirectionalLight extends BaseLight {
 	public final Vector3 direction = new Vector3();
 
-	public static class Builder extends BaseLight.Builder {
-		float directionX;
-		float directionY;
-		float directionZ;
-
-		public Builder direction(float directionX, float directionY, float directionZ) {
-			this.directionX = directionX;
-			this.directionY = directionY;
-			this.directionZ = directionZ;
-			return this;
-		}
-
-		public Builder direction(Vector3 direction) {
-			directionX = direction.x;
-			directionY = direction.y;
-			directionZ = direction.z;
-			return this;
-		}
-
-		public DirectionalLight build() {
-			return new DirectionalLight(this);
-		}
+	public DirectionalLight setDirection(float directionX, float directionY, float directionZ) {
+		this.direction.set(directionX, directionY, directionZ);
+		return this;
 	}
 
-	public DirectionalLight(Builder builder) {
-		this.color.set(builder.r, builder.g, builder.b, builder.a);
-		this.direction.set(builder.directionX, builder.directionY, builder.directionZ);
-	}
-
-	public DirectionalLight() {
+	public DirectionalLight setDirection(Vector3 direction) {
+		this.direction.set(direction);
+		return this;
 	}
 
 	public DirectionalLight set (final DirectionalLight copyFrom) {
