@@ -155,7 +155,7 @@ public class GlyphLayout implements Poolable {
 								break outer;
 							}
 
-							int wrapIndex = fontData.getWrapIndex(run.glyphs, i - 1);
+							int wrapIndex = fontData.getWrapIndex(run.glyphs, i);
 							if ((run.x == 0 && wrapIndex == 0) // Require at least one glyph per line.
 								|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
 								wrapIndex = i - 1;
@@ -272,39 +272,30 @@ public class GlyphLayout implements Poolable {
 		second.color.set(first.color);
 		int glyphCount = first.glyphs.size;
 
-		// Determine index where first run ends, ignoring whitespace before the wrap index.
-		int endIndex = wrapIndex;
-		for (; endIndex > 0; endIndex--)
-			if (!fontData.isWhitespace((char)first.glyphs.get(endIndex - 1).id)) break;
-
-		// Determine index where second run starts, ignoring whitespace after the wrap index.
-		int startIndex = wrapIndex;
-		for (; startIndex < glyphCount; startIndex++)
-			if (!fontData.isWhitespace((char)first.glyphs.get(startIndex).id)) break;
-
 		// Copy wrapped glyphs and xAdvances to second run.
-		if (startIndex < glyphCount) {
-			second.glyphs.addAll(first.glyphs, startIndex, glyphCount - startIndex);
+		if (wrapIndex < glyphCount) {
+			second.glyphs.addAll(first.glyphs, wrapIndex, glyphCount - wrapIndex);
+			// second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft);
 			second.xAdvances.add(-second.glyphs.first().xoffset * fontData.scaleX - fontData.padLeft);
-			second.xAdvances.addAll(first.xAdvances, startIndex + 1, first.xAdvances.size - (startIndex + 1));
+			second.xAdvances.addAll(first.xAdvances, wrapIndex + 1, first.xAdvances.size - (wrapIndex + 1));
 		}
 
 		// Increase first run width up to the end index.
-		while (widthIndex < endIndex)
+		while (widthIndex < wrapIndex)
 			first.width += first.xAdvances.get(widthIndex++);
 
 		// Reduce first run width by the wrapped glyphs that have contributed to the width.
-		while (widthIndex > endIndex + 1)
+		while (widthIndex > wrapIndex + 1)
 			first.width -= first.xAdvances.get(--widthIndex);
 
-		if (endIndex == 0) {
+		if (wrapIndex == 0) {
 			// If the first run is now empty, remove it.
 			glyphRunPool.free(first);
 			runs.pop();
 		} else {
 			// Truncate wrapped glyphs from first run.
-			first.glyphs.truncate(endIndex);
-			first.xAdvances.truncate(endIndex + 1);
+			first.glyphs.truncate(wrapIndex);
+			first.xAdvances.truncate(wrapIndex + 1);
 			adjustLastGlyph(fontData, first);
 		}
 		return second;
