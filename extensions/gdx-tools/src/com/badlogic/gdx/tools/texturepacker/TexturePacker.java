@@ -371,7 +371,7 @@ public class TexturePacker {
 
 	/** @author Regnarock
 	 * @author Nathan Sweet */
-	static public class Alias {
+	static public class Alias implements Comparable<Alias> {
 		public String name;
 		public int index;
 		public int[] splits;
@@ -398,6 +398,10 @@ public class TexturePacker {
 			rect.offsetY = offsetY;
 			rect.originalWidth = originalWidth;
 			rect.originalHeight = originalHeight;
+		}
+
+		public int compareTo (Alias o) {
+			return name.compareTo(o.name);
 		}
 	}
 
