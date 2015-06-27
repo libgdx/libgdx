@@ -1,3 +1,6 @@
+[1.6.3]
+- Updated to RoboVM 1.4
+
 [1.6.2]
 - API Change: TiledMapImageLayer now uses floats instead of ints for positioning
 - API Change: Added GLFrameBuffer and FrameBufferCubemap: Framebuffer now extends GLFramebuffer, see #2933
