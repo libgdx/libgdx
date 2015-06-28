@@ -169,11 +169,11 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
 		}
 
-		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
-
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+
+		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			colorTexture.dispose();
@@ -252,17 +252,17 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public T getColorBufferTexture () {
 		return colorTexture;
 	}
-	
+
 	/** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
 	public int getFramebufferHandle () {
 		return framebufferHandle;
 	}
-	
+
 	/** @return The OpenGL handle of the (optional) depth buffer (see {@link GL20#glGenRenderbuffer()}) */
 	public int getDepthBufferHandle () {
 		return depthbufferHandle;
 	}
-	
+
 	/** @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}) */
 	public int getStencilBufferHandle () {
 		return stencilbufferHandle;
@@ -278,11 +278,11 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		return colorTexture.getWidth();
 	}
 
-	/** @return the depth of the framebuffer in pixels (if applicable) */ 
+	/** @return the depth of the framebuffer in pixels (if applicable) */
 	public int getDepth () {
 		return colorTexture.getDepth();
 	}
-	
+
 	private static void addManagedFrameBuffer (Application app, GLFrameBuffer frameBuffer) {
 		Array<GLFrameBuffer> managedResources = buffers.get(app);
 		if (managedResources == null) managedResources = new Array<GLFrameBuffer>();
