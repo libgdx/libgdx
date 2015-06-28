@@ -665,7 +665,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		/** true for straight (mitered), false for rounded borders */
 		public boolean borderStraight = false;
 		/** Number of times to render the glyph on top of the border, otherwise the border can show through the glyph. */
-		public int borderGlyphCount = 3;
+		public int borderGlyphCount = 2;
 		/** Offset of text shadow on X axis in pixels, 0 to disable */
 		public int shadowOffsetX = 0;
 		/** Offset of text shadow on Y axis in pixels, 0 to disable */
@@ -673,7 +673,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		/** Shadow color; only used if shadowOffset > 0 */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Number of times to render the glyph on top of the shadow, otherwise the shadow can show through the glyph. */
-		public int shadowGlyphCount = 3;
+		public int shadowGlyphCount = 2;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
