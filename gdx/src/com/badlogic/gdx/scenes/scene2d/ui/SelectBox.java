@@ -418,6 +418,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			validate();
 			float width = Math.max(getPrefWidth(), selectBox.getWidth());
 			if (getPrefHeight() > height) width += getScrollBarWidth();
+			if (scrollPaneBackground != null) {
+				// Assume left and right padding are the same, so right padding can include a shadow.
+				width += Math.max(0, scrollPaneBackground.getRightWidth() - scrollPaneBackground.getLeftWidth());
+			}
 			setWidth(width);
 
 			validate();
