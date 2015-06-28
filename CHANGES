@@ -10,6 +10,7 @@
 - Fixed TextField for non-pixel display.
 - Allow ellipsis string to be set on Label.
 - AssetManager gets hook for handling loading failure.
+- TextField now fires a ChangeEvent when the text change. Can be cancelled too!
 
 [1.6.3]
 - Updated to RoboVM 1.4

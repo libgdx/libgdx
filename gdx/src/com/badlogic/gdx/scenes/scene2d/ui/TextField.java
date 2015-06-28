@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.math.MathUtils;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -86,7 +87,7 @@ public class TextField extends Widget implements Disableable {
 	TextFieldStyle style;
 	private String messageText;
 	protected CharSequence displayText;
-	private Clipboard clipboard;
+	Clipboard clipboard;
 	InputListener inputListener;
 	TextFieldListener listener;
 	TextFieldFilter filter;
@@ -109,6 +110,7 @@ public class TextField extends Widget implements Disableable {
 	long lastBlink;
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
+	boolean programmaticChangeEvents;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -413,18 +415,18 @@ public class TextField extends Widget implements Disableable {
 	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
 	 * it. */
 	public void cut () {
+		cut(programmaticChangeEvents);
+	}
+
+	void cut (boolean fireChangeEvent) {
 		if (hasSelection && !passwordMode) {
 			copy();
-			cursor = delete();
+			cursor = delete(fireChangeEvent);
+			updateDisplayText();
 		}
 	}
 
-	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
-	void paste () {
-		paste(clipboard.getContents());
-	}
-
-	void paste (String content) {
+	void paste (String content, boolean fireChangeEvent) {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
@@ -440,8 +442,11 @@ public class TextField extends Widget implements Disableable {
 		}
 		content = buffer.toString();
 
-		if (hasSelection) cursor = delete(false);
-		text = insert(cursor, content, text);
+		if (hasSelection) cursor = delete(fireChangeEvent);
+		if (fireChangeEvent)
+			changeText(text, insert(cursor, content, text));
+		else
+			text = insert(cursor, content, text);
 		updateDisplayText();
 		cursor += content.length();
 	}
@@ -451,20 +456,17 @@ public class TextField extends Widget implements Disableable {
 		return to.substring(0, position) + text + to.substring(position, to.length());
 	}
 
-	int delete () {
-		return delete(true);
-	}
-
-	int delete (boolean updateText) {
-		return delete(selectionStart, cursor, updateText);
-	}
-
-	int delete (int from, int to, boolean updateText) {
+	int delete (boolean fireChangeEvent) {
+		int from = selectionStart;
+		int to = cursor;
 		int minIndex = Math.min(from, to);
 		int maxIndex = Math.max(from, to);
-		text = (minIndex > 0 ? text.substring(0, minIndex) : "")
+		String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-		if (updateText) updateDisplayText();
+		if (fireChangeEvent)
+			changeText(text, newText);
+		else
+			text = newText;
 		clearSelection();
 		return minIndex;
 	}
@@ -550,7 +552,7 @@ public class TextField extends Widget implements Disableable {
 
 		clearSelection();
 		cursor = text.length();
-		paste(str);
+		paste(str, programmaticChangeEvents);
 	}
 
 	/** @param str If null, "" is used. */
@@ -559,14 +561,33 @@ public class TextField extends Widget implements Disableable {
 		if (str.equals(text)) return;
 
 		clearSelection();
+		String oldText = text;
 		text = "";
-		paste(str);
+		paste(str, false);
+		if (programmaticChangeEvents) changeText(oldText, text);
 		cursor = 0;
 	}
 
 	/** @return Never null, might be an empty string. */
 	public String getText () {
 		return text;
+	}
+
+	/** @param oldText May be null.
+	 * @return True if the text was changed. */
+	boolean changeText (String oldText, String newText) {
+		if (newText.equals(oldText)) return false;
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		boolean cancelled = fire(changeEvent);
+		text = cancelled ? oldText : newText;
+		Pools.free(changeEvent);
+		return !cancelled;
+	}
+
+	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes the
+	 * text. */
+	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
+		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
 	public int getSelectionStart () {
@@ -800,7 +821,7 @@ public class TextField extends Widget implements Disableable {
 
 			if (ctrl) {
 				if (keycode == Keys.V) {
-					paste();
+					paste(clipboard.getContents(), true);
 					repeat = true;
 				}
 				if (keycode == Keys.C || keycode == Keys.INSERT) {
@@ -808,7 +829,7 @@ public class TextField extends Widget implements Disableable {
 					return true;
 				}
 				if (keycode == Keys.X || keycode == Keys.DEL) {
-					cut();
+					cut(true);
 					return true;
 				}
 				if (keycode == Keys.A) {
@@ -818,11 +839,8 @@ public class TextField extends Widget implements Disableable {
 			}
 
 			if (UIUtils.shift()) {
-				if (keycode == Keys.INSERT) paste();
-				if (keycode == Keys.FORWARD_DEL && hasSelection) {
-					copy();
-					delete(); // cut
-				}
+				if (keycode == Keys.INSERT) paste(clipboard.getContents(), true);
+				if (keycode == Keys.FORWARD_DEL) cut(true);
 				selection:
 				{
 					int temp = cursor;
@@ -922,6 +940,8 @@ public class TextField extends Widget implements Disableable {
 				boolean add = enter ? writeEnters : (!onlyFontChars || style.font.getData().hasGlyph(character));
 				boolean remove = backspace || delete;
 				if (add || remove) {
+					String oldText = text;
+					int oldCursor = cursor;
 					if (hasSelection)
 						cursor = delete(false);
 					else {
@@ -940,6 +960,7 @@ public class TextField extends Widget implements Disableable {
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
+					if (!changeText(oldText, text)) cursor = oldCursor;
 					updateDisplayText();
 				}
 			}
