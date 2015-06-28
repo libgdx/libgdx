@@ -336,7 +336,7 @@ public class TextField extends Widget implements Disableable {
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
 		selection.draw(batch, x + selectionX + renderOffset + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
-			textHeight + font.getDescent() / 2);
+			textHeight);
 	}
 
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
@@ -345,8 +345,7 @@ public class TextField extends Widget implements Disableable {
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset
-			+ font.getData().cursorX, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight + font.getDescent()
-			/ 2);
+			+ font.getData().cursorX, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
