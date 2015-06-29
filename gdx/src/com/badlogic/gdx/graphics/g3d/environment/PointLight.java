@@ -19,21 +19,9 @@ package com.badlogic.gdx.graphics.g3d.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
-public class PointLight extends BaseLight {
+public class PointLight extends BaseLight<PointLight> {
 	public final Vector3 position = new Vector3();
 	public float intensity;
-
-	@Override
-	public PointLight setColor(float r, float g, float b, float a) {
-		super.setColor(r, g, b, a);
-		return this;
-	}
-
-	@Override
-	public PointLight setColor(Color color) {
-		super.setColor(color);
-		return this;
-	}
 
 	public PointLight setPosition(float positionX, float positionY, float positionZ) {
 		this.position.set(positionX, positionY, positionZ);

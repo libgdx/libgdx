@@ -22,24 +22,12 @@ import com.badlogic.gdx.math.Vector3;
 
 /** Note that the default shader doesn't support spot lights, you'll have to supply your own shader to use this class.
  * @author realitix */
-public class SpotLight extends BaseLight {
+public class SpotLight extends BaseLight<SpotLight> {
 	public final Vector3 position = new Vector3();
 	public final Vector3 direction = new Vector3();
 	public float intensity;
 	public float cutoffAngle;
 	public float exponent;
-
-	@Override
-	public SpotLight setColor(float r, float g, float b, float a) {
-		super.setColor(r, g, b, a);
-		return this;
-	}
-
-	@Override
-	public SpotLight setColor(Color color) {
-		super.setColor(color);
-		return this;
-	}
 
 	public SpotLight setPosition(float positionX, float positionY, float positionZ) {
 		this.position.set(positionX, positionY, positionZ);

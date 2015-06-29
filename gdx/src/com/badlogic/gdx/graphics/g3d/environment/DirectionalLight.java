@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics.g3d.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
-public class DirectionalLight extends BaseLight {
+public class DirectionalLight extends BaseLight<DirectionalLight> {
 	public final Vector3 direction = new Vector3();
 
 	public DirectionalLight setDirection(float directionX, float directionY, float directionZ) {
