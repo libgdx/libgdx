@@ -79,17 +79,21 @@ public class TooltipManager {
 		showTask.cancel();
 		if (tooltip.table.remove()) resetTask.cancel();
 		resetTask.run();
-		showTooltip = tooltip;
-		Timer.schedule(showTask, time);
+		if (enabled || tooltip.always) {
+			showTooltip = tooltip;
+			Timer.schedule(showTask, time);
+		}
 	}
 
 	public void enter (Tooltip tooltip) {
 		showTooltip = tooltip;
 		showTask.cancel();
-		if ((enabled && time == 0) || tooltip.instant)
-			showTask.run();
-		else if (enabled) //
-			Timer.schedule(showTask, time);
+		if (enabled || tooltip.always) {
+			if (time == 0 || tooltip.instant)
+				showTask.run();
+			else
+				Timer.schedule(showTask, time);
+		}
 	}
 
 	public void hide (Tooltip tooltip) {

@@ -35,7 +35,7 @@ public class Tooltip extends InputListener {
 	private TooltipStyle style;
 	final Table table;
 	final Label label;
-	boolean instant;
+	boolean instant, always;
 	Actor targetActor;
 
 	public Tooltip (String text, Skin skin) {
@@ -107,9 +107,14 @@ public class Tooltip extends InputListener {
 		return label;
 	}
 
-	/** If true, this tooltip is shown without delay. */
+	/** If true, this tooltip is shown without delay when hovered. */
 	public void setInstant (boolean instant) {
 		this.instant = instant;
+	}
+
+	/** If true, this tooltip is shown even when tooltips are not {@link TooltipManager#enabled}. */
+	public void setAlways (boolean always) {
+		this.always = always;
 	}
 
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
