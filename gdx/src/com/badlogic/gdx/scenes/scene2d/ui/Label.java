@@ -194,7 +194,7 @@ public class Label extends Widget {
 			y += cache.getFont().isFlipped() ? height - textHeight : 0;
 			y -= style.font.getDescent();
 		} else {
-			y += (height - textHeight) / 2;
+			y += Math.round((height - textHeight) / 2);
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
