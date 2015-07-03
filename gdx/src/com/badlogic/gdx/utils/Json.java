@@ -817,14 +817,14 @@ public class Json {
 	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Class elementType, T defaultValue, JsonValue jsonMap) {
 		JsonValue jsonValue = jsonMap.get(name);
-		if (jsonValue == null) return defaultValue;
-		return (T)readValue(type, elementType, jsonValue);
+		return (T)readValue(type, elementType, defaultValue, jsonValue);
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T readValue (Class<T> type, Class elementType, T defaultValue, JsonValue jsonData) {
+ 		if (jsonData == null) return defaultValue;
 		return (T)readValue(type, elementType, jsonData);
 	}
 
