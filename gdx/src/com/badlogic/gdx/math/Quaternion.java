@@ -501,7 +501,7 @@ public class Quaternion implements Serializable {
 			xx *= lx;
 			xy *= lx;
 			xz *= lx;
-			yz *= ly;
+			yx *= ly;
 			yy *= ly;
 			yz *= ly;
 			zx *= lz;
