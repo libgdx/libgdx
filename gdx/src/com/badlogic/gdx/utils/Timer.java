@@ -240,7 +240,9 @@ public class Timer {
 				}
 			}
 			app = Gdx.app;
-			new Thread(this, "Timer").start();
+			Thread t = new Thread(this, "Timer");
+			t.setDaemon(true);
+			t.start();
 			thread = this;
 		}
 
