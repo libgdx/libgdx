@@ -119,7 +119,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		final Array<VertexAttribute> attrs = new Array<VertexAttribute>();
 		if ((usage & Usage.Position) == Usage.Position)
 			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-		if ((usage & Usage.ColorUnpacked) == Usage.ColorUnpacked) attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.ColorUnpacked) == Usage.ColorUnpacked)
+			attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
 			attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.Normal) == Usage.Normal)
@@ -162,8 +163,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.istart = 0;
 		this.part = null;
 		this.stride = attributes.vertexSize / 4;
-		if (this.vertex == null || this.vertex.length < stride)
-			this.vertex = new float[stride];
+		if (this.vertex == null || this.vertex.length < stride) this.vertex = new float[stride];
 		VertexAttribute a = attributes.findByUsage(Usage.Position);
 		if (a == null) throw new GdxRuntimeException("Cannot build mesh without position attribute");
 		posOffset = a.offset / 4;
@@ -253,14 +253,67 @@ public class MeshBuilder implements MeshPartBuilder {
 		return end(new Mesh(true, vertices.size / stride, indices.size, attributes));
 	}
 
+	/** Clears the data being built up until now, including the vertices, indices and all parts. Must be called in between the call
+	 * to #begin and #end. Any builder calls made from the last call to #begin up until now are practically discarded. The state
+	 * (e.g. UV region, color, vertex transform) will remain unchanged. */
+	public void clear () {
+		this.vertices.clear();
+		this.indices.clear();
+		this.parts.clear();
+		this.vindex = 0;
+		this.istart = 0;
+		this.part = null;
+	}
+
+	/** @return the size in number of floats of one vertex, multiply by four to get the size in bytes. */
+	public int getFloatsPerVertex () {
+		return stride;
+	}
+
 	/** @return The number of vertices built up until now, only valid in between the call to begin() and end(). */
 	public int getNumVertices () {
 		return vertices.size / stride;
 	}
 
+	/** Get a copy of the vertices built so far.
+	 * @param out The float array to receive the copy of the vertices, must be at least `destOffset` + {@link #getNumVertices()} *
+	 *           {@link #getFloatsPerVertex()} in size.
+	 * @param destOffset The offset (number of floats) in the out array where to start copying */
+	public void getVertices (float[] out, int destOffset) {
+		if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
+		if ((destOffset < 0) || (destOffset > out.length - vertices.size))
+			throw new GdxRuntimeException("Array to small or offset out of range");
+		System.arraycopy(vertices.items, 0, out, destOffset, vertices.size);
+	}
+
+	/** Provides direct access to the vertices array being built, use with care. The size of the array might be bigger, do not rely
+	 * on the length of the array. Instead use {@link #getFloatsPerVertex()} * {@link #getNumVertices()} to calculate the usable
+	 * size of the array. Must be called in between the call to #begin and #end. */
+	protected float[] getVertices () {
+		return vertices.items;
+	}
+
 	/** @return The number of indices built up until now, only valid in between the call to begin() and end(). */
 	public int getNumIndices () {
 		return indices.size;
+	}
+
+	/** Get a copy of the indices built so far.
+	 * @param out The short array to receive the copy of the indices, must be at least `destOffset` + {@link #getNumIndices()} in
+	 *           size.
+	 * @param destOffset The offset (number of shorts) in the out array where to start copying */
+	public void getIndices (short[] out, int destOffset) {
+		if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
+		if ((destOffset < 0) || (destOffset > out.length - indices.size))
+			throw new GdxRuntimeException("Array to small or offset out of range");
+		System.arraycopy(indices.items, 0, out, destOffset, indices.size);
+	}
+
+	/** Provides direct access to the indices array being built, use with care. The size of the array might be bigger, do not rely
+	 * on the length of the array. Instead use {@link #getNumIndices()} to calculate the usable size of the array. Must be called
+	 * in between the call to #begin and #end. */
+	protected short[] getIndices () {
+		return indices.items;
 	}
 
 	@Override
