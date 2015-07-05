@@ -321,12 +321,12 @@ public class BitmapFont implements Disposable {
 		int maxAdvance = 0;
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
 			Glyph g = data.getGlyph(glyphs.charAt(index));
-			if (g != null && g.xadvance > maxAdvance) maxAdvance = g.xadvance - g.xoffset;
+			if (g != null && g.xadvance > maxAdvance) maxAdvance = g.xadvance;
 		}
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
 			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g == null) continue;
-			g.xoffset += (maxAdvance - g.xadvance) / 2;
+			g.xoffset += Math.round((maxAdvance - g.xadvance) / 2);
 			g.xadvance = maxAdvance;
 			g.kerning = null;
 		}
