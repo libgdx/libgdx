@@ -533,6 +533,48 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 		return (h ^ h >>> hashShift) & mask;
 	}
 
+	public int hashCode () {
+		int h = 0;
+		if (hasZeroValue) {
+			h += Float.floatToIntBits(zeroValue);
+		}
+		int[] keyTable = this.keyTable;
+		int[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			int key = keyTable[i];
+			if (key != EMPTY) {
+				h += key * 31;
+
+				int value = valueTable[i];
+				h += value;
+			}
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IntIntMap)) return false;
+		IntIntMap other = (IntIntMap)obj;
+		if (other.size != size) return false;
+		if (other.hasZeroValue != hasZeroValue) return false;
+		if (hasZeroValue && other.zeroValue != zeroValue) {
+			return false;
+		}
+		int[] keyTable = this.keyTable;
+		int[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			int key = keyTable[i];
+			if (key != EMPTY) {
+				int otherValue = other.get(key, 0);
+				if (otherValue == 0 && !other.containsKey(key)) return false;
+				int value = valueTable[i];
+				if (otherValue != value) return false;
+			}
+		}
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "{}";
 		StringBuilder buffer = new StringBuilder(32);
