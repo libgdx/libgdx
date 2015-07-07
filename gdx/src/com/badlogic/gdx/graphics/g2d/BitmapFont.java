@@ -148,6 +148,10 @@ public class BitmapFont implements Disposable {
 	 * of the region(s) if the regions array is != null and not empty.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		this.flipped = data.flipped;
+		this.data = data;
+		this.integer = integer;
+
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
 			int n = data.imagePaths.length;
@@ -168,9 +172,6 @@ public class BitmapFont implements Disposable {
 
 		cache = newFontCache();
 
-		this.flipped = data.flipped;
-		this.data = data;
-		this.integer = integer;
 		load(data);
 	}
 
