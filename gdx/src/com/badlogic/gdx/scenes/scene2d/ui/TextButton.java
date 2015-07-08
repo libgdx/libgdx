@@ -101,10 +101,6 @@ public class TextButton extends Button {
 		return label.getText();
 	}
 
-	public String toString () {
-		return super.toString() + ": " + label.getText();
-	}
-
 	/** The style for a text button, see {@link TextButton}.
 	 * @author Nathan Sweet */
 	static public class TextButtonStyle extends ButtonStyle {

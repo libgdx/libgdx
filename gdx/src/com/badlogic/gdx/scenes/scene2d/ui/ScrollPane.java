@@ -1042,13 +1042,6 @@ public class ScrollPane extends WidgetGroup {
 		resetTransform(shapes);
 	}
 
-	public String toString () {
-		if (widget == null)
-			return super.toString();
-		else
-			return super.toString() + ": " + widget.toString();
-	}
-
 	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
