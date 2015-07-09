@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -82,12 +82,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
-	
+
 	public String getPreloaderBaseURL()
 	{
 		return GWT.getHostPageBaseURL() + "assets/";
 	}
-	
+
 	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
@@ -154,14 +154,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void ontimeout (String status, String errorType) {
 				error("SoundManager", status + " " + errorType);
 			}
-			
+
 		});
 	}
 
 	void setupLoop () {
 		// setup modules
-		try {			
-			graphics = new GwtGraphics(root, config);			
+		try {
+			graphics = new GwtGraphics(root, config);
 		} catch (Throwable e) {
 			root.clear();
 			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
@@ -177,7 +177,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;
-		this.net = new GwtNet();
+		this.net = new GwtNet(preloader);
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
 
@@ -223,7 +223,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		listener.render();
 		input.reset();
 	}
-	
+
 	public Panel getRootPanel () {
 		return root;
 	}
@@ -238,7 +238,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		final Panel preloaderPanel = new VerticalPanel();
 		preloaderPanel.setStyleName("gdx-preloader");
 		final Image logo = new Image(GWT.getModuleBaseURL() + "logo.png");
-		logo.setStyleName("logo");		
+		logo.setStyleName("logo");
 		preloaderPanel.add(logo);
 		final Panel meterPanel = new SimplePanel();
 		meterPanel.setStyleName("gdx-meter");
@@ -255,12 +255,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void error (String file) {
 				System.out.println("error: " + file);
 			}
-			
+
 			@Override
 			public void update (PreloaderState state) {
 				meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
-			}			
-			
+			}
+
 		};
 	}
 
@@ -283,7 +283,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Files getFiles () {
 		return Gdx.files;
 	}
-	
+
 	@Override
 	public Net getNet() {
 		return Gdx.net;
@@ -422,7 +422,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Clipboard getClipboard () {
 		return clipboard;
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		runnables.add(runnable);
@@ -500,7 +500,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Preloader getPreloader () {
 		return preloader;
 	}
-	
+
 	public CanvasElement getCanvasElement(){
 		return graphics.canvas;
 	}
@@ -524,13 +524,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void removeLifecycleListener (LifecycleListener listener) {
 		synchronized(lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
-	
+
 	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
-	
+
 	private native void addEventListeners () /*-{
 		var self = this;
 		$doc.addEventListener('visibilitychange', function (e) {
@@ -551,7 +551,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			listener.pause();
 		}
 	}
-	
+
 	/**
 	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
 	 */
@@ -560,7 +560,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		 * Method called before the setup
 		 */
 		public void beforeSetup();
-		
+
 		/**
 		 * Method called after the setup
 		 */
