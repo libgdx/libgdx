@@ -26,7 +26,7 @@ public class DependencyBank {
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
-	static String box2DLightsVersion = "1.3";
+	static String box2DLightsVersion = "1.4";
 	static String ashleyVersion = "1.4.0";
 	static String aiVersion = "1.5.0";
 
