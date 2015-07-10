@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class Version {
 	/** the current version of libgdx as a String in the major.minor.revision format **/
-	public static final String VERSION = "1.6.4";
+	public static final String VERSION = "1.6.5";
 
 	/** the current major version of libgdx **/
 	public static final int MAJOR;
