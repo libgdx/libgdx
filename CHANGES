@@ -12,6 +12,7 @@
 - AssetManager gets hook for handling loading failure.
 - TextField now fires a ChangeEvent when the text change. Can be cancelled too!
 - Added tooltips to scene2d.ui.
+- Updated to RoboVM 1.5
 
 [1.6.3]
 - Updated to RoboVM 1.4
