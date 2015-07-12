@@ -406,16 +406,6 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		// Set space glyph.
-		Glyph spaceGlyph = data.getGlyph(' ');
-		if (spaceGlyph == null) {
-			spaceGlyph = new Glyph();
-			spaceGlyph.xadvance = (int)data.spaceWidth;
-			spaceGlyph.id = (int)' ';
-			data.setGlyph(' ', spaceGlyph);
-		}
-		if (spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + data.padRight);
-
 		if (stroker != null && !incremental) stroker.dispose();
 
 		// Generate kerning.
@@ -445,6 +435,16 @@ public class FreeTypeFontGenerator implements Disposable {
 			data.regions = new Array();
 			packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		}
+
+		// Set space glyph.
+		Glyph spaceGlyph = data.getGlyph(' ');
+		if (spaceGlyph == null) {
+			spaceGlyph = new Glyph();
+			spaceGlyph.xadvance = (int)data.spaceWidth;
+			spaceGlyph.id = (int)' ';
+			data.setGlyph(' ', spaceGlyph);
+		}
+		if (spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + data.padRight);
 
 		return data;
 	}
