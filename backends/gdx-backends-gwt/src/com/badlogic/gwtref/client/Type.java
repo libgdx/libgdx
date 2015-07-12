@@ -241,6 +241,14 @@ public class Type {
 		return annotations;
 	}
 
+	/** @return annotation of specified type, or null if not found. */
+	public Annotation getDeclaredAnnotation (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		for (Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) return annotation;
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString () {
 		return "Type [name=" + name + ",\n clazz=" + clazz + ",\n superClass=" + superClass + ",\n assignables=" + assignables
