@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.utils.Align;
@@ -13,6 +15,9 @@ public class Cell<T extends Actor> implements Poolable {
 	static private final Integer zeroi = 0, onei = 1;
 	static private final Integer centeri = onei, topi = Align.top, bottomi = Align.bottom, lefti = Align.left,
 		righti = Align.right;
+
+	static private Application app;
+	static private Cell defaults;
 
 	Value minWidth, minHeight;
 	Value prefWidth, prefHeight;
@@ -884,60 +889,40 @@ public class Cell<T extends Actor> implements Poolable {
 		uniformY = null;
 	}
 
-	/** Reset state so the cell can be reused, setting all constraints to their default values. */
+	/** Reset state so the cell can be reused, setting all constraints to their {@link #defaults() default} values. */
 	public void reset () {
 		actor = null;
 		table = null;
 		endRow = false;
 		cellAboveIndex = -1;
 
-		minWidth = Value.minWidth;
-		minHeight = Value.minHeight;
-		prefWidth = Value.prefWidth;
-		prefHeight = Value.prefHeight;
-		maxWidth = Value.maxWidth;
-		maxHeight = Value.maxHeight;
-		spaceTop = Value.zero;
-		spaceLeft = Value.zero;
-		spaceBottom = Value.zero;
-		spaceRight = Value.zero;
-		padTop = Value.zero;
-		padLeft = Value.zero;
-		padBottom = Value.zero;
-		padRight = Value.zero;
-		fillX = zerof;
-		fillY = zerof;
-		align = centeri;
-		expandX = zeroi;
-		expandY = zeroi;
-		colspan = onei;
-		uniformX = null;
-		uniformY = null;
+		Cell defaults = defaults();
+		if (defaults != null) set(defaults);
 	}
 
-	void set (Cell defaults) {
-		minWidth = defaults.minWidth;
-		minHeight = defaults.minHeight;
-		prefWidth = defaults.prefWidth;
-		prefHeight = defaults.prefHeight;
-		maxWidth = defaults.maxWidth;
-		maxHeight = defaults.maxHeight;
-		spaceTop = defaults.spaceTop;
-		spaceLeft = defaults.spaceLeft;
-		spaceBottom = defaults.spaceBottom;
-		spaceRight = defaults.spaceRight;
-		padTop = defaults.padTop;
-		padLeft = defaults.padLeft;
-		padBottom = defaults.padBottom;
-		padRight = defaults.padRight;
-		fillX = defaults.fillX;
-		fillY = defaults.fillY;
-		align = defaults.align;
-		expandX = defaults.expandX;
-		expandY = defaults.expandY;
-		colspan = defaults.colspan;
-		uniformX = defaults.uniformX;
-		uniformY = defaults.uniformY;
+	void set (Cell cell) {
+		minWidth = cell.minWidth;
+		minHeight = cell.minHeight;
+		prefWidth = cell.prefWidth;
+		prefHeight = cell.prefHeight;
+		maxWidth = cell.maxWidth;
+		maxHeight = cell.maxHeight;
+		spaceTop = cell.spaceTop;
+		spaceLeft = cell.spaceLeft;
+		spaceBottom = cell.spaceBottom;
+		spaceRight = cell.spaceRight;
+		padTop = cell.padTop;
+		padLeft = cell.padLeft;
+		padBottom = cell.padBottom;
+		padRight = cell.padRight;
+		fillX = cell.fillX;
+		fillY = cell.fillY;
+		align = cell.align;
+		expandX = cell.expandX;
+		expandY = cell.expandY;
+		colspan = cell.colspan;
+		uniformX = cell.uniformX;
+		uniformY = cell.uniformY;
 	}
 
 	/** @param cell May be null. */
@@ -965,5 +950,37 @@ public class Cell<T extends Actor> implements Poolable {
 		if (cell.colspan != null) colspan = cell.colspan;
 		if (cell.uniformX != null) uniformX = cell.uniformX;
 		if (cell.uniformY != null) uniformY = cell.uniformY;
+	}
+
+	/** Returns the defaults to use for all cells. This can be used to avoid needing to set the same defaults for every table (eg,
+	 * for spacing). */
+	static public Cell defaults () {
+		if (app == null || app != Gdx.app) {
+			app = Gdx.app;
+			defaults = new Cell();
+			defaults.minWidth = Value.minWidth;
+			defaults.minHeight = Value.minHeight;
+			defaults.prefWidth = Value.prefWidth;
+			defaults.prefHeight = Value.prefHeight;
+			defaults.maxWidth = Value.maxWidth;
+			defaults.maxHeight = Value.maxHeight;
+			defaults.spaceTop = Value.zero;
+			defaults.spaceLeft = Value.zero;
+			defaults.spaceBottom = Value.zero;
+			defaults.spaceRight = Value.zero;
+			defaults.padTop = Value.zero;
+			defaults.padLeft = Value.zero;
+			defaults.padBottom = Value.zero;
+			defaults.padRight = Value.zero;
+			defaults.fillX = zerof;
+			defaults.fillY = zerof;
+			defaults.align = centeri;
+			defaults.expandX = zeroi;
+			defaults.expandY = zeroi;
+			defaults.colspan = onei;
+			defaults.uniformX = null;
+			defaults.uniformY = null;
+		}
+		return defaults;
 	}
 }
