@@ -43,9 +43,15 @@ public class TooltipManager {
 	public boolean enabled = true;
 	/** If false, tooltips will be shown without animations. Default is true. */
 	public boolean animations = true;
+	/** The maximum width of a {@link TextTooltip}. The label will wrap if needed. Default is Integer.MAX_VALUE. */
+	public float maxWidth = Integer.MAX_VALUE;
+	/** The distance from the mouse position to offset the tooltip actor. Default is 15,19. */
+	public float offsetX = 15, offsetY = 19;
+	/** The distance from the tooltip actor position to the edge of the screen where the actor will be shown on the other side of
+	 * the mouse cursor. Default is 7. */
+	public float edgeDistance = 7;
 
 	final Array<Tooltip> shown = new Array();
-	float maxWidth = Integer.MAX_VALUE;
 
 	float time = initialTime;
 	final Task resetTask = new Task() {
@@ -61,11 +67,11 @@ public class TooltipManager {
 
 			Stage stage = showTooltip.targetActor.getStage();
 			if (stage == null) return;
-			stage.addActor(showTooltip.table);
-			showTooltip.table.toFront();
+			stage.addActor(showTooltip.container);
+			showTooltip.container.toFront();
 			shown.add(showTooltip);
 
-			showTooltip.table.clearActions();
+			showTooltip.container.clearActions();
 			showAction(showTooltip);
 
 			if (!showTooltip.instant) {
@@ -77,7 +83,7 @@ public class TooltipManager {
 
 	public void touchDown (Tooltip tooltip) {
 		showTask.cancel();
-		if (tooltip.table.remove()) resetTask.cancel();
+		if (tooltip.container.remove()) resetTask.cancel();
 		resetTask.run();
 		if (enabled || tooltip.always) {
 			showTooltip = tooltip;
@@ -99,7 +105,7 @@ public class TooltipManager {
 	public void hide (Tooltip tooltip) {
 		showTooltip = null;
 		showTask.cancel();
-		if (tooltip.table.hasParent()) {
+		if (tooltip.container.hasParent()) {
 			shown.removeValue(tooltip, true);
 			hideAction(tooltip);
 			resetTask.cancel();
@@ -110,15 +116,16 @@ public class TooltipManager {
 	/** Called when tooltip is shown. Default implementation sets actions to animate showing. */
 	protected void showAction (Tooltip tooltip) {
 		float actionTime = animations ? (time > 0 ? 0.5f : 0.15f) : 0.1f;
-		tooltip.table.getColor().a = 0.2f;
-		tooltip.table.setScale(0.05f);
-		tooltip.table.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interpolation.fade)));
+		tooltip.container.setTransform(true);
+		tooltip.container.getColor().a = 0.2f;
+		tooltip.container.setScale(0.05f);
+		tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interpolation.fade)));
 	}
 
 	/** Called when tooltip is hidden. Default implementation sets actions to animate hiding and to remove the actor from the stage
 	 * when the actions are complete. A subclass must at least remove the actor. */
 	protected void hideAction (Tooltip tooltip) {
-		tooltip.table.addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)),
+		tooltip.container.addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)),
 			removeActor()));
 	}
 
@@ -133,11 +140,6 @@ public class TooltipManager {
 		time = 0;
 		showTask.run();
 		showTask.cancel();
-	}
-
-	/** The maximum width of a tooltip. The tooltip text will wrap if needed. Default is Integer.MAX_VALUE. */
-	public void setMaxWidth (float maxWidth) {
-		this.maxWidth = maxWidth;
 	}
 
 	static public TooltipManager getInstance () {

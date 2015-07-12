@@ -40,9 +40,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Tooltip;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.Tooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -132,7 +132,11 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
-		buttonMulti.addListener(new Tooltip("This is a tooltip!", skin));
+		buttonMulti.addListener(new TextTooltip("This is a tooltip!", skin));
+		Table tooltipTable = new Table(skin);
+		tooltipTable.pad(10).background("default-round");
+		tooltipTable.add(new TextButton("Fancy tooltip!", skin));
+		imgButton.addListener(new Tooltip(tooltipTable));
 
 		// window.debug();
 		Window window = new Window("Dialog", skin);
