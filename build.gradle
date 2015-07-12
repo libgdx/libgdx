@@ -1,0 +1,300 @@
+
+ext {
+	GROUPID = "com.badlogicgames.gdx"
+	VERSION = "1.5.4-SNAPSHOT"
+	robovmVersion = "1.0.0-beta-03"
+	androidVersion = "4.4"
+	gwtVersion = "2.6.0"
+	jglfwVersion = "1.1"
+	lwjglVersion = "2.9.2"
+	jlayerVersion = "1.0.1-gdx"
+	jorbisVersion = "0.0.17"
+}
+
+buildscript {
+	repositories { mavenCentral() }
+	dependencies {
+		classpath "com.android.tools.build:gradle:1.0.0"
+		classpath "org.robovm:robovm-gradle-plugin:1.0.0-beta-03"
+	}
+}
+
+// apply the following to all projects, except the
+// Android test project, that one has its own
+// build.gradle file cause Android is special...
+configure(allprojects - project(':tests:gdx-tests-android')) {
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "java"
+
+	repositories {
+		mavenCentral()
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+	}
+
+	group = GROUPID
+	version = VERSION
+
+	// set source Java version
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+	sourceSets.main.java.srcDirs = ["src"]
+
+	// create a custom configuration for local dependencies such as Android runtime
+	configurations {
+		optional
+		compile.extendsFrom optional
+	}
+}
+
+project(":gdx") {
+	dependencies { optional project(":extensions:gdx-jnigen")              }
+}
+
+project(":backends:gdx-backend-android") {
+	dependencies {
+		compile project(":gdx")
+		optional fileTree(dir: 'libs', include: ['*.jar'])
+	}
+}
+
+project(":backends:gdx-backend-headless") {
+	dependencies { compile project(":gdx")         }
+}
+
+project(":backends:gdx-backend-jglfw") {
+	dependencies {
+		compile project(":gdx")
+		compile "com.badlogicgames.jglfw:jglfw:$jglfwVersion"
+		compile "com.badlogicgames.jglfw:jglfw-platform:$jglfwVersion:natives-desktop"
+	}
+}
+
+project(":backends:gdx-backend-lwjgl") {
+	dependencies {
+		compile project(":gdx")
+		compile "org.lwjgl.lwjgl:lwjgl:$lwjglVersion"
+		compile "org.lwjgl.lwjgl:lwjgl_util:$lwjglVersion"
+		compile "com.badlogicgames.jlayer:jlayer:$jlayerVersion"
+		compile "org.jcraft:jorbis:$jorbisVersion"
+	}
+}
+
+project(":backends:gdx-backend-robovm") {
+	dependencies {
+		compile project(":gdx")
+		optional "org.robovm:robovm-rt:$robovmVersion"
+		optional "org.robovm:robovm-objc:$robovmVersion"
+		optional "org.robovm:robovm-cocoatouch:$robovmVersion"
+	}
+}
+
+project(":backends:gdx-backends-gwt") {
+	sourceSets.main.java.exclude "**/System.java"
+
+	dependencies {
+		compile project(":gdx")
+		optional "com.google.gwt:gwt-user:$gwtVersion"
+		optional "com.google.gwt:gwt-dev:$gwtVersion"
+	}
+
+	eclipse {
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/backends/gwt/emu"
+		classpath.file.whenMerged { classpath ->
+			classpath.entries.find { it.path == 'src' }*.excludes = [
+				"com/badlogic/gdx/backends/gwt/emu/" ]
+		}
+	}
+}
+
+project(":extensions:gdx-box2d:gdx-box2d") {
+	dependencies {
+		compile project(":gdx")
+		optional project(":extensions:gdx-jnigen")
+	}
+}
+
+project(":extensions:gdx-box2d:gdx-box2d-gwt") {
+	dependencies { compile project(":gdx")         }
+
+	eclipse {
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/physics/box2d/gwt/emu"
+		classpath.file.whenMerged { classpath ->
+			classpath.entries.find { it.path == 'src' }*.excludes = [
+				"com/badlogic/gdx/physics/box2d/gwt/emu/"
+			]
+		}
+	}
+}
+
+project(":extensions:gdx-bullet") {
+	sourceSets.main.java.srcDirs = [
+		"jni/swig-src/collision",
+		"jni/swig-src/dynamics",
+		"jni/swig-src/extras",
+		"jni/swig-src/linearmath",
+		"jni/swig-src/softbody",
+		"src"
+	]
+
+	dependencies {
+		compile project(":gdx")
+		optional project(":extensions:gdx-jnigen")
+	}
+}
+
+project(":extensions:gdx-controllers:gdx-controllers") {
+	dependencies { compile project(":gdx"); }
+}
+
+project(":extensions:gdx-controllers:gdx-controllers-android") {
+	dependencies {
+		compile project(":gdx");
+		compile project(":extensions:gdx-controllers:gdx-controllers");
+		compile project(":backends:gdx-backend-android");
+	}
+}
+
+project(":extensions:gdx-controllers:gdx-controllers-desktop") {
+	dependencies {
+		compile project(":gdx");
+		compile project(":extensions:gdx-controllers:gdx-controllers");
+		compile project(":backends:gdx-backend-lwjgl");
+		optional project(":extensions:gdx-jnigen")
+	}
+}
+
+project(":extensions:gdx-controllers:gdx-controllers-gwt") {
+	dependencies {
+		compile project(":gdx");
+		compile project(":extensions:gdx-controllers:gdx-controllers");
+		compile project(":backends:gdx-backends-gwt");
+	}
+
+	eclipse {
+		sourceSets.main.java.srcDirs "src", "src/com/badlogic/gdx/controllers/gwt/emu"
+		classpath.file.whenMerged { classpath ->
+			classpath.entries.find { it.path == 'src' }*.excludes = [
+				"com/badlogic/gdx/controllers/gwt/emu/"
+			]
+		}
+	}
+}
+
+project(":extensions:gdx-freetype") {
+	dependencies { compile project(":gdx");         }
+}
+
+project(":extensions:gdx-jnigen") {
+	dependencies { compile "com.google.code.javaparser:javaparser:1.0.8" }
+}
+
+project(":extensions:gdx-setup") {
+}
+
+
+project(":extensions:gdx-tools") {
+	dependencies {
+		compile project(":backends:gdx-backend-lwjgl")
+		compile project(":backends:gdx-backend-headless")
+		optional fileTree(dir: 'libs', include: ['*.jar'])
+	}
+}
+
+project(":tests:gdx-tests") {
+	dependencies {
+		compile project(":gdx")
+		compile project(":extensions:gdx-box2d:gdx-box2d")
+		compile project(":extensions:gdx-bullet")
+		compile project(":extensions:gdx-controllers:gdx-controllers")
+		compile project(":extensions:gdx-freetype")
+	}
+}
+
+project(":tests:gdx-tests-android") {
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "android"
+	
+	dependencies {
+		compile project(":tests:gdx-tests")
+		compile project(":backends:gdx-backend-android")
+	}
+}
+
+project(":tests:gdx-tests-gwt") {
+	dependencies {
+		compile project(":tests:gdx-tests")
+		compile project(":backends:gdx-backends-gwt")
+	}
+}
+
+project(":tests:gdx-tests-iosrobovm") {
+	dependencies {
+		compile project(":tests:gdx-tests")
+		compile project(":backends:gdx-backend-robovm")
+	}
+	
+	eclipse.project {		
+		natures 'org.robovm.eclipse.RoboVMNature'
+	}
+}
+
+project(":tests:gdx-tests-jglfw") {
+	dependencies {
+		compile project(":tests:gdx-tests")
+		compile project(":backends:gdx-backend-jglfw")
+		compile files("../../gdx/libs/gdx-natives.jar")
+		compile files("../../backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar")
+		compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
+		compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
+		compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
+		compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+		compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
+	}
+	
+	eclipse.project.linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/gdx-tests-android/assets'
+	task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
+		doLast {
+			def classpath = new XmlParser().parse(file(".classpath"))
+			new Node(classpath, "classpathentry", [ kind: 'src', path: 'assets' ]);
+			def writer = new FileWriter(file(".classpath"))
+			def printer = new XmlNodePrinter(new PrintWriter(writer))
+			printer.setPreserveWhitespace(true)
+			printer.print(classpath)
+		}
+	}
+}
+
+project(":tests:gdx-tests-lwjgl") {
+	dependencies {
+		compile project(":tests:gdx-tests")
+		compile project(":backends:gdx-backend-lwjgl")
+		compile files("../../gdx/libs/gdx-natives.jar")
+		compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
+		compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
+		compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
+		compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+		compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
+	}
+
+	eclipse.project.linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/gdx-tests-android/assets'
+	task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
+		doLast {
+			def classpath = new XmlParser().parse(file(".classpath"))
+			new Node(classpath, "classpathentry", [ kind: 'src', path: 'assets' ]);
+			def writer = new FileWriter(file(".classpath"))
+			def printer = new XmlNodePrinter(new PrintWriter(writer))
+			printer.setPreserveWhitespace(true)
+			printer.print(classpath)
+		}
+	}
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+	allprojects {
+		tasks.withType(Javadoc) {
+			options.addStringOption("Xdoclint:none", "-quiet")
+		}
+	}
+}

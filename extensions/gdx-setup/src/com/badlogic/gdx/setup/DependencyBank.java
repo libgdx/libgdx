@@ -6,10 +6,10 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.6.3";
+	static String libgdxVersion = "1.6.4";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.6.4-SNAPSHOT";
-	static String roboVMVersion = "1.4.0";
+	static String libgdxNightlyVersion = "1.6.5-SNAPSHOT";
+	static String roboVMVersion = "1.5.0";
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
@@ -26,7 +26,7 @@ public class DependencyBank {
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
-	static String box2DLightsVersion = "1.3";
+	static String box2DLightsVersion = "1.4";
 	static String ashleyVersion = "1.4.0";
 	static String aiVersion = "1.5.0";
 
