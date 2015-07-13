@@ -231,8 +231,10 @@ public final class ClassReflection {
 	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this class doesn't have such an
 	 * annotation. This is a convenience function if the caller knows already which annotation type he's looking for. */
 	static public Annotation getDeclaredAnnotation (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
-		java.lang.annotation.Annotation annotation = c.getDeclaredAnnotation(annotationType);
-		if (annotation != null) return new Annotation(annotation);
+		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) return new Annotation(annotation);
+		}
 		return null;
 	}
 }
