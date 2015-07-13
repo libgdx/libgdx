@@ -111,6 +111,10 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0 */
 	public void setPitch (long soundId, float pitch);
+	
+	/** Changes the default sound volume used by {@link #play()}. Does not update playing sounds.
+	 * @param volume the volume in the range 0 (silent) to 1 (max volume). */
+	public void setVolume (float volume);
 
 	/** Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the
 	 * sound is no longer playing, this has no effect.

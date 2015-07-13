@@ -27,6 +27,7 @@ final class AndroidSound implements Sound {
 	final AudioManager manager;
 	final int soundId;
 	final IntArray streamIds = new IntArray(8);
+	private float volume = 1;
 
 	AndroidSound (SoundPool pool, AudioManager manager, int soundId) {
 		this.soundPool = pool;
@@ -41,7 +42,7 @@ final class AndroidSound implements Sound {
 
 	@Override
 	public long play () {
-		return play(1);
+		return play(volume);
 	}
 
 	@Override
@@ -96,7 +97,7 @@ final class AndroidSound implements Sound {
 
 	@Override
 	public long loop () {
-		return loop(1);
+		return loop(volume);
 	}
 
 	@Override
@@ -165,5 +166,10 @@ final class AndroidSound implements Sound {
 	@Override
 	public void setPriority (long soundId, int priority) {
 		soundPool.setPriority((int)soundId, priority);
+	}
+
+	@Override
+	public void setVolume (float volume) {
+		this.volume = volume;
 	}
 }

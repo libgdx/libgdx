@@ -28,6 +28,7 @@ public class OpenALSound implements Sound {
 	private int bufferID = -1;
 	private final OpenALAudio audio;
 	private float duration;
+	private float volume = 1;
 
 	public OpenALSound (OpenALAudio audio) {
 		this.audio = audio;
@@ -50,7 +51,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public long play () {
-		return play(1);
+		return play(volume);
 	}
 
 	public long play (float volume) {
@@ -72,7 +73,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public long loop () {
-		return loop(1);
+		return loop(volume);
 	}
 
 	@Override
@@ -180,5 +181,10 @@ public class OpenALSound implements Sound {
 	@Override
 	public void setPriority (long soundId, int priority) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void setVolume (float volume) {
+		this.volume = volume;
 	}
 }

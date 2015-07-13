@@ -39,6 +39,7 @@ public class IOSSound implements Sound {
 	private ALChannelSource channel;
 	private NSArray<ALSource> sourcePool;
 	private IntArray streamIds = new IntArray(8);
+	private float volume = 1;
 	
 	public IOSSound (FileHandle filePath) {
 		soundPath = filePath.file().getPath().replace('\\', '/');
@@ -49,7 +50,7 @@ public class IOSSound implements Sound {
 
 	@Override
 	public long play () {
-		return play(1, 1, 0, false);
+		return play(volume, 1, 0, false);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class IOSSound implements Sound {
 
 	@Override
 	public long loop () {
-		return play(1, 1, 0, true);
+		return play(volume, 1, 0, true);
 	}
 
 	@Override
@@ -171,5 +172,10 @@ public class IOSSound implements Sound {
 			if (source.getSourceId() == soundId) return source;			
 		}
 		return null;
+	}
+
+	@Override
+	public void setVolume(float volume) {
+		this.volume = volume;
 	}
 }
