@@ -1,3 +1,6 @@
+[1.6.5]
+- Made possible to use any actor for tooltips.
+
 [1.6.4]
 - TextField cursor and selection size changed. https://github.com/libgdx/libgdx/commit/2a830dea348948d2a37bd8f6338af2023fec9b09
 - FreeTypeFontGenerator setting to improve shadows and borders.
