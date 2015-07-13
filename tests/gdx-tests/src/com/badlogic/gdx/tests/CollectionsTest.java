@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -45,6 +43,9 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.ShortArray;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.Method;
 
 /** Tests for the collection classes. Currently, only equals() and hashCode() methods are tested. */
 public class CollectionsTest extends GdxTest {
@@ -75,7 +76,7 @@ public class CollectionsTest extends GdxTest {
 	/** Uses reflection to create a new instance of the given type. */
 	private Object newInstance (Class<?> clazz) {
 		try {
-			return clazz.newInstance();
+			return ClassReflection.newInstance(clazz);
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException(ex);
 		}
@@ -84,7 +85,7 @@ public class CollectionsTest extends GdxTest {
 	private void invoke (String methodName, Object object, Object... args) {
 		try {
 			Method theMethod = null;
-			for (Method method : object.getClass().getMethods()) {
+			for (Method method : ClassReflection.getMethods(object.getClass())) {
 				if (methodName.equals(method.getName()) && method.getParameterTypes().length == args.length) {
 					theMethod = method;
 					break;
@@ -98,7 +99,7 @@ public class CollectionsTest extends GdxTest {
 
 	private void set (String fieldName, Object object, Object value) {
 		try {
-			object.getClass().getField(fieldName).set(object, value);
+			ClassReflection.getField(object.getClass(), fieldName).set(object, value);
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException(ex);
 		}
@@ -107,9 +108,9 @@ public class CollectionsTest extends GdxTest {
 	private Object copy(Object object) {
 		try {
 			Constructor theConstructor = null;
-			for (Constructor constructor : object.getClass().getConstructors()) {
+			for (Constructor constructor : ClassReflection.getConstructors(object.getClass())) {
 				if (constructor.getParameterTypes().length == 1
-						&& constructor.getParameterTypes()[0].isAssignableFrom(object.getClass())) {
+						&& ClassReflection.isAssignableFrom(constructor.getParameterTypes()[0], object.getClass())) {
 					theConstructor = constructor;
 					break;
 				}
