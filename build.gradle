@@ -39,6 +39,7 @@ configure(allprojects - project(':tests:gdx-tests-android')) {
 	sourceCompatibility = 1.6
 	targetCompatibility = 1.6
 	sourceSets.main.java.srcDirs = ["src"]
+	sourceSets.main.resources.srcDirs = ["src"]
 
 	// create a custom configuration for local dependencies such as Android runtime
 	configurations {
@@ -195,6 +196,7 @@ project(":extensions:gdx-setup") {
 
 project(":extensions:gdx-tools") {
 	dependencies {
+		compile files("../../gdx/libs/gdx-natives.jar")
 		compile project(":backends:gdx-backend-lwjgl")
 		compile project(":backends:gdx-backend-headless")
 		optional fileTree(dir: 'libs', include: ['*.jar'])

@@ -1,0 +1,66 @@
+project.ext.particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
+project.ext.particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
+project.ext.hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
+project.ext.texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
+
+project.ext.toolsAssetsDir = ["assets"]
+
+task dist2DParticles (type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.toolsAssetsDir);
+
+    baseName = "runnable-2D-particles"
+    version = ""
+
+    manifest {
+        attributes 'Main-Class': project.particles2DMainClass
+    }
+}
+
+task dist3DParticles (type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.toolsAssetsDir)
+
+    baseName = "runnable-3D-particles"
+    version = ""
+
+    manifest {
+        attributes 'Main-Class': project.particles3DMainClass
+    }
+}
+
+task distHiero (type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.toolsAssetsDir);
+
+    baseName = "runnable-hiero"
+    version = ""
+
+    manifest {
+        attributes 'Main-Class': project.hieroMainClass
+    }
+}
+
+task distTexturePacker (type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.toolsAssetsDir);
+
+    baseName = "runnable-texturepacker"
+    version = ""
+
+    manifest {
+        attributes 'Main-Class': project.texturePackerMainClass
+    }
+}
+
+task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) << {
+    println "Building ye runnables"
+}
