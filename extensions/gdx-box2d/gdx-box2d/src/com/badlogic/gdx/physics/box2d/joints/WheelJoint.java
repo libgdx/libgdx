@@ -52,7 +52,7 @@ public class WheelJoint extends Joint {
 	*/
 
 	public Vector2 getLocalAnchorB () {
-		jniGetLocalAnchorA(addr, tmp);
+		jniGetLocalAnchorB(addr, tmp);
 		localAnchorB.set(tmp[0], tmp[1]);
 		return localAnchorB;
 	}
@@ -64,7 +64,7 @@ public class WheelJoint extends Joint {
 	*/
 
 	public Vector2 getLocalAxisA(){
-		jniGetLocalAnchorA(addr, tmp);
+		jniGetLocalAxisA(addr, tmp);
 		localAxisA.set(tmp[0], tmp[1]);
 		return localAxisA;
 	}
