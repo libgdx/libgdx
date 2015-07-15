@@ -193,13 +193,32 @@ public final class ClassReflection {
 		}
 	}
 
-	/** Returns true if the supplied class includes an annotation of the given class type. */
+	/** Returns true if the supplied class includes an annotation of the given type. */
 	static public boolean isAnnotationPresent (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
 		return c.isAnnotationPresent(annotationType);
 	}
 
-	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class,
-	 * or an empty array if there are none. Does not include inherited annotations. */
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class, and inherited
+	 * from its superclass. Returns an empty array if there are none. */
+	static public Annotation[] getAnnotations (Class c) {
+		java.lang.annotation.Annotation[] annotations = c.getAnnotations();
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
+
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null if this class doesn't have such an
+	 * annotation. This is a convenience function if the caller knows already which annotation type he's looking for. */
+	static public Annotation getAnnotation (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation annotation = c.getAnnotation(annotationType);
+		if (annotation != null) return new Annotation(annotation);
+		return null;
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class, or an empty
+	 * array if there are none. Does not include inherited annotations. */
 	static public Annotation[] getDeclaredAnnotations (Class c) {
 		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
 		Annotation[] result = new Annotation[annotations.length];
@@ -209,15 +228,12 @@ public final class ClassReflection {
 		return result;
 	}
 
-	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this field doesn't
-	 * have such an annotation. This is a convenience function if the caller knows already which annotation
-	 * type he's looking for. */
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null if this class doesn't have such an
+	 * annotation. This is a convenience function if the caller knows already which annotation type he's looking for. */
 	static public Annotation getDeclaredAnnotation (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
 		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
 		for (java.lang.annotation.Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(annotationType)) {
-				return new Annotation(annotation);
-			}
+			if (annotation.annotationType().equals(annotationType)) return new Annotation(annotation);
 		}
 		return null;
 	}
