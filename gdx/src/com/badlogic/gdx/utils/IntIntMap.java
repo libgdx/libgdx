@@ -50,14 +50,6 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
-	public static void main (String[] args) throws Exception {
-		ObjectIntMap m = new ObjectIntMap();
-		m.put("Asd", 10);
-		System.out.println(m.containsValue(10));
-		m.remove("Asd", 0);
-		System.out.println(m.containsValue(10));
-	}
-
 	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
 	 * backing table. */
 	public IntIntMap () {
