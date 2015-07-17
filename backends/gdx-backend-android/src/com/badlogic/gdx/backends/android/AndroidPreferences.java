@@ -149,7 +149,7 @@ public class AndroidPreferences implements Preferences {
 	@Override
 	public void flush () {
 		if (editor != null) {
-			editor.commit();
+			editor.apply();
 			editor = null;
 		}
 	}
