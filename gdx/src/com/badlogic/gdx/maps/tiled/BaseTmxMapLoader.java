@@ -217,9 +217,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					TextureMapObject textureMapObject = new TextureMapObject(textureRegion);
 					textureMapObject.getProperties().put("gid", id);
 					textureMapObject.setX(x);
-					textureMapObject.setY(flipY ? y - height : y);
-					textureMapObject.setScaleX(scaleX);
-					textureMapObject.setScaleY(scaleY);
+					textureMapObject.setY(flipY ? y : y - height);
+					textureMapObject.setScaleX(scaleX * (element.getFloatAttribute("width", textureRegion.getRegionWidth()) / textureRegion.getRegionWidth()));
+					textureMapObject.setScaleY(scaleY * (element.getFloatAttribute("height", textureRegion.getRegionHeight()) / textureRegion.getRegionHeight()));
 					textureMapObject.setRotation(element.getFloatAttribute("rotation", 0));
 					object = textureMapObject;
 				} else {

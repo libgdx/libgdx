@@ -19,6 +19,6 @@
    <polygon points="0,0 78,-4 32,73"/>
   </object>
   <object id="9" name="Rectangle" x="340" y="341.333" width="118.667" height="100"/>
-  <object id="12" name="Texture" gid="3" x="128" y="298.667"/>
+  <object id="12" name="Texture" gid="3" x="128" y="298.667" width="256" height="33.667"/>
  </objectgroup>
 </map>
