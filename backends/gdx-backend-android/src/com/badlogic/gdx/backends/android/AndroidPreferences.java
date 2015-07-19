@@ -149,7 +149,11 @@ public class AndroidPreferences implements Preferences {
 	@Override
 	public void flush () {
 		if (editor != null) {
-			editor.commit();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+    				editor.apply();
+			} else {
+				editor.commit();
+			}
 			editor = null;
 		}
 	}
