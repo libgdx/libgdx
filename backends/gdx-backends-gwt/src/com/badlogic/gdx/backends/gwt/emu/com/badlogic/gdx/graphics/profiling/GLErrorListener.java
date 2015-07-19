@@ -14,23 +14,24 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.debugging;
+package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import static com.badlogic.gdx.graphics.profiling.GLProfiler.resolveErrorNumber;
 
-/** @see GLDebugger
+/** @see GLProfiler
  * @author Jan Polák */
-public interface GLDebuggerErrorListener {
+public interface GLErrorListener {
 
 	/** Put your error logging code here.
-	 * @see GLDebugger#resolveErrorNumber(int) */
+	 * @see GLProfiler#resolveErrorNumber(int) */
 	public void onError (int error);
 
 	// Basic implementations
 
-	/** Listener that will log using Gdx.app.error GL error number and GL function. */
-	public static final GLDebuggerErrorListener LOGGING_LISTENER = new GLDebuggerErrorListener() {
+	/** Listener that will log using Gdx.app.error GL error name and GL function. */
+	public static final GLErrorListener LOGGING_LISTENER = new GLErrorListener() {
 
 		public void onError (int error) {
 			final Exception exc = new Exception();
@@ -51,10 +52,10 @@ public interface GLDebuggerErrorListener {
 			}
 
 			if (place != null) {
-				Gdx.app.error("GLDebugger", "Error " + GLDebugger.resolveErrorNumber(error) + " from " + place);
+				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
 			} else {
 				StringBuffer buffer = new StringBuffer("Error ");
-				buffer.append(GLDebugger.resolveErrorNumber(error));
+				buffer.append(resolveErrorNumber(error));
 				buffer.append(" at:\n");
 				try {
 					final StackTraceElement[] stack = exc.getStackTrace();
@@ -64,17 +65,17 @@ public interface GLDebuggerErrorListener {
 				} catch (Exception ignored) {
 					buffer.append(" (Failed to print stack trace: ").append(ignored).append(")");
 				}
-				Gdx.app.error("GLDebugger", buffer.toString());
+				Gdx.app.error("GLProfiler", buffer.toString());
 				// GWT backend seems to have trouble printing stack traces reliably
 			}
 		}
 	};
 
-	/** Listener that will throw a GdxRuntimeException with error number. */
-	public static final GLDebuggerErrorListener THROWING_LISTENER = new GLDebuggerErrorListener() {
+	/** Listener that will throw a GdxRuntimeException with error name. */
+	public static final GLErrorListener THROWING_LISTENER = new GLErrorListener() {
 
 		public void onError (int error) {
-			throw new GdxRuntimeException("GLDebugger: Got gl error " + GLDebugger.resolveErrorNumber(error));
+			throw new GdxRuntimeException("GLProfiler: Got GL error " + resolveErrorNumber(error));
 		}
 	};
 }

@@ -18,20 +18,20 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.debugging.GLDebugger;
-import com.badlogic.gdx.graphics.debugging.GLDebuggerErrorListener;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.graphics.profiling.GLErrorListener;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class GLDebuggerTest extends GdxTest {
+public class GLProfilerErrorTest extends GdxTest {
 	SpriteBatch batch;
 	BitmapFont font;
 
-	String message = "GLDebugger is currently disabled";
+	String message = "GLProfiler is currently disabled";
 	boolean makeGlError = false;
-	final GLDebuggerErrorListener customListener = new GLDebuggerErrorListener() {
+	final GLErrorListener customListener = new GLErrorListener() {
 		@Override
 		public void onError (int error) {
 			if (error == GL20.GL_INVALID_VALUE) {
@@ -61,12 +61,12 @@ public class GLDebuggerTest extends GdxTest {
 			try {
 				Gdx.gl.glClear(42); // Random invalid value, will raise GL_INVALID_VALUE (0x501, 1281)
 			} catch (GdxRuntimeException glError) {
-				if ("GLDebugger: Got gl error GL_INVALID_VALUE".equals(glError.getMessage())) {
+				if ("GLProfiler: Got gl error GL_INVALID_VALUE".equals(glError.getMessage())) {
 					message = "Got expected exception.";
 				} else {
 					message = "Got GdxRuntimeException (correct) but with unexpected message: " + glError.getMessage();
 				}
-				Gdx.app.log("GLDebuggerTest", "Caught exception: ", glError);
+				Gdx.app.log("GLProfilerTest", "Caught exception: ", glError);
 			}
 		}
 
@@ -85,35 +85,35 @@ public class GLDebuggerTest extends GdxTest {
 		String DEBUGGER_DISABLED_MESSAGE = "Error will be detected after enabling the debugger";
 		switch (character) {
 		case 'e':
-			GLDebugger.enable();
-			message = "GLDebugger enabled (isEnabled(): " + GLDebugger.isEnabled() + ")";
+			GLProfiler.enable();
+			message = "GLProfiler enabled (isEnabled(): " + GLProfiler.isEnabled() + ")";
 			break;
 		case 'd':
-			GLDebugger.disable();
-			message = "GLDebugger disabled (isEnabled(): " + GLDebugger.isEnabled() + ")";
+			GLProfiler.disable();
+			message = "GLProfiler disabled (isEnabled(): " + GLProfiler.isEnabled() + ")";
 			break;
 		case 'l':
-			GLDebugger.listener = GLDebuggerErrorListener.LOGGING_LISTENER;
+			GLProfiler.listener = GLErrorListener.LOGGING_LISTENER;
 			makeGlError = true;
-			if (GLDebugger.isEnabled()) {
+			if (GLProfiler.isEnabled()) {
 				message = "Log should contain info about error, which happened in glClear.";
 			} else {
 				message = DEBUGGER_DISABLED_MESSAGE;
 			}
 			break;
 		case 't':
-			GLDebugger.listener = GLDebuggerErrorListener.THROWING_LISTENER;
+			GLProfiler.listener = GLErrorListener.THROWING_LISTENER;
 			makeGlError = true;
-			if (GLDebugger.isEnabled()) {
+			if (GLProfiler.isEnabled()) {
 				message = "This should be soon replaced with info about caught exception.";
 			} else {
 				message = DEBUGGER_DISABLED_MESSAGE;
 			}
 			break;
 		case 'c':
-			GLDebugger.listener = customListener;
+			GLProfiler.listener = customListener;
 			makeGlError = true;
-			if (GLDebugger.isEnabled()) {
+			if (GLProfiler.isEnabled()) {
 				message = "This should be soon replaced about info about success.";
 			} else {
 				message = DEBUGGER_DISABLED_MESSAGE;

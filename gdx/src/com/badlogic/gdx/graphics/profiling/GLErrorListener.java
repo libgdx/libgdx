@@ -14,23 +14,26 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.debugging;
+package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import static com.badlogic.gdx.graphics.profiling.GLProfiler.resolveErrorNumber;
 
-/** @see GLDebugger
+/** Listener for GL errors detected by {@link GLProfiler}.
+ * 
+ * @see GLProfiler
  * @author Jan Polák */
-public interface GLDebuggerErrorListener {
+public interface GLErrorListener {
 
 	/** Put your error logging code here.
-	 * @see GLDebugger#resolveErrorNumber(int) */
+	 * @see GLProfiler#resolveErrorNumber(int) */
 	public void onError (int error);
 
 	// Basic implementations
 
-	/** Listener that will log using Gdx.app.error GL error number and GL function. */
-	public static final GLDebuggerErrorListener LOGGING_LISTENER = new GLDebuggerErrorListener() {
+	/** Listener that will log using Gdx.app.error GL error name and GL function. */
+	public static final GLErrorListener LOGGING_LISTENER = new GLErrorListener() {
 		@Override
 		public void onError (int error) {
 			String place = null;
@@ -49,19 +52,19 @@ public interface GLDebuggerErrorListener {
 			}
 
 			if (place != null) {
-				Gdx.app.error("GLDebugger", "Error " + GLDebugger.resolveErrorNumber(error) + " from " + place);
+				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
 			} else {
-				Gdx.app.error("GLDebugger", "Error " + GLDebugger.resolveErrorNumber(error) + " at: ", new Exception());
+				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " at: ", new Exception());
 				// This will capture current stack trace for logging, if possible
 			}
 		}
 	};
 
-	/** Listener that will throw a GdxRuntimeException with error number. */
-	public static final GLDebuggerErrorListener THROWING_LISTENER = new GLDebuggerErrorListener() {
+	/** Listener that will throw a GdxRuntimeException with error name. */
+	public static final GLErrorListener THROWING_LISTENER = new GLErrorListener() {
 		@Override
 		public void onError (int error) {
-			throw new GdxRuntimeException("GLDebugger: Got gl error " + GLDebugger.resolveErrorNumber(error));
+			throw new GdxRuntimeException("GLProfiler: Got GL error " + resolveErrorNumber(error));
 		}
 	};
 }
