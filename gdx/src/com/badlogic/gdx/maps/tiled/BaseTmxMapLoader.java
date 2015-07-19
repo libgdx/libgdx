@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -308,9 +310,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 						if (compression == null)
 							is = new ByteArrayInputStream(bytes);
 						else if (compression.equals("gzip"))
-							is = new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length);
+							is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
 						else if (compression.equals("zlib"))
-							is = new InflaterInputStream(new ByteArrayInputStream(bytes));
+							is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
 						else
 							throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
 
