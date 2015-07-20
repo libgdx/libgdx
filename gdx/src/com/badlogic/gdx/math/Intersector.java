@@ -481,11 +481,6 @@ public final class Intersector {
 	 * @param ray The ray
 	 * @param box The bounding box
 	 * @return Whether the ray and the bounding box intersect. */
-	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
-	 * 
-	 * @param ray The ray
-	 * @param box The bounding box
-	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
 		return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
 	}
