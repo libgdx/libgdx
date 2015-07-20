@@ -1145,7 +1145,7 @@ public final class Intersector {
 			split[offset + i] = a + t * (b - a);
 		}
 	}
-
+/*
 	public static void main (String[] args) {
 		Plane plane = new Plane(new Vector3(1, 0, 0), 0);
 		SplitTriangle split = new SplitTriangle(3);
@@ -1189,7 +1189,7 @@ public final class Intersector {
 
 		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
 	}
-
+*/
 	public static class SplitTriangle {
 		public float[] front;
 		public float[] back;
