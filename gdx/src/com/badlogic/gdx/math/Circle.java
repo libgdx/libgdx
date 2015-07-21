@@ -167,10 +167,11 @@ public class Circle implements Serializable, Shape2D {
 	/** @param c the other {@link Circle}
 	 * @return whether this circle contains the other circle. */
 	public boolean contains (Circle c) {
+		final float radiusDiff = radius - c.radius;
+		if (radiusDiff < 0f) return false; // Can't contain bigger circle
 		final float dx = x - c.x;
 		final float dy = y - c.y;
 		final float dst = dx * dx + dy * dy;
-		final float radiusDiff = radius - c.radius;
 		final float radiusSum = radius + c.radius;
 		return (!(radiusDiff * radiusDiff < dst) && (dst < radiusSum * radiusSum));
 	}
