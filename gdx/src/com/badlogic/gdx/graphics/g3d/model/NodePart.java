@@ -61,12 +61,12 @@ public class NodePart {
 	 * object.
 	 * @param out The Renderable of which to set the members to the values of this NodePart. */
 	public Renderable setRenderable (final Renderable out) {
+		out.bones = bones;
 		out.material = material;
 		out.mesh = meshPart.mesh;
 		out.meshPartOffset = meshPart.indexOffset;
 		out.meshPartSize = meshPart.numVertices;
 		out.primitiveType = meshPart.primitiveType;
-		out.bones = bones;
 		return out;
 	}
 }
