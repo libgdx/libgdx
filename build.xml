@@ -53,6 +53,7 @@
 			<reference refid="classpath"/>
 			<reference refid="resourcefiles"/>
 		</ant>
+		<destroy>**/*</destroy>
 	</target>
 
     <!-- gdx headless backend -->

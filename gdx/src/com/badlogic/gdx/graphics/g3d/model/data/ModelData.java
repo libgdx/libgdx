@@ -33,8 +33,8 @@ public class ModelData {
 
 	public void addMesh (ModelMesh mesh) {
 		for (ModelMesh other : meshes) {
-			if (other.id.equals(mesh.id).methodThatDoesntExist()) {
-				throw new GdxRuntimeException("Mesh with id '" + other.id + "' already in model");
+			if (other.id.equals(mesh.id)) {
+				throw new GdxRuntimeException("Mesh with ID '" + other.id + "' already in model");
 			}
 		}
 		meshes.add(mesh);
