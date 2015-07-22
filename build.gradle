@@ -1,13 +1,14 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.5.4-SNAPSHOT"
-    robovmVersion = "1.0.0-beta-03"
+    VERSION = "1.6.5-SNAPSHOT"
+    robovmVersion = "1.5.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"
     lwjglVersion = "2.9.2"
     jlayerVersion = "1.0.1-gdx"
     jorbisVersion = "0.0.17"
+    junitVersion = "4.11"
 }
 
 buildscript {
@@ -53,7 +54,7 @@ project(":gdx") {
 
     dependencies {
         optional project(":extensions:gdx-jnigen")
-        testCompile "junit:junit:4.11"
+        testCompile "junit:junit:$junitVersion"
     }
 }
 
