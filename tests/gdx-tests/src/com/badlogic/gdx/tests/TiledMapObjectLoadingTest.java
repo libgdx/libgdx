@@ -84,19 +84,10 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
-//			if (mapObject instanceof TextureMapObject) {
-//				TextureMapObject tmObject = (TextureMapObject)mapObject;
-//				batch.begin();
-//				batch.draw(tmObject.getTextureRegion(), tmObject.getX(), tmObject.getY(), tmObject.getOriginX(),
-//					tmObject.getOriginY(), tmObject.getTextureRegion().getRegionWidth(),
-//					tmObject.getTextureRegion().getRegionHeight(), tmObject.getScaleX(), tmObject.getScaleY(), -tmObject.getRotation());
-//				batch.end();
-//			}
 			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
 				TextureRegion textureRegion = tmtObject.getTile().getTextureRegion();
-				// The coords in TilEd are bottom left, since the origin is offset while drawing, we need to adjust the position.
 				// TilEd rotation is clockwise, we need counter-clockwise.
 				float rotation = -tmtObject.getRotation();
 				float scaleX = tmtObject.getScaleX();
@@ -106,7 +97,6 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY,
 					textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
-
 				// We flip back to the original state.
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.end();

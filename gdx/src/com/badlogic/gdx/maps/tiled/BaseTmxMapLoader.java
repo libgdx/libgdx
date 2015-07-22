@@ -223,8 +223,6 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					float objectHeight = element.getFloatAttribute("height", textureRegion.getRegionHeight());
 					tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
 					tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
-// tiledMapTileMapObject.setOriginX(objectWidth / 2f);
-// tiledMapTileMapObject.setOriginY(objectHeight / 2f);
 					tiledMapTileMapObject.setRotation(element.getFloatAttribute("rotation", 0));
 					object = tiledMapTileMapObject;
 				} else {
