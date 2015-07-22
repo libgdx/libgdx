@@ -302,6 +302,7 @@ public final class Intersector {
 
 	private static final Plane p = new Plane(new Vector3(), 0);
 	private static final Vector3 i = new Vector3();
+	private static final float epsilon = 0.00001f;
 
 	/** Intersect a {@link Ray} and a triangle, returning the intersection point in intersection.
 	 * 
@@ -312,37 +313,42 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return True in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
-		if (t1.idt(ray.origin) || t2.idt(ray.origin) || t3.idt(ray.origin)) {
-			if (intersection != null) intersection.set(ray.origin);
-			return true;
-		}
-
-		p.set(t1, t2, t3);
-		if (!intersectRayPlane(ray, p, i)) return false;
-
-		v0.set(t3).sub(t1);
-		v1.set(t2).sub(t1);
-		v2.set(i).sub(t1);
-
-		float dot00 = v0.dot(v0);
-		float dot01 = v0.dot(v1);
-		float dot02 = v0.dot(v2);
-		float dot11 = v1.dot(v1);
-		float dot12 = v1.dot(v2);
-
-		float denom = dot00 * dot11 - dot01 * dot01;
-		if (denom == 0) return false;
-
-		float u = (dot11 * dot02 - dot01 * dot12) / denom;
-		float v = (dot00 * dot12 - dot01 * dot02) / denom;
-
-		if (u >= 0 && v >= 0 && u + v <= 1) {
-			if (intersection != null) intersection.set(i);
-			return true;
-		} else {
+		Vector3 edge1 = v0.set(t2).sub(t1);
+		Vector3 edge2 = v1.set(t3).sub(t1);
+		
+		Vector3 pvec = v2.set(ray.direction).crs(edge2);
+		float det = edge1.dot(pvec);
+		if (det > -epsilon && det < epsilon) {
+			p.set(t1, t2, t3);
+			if (p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
+				if (intersection != null) intersection.set(ray.origin);
+				return true;
+			}
 			return false;
 		}
+		
+		det = 1.0f / det;
 
+		Vector3 tvec = i.set(ray.origin).sub(t1);
+		float u = tvec.dot(pvec) * det;
+		if (u < 0.0f || u > 1.0f) return false;
+		
+		Vector3 qvec = tvec.crs(edge1);
+		float v = ray.direction.dot(qvec) * det;
+		if (v < 0.0f || u + v > 1.0f) return false;
+		
+		float t = edge2.dot(qvec) * det;
+		if (t < 0) return false;
+		
+		if (intersection != null) {
+			if (t < epsilon) {
+				intersection.set(ray.origin);
+			} else {
+				ray.getEndPoint(intersection, t);
+			}
+		}
+		
+		return true;
 	}
 
 	private static final Vector3 dir = new Vector3();
