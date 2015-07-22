@@ -1026,7 +1026,7 @@ public final class Intersector {
 	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
 	 * </ul>
 	 * 
-	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, y3. One can add additional attributes per vertex which
+	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, z3. One can add additional attributes per vertex which
 	 * will be interpolated if split, such as texture coordinates or normals. Note that these additional attributes won't be
 	 * normalized, as might be necessary in case of normals.
 	 * 
@@ -1145,51 +1145,7 @@ public final class Intersector {
 			split[offset + i] = a + t * (b - a);
 		}
 	}
-/*
-	public static void main (String[] args) {
-		Plane plane = new Plane(new Vector3(1, 0, 0), 0);
-		SplitTriangle split = new SplitTriangle(3);
-		float[] fTriangle = {-10, 0, 10, -1, 0, 0, -10, 0, 10};
-		Intersector.splitTriangle(fTriangle, plane, split);
-		System.out.println(split);
-
-		float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10};
-		Intersector.splitTriangle(triangle, plane, split);
-		System.out.println(split);
-
-		Circle c1 = new Circle(0, 0, 1);
-		Circle c2 = new Circle(0, 0, 1);
-		Circle c3 = new Circle(2, 0, 1);
-		Circle c4 = new Circle(0, 0, 2);
-		System.out.println("Circle test cases");
-		System.out.println(c1.overlaps(c1)); // true
-		System.out.println(c1.overlaps(c2)); // true
-		System.out.println(c1.overlaps(c3)); // false
-		System.out.println(c1.overlaps(c4)); // true
-		System.out.println(c4.overlaps(c1)); // true
-		System.out.println(c1.contains(0, 1)); // true
-		System.out.println(c1.contains(0, 2)); // false
-		System.out.println(c1.contains(c1)); // true
-		System.out.println(c1.contains(c4)); // false
-		System.out.println(c4.contains(c1)); // true
-
-		System.out.println("Rectangle test cases");
-		Rectangle r1 = new Rectangle(0, 0, 1, 1);
-		Rectangle r2 = new Rectangle(1, 0, 2, 1);
-		System.out.println(r1.overlaps(r1)); // true
-		System.out.println(r1.overlaps(r2)); // false
-		System.out.println(r1.contains(0, 0)); // true
-
-		System.out.println("BoundingBox test cases");
-		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
-		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
-		System.out.println(b1.contains(Vector3.Zero)); // true
-		System.out.println(b1.contains(b1)); // true
-		System.out.println(b1.contains(b2)); // false
-
-		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
-	}
-*/
+	
 	public static class SplitTriangle {
 		public float[] front;
 		public float[] back;
