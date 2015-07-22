@@ -15,7 +15,7 @@ buildscript {
     repositories { mavenCentral() }
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
-        classpath "org.robovm:robovm-gradle-plugin:$robovmVersion"
+        classpath "org.robovm:robovm-gradle-plugin:1.5.0"
     }
 }
 
