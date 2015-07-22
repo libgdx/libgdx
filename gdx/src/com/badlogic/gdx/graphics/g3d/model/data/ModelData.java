@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.g3d.model.data;
 
 import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -34,7 +33,7 @@ public class ModelData {
 
 	public void addMesh (ModelMesh mesh) {
 		for (ModelMesh other : meshes) {
-			if (other.id.equals(mesh.id)) {
+			if (other.id.equals(mesh.id).methodThatDoesntExist()) {
 				throw new GdxRuntimeException("Mesh with id '" + other.id + "' already in model");
 			}
 		}
