@@ -70,6 +70,14 @@ public class Transform {
 	public float getRotation () {
 		return (float)Math.atan2(vals[SIN], vals[COS]);
 	}
+	
+	public Vector2 getOrientation () {
+		return position.set(vals[COS], vals[SIN]);
+	}
+	public void setOrientation (Vector2 orientation) {
+		this.vals[COS] = orientation.x;
+		this.vals[SIN] = orientation.y;
+	}
 
 	/** Sets the position of this transform
 	 * @param pos the position */
