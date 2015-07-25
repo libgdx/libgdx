@@ -16,12 +16,14 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.utils.NumberUtils;
+import java.io.Serializable;
 
 /** A point in a 2D grid, with integer x and y coordinates
  * 
  * @author badlogic */
-public class GridPoint2 {
+public class GridPoint2 implements Serializable {
+	private static final long serialVersionUID = -4019969926331717380L;
+
 	public int x;
 	public int y;
 
@@ -84,5 +86,10 @@ public class GridPoint2 {
 		result = prime * result + this.x;
 		result = prime * result + this.y;
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
 	}
 }

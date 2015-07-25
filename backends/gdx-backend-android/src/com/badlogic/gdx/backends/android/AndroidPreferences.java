@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 
 import com.badlogic.gdx.Preferences;
 
@@ -149,7 +150,11 @@ public class AndroidPreferences implements Preferences {
 	@Override
 	public void flush () {
 		if (editor != null) {
-			editor.commit();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+    				editor.apply();
+			} else {
+				editor.commit();
+			}
 			editor = null;
 		}
 	}
