@@ -85,8 +85,9 @@ public class HorizontalGroup extends WidgetGroup {
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			float width, height;
+			Layout layout = null;
 			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
+				layout = (Layout)child;
 				if (fill > 0)
 					height = groupHeight * fill;
 				else
@@ -113,6 +114,8 @@ public class HorizontalGroup extends WidgetGroup {
 			else
 				child.setBounds(x, y, width, height);
 			if (!reverse) x += (width + spacing);
+
+			if (layout != null) layout.validate();
 		}
 	}
 
