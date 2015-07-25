@@ -91,11 +91,11 @@ public class WidgetGroup extends Group implements Layout {
 
 	public void validate () {
 		if (!layoutEnabled) return;
+
 		Group parent = getParent();
 		if (fillParent && parent != null) {
-			Stage stage = getStage();
-
 			float parentWidth, parentHeight;
+			Stage stage = getStage();
 			if (stage != null && parent == stage.getRoot()) {
 				parentWidth = stage.getWidth();
 				parentHeight = stage.getHeight();
