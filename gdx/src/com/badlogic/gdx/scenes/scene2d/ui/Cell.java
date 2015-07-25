@@ -952,6 +952,10 @@ public class Cell<T extends Actor> implements Poolable {
 		if (cell.uniformY != null) uniformY = cell.uniformY;
 	}
 
+	public String toString () {
+		return actor != null ? actor.toString() : super.toString();
+	}
+
 	/** Returns the defaults to use for all cells. This can be used to avoid needing to set the same defaults for every table (eg,
 	 * for spacing). */
 	static public Cell defaults () {
