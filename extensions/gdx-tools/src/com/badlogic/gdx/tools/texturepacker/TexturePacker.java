@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
@@ -42,6 +43,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
@@ -687,9 +689,12 @@ public class TexturePacker {
 	}
 
 	static public void main (String[] args) throws Exception {
+		Settings settings = null;
 		String input = null, output = null, packFileName = "pack.atlas";
 
 		switch (args.length) {
+		case 4:
+			settings = new Json().fromJson(Settings.class, new FileReader(args[3]));
 		case 3:
 			packFileName = args[2];
 		case 2:
@@ -698,7 +703,7 @@ public class TexturePacker {
 			input = args[0];
 			break;
 		default:
-			System.out.println("Usage: inputDir [outputDir] [packFileName]");
+			System.out.println("Usage: inputDir [outputDir] [packFileName] [settingsFileName]");
 			System.exit(0);
 		}
 
@@ -706,7 +711,9 @@ public class TexturePacker {
 			File inputFile = new File(input);
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
+		if (settings == null)
+			settings = new Settings();
 
-		process(input, output, packFileName);
+		process(settings, input, output, packFileName);
 	}
 }
