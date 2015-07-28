@@ -1,4 +1,5 @@
 [1.6.5]
+- Objects from animated tiles in TMX maps are now supported.
 - Made possible to use any actor for tooltips.
 - Improved cross-platform reflection api for annotations.
 - NinePatch#scale now also scales middle patch size.
