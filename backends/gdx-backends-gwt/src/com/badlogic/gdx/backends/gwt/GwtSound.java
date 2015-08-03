@@ -36,12 +36,15 @@ public class GwtSound implements Sound {
 	private int soundIndex;
 	/** The path to the sound file. */
 	private FileHandle soundFile;
+	/** Default volune */
+	private float volume;
 	
 	public GwtSound (FileHandle file) {
 		soundFile = file;
 		sounds = new GwtMusic[MAX_SOUNDS];
 		sounds[0] = new GwtMusic(file);
 		soundIndex = 0;
+		volume = 1;
 	}
 	
 	/** Let's find a sound that isn't currently playing.
@@ -66,7 +69,7 @@ public class GwtSound implements Sound {
 
 	@Override
 	public long play () {
-		return play(1.0f, 1.0f, 0.0f, false);
+		return play(volume, 1.0f, 0.0f, false);
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class GwtSound implements Sound {
 
 	@Override
 	public long loop () {
-		return play(1.0f, 1.0f, 0.0f, true);
+		return play(volume, 1.0f, 0.0f, true);
 	}
 
 	@Override
@@ -189,5 +192,10 @@ public class GwtSound implements Sound {
 	@Override
 	public void setPriority (long soundId, int priority) {
 		// FIXME
+	}
+
+	@Override
+	public void setVolume (float volume) {
+		this.volume = volume;
 	}
 }

@@ -111,4 +111,9 @@ public class MockSound implements Sound {
 	public void setPriority(long soundId, int priority) {
 
 	}
+
+	@Override
+	public void setVolume(float volume) {
+		
+	}
 }
