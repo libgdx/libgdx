@@ -545,6 +545,29 @@ public class Cell<T extends Actor> implements Poolable {
 		return this;
 	}
 
+	/** Sets expandX, expandY, fillX, and fillY to 1. */
+	public Cell<T> grow () {
+		expandX = onei;
+		expandY = onei;
+		fillX = onef;
+		fillY = onef;
+		return this;
+	}
+
+	/** Sets expandX and fillX to 1. */
+	public Cell<T> growX () {
+		expandX = onei;
+		fillX = onef;
+		return this;
+	}
+
+	/** Sets expandY and fillY to 1. */
+	public Cell<T> growY () {
+		expandY = onei;
+		fillY = onef;
+		return this;
+	}
+
 	/** Sets expandX and expandY to 1. */
 	public Cell<T> expand () {
 		expandX = onei;
