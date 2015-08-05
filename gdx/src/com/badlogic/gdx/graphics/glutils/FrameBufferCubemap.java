@@ -87,12 +87,17 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 		super(format, width, height, hasDepth, hasStencil);
 	}
 
-	/** Override this method in a derived class to set up the backing texture as you like. */
 	@Override
-	protected void setupTexture () {
-		colorTexture = new Cubemap(width, height, width, format);
-		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	protected Cubemap createColorTexture () {
+		Cubemap result = new Cubemap(width, height, width, format);
+		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		return result;
+	}
+	
+	@Override
+	protected void disposeColorTexture (Cubemap colorTexture) {
+		colorTexture.dispose();
 	}
 
 	/** Makes the frame buffer current so everything gets drawn to it, must be followed by call to either {@link #nextSide()} or

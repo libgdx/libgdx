@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
@@ -48,7 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </p>
  *
  * @author mzechner, realitix */
-public class GLFrameBuffer<T extends GLTexture> implements Disposable {
+public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
 	private final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
@@ -114,9 +113,10 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	/** Override this method in a derived class to set up the backing texture as you like. */
-	protected void setupTexture () {
-		throw new GdxRuntimeException("Texture must be setup");
-	}
+	protected abstract T createColorTexture ();
+	
+	/** Override this method in a derived class to dispose the backing texture as you like. */
+	protected abstract void disposeColorTexture (T colorTexture);
 
 	private void build () {
 		GL20 gl = Gdx.gl20;
@@ -133,7 +133,7 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			}
 		}
 
-		setupTexture();
+		colorTexture = createColorTexture();
 
 		framebufferHandle = gl.glGenFramebuffer();
 
@@ -176,7 +176,7 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
-			colorTexture.dispose();
+			disposeColorTexture(colorTexture);
 
 			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 
@@ -201,7 +201,8 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
 
-		colorTexture.dispose();
+		disposeColorTexture(colorTexture);
+		
 		if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 
 		if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
