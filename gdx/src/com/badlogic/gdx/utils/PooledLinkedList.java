@@ -35,12 +35,14 @@ public class PooledLinkedList<T> {
 
 	public PooledLinkedList (int maxPoolSize) {
 		this.pool = new Pool<Item<T>>(16, maxPoolSize) {
+			@Override
 			protected Item<T> newObject () {
 				return new Item<T>();
 			}
 		};
 	}
 
+	/** Adds the specified object to the end of the list regardless of iteration status */
 	public void add (T object) {
 		Item<T> item = pool.obtain();
 		item.payload = object;
@@ -58,6 +60,11 @@ public class PooledLinkedList<T> {
 		tail.next = item;
 		tail = item;
 		size++;
+	}
+
+	/** Returns the number of items in the list */
+	public int size () {
+		return size;
 	}
 
 	/** Starts iterating over the list's items from the head of the list */
@@ -163,6 +170,6 @@ public class PooledLinkedList<T> {
 		T v = null;
 		while ((v = next()) != null)
 			remove();
-
 	}
+
 }
