@@ -16,7 +16,15 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +34,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.Uri;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files.FileType;
@@ -44,6 +53,8 @@ public final class AndroidAudio implements Audio {
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 
+	private Context context;
+
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio) {
 			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
@@ -51,6 +62,7 @@ public final class AndroidAudio implements Audio {
 			if (context instanceof Activity) {
 				((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 			}
+			this.context = context;
 		} else {
 			soundPool = null;
 			manager = null;
@@ -65,7 +77,7 @@ public final class AndroidAudio implements Audio {
 			for (AndroidMusic music : musics) {
 				if (music.isPlaying()) {
 					music.pause();
-					music.wasPlaying = true;					
+					music.wasPlaying = true;
 				} else
 					music.wasPlaying = false;
 			}
@@ -83,6 +95,22 @@ public final class AndroidAudio implements Audio {
 			}
 		}
 		this.soundPool.autoResume();
+	}
+
+	private File buildCacheFile (AndroidFileHandle aHandle) throws FileNotFoundException, IOException {
+		InputStream input = FileHandle.class.getResourceAsStream("/" + aHandle.file().getPath().replace('\\', '/'));
+		File tmpFile = new File(context.getCacheDir(), "cache" + aHandle.file().getName());
+		OutputStream output = new FileOutputStream(tmpFile);
+		byte[] buffer = new byte[4 * 1024];
+		int read;
+
+		while ((read = input.read(buffer)) != -1) {
+			output.write(buffer, 0, read);
+		}
+		output.flush();
+		output.close();
+		input.close();
+		return tmpFile;
 	}
 
 	/** {@inheritDoc} */
@@ -119,6 +147,24 @@ public final class AndroidAudio implements Audio {
 				throw new GdxRuntimeException("Error loading audio file: " + file
 					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
 			}
+		} else if (aHandle.type() == FileType.Classpath) {
+			try {
+				File tmpFile = buildCacheFile(aHandle);
+
+				FileInputStream inputStream = new FileInputStream(tmpFile);
+				mediaPlayer.setDataSource(inputStream.getFD());
+				mediaPlayer.prepare();
+				inputStream.close();
+				tmpFile.delete();
+
+				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
+				synchronized (musics) {
+					musics.add(music);
+				}
+				return music;
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error loading audio file in Classpath loading: " + file, ex);
+			}
 		} else {
 			try {
 				mediaPlayer.setDataSource(aHandle.file().getPath());
@@ -132,7 +178,6 @@ public final class AndroidAudio implements Audio {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
-
 	}
 
 	/** {@inheritDoc} */
@@ -151,6 +196,16 @@ public final class AndroidAudio implements Audio {
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file
 					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
+			}
+		} else if (aHandle.type() == FileType.Classpath) {
+			try {
+				File tmpFile = buildCacheFile(aHandle);
+
+				int loadid = soundPool.load(tmpFile.getPath(), 1);
+				tmpFile.delete();
+				return new AndroidSound(soundPool, manager, loadid);
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error loading audio file in Classpath loading: " + file, ex);
 			}
 		} else {
 			try {
