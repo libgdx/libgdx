@@ -138,7 +138,7 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 		bool unique = true;
 		for (int32 j = 0; j < tempCount; ++j)
 		{
-			if (b2DistanceSquared(v, ps[j]) < 0.5f * b2_linearSlop)
+			if (b2DistanceSquared(v, ps[j]) < ((0.5f * b2_linearSlop) * (0.5f * b2_linearSlop)))
 			{
 				unique = false;
 				break;

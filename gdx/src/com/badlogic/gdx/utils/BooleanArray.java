@@ -264,14 +264,27 @@ public class BooleanArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		boolean[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + (items[i] ? 1231 : 1237);
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof BooleanArray)) return false;
 		BooleanArray array = (BooleanArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		boolean[] items1 = this.items;
+		boolean[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

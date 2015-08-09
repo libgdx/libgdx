@@ -404,12 +404,12 @@ SIMD_FORCE_INLINE void SEGMENT_COLLISION(
 	CLASS_POINT & vPointA,
 	CLASS_POINT & vPointB)
 {
-    CLASS_POINT _AD,_BD,_N;
+    CLASS_POINT _AD,_BD,n;
     vec4f _M;//plane
     VEC_DIFF(_AD,vA2,vA1);
     VEC_DIFF(_BD,vB2,vB1);
-    VEC_CROSS(_N,_AD,_BD);
-    GREAL _tp = VEC_DOT(_N,_N);
+    VEC_CROSS(n,_AD,_BD);
+    GREAL _tp = VEC_DOT(n,n);
     if(_tp<G_EPSILON)//ARE PARALELE
     {
     	//project B over A
@@ -424,10 +424,10 @@ SIMD_FORCE_INLINE void SEGMENT_COLLISION(
     	_M[2] = VEC_DOT(vA1,_AD);
     	_M[3] = VEC_DOT(vA2,_AD);
     	//mid points
-    	_N[0] = (_M[0]+_M[1])*0.5f;
-    	_N[1] = (_M[2]+_M[3])*0.5f;
+    	n[0] = (_M[0]+_M[1])*0.5f;
+    	n[1] = (_M[2]+_M[3])*0.5f;
 
-    	if(_N[0]<_N[1])
+    	if(n[0]<n[1])
     	{
     		if(_M[1]<_M[2])
     		{
@@ -467,7 +467,7 @@ SIMD_FORCE_INLINE void SEGMENT_COLLISION(
     }
 
 
-    VEC_CROSS(_M,_N,_BD);
+    VEC_CROSS(_M,n,_BD);
     _M[3] = VEC_DOT(_M,vB1);
 
     LINE_PLANE_COLLISION(_M,_AD,vA1,vPointA,_tp,btScalar(0), btScalar(1));

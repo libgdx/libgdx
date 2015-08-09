@@ -168,6 +168,10 @@ public class btIDebugDraw extends BulletBase {
     if (getClass() == btIDebugDraw.class) LinearMathJNI.btIDebugDraw_drawPlane(swigCPtr, this, planeNormal, planeConst, transform, color); else LinearMathJNI.btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(swigCPtr, this, planeNormal, planeConst, transform, color);
   }
 
+  public void flushLines() {
+    if (getClass() == btIDebugDraw.class) LinearMathJNI.btIDebugDraw_flushLines(swigCPtr, this); else LinearMathJNI.btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw(swigCPtr, this);
+  }
+
   public btIDebugDraw() {
     this(LinearMathJNI.new_btIDebugDraw(), true);
     LinearMathJNI.btIDebugDraw_director_connect(this, swigCPtr, swigCMemOwn, true);
@@ -190,7 +194,8 @@ public class btIDebugDraw extends BulletBase {
     public final static int DBG_DrawConstraintLimits = (1 << 12);
     public final static int DBG_FastWireframe = (1 << 13);
     public final static int DBG_DrawNormals = (1 << 14);
-    public final static int DBG_MAX_DEBUG_DRAW_MODE = DBG_DrawNormals + 1;
+    public final static int DBG_DrawFrames = (1 << 15);
+    public final static int DBG_MAX_DEBUG_DRAW_MODE = DBG_DrawFrames + 1;
   }
 
 }

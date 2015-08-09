@@ -64,8 +64,6 @@ typedef struct bInvalidHandle {
     class btConvexHullShapeData;
     class btCollisionObjectDoubleData;
     class btCollisionObjectFloatData;
-    class btDynamicsWorldDoubleData;
-    class btDynamicsWorldFloatData;
     class btRigidBodyFloatData;
     class btRigidBodyDoubleData;
     class btConstraintInfo1;
@@ -78,8 +76,6 @@ typedef struct bInvalidHandle {
     class btGeneric6DofConstraintData;
     class btGeneric6DofSpringConstraintData;
     class btSliderConstraintData;
-    class btContactSolverInfoDoubleData;
-    class btContactSolverInfoFloatData;
     class SoftBodyMaterialData;
     class SoftBodyNodeData;
     class SoftBodyLinkData;
@@ -507,7 +503,6 @@ typedef struct bInvalidHandle {
         double m_contactProcessingThreshold;
         double m_deactivationTime;
         double m_friction;
-        double m_rollingFriction;
         double m_restitution;
         double m_hitFraction;
         double m_ccdSweptSphereRadius;
@@ -539,7 +534,6 @@ typedef struct bInvalidHandle {
         float m_contactProcessingThreshold;
         float m_deactivationTime;
         float m_friction;
-        float m_rollingFriction;
         float m_restitution;
         float m_hitFraction;
         float m_ccdSweptSphereRadius;
@@ -551,25 +545,6 @@ typedef struct bInvalidHandle {
         int m_activationState1;
         int m_internalType;
         int m_checkCollideWith;
-        char m_padding[4];
-    };
-
-
-// -------------------------------------------------- //
-    class btDynamicsWorldDoubleData
-    {
-    public:
-        btContactSolverInfoDoubleData m_solverInfo;
-        btVector3DoubleData m_gravity;
-    };
-
-
-// -------------------------------------------------- //
-    class btDynamicsWorldFloatData
-    {
-    public:
-        btContactSolverInfoFloatData m_solverInfo;
-        btVector3FloatData m_gravity;
     };
 
 
@@ -778,64 +753,6 @@ typedef struct bInvalidHandle {
         float m_angularLowerLimit;
         int m_useLinearReferenceFrameA;
         int m_useOffsetForConstraintFrame;
-    };
-
-
-// -------------------------------------------------- //
-    class btContactSolverInfoDoubleData
-    {
-    public:
-        double m_tau;
-        double m_damping;
-        double m_friction;
-        double m_timeStep;
-        double m_restitution;
-        double m_maxErrorReduction;
-        double m_sor;
-        double m_erp;
-        double m_erp2;
-        double m_globalCfm;
-        double m_splitImpulsePenetrationThreshold;
-        double m_splitImpulseTurnErp;
-        double m_linearSlop;
-        double m_warmstartingFactor;
-        double m_maxGyroscopicForce;
-        double m_singleAxisRollingFrictionThreshold;
-        int m_numIterations;
-        int m_solverMode;
-        int m_restingContactRestitutionThreshold;
-        int m_minimumSolverBatchSize;
-        int m_splitImpulse;
-        char m_padding[4];
-    };
-
-
-// -------------------------------------------------- //
-    class btContactSolverInfoFloatData
-    {
-    public:
-        float m_tau;
-        float m_damping;
-        float m_friction;
-        float m_timeStep;
-        float m_restitution;
-        float m_maxErrorReduction;
-        float m_sor;
-        float m_erp;
-        float m_erp2;
-        float m_globalCfm;
-        float m_splitImpulsePenetrationThreshold;
-        float m_splitImpulseTurnErp;
-        float m_linearSlop;
-        float m_warmstartingFactor;
-        float m_maxGyroscopicForce;
-        float m_singleAxisRollingFrictionThreshold;
-        int m_numIterations;
-        int m_solverMode;
-        int m_restingContactRestitutionThreshold;
-        int m_minimumSolverBatchSize;
-        int m_splitImpulse;
-        char m_padding[4];
     };
 
 

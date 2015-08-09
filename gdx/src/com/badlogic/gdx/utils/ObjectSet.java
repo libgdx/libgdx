@@ -359,7 +359,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		T[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null) return keyTable[i];
-		throw new IllegalStateException("IntSet is empty.");
+		throw new IllegalStateException("ObjectSet is empty.");
 	}
 
 	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
@@ -402,6 +402,22 @@ public class ObjectSet<T> implements Iterable<T> {
 	private int hash3 (int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
+	}
+
+	public int hashCode () {
+		int h = 0;
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
+			if (keyTable[i] != null) h += keyTable[i].hashCode();
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (!(obj instanceof ObjectSet)) return false;
+		ObjectSet other = (ObjectSet)obj;
+		if (other.size != size) return false;
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
+			if (keyTable[i] != null && !other.contains(keyTable[i])) return false;
+		return true;
 	}
 
 	public String toString () {

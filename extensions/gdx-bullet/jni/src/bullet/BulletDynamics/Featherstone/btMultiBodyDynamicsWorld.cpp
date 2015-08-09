@@ -20,7 +20,7 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
 #include "LinearMath/btQuickprof.h"
 #include "btMultiBodyConstraint.h"
-
+#include "LinearMath/btIDebugDraw.h"
 	
 
 
@@ -364,7 +364,9 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 		btCollisionObject** bodies = m_bodies.size()? &m_bodies[0]:0;
 		btPersistentManifold** manifold = m_manifolds.size()?&m_manifolds[0]:0;
 		btTypedConstraint** constraints = m_constraints.size()?&m_constraints[0]:0;
-		btMultiBodyConstraint** multiBodyConstraints = m_multiBodyConstraints.size() ? &m_multiBodyConstraints[0] : 0;
+		btMultiBodyConstraint** multiBodyConstraints = m_multiBodyConstraints.size() ? &m_multiBodyConstraints[0] : 0;			
+
+		//printf("mb contacts = %d, mb constraints = %d\n", mbContacts, m_multiBodyConstraints.size());
 	
 		m_solver->solveMultiBodyGroup( bodies,m_bodies.size(),manifold, m_manifolds.size(),constraints, m_constraints.size() ,multiBodyConstraints, m_multiBodyConstraints.size(), *m_solverInfo,m_debugDrawer,m_dispatcher);
 		m_bodies.resize(0);
@@ -391,9 +393,6 @@ btMultiBodyDynamicsWorld::~btMultiBodyDynamicsWorld ()
 {
 	delete m_solverMultiBodyIslandCallback;
 }
-
-
-
 
 void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 {
@@ -451,11 +450,11 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 
 			if (!isSleeping)
 			{
-				scratch_r.resize(bod->getNumLinks()+1);
+				//useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
+				scratch_r.resize(bod->getNumLinks()+1);			//multidof? ("Y"s use it and it is used to store qdd)
 				scratch_v.resize(bod->getNumLinks()+1);
 				scratch_m.resize(bod->getNumLinks()+1);
 
-				bod->clearForcesAndTorques();
 				bod->addBaseForce(m_gravity * bod->getBaseMass());
 
 				for (int j = 0; j < bod->getNumLinks(); ++j) 
@@ -463,8 +462,176 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 					bod->addLinkForce(j, m_gravity * bod->getLinkMass(j));
 				}
 
-				bod->stepVelocities(solverInfo.m_timeStep, scratch_r, scratch_v, scratch_m);
-			}
+				bool doNotUpdatePos = false;
+
+				if(bod->isMultiDof())
+				{
+					if(!bod->isUsingRK4Integration())
+					{
+						bod->stepVelocitiesMultiDof(solverInfo.m_timeStep, scratch_r, scratch_v, scratch_m);
+					}
+					else
+					{						
+						//
+						int numDofs = bod->getNumDofs() + 6;
+						int numPosVars = bod->getNumPosVars() + 7;
+						btAlignedObjectArray<btScalar> scratch_r2; scratch_r2.resize(2*numPosVars + 8*numDofs);
+						//convenience
+						btScalar *pMem = &scratch_r2[0];
+						btScalar *scratch_q0 = pMem; pMem += numPosVars;
+						btScalar *scratch_qx = pMem; pMem += numPosVars;
+						btScalar *scratch_qd0 = pMem; pMem += numDofs;
+						btScalar *scratch_qd1 = pMem; pMem += numDofs;
+						btScalar *scratch_qd2 = pMem; pMem += numDofs;
+						btScalar *scratch_qd3 = pMem; pMem += numDofs;
+						btScalar *scratch_qdd0 = pMem; pMem += numDofs;
+						btScalar *scratch_qdd1 = pMem; pMem += numDofs;
+						btScalar *scratch_qdd2 = pMem; pMem += numDofs;
+						btScalar *scratch_qdd3 = pMem; pMem += numDofs;
+						btAssert((pMem - (2*numPosVars + 8*numDofs)) == &scratch_r2[0]);
+
+						/////						
+						//copy q0 to scratch_q0 and qd0 to scratch_qd0
+						scratch_q0[0] = bod->getWorldToBaseRot().x();
+						scratch_q0[1] = bod->getWorldToBaseRot().y();
+						scratch_q0[2] = bod->getWorldToBaseRot().z();
+						scratch_q0[3] = bod->getWorldToBaseRot().w();
+						scratch_q0[4] = bod->getBasePos().x();
+						scratch_q0[5] = bod->getBasePos().y();
+						scratch_q0[6] = bod->getBasePos().z();
+						//
+						for(int link = 0; link < bod->getNumLinks(); ++link)
+						{
+							for(int dof = 0; dof < bod->getLink(link).m_posVarCount; ++dof)
+								scratch_q0[7 + bod->getLink(link).m_cfgOffset + dof] = bod->getLink(link).m_jointPos[dof];							
+						}
+						//
+						for(int dof = 0; dof < numDofs; ++dof)								
+							scratch_qd0[dof] = bod->getVelocityVector()[dof];
+						////
+						struct
+						{
+						    btMultiBody *bod;
+                            btScalar *scratch_qx, *scratch_q0;
+
+						    void operator()()
+						    {
+						        for(int dof = 0; dof < bod->getNumPosVars() + 7; ++dof)
+                                    scratch_qx[dof] = scratch_q0[dof];
+						    }
+						} pResetQx = {bod, scratch_qx, scratch_q0};
+						//
+						struct
+						{
+						    void operator()(btScalar dt, const btScalar *pDer, const btScalar *pCurVal, btScalar *pVal, int size)
+						    {
+						        for(int i = 0; i < size; ++i)
+                                    pVal[i] = pCurVal[i] + dt * pDer[i];
+						    }
+
+						} pEulerIntegrate;
+						//
+						struct
+                        {
+                            void operator()(btMultiBody *pBody, const btScalar *pData)
+                            {
+                                btScalar *pVel = const_cast<btScalar*>(pBody->getVelocityVector());
+
+                                for(int i = 0; i < pBody->getNumDofs() + 6; ++i)
+                                    pVel[i] = pData[i];
+
+                            }
+                        } pCopyToVelocityVector;
+						//
+                        struct
+						{
+						    void operator()(const btScalar *pSrc, btScalar *pDst, int start, int size)
+						    {
+						        for(int i = 0; i < size; ++i)
+                                    pDst[i] = pSrc[start + i];
+						    }
+						} pCopy;
+						//
+
+						btScalar h = solverInfo.m_timeStep;
+						#define output &scratch_r[bod->getNumDofs()]
+						//calc qdd0 from: q0 & qd0	
+						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						pCopy(output, scratch_qdd0, 0, numDofs);
+						//calc q1 = q0 + h/2 * qd0
+						pResetQx();
+						bod->stepPositionsMultiDof(btScalar(.5)*h, scratch_qx, scratch_qd0);
+						//calc qd1 = qd0 + h/2 * qdd0
+						pEulerIntegrate(btScalar(.5)*h, scratch_qdd0, scratch_qd0, scratch_qd1, numDofs);
+						//
+						//calc qdd1 from: q1 & qd1
+						pCopyToVelocityVector(bod, scratch_qd1);
+						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						pCopy(output, scratch_qdd1, 0, numDofs);
+						//calc q2 = q0 + h/2 * qd1
+						pResetQx();
+						bod->stepPositionsMultiDof(btScalar(.5)*h, scratch_qx, scratch_qd1);
+						//calc qd2 = qd0 + h/2 * qdd1
+						pEulerIntegrate(btScalar(.5)*h, scratch_qdd1, scratch_qd0, scratch_qd2, numDofs);
+						//
+						//calc qdd2 from: q2 & qd2
+						pCopyToVelocityVector(bod, scratch_qd2);
+						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						pCopy(output, scratch_qdd2, 0, numDofs);
+						//calc q3 = q0 + h * qd2
+						pResetQx();
+						bod->stepPositionsMultiDof(h, scratch_qx, scratch_qd2);
+						//calc qd3 = qd0 + h * qdd2
+						pEulerIntegrate(h, scratch_qdd2, scratch_qd0, scratch_qd3, numDofs);
+						//
+						//calc qdd3 from: q3 & qd3
+						pCopyToVelocityVector(bod, scratch_qd3);
+						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						pCopy(output, scratch_qdd3, 0, numDofs);
+
+						//
+						//calc q = q0 + h/6(qd0 + 2*(qd1 + qd2) + qd3)
+						//calc qd = qd0 + h/6(qdd0 + 2*(qdd1 + qdd2) + qdd3)						
+						btAlignedObjectArray<btScalar> delta_q; delta_q.resize(numDofs);
+						btAlignedObjectArray<btScalar> delta_qd; delta_qd.resize(numDofs);
+						for(int i = 0; i < numDofs; ++i)
+						{
+							delta_q[i] = h/btScalar(6.)*(scratch_qd0[i] + 2*scratch_qd1[i] + 2*scratch_qd2[i] + scratch_qd3[i]);
+							delta_qd[i] = h/btScalar(6.)*(scratch_qdd0[i] + 2*scratch_qdd1[i] + 2*scratch_qdd2[i] + scratch_qdd3[i]);							
+							//delta_q[i] = h*scratch_qd0[i];
+							//delta_qd[i] = h*scratch_qdd0[i];
+						}
+						//
+						pCopyToVelocityVector(bod, scratch_qd0);
+						bod->applyDeltaVeeMultiDof(&delta_qd[0], 1);						
+						//
+						if(!doNotUpdatePos)
+						{
+							btScalar *pRealBuf = const_cast<btScalar *>(bod->getVelocityVector());
+							pRealBuf += 6 + bod->getNumDofs() + bod->getNumDofs()*bod->getNumDofs();
+
+							for(int i = 0; i < numDofs; ++i)
+								pRealBuf[i] = delta_q[i];
+
+							//bod->stepPositionsMultiDof(1, 0, &delta_q[0]);
+							bod->setPosUpdated(true);							
+						}
+
+						//ugly hack which resets the cached data to t0 (needed for constraint solver)
+						{
+							for(int link = 0; link < bod->getNumLinks(); ++link)
+								bod->getLink(link).updateCacheMultiDof();
+							bod->stepVelocitiesMultiDof(0, scratch_r, scratch_v, scratch_m);
+						}
+						
+					}
+				}
+				else//if(bod->isMultiDof())
+				{
+					bod->stepVelocities(solverInfo.m_timeStep, scratch_r, scratch_v, scratch_m);
+				}
+				bod->clearForcesAndTorques();
+			}//if (!isSleeping)
 		}
 	}
 
@@ -503,13 +670,25 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 			{
 				int nLinks = bod->getNumLinks();
 
-				///base + num links
+				///base + num m_links
 				world_to_local.resize(nLinks+1);
 				local_origin.resize(nLinks+1);
 
-				bod->stepPositions(timeStep);
+				if(bod->isMultiDof())
+				{
+					if(!bod->isPosUpdated())
+						bod->stepPositionsMultiDof(timeStep);
+					else
+					{
+						btScalar *pRealBuf = const_cast<btScalar *>(bod->getVelocityVector());
+						pRealBuf += 6 + bod->getNumDofs() + bod->getNumDofs()*bod->getNumDofs();
 
-	 
+						bod->stepPositionsMultiDof(1, 0, pRealBuf);
+						bod->setPosUpdated(false);
+					}
+				}
+				else
+					bod->stepPositions(timeStep);			
 
 				world_to_local[0] = bod->getWorldToBaseRot();
 				local_origin[0] = bod->getBasePos();
@@ -517,8 +696,8 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 				if (bod->getBaseCollider())
 				{
 					btVector3 posr = local_origin[0];
-					float pos[4]={posr.x(),posr.y(),posr.z(),1};
-					float quat[4]={-world_to_local[0].x(),-world_to_local[0].y(),-world_to_local[0].z(),world_to_local[0].w()};
+				//	float pos[4]={posr.x(),posr.y(),posr.z(),1};
+					btScalar quat[4]={-world_to_local[0].x(),-world_to_local[0].y(),-world_to_local[0].z(),world_to_local[0].w()};
 					btTransform tr;
 					tr.setIdentity();
 					tr.setOrigin(posr);
@@ -547,8 +726,8 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 						int index = link+1;
 
 						btVector3 posr = local_origin[index];
-						float pos[4]={posr.x(),posr.y(),posr.z(),1};
-						float quat[4]={-world_to_local[index].x(),-world_to_local[index].y(),-world_to_local[index].z(),world_to_local[index].w()};
+			//			float pos[4]={posr.x(),posr.y(),posr.z(),1};
+						btScalar quat[4]={-world_to_local[index].x(),-world_to_local[index].y(),-world_to_local[index].z(),world_to_local[index].w()};
 						btTransform tr;
 						tr.setIdentity();
 						tr.setOrigin(posr);
@@ -575,4 +754,93 @@ void	btMultiBodyDynamicsWorld::addMultiBodyConstraint( btMultiBodyConstraint* co
 void	btMultiBodyDynamicsWorld::removeMultiBodyConstraint( btMultiBodyConstraint* constraint)
 {
 	m_multiBodyConstraints.remove(constraint);
+}
+
+void btMultiBodyDynamicsWorld::debugDrawMultiBodyConstraint(btMultiBodyConstraint* constraint)
+{
+	constraint->debugDraw(getDebugDrawer());
+}
+
+
+void	btMultiBodyDynamicsWorld::debugDrawWorld()
+{
+	BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
+
+	bool drawConstraints = false;
+	if (getDebugDrawer())
+	{
+		int mode = getDebugDrawer()->getDebugMode();
+		if (mode  & (btIDebugDraw::DBG_DrawConstraints | btIDebugDraw::DBG_DrawConstraintLimits))
+		{
+			drawConstraints = true;
+		}
+
+		if (drawConstraints)
+		{
+			BT_PROFILE("btMultiBody debugDrawWorld");
+			
+			btAlignedObjectArray<btQuaternion> world_to_local;
+			btAlignedObjectArray<btVector3> local_origin;
+
+			for (int c=0;c<m_multiBodyConstraints.size();c++)
+			{
+				btMultiBodyConstraint* constraint = m_multiBodyConstraints[c];
+				debugDrawMultiBodyConstraint(constraint);
+			}
+
+			for (int b = 0; b<m_multiBodies.size(); b++)
+			{
+				btMultiBody* bod = m_multiBodies[b];
+				int nLinks = bod->getNumLinks();
+
+				///base + num m_links
+				world_to_local.resize(nLinks + 1);
+				local_origin.resize(nLinks + 1);
+
+					
+				world_to_local[0] = bod->getWorldToBaseRot();
+				local_origin[0] = bod->getBasePos();
+
+				
+				{
+					btVector3 posr = local_origin[0];
+					//	float pos[4]={posr.x(),posr.y(),posr.z(),1};
+					btScalar quat[4] = { -world_to_local[0].x(), -world_to_local[0].y(), -world_to_local[0].z(), world_to_local[0].w() };
+					btTransform tr;
+					tr.setIdentity();
+					tr.setOrigin(posr);
+					tr.setRotation(btQuaternion(quat[0], quat[1], quat[2], quat[3]));
+
+					getDebugDrawer()->drawTransform(tr, 0.1);
+
+				}
+
+				for (int k = 0; k<bod->getNumLinks(); k++)
+				{
+					const int parent = bod->getParent(k);
+					world_to_local[k + 1] = bod->getParentToLocalRot(k) * world_to_local[parent + 1];
+					local_origin[k + 1] = local_origin[parent + 1] + (quatRotate(world_to_local[k + 1].inverse(), bod->getRVector(k)));
+				}
+
+
+				for (int m = 0; m<bod->getNumLinks(); m++)
+				{
+					int link = m;
+					int index = link + 1;
+
+					btVector3 posr = local_origin[index];
+					//			float pos[4]={posr.x(),posr.y(),posr.z(),1};
+					btScalar quat[4] = { -world_to_local[index].x(), -world_to_local[index].y(), -world_to_local[index].z(), world_to_local[index].w() };
+					btTransform tr;
+					tr.setIdentity();
+					tr.setOrigin(posr);
+					tr.setRotation(btQuaternion(quat[0], quat[1], quat[2], quat[3]));
+
+					getDebugDrawer()->drawTransform(tr, 0.1);
+				}
+			}
+		}
+	}
+
+	btDiscreteDynamicsWorld::debugDrawWorld();
 }

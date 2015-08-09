@@ -81,8 +81,9 @@ public class VerticalGroup extends WidgetGroup {
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			float width, height;
+			Layout layout = null;
 			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
+				layout = (Layout)child;
 				if (fill > 0)
 					width = groupWidth * fill;
 				else
@@ -109,6 +110,8 @@ public class VerticalGroup extends WidgetGroup {
 			else
 				child.setBounds(x, y, width, height);
 			if (reverse) y += (height + spacing);
+
+			if (layout != null) layout.validate();
 		}
 	}
 

@@ -1,6 +1,8 @@
 SPECIFY_CLASS(Extras, com.badlogic.gdx.physics.bullet.extras)
 SPECIFY_CLASS(ExtrasJNI, com.badlogic.gdx.physics.bullet.extras)
 SPECIFY_CLASS(SWIGTYPE_p_bParse__btBulletFile, com.badlogic.gdx.physics.bullet.extras)
+SPECIFY_CLASS(SWIGTYPE_p_btGearConstraint, com.badlogic.gdx.physics.bullet.extras)
+SPECIFY_CLASS(SWIGTYPE_p_btGeneric6DofSpring2Constraint, com.badlogic.gdx.physics.bullet.extras)
 SPECIFY_CLASS(btBulletWorldImporter, com.badlogic.gdx.physics.bullet.extras)
 SPECIFY_CLASS(btStringArray, com.badlogic.gdx.physics.bullet.extras)
 SPECIFY_CLASS(btWorldImporter, com.badlogic.gdx.physics.bullet.extras)

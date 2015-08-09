@@ -46,6 +46,10 @@ public class JsonTest extends GdxTest {
 		test.array = new Array();
 		test.array.add("meow");
 		test.array.add("moo");
+		test.someEnum = SomeEnum.b;
+		roundTrip(test);
+
+		test.someEnum = null;
 		roundTrip(test);
 
 		test = new Test1();
@@ -166,6 +170,7 @@ public class JsonTest extends GdxTest {
 		public Object object;
 		public ObjectMap<String, Integer> map;
 		public Array<String> array;
+		public SomeEnum someEnum;
 
 		public boolean equals (Object obj) {
 			if (this == obj) return true;
@@ -233,6 +238,10 @@ public class JsonTest extends GdxTest {
 			if (shortField != other.shortField) return false;
 			return true;
 		}
+	}
+
+	public enum SomeEnum {
+		a, b, c;
 	}
 
 	static Object arrayToList (Object array) {

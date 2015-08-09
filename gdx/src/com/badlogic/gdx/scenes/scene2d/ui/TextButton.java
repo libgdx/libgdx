@@ -50,9 +50,7 @@ public class TextButton extends Button {
 	}
 
 	public void setStyle (ButtonStyle style) {
-		if (style == null) {
-			throw new NullPointerException("style cannot be null");
-		}
+		if (style == null) throw new NullPointerException("style cannot be null");
 		if (!(style instanceof TextButtonStyle)) throw new IllegalArgumentException("style must be a TextButtonStyle.");
 		super.setStyle(style);
 		this.style = (TextButtonStyle)style;
@@ -99,10 +97,6 @@ public class TextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
-	}
-
-	public String toString () {
-		return super.toString() + ": " + label.getText();
 	}
 
 	/** The style for a text button, see {@link TextButton}.

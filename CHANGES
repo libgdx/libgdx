@@ -1,3 +1,53 @@
+[1.6.5]
+- Objects from animated tiles in TMX maps are now supported.
+- Made possible to use any actor for tooltips.
+- Improved cross-platform reflection api for annotations.
+- NinePatch#scale now also scales middle patch size.
+- GLFrameBuffer is now abstract, renamed setupTexture to createColorTexture, added disposeColorTexture
+
+[1.6.4]
+- TextField cursor and selection size changed. https://github.com/libgdx/libgdx/commit/2a830dea348948d2a37bd8f6338af2023fec9b09
+- FreeTypeFontGenerator setting to improve shadows and borders.
+- ScrollPane scrolls smoothly when the scrolled area is much larger than the scrollbars.
+- TexturePacker sorts page regions by name.
+- GlyphLayout text wrapping changed to not trim whitespace. https://github.com/libgdx/libgdx/commit/ee42693da067da7c5ddd747f051c1423d262cb96
+- Fixed BitmapFont computing space width incorrectly when padding is used and no space glyph is in the font.
+- Fixed TextArea cursor and selection drawing positions.
+- Fixed ActorGestureListener pan and zoom when the actor is rotated or scaled.
+- Fixed TextField for non-pixel display.
+- Allow ellipsis string to be set on Label.
+- AssetManager gets hook for handling loading failure.
+- TextField now fires a ChangeEvent when the text change. Can be cancelled too!
+- Added tooltips to scene2d.ui.
+- Updated to RoboVM 1.5
+
+[1.6.3]
+- Updated to RoboVM 1.4
+
+[1.6.2]
+- API Change: TiledMapImageLayer now uses floats instead of ints for positioning
+- API Change: Added GLFrameBuffer and FrameBufferCubemap: Framebuffer now extends GLFramebuffer, see #2933
+
+[1.6.1]
+- Added optional hostname argument to Net.newServerSocket method to allow specific ip bindings for server applications made with gdx.
+- Changed the way iOS native libs are handled. Removed updateRoboVMXML and copyNatives task from ios/build.gradle. Instead natives are now packaged in jars, within the META-INF/robovm/ios folder. Additionally, a robovm.xml file is stored there that gets merged with the project's robovm.xml file by RoboVM.
+
+[1.6.0]
+- API Change: GlyphLayout xAdvances now have an additional entry at the beginning. This was required to implement tighter text bounds. #3034
+- API Change: Label#getTextBounds changed to getGlyphLayout. This exposes all the runs, not just the width and height.
+- In the 2D ParticleEditor, all chart points can be dragged at once by holding ctrl. They can be dragged proportionally by holding ctrl-shift.
+- Added Merge button to the 2D ParticleEditor, for merging a loaded particle effect file with the currently open particle effect.
+- Added ability to retrieve method annotations to reflection api
+- Added PixmapPacker.updateTextureRegions() method.
+- Added ability to pack "anonymous" pixmaps into PixmapPacker, which will appear in the generated texture but not a generated or updated TextureAtlas
+- Added PixmapPacker.packDirectToTexture() methods.
+- API Change: PixmapPacker.generateTextureAtlas(...) now returns an atlas which can be updated with subsequent calls to PixmapPacker.updateTextureAtlas(...)
+- API Change: FreeTypeFontGenerator.generateFont(...) now works with a user-provided PixmapPacker.
+- Added DirectionalLightsAttribute, PointLightsAttribute and SpotLightsAttribute, removed Environment#directionalLights/pointLights/spotLights, added Environment#remove, lights are now just like any other attribute. See also https://github.com/libgdx/libgdx/wiki/Material-and-environment#lights
+- API Change: BitmapFont metrics now respect padding. #3074
+- Update bullet wrapper to v2.83
+- Added AnimatedTiledMapTile.getFrameTiles() method
+
 [1.5.6]
 - API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
 - Added VertexBufferObjectWithVAO, see https://github.com/libgdx/libgdx/pull/2527

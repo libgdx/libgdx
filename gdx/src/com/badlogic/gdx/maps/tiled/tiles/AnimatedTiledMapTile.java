@@ -19,10 +19,9 @@ package com.badlogic.gdx.maps.tiled.tiles;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** @brief Represents a changing {@link TiledMapTile}. */
@@ -63,19 +62,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
-	public int getCurrentFrameIndex() {
+	public int getCurrentFrameIndex () {
 		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 
-		for (int i = 0; i < animationIntervals.length; ++i){
+		for (int i = 0; i < animationIntervals.length; ++i) {
 			int animationInterval = animationIntervals[i];
 			if (currentTime <= animationInterval) return i;
 			currentTime -= animationInterval;
 		}
 
-		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+		throw new GdxRuntimeException(
+			"Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
 
-	public TiledMapTile getCurrentFrame() {
+	public TiledMapTile getCurrentFrame () {
 		return frameTiles[getCurrentFrameIndex()];
 	}
 
@@ -85,10 +85,10 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
-	public void setTextureRegion(TextureRegion textureRegion) {
+	public void setTextureRegion (TextureRegion textureRegion) {
 		throw new GdxRuntimeException("Cannot set the texture region of AnimatedTiledMapTile.");
 	}
-	
+
 	@Override
 	public float getOffsetX () {
 		return getCurrentFrame().getOffsetX();
@@ -109,10 +109,10 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
 	}
 
-	public int[] getAnimationIntervals(){
+	public int[] getAnimationIntervals () {
 		return animationIntervals;
 	}
-	
+
 	public void setAnimationIntervals (int[] intervals) {
 		if (intervals.length == animationIntervals.length) {
 			this.animationIntervals = intervals;
@@ -152,7 +152,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 		this.loopDuration = frameTiles.size * (int)(interval * 1000f);
 		this.animationIntervals = new int[frameTiles.size];
-		for (int i = 0; i < frameTiles.size; ++i){
+		for (int i = 0; i < frameTiles.size; ++i) {
 			this.frameTiles[i] = frameTiles.get(i);
 			this.animationIntervals[i] = (int)(interval * 1000f);
 		}
@@ -169,10 +169,13 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.animationIntervals = intervals.toArray();
 		this.loopDuration = 0;
 
-		for (int i = 0; i < intervals.size; ++i){
+		for (int i = 0; i < intervals.size; ++i) {
 			this.frameTiles[i] = frameTiles.get(i);
 			this.loopDuration += intervals.get(i);
 		}
 	}
 
+	public StaticTiledMapTile[] getFrameTiles () {
+		return frameTiles;
+	}
 }

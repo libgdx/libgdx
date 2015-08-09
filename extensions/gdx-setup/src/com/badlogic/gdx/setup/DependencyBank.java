@@ -6,10 +6,10 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.5.5";
+	static String libgdxVersion = "1.6.4";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.5.6-SNAPSHOT";
-	static String roboVMVersion = "1.0.0";
+	static String libgdxNightlyVersion = "1.6.5-SNAPSHOT";
+	static String roboVMVersion = "1.5.0";
 	static String buildToolsVersion = "20.0.0";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
@@ -22,12 +22,12 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.0.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.2.3";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
-	static String box2DLightsVersion = "1.3";
-	static String ashleyVersion = "1.3.1";
+	static String box2DLightsVersion = "1.4";
+	static String ashleyVersion = "1.6.4";
 	static String aiVersion = "1.5.0";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
@@ -64,7 +64,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"},
-			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
+			new String[]{"org.robovm:robovm-rt:$roboVMVersion", "org.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			

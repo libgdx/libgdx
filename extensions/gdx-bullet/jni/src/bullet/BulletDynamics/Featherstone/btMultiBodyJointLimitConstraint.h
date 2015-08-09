@@ -36,7 +36,11 @@ public:
 	virtual void createConstraintRows(btMultiBodyConstraintArray& constraintRows,
 		btMultiBodyJacobianData& data,
 		const btContactSolverInfo& infoGlobal);
-	
+
+	virtual void debugDraw(class btIDebugDraw* drawer)
+	{
+		//todo(erwincoumans)
+	}
 	
 };
 

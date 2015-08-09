@@ -1,11 +1,20 @@
 	project "BulletCollision"
-		
+
 	kind "StaticLib"
-	targetdir "../../lib"
 	includedirs {
 		"..",
 	}
 	files {
-		"**.cpp",
-		"**.h"
+		"*.cpp",
+		"*.h",
+		"BroadphaseCollision/*.cpp",
+		"BroadphaseCollision/*.h",
+		"CollisionDispatch/*.cpp",
+                "CollisionDispatch/*.h",
+		"CollisionShapes/*.cpp",
+		"CollisionShapes/*.h",
+		"Gimpact/*.cpp",
+		"Gimpact/*.h",
+		"NarrowPhaseCollision/*.cpp",
+		"NarrowPhaseCollision/*.h",
 	}

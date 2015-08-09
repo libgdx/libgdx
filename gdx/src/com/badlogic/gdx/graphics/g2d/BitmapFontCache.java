@@ -375,8 +375,8 @@ public class BitmapFontCache {
 			float gx = x + run.x, gy = y + run.y;
 			for (int ii = 0, nn = glyphs.size; ii < nn; ii++) {
 				Glyph glyph = glyphs.get(ii);
-				addGlyph(glyph, gx, gy, color);
 				gx += xAdvances.get(ii);
+				addGlyph(glyph, gx, gy, color);
 			}
 		}
 
@@ -387,16 +387,16 @@ public class BitmapFontCache {
 		final float scaleX = font.data.scaleX, scaleY = font.data.scaleY;
 		x += glyph.xoffset * scaleX;
 		y += glyph.yoffset * scaleY;
-		final float width = glyph.width * scaleX, height = glyph.height * scaleY;
+		float width = glyph.width * scaleX, height = glyph.height * scaleY;
 		final float u = glyph.u, u2 = glyph.u2, v = glyph.v, v2 = glyph.v2;
 
-		float x2 = x + width, y2 = y + height;
 		if (integer) {
 			x = Math.round(x);
 			y = Math.round(y);
-			x2 = Math.round(x2);
-			y2 = Math.round(y2);
+			width = Math.round(width);
+			height = Math.round(height);
 		}
+		final float x2 = x + width, y2 = y + height;
 
 		final int page = glyph.page;
 		int idx = this.idx[page];

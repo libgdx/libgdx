@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,12 +30,16 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.SpotLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -111,6 +115,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
 		public final static Uniform dirLights = new Uniform("u_dirLights");
 		public final static Uniform pointLights = new Uniform("u_pointLights");
+		public final static Uniform spotLights = new Uniform("u_spotLights");
 		public final static Uniform environmentCubemap = new Uniform("u_environmentCubemap");
 	}
 
@@ -160,6 +165,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter viewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
@@ -167,6 +173,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter projViewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
@@ -174,6 +181,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter normalMatrix = new LocalSetter() {
 			private final Matrix3 tmpM = new Matrix3();
+
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
@@ -341,17 +349,20 @@ public class DefaultShader extends BaseShader {
 					if (combinedAttributes.has(ColorAttribute.AmbientLight))
 						cacheAmbientCubemap.set(((ColorAttribute)combinedAttributes.get(ColorAttribute.AmbientLight)).color);
 
-					for (int i = dirLightsOffset; i < renderable.environment.directionalLights.size; i++)
-						cacheAmbientCubemap.add(renderable.environment.directionalLights.get(i).color,
-							renderable.environment.directionalLights.get(i).direction);
+					if (combinedAttributes.has(DirectionalLightsAttribute.Type)) {
+						Array<DirectionalLight> lights = ((DirectionalLightsAttribute)combinedAttributes
+							.get(DirectionalLightsAttribute.Type)).lights;
+						for (int i = dirLightsOffset; i < lights.size; i++)
+							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).direction);
+					}
 
-					for (int i = pointLightsOffset; i < renderable.environment.pointLights.size; i++)
-						cacheAmbientCubemap.add(renderable.environment.pointLights.get(i).color,
-							renderable.environment.pointLights.get(i).position, tmpV1,
-							renderable.environment.pointLights.get(i).intensity);
+					if (combinedAttributes.has(PointLightsAttribute.Type)) {
+						Array<PointLight> lights = ((PointLightsAttribute)combinedAttributes.get(PointLightsAttribute.Type)).lights;
+						for (int i = pointLightsOffset; i < lights.size; i++)
+							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).position, tmpV1, lights.get(i).intensity);
+					}
 
 					cacheAmbientCubemap.clamp();
-
 					shader.program.setUniform3fv(shader.loc(inputID), cacheAmbientCubemap.data, 0, cacheAmbientCubemap.data.length);
 				}
 			}
@@ -436,6 +447,13 @@ public class DefaultShader extends BaseShader {
 	protected final int u_pointLights0position = register(new Uniform("u_pointLights[0].position"));
 	protected final int u_pointLights0intensity = register(new Uniform("u_pointLights[0].intensity"));
 	protected final int u_pointLights1color = register(new Uniform("u_pointLights[1].color"));
+	protected final int u_spotLights0color = register(new Uniform("u_spotLights[0].color"));
+	protected final int u_spotLights0position = register(new Uniform("u_spotLights[0].position"));
+	protected final int u_spotLights0intensity = register(new Uniform("u_spotLights[0].intensity"));
+	protected final int u_spotLights0direction = register(new Uniform("u_spotLights[0].direction"));
+	protected final int u_spotLights0cutoffAngle = register(new Uniform("u_spotLights[0].cutoffAngle"));
+	protected final int u_spotLights0exponent = register(new Uniform("u_spotLights[0].exponent"));
+	protected final int u_spotLights1color = register(new Uniform("u_spotLights[1].color"));
 	protected final int u_fogColor = register(new Uniform("u_fogColor"));
 	protected final int u_shadowMapProjViewTrans = register(new Uniform("u_shadowMapProjViewTrans"));
 	protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
@@ -451,6 +469,14 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsPositionOffset;
 	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
+	protected int spotLightsLoc;
+	protected int spotLightsColorOffset;
+	protected int spotLightsPositionOffset;
+	protected int spotLightsDirectionOffset;
+	protected int spotLightsIntensityOffset;
+	protected int spotLightsCutoffAngleOffset;
+	protected int spotLightsExponentOffset;
+	protected int spotLightsSize;
 
 	protected final boolean lighting;
 	protected final boolean environmentCubemap;
@@ -458,6 +484,7 @@ public class DefaultShader extends BaseShader {
 	protected final AmbientCubemap ambientCubemap = new AmbientCubemap();
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
+	protected final SpotLight spotLights[];
 
 	/** The renderable used to create this shader, invalid after the call to init */
 	private Renderable renderable;
@@ -480,12 +507,12 @@ public class DefaultShader extends BaseShader {
 		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
 			config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
 	}
-	
+
 	public DefaultShader (final Renderable renderable, final Config config, final String prefix, final String vertexShader,
 		final String fragmentShader) {
 		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
-	
+
 	public DefaultShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		final Attributes attributes = combineAttributes(renderable);
 		this.config = config;
@@ -504,6 +531,9 @@ public class DefaultShader extends BaseShader {
 		this.pointLights = new PointLight[lighting && config.numPointLights > 0 ? config.numPointLights : 0];
 		for (int i = 0; i < pointLights.length; i++)
 			pointLights[i] = new PointLight();
+		this.spotLights = new SpotLight[lighting && config.numSpotLights > 0 ? config.numSpotLights : 0];
+		for (int i = 0; i < spotLights.length; i++)
+			spotLights[i] = new SpotLight();
 
 		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
@@ -568,6 +598,16 @@ public class DefaultShader extends BaseShader {
 		pointLightsIntensityOffset = has(u_pointLights0intensity) ? loc(u_pointLights0intensity) - pointLightsLoc : -1;
 		pointLightsSize = loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0) pointLightsSize = 0;
+
+		spotLightsLoc = loc(u_spotLights0color);
+		spotLightsColorOffset = loc(u_spotLights0color) - spotLightsLoc;
+		spotLightsPositionOffset = loc(u_spotLights0position) - spotLightsLoc;
+		spotLightsDirectionOffset = loc(u_spotLights0direction) - spotLightsLoc;
+		spotLightsIntensityOffset = has(u_spotLights0intensity) ? loc(u_spotLights0intensity) - spotLightsLoc : -1;
+		spotLightsCutoffAngleOffset = loc(u_spotLights0cutoffAngle) - spotLightsLoc;
+		spotLightsExponentOffset = loc(u_spotLights0exponent) - spotLightsLoc;
+		spotLightsSize = loc(u_spotLights1color) - spotLightsLoc;
+		if (spotLightsSize < 0) spotLightsSize = 0;
 	}
 
 	private static final boolean and (final long mask, final long flag) {
@@ -577,10 +617,11 @@ public class DefaultShader extends BaseShader {
 	private static final boolean or (final long mask, final long flag) {
 		return (mask & flag) != 0;
 	}
-	
+
 	private final static Attributes tmpAttributes = new Attributes();
-	// TODO: Move responsibility for combining attributes to RenderableProvider
-	private static final Attributes combineAttributes(final Renderable renderable) {
+
+	// TODO: Perhaps move responsibility for combining attributes to RenderableProvider?
+	private static final Attributes combineAttributes (final Renderable renderable) {
 		tmpAttributes.clear();
 		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
 		if (renderable.material != null) tmpAttributes.set(renderable.material);
@@ -603,12 +644,12 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define ambientCubemapFlag\n";
 				prefix += "#define numDirectionalLights " + config.numDirectionalLights + "\n";
 				prefix += "#define numPointLights " + config.numPointLights + "\n";
+				prefix += "#define numSpotLights " + config.numSpotLights + "\n";
 				if (attributes.has(ColorAttribute.Fog)) {
 					prefix += "#define fogFlag\n";
 				}
 				if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
-				if (attributes.has(CubemapAttribute.EnvironmentMap)
-					|| attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
+				if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
 			}
 		}
 		final int n = renderable.mesh.getVertexAttributes().size();
@@ -618,7 +659,8 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define boneWeight" + attr.unit + "Flag\n";
 			else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
 		}
-		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type) prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
+		if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type)
+			prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
 		if ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
@@ -695,11 +737,13 @@ public class DefaultShader extends BaseShader {
 			dirLight.set(0, 0, 0, 0, -1, 0);
 		for (final PointLight pointLight : pointLights)
 			pointLight.set(0, 0, 0, 0, 0, 0, 0);
+		for (final SpotLight spotLight : spotLights)
+			spotLight.set(0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0);
 		lightsSet = false;
 
 		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
 	}
-	
+
 	@Override
 	public void render (Renderable renderable, Attributes combinedAttributes) {
 		if (!combinedAttributes.has(BlendingAttribute.Type))
@@ -748,8 +792,12 @@ public class DefaultShader extends BaseShader {
 
 	protected void bindLights (final Renderable renderable, final Attributes attributes) {
 		final Environment lights = renderable.environment;
-		final Array<DirectionalLight> dirs = lights.directionalLights;
-		final Array<PointLight> points = lights.pointLights;
+		final DirectionalLightsAttribute dla = attributes.get(DirectionalLightsAttribute.class, DirectionalLightsAttribute.Type);
+		final Array<DirectionalLight> dirs = dla == null ? null : dla.lights;
+		final PointLightsAttribute pla = attributes.get(PointLightsAttribute.class, PointLightsAttribute.Type);
+		final Array<PointLight> points = pla == null ? null : pla.lights;
+		final SpotLightsAttribute sla = attributes.get(SpotLightsAttribute.class, SpotLightsAttribute.Type);
+		final Array<SpotLight> spots = sla == null ? null : sla.lights;
 
 		if (dirLightsLoc >= 0) {
 			for (int i = 0; i < directionalLights.length; i++) {
@@ -765,7 +813,8 @@ public class DefaultShader extends BaseShader {
 				int idx = dirLightsLoc + i * dirLightsSize;
 				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.r, directionalLights[i].color.g,
 					directionalLights[i].color.b);
-				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction);
+				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction.x,
+					directionalLights[i].direction.y, directionalLights[i].direction.z);
 				if (dirLightsSize <= 0) break;
 			}
 		}
@@ -783,10 +832,33 @@ public class DefaultShader extends BaseShader {
 				int idx = pointLightsLoc + i * pointLightsSize;
 				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
 					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
-				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position);
-				if (pointLightsIntensityOffset >= 0)
-					program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
+				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
+					pointLights[i].position.z);
+				if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0) break;
+			}
+		}
+
+		if (spotLightsLoc >= 0) {
+			for (int i = 0; i < spotLights.length; i++) {
+				if (spots == null || i >= spots.size) {
+					if (lightsSet && spotLights[i].intensity == 0f) continue;
+					spotLights[i].intensity = 0f;
+				} else if (lightsSet && spotLights[i].equals(spots.get(i)))
+					continue;
+				else
+					spotLights[i].set(spots.get(i));
+
+				int idx = spotLightsLoc + i * spotLightsSize;
+				program.setUniformf(idx + spotLightsColorOffset, spotLights[i].color.r * spotLights[i].intensity,
+					spotLights[i].color.g * spotLights[i].intensity, spotLights[i].color.b * spotLights[i].intensity);
+				program.setUniformf(idx + spotLightsPositionOffset, spotLights[i].position);
+				program.setUniformf(idx + spotLightsDirectionOffset, spotLights[i].direction);
+				program.setUniformf(idx + spotLightsCutoffAngleOffset, spotLights[i].cutoffAngle);
+				program.setUniformf(idx + spotLightsExponentOffset, spotLights[i].exponent);
+				if (spotLightsIntensityOffset >= 0)
+					program.setUniformf(idx + spotLightsIntensityOffset, spotLights[i].intensity);
+				if (spotLightsSize <= 0) break;
 			}
 		}
 
@@ -794,10 +866,10 @@ public class DefaultShader extends BaseShader {
 			set(u_fogColor, ((ColorAttribute)attributes.get(ColorAttribute.Fog)).color);
 		}
 
-		if (lights.shadowMap != null) {
+		if (lights != null && lights.shadowMap != null) {
 			set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
 			set(u_shadowTexture, lights.shadowMap.getDepthMap());
-			set(u_shadowPCFOffset, 1.f / (float)(2f * lights.shadowMap.getDepthMap().texture.getWidth()));
+			set(u_shadowPCFOffset, 1.f / (2f * lights.shadowMap.getDepthMap().texture.getWidth()));
 		}
 
 		lightsSet = true;

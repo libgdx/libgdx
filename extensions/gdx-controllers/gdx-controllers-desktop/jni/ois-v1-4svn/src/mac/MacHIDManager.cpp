@@ -247,7 +247,11 @@ HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propert
 		const char* str_c = getCString(str);
 		if(str_c) {
 			info->productKey = str_c;
-			free((char*)str_c);
+            // mzechner: we leak this so packr packaged apps
+            // works. I have no idea why this would fail in
+            // case of packr. My guess it register allocation
+            // and aliasing with str_c above.
+			// free((char*)str_c);
 		} else {
 			info->productKey = "Unknown Product";
 		}

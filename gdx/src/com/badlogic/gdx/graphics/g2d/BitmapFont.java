@@ -62,7 +62,7 @@ public class BitmapFont implements Disposable {
 	Array<TextureRegion> regions;
 	private final BitmapFontCache cache;
 	private boolean flipped;
-	private boolean integer;
+	boolean integer;
 	private boolean ownsTexture;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -148,6 +148,10 @@ public class BitmapFont implements Disposable {
 	 * of the region(s) if the regions array is != null and not empty.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		this.flipped = data.flipped;
+		this.data = data;
+		this.integer = integer;
+
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
 			int n = data.imagePaths.length;
@@ -166,15 +170,12 @@ public class BitmapFont implements Disposable {
 			ownsTexture = false;
 		}
 
-		cache = new BitmapFontCache(this, integer);
+		cache = newFontCache();
 
-		this.flipped = data.flipped;
-		this.data = data;
-		this.integer = integer;
 		load(data);
 	}
 
-	private void load (BitmapFontData data) {
+	protected void load (BitmapFontData data) {
 		for (Glyph[] page : data.glyphs) {
 			if (page == null) continue;
 			for (Glyph glyph : page) {
@@ -326,7 +327,7 @@ public class BitmapFont implements Disposable {
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
 			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g == null) continue;
-			g.xoffset += (maxAdvance - g.xadvance) / 2;
+			g.xoffset += Math.round((maxAdvance - g.xadvance) / 2);
 			g.xadvance = maxAdvance;
 			g.kerning = null;
 		}
@@ -365,6 +366,15 @@ public class BitmapFont implements Disposable {
 	 * @param ownsTexture whether the font owns the texture */
 	public void setOwnsTexture (boolean ownsTexture) {
 		this.ownsTexture = ownsTexture;
+	}
+
+	/** Creates a new BitmapFontCache for this font. Using this method allows the font to provide the BitmapFontCache implementation
+	 * to customize rendering.
+	 * <p>
+	 * Note this method is called by the BitmapFont constructors. If a subclass overrides this method, it will be called before the
+	 * subclass constructors. */
+	public BitmapFontCache newFontCache () {
+		return new BitmapFontCache(this, integer);
 	}
 
 	public String toString () {
@@ -419,6 +429,7 @@ public class BitmapFont implements Disposable {
 		public String[] imagePaths;
 		public FileHandle fontFile;
 		public boolean flipped;
+		public float padTop, padRight, padBottom, padLeft;
 		/** The distance from one line of text to the next. */
 		public float lineHeight;
 		/** The distance from the top of most uppercase characters to the baseline. Since the drawing position is the cap height of
@@ -431,6 +442,9 @@ public class BitmapFont implements Disposable {
 		public float down;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
+		/** The amount to add to the glyph X position when drawing a cursor between glyphs. This field is not set by the BMFont file,
+		 * it needs to be set manually depending on how the glyphs are rendered on the backing textures. */
+		public float cursorX;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		/** The width of the space character. */
@@ -460,14 +474,24 @@ public class BitmapFont implements Disposable {
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 			try {
-				reader.readLine(); // info
-
-				String line = reader.readLine();
+				String line = reader.readLine(); // info
 				if (line == null) throw new GdxRuntimeException("File is empty.");
+
+				line = line.substring(line.indexOf("padding=") + 8);
+				String[] padding = line.substring(0, line.indexOf(' ')).split(",", 4);
+				if (padding.length != 4) throw new GdxRuntimeException("Invalid padding.");
+				padTop = Integer.parseInt(padding[0]);
+				padLeft = Integer.parseInt(padding[1]);
+				padBottom = Integer.parseInt(padding[2]);
+				padRight = Integer.parseInt(padding[3]);
+				float padY = padTop + padBottom;
+
+				line = reader.readLine();
+				if (line == null) throw new GdxRuntimeException("Missing common header.");
 				String[] common = line.split(" ", 7); // At most we want the 6th element; i.e. "page=N"
 
 				// At least lineHeight and base are required.
-				if (common.length < 3) throw new GdxRuntimeException("Invalid header.");
+				if (common.length < 3) throw new GdxRuntimeException("Invalid common header.");
 
 				if (!common[1].startsWith("lineHeight=")) throw new GdxRuntimeException("Missing: lineHeight");
 				lineHeight = Integer.parseInt(common[1].substring(11));
@@ -561,6 +585,7 @@ public class BitmapFont implements Disposable {
 
 					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset, descent);
 				}
+				descent += padBottom;
 
 				while (true) {
 					line = reader.readLine();
@@ -591,7 +616,11 @@ public class BitmapFont implements Disposable {
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
 					setGlyph(' ', spaceGlyph);
 				}
-				spaceWidth = spaceGlyph != null ? spaceGlyph.xadvance + spaceGlyph.width : 1;
+				if (spaceGlyph.width == 0) {
+					spaceGlyph.width = (int)(spaceGlyph.xadvance + padRight);
+					spaceGlyph.xoffset = (int)-padLeft;
+				}
+				spaceWidth = spaceGlyph.width;
 
 				Glyph xGlyph = null;
 				for (int i = 0; i < xChars.length; i++) {
@@ -599,7 +628,7 @@ public class BitmapFont implements Disposable {
 					if (xGlyph != null) break;
 				}
 				if (xGlyph == null) xGlyph = getFirstGlyph();
-				xHeight = xGlyph.height;
+				xHeight = xGlyph.height - padY;
 
 				Glyph capGlyph = null;
 				for (int i = 0; i < capChars.length; i++) {
@@ -616,6 +645,7 @@ public class BitmapFont implements Disposable {
 					}
 				} else
 					capHeight = capGlyph.height;
+				capHeight -= padY;
 
 				ascent = baseLine - capHeight;
 				down = -lineHeight;
@@ -631,8 +661,9 @@ public class BitmapFont implements Disposable {
 		}
 
 		public void setGlyphRegion (Glyph glyph, TextureRegion region) {
-			float invTexWidth = 1.0f / region.getTexture().getWidth();
-			float invTexHeight = 1.0f / region.getTexture().getHeight();
+			Texture texture = region.getTexture();
+			float invTexWidth = 1.0f / texture.getWidth();
+			float invTexHeight = 1.0f / texture.getHeight();
 
 			float offsetX = 0, offsetY = 0;
 			float u = region.u;
@@ -743,26 +774,29 @@ public class BitmapFont implements Disposable {
 				if (glyph == null) continue;
 				glyphs.add(glyph);
 
-				if (lastGlyph != null) xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				if (lastGlyph == null)
+					xAdvances.add(-glyph.xoffset * scaleX - padLeft); // First glyph.
+				else
+					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
-			if (lastGlyph != null) xAdvances.add(lastGlyph.xadvance * scaleX);
+			if (lastGlyph != null) xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX - padRight);
 		}
 
-		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and moving
-		 * toward the beginning of the glyphs array. */
+		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and
+		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
-			char ch = (char)glyphs.get(start).id;
-			if (isWhitespace(ch)) return start + 1;
-			for (int i = start - 1; i >= 1; i--) {
-				ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch)) return i + 1;
-				if (isBreakChar(ch)) return i;
+			int i = start - 1;
+			for (; i >= 1; i--)
+				if (!isWhitespace((char)glyphs.get(i).id)) break;
+			for (; i >= 1; i--) {
+				char ch = (char)glyphs.get(i).id;
+				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
-			return start;
+			return 0;
 		}
 
 		public boolean isBreakChar (char c) {
@@ -814,6 +848,10 @@ public class BitmapFont implements Disposable {
 			ascent *= y;
 			descent *= y;
 			down *= y;
+			padTop *= y;
+			padLeft *= y;
+			padBottom *= y;
+			padRight *= y;
 			this.scaleX = scaleX;
 			this.scaleY = scaleY;
 		}

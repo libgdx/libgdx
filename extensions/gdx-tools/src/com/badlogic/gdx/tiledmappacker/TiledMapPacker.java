@@ -49,9 +49,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
@@ -60,15 +63,15 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Given one or more TMX tilemaps, packs all tileset resources used across the maps into a <b>single</b> {@link TextureAtlas} and
- * produces a new TMX file to be loaded with an AtlasTiledMapLoader loader. Optionally, it can keep track of unused tiles
- * and omit them from the generated atlas, reducing the resource size.
+ * produces a new TMX file to be loaded with an AtlasTiledMapLoader loader. Optionally, it can keep track of unused tiles and omit
+ * them from the generated atlas, reducing the resource size.
  * 
  * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
  * <b>required</b>, that's why an LwjglApplication is created by this preprocessor: this is probably subject to change in the
  * future, where loading both maps metadata and graphics resources should be made conditional.
  * 
- * The new TMX map file will contains a new property, namely "atlas", whose value will enable the AtlasTiledMapLoader to
- * correctly read the associated TextureAtlas representing the tileset.
+ * The new TMX map file will contains a new property, namely "atlas", whose value will enable the AtlasTiledMapLoader to correctly
+ * read the associated TextureAtlas representing the tileset.
  * 
  * @author David Fraska and others (initial implementation, tell me who you are!)
  * @author Manuel Bua */
@@ -170,15 +173,15 @@ public class TiledMapPacker {
 						for (int y = 0; y < mapHeight; ++y) {
 							for (int x = 0; x < mapWidth; ++x) {
 								if (tlayer.getCell(x, y) != null) {
-									int tileid = tlayer.getCell(x, y).getTile().getId() & ~0xE0000000;
-									String tilesetName = tilesetNameFromTileId(map, tileid);
-									IntArray usedIds = getUsedIdsBucket(tilesetName, bucketSize);
-									usedIds.add(tileid);
-
-									// track this tileset to be packed if not already tracked
-									if (!tilesetsToPack.containsKey(tilesetName)) {
-										tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
+									TiledMapTile tile = tlayer.getCell(x, y).getTile();
+									if (tile instanceof AnimatedTiledMapTile) {
+										AnimatedTiledMapTile aTile = (AnimatedTiledMapTile)tile;
+										for (StaticTiledMapTile t : aTile.getFrameTiles()) {
+											addTile(t, bucketSize, tilesetsToPack);
+										}
 									}
+									// Adds non-animated tiles and the base animated tile
+									addTile(tile, bucketSize, tilesetsToPack);
 								}
 							}
 						}
@@ -198,6 +201,18 @@ public class TiledMapPacker {
 		}
 
 		packTilesets(tilesetsToPack, inputDirHandle, outputDir, settings);
+	}
+
+	private void addTile (TiledMapTile tile, int bucketSize, ObjectMap<String, TiledMapTileSet> tilesetsToPack) {
+		int tileid = tile.getId() & ~0xE0000000;
+		String tilesetName = tilesetNameFromTileId(map, tileid);
+		IntArray usedIds = getUsedIdsBucket(tilesetName, bucketSize);
+		usedIds.add(tileid);
+
+		// track this tileset to be packed if not already tracked
+		if (!tilesetsToPack.containsKey(tilesetName)) {
+			tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
+		}
 	}
 
 	/** Returns the tileset name associated with the specified tile id
@@ -279,7 +294,7 @@ public class TiledMapPacker {
 				if (isBlended(tile)) setBlended(gid);
 				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
 					+ ")");
-				packer.addImage(tile, this.settings.atlasOutputName + "_" + (gid-1));
+				packer.addImage(tile, this.settings.atlasOutputName + "_" + (gid - 1));
 			}
 		}
 

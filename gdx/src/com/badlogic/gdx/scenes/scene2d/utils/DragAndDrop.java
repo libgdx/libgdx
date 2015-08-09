@@ -89,13 +89,17 @@ public class DragAndDrop {
 						if (!target.actor.isAscendantOf(hit)) continue;
 						newTarget = target;
 						target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
-						isValidTarget = target.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 						break;
 					}
 				}
+				//if over a new target, notify the former target that it's being left behind.
 				if (newTarget != target) {
 					if (target != null) target.reset(source, payload);
 					target = newTarget;
+				}
+				//with any reset out of the way, notify new targets of drag.
+				if (newTarget != null) {
+					isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 				}
 
 				if (dragActor != null) dragActor.setTouchable(dragActorTouchable);

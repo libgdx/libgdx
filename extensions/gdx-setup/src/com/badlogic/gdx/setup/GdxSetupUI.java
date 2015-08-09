@@ -248,7 +248,7 @@ public class GdxSetupUI extends JFrame {
 					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
 				} else {
 					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-					log("To import to Intellij IDEA: File -> Import -> build.gradle");
+					log("To import to Intellij IDEA: File -> Open -> build.gradle");
 					log("To import to NetBeans: File -> Open Project...");
 				}
 				SwingUtilities.invokeLater(new Runnable() {
@@ -428,7 +428,11 @@ public class GdxSetupUI extends JFrame {
 		JTextField destinationText = new JTextField(new File("test").getAbsolutePath());
 		SetupButton destinationButton = new SetupButton("Browse");
 		JLabel sdkLocationLabel = new JLabel("Android SDK");
-		JTextField sdkLocationText = new JTextField("C:\\Path\\To\\Your\\Sdk");
+		JTextField sdkLocationText = new JTextField(
+				System.getProperty("os.name").contains("Windows")
+				? "C:\\Path\\To\\Your\\Sdk"
+				: "/path/to/your/sdk"
+		);
 		SetupButton sdkLocationButton = new SetupButton("Browse");
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
