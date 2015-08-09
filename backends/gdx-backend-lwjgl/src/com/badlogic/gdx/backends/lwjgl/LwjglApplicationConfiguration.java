@@ -35,15 +35,17 @@ public class LwjglApplicationConfiguration {
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;
 	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version is
-	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 4. Only used when {@link #useGL30} is true. OpenGL
-	 * is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a lower value might cause some
-	 * features not to function properly. */
-	public int gles30ContextMajorVersion = 4;
-	/** The OpenGL context major version (the part after the decimal point) used to emulate OpenGL ES 3.0, when the version is
-	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3. Only used when {@link #useGL30} is true. OpenGL
-	 * is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a lower value might cause some
-	 * features not to function properly. */
-	public int gles30ContextMinorVersion = 3;
+	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when
+	 * {@link #useGL30} is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a
+	 * lower value might cause some features not to function properly. OSX requires 3.2 though.
+	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	public int gles30ContextMajorVersion = 3;
+	/** The OpenGL context major version (the part after the decimal point) used to emulate OpenGL ES 3.0, when the version is not
+	 * supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when {@link #useGL30}
+	 * is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a lower value might
+	 * cause some features not to function properly. OSX requires 3.2 though.
+	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	public int gles30ContextMinorVersion = 2;
 
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
