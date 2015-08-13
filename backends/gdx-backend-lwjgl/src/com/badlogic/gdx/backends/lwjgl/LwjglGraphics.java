@@ -239,11 +239,13 @@ public class LwjglGraphics implements Graphics {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
 						config.samples), context);
 				} catch (Exception e) {
-					System.out.println("LwjglGraphics: OpenGL 4.3+ core profile (GLES 3.0) not supported.");
+					System.out.println("LwjglGraphics: OpenGL " + gles30ContextMajor + "." + gles30ContextMinor
+						+ "+ core profile (GLES 3.0) not supported.");
 					createDisplayPixelFormat(false, gles30ContextMajor, gles30ContextMinor);
 					return;
 				}
-				System.out.println("LwjglGraphics: created OpenGL 4.3+ core profile context. This is experimental!");
+				System.out.println("LwjglGraphics: created OpenGL " + gles30ContextMajor + "." + gles30ContextMinor
+					+ "+ core profile (GLES 3.0) context. This is experimental!");
 				usingGL30 = true;
 			} else {
 				Display
