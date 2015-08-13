@@ -11,16 +11,14 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
  */
 public class Pass1Shader extends DefaultShader {
 	private static String defaultVertexShader = null;
-
-	public final static String getDefaultVertexShader () {
+	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
 			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/pass1.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
-
-	public final static String getDefaultFragmentShader () {
+	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/pass1.fragment.glsl").readString();
 		return defaultFragmentShader;

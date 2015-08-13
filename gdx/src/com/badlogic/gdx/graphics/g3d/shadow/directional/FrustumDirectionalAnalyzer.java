@@ -10,15 +10,14 @@ import com.badlogic.gdx.math.Vector3;
  * @see "http://gamedev.stackexchange.com/questions/81734/how-to-calculate-directional-light-frustum-from-camera-frustum"
  */
 public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
+	protected DirectionalResult result = new DirectionalResult();
+	protected Vector3 vz = new Vector3();
+	protected Vector3 vx = new Vector3();
+	protected Vector3 vy = new Vector3();
 
-	private DirectionalResult result = new DirectionalResult();
-	private Vector3 vz = new Vector3();
-	private Vector3 vx = new Vector3();
-	private Vector3 vy = new Vector3();
-
-	private Vector2 dimz = new Vector2();
-	private Vector2 dimx = new Vector2();
-	private Vector2 dimy = new Vector2();
+	protected Vector2 dimz = new Vector2();
+	protected Vector2 dimx = new Vector2();
+	protected Vector2 dimy = new Vector2();
 
 	/**
 	 * @FIXME NOT WORKING

@@ -356,10 +356,6 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		Gdx.gl.glScissor(r.x, r.y, r.width, r.height);
 		region.setRegion(r.x, r.y, r.width, r.height);
 
-		// TODO to delete
-		//Gdx.gl.glClearColor((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
 		return tmpV2.set(r.width, r.height);
 	}
 
@@ -371,7 +367,6 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	@Override
 	public void end (int n) {
-		//ScreenshotFactory.saveScreenshot(frameBuffer.getWidth(), frameBuffer.getHeight(), "depthmap");
 		frameBuffer.end();
 		texture = frameBuffer.getColorBufferTexture();
 		allocator.end();

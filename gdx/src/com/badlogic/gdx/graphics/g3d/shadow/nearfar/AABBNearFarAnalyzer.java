@@ -18,11 +18,11 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	public static float CAMERA_NEAR = 0.1f;
 	public static float CAMERA_FAR = 1000;
 
-	private Scene scene;
-	private Vector2 result = new Vector2();
-	private BoundingBox bb1 = new BoundingBox();
-	private BoundingBox bb2 = new BoundingBox();
-	private Sphere sphere = new Sphere(new Vector3(), 0);
+	protected Scene scene;
+	protected Vector2 result = new Vector2();
+	protected BoundingBox bb1 = new BoundingBox();
+	protected BoundingBox bb2 = new BoundingBox();
+	protected Sphere sphere = new Sphere(new Vector3(), 0);
 
 	public AABBNearFarAnalyzer(Scene scene) {
 		this.scene = scene;
@@ -48,8 +48,6 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		bb1.getBoundingSphere(sphere);
 		float distance = sphere.center.dst(camera.position);
 		result.set(distance - sphere.radius, distance + sphere.radius);
-		//result.set(distance - 2*sphere.radius, distance + 2*sphere.radius);
-		//result.set(distance - (sphere.radius + 0.1f*sphere.radius), distance + sphere.radius);
 
 		if (result.x <= 0) result.x = 1f;
 		if (result.y <= 0) result.y = 1f;

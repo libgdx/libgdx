@@ -18,11 +18,11 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	public static final int NB_MAP_MED = 16;
 	public static final int NB_MAP_MAX = 32;
 
-	private final int size;
-	private final int nbMap;
-	private int currentMap;
-	private Scene scene;
-	private AllocatorResult result = new AllocatorResult();
+	protected final int size;
+	protected final int nbMap;
+	protected int currentMap;
+	protected Scene scene;
+	protected AllocatorResult result = new AllocatorResult();
 
 	public FixedShadowMapAllocator(int size, int nbMap, Scene scene) {
 		this.size = size;

@@ -11,12 +11,11 @@ import com.badlogic.gdx.math.collision.Sphere;
  * @author realitix
  */
 public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
-
-	private DirectionalResult result = new DirectionalResult();
-	private BoundingBox bb = new BoundingBox();
-	private Sphere sphere = new Sphere(new Vector3(), 0);
-	private Vector3 tmpV = new Vector3();
-	private Vector3 tmpV2 = new Vector3();
+	protected DirectionalResult result = new DirectionalResult();
+	protected BoundingBox bb = new BoundingBox();
+	protected Sphere sphere = new Sphere(new Vector3(), 0);
+	protected Vector3 tmpV = new Vector3();
+	protected Vector3 tmpV2 = new Vector3();
 
 	@Override
 	public DirectionalResult analyze (Frustum frustum, Vector3 direction) {

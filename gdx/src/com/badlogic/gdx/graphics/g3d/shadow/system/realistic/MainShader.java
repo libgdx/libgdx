@@ -58,7 +58,7 @@ public class MainShader extends DefaultShader {
 			super();
 			numBones = 0;
 			numPointLights = 0;
-			numSpotLights = 2;
+			numSpotLights = 3;
 			numDirectionalLights = 2;
 		}
 	}
@@ -153,19 +153,17 @@ public class MainShader extends DefaultShader {
 	protected int pointShadowMapUVTransformLoc;
 	protected int pointShadowMapUVTransformSize;
 
+	protected RealisticShadowSystem shadowSystem;
+
 	private static String defaultVertexShader = null;
-
-	private RealisticShadowSystem shadowSystem;
-
-	public final static String getDefaultVertexShader () {
+	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
 			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
-
-	public final static String getDefaultFragmentShader () {
+	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.fragment.glsl").readString();
 		return defaultFragmentShader;
