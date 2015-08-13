@@ -92,7 +92,6 @@ varying vec3 v_viewVec;
 #define ambientFlag
 #endif //ambientFlag
 
-
 #if defined(ambientFlag) && defined(separateAmbientFlag)
 varying vec3 v_ambientLight;
 #endif //separateAmbientFlag
@@ -101,21 +100,27 @@ varying vec3 v_ambientLight;
 
 varying vec3 v_pos;
 
-#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+#ifdef numDirectionalLights
+#if numDirectionalLights > 0
 uniform mat4 u_dirShadowMapProjViewTrans[numDirectionalLights];
 varying vec4 v_dirShadowMapUv[numDirectionalLights];
 #endif
+#endif // numDirectionalLights
 
-#if defined(numSpotLights) && (numSpotLights > 0)
+#ifdef numSpotLights
+#if numSpotLights > 0
 uniform mat4 u_spotShadowMapProjViewTrans[numSpotLights];
 varying vec4 v_spotShadowMapUv[numSpotLights];
 #endif
+#endif // numSpotLights
 
-#if defined(numPointLights) && (numPointLights > 0)
+#ifdef numPointLights
+#if numPointLights > 0
 #define numPointFaces numPointLights*6
 uniform mat4 u_pointShadowMapProjViewTrans[numPointFaces];
 varying vec4 v_pointShadowMapUv[numPointFaces];
 #endif
+#endif // numPointLights
 
 void main() {
 	vec4 pos = u_worldTrans * vec4(a_position, 1.0);
@@ -154,22 +159,28 @@ void main() {
 		v_color = a_color;
 	#endif // colorFlag
 	
-	#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+	#ifdef numDirectionalLights
+	#if numDirectionalLights > 0
 		for (int i = 0; i < numDirectionalLights; i++) {
 			v_dirShadowMapUv[i] = u_dirShadowMapProjViewTrans[i] * pos;
 		}
 	#endif
+	#endif
 	
-	#if defined(numSpotLights) && (numSpotLights > 0)
+	#ifdef numSpotLights
+	#if numSpotLights > 0
 		for (int i = 0; i < numSpotLights; i++) {			
 			v_spotShadowMapUv[i] = u_spotShadowMapProjViewTrans[i] * pos;
 		}
 	#endif
+	#endif
 	
-	#if defined(numPointLights) && (numPointLights > 0)
+	#ifdef numPointLights
+	#if numPointLights > 0
 		for (int i = 0; i < numPointFaces; i++) {
 			v_pointShadowMapUv[i] = u_pointShadowMapProjViewTrans[i] * pos;
 		}
+	#endif
 	#endif
 	
 	gl_Position = u_projViewTrans * pos;

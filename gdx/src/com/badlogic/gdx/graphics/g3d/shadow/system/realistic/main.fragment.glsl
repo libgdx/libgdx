@@ -52,7 +52,8 @@ uniform vec4 u_diffuseColor;
 
 uniform sampler2D u_shadowTexture;
 
-#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+#ifdef numDirectionalLights
+#if numDirectionalLights > 0
 struct DirectionalLight
 {
 	vec3 color;
@@ -70,10 +71,11 @@ uniform DirectionalShadow u_dirShadows[numDirectionalLights];
 varying vec4 v_dirShadowMapUv[numDirectionalLights];
 uniform vec4 u_dirShadowMapUVTransform[numDirectionalLights];
 
+#endif
 #endif // numDirectionalLights
 
-#if defined(numPointLights) && (numPointLights > 0)
-
+#ifdef numPointLights
+#if numPointLights > 0
 #define numPointFaces numPointLights*6
 
 struct PointLight
@@ -93,9 +95,11 @@ uniform PointShadow u_pointShadows[numPointFaces];
 varying vec4 v_pointShadowMapUv[numPointFaces];
 uniform vec4 u_pointShadowMapUVTransform[numPointFaces];
 
+#endif
 #endif // numPointLights
 
-#if defined(numSpotLights) && (numSpotLights > 0)
+#ifdef numSpotLights
+#if numSpotLights > 0
 struct SpotLight
 {
 	vec3 color;
@@ -116,6 +120,7 @@ uniform SpotShadow u_spotShadows[numSpotLights];
 varying vec4 v_spotShadowMapUv[numSpotLights];
 uniform vec4 u_spotShadowMapUVTransform[numSpotLights];
 
+#endif
 #endif // numSpotLights
 
 varying vec3 v_pos;
@@ -168,12 +173,19 @@ void main() {
 		vec4 diffuse = vec4(1.0);
 	#endif
 
-	vec3 lightSpecular = vec3(0.0);
-	vec3 lightDiffuse = vec3(0.0);
-	const float bias = 0.01;
+	#ifdef lightingFlag
+		vec3 lightSpecular = vec3(0.0);
+		vec3 lightDiffuse = vec3(0.0);
+		const float bias = 0.01;
+	#else
+		vec3 lightSpecular = vec3(1.0);
+		vec3 lightDiffuse = vec3(1.0);
+	#endif
+
 	
 	// Directional Lights
-	#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+	#ifdef numDirectionalLights
+	#if numDirectionalLights > 0
 		for (int i = 0; i < numDirectionalLights; i++) {
 			vec3 lightDir = -u_dirLights[i].direction;
 			vec3 depth = (v_dirShadowMapUv[i].xyz / v_dirShadowMapUv[i].w)*0.5+0.5;
@@ -198,11 +210,13 @@ void main() {
 				}
 			}
 		}
+	#endif
 	#endif // numDirectionalLights
 	
 	
 	// Spot Lights
-	#if defined(numSpotLights) && (numSpotLights > 0)
+	#ifdef numSpotLights
+	#if numSpotLights > 0
 		for (int i = 0; i < numSpotLights; i++) {
 			vec3 lightDir = u_spotLights[i].position - v_pos;
 			vec3 depth = (v_spotShadowMapUv[i].xyz / v_spotShadowMapUv[i].w)*0.5+0.5;
@@ -239,10 +253,12 @@ void main() {
 				}
 			}
 		}
+	#endif
 	#endif // numSpotLights
 	
 	// Point Lights
-	#if defined(numPointLights) && (numPointLights > 0)
+	#ifdef numPointLights
+	#if numPointLights > 0
 		for (int i = 0; i < numPointLights; i++) {
 			vec3 lightDir = u_pointLights[i].position - v_pos;
 			for(int j = 0; j < 6; j++) {
@@ -274,6 +290,7 @@ void main() {
 				}
 			}
 		}
+	#endif
 	#endif // numPointLights
 	
 	gl_FragColor.rgb = (diffuse.rgb * lightDiffuse) + (specular * lightSpecular);
