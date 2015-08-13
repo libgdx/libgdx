@@ -65,7 +65,6 @@ public class ShadowTest extends GdxTest {
 	PerspectiveCamera cam;
 	PerspectiveCamera cam2;
 	CameraInputController inputController;
-	ModelBatch modelBatch;
 	
 	Model model;
 	ModelInstance instance;
@@ -121,17 +120,16 @@ public class ShadowTest extends GdxTest {
 		PointLight pl = new PointLight()
 			.setColor(1, 1, 1, 1)
 			.setIntensity(20)
-			//.setPosition(5, 7, 10);
 			.setPosition(0, 7, 10);
 			
 		
 		dl = new DirectionalLight()
-			.setColor(1, 1, 1, 1)
+			.setColor(0.5f, 0.5f, 0.5f, 1)
 			.setDirection(0, -1f, 0);
 		
 		environment.add(sl);
-		//environment.add(sl2);
-		//environment.add(sl3);
+		environment.add(sl2);
+		environment.add(sl3);
 		//environment.add(pl);
 		environment.add(dl);
 
@@ -145,7 +143,7 @@ public class ShadowTest extends GdxTest {
 			cameraHelper.add(new CameraHelper(e.value.camera));
 		}
 		
-
+		// The camera wich directional light use
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0f, 7f, 10f);
 		cam.lookAt(0, 0, 0);
@@ -155,6 +153,7 @@ public class ShadowTest extends GdxTest {
 		cam.update();
 		//cameraHelper.add(new CameraHelper(cam));
 		
+		// The user camera
 		cam2 = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam2.position.set(0f, 7f, 10f);
 		cam2.lookAt(0, 0, 0);
@@ -162,8 +161,6 @@ public class ShadowTest extends GdxTest {
 		cam2.far = 100f;
 		cam2.up.set(0,1,0);
 		cam2.update();
-		
-		//cameraHelper = new CameraHelper(cam);
 		
 		// Load texture
 		Array<Texture> wood = new Array<Texture>(3);
@@ -196,30 +193,16 @@ public class ShadowTest extends GdxTest {
 		mpb.sphere(2f, 2f, 2f, 20, 20);
 		
 		model = modelBuilder.end();
-		instance = new ModelInstance(model);
-		
-		//createSmallBall();
-
-		
+		instance = new ModelInstance(model);		
 		scene.add(instance);
 		scene.setCamera(cam);
 		
-		
-		//shadowManager.addLight(sl);
-		//shadowManager.addLight(sl2);
-		//shadowManager.addLight(pl);
-		//shadowManager.addLight(dl);
-		
 		createAxes();
-		
-		modelBatch = new ModelBatch();
 		
 		for(int i = 0; i < shadowManager.getPassQuantity(); i++) {
 			passBatches.add(new ModelBatch(shadowManager.getPassShaderProvider(i)));
 		}
-		
 		shadowModelBatch = new ModelBatch(shadowManager.getShaderProvider());
-		
 		Gdx.input.setInputProcessor(inputController = new CameraInputController(cam2));
 	}
 	
@@ -247,7 +230,6 @@ public class ShadowTest extends GdxTest {
 
 	@Override
 	public void render () {
-		
 		final float delta = Gdx.graphics.getDeltaTime();
 		sl.position.rotate(Vector3.Y, -delta * 20f);
 		sl.position.rotate(Vector3.X, -delta * 30f);
@@ -265,8 +247,6 @@ public class ShadowTest extends GdxTest {
 		sl3.direction.set(Vector3.Zero.cpy().sub(sl3.position));
 		
 		dl.direction.rotate(Vector3.X, delta * 10f);
-		
-		
 		
 		shadowManager.update();
 		
@@ -290,16 +270,11 @@ public class ShadowTest extends GdxTest {
 			h.update();
 		}
 		
-		modelBatch.begin(cam2);
-		//modelBatch.render(axesInstance);
-		for(CameraHelper h: cameraHelper) {
-			modelBatch.render(h);
-		}
-		
-		modelBatch.end();
-		
-		
 		shadowModelBatch.begin(cam2);
+		shadowModelBatch.render(axesInstance);
+		for(CameraHelper h: cameraHelper) {
+			shadowModelBatch.render(h);
+		}
 		shadowModelBatch.render(instance, environment);
 		shadowModelBatch.end();
 	}
