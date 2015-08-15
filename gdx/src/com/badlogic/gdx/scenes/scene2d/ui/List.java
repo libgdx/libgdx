@@ -235,7 +235,7 @@ public class List<T> extends Widget implements Cullable {
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
 	}
 	
-	public void addItem (T... newItem) {
+	public void addItem (T newItem) {
 		if (newItem == null) throw new IllegalArgumentException("newItem cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
@@ -246,7 +246,7 @@ public class List<T> extends Widget implements Cullable {
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
 	}
 	
-	public void removeItem (T... item) {
+	public void removeItem (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
