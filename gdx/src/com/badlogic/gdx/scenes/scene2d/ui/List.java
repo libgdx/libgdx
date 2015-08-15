@@ -37,6 +37,9 @@ import com.badlogic.gdx.utils.Pools;
  * {@link ChangeEvent} is fired when the list selection changes.
  * <p>
  * The preferred size of the list is determined by the text bounds of the items and the size of the {@link ListStyle#selection}.
+ * <p>
+ * Uses #toString() on each item of the list to decide what to display.
+ * @author nrallakis
  * @author mzechner
  * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
@@ -226,6 +229,28 @@ public class List<T> extends Widget implements Cullable {
 
 		items.clear();
 		items.addAll(newItems);
+		selection.validate();
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
+	}
+	
+	public void addItem (T... newItem) {
+		if (newItem == null) throw new IllegalArgumentException("newItem cannot be null.");
+		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
+
+		items.add(newItem);
+		selection.validate();
+
+		invalidate();
+		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
+	}
+	
+	public void removeItem (T... item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
+		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
+
+		items.remove(item, false);
 		selection.validate();
 
 		invalidate();
