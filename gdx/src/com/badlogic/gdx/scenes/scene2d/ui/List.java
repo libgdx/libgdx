@@ -250,7 +250,7 @@ public class List<T> extends Widget implements Cullable {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
-		items.remove(item, false);
+		items.removeValue(item, false);
 		selection.validate();
 
 		invalidate();
