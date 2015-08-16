@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.shadow.directional;
 
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,7 +24,7 @@ public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 	 * @FIXME NOT WORKING
 	 */
 	@Override
-	public DirectionalResult analyze (Frustum frustum, Vector3 direction) {
+	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction) {
 		vz.set(direction);
 		vx.set(vz.y, vz.z, vz.x);
 		vy.set(vz).crs(vx);

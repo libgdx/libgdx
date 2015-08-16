@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.shadow.directional;
 
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -18,7 +19,7 @@ public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
 	protected Vector3 tmpV2 = new Vector3();
 
 	@Override
-	public DirectionalResult analyze (Frustum frustum, Vector3 direction) {
+	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction) {
 		bb.inf();
 		for(int i = 0; i < frustum.planePoints.length; i++) {
 			bb.ext(frustum.planePoints[i]);

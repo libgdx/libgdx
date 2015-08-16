@@ -247,6 +247,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 			e.value.camera.direction.set(e.key.direction);
 			directionalAnalyzer
 			.analyze(
+				e.key,
 				scene.getCamera().frustum,
 				e.value.camera.direction)
 				.set(e.value.camera);
