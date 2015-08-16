@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d.shadow.nearfar;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Scene;
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -29,10 +30,8 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	}
 
 	@Override
-	public Vector2 analyze (Camera camera) {
-		camera.near = AABBNearFarAnalyzer.CAMERA_NEAR;
-		camera.far = AABBNearFarAnalyzer.CAMERA_FAR;
-		camera.update();
+	public Vector2 analyze (BaseLight light, Camera camera) {
+		prepareCamera(camera);
 
 		bb1.inf();
 		for( ModelInstance instance: scene.getInstances() ) {
@@ -45,8 +44,18 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 			}
 		}
 
+		return computeResult(bb1, camera.position);
+	}
+
+	protected void prepareCamera(Camera camera) {
+		camera.near = AABBNearFarAnalyzer.CAMERA_NEAR;
+		camera.far = AABBNearFarAnalyzer.CAMERA_FAR;
+		camera.update();
+	}
+
+	protected Vector2 computeResult(BoundingBox bb, Vector3 cameraPosition) {
 		bb1.getBoundingSphere(sphere);
-		float distance = sphere.center.dst(camera.position);
+		float distance = sphere.center.dst(cameraPosition);
 		result.set(distance - sphere.radius, distance + sphere.radius);
 
 		if (result.x <= 0) result.x = 1f;

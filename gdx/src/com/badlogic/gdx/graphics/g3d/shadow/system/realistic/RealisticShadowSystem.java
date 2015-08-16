@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.shadow.allocation.FixedShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.BoundingSphereDirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.DirectionalAnalyzer;
+import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBCachedNearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBNearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.NearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.system.ShadowSystem;
@@ -119,7 +120,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	 * @param scene Scene used in the rendering process
 	 */
 	public RealisticShadowSystem(Scene scene) {
-		this(scene, new AABBNearFarAnalyzer(scene), new FixedShadowMapAllocator(
+		this(scene, new AABBCachedNearFarAnalyzer(scene), new FixedShadowMapAllocator(
 			FixedShadowMapAllocator.QUALITY_MED,
 			FixedShadowMapAllocator.NB_MAP_MED,
 			scene));
@@ -236,7 +237,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		for(ObjectMap.Entry<SpotLight, LightProperties> e : spotCameras) {
 			e.value.camera.position.set(e.key.position);
 			e.value.camera.direction.set(e.key.direction);
-			Vector2 nearFar = nearFarAnalyzer.analyze(e.value.camera);
+			Vector2 nearFar = nearFarAnalyzer.analyze(e.key, e.value.camera);
 			e.value.camera.near = nearFar.x;
 			e.value.camera.far = nearFar.y;
 			e.value.camera.update();
@@ -255,7 +256,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		for(ObjectMap.Entry<PointLight, PointLightProperties> e : pointCameras) {
 			for(ObjectMap.Entry<CubemapSide, LightProperties> c : e.value.properties) {
 				c.value.camera.position.set(e.key.position);
-				Vector2 nearFar = nearFarAnalyzer.analyze(c.value.camera);
+				Vector2 nearFar = nearFarAnalyzer.analyze(e.key, c.value.camera);
 				c.value.camera.near = nearFar.x;
 				c.value.camera.far = nearFar.y;
 				c.value.camera.update();
