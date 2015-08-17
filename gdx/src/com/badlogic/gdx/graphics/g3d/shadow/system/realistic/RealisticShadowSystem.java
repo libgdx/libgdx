@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g3d.shadow.allocation.FixedShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.BoundingSphereDirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.DirectionalAnalyzer;
+import com.badlogic.gdx.graphics.g3d.shadow.filter.FrustumLightFilter;
+import com.badlogic.gdx.graphics.g3d.shadow.filter.LightFilter;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBCachedNearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBNearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.NearFarAnalyzer;
@@ -81,8 +83,12 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	protected ShadowMapAllocator allocator;
 	/** Analyzer which compute how to create the camera for directional light */
 	protected DirectionalAnalyzer directionalAnalyzer;
+	/** Filter that choose if light must be rendered */
+	protected LightFilter lightFilter;
 	/** Framebuffer used to render all the depth maps */
 	protected final FrameBuffer frameBuffer;
+	/** Current pass in the depth process */
+	protected int currentPass = 0;
 	/** Iterators for cameras */
 	protected Entries<SpotLight, LightProperties> spotCameraIterator;
 	protected Entries<DirectionalLight, LightProperties> dirCameraIterator;
@@ -104,12 +110,16 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	 * @param scene Scene used in the rendering process
 	 * @param nearFarAnalyzer Analyzer of near and far
 	 * @param allocator Allocator of shadow maps
+	 * @param directionalAnalyzer Analyze directional light to create orthographic camera
+	 * @param lightFilter Filter light to render
 	 */
-	public RealisticShadowSystem(Scene scene, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator) {
+	public RealisticShadowSystem(Scene scene, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
+		DirectionalAnalyzer directionalAnalyzer, LightFilter lightFilter) {
 		this.scene = scene;
 		this.nearFarAnalyzer = nearFarAnalyzer;
 		this.allocator = allocator;
-		this.directionalAnalyzer = new BoundingSphereDirectionalAnalyzer();
+		this.directionalAnalyzer = directionalAnalyzer;
+		this.lightFilter = lightFilter;
 		this.frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getSize(), allocator.getSize(), true);
 		pass1ShaderProvider = new Pass1ShaderProvider();
 		mainShaderProvider = new MainShaderProvider(new MainShader.Config(this));
@@ -120,10 +130,14 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	 * @param scene Scene used in the rendering process
 	 */
 	public RealisticShadowSystem(Scene scene) {
-		this(scene, new AABBCachedNearFarAnalyzer(scene), new FixedShadowMapAllocator(
-			FixedShadowMapAllocator.QUALITY_MED,
-			FixedShadowMapAllocator.NB_MAP_MED,
-			scene));
+		this(scene,
+			new AABBCachedNearFarAnalyzer(scene),
+			new FixedShadowMapAllocator(
+				FixedShadowMapAllocator.QUALITY_MED,
+				FixedShadowMapAllocator.NB_MAP_MED,
+				scene),
+			new BoundingSphereDirectionalAnalyzer(),
+			new FrustumLightFilter(scene));
 	}
 
 	@Override
@@ -277,6 +291,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		pointCameraIterator.reset();
 
 		currentPointSide = 6;
+		currentPass = n;
 
 		allocator.begin();
 		frameBuffer.begin();
@@ -318,6 +333,9 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		}
 
 		LightProperties lp = spotCameraIterator.next().value;
+		if( !lightFilter.filter(currentPass, spotCameras.findKey(lp, true), lp.camera) ) {
+			return nextSpot();
+		}
 		processViewportCamera(lp.camera, processViewport(lp));
 		return lp.camera;
 	}
@@ -335,8 +353,12 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 		if( currentPointProperties.properties.containsKey(Cubemap.CubemapSide.values()[currentPointSide]) ) {
 			LightProperties lp = currentPointProperties.properties.get(Cubemap.CubemapSide.values()[currentPointSide]);
-			processViewportCamera(lp.camera, processViewport(lp));
 			currentPointSide += 1;
+			if( !lightFilter.filter(currentPass, pointCameras.findKey(currentPointProperties, true), lp.camera) ) {
+				return nextPoint();
+			}
+
+			processViewportCamera(lp.camera, processViewport(lp));
 			return lp.camera;
 		}
 
