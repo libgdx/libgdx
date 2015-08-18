@@ -242,7 +242,7 @@
 		<include name="graphics/profiling/GL20Profiler.java"/>
 		<include name="graphics/profiling/GL30Profiler.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
-		
+		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>

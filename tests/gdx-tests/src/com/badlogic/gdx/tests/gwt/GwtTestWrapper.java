@@ -59,6 +59,7 @@ import com.badlogic.gdx.tests.DecalTest;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
+import com.badlogic.gdx.tests.GLProfilerErrorTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
@@ -516,6 +517,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GestureDetectorTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new GLProfilerErrorTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
