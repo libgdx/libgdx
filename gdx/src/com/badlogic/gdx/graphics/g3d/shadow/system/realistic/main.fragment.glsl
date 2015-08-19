@@ -36,6 +36,7 @@ varying vec2 v_diffuseUV;
 #ifdef specularTextureFlag
 uniform sampler2D u_specularTexture;
 varying vec2 v_specularUV;
+varying vec3 v_viewVec;
 #endif
 
 #ifdef normalTextureFlag
@@ -43,7 +44,6 @@ uniform sampler2D u_normalTexture;
 varying vec2 v_normalUV;
 varying vec3 v_binormal;
 varying vec3 v_tangent;
-varying vec3 v_viewVec;
 #endif
 
 #ifdef diffuseColorFlag
@@ -203,7 +203,7 @@ void main() {
 					lightDiffuse.rgb += u_dirLights[i].color * NdotL;
 
 					// Specular
-					#ifdef textureFlag
+					#ifdef specularTextureFlag
 						float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
 						lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 2.0);
 					#endif
@@ -245,7 +245,7 @@ void main() {
 						lightDiffuse += u_spotLights[i].color * (NdotL * falloff) * spotEffect;
 
 						// Specular
-						#ifdef textureFlag
+						#ifdef specularTextureFlag
 							float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
 							lightSpecular += u_spotLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0) * spotEffect;
 						#endif
@@ -285,6 +285,12 @@ void main() {
 					
 							// Diffuse
 							lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+
+							// Specular
+							#ifdef specularTextureFlag
+								float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
+								lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+							#endif
 						}
 					}
 				}

@@ -43,6 +43,7 @@ varying vec3 v_tangent;
 #ifdef specularTextureFlag
 uniform vec4 u_specularUVTransform;
 varying vec2 v_specularUV;
+varying vec3 v_viewVec;
 #endif
 
 uniform mat4 u_worldTrans;
@@ -84,7 +85,6 @@ varying vec3 v_lightSpecular;
 
 #ifdef cameraPositionFlag
 uniform vec4 u_cameraPosition;
-varying vec3 v_viewVec;
 #endif // cameraPositionFlag
 
 
@@ -150,7 +150,9 @@ void main() {
 		}
 		v_tangent = normalize(v_tangent);
 		v_binormal = normalize(cross(v_normal, v_tangent));
-		v_viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+		#ifdef specularTextureFlag
+			v_viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+		#endif
 	#elif defined(normalFlag)
 		v_normal = normalize(u_normalMatrix * a_normal);
 	#endif
