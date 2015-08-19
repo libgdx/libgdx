@@ -19,7 +19,11 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
-import org.robovm.apple.foundation.*;
+import org.robovm.apple.foundation.Foundation;
+import org.robovm.apple.foundation.NSMutableDictionary;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
@@ -387,8 +391,7 @@ public class IOSApplication implements Application {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
 		File finalPath = new File(libraryPath, name + ".plist");
 
-		@SuppressWarnings("unchecked")
-		NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
+		@SuppressWarnings("unchecked") NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
 			.read(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
