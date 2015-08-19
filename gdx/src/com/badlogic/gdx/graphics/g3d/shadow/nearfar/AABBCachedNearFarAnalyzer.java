@@ -4,11 +4,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Scene;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -20,7 +18,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 
-	protected ObjectMap<ModelInstance, BoundingBox> cachedBoundingBoxes = new ObjectMap<ModelInstance, BoundingBox>(); 
+	protected ObjectMap<Node, BoundingBox> cachedBoundingBoxes = new ObjectMap<Node, BoundingBox>();
 
 	public AABBCachedNearFarAnalyzer (Scene scene) {
 		super(scene);
@@ -32,15 +30,17 @@ public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 
 		bb1.inf();
 		for( ModelInstance instance: scene.getInstances() ) {
-			if( cachedBoundingBoxes.containsKey(instance) )
-				bb2.set(cachedBoundingBoxes.get(instance));
-			else
-				instance.calculateBoundingBox(bb2);
+			for( Node node: instance.nodes ) {
+				if( cachedBoundingBoxes.containsKey(node) )
+					bb2.set(cachedBoundingBoxes.get(node));
+				else
+					node.calculateBoundingBox(bb2);
 
-			if( bb2.contains(camera.position) ) {
-			}
-			else if( camera.frustum.boundsInFrustum(bb2) ) {
-				instance.extendBoundingBox(bb1);
+				if( bb2.contains(camera.position) ) {
+				}
+				else if( camera.frustum.boundsInFrustum(bb2) ) {
+					node.extendBoundingBox(bb1);
+				}
 			}
 		}
 

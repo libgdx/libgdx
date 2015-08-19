@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.g3d.shadow.directional.DirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.filter.FrustumLightFilter;
 import com.badlogic.gdx.graphics.g3d.shadow.filter.LightFilter;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBCachedNearFarAnalyzer;
-import com.badlogic.gdx.graphics.g3d.shadow.nearfar.AABBNearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.nearfar.NearFarAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.system.ShadowSystem;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
@@ -136,8 +135,8 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 				FixedShadowMapAllocator.QUALITY_MED,
 				FixedShadowMapAllocator.NB_MAP_MED,
 				scene),
-			new BoundingSphereDirectionalAnalyzer(),
-			new FrustumLightFilter(scene));
+				new BoundingSphereDirectionalAnalyzer(),
+				new FrustumLightFilter(scene));
 	}
 
 	@Override

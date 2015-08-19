@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Scene;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -35,12 +36,14 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 
 		bb1.inf();
 		for( ModelInstance instance: scene.getInstances() ) {
-			instance.calculateBoundingBox(bb2);
+			for( Node node: instance.nodes ) {
+				node.calculateBoundingBox(bb2);
 
-			if( bb2.contains(camera.position) ) {
-			}
-			else if( camera.frustum.boundsInFrustum(bb2) ) {
-				instance.extendBoundingBox(bb1);
+				if( bb2.contains(camera.position) ) {
+				}
+				else if( camera.frustum.boundsInFrustum(bb2) ) {
+					node.extendBoundingBox(bb1);
+				}
 			}
 		}
 
