@@ -1,6 +1,14 @@
 
 package com.badlogic.gdx.maps.tiled;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -15,8 +23,8 @@ import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Base64Coder;
@@ -24,12 +32,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
 
 public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>> extends AsynchronousAssetLoader<TiledMap, P> {
 
@@ -212,16 +214,17 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
 
 					TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
-					TextureRegion textureRegion = new TextureRegion(tile.getTextureRegion());
-					textureRegion.flip(flipHorizontally, flipVertically);
-					TextureMapObject textureMapObject = new TextureMapObject(textureRegion);
-					textureMapObject.getProperties().put("gid", id);
-					textureMapObject.setX(x);
-					textureMapObject.setY(flipY ? y - height : y);
-					textureMapObject.setScaleX(scaleX);
-					textureMapObject.setScaleY(scaleY);
-					textureMapObject.setRotation(element.getFloatAttribute("rotation", 0));
-					object = textureMapObject;
+					TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally, flipVertically);
+					TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
+					tiledMapTileMapObject.getProperties().put("gid", id);
+					tiledMapTileMapObject.setX(x);
+					tiledMapTileMapObject.setY(flipY ? y : y - height);
+					float objectWidth = element.getFloatAttribute("width", textureRegion.getRegionWidth());
+					float objectHeight = element.getFloatAttribute("height", textureRegion.getRegionHeight());
+					tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
+					tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
+					tiledMapTileMapObject.setRotation(element.getFloatAttribute("rotation", 0));
+					object = tiledMapTileMapObject;
 				} else {
 					object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
 				}
@@ -308,9 +311,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 						if (compression == null)
 							is = new ByteArrayInputStream(bytes);
 						else if (compression.equals("gzip"))
-							is = new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length);
+							is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
 						else if (compression.equals("zlib"))
-							is = new InflaterInputStream(new ByteArrayInputStream(bytes));
+							is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
 						else
 							throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
 
@@ -344,7 +347,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	}
 
 	protected static int unsignedByteToInt (byte b) {
-		return (int)b & 0xFF;
+		return b & 0xFF;
 	}
 
 	protected static FileHandle getRelativeFileHandle (FileHandle file, String path) {

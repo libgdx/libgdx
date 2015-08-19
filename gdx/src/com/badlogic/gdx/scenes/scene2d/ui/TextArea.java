@@ -234,7 +234,7 @@ public class TextArea extends TextField {
 				float selectionX = glyphPositions.get(start) - glyphPositions.get(linesBreak.get(i));
 				float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
 
-				selection.draw(batch, x + selectionX, y - textHeight - font.getDescent() - offsetY, selectionWidth,
+				selection.draw(batch, x + selectionX + fontOffset, y - textHeight - font.getDescent() - offsetY, selectionWidth,
 					font.getLineHeight());
 			}
 
@@ -256,9 +256,8 @@ public class TextArea extends TextField {
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0 : glyphPositions.get(cursor)
 			- glyphPositions.get(linesBreak.items[cursorLine * 2]);
-		cursorPatch.draw(batch, x + textOffset,
-			y - font.getDescent() / 2 - (cursorLine - firstLineShowing + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
-			font.getLineHeight());
+		cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX, y - font.getDescent() / 2
+			- (cursorLine - firstLineShowing + 1) * font.getLineHeight(), cursorPatch.getMinWidth(), font.getLineHeight());
 	}
 
 	@Override

@@ -597,7 +597,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefWidth () {
 		float v = prefWidth.get(actor);
 		if (background != null) v = Math.max(v, background.getMinWidth());
-		return v + padLeft.get(this) + padRight.get(this);
+		return Math.max(getMinWidth(), v + padLeft.get(this) + padRight.get(this));
 	}
 
 	public Value getPrefHeightValue () {
@@ -607,7 +607,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefHeight () {
 		float v = prefHeight.get(actor);
 		if (background != null) v = Math.max(v, background.getMinHeight());
-		return v + padTop.get(this) + padBottom.get(this);
+		return Math.max(getMinHeight(), v + padTop.get(this) + padBottom.get(this));
 	}
 
 	public Value getMaxWidthValue () {

@@ -79,7 +79,7 @@ public final class AndroidAudio implements Audio {
 		}
 		synchronized (musics) {
 			for (int i = 0; i < musics.size(); i++) {
-				if (musics.get(i).wasPlaying == true) musics.get(i).play();
+				if (musics.get(i).wasPlaying) musics.get(i).play();
 			}
 		}
 		this.soundPool.autoResume();

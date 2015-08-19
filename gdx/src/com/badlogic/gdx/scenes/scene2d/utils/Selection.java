@@ -200,7 +200,12 @@ public class Selection<T> implements Disableable, Iterable<T> {
 
 	/** Makes a best effort to return the last item selected, else returns an arbitrary item or null if the selection is empty. */
 	public T getLastSelected () {
-		return lastSelected != null ? lastSelected : selected.first();
+		if (lastSelected != null) {
+			return lastSelected;
+		} else if (selected.size > 0) {
+			return selected.first();
+		}
+		return null;
 	}
 
 	public Iterator<T> iterator () {

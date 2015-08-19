@@ -40,8 +40,8 @@ public class CheckBox extends TextButton {
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
-		imageCell = add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
+		imageCell = add(image = new Image(style.checkboxOff));
 		add(label);
 		label.setAlignment(Align.left);
 		setSize(getPrefWidth(), getPrefHeight());

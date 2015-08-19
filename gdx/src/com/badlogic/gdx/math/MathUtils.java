@@ -20,7 +20,7 @@ import java.util.Random;
 
 /** Utility and fast math functions.
  * <p>
- * Thanks to Riven on JavaGaming.org for the basis of sin/cos/atan2/floor/ceil.
+ * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
  * @author Nathan Sweet */
 public final class MathUtils {
 	static public final float nanoToSec = 1 / 1000000000f;
@@ -80,52 +80,22 @@ public final class MathUtils {
 
 	// ---
 
-	static private final int ATAN2_BITS = 7; // Adjust for accuracy.
-	static private final int ATAN2_BITS2 = ATAN2_BITS << 1;
-	static private final int ATAN2_MASK = ~(-1 << ATAN2_BITS2);
-	static private final int ATAN2_COUNT = ATAN2_MASK + 1;
-	static final int ATAN2_DIM = (int)Math.sqrt(ATAN2_COUNT);
-	static private final float INV_ATAN2_DIM_MINUS_1 = 1.0f / (ATAN2_DIM - 1);
-
-	static private class Atan2 {
-		static final float[] table = new float[ATAN2_COUNT];
-		static {
-			for (int i = 0; i < ATAN2_DIM; i++) {
-				for (int j = 0; j < ATAN2_DIM; j++) {
-					float x0 = (float)i / ATAN2_DIM;
-					float y0 = (float)j / ATAN2_DIM;
-					table[j * ATAN2_DIM + i] = (float)Math.atan2(y0, x0);
-				}
-			}
-		}
-	}
-
-	/** Returns atan2 in radians from a lookup table. */
+	/** Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231, largest error of 0.00488. */
 	static public float atan2 (float y, float x) {
-		float add, mul;
-		if (x < 0) {
-			if (y < 0) {
-				y = -y;
-				mul = 1;
-			} else
-				mul = -1;
-			x = -x;
-			add = -PI;
-		} else {
-			if (y < 0) {
-				y = -y;
-				mul = -1;
-			} else
-				mul = 1;
-			add = 0;
+		if (x == 0.0f) {
+			if (y > 0.0f) return PI / 2;
+			if (y == 0.0f) return 0.0f;
+			return -PI / 2;
 		}
-		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
-
-		if (invDiv == Float.POSITIVE_INFINITY) return ((float)Math.atan2(y, x) + add) * mul;
-
-		int xi = (int)(x * invDiv);
-		int yi = (int)(y * invDiv);
-		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
+		final float atan;
+		final float z = y / x;
+		if (Math.abs(z) < 1.0f) {
+			atan = z / (1.0f + 0.28f * z * z);
+			if (x < 0.0f) return y < 0.0f ? atan - PI : atan + PI;
+			return atan;
+		}
+		atan = PI / 2 - z / (z * z + 0.28f);
+		return y < 0.0f ? atan - PI : atan;
 	}
 
 	// ---

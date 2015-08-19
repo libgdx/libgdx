@@ -30,12 +30,11 @@ import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a gltexture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * gltexture by {@link GLFrameBuffer#getGLTexture()}. This class will only work with OpenGL ES 2.0.
+ * gltexture by {@link GLFrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  *
  * <p>
@@ -48,7 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </p>
  *
  * @author mzechner, realitix */
-public class GLFrameBuffer<T extends GLTexture> implements Disposable {
+public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
 	private final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
@@ -114,9 +113,10 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	/** Override this method in a derived class to set up the backing texture as you like. */
-	protected void setupTexture () {
-		throw new GdxRuntimeException("Texture must be setup");
-	}
+	protected abstract T createColorTexture ();
+	
+	/** Override this method in a derived class to dispose the backing texture as you like. */
+	protected abstract void disposeColorTexture (T colorTexture);
 
 	private void build () {
 		GL20 gl = Gdx.gl20;
@@ -133,7 +133,7 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			}
 		}
 
-		setupTexture();
+		colorTexture = createColorTexture();
 
 		framebufferHandle = gl.glGenFramebuffer();
 
@@ -169,14 +169,14 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
 		}
 
-		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
-
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
+		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
+
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
-			colorTexture.dispose();
+			disposeColorTexture(colorTexture);
 
 			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 
@@ -201,7 +201,8 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
 
-		colorTexture.dispose();
+		disposeColorTexture(colorTexture);
+		
 		if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 
 		if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
@@ -252,17 +253,17 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public T getColorBufferTexture () {
 		return colorTexture;
 	}
-	
+
 	/** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
 	public int getFramebufferHandle () {
 		return framebufferHandle;
 	}
-	
+
 	/** @return The OpenGL handle of the (optional) depth buffer (see {@link GL20#glGenRenderbuffer()}) */
 	public int getDepthBufferHandle () {
 		return depthbufferHandle;
 	}
-	
+
 	/** @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}) */
 	public int getStencilBufferHandle () {
 		return stencilbufferHandle;
@@ -278,11 +279,11 @@ public class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		return colorTexture.getWidth();
 	}
 
-	/** @return the depth of the framebuffer in pixels (if applicable) */ 
+	/** @return the depth of the framebuffer in pixels (if applicable) */
 	public int getDepth () {
 		return colorTexture.getDepth();
 	}
-	
+
 	private static void addManagedFrameBuffer (Application app, GLFrameBuffer frameBuffer) {
 		Array<GLFrameBuffer> managedResources = buffers.get(app);
 		if (managedResources == null) managedResources = new Array<GLFrameBuffer>();

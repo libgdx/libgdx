@@ -312,37 +312,42 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return True in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
-		if (t1.idt(ray.origin) || t2.idt(ray.origin) || t3.idt(ray.origin)) {
-			if (intersection != null) intersection.set(ray.origin);
-			return true;
-		}
-
-		p.set(t1, t2, t3);
-		if (!intersectRayPlane(ray, p, i)) return false;
-
-		v0.set(t3).sub(t1);
-		v1.set(t2).sub(t1);
-		v2.set(i).sub(t1);
-
-		float dot00 = v0.dot(v0);
-		float dot01 = v0.dot(v1);
-		float dot02 = v0.dot(v2);
-		float dot11 = v1.dot(v1);
-		float dot12 = v1.dot(v2);
-
-		float denom = dot00 * dot11 - dot01 * dot01;
-		if (denom == 0) return false;
-
-		float u = (dot11 * dot02 - dot01 * dot12) / denom;
-		float v = (dot00 * dot12 - dot01 * dot02) / denom;
-
-		if (u >= 0 && v >= 0 && u + v <= 1) {
-			if (intersection != null) intersection.set(i);
-			return true;
-		} else {
+		Vector3 edge1 = v0.set(t2).sub(t1);
+		Vector3 edge2 = v1.set(t3).sub(t1);
+		
+		Vector3 pvec = v2.set(ray.direction).crs(edge2);
+		float det = edge1.dot(pvec);
+		if (MathUtils.isZero(det)) {
+			p.set(t1, t2, t3);
+			if (p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
+				if (intersection != null) intersection.set(ray.origin);
+				return true;
+			}
 			return false;
 		}
+		
+		det = 1.0f / det;
 
+		Vector3 tvec = i.set(ray.origin).sub(t1);
+		float u = tvec.dot(pvec) * det;
+		if (u < 0.0f || u > 1.0f) return false;
+		
+		Vector3 qvec = tvec.crs(edge1);
+		float v = ray.direction.dot(qvec) * det;
+		if (v < 0.0f || u + v > 1.0f) return false;
+		
+		float t = edge2.dot(qvec) * det;
+		if (t < 0) return false;
+		
+		if (intersection != null) {
+			if (t <= MathUtils.FLOAT_ROUNDING_ERROR) {
+				intersection.set(ray.origin);
+			} else {
+				ray.getEndPoint(intersection, t);
+			}
+		}
+		
+		return true;
 	}
 
 	private static final Vector3 dir = new Vector3();
@@ -476,11 +481,6 @@ public final class Intersector {
 		return hit;
 	}
 
-	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
-	 * 
-	 * @param ray The ray
-	 * @param box The bounding box
-	 * @return Whether the ray and the bounding box intersect. */
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray
@@ -1031,7 +1031,7 @@ public final class Intersector {
 	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
 	 * </ul>
 	 * 
-	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, y3. One can add additional attributes per vertex which
+	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, z3. One can add additional attributes per vertex which
 	 * will be interpolated if split, such as texture coordinates or normals. Note that these additional attributes won't be
 	 * normalized, as might be necessary in case of normals.
 	 * 
@@ -1061,13 +1061,13 @@ public final class Intersector {
 
 		// set number of triangles
 		split.total = 3;
-		split.numFront = (r1 ? 1 : 0) + (r2 ? 1 : 0) + (r3 ? 1 : 0);
+		split.numFront = (r1 ? 0 : 1) + (r2 ? 0 : 1) + (r3 ? 0 : 1);
 		split.numBack = split.total - split.numFront;
 
 		// hard case, split the three edges on the plane
 		// determine which array to fill first, front or back, flip if we
 		// cross the plane
-		split.setSide(r1);
+		split.setSide(!r1);
 
 		// split first edge
 		int first = 0;
@@ -1150,51 +1150,7 @@ public final class Intersector {
 			split[offset + i] = a + t * (b - a);
 		}
 	}
-
-	public static void main (String[] args) {
-		Plane plane = new Plane(new Vector3(1, 0, 0), 0);
-		SplitTriangle split = new SplitTriangle(3);
-		float[] fTriangle = {-10, 0, 10, -1, 0, 0, -10, 0, 10};
-		Intersector.splitTriangle(fTriangle, plane, split);
-		System.out.println(split);
-
-		float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10};
-		Intersector.splitTriangle(triangle, plane, split);
-		System.out.println(split);
-
-		Circle c1 = new Circle(0, 0, 1);
-		Circle c2 = new Circle(0, 0, 1);
-		Circle c3 = new Circle(2, 0, 1);
-		Circle c4 = new Circle(0, 0, 2);
-		System.out.println("Circle test cases");
-		System.out.println(c1.overlaps(c1)); // true
-		System.out.println(c1.overlaps(c2)); // true
-		System.out.println(c1.overlaps(c3)); // false
-		System.out.println(c1.overlaps(c4)); // true
-		System.out.println(c4.overlaps(c1)); // true
-		System.out.println(c1.contains(0, 1)); // true
-		System.out.println(c1.contains(0, 2)); // false
-		System.out.println(c1.contains(c1)); // true
-		System.out.println(c1.contains(c4)); // false
-		System.out.println(c4.contains(c1)); // true
-
-		System.out.println("Rectangle test cases");
-		Rectangle r1 = new Rectangle(0, 0, 1, 1);
-		Rectangle r2 = new Rectangle(1, 0, 2, 1);
-		System.out.println(r1.overlaps(r1)); // true
-		System.out.println(r1.overlaps(r2)); // false
-		System.out.println(r1.contains(0, 0)); // true
-
-		System.out.println("BoundingBox test cases");
-		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
-		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
-		System.out.println(b1.contains(Vector3.Zero)); // true
-		System.out.println(b1.contains(b1)); // true
-		System.out.println(b1.contains(b2)); // false
-
-		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
-	}
-
+	
 	public static class SplitTriangle {
 		public float[] front;
 		public float[] back;

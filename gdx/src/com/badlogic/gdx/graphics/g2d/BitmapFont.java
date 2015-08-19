@@ -148,6 +148,10 @@ public class BitmapFont implements Disposable {
 	 * of the region(s) if the regions array is != null and not empty.
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+		this.flipped = data.flipped;
+		this.data = data;
+		this.integer = integer;
+
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
 			int n = data.imagePaths.length;
@@ -168,9 +172,6 @@ public class BitmapFont implements Disposable {
 
 		cache = newFontCache();
 
-		this.flipped = data.flipped;
-		this.data = data;
-		this.integer = integer;
 		load(data);
 	}
 
@@ -326,7 +327,7 @@ public class BitmapFont implements Disposable {
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
 			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g == null) continue;
-			g.xoffset += (maxAdvance - g.xadvance) / 2;
+			g.xoffset += Math.round((maxAdvance - g.xadvance) / 2);
 			g.xadvance = maxAdvance;
 			g.kerning = null;
 		}
@@ -441,6 +442,9 @@ public class BitmapFont implements Disposable {
 		public float down;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
+		/** The amount to add to the glyph X position when drawing a cursor between glyphs. This field is not set by the BMFont file,
+		 * it needs to be set manually depending on how the glyphs are rendered on the backing textures. */
+		public float cursorX;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		/** The width of the space character. */
@@ -612,7 +616,10 @@ public class BitmapFont implements Disposable {
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
 					setGlyph(' ', spaceGlyph);
 				}
-				if (spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + padRight);
+				if (spaceGlyph.width == 0) {
+					spaceGlyph.width = (int)(spaceGlyph.xadvance + padRight);
+					spaceGlyph.xoffset = (int)-padLeft;
+				}
 				spaceWidth = spaceGlyph.width;
 
 				Glyph xGlyph = null;
@@ -782,12 +789,12 @@ public class BitmapFont implements Disposable {
 		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
-			char ch = (char)glyphs.get(start).id;
-			if (isWhitespace(ch)) return start;
-			for (int i = start - 1; i >= 1; i--) {
-				ch = (char)glyphs.get(i).id;
-				if (isWhitespace(ch)) return i;
-				if (isBreakChar(ch)) return i + 1;
+			int i = start - 1;
+			for (; i >= 1; i--)
+				if (!isWhitespace((char)glyphs.get(i).id)) break;
+			for (; i >= 1; i--) {
+				char ch = (char)glyphs.get(i).id;
+				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
 			return 0;
 		}

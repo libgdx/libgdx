@@ -696,6 +696,16 @@ public class Table extends WidgetGroup {
 		return columns;
 	}
 
+	/** Returns the height of the specified row. */
+	public float getRowHeight (int rowIndex) {
+		return rowHeight[rowIndex];
+	}
+
+	/** Returns the width of the specified column. */
+	public float getColumnWidth (int columnIndex) {
+		return columnWidth[columnIndex];
+	}
+
 	private float[] ensureSize (float[] array, int size) {
 		if (array == null || array.length < size) return new float[size];
 		for (int i = 0, n = array.length; i < n; i++)
