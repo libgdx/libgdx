@@ -630,8 +630,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	final float[] R = new float[9];
 	final float[] orientation = new float[3];
 
-	
-//TODO: ?
 	private void updateOrientation () {
 		if (SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
 			SensorManager.getOrientation(R, orientation);
@@ -688,7 +686,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		} else
 			accelerometerAvailable = false;
 		
-//TODO: implement Gyroscope
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() == 0) {
@@ -696,12 +693,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			} else {
 				Sensor gyroscope = manager.getSensorList(Sensor.TYPE_GYROSCOPE).get(0);
 				gyroscopeListener = new SensorListener(this.nativeOrientation, this.gyroscopeValues, this.magneticFieldValues, this.gyroscopeValues);
-				gyroscopeAvailable = manager.registerListener(accelerometerListener, gyroscope,
+				gyroscopeAvailable = manager.registerListener(gyroscopeListener, gyroscope,
 					SensorManager.SENSOR_DELAY_GAME);
 			}
 		} else
 			gyroscopeAvailable = false;
-
 		
 		if (config.useCompass) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
@@ -725,6 +721,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (accelerometerListener != null) {
 				manager.unregisterListener(accelerometerListener);
 				accelerometerListener = null;
+			}
+			if (gyroscopeListener != null) {
+				manager.unregisterListener(gyroscopeListener);
+				gyroscopeListener = null;
 			}
 			if (compassListener != null) {
 				manager.unregisterListener(compassListener);
