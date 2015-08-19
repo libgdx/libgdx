@@ -391,7 +391,8 @@ public class IOSApplication implements Application {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
 		File finalPath = new File(libraryPath, name + ".plist");
 
-		@SuppressWarnings("unchecked") NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
+		@SuppressWarnings("unchecked")
+		NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
 			.read(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
