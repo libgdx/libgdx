@@ -20,12 +20,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * The scene contains all the renderable providers,
- * the camera and the environment
- * It allows to transfert all the rendering context between objects
- * @author realitix
- */
+/** The scene contains all the renderable providers, the camera and the environment It allows to transfert all the rendering
+ * context between objects
+ * @author realitix */
 public class Scene {
 	/** Array of all the renderable providers */
 	private Array<RenderableProvider> renderableProviders = new Array<RenderableProvider>();
@@ -36,132 +33,104 @@ public class Scene {
 	/** Camera */
 	private Camera camera;
 
-	/**
-	 * Construct a scene with default environment
-	 */
-	public Scene() {
+	/** Construct a scene with default environment */
+	public Scene () {
 		this(new Environment());
 	}
 
-	/**
-	 * Construct a scene with custom environment
-	 * @param environment Custom environment
-	 */
-	public Scene(Environment environment) {
+	/** Construct a scene with custom environment
+	 * @param environment Custom environment */
+	public Scene (Environment environment) {
 		this.environment = environment;
 	}
 
-	/**
-	 * Add light in the environment
+	/** Add light in the environment
 	 * @param light Light to add
-	 * @return Scene
-	 */
-	public Scene add(BaseLight light) {
+	 * @return Scene */
+	public Scene add (BaseLight light) {
 		environment.add(light);
 		return this;
 	}
 
-	/**
-	 * Remove light from environment
+	/** Remove light from environment
 	 * @param light Light to remove
-	 * @return Scene
-	 */
-	public Scene remove(BaseLight light) {
+	 * @return Scene */
+	public Scene remove (BaseLight light) {
 		environment.remove(light);
 		return this;
 	}
 
-	/**
-	 * Add renderable provider into the scene
+	/** Add renderable provider into the scene
 	 * @param p Renderable provider
-	 * @return Scene
-	 */
-	public Scene add(RenderableProvider p) {
+	 * @return Scene */
+	public Scene add (RenderableProvider p) {
 		renderableProviders.add(p);
 		return this;
 	}
 
-	/**
-	 * Add model instance to the scene
+	/** Add model instance to the scene
 	 * @param instance Model instance
-	 * @return Scene
-	 */
-	public Scene add(ModelInstance instance) {
+	 * @return Scene */
+	public Scene add (ModelInstance instance) {
 		renderableProviders.add(instance);
 		instances.add(instance);
 		return this;
 	}
 
-	/**
-	 * Remove renderable provider from scene
+	/** Remove renderable provider from scene
 	 * @param p Renderable provider
-	 * @return Scene
-	 */
-	public Scene remove(RenderableProvider p) {
+	 * @return Scene */
+	public Scene remove (RenderableProvider p) {
 		renderableProviders.removeValue(p, true);
 		return this;
 	}
 
-	/**
-	 * Remove model instance from scene
+	/** Remove model instance from scene
 	 * @param instance Model instance
-	 * @return Scene
-	 */
-	public Scene remove(ModelInstance instance) {
+	 * @return Scene */
+	public Scene remove (ModelInstance instance) {
 		renderableProviders.removeValue(instance, true);
 		instances.removeValue(instance, true);
 		return this;
 	}
 
-	/**
-	 * Return all the renderable providers of the scene
-	 * @return Array<RenderableProvider>
-	 */
-	public Array<RenderableProvider> getRenderableProviders() {
+	/** Return all the renderable providers of the scene
+	 * @return Array<RenderableProvider> */
+	public Array<RenderableProvider> getRenderableProviders () {
 		return renderableProviders;
 	}
 
-	/**
-	 * Return all the model instances of the scene
-	 * @return Array<ModelInstance>
-	 */
-	public Array<ModelInstance> getInstances() {
+	/** Return all the model instances of the scene
+	 * @return Array<ModelInstance> */
+	public Array<ModelInstance> getInstances () {
 		return instances;
 	}
 
-	/**
-	 * Return environment
-	 * @return Environment
-	 */
-	public Environment getEnvironment() {
+	/** Return environment
+	 * @return Environment */
+	public Environment getEnvironment () {
 		return environment;
 	}
 
-	/**
-	 * Set custom environment
+	/** Set custom environment
 	 * @param environment
-	 * @return Scene
-	 */
-	public Scene setEnvironment(Environment environment) {
+	 * @return Scene */
+	public Scene setEnvironment (Environment environment) {
 		this.environment = environment;
 		return this;
 	}
 
-	/**
-	 * Set camera of the scene
+	/** Set camera of the scene
 	 * @param camera Camera
-	 * @return Scene
-	 */
-	public Scene setCamera(Camera camera) {
+	 * @return Scene */
+	public Scene setCamera (Camera camera) {
 		this.camera = camera;
 		return this;
 	}
 
-	/**
-	 * Get the camera
-	 * @return Scene
-	 */
-	public Camera getCamera() {
+	/** Get the camera
+	 * @return Scene */
+	public Camera getCamera () {
 		return camera;
 	}
 }

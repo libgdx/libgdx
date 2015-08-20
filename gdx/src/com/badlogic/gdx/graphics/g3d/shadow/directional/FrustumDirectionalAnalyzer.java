@@ -21,11 +21,9 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * @FIXME NOT WORKING, DO NOT USE
+/** @FIXME NOT WORKING, DO NOT USE
  * @author realitix
- * @see "http://gamedev.stackexchange.com/questions/81734/how-to-calculate-directional-light-frustum-from-camera-frustum"
- */
+ * @see "http://gamedev.stackexchange.com/questions/81734/how-to-calculate-directional-light-frustum-from-camera-frustum" */
 public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 	protected DirectionalResult result = new DirectionalResult();
 	protected Vector3 vz = new Vector3();
@@ -36,9 +34,7 @@ public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 	protected Vector2 dimx = new Vector2();
 	protected Vector2 dimy = new Vector2();
 
-	/**
-	 * @FIXME NOT WORKING
-	 */
+	/** @FIXME NOT WORKING */
 	@Override
 	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction) {
 		vz.set(direction);
@@ -52,21 +48,21 @@ public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 		int i = 0;
 		float d;
 
-		for(i = 0; i < frustum.planePoints.length; i++) {
+		for (i = 0; i < frustum.planePoints.length; i++) {
 			// z
 			d = frustum.planePoints[i].dot(vz);
-			if( d < dimz.x ) dimz.x = d;
-			if( d > dimz.y ) dimz.y = d;
+			if (d < dimz.x) dimz.x = d;
+			if (d > dimz.y) dimz.y = d;
 
 			// x
 			d = frustum.planePoints[i].dot(vx);
-			if( d < dimx.x ) dimx.x = d;
-			if( d > dimx.y ) dimx.y = d;
+			if (d < dimx.x) dimx.x = d;
+			if (d > dimx.y) dimx.y = d;
 
 			// y
 			d = frustum.planePoints[i].dot(vy);
-			if( d < dimy.x ) dimy.x = d;
-			if( d > dimy.y ) dimy.y = d;
+			if (d < dimy.x) dimy.x = d;
+			if (d > dimy.y) dimy.y = d;
 		}
 
 		return null;

@@ -20,9 +20,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 
-/**
- * @author realitix
- */
+/** @author realitix */
 public class MainShaderProvider extends BaseShaderProvider {
 	public final MainShader.Config config;
 

@@ -22,12 +22,16 @@ import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+/** This Filter allows lights thare are in camera frustum
+ * @author realitix */
 public class FrustumLightFilter implements LightFilter {
 
+	/** Scene */
 	protected Scene scene;
+	/** tmp bounding box */
 	protected BoundingBox bb = new BoundingBox();
 
-	public FrustumLightFilter(Scene scene) {
+	public FrustumLightFilter (Scene scene) {
 		this.scene = scene;
 	}
 
@@ -37,11 +41,11 @@ public class FrustumLightFilter implements LightFilter {
 		Frustum f2 = camera.frustum;
 		bb.inf();
 
-		for(int i = 0; i < f2.planePoints.length; i++) {
+		for (int i = 0; i < f2.planePoints.length; i++) {
 			bb.ext(f2.planePoints[i]);
 		}
 
-		if(f1.boundsInFrustum(bb)) {
+		if (f1.boundsInFrustum(bb)) {
 			return true;
 		}
 

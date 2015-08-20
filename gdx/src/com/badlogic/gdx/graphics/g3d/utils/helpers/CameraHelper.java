@@ -33,10 +33,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * Allow to visualize a camera
- * @author realitix
- */
+/** Allow to visualize a camera
+ * @author realitix */
 public class CameraHelper implements RenderableProvider {
 	/** Current modelised camera */
 	protected Camera camera;
@@ -56,20 +54,16 @@ public class CameraHelper implements RenderableProvider {
 	protected Array<Short> verticesIndice = new Array<Short>();
 	protected float verticesBuffer[];
 
-	/**
-	 * Generate a mesh for a camera
-	 * Work with Orthographic and Perspective camera
-	 * @param camera The camera
-	 */
-	public CameraHelper(Camera camera) {
+	/** Generate a mesh for a camera Work with Orthographic and Perspective camera
+	 * @param camera The camera */
+	public CameraHelper (Camera camera) {
 		this.camera = camera;
 		init();
 	}
 
-	protected void init() {
-		mesh = new Mesh(false, 22, 50,
-			new VertexAttribute(Usage.Position, 3, "a_position"),
-			new VertexAttribute(Usage.ColorUnpacked, 4, "a_color"));
+	protected void init () {
+		mesh = new Mesh(false, 22, 50, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+			Usage.ColorUnpacked, 4, "a_color"));
 
 		material.set(ColorAttribute.createDiffuse(Color.WHITE));
 		material.set(new DepthTestAttribute());
@@ -77,7 +71,7 @@ public class CameraHelper implements RenderableProvider {
 		initPoints();
 	}
 
-	protected void initPoints() {
+	protected void initPoints () {
 		// colors
 		Color colorFrustum = new Color(1, 0.66f, 0, 1);
 		Color colorCone = new Color(1, 0, 0, 1);
@@ -86,83 +80,83 @@ public class CameraHelper implements RenderableProvider {
 		Color colorCross = new Color(0.2f, 0.2f, 0.2f, 1);
 
 		// near
-		addLine( "n1", "n2", colorFrustum );
-		addLine( "n2", "n4", colorFrustum );
-		addLine( "n4", "n3", colorFrustum );
-		addLine( "n3", "n1", colorFrustum );
+		addLine("n1", "n2", colorFrustum);
+		addLine("n2", "n4", colorFrustum);
+		addLine("n4", "n3", colorFrustum);
+		addLine("n3", "n1", colorFrustum);
 
 		// far
-		addLine( "f1", "f2", colorFrustum );
-		addLine( "f2", "f4", colorFrustum );
-		addLine( "f4", "f3", colorFrustum );
-		addLine( "f3", "f1", colorFrustum );
+		addLine("f1", "f2", colorFrustum);
+		addLine("f2", "f4", colorFrustum);
+		addLine("f4", "f3", colorFrustum);
+		addLine("f3", "f1", colorFrustum);
 
 		// sides
-		addLine( "n1", "f1", colorFrustum );
-		addLine( "n2", "f2", colorFrustum );
-		addLine( "n3", "f3", colorFrustum );
-		addLine( "n4", "f4", colorFrustum );
+		addLine("n1", "f1", colorFrustum);
+		addLine("n2", "f2", colorFrustum);
+		addLine("n3", "f3", colorFrustum);
+		addLine("n4", "f4", colorFrustum);
 
 		// cone
-		addLine( "p", "n1", colorCone );
-		addLine( "p", "n2", colorCone );
-		addLine( "p", "n3", colorCone );
-		addLine( "p", "n4", colorCone );
+		addLine("p", "n1", colorCone);
+		addLine("p", "n2", colorCone);
+		addLine("p", "n3", colorCone);
+		addLine("p", "n4", colorCone);
 
 		// up
-		addLine( "u1", "u2", colorUp );
-		addLine( "u2", "u3", colorUp );
-		addLine( "u3", "u1", colorUp );
+		addLine("u1", "u2", colorUp);
+		addLine("u2", "u3", colorUp);
+		addLine("u3", "u1", colorUp);
 
 		// target
-		addLine( "c", "t", colorTarget );
-		addLine( "p", "c", colorCross );
+		addLine("c", "t", colorTarget);
+		addLine("p", "c", colorCross);
 
 		// cross
-		addLine( "cn1", "cn2", colorCross );
-		addLine( "cn3", "cn4", colorCross );
-		addLine( "cf1", "cf2", colorCross );
-		addLine( "cf3", "cf4", colorCross );
+		addLine("cn1", "cn2", colorCross);
+		addLine("cn3", "cn4", colorCross);
+		addLine("cf1", "cf2", colorCross);
+		addLine("cf3", "cf4", colorCross);
 	}
 
-	protected void addLine( String a, String b, Color color ) {
+	protected void addLine (String a, String b, Color color) {
 		addPoint(a, color);
 		addPoint(b, color);
 		addIndices(a, b);
 	}
 
-	protected void addPoint(String id, Color color) {
-		if( !pointMap.containsKey(id) ) {
+	protected void addPoint (String id, Color color) {
+		if (!pointMap.containsKey(id)) {
 			verticesPosition.add(new Vector3());
 			verticesColor.add(color);
 			pointMap.put(id, (short)(verticesPosition.size - 1));
 		}
 	}
 
-	protected void addIndices(String p1, String p2) {
+	protected void addIndices (String p1, String p2) {
 		verticesIndice.add(pointMap.get(p1));
 		verticesIndice.add(pointMap.get(p2));
 	}
 
-	protected void setPoint( String id, float x, float y, float z) {
-		unproject(tmpV.set( x, y, z ));
+	protected void setPoint (String id, float x, float y, float z) {
+		unproject(tmpV.set(x, y, z));
 		verticesPosition.get(pointMap.get(id)).set(tmpV);
 	};
 
-	protected void unproject(Vector3 v) {
+	protected void unproject (Vector3 v) {
 		tmpM.set(projectionMatrix);
 		tmpM.inv();
 
 		// Projection
 		float x = v.x, y = v.y, z = v.z;
 		float e[] = tmpM.val;
-		float d = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] ); // perspective divide
-		v.x = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * d;
-		v.y = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * d;
-		v.z = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * d;
+		float d = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]); // perspective divide
+		v.x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * d;
+		v.y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * d;
+		v.z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * d;
 	}
 
-	public void update() {
+	public void update () {
 		int w = 1, h = 1;
 		projectionMatrix.set(camera.combined);
 
@@ -170,67 +164,66 @@ public class CameraHelper implements RenderableProvider {
 		verticesPosition.get(pointMap.get("p")).set(camera.position);
 
 		// center / target
-		setPoint( "c", 0, 0, - 1 );
-		setPoint( "t", 0, 0, 1 );
+		setPoint("c", 0, 0, -1);
+		setPoint("t", 0, 0, 1);
 
 		// near
-		setPoint( "n1", - w, - h, - 1 );
-		setPoint( "n2", w, - h, - 1 );
-		setPoint( "n3", - w, h, - 1 );
-		setPoint( "n4", w, h, - 1 );
+		setPoint("n1", -w, -h, -1);
+		setPoint("n2", w, -h, -1);
+		setPoint("n3", -w, h, -1);
+		setPoint("n4", w, h, -1);
 
 		// far
-		setPoint( "f1", - w, - h, 1 );
-		setPoint( "f2", w, - h, 1 );
-		setPoint( "f3", - w, h, 1 );
-		setPoint( "f4", w, h, 1 );
+		setPoint("f1", -w, -h, 1);
+		setPoint("f2", w, -h, 1);
+		setPoint("f3", -w, h, 1);
+		setPoint("f4", w, h, 1);
 
 		// up
-		setPoint( "u1", w * 0.7f, h * 1.1f, - 1 );
-		setPoint( "u2", - w * 0.7f, h * 1.1f, - 1 );
-		setPoint( "u3", 0, h * 2, - 1 );
+		setPoint("u1", w * 0.7f, h * 1.1f, -1);
+		setPoint("u2", -w * 0.7f, h * 1.1f, -1);
+		setPoint("u3", 0, h * 2, -1);
 
 		// cross
-		setPoint( "cf1", - w, 0, 1 );
-		setPoint( "cf2", w, 0, 1 );
-		setPoint( "cf3", 0, - h, 1 );
-		setPoint( "cf4", 0, h, 1 );
-		setPoint( "cn1", - w, 0, - 1 );
-		setPoint( "cn2", w, 0, - 1 );
-		setPoint( "cn3", 0, - h, - 1 );
-		setPoint( "cn4", 0, h, - 1 );
+		setPoint("cf1", -w, 0, 1);
+		setPoint("cf2", w, 0, 1);
+		setPoint("cf3", 0, -h, 1);
+		setPoint("cf4", 0, h, 1);
+		setPoint("cn1", -w, 0, -1);
+		setPoint("cn2", w, 0, -1);
+		setPoint("cn3", 0, -h, -1);
+		setPoint("cn4", 0, h, -1);
 
 		updateMesh();
 	}
 
-	protected void updateMesh() {
+	protected void updateMesh () {
 		// Vertices
-		if(verticesBuffer == null) {
-			verticesBuffer = new float[verticesPosition.size*(mesh.getVertexSize()/4)];
+		if (verticesBuffer == null) {
+			verticesBuffer = new float[verticesPosition.size * (mesh.getVertexSize() / 4)];
 		}
 
-		for(int i = 0; i < verticesPosition.size; i++) {
+		for (int i = 0; i < verticesPosition.size; i++) {
 			// 3 vertices + 1 color packed
 			int j = i * 7;
 			verticesBuffer[j] = verticesPosition.get(i).x;
-			verticesBuffer[j+1] = verticesPosition.get(i).y;
-			verticesBuffer[j+2] = verticesPosition.get(i).z;
-			verticesBuffer[j+3] = verticesColor.get(i).r;
-			verticesBuffer[j+4] = verticesColor.get(i).g;
-			verticesBuffer[j+5] = verticesColor.get(i).b;
-			verticesBuffer[j+6] = verticesColor.get(i).a;
+			verticesBuffer[j + 1] = verticesPosition.get(i).y;
+			verticesBuffer[j + 2] = verticesPosition.get(i).z;
+			verticesBuffer[j + 3] = verticesColor.get(i).r;
+			verticesBuffer[j + 4] = verticesColor.get(i).g;
+			verticesBuffer[j + 5] = verticesColor.get(i).b;
+			verticesBuffer[j + 6] = verticesColor.get(i).a;
 		}
 		mesh.setVertices(verticesBuffer);
 
 		// Indices
 		short indicesBuffer[] = new short[verticesIndice.size];
 
-		for(int i = 0; i < verticesIndice.size; i++) {
+		for (int i = 0; i < verticesIndice.size; i++) {
 			indicesBuffer[i] = verticesIndice.get(i);
 		}
 		mesh.setIndices(indicesBuffer);
 	}
-
 
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {

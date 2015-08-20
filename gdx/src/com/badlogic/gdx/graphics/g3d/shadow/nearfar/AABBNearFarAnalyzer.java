@@ -26,11 +26,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 
-/**
- * Compute the near and far plane base on the
- * object's bounding box of the scene
- * @author realitix
- */
+/** Compute the near and far plane base on the object's bounding box of the scene
+ * @author realitix */
 public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 
 	public static float CAMERA_NEAR = 0.1f;
@@ -42,7 +39,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	protected BoundingBox bb2 = new BoundingBox();
 	protected Sphere sphere = new Sphere(new Vector3(), 0);
 
-	public AABBNearFarAnalyzer(Scene scene) {
+	public AABBNearFarAnalyzer (Scene scene) {
 		this.scene = scene;
 	}
 
@@ -51,13 +48,12 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		prepareCamera(camera);
 
 		bb1.inf();
-		for( ModelInstance instance: scene.getInstances() ) {
-			for( Node node: instance.nodes ) {
+		for (ModelInstance instance : scene.getInstances()) {
+			for (Node node : instance.nodes) {
 				node.calculateBoundingBox(bb2);
 
-				if( bb2.contains(camera.position) ) {
-				}
-				else if( camera.frustum.boundsInFrustum(bb2) ) {
+				if (bb2.contains(camera.position)) {
+				} else if (camera.frustum.boundsInFrustum(bb2)) {
 					node.extendBoundingBox(bb1);
 				}
 			}
@@ -66,13 +62,13 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		return computeResult(bb1, camera.position);
 	}
 
-	protected void prepareCamera(Camera camera) {
+	protected void prepareCamera (Camera camera) {
 		camera.near = AABBNearFarAnalyzer.CAMERA_NEAR;
 		camera.far = AABBNearFarAnalyzer.CAMERA_FAR;
 		camera.update();
 	}
 
-	protected Vector2 computeResult(BoundingBox bb, Vector3 cameraPosition) {
+	protected Vector2 computeResult (BoundingBox bb, Vector3 cameraPosition) {
 		bb1.getBoundingSphere(sphere);
 		float distance = sphere.center.dst(cameraPosition);
 		result.set(distance - sphere.radius, distance + sphere.radius);

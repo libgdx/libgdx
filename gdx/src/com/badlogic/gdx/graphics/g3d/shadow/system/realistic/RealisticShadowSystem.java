@@ -52,33 +52,25 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
-
-/**
- * The Realistic shadow system creates real shadow.
- * Indeed, with this sytem, a shadow is the absence of light.
- * This system render only one time for each light and then render the scene.
- * Be careful with this system, the PointLight consumes 6 varying in the shader
- * so it can reach very fast the max varying and not compile.
- * This system implements EnvironmentListener so the lights are added when you add them
- * in the environment.
- * @author realitix
- */
+/** The Realistic shadow system creates real shadow. Indeed, with this sytem, a shadow is the absence of light. This system render
+ * only one time for each light and then render the scene. Be careful with this system, the PointLight consumes 6 varying in the
+ * shader so it can reach very fast the max varying and not compile. This system implements EnvironmentListener so the lights are
+ * added when you add them in the environment.
+ * @author realitix */
 public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener {
-	/**
-	 * This class handles the camera and texture region
-	 * @author realitix
-	 */
+	/** This class handles the camera and texture region
+	 * @author realitix */
 	public static class LightProperties {
 		public Camera camera;
 		public TextureRegion region = new TextureRegion();
 
-		public LightProperties(Camera camera) { this.camera = camera; }
+		public LightProperties (Camera camera) {
+			this.camera = camera;
+		}
 	}
 
-	/**
-	 * This class handles a LightProperties for each side ofa PointLight
-	 * @author realitix
-	 */
+	/** This class handles a LightProperties for each side ofa PointLight
+	 * @author realitix */
 	public static class PointLightProperties {
 		public ObjectMap<CubemapSide, LightProperties> properties = new ObjectMap<CubemapSide, LightProperties>(6);
 	}
@@ -121,15 +113,13 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	protected final ShaderProvider pass1ShaderProvider;
 	protected final ShaderProvider mainShaderProvider;
 
-	/**
-	 * Construct the system with the needed params.
+	/** Construct the system with the needed params.
 	 * @param scene Scene used in the rendering process
 	 * @param nearFarAnalyzer Analyzer of near and far
 	 * @param allocator Allocator of shadow maps
 	 * @param directionalAnalyzer Analyze directional light to create orthographic camera
-	 * @param lightFilter Filter light to render
-	 */
-	public RealisticShadowSystem(Scene scene, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
+	 * @param lightFilter Filter light to render */
+	public RealisticShadowSystem (Scene scene, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
 		DirectionalAnalyzer directionalAnalyzer, LightFilter lightFilter) {
 		this.scene = scene;
 		this.nearFarAnalyzer = nearFarAnalyzer;
@@ -141,19 +131,11 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		mainShaderProvider = new MainShaderProvider(new MainShader.Config(this));
 	}
 
-	/**
-	 * Construct the system with default values
-	 * @param scene Scene used in the rendering process
-	 */
-	public RealisticShadowSystem(Scene scene) {
-		this(scene,
-			new AABBCachedNearFarAnalyzer(scene),
-			new FixedShadowMapAllocator(
-				FixedShadowMapAllocator.QUALITY_MED,
-				FixedShadowMapAllocator.NB_MAP_MED,
-				scene),
-				new BoundingSphereDirectionalAnalyzer(),
-				new FrustumLightFilter(scene));
+	/** Construct the system with default values
+	 * @param scene Scene used in the rendering process */
+	public RealisticShadowSystem (Scene scene) {
+		this(scene, new AABBCachedNearFarAnalyzer(scene), new FixedShadowMapAllocator(FixedShadowMapAllocator.QUALITY_MED,
+			FixedShadowMapAllocator.NB_MAP_MED, scene), new BoundingSphereDirectionalAnalyzer(), new FrustumLightFilter(scene));
 	}
 
 	@Override
@@ -194,21 +176,16 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	@Override
 	public void addLight (PointLight point) {
-		addLight(point, EnumSet.of(
-			CubemapSide.PositiveX,
-			CubemapSide.NegativeX,
-			CubemapSide.PositiveY,
-			CubemapSide.NegativeY,
-			CubemapSide.PositiveZ,
-			CubemapSide.NegativeZ));
+		addLight(point, EnumSet.of(CubemapSide.PositiveX, CubemapSide.NegativeX, CubemapSide.PositiveY, CubemapSide.NegativeY,
+			CubemapSide.PositiveZ, CubemapSide.NegativeZ));
 	}
 
 	@Override
 	public void addLight (PointLight point, Set<CubemapSide> sides) {
 		PointLightProperties plProperty = new PointLightProperties();
-		for( int i = 0; i < 6; i++ ) {
+		for (int i = 0; i < 6; i++) {
 			CubemapSide cubemapSide = Cubemap.CubemapSide.values()[i];
-			if( sides.contains(cubemapSide) ) {
+			if (sides.contains(cubemapSide)) {
 				PerspectiveCamera camera = new PerspectiveCamera(90, 0, 0);
 				camera.position.set(point.position);
 				camera.direction.set(cubemapSide.direction);
@@ -240,7 +217,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	@Override
 	public boolean hasLight (SpotLight spot) {
-		if( spotCameras.containsKey(spot) ) {
+		if (spotCameras.containsKey(spot)) {
 			return true;
 		}
 		return false;
@@ -248,7 +225,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	@Override
 	public boolean hasLight (DirectionalLight dir) {
-		if( dirCameras.containsKey(dir) ) {
+		if (dirCameras.containsKey(dir)) {
 			return true;
 		}
 		return false;
@@ -256,15 +233,15 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	@Override
 	public boolean hasLight (PointLight point) {
-		if( pointCameras.containsKey(point) ) {
+		if (pointCameras.containsKey(point)) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void update() {
-		for(ObjectMap.Entry<SpotLight, LightProperties> e : spotCameras) {
+	public void update () {
+		for (ObjectMap.Entry<SpotLight, LightProperties> e : spotCameras) {
 			e.value.camera.position.set(e.key.position);
 			e.value.camera.direction.set(e.key.direction);
 			Vector2 nearFar = nearFarAnalyzer.analyze(e.key, e.value.camera);
@@ -273,19 +250,14 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 			e.value.camera.update();
 		}
 
-		for(ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
+		for (ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
 			e.value.camera.direction.set(e.key.direction);
-			directionalAnalyzer
-			.analyze(
-				e.key,
-				scene.getCamera().frustum,
-				e.value.camera.direction)
-				.set(e.value.camera);
+			directionalAnalyzer.analyze(e.key, scene.getCamera().frustum, e.value.camera.direction).set(e.value.camera);
 			e.value.camera.update();
 		}
 
-		for(ObjectMap.Entry<PointLight, PointLightProperties> e : pointCameras) {
-			for(ObjectMap.Entry<CubemapSide, LightProperties> c : e.value.properties) {
+		for (ObjectMap.Entry<PointLight, PointLightProperties> e : pointCameras) {
+			for (ObjectMap.Entry<CubemapSide, LightProperties> c : e.value.properties) {
 				c.value.camera.position.set(e.key.position);
 				Vector2 nearFar = nearFarAnalyzer.analyze(e.key, c.value.camera);
 				c.value.camera.near = nearFar.x;
@@ -319,22 +291,19 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	@Override
 	public Camera next () {
 		Camera camera = nextDirectional();
-		if( camera != null )
-			return camera;
+		if (camera != null) return camera;
 
 		camera = nextSpot();
-		if( camera != null )
-			return camera;
+		if (camera != null) return camera;
 
 		camera = nextPoint();
-		if( camera != null )
-			return camera;
+		if (camera != null) return camera;
 
 		return null;
 	}
 
-	protected Camera nextDirectional() {
-		if( !dirCameraIterator.hasNext() ) {
+	protected Camera nextDirectional () {
+		if (!dirCameraIterator.hasNext()) {
 			return null;
 		}
 
@@ -343,34 +312,32 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		return lp.camera;
 	}
 
-	protected Camera nextSpot() {
-		if( !spotCameraIterator.hasNext() ) {
+	protected Camera nextSpot () {
+		if (!spotCameraIterator.hasNext()) {
 			return null;
 		}
 
 		LightProperties lp = spotCameraIterator.next().value;
-		if( !lightFilter.filter(currentPass, spotCameras.findKey(lp, true), lp.camera) ) {
+		if (!lightFilter.filter(currentPass, spotCameras.findKey(lp, true), lp.camera)) {
 			return nextSpot();
 		}
 		processViewportCamera(lp.camera, processViewport(lp));
 		return lp.camera;
 	}
 
-	protected Camera nextPoint() {
-		if( !pointCameraIterator.hasNext() && currentPointSide > 5 ) {
+	protected Camera nextPoint () {
+		if (!pointCameraIterator.hasNext() && currentPointSide > 5) {
 			return null;
 		}
 
-		if( currentPointSide > 5 )
-			currentPointSide = 0;
+		if (currentPointSide > 5) currentPointSide = 0;
 
-		if( currentPointSide == 0 )
-			currentPointProperties = pointCameraIterator.next().value;
+		if (currentPointSide == 0) currentPointProperties = pointCameraIterator.next().value;
 
-		if( currentPointProperties.properties.containsKey(Cubemap.CubemapSide.values()[currentPointSide]) ) {
+		if (currentPointProperties.properties.containsKey(Cubemap.CubemapSide.values()[currentPointSide])) {
 			LightProperties lp = currentPointProperties.properties.get(Cubemap.CubemapSide.values()[currentPointSide]);
 			currentPointSide += 1;
-			if( !lightFilter.filter(currentPass, pointCameras.findKey(currentPointProperties, true), lp.camera) ) {
+			if (!lightFilter.filter(currentPass, pointCameras.findKey(currentPointProperties, true), lp.camera)) {
 				return nextPoint();
 			}
 
@@ -382,11 +349,11 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		return nextPoint();
 	}
 
-	protected Vector2 processViewport(LightProperties lp) {
+	protected Vector2 processViewport (LightProperties lp) {
 		Camera camera = lp.camera;
 		AllocatorResult r = allocator.nextResult(camera);
 
-		if( r == null ) {
+		if (r == null) {
 			return null;
 		}
 
@@ -399,7 +366,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		return tmpV2.set(r.width, r.height);
 	}
 
-	protected void processViewportCamera(Camera camera, Vector2 viewport) {
+	protected void processViewportCamera (Camera camera, Vector2 viewport) {
 		camera.viewportHeight = viewport.y;
 		camera.viewportWidth = viewport.x;
 		camera.update();
@@ -413,19 +380,19 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 	}
 
-	public ObjectMap<DirectionalLight, LightProperties> getDirectionalCameras() {
+	public ObjectMap<DirectionalLight, LightProperties> getDirectionalCameras () {
 		return dirCameras;
 	}
 
-	public ObjectMap<SpotLight, LightProperties> getSpotCameras() {
+	public ObjectMap<SpotLight, LightProperties> getSpotCameras () {
 		return spotCameras;
 	}
 
-	public ObjectMap<PointLight, PointLightProperties> getPointCameras() {
+	public ObjectMap<PointLight, PointLightProperties> getPointCameras () {
 		return pointCameras;
 	}
 
-	public Texture getTexture() {
+	public Texture getTexture () {
 		return texture;
 	}
 
@@ -435,8 +402,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 			addLight((DirectionalLight)light);
 		else if (light instanceof PointLight)
 			addLight((PointLight)light);
-		else if (light instanceof SpotLight)
-			addLight((SpotLight)light);
+		else if (light instanceof SpotLight) addLight((SpotLight)light);
 	}
 
 	@Override
@@ -445,7 +411,6 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 			removeLight((DirectionalLight)light);
 		else if (light instanceof PointLight)
 			removeLight((PointLight)light);
-		else if (light instanceof SpotLight)
-			removeLight((SpotLight)light);
+		else if (light instanceof SpotLight) removeLight((SpotLight)light);
 	}
 }

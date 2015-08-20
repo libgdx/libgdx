@@ -25,13 +25,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/**
- * Compute the near and far plane base on the
- * object's bounding box of the scene
- * Faster than AABBNearFarAnalyzer because cache BoundingBox
- * Do not use it your mesh are dynamics
- * @author realitix
- */
+/** Compute the near and far plane base on the object's bounding box of the scene Faster than AABBNearFarAnalyzer because cache
+ * BoundingBox Do not use it your mesh are dynamics
+ * @author realitix */
 public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 
 	protected ObjectMap<Node, BoundingBox> cachedBoundingBoxes = new ObjectMap<Node, BoundingBox>();
@@ -45,16 +41,15 @@ public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 		prepareCamera(camera);
 
 		bb1.inf();
-		for( ModelInstance instance: scene.getInstances() ) {
-			for( Node node: instance.nodes ) {
-				if( cachedBoundingBoxes.containsKey(node) )
+		for (ModelInstance instance : scene.getInstances()) {
+			for (Node node : instance.nodes) {
+				if (cachedBoundingBoxes.containsKey(node))
 					bb2.set(cachedBoundingBoxes.get(node));
 				else
 					node.calculateBoundingBox(bb2);
 
-				if( bb2.contains(camera.position) ) {
-				}
-				else if( camera.frustum.boundsInFrustum(bb2) ) {
+				if (bb2.contains(camera.position)) {
+				} else if (camera.frustum.boundsInFrustum(bb2)) {
 					node.extendBoundingBox(bb1);
 				}
 			}

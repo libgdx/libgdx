@@ -22,11 +22,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 
-/**
- * Compute the DirectionalResult based on the
- * bounding sphere of the frustum
- * @author realitix
- */
+/** Compute the DirectionalResult based on the bounding sphere of the frustum
+ * @author realitix */
 public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
 	protected DirectionalResult result = new DirectionalResult();
 	protected BoundingBox bb = new BoundingBox();
@@ -37,7 +34,7 @@ public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
 	@Override
 	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction) {
 		bb.inf();
-		for(int i = 0; i < frustum.planePoints.length; i++) {
+		for (int i = 0; i < frustum.planePoints.length; i++) {
 			bb.ext(frustum.planePoints[i]);
 		}
 		bb.getBoundingSphere(sphere);
@@ -47,13 +44,13 @@ public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
 
 		// Move back from 1.5*radius
 		tmpV2.set(direction);
-		tmpV2.scl(sphere.radius*1.5f);
+		tmpV2.scl(sphere.radius * 1.5f);
 
 		result.direction.set(direction);
 		result.position.set(tmpV.sub(tmpV2));
-		result.near = 0.5f*sphere.radius;
-		result.far = 2.5f*sphere.radius;
-		result.up.set(direction.y, direction.z,direction.x);
+		result.near = 0.5f * sphere.radius;
+		result.far = 2.5f * sphere.radius;
+		result.up.set(direction.y, direction.z, direction.x);
 		result.viewportWidth = sphere.radius;
 		result.viewportHeight = sphere.radius;
 

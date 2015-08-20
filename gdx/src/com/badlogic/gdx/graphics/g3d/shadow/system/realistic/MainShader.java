@@ -38,13 +38,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/**
- * This shader is used by the realistic shadow system
- * Be careful about varying.
- * Point light consumes six varying adn can crash the shader
- * This shader supports normal mapping and specular mapping
- * @author realitix
- */
+/** This shader is used by the realistic shadow system Be careful about varying. Point light consumes six varying adn can crash the
+ * shader This shader supports normal mapping and specular mapping
+ * @author realitix */
 public class MainShader extends DefaultShader {
 	public static class Config extends DefaultShader.Config {
 		public RealisticShadowSystem shadowSystem;
@@ -72,11 +68,7 @@ public class MainShader extends DefaultShader {
 		public Vector3 direction = new Vector3();
 	}
 
-	/**
-	 * ****
-	 * Directional shadow
-	 * ****
-	 */
+	/** **** Directional shadow **** */
 	protected final int u_dirShadows0uvTransform = register(new Uniform("u_dirShadows[0].uvTransform"));
 	protected final int u_dirShadows1uvTransform = register(new Uniform("u_dirShadows[1].uvTransform"));
 
@@ -84,7 +76,7 @@ public class MainShader extends DefaultShader {
 	protected int dirShadowsUvTransformOffset;
 	protected int dirShadowsSize;
 
-	//protected final SpotShadow spotShadows[];
+	// protected final SpotShadow spotShadows[];
 
 	// Shadow projViewTrans
 	protected int u_dirShadowMapProjViewTrans0 = register(new Uniform("u_dirShadowMapProjViewTrans[0]"));
@@ -98,12 +90,7 @@ public class MainShader extends DefaultShader {
 	protected int dirShadowMapUVTransformLoc;
 	protected int dirShadowMapUVTransformSize;
 
-
-	/**
-	 * ****
-	 * Spot shadow
-	 * ****
-	 */
+	/** **** Spot shadow **** */
 	protected final int u_spotShadows0uvTransform = register(new Uniform("u_spotShadows[0].uvTransform"));
 	protected final int u_spotShadows1uvTransform = register(new Uniform("u_spotShadows[1].uvTransform"));
 
@@ -125,11 +112,7 @@ public class MainShader extends DefaultShader {
 	protected int spotShadowMapUVTransformLoc;
 	protected int spotShadowMapUVTransformSize;
 
-	/**
-	 * ****
-	 * Point shadow
-	 * ****
-	 */
+	/** **** Point shadow **** */
 	protected final int u_pointShadows0uvTransform = register(new Uniform("u_pointShadows[0].uvTransform"));
 	protected final int u_pointShadows0direction = register(new Uniform("u_pointShadows[0].direction"));
 	protected final int u_pointShadows1uvTransform = register(new Uniform("u_pointShadows[1].uvTransform"));
@@ -156,16 +139,20 @@ public class MainShader extends DefaultShader {
 	protected RealisticShadowSystem shadowSystem;
 
 	private static String defaultVertexShader = null;
+
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.vertex.glsl").readString();
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.vertex.glsl")
+				.readString();
 		return defaultVertexShader;
 	}
 
 	private static String defaultFragmentShader = null;
+
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.fragment.glsl").readString();
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.fragment.glsl")
+				.readString();
 		return defaultFragmentShader;
 	}
 
@@ -206,7 +193,7 @@ public class MainShader extends DefaultShader {
 	}
 
 	@Override
-	public void init() {
+	public void init () {
 		super.init();
 
 		// Directional Shadow
@@ -261,13 +248,13 @@ public class MainShader extends DefaultShader {
 		}
 	}
 
-	public void bindDirectionalShadows(final Attributes attributes) {
+	public void bindDirectionalShadows (final Attributes attributes) {
 		final DirectionalLightsAttribute dla = attributes.get(DirectionalLightsAttribute.class, DirectionalLightsAttribute.Type);
 		final Array<DirectionalLight> dirs = dla == null ? null : dla.lights;
 
 		if (dirLightsLoc >= 0) {
 			for (int i = 0; i < directionalLights.length; i++) {
-				if(dirs == null || dirs.size <= i) {
+				if (dirs == null || dirs.size <= i) {
 					continue;
 				}
 
@@ -277,13 +264,14 @@ public class MainShader extends DefaultShader {
 				ObjectMap<DirectionalLight, LightProperties> dirCameras = shadowSystem.getDirectionalCameras();
 
 				DirectionalLight dl = dirs.get(i);
-				if( shadowSystem.hasLight(dl) ) {
+				if (shadowSystem.hasLight(dl)) {
 					// UVTransform
 					final TextureRegion tr = dirCameras.get(dl).region;
 					Camera cam = dirCameras.get(dl).camera;
 
-					if( cam != null ) {
-						program.setUniformf(idx + dirShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(), tr.getV2() - tr.getV());
+					if (cam != null) {
+						program.setUniformf(idx + dirShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(), tr.getV2()
+							- tr.getV());
 
 						// ProjViewTrans
 						idx = dirShadowMapProjViewTransLoc + i * dirShadowMapProjViewTransSize;
@@ -296,13 +284,13 @@ public class MainShader extends DefaultShader {
 		}
 	}
 
-	public void bindSpotShadows(final Attributes attributes) {
+	public void bindSpotShadows (final Attributes attributes) {
 		final SpotLightsAttribute sla = attributes.get(SpotLightsAttribute.class, SpotLightsAttribute.Type);
 		final Array<SpotLight> spots = sla == null ? null : sla.lights;
 
 		if (spotLightsLoc >= 0) {
 			for (int i = 0; i < spotLights.length; i++) {
-				if(spots == null || spots.size <= i) {
+				if (spots == null || spots.size <= i) {
 					continue;
 				}
 
@@ -312,13 +300,14 @@ public class MainShader extends DefaultShader {
 				ObjectMap<SpotLight, LightProperties> spotCameras = shadowSystem.getSpotCameras();
 
 				SpotLight sl = spots.get(i);
-				if( shadowSystem.hasLight(sl) ) {
+				if (shadowSystem.hasLight(sl)) {
 					// UVTransform
 					final TextureRegion tr = spotCameras.get(sl).region;
 					Camera cam = spotCameras.get(sl).camera;
 
-					if( cam != null ) {
-						program.setUniformf(idx + spotShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(), tr.getV2() - tr.getV());
+					if (cam != null) {
+						program.setUniformf(idx + spotShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(),
+							tr.getV2() - tr.getV());
 
 						// ProjViewTrans
 						idx = spotShadowMapProjViewTransLoc + i * spotShadowMapProjViewTransSize;
@@ -331,13 +320,13 @@ public class MainShader extends DefaultShader {
 		}
 	}
 
-	public void bindPointShadows(final Attributes attributes) {
+	public void bindPointShadows (final Attributes attributes) {
 		final PointLightsAttribute pla = attributes.get(PointLightsAttribute.class, PointLightsAttribute.Type);
 		final Array<PointLight> points = pla == null ? null : pla.lights;
 
 		if (pointLightsLoc >= 0) {
 			for (int i = 0; i < pointLights.length; i++) {
-				if(points == null || points.size <= i) {
+				if (points == null || points.size <= i) {
 					continue;
 				}
 
@@ -345,21 +334,22 @@ public class MainShader extends DefaultShader {
 				ObjectMap<PointLight, PointLightProperties> pointCameras = shadowSystem.getPointCameras();
 
 				PointLight pl = points.get(i);
-				if( shadowSystem.hasLight(pl) ) {
-					for(int j = 0; j < 6; j++) {
-						if( pointCameras.get(pl).properties.containsKey(Cubemap.CubemapSide.values()[j]) ) {
+				if (shadowSystem.hasLight(pl)) {
+					for (int j = 0; j < 6; j++) {
+						if (pointCameras.get(pl).properties.containsKey(Cubemap.CubemapSide.values()[j])) {
 							LightProperties property = pointCameras.get(pl).properties.get(Cubemap.CubemapSide.values()[j]);
 							final TextureRegion tr = property.region;
 							final Camera cam = property.camera;
 
-							int idx = pointShadowsLoc + (6*i) * pointShadowsSize + j * pointShadowsSize;
+							int idx = pointShadowsLoc + (6 * i) * pointShadowsSize + j * pointShadowsSize;
 
-							if( cam != null ) {
-								program.setUniformf(idx + pointShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(), tr.getV2() - tr.getV());
+							if (cam != null) {
+								program.setUniformf(idx + pointShadowsUvTransformOffset, tr.getU(), tr.getV(), tr.getU2() - tr.getU(),
+									tr.getV2() - tr.getV());
 								program.setUniformf(idx + pointShadowsDirectionOffset, cam.direction);
 
 								// ProjViewTrans
-								idx = pointShadowMapProjViewTransLoc + (i*6+j) * pointShadowMapProjViewTransSize;
+								idx = pointShadowMapProjViewTransLoc + (i * 6 + j) * pointShadowMapProjViewTransSize;
 								program.setUniformMatrix(idx, cam.combined);
 							}
 						}

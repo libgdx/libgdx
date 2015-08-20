@@ -20,12 +20,10 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 
-/**
- * @author realitix
- */
+/** @author realitix */
 public class Pass1ShaderProvider extends DefaultShaderProvider {
 	@Override
-	protected Shader createShader(final Renderable renderable) {
+	protected Shader createShader (final Renderable renderable) {
 		return new Pass1Shader(renderable);
 	}
 

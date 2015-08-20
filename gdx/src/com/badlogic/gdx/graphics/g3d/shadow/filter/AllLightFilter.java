@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics.g3d.shadow.filter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 
+/** This Filter do not block lights. All lights are allowed.
+ * @author realitix */
 public class AllLightFilter implements LightFilter {
 
 	@Override

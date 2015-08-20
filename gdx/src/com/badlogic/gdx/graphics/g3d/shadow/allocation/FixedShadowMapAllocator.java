@@ -19,12 +19,9 @@ package com.badlogic.gdx.graphics.g3d.shadow.allocation;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Scene;
 
-/**
- * The behavior of the FixedShadowMapAllocator is naive.
- * It separates the texture in several parts and for each lights
- * increments the region
- * @author realitix
- */
+/** The behavior of the FixedShadowMapAllocator is naive. It separates the texture in several parts and for each lights increments
+ * the region
+ * @author realitix */
 public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	public static final int QUALITY_MIN = 1024;
 	public static final int QUALITY_MED = 2048;
@@ -40,18 +37,18 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	protected Scene scene;
 	protected AllocatorResult result = new AllocatorResult();
 
-	public FixedShadowMapAllocator(int size, int nbMap, Scene scene) {
+	public FixedShadowMapAllocator (int size, int nbMap, Scene scene) {
 		this.size = size;
 		this.nbMap = nbMap;
 		this.scene = scene;
 	}
 
 	@Override
-	public int getSize() {
+	public int getSize () {
 		return size;
 	}
 
-	public int getNbMap() {
+	public int getNbMap () {
 		return nbMap;
 	}
 
@@ -71,8 +68,8 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 		int j = currentMap / nbOnLine;
 		int sizeMap = size / nbOnLine;
 
-		result.x = i*sizeMap;
-		result.y = j*sizeMap;
+		result.x = i * sizeMap;
+		result.y = j * sizeMap;
 		result.width = sizeMap;
 		result.height = sizeMap;
 
