@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.shadow.system.realistic;
 
 import java.util.EnumSet;
@@ -15,6 +31,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment.EnvironmentListener;
 import com.badlogic.gdx.graphics.g3d.Scene;
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
@@ -413,32 +430,22 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	}
 
 	@Override
-	public void onLightAdded (PointLight pointLight) {
-		addLight(pointLight);
+	public void onLightAdded (BaseLight light) {
+		if (light instanceof DirectionalLight)
+			addLight((DirectionalLight)light);
+		else if (light instanceof PointLight)
+			addLight((PointLight)light);
+		else if (light instanceof SpotLight)
+			addLight((SpotLight)light);
 	}
 
 	@Override
-	public void onLightAdded (DirectionalLight directionalLight) {
-		addLight(directionalLight);
-	}
-
-	@Override
-	public void onLightAdded (SpotLight spotLight) {
-		addLight(spotLight);
-	}
-
-	@Override
-	public void onLightRemoved (PointLight pointLight) {
-		removeLight(pointLight);
-	}
-
-	@Override
-	public void onLightRemoved (DirectionalLight directionalLight) {
-		removeLight(directionalLight);
-	}
-
-	@Override
-	public void onLightRemoved (SpotLight spotLight) {
-		removeLight(spotLight);
+	public void onLightRemoved (BaseLight light) {
+		if (light instanceof DirectionalLight)
+			removeLight((DirectionalLight)light);
+		else if (light instanceof PointLight)
+			removeLight((PointLight)light);
+		else if (light instanceof SpotLight)
+			removeLight((SpotLight)light);
 	}
 }

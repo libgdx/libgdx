@@ -200,7 +200,13 @@
 		<include name="graphics/g3d/shadow/directional/DirectionalResult.java"/>
 		<include name="graphics/g3d/shadow/directional/FrustumDirectionalAnalyzer.java"/>
 
+	<!-- graphics/g3d/shadow/filter -->
+		<include name="graphics/g3d/shadow/filter/FrustumLightFilter.java"/>
+		<include name="graphics/g3d/shadow/filter/LightFilter.java"/>
+		<include name="graphics/g3d/shadow/filter/NoLightFilter.java"/>
+
 	<!-- graphics/g3d/shadow/nearfar -->
+		<include name="graphics/g3d/shadow/nearfar/AABBCachedNearFarAnalyzer.java"/>
 		<include name="graphics/g3d/shadow/nearfar/AABBNearFarAnalyzer.java"/>
 		<include name="graphics/g3d/shadow/nearfar/NearFarAnalyzer.java"/>
 
