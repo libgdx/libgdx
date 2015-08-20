@@ -190,7 +190,6 @@
 		<include name="graphics/g3d/shaders/DepthShader.java"/>
 
 	<!-- graphics/g3d/shadow/allocation -->
-		<include name="graphics/g3d/shadow/allocation/AllocatorResult.java"/>
 		<include name="graphics/g3d/shadow/allocation/FixedShadowMapAllocator.java"/>
 		<include name="graphics/g3d/shadow/allocation/ShadowMapAllocator.java"/>
 
@@ -201,9 +200,9 @@
 		<include name="graphics/g3d/shadow/directional/FrustumDirectionalAnalyzer.java"/>
 
 	<!-- graphics/g3d/shadow/filter -->
+		<include name="graphics/g3d/shadow/filter/AllLightFilter.java"/>
 		<include name="graphics/g3d/shadow/filter/FrustumLightFilter.java"/>
 		<include name="graphics/g3d/shadow/filter/LightFilter.java"/>
-		<include name="graphics/g3d/shadow/filter/NoLightFilter.java"/>
 
 	<!-- graphics/g3d/shadow/nearfar -->
 		<include name="graphics/g3d/shadow/nearfar/AABBCachedNearFarAnalyzer.java"/>

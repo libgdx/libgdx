@@ -23,6 +23,14 @@ import com.badlogic.gdx.graphics.Camera;
  * @author realitix
  */
 public interface ShadowMapAllocator {
+
+	/**
+	 * Result of the allocator analyze
+	 */
+	public class AllocatorResult {
+		public int x, y, width, height;
+	}
+
 	/**
 	 * Start the allocation of the texture
 	 */
