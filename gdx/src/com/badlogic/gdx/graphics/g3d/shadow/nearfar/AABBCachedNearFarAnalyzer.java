@@ -18,11 +18,11 @@ package com.badlogic.gdx.graphics.g3d.shadow.nearfar;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Scene;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Compute the near and far plane base on the object's bounding box of the scene Faster than AABBNearFarAnalyzer because cache
@@ -32,8 +32,8 @@ public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 
 	protected ObjectMap<Node, BoundingBox> cachedBoundingBoxes = new ObjectMap<Node, BoundingBox>();
 
-	public AABBCachedNearFarAnalyzer (Scene scene) {
-		super(scene);
+	public AABBCachedNearFarAnalyzer (Array<ModelInstance> instances) {
+		super(instances);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class AABBCachedNearFarAnalyzer extends AABBNearFarAnalyzer {
 		prepareCamera(camera);
 
 		bb1.inf();
-		for (ModelInstance instance : scene.getInstances()) {
+		for (ModelInstance instance : instances) {
 			for (Node node : instance.nodes) {
 				if (cachedBoundingBoxes.containsKey(node))
 					bb2.set(cachedBoundingBoxes.get(node));

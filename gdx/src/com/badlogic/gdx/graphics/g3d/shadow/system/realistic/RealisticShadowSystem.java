@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment.EnvironmentListener;
-import com.badlogic.gdx.graphics.g3d.Scene;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
@@ -49,6 +49,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
@@ -77,8 +78,8 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	/** Quantity of pass before render the scene */
 	public static final int PASS_QUANTITY = 1;
-	/** Main scene */
-	protected Scene scene;
+	/** Main camera */
+	protected Camera camera;
 	/** Cameras linked with spot lights */
 	protected ObjectMap<SpotLight, LightProperties> spotCameras = new ObjectMap<SpotLight, LightProperties>();
 	/** Cameras linked with directional lights */
@@ -114,14 +115,14 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	protected final ShaderProvider mainShaderProvider;
 
 	/** Construct the system with the needed params.
-	 * @param scene Scene used in the rendering process
+	 * @param camera Camera used in the rendering process
 	 * @param nearFarAnalyzer Analyzer of near and far
 	 * @param allocator Allocator of shadow maps
 	 * @param directionalAnalyzer Analyze directional light to create orthographic camera
 	 * @param lightFilter Filter light to render */
-	public RealisticShadowSystem (Scene scene, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
+	public RealisticShadowSystem (Camera camera, NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
 		DirectionalAnalyzer directionalAnalyzer, LightFilter lightFilter) {
-		this.scene = scene;
+		this.camera = camera;
 		this.nearFarAnalyzer = nearFarAnalyzer;
 		this.allocator = allocator;
 		this.directionalAnalyzer = directionalAnalyzer;
@@ -132,10 +133,11 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 	}
 
 	/** Construct the system with default values
-	 * @param scene Scene used in the rendering process */
-	public RealisticShadowSystem (Scene scene) {
-		this(scene, new AABBCachedNearFarAnalyzer(scene), new FixedShadowMapAllocator(FixedShadowMapAllocator.QUALITY_MED,
-			FixedShadowMapAllocator.NB_MAP_MED, scene), new BoundingSphereDirectionalAnalyzer(), new FrustumLightFilter(scene));
+	 * @param camera Camera used in the rendering process
+	 * @param instances Array of model instances rendered */
+	public RealisticShadowSystem (Camera camera, Array<ModelInstance> instances) {
+		this(camera, new AABBCachedNearFarAnalyzer(instances), new FixedShadowMapAllocator(FixedShadowMapAllocator.QUALITY_MED,
+			FixedShadowMapAllocator.NB_MAP_MED), new BoundingSphereDirectionalAnalyzer(), new FrustumLightFilter(camera));
 	}
 
 	@Override
@@ -252,7 +254,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 		for (ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
 			e.value.camera.direction.set(e.key.direction);
-			directionalAnalyzer.analyze(e.key, scene.getCamera().frustum, e.value.camera.direction, e.value.camera).update();
+			directionalAnalyzer.analyze(e.key, this.camera.frustum, e.value.camera.direction, e.value.camera).update();
 			e.value.camera.update();
 		}
 

@@ -18,13 +18,13 @@ package com.badlogic.gdx.graphics.g3d.shadow.nearfar;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Scene;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
+import com.badlogic.gdx.utils.Array;
 
 /** Compute the near and far plane base on the object's bounding box of the scene
  * @author realitix */
@@ -33,14 +33,14 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	public static float CAMERA_NEAR = 0.1f;
 	public static float CAMERA_FAR = 1000;
 
-	protected Scene scene;
+	protected Array<ModelInstance> instances;
 	protected Vector2 result = new Vector2();
 	protected BoundingBox bb1 = new BoundingBox();
 	protected BoundingBox bb2 = new BoundingBox();
 	protected Sphere sphere = new Sphere(new Vector3(), 0);
 
-	public AABBNearFarAnalyzer (Scene scene) {
-		this.scene = scene;
+	public AABBNearFarAnalyzer (Array<ModelInstance> instances) {
+		this.instances = instances;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		prepareCamera(camera);
 
 		bb1.inf();
-		for (ModelInstance instance : scene.getInstances()) {
+		for (ModelInstance instance : instances) {
 			for (Node node : instance.nodes) {
 				node.calculateBoundingBox(bb2);
 

@@ -34,7 +34,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Scene;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
@@ -70,7 +69,6 @@ public class ShadowTest extends GdxTest {
 	Environment environment;
 	Array<ModelBatch> passBatches = new Array<ModelBatch>();
 	RealisticShadowSystem shadowManager;
-	Scene scene;
 	ModelBatch shadowModelBatch;
 
 	public Model axesModel;
@@ -85,11 +83,7 @@ public class ShadowTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		
 		environment = new Environment();
-		scene = new Scene(environment);
-		shadowManager = new RealisticShadowSystem(scene);
-		environment.addListener(shadowManager);
 		
 		sl = new SpotLight()
 			.setPosition(0, 10, -6)
@@ -181,9 +175,12 @@ public class ShadowTest extends GdxTest {
 		mpb.sphere(2f, 2f, 2f, 20, 20);
 		
 		model = modelBuilder.end();
-		instance = new ModelInstance(model);		
-		scene.add(instance);
-		scene.setCamera(cam);
+		instance = new ModelInstance(model);
+
+		Array<ModelInstance> instances = new Array<ModelInstance>();
+		instances.add(instance);
+		shadowManager = new RealisticShadowSystem(cam, instances);
+		environment.addListener(shadowManager);
 		
 		createAxes();
 		
@@ -243,7 +240,7 @@ public class ShadowTest extends GdxTest {
 			Camera camera;
 			while((camera = shadowManager.next()) != null) {
 				passBatches.get(i).begin(camera);
-				passBatches.get(i).render(instance, scene.getEnvironment());
+				passBatches.get(i).render(instance, environment);
 				passBatches.get(i).end();
 			}
 			camera = null;
