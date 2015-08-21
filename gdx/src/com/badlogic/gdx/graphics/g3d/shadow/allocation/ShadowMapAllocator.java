@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Camera;
 public interface ShadowMapAllocator {
 
 	/** Result of the allocator analyze */
-	public class AllocatorResult {
+	public class ShadowMapRegion {
 		public int x, y, width, height;
 	}
 
@@ -36,7 +36,7 @@ public interface ShadowMapAllocator {
 	/** Find the next texture region for the current camera
 	 * @param camera Current Camera
 	 * @return AllocatorResult */
-	public AllocatorResult nextResult (Camera camera);
+	public ShadowMapRegion nextResult (Camera camera);
 
 	/** Return the size of the shadow map
 	 * @return int */

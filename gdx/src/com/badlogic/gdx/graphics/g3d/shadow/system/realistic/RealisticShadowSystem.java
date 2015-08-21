@@ -37,7 +37,7 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.shadow.allocation.FixedShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator;
-import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator.AllocatorResult;
+import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator.ShadowMapRegion;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.BoundingSphereDirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.DirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.filter.FrustumLightFilter;
@@ -252,7 +252,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 		for (ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
 			e.value.camera.direction.set(e.key.direction);
-			directionalAnalyzer.analyze(e.key, scene.getCamera().frustum, e.value.camera.direction).set(e.value.camera);
+			directionalAnalyzer.analyze(e.key, scene.getCamera().frustum, e.value.camera.direction, e.value.camera).update();
 			e.value.camera.update();
 		}
 
@@ -351,7 +351,7 @@ public class RealisticShadowSystem implements ShadowSystem, EnvironmentListener 
 
 	protected Vector2 processViewport (LightProperties lp) {
 		Camera camera = lp.camera;
-		AllocatorResult r = allocator.nextResult(camera);
+		ShadowMapRegion r = allocator.nextResult(camera);
 
 		if (r == null) {
 			return null;

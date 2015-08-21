@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.shadow.directional;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +26,6 @@ import com.badlogic.gdx.math.Vector3;
  * @author realitix
  * @see "http://gamedev.stackexchange.com/questions/81734/how-to-calculate-directional-light-frustum-from-camera-frustum" */
 public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
-	protected DirectionalResult result = new DirectionalResult();
 	protected Vector3 vz = new Vector3();
 	protected Vector3 vx = new Vector3();
 	protected Vector3 vy = new Vector3();
@@ -36,7 +36,7 @@ public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 
 	/** @FIXME NOT WORKING */
 	@Override
-	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction) {
+	public Camera analyze (BaseLight light, Frustum frustum, Vector3 direction, Camera out) {
 		vz.set(direction);
 		vx.set(vz.y, vz.z, vz.x);
 		vy.set(vz).crs(vx);
@@ -65,6 +65,6 @@ public class FrustumDirectionalAnalyzer implements DirectionalAnalyzer {
 			if (d > dimy.y) dimy.y = d;
 		}
 
-		return null;
+		return out;
 	}
 }

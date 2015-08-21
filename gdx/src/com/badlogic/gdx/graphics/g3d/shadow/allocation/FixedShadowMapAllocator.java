@@ -35,7 +35,7 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	protected final int nbMap;
 	protected int currentMap;
 	protected Scene scene;
-	protected AllocatorResult result = new AllocatorResult();
+	protected ShadowMapRegion result = new ShadowMapRegion();
 
 	public FixedShadowMapAllocator (int size, int nbMap, Scene scene) {
 		this.size = size;
@@ -62,7 +62,7 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	}
 
 	@Override
-	public AllocatorResult nextResult (Camera camera) {
+	public ShadowMapRegion nextResult (Camera camera) {
 		int nbOnLine = (int)Math.round(Math.sqrt(nbMap));
 		int i = currentMap % nbOnLine;
 		int j = currentMap / nbOnLine;

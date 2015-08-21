@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.shadow.directional;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector3;
@@ -26,6 +27,8 @@ public interface DirectionalAnalyzer {
 	/** Compute the good orthographicCamera dimension based on the frustum. Be careful, direction must be normalized.
 	 * @param light Current light
 	 * @param frustum Frustum of the main camera
-	 * @param direction Direction of the directional light */
-	public DirectionalResult analyze (BaseLight light, Frustum frustum, Vector3 direction);
+	 * @param direction Direction of the directional light
+	 * @param out Camera modified (still needs to call update() )
+	 * @return Camera The camera for chaining */
+	public Camera analyze (BaseLight light, Frustum frustum, Vector3 direction, Camera out);
 }
