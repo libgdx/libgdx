@@ -6,6 +6,7 @@
 - GLFrameBuffer is now abstract, renamed setupTexture to createColorTexture, added disposeColorTexture
 - Added LwjglApplicationConfiguration#gles30Context*Version, see https://github.com/libgdx/libgdx/pull/2941
 - Added OpenGL error checking to GLProfiler, see https://github.com/libgdx/libgdx/pull/2889
+- Updated to RoboVM 1.6
 
 [1.6.4]
 - TextField cursor and selection size changed. https://github.com/libgdx/libgdx/commit/2a830dea348948d2a37bd8f6338af2023fec9b09
