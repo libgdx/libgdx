@@ -52,7 +52,6 @@ import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.helpers.CameraHelper;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -77,7 +76,6 @@ public class ShadowTest extends GdxTest {
 	public Model axesModel;
 	public ModelInstance axesInstance;
 	
-	private Array<CameraHelper> cameraHelper = new Array<CameraHelper>();
 	SpotLight sl;
 	SpotLight sl2;
 	SpotLight sl3;
@@ -132,16 +130,6 @@ public class ShadowTest extends GdxTest {
 		environment.add(sl3);
 		//environment.add(pl);
 		environment.add(dl);
-
-		ObjectMap<SpotLight, LightProperties> spotCameras = shadowManager.getSpotCameras();
-		for(ObjectMap.Entry<SpotLight, LightProperties> e : spotCameras) {
-			cameraHelper.add(new CameraHelper(e.value.camera));
-		}
-		
-		ObjectMap<DirectionalLight, LightProperties> dirCameras = shadowManager.getDirectionalCameras();
-		for(ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
-			cameraHelper.add(new CameraHelper(e.value.camera));
-		}
 		
 		// The camera wich directional light use
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -266,15 +254,8 @@ public class ShadowTest extends GdxTest {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		for(CameraHelper h: cameraHelper) {
-			h.update();
-		}
-		
 		shadowModelBatch.begin(cam2);
 		shadowModelBatch.render(axesInstance);
-		for(CameraHelper h: cameraHelper) {
-			shadowModelBatch.render(h);
-		}
 		shadowModelBatch.render(instance, environment);
 		shadowModelBatch.end();
 	}
