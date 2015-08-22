@@ -191,7 +191,7 @@ public class JniGenSharedLibraryLoader {
 		}
 		if (isLinux) {
 			if (libraryFinder != null)
-				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, nativesZip));
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, isARM, nativesZip));
 			else if (!is64Bit)
 				loaded = loadLibrary("lib" + sharedLibName + (isARM ? "arm"+abi : "" ) + ".so");
 			else
@@ -200,7 +200,7 @@ public class JniGenSharedLibraryLoader {
 		if (isMac) {
 			if (libraryFinder != null)
 				loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, is64Bit, nativesZip));
-			else if(!is64Bit)
+			else if (!is64Bit)
 				loaded = loadLibrary("lib" + sharedLibName + ".dylib");
 			else
 				loaded = loadLibrary("lib" + sharedLibName + "64.dylib");

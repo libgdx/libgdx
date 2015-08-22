@@ -398,6 +398,42 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size = newSize;
 	}
 
+	public int hashCode () {
+		K[] keys = this.keys;
+		V[] values = this.values;
+		int h = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			K key = keys[i];
+			V value = values[i];
+			if (key != null) h += key.hashCode() * 31;
+			if (value != null) h += value.hashCode();
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ArrayMap)) return false;
+		ArrayMap<K, V> other = (ArrayMap) obj;
+		if (other.size != size) return false;
+		K[] keys = this.keys;
+		V[] values = this.values;
+		for (int i = 0, n = size; i < n; i++) {
+			K key = keys[i];
+			V value = values[i];
+			if (value == null) {
+				if (!other.containsKey(key) || other.get(key) != null) {
+					return false;
+				}
+			} else {
+				if (!value.equals(other.get(key))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "{}";
 		K[] keys = this.keys;

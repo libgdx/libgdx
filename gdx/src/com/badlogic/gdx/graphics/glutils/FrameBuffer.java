@@ -63,12 +63,17 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		super(format, width, height, hasDepth, hasStencil);
 	}
 
-	/** Override this method in a derived class to set up the backing texture as you like. */
 	@Override
-	protected void setupTexture () {
-		colorTexture = new Texture(width, height, format);
-		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	protected Texture createColorTexture () {
+		Texture result = new Texture(width, height, format);
+		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		return result;
+	}
+	
+	@Override
+	protected void disposeColorTexture (Texture colorTexture) {
+		colorTexture.dispose();
 	}
 	
 	/** See {@link GLFrameBuffer#unbind()} */

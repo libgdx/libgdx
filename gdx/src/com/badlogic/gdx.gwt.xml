@@ -242,7 +242,7 @@
 		<include name="graphics/profiling/GL20Profiler.java"/>
 		<include name="graphics/profiling/GL30Profiler.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
-		
+		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
@@ -289,10 +289,13 @@
 		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
 
-	<!-- maps/tiles/tiles -->
+	<!-- maps/tiled/tiles -->
 		<include name="maps/tiled/tiles/AnimatedTiledMapTile.java"/>
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
 	
+	<!-- maps/tiled/objects -->
+		<include name="maps/tiled/objects/TiledMapTileMapObject.java"/>	
+		
 	<!-- math -->
 		<include name="math/Affine2.java"/>
 		<include name="math/Bezier.java"/>

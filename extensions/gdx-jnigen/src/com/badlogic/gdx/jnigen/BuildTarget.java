@@ -56,6 +56,11 @@ public class BuildTarget {
 	public String postCompileTask;
 	/** the libraries to be linked to the output, specify via e.g. -ldinput -ldxguid etc. **/
 	public String libraries;
+	/** The name used for folders for this specific target. Defaults to "${target}(64)" **/
+	public String osFileName;
+	/** The name used for the library file. This is a full file name, including file extension. Default is platform specific.
+	 *  E.g. "lib{sharedLibName}64.so" **/
+	public String libName; 
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,

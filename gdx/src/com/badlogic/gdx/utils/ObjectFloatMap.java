@@ -407,9 +407,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
 	 * an expensive operation. */
 	public boolean containsValue (float value) {
+		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return true;
+			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
 
@@ -436,9 +437,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
 	public K findKey (float value) {
+		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return keyTable[i];
+			if (keyTable[i] != null && valueTable[i] == value) return keyTable[i];
 		return null;
 	}
 
@@ -484,6 +486,41 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	private int hash3 (int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
+	}
+
+	public int hashCode () {
+		int h = 0;
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				h += key.hashCode() * 31;
+
+				float value = valueTable[i];
+				h += Float.floatToIntBits(value);
+			}
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ObjectFloatMap)) return false;
+		ObjectFloatMap<K> other = (ObjectFloatMap) obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				float otherValue = other.get(key, 0f);
+				if (otherValue == 0f && !other.containsKey(key)) return false;
+				float value = valueTable[i];
+				if (otherValue != value) return false;
+			}
+		}
+		return true;
 	}
 
 	public String toString () {

@@ -428,7 +428,11 @@ public class GdxSetupUI extends JFrame {
 		JTextField destinationText = new JTextField(new File("test").getAbsolutePath());
 		SetupButton destinationButton = new SetupButton("Browse");
 		JLabel sdkLocationLabel = new JLabel("Android SDK");
-		JTextField sdkLocationText = new JTextField("C:\\Path\\To\\Your\\Sdk");
+		JTextField sdkLocationText = new JTextField(
+				System.getProperty("os.name").contains("Windows")
+				? "C:\\Path\\To\\Your\\Sdk"
+				: "/path/to/your/sdk"
+		);
 		SetupButton sdkLocationButton = new SetupButton("Browse");
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());

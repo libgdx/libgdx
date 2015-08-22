@@ -334,16 +334,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		// determine space width and set glyph
+		// determine space width
 		if (face.loadChar(' ', FreeType.FT_LOAD_DEFAULT)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // FIXME possibly very wrong :)
 		}
-		Glyph spaceGlyph = new Glyph();
-		spaceGlyph.xadvance = (int)data.spaceWidth;
-		spaceGlyph.id = (int)' ';
-		data.setGlyph(' ', spaceGlyph);
 
 		// determine x-height
 		for (char xChar : data.xChars) {
@@ -440,6 +436,16 @@ public class FreeTypeFontGenerator implements Disposable {
 			packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
 		}
 
+		// Set space glyph.
+		Glyph spaceGlyph = data.getGlyph(' ');
+		if (spaceGlyph == null) {
+			spaceGlyph = new Glyph();
+			spaceGlyph.xadvance = (int)data.spaceWidth;
+			spaceGlyph.id = (int)' ';
+			data.setGlyph(' ', spaceGlyph);
+		}
+		if (spaceGlyph.width == 0) spaceGlyph.width = (int)(spaceGlyph.xadvance + data.padRight);
+
 		return data;
 	}
 
@@ -482,8 +488,10 @@ public class FreeTypeFontGenerator implements Disposable {
 				// render border (pixmap is bigger than main)
 				Pixmap borderPixmap = borderBitmap.getPixmap(Format.RGBA8888, parameter.borderColor);
 				// draw main glyph on top of border
-				borderPixmap.drawPixmap(mainPixmap, mainGlyph.getLeft() - borderGlyph.getLeft(),
-					-(mainGlyph.getTop() - borderGlyph.getTop()));
+				for (int i = 0, n = parameter.borderGlyphCount; i < n; i++) {
+					borderPixmap.drawPixmap(mainPixmap, mainGlyph.getLeft() - borderGlyph.getLeft(),
+						-(mainGlyph.getTop() - borderGlyph.getTop()));
+				}
 				mainPixmap.dispose();
 				mainGlyph.dispose();
 				mainPixmap = borderPixmap;
@@ -500,7 +508,8 @@ public class FreeTypeFontGenerator implements Disposable {
 				shadowPixmap.drawPixmap(shadowPixmapSrc, Math.max(parameter.shadowOffsetX, 0), Math.max(parameter.shadowOffsetY, 0));
 				Pixmap.setBlending(blending);
 				// draw main glyph (with border) on top of shadow
-				shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
+				for (int i = 0, n = parameter.shadowGlyphCount; i < n; i++)
+					shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
 				mainPixmap.dispose();
 				mainPixmap = shadowPixmap;
 			}
@@ -591,6 +600,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Stroker stroker;
 		PixmapPacker packer;
 		Array<Glyph> glyphs;
+		private boolean dirty;
 
 		@Override
 		public Glyph getGlyph (char ch) {
@@ -603,6 +613,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				setGlyph(ch, glyph);
 				setGlyphRegion(glyph, regions.get(glyph.page));
 				glyphs.add(glyph);
+				dirty = true;
 
 				if (parameter.kerning) {
 					Face face = generator.face;
@@ -625,6 +636,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end) {
 			if (packer != null) packer.setPackToTexture(true); // All glyphs added after this are packed directly to the texture.
 			super.getGlyphs(run, str, start, end);
+			if (dirty) {
+				dirty = false;
+				packer.updateTextureRegions(regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
+			}
 		}
 
 		@Override
@@ -655,12 +670,16 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Color borderColor = Color.BLACK;
 		/** true for straight (mitered), false for rounded borders */
 		public boolean borderStraight = false;
+		/** Number of times to render the glyph on top of the border, otherwise the border can show through the glyph. */
+		public int borderGlyphCount = 2;
 		/** Offset of text shadow on X axis in pixels, 0 to disable */
 		public int shadowOffsetX = 0;
 		/** Offset of text shadow on Y axis in pixels, 0 to disable */
 		public int shadowOffsetY = 0;
 		/** Shadow color; only used if shadowOffset > 0 */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
+		/** Number of times to render the glyph on top of the shadow, otherwise the shadow can show through the glyph. */
+		public int shadowGlyphCount = 2;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */

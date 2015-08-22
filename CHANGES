@@ -1,3 +1,32 @@
+[1.6.5]
+- Objects from animated tiles in TMX maps are now supported.
+- Made possible to use any actor for tooltips.
+- Improved cross-platform reflection api for annotations.
+- NinePatch#scale now also scales middle patch size.
+- GLFrameBuffer is now abstract, renamed setupTexture to createColorTexture, added disposeColorTexture
+- Added LwjglApplicationConfiguration#gles30Context*Version, see https://github.com/libgdx/libgdx/pull/2941
+- Added OpenGL error checking to GLProfiler, see https://github.com/libgdx/libgdx/pull/2889
+- Updated to RoboVM 1.6
+
+[1.6.4]
+- TextField cursor and selection size changed. https://github.com/libgdx/libgdx/commit/2a830dea348948d2a37bd8f6338af2023fec9b09
+- FreeTypeFontGenerator setting to improve shadows and borders.
+- ScrollPane scrolls smoothly when the scrolled area is much larger than the scrollbars.
+- TexturePacker sorts page regions by name.
+- GlyphLayout text wrapping changed to not trim whitespace. https://github.com/libgdx/libgdx/commit/ee42693da067da7c5ddd747f051c1423d262cb96
+- Fixed BitmapFont computing space width incorrectly when padding is used and no space glyph is in the font.
+- Fixed TextArea cursor and selection drawing positions.
+- Fixed ActorGestureListener pan and zoom when the actor is rotated or scaled.
+- Fixed TextField for non-pixel display.
+- Allow ellipsis string to be set on Label.
+- AssetManager gets hook for handling loading failure.
+- TextField now fires a ChangeEvent when the text change. Can be cancelled too!
+- Added tooltips to scene2d.ui.
+- Updated to RoboVM 1.5
+
+[1.6.3]
+- Updated to RoboVM 1.4
+
 [1.6.2]
 - API Change: TiledMapImageLayer now uses floats instead of ints for positioning
 - API Change: Added GLFrameBuffer and FrameBufferCubemap: Framebuffer now extends GLFramebuffer, see #2933
