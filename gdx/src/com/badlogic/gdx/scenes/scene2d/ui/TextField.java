@@ -112,6 +112,10 @@ public class TextField extends Widget implements Disableable {
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
+	public TextField (Skin skin) {
+		this("", skin);
+	}
+	
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
 	}
