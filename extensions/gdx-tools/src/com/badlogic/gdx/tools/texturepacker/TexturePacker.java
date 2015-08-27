@@ -219,7 +219,7 @@ public class TexturePacker {
 				}
 			}
 
-			if (settings.bleed && !settings.premultiplyAlpha && !settings.outputFormat.equalsIgnoreCase("jpg")) {
+			if (settings.bleed && !settings.premultiplyAlpha && !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
 				canvas = new ColorBleedEffect().processImage(canvas, 2);
 				g = (Graphics2D)canvas.getGraphics();
 			}
@@ -231,7 +231,7 @@ public class TexturePacker {
 
 			ImageOutputStream ios = null;
 			try {
-				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
+				if (settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg")) {
 					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 					newImage.getGraphics().drawImage(canvas, 0, 0, null);
 					canvas = newImage;
