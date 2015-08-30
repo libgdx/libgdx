@@ -294,13 +294,17 @@ public class NativeCodeGenerator {
 		}
 	}
 
+	protected void emitHeaderInclude (StringBuffer buffer, String fileName) {
+		buffer.append("#include <" + fileName + ">\n");
+	}
+
 	private void generateCppFile (ArrayList<JavaSegment> javaSegments, FileDescriptor hFile, FileDescriptor cppFile)
 		throws Exception {
 		String headerFileContent = hFile.readString();
 		ArrayList<CMethod> cMethods = cMethodParser.parse(headerFileContent).getMethods();
 
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("#include <" + hFile.name() + ">\n");
+		emitHeaderInclude(buffer, hFile.name());
 
 		for (JavaSegment segment : javaSegments) {
 			if (segment instanceof JniSection) {
@@ -423,7 +427,7 @@ public class NativeCodeGenerator {
 
 	}
 
-	private void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
+	protected void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
 		// emit a line marker
 		emitLineMarker(buffer, javaMethod.getEndIndex());
 
