@@ -176,7 +176,8 @@ public interface Application {
 	public void postRunnable (Runnable runnable);
 
 	/** Schedule an exit from the application. On android, this will cause a call to pause() and dispose() some time in the future,
-	 * it will not immediately finish your application. */
+	 * it will not immediately finish your application.
+	 * On iOS this should be avoided in production as it breaks Apples guidelines*/
 	public void exit ();
 
 	/** Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more

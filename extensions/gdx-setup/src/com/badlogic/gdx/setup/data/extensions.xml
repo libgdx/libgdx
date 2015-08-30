@@ -22,8 +22,8 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>0.7.7</version>
-		<compatibility>1.6.1</compatibility>
+		<version>0.8.1</version>
+		<compatibility>1.6.4</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
 		    <inherit>com.kotcrab.vis.vis-ui</inherit>
@@ -37,6 +37,28 @@
 			<ios></ios>
 			<html>
 				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
+			</html>
+		</projects>
+	</extension>
+		<extension>
+		<name>VisRuntime</name>
+		<description>Runtime for VisEditor</description>
+		<package>com.kotcrab.vis.runtime</package>
+		<version>0.2.1</version>
+		<compatibility>1.6.4</compatibility>
+		<website>http://vis.kotcrab.com</website>
+		<gwtInherits>
+		    <inherit>com.kotcrab.vis.vis-runtime</inherit>
+		</gwtInherits>
+		<projects>
+			<core>
+				<dependency>com.kotcrab.vis:vis-runtime</dependency>
+			</core>
+			<desktop></desktop>
+			<android></android>
+			<ios></ios>
+			<html>
+				<dependency>com.kotcrab.vis:vis-runtime:sources</dependency>
 			</html>
 		</projects>
 	</extension>

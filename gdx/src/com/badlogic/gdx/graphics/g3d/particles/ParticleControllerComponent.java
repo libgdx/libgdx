@@ -21,8 +21,7 @@ public abstract class ParticleControllerComponent implements Disposable, Json.Se
 		 TMP_V4 = new Vector3(), 
 		 TMP_V5 = new Vector3(),
 		 TMP_V6 = new Vector3();
-	protected static final Quaternion 	TMP_Q = new Quaternion(),
-													TMP_Q2 = new Quaternion();
+	protected static final Quaternion TMP_Q = new Quaternion(), TMP_Q2 = new Quaternion();
 	protected static final Matrix3 TMP_M3 = new Matrix3();
 	protected static final Matrix4 TMP_M4 = new Matrix4();
 	protected ParticleController controller;

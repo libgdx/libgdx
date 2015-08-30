@@ -27,7 +27,7 @@ public class Color {
 	public static final Color BLACK = new Color(0, 0, 0, 1);
 
 	public static final Color WHITE = new Color(0xffffffff);
-	public static final Color LIGHT_GRAY = new Color(0x696969ff);
+	public static final Color LIGHT_GRAY = new Color(0xbfbfbfff);
 	public static final Color GRAY = new Color(0x7f7f7fff);
 	public static final Color DARK_GRAY = new Color(0x3f3f3fff);
 	public static final Color SLATE = new Color(0x708090ff);

@@ -111,7 +111,7 @@ public class ProgressBar extends Widget implements Disableable {
 	public void draw (Batch batch, float parentAlpha) {
 		ProgressBarStyle style = this.style;
 		boolean disabled = this.disabled;
-		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable knob = getKnobDrawable();
 		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 		final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
 		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
@@ -218,6 +218,10 @@ public class ProgressBar extends Widget implements Disableable {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
 
+	protected Drawable getKnobDrawable () {
+		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+	}
+
 	/** Returns progress bar visual position within the range. */
 	protected float getKnobPosition () {
 		return this.position;
@@ -269,7 +273,7 @@ public class ProgressBar extends Widget implements Disableable {
 
 	public float getPrefWidth () {
 		if (vertical) {
-			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable knob = getKnobDrawable();
 			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
 		} else
@@ -280,7 +284,7 @@ public class ProgressBar extends Widget implements Disableable {
 		if (vertical)
 			return 140;
 		else {
-			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable knob = getKnobDrawable();
 			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg == null ? 0 : bg.getMinHeight());
 		}
