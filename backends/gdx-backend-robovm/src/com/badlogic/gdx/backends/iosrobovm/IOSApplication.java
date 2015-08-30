@@ -428,7 +428,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		NSThread.getMainThread().exit();
+		NSThread.exit();
 	}
 
 	@Override
