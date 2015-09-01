@@ -28,6 +28,7 @@ import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -558,5 +559,19 @@ public class LwjglGraphics implements Graphics {
 		 * @return the configuration to be used for a second attempt at creating a display. A null value results in NOT attempting
 		 *         to create the display a second time */
 		public LwjglApplicationConfiguration onFailure (LwjglApplicationConfiguration initialConfig);
+	}
+	
+	@Override
+	public com.badlogic.gdx.graphics.Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+		return new LwjglCursor(pixmap, xHotspot, yHotspot);
+	}
+
+	@Override
+	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
+		if (cursor == null) {
+			LwjglCursor.resetCursor();
+		} else {
+			cursor.setSystemCursor();
+		}
 	}
 }
