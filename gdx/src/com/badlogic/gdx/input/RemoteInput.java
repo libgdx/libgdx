@@ -26,7 +26,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntSet;
 
@@ -503,10 +502,6 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
 	@Override

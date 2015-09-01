@@ -53,7 +53,6 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -584,10 +583,6 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
 	public void touchDown (long touches, UIEvent event) {

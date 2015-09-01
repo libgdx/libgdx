@@ -22,8 +22,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
@@ -402,5 +404,14 @@ public class JglfwGraphics implements Graphics {
 	@Override
 	public GL30 getGL30 () {
 		return null;
+	}
+	
+	@Override
+	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+		return null;
+	}
+
+	@Override
+	public void setCursor (Cursor cursor) {
 	}
 }
