@@ -311,4 +311,5 @@ if (JavaVersion.current().isJava8Compatible()) {
 task fetchNatives << {
     ant.importBuild "fetch.xml"
     fetch.execute()
+    copy.execute()
 }
