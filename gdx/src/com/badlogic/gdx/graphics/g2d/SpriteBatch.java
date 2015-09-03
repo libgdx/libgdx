@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,29 +34,29 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
-	private Mesh mesh;
+	protected Mesh mesh;
 
-	final float[] vertices;
-	int idx = 0;
-	Texture lastTexture = null;
-	float invTexWidth = 0, invTexHeight = 0;
+	protected final float[] vertices;
+	protected int idx = 0;
+	protected Texture lastTexture = null;
+	protected float invTexWidth = 0, invTexHeight = 0;
 
-	boolean drawing = false;
+	protected boolean drawing = false;
 
-	private final Matrix4 transformMatrix = new Matrix4();
-	private final Matrix4 projectionMatrix = new Matrix4();
-	private final Matrix4 combinedMatrix = new Matrix4();
+	protected final Matrix4 transformMatrix = new Matrix4();
+	protected final Matrix4 projectionMatrix = new Matrix4();
+	protected final Matrix4 combinedMatrix = new Matrix4();
 
-	private boolean blendingDisabled = false;
-	private int blendSrcFunc = GL20.GL_SRC_ALPHA;
-	private int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
+	protected boolean blendingDisabled = false;
+	protected int blendSrcFunc = GL20.GL_SRC_ALPHA;
+	protected int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 
-	private final ShaderProgram shader;
-	private ShaderProgram customShader = null;
-	private boolean ownsShader;
+	protected final ShaderProgram shader;
+	protected ShaderProgram customShader = null;
+	protected boolean ownsShader;
 
-	float color = Color.WHITE.toFloatBits();
-	private Color tempColor = new Color(1, 1, 1, 1);
+	protected float color = Color.WHITE.toFloatBits();
+	protected Color tempColor = new Color(1, 1, 1, 1);
 
 	/** Number of render calls since the last {@link #begin()}. **/
 	public int renderCalls = 0;
@@ -1035,7 +1035,7 @@ public class SpriteBatch implements Batch {
 		if (drawing) setupMatrices();
 	}
 
-	private void setupMatrices () {
+	protected void setupMatrices () {
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 		if (customShader != null) {
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
@@ -1085,6 +1085,7 @@ public class SpriteBatch implements Batch {
 		return !blendingDisabled;
 	}
 
+	@Override
 	public boolean isDrawing () {
 		return drawing;
 	}
