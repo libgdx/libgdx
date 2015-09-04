@@ -50,6 +50,7 @@ public class Table extends WidgetGroup {
 	static private float[] columnWeightedWidth, rowWeightedHeight;
 
 	private int columns, rows;
+	private boolean implicitEndRow;
 
 	private final Array<Cell> cells = new Array(4);
 	private final Cell cellDefaults;
@@ -193,6 +194,13 @@ public class Table extends WidgetGroup {
 		Cell<T> cell = obtainCell();
 		cell.actor = actor;
 
+		// The row was ended for layout, not be the user, so revert it.
+		if (implicitEndRow) {
+			implicitEndRow = false;
+			rows--;
+			cells.peek().endRow = false;
+		}
+
 		Array<Cell> cells = this.cells;
 		int cellCount = cells.size;
 		if (cellCount > 0) {
@@ -306,6 +314,7 @@ public class Table extends WidgetGroup {
 		columns = 0;
 		if (rowDefaults != null) cellPool.free(rowDefaults);
 		rowDefaults = null;
+		implicitEndRow = false;
 
 		super.clearChildren();
 	}
@@ -755,7 +764,12 @@ public class Table extends WidgetGroup {
 		Array<Cell> cells = this.cells;
 		int cellCount = cells.size;
 
-		if (cellCount > 0 && !cells.peek().endRow) endRow();
+		// Implicitly End the row for layout purposes.
+		if (cellCount > 0 && !cells.peek().endRow) {
+			endRow();
+			implicitEndRow = true;
+		} else
+			implicitEndRow = false;
 
 		int columns = this.columns, rows = this.rows;
 		float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
