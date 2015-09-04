@@ -49,6 +49,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -131,6 +133,14 @@ public class GdxSetupUI extends JFrame {
 		final String pack = ui.form.packageText.getText().trim();
 		if (pack.length() == 0) {
 			JOptionPane.showMessageDialog(this, "Please enter a package name.");
+			return;
+		}
+		Pattern pattern = Pattern.compile("[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+[0-9a-z_]");
+		Matcher matcher = pattern.matcher(pack);
+		boolean matches = matcher.matches();
+
+		if (!matches) {
+			JOptionPane.showMessageDialog(this, "Invalid package name");
 			return;
 		}
 

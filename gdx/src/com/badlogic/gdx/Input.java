@@ -756,15 +756,4 @@ public interface Input {
 	 * @param x the x-position
 	 * @param y the y-position */
 	public void setCursorPosition (int x, int y);
-
-	/** Only viable on the desktop. Will set the mouse cursor image to the image represented by the
-	 * {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format, width & height must be powers-of-two
-	 * greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). To revert to
-	 * the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
-	 * 
-	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default
-	 *           operating system cursor
-	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
-	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner) */
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot);
 }

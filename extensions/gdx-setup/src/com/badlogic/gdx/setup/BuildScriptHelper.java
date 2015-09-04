@@ -44,7 +44,7 @@ public class BuildScriptHelper {
 		space(wr);
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
-		write(wr, "appName = '%APP_NAME%'");
+		write(wr, "appName = \"%APP_NAME%\"");
 		write(wr, "gdxVersion = '" + DependencyBank.libgdxVersion + "'");
 		write(wr, "roboVMVersion = '" + DependencyBank.roboVMVersion + "'");
 		write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");

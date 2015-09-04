@@ -227,6 +227,7 @@ project(":tests:gdx-tests-android") {
     dependencies {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backend-android")
+        compile "com.android.support:support-v4:+"
     }
 }
 
@@ -305,4 +306,10 @@ if (JavaVersion.current().isJava8Compatible()) {
             options.addStringOption("Xdoclint:none", "-quiet")
         }
     }
+}
+
+task fetchNatives << {
+    ant.importBuild "fetch.xml"
+    fetch.execute()
+    copy.execute()
 }
