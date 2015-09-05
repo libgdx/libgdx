@@ -321,7 +321,10 @@ public class Label extends Widget {
 	/** When true the text will be truncated "..." if it does not fit within the width of the label. Wrapping will not occur when
 	 * ellipsis is true. Default is false. */
 	public void setEllipsis (boolean ellipsis) {
-		this.ellipsis = "...";
+		if(ellipsis)
+			this.ellipsis = "...";
+		else
+			this.ellipsis = null;
 	}
 
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
