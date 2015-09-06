@@ -27,10 +27,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ToStringProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Provider;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -40,7 +42,10 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
+	static final ToStringProvider defaultProvider = new ToStringProvider();
+
 	private ListStyle style;
+	private Provider<T, String> itemNameProvider = defaultProvider;
 	private final Array<T> items = new Array();
 	final ArraySelection<T> selection = new ArraySelection(items);
 	private Rectangle cullingArea;
@@ -111,7 +116,7 @@ public class List<T> extends Widget implements Cullable {
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
-			layout.setText(font, items.get(i).toString());
+			layout.setText(font, itemNameProvider.get(items.get(i)));
 			prefWidth = Math.max(layout.width, prefWidth);
 		}
 		layoutPool.free(layout);
@@ -158,7 +163,7 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				font.draw(batch, item.toString(), x + textOffsetX, y + itemY - textOffsetY);
+				font.draw(batch, itemNameProvider.get(item), x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
@@ -204,6 +209,15 @@ public class List<T> extends Widget implements Cullable {
 		} else {
 			selection.set(items.get(index));
 		}
+	}
+
+	/** Sets item name provider that will be used to get text form of items shown in List.
+	 * If null default provider will be used. */
+	public void setItemNameProvider (Provider<T, String> itemNameProvider) {
+		if(itemNameProvider == null)
+			this.itemNameProvider = defaultProvider;
+		else
+			this.itemNameProvider = itemNameProvider;
 	}
 
 	public void setItems (T... newItems) {
