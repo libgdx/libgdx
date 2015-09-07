@@ -5,7 +5,7 @@
 		<description>Runtime for Overlap2D ui and level editing toolkit</description>
 		<package>com.underwaterapps.overlap2druntime</package>
 		<version>0.1.1</version>
-		<compatibility>1.6.4</compatibility>
+		<compatibility>1.6.5</compatibility>
 		<website>http://overlap2d.com/</website>
 		<gwtInherits></gwtInherits>
 		<projects>
