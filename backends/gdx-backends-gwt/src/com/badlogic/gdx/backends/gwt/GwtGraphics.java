@@ -281,10 +281,15 @@ public class GwtGraphics implements Graphics {
 	
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
-		return null;
+		return new GwtCursor(pixmap, xHotspot, yHotspot);
 	}
 
 	@Override
 	public void setCursor (Cursor cursor) {
+		if (cursor == null) {
+			GwtCursor.resetCursor();
+		} else {
+			cursor.setSystemCursor();
+		}
 	}
 }

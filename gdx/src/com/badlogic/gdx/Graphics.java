@@ -235,9 +235,10 @@ public interface Graphics {
 	 * @return a cursor object that can be used by calling {@link #setCursor(Cursor)} or null if not supported */
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
 
-	/** Only viable on the desktop. Will set the mouse cursor image to the image represented by the
-	 * {@link com.badlogic.gdx.graphics.Cursor}. To revert to the default operating system cursor, pass in a null cursor. It is
-	 * recommended to call this function in the main render thread, and maximum one time per frame.
+	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
+	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
+	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. To revert to the default operating system cursor,
+	 * pass in a null cursor. It is recommended to call this function in the main render thread, and maximum one time per frame.
 	 * 
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor}, or null to revert to the default operating
 	 *           system cursor */
