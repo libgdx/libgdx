@@ -16,15 +16,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btFixedConstraint extends BulletBase {
+public class btFixedConstraint extends btGeneric6DofSpring2Constraint {
 	private long swigCPtr;
 	
 	protected btFixedConstraint(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, cPtr, cMemoryOwn);
+		super(className, DynamicsJNI.btFixedConstraint_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btFixedConstraint, normally you should not need this constructor it's intended for low-level usage. */ 
+	/** Construct a new btFixedConstraint, normally you should not need this constructor it's intended for low-level usage. */
 	public btFixedConstraint(long cPtr, boolean cMemoryOwn) {
 		this("btFixedConstraint", cPtr, cMemoryOwn);
 		construct();
@@ -34,7 +34,7 @@ public class btFixedConstraint extends BulletBase {
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(swigCPtr = cPtr, cMemoryOwn);
+		super.reset(DynamicsJNI.btFixedConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
 	
 	public static long getCPtr(btFixedConstraint obj) {

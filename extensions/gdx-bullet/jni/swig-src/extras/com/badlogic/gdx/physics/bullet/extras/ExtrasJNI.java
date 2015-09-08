@@ -232,7 +232,7 @@ public class ExtrasJNI {
     return btGeneric6DofSpringConstraint.getCPtr(self.createGeneric6DofSpringConstraint(new btRigidBody(rbA, false), new btRigidBody(rbB, false), frameInA, frameInB, useLinearReferenceFrameA));
   }
   public static long SwigDirector_btBulletWorldImporter_createGeneric6DofSpring2Constraint(btBulletWorldImporter self, long rbA, long rbB, Matrix4 frameInA, Matrix4 frameInB, int rotateOrder) {
-    return SWIGTYPE_p_btGeneric6DofSpring2Constraint.getCPtr(self.createGeneric6DofSpring2Constraint(new btRigidBody(rbA, false), new btRigidBody(rbB, false), frameInA, frameInB, rotateOrder));
+    return btGeneric6DofSpring2Constraint.getCPtr(self.createGeneric6DofSpring2Constraint(new btRigidBody(rbA, false), new btRigidBody(rbB, false), frameInA, frameInB, rotateOrder));
   }
   public static long SwigDirector_btBulletWorldImporter_createSliderConstraint__SWIG_0(btBulletWorldImporter self, long rbA, long rbB, Matrix4 frameInA, Matrix4 frameInB, boolean useLinearReferenceFrameA) {
     return btSliderConstraint.getCPtr(self.createSliderConstraint(new btRigidBody(rbA, false), new btRigidBody(rbB, false), frameInA, frameInB, useLinearReferenceFrameA));

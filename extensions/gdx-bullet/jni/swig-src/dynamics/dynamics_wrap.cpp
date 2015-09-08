@@ -1891,6 +1891,9 @@ SWIGINTERN btRigidBody *new_btRigidBody__SWIG_1(bool dummy,btScalar mass,btMotio
 #include <BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h>
 
 
+#include <BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h>
+
+
 #include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
 
 
@@ -20445,6 +20448,4709 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1loLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_loLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1loLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_loLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1hiLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_hiLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1hiLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_hiLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1bounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_bounce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1bounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_bounce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1stopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_stopERP = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1stopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_stopERP);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1stopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_stopCFM = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1stopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_stopCFM);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1motorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_motorERP = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1motorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_motorERP);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1motorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_motorCFM = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1motorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_motorCFM);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1enableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_enableMotor = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1enableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (bool) ((arg1)->m_enableMotor);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1targetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_targetVelocity = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1targetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_targetVelocity);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1maxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxMotorForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1maxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxMotorForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1servoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_servoMotor = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1servoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (bool) ((arg1)->m_servoMotor);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1servoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_servoTarget = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1servoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_servoTarget);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1enableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_enableSpring = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1enableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (bool) ((arg1)->m_enableSpring);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1springStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_springStiffness = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1springStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_springStiffness);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1springDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_springDamping = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1springDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_springDamping);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1equilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_equilibriumPoint = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1equilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_equilibriumPoint);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimitError_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_currentLimitError = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimitError_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_currentLimitError);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimitErrorHi_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_currentLimitErrorHi = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimitErrorHi_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_currentLimitErrorHi);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentPosition_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_currentPosition = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentPosition_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (btScalar) ((arg1)->m_currentPosition);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_currentLimit = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1currentLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (int) ((arg1)->m_currentLimit);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btRotationalLimitMotor2_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btRotationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btRotationalLimitMotor2 *)new btRotationalLimitMotor2();
+  *(btRotationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btRotationalLimitMotor2_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = 0 ;
+  btRotationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRotationalLimitMotor2 const & reference is null");
+    return 0;
+  } 
+  result = (btRotationalLimitMotor2 *)new btRotationalLimitMotor2((btRotationalLimitMotor2 const &)*arg1);
+  *(btRotationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1isLimited(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  result = (bool)(arg1)->isLimited();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRotationalLimitMotor2_1testLimitValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->testLimitValue(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btRotationalLimitMotor2(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btRotationalLimitMotor2 *arg1 = (btRotationalLimitMotor2 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btRotationalLimitMotor2 **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1lowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_lowerLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1lowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_lowerLimit);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1upperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_upperLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1upperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_upperLimit);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1bounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_bounce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1bounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_bounce);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1stopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_stopERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1stopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_stopERP);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1stopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_stopCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1stopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_stopCFM);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1motorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_motorERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1motorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_motorERP);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1motorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_motorCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1motorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_motorCFM);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1enableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbooleanArray jarg2) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  if (jarg2 && jenv->GetArrayLength(jarg2) != 3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
+    return ;
+  }
+  arg2 = (bool *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  {
+    size_t ii;
+    bool *b = (bool *) arg1->m_enableMotor;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((bool *) arg2 + ii);
+  }
+  jenv->ReleasePrimitiveArrayCritical(jarg2, (bool *)arg2, 0); 
+}
+
+
+SWIGEXPORT jbooleanArray JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1enableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jbooleanArray jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (bool *)(bool *) ((arg1)->m_enableMotor);
+  /*jresult = SWIG_JavaArrayOut##Bool(jenv, (bool *)result, 3);*/ 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1servoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbooleanArray jarg2) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  if (jarg2 && jenv->GetArrayLength(jarg2) != 3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
+    return ;
+  }
+  arg2 = (bool *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  {
+    size_t ii;
+    bool *b = (bool *) arg1->m_servoMotor;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((bool *) arg2 + ii);
+  }
+  jenv->ReleasePrimitiveArrayCritical(jarg2, (bool *)arg2, 0); 
+}
+
+
+SWIGEXPORT jbooleanArray JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1servoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jbooleanArray jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (bool *)(bool *) ((arg1)->m_servoMotor);
+  /*jresult = SWIG_JavaArrayOut##Bool(jenv, (bool *)result, 3);*/ 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1enableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbooleanArray jarg2) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  if (jarg2 && jenv->GetArrayLength(jarg2) != 3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
+    return ;
+  }
+  arg2 = (bool *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  {
+    size_t ii;
+    bool *b = (bool *) arg1->m_enableSpring;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((bool *) arg2 + ii);
+  }
+  jenv->ReleasePrimitiveArrayCritical(jarg2, (bool *)arg2, 0); 
+}
+
+
+SWIGEXPORT jbooleanArray JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1enableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jbooleanArray jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  bool *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (bool *)(bool *) ((arg1)->m_enableSpring);
+  /*jresult = SWIG_JavaArrayOut##Bool(jenv, (bool *)result, 3);*/ 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1servoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_servoTarget = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1servoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_servoTarget);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1springStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_springStiffness = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1springStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_springStiffness);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1springDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_springDamping = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1springDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_springDamping);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1equilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_equilibriumPoint = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1equilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_equilibriumPoint);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1targetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_targetVelocity = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1targetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_targetVelocity);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1maxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_maxMotorForce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1maxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_maxMotorForce);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimitError_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_currentLimitError = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimitError_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_currentLimitError);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimitErrorHi_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_currentLimitErrorHi = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimitErrorHi_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_currentLimitErrorHi);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLinearDiff_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_currentLinearDiff = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLinearDiff_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_currentLinearDiff);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jintArray jarg2) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  int *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  if (jarg2 && jenv->GetArrayLength(jarg2) != 3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
+    return ;
+  }
+  arg2 = (int *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  {
+    size_t ii;
+    int *b = (int *) arg1->m_currentLimit;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((int *) arg2 + ii);
+  }
+  jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
+}
+
+
+SWIGEXPORT jintArray JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1currentLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jintArray jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  int *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  result = (int *)(int *) ((arg1)->m_currentLimit);
+  /*jresult = SWIG_JavaArrayOut##Int(jenv, (int *)result, 3);*/ 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btTranslationalLimitMotor2_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btTranslationalLimitMotor2 *)new btTranslationalLimitMotor2();
+  *(btTranslationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btTranslationalLimitMotor2_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = 0 ;
+  btTranslationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTranslationalLimitMotor2 const & reference is null");
+    return 0;
+  } 
+  result = (btTranslationalLimitMotor2 *)new btTranslationalLimitMotor2((btTranslationalLimitMotor2 const &)*arg1);
+  *(btTranslationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1isLimited(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  int arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (bool)(arg1)->isLimited(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btTranslationalLimitMotor2_1testLimitValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->testLimitValue(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btTranslationalLimitMotor2(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btTranslationalLimitMotor2 *arg1 = (btTranslationalLimitMotor2 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btTranslationalLimitMotor2 **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2Constraint_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jint jarg5) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  btTransform *arg4 = 0 ;
+  RotateOrder arg5 ;
+  btGeneric6DofSpring2Constraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btTransform local_arg4;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitMatrix4 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  arg5 = (RotateOrder)jarg5; 
+  result = (btGeneric6DofSpring2Constraint *)new btGeneric6DofSpring2Constraint(*arg1,*arg2,(btTransform const &)*arg3,(btTransform const &)*arg4,arg5);
+  *(btGeneric6DofSpring2Constraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2Constraint_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btRigidBody *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  btTransform *arg4 = 0 ;
+  btGeneric6DofSpring2Constraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btTransform local_arg4;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitMatrix4 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  result = (btGeneric6DofSpring2Constraint *)new btGeneric6DofSpring2Constraint(*arg1,*arg2,(btTransform const &)*arg3,(btTransform const &)*arg4);
+  *(btGeneric6DofSpring2Constraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2Constraint_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btTransform *arg2 = 0 ;
+  RotateOrder arg3 ;
+  btGeneric6DofSpring2Constraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  arg3 = (RotateOrder)jarg3; 
+  result = (btGeneric6DofSpring2Constraint *)new btGeneric6DofSpring2Constraint(*arg1,(btTransform const &)*arg2,arg3);
+  *(btGeneric6DofSpring2Constraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2Constraint_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jlong jresult = 0 ;
+  btRigidBody *arg1 = 0 ;
+  btTransform *arg2 = 0 ;
+  btGeneric6DofSpring2Constraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody & reference is null");
+    return 0;
+  } 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btGeneric6DofSpring2Constraint *)new btGeneric6DofSpring2Constraint(*arg1,(btTransform const &)*arg2);
+  *(btGeneric6DofSpring2Constraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getRotationalLimitMotor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btRotationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btRotationalLimitMotor2 *)(arg1)->getRotationalLimitMotor(arg2);
+  *(btRotationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getTranslationalLimitMotor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTranslationalLimitMotor2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (btTranslationalLimitMotor2 *)(arg1)->getTranslationalLimitMotor();
+  *(btTranslationalLimitMotor2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1calculateTransforms_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  (arg1)->calculateTransforms((btTransform const &)*arg2,(btTransform const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1calculateTransforms_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  (arg1)->calculateTransforms();
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getCalculatedTransformA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (btTransform *) &((btGeneric6DofSpring2Constraint const *)arg1)->getCalculatedTransformA();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setMatrix4FrombtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getCalculatedTransformB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (btTransform *) &((btGeneric6DofSpring2Constraint const *)arg1)->getCalculatedTransformB();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setMatrix4FrombtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getFrameOffsetA_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (btTransform *) &((btGeneric6DofSpring2Constraint const *)arg1)->getFrameOffsetA();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setMatrix4FrombtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getFrameOffsetB_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (btTransform *) &((btGeneric6DofSpring2Constraint const *)arg1)->getFrameOffsetB();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setMatrix4FrombtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAxis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jobject jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = ((btGeneric6DofSpring2Constraint const *)arg1)->getAxis(arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAngle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btScalar)((btGeneric6DofSpring2Constraint const *)arg1)->getAngle(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getRelativePivotPosition(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btScalar)((btGeneric6DofSpring2Constraint const *)arg1)->getRelativePivotPosition(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setFrames(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btTransform *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btTransform local_arg3;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  (arg1)->setFrames((btTransform const &)*arg2,(btTransform const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setLinearLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setLinearLowerLimit((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getLinearLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getLinearLowerLimit(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setLinearUpperLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setLinearUpperLimit((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getLinearUpperLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getLinearUpperLimit(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setAngularLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setAngularLowerLimit((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setAngularLowerLimitReversed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setAngularLowerLimitReversed((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAngularLowerLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getAngularLowerLimit(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAngularLowerLimitReversed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getAngularLowerLimitReversed(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setAngularUpperLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setAngularUpperLimit((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setAngularUpperLimitReversed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setAngularUpperLimitReversed((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAngularUpperLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getAngularUpperLimit(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getAngularUpperLimitReversed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->getAngularUpperLimitReversed(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setLimit(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3, jfloat jarg4) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  btScalar arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  arg4 = (btScalar)jarg4; 
+  (arg1)->setLimit(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setLimitReversed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3, jfloat jarg4) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  btScalar arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  arg4 = (btScalar)jarg4; 
+  (arg1)->setLimitReversed(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1isLimited(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (bool)(arg1)->isLimited(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setRotationOrder(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  RotateOrder arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (RotateOrder)jarg2; 
+  (arg1)->setRotationOrder(arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getRotationOrder(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  RotateOrder result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  result = (RotateOrder)(arg1)->getRotationOrder();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setAxis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  (arg1)->setAxis((btVector3 const &)*arg2,(btVector3 const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setBounce(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setBounce(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1enableMotor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jboolean jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->enableMotor(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setServo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jboolean jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->setServo(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setTargetVelocity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setTargetVelocity(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setServoTarget(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setServoTarget(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setMaxMotorForce(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setMaxMotorForce(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1enableSpring(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jboolean jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->enableSpring(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setStiffness(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setStiffness(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setDamping(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setDamping(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setEquilibriumPoint_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  (arg1)->setEquilibriumPoint();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setEquilibriumPoint_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setEquilibriumPoint(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setEquilibriumPoint_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setEquilibriumPoint(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3, jint jarg4) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->setParam(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1setParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->setParam(arg2,arg3);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getParam_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  jfloat jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (btScalar)((btGeneric6DofSpring2Constraint const *)arg1)->getParam(arg2,arg3);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1getParam_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  int arg2 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btScalar)((btGeneric6DofSpring2Constraint const *)arg1)->getParam(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btGeneric6DofSpring2Constraint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btGeneric6DofSpring2Constraint *arg1 = (btGeneric6DofSpring2Constraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btGeneric6DofSpring2Constraint **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1typeConstraintData_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTypedConstraintData *arg2 = (btTypedConstraintData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btTypedConstraintData **)&jarg2; 
+  if (arg1) (arg1)->m_typeConstraintData = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1typeConstraintData_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTypedConstraintData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btTypedConstraintData *)& ((arg1)->m_typeConstraintData);
+  *(btTypedConstraintData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rbAFrame_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTransformFloatData *arg2 = (btTransformFloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2; 
+  if (arg1) (arg1)->m_rbAFrame = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rbAFrame_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTransformFloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btTransformFloatData *)& ((arg1)->m_rbAFrame);
+  *(btTransformFloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rbBFrame_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTransformFloatData *arg2 = (btTransformFloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2; 
+  if (arg1) (arg1)->m_rbBFrame = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rbBFrame_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btTransformFloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btTransformFloatData *)& ((arg1)->m_rbBFrame);
+  *(btTransformFloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearUpperLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearUpperLimit);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearLowerLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearLowerLimit);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearBounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearBounce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearBounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearBounce);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearStopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearStopERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearStopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearStopERP);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearStopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearStopCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearStopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearStopCFM);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMotorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMotorERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMotorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearMotorERP);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMotorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMotorCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMotorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearMotorCFM);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearTargetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearTargetVelocity = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearTargetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearTargetVelocity);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMaxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMaxMotorForce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearMaxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearMaxMotorForce);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearServoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearServoTarget = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearServoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearServoTarget);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearSpringStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearSpringStiffness = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearSpringStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearSpringStiffness);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearSpringDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearSpringDamping = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearSpringDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearSpringDamping);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEquilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_linearEquilibriumPoint = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEquilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_linearEquilibriumPoint);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEnableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearEnableMotor, (const char *)arg2, 4-1);
+      arg1->m_linearEnableMotor[4-1] = 0;
+    } else {
+      arg1->m_linearEnableMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEnableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearEnableMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearServoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearServoMotor, (const char *)arg2, 4-1);
+      arg1->m_linearServoMotor[4-1] = 0;
+    } else {
+      arg1->m_linearServoMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearServoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearServoMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEnableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearEnableSpring, (const char *)arg2, 4-1);
+      arg1->m_linearEnableSpring[4-1] = 0;
+    } else {
+      arg1->m_linearEnableSpring[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1linearEnableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearEnableSpring);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding1_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding1, (const char *)arg2, 4-1);
+      arg1->m_padding1[4-1] = 0;
+    } else {
+      arg1->m_padding1[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding1_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding1);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularUpperLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularUpperLimit);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularLowerLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularLowerLimit);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularBounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularBounce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularBounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularBounce);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularStopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularStopERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularStopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularStopERP);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularStopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularStopCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularStopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularStopCFM);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMotorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMotorERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMotorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularMotorERP);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMotorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMotorCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMotorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularMotorCFM);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularTargetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularTargetVelocity = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularTargetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularTargetVelocity);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMaxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMaxMotorForce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularMaxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularMaxMotorForce);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularServoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularServoTarget = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularServoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularServoTarget);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularSpringStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularSpringStiffness = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularSpringStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularSpringStiffness);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularSpringDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularSpringDamping = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularSpringDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularSpringDamping);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEquilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_angularEquilibriumPoint = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEquilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_angularEquilibriumPoint);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEnableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularEnableMotor, (const char *)arg2, 4-1);
+      arg1->m_angularEnableMotor[4-1] = 0;
+    } else {
+      arg1->m_angularEnableMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEnableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularEnableMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularServoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularServoMotor, (const char *)arg2, 4-1);
+      arg1->m_angularServoMotor[4-1] = 0;
+    } else {
+      arg1->m_angularServoMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularServoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularServoMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEnableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularEnableSpring, (const char *)arg2, 4-1);
+      arg1->m_angularEnableSpring[4-1] = 0;
+    } else {
+      arg1->m_angularEnableSpring[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1angularEnableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularEnableSpring);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding2_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding2, (const char *)arg2, 4-1);
+      arg1->m_padding2[4-1] = 0;
+    } else {
+      arg1->m_padding2[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding2_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding2);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rotateOrder_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_rotateOrder = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1rotateOrder_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (int) ((arg1)->m_rotateOrder);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding3_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding3, (const char *)arg2, 4-1);
+      arg1->m_padding3[4-1] = 0;
+    } else {
+      arg1->m_padding3[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintData_1padding3_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding3);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2ConstraintData(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btGeneric6DofSpring2ConstraintData *)new btGeneric6DofSpring2ConstraintData();
+  *(btGeneric6DofSpring2ConstraintData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btGeneric6DofSpring2ConstraintData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btGeneric6DofSpring2ConstraintData *arg1 = (btGeneric6DofSpring2ConstraintData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btGeneric6DofSpring2ConstraintData **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1typeConstraintData_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTypedConstraintDoubleData *arg2 = (btTypedConstraintDoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btTypedConstraintDoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_typeConstraintData = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1typeConstraintData_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTypedConstraintDoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btTypedConstraintDoubleData *)& ((arg1)->m_typeConstraintData);
+  *(btTypedConstraintDoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rbAFrame_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTransformDoubleData *arg2 = (btTransformDoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btTransformDoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_rbAFrame = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rbAFrame_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTransformDoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btTransformDoubleData *)& ((arg1)->m_rbAFrame);
+  *(btTransformDoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rbBFrame_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTransformDoubleData *arg2 = (btTransformDoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btTransformDoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_rbBFrame = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rbBFrame_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btTransformDoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btTransformDoubleData *)& ((arg1)->m_rbBFrame);
+  *(btTransformDoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearUpperLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearUpperLimit);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearLowerLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearLowerLimit);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearBounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearBounce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearBounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearBounce);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearStopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearStopERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearStopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearStopERP);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearStopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearStopCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearStopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearStopCFM);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMotorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMotorERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMotorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearMotorERP);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMotorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMotorCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMotorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearMotorCFM);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearTargetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearTargetVelocity = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearTargetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearTargetVelocity);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMaxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearMaxMotorForce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearMaxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearMaxMotorForce);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearServoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearServoTarget = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearServoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearServoTarget);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearSpringStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearSpringStiffness = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearSpringStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearSpringStiffness);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearSpringDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearSpringDamping = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearSpringDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearSpringDamping);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEquilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_linearEquilibriumPoint = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEquilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_linearEquilibriumPoint);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEnableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearEnableMotor, (const char *)arg2, 4-1);
+      arg1->m_linearEnableMotor[4-1] = 0;
+    } else {
+      arg1->m_linearEnableMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEnableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearEnableMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearServoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearServoMotor, (const char *)arg2, 4-1);
+      arg1->m_linearServoMotor[4-1] = 0;
+    } else {
+      arg1->m_linearServoMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearServoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearServoMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEnableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_linearEnableSpring, (const char *)arg2, 4-1);
+      arg1->m_linearEnableSpring[4-1] = 0;
+    } else {
+      arg1->m_linearEnableSpring[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1linearEnableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_linearEnableSpring);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding1_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding1, (const char *)arg2, 4-1);
+      arg1->m_padding1[4-1] = 0;
+    } else {
+      arg1->m_padding1[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding1_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding1);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularUpperLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularUpperLimit);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularLowerLimit = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularLowerLimit);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularBounce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularBounce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularBounce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularBounce);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularStopERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularStopERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularStopERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularStopERP);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularStopCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularStopCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularStopCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularStopCFM);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMotorERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMotorERP = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMotorERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularMotorERP);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMotorCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMotorCFM = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMotorCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularMotorCFM);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularTargetVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularTargetVelocity = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularTargetVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularTargetVelocity);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMaxMotorForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularMaxMotorForce = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularMaxMotorForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularMaxMotorForce);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularServoTarget_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularServoTarget = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularServoTarget_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularServoTarget);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularSpringStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularSpringStiffness = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularSpringStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularSpringStiffness);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularSpringDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularSpringDamping = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularSpringDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularSpringDamping);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEquilibriumPoint_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_angularEquilibriumPoint = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEquilibriumPoint_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_angularEquilibriumPoint);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEnableMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularEnableMotor, (const char *)arg2, 4-1);
+      arg1->m_angularEnableMotor[4-1] = 0;
+    } else {
+      arg1->m_angularEnableMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEnableMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularEnableMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularServoMotor_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularServoMotor, (const char *)arg2, 4-1);
+      arg1->m_angularServoMotor[4-1] = 0;
+    } else {
+      arg1->m_angularServoMotor[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularServoMotor_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularServoMotor);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEnableSpring_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_angularEnableSpring, (const char *)arg2, 4-1);
+      arg1->m_angularEnableSpring[4-1] = 0;
+    } else {
+      arg1->m_angularEnableSpring[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1angularEnableSpring_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_angularEnableSpring);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding2_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding2, (const char *)arg2, 4-1);
+      arg1->m_padding2[4-1] = 0;
+    } else {
+      arg1->m_padding2[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding2_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding2);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rotateOrder_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_rotateOrder = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1rotateOrder_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (int) ((arg1)->m_rotateOrder);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding3_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  {
+    if(arg2) {
+      strncpy((char*)arg1->m_padding3, (const char *)arg2, 4-1);
+      arg1->m_padding3[4-1] = 0;
+    } else {
+      arg1->m_padding3[0] = 0;
+    }
+  }
+  
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2ConstraintDoubleData2_1padding3_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  result = (char *)(char *) ((arg1)->m_padding3);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btGeneric6DofSpring2ConstraintDoubleData2(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btGeneric6DofSpring2ConstraintDoubleData2 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btGeneric6DofSpring2ConstraintDoubleData2 *)new btGeneric6DofSpring2ConstraintDoubleData2();
+  *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btGeneric6DofSpring2ConstraintDoubleData2(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btGeneric6DofSpring2ConstraintDoubleData2 *arg1 = (btGeneric6DofSpring2ConstraintDoubleData2 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btGeneric6DofSpring2ConstraintDoubleData2 **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btHingeConstraint_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jobject jarg5, jobject jarg6, jboolean jarg7) {
   jlong jresult = 0 ;
   btRigidBody *arg1 = 0 ;
@@ -26271,6 +30977,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     return baseptr;
 }
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btGeneric6DofSpring2Constraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btTypedConstraint **)&baseptr = *(btGeneric6DofSpring2Constraint **)&jarg1;
+    return baseptr;
+}
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
@@ -26284,6 +30998,22 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     (void)jenv;
     (void)jcls;
     *(btHingeConstraint **)&baseptr = *(btHingeAccumulatedAngleConstraint **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHinge2Constraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btGeneric6DofSpring2Constraint **)&baseptr = *(btHinge2Constraint **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btFixedConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btGeneric6DofSpring2Constraint **)&baseptr = *(btFixedConstraint **)&jarg1;
     return baseptr;
 }
 

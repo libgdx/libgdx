@@ -3016,7 +3016,7 @@ void SwigDirector_btBulletWorldImporter::swig_connect_director(JNIEnv *jenv, job
       "createGeneric6DofSpringConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btGeneric6DofSpringConstraint;", NULL 
     },
     {
-      "createGeneric6DofSpring2Constraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;I)Lcom/badlogic/gdx/physics/bullet/extras/SWIGTYPE_p_btGeneric6DofSpring2Constraint;", NULL 
+      "createGeneric6DofSpring2Constraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;I)Lcom/badlogic/gdx/physics/bullet/dynamics/btGeneric6DofSpring2Constraint;", NULL 
     },
     {
       "createSliderConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btSliderConstraint;", NULL 

@@ -25,6 +25,8 @@ public interface DynamicsConstants {
   public final static int BT_6DOF_FLAGS_AXIS_SHIFT = 3;
   public final static String btConeTwistConstraintDataName = "btConeTwistConstraintData";
   public final static String btGeneric6DofSpringConstraintDataName = "btGeneric6DofSpringConstraintData";
+  public final static String btGeneric6DofSpring2ConstraintDataName = "btGeneric6DofSpring2ConstraintData";
+  public final static int BT_6DOF_FLAGS_AXIS_SHIFT2 = 4;
   public final static int _BT_USE_CENTER_LIMIT_ = 1;
   public final static String btHingeConstraintDataName = "btHingeConstraintFloatData";
 }
