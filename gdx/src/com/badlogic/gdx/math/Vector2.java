@@ -278,16 +278,16 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return "(" + x + "," + y + ")";
 	}
 
-	/** Sets this {@code Vector2} to the value represented by the specified string according to the format of {@link #toString()}.
+	/** Parses the {@code Vector2} represented by the given string according to the format of {@link #toString()}.
 	 * @param v the string.
-	 * @return this vector for chaining */
-	public Vector2 fromString (String v) {
+	 * @return the {@code Vector2} represented by the given string. */
+	public static Vector2 fromString (String v) {
 		int s = v.indexOf(',', 1);
 		if (s != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')') {
 			try {
 				float x = Float.parseFloat(v.substring(1, s));
 				float y = Float.parseFloat(v.substring(s + 1, v.length() - 1));
-				return this.set(x, y);
+				return new Vector2(x, y);
 			} catch (NumberFormatException ex) {
 				// Throw a GdxRuntimeException
 			}
