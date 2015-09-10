@@ -564,6 +564,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
 
+	/** Converts this {@code Vector3} to a string in the format {@code (x,y,z)}.
+	 * @return a string representation of this object. */
 	@Override
 	public String toString () {
 		return "(" + x + "," + y + "," + z + ")";
