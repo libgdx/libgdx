@@ -365,10 +365,10 @@ public class Rectangle implements Serializable, Shape2D {
 		return "[" + x + "," + y + "," + width + "," + height + "]";
 	}
 
-	/** Parses the {@code Rectangle} represented by the given string according to the format of {@link #toString()}.
+	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}.
 	 * @param v the string.
-	 * @return the {@code Rectangle} represented by the given string. */
-	public static Rectangle fromString (String v) {
+	 * @return this rectangle for chaining */
+	public Rectangle fromString (String v) {
 		int s0 = v.indexOf(',', 1);
 		int s1 = v.indexOf(',', s0 + 1);
 		int s2 = v.indexOf(',', s1 + 1);
@@ -378,7 +378,7 @@ public class Rectangle implements Serializable, Shape2D {
 				float y = Float.parseFloat(v.substring(s0 + 1, s1));
 				float width = Float.parseFloat(v.substring(s1 + 1, s2));
 				float height = Float.parseFloat(v.substring(s2 + 1, v.length() - 1));
-				return new Rectangle(x, y, width, height);
+				return this.set(x, y, width, height);
 			} catch (NumberFormatException ex) {
 				// Throw a GdxRuntimeException
 			}
