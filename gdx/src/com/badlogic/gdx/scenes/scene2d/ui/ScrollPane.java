@@ -186,19 +186,19 @@ public class ScrollPane extends WidgetGroup {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				cancelTouchFocusedChild(event);
+				if (cancelTouchFocus) cancelTouchFocus();
 			}
 
 			public void fling (InputEvent event, float x, float y, int button) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
-					cancelTouchFocusedChild(event);
+					if (cancelTouchFocus) cancelTouchFocus();
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
 					velocityY = -y;
-					cancelTouchFocusedChild(event);
+					if (cancelTouchFocus) cancelTouchFocus();
 				}
 			}
 
@@ -231,8 +231,10 @@ public class ScrollPane extends WidgetGroup {
 		fadeDelay = fadeDelaySeconds;
 	}
 
-	void cancelTouchFocusedChild (InputEvent event) {
-		if (!cancelTouchFocus) return;
+	/** Cancels the stage's touch focus for all listeners except this scroll pane's flick scroll listener. This causes any widgets
+	 * inside the scrollpane that have received touchDown to receive touchUp.
+	 * @see #setCancelTouchFocus(boolean) */
+	public void cancelTouchFocus () {
 		Stage stage = getStage();
 		if (stage != null) stage.cancelTouchFocusExcept(flickScrollListener, this);
 	}
@@ -928,12 +930,9 @@ public class ScrollPane extends WidgetGroup {
 		this.velocityX = velocityX;
 	}
 
-	/** Gets the flick scroll y velocity. */
+	/** Gets the flick scroll x velocity. */
 	public float getVelocityX () {
-		if (flingTimer <= 0) return 0;
-		float alpha = flingTimer / flingTime;
-		alpha = alpha * alpha * alpha;
-		return velocityX * alpha * alpha * alpha;
+		return velocityX;
 	}
 
 	public void setVelocityY (float velocityY) {
@@ -1026,8 +1025,8 @@ public class ScrollPane extends WidgetGroup {
 		this.variableSizeKnobs = variableSizeKnobs;
 	}
 
-	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled when flick scrolling begins. This causes
-	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
+	/** When true (default) and flick scrolling begins, {@link #cancelTouchFocus()} is called. This causes any widgets inside the
+	 * scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
 	}
