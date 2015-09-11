@@ -477,7 +477,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
-			if (e.getKeyCode() >= SUPPORTED_KEYS) return false;
+			if (e.getKeyCode() < 0 || e.getKeyCode() >= SUPPORTED_KEYS) {
+				return false;
+			}
 			
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
