@@ -10,13 +10,16 @@
 
 package java.io;
 
-import avian.Utf8;
+import com.badlogic.gdx.utils.Utf8Decoder;
 
 public class InputStreamReader extends Reader {
 	private final InputStream in;
 
+	private final Utf8Decoder utf8Decoder;
+
 	public InputStreamReader (InputStream in) {
 		this.in = in;
+		this.utf8Decoder = new Utf8Decoder();
 	}
 
 	public InputStreamReader (InputStream in, String encoding) throws UnsupportedEncodingException {
@@ -31,14 +34,7 @@ public class InputStreamReader extends Reader {
 	public int read (char[] b, int offset, int length) throws IOException {
 		byte[] buffer = new byte[length];
 		int c = in.read(buffer);
-
-		if (c <= 0) return c;
-
-		char[] buffer16 = Utf8.decode16(buffer, 0, c);
-
-		System.arraycopy(buffer16, 0, b, offset, buffer16.length);
-
-		return buffer16.length;
+		return c <= 0 ? c : utf8Decoder.decode(buffer, 0, c, b, offset);
 	}
 
 	public void close () throws IOException {
