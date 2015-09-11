@@ -111,7 +111,7 @@ public class List<T> extends Widget implements Cullable {
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
-			layout.setText(font, items.get(i).toString());
+			layout.setText(font, toString(items.get(i)));
 			prefWidth = Math.max(layout.width, prefWidth);
 		}
 		layoutPool.free(layout);
@@ -158,7 +158,7 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				font.draw(batch, item.toString(), x + textOffsetX, y + itemY - textOffsetY);
+				font.draw(batch, toString(item), x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
@@ -256,6 +256,10 @@ public class List<T> extends Widget implements Cullable {
 	public float getPrefHeight () {
 		validate();
 		return prefHeight;
+	}
+
+	protected String toString (T obj) {
+		return obj.toString();
 	}
 
 	public void setCullingArea (Rectangle cullingArea) {
