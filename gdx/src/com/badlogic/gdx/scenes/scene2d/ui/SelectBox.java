@@ -40,13 +40,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ToStringProvider;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.Provider;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -59,10 +57,8 @@ import com.badlogic.gdx.utils.Provider;
  * @author Nathan Sweet */
 public class SelectBox<T> extends Widget implements Disableable {
 	static final Vector2 temp = new Vector2();
-	static final ToStringProvider defaultProvider = new ToStringProvider();
 
 	SelectBoxStyle style;
-	Provider<T, String> itemNameProvider = defaultProvider;
 	final Array<T> items = new Array();
 	final ArraySelection<T> selection = new ArraySelection(items);
 	SelectBoxList<T> selectBoxList;
@@ -129,16 +125,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return style;
 	}
 
-	/** Sets item name provider that will be used to get text form of items shown in SelectBox.
-	 * If null default provider will be used. */
-	public void setItemNameProvider (Provider<T, String> itemNameProvider) {
-		if(itemNameProvider == null)
-			this.itemNameProvider = defaultProvider;
-		else
-			this.itemNameProvider = itemNameProvider;
-		selectBoxList.list.setItemNameProvider(itemNameProvider);
-	}
-
 	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
@@ -194,7 +180,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
-			layout.setText(font, itemNameProvider.get(items.get(i)));
+			layout.setText(font, items.get(i).toString());
 			maxItemWidth = Math.max(layout.width, maxItemWidth);
 		}
 		layoutPool.free(layout);
@@ -244,7 +230,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 		T selected = selection.first();
 		if (selected != null) {
-			String string = itemNameProvider.get(selected);
+			String string = selected.toString();
 			if (background != null) {
 				width -= background.getLeftWidth() + background.getRightWidth();
 				height -= background.getBottomHeight() + background.getTopHeight();
