@@ -27,6 +27,8 @@ configure(allprojects - project(':tests:gdx-tests-android')) {
     apply plugin: "idea"
     apply plugin: "java"
 
+    compileJava.options.encoding = 'UTF-8';
+
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
