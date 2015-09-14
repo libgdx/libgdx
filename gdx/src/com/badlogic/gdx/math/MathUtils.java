@@ -247,6 +247,30 @@ public final class MathUtils {
 	static public float lerp (float fromValue, float toValue, float progress) {
 		return fromValue + (toValue - fromValue) * progress;
 	}
+	
+	/** Linearly interpolates between two angles in radians. Takes into account that angles wrap at two pi and always takes the
+	 * direction with the smallest delta angle.
+	 * 
+	 * @param fromRadians start angle in radians
+	 * @param toRadians target angle in radians
+	 * @param progress interpolation value in the range [0, 1]
+	 * @return the interpolated angle in the range [0, PI2[ */
+	public static float lerpAngle (float fromRadians, float toRadians, float progress) {
+		float delta = ((toRadians - fromRadians + PI2 + PI) % PI2) - PI;
+		return (fromRadians + delta * progress + PI2) % PI2;
+	}
+
+	/** Linearly interpolates between two angles in degrees. Takes into account that angles wrap at 360 degrees and always takes
+	 * the direction with the smallest delta angle.
+	 * 
+	 * @param fromDegrees start angle in degrees
+	 * @param toDegrees target angle in degrees
+	 * @param progress interpolation value in the range [0, 1]
+	 * @return the interpolated angle in the range [0, 360[ */
+	public static float lerpAngleDeg (float fromDegrees, float toDegrees, float progress) {
+		float delta = ((toDegrees - fromDegrees + 360 + 180) % 360) - 180;
+		return (fromDegrees + delta * progress + 360) % 360;
+	}
 
 	// ---
 
