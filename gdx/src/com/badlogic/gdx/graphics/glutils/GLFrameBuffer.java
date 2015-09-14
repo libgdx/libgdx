@@ -171,9 +171,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
+
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			disposeColorTexture(colorTexture);
