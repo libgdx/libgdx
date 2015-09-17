@@ -368,6 +368,11 @@ public class GwtTestWrapper extends GdxTest {
 		public void setCatchMenuKey (boolean catchMenu) {
 			input.setCatchMenuKey(catchMenu);
 		}
+		
+		@Override
+		public boolean isCatchMenuKey () {
+			return input.isCatchMenuKey();
+		}
 
 		@Override
 		public void setInputProcessor (InputProcessor processor) {
