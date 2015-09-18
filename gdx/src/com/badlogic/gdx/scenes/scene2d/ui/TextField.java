@@ -831,7 +831,7 @@ public class TextField extends Widget implements Disableable {
 					copy();
 					return true;
 				}
-				if (keycode == Keys.X || keycode == Keys.DEL) {
+				if (keycode == Keys.X) {
 					cut(true);
 					return true;
 				}
