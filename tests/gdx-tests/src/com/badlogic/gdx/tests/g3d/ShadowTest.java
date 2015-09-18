@@ -44,7 +44,7 @@ import com.badlogic.gdx.graphics.g3d.shadow.system.ShadowSystem;
 import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem;
 import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.MainShaderProvider;
 import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.Pass1ShaderProvider;
-import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem.LightProperties;
+import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;

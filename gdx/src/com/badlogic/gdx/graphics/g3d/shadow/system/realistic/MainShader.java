@@ -30,8 +30,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem.LightProperties;
-import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem.PointLightProperties;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -143,7 +141,7 @@ public class MainShader extends DefaultShader {
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
 			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.vertex.glsl")
-				.readString();
+			.readString();
 		return defaultVertexShader;
 	}
 
@@ -152,7 +150,7 @@ public class MainShader extends DefaultShader {
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.fragment.glsl")
-				.readString();
+			.readString();
 		return defaultFragmentShader;
 	}
 
@@ -261,7 +259,8 @@ public class MainShader extends DefaultShader {
 				int idx = dirShadowsLoc + i * dirShadowsSize;
 
 				// Shadow
-				ObjectMap<DirectionalLight, LightProperties> dirCameras = shadowSystem.getDirectionalCameras();
+				ObjectMap<DirectionalLight, com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem.LightProperties> dirCameras = shadowSystem
+					.getDirectionalCameras();
 
 				DirectionalLight dl = dirs.get(i);
 				if (shadowSystem.hasLight(dl)) {
@@ -297,7 +296,8 @@ public class MainShader extends DefaultShader {
 				int idx = spotShadowsLoc + i * spotShadowsSize;
 
 				// Shadow
-				ObjectMap<SpotLight, LightProperties> spotCameras = shadowSystem.getSpotCameras();
+				ObjectMap<SpotLight, com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem.LightProperties> spotCameras = shadowSystem
+					.getSpotCameras();
 
 				SpotLight sl = spots.get(i);
 				if (shadowSystem.hasLight(sl)) {
@@ -331,13 +331,15 @@ public class MainShader extends DefaultShader {
 				}
 
 				// Shadow
-				ObjectMap<PointLight, PointLightProperties> pointCameras = shadowSystem.getPointCameras();
+				ObjectMap<PointLight, com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem.PointLightProperties> pointCameras = shadowSystem
+					.getPointCameras();
 
 				PointLight pl = points.get(i);
 				if (shadowSystem.hasLight(pl)) {
 					for (int j = 0; j < 6; j++) {
 						if (pointCameras.get(pl).properties.containsKey(Cubemap.CubemapSide.values()[j])) {
-							LightProperties property = pointCameras.get(pl).properties.get(Cubemap.CubemapSide.values()[j]);
+							com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem.LightProperties property = pointCameras.get(pl).properties
+								.get(Cubemap.CubemapSide.values()[j]);
 							final TextureRegion tr = property.region;
 							final Camera cam = property.camera;
 

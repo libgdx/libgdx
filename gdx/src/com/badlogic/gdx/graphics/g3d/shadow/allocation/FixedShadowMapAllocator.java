@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.shadow.allocation;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** The behavior of the FixedShadowMapAllocator is naive. It separates the texture in several parts and for each lights increments
  * the region
@@ -34,6 +35,7 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	protected final int nbMap;
 	protected int currentMap;
 	protected ShadowMapRegion result = new ShadowMapRegion();
+	protected boolean allocating = false;
 
 	public FixedShadowMapAllocator (int size, int nbMap) {
 		this.size = size;
@@ -51,15 +53,27 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 
 	@Override
 	public void begin () {
+		if (allocating) {
+			throw new GdxRuntimeException("Allocator must end before begin");
+		}
+		allocating = true;
 		currentMap = 0;
 	}
 
 	@Override
 	public void end () {
+		if (!allocating) {
+			throw new GdxRuntimeException("Allocator must begin before end");
+		}
+		allocating = false;
 	}
 
 	@Override
 	public ShadowMapRegion nextResult (Camera camera) {
+		if (!allocating) {
+			throw new GdxRuntimeException("Allocator must begin before call");
+		}
+
 		int nbOnLine = (int)Math.round(Math.sqrt(nbMap));
 		int i = currentMap % nbOnLine;
 		int j = currentMap / nbOnLine;
