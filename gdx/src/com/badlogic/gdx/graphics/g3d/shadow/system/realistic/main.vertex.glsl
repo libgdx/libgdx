@@ -114,14 +114,6 @@ varying vec4 v_spotShadowMapUv[numSpotLights];
 #endif
 #endif // numSpotLights
 
-#ifdef numPointLights
-#if numPointLights > 0
-#define numPointFaces numPointLights*6
-uniform mat4 u_pointShadowMapProjViewTrans[numPointFaces];
-varying vec4 v_pointShadowMapUv[numPointFaces];
-#endif
-#endif // numPointLights
-
 void main() {
 	vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	v_pos = pos.xyz;
@@ -173,14 +165,6 @@ void main() {
 	#if numSpotLights > 0
 		for (int i = 0; i < numSpotLights; i++) {			
 			v_spotShadowMapUv[i] = u_spotShadowMapProjViewTrans[i] * pos;
-		}
-	#endif
-	#endif
-	
-	#ifdef numPointLights
-	#if numPointLights > 0
-		for (int i = 0; i < numPointFaces; i++) {
-			v_pointShadowMapUv[i] = u_pointShadowMapProjViewTrans[i] * pos;
 		}
 	#endif
 	#endif

@@ -16,12 +16,16 @@
 
 package com.badlogic.gdx.graphics.g3d.shadow.system.realistic;
 
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.shadow.allocation.ShadowMapAllocator;
 import com.badlogic.gdx.graphics.g3d.shadow.directional.DirectionalAnalyzer;
 import com.badlogic.gdx.graphics.g3d.shadow.filter.LightFilter;
@@ -60,6 +64,12 @@ public class RealisticShadowSystem extends BaseShadowSystem {
 		frameBuffers[PASS_1] = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getSize(), allocator.getSize(), true);
 		passShaderProviders[PASS_1] = new Pass1ShaderProvider();
 		mainShaderProvider = new MainShaderProvider(new MainShader.Config(this));
+	}
+
+	/** No point light support */
+	@Override
+	public void addLight (PointLight point, Set<CubemapSide> sides) {
+
 	}
 
 	@Override

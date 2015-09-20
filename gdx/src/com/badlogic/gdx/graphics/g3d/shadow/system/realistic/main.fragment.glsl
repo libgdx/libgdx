@@ -76,7 +76,6 @@ uniform vec4 u_dirShadowMapUVTransform[numDirectionalLights];
 
 #ifdef numPointLights
 #if numPointLights > 0
-#define numPointFaces numPointLights*6
 
 struct PointLight
 {
@@ -85,15 +84,6 @@ struct PointLight
 	float intensity;
 };
 uniform PointLight u_pointLights[numPointLights];
-
-struct PointShadow
-{
-	vec4 uvTransform;
-	vec3 direction;
-};
-uniform PointShadow u_pointShadows[numPointFaces];
-varying vec4 v_pointShadowMapUv[numPointFaces];
-uniform vec4 u_pointShadowMapUVTransform[numPointFaces];
 
 #endif
 #endif // numPointLights
@@ -261,40 +251,19 @@ void main() {
 	#if numPointLights > 0
 		for (int i = 0; i < numPointLights; i++) {
 			vec3 lightDir = u_pointLights[i].position - v_pos;
-			for(int j = 0; j < 6; j++) {
-				int id = i*6+j;
-				vec3 depth = (v_pointShadowMapUv[id].xyz / v_pointShadowMapUv[id].w)*0.5+0.5;
-				vec2 uv = u_pointShadows[id].uvTransform.xy + depth.xy * u_pointShadows[id].uvTransform.zw;
-				float lenDepthMap = unpack(texture2D(u_shadowTexture, uv));
+			float dist2 = dot(lightDir, lightDir);
+			lightDir *= inversesqrt(dist2);
+			float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
+			float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
 			
-				if (v_pointShadowMapUv[id].z >= 0.0
-					&& depth.x >= 0.0 
-					&& depth.x <= 1.0
-					&& depth.y >= 0.0 
-					&& depth.y <= 1.0 
-					) {
+			// Diffuse
+			lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
 
-		    		if( depth.z - lenDepthMap <= bias ) {
-
-						float spotEffect = dot(-normalize(lightDir), normalize(u_pointShadows[id].direction));
-						if ( spotEffect  > cos(radians(90.0)) ) {
-							float dist2 = dot(lightDir, lightDir);
-							lightDir *= inversesqrt(dist2);
-							float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
-							float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-					
-							// Diffuse
-							lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
-
-							// Specular
-							#ifdef specularTextureFlag
-								float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
-								lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
-							#endif
-						}
-					}
-				}
-			}
+			// Specular
+			#ifdef specularTextureFlag
+				float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
+				lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+			#endif
 		}
 	#endif
 	#endif // numPointLights
