@@ -1,6 +1,7 @@
 [1.6.6]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/
 - Fixed an issue with UTF8 decoding in GWT emulation of InputStreamReader
+- Updated to RoboVM 1.8 for iOS 9 support.
 
 [1.6.5]
 - Objects from animated tiles in TMX maps are now supported.
