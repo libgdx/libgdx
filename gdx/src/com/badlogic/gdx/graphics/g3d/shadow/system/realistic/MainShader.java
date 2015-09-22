@@ -31,8 +31,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** This shader is used by the realistic shadow system Be careful about varying. Point light consumes six varying adn can crash the
- * shader This shader supports normal mapping and specular mapping
+/** This shader is used by the realistic shadow system. This shader supports normal mapping and specular mapping
  * @author realitix */
 public class MainShader extends DefaultShader {
 	public static class Config extends DefaultShader.Config {
@@ -101,7 +100,7 @@ public class MainShader extends DefaultShader {
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
 			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.vertex.glsl")
-				.readString();
+			.readString();
 		return defaultVertexShader;
 	}
 
@@ -110,7 +109,7 @@ public class MainShader extends DefaultShader {
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shadow/system/realistic/main.fragment.glsl")
-				.readString();
+			.readString();
 		return defaultFragmentShader;
 	}
 

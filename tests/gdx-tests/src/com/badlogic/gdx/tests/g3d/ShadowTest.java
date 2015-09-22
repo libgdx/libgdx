@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,25 +32,34 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
+import com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem;
+import com.badlogic.gdx.graphics.g3d.shadow.system.ShadowSystem;
+import com.badlogic.gdx.graphics.g3d.shadow.system.classical.ClassicalShadowSystem;
 import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class ShadowTest extends GdxTest {
 	PerspectiveCamera cam;
-	PerspectiveCamera cam2;
 	CameraInputController inputController;
 
 	Model model;
 	ModelInstance instance;
 	Environment environment;
-	Array<ModelBatch> passBatches = new Array<ModelBatch>();
-	RealisticShadowSystem shadowManager;
-	ModelBatch shadowModelBatch;
+
+	ObjectMap<ShadowSystem, Array<ModelBatch>> passBatches2 = new ObjectMap<ShadowSystem, Array<ModelBatch>>();
+	ObjectMap<ShadowSystem, ModelBatch> shadowBatches = new ObjectMap<ShadowSystem, ModelBatch>();
+	Array<ShadowSystem> shadowSystems = new Array<ShadowSystem>();
 
 	public Model axesModel;
 	public ModelInstance axesInstance;
@@ -61,6 +70,11 @@ public class ShadowTest extends GdxTest {
 	DirectionalLight dl;
 	float radius = 1f;
 	Vector3 center = new Vector3(), transformedCenter = new Vector3(), tmpV = new Vector3();
+
+	int currentShadowSystem = 0;
+
+	Stage stage;
+	Label label;
 
 	@Override
 	public void create () {
@@ -82,7 +96,7 @@ public class ShadowTest extends GdxTest {
 		environment.add(sl3);
 		environment.add(dl);
 
-		// The camera wich directional light use
+		// The user camera
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0f, 7f, 10f);
 		cam.lookAt(0, 0, 0);
@@ -90,16 +104,6 @@ public class ShadowTest extends GdxTest {
 		cam.far = 25f;
 		cam.up.set(0, 1, 0);
 		cam.update();
-		// cameraHelper.add(new CameraHelper(cam));
-
-		// The user camera
-		cam2 = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam2.position.set(0f, 7f, 10f);
-		cam2.lookAt(0, 0, 0);
-		cam2.near = 1f;
-		cam2.far = 100f;
-		cam2.up.set(0, 1, 0);
-		cam2.update();
 
 		// Load texture
 		Array<Texture> wood = new Array<Texture>(3);
@@ -138,16 +142,28 @@ public class ShadowTest extends GdxTest {
 
 		Array<ModelInstance> instances = new Array<ModelInstance>();
 		instances.add(instance);
-		shadowManager = new RealisticShadowSystem(cam, instances);
-		environment.addListener(shadowManager);
+
+		// Shadow system init
+		shadowSystems.add(new RealisticShadowSystem(cam, instances));
+		shadowSystems.add(new ClassicalShadowSystem(cam, instances));
+
+		for (ShadowSystem shadowSystem : shadowSystems) {
+			passBatches2.put(shadowSystem, new Array<ModelBatch>());
+			for (int i = 0; i < shadowSystem.getPassQuantity(); i++) {
+				passBatches2.get(shadowSystem).add(new ModelBatch(shadowSystem.getPassShaderProvider(i)));
+			}
+			shadowBatches.put(shadowSystem, new ModelBatch(shadowSystem.getShaderProvider()));
+			environment.addListener((BaseShadowSystem)shadowSystem);
+		}
 
 		createAxes();
+		Gdx.input.setInputProcessor(inputController = new CameraInputController(cam));
 
-		for (int i = 0; i < shadowManager.getPassQuantity(); i++) {
-			passBatches.add(new ModelBatch(shadowManager.getPassShaderProvider(i)));
-		}
-		shadowModelBatch = new ModelBatch(shadowManager.getShaderProvider());
-		Gdx.input.setInputProcessor(inputController = new CameraInputController(cam2));
+		stage = new Stage(new ScreenViewport());
+		label = new Label("", new Skin(Gdx.files.internal("data/uiskin.json")));
+		stage.addActor(label);
+		label.setX(100);
+		label.setY(Gdx.graphics.getHeight() - 30);
 	}
 
 	private void createAxes () {
@@ -172,8 +188,16 @@ public class ShadowTest extends GdxTest {
 		axesInstance = new ModelInstance(axesModel);
 	}
 
+	long lastTime;
+
 	@Override
 	public void render () {
+		if (TimeUtils.timeSinceMillis(lastTime) > 5 * 1000) {
+			currentShadowSystem++;
+			if (currentShadowSystem > 1) currentShadowSystem = 0;
+			lastTime = TimeUtils.millis();
+		}
+
 		final float delta = Gdx.graphics.getDeltaTime();
 		sl.position.rotate(Vector3.Y, -delta * 20f);
 		sl.position.rotate(Vector3.X, -delta * 30f);
@@ -192,33 +216,49 @@ public class ShadowTest extends GdxTest {
 
 		dl.direction.rotate(Vector3.X, delta * 10f);
 
-		shadowManager.update();
-
-		for (int i = 0; i < shadowManager.getPassQuantity(); i++) {
-			shadowManager.begin(i);
-			Camera camera;
-			while ((camera = shadowManager.next()) != null) {
-				passBatches.get(i).begin(camera);
-				passBatches.get(i).render(instance, environment);
-				passBatches.get(i).end();
+		// Update shadow map
+		for (ObjectMap.Entry<ShadowSystem, Array<ModelBatch>> e : passBatches2) {
+			ShadowSystem shadowSystem = e.key;
+			shadowSystem.update();
+			for (int i = 0; i < shadowSystem.getPassQuantity(); i++) {
+				shadowSystem.begin(i);
+				Camera camera;
+				while ((camera = shadowSystem.next()) != null) {
+					passBatches2.get(shadowSystem).get(i).begin(camera);
+					passBatches2.get(shadowSystem).get(i).render(instance, environment);
+					passBatches2.get(shadowSystem).get(i).end();
+				}
+				camera = null;
+				shadowSystem.end(i);
 			}
-			camera = null;
-			shadowManager.end(i);
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		shadowModelBatch.begin(cam2);
-		shadowModelBatch.render(axesInstance);
-		shadowModelBatch.render(instance, environment);
-		shadowModelBatch.end();
+		int i = 0;
+		for (ObjectMap.Entry<ShadowSystem, Array<ModelBatch>> e : passBatches2) {
+			if (currentShadowSystem == i) {
+				render(e.key);
+				label.setText(e.key.toString());
+			}
+			i++;
+		}
+
+		stage.act(delta);
+		stage.draw();
+	}
+
+	public void render (ShadowSystem shadowSystem) {
+		shadowBatches.get(shadowSystem).begin(cam);
+		shadowBatches.get(shadowSystem).render(axesInstance);
+		shadowBatches.get(shadowSystem).render(instance, environment);
+		shadowBatches.get(shadowSystem).end();
 	}
 
 	@Override
 	public void dispose () {
-		shadowModelBatch.dispose();
 		model.dispose();
 	}
 
@@ -226,12 +266,15 @@ public class ShadowTest extends GdxTest {
 		return true;
 	}
 
+	@Override
 	public void resume () {
 	}
 
+	@Override
 	public void resize (int width, int height) {
 	}
 
+	@Override
 	public void pause () {
 	}
 }

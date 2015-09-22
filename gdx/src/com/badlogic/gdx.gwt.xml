@@ -213,6 +213,15 @@
 		<include name="graphics/g3d/shadow/system/BaseShadowSystem.java"/>
 		<include name="graphics/g3d/shadow/system/ShadowSystem.java"/>
 
+	<!-- graphics/g3d/shadow/system/classical -->
+		<include name="graphics/g3d/shadow/system/classical/ClassicalShadowSystem.java"/>
+		<include name="graphics/g3d/shadow/system/classical/MainShader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/MainShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass1Shader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass1ShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass2Shader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass2ShaderProvider.java"/>
+
 	<!-- graphics/g3d/shadow/system/realistic -->
 		<include name="graphics/g3d/shadow/system/realistic/MainShader.java"/>
 		<include name="graphics/g3d/shadow/system/realistic/MainShaderProvider.java"/>

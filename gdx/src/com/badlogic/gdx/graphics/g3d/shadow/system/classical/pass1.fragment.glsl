@@ -9,8 +9,6 @@ precision mediump float;
 #define HIGH
 #endif
 
-//varying HIGH float v_depth;
-
 /**
  Pack a float into a vec4
  It allows to save the float in the texture with a 32 bits precision
@@ -25,9 +23,5 @@ vec4 pack(HIGH float depth) {
 
 void main()
 {
-	// Not working with spotlight
-	//HIGH float depth = v_depth;
-	//gl_FragColor = pack(depth);
-	
 	gl_FragColor = pack(gl_FragCoord.z);
 }
