@@ -80,7 +80,8 @@ public class Table extends WidgetGroup {
 		this(null);
 	}
 
-	/** Creates a table with a skin, which enables the {@link #add(String)} and {@link #add(String, String)} methods to be used. */
+	/** Creates a table with a skin, which enables the {@link #add(CharSequence)} and {@link #add(CharSequence, String)} methods to
+	 * be used. */
 	public Table (Skin skin) {
 		this.skin = skin;
 
@@ -250,25 +251,25 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text) {
+	public Cell<Label> add (CharSequence text) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String labelStyleName) {
+	public Cell<Label> add (CharSequence text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, Color color) {
+	public Cell<Label> add (CharSequence text, String fontName, Color color) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, String colorName) {
+	public Cell<Label> add (CharSequence text, String fontName, String colorName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
