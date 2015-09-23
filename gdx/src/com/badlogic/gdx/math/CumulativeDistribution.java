@@ -88,7 +88,7 @@ public class CumulativeDistribution <T>{
 			else break;
 		}
 
-		return value.value;
+		return values.items[imin].value;
 	}
 
 	/** @return the value whose interval contains a random probability in [0,1] */
