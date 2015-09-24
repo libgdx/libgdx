@@ -40,26 +40,44 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	private Vector2 topLeft = new Vector2();
 	private Vector2 bottomRight = new Vector2();
 
+	private float unitScaleY;
+	
 	public IsometricTiledMapRenderer (TiledMap map) {
 		super(map);
+		unitScaleY = 1.0f;
 		init();
 	}
 
 	public IsometricTiledMapRenderer (TiledMap map, Batch batch) {
 		super(map, batch);
+		unitScaleY = 1.0f;
 		init();
 	}
 
 	public IsometricTiledMapRenderer (TiledMap map, float unitScale) {
 		super(map, unitScale);
+		unitScaleY = unitScale;
 		init();
 	}
 
+	public IsometricTiledMapRenderer (TiledMap map, float unitScale, float unitScaleY) {
+		super(map, unitScale);
+		this.unitScaleY = unitScaleY;
+		init();
+	}
+	
 	public IsometricTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
 		super(map, unitScale, batch);
+		unitScaleY = unitScale;
 		init();
 	}
 
+	public IsometricTiledMapRenderer (TiledMap map, float unitScale, float unitScaleY, Batch batch) {
+		super(map, unitScale, batch);
+		this.unitScaleY = unitScaleY;
+		init();
+	}
+	
 	private void init () {
 		// create the isometric transform
 		isoTransform = new Matrix4();
@@ -87,7 +105,7 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
 		float tileWidth = layer.getTileWidth() * unitScale;
-		float tileHeight = layer.getTileHeight() * unitScale;
+		float tileHeight = layer.getTileHeight() * unitScaleY;
 		float halfTileWidth = tileWidth * 0.5f;
 		float halfTileHeight = tileHeight * 0.5f;
 
@@ -227,3 +245,4 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		}
 	}
 }
+	
