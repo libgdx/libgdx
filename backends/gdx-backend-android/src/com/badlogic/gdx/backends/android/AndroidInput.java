@@ -712,7 +712,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return vibrator != null;
+		if (peripheral == Peripheral.Vibrator) return vibrator != null && vibrator.hasVibrator();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
 	}
