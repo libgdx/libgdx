@@ -49,7 +49,7 @@ public class BitmapFontWriter {
 	}
 
 	/** The output format */
-	private static OutputFormat format = OutputFormat.JSON;
+	private static OutputFormat format = OutputFormat.Text;
 
 	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for LibGDX) or XML (for other engines, like
 	 * Pixi.js).
@@ -164,8 +164,6 @@ public class BitmapFontWriter {
 		boolean txt = (fmt == OutputFormat.Text);
 		boolean json = (fmt == OutputFormat.JSON);
 
-		System.out.println(xml ? "OUTPUT XML" : txt ? "OUTPUT TXT" : "OUTPUT JSON");
-
 		StringBuilder buf = new StringBuilder();
 
 		if (json) {
@@ -264,7 +262,6 @@ public class BitmapFontWriter {
 
 				String charset = info.charset;
 				if (charset != null && charset.length() == 0) charset = null;
-System.out.println(jo.toString());
 				outFntFile.writeString(jo.toString(), false, charset);
 		}
 		else {
