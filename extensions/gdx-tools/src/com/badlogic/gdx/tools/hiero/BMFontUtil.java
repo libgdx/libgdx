@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.stream.JsonGenerator;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -51,13 +58,180 @@ public class BMFontUtil {
 		this.unicodeFont = unicodeFont;
 	}
 
-	public void save (File outputBMFontFile) throws IOException {
-		File outputDir = outputBMFontFile.getParentFile();
-		String outputName = outputBMFontFile.getName();
-		if (outputName.endsWith(".fnt")) outputName = outputName.substring(0, outputName.length() - 4);
+	/** The output format. */
+	public static enum OutputFormat {
 
-		unicodeFont.loadGlyphs();
+		/** AngelCodeFont text format */
+		Text,
+		/** AngelCodeFont XML format - unsupported */
+		XML,
+		/** json format */
+		JSON;
+	}
 
+	private void saveFntJson(File outputDir, String outputName) throws IOException {
+		Font font = unicodeFont.getFont();
+		int pageWidth = unicodeFont.getGlyphPageWidth();
+		int pageHeight = unicodeFont.getGlyphPageHeight();
+
+		JsonObjectBuilder jb = Json.createObjectBuilder()
+			// INFO LINE
+			.add("info", Json.createObjectBuilder()
+				.add("face", font.getFontName())
+				.add("size", font.getSize())
+				.add("bold", font.isBold() ? 1 : 0)
+				.add("italic", font.isItalic() ? 1 : 0)
+				.add("charset", "")
+				.add("unicode", 0)
+				.add("stretchH", 100)
+				.add("smooth", 1)
+				.add("aa", 1)
+				.add("padding", Json.createArrayBuilder()
+					.add(unicodeFont.getPaddingTop())
+					.add(unicodeFont.getPaddingLeft())
+					.add(unicodeFont.getPaddingBottom())
+					.add(unicodeFont.getPaddingRight()))
+				.add("spacing", Json.createArrayBuilder()
+					.add(unicodeFont.getPaddingAdvanceX())
+					.add(unicodeFont.getPaddingAdvanceY()))
+			)
+			// COMMON line
+			.add("common", Json.createObjectBuilder()
+				.add("lineHeight", unicodeFont.getLineHeight())
+				.add("base", unicodeFont.getAscent())
+				.add("scaleW", pageWidth)
+				.add("scaleH", pageHeight)
+				.add("pages", unicodeFont.getGlyphPages().size())
+				.add("packed", 0)
+			);
+
+		JsonArrayBuilder pagesArray = Json.createArrayBuilder();
+		// PAGES
+		int pageIndex = 0, glyphCount = 0;
+		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
+			GlyphPage page = (GlyphPage)pageIter.next();
+			String fileName;
+			if (pageIndex == 0 && !pageIter.hasNext())
+				fileName = outputName + ".png";
+			else
+				fileName = outputName + (pageIndex + 1) + ".png";
+			pagesArray.add(Json.createObjectBuilder().add("id", pageIndex).add("file", fileName));
+			glyphCount += page.getGlyphs().size();
+			pageIndex++;
+		}
+
+		jb.add("pages", pagesArray);
+
+		JsonArrayBuilder chars = Json.createArrayBuilder();
+		// CHAR definitions
+		// Always output space entry (codepoint 32).
+		int[] glyphMetrics = getGlyphMetrics(font, 32);
+		int xAdvance = glyphMetrics[1];
+		chars.add(Json.createObjectBuilder()
+			.add("id", 32)
+			.add("x", 0)
+			.add("y", 0)
+			.add("width", 0)
+			.add("height", 0)
+			.add("xoffset", 0)
+			.add("yoffset", unicodeFont.getAscent())
+			.add("xadvance", xAdvance)
+			.add("page", 0)
+			.add("chnl", 0)
+		);
+
+		pageIndex = 0;
+		List allGlyphs = new ArrayList(512);
+		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
+			GlyphPage page = (GlyphPage)pageIter.next();
+			for (Iterator glyphIter = page.getGlyphs().iterator(); glyphIter.hasNext();) {
+				Glyph glyph = (Glyph)glyphIter.next();
+
+				glyphMetrics = getGlyphMetrics(font, glyph.getCodePoint());
+				int xOffset = glyphMetrics[0];
+				xAdvance = glyphMetrics[1];
+
+				chars.add(Json.createObjectBuilder()
+					.add("id", glyph.getCodePoint())
+					.add("x", (int)(glyph.getU() * pageWidth))
+					.add("y", (int)(glyph.getV() * pageHeight))
+					.add("width", glyph.getWidth())
+					.add("height", glyph.getHeight())
+					.add("xoffset", xOffset)
+					.add("yoffset", glyph.getYOffset())
+					.add("xadvance", xAdvance)
+					.add("page", pageIndex)
+					.add("chnl", 0)
+				);
+			}
+			allGlyphs.addAll(page.getGlyphs());
+			pageIndex++;
+		}
+		jb.add("chars", chars);
+
+		JsonArrayBuilder kerningsJson = Json.createArrayBuilder();
+
+		// KERNINGS
+		String ttfFileRef = unicodeFont.getFontFile();
+		if (ttfFileRef == null)
+			System.out.println("Kerning information could not be output because a TTF font file was not specified.");
+		else {
+			Kerning kerning = new Kerning();
+			try {
+				kerning.load(Gdx.files.internal(ttfFileRef).read(), font.getSize());
+			} catch (IOException ex) {
+				System.out.println("Unable to read kerning information from font: " + ttfFileRef);
+			}
+
+			Map glyphCodeToCodePoint = new HashMap();
+			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
+				Glyph glyph = (Glyph)iter.next();
+				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
+			}
+
+			List kernings = new ArrayList(256);
+			class KerningPair {
+				public int firstCodePoint, secondCodePoint, offset;
+			}
+			for (Iterator iter1 = allGlyphs.iterator(); iter1.hasNext();) {
+				Glyph firstGlyph = (Glyph)iter1.next();
+				int firstGlyphCode = getGlyphCode(font, firstGlyph.getCodePoint());
+				int[] values = kerning.getValues(firstGlyphCode);
+				if (values == null) continue;
+				for (int i = 0; i < values.length; i++) {
+					Integer secondCodePoint = (Integer)glyphCodeToCodePoint.get(new Integer(values[i] & 0xffff));
+					if (secondCodePoint == null) continue; // We may not be outputting the second character.
+					int offset = values[i] >> 16;
+					KerningPair pair = new KerningPair();
+					pair.firstCodePoint = firstGlyph.getCodePoint();
+					pair.secondCodePoint = secondCodePoint.intValue();
+					pair.offset = offset;
+					kernings.add(pair);
+				}
+			}
+			for (Iterator iter = kernings.iterator(); iter.hasNext();) {
+				KerningPair pair = (KerningPair)iter.next();
+				kerningsJson.add(Json.createObjectBuilder()
+					.add("first", pair.firstCodePoint)
+					.add("second", pair.secondCodePoint)
+					.add("amount", pair.offset)
+				);
+			}
+		}
+		// KERN info
+		jb.add("kernings", kerningsJson);
+
+		JsonObject jo = jb.build();
+
+		Map<String, Object> properties = new HashMap<String, Object>(1);
+		properties.put(JsonGenerator.PRETTY_PRINTING, true);
+		JsonWriterFactory writerFactory = Json.createWriterFactory(properties);
+		JsonWriter writer = writerFactory.createWriter(new FileOutputStream(new File(outputDir, outputName + ".json")));
+		writer.writeObject(jo);
+		writer.close();
+	}
+
+	private void saveFntText(File outputDir, String outputName) throws IOException {
 		PrintStream out = new PrintStream(new FileOutputStream(new File(outputDir, outputName + ".fnt")));
 		Font font = unicodeFont.getFont();
 		int pageWidth = unicodeFont.getGlyphPageWidth();
@@ -155,6 +329,22 @@ public class BMFontUtil {
 			}
 		}
 		out.close();
+	}
+
+	public void save (File outputBMFontFile, OutputFormat outputFormat) throws IOException {
+		File outputDir = outputBMFontFile.getParentFile();
+		String outputName = outputBMFontFile.getName();
+
+		unicodeFont.loadGlyphs();
+
+		if (outputFormat == OutputFormat.JSON) {
+			if (outputName.endsWith(".json")) outputName = outputName.substring(0, outputName.length() - 5);
+			saveFntJson(outputDir, outputName);
+		}
+		else {
+			if (outputName.endsWith(".fnt")) outputName = outputName.substring(0, outputName.length() - 4);
+			saveFntText(outputDir, outputName);
+		}
 
 		int width = unicodeFont.getGlyphPageWidth();
 		int height = unicodeFont.getGlyphPageHeight();
@@ -162,7 +352,7 @@ public class BMFontUtil {
 		BufferedImage pageImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		int[] row = new int[width];
 
-		pageIndex = 0;
+		int pageIndex = 0;
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
 			GlyphPage page = (GlyphPage)pageIter.next();
 			String fileName;
