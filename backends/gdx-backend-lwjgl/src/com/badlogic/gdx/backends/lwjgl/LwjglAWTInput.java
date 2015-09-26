@@ -822,4 +822,19 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public float getGyroscopeX () {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		return 0;
+	}
 }
