@@ -271,6 +271,16 @@ final public class LwjglInput implements Input {
 	@Override
 	public boolean isCatchBackKey () {
 		return false;
+	}	
+
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
 	}
 
 	void processEvents () {
@@ -1016,10 +1026,6 @@ final public class LwjglInput implements Input {
 	@Override
 	public void setCursorPosition (int x, int y) {
 		Mouse.setCursorPosition(x, Gdx.graphics.getHeight() - 1 - y);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
 	}
 
 	@Override

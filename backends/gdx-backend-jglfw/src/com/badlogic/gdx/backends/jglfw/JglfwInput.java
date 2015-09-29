@@ -260,6 +260,11 @@ public class JglfwInput implements Input {
 
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
 
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;

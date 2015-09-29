@@ -575,6 +575,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void setCatchMenuKey (boolean catchMenu) {
 		this.catchMenu = catchMenu;
 	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return catchMenu;
+	}
 
 	@Override
 	public void vibrate (int milliseconds) {

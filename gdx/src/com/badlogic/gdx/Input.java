@@ -717,6 +717,9 @@ public interface Input {
 	 * 
 	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
+	
+	/** @return whether the menu button is currently being caught */
+	public boolean isCatchMenuKey ();
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.

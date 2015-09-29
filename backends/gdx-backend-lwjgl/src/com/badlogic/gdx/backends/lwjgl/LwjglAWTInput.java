@@ -398,6 +398,16 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public boolean isCatchBackKey() {
 		return false;
 	}
+	
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
@@ -804,13 +814,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		if (robot != null) {
 			robot.mouseMove(canvas.getLocationOnScreen().x + x, canvas.getLocationOnScreen().y + y);
 		}
-	}
-
-  @Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
-
-	}
+	}  
 
 	@Override
 	public long getCurrentEventTime () {
@@ -821,5 +825,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public void getRotationMatrix (float[] matrix) {
 		// TODO Auto-generated method stub
 
-	}
+	}	
+	
 }
