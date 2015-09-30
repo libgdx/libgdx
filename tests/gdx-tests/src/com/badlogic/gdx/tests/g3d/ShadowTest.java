@@ -35,7 +35,6 @@ import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.shadow.system.BaseShadowSystem;
 import com.badlogic.gdx.graphics.g3d.shadow.system.ShadowSystem;
 import com.badlogic.gdx.graphics.g3d.shadow.system.classical.ClassicalShadowSystem;
-import com.badlogic.gdx.graphics.g3d.shadow.system.realistic.RealisticShadowSystem;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -46,10 +45,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class ShadowTest extends GdxTest {
+
+	public static class ShadowSystemProperties {
+		public Array<ModelBatch> passBatches = new Array<ModelBatch>();
+		public ModelBatch mainBatch;
+	}
+
 	PerspectiveCamera cam;
 	CameraInputController inputController;
 
@@ -57,12 +63,10 @@ public class ShadowTest extends GdxTest {
 	ModelInstance instance;
 	Environment environment;
 
-	ObjectMap<ShadowSystem, Array<ModelBatch>> passBatches2 = new ObjectMap<ShadowSystem, Array<ModelBatch>>();
-	ObjectMap<ShadowSystem, ModelBatch> shadowBatches = new ObjectMap<ShadowSystem, ModelBatch>();
-	Array<ShadowSystem> shadowSystems = new Array<ShadowSystem>();
+	ObjectMap<ShadowSystem, ShadowSystemProperties> systems = new ObjectMap<ShadowSystem, ShadowSystemProperties>();
 
-	public Model axesModel;
-	public ModelInstance axesInstance;
+	Model axesModel;
+	ModelInstance axesInstance;
 
 	SpotLight sl;
 	SpotLight sl2;
@@ -71,10 +75,12 @@ public class ShadowTest extends GdxTest {
 	float radius = 1f;
 	Vector3 center = new Vector3(), transformedCenter = new Vector3(), tmpV = new Vector3();
 
-	int currentShadowSystem = 0;
-
 	Stage stage;
 	Label label;
+
+	Entries<ShadowSystem, ShadowSystemProperties> systemIterator;
+	ShadowSystem currSystem;
+	ShadowSystemProperties currProperties;
 
 	@Override
 	public void create () {
@@ -144,17 +150,19 @@ public class ShadowTest extends GdxTest {
 		instances.add(instance);
 
 		// Shadow system init
-		shadowSystems.add(new RealisticShadowSystem(cam, instances));
-		shadowSystems.add(new ClassicalShadowSystem(cam, instances));
+		// systems.put(new RealisticShadowSystem(cam, instances), new ShadowSystemProperties());
+		systems.put(new ClassicalShadowSystem(cam, instances), new ShadowSystemProperties());
 
-		for (ShadowSystem shadowSystem : shadowSystems) {
-			passBatches2.put(shadowSystem, new Array<ModelBatch>());
-			for (int i = 0; i < shadowSystem.getPassQuantity(); i++) {
-				passBatches2.get(shadowSystem).add(new ModelBatch(shadowSystem.getPassShaderProvider(i)));
+		for (ObjectMap.Entry<ShadowSystem, ShadowSystemProperties> e : systems) {
+			ShadowSystem system = e.key;
+			ShadowSystemProperties properties = e.value;
+			for (int i = 0; i < system.getPassQuantity(); i++) {
+				properties.passBatches.add(new ModelBatch(system.getPassShaderProvider(i)));
 			}
-			shadowBatches.put(shadowSystem, new ModelBatch(shadowSystem.getShaderProvider()));
-			environment.addListener((BaseShadowSystem)shadowSystem);
+			properties.mainBatch = new ModelBatch(system.getShaderProvider());
+			environment.addListener((BaseShadowSystem)system);
 		}
+		systemIterator = systems.entries();
 
 		createAxes();
 		Gdx.input.setInputProcessor(inputController = new CameraInputController(cam));
@@ -192,13 +200,22 @@ public class ShadowTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if (TimeUtils.timeSinceMillis(lastTime) > 5 * 1000) {
-			currentShadowSystem++;
-			if (currentShadowSystem > 1) currentShadowSystem = 0;
+		if (TimeUtils.timeSinceMillis(lastTime) > 3 * 1000) {
+			ObjectMap.Entry<ShadowSystem, ShadowSystemProperties> e;
+			try {
+				e = systemIterator.next();
+			} catch (java.util.NoSuchElementException exc) {
+				systemIterator.reset();
+				e = systemIterator.next();
+			}
+			currSystem = e.key;
+			currProperties = e.value;
+			label.setText(currSystem.toString());
 			lastTime = TimeUtils.millis();
 		}
 
 		final float delta = Gdx.graphics.getDeltaTime();
+
 		sl.position.rotate(Vector3.Y, -delta * 20f);
 		sl.position.rotate(Vector3.X, -delta * 30f);
 		sl.position.rotate(Vector3.Z, -delta * 10f);
@@ -217,44 +234,30 @@ public class ShadowTest extends GdxTest {
 		dl.direction.rotate(Vector3.X, delta * 10f);
 
 		// Update shadow map
-		for (ObjectMap.Entry<ShadowSystem, Array<ModelBatch>> e : passBatches2) {
-			ShadowSystem shadowSystem = e.key;
-			shadowSystem.update();
-			for (int i = 0; i < shadowSystem.getPassQuantity(); i++) {
-				shadowSystem.begin(i);
-				Camera camera;
-				while ((camera = shadowSystem.next()) != null) {
-					passBatches2.get(shadowSystem).get(i).begin(camera);
-					passBatches2.get(shadowSystem).get(i).render(instance, environment);
-					passBatches2.get(shadowSystem).get(i).end();
-				}
-				camera = null;
-				shadowSystem.end(i);
+		currSystem.update();
+		for (int i = 0; i < currSystem.getPassQuantity(); i++) {
+			currSystem.begin(i);
+			Camera camera;
+			while ((camera = currSystem.next()) != null) {
+				currProperties.passBatches.get(i).begin(camera);
+				currProperties.passBatches.get(i).render(instance, environment);
+				currProperties.passBatches.get(i).end();
 			}
+			camera = null;
+			currSystem.end(i);
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		int i = 0;
-		for (ObjectMap.Entry<ShadowSystem, Array<ModelBatch>> e : passBatches2) {
-			if (currentShadowSystem == i) {
-				render(e.key);
-				label.setText(e.key.toString());
-			}
-			i++;
-		}
+		currProperties.mainBatch.begin(cam);
+		currProperties.mainBatch.render(axesInstance);
+		currProperties.mainBatch.render(instance, environment);
+		currProperties.mainBatch.end();
 
 		stage.act(delta);
 		stage.draw();
-	}
-
-	public void render (ShadowSystem shadowSystem) {
-		shadowBatches.get(shadowSystem).begin(cam);
-		shadowBatches.get(shadowSystem).render(axesInstance);
-		shadowBatches.get(shadowSystem).render(instance, environment);
-		shadowBatches.get(shadowSystem).end();
 	}
 
 	@Override

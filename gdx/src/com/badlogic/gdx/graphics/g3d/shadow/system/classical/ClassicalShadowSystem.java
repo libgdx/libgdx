@@ -104,12 +104,8 @@ public class ClassicalShadowSystem extends BaseShadowSystem {
 
 	@Override
 	protected Camera interceptCamera (LightProperties lp) {
-		currentLightProperties = lp;
-
 		// if it's the second pass, we return the main camera
-		if (currentPass == PASS_2) {
-			return this.camera;
-		}
+		if (currentPass == PASS_2) return this.camera;
 		return lp.camera;
 	}
 

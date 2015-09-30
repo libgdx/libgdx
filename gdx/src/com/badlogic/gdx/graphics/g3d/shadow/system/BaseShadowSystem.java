@@ -104,8 +104,9 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 	/** Shader providers used by this system */
 	protected ShaderProvider[] passShaderProviders;
 	protected ShaderProvider mainShaderProvider;
-	/** Current Camera used in the Pass2 shader */
+	/** Current light and properties during shadowmap generation */
 	protected LightProperties currentLightProperties;
+	protected BaseLight currentLight;
 
 	/** Construct the system with the needed params.
 	 * @param camera Camera used in the rendering process
@@ -306,7 +307,6 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 	}
 
 	protected Camera interceptCamera (LightProperties lp) {
-		currentLightProperties = lp;
 		return lp.camera;
 	}
 
@@ -315,7 +315,10 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 			return null;
 		}
 
-		LightProperties lp = dirCameraIterator.next().value;
+		ObjectMap.Entry<DirectionalLight, LightProperties> e = dirCameraIterator.next();
+		currentLight = e.key;
+		currentLightProperties = e.value;
+		LightProperties lp = e.value;
 		processViewport(lp);
 		return lp;
 	}
@@ -325,7 +328,10 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 			return null;
 		}
 
-		LightProperties lp = spotCameraIterator.next().value;
+		ObjectMap.Entry<SpotLight, LightProperties> e = spotCameraIterator.next();
+		currentLight = e.key;
+		currentLightProperties = e.value;
+		LightProperties lp = e.value;
 		if (!lightFilter.filter(currentPass, spotCameras.findKey(lp, true), lp.camera)) {
 			return nextSpot();
 		}
@@ -340,10 +346,16 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 
 		if (currentPointSide > 5) currentPointSide = 0;
 
-		if (currentPointSide == 0) currentPointProperties = pointCameraIterator.next().value;
+		if (currentPointSide == 0) {
+			ObjectMap.Entry<PointLight, PointLightProperties> e = pointCameraIterator.next();
+			currentLight = e.key;
+			currentPointProperties = e.value;
+		}
 
 		if (currentPointProperties.properties.containsKey(Cubemap.CubemapSide.values()[currentPointSide])) {
+
 			LightProperties lp = currentPointProperties.properties.get(Cubemap.CubemapSide.values()[currentPointSide]);
+			currentLightProperties = lp;
 			currentPointSide += 1;
 			if (!lightFilter.filter(currentPass, pointCameras.findKey(currentPointProperties, true), lp.camera)) {
 				return nextPoint();
@@ -417,6 +429,10 @@ public abstract class BaseShadowSystem implements ShadowSystem, EnvironmentListe
 
 	public LightProperties getCurrentLightProperties () {
 		return currentLightProperties;
+	}
+
+	public BaseLight getCurrentLight () {
+		return currentLight;
 	}
 
 	public int getCurrentPass () {
