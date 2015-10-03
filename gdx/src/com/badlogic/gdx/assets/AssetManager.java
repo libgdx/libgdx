@@ -85,21 +85,30 @@ public class AssetManager implements Disposable {
 
 	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager (FileHandleResolver resolver) {
-		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
-		setLoader(Music.class, new MusicLoader(resolver));
-		setLoader(Pixmap.class, new PixmapLoader(resolver));
-		setLoader(Sound.class, new SoundLoader(resolver));
-		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
-		setLoader(Texture.class, new TextureLoader(resolver));
-		setLoader(Skin.class, new SkinLoader(resolver));
-		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
-		setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
-			new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
-		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
-		setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
-		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
-		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
-		setLoader(Model.class, ".obj", new ObjLoader(resolver));
+		this(resolver, true);
+	}
+
+	/** Creates a new AssetManager with optionally all default loaders. If you don't add the default loaders then you do have to
+	 * manually add the loaders you need, including any loaders they might depend on.
+	 * @param defaultLoaders whether to add the default loaders */
+	public AssetManager (FileHandleResolver resolver, boolean defaultLoaders) {
+		if (defaultLoaders) {
+			setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+			setLoader(Music.class, new MusicLoader(resolver));
+			setLoader(Pixmap.class, new PixmapLoader(resolver));
+			setLoader(Sound.class, new SoundLoader(resolver));
+			setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+			setLoader(Texture.class, new TextureLoader(resolver));
+			setLoader(Skin.class, new SkinLoader(resolver));
+			setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+			setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
+				new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
+			setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
+			setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
+			setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
+			setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
+			setLoader(Model.class, ".obj", new ObjLoader(resolver));
+		}
 		executor = new AsyncExecutor(1);
 	}
 
