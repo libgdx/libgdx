@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 import com.badlogic.gdx.utils.Array;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 /** A utility to output BitmapFontData to a FNT file. This can be useful for caching the result from TrueTypeFont, for faster load
  * times.
- * 
+ *
  * The font format is from the AngelCodeFont BMFont tool.
- * 
+ *
  * @author mattdesl AKA davedes */
 public class BitmapFontWriter {
 
@@ -38,7 +43,9 @@ public class BitmapFontWriter {
 		/** AngelCodeFont text format */
 		Text,
 		/** AngelCodeFont XML format */
-		XML;
+		XML,
+		/** json format */
+		JSON;
 	}
 
 	/** The output format */
@@ -46,7 +53,7 @@ public class BitmapFontWriter {
 
 	/** Sets the AngelCodeFont output format for subsequent writes; can be text (for LibGDX) or XML (for other engines, like
 	 * Pixi.js).
-	 * 
+	 *
 	 * @param fmt the output format to use */
 	public static void setOutputFormat (OutputFormat fmt) {
 		if (fmt == null) throw new NullPointerException("format cannot be null");
@@ -127,14 +134,14 @@ public class BitmapFontWriter {
 
 	/** Writes the given BitmapFontData to a file, using the specified <tt>pageRefs</tt> strings as the image paths for each texture
 	 * page. The glyphs in BitmapFontData have a "page" id, which references the index of the pageRef you specify here.
-	 * 
+	 *
 	 * The FontInfo parameter is useful for cleaner output; such as including a size and font face name hint. However, it can be
 	 * null to use default values. Ultimately, LibGDX ignores the "info" line when reading back fonts.
-	 * 
+	 *
 	 * Likewise, the scaleW and scaleH are only for cleaner output. They are currently ignored by LibGDX's reader. For maximum
 	 * compatibility with other BMFont tools, you should use the width and height of your texture pages (each page should be the
 	 * same size).
-	 * 
+	 *
 	 * @param fontData the bitmap font
 	 * @param pageRefs the references to each texture page image file, generally in the same folder as outFntFile
 	 * @param outFntFile the font file to save to (typically ends with '.fnt')
@@ -153,122 +160,225 @@ public class BitmapFontWriter {
 		int packed = 0;
 		int base = (int)((fontData.capHeight) + (fontData.flipped ? -fontData.ascent : fontData.ascent));
 		OutputFormat fmt = BitmapFontWriter.getOutputFormat();
-		boolean xml = fmt == OutputFormat.XML;
+		boolean xml = (fmt == OutputFormat.XML);
+		boolean txt = (fmt == OutputFormat.Text);
+		boolean json = (fmt == OutputFormat.JSON);
 
 		StringBuilder buf = new StringBuilder();
 
-		if (xml) {
-			buf.append("<font>\n");
-		}
-		String xmlOpen = xml ? "\t<" : "";
-		String xmlCloseSelf = xml ? "/>" : "";
-		String xmlTab = xml ? "\t" : "";
-		String xmlClose = xml ? ">" : "";
+		if (json) {
+			JsonObjectBuilder jb = Json.createObjectBuilder()
+				// INFO LINE
+			  .add("info", Json.createObjectBuilder()
+					.add("face", info.face == null ? "" : info.face.replaceAll("\"", "'"))
+					.add("size", info.size)
+					.add("bold", info.bold ? 1 : 0)
+					.add("italic", info.italic ? 1 : 0)
+					.add("charset", info.charset == null ? "" : info.charset)
+					.add("unicode", info.unicode ? 1 : 0)
+					.add("stretchH", info.stretchH)
+					.add("smooth", info.smooth ? 1 : 0)
+					.add("aa", info.aa)
+					.add("padding", Json.createArrayBuilder().add(info.padding.up).add(info.padding.down).add(info.padding.left).add(info.padding.right))
+					.add("spacing", Json.createArrayBuilder().add(info.spacing.horizontal).add(info.spacing.vertical))
+				)
+				// COMMON line
+				.add("common", Json.createObjectBuilder()
+					.add("lineHeight", lineHeight)
+					.add("base", base)
+					.add("scaleW", scaleW)
+					.add("scaleH", scaleH)
+					.add("pages", pages)
+					.add("packed", packed)
+					.add("alphaChnl", 0)
+					.add("redChnl", 0)
+					.add("greenChnl", 0)
+					.add("blueChnl", 0)
+				);
 
-		String xmlQuote = xml ? "\"" : "";
-		String alphaChnlParams = xml ? " alphaChnl=\"0\" redChnl=\"0\" greenChnl=\"0\" blueChnl=\"0\""
-			: " alphaChnl=0 redChnl=0 greenChnl=0 blueChnl=0";
-		// INFO LINE
-
-		buf.append(xmlOpen).append("info face=\"").append(info.face == null ? "" : info.face.replaceAll("\"", "'"))
-			.append("\" size=").append(quote(info.size)).append(" bold=").append(quote(info.bold ? 1 : 0)).append(" italic=")
-			.append(quote(info.italic ? 1 : 0)).append(" charset=\"").append(info.charset == null ? "" : info.charset)
-			.append("\" unicode=").append(quote(info.unicode ? 1 : 0)).append(" stretchH=").append(quote(info.stretchH))
-			.append(" smooth=").append(quote(info.smooth ? 1 : 0)).append(" aa=").append(quote(info.aa)).append(" padding=")
-			.append(xmlQuote).append(info.padding.up).append(",").append(info.padding.down).append(",").append(info.padding.left)
-			.append(",").append(info.padding.right).append(xmlQuote).append(" spacing=").append(xmlQuote)
-			.append(info.spacing.horizontal).append(",").append(info.spacing.vertical).append(xmlQuote).append(xmlCloseSelf)
-			.append("\n");
-
-		// COMMON line
-		buf.append(xmlOpen).append("common lineHeight=").append(quote(lineHeight)).append(" base=").append(quote(base))
-			.append(" scaleW=").append(quote(scaleW)).append(" scaleH=").append(quote(scaleH)).append(" pages=")
-			.append(quote(pages)).append(" packed=").append(quote(packed)).append(alphaChnlParams).append(xmlCloseSelf).append("\n");
-
-		if (xml) buf.append("\t<pages>\n");
-
-		// PAGES
-		for (int i = 0; i < pageRefs.length; i++) {
-			buf.append(xmlTab).append(xmlOpen).append("page id=").append(quote(i)).append(" file=\"").append(pageRefs[i])
-				.append("\"").append(xmlCloseSelf).append("\n");
-		}
-
-		if (xml) buf.append("\t</pages>\n");
-
-		// CHARS
-		Array<Glyph> glyphs = new Array<Glyph>(256);
-		for (int i = 0; i < fontData.glyphs.length; i++) {
-			if (fontData.glyphs[i] == null) continue;
-
-			for (int j = 0; j < fontData.glyphs[i].length; j++) {
-				if (fontData.glyphs[i][j] != null) {
-					glyphs.add(fontData.glyphs[i][j]);
+				JsonArrayBuilder pagesArray = Json.createArrayBuilder();
+				// PAGES
+				for (int i = 0; i < pageRefs.length; i++) {
+					pagesArray.add(Json.createObjectBuilder().add("id", i).add("file", pageRefs[i]));
 				}
-			}
+				jb.add("pages", pagesArray);
+
+				// CHARS
+				Array<Glyph> glyphs = new Array<Glyph>(256);
+				for (int i = 0; i < fontData.glyphs.length; i++) {
+					if (fontData.glyphs[i] == null) continue;
+
+					for (int j = 0; j < fontData.glyphs[i].length; j++) {
+						if (fontData.glyphs[i][j] != null) {
+							glyphs.add(fontData.glyphs[i][j]);
+						}
+					}
+				}
+
+				JsonArrayBuilder chars = Json.createArrayBuilder();
+				// CHAR definitions
+				for (int i = 0; i < glyphs.size; i++) {
+					Glyph g = glyphs.get(i);
+					chars.add(Json.createObjectBuilder()
+						.add("id", String.format("%-6s", g.id))
+						.add("x", g.srcX)
+						.add("y", g.srcY)
+						.add("width", g.width)
+						.add("height", g.height)
+						.add("xoffset", g.xoffset)
+						.add("yoffset", fontData.flipped ? g.yoffset : -(g.height + g.yoffset))
+						.add("xadvance", g.xadvance)
+						.add("page", g.page)
+						.add("chnl", 0)
+					);
+				}
+				jb.add("chars", chars);
+
+				JsonArrayBuilder kernings = Json.createArrayBuilder();
+
+				// KERNINGS
+				int kernCount = 0;
+				StringBuilder kernBuf = new StringBuilder();
+				for (int i = 0; i < glyphs.size; i++) {
+					for (int j = 0; j < glyphs.size; j++) {
+						Glyph first = glyphs.get(i);
+						Glyph second = glyphs.get(j);
+						int kern = first.getKerning((char)second.id);
+						if (kern != 0) {
+							kernCount++;
+							kernings.add(Json.createObjectBuilder()
+								.add("first", first.id)
+								.add("second", second.id)
+								.add("amount", kern)
+							);
+						}
+					}
+				}
+
+				// KERN info
+				jb.add("kernings", kernings);
+
+			  JsonObject jo = jb.build();
+
+				String charset = info.charset;
+				if (charset != null && charset.length() == 0) charset = null;
+				outFntFile.writeString(jo.toString(), false, charset);
 		}
+		else {
+			if (xml) {
+				buf.append("<font>\n");
+			}
+			String xmlOpen = xml ? "\t<" : "";
+			String xmlCloseSelf = xml ? "/>" : "";
+			String xmlTab = xml ? "\t" : "";
+			String xmlClose = xml ? ">" : "";
 
-		buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
+			String xmlQuote = xml ? "\"" : "";
+			String alphaChnlParams = xml ? " alphaChnl=\"0\" redChnl=\"0\" greenChnl=\"0\" blueChnl=\"0\""
+				: " alphaChnl=0 redChnl=0 greenChnl=0 blueChnl=0";
+			// INFO LINE
 
-		// CHAR definitions
-		for (int i = 0; i < glyphs.size; i++) {
-			Glyph g = glyphs.get(i);
-			buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-6s", g.id), true)).append("x=")
-				.append(quote(String.format("%-5s", g.srcX), true)).append("y=").append(quote(String.format("%-5s", g.srcY), true))
-				.append("width=").append(quote(String.format("%-5s", g.width), true)).append("height=")
-				.append(quote(String.format("%-5s", g.height), true)).append("xoffset=")
-				.append(quote(String.format("%-5s", g.xoffset), true)).append("yoffset=")
-				.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset : -(g.height + g.yoffset)), true))
-				.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
-				.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
+			buf.append(xmlOpen).append("info face=\"").append(info.face == null ? "" : info.face.replaceAll("\"", "'"))
+				.append("\" size=").append(quote(info.size)).append(" bold=").append(quote(info.bold ? 1 : 0)).append(" italic=")
+				.append(quote(info.italic ? 1 : 0)).append(" charset=\"").append(info.charset == null ? "" : info.charset)
+				.append("\" unicode=").append(quote(info.unicode ? 1 : 0)).append(" stretchH=").append(quote(info.stretchH))
+				.append(" smooth=").append(quote(info.smooth ? 1 : 0)).append(" aa=").append(quote(info.aa)).append(" padding=")
+				.append(xmlQuote).append(info.padding.up).append(",").append(info.padding.down).append(",").append(info.padding.left)
+				.append(",").append(info.padding.right).append(xmlQuote).append(" spacing=").append(xmlQuote)
+				.append(info.spacing.horizontal).append(",").append(info.spacing.vertical).append(xmlQuote).append(xmlCloseSelf)
 				.append("\n");
-		}
 
-		if (xml) buf.append("\t</chars>\n");
+			// COMMON line
+			buf.append(xmlOpen).append("common lineHeight=").append(quote(lineHeight)).append(" base=").append(quote(base))
+				.append(" scaleW=").append(quote(scaleW)).append(" scaleH=").append(quote(scaleH)).append(" pages=")
+				.append(quote(pages)).append(" packed=").append(quote(packed)).append(alphaChnlParams).append(xmlCloseSelf).append("\n");
 
-		// KERNINGS
-		int kernCount = 0;
-		StringBuilder kernBuf = new StringBuilder();
-		for (int i = 0; i < glyphs.size; i++) {
-			for (int j = 0; j < glyphs.size; j++) {
-				Glyph first = glyphs.get(i);
-				Glyph second = glyphs.get(j);
-				int kern = first.getKerning((char)second.id);
-				if (kern != 0) {
-					kernCount++;
-					kernBuf.append(xmlTab).append(xmlOpen).append("kerning first=").append(quote(first.id)).append(" second=")
-						.append(quote(second.id)).append(" amount=").append(quote(kern, true)).append(xmlCloseSelf).append("\n");
+			if (xml) buf.append("\t<pages>\n");
+
+			// PAGES
+			for (int i = 0; i < pageRefs.length; i++) {
+				buf.append(xmlTab).append(xmlOpen).append("page id=").append(quote(i)).append(" file=\"").append(pageRefs[i])
+					.append("\"").append(xmlCloseSelf).append("\n");
+			}
+
+			if (xml) buf.append("\t</pages>\n");
+
+			// CHARS
+			Array<Glyph> glyphs = new Array<Glyph>(256);
+			for (int i = 0; i < fontData.glyphs.length; i++) {
+				if (fontData.glyphs[i] == null) continue;
+
+				for (int j = 0; j < fontData.glyphs[i].length; j++) {
+					if (fontData.glyphs[i][j] != null) {
+						glyphs.add(fontData.glyphs[i][j]);
+					}
 				}
 			}
+
+			buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
+
+			// CHAR definitions
+			for (int i = 0; i < glyphs.size; i++) {
+				Glyph g = glyphs.get(i);
+				buf.append(xmlTab).append(xmlOpen).append("char id=").append(quote(String.format("%-6s", g.id), true)).append("x=")
+					.append(quote(String.format("%-5s", g.srcX), true)).append("y=").append(quote(String.format("%-5s", g.srcY), true))
+					.append("width=").append(quote(String.format("%-5s", g.width), true)).append("height=")
+					.append(quote(String.format("%-5s", g.height), true)).append("xoffset=")
+					.append(quote(String.format("%-5s", g.xoffset), true)).append("yoffset=")
+					.append(quote(String.format("%-5s", fontData.flipped ? g.yoffset : -(g.height + g.yoffset)), true))
+					.append("xadvance=").append(quote(String.format("%-5s", g.xadvance), true)).append("page=")
+					.append(quote(String.format("%-5s", g.page), true)).append("chnl=").append(quote(0, true)).append(xmlCloseSelf)
+					.append("\n");
+			}
+
+			if (xml) buf.append("\t</chars>\n");
+
+			// KERNINGS
+			int kernCount = 0;
+			StringBuilder kernBuf = new StringBuilder();
+			for (int i = 0; i < glyphs.size; i++) {
+				for (int j = 0; j < glyphs.size; j++) {
+					Glyph first = glyphs.get(i);
+					Glyph second = glyphs.get(j);
+					int kern = first.getKerning((char)second.id);
+					if (kern != 0) {
+						kernCount++;
+						kernBuf.append(xmlTab).append(xmlOpen).append("kerning first=").append(quote(first.id)).append(" second=")
+							.append(quote(second.id)).append(" amount=").append(quote(kern, true)).append(xmlCloseSelf).append("\n");
+					}
+				}
+			}
+
+			// KERN info
+			buf.append(xmlOpen).append("kernings count=").append(quote(kernCount)).append(xmlClose).append("\n");
+			buf.append(kernBuf);
+
+			if (xml) {
+				buf.append("\t</kernings>\n");
+				buf.append("</font>");
+			}
+
+			String charset = info.charset;
+			if (charset != null && charset.length() == 0) charset = null;
+
+			outFntFile.writeString(buf.toString(), false, charset);
 		}
 
-		// KERN info
-		buf.append(xmlOpen).append("kernings count=").append(quote(kernCount)).append(xmlClose).append("\n");
-		buf.append(kernBuf);
-
-		if (xml) {
-			buf.append("\t</kernings>\n");
-			buf.append("</font>");
-		}
-
-		String charset = info.charset;
-		if (charset != null && charset.length() == 0) charset = null;
-
-		outFntFile.writeString(buf.toString(), false, charset);
 	}
 
 	/** A utility method which writes the given font data to a file.
-	 * 
+	 *
 	 * The specified pixmaps are written to the parent directory of <tt>outFntFile</tt>, using that file's name without an
 	 * extension for the PNG file name(s).
-	 * 
+	 *
 	 * The specified FontInfo is optional, and can be null.
-	 * 
+	 *
 	 * Typical usage looks like this:
-	 * 
+	 *
 	 * <pre>
 	 * BitmapFontWriter.writeFont(myFontData, myFontPixmaps, Gdx.files.external(&quot;fonts/output.fnt&quot;), new FontInfo(&quot;Arial&quot;, 16));
 	 * </pre>
-	 * 
+	 *
 	 * @param fontData the font data
 	 * @param pages the pixmaps to write as PNGs
 	 * @param outFntFile the output file for the font definition
@@ -282,14 +392,14 @@ public class BitmapFontWriter {
 
 	/** A utility method to write the given array of pixmaps to the given output directory, with the specified file name. If the
 	 * pages array is of length 1, then the resulting file ref will look like: "fileName.png".
-	 * 
+	 *
 	 * If the pages array is greater than length 1, the resulting file refs will be appended with "_N", such as "fileName_0.png",
 	 * "fileName_1.png", "fileName_2.png" etc.
-	 * 
+	 *
 	 * The returned string array can then be passed to the <tt>writeFont</tt> method.
-	 * 
+	 *
 	 * Note: None of the pixmaps will be disposed.
-	 * 
+	 *
 	 * @param pages the pages of pixmap data to write
 	 * @param outputDir the output directory
 	 * @param fileName the file names for the output images
@@ -314,7 +424,7 @@ public class BitmapFontWriter {
 
 	/** A convenience method to write pixmaps by page; typically returned from a PixmapPacker when used alongside
 	 * FreeTypeFontGenerator.
-	 * 
+	 *
 	 * @param pages the pages containing the Pixmaps
 	 * @param outputDir the output directory
 	 * @param fileName the file name

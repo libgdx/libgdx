@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -161,7 +161,9 @@ public class Hiero extends JFrame {
 	JMenuItem saveMenuItem;
 	JMenuItem exitMenuItem;
 	JMenuItem saveBMFontMenuItem;
+	JMenuItem saveBMFontJsonMenuItem;
 	File saveBmFontFile;
+	BMFontUtil.OutputFormat saveBmFormat = BMFontUtil.OutputFormat.Text;
 	String lastSaveFilename = "", lastSaveBMFilename = "", lastOpenFilename = "";
 
 	public Hiero (String[] args) {
@@ -236,6 +238,8 @@ public class Hiero extends JFrame {
 			} else if (more && (param.equals("-o") || param.equals("--output"))) {
 				File f = new File(args[++i]);
 				saveBm(f);
+			} else if (more && (param.equals("-j") || param.equals("--json"))) {
+				saveBmFormat = BMFontUtil.OutputFormat.JSON;
 			} else {
 				System.err.println("Unknown parameter: " + param);
 				System.exit(3);
@@ -601,6 +605,32 @@ public class Hiero extends JFrame {
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				lastSaveBMFilename = fileName;
+				saveBmFormat = BMFontUtil.OutputFormat.Text;
+				saveBm(new File(dialog.getDirectory(), fileName));
+			}
+		});
+		saveBMFontJsonMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent evt) {
+				FileDialog dialog = new FileDialog(Hiero.this, "Save BMFont files", FileDialog.SAVE);
+				dialog.setLocationRelativeTo(null);
+				dialog.setFile("*.json");
+				dialog.setDirectory(prefs.get("dir.savebm", ""));
+
+				if (lastSaveBMFilename.length() > 0) {
+					dialog.setFile(lastSaveBMFilename);
+				} else if (lastOpenFilename.length() > 0) {
+					dialog.setFile(lastOpenFilename.replace(".hiero", ".json"));
+				}
+
+				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.savebm", dialog.getDirectory());
+				}
+
+				String fileName = dialog.getFile();
+				if (fileName == null) return;
+				lastSaveBMFilename = fileName;
+				saveBmFormat = BMFontUtil.OutputFormat.JSON;
 				saveBm(new File(dialog.getDirectory(), fileName));
 			}
 		});
@@ -1015,6 +1045,13 @@ public class Hiero extends JFrame {
 				}
 				fileMenu.addSeparator();
 				{
+					saveBMFontJsonMenuItem = new JMenuItem("Save BMFont files (JSON)...");
+					saveBMFontJsonMenuItem.setMnemonic(KeyEvent.VK_J);
+					saveBMFontJsonMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, KeyEvent.CTRL_MASK));
+					fileMenu.add(saveBMFontJsonMenuItem);
+				}
+				fileMenu.addSeparator();
+				{
 					exitMenuItem = new JMenuItem("Exit");
 					exitMenuItem.setMnemonic(KeyEvent.VK_X);
 					fileMenu.add(exitMenuItem);
@@ -1409,7 +1446,7 @@ public class Hiero extends JFrame {
 			if (saveBmFontFile != null) {
 				try {
 					BMFontUtil bmFont = new BMFontUtil(unicodeFont);
-					bmFont.save(saveBmFontFile);
+					bmFont.save(saveBmFontFile, saveBmFormat);
 
 					if (batchMode) {
 						System.exit(0);
