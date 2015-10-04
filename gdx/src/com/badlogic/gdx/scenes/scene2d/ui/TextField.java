@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget implements Disableable {
+public class TextField extends Widget implements Disableable, Focusable {
 	static private final char BACKSPACE = 8;
 	static protected final char ENTER_DESKTOP = '\r';
 	static protected final char ENTER_ANDROID = '\n';
@@ -111,6 +111,9 @@ public class TextField extends Widget implements Disableable {
 
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
+
+	private Actor nextKeyFocusActor;
+	private Actor previousKeyFocusActor;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -473,43 +476,51 @@ public class TextField extends Widget implements Disableable {
 		return minIndex;
 	}
 
-	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
-	public void next (boolean up) {
+	/** Focuses the next Focusable. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
+	 * @param up If true, the previous Focusable will be returned or the one with the same or next smallest y coordinate if {@link Focusable#getPreviousKeyFocusActor()} is null, else the next highest. */
+	public <T extends Actor & Focusable> void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
-		TextField textField = findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
-		if (textField == null) { // Try to wrap around.
-			if (up)
-				tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
-			else
-				tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-			textField = findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+
+		T focusable;
+		if (nextKeyFocusActor != null && !up) {
+			focusable = FocusSupport.getNextFocusActor(this);
+		} else if (previousKeyFocusActor != null && up) {
+			focusable = FocusSupport.getPreviousFocusActor(this);
+		} else {
+			getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
+			focusable = findNextFocusable(stage.getActors(), null, tmp2, tmp1, up);
+			if (focusable == null) { // Try to wrap around.
+				if (up)
+					tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
+				else
+					tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+				focusable = findNextFocusable(getStage().getActors(), null, tmp2, tmp1, up);
+			}
 		}
-		if (textField != null)
-			stage.setKeyboardFocus(textField);
+		if (focusable != null)
+			stage.setKeyboardFocus(focusable);
 		else
 			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
-	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords, boolean up) {
+	private <T extends Actor & Focusable> T findNextFocusable(Array<Actor> actors, T best, Vector2 bestCoords, Vector2 currentCoords, boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor == this) continue;
-			if (actor instanceof TextField) {
-				TextField textField = (TextField)actor;
-				if (textField.isDisabled() || !textField.focusTraversal) continue;
+			if (actor instanceof Focusable) {
+				T focusable = (T)actor;
+				if (focusable.isDisabled() || !focusable.isFocusTraversal()) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
 					if (best == null
 						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
-						best = (TextField)actor;
+						best = focusable;
 						bestCoords.set(actorCoords);
 					}
 				}
 			} else if (actor instanceof Group)
-				best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
+				best = findNextFocusable(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
 		}
 		return best;
 	}
@@ -532,7 +543,13 @@ public class TextField extends Widget implements Disableable {
 		return filter;
 	}
 
+	@Override
+	public boolean isFocusTraversal() {
+		return focusTraversal;
+	}
+
 	/** If true (the default), tab/shift+tab will move to the next text field. */
+	@Override
 	public void setFocusTraversal (boolean focusTraversal) {
 		this.focusTraversal = focusTraversal;
 	}
@@ -697,6 +714,32 @@ public class TextField extends Widget implements Disableable {
 
 	public void setDisabled (boolean disabled) {
 		this.disabled = disabled;
+	}
+
+	@Override
+	public <T extends Actor & Focusable> T getNextKeyFocusActor() {
+		return (T) nextKeyFocusActor;
+	}
+
+	@Override
+	public <T extends Actor & Focusable> void setNextKeyFocusActor(T actor) {
+		nextKeyFocusActor = actor;
+	}
+
+	@Override
+	public <T extends Actor & Focusable> T getPreviousKeyFocusActor() {
+		return (T) previousKeyFocusActor;
+	}
+
+	@Override
+	public <T extends Actor & Focusable> void setPreviousKeyFocusActor(T actor) {
+		previousKeyFocusActor = actor;
+	}
+
+	@Override
+	public <T extends Actor & Focusable> void chainKeyFocusActor(T nextActor) {
+		setNextKeyFocusActor(nextActor);
+		nextActor.setPreviousKeyFocusActor(this);
 	}
 
 	public boolean isDisabled () {
