@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,6 +67,8 @@ public class ScrollPane extends WidgetGroup {
 	final Vector2 lastPoint = new Vector2();
 	float areaWidth, areaHeight;
 	private boolean fadeScrollBars = true, smoothScrolling = true;
+	float smoothingMaxSpeed = 200, smoothingSpeedFactor = 7;
+	float mouseWheelX, mouseWheelY;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 	boolean cancelTouchFocus = true;
 
@@ -309,16 +311,20 @@ public class ScrollPane extends WidgetGroup {
 		) {
 			if (visualAmountX != amountX) {
 				if (visualAmountX < amountX)
-					visualScrollX(Math.min(amountX, visualAmountX + Math.max(200 * delta, (amountX - visualAmountX) * 7 * delta)));
+					visualScrollX(Math.min(amountX, visualAmountX + Math.max(smoothingMaxSpeed * delta, (amountX - visualAmountX) *
+						smoothingSpeedFactor * delta)));
 				else
-					visualScrollX(Math.max(amountX, visualAmountX - Math.max(200 * delta, (visualAmountX - amountX) * 7 * delta)));
+					visualScrollX(Math.max(amountX, visualAmountX - Math.max(smoothingMaxSpeed * delta, (visualAmountX - amountX) *
+						smoothingSpeedFactor * delta)));
 				animating = true;
 			}
 			if (visualAmountY != amountY) {
 				if (visualAmountY < amountY)
-					visualScrollY(Math.min(amountY, visualAmountY + Math.max(200 * delta, (amountY - visualAmountY) * 7 * delta)));
+					visualScrollY(Math.min(amountY, visualAmountY + Math.max(smoothingMaxSpeed * delta, (amountY - visualAmountY) *
+						smoothingSpeedFactor * delta)));
 				else
-					visualScrollY(Math.max(amountY, visualAmountY - Math.max(200 * delta, (visualAmountY - amountY) * 7 * delta)));
+					visualScrollY(Math.max(amountY, visualAmountY - Math.max(smoothingMaxSpeed * delta, (visualAmountY - amountY) *
+						smoothingSpeedFactor * delta)));
 				animating = true;
 			}
 		} else {
@@ -740,12 +746,12 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Returns the amount to scroll horizontally when the mouse wheel is scrolled. */
 	protected float getMouseWheelX () {
-		return Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4;
+		return mouseWheelX == 0 ? Math.min(areaWidth, maxX * 0.2f) : mouseWheelX;
 	}
 
 	/** Returns the amount to scroll vertically when the mouse wheel is scrolled. */
 	protected float getMouseWheelY () {
-		return Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4;
+		return mouseWheelY == 0 ? Math.min(areaHeight, maxY * 0.2f) : mouseWheelY;
 	}
 
 	public void setScrollX (float pixels) {
@@ -1055,20 +1061,19 @@ public class ScrollPane extends WidgetGroup {
 		public ScrollPaneStyle () {
 		}
 
-		public ScrollPaneStyle (Drawable background, Drawable hScroll, Drawable hScrollKnob, Drawable vScroll, Drawable vScrollKnob) {
+		public ScrollPaneStyle (Drawable background, Drawable hScroll, Drawable hScrollKnob, Drawable vScroll,   Drawable vScrollKnob) {
 			this.background = background;
 			this.hScroll = hScroll;
 			this.hScrollKnob = hScrollKnob;
 			this.vScroll = vScroll;
 			this.vScrollKnob = vScrollKnob;
-		}
+  }
 
-		public ScrollPaneStyle (ScrollPaneStyle style) {
+  public ScrollPaneStyle (ScrollPaneStyle style) {
 			this.background = style.background;
 			this.hScroll = style.hScroll;
 			this.hScrollKnob = style.hScrollKnob;
 			this.vScroll = style.vScroll;
 			this.vScrollKnob = style.vScrollKnob;
-		}
-	}
+  }	 }
 }
