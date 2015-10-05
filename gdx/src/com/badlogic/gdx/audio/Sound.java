@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.Disposable;
  * </p>
  * 
  * <p>
- * <b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so
+ * <b>Note</b>: any values provided will not be clamped, it is the developer's responsibility to do so
  * </p>
  * 
  * @author badlogicgames@gmail.com */
