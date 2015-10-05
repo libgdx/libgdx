@@ -19,10 +19,10 @@ package com.badlogic.gdx.tests.g3d.shadows.utils;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 
-/** LightFilter allow to filter rendering light
+/** Select only casting shadow lights. Allows to optimize shadow system.
  * @author realitix */
 public interface LightFilter {
-	/** Return true if the light should be used for shadow computation
+	/** Return true if light should be used for shadow computation.
 	 * @param n Pass number
 	 * @param light Current light
 	 * @param camera Light's camera

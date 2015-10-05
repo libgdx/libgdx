@@ -18,14 +18,13 @@ package com.badlogic.gdx.tests.g3d.shadows.utils;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.math.Vector2;
 
-/** Nearfar Analyzer compute the near and far plane of a camera
+/** Nearfar Analyzer computes near and far plane of camera. It has to call camera.update() after setting values. Updated camera's
+ * frustum should encompass all casting shadow objects.
  * @author realitix */
 public interface NearFarAnalyzer {
-	/** Analyze near and far plane for the camera
+	/** Update near and far plane of camera.
 	 * @param light Current light
-	 * @param camera Light's camera
-	 * @return Vector2 x=near, y=far */
-	public Vector2 analyze (BaseLight light, Camera camera);
+	 * @param camera Light's camera */
+	public void analyze (BaseLight light, Camera camera);
 }

@@ -17,18 +17,15 @@
 package com.badlogic.gdx.tests.g3d.shadows.utils;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 
-/** Directional Analyzer compute the camera's properties needed by a directional light
+/** Directional Analyzer computes the camera's properties needed by directional light. Implementation should use main camera
+ * frustum and scene objects to encompass all casting shadow objects.
  * @author realitix */
 public interface DirectionalAnalyzer {
-	/** Compute the good orthographicCamera dimension based on the frustum. Be careful, direction must be normalized.
-	 * @param light Current light
-	 * @param frustum Frustum of the main camera
-	 * @param direction Direction of the directional light
-	 * @param out Camera modified ( still needs to call update() )
-	 * @return Camera The camera for chaining */
-	public Camera analyze (BaseLight light, Frustum frustum, Vector3 direction, Camera out);
+	/** Compute the camera dimension based on directional light. Camera should be an orthographic camera.
+	 * @param light Current directional light
+	 * @param out Updated camera
+	 * @return Camera Camera for chaining */
+	public Camera analyze (DirectionalLight light, Camera out);
 }

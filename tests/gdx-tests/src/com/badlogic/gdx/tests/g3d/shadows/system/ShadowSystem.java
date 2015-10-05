@@ -25,7 +25,47 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 
-/** Shadow system provides functionalities to render shadows
+/** Shadow system provides functionalities to render shadows.
+ * <p>
+ * Typical use: <br />
+ *
+ * // Init system: <br />
+ * Array<ModelBatch> passBatches = new Array<ModelBatch>();<br />
+ * ModelBatch mainBatch; <br />
+ * ShadowSystem system = new XXXShadowSystem(cam, instances); <br />
+ * for (int i = 0; i < system.getPassQuantity(); i++) { <br />
+ * passBatches.add(new ModelBatch(system.getPassShaderProvider(i))); <br />
+ * } <br />
+ * mainBatch = new ModelBatch(system.getShaderProvider()) <br />
+ *
+ * // Render scene with shadows: <br />
+ * system.update(); <br />
+ * for (int i = 0; i < system.getPassQuantity(); i++) { <br />
+ * system.begin(i); <br />
+ * Camera camera; <br />
+ * while ((camera = system.next()) != null) { <br />
+ * passBatches.get(i).begin(camera); <br />
+ * passBatches.get(i).render(instances, environment); <br />
+ * passBatches.get(i).end(); <br />
+ * } <br />
+ * camera = null; <br />
+ * system.end(i); <br />
+ * } <br />
+ * <br />
+ * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); <br />
+ * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
+ * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
+ *
+ * mainBatch.begin(cam); <br />
+ * mainBatch.render(instances, environment); <br />
+ * mainBatch.end(); <br />
+ * </p>
+ *
+ * <p>
+ * Current environnment should be alway be synchonized with shadow system lights. It means that if you add or remove light from
+ * environment, you should do it in shadow system too. <br />
+ * If you have two different environments, when you switch, you should add and remove all lights in shadow system.
+ * </p>
  * @author realitix */
 public interface ShadowSystem {
 
