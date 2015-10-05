@@ -243,9 +243,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-			String nodeId = "node" + (++id);
-			String meshId = "mesh" + id;
-			String partId = "part" + id;
+			String stringId = "" + (++id);
+			String nodeId = group.name != "default" ? group.name : "node" + stringId;
+			String meshId = group.name != "default" ? group.name : "mesh" + stringId;
+			String partId = group.name != "default" ? group.name : "part" + stringId;
 			ModelNode node = new ModelNode();
 			node.id = nodeId;
 			node.meshId = meshId;
