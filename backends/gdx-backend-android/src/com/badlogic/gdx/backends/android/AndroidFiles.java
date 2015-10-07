@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.IOException;
+
 import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner
  * @author Nathan Sweet */
@@ -29,6 +33,7 @@ public class AndroidFiles implements Files {
 	protected final String localpath;
 
 	protected final AssetManager assets;
+	private ZipResourceFile expansionFile = null;
 
 	public AndroidFiles (AssetManager assets) {
 		this.assets = assets;
@@ -42,7 +47,14 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public FileHandle getFileHandle (String path, FileType type) {
-		return new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
+		FileHandle handle = new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
+		if (!handle.exists() && expansionFile != null) {
+			// try APK expansion instead
+			FileHandle zipHandle = new AndroidZipFileHandle(path);
+			if (zipHandle.exists())
+				handle = zipHandle;
+		}
+		return handle;
 	}
 
 	@Override
@@ -52,7 +64,14 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
-		return new AndroidFileHandle(assets, path, FileType.Internal);
+		FileHandle handle = new AndroidFileHandle(assets, path, FileType.Internal);
+		if (!handle.exists() && expansionFile != null) {
+			// try APK expansion instead
+			FileHandle zipHandle = new AndroidZipFileHandle(path);
+			if (zipHandle.exists())
+				handle = zipHandle;
+		}
+		return handle;
 	}
 
 	@Override
@@ -88,5 +107,32 @@ public class AndroidFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
+	}
+
+	/**
+	 * This method can be called to set the version code of the APK expansion
+	 * file(s) used by the application
+	 * 
+	 * @param mainVersion
+	 *            - version code of the main expansion file
+	 * @param patchVersion
+	 *            - version code of the patch expansion file
+	 * 
+	 * @return true if the APK expansion file could be opened, false otherwise
+	 */
+	public boolean setAPKExpansion(int mainVersion, int patchVersion) {
+		try {
+			expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
+					((AndroidApplication) Gdx.app).getBaseContext(),
+					mainVersion, patchVersion);
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("APK expansion main version " + mainVersion + " or patch version " + patchVersion + " couldn't be opened!");
+		}
+		return expansionFile != null;
+	}
+
+	/** @return The application's APK extension file */
+	public ZipResourceFile getExpansionFile() {
+		return expansionFile;
 	}
 }
