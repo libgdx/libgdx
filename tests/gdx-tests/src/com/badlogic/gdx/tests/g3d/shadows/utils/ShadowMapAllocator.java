@@ -38,7 +38,11 @@ public interface ShadowMapAllocator {
 	 * @return ShadowMapRegion */
 	public ShadowMapRegion nextResult (BaseLight light);
 
-	/** Return the size of the shadow map. Width = Height
+	/** Return shadow map width.
 	 * @return int */
-	public int getSize ();
+	public int getWidth ();
+
+	/** Return shadow map height.
+	 * @return int */
+	public int getHeight ();
 }

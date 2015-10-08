@@ -29,36 +29,39 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * <p>
  * Typical use: <br />
  *
- * // Init system: <br />
- * Array<ModelBatch> passBatches = new Array<ModelBatch>();<br />
- * ModelBatch mainBatch; <br />
- * ShadowSystem system = new XXXShadowSystem(cam, instances); <br />
- * for (int i = 0; i < system.getPassQuantity(); i++) { <br />
- * passBatches.add(new ModelBatch(system.getPassShaderProvider(i))); <br />
- * } <br />
- * mainBatch = new ModelBatch(system.getShaderProvider()) <br />
+ * <pre>
+ * // Init system:
+ * Array&lt;ModelBatch&gt; passBatches = new Array&lt;ModelBatch&gt;();
+ * ModelBatch mainBatch;
+ * ShadowSystem system = new XXXShadowSystem(cam, instances);
+ * for (int i = 0; i &lt; system.getPassQuantity(); i++) {
+ * 	passBatches.add(new ModelBatch(system.getPassShaderProvider(i)));
+ * }
+ * mainBatch = new ModelBatch(system.getShaderProvider());
+ * 
+ * // Render scene with shadows:
+ * system.update();
+ * for (int i = 0; i &lt; system.getPassQuantity(); i++) {
+ * 	system.begin(i);
+ * 	Camera camera;
+ * 	while ((camera = system.next()) != null) {
+ * 		passBatches.get(i).begin(camera);
+ * 		passBatches.get(i).render(instances, environment);
+ * 		passBatches.get(i).end();
+ * 	}
+ * 	camera = null;
+ * 	system.end(i);
+ * }
+ * 
+ * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+ * Gdx.gl.glClearColor(0, 0, 0, 1);
+ * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+ * 
+ * mainBatch.begin(cam);
+ * mainBatch.render(instances, environment);
+ * mainBatch.end();
+ * </pre>
  *
- * // Render scene with shadows: <br />
- * system.update(); <br />
- * for (int i = 0; i < system.getPassQuantity(); i++) { <br />
- * system.begin(i); <br />
- * Camera camera; <br />
- * while ((camera = system.next()) != null) { <br />
- * passBatches.get(i).begin(camera); <br />
- * passBatches.get(i).render(instances, environment); <br />
- * passBatches.get(i).end(); <br />
- * } <br />
- * camera = null; <br />
- * system.end(i); <br />
- * } <br />
- * <br />
- * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); <br />
- * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
- * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
- *
- * mainBatch.begin(cam); <br />
- * mainBatch.render(instances, environment); <br />
- * mainBatch.end(); <br />
  * </p>
  *
  * <p>

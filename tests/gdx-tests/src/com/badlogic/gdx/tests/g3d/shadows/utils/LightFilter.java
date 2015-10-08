@@ -23,9 +23,8 @@ import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
  * @author realitix */
 public interface LightFilter {
 	/** Return true if light should be used for shadow computation.
-	 * @param n Pass number
 	 * @param light Current light
 	 * @param camera Light's camera
 	 * @return boolean */
-	public boolean filter (int n, BaseLight light, Camera camera);
+	public boolean filter (BaseLight light, Camera camera);
 }
