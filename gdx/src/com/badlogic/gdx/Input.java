@@ -731,7 +731,9 @@ public interface Input {
 	public InputProcessor getInputProcessor ();
 
 	/** Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
-	 * this returns the whether the keyboard is currently slid out or not.
+	 * this returns the whether the keyboard is currently slid out or not. If {@link Peripheral#Vibrator} returns true in the
+	 * GWT-backend this does means that the browser supports vibration, but not whether the device has a vibrator. If it returns
+	 * false, you can be sure that this device does not have vibration support!
 	 * 
 	 * @param peripheral the {@link Peripheral}
 	 * @return whether the peripheral is available or not. */

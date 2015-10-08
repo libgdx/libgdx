@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayNumber;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -200,15 +201,72 @@ public class GwtInput implements Input {
 
 	@Override
 	public void vibrate (int milliseconds) {
+		cancelVibrate(); // Always cancel possible current vibration
+		vibrateJSNI(milliseconds);
 	}
+
+	private native void vibrateJSNI (int milliseconds)/*-{
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate
+				|| navigator.mozVibrate || navigator.msVibrate;
+		navigator.vibrate(milliseconds);
+	}-*/;
 
 	@Override
 	public void vibrate (long[] pattern, int repeat) {
+		JsArrayNumber jsPattern = (JsArrayNumber)JsArrayNumber.createArray();
+		for (int i = 0; i < pattern.length; i++) {
+			jsPattern.push(pattern[i]);
+		}
+		cancelVibrate(); // Always cancel possible current vibration
+		vibrateJSNI(jsPattern, repeat);
 	}
+
+	private native void vibrateJSNI (JsArrayNumber patternArg, int repeat)/*-{
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate
+				|| navigator.mozVibrate || navigator.msVibrate;
+		if (repeat == -1) { //No repeat
+			patternArg.unshift(0);
+			navigator.vibrate(patternArg);
+		} else if (repeat == patternArg.length - 1 && repeat % 2 != 0) { // Every 2nd pos in pattern is a delay, 
+			//if repeat is also the last pos of the array, we don't have to repeat it because we'd repeat silence
+			patternArg.unshift(0); // Add a 0 to conform to the pattern-format
+			navigator.vibrate(patternArg);
+		} else {
+			//Calculate the time of the normal pattern
+			patternTime = 0;
+			for (i = 0; i < patternArg.length; i++) {
+				patternTime += patternArg[i];
+			}
+
+			patternArg.unshift(0); // Add a 0 to conform to the pattern-format
+			navigator.vibrate(patternArg);
+			patternArg.splice(1, repeat); //Removes from index 1, n items
+			//Calculate the time of the repeated pattern
+			repeatedPatternTime = 0;
+			for (i = 0; i < patternArg.length; i++) {
+				repeatedPatternTime += patternArg[i];
+			}
+			$wnd.libgdxTimeout = $wnd.setTimeout(function() {
+				$wnd.libgdxInterval = $wnd.setInterval(function() {
+					navigator.vibrate(patternArg);
+				}, repeatedPatternTime);
+			}, patternTime);
+		}
+
+	}-*/;
 
 	@Override
 	public void cancelVibrate () {
+		cancelVibrateJSNI();
 	}
+
+	private native void cancelVibrateJSNI ()/*-{
+		$wnd.clearTimeout($wnd.libgdxTimeout);
+		$wnd.clearInterval($wnd.libgdxInterval);
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate
+				|| navigator.mozVibrate || navigator.msVibrate;
+		navigator.vibrate(0);
+	}-*/;
 
 	@Override
 	public float getAzimuth () {
@@ -269,9 +327,19 @@ public class GwtInput implements Input {
 		if (peripheral == Peripheral.HardwareKeyboard) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return false;
-		if (peripheral == Peripheral.Vibrator) return false;
+		if (peripheral == Peripheral.Vibrator) return isVibratorAvailableJSNI();
 		return false;
 	}
+
+	private native boolean isVibratorAvailableJSNI ()/*-{
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate
+				|| navigator.mozVibrate || navigator.msVibrate;
+		if (navigator.vibrate) {
+			return true;
+		} else {
+			return false;
+		}
+	}-*/;
 
 	@Override
 	public int getRotation () {

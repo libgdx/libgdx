@@ -239,6 +239,7 @@ public class GdxTests {
 		UITest.class,
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,
+		VibratorAdvancedTest.class,
 		VibratorTest.class,
 		ViewportTest1.class,
 		ViewportTest2.class,
