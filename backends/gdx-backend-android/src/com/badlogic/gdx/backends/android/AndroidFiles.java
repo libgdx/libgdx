@@ -48,11 +48,9 @@ public class AndroidFiles implements Files {
 	@Override
 	public FileHandle getFileHandle (String path, FileType type) {
 		FileHandle handle = new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
-		if (!handle.exists() && expansionFile != null) {
+		if (type == FileType.Internal && !handle.exists() && expansionFile != null) {
 			// try APK expansion instead
-			FileHandle zipHandle = new AndroidZipFileHandle(path);
-			if (zipHandle.exists())
-				handle = zipHandle;
+			handle = new AndroidZipFileHandle(path);
 		}
 		return handle;
 	}
@@ -67,9 +65,7 @@ public class AndroidFiles implements Files {
 		FileHandle handle = new AndroidFileHandle(assets, path, FileType.Internal);
 		if (!handle.exists() && expansionFile != null) {
 			// try APK expansion instead
-			FileHandle zipHandle = new AndroidZipFileHandle(path);
-			if (zipHandle.exists())
-				handle = zipHandle;
+			handle = new AndroidZipFileHandle(path);
 		}
 		return handle;
 	}
