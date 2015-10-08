@@ -86,7 +86,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	protected final boolean hasStencil;
 
 	/** if has depth stencil packed buffer **/
-	protected boolean hasDepthStencilPackedBuffer;
+	private boolean hasDepthStencilPackedBuffer;
 
 	/** format **/
 	protected final Pixmap.Format format;
@@ -304,6 +304,11 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}). May return 0 even if stencil buffer enabled */
 	public int getStencilBufferHandle () {
 		return stencilbufferHandle;
+	}
+	
+	/** @return The OpenGL handle of the packed depth & stencil buffer (GL_DEPTH24_STENCIL8_OES) or 0 if not used. **/
+	protected int getDepthStencilPackedBuffer () {
+		return depthStencilPackedBufferHandle;
 	}
 
 	/** @return the height of the framebuffer in pixels */
