@@ -177,7 +177,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					if (tokens.length == 1)
 						activeGroup.materialName = "default";
 					else
-						activeGroup.materialName = tokens[1];
+						activeGroup.materialName = tokens[1].replace('.', '_');
 				}
 			}
 			reader.close();
