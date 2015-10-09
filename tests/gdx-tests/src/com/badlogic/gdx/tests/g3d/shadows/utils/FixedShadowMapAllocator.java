@@ -22,9 +22,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** FixedShadowMapAllocator behavior is naive. It separates the texture in several parts and for each light increments the region.
  * The larger the size, the better the quality or quantity.
  * <p>
- * Exemples: <br />
- * If you set size to QUALITY_MAX and nbMap to NB_MAP_MIN, each depth map would be 2048*2048 (it's huge!).<br />
- * If you set size to QUALITY_MIN and nbMap to NB_MAP_MAX, each depth map would be 64*64.
+ * Examples: <br />
+ * If you set size to QUALITY_MAX and mapQuantity to NB_MAP_MIN, each depth map would be 2048*2048 (it's huge!).<br />
+ * If you set size to QUALITY_MIN and mapQuantity to NB_MAP_MAX, each depth map would be 64*64.
  * </p>
  * @author realitix */
 public class FixedShadowMapAllocator implements ShadowMapAllocator {
@@ -34,14 +34,14 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	public static final int QUALITY_MAX = 4096;
 
 	/** Helpers to choose number of supported shadows */
-	public static final int NB_MAP_MIN = 4;
-	public static final int NB_MAP_MED = 16;
-	public static final int NB_MAP_MAX = 32;
+	public static final int QUANTITY_MAP_MIN = 4;
+	public static final int QUANTITY_MAP_MED = 16;
+	public static final int QUANTITY_MAP_MAX = 32;
 
 	/** Shadow map size (Width = Height) */
 	protected final int size;
 	/** Quantity of renderable parts */
-	protected final int nbMap;
+	protected final int mapQuantity;
 	/** Current rendered part */
 	protected int currentMap;
 	/** Result region */
@@ -54,7 +54,7 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	 * @param nbMap Quantity of supported regions */
 	public FixedShadowMapAllocator (int size, int nbMap) {
 		this.size = size;
-		this.nbMap = nbMap;
+		this.mapQuantity = nbMap;
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 	}
 
 	/** @return Quantity of supported regions. */
-	public int getNbMap () {
-		return nbMap;
+	public int getMapQuantity () {
+		return mapQuantity;
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class FixedShadowMapAllocator implements ShadowMapAllocator {
 			throw new GdxRuntimeException("Allocator must begin before call");
 		}
 
-		int nbOnLine = (int)Math.round(Math.sqrt(nbMap));
+		int nbOnLine = (int)Math.round(Math.sqrt(mapQuantity));
 		int i = currentMap % nbOnLine;
 		int j = currentMap / nbOnLine;
 		int sizeMap = size / nbOnLine;

@@ -68,7 +68,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		computeResult(bb1, camera);
 	}
 
-	/** Initialize camera before computation
+	/** Initialize camera before computation.
 	 * @param camera Camera to compute. */
 	protected void prepareCamera (Camera camera) {
 		camera.near = AABBNearFarAnalyzer.CAMERA_NEAR;
@@ -76,7 +76,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		camera.update();
 	}
 
-	/** Compute final result
+	/** Compute final result.
 	 * @param bb BoundingBox encompassing instances
 	 * @param camera Camera to compute */
 	protected void computeResult (BoundingBox bb, Camera camera) {
