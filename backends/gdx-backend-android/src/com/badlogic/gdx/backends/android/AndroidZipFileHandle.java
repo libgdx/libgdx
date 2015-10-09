@@ -171,11 +171,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 
 	@Override
 	public long length() {
-		try {
-			return getAssetFileDescriptor().getLength();
-		} catch (IOException e) {
-		}
-		return 0;
+		return assetFd != null ? assetFd.getLength() : 0;
 	}
 
 	@Override
