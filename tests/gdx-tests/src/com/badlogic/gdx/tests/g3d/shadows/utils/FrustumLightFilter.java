@@ -16,33 +16,39 @@
 
 package com.badlogic.gdx.tests.g3d.shadows.utils;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
-/** Shadow map allocator return texture region for each light
+/** This Filter allows lights that are in camera frustum
  * @author realitix */
-public interface ShadowMapAllocator {
+public class FrustumLightFilter implements LightFilter {
 
-	/** Result of the allocator analyze */
-	public class ShadowMapRegion {
-		public int x, y, width, height;
+	/** Main camera */
+	protected Camera camera;
+	/** Bounding box used for computation */
+	protected BoundingBox bb = new BoundingBox();
+
+	/** @param camera Main camera */
+	public FrustumLightFilter (Camera camera) {
+		this.camera = camera;
 	}
 
-	/** Begin the texture allocation */
-	public void begin ();
+	@Override
+	public boolean filter (BaseLight light, Camera camera) {
+		Frustum f1 = this.camera.frustum;
+		Frustum f2 = camera.frustum;
+		bb.inf();
 
-	/** End the texture allocation */
-	public void end ();
+		for (int i = 0; i < f2.planePoints.length; i++) {
+			bb.ext(f2.planePoints[i]);
+		}
 
-	/** Find the next texture region for the current light
-	 * @param light Current light
-	 * @return ShadowMapRegion or null if no more space on texture */
-	public ShadowMapRegion nextResult (BaseLight light);
+		if (f1.boundsInFrustum(bb)) {
+			return true;
+		}
 
-	/** Return shadow map width.
-	 * @return int */
-	public int getWidth ();
-
-	/** Return shadow map height.
-	 * @return int */
-	public int getHeight ();
+		return false;
+	}
 }

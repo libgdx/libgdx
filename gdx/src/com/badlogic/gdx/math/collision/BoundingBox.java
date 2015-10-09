@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /** Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the
  * bounding box's center, dimensions and corner points.
- * 
+ *
  * @author badlogicgames@gmail.com, Xoppa */
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
@@ -117,20 +117,28 @@ public class BoundingBox implements Serializable {
 		return out.set(max);
 	}
 
+	/** @param out The {@link Sphere} to compute.
+	 * @return The sphere specified with the out argument */
+	public Sphere getBoundingSphere (Sphere out) {
+		getCenter(out.center);
+		out.radius = getDimensions(tmpVector).len() * 0.5f;
+		return out;
+	}
+
 	/** Constructs a new bounding box with the minimum and maximum vector set to zeros. */
 	public BoundingBox () {
 		clr();
 	}
 
 	/** Constructs a new bounding box from the given bounding box.
-	 * 
+	 *
 	 * @param bounds The bounding box to copy */
 	public BoundingBox (BoundingBox bounds) {
 		this.set(bounds);
 	}
 
 	/** Constructs the new bounding box using the given minimum and maximum vector.
-	 * 
+	 *
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector */
 	public BoundingBox (Vector3 minimum, Vector3 maximum) {
@@ -138,7 +146,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the given bounding box.
-	 * 
+	 *
 	 * @param bounds The bounds.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (BoundingBox bounds) {
@@ -146,7 +154,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the given minimum and maximum vector.
-	 * 
+	 *
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector
 	 * @return This bounding box for chaining. */
@@ -161,7 +169,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.
-	 * 
+	 *
 	 * @param points The points.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (Vector3[] points) {
@@ -172,7 +180,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.
-	 * 
+	 *
 	 * @param points The points.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (List<Vector3> points) {
@@ -183,7 +191,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the minimum and maximum vector to positive and negative infinity.
-	 * 
+	 *
 	 * @return This bounding box for chaining. */
 	public BoundingBox inf () {
 		min.set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
@@ -214,7 +222,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Extends this bounding box by the given bounding box.
-	 * 
+	 *
 	 * @param a_bounds The bounding box
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (BoundingBox a_bounds) {
@@ -223,7 +231,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Extends this bounding box by the given transformed bounding box.
-	 * 
+	 *
 	 * @param bounds The bounding box
 	 * @param transform The transformation matrix to apply to bounds, before using it to extend this bounding box.
 	 * @return This bounding box for chaining. */
@@ -241,7 +249,7 @@ public class BoundingBox implements Serializable {
 
 	/** Multiplies the bounding box by the given matrix. This is achieved by multiplying the 8 corner points and then calculating
 	 * the minimum and maximum vectors from the transformed points.
-	 * 
+	 *
 	 * @param transform The matrix
 	 * @return This bounding box for chaining. */
 	public BoundingBox mul (Matrix4 transform) {
@@ -300,7 +308,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Extends the bounding box by the given vector.
-	 * 
+	 *
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate
 	 * @param z The z-coordinate
