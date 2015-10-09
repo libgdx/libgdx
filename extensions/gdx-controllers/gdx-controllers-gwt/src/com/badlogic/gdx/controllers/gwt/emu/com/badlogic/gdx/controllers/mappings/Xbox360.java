@@ -17,6 +17,7 @@
 package com.badlogic.gdx.controllers.mappings;
 
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.PovDirection;
 
 /** Button and axis indices for the Xbox 360 {@link Controller}.
  * @author Green Lightning */
@@ -55,5 +56,67 @@ public class Xbox360 {
 	public static final int BUTTON_RIGHT_STICK = 11;
 	public static final int AXIS_RIGHT_X = 2;
 	public static final int AXIS_RIGHT_Y = 3;
+
+	public static PovDirection getDPad(Controller controller) {
+		int x = 0, y = 0;
+		if (isDPadLeftPressed(controller))
+			x--;
+		if (isDPadRightPressed(controller))
+			x++;
+		if (isDPadDownPressed(controller))
+			y--;
+		if (isDPadUpPressed(controller))
+			y++;
+		switch (3 * x + y) {
+			case 3 * -1 + -1:
+				return PovDirection.southWest;
+			case 3 * -1 + 0:
+				return PovDirection.west;
+			case 3 * -1 + 1:
+				return PovDirection.northWest;
+			case 3 * 0 + -1:
+				return PovDirection.south;
+			case 3 * 0 + 0:
+				return PovDirection.center;
+			case 3 * 0 + 1:
+				return PovDirection.north;
+			case 3 * 1 + -1:
+				return PovDirection.southEast;
+			case 3 * 1 + 0:
+				return PovDirection.east;
+			case 3 * 1 + 1:
+				return PovDirection.northEast;
+			default:
+				return PovDirection.center;
+		}
+	}
+
+	public static boolean isDPadUpPressed(Controller controller) {
+		return controller.getButton(BUTTON_DPAD_UP);
+	}
+
+	public static boolean isDPadDownPressed(Controller controller) {
+		return controller.getButton(BUTTON_DPAD_DOWN);
+	}
+
+	public static boolean isDPadLeftPressed(Controller controller) {
+		return controller.getButton(BUTTON_DPAD_LEFT);
+	}
+
+	public static boolean isDPadRightPressed(Controller controller) {
+		return controller.getButton(BUTTON_DPAD_RIGHT);
+	}
+
+	public static float getLeftTrigger(Controller controller) {
+		return controller.getAxis(AXIS_LEFT_TRIGGER);
+	}
+
+	public static float getRightTrigger(Controller controller) {
+		return controller.getAxis(AXIS_RIGHT_TRIGGER);
+	}
+
+	public static float getBackTriggers(Controller controller) {
+		return getLeftTrigger(controller) - getRightTrigger(controller);
+	}
 
 }

@@ -17,6 +17,8 @@
 package com.badlogic.gdx.controllers.mappings;
 
 import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.math.MathUtils;
 
 /** Button and axis indices for the Xbox 360 {@link Controller}.
  * <p>
@@ -132,6 +134,38 @@ public class Xbox360 {
 	public static final int AXIS_RIGHT_X = OS.axisRightX;
 	public static final int AXIS_RIGHT_Y = OS.axisRightY;
 
+	public static PovDirection getDPad (Controller controller) {
+		return OS.dPadNormalizer.getDPad(controller);
+	}
+
+	public static boolean isDPadUpPressed (Controller controller) {
+		return OS.dPadNormalizer.isDPadUpPressed(controller);
+	}
+
+	public static boolean isDPadDownPressed (Controller controller) {
+		return OS.dPadNormalizer.isDPadDownPressed(controller);
+	}
+
+	public static boolean isDPadLeftPressed (Controller controller) {
+		return OS.dPadNormalizer.isDPadLeftPressed(controller);
+	}
+
+	public static boolean isDPadRightPressed (Controller controller) {
+		return OS.dPadNormalizer.isDPadUpPressed(controller);
+	}
+
+	public static float getLeftTrigger (Controller controller) {
+		return OS.getLeftTrigger(controller);
+	}
+
+	public static float getRightTrigger (Controller controller) {
+		return OS.getRightTrigger(controller);
+	}
+
+	public static float getBackTriggers (Controller controller) {
+		return OS.getBackTriggers(controller);
+	}
+
 	private static enum OperatingSystem {
 		UNKNOWN, WINDOWS {
 			{
@@ -157,6 +191,23 @@ public class Xbox360 {
 				buttonRightStick = 9;
 				axisRightX = 3;
 				axisRightY = 2;
+
+				dPadNormalizer = DPadNormalizer.POV;
+			}
+
+			@Override
+			public float getLeftTrigger (Controller controller) {
+				return MathUtils.clamp(controller.getAxis(axisBackTriggers), 0, 1);
+			}
+
+			@Override
+			public float getRightTrigger (Controller controller) {
+				return MathUtils.clamp(-controller.getAxis(axisBackTriggers), 0, 1);
+			}
+
+			@Override
+			public float getBackTriggers (Controller controller) {
+				return controller.getAxis(axisBackTriggers);
 			}
 		},
 		OSX {
@@ -188,6 +239,18 @@ public class Xbox360 {
 				buttonRightStick = 7;
 				axisRightX = 4;
 				axisRightY = 5;
+
+				dPadNormalizer = DPadNormalizer.BUTTONS;
+			}
+
+			@Override
+			public float getLeftTrigger (Controller controller) {
+				return controller.getAxis(axisLeftTrigger);
+			}
+
+			@Override
+			public float getRightTrigger (Controller controller) {
+				return controller.getAxis(axisRightTrigger);
 			}
 		},
 		LINUX {
@@ -216,6 +279,18 @@ public class Xbox360 {
 				buttonRightStick = 10;
 				axisRightX = 3;
 				axisRightY = 4;
+
+				dPadNormalizer = DPadNormalizer.POV;
+			}
+
+			@Override
+			public float getLeftTrigger (Controller controller) {
+				return (controller.getAxis(axisLeftTrigger) + 1f) / 2f;
+			}
+
+			@Override
+			public float getRightTrigger (Controller controller) {
+				return (controller.getAxis(axisRightTrigger) + 1f) / 2f;
 			}
 		};
 
@@ -248,6 +323,127 @@ public class Xbox360 {
 		public int buttonRightStick = UNDEFINED;
 		public int axisRightX = UNDEFINED;
 		public int axisRightY = UNDEFINED;
+
+		public DPadNormalizer dPadNormalizer = DPadNormalizer.NONE;
+
+		public float getLeftTrigger (Controller controller) {
+			return 0;
+		}
+
+		public float getRightTrigger (Controller controller) {
+			return 0;
+		}
+
+		public float getBackTriggers (Controller controller) {
+			return getLeftTrigger(controller) - getRightTrigger(controller);
+		}
+
+	}
+
+	private static enum DPadNormalizer {
+		NONE, POV {
+			@Override
+			public PovDirection getDPad (Controller controller) {
+				return controller.getPov(POV_DPAD);
+			}
+
+			@Override
+			public boolean isDPadUpPressed (Controller controller) {
+				return isDPadDirectionPressed(controller, PovDirection.north, PovDirection.northWest, PovDirection.northEast);
+			}
+
+			@Override
+			public boolean isDPadDownPressed (Controller controller) {
+				return isDPadDirectionPressed(controller, PovDirection.south, PovDirection.southWest, PovDirection.southEast);
+			}
+
+			@Override
+			public boolean isDPadLeftPressed (Controller controller) {
+				return isDPadDirectionPressed(controller, PovDirection.west, PovDirection.northWest, PovDirection.southWest);
+			}
+
+			@Override
+			public boolean isDPadRightPressed (Controller controller) {
+				return isDPadDirectionPressed(controller, PovDirection.east, PovDirection.northEast, PovDirection.southEast);
+			}
+
+			private boolean isDPadDirectionPressed (Controller controller, PovDirection one, PovDirection two, PovDirection three) {
+				PovDirection dir = controller.getPov(POV_DPAD);
+				return dir == one || dir == two || dir == three;
+			}
+		},
+		BUTTONS {
+			@Override
+			public PovDirection getDPad (Controller controller) {
+				int x = 0, y = 0;
+				if (isDPadLeftPressed(controller)) x--;
+				if (isDPadRightPressed(controller)) x++;
+				if (isDPadDownPressed(controller)) y--;
+				if (isDPadUpPressed(controller)) y++;
+				switch (3 * x + y) {
+				case 3 * -1 + -1:
+					return PovDirection.southWest;
+				case 3 * -1 + 0:
+					return PovDirection.west;
+				case 3 * -1 + 1:
+					return PovDirection.northWest;
+				case 3 * 0 + -1:
+					return PovDirection.south;
+				case 3 * 0 + 0:
+					return PovDirection.center;
+				case 3 * 0 + 1:
+					return PovDirection.north;
+				case 3 * 1 + -1:
+					return PovDirection.southEast;
+				case 3 * 1 + 0:
+					return PovDirection.east;
+				case 3 * 1 + 1:
+					return PovDirection.northEast;
+				default:
+					return PovDirection.center;
+				}
+			}
+
+			@Override
+			public boolean isDPadUpPressed (Controller controller) {
+				return controller.getButton(BUTTON_DPAD_UP);
+			}
+
+			@Override
+			public boolean isDPadDownPressed (Controller controller) {
+				return controller.getButton(BUTTON_DPAD_DOWN);
+			}
+
+			@Override
+			public boolean isDPadLeftPressed (Controller controller) {
+				return controller.getButton(BUTTON_DPAD_LEFT);
+			}
+
+			@Override
+			public boolean isDPadRightPressed (Controller controller) {
+				return controller.getButton(BUTTON_DPAD_RIGHT);
+			}
+		};
+
+		public PovDirection getDPad (Controller controller) {
+			return PovDirection.center;
+		}
+
+		public boolean isDPadUpPressed (Controller controller) {
+			return false;
+		}
+
+		public boolean isDPadDownPressed (Controller controller) {
+			return false;
+		}
+
+		public boolean isDPadLeftPressed (Controller controller) {
+			return false;
+		}
+
+		public boolean isDPadRightPressed (Controller controller) {
+			return false;
+		}
 	}
 
 }
