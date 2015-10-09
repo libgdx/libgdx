@@ -16,33 +16,15 @@
 
 package com.badlogic.gdx.tests.g3d.shadows.utils;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 
-/** Shadow map allocator return texture region for each light
+/** This Filter do not block lights. All lights are allowed.
  * @author realitix */
-public interface ShadowMapAllocator {
+public class AllLightFilter implements LightFilter {
 
-	/** Result of the allocator analyze */
-	public class ShadowMapRegion {
-		public int x, y, width, height;
+	@Override
+	public boolean filter (BaseLight light, Camera camera) {
+		return true;
 	}
-
-	/** Begin the texture allocation */
-	public void begin ();
-
-	/** End the texture allocation */
-	public void end ();
-
-	/** Find the next texture region for the current light
-	 * @param light Current light
-	 * @return ShadowMapRegion or null if no more space on texture */
-	public ShadowMapRegion nextResult (BaseLight light);
-
-	/** Return shadow map width.
-	 * @return int */
-	public int getWidth ();
-
-	/** Return shadow map height.
-	 * @return int */
-	public int getHeight ();
 }
