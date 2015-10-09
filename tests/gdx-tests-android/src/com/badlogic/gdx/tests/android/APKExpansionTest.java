@@ -19,13 +19,20 @@ package com.badlogic.gdx.tests.android;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /* 
@@ -57,6 +64,13 @@ public class APKExpansionTest extends GdxTest {
         }
 
         assetManager = new AssetManager();
+        FileHandleResolver resolver = new InternalFileHandleResolver();
+        assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+
+        loadFont(assetManager, "data/DroidSerif-Regular.ttf", 12);
+        loadFont(assetManager, "data/"  + extensionPrefix + "DroidSerif-Regular.ttf", 12);
+
         assetManager.load("data/" + extensionPrefix + "testpackobb", TextureAtlas.class);
         assetManager.finishLoading();
 
@@ -66,6 +80,8 @@ public class APKExpansionTest extends GdxTest {
         batch = new SpriteBatch();
         TextureAtlas atlas = assetManager.get("data/" + extensionPrefix + "testpackobb");
         atlasTextureRegion = new TextureRegion(atlas.findRegion("water"));
+        sound = Gdx.audio.newSound(Gdx.files.internal("data/shotgun.ogg"));
+        sound.play();
     }
 
     @Override
@@ -76,5 +92,15 @@ public class APKExpansionTest extends GdxTest {
         batch.draw(texture, 0, 0);
         batch.draw(atlasTextureRegion, 0, 0);
         batch.end();
+    }
+
+    private void loadFont(AssetManager assetManager, String fontName, int size) {
+       FreeTypeFontLoaderParameter param = new FreeTypeFontLoaderParameter();
+       param.fontFileName = fontName;
+       param.fontParameters.size = 12;
+       param.fontParameters.genMipMaps = true;
+       param.fontParameters.minFilter = TextureFilter.MipMapLinearLinear;
+       param.fontParameters.magFilter = TextureFilter.Linear;
+       assetManager.load(fontName + "size" + size + ".ttf", BitmapFont.class, param);
     }
 }
