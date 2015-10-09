@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-/** This Filter allows lights that are in camera frustum
+/** This Filter allows lights that are in camera frustum.
  * @author realitix */
 public class FrustumLightFilter implements LightFilter {
 
