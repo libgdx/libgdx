@@ -40,6 +40,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public final class AndroidAudio implements Audio {
+	
 	private final SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
