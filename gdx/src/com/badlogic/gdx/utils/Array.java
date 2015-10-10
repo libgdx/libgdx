@@ -289,7 +289,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes and returns the last item. */
 	public T pop () {
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+		if (isEmpty()) throw new IllegalStateException("Array is empty.");
 		--size;
 		T item = items[size];
 		items[size] = null;
@@ -298,13 +298,13 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns the last item. */
 	public T peek () {
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+		if (isEmpty()) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
 	/** Returns the first item. */
 	public T first () {
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+		if (isEmpty()) throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
 
@@ -427,8 +427,14 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns a random item from the array, or null if the array is empty. */
 	public T random () {
-		if (size == 0) return null;
+		if (isEmpty()) return null;
 		return items[MathUtils.random(0, size - 1)];
+	}
+
+	/**
+	* Returns <tt>true</tt> if this list contains no elements.*/
+	public boolean isEmpty() {
+		return size == 0;
 	}
 
 	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
@@ -474,7 +480,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public String toString () {
-		if (size == 0) return "[]";
+		if (isEmpty()) return "[]";
 		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
@@ -488,7 +494,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public String toString (String separator) {
-		if (size == 0) return "";
+		if (isEmpty()) return "";
 		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append(items[0]);
