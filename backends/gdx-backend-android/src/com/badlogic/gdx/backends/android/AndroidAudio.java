@@ -26,6 +26,8 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.media.SoundPool.Builder;
+import android.os.Build;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files.FileType;
@@ -46,7 +48,19 @@ public final class AndroidAudio implements Audio {
 
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio) {
-			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				AudioAttributes attributes = new AudioAttributes.Builder()
+					.setUsage(AudioAttributes.USAGE_GAME)
+					.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+					.build();
+
+				soundPool = new SoundPool.Builder()
+					.setAudioAttributes(attributes)
+					.setMaxStreams (config.maxSimultaneousSounds)
+					.build();
+			} else {
+				soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);	
+			}
 			manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 			if (context instanceof Activity) {
 				((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
