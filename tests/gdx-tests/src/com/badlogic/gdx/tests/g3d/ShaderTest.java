@@ -169,7 +169,7 @@ public class ShaderTest extends GdxTest {
 				set(u_color, colorAttr.color);
 			}
 
-			renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize);
+			renderable.meshPart.render(program);
 		}
 
 		@Override

@@ -523,7 +523,7 @@ public class DefaultShader extends BaseShader {
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
 		this.renderable = renderable;
 		attributesMask = attributes.getMask() | optionalAttributes;
-		vertexMask = renderable.mesh.getVertexAttributes().getMask();
+		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
 
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
 		for (int i = 0; i < directionalLights.length; i++)
@@ -632,7 +632,7 @@ public class DefaultShader extends BaseShader {
 		final Attributes attributes = combineAttributes(renderable);
 		String prefix = "";
 		final long attributesMask = attributes.getMask();
-		final long vertexMask = renderable.mesh.getVertexAttributes().getMask();
+		final long vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
 		if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
 		if (or(vertexMask, Usage.ColorUnpacked | Usage.ColorPacked)) prefix += "#define colorFlag\n";
 		if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
@@ -652,9 +652,9 @@ public class DefaultShader extends BaseShader {
 				if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
 			}
 		}
-		final int n = renderable.mesh.getVertexAttributes().size();
+		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
+			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
 			if (attr.usage == Usage.BoneWeight)
 				prefix += "#define boneWeight" + attr.unit + "Flag\n";
 			else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
@@ -705,7 +705,7 @@ public class DefaultShader extends BaseShader {
 	public boolean canRender (final Renderable renderable) {
 		final Attributes attributes = combineAttributes(renderable);
 		return (attributesMask == (attributes.getMask() | optionalAttributes))
-			&& (vertexMask == renderable.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting;
+			&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMask()) && (renderable.environment != null) == lighting;
 	}
 
 	@Override

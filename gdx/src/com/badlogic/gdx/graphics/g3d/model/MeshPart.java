@@ -18,7 +18,9 @@ package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
@@ -63,19 +65,33 @@ public class MeshPart {
 	 * @param size The size (in total number of vertices) of the part.
 	 * @param type The primitive type of the part (e.g. GL_TRIANGLES, GL_LINE_STRIP, etc.). */
 	public MeshPart (final String id, final Mesh mesh, final int offset, final int size, final int type) {
+		set(id, mesh, offset, size, type);
+	}
+
+	/** Construct a new MeshPart which is an exact copy of the provided MeshPart.
+	 * @param copyFrom The MeshPart to copy. */
+	public MeshPart (final MeshPart copyFrom) {
+		set(copyFrom);
+	}
+
+	/** Set this MeshPart to be a copy of the other MeshPart 
+	 * @param other The MeshPart from which to copy the values */
+	public void set (final MeshPart other) {
+		this.id = other.id;
+		this.mesh = other.mesh;
+		this.indexOffset = other.indexOffset;
+		this.numVertices = other.numVertices;
+		this.primitiveType = other.primitiveType;
+	}
+	
+	public void set (final String id, final Mesh mesh, final int offset, final int size, final int type) {
 		this.id = id;
 		this.mesh = mesh;
 		this.indexOffset = offset;
 		this.numVertices = size;
 		this.primitiveType = type;
 	}
-
-	/** Construct a new MeshPart which is an exact copy of the provided MeshPart.
-	 * @param copyFrom The MeshPart to copy. */
-	public MeshPart (final MeshPart copyFrom) {
-		this(copyFrom.id, copyFrom.mesh, copyFrom.indexOffset, copyFrom.numVertices, copyFrom.primitiveType);
-	}
-
+	
 	/** Compares this MeshPart to the specified MeshPart and returns true if they both reference the same {@link Mesh} and the
 	 * {@link #indexOffset}, {@link #numVertices} and {@link #primitiveType} members are equal. The {@link #id} member is ignored.
 	 * @param other The other MeshPart to compare this MeshPart to.
@@ -91,5 +107,20 @@ public class MeshPart {
 		if (arg0 == this) return true;
 		if (!(arg0 instanceof MeshPart)) return false;
 		return equals((MeshPart)arg0);
+	}
+
+	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
+	 * {@link ShaderProgram#end()}.
+	 * @param shader the shader to be used
+	 * @param autoBind overrides the autoBind member of the Mesh */
+	public void render (ShaderProgram shader, boolean autoBind) {
+		mesh.render(shader, primitiveType, indexOffset, numVertices, autoBind);
+	}
+	
+	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
+	 * {@link ShaderProgram#end()}.
+	 * @param shader the shader to be used */
+	public void render (ShaderProgram shader) {
+		mesh.render(shader, primitiveType, indexOffset, numVertices);
 	}
 }
