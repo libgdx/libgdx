@@ -131,13 +131,13 @@ public class ModelCache implements Disposable, RenderableProvider {
 
 		@Override
 		public int compare (Renderable arg0, Renderable arg1) {
-			final VertexAttributes va0 = arg0.mesh.getVertexAttributes();
-			final VertexAttributes va1 = arg1.mesh.getVertexAttributes();
+			final VertexAttributes va0 = arg0.meshPart.mesh.getVertexAttributes();
+			final VertexAttributes va1 = arg1.meshPart.mesh.getVertexAttributes();
 			final int vc = va0.compareTo(va1);
 			if (vc == 0) {
 				final int mc = arg0.material.compareTo(arg1.material);
 				if (mc == 0) {
-					return arg0.primitiveType - arg1.primitiveType;
+					return arg0.meshPart.primitiveType - arg1.meshPart.primitiveType;
 				}
 				return mc;
 			}
@@ -197,10 +197,13 @@ public class ModelCache implements Disposable, RenderableProvider {
 		result.bones = null;
 		result.environment = null;
 		result.material = material;
-		result.mesh = null;
-		result.meshPartOffset = 0;
-		result.meshPartSize = 0;
-		result.primitiveType = primitiveType;
+		result.meshPart.mesh = null;
+		result.meshPart.indexOffset = 0;
+		result.meshPart.numVertices = 0;
+		result.meshPart.primitiveType = primitiveType;
+		result.meshPart.center.set(0, 0, 0);
+		result.meshPart.halfExtents.set(0, 0, 0);
+		result.meshPart.radius = -1f;
 		result.shader = null;
 		result.userData = null;
 		result.worldTransform.idt();
@@ -221,9 +224,9 @@ public class ModelCache implements Disposable, RenderableProvider {
 		int initCount = renderables.size;
 
 		final Renderable first = items.get(0);
-		VertexAttributes vertexAttributes = first.mesh.getVertexAttributes();
+		VertexAttributes vertexAttributes = first.meshPart.mesh.getVertexAttributes();
 		Material material = first.material;
-		int primitiveType = first.primitiveType;
+		int primitiveType = first.meshPart.primitiveType;
 		int offset = renderables.size;
 
 		meshBuilder.begin(vertexAttributes);
@@ -232,12 +235,12 @@ public class ModelCache implements Disposable, RenderableProvider {
 
 		for (int i = 0, n = items.size; i < n; ++i) {
 			final Renderable renderable = items.get(i);
-			final VertexAttributes va = renderable.mesh.getVertexAttributes();
+			final VertexAttributes va = renderable.meshPart.mesh.getVertexAttributes();
 			final Material mat = renderable.material;
-			final int pt = renderable.primitiveType;
+			final int pt = renderable.meshPart.primitiveType;
 
 			final boolean sameMesh = va.equals(vertexAttributes)
-				&& renderable.meshPartSize + meshBuilder.getNumVertices() < Short.MAX_VALUE; // comparing indices and vertices...
+				&& renderable.meshPart.numVertices + meshBuilder.getNumVertices() < Short.MAX_VALUE; // comparing indices and vertices...
 			final boolean samePart = sameMesh && pt == primitiveType && mat.same(material, true);
 
 			if (!samePart) {
@@ -245,31 +248,31 @@ public class ModelCache implements Disposable, RenderableProvider {
 					final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
 						meshBuilder.getNumIndices()));
 					while (offset < renderables.size)
-						renderables.get(offset++).mesh = mesh;
+						renderables.get(offset++).meshPart.mesh = mesh;
 					meshBuilder.begin(vertexAttributes = va);
 				}
 
 				final MeshPart newPart = meshBuilder.part("", pt, meshPartPool.obtain());
 				final Renderable previous = renderables.get(renderables.size - 1);
-				previous.meshPartOffset = part.indexOffset;
-				previous.meshPartSize = part.numVertices;
+				previous.meshPart.indexOffset = part.indexOffset;
+				previous.meshPart.numVertices = part.numVertices;
 				part = newPart;
 
 				renderables.add(obtainRenderable(material = mat, primitiveType = pt));
 			}
 
 			meshBuilder.setVertexTransform(renderable.worldTransform);
-			meshBuilder.addMesh(renderable.mesh, renderable.meshPartOffset, renderable.meshPartSize);
+			meshBuilder.addMesh(renderable.meshPart.mesh, renderable.meshPart.indexOffset, renderable.meshPart.numVertices);
 		}
 
 		final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
 			meshBuilder.getNumIndices()));
 		while (offset < renderables.size)
-			renderables.get(offset++).mesh = mesh;
+			renderables.get(offset++).meshPart.mesh = mesh;
 
 		final Renderable previous = renderables.get(renderables.size - 1);
-		previous.meshPartOffset = part.indexOffset;
-		previous.meshPartSize = part.numVertices;
+		previous.meshPart.indexOffset = part.indexOffset;
+		previous.meshPart.numVertices = part.numVertices;
 	}
 
 	/** Adds the specified {@link Renderable} to the cache. Must be called in between a call to {@link #begin()} and {@link #end()}.

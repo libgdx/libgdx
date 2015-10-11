@@ -133,6 +133,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 		renderable.meshPart.numVertices = bufferedParticlesCount;
 		renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount*CPU_VERTEX_SIZE);
+		renderable.meshPart.update();
 	}
 
 	@Override

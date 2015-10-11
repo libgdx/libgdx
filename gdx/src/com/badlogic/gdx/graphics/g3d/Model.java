@@ -259,6 +259,8 @@ public class Model implements Disposable {
 			meshParts.add(meshPart);
 		}
 		mesh.getIndicesBuffer().position(0);
+		for (MeshPart part : meshParts)
+			part.update();
 	}
 
 	private void loadMaterials (Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {

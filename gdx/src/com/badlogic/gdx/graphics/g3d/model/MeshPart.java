@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
@@ -53,6 +55,17 @@ public class MeshPart {
 	public int numVertices;
 	/** The Mesh the part references, also stored in {@link Model} **/
 	public Mesh mesh;
+	/** The offset to the center of the bounding box of the shape, only valid after the call to {@link #update()}. **/
+	public final Vector3 center = new Vector3();
+	/** The location, relative to {@link #center} of the corner of the axis aligned bounding box of the shape. Or, in other words:
+	 * half the dimensions of the bounding box of the shape, where {@link Vector3#x} is half the width, {@link Vector3#y} is half
+	 * the height and {@link Vector3#z} is half the depth. Only valid after the call to {@link #update()}. */
+	public final Vector3 halfExtents = new Vector3();
+	/** The radius relative to {@link #center} of the bounding sphere of the shape, or negative if not calculated yet. This is the
+	 * same as the length of the {@link #halfExtents} member. See {@link #update()}. */
+	public float radius = -1;
+	/** Temporary static {@link BoundingBox} instance, used in the {@link #update()} method. */
+	private final static BoundingBox bounds = new BoundingBox();
 
 	/** Construct a new MeshPart, with null values. The MeshPart is unusable until you set all members. **/
 	public MeshPart () {
@@ -74,24 +87,45 @@ public class MeshPart {
 		set(copyFrom);
 	}
 
-	/** Set this MeshPart to be a copy of the other MeshPart 
-	 * @param other The MeshPart from which to copy the values */
-	public void set (final MeshPart other) {
+	/** Set this MeshPart to be a copy of the other MeshPart
+	 * @param other The MeshPart from which to copy the values
+	 * @return this MeshPart, for chaining */
+	public MeshPart set (final MeshPart other) {
 		this.id = other.id;
 		this.mesh = other.mesh;
 		this.indexOffset = other.indexOffset;
 		this.numVertices = other.numVertices;
 		this.primitiveType = other.primitiveType;
+		this.center.set(other.center);
+		this.halfExtents.set(other.halfExtents);
+		return this;
 	}
-	
-	public void set (final String id, final Mesh mesh, final int offset, final int size, final int type) {
+
+	/** Set this MeshPart to given values, does not {@link #update()} the bounding box values.
+	 * @return this MeshPart, for chaining. */
+	public MeshPart set (final String id, final Mesh mesh, final int offset, final int size, final int type) {
 		this.id = id;
 		this.mesh = mesh;
 		this.indexOffset = offset;
 		this.numVertices = size;
 		this.primitiveType = type;
+		this.center.set(0, 0, 0);
+		this.halfExtents.set(0, 0, 0);
+		this.radius = -1f;
+		return this;
 	}
-	
+
+	/** Calculates and updates the {@link #center}, {@link #halfExtents} and {@link #radius} values. This is considered a costly
+	 * operation and should not be called frequently. All vertices (points) of the shape are traversed to calculate the maximum and
+	 * minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any transformation that might be applied
+	 * when rendering. It calculates the untransformed (not moved, not scaled, not rotated) values. */
+	public void update () {
+		mesh.calculateBoundingBox(bounds, indexOffset, numVertices);
+		bounds.getCenter(center);
+		bounds.getDimensions(halfExtents).scl(0.5f);
+		radius = halfExtents.len();
+	}
+
 	/** Compares this MeshPart to the specified MeshPart and returns true if they both reference the same {@link Mesh} and the
 	 * {@link #indexOffset}, {@link #numVertices} and {@link #primitiveType} members are equal. The {@link #id} member is ignored.
 	 * @param other The other MeshPart to compare this MeshPart to.
@@ -116,7 +150,7 @@ public class MeshPart {
 	public void render (ShaderProgram shader, boolean autoBind) {
 		mesh.render(shader, primitiveType, indexOffset, numVertices, autoBind);
 	}
-	
+
 	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
 	 * {@link ShaderProgram#end()}.
 	 * @param shader the shader to be used */

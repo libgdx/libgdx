@@ -677,6 +677,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			Renderable renderable = renderablePool.obtain();
 			renderable.meshPart.numVertices = (addedVertexCount/4)*6;
 			renderable.meshPart.mesh.setVertices(vertices, currentVertexSize *v, currentVertexSize * addedVertexCount);
+			renderable.meshPart.update();
 			renderables.add(renderable);
 		}
 	}
