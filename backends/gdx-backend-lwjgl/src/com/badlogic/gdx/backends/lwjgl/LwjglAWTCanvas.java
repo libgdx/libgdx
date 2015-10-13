@@ -211,6 +211,7 @@ public class LwjglAWTCanvas implements Application {
 	void create () {
 		try {
 			setGlobals();
+			graphics.setupDisplay();
 			graphics.initiateGLInstances();
 			listener.create();
 			lastWidth = Math.max(1, graphics.getWidth());
