@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Nathan Sweet */
 public class AndroidFileHandle extends FileHandle {
 	// The asset manager, or null if this is not an internal file.
-	final AssetManager assets;
+	final private AssetManager assets;
 
 	AndroidFileHandle (AssetManager assets, String fileName, FileType type) {
 		super(fileName.replace('\\', '/'), type);
@@ -229,4 +229,11 @@ public class AndroidFileHandle extends FileHandle {
 		return super.file();
 	}
 
+	/**
+	 * @return an AssetFileDescriptor for this file or null if the file is not of type Internal
+	 * @throws IOException - thrown by AssetManager.openFd()
+	 */
+	public AssetFileDescriptor getAssetFileDescriptor() throws IOException {
+		return assets != null ? assets.openFd(path()) : null;
+	}
 }
