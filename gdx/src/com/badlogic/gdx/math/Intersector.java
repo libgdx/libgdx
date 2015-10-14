@@ -1204,8 +1204,13 @@ public final class Intersector {
 		}
 	}
 
+	/**
+	 * Minimum translation required to separate two polygons.
+	 */
 	public static class MinimumTranslationVector {
+		/** Unit length vector that indicates the direction for the separation */
 		public Vector2 normal = new Vector2();
+		/** Distance of the translation required for the separation */
 		public float depth = 0;
 	}
 }
