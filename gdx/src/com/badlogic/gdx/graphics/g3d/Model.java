@@ -251,11 +251,11 @@ public class Model implements Disposable {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
 			meshPart.primitiveType = part.primitiveType;
-			meshPart.indexOffset = offset;
-			meshPart.numVertices = part.indices.length;
+			meshPart.offset = offset;
+			meshPart.size = part.indices.length;
 			meshPart.mesh = mesh;
 			mesh.getIndicesBuffer().put(part.indices);
-			offset += meshPart.numVertices;
+			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
 		mesh.getIndicesBuffer().position(0);

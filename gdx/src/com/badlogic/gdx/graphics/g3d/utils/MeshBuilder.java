@@ -192,8 +192,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			bounds.getDimensions(part.halfExtents).scl(0.5f);
 			part.radius = part.halfExtents.len();
 			bounds.inf();
-			part.indexOffset = istart;
-			part.numVertices = indices.size - istart;
+			part.offset = istart;
+			part.size = indices.size - istart;
 			istart = indices.size;
 			part = null;
 		}
@@ -1291,7 +1291,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void addMesh (MeshPart meshpart) {
 		if (meshpart.primitiveType != primitiveType) throw new GdxRuntimeException("Primitive type doesn't match");
-		addMesh(meshpart.mesh, meshpart.indexOffset, meshpart.numVertices);
+		addMesh(meshpart.mesh, meshpart.offset, meshpart.size);
 	}
 
 	@Override

@@ -198,8 +198,8 @@ public class ModelCache implements Disposable, RenderableProvider {
 		result.environment = null;
 		result.material = material;
 		result.meshPart.mesh = null;
-		result.meshPart.indexOffset = 0;
-		result.meshPart.numVertices = 0;
+		result.meshPart.offset = 0;
+		result.meshPart.size = 0;
 		result.meshPart.primitiveType = primitiveType;
 		result.meshPart.center.set(0, 0, 0);
 		result.meshPart.halfExtents.set(0, 0, 0);
@@ -240,7 +240,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			final int pt = renderable.meshPart.primitiveType;
 
 			final boolean sameMesh = va.equals(vertexAttributes)
-				&& renderable.meshPart.numVertices + meshBuilder.getNumVertices() < Short.MAX_VALUE; // comparing indices and vertices...
+				&& renderable.meshPart.size + meshBuilder.getNumVertices() < Short.MAX_VALUE; // comparing indices and vertices...
 			final boolean samePart = sameMesh && pt == primitiveType && mat.same(material, true);
 
 			if (!samePart) {
@@ -254,15 +254,15 @@ public class ModelCache implements Disposable, RenderableProvider {
 
 				final MeshPart newPart = meshBuilder.part("", pt, meshPartPool.obtain());
 				final Renderable previous = renderables.get(renderables.size - 1);
-				previous.meshPart.indexOffset = part.indexOffset;
-				previous.meshPart.numVertices = part.numVertices;
+				previous.meshPart.offset = part.offset;
+				previous.meshPart.size = part.size;
 				part = newPart;
 
 				renderables.add(obtainRenderable(material = mat, primitiveType = pt));
 			}
 
 			meshBuilder.setVertexTransform(renderable.worldTransform);
-			meshBuilder.addMesh(renderable.meshPart.mesh, renderable.meshPart.indexOffset, renderable.meshPart.numVertices);
+			meshBuilder.addMesh(renderable.meshPart.mesh, renderable.meshPart.offset, renderable.meshPart.size);
 		}
 
 		final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
@@ -271,8 +271,8 @@ public class ModelCache implements Disposable, RenderableProvider {
 			renderables.get(offset++).meshPart.mesh = mesh;
 
 		final Renderable previous = renderables.get(renderables.size - 1);
-		previous.meshPart.indexOffset = part.indexOffset;
-		previous.meshPart.numVertices = part.numVertices;
+		previous.meshPart.offset = part.offset;
+		previous.meshPart.size = part.size;
 	}
 
 	/** Adds the specified {@link Renderable} to the cache. Must be called in between a call to {@link #begin()} and {@link #end()}.

@@ -164,7 +164,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	protected Renderable allocRenderable(){
 		Renderable renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-		renderable.meshPart.indexOffset = 0;
+		renderable.meshPart.offset = 0;
 		renderable.material = new Material(this.blendingAttribute, this.depthTestAttribute,
 			TextureAttribute.createDiffuse(texture));
 		renderable.meshPart.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
@@ -675,7 +675,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		for(int v = 0; v < vCount; v += addedVertexCount){
 			addedVertexCount = Math.min(vCount-v, MAX_VERTICES_PER_MESH);
 			Renderable renderable = renderablePool.obtain();
-			renderable.meshPart.numVertices = (addedVertexCount/4)*6;
+			renderable.meshPart.size = (addedVertexCount/4)*6;
 			renderable.meshPart.mesh.setVertices(vertices, currentVertexSize *v, currentVertexSize * addedVertexCount);
 			renderable.meshPart.update();
 			renderables.add(renderable);

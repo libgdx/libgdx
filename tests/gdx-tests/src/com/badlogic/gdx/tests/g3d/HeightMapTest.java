@@ -57,8 +57,8 @@ public class HeightMapTest extends BaseG3dTest {
 		ground.environment = environment;
 		ground.meshPart.mesh = field.mesh;
 		ground.meshPart.primitiveType = GL20.GL_TRIANGLES;
-		ground.meshPart.indexOffset = 0;
-		ground.meshPart.numVertices = field.mesh.getNumIndices();
+		ground.meshPart.offset = 0;
+		ground.meshPart.size = field.mesh.getNumIndices();
 		ground.meshPart.update();
 		ground.material = new Material(TextureAttribute.createDiffuse(texture));
 	}

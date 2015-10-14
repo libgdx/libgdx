@@ -26,13 +26,13 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
- * {@link #indexOffset} represents the offset in the indices array and {@link #numVertices} represents the number of indices. When
- * the mesh isn't indexed, then the {@link #indexOffset} member represents the offset in the vertices array and the
- * {@link #numVertices} member represents the number of vertices.</p>
+ * {@link #offset} represents the offset in the indices array and {@link #size} represents the number of indices. When
+ * the mesh isn't indexed, then the {@link #offset} member represents the offset in the vertices array and the
+ * {@link #size} member represents the number of vertices.</p>
  * 
  * In other words: Regardless whether the mesh is indexed or not, when {@link #primitiveType} is not a strip, then
- * {@link #numVertices} equals the number of primitives multiplied by the number of vertices per primitive. So if the MeshPart
- * represents 4 triangles ({@link #primitiveType} is GL_TRIANGLES), then the {@link #numVertices} member is 12 (4 triangles * 3
+ * {@link #size} equals the number of primitives multiplied by the number of vertices per primitive. So if the MeshPart
+ * represents 4 triangles ({@link #primitiveType} is GL_TRIANGLES), then the {@link #size} member is 12 (4 triangles * 3
  * vertices = 12 vertices total). Likewise, if the part represents 12 lines ({@link #primitiveType} is GL_LINES), then the size is
  * 24 (12 lines * 2 vertices = 24 vertices total).</p>
  * 
@@ -49,22 +49,22 @@ public class MeshPart {
 	public int primitiveType;
 	/** The offset in the {@link #mesh} to this part. If the mesh is indexed ({@link Mesh#getNumIndices()} > 0), this is the offset
 	 * in the indices array, otherwise it is the offset in the vertices array. **/
-	public int indexOffset;
+	public int offset;
 	/** The size (in total number of vertices) of this part in the {@link #mesh}. When the mesh is indexed (
 	 * {@link Mesh#getNumIndices()} > 0), this is the number of indices, otherwise it is the number of vertices. **/
-	public int numVertices;
+	public int size;
 	/** The Mesh the part references, also stored in {@link Model} **/
 	public Mesh mesh;
 	/** The offset to the center of the bounding box of the shape, only valid after the call to {@link #update()}. **/
 	public final Vector3 center = new Vector3();
-	/** The location, relative to {@link #center} of the corner of the axis aligned bounding box of the shape. Or, in other words:
+	/** The location, relative to {@link #center}, of the corner of the axis aligned bounding box of the shape. Or, in other words:
 	 * half the dimensions of the bounding box of the shape, where {@link Vector3#x} is half the width, {@link Vector3#y} is half
-	 * the height and {@link Vector3#z} is half the depth. Only valid after the call to {@link #update()}. */
+	 * the height and {@link Vector3#z} is half the depth. Only valid after the call to {@link #update()}. **/
 	public final Vector3 halfExtents = new Vector3();
 	/** The radius relative to {@link #center} of the bounding sphere of the shape, or negative if not calculated yet. This is the
-	 * same as the length of the {@link #halfExtents} member. See {@link #update()}. */
+	 * same as the length of the {@link #halfExtents} member. See {@link #update()}. **/
 	public float radius = -1;
-	/** Temporary static {@link BoundingBox} instance, used in the {@link #update()} method. */
+	/** Temporary static {@link BoundingBox} instance, used in the {@link #update()} method. **/
 	private final static BoundingBox bounds = new BoundingBox();
 
 	/** Construct a new MeshPart, with null values. The MeshPart is unusable until you set all members. **/
@@ -93,11 +93,12 @@ public class MeshPart {
 	public MeshPart set (final MeshPart other) {
 		this.id = other.id;
 		this.mesh = other.mesh;
-		this.indexOffset = other.indexOffset;
-		this.numVertices = other.numVertices;
+		this.offset = other.offset;
+		this.size = other.size;
 		this.primitiveType = other.primitiveType;
 		this.center.set(other.center);
 		this.halfExtents.set(other.halfExtents);
+		this.radius = other.radius;
 		return this;
 	}
 
@@ -106,8 +107,8 @@ public class MeshPart {
 	public MeshPart set (final String id, final Mesh mesh, final int offset, final int size, final int type) {
 		this.id = id;
 		this.mesh = mesh;
-		this.indexOffset = offset;
-		this.numVertices = size;
+		this.offset = offset;
+		this.size = size;
 		this.primitiveType = type;
 		this.center.set(0, 0, 0);
 		this.halfExtents.set(0, 0, 0);
@@ -120,19 +121,19 @@ public class MeshPart {
 	 * minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any transformation that might be applied
 	 * when rendering. It calculates the untransformed (not moved, not scaled, not rotated) values. */
 	public void update () {
-		mesh.calculateBoundingBox(bounds, indexOffset, numVertices);
+		mesh.calculateBoundingBox(bounds, offset, size);
 		bounds.getCenter(center);
 		bounds.getDimensions(halfExtents).scl(0.5f);
 		radius = halfExtents.len();
 	}
 
 	/** Compares this MeshPart to the specified MeshPart and returns true if they both reference the same {@link Mesh} and the
-	 * {@link #indexOffset}, {@link #numVertices} and {@link #primitiveType} members are equal. The {@link #id} member is ignored.
+	 * {@link #offset}, {@link #size} and {@link #primitiveType} members are equal. The {@link #id} member is ignored.
 	 * @param other The other MeshPart to compare this MeshPart to.
 	 * @return True when this MeshPart equals the other MeshPart (ignoring the {@link #id} member), false otherwise. */
 	public boolean equals (final MeshPart other) {
 		return other == this
-			|| (other != null && other.mesh == mesh && other.primitiveType == primitiveType && other.indexOffset == indexOffset && other.numVertices == numVertices);
+			|| (other != null && other.mesh == mesh && other.primitiveType == primitiveType && other.offset == offset && other.size == size);
 	}
 
 	@Override
@@ -148,13 +149,13 @@ public class MeshPart {
 	 * @param shader the shader to be used
 	 * @param autoBind overrides the autoBind member of the Mesh */
 	public void render (ShaderProgram shader, boolean autoBind) {
-		mesh.render(shader, primitiveType, indexOffset, numVertices, autoBind);
+		mesh.render(shader, primitiveType, offset, size, autoBind);
 	}
 
 	/** Renders the mesh part using the specified shader, must be called in between {@link ShaderProgram#begin()} and
 	 * {@link ShaderProgram#end()}.
 	 * @param shader the shader to be used */
 	public void render (ShaderProgram shader) {
-		mesh.render(shader, primitiveType, indexOffset, numVertices);
+		mesh.render(shader, primitiveType, offset, size);
 	}
 }
