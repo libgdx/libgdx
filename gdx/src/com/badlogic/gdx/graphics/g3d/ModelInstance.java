@@ -294,12 +294,7 @@ public class ModelInstance implements RenderableProvider {
 
 	private NodePart copyNodePart (NodePart nodePart) {
 		NodePart copy = new NodePart();
-		copy.meshPart = new MeshPart();
-		copy.meshPart.id = nodePart.meshPart.id;
-		copy.meshPart.indexOffset = nodePart.meshPart.indexOffset;
-		copy.meshPart.numVertices = nodePart.meshPart.numVertices;
-		copy.meshPart.primitiveType = nodePart.meshPart.primitiveType;
-		copy.meshPart.mesh = nodePart.meshPart.mesh;
+		copy.meshPart = new MeshPart(nodePart.meshPart);
 
 		if (nodePart.invBoneBindTransforms != null) nodePartBones.put(copy, nodePart.invBoneBindTransforms);
 

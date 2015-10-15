@@ -67,17 +67,8 @@ public class Renderable {
 	/** Used to specify the transformations (like translation, scale and rotation) to apply to the shape. In other words: it is used
 	 * to transform the vertices from model space into world space. **/
 	public final Matrix4 worldTransform = new Matrix4();
-	/** The {@link Mesh} which contains the part to render **/
-	public Mesh mesh;
-	/** The offset in the {@link #mesh} to the part to render. If the mesh is indexed ({@link Mesh#getNumIndices()} > 0), this is
-	 * the offset in the indices array, otherwise it is the offset in the vertices array. **/
-	public int meshPartOffset;
-	/** The size (in total number of vertices) of the part in the {@link #mesh} to render. When the mesh is indexed (
-	 * {@link Mesh#getNumIndices()} > 0), this is the number of indices, otherwise it is the number of vertices. **/
-	public int meshPartSize;
-	/** The primitive type, OpenGL constant e.g: {@link GL20#GL_TRIANGLES}, {@link GL20#GL_POINTS}, {@link GL20#GL_LINES},
-	 * {@link GL20#GL_LINE_STRIP}, {@link GL20#GL_TRIANGLE_STRIP} **/
-	public int primitiveType;
+	/** The {@link MeshPart} that contains the shape to render **/
+	public final MeshPart meshPart = new MeshPart();
 	/** The {@link Material} to be applied to the shape (part of the mesh), must not be null.
 	 * @see #environment **/
 	public Material material;
@@ -101,10 +92,7 @@ public class Renderable {
 	public Renderable set(Renderable renderable) {
 		worldTransform.set(renderable.worldTransform);
 		material = renderable.material;
-		mesh = renderable.mesh;
-		meshPartOffset = renderable.meshPartOffset;
-		meshPartSize = renderable.meshPartSize;
-		primitiveType = renderable.primitiveType;
+		meshPart.set(renderable.meshPart);
 		bones = renderable.bones;
 		environment = renderable.environment;
 		shader = renderable.shader;

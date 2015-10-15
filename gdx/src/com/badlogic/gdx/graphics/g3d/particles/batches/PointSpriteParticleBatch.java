@@ -73,15 +73,15 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	@Override
 	protected void allocParticlesData(int capacity){
 		vertices = new float[capacity * CPU_VERTEX_SIZE];
-		if(renderable.mesh != null) 
-			renderable.mesh.dispose();
-		renderable.mesh = new Mesh(false, capacity, 0, CPU_ATTRIBUTES);
+		if(renderable.meshPart.mesh != null) 
+			renderable.meshPart.mesh.dispose();
+		renderable.meshPart.mesh = new Mesh(false, capacity, 0, CPU_ATTRIBUTES);
 	}
 	
 	protected void allocRenderable(){
 		renderable = new Renderable();
-		renderable.primitiveType = GL20.GL_POINTS;
-		renderable.meshPartOffset = 0;
+		renderable.meshPart.primitiveType = GL20.GL_POINTS;
+		renderable.meshPart.offset = 0;
 		renderable.material = new Material(	new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
 			new DepthTestAttribute(GL20.GL_LEQUAL, false),
 			TextureAttribute.createDiffuse((Texture)null));
@@ -131,8 +131,9 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			}
 		}
 
-		renderable.meshPartSize = bufferedParticlesCount;
-		renderable.mesh.setVertices(vertices, 0, bufferedParticlesCount*CPU_VERTEX_SIZE);
+		renderable.meshPart.size = bufferedParticlesCount;
+		renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount*CPU_VERTEX_SIZE);
+		renderable.meshPart.update();
 	}
 
 	@Override

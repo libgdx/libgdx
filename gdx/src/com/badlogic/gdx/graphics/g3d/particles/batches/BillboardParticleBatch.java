@@ -163,12 +163,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 
 	protected Renderable allocRenderable(){
 		Renderable renderable = new Renderable();
-		renderable.primitiveType = GL20.GL_TRIANGLES;
-		renderable.meshPartOffset = 0;
+		renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+		renderable.meshPart.offset = 0;
 		renderable.material = new Material(this.blendingAttribute, this.depthTestAttribute,
 			TextureAttribute.createDiffuse(texture));
-		renderable.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
-		renderable.mesh.setIndices(indices);
+		renderable.meshPart.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
+		renderable.meshPart.mesh.setIndices(indices);
 		renderable.shader = shader;
 		return renderable;
 	}
@@ -213,7 +213,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		renderablePool.freeAll(renderables);
 		for(int i=0, free = renderablePool.getFree(); i < free; ++i){
 			Renderable renderable = renderablePool.obtain();
-			renderable.mesh.dispose();
+			renderable.meshPart.mesh.dispose();
 		}
 		renderables.clear();
 	}
@@ -675,8 +675,9 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		for(int v = 0; v < vCount; v += addedVertexCount){
 			addedVertexCount = Math.min(vCount-v, MAX_VERTICES_PER_MESH);
 			Renderable renderable = renderablePool.obtain();
-			renderable.meshPartSize = (addedVertexCount/4)*6;
-			renderable.mesh.setVertices(vertices, currentVertexSize *v, currentVertexSize * addedVertexCount);
+			renderable.meshPart.size = (addedVertexCount/4)*6;
+			renderable.meshPart.mesh.setVertices(vertices, currentVertexSize *v, currentVertexSize * addedVertexCount);
+			renderable.meshPart.update();
 			renderables.add(renderable);
 		}
 	}

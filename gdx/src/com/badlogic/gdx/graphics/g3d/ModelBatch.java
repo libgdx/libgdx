@@ -54,7 +54,7 @@ public class ModelBatch implements Disposable {
 			Renderable renderable = super.obtain();
 			renderable.environment = null;
 			renderable.material = null;
-			renderable.mesh = null;
+			renderable.meshPart.set("", null, 0, 0, 0);
 			renderable.shader = null;
 			obtained.add(renderable);
 			return renderable;
@@ -231,7 +231,7 @@ public class ModelBatch implements Disposable {
 	 * @param renderable The {@link Renderable} to be added. */
 	public void render (final Renderable renderable) {
 		renderable.shader = shaderProvider.getShader(renderable);
-		renderable.mesh.setAutoBind(false);
+		renderable.meshPart.mesh.setAutoBind(false);
 		renderables.add(renderable);
 	}
 
