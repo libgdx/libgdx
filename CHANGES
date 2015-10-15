@@ -1,6 +1,7 @@
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
 - Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
+- API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
 
 [1.7.0]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/
