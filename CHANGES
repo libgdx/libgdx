@@ -11,12 +11,16 @@
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
 - Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
 - API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
+<<<<<<< ea705f519bfca15822218064b4654c4f0e83db96
 - Added Vector#setToRandomDirection(), see #3222
 - Updated to stb_image v2.08
 - Added Node#copy(), used when creating a ModelInstance from a Model to allow using custom nodes
 - Add ModelCache, see https://github.com/libgdx/libgdx/wiki/ModelCache
 - Updated bullet to v2.83.6
 - Updated to RoboVM 1.9, for free life-time license read http://www.badlogicgames.com/wordpress/?p=3762
+=======
+- SpriteBatch can now be customized to use extra VertexAttributes, which can be drawn to with the new ExpandableSprite.
+>>>>>>> Add option for extra vertex attributes in SpriteBatch and a helper class.
 
 [1.7.0]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/

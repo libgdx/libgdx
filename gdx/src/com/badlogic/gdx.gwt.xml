@@ -92,6 +92,7 @@
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
+		<include name="graphics/g2d/ExpandableSprite.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
 		<include name="graphics/g2d/GlyphLayout.java"/>
 		<include name="graphics/g2d/NinePatch.java"/>
