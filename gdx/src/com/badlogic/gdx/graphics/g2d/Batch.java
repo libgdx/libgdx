@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * A Batch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A Batch works with OpenGL ES 2.0. In the case of a 2.0 context it will use its own custom shader to draw all provided
+ * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided
  * sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
  * <p>
  * A Batch has to be disposed if it is no longer used.
