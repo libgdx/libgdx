@@ -3,6 +3,7 @@
 - Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
 - API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
 - Added Vector#setToRandomDirection(), see #3222
+- Updated to stb_image v2.08
 
 [1.7.0]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/
