@@ -120,6 +120,11 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T interpolate (T target, float alpha, Interpolation interpolator);
 
+	/**
+	 * Sets this vector to a random direction
+	 * @return This vector for chaining */
+	T setToRandomDirection ();
+
 	/** @return Whether this vector is a unit length vector */
 	boolean isUnit ();
 
