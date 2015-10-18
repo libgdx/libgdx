@@ -409,6 +409,15 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return lerp(target, interpolation.apply(alpha));
 	}
 
+	/**
+	 * Sets this vector to a random direction
+	 * @return This vector for chaining */
+	@Override
+	public Vector2 setToRandomDirection () {
+		float theta = MathUtils.random(0f, MathUtils.PI2);
+		return this.set(MathUtils.cos(theta), MathUtils.sin(theta));
+	}
+
 	@Override
 	public int hashCode () {
 		final int prime = 31;

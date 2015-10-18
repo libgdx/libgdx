@@ -108,6 +108,35 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(vector.x, vector.y, z);
 	}
 
+	/**
+	 * Sets the components from the given spherical coordinate
+	 * @param azimuthalAngle The angle between x-axis in radians [0, 2pi]
+	 * @param polarAngle The angle between z-axis in radians [0, pi]
+	 * @return This vector for chaining */
+	public Vector3 setFromSpherical (float azimuthalAngle, float polarAngle) {
+		float cosPolar = MathUtils.cos(polarAngle);
+		float sinPolar = MathUtils.sin(polarAngle);
+
+		float cosAzim = MathUtils.cos(azimuthalAngle);
+		float sinAzim = MathUtils.sin(azimuthalAngle);
+
+		return this.set(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
+	}
+
+	/**
+	 * Sets this vector to a random direction
+	 * @return This vector for chaining */
+	@Override
+	public Vector3 setToRandomDirection () {
+		float u = MathUtils.random();
+		float v = MathUtils.random();
+
+		float theta = MathUtils.PI2 * u; //azimuthal angle
+		float phi = (float) Math.acos(2f * v - 1f); //polar angle
+
+		return this.setFromSpherical(theta, phi);
+	}
+
 	@Override
 	public Vector3 cpy () {
 		return new Vector3(this);
@@ -532,7 +561,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		z += alpha * (target.z - z);
 		return this;
 	}
-	
+
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
