@@ -26,15 +26,15 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 /** A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset is
  * described by an offset and size. When the mesh is indexed (which is when {@link Mesh#getNumIndices()} > 0), then the
- * {@link #offset} represents the offset in the indices array and {@link #size} represents the number of indices. When
- * the mesh isn't indexed, then the {@link #offset} member represents the offset in the vertices array and the
- * {@link #size} member represents the number of vertices.</p>
+ * {@link #offset} represents the offset in the indices array and {@link #size} represents the number of indices. When the mesh
+ * isn't indexed, then the {@link #offset} member represents the offset in the vertices array and the {@link #size} member
+ * represents the number of vertices.</p>
  * 
- * In other words: Regardless whether the mesh is indexed or not, when {@link #primitiveType} is not a strip, then
- * {@link #size} equals the number of primitives multiplied by the number of vertices per primitive. So if the MeshPart
- * represents 4 triangles ({@link #primitiveType} is GL_TRIANGLES), then the {@link #size} member is 12 (4 triangles * 3
- * vertices = 12 vertices total). Likewise, if the part represents 12 lines ({@link #primitiveType} is GL_LINES), then the size is
- * 24 (12 lines * 2 vertices = 24 vertices total).</p>
+ * In other words: Regardless whether the mesh is indexed or not, when {@link #primitiveType} is not a strip, then {@link #size}
+ * equals the number of primitives multiplied by the number of vertices per primitive. So if the MeshPart represents 4 triangles (
+ * {@link #primitiveType} is GL_TRIANGLES), then the {@link #size} member is 12 (4 triangles * 3 vertices = 12 vertices total).
+ * Likewise, if the part represents 12 lines ({@link #primitiveType} is GL_LINES), then the size is 24 (12 lines * 2 vertices = 24
+ * vertices total).</p>
  * 
  * Note that some classes might require the mesh (part) to be indexed.</p>
  * 
@@ -118,8 +118,8 @@ public class MeshPart {
 
 	/** Calculates and updates the {@link #center}, {@link #halfExtents} and {@link #radius} values. This is considered a costly
 	 * operation and should not be called frequently. All vertices (points) of the shape are traversed to calculate the maximum and
-	 * minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any transformation that might be applied
-	 * when rendering. It calculates the untransformed (not moved, not scaled, not rotated) values. */
+	 * minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any transformation that might be applied when
+	 * rendering. It calculates the untransformed (not moved, not scaled, not rotated) values. */
 	public void update () {
 		mesh.calculateBoundingBox(bounds, offset, size);
 		bounds.getCenter(center);
