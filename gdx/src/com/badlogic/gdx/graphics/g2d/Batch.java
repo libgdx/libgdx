@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * A Batch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A Batch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw all provided
+ * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided
  * sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
  * <p>
  * A Batch has to be disposed if it is no longer used.
@@ -178,8 +178,8 @@ public interface Batch extends Disposable {
 	public void enableBlending ();
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
-	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
+	 * @param srcFunc the source function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param dstFunc the destination function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc);
 
 	public int getBlendSrcFunc ();
