@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ public class Frustum {
 			clipSpacePlanePointsArray[j++] = v.z;
 		}
 	}
-
+	
 	private final static Vector3 tmpV = new Vector3();
 
 	/** the six clipping planes, near, far, left, right, top, bottom **/
@@ -77,7 +77,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the point is in the frustum.
-	 *
+	 * 
 	 * @param point The point
 	 * @return Whether the point is in the frustum. */
 	public boolean pointInFrustum (Vector3 point) {
@@ -89,7 +89,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the point is in the frustum.
-	 *
+	 * 
 	 * @param x The X coordinate of the point
 	 * @param y The Y coordinate of the point
 	 * @param z The Z coordinate of the point
@@ -103,7 +103,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the given sphere is in the frustum.
-	 *
+	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
 	 * @return Whether the sphere is in the frustum */
@@ -115,7 +115,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the given sphere is in the frustum.
-	 *
+	 * 
 	 * @param x The X coordinate of the center of the sphere
 	 * @param y The Y coordinate of the center of the sphere
 	 * @param z The Z coordinate of the center of the sphere
@@ -128,7 +128,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
-	 *
+	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
 	 * @return Whether the sphere is in the frustum */
@@ -140,7 +140,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
-	 *
+	 * 
 	 * @param x The X coordinate of the center of the sphere
 	 * @param y The Y coordinate of the center of the sphere
 	 * @param z The Z coordinate of the center of the sphere
@@ -153,7 +153,7 @@ public class Frustum {
 	}
 
 	/** Returns whether the given {@link BoundingBox} is in the frustum.
-	 *
+	 * 
 	 * @param bounds The bounding box
 	 * @return Whether the bounding box is in the frustum */
 	public boolean boundsInFrustum (BoundingBox bounds) {
