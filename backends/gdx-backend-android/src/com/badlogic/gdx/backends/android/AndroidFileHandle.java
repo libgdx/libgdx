@@ -55,7 +55,7 @@ public class AndroidFileHandle extends FileHandle {
 	public FileHandle sibling (String name) {
 		name = name.replace('\\', '/');
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
-		return new AndroidFileHandle(assets, new File(file.getParent(), name), type);
+		return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
 	}
 
 	public FileHandle parent () {
