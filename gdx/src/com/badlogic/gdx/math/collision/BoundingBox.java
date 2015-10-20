@@ -230,6 +230,18 @@ public class BoundingBox implements Serializable {
 			max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
 
+	/** Extends this bounding box by the given sphere.
+	 *
+	 * @param sphere The sphere
+	 * @return This bounding box for chaining. */
+	public BoundingBox ext (Sphere sphere) {
+		return this.set(
+			min.set(min(min.x, sphere.center.x - sphere.radius), min(min.y, sphere.center.y - sphere.radius),
+				min(min.z, sphere.center.z - sphere.radius)),
+			max.set(max(max.x, sphere.center.x + sphere.radius), max(max.y, sphere.center.y + sphere.radius),
+				max(max.z, sphere.center.z + sphere.radius)));
+	}
+
 	/** Extends this bounding box by the given transformed bounding box.
 	 *
 	 * @param bounds The bounding box
