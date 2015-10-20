@@ -117,14 +117,6 @@ public class BoundingBox implements Serializable {
 		return out.set(max);
 	}
 
-	/** @param out The {@link Sphere} to compute.
-	 * @return The sphere specified with the out argument */
-	public Sphere getBoundingSphere (Sphere out) {
-		getCenter(out.center);
-		out.radius = getDimensions(tmpVector).len() * 0.5f;
-		return out;
-	}
-
 	/** Constructs a new bounding box with the minimum and maximum vector set to zeros. */
 	public BoundingBox () {
 		clr();
@@ -232,14 +224,12 @@ public class BoundingBox implements Serializable {
 
 	/** Extends this bounding box by the given sphere.
 	 *
-	 * @param sphere The sphere
+	 * @param center Sphere center
+	 * @param radius Sphere radius
 	 * @return This bounding box for chaining. */
-	public BoundingBox ext (Sphere sphere) {
-		return this.set(
-			min.set(min(min.x, sphere.center.x - sphere.radius), min(min.y, sphere.center.y - sphere.radius),
-				min(min.z, sphere.center.z - sphere.radius)),
-			max.set(max(max.x, sphere.center.x + sphere.radius), max(max.y, sphere.center.y + sphere.radius),
-				max(max.z, sphere.center.z + sphere.radius)));
+	public BoundingBox ext (Vector3 center, float radius) {
+		return this.set(min.set(min(min.x, center.x - radius), min(min.y, center.y - radius), min(min.z, center.z - radius)),
+			max.set(max(max.x, center.x + radius), max(max.y, center.y + radius), max(max.z, center.z + radius)));
 	}
 
 	/** Extends this bounding box by the given transformed bounding box.

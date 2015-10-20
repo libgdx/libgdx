@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -69,7 +68,6 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 
 	/** Objects used for computation */
 	protected BoundingBox bb1 = new BoundingBox();
-	protected Sphere sphere = new Sphere(new Vector3(), 0);
 	protected Vector3 tmpV = new Vector3();
 
 	/** Create new AABBNearFarAnalyzer.
@@ -85,16 +83,11 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 
 		bb1.inf();
 		for (Renderable renderable : renderables) {
-			// Center
 			renderable.worldTransform.getTranslation(tmpV);
 			tmpV.add(renderable.meshPart.center);
-			sphere.center.set(tmpV);
 
-			// Radius
-			sphere.radius = renderable.meshPart.radius;
-
-			if (camera.frustum.sphereInFrustum(sphere)) {
-				bb1.ext(sphere);
+			if (camera.frustum.sphereInFrustum(tmpV, renderable.meshPart.radius)) {
+				bb1.ext(tmpV, renderable.meshPart.radius);
 			}
 		}
 
@@ -120,10 +113,16 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	 * @param bb BoundingBox encompassing instances
 	 * @param camera Camera to compute */
 	protected void computeResult (BoundingBox bb, Camera camera) {
-		bb1.getBoundingSphere(sphere);
-		float distance = sphere.center.dst(camera.position);
-		float near = distance - sphere.radius;
-		float far = distance + sphere.radius;
+		// Radius
+		float radius = bb1.getDimensions(tmpV).len() * 0.5f;
+
+		// Center
+		bb1.getCenter(tmpV);
+
+		// Computation
+		float distance = tmpV.dst(camera.position);
+		float near = distance - radius;
+		float far = distance + radius;
 
 		if (near <= 0) near = CAMERA_NEAR;
 		if (far <= 0) far = CAMERA_FAR;

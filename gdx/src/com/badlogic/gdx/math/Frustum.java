@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 
 /** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen.
  * @see Camera#frustum */
@@ -101,14 +100,6 @@ public class Frustum {
 			if (result == PlaneSide.Back) return false;
 		}
 		return true;
-	}
-
-	/** Returns whether the given sphere is in the frustum.
-	 *
-	 * @param sphere The sphere
-	 * @return Whether the sphere is in the frustum */
-	public boolean sphereInFrustum (Sphere sphere) {
-		return sphereInFrustum(sphere.center, sphere.radius);
 	}
 
 	/** Returns whether the given sphere is in the frustum.
