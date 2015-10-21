@@ -20,58 +20,48 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 
 /** Compute directional camera based on frustum bounding sphere.
  * @author realitix */
 public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
-	/** Main camera */
-	protected Camera camera;
-
 	/** Objects used for computation */
 	protected BoundingBox bb = new BoundingBox();
-	protected Sphere sphere = new Sphere(new Vector3(), 0);
 	protected Vector3 tmpV = new Vector3();
 	protected Vector3 tmpV2 = new Vector3();
 
-	/** @param camera Main camera */
-	public BoundingSphereDirectionalAnalyzer (Camera camera) {
-		this.camera = camera;
-	}
-
 	@Override
-	public Camera analyze (DirectionalLight light, Camera out) {
+	public Camera analyze (DirectionalLight light, Camera out, Camera mainCamera) {
 		bb.inf();
 
 		// Create bounding box encompassing main camera frustum
-		for (int i = 0; i < camera.frustum.planePoints.length; i++) {
-			bb.ext(camera.frustum.planePoints[i]);
+		for (int i = 0; i < mainCamera.frustum.planePoints.length; i++) {
+			bb.ext(mainCamera.frustum.planePoints[i]);
 		}
 
-		// Convert to bounding sphere
-		bb.getBoundingSphere(sphere);
+		// Radius
+		float radius = bb.getDimensions(tmpV).len() * 0.5f;
 
-		// Position at sphere center
-		tmpV.set(sphere.center);
+		// Center
+		bb.getCenter(tmpV);
 
 		// Move back from 1.5*radius
 		tmpV2.set(light.direction);
-		tmpV2.scl(sphere.radius * 1.5f);
+		tmpV2.scl(radius * 1.5f);
 
 		// Position out camera
 		out.direction.set(light.direction);
 		out.position.set(tmpV.sub(tmpV2));
 
 		// Compute near and far
-		out.near = 0.5f * sphere.radius;
-		out.far = 2.5f * sphere.radius;
+		out.near = 0.5f * radius;
+		out.far = 2.5f * radius;
 
 		// Compute up vector
 		out.up.set(light.direction.y, light.direction.z, light.direction.x);
 
 		// Compute viewport (orthographic camera)
-		out.viewportWidth = sphere.radius;
-		out.viewportHeight = sphere.radius;
+		out.viewportWidth = radius;
+		out.viewportHeight = radius;
 
 		return out;
 	}

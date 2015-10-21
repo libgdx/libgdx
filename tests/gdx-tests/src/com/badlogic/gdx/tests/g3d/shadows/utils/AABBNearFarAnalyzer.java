@@ -30,8 +30,8 @@ import com.badlogic.gdx.utils.Pool;
  * @author realitix */
 public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	/** Near and far initialization before computation. You should put the same values as the main camera */
-	public static float CAMERA_NEAR = 0.1f;
-	public static float CAMERA_FAR = 1000;
+	public static float CAMERA_NEAR = 1;
+	public static float CAMERA_FAR = 100;
 
 	// @TODO Merge renderable pools (ModelBatch)
 	protected static class RenderablePool extends Pool<Renderable> {
@@ -63,22 +63,13 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	/** list of Renderables to be rendered in the current batch **/
 	protected final Array<Renderable> renderables = new Array<Renderable>();
 
-	/** Renderable providers array */
-	protected Array<RenderableProvider> renderableProviders;
-
 	/** Objects used for computation */
 	protected BoundingBox bb1 = new BoundingBox();
 	protected Vector3 tmpV = new Vector3();
 
-	/** Create new AABBNearFarAnalyzer.
-	 * @param renderableProviders Array of renderable providers */
-	public AABBNearFarAnalyzer (Array<RenderableProvider> renderableProviders) {
-		this.renderableProviders = renderableProviders;
-	}
-
 	@Override
-	public void analyze (BaseLight light, Camera camera) {
-		getRenderables();
+	public void analyze (BaseLight light, Camera camera, Iterable<RenderableProvider> renderableProviders) {
+		getRenderables(renderableProviders);
 		prepareCamera(camera);
 
 		bb1.inf();
@@ -92,10 +83,11 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		}
 
 		computeResult(bb1, camera);
+		renderablesPool.flush();
 		renderables.clear();
 	}
 
-	protected void getRenderables () {
+	protected void getRenderables (Iterable<RenderableProvider> renderableProviders) {
 		for (RenderableProvider renderableProvider : renderableProviders) {
 			renderableProvider.getRenderables(renderables, renderablesPool);
 		}
