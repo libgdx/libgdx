@@ -172,11 +172,11 @@ public final class MathUtils {
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where the
 	 * {@code mode} argument defaults to the midpoint between the bounds, giving a symmetric distribution.
 	 * <p>
-	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (max - min) * .5f)}
+	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (min + max) * .5f)}
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {
-		return randomTriangular(min, max, min + (max - min) * 0.5f);
+		return randomTriangular(min, max, (min + max) * 0.5f);
 	}
 
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values
