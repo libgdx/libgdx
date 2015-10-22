@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,9 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tests.bullet;
+
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -31,16 +34,13 @@ import com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback;
 import com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback.EFlags;
 import com.badlogic.gdx.physics.bullet.linearmath.btVector3;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-
 /** @author jsjolund */
 public class TriangleRaycastTest extends BaseBulletTest {
 
 	private class MyTriangleRaycastCallback extends btTriangleRaycastCallback {
 
 		public Vector3 hitNormalLocal = new Vector3();
-		public float hitFraction = -1;
+		public float hitFraction = 1;
 		public int partId = -1;
 		public int triangleIndex = -1;
 
@@ -104,7 +104,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	private Vector3 rayTo = new Vector3();
 
 	@Override
-	public void create() {
+	public void create () {
 		super.create();
 		instructions = "Tap a triangle to ray cast\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 
@@ -134,7 +134,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		super.render();
 		Gdx.gl.glLineWidth(5);
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -148,7 +148,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	}
 
 	@Override
-	public boolean tap(float screenX, float screenY, int count, int button) {
+	public boolean tap (float screenX, float screenY, int count, int button) {
 		Ray ray = camera.getPickRay(screenX, screenY);
 		rayFrom.set(ray.origin);
 		rayTo.set(ray.direction).scl(100).add(rayFrom);
