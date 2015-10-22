@@ -1,12 +1,22 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+<<<<<<< HEAD
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+=======
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+>>>>>>> ef89f49... Corrected hitFraction bug in TriangleRaycastTest.
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +25,6 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tests.bullet;
-
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -34,58 +41,76 @@ import com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback;
 import com.badlogic.gdx.physics.bullet.collision.btTriangleRaycastCallback.EFlags;
 import com.badlogic.gdx.physics.bullet.linearmath.btVector3;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
 /** @author jsjolund */
 public class TriangleRaycastTest extends BaseBulletTest {
 
 	private class MyTriangleRaycastCallback extends btTriangleRaycastCallback {
 
 		public Vector3 hitNormalLocal = new Vector3();
-		public float hitFraction;
-		public int partId;
-		public int triangleIndex;
-
-		private float mHitFraction;
+<<<<<<< HEAD
+		public float hitFraction = 1;
+=======
+		public float hitFraction = -1;
+>>>>>>> ef89f49... Corrected hitFraction bug in TriangleRaycastTest.
+		public int partId = -1;
+		public int triangleIndex = -1;
 
 		private btVector3 tmpSetFrom = new btVector3();
 		private btVector3 tmpSetTo = new btVector3();
 
-		public MyTriangleRaycastCallback (Vector3 from, Vector3 to) {
+		public MyTriangleRaycastCallback(Vector3 from, Vector3 to) {
 			super(from, to);
-			clearReport();
 		}
 
-		public void clearReport () {
+		public void clearReport() {
 			hitNormalLocal.setZero();
 			hitFraction = 1;
-			mHitFraction = 1;
 			partId = -1;
 			triangleIndex = -1;
 		}
 
 		@Override
+<<<<<<< HEAD
+		public void setHitFraction (float hitFraction) {
+=======
+		public void setHitFraction(float hitFraction) {
+>>>>>>> ef89f49... Corrected hitFraction bug in TriangleRaycastTest.
+			super.setHitFraction(hitFraction);
+			this.hitFraction = hitFraction;
+		}
+
+		@Override
+<<<<<<< HEAD
 		public float reportHit (Vector3 hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
-			if (hitFraction < mHitFraction) {
+=======
+		public float reportHit(Vector3 hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
+>>>>>>> ef89f49... Corrected hitFraction bug in TriangleRaycastTest.
+			// The hit with lowest hitFraction is closest to the ray origin.
+			// We need to find the lowest hitFraction since the super class does not handle it for us.
+			if (hitFraction < this.hitFraction) {
 				this.hitNormalLocal.set(hitNormalLocal);
 				this.hitFraction = hitFraction;
 				this.partId = partId;
 				this.triangleIndex = triangleIndex;
-				return hitFraction;
 			}
-			return mHitFraction;
+			return hitFraction;
 		}
 
-		public void setFrom (Vector3 value) {
+		public void setFrom(Vector3 value) {
 			tmpSetFrom.setValue(value.x, value.y, value.z);
 			super.setFrom(tmpSetFrom);
 		}
 
-		public void setTo (Vector3 value) {
+		public void setTo(Vector3 value) {
 			tmpSetTo.setValue(value.x, value.y, value.z);
 			super.setTo(tmpSetTo);
 		}
-		
+
 		@Override
-		public void dispose () {
+		public void dispose() {
 			tmpSetFrom.dispose();
 			tmpSetTo.dispose();
 			super.dispose();
@@ -101,7 +126,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	private Vector3 rayTo = new Vector3();
 
 	@Override
-	public void create () {
+	public void create() {
 		super.create();
 		instructions = "Tap a triangle to ray cast\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 
@@ -131,7 +156,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render () {
+	public void render() {
 		super.render();
 		Gdx.gl.glLineWidth(5);
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -145,7 +170,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	}
 
 	@Override
-	public boolean tap (float screenX, float screenY, int count, int button) {
+	public boolean tap(float screenX, float screenY, int count, int button) {
 		Ray ray = camera.getPickRay(screenX, screenY);
 		rayFrom.set(ray.origin);
 		rayTo.set(ray.direction).scl(100).add(rayFrom);
