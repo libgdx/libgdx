@@ -97,8 +97,12 @@ public class btBulletWorldImporter extends btWorldImporter {
     ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
+  public boolean loadFile(String fileName, String preSwapFilenameOut) {
+    return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_0(swigCPtr, this, fileName, preSwapFilenameOut);
+  }
+
   public boolean loadFile(String fileName) {
-    return ExtrasJNI.btBulletWorldImporter_loadFile(swigCPtr, this, fileName);
+    return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_1(swigCPtr, this, fileName);
   }
 
   public boolean loadFileFromMemory(SWIGTYPE_p_bParse__btBulletFile file) {

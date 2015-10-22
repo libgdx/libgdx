@@ -28,7 +28,7 @@ public class ColorAction extends TemporalAction {
 	private final Color end = new Color();
 
 	protected void begin () {
-		if (color == null) color = actor.getColor();
+		if (color == null) color = target.getColor();
 		startR = color.r;
 		startG = color.g;
 		startB = color.b;

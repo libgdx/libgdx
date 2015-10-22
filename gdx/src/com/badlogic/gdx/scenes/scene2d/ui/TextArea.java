@@ -20,11 +20,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A multiple-line text input field, entirely based on {@link TextField} */
 public class TextArea extends TextField {
@@ -192,6 +196,8 @@ public class TextArea extends TextField {
 
 	@Override
 	protected void sizeChanged () {
+		lastText = null; // Cause calculateOffsets to recalculate the line breaks.
+
 		// The number of lines showed must be updated whenever the height is updated
 		BitmapFont font = style.font;
 		Drawable background = style.background;
@@ -228,7 +234,7 @@ public class TextArea extends TextField {
 				float selectionX = glyphPositions.get(start) - glyphPositions.get(linesBreak.get(i));
 				float selectionWidth = glyphPositions.get(end) - glyphPositions.get(start);
 
-				selection.draw(batch, x + selectionX, y - textHeight - font.getDescent() - offsetY, selectionWidth,
+				selection.draw(batch, x + selectionX + fontOffset, y - textHeight - font.getDescent() - offsetY, selectionWidth,
 					font.getLineHeight());
 			}
 
@@ -241,7 +247,7 @@ public class TextArea extends TextField {
 	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		float offsetY = 0;
 		for (int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
-			font.draw(batch, displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1]);
+			font.draw(batch, displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1], 0, Align.left, false);
 			offsetY -= font.getLineHeight();
 		}
 	}
@@ -250,9 +256,8 @@ public class TextArea extends TextField {
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
 		float textOffset = cursor >= glyphPositions.size || cursorLine * 2 >= linesBreak.size ? 0 : glyphPositions.get(cursor)
 			- glyphPositions.get(linesBreak.items[cursorLine * 2]);
-		cursorPatch.draw(batch, x + textOffset,
-			y - font.getDescent() / 2 - (cursorLine - firstLineShowing + 1) * font.getLineHeight(), cursorPatch.getMinWidth(),
-			font.getLineHeight());
+		cursorPatch.draw(batch, x + textOffset + fontOffset + font.getData().cursorX, y - font.getDescent() / 2
+			- (cursorLine - firstLineShowing + 1) * font.getLineHeight(), cursorPatch.getMinWidth(), font.getLineHeight());
 	}
 
 	@Override
@@ -260,7 +265,6 @@ public class TextArea extends TextField {
 		super.calculateOffsets();
 		if (!this.text.equals(lastText)) {
 			this.lastText = text;
-			BitmapFont.TextBounds bounds = new BitmapFont.TextBounds();
 			BitmapFont font = style.font;
 			float maxWidthLine = this.getWidth()
 				- (style.background != null ? style.background.getLeftWidth() + style.background.getRightWidth() : 0);
@@ -268,6 +272,8 @@ public class TextArea extends TextField {
 			int lineStart = 0;
 			int lastSpace = 0;
 			char lastCharacter;
+			Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);
 				if (lastCharacter == ENTER_DESKTOP || lastCharacter == ENTER_ANDROID) {
@@ -276,8 +282,8 @@ public class TextArea extends TextField {
 					lineStart = i + 1;
 				} else {
 					lastSpace = (continueCursor(i, 0) ? lastSpace : i);
-					font.getBounds(text, lineStart, i + 1, bounds);
-					if (bounds.width > maxWidthLine) {
+					layout.setText(font, text.subSequence(lineStart, i + 1));
+					if (layout.width > maxWidthLine) {
 						if (lineStart >= lastSpace) {
 							lastSpace = i - 1;
 						}
@@ -288,6 +294,7 @@ public class TextArea extends TextField {
 					}
 				}
 			}
+			layoutPool.free(layout);
 			// Add last line
 			if (lineStart < text.length()) {
 				linesBreak.add(lineStart);
@@ -329,7 +336,7 @@ public class TextArea extends TextField {
 	protected boolean continueCursor (int index, int offset) {
 		int pos = calculateCurrentLineIndex(index + offset);
 		return super.continueCursor(index, offset)
-			&& (pos < 0 || pos >= linesBreak.size || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
+			&& (pos < 0 || pos >= linesBreak.size - 2 || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
 	}
 
 	public int getCursorLine () {

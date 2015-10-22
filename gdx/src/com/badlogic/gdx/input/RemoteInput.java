@@ -24,8 +24,8 @@ import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntSet;
 
@@ -388,13 +388,8 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void getTextInput (TextInputListener listener, String title, String text) {
-		Gdx.app.getInput().getTextInput(listener, title, text);
-	}
-
-	@Override
-	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		Gdx.app.getInput().getPlaceholderTextInput(listener, title, placeholder);
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint);
 	}
 
 	@Override
@@ -440,6 +435,17 @@ public class RemoteInput implements Runnable, Input {
 	public boolean isCatchBackKey() {
 		return false;
 	}
+	
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
+
 
 	@Override
 	public void setInputProcessor (InputProcessor processor) {
@@ -507,16 +513,6 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

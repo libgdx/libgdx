@@ -240,6 +240,14 @@ public class btCollisionShape extends BulletBase {
     return CollisionJNI.btCollisionShape_getUserPointer(swigCPtr, this);
   }
 
+  public void setUserIndex(int index) {
+    CollisionJNI.btCollisionShape_setUserIndex(swigCPtr, this, index);
+  }
+
+  public int getUserIndex() {
+    return CollisionJNI.btCollisionShape_getUserIndex(swigCPtr, this);
+  }
+
   public int calculateSerializeBufferSize() {
     return CollisionJNI.btCollisionShape_calculateSerializeBufferSize(swigCPtr, this);
   }

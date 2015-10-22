@@ -38,7 +38,7 @@ protected:
 	virtual void	calculateSimulationIslands();
 	virtual void	updateActivationState(btScalar timeStep);
 	virtual void	solveConstraints(btContactSolverInfo& solverInfo);
-	virtual void	integrateTransforms(btScalar timeStep);
+	
 public:
 
 	btMultiBodyDynamicsWorld(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btMultiBodyConstraintSolver* constraintSolver,btCollisionConfiguration* collisionConfiguration);
@@ -52,5 +52,11 @@ public:
 	virtual void	addMultiBodyConstraint( btMultiBodyConstraint* constraint);
 
 	virtual void	removeMultiBodyConstraint( btMultiBodyConstraint* constraint);
+
+	virtual void	integrateTransforms(btScalar timeStep);
+
+	virtual void	debugDrawWorld();
+	
+	virtual void	debugDrawMultiBodyConstraint(btMultiBodyConstraint* constraint);
 };
 #endif //BT_MULTIBODY_DYNAMICS_WORLD_H

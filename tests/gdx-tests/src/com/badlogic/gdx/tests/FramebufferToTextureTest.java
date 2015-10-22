@@ -52,7 +52,7 @@ public class FramebufferToTextureTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		ObjLoader objLoader = new ObjLoader();
-		mesh = objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		mesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		mesh.materials.get(0).set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		modelInstance = new ModelInstance(mesh);
 		modelBatch = new ModelBatch();

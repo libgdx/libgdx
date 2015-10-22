@@ -16,16 +16,16 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
@@ -51,14 +51,12 @@ import com.badlogic.gdx.utils.BufferUtils;
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class VertexBufferObject implements VertexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
-	final VertexAttributes attributes;
-	final FloatBuffer buffer;
-	final ByteBuffer byteBuffer;
-	int bufferHandle;
-	final boolean isStatic;
-	final int usage;
+	private VertexAttributes attributes;
+	private FloatBuffer buffer;
+	private ByteBuffer byteBuffer;
+	private boolean ownsBuffer;
+	private int bufferHandle;
+	private int usage;
 	boolean isDirty = false;
 	boolean isBound = false;
 
@@ -77,20 +75,19 @@ public class VertexBufferObject implements VertexData {
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttributes}. */
 	public VertexBufferObject (boolean isStatic, int numVertices, VertexAttributes attributes) {
-		this.isStatic = isStatic;
-		this.attributes = attributes;
+		bufferHandle = Gdx.gl20.glGenBuffer();
 
-		byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
-		buffer = byteBuffer.asFloatBuffer();
-		buffer.flip();
-		byteBuffer.flip();
-		bufferHandle = createBufferObject();
-		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
+		ByteBuffer data = BufferUtils.newUnsafeByteBuffer(attributes.vertexSize * numVertices);
+		data.limit(0);
+		setBuffer(data, true, attributes);
+		setUsage(isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW);
 	}
-
-	private int createBufferObject () {
-		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
+	
+	protected VertexBufferObject (int usage, ByteBuffer data, boolean ownsBuffer, VertexAttributes attributes) {
+		bufferHandle = Gdx.gl20.glGenBuffer();
+		
+		setBuffer(data, ownsBuffer, attributes);
+		setUsage(usage);
 	}
 
 	@Override
@@ -112,6 +109,28 @@ public class VertexBufferObject implements VertexData {
 	public FloatBuffer getBuffer () {
 		isDirty = true;
 		return buffer;
+	}
+
+	/** Low level method to reset the buffer and attributes to the specified values. Use with care!
+	 * @param data
+	 * @param ownsBuffer
+	 * @param value */
+	protected void setBuffer (Buffer data, boolean ownsBuffer, VertexAttributes value) {
+		if (isBound) throw new GdxRuntimeException("Cannot change attributes while VBO is bound");
+		if (this.ownsBuffer && byteBuffer != null)
+			BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+		attributes = value;
+		if (data instanceof ByteBuffer)
+			byteBuffer = (ByteBuffer)data;
+		else
+			throw new GdxRuntimeException("Only ByteBuffer is currently supported");
+		this.ownsBuffer = ownsBuffer;
+		
+		final int l = byteBuffer.limit();
+		byteBuffer.limit(byteBuffer.capacity());
+		buffer = byteBuffer.asFloatBuffer();
+		byteBuffer.limit(l);
+		buffer.limit(l / 4);
 	}
 
 	private void bufferChanged () {
@@ -141,8 +160,20 @@ public class VertexBufferObject implements VertexData {
 		bufferChanged();
 	}
 
+	/** @return The GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, e.g. GL_STATIC_DRAW or
+	 *         GL_DYNAMIC_DRAW */
+	protected int getUsage () {
+		return usage;
+	}
+
+	/** Set the GL enum used in the call to {@link GL20#glBufferData(int, int, java.nio.Buffer, int)}, can only be called when the
+	 * VBO is not bound. */
+	protected void setUsage (int value) {
+		if (isBound) throw new GdxRuntimeException("Cannot change usage while VBO is bound");
+		usage = value;
+	}
+
 	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
-	 * 
 	 * @param shader the shader */
 	@Override
 	public void bind (ShaderProgram shader) {
@@ -168,10 +199,10 @@ public class VertexBufferObject implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
-			
+
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
@@ -179,8 +210,8 @@ public class VertexBufferObject implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-					attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		}
 		isBound = true;
@@ -213,21 +244,19 @@ public class VertexBufferObject implements VertexData {
 	}
 
 	/** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
+	@Override
 	public void invalidate () {
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		tmpHandle.clear();
-		tmpHandle.put(bufferHandle);
-		tmpHandle.flip();
 		GL20 gl = Gdx.gl20;
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-		gl.glDeleteBuffers(1, tmpHandle);
+		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
-		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
+		if (ownsBuffer) BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 }

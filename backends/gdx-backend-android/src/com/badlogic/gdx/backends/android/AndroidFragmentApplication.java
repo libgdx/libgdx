@@ -106,20 +106,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
-
-		View view = getApplicationWindow().getDecorView();
-
+		
 		try {
+			View view = this.graphics.getView();
+
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
+			log("AndroidApplication", "Failed to setup immersive mode, a throwable has occurred.", e);
 		}
 	}
 
@@ -169,12 +166,12 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			public void resume () {
 				audio.resume();
 			}
-			
+
 			@Override
 			public void pause () {
 				audio.pause();
 			}
-			
+
 			@Override
 			public void dispose () {
 				audio.dispose();
@@ -205,18 +202,25 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
+
+		// from here we don't want non continuous rendering
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
+		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
+		// will be ignored at this point...
 		graphics.pause();
 
 		input.onPause();
 
 		// davebaol & mobidevelop:
-		// This fragment is currently being removed from its activity or the activity is in the process of finishing
-		if (isRemoving() || getActivity().isFinishing()) {
+		// This fragment (or one of the parent)  is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
 
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();
@@ -459,5 +463,23 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public WindowManager getWindowManager () {
 		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+	}
+
+	/**
+	* Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
+	*
+	* @return true - one of the parent fragments is being removed
+	*/
+	private boolean isAnyParentFragmentRemoving() {
+		Fragment fragment = getParentFragment();
+
+		 while (fragment != null) {
+			if (fragment.isRemoving())
+				return true;
+
+			fragment = fragment.getParentFragment();
+		}
+
+		return false;
 	}
 }

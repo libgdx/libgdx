@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -44,10 +43,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
- * @author mzechner */
+ * @author mzechner, Thorsten Schleinzer */
 public class IndexBufferObject implements IndexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
 	ShortBuffer buffer;
 	ByteBuffer byteBuffer;
 	int bufferHandle;
@@ -56,48 +53,45 @@ public class IndexBufferObject implements IndexData {
 	boolean isBound = false;
 	final int usage;
 
+	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
+	private final boolean empty;
+
+	/** Creates a new static IndexBufferObject to be used with vertex arrays.
+	 * 
+	 * @param maxIndices the maximum number of indices this buffer can hold */
+	public IndexBufferObject (int maxIndices) {
+		this(true, maxIndices);
+	}
+
 	/** Creates a new IndexBufferObject.
 	 * 
 	 * @param isStatic whether the index buffer is static
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObject (boolean isStatic, int maxIndices) {
+
+		empty = maxIndices == 0;
+		if (empty) {
+			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
+		}
+
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
-	}
-
-	/** Creates a new IndexBufferObject to be used with vertex arrays.
-	 * 
-	 * @param maxIndices the maximum number of indices this buffer can hold */
-	public IndexBufferObject (int maxIndices) {
-		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
-		this.isDirect = true;
-
-		buffer = byteBuffer.asShortBuffer();
-		buffer.flip();
-		byteBuffer.flip();
-		bufferHandle = createBufferObject();
-		usage = GL20.GL_STATIC_DRAW;
-	}
-
-	private int createBufferObject () {
-		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
 	}
 
 	/** @return the number of indices currently stored in this buffer */
 	public int getNumIndices () {
-		return buffer.limit();
+		return empty ? 0 : buffer.limit();
 	}
 
 	/** @return the maximum number of indices this IndexBufferObject can store. */
 	public int getNumMaxIndices () {
-		return buffer.capacity();
+		return empty ? 0 : buffer.capacity();
 	}
 
 	/** <p>
@@ -119,6 +113,22 @@ public class IndexBufferObject implements IndexData {
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
+
+		if (isBound) {
+			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+			isDirty = false;
+		}
+	}
+
+	public void setIndices (ShortBuffer indices) {
+		isDirty = true;
+		int pos = indices.position();
+		buffer.clear();
+		buffer.put(indices);
+		buffer.flip();
+		indices.position(pos);
+		byteBuffer.position(0);
+		byteBuffer.limit(buffer.limit() << 1);
 
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
@@ -158,17 +168,14 @@ public class IndexBufferObject implements IndexData {
 
 	/** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	public void dispose () {
-		tmpHandle.clear();
-		tmpHandle.put(bufferHandle);
-		tmpHandle.flip();
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-		Gdx.gl20.glDeleteBuffers(1, tmpHandle);
+		Gdx.gl20.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
 
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);

@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btHinge2Constraint extends btGeneric6DofSpringConstraint {
+public class btHinge2Constraint extends btGeneric6DofSpring2Constraint {
 	private long swigCPtr;
 	
 	protected btHinge2Constraint(final String className, long cPtr, boolean cMemoryOwn) {

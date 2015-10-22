@@ -1,6 +1,145 @@
-[1.4.2]
+[1.7.1]
+- Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
+- Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
+- API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
+- Added Vector#setToRandomDirection(), see #3222
+- Updated to stb_image v2.08
+- Added Node#copy(), used when creating a ModelInstance from a Model to allow using custom nodes
+
+[1.7.0]
+- Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/
+- Fixed an issue with UTF8 decoding in GWT emulation of InputStreamReader
+- Updated to RoboVM 1.8 for iOS 9 support.
+
+[1.6.5]
+- Objects from animated tiles in TMX maps are now supported.
+- Made possible to use any actor for tooltips.
+- Improved cross-platform reflection api for annotations.
+- NinePatch#scale now also scales middle patch size.
+- GLFrameBuffer is now abstract, renamed setupTexture to createColorTexture, added disposeColorTexture
+- Added LwjglApplicationConfiguration#gles30Context*Version, see https://github.com/libgdx/libgdx/pull/2941
+- Added OpenGL error checking to GLProfiler, see https://github.com/libgdx/libgdx/pull/2889
+- Updated to RoboVM 1.6
+
+[1.6.4]
+- TextField cursor and selection size changed. https://github.com/libgdx/libgdx/commit/2a830dea348948d2a37bd8f6338af2023fec9b09
+- FreeTypeFontGenerator setting to improve shadows and borders.
+- ScrollPane scrolls smoothly when the scrolled area is much larger than the scrollbars.
+- TexturePacker sorts page regions by name.
+- GlyphLayout text wrapping changed to not trim whitespace. https://github.com/libgdx/libgdx/commit/ee42693da067da7c5ddd747f051c1423d262cb96
+- Fixed BitmapFont computing space width incorrectly when padding is used and no space glyph is in the font.
+- Fixed TextArea cursor and selection drawing positions.
+- Fixed ActorGestureListener pan and zoom when the actor is rotated or scaled.
+- Fixed TextField for non-pixel display.
+- Allow ellipsis string to be set on Label.
+- AssetManager gets hook for handling loading failure.
+- TextField now fires a ChangeEvent when the text change. Can be cancelled too!
+- Added tooltips to scene2d.ui.
+- Updated to RoboVM 1.5
+
+[1.6.3]
+- Updated to RoboVM 1.4
+
+[1.6.2]
+- API Change: TiledMapImageLayer now uses floats instead of ints for positioning
+- API Change: Added GLFrameBuffer and FrameBufferCubemap: Framebuffer now extends GLFramebuffer, see #2933
+
+[1.6.1]
+- Added optional hostname argument to Net.newServerSocket method to allow specific ip bindings for server applications made with gdx.
+- Changed the way iOS native libs are handled. Removed updateRoboVMXML and copyNatives task from ios/build.gradle. Instead natives are now packaged in jars, within the META-INF/robovm/ios folder. Additionally, a robovm.xml file is stored there that gets merged with the project's robovm.xml file by RoboVM.
+
+[1.6.0]
+- API Change: GlyphLayout xAdvances now have an additional entry at the beginning. This was required to implement tighter text bounds. #3034
+- API Change: Label#getTextBounds changed to getGlyphLayout. This exposes all the runs, not just the width and height.
+- In the 2D ParticleEditor, all chart points can be dragged at once by holding ctrl. They can be dragged proportionally by holding ctrl-shift.
+- Added Merge button to the 2D ParticleEditor, for merging a loaded particle effect file with the currently open particle effect.
+- Added ability to retrieve method annotations to reflection api
+- Added PixmapPacker.updateTextureRegions() method.
+- Added ability to pack "anonymous" pixmaps into PixmapPacker, which will appear in the generated texture but not a generated or updated TextureAtlas
+- Added PixmapPacker.packDirectToTexture() methods.
+- API Change: PixmapPacker.generateTextureAtlas(...) now returns an atlas which can be updated with subsequent calls to PixmapPacker.updateTextureAtlas(...)
+- API Change: FreeTypeFontGenerator.generateFont(...) now works with a user-provided PixmapPacker.
+- Added DirectionalLightsAttribute, PointLightsAttribute and SpotLightsAttribute, removed Environment#directionalLights/pointLights/spotLights, added Environment#remove, lights are now just like any other attribute. See also https://github.com/libgdx/libgdx/wiki/Material-and-environment#lights
+- API Change: BitmapFont metrics now respect padding. #3074
+- Update bullet wrapper to v2.83
+- Added AnimatedTiledMapTile.getFrameTiles() method
+
+[1.5.6]
+- API Change: Refactored Window. https://github.com/libgdx/libgdx/commit/7d372b3c67d4fcfe4e82546b0ad6891d14d03242
+- Added VertexBufferObjectWithVAO, see https://github.com/libgdx/libgdx/pull/2527
+- API Change: Removed Mesh.create(...), use MeshBuilder instead
+- API Change: BitmapFontData, BitmapFont, and BitmapFontCache have been refactored. http://www.badlogicgames.com/wordpress/?p=3658
+- FreeTypeFontGenerator can now render glyphs on the fly.
+- Attribute now implements Comparable, custom attributes might need to be updated, see: https://github.com/libgdx/libgdx/wiki/Material-and-environment#custom-attributes
+- API Change: Removed (previously deprecated) GLTexture#createTextureData/createGLHandle, Ray#getEndPoint(float), Color#tmp, Node#parent/children, VertexAttribute#Color(), Usage#Color, ModelBuilder#createFromMesh, BoundingBox#getCenter()/updateCorners()/getCorners(), Matrix4.tmp
+
+[1.5.5]
+- Added iOS ARM-64 bit support for Bullet physics
+- 3D Animation, NodeAnimation keyframes are separated into translation, rotation and scaling
+- Added capability to enable color markup from inside skin json file.
+- Exposed method ControllerManager#clearListeners on Controllers class
+- Net#openURI now returns a boolean to indicate whether the uri was actually opened.
+- DefaultShader now always combines material and environment attributes
+- Added ShapeRenderer constructor to pass a custom shader program to ImmediateModeRenderer20.
+- API Change: Group#toString now returns actor hierarchy. Group#print is gone.
+- Added SpotLight class, see https://github.com/libgdx/libgdx/pull/2907
+- Added support for resolving file handles using classpaths (ClasspathFileHandleResolver)
+
+[1.5.4]
+- Added support for image layers in Tiled maps (TiledMapImageLayer)
+- Added support for loading texture objects from TMX Maps (TextureMapObject)
+- Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
+- Now unknown markup colors are silently ignored and considered as normal text.
+- Updated freetype from version 2.4.10 to 2.5.5
+- Added 3rd party extensions to setup application, see 
+- Updated to RoboVM 1.0.0-beta-04
+- Updated to GWT 2.6.1, sadly GWT 2.7.0 isn't production ready yet.
+
+[1.5.3]
+- API Change: TextField#setRightAlign -> TextField#setAlignment
+- I18NBundle is now compatible with Android 2.2
+- Fixed GWT reflection includes for 3D particles
+- 3D ParticleEffectLoader registered by default
+- Added HttpRequestBuilder, see https://github.com/libgdx/libgdx/pull/2698
+- Added LwjglApplicationConfiguration.useHDPI for Mac OS X with retina displays. Allows you to get "real" pixel coordinates for mouse and display coordinates.
+- Updated RoboVM to 1.0.0-beta-03
+
+[1.5.2]
+- Fixed issue #2433 with color markup and alpha animation. 
+- Fixed natives loading for LWJGL on Mac OS X
+
+[1.5.1]
+- Gradle updated to 2.2
+- Android Gradle tooling updated to 1.0.0
+- API Change: Switched from Timer to AnimationScheduler for driving main loop on GWT. Removed fps field from GwtApplicationConfiguration to instead let the browser choose the most optimal rate.
+- API Change: Added pause and resume handling on GWT backend. When the browser supports the page visibility api, pause and resume will be called when the tab or window loses and gains visibility.
+- API Change: Added concept of target actor, separate from the actor the action is added to. This allows an action to be added to one actor but affect another. This is useful to create a sequence of actions that affect many different actors. Previously this would require adding actions to each actor and using delays to get them to play in the correct order.
+- Added 64-bit support for iOS sim and device
+- Deprecated Node#children and Node#parent, added inheritTransform flag and methods to add/get/remove children
+- API Change: By default keyframes are no longer copied from Model to ModelInstance but shared instead, can be changed using the `ModelInstance.defaultShareKeyframes` flag or `shareKeyframes` constructor argument.
+- JSON minimal format now makes commas optional: newline can be used in place of any comma.
+- JSON minimal format is now more lenient with unquoted strings: spaces and more are allowed.
+- API Change: Added support for KTX/ZKTX file format, https://github.com/libgdx/libgdx/pull/2431
+- Update stb_image from v1.33 to v1.48, see https://github.com/libgdx/libgdx/pull/2668
+- Bullet Wrapper: added Gimpact, see https://github.com/libgdx/libgdx/issues/2619
+- API Addition: Added MeshPartBuilder#addMesh(...), can be used to more easily combine meshes/models
+- Update to LWJGL 2.9.2, fixes fullscreen mode on "retina" displays
+- Fixes to RoboVM backend which would crash if accelerometer is used.
+
+[1.5.0]
+- API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
+- API Addition: Added getter for UITextField on IOS for keyboard customization 
+- API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
 - API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
 - API Addition: HttpRequest is now poolable.
+- New PNG encoder that supports compression, more efficient vertical flipping, and minimal allocation when encoding multiple PNGs.
+- API Change: Label#setEllipse -> Label#setEllipsis.
+- API Change: BatchTiledMapRenderer *SpriteBatch fields and methods renamed to *Batch
+- API Change: ScrollPane#scrollToCenter -> ScrollPane#scrollTo; see optional boolean arguments centerHorizontal and centerVertical (scrollToCenter centered vertically only).
+- API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
+- Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
+- iOS backend now supports sound ids, thanks Tomski!
+
 
 [1.4.1]
 - Update to the Gradle Integration plugin nightly build if you are on Eclipse 4.4.x!

@@ -52,6 +52,11 @@ public:
 	/// Returns the time in us since the last call to reset or since 
 	/// the Clock was created.
 	unsigned long int getTimeMicroseconds();
+	
+	/// Returns the time in s since the last call to reset or since 
+	/// the Clock was created.
+	btScalar getTimeSeconds();
+	
 private:
 	struct btClockData* m_data;
 };

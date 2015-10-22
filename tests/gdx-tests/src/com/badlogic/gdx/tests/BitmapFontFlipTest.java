@@ -22,12 +22,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 
 public class BitmapFontFlipTest extends GdxTest {
 	private SpriteBatch spriteBatch;
@@ -59,19 +59,19 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), true);
 
-		cache1 = new BitmapFontCache(font);
-		cache2 = new BitmapFontCache(font);
-		cache3 = new BitmapFontCache(font);
-		cache4 = new BitmapFontCache(font);
-		cache5 = new BitmapFontCache(font);
+		cache1 = font.newFontCache();
+		cache2 = font.newFontCache();
+		cache3 = font.newFontCache();
+		cache4 = font.newFontCache();
+		cache5 = font.newFontCache();
 		createCaches("cached", cache1, cache2, cache3, cache4, cache5);
 
-		font.setScale(1.33f);
-		cacheScaled1 = new BitmapFontCache(font);
-		cacheScaled2 = new BitmapFontCache(font);
-		cacheScaled3 = new BitmapFontCache(font);
-		cacheScaled4 = new BitmapFontCache(font);
-		cacheScaled5 = new BitmapFontCache(font);
+		font.getData().setScale(1.33f);
+		cacheScaled1 = font.newFontCache();
+		cacheScaled2 = font.newFontCache();
+		cacheScaled3 = font.newFontCache();
+		cacheScaled4 = font.newFontCache();
+		cacheScaled5 = font.newFontCache();
 		createCaches("cache scaled", cacheScaled1, cacheScaled2, cacheScaled3, cacheScaled4, cacheScaled5);
 	}
 
@@ -81,18 +81,18 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		String text = "Sphinx of black quartz,\njudge my vow.";
 		cache2.setColor(Color.RED);
-		cache2.setMultiLineText(text, 5, 320 - 300);
+		cache2.setText(text, 5, 320 - 300);
 
 		text = "How quickly\ndaft jumping zebras vex.";
 		cache3.setColor(Color.BLUE);
-		cache3.setMultiLineText(text, 5, 320 - 200, 470, BitmapFont.HAlignment.CENTER);
+		cache3.setText(text, 5, 320 - 200, 470, Align.center, false);
 
 		text = "Kerning: LYA moo";
-		cache4.setText(text, 210, 320 - 66, 0, text.length() - 3);
+		cache4.setText(text, 210, 320 - 66, 0, text.length() - 3, 0, Align.left, false);
 
 		text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
 		cache5.setColor(red);
-		cache5.setWrappedText(text, 0, 320 - 300, 480, HAlignment.CENTER);
+		cache5.setText(text, 0, 320 - 300, 480, Align.center, false);
 	}
 
 	@Override
@@ -104,19 +104,19 @@ public class BitmapFontFlipTest extends GdxTest {
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {
 		case 0:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderNormal("normal");
 			break;
 		case 1:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderCached();
 			break;
 		case 2:
-			font.setScale(red.a + 0.5f);
+			font.getData().setScale(red.a + 0.5f);
 			renderNormal("normal scaled");
 			break;
 		case 3:
-			font.setScale(1);
+			font.getData().setScale(1);
 			renderCachedScaled();
 			break;
 		}
@@ -126,7 +126,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	private void renderNormal (String type) {
 		String text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
 		font.setColor(red);
-		font.drawWrapped(spriteBatch, text, 0, 320 - 300, 480, HAlignment.CENTER);
+		font.draw(spriteBatch, text, 0, 320 - 300, 480, Align.center, false);
 
 		font.setColor(Color.WHITE);
 		font.draw(spriteBatch, "(" + type + ")", 10, 320 - 66);
@@ -135,15 +135,15 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		text = "Sphinx of black quartz,\njudge my vow.";
 		font.setColor(Color.RED);
-		font.drawMultiLine(spriteBatch, text, 5, 320 - 300);
+		font.draw(spriteBatch, text, 5, 320 - 300);
 
 		text = "How quickly\ndaft jumping zebras vex.";
 		font.setColor(Color.BLUE);
-		font.drawMultiLine(spriteBatch, text, 5, 320 - 200, 470, BitmapFont.HAlignment.RIGHT);
+		font.draw(spriteBatch, text, 5, 320 - 200, 470, Align.right, false);
 
 		text = "Kerning: LYA moo";
 		font.setColor(Color.WHITE);
-		font.draw(spriteBatch, text, 210, 320 - 66, 0, text.length() - 3);
+		font.draw(spriteBatch, text, 210, 320 - 66, 0, text.length() - 3, 0, Align.left, false);
 	}
 
 	private void renderCached () {

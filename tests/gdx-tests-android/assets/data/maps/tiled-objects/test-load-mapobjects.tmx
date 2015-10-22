@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" nextobjectid="17">
+ <tileset firstgid="1" name="Test" tilewidth="256" tileheight="256">
+  <tile id="0">
+   <image width="32" height="32" source="Start.bmp"/>
+   <animation>
+    <frame tileid="0" duration="500"/>
+    <frame tileid="1" duration="500"/>
+   </animation>
+  </tile>
+  <tile id="1">
+   <image width="32" height="32" source="../../badlogicsmall.jpg"/>
+  </tile>
+  <tile id="2">
+   <image width="256" height="256" source="../../badlogic.jpg"/>
+  </tile>
+ </tileset>
+ <objectgroup name="Objects">
+  <object id="3" name="Ellipse" x="59.3333" y="335" width="130" height="87">
+   <ellipse/>
+  </object>
+  <object id="5" name="Polygon" x="238.667" y="351.333">
+   <polygon points="0,0 78,-4 32,73"/>
+  </object>
+  <object id="9" name="Rectangle" x="340" y="341.333" width="118.667" height="100"/>
+  <object id="12" name="Texture" gid="3" x="128" y="298.667" width="256" height="33.667"/>
+  <object id="14" gid="1073741825" x="384" y="256" width="64" height="32"/>
+ </objectgroup>
+</map>

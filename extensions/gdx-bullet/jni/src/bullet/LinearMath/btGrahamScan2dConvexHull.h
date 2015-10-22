@@ -85,9 +85,17 @@ inline void GrahamScanConvexHull2D(btAlignedObjectArray<GrahamVector3>& original
 	originalPoints[0].m_angle = -1e30f;
 	for (int i=1;i<originalPoints.size();i++)
 	{
-		btVector3 xvec = axis0;
-		btVector3 ar = originalPoints[i]-originalPoints[0];
-		originalPoints[i].m_angle = btCross(xvec, ar).dot(normalAxis) / ar.length();
+	    btVector3 ar = originalPoints[i]-originalPoints[0];
+	    btScalar ar1 = axis1.dot(ar);
+	    btScalar ar0 = axis0.dot(ar);
+	    if( ar1*ar1+ar0*ar0 < FLT_EPSILON ) 
+	    {
+	      originalPoints[i].m_angle = 0.0f;
+	    }
+	    else
+	    {
+	      originalPoints[i].m_angle = btAtan2Fast(ar1, ar0);
+	    }
 	}
 
 	//step 2: sort all points, based on 'angle' with this anchor
@@ -111,6 +119,11 @@ inline void GrahamScanConvexHull2D(btAlignedObjectArray<GrahamVector3>& original
 			else 
 				hull.push_back(originalPoints[i]);
 		}
+
+	    if( hull.size() == 1 )
+	    {
+	      hull.push_back( originalPoints[i] );
+	    }
 	}
 }
 

@@ -35,6 +35,7 @@
 		<include name="assets/loaders/AssetLoader.java"/>
 		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
 		<include name="assets/loaders/BitmapFontLoader.java"/>
+		<exclude name="assets/loaders/CubemapLoader.java"/> <!--  relies on KTXTextureData -->
 		<include name="assets/loaders/FileHandleResolver.java"/>
 		<include name="assets/loaders/I18NBundleLoader.java"/>
 		<include name="assets/loaders/ModelLoader.java"/>
@@ -50,6 +51,7 @@
 	<!-- assets/loaders/resolvers -->		
 		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/InternalFileHandleResolver.java"/>
+		<include name="assets/loaders/resolvers/ClasspathFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/ResolutionFileResolver.java"/> <!-- Emulated -->
 
 	<!-- audio -->		
@@ -67,6 +69,8 @@
 		<include name="graphics/Color.java"/>
 		<include name="graphics/Colors.java"/>
 		<include name="graphics/Cubemap.java"/>
+		<include name="graphics/CubemapData.java"/>
+		<include name="graphics/Cursor.java"/>
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GL30.java"/>
@@ -78,7 +82,7 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
-		<include name="graphics/TextureData.java"/>
+		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
 		<include name="graphics/VertexAttribute.java"/>
 		<include name="graphics/VertexAttributes.java"/>
 		
@@ -89,12 +93,14 @@
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
+		<include name="graphics/g2d/GlyphLayout.java"/>
 		<include name="graphics/g2d/NinePatch.java"/>
 		<include name="graphics/g2d/ParticleEffect.java"/> <!-- Emulated: Not supporting save -->
 		<include name="graphics/g2d/ParticleEffectPool.java"/>
 		<include name="graphics/g2d/ParticleEmitter.java"/>
 		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>		
 		<include name="graphics/g2d/PixmapPacker.java"/>
+		<exclude name="graphics/g2d/PixmapPackerIO.java"/>
 		<include name="graphics/g2d/PolygonRegion.java"/>
 		<include name="graphics/g2d/PolygonRegionLoader.java"/>
 		<include name="graphics/g2d/PolygonSprite.java"/>
@@ -102,6 +108,7 @@
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
 		<include name="graphics/g2d/SpriteCache.java"/>
+		<include name="graphics/g2d/TextMarkup.java"/>
 		<include name="graphics/g2d/TextureAtlas.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
 		
@@ -125,6 +132,9 @@
 		<include name="graphics/g3d/attributes/FloatAttribute.java"/>
 		<include name="graphics/g3d/attributes/IntAttribute.java"/>
 		<include name="graphics/g3d/attributes/TextureAttribute.java"/>
+		<include name="graphics/g3d/attributes/DirectionalLightsAttribute.java"/>
+		<include name="graphics/g3d/attributes/PointLightsAttribute.java"/>
+		<include name="graphics/g3d/attributes/SpotLightsAttribute.java"/>
 		
 	<!-- graphics/g3d/decals -->
 		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
@@ -143,6 +153,7 @@
 		<include name="graphics/g3d/environment/DirectionalLight.java"/>
 		<include name="graphics/g3d/environment/DirectionalShadowLight.java"/>
 		<include name="graphics/g3d/environment/PointLight.java"/>
+		<include name="graphics/g3d/environment/SpotLight.java"/>
 		<include name="graphics/g3d/environment/ShadowMap.java"/>
 		<include name="graphics/g3d/environment/Sphericalharmonics.java"/>
 				
@@ -203,10 +214,13 @@
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
+		<include name="graphics/glutils/FacedCubemapData.java"/>
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
 		<include name="graphics/glutils/FrameBuffer.java"/>
+		<include name="graphics/glutils/FrameBufferCubemap.java"/>
+		<include name="graphics/glutils/GLFrameBuffer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>
@@ -214,6 +228,7 @@
 		<include name="graphics/glutils/IndexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/IndexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/IndexData.java"/>
+		<exclude name="graphics/glutils/KTXTextureData.java"/>  <!-- Rely on ETC1 -->
 		<include name="graphics/glutils/MipMapGenerator.java"/>
 		<include name="graphics/glutils/PixmapTextureData.java"/>
 		<include name="graphics/glutils/ShaderProgram.java"/>
@@ -221,13 +236,14 @@
 		<include name="graphics/glutils/VertexArray.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
+		<include name="graphics/glutils/VertexBufferObjectWithVAO.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexData.java"/>
 
 	<!-- graphics/profiling -->
 		<include name="graphics/profiling/GL20Profiler.java"/>
 		<include name="graphics/profiling/GL30Profiler.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
-		
+		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
@@ -254,6 +270,7 @@
 	
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/BaseTmxMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
@@ -261,6 +278,7 @@
 		<include name="maps/tiled/TiledMapTileLayer.java"/>
 		<include name="maps/tiled/TiledMapTileSet.java"/>
 		<include name="maps/tiled/TiledMapTileSets.java"/>
+		<include name="maps/tiled/TiledMapImageLayer.java"/>
 		<include name="maps/tiled/TmxMapHelper.java"/>
 		<include name="maps/tiled/TmxMapLoader.java"/>
 		
@@ -272,10 +290,13 @@
 		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
 
-	<!-- maps/tiles/tiles -->
+	<!-- maps/tiled/tiles -->
 		<include name="maps/tiled/tiles/AnimatedTiledMapTile.java"/>
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
 	
+	<!-- maps/tiled/objects -->
+		<include name="maps/tiled/objects/TiledMapTileMapObject.java"/>	
+		
 	<!-- math -->
 		<include name="math/Affine2.java"/>
 		<include name="math/Bezier.java"/>
@@ -327,6 +348,7 @@
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
+		<include name="net/HttpRequestBuilder.java"/>
 	
 	<!-- physics/box2d -->
 	<!-- Box2d is fully emulated in GWT backend -->

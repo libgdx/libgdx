@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
@@ -231,25 +232,62 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	@Override
 	public Vector2 limit (float limit) {
-		if (len2() > limit * limit) {
-			nor();
-			scl(limit);
+		return limit2(limit * limit);
+	}
+
+	@Override
+	public Vector2 limit2 (float limit2) {
+		float len2 = len2();
+		if (len2 > limit2) {
+			return scl((float)Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}
 
 	@Override
 	public Vector2 clamp (float min, float max) {
-		final float l2 = len2();
-		if (l2 == 0f) return this;
-		if (l2 > max * max) return nor().scl(max);
-		if (l2 < min * min) return nor().scl(min);
+		final float len2 = len2();
+		if (len2 == 0f) return this;
+		float max2 = max * max;
+		if (len2 > max2) return scl((float)Math.sqrt(max2 / len2));
+		float min2 = min * min;
+		if (len2 < min2) return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 
 	@Override
+	public Vector2 setLength (float len) {
+		return setLength2(len * len);
+	}
+
+	@Override
+	public Vector2 setLength2 (float len2) {
+		float oldLen2 = len2();
+		return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float)Math.sqrt(len2 / oldLen2));
+	}
+
+	/** Converts this {@code Vector2} to a string in the format {@code (x,y)}.
+	 * @return a string representation of this object. */
+	@Override
 	public String toString () {
-		return "[" + x + ":" + y + "]";
+		return "(" + x + "," + y + ")";
+	}
+
+	/** Sets this {@code Vector2} to the value represented by the specified string according to the format of {@link #toString()}.
+	 * @param v the string.
+	 * @return this vector for chaining */
+	public Vector2 fromString (String v) {
+		int s = v.indexOf(',', 1);
+		if (s != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')') {
+			try {
+				float x = Float.parseFloat(v.substring(1, s));
+				float y = Float.parseFloat(v.substring(s + 1, v.length() - 1));
+				return this.set(x, y);
+			} catch (NumberFormatException ex) {
+				// Throw a GdxRuntimeException
+			}
+		}
+		throw new GdxRuntimeException("Malformed Vector2: " + v);
 	}
 
 	/** Left-multiplies this vector by the given matrix
@@ -364,6 +402,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	@Override
 	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolation) {
 		return lerp(target, interpolation.apply(alpha));
+	}
+
+	@Override
+	public Vector2 setToRandomDirection () {
+		float theta = MathUtils.random(0f, MathUtils.PI2);
+		return this.set(MathUtils.cos(theta), MathUtils.sin(theta));
 	}
 
 	@Override

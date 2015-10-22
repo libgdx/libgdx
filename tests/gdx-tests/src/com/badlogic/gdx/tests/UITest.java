@@ -41,10 +41,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.Tooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class UITest extends GdxTest {
@@ -93,20 +96,23 @@ public class UITest extends GdxTest {
 
 		t.layout();
 
-		CheckBox checkBox = new CheckBox("Check me", skin);
+		final CheckBox checkBox = new CheckBox(" Continuous rendering", skin);
+		checkBox.setChecked(true);
 		final Slider slider = new Slider(0, 10, 1, false, skin);
+		slider.setAnimateDuration(0.3f);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		final SelectBox dropdown = new SelectBox(skin);
-		dropdown.addListener(new ChangeListener(){
+		textfield.setAlignment(Align.center);
+		final SelectBox selectBox = new SelectBox(skin);
+		selectBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				System.out.println(dropdown.getSelected());
+				System.out.println(selectBox.getSelected());
 			}
 		});
-		dropdown.setItems("Android1", "Windows1", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
-			"Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5", "OSX5",
-			"Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
-		dropdown.setSelected("Linux6");
+		selectBox.setItems("Android1", "Windows1 long text in item", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2",
+			"Android3", "Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5",
+			"OSX5", "Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
+		selectBox.setSelected("Linux6");
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
 		List list = new List(skin);
@@ -126,9 +132,15 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
+		buttonMulti.addListener(new TextTooltip("This is a tooltip!", skin));
+		Table tooltipTable = new Table(skin);
+		tooltipTable.pad(10).background("default-round");
+		tooltipTable.add(new TextButton("Fancy tooltip!", skin));
+		imgButton.addListener(new Tooltip(tooltipTable));
+
 		// window.debug();
 		Window window = new Window("Dialog", skin);
-		window.getButtonTable().add(new TextButton("X", skin)).height(window.getPadTop());
+		window.getTitleTable().add(new TextButton("X", skin)).height(window.getPadTop());
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
@@ -140,7 +152,7 @@ public class UITest extends GdxTest {
 		window.add(checkBox);
 		window.add(slider).minWidth(100).fillX().colspan(3);
 		window.row();
-		window.add(dropdown);
+		window.add(selectBox).maxWidth(100);
 		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
 		window.add(splitPane).fill().expand().colspan(4).maxHeight(200);
@@ -174,6 +186,12 @@ public class UITest extends GdxTest {
 					}
 				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).key(Keys.ENTER, true)
 					.key(Keys.ESCAPE, false).show(stage);
+			}
+		});
+
+		checkBox.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.graphics.setContinuousRendering(checkBox.isChecked());
 			}
 		});
 	}

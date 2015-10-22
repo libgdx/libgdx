@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
+import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.glutils.FacedCubemapData;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -112,8 +114,9 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			return result;
 		}
 	}
-
-	protected Environment lights;
+	
+	protected Environment environment;
+	protected DirectionalLight dirLight;
 	protected TestShaderProvider shaderProvider;
 	protected FileHandle shaderRoot;
 	protected ModelBatch shaderBatch;
@@ -127,9 +130,9 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
-		lights = new Environment();
-		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.1f, 0.1f, 1.f));
-		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.1f, 0.1f, 1.f));
+		environment.add(dirLight = new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
 
 		shaderProvider = new TestShaderProvider();
 		shaderBatch = new ModelBatch(shaderProvider);
@@ -162,18 +165,20 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			cubemap = null;
 		}
 		if (name.equals("<none>")) {
-			if (lights.has(CubemapAttribute.EnvironmentMap)) {
-				lights.remove(CubemapAttribute.EnvironmentMap);
+			if (environment.has(CubemapAttribute.EnvironmentMap)) {
+				environment.remove(CubemapAttribute.EnvironmentMap);
 				shaderProvider.clear();
 			}
 		} else {
 			FileHandle root = Gdx.files.internal("data/g3d/environment");
-			cubemap = new Cubemap(root.child(name + "_PX.png"), root.child(name+"_NX.png"),
+			FacedCubemapData faces = new FacedCubemapData(root.child(name + "_PX.png"), root.child(name+"_NX.png"),
 				root.child(name + "_PY.png"), root.child(name + "_NY.png"), root.child(name + "_PZ.png"),
 				root.child(name + "_NZ.png"), false); // FIXME mipmapping on desktop
-			cubemap.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
-			if (!lights.has(CubemapAttribute.EnvironmentMap)) shaderProvider.clear();
-			lights.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
+			cubemap = new Cubemap(faces);
+			faces.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
+			cubemap.load(faces);
+			if (!environment.has(CubemapAttribute.EnvironmentMap)) shaderProvider.clear();
+			environment.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 		}
 	}
 
@@ -217,13 +222,13 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 
 	@Override
 	public void render (Array<ModelInstance> instances) {
-		lights.directionalLights.get(0).direction.rotate(dirLightRotAxis, Gdx.graphics.getDeltaTime() * 45f);
+		dirLight.direction.rotate(dirLightRotAxis, Gdx.graphics.getDeltaTime() * 45f);
 
 		super.render(null);
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
 			e.value.update(Gdx.graphics.getDeltaTime());
 		shaderBatch.begin(cam);
-		shaderBatch.render(instances, lights);
+		shaderBatch.render(instances, environment);
 		shaderBatch.end();
 	}
 
@@ -285,12 +290,12 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			if (instance.animations.size > 0) animationControllers.put(instance, new AnimationController(instance));
 
 			instance.calculateBoundingBox(bounds);
-			cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions().len() * 0.75f).add(bounds.getCenter());
+			cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions(tmpV).len() * 0.75f).add(bounds.getCenter(tmpV));
 			cam.up.set(0, 1, 0);
-			cam.lookAt(inputController.target.set(bounds.getCenter()));
-			cam.far = Math.max(100f, bounds.getDimensions().len() * 2.0f);
+			cam.lookAt(inputController.target.set(bounds.getCenter(tmpV)));
+			cam.far = Math.max(100f, bounds.getDimensions(tmpV).len() * 2.0f);
 			cam.update();
-			moveRadius = bounds.getDimensions().len() * 0.25f;
+			moveRadius = bounds.getDimensions(tmpV).len() * 0.25f;
 		}
 	}
 

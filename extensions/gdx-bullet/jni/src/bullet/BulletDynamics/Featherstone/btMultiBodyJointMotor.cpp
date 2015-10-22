@@ -25,6 +25,8 @@ btMultiBodyJointMotor::btMultiBodyJointMotor(btMultiBody* body, int link, btScal
 	:btMultiBodyConstraint(body,body,link,link,1,true),
 	m_desiredVelocity(desiredVelocity)	
 {
+	int linkDoF = 0;
+
 	m_maxAppliedImpulse = maxMotorImpulse;
 	// the data.m_jacobians never change, so may as well
     // initialize them here
@@ -32,8 +34,33 @@ btMultiBodyJointMotor::btMultiBodyJointMotor(btMultiBody* body, int link, btScal
     // note: we rely on the fact that data.m_jacobians are
     // always initialized to zero by the Constraint ctor
 
-    // row 0: the lower bound
-    jacobianA(0)[6 + link] = 1;
+    unsigned int offset = 6 + (body->isMultiDof() ? body->getLink(link).m_dofOffset + linkDoF : link);
+
+	// row 0: the lower bound
+	// row 0: the lower bound
+    jacobianA(0)[offset] = 1;
+}
+
+
+btMultiBodyJointMotor::btMultiBodyJointMotor(btMultiBody* body, int link, int linkDoF, btScalar desiredVelocity, btScalar maxMotorImpulse)
+	//:btMultiBodyConstraint(body,0,link,-1,1,true),
+	:btMultiBodyConstraint(body,body,link,link,1,true),
+	m_desiredVelocity(desiredVelocity)	
+{
+	btAssert(linkDoF < body->getLink(link).m_dofCount);
+
+	m_maxAppliedImpulse = maxMotorImpulse;
+	// the data.m_jacobians never change, so may as well
+    // initialize them here
+        
+    // note: we rely on the fact that data.m_jacobians are
+    // always initialized to zero by the Constraint ctor
+
+    unsigned int offset = 6 + (body->isMultiDof() ? body->getLink(link).m_dofOffset + linkDoF : link);
+
+	// row 0: the lower bound
+	// row 0: the lower bound
+    jacobianA(0)[offset] = 1;
 }
 btMultiBodyJointMotor::~btMultiBodyJointMotor()
 {
@@ -76,13 +103,15 @@ void btMultiBodyJointMotor::createConstraintRows(btMultiBodyConstraintArray& con
     // directions were set in the ctor and never change.
     
   
+	const btScalar posError = 0;
+	const btVector3 dummy(0, 0, 0);
 
 	for (int row=0;row<getNumRows();row++)
 	{
 		btMultiBodySolverConstraint& constraintRow = constraintRows.expandNonInitializing();
 		
-		btScalar penetration = 0;
-		fillConstraintRowMultiBodyMultiBody(constraintRow,data,jacobianA(row),jacobianB(row),infoGlobal,m_desiredVelocity,-m_maxAppliedImpulse,m_maxAppliedImpulse);
+		
+		fillMultiBodyConstraint(constraintRow,data,jacobianA(row),jacobianB(row),dummy,dummy,dummy,posError,infoGlobal,-m_maxAppliedImpulse,m_maxAppliedImpulse,1,false,m_desiredVelocity);
 	}
 
 }

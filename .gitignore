@@ -3,13 +3,18 @@
 .*.swp
 .DS_STORE
 
+.gradle/
+build/
 bin/
 target/
 obj/
+out/
+classes/
 .gwt/
 gwt-unitCache/
 war/
 gen/
+gen-external-apklibs/
 armeabi/
 armeabi-v7a/
 linux32/

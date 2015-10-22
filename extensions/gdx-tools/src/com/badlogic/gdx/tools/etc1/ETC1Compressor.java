@@ -31,6 +31,7 @@ public class ETC1Compressor {
 		ETC1FileProcessor () {
 			addInputSuffix(".png");
 			addInputSuffix(".jpg");
+			addInputSuffix(".jpeg");
 			addInputSuffix(".bmp");
 			setOutputSuffix(".etc1");
 		}

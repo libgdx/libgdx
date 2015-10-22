@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
  * actor.addListener(new InputListener() {
  * 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
  * 		Gdx.app.log(&quot;Example&quot;, &quot;touch started at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
+ * 		return false;
  * 	}
  * 
  * 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {

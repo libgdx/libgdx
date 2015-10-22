@@ -149,12 +149,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			public void resume () {
 				// No need to resume audio here
 			}
-			
+
 			@Override
 			public void pause () {
 				audio.pause();
 			}
-			
+
 			@Override
 			public void dispose () {
 				audio.dispose();
@@ -214,8 +214,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			if (getVersion() <= 13)
-				m.invoke(rootView, 0x0);
+			if (getVersion() <= 13) m.invoke(rootView, 0x0);
 			m.invoke(rootView, 0x1);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
@@ -246,12 +245,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-						| View.SYSTEM_UI_FLAG_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
@@ -261,7 +257,13 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	protected void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
+		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
+
+		// from here we don't want non continuous rendering
+		AndroidGraphics.enforceContinuousRendering = true;
 		graphics.setContinuousRendering(true);
+		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
+		// will be ignored at this point...
 		graphics.pause();
 
 		input.onPause();
@@ -270,6 +272,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
+
+		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();
@@ -462,7 +466,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		// forward events to our listeners if there are any installed
 		synchronized (androidEventListeners) {
 			for (int i = 0; i < androidEventListeners.size; i++) {
@@ -487,7 +491,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	public Context getContext () {
-		return this;  
+		return this;
 	}
 
 	@Override

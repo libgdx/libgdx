@@ -28,6 +28,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.service.wallpaper.WallpaperService.Engine;
@@ -44,9 +45,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -94,8 +95,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	};
 
-	public static final int NUM_TOUCHES = 40;
-
+	public static final int NUM_TOUCHES = 20;
+	public static final int SUPPORTED_KEYS = 260;
+	
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
@@ -108,9 +110,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private int keyCount = 0;
-	private boolean[] keys = new boolean[256];
+	private boolean[] keys = new boolean[SUPPORTED_KEYS];
 	private boolean keyJustPressed = false;
-	private boolean[] justPressedKeys = new boolean[256];
+	private boolean[] justPressedKeys = new boolean[SUPPORTED_KEYS];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
@@ -192,13 +194,14 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
-				input.setText(text);
+				input.setHint(hint);
+				input.setText(text);				
 				input.setSingleLine();
 				alert.setView(input);
 				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -217,41 +220,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 							@Override
 							public void run () {
 								listener.canceled();
-							}
-						});
-					}
-				});
-				alert.setOnCancelListener(new OnCancelListener() {
-					@Override
-					public void onCancel (DialogInterface arg0) {
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								listener.canceled();
-							}
-						});
-					}
-				});
-				alert.show();
-			}
-		});
-	}
-
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		handle.post(new Runnable() {
-			public void run () {
-				AlertDialog.Builder alert = new AlertDialog.Builder(context);
-				alert.setTitle(title);
-				final EditText input = new EditText(context);
-				input.setHint(placeholder);
-				input.setSingleLine();
-				alert.setView(input);
-				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-					public void onClick (DialogInterface dialog, int whichButton) {
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								listener.input(input.getText().toString());
 							}
 						});
 					}
@@ -311,7 +279,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyCount > 0;
 		}
-		if (key < 0 || key > 255) {
+		if (key < 0 || key >= SUPPORTED_KEYS) {
 			return false;
 		}
 		return keys[key];
@@ -322,7 +290,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (key == Input.Keys.ANY_KEY) {
 			return keyJustPressed;
 		}
-		if (key < 0 || key > 255) {
+		if (key < 0 || key >= SUPPORTED_KEYS) {
 			return false;
 		}
 		return justPressedKeys[key];
@@ -510,7 +478,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
-
+			if (e.getKeyCode() < 0 || e.getKeyCode() >= SUPPORTED_KEYS) {
+				return false;
+			}
+			
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
@@ -604,6 +575,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 		this.catchMenu = catchMenu;
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return catchMenu;
 	}
 
 	@Override
@@ -742,7 +718,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return vibrator != null;
+		if (peripheral == Peripheral.Vibrator)
+			return (Build.VERSION.SDK_INT >= 11 && vibrator != null) ? vibrator.hasVibrator() : vibrator != null;
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
 	}
@@ -850,10 +827,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
 	@Override

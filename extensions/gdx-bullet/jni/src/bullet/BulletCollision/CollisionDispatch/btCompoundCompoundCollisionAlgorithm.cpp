@@ -27,10 +27,8 @@ subject to the following restrictions:
 btShapePairCallback gCompoundCompoundChildShapePairCallback = 0;
 
 btCompoundCompoundCollisionAlgorithm::btCompoundCompoundCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped)
-:btActivatingCollisionAlgorithm(ci,body0Wrap,body1Wrap),
-m_sharedManifold(ci.m_manifold)
+:btCompoundCollisionAlgorithm(ci,body0Wrap,body1Wrap,isSwapped)
 {
-	m_ownsManifold = false;
 
 	void* ptr = btAlignedAlloc(sizeof(btHashedSimplePairCache),16);
 	m_childCollisionAlgorithmCache= new(ptr) btHashedSimplePairCache();
@@ -114,10 +112,9 @@ struct	btCompoundCompoundLeafCallback : btDbvt::ICollide
 									btManifoldResult*	resultOut,
 									btHashedSimplePairCache* childAlgorithmsCache,
 									btPersistentManifold*	sharedManifold)
-		:m_compound0ColObjWrap(compound1ObjWrap),m_compound1ColObjWrap(compound0ObjWrap),m_dispatcher(dispatcher),m_dispatchInfo(dispatchInfo),m_resultOut(resultOut),
+		:m_numOverlapPairs(0),m_compound0ColObjWrap(compound1ObjWrap),m_compound1ColObjWrap(compound0ObjWrap),m_dispatcher(dispatcher),m_dispatchInfo(dispatchInfo),m_resultOut(resultOut),
 		m_childCollisionAlgorithmCache(childAlgorithmsCache),
-		m_sharedManifold(sharedManifold),
-		m_numOverlapPairs(0)
+		m_sharedManifold(sharedManifold)
 	{
 
 	}
@@ -292,12 +289,21 @@ void btCompoundCompoundCollisionAlgorithm::processCollision (const btCollisionOb
 	const btCompoundShape* compoundShape0 = static_cast<const btCompoundShape*>(col0ObjWrap->getCollisionShape());
 	const btCompoundShape* compoundShape1 = static_cast<const btCompoundShape*>(col1ObjWrap->getCollisionShape());
 
+	const btDbvt* tree0 = compoundShape0->getDynamicAabbTree();
+	const btDbvt* tree1 = compoundShape1->getDynamicAabbTree();
+	if (!tree0 || !tree1)
+	{
+		return btCompoundCollisionAlgorithm::processCollision(body0Wrap,body1Wrap,dispatchInfo,resultOut);
+	}
 	///btCompoundShape might have changed:
 	////make sure the internal child collision algorithm caches are still valid
 	if ((compoundShape0->getUpdateRevision() != m_compoundShapeRevision0) || (compoundShape1->getUpdateRevision() != m_compoundShapeRevision1))
 	{
 		///clear all
 		removeChildAlgorithms();
+		m_compoundShapeRevision0 = compoundShape0->getUpdateRevision();
+		m_compoundShapeRevision1 = compoundShape1->getUpdateRevision();
+
 	}
 
 
@@ -329,8 +335,7 @@ void btCompoundCompoundCollisionAlgorithm::processCollision (const btCollisionOb
 	}
 
 
-	const btDbvt* tree0 = compoundShape0->getDynamicAabbTree();
-	const btDbvt* tree1 = compoundShape1->getDynamicAabbTree();
+	
 
 	btCompoundCompoundLeafCallback callback(col0ObjWrap,col1ObjWrap,this->m_dispatcher,dispatchInfo,resultOut,this->m_childCollisionAlgorithmCache,m_sharedManifold);
 

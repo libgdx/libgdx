@@ -92,7 +92,7 @@ public class Array<T> implements Iterable<T> {
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
-		System.arraycopy(array, 0, items, 0, size);
+		System.arraycopy(array, start, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -105,22 +105,22 @@ public class Array<T> implements Iterable<T> {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
-		if (offset + length > array.size)
-			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+	public void addAll (Array<? extends T> array, int start, int count) {
+		if (start + count > array.size)
+			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
+		addAll((T[])array.items, start, count);
 	}
 
 	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
-	public void addAll (T[] array, int offset, int length) {
+	public void addAll (T[] array, int start, int count) {
 		T[] items = this.items;
-		int sizeNeeded = size + length;
+		int sizeNeeded = size + count;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array, offset, items, size, length);
-		size += length;
+		System.arraycopy(array, start, items, size, count);
+		size += count;
 	}
 
 	public T get (int index) {
@@ -443,10 +443,24 @@ public class Array<T> implements Iterable<T> {
 		return result;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		Object[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++) {
+			h *= 31;
+			Object item = items[i];
+			if (item != null) h += item.hashCode();
+		}
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof Array)) return false;
 		Array array = (Array)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
 		Object[] items1 = this.items;

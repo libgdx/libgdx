@@ -133,6 +133,11 @@ void btBulletFile::parseData()
 
 	//dataPtr += ChunkUtils::getNextBlock(&dataChunk, dataPtr, mFlags);
 	int seek = getNextBlock(&dataChunk, dataPtr, mFlags);
+	
+	
+	if (mFlags &FD_ENDIAN_SWAP) 
+		swapLen(dataPtr);
+
 	//dataPtr += ChunkUtils::getOffset(mFlags);
 	char *dataPtrHead = 0;
 
@@ -219,10 +224,13 @@ void btBulletFile::parseData()
 			printf("skipping BT_QUANTIZED_BVH_CODE due to broken DNA\n");
 		}
 
-		// next please!
+		
 		dataPtr += seek;
 
 		seek =  getNextBlock(&dataChunk, dataPtr, mFlags);
+		if (mFlags &FD_ENDIAN_SWAP) 
+			swapLen(dataPtr);
+
 		if (seek < 0)
 			break;
 	}
@@ -334,6 +342,15 @@ void	btBulletFile::parse(int verboseMode)
 		parseInternal(verboseMode,m_DnaCopy,sBulletDNAlen);
 	}
 #endif//BT_INTERNAL_UPDATE_SERIALIZATION_STRUCTURES
+	
+	//the parsing will convert to cpu endian
+	mFlags &=~FD_ENDIAN_SWAP;
+
+	int littleEndian= 1;
+	littleEndian= ((char*)&littleEndian)[0];
+	
+	mFileBuffer[8] = littleEndian?'v':'V';
+	
 }
 
 // experimental

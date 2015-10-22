@@ -18,8 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /** A group that lays out its children on top of each other in a single column. This can be easier than using {@link Table} when
@@ -81,8 +81,9 @@ public class VerticalGroup extends WidgetGroup {
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			float width, height;
+			Layout layout = null;
 			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
+				layout = (Layout)child;
 				if (fill > 0)
 					width = groupWidth * fill;
 				else
@@ -109,6 +110,8 @@ public class VerticalGroup extends WidgetGroup {
 			else
 				child.setBounds(x, y, width, height);
 			if (reverse) y += (height + spacing);
+
+			if (layout != null) layout.validate();
 		}
 	}
 

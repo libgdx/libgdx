@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.Method;
 
 /** Performs some tests with {@link Annotation} and prints the results on the screen.
  * @author dludwig */
@@ -57,9 +59,25 @@ public class AnnotationTest extends GdxTest {
 	/** Sample usage of class and field annotations. */
 	@TestAnnotation(name = "MyAnnotatedClass", someEnum = TestEnum.EnumB)
 	static public class AnnotatedClass {
+		public int unanottatedField;
+		public int unannotatedMethod() { return 0; }
 		@TestAnnotation(name = "MyAnnotatedField", values = {4, 5}) public int annotatedValue;
+		@TestAnnotation(name = "MyAnnotatedMethod", values = {6, 7}) public int annotatedMethod () { return 0; };		
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Inherited
+	static public @interface TestInheritAnnotation {
+	}
+
+	@TestInheritAnnotation
+	static public class InheritClassA {
+	}
+
+	@TestAnnotation(name = "MyInheritClassB")
+	static public class InheritClassB extends InheritClassA {
+	}
+	
 	@Override
 	public void create () {
 		font = new BitmapFont();
@@ -89,6 +107,30 @@ public class AnnotationTest extends GdxTest {
 			} else {
 				println("ERROR: Field 'annotatedValue' not found.");
 			}
+
+			Method method = ClassReflection.getDeclaredMethod(AnnotatedClass.class, "annotatedMethod");
+			if (method != null) {
+				Annotation[] annotations = method.getDeclaredAnnotations();
+				for (Annotation a : annotations) {
+					if (a.getAnnotationType().equals(TestAnnotation.class)) {
+						TestAnnotation annotationInstance = a.getAnnotation(TestAnnotation.class);
+						println("Method annotation:\n name=" + annotationInstance.name() + ",\n values="
+							+ Arrays.toString(annotationInstance.values()) + ",\n enum=" + annotationInstance.someEnum().toString());
+						break;
+					}
+				}
+			} else {
+				println("ERROR: Method 'annotatedMethod' not found.");
+			}
+
+			println("Class annotations w/@Inherit:");
+			Annotation[] annotations = ClassReflection.getAnnotations(InheritClassB.class);
+			for (Annotation a : annotations) {
+				println(" name=" + a.getAnnotationType().getSimpleName());
+			}
+			if (!ClassReflection.isAnnotationPresent(InheritClassB.class, TestInheritAnnotation.class)) {
+				println("ERROR: Inherited class annotation not found.");
+			}
 		} catch (Exception e) {
 			println("FAILED: " + e.getMessage());
 			message += e.getClass();
@@ -103,7 +145,7 @@ public class AnnotationTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
 	}
 

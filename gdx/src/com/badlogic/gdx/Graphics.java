@@ -16,9 +16,11 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -221,4 +223,24 @@ public interface Graphics {
 
 	/** Whether the app is fullscreen or not */
 	public boolean isFullscreen ();
+
+	/** Create a new cursor represented by the {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format,
+	 * width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit
+	 * (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the system cursor by calling
+	 * {@link #setCursor(Cursor)} .
+	 * 
+	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
+	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
+	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
+	 * @return a cursor object that can be used by calling {@link #setCursor(Cursor)} or null if not supported */
+	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
+
+	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
+	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
+	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. To revert to the default operating system cursor,
+	 * pass in a null cursor. It is recommended to call this function in the main render thread, and maximum one time per frame.
+	 * 
+	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor}, or null to revert to the default operating
+	 *           system cursor */
+	public void setCursor (Cursor cursor);
 }

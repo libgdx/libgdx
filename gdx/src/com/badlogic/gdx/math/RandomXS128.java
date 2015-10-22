@@ -115,7 +115,7 @@ public class RandomXS128 extends Random {
 		}
 	}
 
-	/** Returns a pseudo-random, uniformly distributed {@code double} value between 0.0 and 1.0from this random number generator's
+	/** Returns a pseudo-random, uniformly distributed {@code double} value between 0.0 and 1.0 from this random number generator's
 	 * sequence.
 	 * <p>
 	 * This implementation uses {@link #nextLong()} internally. */
@@ -158,7 +158,7 @@ public class RandomXS128 extends Random {
 
 	/** Sets the internal seed of this generator based on the given {@code long} value.
 	 * <p>
-	 * The given seed is passed twice through an hash function. This way, if the user passes a small value we avoid the short
+	 * The given seed is passed twice through a hash function. This way, if the user passes a small value we avoid the short
 	 * irregular transient associated with states having a very small number of bits set.
 	 * @param seed a nonzero seed for this generator (if zero, the generator will be seeded with {@link Long#MIN_VALUE}). */
 	@Override
@@ -173,6 +173,15 @@ public class RandomXS128 extends Random {
 	public void setState (final long seed0, final long seed1) {
 		this.seed0 = seed0;
 		this.seed1 = seed1;
+	}
+	
+	/**
+	 * Returns the internal seeds to allow state saving.
+	 * @param seed muse be 0 or 1, designating which of the 2 long seeds to return
+	 * @return the internal seed that can be used in setState
+	 */
+	public long getState(int seed) {
+		return seed == 0 ? seed0 : seed1;
 	}
 
 	private final static long murmurHash3 (long x) {

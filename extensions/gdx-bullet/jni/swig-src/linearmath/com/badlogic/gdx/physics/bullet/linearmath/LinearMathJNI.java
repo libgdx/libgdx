@@ -17,8 +17,6 @@ import com.badlogic.gdx.utils.Pool;
 
 public class LinearMathJNI {
   public final static native int btGetVersion();
-  public final static native void btInfinityMask_set(int jarg1);
-  public final static native int btInfinityMask_get();
   public final static native float btSqrt(float jarg1);
   public final static native float btFabs(float jarg1);
   public final static native float btCos(float jarg1);
@@ -259,6 +257,8 @@ public class LinearMathJNI {
   public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
   public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
   public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_flushLines(long jarg1, btIDebugDraw jarg1_);
+  public final static native void btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
   public final static native long new_btIDebugDraw();
   public final static native void btIDebugDraw_director_connect(btIDebugDraw obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btIDebugDraw_change_ownership(btIDebugDraw obj, long cptr, boolean take_or_release);
@@ -609,6 +609,9 @@ public class LinearMathJNI {
   }
   public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
     self.drawPlane(planeNormal, planeConst, transform, color);
+  }
+  public static void SwigDirector_btIDebugDraw_flushLines(btIDebugDraw self) {
+    self.flushLines();
   }
   public static void SwigDirector_btMotionState_getWorldTransform(btMotionState self, Matrix4 worldTrans) {
     self.getWorldTransform(worldTrans);

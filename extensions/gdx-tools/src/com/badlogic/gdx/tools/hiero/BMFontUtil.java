@@ -16,7 +16,17 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import java.awt.Font;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
+import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
+import com.badlogic.gdx.utils.IntIntMap;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
@@ -27,21 +37,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
-import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
-import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
 /** @author Nathan Sweet */
 public class BMFontUtil {
@@ -120,9 +117,10 @@ public class BMFontUtil {
 				kerning.load(Gdx.files.internal(ttfFileRef).read(), font.getSize());
 			} catch (IOException ex) {
 				System.out.println("Unable to read kerning information from font: " + ttfFileRef);
+				ex.printStackTrace();
 			}
 
-			Map glyphCodeToCodePoint = new HashMap();
+			IntIntMap glyphCodeToCodePoint = new IntIntMap();
 			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
 				Glyph glyph = (Glyph)iter.next();
 				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
@@ -132,23 +130,25 @@ public class BMFontUtil {
 			class KerningPair {
 				public int firstCodePoint, secondCodePoint, offset;
 			}
-			for (Iterator iter1 = allGlyphs.iterator(); iter1.hasNext();) {
-				Glyph firstGlyph = (Glyph)iter1.next();
-				int firstGlyphCode = getGlyphCode(font, firstGlyph.getCodePoint());
-				int[] values = kerning.getValues(firstGlyphCode);
-				if (values == null) continue;
-				for (int i = 0; i < values.length; i++) {
-					Integer secondCodePoint = (Integer)glyphCodeToCodePoint.get(new Integer(values[i] & 0xffff));
-					if (secondCodePoint == null) continue; // We may not be outputting the second character.
-					int offset = values[i] >> 16;
-					KerningPair pair = new KerningPair();
-					pair.firstCodePoint = firstGlyph.getCodePoint();
-					pair.secondCodePoint = secondCodePoint.intValue();
-					pair.offset = offset;
-					kernings.add(pair);
+			for (IntIntMap.Entry entry : kerning.getKernings()) {
+				int firstGlyphCode = entry.key >> 16;
+				int secondGlyphCode = entry.key & 0xffff;
+				int offset = entry.value;
+				int firstCodePoint = glyphCodeToCodePoint.get(firstGlyphCode, -1);
+				int secondCodePoint = glyphCodeToCodePoint.get(secondGlyphCode, -1);
+
+				if (firstCodePoint == -1 || secondCodePoint == -1 || offset == 0) {
+					// We are not outputting one or both of these glyphs, or the offset is zero anyway.
+					continue;
 				}
+
+				KerningPair pair = new KerningPair();
+				pair.firstCodePoint = firstCodePoint;
+				pair.secondCodePoint = secondCodePoint;
+				pair.offset = offset;
+				kernings.add(pair);
 			}
-			out.println("kernings count=" + kerning.getCount());
+			out.println("kernings count=" + kernings.size());
 			for (Iterator iter = kernings.iterator(); iter.hasNext();) {
 				KerningPair pair = (KerningPair)iter.next();
 				out.println("kerning first=" + pair.firstCodePoint + "  second=" + pair.secondCodePoint + "  amount=" + pair.offset);

@@ -480,6 +480,168 @@ void			btSoftBodyHelpers::DrawClusterTree(	btSoftBody* psb,
 	drawTree(idraw,psb->m_cdbvt.m_root,0,btVector3(0,1,1),btVector3(1,0,0),mindepth,maxdepth);
 }
 
+
+//The btSoftBody object from the BulletSDK includes an array of Nodes and Links. These links appear
+// to be first set up to connect a node to between 5 and 6 of its neighbors [480 links], 
+//and then to the rest of the nodes after the execution of the Floyd-Warshall graph algorithm 
+//[another 930 links]. 
+//The way the links are stored by default, we have a number of cases where adjacent links share a node in common
+// - this leads to the creation of a data dependency through memory. 
+//The PSolve_Links() function reads and writes nodes as it iterates over each link. 
+//So, we now have the possibility of a data dependency between iteration X 
+//that processes link L with iteration X+1 that processes link L+1 
+//because L and L+1 have one node in common, and iteration X updates the positions of that node, 
+//and iteration X+1 reads in the position of that shared node.
+//
+//Such a memory dependency limits the ability of a modern CPU to speculate beyond 
+//a certain point because it has to respect a possible dependency 
+//- this prevents the CPU from making full use of its out-of-order resources. 
+//If we re-order the links such that we minimize the cases where a link L and L+1 share a common node, 
+//we create a temporal gap between when the node position is written, 
+//and when it is subsequently read. This in turn allows the CPU to continue execution without 
+//risking a dependency violation. Such a reordering would result in significant speedups on 
+//modern CPUs with lots of execution resources. 
+//In our testing, we see it have a tremendous impact not only on the A7, 
+//but also on all x86 cores that ship with modern Macs. 
+//The attached source file includes a single function (ReoptimizeLinkOrder) which can be called on a 
+//btSoftBody object in the solveConstraints() function before the actual solver is invoked, 
+//or right after generateBendingConstraints() once we have all 1410 links.
+
+
+//===================================================================
+//
+//
+// This function takes in a list of interdependent Links and tries 
+// to maximize the distance between calculation
+// of dependent links.  This increases the amount of parallelism that can
+// be exploited by out-of-order instruction processors with large but
+// (inevitably) finite instruction windows.
+//
+//===================================================================
+
+// A small structure to track lists of dependent link calculations
+class LinkDeps_t {
+	public:
+	int value;			// A link calculation that is dependent on this one
+		// Positive values = "input A" while negative values = "input B"
+	LinkDeps_t *next;	// Next dependence in the list
+};
+typedef LinkDeps_t *LinkDepsPtr_t;
+
+// Dependency list constants
+#define REOP_NOT_DEPENDENT	-1
+#define REOP_NODE_COMPLETE	-2	// Must be less than REOP_NOT_DEPENDENT
+
+
+void btSoftBodyHelpers::ReoptimizeLinkOrder(btSoftBody *psb /* This can be replaced by a btSoftBody pointer */)
+{
+	int i, nLinks=psb->m_links.size(), nNodes=psb->m_nodes.size();
+	btSoftBody::Link *lr;
+	int ar, br;
+	btSoftBody::Node *node0 = &(psb->m_nodes[0]);
+	btSoftBody::Node *node1 = &(psb->m_nodes[1]);
+	LinkDepsPtr_t linkDep;
+	int readyListHead, readyListTail, linkNum, linkDepFrees, depLink;
+	
+	// Allocate temporary buffers
+	int *nodeWrittenAt = new int[nNodes+1];	// What link calculation produced this node's current values?
+	int *linkDepA = new int[nLinks];			// Link calculation input is dependent upon prior calculation #N
+	int *linkDepB = new int[nLinks];
+	int *readyList = new int[nLinks];		// List of ready-to-process link calculations (# of links, maximum)
+	LinkDeps_t *linkDepFreeList = new LinkDeps_t[2*nLinks];		// Dependent-on-me list elements (2x# of links, maximum)
+	LinkDepsPtr_t *linkDepListStarts = new LinkDepsPtr_t[nLinks];	// Start nodes of dependent-on-me lists, one for each link
+		
+	// Copy the original, unsorted links to a side buffer
+	btSoftBody::Link *linkBuffer = new btSoftBody::Link[nLinks];
+	memcpy(linkBuffer, &(psb->m_links[0]), sizeof(btSoftBody::Link)*nLinks);
+
+	// Clear out the node setup and ready list
+	for (i=0; i < nNodes+1; i++) {
+		nodeWrittenAt[i] = REOP_NOT_DEPENDENT;
+	}
+	for (i=0; i < nLinks; i++) {
+		linkDepListStarts[i] = NULL;
+	}
+	readyListHead = readyListTail = linkDepFrees = 0;
+
+	// Initial link analysis to set up data structures
+	for (i=0; i < nLinks; i++) {
+	
+		// Note which prior link calculations we are dependent upon & build up dependence lists
+		lr = &(psb->m_links[i]);
+		ar = (lr->m_n[0] - node0)/(node1 - node0);
+		br = (lr->m_n[1] - node0)/(node1 - node0);
+		if (nodeWrittenAt[ar] > REOP_NOT_DEPENDENT) {
+			linkDepA[i] = nodeWrittenAt[ar];
+			linkDep = &linkDepFreeList[linkDepFrees++];
+			linkDep->value = i;
+			linkDep->next = linkDepListStarts[nodeWrittenAt[ar]];
+			linkDepListStarts[nodeWrittenAt[ar]] = linkDep;
+		} else {
+			linkDepA[i] = REOP_NOT_DEPENDENT;
+		}
+		if (nodeWrittenAt[br] > REOP_NOT_DEPENDENT) {
+			linkDepB[i] = nodeWrittenAt[br];
+			linkDep = &linkDepFreeList[linkDepFrees++];
+			linkDep->value = -(i+1);
+			linkDep->next = linkDepListStarts[nodeWrittenAt[br]];
+			linkDepListStarts[nodeWrittenAt[br]] = linkDep;
+		} else {
+			linkDepB[i] = REOP_NOT_DEPENDENT;
+		}
+		
+		// Add this link to the initial ready list, if it is not dependent on any other links
+		if ((linkDepA[i] == REOP_NOT_DEPENDENT) && (linkDepB[i] == REOP_NOT_DEPENDENT)) {
+			readyList[readyListTail++] = i;
+			linkDepA[i] = linkDepB[i] = REOP_NODE_COMPLETE;	// Probably not needed now
+		}
+		
+		// Update the nodes to mark which ones are calculated by this link
+		nodeWrittenAt[ar] = nodeWrittenAt[br] = i;
+	}
+	
+	// Process the ready list and create the sorted list of links
+	// -- By treating the ready list as a queue, we maximize the distance between any
+	//    inter-dependent node calculations
+	// -- All other (non-related) nodes in the ready list will automatically be inserted
+	//    in between each set of inter-dependent link calculations by this loop
+	i = 0;
+	while (readyListHead != readyListTail) {
+		// Use ready list to select the next link to process
+		linkNum = readyList[readyListHead++];
+		// Copy the next-to-calculate link back into the original link array
+		psb->m_links[i++] = linkBuffer[linkNum];
+
+		// Free up any link inputs that are dependent on this one
+		linkDep = linkDepListStarts[linkNum];
+		while (linkDep) {
+			depLink = linkDep->value;
+			if (depLink >= 0) {
+				linkDepA[depLink] = REOP_NOT_DEPENDENT;
+			} else {
+				depLink = -depLink - 1;
+				linkDepB[depLink] = REOP_NOT_DEPENDENT;
+			}
+			// Add this dependent link calculation to the ready list if *both* inputs are clear
+			if ((linkDepA[depLink] == REOP_NOT_DEPENDENT) && (linkDepB[depLink] == REOP_NOT_DEPENDENT)) {
+				readyList[readyListTail++] = depLink;
+				linkDepA[depLink] = linkDepB[depLink] = REOP_NODE_COMPLETE;	// Probably not needed now
+			}
+			linkDep = linkDep->next;
+		}
+	}
+
+	// Delete the temporary buffers
+	delete [] nodeWrittenAt;
+	delete [] linkDepA;
+	delete [] linkDepB;
+	delete [] readyList;
+	delete [] linkDepFreeList;
+	delete [] linkDepListStarts;
+	delete [] linkBuffer;
+}
+
+
 //
 void			btSoftBodyHelpers::DrawFrame(		btSoftBody* psb,
 											 btIDebugDraw* idraw)

@@ -16,19 +16,15 @@
 
 package com.badlogic.gdx.graphics.g3d.shaders;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Attributes;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -40,7 +36,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.Pool;
 
 /** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It does
  *         not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
@@ -56,14 +51,14 @@ public abstract class BaseShader implements Shader {
 
 		void set (final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);
 	}
-	
+
 	public abstract static class GlobalSetter implements Setter {
 		@Override
 		public boolean isGlobal (final BaseShader shader, final int inputID) {
 			return true;
 		}
 	}
-	
+
 	public abstract static class LocalSetter implements Setter {
 		@Override
 		public boolean isGlobal (final BaseShader shader, final int inputID) {
@@ -195,7 +190,7 @@ public abstract class BaseShader implements Shader {
 			}
 		}
 		if (renderable != null) {
-			final VertexAttributes attrs = renderable.mesh.getVertexAttributes();
+			final VertexAttributes attrs = renderable.meshPart.mesh.getVertexAttributes();
 			final int c = attrs.size();
 			for (int i = 0; i < c; i++) {
 				final VertexAttribute attr = attrs.get(i);
@@ -240,12 +235,12 @@ public abstract class BaseShader implements Shader {
 	public void render (Renderable renderable, final Attributes combinedAttributes) {
 		for (int u, i = 0; i < localUniforms.size; ++i)
 			if (setters.get(u = localUniforms.get(i)) != null) setters.get(u).set(this, u, renderable, combinedAttributes);
-		if (currentMesh != renderable.mesh) {
+		if (currentMesh != renderable.meshPart.mesh) {
 			if (currentMesh != null) currentMesh.unbind(program, tempArray.items);
-			currentMesh = renderable.mesh;
-			currentMesh.bind(program, getAttributeLocations(renderable.mesh.getVertexAttributes()));
+			currentMesh = renderable.meshPart.mesh;
+			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()));
 		}
-		renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize, false);
+		renderable.meshPart.render(program, false);
 	}
 
 	@Override

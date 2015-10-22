@@ -126,9 +126,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody getRigidBodyByName(String name) {
-    long cPtr = ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return btRigidBody.getInstance(ExtrasJNI.btWorldImporter_getRigidBodyByName(swigCPtr, this, name), false);
+}
 
   public btTypedConstraint getConstraintByName(String name) {
     long cPtr = ExtrasJNI.btWorldImporter_getConstraintByName(swigCPtr, this, name);
@@ -144,9 +143,8 @@ public class btWorldImporter extends BulletBase {
   }
 
   public btRigidBody createRigidBody(boolean isDynamic, float mass, Matrix4 startTransform, btCollisionShape shape, String bodyName) {
-    long cPtr = ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
+	return btRigidBody.getInstance(ExtrasJNI.btWorldImporter_createRigidBody(swigCPtr, this, isDynamic, mass, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
+}
 
   public btCollisionObject createCollisionObject(Matrix4 startTransform, btCollisionShape shape, String bodyName) {
 	return btCollisionObject.getInstance(ExtrasJNI.btWorldImporter_createCollisionObject(swigCPtr, this, startTransform, btCollisionShape.getCPtr(shape), shape, bodyName), false);
@@ -197,6 +195,21 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
+  public btCollisionShape createConeShapeX(float radius, float height) {
+    long cPtr = ExtrasJNI.btWorldImporter_createConeShapeX(swigCPtr, this, radius, height);
+    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
+  }
+
+  public btCollisionShape createConeShapeY(float radius, float height) {
+    long cPtr = ExtrasJNI.btWorldImporter_createConeShapeY(swigCPtr, this, radius, height);
+    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
+  }
+
+  public btCollisionShape createConeShapeZ(float radius, float height) {
+    long cPtr = ExtrasJNI.btWorldImporter_createConeShapeZ(swigCPtr, this, radius, height);
+    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
+  }
+
   public btTriangleIndexVertexArray createTriangleMeshContainer() {
     long cPtr = ExtrasJNI.btWorldImporter_createTriangleMeshContainer(swigCPtr, this);
     return (cPtr == 0) ? null : new btTriangleIndexVertexArray(cPtr, false);
@@ -212,9 +225,9 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public SWIGTYPE_p_btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
+  public btGImpactMeshShape createGimpactShape(btStridingMeshInterface trimesh) {
     long cPtr = ExtrasJNI.btWorldImporter_createGimpactShape(swigCPtr, this, btStridingMeshInterface.getCPtr(trimesh), trimesh);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btGImpactMeshShape(cPtr, false);
+    return (cPtr == 0) ? null : new btGImpactMeshShape(cPtr, false);
   }
 
   public btStridingMeshInterfaceData createStridingMeshInterfaceData(btStridingMeshInterfaceData interfaceData) {
@@ -315,6 +328,11 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : new btGeneric6DofSpringConstraint(cPtr, false);
   }
 
+  public btGeneric6DofSpring2Constraint createGeneric6DofSpring2Constraint(btRigidBody rbA, btRigidBody rbB, Matrix4 frameInA, Matrix4 frameInB, int rotateOrder) {
+    long cPtr = ExtrasJNI.btWorldImporter_createGeneric6DofSpring2Constraint(swigCPtr, this, btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, frameInA, frameInB, rotateOrder);
+    return (cPtr == 0) ? null : new btGeneric6DofSpring2Constraint(cPtr, false);
+  }
+
   public btSliderConstraint createSliderConstraint(btRigidBody rbA, btRigidBody rbB, Matrix4 frameInA, Matrix4 frameInB, boolean useLinearReferenceFrameA) {
     long cPtr = ExtrasJNI.btWorldImporter_createSliderConstraint__SWIG_0(swigCPtr, this, btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, frameInA, frameInB, useLinearReferenceFrameA);
     return (cPtr == 0) ? null : new btSliderConstraint(cPtr, false);
@@ -323,6 +341,11 @@ public class btWorldImporter extends BulletBase {
   public btSliderConstraint createSliderConstraint(btRigidBody rbB, Matrix4 frameInB, boolean useLinearReferenceFrameA) {
     long cPtr = ExtrasJNI.btWorldImporter_createSliderConstraint__SWIG_1(swigCPtr, this, btRigidBody.getCPtr(rbB), rbB, frameInB, useLinearReferenceFrameA);
     return (cPtr == 0) ? null : new btSliderConstraint(cPtr, false);
+  }
+
+  public SWIGTYPE_p_btGearConstraint createGearConstraint(btRigidBody rbA, btRigidBody rbB, Vector3 axisInA, Vector3 axisInB, float ratio) {
+    long cPtr = ExtrasJNI.btWorldImporter_createGearConstraint(swigCPtr, this, btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, axisInA, axisInB, ratio);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_btGearConstraint(cPtr, false);
   }
 
 }

@@ -18,8 +18,10 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -53,8 +55,8 @@ public class GwtGraphics implements Graphics {
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
 		attributes.setAntialias(config.antialiasing);
 		attributes.setStencil(config.stencil);
-		attributes.setAlpha(false);
-		attributes.setPremultipliedAlpha(false);
+		attributes.setAlpha(config.alpha);
+		attributes.setPremultipliedAlpha(config.premultipliedAlpha);
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
@@ -250,7 +252,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean isContinuousRendering () {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -275,5 +277,19 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public GL30 getGL30 () {
 		return null;
+	}
+	
+	@Override
+	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+		return new GwtCursor(pixmap, xHotspot, yHotspot);
+	}
+
+	@Override
+	public void setCursor (Cursor cursor) {
+		if (cursor == null) {
+			GwtCursor.resetCursor();
+		} else {
+			cursor.setSystemCursor();
+		}
 	}
 }

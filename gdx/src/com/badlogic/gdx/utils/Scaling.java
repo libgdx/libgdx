@@ -67,16 +67,12 @@ public enum Scaling {
 			break;
 		}
 		case fillX: {
-			float targetRatio = targetHeight / targetWidth;
-			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetWidth / sourceWidth;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
 			break;
 		}
 		case fillY: {
-			float targetRatio = targetHeight / targetWidth;
-			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;

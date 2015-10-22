@@ -63,6 +63,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		if (dependenciesLoaded == false) {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 			if (dependencies != null) {
+				removeDuplicates(dependencies);
 				manager.injectDependencies(assetDesc.fileName, dependencies);
 			} else {
 				// if we have no dependencies, we load the async part of the task immediately.
@@ -100,6 +101,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 				asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 				return;
 			}
+			removeDuplicates(dependencies);
 			manager.injectDependencies(assetDesc.fileName, dependencies);
 		} else {
 			asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
@@ -149,5 +151,19 @@ class AssetLoadingTask implements AsyncTask<Void> {
 
 	public Object getAsset () {
 		return asset;
+	}
+	
+	private void removeDuplicates(Array<AssetDescriptor> array) {
+		boolean ordered = array.ordered;
+		array.ordered = true;
+		for (int i = 0; i < array.size; ++i) {
+			final String fn = array.get(i).fileName;
+			final Class type = array.get(i).type;
+			for (int j = array.size - 1; j > i; --j) {
+				if (type == array.get(j).type && fn.equals(array.get(j).fileName))
+					array.removeIndex(j);
+			}
+		}
+		array.ordered = ordered;
 	}
 }
