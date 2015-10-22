@@ -238,7 +238,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		disposeColorTexture(colorTexture);
 
 		if (hasDepthStencilPackedBuffer) {
-			gl.glDeleteBuffer(depthStencilPackedBufferHandle);
+			gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
 		} else {
 			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 			if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
