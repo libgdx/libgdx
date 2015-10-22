@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,38 +40,41 @@ public class TriangleRaycastTest extends BaseBulletTest {
 	private class MyTriangleRaycastCallback extends btTriangleRaycastCallback {
 
 		public Vector3 hitNormalLocal = new Vector3();
-		public float hitFraction;
-		public int partId;
-		public int triangleIndex;
-
-		private float mHitFraction;
+		public float hitFraction = 1;
+		public int partId = -1;
+		public int triangleIndex = -1;
 
 		private btVector3 tmpSetFrom = new btVector3();
 		private btVector3 tmpSetTo = new btVector3();
 
 		public MyTriangleRaycastCallback (Vector3 from, Vector3 to) {
 			super(from, to);
-			clearReport();
 		}
 
 		public void clearReport () {
 			hitNormalLocal.setZero();
 			hitFraction = 1;
-			mHitFraction = 1;
 			partId = -1;
 			triangleIndex = -1;
 		}
 
 		@Override
+		public void setHitFraction (float hitFraction) {
+			super.setHitFraction(hitFraction);
+			this.hitFraction = hitFraction;
+		}
+
+		@Override
 		public float reportHit (Vector3 hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
-			if (hitFraction < mHitFraction) {
+			// The hit with lowest hitFraction is closest to the ray origin.
+			// We need to find the lowest hitFraction since the super class does not handle it for us.
+			if (hitFraction < this.hitFraction) {
 				this.hitNormalLocal.set(hitNormalLocal);
 				this.hitFraction = hitFraction;
 				this.partId = partId;
 				this.triangleIndex = triangleIndex;
-				return hitFraction;
 			}
-			return mHitFraction;
+			return hitFraction;
 		}
 
 		public void setFrom (Vector3 value) {
@@ -83,7 +86,7 @@ public class TriangleRaycastTest extends BaseBulletTest {
 			tmpSetTo.setValue(value.x, value.y, value.z);
 			super.setTo(tmpSetTo);
 		}
-		
+
 		@Override
 		public void dispose () {
 			tmpSetFrom.dispose();
