@@ -17,16 +17,37 @@
 package com.badlogic.gdx.tests.g3d.shadows.utils;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
-/** Nearfar Analyzer computes near and far plane of camera. It has to call camera.update() after setting values. Updated camera's
- * frustum should encompass all casting shadow objects.
+/** This Filter allows lights that are in camera frustum.
  * @author realitix */
-public interface NearFarAnalyzer {
-	/** Update near and far plane of camera.
-	 * @param light Current light
-	 * @param camera Light's camera
-	 * @param renderableProviders Renderable providers */
-	public void analyze (BaseLight light, Camera camera, Iterable<RenderableProvider> renderableProviders);
+public class FrustumLightFilter implements LightFilter {
+	/** Main camera */
+	protected Camera camera;
+	/** Bounding box used for computation */
+	protected BoundingBox bb = new BoundingBox();
+
+	/** @param camera Main camera */
+	public FrustumLightFilter (Camera camera) {
+		this.camera = camera;
+	}
+
+	@Override
+	public boolean filter (BaseLight light, Camera camera) {
+		Frustum f1 = this.camera.frustum;
+		Frustum f2 = camera.frustum;
+		bb.inf();
+
+		for (int i = 0; i < f2.planePoints.length; i++) {
+			bb.ext(f2.planePoints[i]);
+		}
+
+		if (f1.boundsInFrustum(bb)) {
+			return true;
+		}
+
+		return false;
+	}
 }
