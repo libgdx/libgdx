@@ -26,6 +26,7 @@ public interface DirectionalAnalyzer {
 	/** Compute the camera dimension based on directional light. Camera should be an orthographic camera.
 	 * @param light Current directional light
 	 * @param out Updated camera
-	 * @return Camera Camera for chaining */
-	public Camera analyze (DirectionalLight light, Camera out);
+	 * @param mainCamera Main Scene camera
+	 * @return Camera Camera out for chaining */
+	public Camera analyze (DirectionalLight light, Camera out, Camera mainCamera);
 }

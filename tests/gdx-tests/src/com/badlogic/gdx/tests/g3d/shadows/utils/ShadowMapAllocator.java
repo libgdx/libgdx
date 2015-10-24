@@ -35,7 +35,7 @@ public interface ShadowMapAllocator {
 
 	/** Find the next texture region for the current light
 	 * @param light Current light
-	 * @return ShadowMapRegion */
+	 * @return ShadowMapRegion or null if no more space on texture */
 	public ShadowMapRegion nextResult (BaseLight light);
 
 	/** Return shadow map width.
