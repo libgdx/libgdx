@@ -134,22 +134,22 @@ public class GwtGraphics implements Graphics {
 	}
 
 	private native int getScreenWidthJSNI () /*-{
-															return $wnd.screen.width;
-															}-*/;
+		return $wnd.screen.width;
+	}-*/;
 
 	private native int getScreenHeightJSNI () /*-{
-															return $wnd.screen.height;
-															}-*/;
+		return $wnd.screen.height;
+	}-*/;
 
 	private native boolean isFullscreenJSNI () /*-{
-																if("webkitIsFullScreen" in $doc) {
-																return $doc.webkitIsFullScreen;
-																}
-																if("mozFullScreen" in $doc) {
-																return $doc.mozFullScreen;
-																}
-																return false
-																}-*/;
+		if ("webkitIsFullScreen" in $doc) {
+			return $doc.webkitIsFullScreen;
+		}
+		if ("mozFullScreen" in $doc) {
+			return $doc.mozFullScreen;
+		}
+		return false
+	}-*/;
 
 	private void fullscreenChanged () {
 		if (!isFullscreen()) {
@@ -159,31 +159,39 @@ public class GwtGraphics implements Graphics {
 	}
 
 	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element) /*-{
-																														if(element.webkitRequestFullScreen) {
-																														element.width = $wnd.screen.width;
-																														element.height = $wnd.screen.height;
-																														element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-																														$doc.addEventListener("webkitfullscreenchange", function() {
-																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
-																														}, false);
-																														return true;
-																														}
-																														if(element.mozRequestFullScreen) {
-																														element.width = $wnd.screen.width;
-																														element.height = $wnd.screen.height;
-																														element.mozRequestFullScreen();
-																														$doc.addEventListener("mozfullscreenchange", function() {
-																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
-																														}, false);
-																														return true;
-																														}
-																														return false;
-																														}-*/;
+		if (element.webkitRequestFullScreen) {
+			element.width = $wnd.screen.width;
+			element.height = $wnd.screen.height;
+			element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+			$doc
+					.addEventListener(
+							"webkitfullscreenchange",
+							function() {
+								graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+							}, false);
+			return true;
+		}
+		if (element.mozRequestFullScreen) {
+			element.width = $wnd.screen.width;
+			element.height = $wnd.screen.height;
+			element.mozRequestFullScreen();
+			$doc
+					.addEventListener(
+							"mozfullscreenchange",
+							function() {
+								graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+							}, false);
+			return true;
+		}
+		return false;
+	}-*/;
 
 	private native void exitFullscreen () /*-{
-														if($doc.webkitExitFullscreen) $doc.webkitExitFullscreen();
-														if($doc.mozExitFullscreen) $doc.mozExitFullscreen();
-														}-*/;
+		if ($doc.webkitExitFullscreen)
+			$doc.webkitExitFullscreen();
+		if ($doc.mozExitFullscreen)
+			$doc.mozExitFullscreen();
+	}-*/;
 
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
