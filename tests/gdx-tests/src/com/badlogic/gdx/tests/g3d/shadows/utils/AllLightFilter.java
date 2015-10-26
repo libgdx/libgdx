@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 public class AllLightFilter implements LightFilter {
 
 	@Override
-	public boolean filter (BaseLight light, Camera camera) {
+	public boolean filter (BaseLight light, Camera camera, Camera mainCamera) {
 		return true;
 	}
 }
