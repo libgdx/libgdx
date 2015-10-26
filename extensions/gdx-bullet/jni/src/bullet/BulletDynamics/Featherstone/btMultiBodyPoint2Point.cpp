@@ -33,6 +33,7 @@ btMultiBodyPoint2Point::btMultiBodyPoint2Point(btMultiBody* body, int link, btRi
 	m_pivotInA(pivotInA),
 	m_pivotInB(pivotInB)
 {
+    m_data.resize(BTMBP2PCONSTRAINT_DIM);//at least store the applied impulses
 }
 
 btMultiBodyPoint2Point::btMultiBodyPoint2Point(btMultiBody* bodyA, int linkA, btMultiBody* bodyB, int linkB, const btVector3& pivotInA, const btVector3& pivotInB)
@@ -42,8 +43,14 @@ btMultiBodyPoint2Point::btMultiBodyPoint2Point(btMultiBody* bodyA, int linkA, bt
 	m_pivotInA(pivotInA),
 	m_pivotInB(pivotInB)
 {
+    m_data.resize(BTMBP2PCONSTRAINT_DIM);//at least store the applied impulses
 }
 
+void btMultiBodyPoint2Point::finalizeMultiDof()
+{
+	//not implemented yet
+	btAssert(0);
+}
 
 btMultiBodyPoint2Point::~btMultiBodyPoint2Point()
 {
@@ -103,6 +110,8 @@ int numDim = BTMBP2PCONSTRAINT_DIM;
 
 		btMultiBodySolverConstraint& constraintRow = constraintRows.expandNonInitializing();
         //memset(&constraintRow,0xffffffff,sizeof(btMultiBodySolverConstraint));
+	constraintRow.m_orgConstraint = this;
+	constraintRow.m_orgDofIndex = i;
         constraintRow.m_relpos1CrossNormal.setValue(0,0,0);
         constraintRow.m_contactNormal1.setValue(0,0,0);
         constraintRow.m_relpos2CrossNormal.setValue(0,0,0);

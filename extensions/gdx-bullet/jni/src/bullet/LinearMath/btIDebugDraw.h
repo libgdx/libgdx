@@ -21,6 +21,7 @@ subject to the following restrictions:
 #include "btTransform.h"
 
 
+
 ///The btIDebugDraw interface class allows hooking up a debug renderer to visually debug simulations.
 ///Typical use case: create a debug drawer object, and assign it to a btCollisionWorld or btDynamicsWorld using setDebugDrawer and call debugDrawWorld.
 ///A class that implements the btIDebugDraw interface has to implement the drawLine method at a minimum.
@@ -29,6 +30,29 @@ class	btIDebugDraw
 {
 	public:
 
+	ATTRIBUTE_ALIGNED16(struct) DefaultColors
+	{
+		btVector3	m_activeObject;
+		btVector3	m_deactivatedObject;
+		btVector3	m_wantsDeactivationObject;
+		btVector3	m_disabledDeactivationObject;
+		btVector3	m_disabledSimulationObject;
+		btVector3	m_aabb;
+		btVector3 m_contactPoint;
+		
+		DefaultColors()
+		:	m_activeObject(1,1,1),
+			m_deactivatedObject(0,1,0),
+			m_wantsDeactivationObject(0,1,1),
+			m_disabledDeactivationObject(1,0,0),
+			m_disabledSimulationObject(1,1,0),
+			m_aabb(1,0,0),
+			m_contactPoint(1,1,0)
+		{
+		}
+	};
+
+	
 	enum	DebugDrawModes
 	{
 		DBG_NoDebug=0,
@@ -53,6 +77,11 @@ class	btIDebugDraw
 
 	virtual ~btIDebugDraw() {};
 
+	
+	virtual DefaultColors	getDefaultColors() const	{	DefaultColors colors;	return colors;	}
+	///the default implementation for setDefaultColors has no effect. A derived class can implement it and store the colors.
+	virtual void setDefaultColors(const DefaultColors& /*colors*/) {}
+	
 	virtual void	drawLine(const btVector3& from,const btVector3& to,const btVector3& color)=0;
 		
 	virtual void    drawLine(const btVector3& from,const btVector3& to, const btVector3& fromColor, const btVector3& toColor)

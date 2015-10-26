@@ -1427,84 +1427,91 @@ void btCollisionWorld::debugDrawObject(const btTransform& worldTransform, const 
 
 void	btCollisionWorld::debugDrawWorld()
 {
-	if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)
+	if (getDebugDrawer())
 	{
-		if (getDispatcher())
-		{
-			int numManifolds = getDispatcher()->getNumManifolds();
-			btVector3 color(1,1,0);
-			for (int i=0;i<numManifolds;i++)
-			{
-				btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);
-				//btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-				//btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+		btIDebugDraw::DefaultColors defaultColors = getDebugDrawer()->getDefaultColors();
 
-				int numContacts = contactManifold->getNumContacts();
-				for (int j=0;j<numContacts;j++)
+		if ( getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)
+		{
+		
+
+			if (getDispatcher())
+			{
+				int numManifolds = getDispatcher()->getNumManifolds();
+			
+				for (int i=0;i<numManifolds;i++)
 				{
-					btManifoldPoint& cp = contactManifold->getContactPoint(j);
-					getDebugDrawer()->drawContactPoint(cp.m_positionWorldOnB,cp.m_normalWorldOnB,cp.getDistance(),cp.getLifeTime(),color);
+					btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);
+					//btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+					//btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+
+					int numContacts = contactManifold->getNumContacts();
+					for (int j=0;j<numContacts;j++)
+					{
+						btManifoldPoint& cp = contactManifold->getContactPoint(j);
+						getDebugDrawer()->drawContactPoint(cp.m_positionWorldOnB,cp.m_normalWorldOnB,cp.getDistance(),cp.getLifeTime(),defaultColors.m_contactPoint);
+					}
 				}
 			}
 		}
-	}
 
-	if (getDebugDrawer() && (getDebugDrawer()->getDebugMode() & (btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb)))
-	{
-		int i;
-
-		for (  i=0;i<m_collisionObjects.size();i++)
+		if ((getDebugDrawer()->getDebugMode() & (btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb)))
 		{
-			btCollisionObject* colObj = m_collisionObjects[i];
-			if ((colObj->getCollisionFlags() & btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT)==0)
+			int i;
+
+			for (  i=0;i<m_collisionObjects.size();i++)
 			{
-				if (getDebugDrawer() && (getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawWireframe))
+				btCollisionObject* colObj = m_collisionObjects[i];
+				if ((colObj->getCollisionFlags() & btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT)==0)
 				{
-					btVector3 color(btScalar(1.),btScalar(1.),btScalar(1.));
-					switch(colObj->getActivationState())
+					if (getDebugDrawer() && (getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawWireframe))
 					{
-					case  ACTIVE_TAG:
-						color = btVector3(btScalar(1.),btScalar(1.),btScalar(1.)); break;
-					case ISLAND_SLEEPING:
-						color =  btVector3(btScalar(0.),btScalar(1.),btScalar(0.));break;
-					case WANTS_DEACTIVATION:
-						color = btVector3(btScalar(0.),btScalar(1.),btScalar(1.));break;
-					case DISABLE_DEACTIVATION:
-						color = btVector3(btScalar(1.),btScalar(0.),btScalar(0.));break;
-					case DISABLE_SIMULATION:
-						color = btVector3(btScalar(1.),btScalar(1.),btScalar(0.));break;
-					default:
+						btVector3 color(btScalar(0.4),btScalar(0.4),btScalar(0.4));
+
+						switch(colObj->getActivationState())
 						{
-							color = btVector3(btScalar(1),btScalar(0.),btScalar(0.));
-						}
-					};
+						case  ACTIVE_TAG:
+							color = defaultColors.m_activeObject; break;
+						case ISLAND_SLEEPING:
+							color =  defaultColors.m_deactivatedObject;break;
+						case WANTS_DEACTIVATION:
+							color = defaultColors.m_wantsDeactivationObject;break;
+						case DISABLE_DEACTIVATION:
+							color = defaultColors.m_disabledDeactivationObject;break;
+						case DISABLE_SIMULATION:
+							color = defaultColors.m_disabledSimulationObject;break;
+						default:
+							{
+								color = btVector3(btScalar(.3),btScalar(0.3),btScalar(0.3));
+							}
+						};
 
-					debugDrawObject(colObj->getWorldTransform(),colObj->getCollisionShape(),color);
-				}
-				if (m_debugDrawer && (m_debugDrawer->getDebugMode() & btIDebugDraw::DBG_DrawAabb))
-				{
-					btVector3 minAabb,maxAabb;
-					btVector3 colorvec(1,0,0);
-					colObj->getCollisionShape()->getAabb(colObj->getWorldTransform(), minAabb,maxAabb);
-					btVector3 contactThreshold(gContactBreakingThreshold,gContactBreakingThreshold,gContactBreakingThreshold);
-					minAabb -= contactThreshold;
-					maxAabb += contactThreshold;
-
-					btVector3 minAabb2,maxAabb2;
-
-					if(getDispatchInfo().m_useContinuous && colObj->getInternalType()==btCollisionObject::CO_RIGID_BODY && !colObj->isStaticOrKinematicObject())
-					{
-						colObj->getCollisionShape()->getAabb(colObj->getInterpolationWorldTransform(),minAabb2,maxAabb2);
-						minAabb2 -= contactThreshold;
-						maxAabb2 += contactThreshold;
-						minAabb.setMin(minAabb2);
-						maxAabb.setMax(maxAabb2);
+						debugDrawObject(colObj->getWorldTransform(),colObj->getCollisionShape(),color);
 					}
+					if (m_debugDrawer && (m_debugDrawer->getDebugMode() & btIDebugDraw::DBG_DrawAabb))
+					{
+						btVector3 minAabb,maxAabb;
+						btVector3 colorvec = defaultColors.m_aabb;
+						colObj->getCollisionShape()->getAabb(colObj->getWorldTransform(), minAabb,maxAabb);
+						btVector3 contactThreshold(gContactBreakingThreshold,gContactBreakingThreshold,gContactBreakingThreshold);
+						minAabb -= contactThreshold;
+						maxAabb += contactThreshold;
 
-					m_debugDrawer->drawAabb(minAabb,maxAabb,colorvec);
+						btVector3 minAabb2,maxAabb2;
+
+						if(getDispatchInfo().m_useContinuous && colObj->getInternalType()==btCollisionObject::CO_RIGID_BODY && !colObj->isStaticOrKinematicObject())
+						{
+							colObj->getCollisionShape()->getAabb(colObj->getInterpolationWorldTransform(),minAabb2,maxAabb2);
+							minAabb2 -= contactThreshold;
+							maxAabb2 += contactThreshold;
+							minAabb.setMin(minAabb2);
+							maxAabb.setMax(maxAabb2);
+						}
+
+						m_debugDrawer->drawAabb(minAabb,maxAabb,colorvec);
+					}
 				}
 			}
-
 		}
 	}
 }
@@ -1533,7 +1540,7 @@ void	btCollisionWorld::serializeCollisionObjects(btSerializer* serializer)
 	for (i=0;i<m_collisionObjects.size();i++)
 	{
 		btCollisionObject* colObj = m_collisionObjects[i];
-		if (colObj->getInternalType() == btCollisionObject::CO_COLLISION_OBJECT)
+		if ((colObj->getInternalType() == btCollisionObject::CO_COLLISION_OBJECT) || (colObj->getInternalType() == btCollisionObject::CO_FEATHERSTONE_LINK))
 		{
 			colObj->serializeSingleObject(serializer);
 		}

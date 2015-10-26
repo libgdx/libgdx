@@ -1196,23 +1196,23 @@ inline void		btDbvt::collideOCL(	const btDbvtNode* root,
 							
 							//void * memmove ( void * destination, const void * source, size_t num );
 							
-#if DBVT_USE_MEMMOVE
-							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
-#else
+//#if DBVT_USE_MEMMOVE
+//							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
+//#else
 							for(int k=stack.size()-1;k>j;--k) 
 							{
 								stack[k]=stack[k-1];
 							}
-#endif
+//#endif
 							stack[j]=allocate(ifree,stock,nes[q]);
 							/* Insert 1	*/ 
 							j=nearest(&stack[0],&stock[0],nes[1-q].value,j,stack.size());
 							stack.push_back(0);
-#if DBVT_USE_MEMMOVE
-							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
-#else
+//#if DBVT_USE_MEMMOVE
+//							memmove(&stack[j],&stack[j-1],sizeof(int)*(stack.size()-j-1));
+//#else
 							for(int k=stack.size()-1;k>j;--k) stack[k]=stack[k-1];
-#endif
+//#endif
 							stack[j]=allocate(ifree,stock,nes[1-q]);
 						}
 						else

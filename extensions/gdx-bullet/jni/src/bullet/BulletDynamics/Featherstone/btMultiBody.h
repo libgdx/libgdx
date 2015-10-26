@@ -30,6 +30,17 @@
 #include "LinearMath/btMatrix3x3.h"
 #include "LinearMath/btAlignedObjectArray.h"
 
+#ifdef BT_USE_DOUBLE_PRECISION
+	#define btMultiBodyData	btMultiBodyDoubleData
+	#define btMultiBodyDataName	"btMultiBodyDoubleData"
+	#define btMultiBodyLinkData btMultiBodyLinkDoubleData
+	#define btMultiBodyLinkDataName	"btMultiBodyLinkDoubleData"
+#else
+	#define btMultiBodyData	btMultiBodyFloatData
+	#define btMultiBodyDataName	"btMultiBodyFloatData"
+	#define btMultiBodyLinkData btMultiBodyLinkFloatData
+	#define btMultiBodyLinkDataName	"btMultiBodyLinkFloatData"
+#endif //BT_USE_DOUBLE_PRECISION
 
 #include "btMultiBodyLink.h"
 class btMultiBodyLinkCollider;
@@ -54,7 +65,7 @@ public:
 			  );
 
 
-    ~btMultiBody();	
+	virtual ~btMultiBody();
     
 	void setupFixed(int linkIndex,
 						   btScalar mass,
@@ -72,7 +83,7 @@ public:
                                int parent,
                                const btQuaternion &rotParentToThis,
                                const btVector3 &jointAxis,
-                               const btVector3 &parentComToThisComOffset,
+                               const btVector3 &parentComToThisPivotOffset,
 							   const btVector3 &thisPivotToThisComOffset,
 							   bool disableParentCollision);
 
@@ -95,7 +106,6 @@ public:
                        const btVector3 &thisPivotToThisComOffset,				// vector from joint axis to my COM, in MY frame
 					   bool disableParentCollision=false);		
 
-#ifdef BT_MULTIBODYLINK_INCLUDE_PLANAR_JOINTS
 	void setupPlanar(int i,											// 0 to num_links-1
                        btScalar mass,
                        const btVector3 &inertia,
@@ -104,7 +114,6 @@ public:
 					   const btVector3 &rotationAxis,
                        const btVector3 &parentComToThisComOffset,			// vector from parent COM to this COM, in PARENT frame                       
 					   bool disableParentCollision=false);		
-#endif
 	
 	const btMultibodyLink& getLink(int index) const
 	{
@@ -150,6 +159,7 @@ public:
     btScalar getLinkMass(int i) const;
     const btVector3 & getLinkInertia(int i) const;
     
+	
 
     //
     // change mass (incomplete: can only change base mass and inertia at present)
@@ -185,6 +195,15 @@ public:
 		setWorldToBaseRot(tr.getRotation().inverse());
 
 	}
+
+	btTransform getBaseWorldTransform() const
+	{
+		btTransform tr;
+		tr.setOrigin(getBasePos());
+		tr.setRotation(getWorldToBaseRot().inverse());
+		return tr;
+	}
+
     void setBaseVel(const btVector3 &vel) 
 	{ 
 
@@ -212,10 +231,15 @@ public:
 	btScalar * getJointVelMultiDof(int i);
 	btScalar * getJointPosMultiDof(int i);
 
+	const btScalar * getJointVelMultiDof(int i) const ;
+	const btScalar * getJointPosMultiDof(int i) const ;
+
     void setJointPos(int i, btScalar q);
     void setJointVel(int i, btScalar qdot);
 	void setJointPosMultiDof(int i, btScalar *q);
     void setJointVelMultiDof(int i, btScalar *qdot);	
+
+
 
     //
     // direct access to velocities as a vector of 6 + num_links elements.
@@ -263,6 +287,8 @@ public:
     //
 
     void clearForcesAndTorques();
+   void clearConstraintForces();
+
 	void clearVelocities();
 
     void addBaseForce(const btVector3 &f) 
@@ -272,7 +298,17 @@ public:
     void addBaseTorque(const btVector3 &t) { m_baseTorque += t; }
     void addLinkForce(int i, const btVector3 &f);
     void addLinkTorque(int i, const btVector3 &t);
-    void addJointTorque(int i, btScalar Q);
+
+ void addBaseConstraintForce(const btVector3 &f)
+        {
+                m_baseConstraintForce += f;
+        }
+    void addBaseConstraintTorque(const btVector3 &t) { m_baseConstraintTorque += t; }
+    void addLinkConstraintForce(int i, const btVector3 &f);
+    void addLinkConstraintTorque(int i, const btVector3 &t);
+       
+
+void addJointTorque(int i, btScalar Q);
 	void addJointTorqueMultiDof(int i, int dof, btScalar Q);
 	void addJointTorqueMultiDof(int i, const btScalar *Q);
 
@@ -308,7 +344,9 @@ public:
 	void stepVelocitiesMultiDof(btScalar dt,
                         btAlignedObjectArray<btScalar> &scratch_r,
                         btAlignedObjectArray<btVector3> &scratch_v,
-                        btAlignedObjectArray<btMatrix3x3> &scratch_m);
+                        btAlignedObjectArray<btMatrix3x3> &scratch_m,
+			bool isConstraintPass=false
+		);
 
     // calcAccelerationDeltas
     // input: force vector (in same format as jacobian, i.e.:
@@ -364,6 +402,23 @@ public:
 		}
     }
 
+	void applyDeltaVeeMultiDof2(const btScalar * delta_vee, btScalar multiplier)
+	{
+		for (int dof = 0; dof < 6 + getNumDofs(); ++dof)
+                {
+                        m_deltaV[dof] += delta_vee[dof] * multiplier;
+                }
+	}
+	void processDeltaVeeMultiDof2()
+	{
+		applyDeltaVeeMultiDof(&m_deltaV[0],1);
+
+		for (int dof = 0; dof < 6 + getNumDofs(); ++dof)
+                {
+			m_deltaV[dof] = 0.f;
+		}
+	}
+
 	void applyDeltaVeeMultiDof(const btScalar * delta_vee, btScalar multiplier) 
 	{
 		//for (int dof = 0; dof < 6 + getNumDofs(); ++dof)
@@ -389,6 +444,8 @@ public:
 		}
     }
 
+	
+	
     // timestep the positions (given current velocities).
     void stepPositions(btScalar dt);
 	void stepPositionsMultiDof(btScalar dt, btScalar *pq = 0, btScalar *pqd = 0);
@@ -536,6 +593,30 @@ public:
 		__posUpdated = updated;
 	}
 	
+	//internalNeedsJointFeedback is for internal use only
+	bool internalNeedsJointFeedback() const
+	{
+		return m_internalNeedsJointFeedback;
+	}
+	void	forwardKinematics(btAlignedObjectArray<btQuaternion>& scratch_q,btAlignedObjectArray<btVector3>& scratch_m);
+
+	void	updateCollisionObjectWorldTransforms(btAlignedObjectArray<btQuaternion>& scratch_q,btAlignedObjectArray<btVector3>& scratch_m);
+	
+	virtual	int	calculateSerializeBufferSize()	const;
+
+	///fills the dataBuffer and returns the struct name (and 0 on failure)
+	virtual	const char*	serialize(void* dataBuffer,  class btSerializer* serializer) const;
+
+	const char*				getBaseName() const
+	{
+		return m_baseName;
+	}
+	///memory of setBaseName needs to be manager by user
+	void	setBaseName(const char* name)
+	{
+		m_baseName = name;
+	}
+
 private:
     btMultiBody(const btMultiBody &);  // not implemented
     void operator=(const btMultiBody &);  // not implemented
@@ -543,9 +624,7 @@ private:
     void compTreeLinkVelocities(btVector3 *omega, btVector3 *vel) const;
 
 	void solveImatrix(const btVector3& rhs_top, const btVector3& rhs_bot, float result[6]) const;
-#ifdef TEST_SPATIAL_ALGEBRA_LAYER
 	void solveImatrix(const btSpatialForceVector &rhs, btSpatialMotionVector &result) const;
-#endif
 	
 	void updateLinksDofOffsets()
 	{
@@ -563,6 +642,7 @@ private:
 private:
 
 	btMultiBodyLinkCollider* m_baseCollider;//can be NULL
+	const char*				m_baseName;//memory needs to be manager by user!
 
     btVector3 m_basePos;       // position of COM of base (world frame)
     btQuaternion m_baseQuat;   // rotates world points into base frame
@@ -572,7 +652,10 @@ private:
 
     btVector3 m_baseForce;     // external force applied to base. World frame.
     btVector3 m_baseTorque;    // external torque applied to base. World frame.
-    
+   
+    btVector3 m_baseConstraintForce;     // external force applied to base. World frame.
+    btVector3 m_baseConstraintTorque;    // external torque applied to base. World frame.
+ 
     btAlignedObjectArray<btMultibodyLink> m_links;    // array of m_links, excluding the base. index from 0 to num_links-1.
 	btAlignedObjectArray<btMultiBodyLinkCollider*> m_colliders;
 
@@ -592,12 +675,11 @@ private:
     //  offset         size         array
     //   0              num_links+1  rot_from_parent
     //
-    
+   btAlignedObjectArray<btScalar> m_deltaV; 
     btAlignedObjectArray<btScalar> m_realBuf;
     btAlignedObjectArray<btVector3> m_vectorBuf;
     btAlignedObjectArray<btMatrix3x3> m_matrixBuf;
 
-    //std::auto_ptr<Eigen::LU<Eigen::Matrix<btScalar, 6, 6> > > cached_imatrix_lu;
 
 	btMatrix3x3 m_cachedInertiaTopLeft;
 	btMatrix3x3 m_cachedInertiaTopRight;
@@ -622,6 +704,101 @@ private:
 		bool __posUpdated;
 		int m_dofCount, m_posVarCnt;
 	bool m_useRK4, m_useGlobalVelocities;
+	
+	///the m_needsJointFeedback gets updated/computed during the stepVelocitiesMultiDof and it for internal usage only
+	bool m_internalNeedsJointFeedback;
 };
+
+struct btMultiBodyLinkDoubleData
+{
+	btQuaternionDoubleData	m_zeroRotParentToThis;
+	btVector3DoubleData		m_parentComToThisComOffset;
+	btVector3DoubleData		m_thisPivotToThisComOffset;
+	btVector3DoubleData		m_jointAxisTop[6];
+	btVector3DoubleData		m_jointAxisBottom[6];
+
+
+	char					*m_linkName;
+	char					*m_jointName;
+	btCollisionObjectDoubleData	*m_linkCollider;
+	
+	btVector3DoubleData		m_linkInertia;   // inertia of the base (in local frame; diagonal)
+	double					m_linkMass;
+	int						m_parentIndex;
+	int						m_jointType;
+	
+
+	
+
+	int						m_dofCount;
+	int						m_posVarCount;
+	double					m_jointPos[7];
+	double					m_jointVel[6];
+	double					m_jointTorque[6];
+	
+	
+	
+};
+
+struct btMultiBodyLinkFloatData
+{
+	btQuaternionFloatData	m_zeroRotParentToThis;
+	btVector3FloatData		m_parentComToThisComOffset;
+	btVector3FloatData		m_thisPivotToThisComOffset;
+	btVector3FloatData		m_jointAxisTop[6];
+	btVector3FloatData		m_jointAxisBottom[6];
+	
+
+	char				*m_linkName;
+	char				*m_jointName;
+	btCollisionObjectFloatData	*m_linkCollider;
+	
+	btVector3FloatData	m_linkInertia;   // inertia of the base (in local frame; diagonal)
+	int						m_dofCount;
+	float				m_linkMass;
+	int					m_parentIndex;
+	int					m_jointType;
+	
+
+		
+	float					m_jointPos[7];
+	float					m_jointVel[6];
+	float					m_jointTorque[6];
+	int						m_posVarCount;
+	
+
+};
+
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct	btMultiBodyDoubleData
+{
+	char	*m_baseName;
+	btMultiBodyLinkDoubleData	*m_links;
+	btCollisionObjectDoubleData	*m_baseCollider;
+
+	btTransformDoubleData m_baseWorldTransform;
+	btVector3DoubleData m_baseInertia;   // inertia of the base (in local frame; diagonal)
+	
+	int		m_numLinks;
+	double	m_baseMass;
+
+	char m_padding[4];
+	
+};
+
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct	btMultiBodyFloatData
+{
+	char	*m_baseName;
+	btMultiBodyLinkFloatData	*m_links;
+	btCollisionObjectFloatData	*m_baseCollider;
+	btTransformFloatData m_baseWorldTransform;
+	btVector3FloatData m_baseInertia;   // inertia of the base (in local frame; diagonal)
+	
+	float	m_baseMass;
+	int		m_numLinks;
+};
+
+
 
 #endif

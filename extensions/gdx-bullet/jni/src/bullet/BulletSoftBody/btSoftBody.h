@@ -614,7 +614,7 @@ public:
 		RayFromToCaster(const btVector3& rayFrom,const btVector3& rayTo,btScalar mxt);
 		void					Process(const btDbvtNode* leaf);
 
-		static btScalar	rayFromToTriangle(const btVector3& rayFrom,
+		static inline btScalar	rayFromToTriangle(const btVector3& rayFrom,
 			const btVector3& rayTo,
 			const btVector3& rayNormalizedDirection,
 			const btVector3& a,
