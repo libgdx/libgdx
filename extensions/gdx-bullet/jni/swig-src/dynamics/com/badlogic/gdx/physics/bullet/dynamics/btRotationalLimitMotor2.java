@@ -171,12 +171,28 @@ public class btRotationalLimitMotor2 extends BulletBase {
     return DynamicsJNI.btRotationalLimitMotor2_springStiffness_get(swigCPtr, this);
   }
 
+  public void setSpringStiffnessLimited(boolean value) {
+    DynamicsJNI.btRotationalLimitMotor2_springStiffnessLimited_set(swigCPtr, this, value);
+  }
+
+  public boolean getSpringStiffnessLimited() {
+    return DynamicsJNI.btRotationalLimitMotor2_springStiffnessLimited_get(swigCPtr, this);
+  }
+
   public void setSpringDamping(float value) {
     DynamicsJNI.btRotationalLimitMotor2_springDamping_set(swigCPtr, this, value);
   }
 
   public float getSpringDamping() {
     return DynamicsJNI.btRotationalLimitMotor2_springDamping_get(swigCPtr, this);
+  }
+
+  public void setSpringDampingLimited(boolean value) {
+    DynamicsJNI.btRotationalLimitMotor2_springDampingLimited_set(swigCPtr, this, value);
+  }
+
+  public boolean getSpringDampingLimited() {
+    return DynamicsJNI.btRotationalLimitMotor2_springDampingLimited_get(swigCPtr, this);
   }
 
   public void setEquilibriumPoint(float value) {

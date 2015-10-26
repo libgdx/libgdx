@@ -164,6 +164,14 @@ public class btTranslationalLimitMotor2 extends BulletBase {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
+  public void setSpringStiffnessLimited(boolean[] value) {
+    DynamicsJNI.btTranslationalLimitMotor2_springStiffnessLimited_set(swigCPtr, this, value);
+  }
+
+  public boolean[] getSpringStiffnessLimited() {
+    return DynamicsJNI.btTranslationalLimitMotor2_springStiffnessLimited_get(swigCPtr, this);
+}
+
   public void setSpringDamping(btVector3 value) {
     DynamicsJNI.btTranslationalLimitMotor2_springDamping_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
@@ -172,6 +180,14 @@ public class btTranslationalLimitMotor2 extends BulletBase {
     long cPtr = DynamicsJNI.btTranslationalLimitMotor2_springDamping_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
+
+  public void setSpringDampingLimited(boolean[] value) {
+    DynamicsJNI.btTranslationalLimitMotor2_springDampingLimited_set(swigCPtr, this, value);
+  }
+
+  public boolean[] getSpringDampingLimited() {
+    return DynamicsJNI.btTranslationalLimitMotor2_springDampingLimited_get(swigCPtr, this);
+}
 
   public void setEquilibriumPoint(btVector3 value) {
     DynamicsJNI.btTranslationalLimitMotor2_equilibriumPoint_set(swigCPtr, this, btVector3.getCPtr(value), value);

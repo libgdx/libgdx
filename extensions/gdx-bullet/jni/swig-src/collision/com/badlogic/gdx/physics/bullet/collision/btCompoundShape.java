@@ -89,12 +89,16 @@ public class btCompoundShape extends btCollisionShape {
 		super.dispose();
 	}
 
+  public btCompoundShape(boolean enableDynamicAabbTree, int initialChildCapacity) {
+    this(CollisionJNI.new_btCompoundShape__SWIG_0(enableDynamicAabbTree, initialChildCapacity), true);
+  }
+
   public btCompoundShape(boolean enableDynamicAabbTree) {
-    this(CollisionJNI.new_btCompoundShape__SWIG_0(enableDynamicAabbTree), true);
+    this(CollisionJNI.new_btCompoundShape__SWIG_1(enableDynamicAabbTree), true);
   }
 
   public btCompoundShape() {
-    this(CollisionJNI.new_btCompoundShape__SWIG_1(), true);
+    this(CollisionJNI.new_btCompoundShape__SWIG_2(), true);
   }
 
   private void internalAddChildShape(Matrix4 localTransform, btCollisionShape shape) {

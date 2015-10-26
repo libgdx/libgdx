@@ -735,7 +735,7 @@ public class CollisionJNI {
   public final static native Vector3 btConvexShape_localGetSupportVertexNonVirtual(long jarg1, btConvexShape jarg1_, Vector3 jarg2);
   public final static native float btConvexShape_getMarginNonVirtual(long jarg1, btConvexShape jarg1_);
   public final static native void btConvexShape_getAabbNonVirtual(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btConvexShape_project(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4, long jarg5);
+  public final static native void btConvexShape_project(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4, long jarg5, Vector3 jarg6, Vector3 jarg7);
   public final static native void btConvexShape_batchedUnitVectorGetSupportingVertexWithoutMargin(long jarg1, btConvexShape jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, int jarg4);
   public final static native void btConvexShape_getAabbSlow(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native int btConvexShape_getNumPreferredPenetrationDirections(long jarg1, btConvexShape jarg1_);
@@ -1161,7 +1161,6 @@ public class CollisionJNI {
   public final static native long btConvexHullShape_getPoints(long jarg1, btConvexHullShape jarg1_);
   public final static native Vector3 btConvexHullShape_getScaledPoint(long jarg1, btConvexHullShape jarg1_, int jarg2);
   public final static native int btConvexHullShape_getNumPoints(long jarg1, btConvexHullShape jarg1_);
-  public final static native void btConvexHullShape_project(long jarg1, btConvexHullShape jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4, long jarg5, Vector3 jarg6, Vector3 jarg7);
   public final static native long new_btConvexHullShape__SWIG_4(long jarg1, btShapeHull jarg1_);
   public final static native void delete_btConvexHullShape(long jarg1);
   public final static native void btConvexHullShapeData_convexInternalShapeData_set(long jarg1, btConvexHullShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
@@ -1291,8 +1290,9 @@ public class CollisionJNI {
   public final static native long btCompoundShapeChild_node_get(long jarg1, btCompoundShapeChild jarg1_);
   public final static native long new_btCompoundShapeChild();
   public final static native void delete_btCompoundShapeChild(long jarg1);
-  public final static native long new_btCompoundShape__SWIG_0(boolean jarg1);
-  public final static native long new_btCompoundShape__SWIG_1();
+  public final static native long new_btCompoundShape__SWIG_0(boolean jarg1, int jarg2);
+  public final static native long new_btCompoundShape__SWIG_1(boolean jarg1);
+  public final static native long new_btCompoundShape__SWIG_2();
   public final static native void delete_btCompoundShape(long jarg1);
   public final static native void btCompoundShape_internalAddChildShape(long jarg1, btCompoundShape jarg1_, Matrix4 jarg2, long jarg3, btCollisionShape jarg3_);
   public final static native void btCompoundShape_internalRemoveChildShape(long jarg1, btCompoundShape jarg1_, long jarg2, btCollisionShape jarg2_);

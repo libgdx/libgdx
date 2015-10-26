@@ -17,6 +17,8 @@ public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_btIDebugDraw(JNIEnv *jenv);
     virtual ~SwigDirector_btIDebugDraw();
+    virtual btIDebugDraw::DefaultColors getDefaultColors() const;
+    virtual void setDefaultColors(btIDebugDraw::DefaultColors const &arg0);
     virtual void drawLine(btVector3 const &from, btVector3 const &to, btVector3 const &color);
     virtual void drawLine(btVector3 const &from, btVector3 const &to, btVector3 const &fromColor, btVector3 const &toColor);
     virtual void drawSphere(btScalar radius, btTransform const &transform, btVector3 const &color);
@@ -41,10 +43,10 @@ public:
     virtual void flushLines();
 public:
     bool swig_overrides(int n) {
-      return (n < 25 ? swig_override[n] : false);
+      return (n < 27 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[25];
+    bool swig_override[27];
 };
 
 class SwigDirector_btMotionState : public btMotionState, public Swig::Director {

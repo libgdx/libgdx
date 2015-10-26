@@ -149,4 +149,28 @@ public class btQuaternion extends BulletBase {
     return LinearMathJNI.btQuaternion_getW(swigCPtr, this);
   }
 
+  public void serialize(btQuaternionFloatData dataOut) {
+    LinearMathJNI.btQuaternion_serialize(swigCPtr, this, btQuaternionFloatData.getCPtr(dataOut), dataOut);
+  }
+
+  public void deSerialize(btQuaternionFloatData dataIn) {
+    LinearMathJNI.btQuaternion_deSerialize(swigCPtr, this, btQuaternionFloatData.getCPtr(dataIn), dataIn);
+  }
+
+  public void serializeFloat(btQuaternionFloatData dataOut) {
+    LinearMathJNI.btQuaternion_serializeFloat(swigCPtr, this, btQuaternionFloatData.getCPtr(dataOut), dataOut);
+  }
+
+  public void deSerializeFloat(btQuaternionFloatData dataIn) {
+    LinearMathJNI.btQuaternion_deSerializeFloat(swigCPtr, this, btQuaternionFloatData.getCPtr(dataIn), dataIn);
+  }
+
+  public void serializeDouble(btQuaternionDoubleData dataOut) {
+    LinearMathJNI.btQuaternion_serializeDouble(swigCPtr, this, btQuaternionDoubleData.getCPtr(dataOut), dataOut);
+  }
+
+  public void deSerializeDouble(btQuaternionDoubleData dataIn) {
+    LinearMathJNI.btQuaternion_deSerializeDouble(swigCPtr, this, btQuaternionDoubleData.getCPtr(dataIn), dataIn);
+  }
+
 }

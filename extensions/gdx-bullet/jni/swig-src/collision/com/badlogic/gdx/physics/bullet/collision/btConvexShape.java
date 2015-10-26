@@ -82,8 +82,8 @@ public class btConvexShape extends btCollisionShape {
     CollisionJNI.btConvexShape_getAabbNonVirtual(swigCPtr, this, t, aabbMin, aabbMax);
   }
 
-  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float min, SWIGTYPE_p_float max) {
-    CollisionJNI.btConvexShape_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(min), SWIGTYPE_p_float.getCPtr(max));
+  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin, Vector3 witnesPtMax) {
+    CollisionJNI.btConvexShape_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj), SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
   }
 
   public void batchedUnitVectorGetSupportingVertexWithoutMargin(btVector3 vectors, btVector3 supportVerticesOut, int numVectors) {
