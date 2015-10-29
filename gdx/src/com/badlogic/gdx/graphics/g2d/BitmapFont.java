@@ -62,7 +62,7 @@ public class BitmapFont implements Disposable {
 	Array<TextureRegion> regions;
 	private final BitmapFontCache cache;
 	private boolean flipped;
-	boolean integer;
+	boolean roundToInteger;
 	private boolean ownsTexture;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -146,11 +146,11 @@ public class BitmapFont implements Disposable {
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
-	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
-	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
+	 * @param roundToInteger If true, rendering positions will be at integer values to avoid filtering artifacts. */
+	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean roundToInteger) {
 		this.flipped = data.flipped;
 		this.data = data;
-		this.integer = integer;
+		this.roundToInteger = roundToInteger;
 
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
@@ -335,13 +335,13 @@ public class BitmapFont implements Disposable {
 
 	/** Specifies whether to use integer positions. Default is to use them so filtering doesn't kick in as badly. */
 	public void setUseIntegerPositions (boolean integer) {
-		this.integer = integer;
+		this.roundToInteger = integer;
 		cache.setUseIntegerPositions(integer);
 	}
 
 	/** Checks whether this font uses integer positions for drawing. */
 	public boolean usesIntegerPositions () {
-		return integer;
+		return roundToInteger;
 	}
 
 	/** For expert usage -- returns the BitmapFontCache used by this font, for rendering to a sprite batch. This can be used, for
@@ -374,7 +374,7 @@ public class BitmapFont implements Disposable {
 	 * Note this method is called by the BitmapFont constructors. If a subclass overrides this method, it will be called before the
 	 * subclass constructors. */
 	public BitmapFontCache newFontCache () {
-		return new BitmapFontCache(this, integer);
+		return new BitmapFontCache(this, roundToInteger);
 	}
 
 	public String toString () {
