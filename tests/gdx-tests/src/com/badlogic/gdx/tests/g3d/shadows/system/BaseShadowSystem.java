@@ -78,7 +78,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** Main camera */
 	protected Camera camera;
 	/** Renderable providers */
-	Iterable<RenderableProvider> renderableProviders;
+	protected Iterable<RenderableProvider> renderableProviders;
 	/** Cameras linked with spot lights */
 	protected ObjectMap<SpotLight, LightProperties> spotCameras = new ObjectMap<SpotLight, LightProperties>();
 	/** Cameras linked with directional lights */
@@ -147,9 +147,9 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public ShaderProvider getPassShaderProvider (int n) {
-		if (n >= passShaderProviders.length) {
+		if (n >= passShaderProviders.length)
 			throw new GdxRuntimeException("ShaderProvider " + n + " doesn't exist in " + getClass().getName());
-		}
+
 		return passShaderProviders[n];
 	}
 
@@ -176,6 +176,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		camera.direction.set(dir.direction);
 		camera.near = 0.1f;
 		camera.far = 1000;
+
 		dirCameras.put(dir, new LightProperties(camera));
 	}
 
@@ -222,25 +223,19 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public boolean hasLight (SpotLight spot) {
-		if (spotCameras.containsKey(spot)) {
-			return true;
-		}
+		if (spotCameras.containsKey(spot)) return true;
 		return false;
 	}
 
 	@Override
 	public boolean hasLight (DirectionalLight dir) {
-		if (dirCameras.containsKey(dir)) {
-			return true;
-		}
+		if (dirCameras.containsKey(dir)) return true;
 		return false;
 	}
 
 	@Override
 	public boolean hasLight (PointLight point) {
-		if (pointCameras.containsKey(point)) {
-			return true;
-		}
+		if (pointCameras.containsKey(point)) return true;
 		return false;
 	}
 
@@ -268,9 +263,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public void begin (Camera camera, Iterable<RenderableProvider> renderableProviders) {
-		if (this.renderableProviders != null || this.camera != null) {
-			throw new GdxRuntimeException("Call end() first.");
-		}
+		if (this.renderableProviders != null || this.camera != null) throw new GdxRuntimeException("Call end() first.");
 
 		this.camera = camera;
 		this.renderableProviders = renderableProviders;
@@ -278,9 +271,8 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public void begin (int n) {
-		if (n >= passShaderProviders.length) {
+		if (n >= passShaderProviders.length)
 			throw new GdxRuntimeException("Pass " + n + " doesn't exist in " + getClass().getName());
-		}
 
 		currentPass = n;
 
@@ -302,9 +294,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** Begin pass n. Override if more than one pass.
 	 * @param n Pass number */
 	protected void beginPass (int n) {
-		if (n == PASS_1) {
-			beginPass1();
-		}
+		if (n == PASS_1) beginPass1();
 	};
 
 	/** Begin pass 1. Init allocator and clear opengl buffers. */
@@ -324,9 +314,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public void end (int n) {
-		if (currentPass != n) {
-			throw new GdxRuntimeException("Begin " + n + " must be called before end " + n);
-		}
+		if (currentPass != n) throw new GdxRuntimeException("Begin " + n + " must be called before end " + n);
 
 		frameBuffers[n].end();
 		endPass(n);
@@ -335,9 +323,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** End pass n. Override if more than one pass.
 	 * @param n Pass number */
 	protected void endPass (int n) {
-		if (n == PASS_1) {
-			endPass1();
-		}
+		if (n == PASS_1) endPass1();
 	}
 
 	/** End pass 1. Close allocator and disable stencil test. */
@@ -368,9 +354,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	protected LightProperties nextDirectional () {
-		if (!dirCameraIterator.hasNext()) {
-			return null;
-		}
+		if (!dirCameraIterator.hasNext()) return null;
 
 		ObjectMap.Entry<DirectionalLight, LightProperties> e = dirCameraIterator.next();
 		currentLight = e.key;
@@ -381,25 +365,23 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	protected LightProperties nextSpot () {
-		if (!spotCameraIterator.hasNext()) {
-			return null;
-		}
+		if (!spotCameraIterator.hasNext()) return null;
 
 		ObjectMap.Entry<SpotLight, LightProperties> e = spotCameraIterator.next();
 		currentLight = e.key;
 		currentLightProperties = e.value;
 		LightProperties lp = e.value;
+
 		if (!lightFilter.filter(spotCameras.findKey(lp, true), lp.camera, this.camera)) {
 			return nextSpot();
 		}
+
 		processViewportCamera(lp.camera, processViewport(lp));
 		return lp;
 	}
 
 	protected LightProperties nextPoint () {
-		if (!pointCameraIterator.hasNext() && currentPointSide > 5) {
-			return null;
-		}
+		if (!pointCameraIterator.hasNext() && currentPointSide > 5) return null;
 
 		if (currentPointSide > 5) currentPointSide = 0;
 
@@ -410,10 +392,10 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		}
 
 		if (currentPointProperties.properties.containsKey(Cubemap.CubemapSide.values()[currentPointSide])) {
-
 			LightProperties lp = currentPointProperties.properties.get(Cubemap.CubemapSide.values()[currentPointSide]);
 			currentLightProperties = lp;
 			currentPointSide += 1;
+
 			if (!lightFilter.filter(pointCameras.findKey(currentPointProperties, true), lp.camera, this.camera)) {
 				return nextPoint();
 			}
@@ -433,9 +415,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		Camera camera = lp.camera;
 		ShadowMapRegion r = allocator.nextResult(currentLight);
 
-		if (r == null) {
-			return null;
-		}
+		if (r == null) return null;
 
 		TextureRegion region = lp.region;
 		region.setTexture(frameBuffers[PASS_1].getColorBufferTexture());
@@ -470,9 +450,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	public Texture getTexture (int n) {
-		if (n >= getPassQuantity()) {
-			throw new GdxRuntimeException("Can't get texture " + n);
-		}
+		if (n >= getPassQuantity()) throw new GdxRuntimeException("Can't get texture " + n);
 		return frameBuffers[n].getColorBufferTexture();
 	}
 
