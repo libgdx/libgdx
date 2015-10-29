@@ -120,9 +120,6 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		this.allocator = allocator;
 		this.directionalAnalyzer = directionalAnalyzer;
 		this.lightFilter = lightFilter;
-		frameBuffers = new FrameBuffer[getPassQuantity()];
-		passShaderProviders = new ShaderProvider[getPassQuantity()];
-		init();
 	}
 
 	/** Construct the system with default values */
@@ -132,7 +129,10 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	/** Initialize framebuffers and shader providers. You should call super.init() in subclass. */
-	protected void init () {
+	@Override
+	public void init () {
+		frameBuffers = new FrameBuffer[getPassQuantity()];
+		passShaderProviders = new ShaderProvider[getPassQuantity()];
 		frameBuffers[PASS_1] = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getWidth(), allocator.getHeight(), true);
 	};
 

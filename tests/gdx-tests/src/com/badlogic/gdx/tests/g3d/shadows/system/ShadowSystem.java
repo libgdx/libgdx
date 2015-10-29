@@ -35,11 +35,12 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * Array&lt;ModelBatch&gt; passBatches = new Array&lt;ModelBatch&gt;();
  * ModelBatch mainBatch;
  * ShadowSystem system = new XXXShadowSystem();
+ * system.init();
  * for (int i = 0; i &lt; system.getPassQuantity(); i++) {
  * 	passBatches.add(new ModelBatch(system.getPassShaderProvider(i)));
  * }
  * mainBatch = new ModelBatch(system.getShaderProvider());
- * 
+ *
  * // Render scene with shadows:
  * system.begin(camera, instances);
  * system.update();
@@ -55,11 +56,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * 	system.end(i);
  * }
  * system.end();
- * 
+ *
  * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
  * Gdx.gl.glClearColor(0, 0, 0, 1);
  * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
- * 
+ *
  * mainBatch.begin(cam);
  * mainBatch.render(instances, environment);
  * mainBatch.end();
@@ -74,6 +75,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * </p>
  * @author realitix */
 public interface ShadowSystem {
+
+	/** Initialize system */
+	public void init ();
 
 	/** Return number of pass
 	 * @return int */
