@@ -39,7 +39,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * 	passBatches.add(new ModelBatch(system.getPassShaderProvider(i)));
  * }
  * mainBatch = new ModelBatch(system.getShaderProvider());
- *
+ * 
  * // Render scene with shadows:
  * system.begin(camera, instances);
  * system.update();
@@ -55,11 +55,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * 	system.end(i);
  * }
  * system.end();
- *
+ * 
  * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
  * Gdx.gl.glClearColor(0, 0, 0, 1);
  * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
- *
+ * 
  * mainBatch.begin(cam);
  * mainBatch.render(instances, environment);
  * mainBatch.end();
@@ -134,7 +134,7 @@ public interface ShadowSystem {
 	/** Begin shadow system with main camera and renderable providers.
 	 * @param camera
 	 * @param renderableProviders */
-	public void begin (Camera camera, Iterable<RenderableProvider> renderableProviders);
+	public <T extends RenderableProvider> void begin (Camera camera, Iterable<T> renderableProviders);
 
 	/** Begin pass n rendering.
 	 * @param n Pass number */

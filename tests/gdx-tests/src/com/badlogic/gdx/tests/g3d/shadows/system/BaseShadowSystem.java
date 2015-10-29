@@ -36,8 +36,6 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.g3d.shadows.utils.AABBNearFarAnalyzer;
 import com.badlogic.gdx.tests.g3d.shadows.utils.BoundingSphereDirectionalAnalyzer;
 import com.badlogic.gdx.tests.g3d.shadows.utils.DirectionalAnalyzer;
@@ -104,9 +102,6 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** Current side in the point light cubemap */
 	protected int currentPointSide;
 	protected PointLightProperties currentPointProperties;
-	/** Tmp variables */
-	protected Vector3 tmpV3 = new Vector3();
-	protected Vector2 tmpV2 = new Vector2();
 	/** Shader providers used by this system */
 	protected ShaderProvider[] passShaderProviders;
 	protected ShaderProvider mainShaderProvider;
@@ -147,9 +142,6 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	@Override
 	public ShaderProvider getPassShaderProvider (int n) {
-		if (n >= passShaderProviders.length)
-			throw new GdxRuntimeException("ShaderProvider " + n + " doesn't exist in " + getClass().getName());
-
 		return passShaderProviders[n];
 	}
 
@@ -163,8 +155,8 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		PerspectiveCamera camera = new PerspectiveCamera(spot.cutoffAngle, 0, 0);
 		camera.position.set(spot.position);
 		camera.direction.set(spot.direction);
-		camera.near = 0.1f;
-		camera.far = 1000;
+		camera.near = 1;
+		camera.far = 100;
 		camera.up.set(camera.direction.y, camera.direction.z, camera.direction.x);
 
 		spotCameras.put(spot, new LightProperties(camera));
@@ -174,8 +166,8 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	public void addLight (DirectionalLight dir) {
 		OrthographicCamera camera = new OrthographicCamera();
 		camera.direction.set(dir.direction);
-		camera.near = 0.1f;
-		camera.far = 1000;
+		camera.near = 1;
+		camera.far = 100;
 
 		dirCameras.put(dir, new LightProperties(camera));
 	}
@@ -196,8 +188,8 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 				camera.position.set(point.position);
 				camera.direction.set(cubemapSide.direction);
 				camera.up.set(cubemapSide.up);
-				camera.near = 0.1f;
-				camera.far = 1000;
+				camera.near = 1;
+				camera.far = 100;
 
 				LightProperties p = new LightProperties(camera);
 				plProperty.properties.put(cubemapSide, p);
@@ -262,11 +254,11 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	@Override
-	public void begin (Camera camera, Iterable<RenderableProvider> renderableProviders) {
+	public <T extends RenderableProvider> void begin (Camera camera, final Iterable<T> renderableProviders) {
 		if (this.renderableProviders != null || this.camera != null) throw new GdxRuntimeException("Call end() first.");
 
 		this.camera = camera;
-		this.renderableProviders = renderableProviders;
+		this.renderableProviders = (Iterable<RenderableProvider>)renderableProviders;
 	}
 
 	@Override
@@ -275,16 +267,9 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 			throw new GdxRuntimeException("Pass " + n + " doesn't exist in " + getClass().getName());
 
 		currentPass = n;
-
 		spotCameraIterator = spotCameras.iterator();
-		spotCameraIterator.reset();
-
 		dirCameraIterator = dirCameras.iterator();
-		dirCameraIterator.reset();
-
 		pointCameraIterator = pointCameras.iterator();
-		pointCameraIterator.reset();
-
 		currentPointSide = 6;
 
 		frameBuffers[n].begin();
@@ -360,7 +345,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		currentLight = e.key;
 		currentLightProperties = e.value;
 		LightProperties lp = e.value;
-		processViewport(lp);
+		processViewport(lp, false);
 		return lp;
 	}
 
@@ -376,7 +361,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 			return nextSpot();
 		}
 
-		processViewportCamera(lp.camera, processViewport(lp));
+		processViewport(lp, true);
 		return lp;
 	}
 
@@ -400,7 +385,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 				return nextPoint();
 			}
 
-			processViewportCamera(lp.camera, processViewport(lp));
+			processViewport(lp, true);
 			return lp;
 		}
 
@@ -410,12 +395,12 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	/** Set viewport according to allocator.
 	 * @param lp LightProperties to process.
-	 * @return Vector2 */
-	protected Vector2 processViewport (LightProperties lp) {
+	 * @param cameraViewport Set camera viewport if true. */
+	protected void processViewport (LightProperties lp, boolean cameraViewport) {
 		Camera camera = lp.camera;
 		ShadowMapRegion r = allocator.nextResult(currentLight);
 
-		if (r == null) return null;
+		if (r == null) return;
 
 		TextureRegion region = lp.region;
 		region.setTexture(frameBuffers[PASS_1].getColorBufferTexture());
@@ -423,16 +408,9 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		Gdx.gl.glScissor(r.x, r.y, r.width, r.height);
 		region.setRegion(r.x, r.y, r.width, r.height);
 
-		return tmpV2.set(r.width, r.height);
-	}
-
-	/** Set camera viewport according to viewport in parameter.
-	 * @param camera
-	 * @param viewport */
-	protected void processViewportCamera (Camera camera, Vector2 viewport) {
-		if (viewport != null) {
-			camera.viewportHeight = viewport.y;
-			camera.viewportWidth = viewport.x;
+		if (cameraViewport) {
+			camera.viewportHeight = r.height;
+			camera.viewportWidth = r.width;
 			camera.update();
 		}
 	}
