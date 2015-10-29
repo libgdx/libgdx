@@ -71,8 +71,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	}
 
 	/** First pass number */
-	public static final int PASS_1 = 0;
-
+	protected static final int FIRST_PASS = 0;
 	/** Main camera */
 	protected Camera camera;
 	/** Renderable providers */
@@ -133,7 +132,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	public void init () {
 		frameBuffers = new FrameBuffer[getPassQuantity()];
 		passShaderProviders = new ShaderProvider[getPassQuantity()];
-		frameBuffers[PASS_1] = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getWidth(), allocator.getHeight(), true);
+		frameBuffers[FIRST_PASS] = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getWidth(), allocator.getHeight(), true);
 	};
 
 	/** getPassQuantity should return at leat one. */
@@ -279,7 +278,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** Begin pass n. Override if more than one pass.
 	 * @param n Pass number */
 	protected void beginPass (int n) {
-		if (n == PASS_1) beginPass1();
+		if (n == FIRST_PASS) beginPass1();
 	};
 
 	/** Begin pass 1. Init allocator and clear opengl buffers. */
@@ -308,7 +307,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	/** End pass n. Override if more than one pass.
 	 * @param n Pass number */
 	protected void endPass (int n) {
-		if (n == PASS_1) endPass1();
+		if (n == FIRST_PASS) endPass1();
 	}
 
 	/** End pass 1. Close allocator and disable stencil test. */
@@ -403,7 +402,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		if (r == null) return;
 
 		TextureRegion region = lp.region;
-		region.setTexture(frameBuffers[PASS_1].getColorBufferTexture());
+		region.setTexture(frameBuffers[FIRST_PASS].getColorBufferTexture());
 		Gdx.gl.glViewport(r.x, r.y, r.width, r.height);
 		Gdx.gl.glScissor(r.x, r.y, r.width, r.height);
 		region.setRegion(r.x, r.y, r.width, r.height);
