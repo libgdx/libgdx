@@ -79,7 +79,7 @@ public class DistanceFieldFont extends BitmapFont {
 
 	@Override
 	public BitmapFontCache newFontCache () {
-		return new DistanceFieldFontCache(this, roundToInteger);
+		return new DistanceFieldFontCache(this, useIntegerPositions);
 	}
 
 	/** @return The distance field smoothing factor for this font. */

@@ -62,7 +62,7 @@ public class BitmapFont implements Disposable {
 	Array<TextureRegion> regions;
 	private final BitmapFontCache cache;
 	private boolean flipped;
-	boolean roundToInteger;
+	boolean useIntegerPositions;
 	private boolean ownsTexture;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -150,7 +150,7 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (BitmapFontData data, Array<TextureRegion> pageRegions, boolean roundToInteger) {
 		this.flipped = data.flipped;
 		this.data = data;
-		this.roundToInteger = roundToInteger;
+		this.useIntegerPositions = roundToInteger;
 
 		if (pageRegions == null || pageRegions.size == 0) {
 			// Load each path.
@@ -334,14 +334,14 @@ public class BitmapFont implements Disposable {
 	}
 
 	/** Specifies whether to use integer positions. Default is to use them so filtering doesn't kick in as badly. */
-	public void setUseIntegerPositions (boolean integer) {
-		this.roundToInteger = integer;
-		cache.setUseIntegerPositions(integer);
+	public void setUseIntegerPositions (boolean useIntegerPositions) {
+		this.useIntegerPositions = useIntegerPositions;
+		cache.setUseIntegerPositions(useIntegerPositions);
 	}
 
 	/** Checks whether this font uses integer positions for drawing. */
 	public boolean usesIntegerPositions () {
-		return roundToInteger;
+		return useIntegerPositions;
 	}
 
 	/** For expert usage -- returns the BitmapFontCache used by this font, for rendering to a sprite batch. This can be used, for
@@ -374,7 +374,7 @@ public class BitmapFont implements Disposable {
 	 * Note this method is called by the BitmapFont constructors. If a subclass overrides this method, it will be called before the
 	 * subclass constructors. */
 	public BitmapFontCache newFontCache () {
-		return new BitmapFontCache(this, roundToInteger);
+		return new BitmapFontCache(this, useIntegerPositions);
 	}
 
 	public String toString () {
