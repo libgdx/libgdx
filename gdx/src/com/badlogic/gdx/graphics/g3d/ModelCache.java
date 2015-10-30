@@ -312,7 +312,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 	 * All member objects might (depending on possibilities) be used by reference and should not change while the cache is used. If
 	 * the {@link Renderable#bones} member is not null then skinning is assumed and the renderable will be added as-is, by
 	 * reference. Otherwise the renderable will be merged with other renderables as much as possible, depending on the
-	 * {@link Mesh#getVertexAttributes()}, {@link Renderable#material} and {@link Renderable#primitiveType} (in that order). The
+	 * {@link Mesh#getVertexAttributes()}, {@link Renderable#material} and primitiveType (in that order). The
 	 * {@link Renderable#environment}, {@link Renderable#shader} and {@link Renderable#userData} values (if any) are ignored.
 	 * @param renderable The {@link Renderable} to add, should not change while the cache is needed. */
 	public void add (Renderable renderable) {
