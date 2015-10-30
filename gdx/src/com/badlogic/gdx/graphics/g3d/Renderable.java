@@ -30,12 +30,11 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * It defines what (the shape), how (the material) and where (the transform) should be rendered by which shader.</p>
  * 
- * The shape is defined using the {@link #mesh}, {@link #meshPartOffset}, {@link #meshPartSize} and {@link #primitiveType}
- * members. This matches the members of the {@link MeshPart} class. The {@link #meshPartOffset} is used to specify the offset
- * within the mesh and the {@link #meshPartSize} is used to specify the part (in total number of vertices) to render. If the mesh
- * is indexed (which is when {@link Mesh#getNumIndices()} > 0) then both values are in number of indices within the indices array
- * of the mesh, otherwise they are in number of vertices within the vertices array of the mesh. Note that some classes might
- * require the mesh to be indexed.</p>
+ * The shape is defined using the mesh, meshPartOffset, meshPartSize and primitiveType members. This matches the members of the
+ * {@link MeshPart} class. The meshPartOffset is used to specify the offset within the mesh and the meshPartSize is used to
+ * specify the part (in total number of vertices) to render. If the mesh is indexed (which is when {@link Mesh#getNumIndices()} >
+ * 0) then both values are in number of indices within the indices array of the mesh, otherwise they are in number of vertices
+ * within the vertices array of the mesh. Note that some classes might require the mesh to be indexed.</p>
  * 
  * The {@link #material} and (optional) {@link #environment} values are combined to specify how the shape should look like.
  * Typically these are used to specify uniform values or other OpenGL state changes. When a value is present in both the
@@ -82,14 +81,13 @@ public class Renderable {
 	 * combine multiple bones into a single transformation matrix, which is used to transform the vertex to model space. In other
 	 * words: the bone transformation is applied prior to the {@link #worldTransform}. */
 	public Matrix4 bones[];
-	/** The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null.
-	 * It is not guaranteed that the shader will be used, the used {@link ShaderProvider} is responsible
-	 * for actually choosing the correct shader to use. **/
+	/** The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null. It is not guaranteed that
+	 * the shader will be used, the used {@link ShaderProvider} is responsible for actually choosing the correct shader to use. **/
 	public Shader shader;
 	/** User definable value, may be null. */
 	public Object userData;
-	
-	public Renderable set(Renderable renderable) {
+
+	public Renderable set (Renderable renderable) {
 		worldTransform.set(renderable.worldTransform);
 		material = renderable.material;
 		meshPart.set(renderable.meshPart);
