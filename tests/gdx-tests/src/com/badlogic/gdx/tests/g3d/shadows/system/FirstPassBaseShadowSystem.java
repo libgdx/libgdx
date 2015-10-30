@@ -53,7 +53,7 @@ public abstract class FirstPassBaseShadowSystem extends BaseShadowSystem {
 
 	@Override
 	protected void endPass (int n) {
-		super.beginPass(n);
+		super.endPass(n);
 		if (n == FIRST_PASS) endPass1();
 	};
 
