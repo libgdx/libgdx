@@ -105,7 +105,7 @@ public class Queue<T> {
 		if (head < tail) {
 			// Continuous
 			System.arraycopy(values, head, newArray, 0, tail - head);
-		} else {
+		} else if (size > 0) {
 			// Wrapped
 			final int rest = values.length - head;
 			System.arraycopy(values, head, newArray, 0, rest);
