@@ -18,8 +18,10 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
+import java.util.NoSuchElementException;
+
 /** Automatically resizing FIFO queue. Values in backing queue rotate around so push and pop are O(1) (unless resizing in push).
- * This collection is not thread-safe. */
+ * Also provides deque functionality via {@link #popLast()} and {@link #pushFront(Object)}. This collection is not thread-safe. */
 public class Queue<T> {
 
 	/** Contains values waiting in this queue. Pop and push indices go in circle around this array, wrapping at the end. */
@@ -36,7 +38,7 @@ public class Queue<T> {
 	protected int size = 0;
 
 	/** Non resizable queues will have limited capacity.
-	 * @see Queue#add(Object) */
+	 * @see Queue#push(Object) */
 	public boolean resizable;
 
 	/** Create a new Queue which can hold 15 values without resizing. */
@@ -61,10 +63,10 @@ public class Queue<T> {
 		this.resizable = resizable;
 	}
 
-	/** Enqueue given object. Unless backing array needs resizing, operates in O(1) time.
+	/** Enqueue given object (append after tail). Unless backing array needs resizing, operates in O(1) time.
 	 * @param object can be null
 	 * @return true if added, false if full (can only happen when resizable is false) */
-	public boolean add (T object) {
+	public boolean push (T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
@@ -84,6 +86,34 @@ public class Queue<T> {
 		return true;
 	}
 
+	/** Add given object to the deque, prepending to head. Is very similar to {@link #push(Object)} but the object is added to the
+	 * other side. Can be thought of as jumping the queue.
+	 * @param object can be null
+	 * @return true if added, false if full (can only happen when resizable is false) */
+	public boolean pushFront (T object) {
+		T[] values = this.values;
+
+		if (size == values.length) {
+			if (!resizable) {
+				return false;
+			} else {
+				resize(values.length << 1);// *2
+				values = this.values;
+			}
+		}
+
+		int head = this.head;
+		head--;
+		if (head == -1) {
+			head = values.length - 1;
+		}
+		values[head] = object;
+
+		this.head = head;
+		this.size++;
+		return true;
+	}
+
 	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize.
 	 * <p/>
 	 * NOTE: This WILL resize non-resizable arrays. */
@@ -95,7 +125,7 @@ public class Queue<T> {
 	}
 
 	/** Resize backing array. newSize must be bigger than current size. */
-	private void resize (int newSize) {
+	protected void resize (int newSize) {
 		final T[] values = this.values;
 		final int head = this.head;
 		final int tail = this.tail;
@@ -117,14 +147,18 @@ public class Queue<T> {
 	}
 
 	/** Dequeue next object in queue
-	 * @return next object in queue or null if empty */
-	public T remove () {
-		return remove(null);
+	 * @return next item in queue
+	 * @throws NoSuchElementException when queue is empty */
+	public T pop () {
+		if (size == 0) {
+			throw new NoSuchElementException("Queue is empty");
+		}
+		return pop(null);
 	}
 
 	/** Dequeue next object in queue
-	 * @return next object in queue or `defaultValue` if empty */
-	public T remove (T defaultValue) {
+	 * @return next item in queue or `defaultValue` if empty */
+	public T pop (T defaultValue) {
 		if (size == 0) {
 			// Underflow
 			return defaultValue;
@@ -132,7 +166,7 @@ public class Queue<T> {
 
 		final T[] values = this.values;
 
-		T result = values[head];
+		final T result = values[head];
 		values[head] = null;
 		head++;
 		if (head == values.length) {
@@ -143,23 +177,52 @@ public class Queue<T> {
 		return result;
 	}
 
-	/** Same as {@link Queue#remove()} but the value is kept in the queue. */
-	public T peek () {
-		return peek(null);
+	/** Remove item which was added last to this deque. Works the same way as {@link #pop()}, but from the other side.
+	 * @return last item in queue
+	 * @throws NoSuchElementException when queue is empty */
+	public T popLast () {
+		if (size == 0) {
+			throw new NoSuchElementException("Deque is empty");
+		}
+
+		final T[] values = this.values;
+		int tail = this.tail;
+		tail--;
+		if (tail == -1) {
+			tail = values.length - 1;
+		}
+		final T result = values[tail];
+		values[tail] = null;
+		this.tail = tail;
+		size--;
+
+		return result;
 	}
 
-	/** Same as {@link Queue#remove(T)} but the value is kept in the queue. */
-	public T peek (T defaultValue) {
+	/** Returns the next item in queue.
+	 * @throws NoSuchElementException when queue is empty */
+	public T peek () {
 		if (size == 0) {
 			// Underflow
-			return defaultValue;
+			throw new NoSuchElementException("Queue is empty");
 		}
 		return values[head];
 	}
 
-	/** @return true if this queue holds no values to remove */
-	public boolean isEmpty () {
-		return size == 0;
+	/** @return the last item in deque.
+	 * @throws NoSuchElementException when the deque is empty */
+	public T peekLast () {
+		if (size == 0) {
+			// Underflow
+			throw new NoSuchElementException("Deque is empty");
+		}
+		final T[] values = this.values;
+		int tail = this.tail;
+		tail--;
+		if (tail == -1) {
+			tail = values.length - 1;
+		}
+		return values[tail];
 	}
 
 	/** @return true if this queue can't hold any more values (always false when resizable) */
@@ -200,7 +263,7 @@ public class Queue<T> {
 	}
 
 	public String toString () {
-		if (isEmpty()) {
+		if (size == 0) {
 			return "Queue []";
 		}
 		final T[] values = this.values;
