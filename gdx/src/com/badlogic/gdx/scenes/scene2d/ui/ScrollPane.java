@@ -898,6 +898,14 @@ public class ScrollPane extends WidgetGroup {
 		disableY = y;
 	}
 
+	public boolean isXScrollingDisabled () {
+		return disableX;
+	}
+
+	public boolean isYScrollingDisabled () {
+		return disableY;
+	}
+
 	public boolean isLeftEdge () {
 		return !scrollX || amountX <= 0;
 	}
