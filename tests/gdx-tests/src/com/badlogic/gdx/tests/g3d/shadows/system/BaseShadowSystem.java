@@ -43,13 +43,14 @@ import com.badlogic.gdx.tests.g3d.shadows.utils.LightFilter;
 import com.badlogic.gdx.tests.g3d.shadows.utils.NearFarAnalyzer;
 import com.badlogic.gdx.tests.g3d.shadows.utils.ShadowMapAllocator;
 import com.badlogic.gdx.tests.g3d.shadows.utils.ShadowMapAllocator.ShadowMapRegion;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
 /** BaseShadowSystem allows to easily create custom shadow system.
  * @author realitix */
-public abstract class BaseShadowSystem implements ShadowSystem {
+public abstract class BaseShadowSystem implements ShadowSystem, Disposable {
 	/** This class handles camera and texture region.
 	 * @author realitix */
 	public static class LightProperties {
@@ -425,5 +426,14 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 
 	public int getCurrentPass () {
 		return currentPass;
+	}
+
+	@Override
+	public void dispose () {
+		for (int i = 0; i < getPassQuantity(); i++) {
+			frameBuffers[i].dispose();
+			passShaderProviders[i].dispose();
+		}
+		mainShaderProvider.dispose();
 	}
 }
