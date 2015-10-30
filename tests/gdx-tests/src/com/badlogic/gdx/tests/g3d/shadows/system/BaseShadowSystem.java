@@ -23,10 +23,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
@@ -49,8 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
-/** BaseShadowSystem allows to easily create custom shadow system. It assumes that the first pass renders all depth maps in packed
- * texture.
+/** BaseShadowSystem allows to easily create custom shadow system.
  * @author realitix */
 public abstract class BaseShadowSystem implements ShadowSystem {
 	/** This class handles camera and texture region.
@@ -70,8 +67,6 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		public ObjectMap<CubemapSide, LightProperties> properties = new ObjectMap<CubemapSide, LightProperties>(6);
 	}
 
-	/** First pass number */
-	protected static final int FIRST_PASS = 0;
 	/** Main camera */
 	protected Camera camera;
 	/** Renderable providers */
@@ -132,8 +127,14 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	public void init () {
 		frameBuffers = new FrameBuffer[getPassQuantity()];
 		passShaderProviders = new ShaderProvider[getPassQuantity()];
-		frameBuffers[FIRST_PASS] = new FrameBuffer(Pixmap.Format.RGBA8888, allocator.getWidth(), allocator.getHeight(), true);
+
+		for (int i = 0; i < getPassQuantity(); i++) {
+			init(i);
+		}
 	};
+
+	/** Initialize pass n */
+	protected abstract void init (int n);
 
 	/** getPassQuantity should return at leat one. */
 	@Override
@@ -271,23 +272,14 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		pointCameraIterator = pointCameras.iterator();
 		currentPointSide = 6;
 
-		frameBuffers[n].begin();
 		beginPass(n);
 	}
 
-	/** Begin pass n. Override if more than one pass.
+	/** Begin pass n.
 	 * @param n Pass number */
 	protected void beginPass (int n) {
-		if (n == FIRST_PASS) beginPass1();
+		frameBuffers[n].begin();
 	};
-
-	/** Begin pass 1. Init allocator and clear opengl buffers. */
-	protected void beginPass1 () {
-		allocator.begin();
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-	}
 
 	@Override
 	public void end () {
@@ -299,21 +291,13 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 	@Override
 	public void end (int n) {
 		if (currentPass != n) throw new GdxRuntimeException("Begin " + n + " must be called before end " + n);
-
-		frameBuffers[n].end();
 		endPass(n);
 	}
 
-	/** End pass n. Override if more than one pass.
+	/** End pass n.
 	 * @param n Pass number */
 	protected void endPass (int n) {
-		if (n == FIRST_PASS) endPass1();
-	}
-
-	/** End pass 1. Close allocator and disable stencil test. */
-	protected void endPass1 () {
-		allocator.end();
-		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+		frameBuffers[n].end();
 	}
 
 	@Override
@@ -402,7 +386,7 @@ public abstract class BaseShadowSystem implements ShadowSystem {
 		if (r == null) return;
 
 		TextureRegion region = lp.region;
-		region.setTexture(frameBuffers[FIRST_PASS].getColorBufferTexture());
+		region.setTexture(frameBuffers[currentPass].getColorBufferTexture());
 		Gdx.gl.glViewport(r.x, r.y, r.width, r.height);
 		Gdx.gl.glScissor(r.x, r.y, r.width, r.height);
 		region.setRegion(r.x, r.y, r.width, r.height);
