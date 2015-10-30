@@ -18,164 +18,202 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
-/** Automatically resizing FIFO queue.
- * Values in backing queue rotate around so push and pop are O(1) (unless resizing in push).
+/** Automatically resizing FIFO queue. Values in backing queue rotate around so push and pop are O(1) (unless resizing in push).
  * This collection is not thread-safe. */
-public class Queue <T> {
+public class Queue<T> {
 
-    /** Contains values waiting in this queue.
-     * Pop and push indices go in circle around this array, wrapping at the end.
-     * For simplicity, one index (pointed at by pushIndex) is always kept empty.
-     * Therefore, values.length = 8 can only hold 7 queued values. */
-    protected T[] values;
+	/** Contains values waiting in this queue. Pop and push indices go in circle around this array, wrapping at the end. */
+	protected T[] values;
 
-    /** Index to pop from. Logically smaller than pushIndex.
-     * Unless popIndex == pushIndex, it points to a valid element inside queue. */
-    protected int popIndex = 0;
-    /** Index to push to. Logically bigger than popIndex.
-     * Always points to an empty values position. */
-    protected int pushIndex = 0;
+	/** Index to dequeue/remove from. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
+	protected int head = 0;
 
-    /** Create a new Queue which can hold 15 values without resizing. */
-    public Queue(){
-        this(16);
-    }
+	/** Index to enqueue/add to. Logically bigger than head. Usually points to an empty values position, but when full (size ==
+	 * values.length) points to the head. */
+	protected int tail = 0;
 
-    /** Create a new Queue which can hold `initialSize` values without resizing. */
-    public Queue(int initialSize) {
-        //noinspection unchecked
-        values = (T[]) new Object[initialSize + 1];
-    }
+	/** Amount of things currently enqueued. */
+	protected int size = 0;
 
-    /** Create a new Queue which can hold `initialSize` values without resizing.
-     * This creates backing array of correct type via reflection.
-     * Use this only if you are accessing backing array directly.
-     * <p/>
-     * NOTE: Worth using only if you know what are you doing. */
-    public Queue(int initialSize, Class<T> type) {
-        //noinspection unchecked
-        values = (T[]) ArrayReflection.newInstance(type, initialSize + 1);
-    }
+	/** Non resizable queues will have limited capacity.
+	 * @see Queue#add(Object) */
+	public boolean resizable;
 
-    /** Enqueue given object.
-     * Unless backing array needs resizing, operates in O(1) time.
-     * @param object can be null
-     */
-    public void add(T object){
-        final T[] values = this.values;
-        int pushIndex = this.pushIndex;
-        final int popIndex = this.popIndex;
+	/** Create a new Queue which can hold 15 values without resizing. */
+	public Queue () {
+		this(16, true);
+	}
 
-        values[pushIndex] = object;
-        pushIndex++;
-        if(pushIndex == values.length){
-            pushIndex = 0;
-        }
+	/** Create a new Queue which can hold `initialSize` values without resizing. */
+	public Queue (int initialSize, boolean resizable) {
+		// noinspection unchecked
+		this.values = (T[])new Object[initialSize];
+		this.resizable = resizable;
+	}
 
-        if(pushIndex == popIndex){
-            //Must resize
-            final int newSize = values.length << 1;
-            //noinspection unchecked
-            final T[] newArray = (T[]) ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
-            final int currentSize = values.length;
-            for (int i = 0; i < currentSize; i++) {
-                newArray[i] = values[(popIndex + i) % currentSize];
-            }
-            this.popIndex = 0;
-            pushIndex = currentSize;
+	/** Create a new Queue which can hold `initialSize` values without resizing. This creates backing array of correct type via
+	 * reflection. Use this only if you are accessing backing array directly.
+	 * <p/>
+	 * NOTE: Worth using only if you know what are you doing. */
+	public Queue (int initialSize, boolean resizable, Class<T> type) {
+		// noinspection unchecked
+		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
+		this.resizable = resizable;
+	}
 
-            this.values = newArray;
-        }
-        this.pushIndex = pushIndex;
-    }
+	/** Enqueue given object. Unless backing array needs resizing, operates in O(1) time.
+	 * @param object can be null
+	 * @return true if added, false if full (can only happen when resizable is false) */
+	public boolean add (T object) {
+		T[] values = this.values;
 
-    /** Dequeue next object in queue
-     * @return next object in queue or null if empty */
-    public T remove(){
-        return remove(null);
-    }
+		if (size == values.length) {
+			if (!resizable) {
+				return false;
+			} else {
+				resize(values.length << 1);// *2
+				values = this.values;
+			}
+		}
 
-    /** Dequeue next object in queue
-     * @return next object in queue or `defaultValue` if empty */
-    public T remove(T defaultValue){
-        final T[] values = this.values;
-        int popIndex = this.popIndex;
+		values[tail++] = object;
+		if (tail == values.length) {
+			tail = 0;
+		}
+		size++;
+		return true;
+	}
 
-        if(popIndex == pushIndex){
-            //Underflow
-            return defaultValue;
-        }
-        T result = values[popIndex];
-        values[popIndex] = null;
+	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize.
+	 * <p/>
+	 * NOTE: This WILL resize non-resizable arrays. */
+	public void ensureCapacity (int additional) {
+		final int needed = size + additional;
+		if (values.length < needed) {
+			resize(needed);
+		}
+	}
 
-        popIndex++;
-        if(popIndex == values.length){
-            popIndex = 0;
-        }
-        this.popIndex = popIndex;
+	/** Resize backing array. newSize must be bigger than current size. */
+	private void resize (int newSize) {
+		final T[] values = this.values;
+		final int head = this.head;
+		final int tail = this.tail;
 
-        return result;
-    }
+		@SuppressWarnings("unchecked")
+		final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+		if (head < tail) {
+			// Continuous
+			System.arraycopy(values, head, newArray, 0, tail - head);
+		} else {
+			// Wrapped
+			final int rest = values.length - head;
+			System.arraycopy(values, head, newArray, 0, rest);
+			System.arraycopy(values, 0, newArray, rest, tail);
+		}
+		this.values = newArray;
+		this.head = 0;
+		this.tail = size;
+	}
 
-    /** Same as {@link Queue#remove()} but the value is kept in the queue. */
-    public T peek(){
-        return peek(null);
-    }
+	/** Dequeue next object in queue
+	 * @return next object in queue or null if empty */
+	public T remove () {
+		return remove(null);
+	}
 
-    /** Same as {@link Queue#remove(T)} but the value is kept in the queue. */
-    public T peek(T defaultValue){
-        final int popIndex = this.popIndex;
+	/** Dequeue next object in queue
+	 * @return next object in queue or `defaultValue` if empty */
+	public T remove (T defaultValue) {
+		if (size == 0) {
+			// Underflow
+			return defaultValue;
+		}
 
-        if(popIndex == pushIndex){
-            //Underflow
-            return defaultValue;
-        }
-        return values[popIndex];
-    }
+		final T[] values = this.values;
 
-    /** @return true if this queue holds no values to remove */
-    public boolean isEmpty(){
-        return popIndex == pushIndex;
-    }
+		T result = values[head];
+		values[head] = null;
+		head++;
+		if (head == values.length) {
+			head = 0;
+		}
+		size--;
 
-    /** @return amount of values waiting in this queue */
-    public int size(){
-        final int pushIndex = this.pushIndex;
-        final int popIndex = this.popIndex;
+		return result;
+	}
 
-        if(pushIndex == popIndex)return 0;
-        if(popIndex < pushIndex)return (pushIndex - popIndex);
-        return values.length - (popIndex - pushIndex);
-    }
+	/** Same as {@link Queue#remove()} but the value is kept in the queue. */
+	public T peek () {
+		return peek(null);
+	}
 
-    /** Removes all values from this queue.
-     * (Values in backing array are set to null to prevent memory leak, so this operates in O(n).)*/
-    public void clear(){
-        final T[] values = this.values;
-        while(popIndex != pushIndex){
-            values[popIndex] = null;
-            popIndex++;
-            if(popIndex == values.length){
-                popIndex = 0;
-            }
-        }
-    }
+	/** Same as {@link Queue#remove(T)} but the value is kept in the queue. */
+	public T peek (T defaultValue) {
+		if (size == 0) {
+			// Underflow
+			return defaultValue;
+		}
+		return values[head];
+	}
 
-    public String toString(){
-        if(isEmpty()){
-            return "Queue []";
-        }
-        final T[] values = this.values;
-        final int popIndex = this.popIndex;
-        final int pushIndex = this.pushIndex;
+	/** @return true if this queue holds no values to remove */
+	public boolean isEmpty () {
+		return size == 0;
+	}
 
-        StringBuilder sb = new StringBuilder(64);
-        sb.append("Queue [");
-        sb.append(values[popIndex]);
-        for (int i = popIndex+1; i != pushIndex; i = (i+1) % values.length) {
-            sb.append(", ").append(values[i]);
-        }
-        sb.append(']');
-        return sb.toString();
-    }
+	/** @return true if this queue can't hold any more values (always false when resizable) */
+	public boolean isFull () {
+		return !resizable && size == values.length;
+	}
+
+	/** @return amount of values waiting in this queue */
+	public int size () {
+		return size;
+	}
+
+	/** Removes all values from this queue. (Values in backing array are set to null to prevent memory leak, so this operates in
+	 * O(n).) */
+	public void clear () {
+		if (size == 0) return;
+		final T[] values = this.values;
+		final int head = this.head;
+		final int tail = this.tail;
+
+		if (head < tail) {
+			// Continuous
+			for (int i = head; i < tail; i++) {
+				values[i] = null;
+			}
+		} else {
+			// Wrapped
+			for (int i = head; i < values.length; i++) {
+				values[i] = null;
+			}
+			for (int i = 0; i < tail; i++) {
+				values[i] = null;
+			}
+		}
+		this.head = 0;
+		this.tail = 0;
+		this.size = 0;
+	}
+
+	public String toString () {
+		if (isEmpty()) {
+			return "Queue []";
+		}
+		final T[] values = this.values;
+		final int head = this.head;
+		final int tail = this.tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append("Queue [");
+		sb.append(values[head]);
+		for (int i = (head + 1) % values.length; i != tail; i = (i + 1) % values.length) {
+			sb.append(", ").append(values[i]);
+		}
+		sb.append(']');
+		return sb.toString();
+	}
 }
