@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.math.Interpolation.SplineInterpolation;
+
 /** An action that has a float, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class FloatAction extends TemporalAction {
 	private float start, end;
 	private float value;
+	private float worldStartSpeed;
+	private boolean blending = false;
 
 	/** Creates a FloatAction that transitions from 0 to 1. */
 	public FloatAction () {
@@ -36,10 +40,17 @@ public class FloatAction extends TemporalAction {
 
 	protected void begin () {
 		value = start;
+		if (blending) {
+			setStartSpeed(1, worldStartSpeed * getDuration() / (end - start), 0, 0, 0);
+		}
 	}
 
 	protected void update (float percent) {
 		value = start + (end - start) * percent;
+	}
+
+	protected void updateIndependently (float percent0, float percent1, float percent2, float percent3) {
+		value = start + (end - start) * percent0;
 	}
 
 	/** Gets the current float value. */
@@ -68,5 +79,23 @@ public class FloatAction extends TemporalAction {
 	/** Sets the value to transition to. */
 	public void setEnd (float end) {
 		this.end = end;
+	}
+
+	public float getWorldSpeed () {
+		if (getDuration() <= 0) return 0;
+		return getSpeed0() * (end - start) / getDuration();
+	}
+
+	/** Set this interpolation to begin at a speed matching the current speed of an action that it is interrupting, so the
+	 * transition will appear smooth. This must be called before removing the interrupted action from the actor. The interrupted
+	 * action should be removed from the actor after calling this method. A {@linkplain SplineInterpolation} must be used. */
+	public void setBlendFrom (FloatAction interruptedAction, SplineInterpolation interpolation) {
+		setInterpolation(interpolation);
+		worldStartSpeed = interruptedAction.getWorldSpeed();
+		blending = true;
+	}
+
+	public void cancelBlendFrom () {
+		blending = false;
 	}
 }

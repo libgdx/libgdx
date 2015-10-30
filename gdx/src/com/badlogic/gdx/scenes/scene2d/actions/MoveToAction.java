@@ -16,27 +16,39 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.math.Interpolation.SplineInterpolation;
 import com.badlogic.gdx.utils.Align;
 
 /** Moves an actor from its current position to a specific position.
  * @author Nathan Sweet */
-public class MoveToAction extends TemporalAction {
+public class MoveToAction extends TemporalAction implements TemporalAction.MoveAction {
 	private float startX, startY;
 	private float endX, endY;
 	private int alignment = Align.bottomLeft;
+	private float worldStartSpeedX, worldStartSpeedY;
+	private boolean blending = false;
 
 	protected void begin () {
 		startX = target.getX(alignment);
 		startY = target.getY(alignment);
+		if (blending) {
+			setStartSpeed(2, worldStartSpeedX * getDuration() / (endX - startX), worldStartSpeedY * getDuration() / (endY - startY),
+				0, 0);
+		}
 	}
 
 	protected void update (float percent) {
 		target.setPosition(startX + (endX - startX) * percent, startY + (endY - startY) * percent, alignment);
 	}
 
+	protected void updateIndependently (float percent0, float percent1, float percent2, float percent3) {
+		target.setPosition(startX + (endX - startX) * percent0, startY + (endY - startY) * percent1, alignment);
+	};
+
 	public void reset () {
 		super.reset();
 		alignment = Align.bottomLeft;
+		blending = false;
 	}
 
 	public void setPosition (float x, float y) {
@@ -72,5 +84,29 @@ public class MoveToAction extends TemporalAction {
 
 	public void setAlignment (int alignment) {
 		this.alignment = alignment;
+	}
+
+	public float getWorldSpeedX () {
+		if (getDuration() <= 0) return 0;
+		return getSpeed0() * (endX - startX) / getDuration();
+	}
+
+	public float getWorldSpeedY () {
+		if (getDuration() <= 0) return 0;
+		return getSpeed1() * (endY - startY) / getDuration();
+	}
+
+	/** Set this interpolation to begin at a speed matching the current speed of an action that it is interrupting, so the
+	 * transition will appear smooth. This must be called before removing the interrupted action from the actor. The interrupted
+	 * action should be removed from the actor after calling this method. A {@linkplain SplineInterpolation} must be used. */
+	public void setBlendFrom (MoveAction interruptedAction, SplineInterpolation interpolation) {
+		setInterpolation(interpolation);
+		worldStartSpeedX = interruptedAction.getWorldSpeedX();
+		worldStartSpeedY = interruptedAction.getWorldSpeedY();
+		blending = true;
+	}
+
+	public void cancelBlendFrom () {
+		blending = false;
 	}
 }

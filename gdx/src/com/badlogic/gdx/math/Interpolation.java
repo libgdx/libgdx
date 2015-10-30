@@ -27,24 +27,91 @@ public abstract class Interpolation {
 		return start + (end - start) * apply(a);
 	}
 
-	//
+	/** Speeds are expressed in terms of units of "total change" over "duration". To prepare inputs for this method, you may use:
+	 * <p>
+	 * {@code speed = worldSpeed * duration / (end - start)}
+	 * @param startSpeed Beginning rate of change. Used only by {@linkplain SplineInterpolation SplineInterpolations}.
+	 * @param endSpeed Ending rate of change. Used only by {@linkplain SplineInterpolation SplineInterpolations}.
+	 * @param a Alpha value between 0 and 1, where 1 maps to the total duration.
+	 * @return The current rate of change. To convert this to world speed, you may use:
+	 *         <p>
+	 *         {@code worldSpeed = speed * (end - start) / duration} */
+	public abstract float speed (float startSpeed, float endSpeed, float a);
 
 	static public final Interpolation linear = new Interpolation() {
 		public float apply (float a) {
 			return a;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return 1f;
+		}
 	};
 
-	static public final Interpolation fade = new Interpolation() {
+	/** A third-order Hermite spline interpolation. When left unspecified, the starting and ending speeds are zero, and the
+	 * function is equivalent to the {@code smoothstep} function in GLSL. */
+	static public final SplineInterpolation smooth = new SplineInterpolation() {
+		public float apply (float a) {
+			return MathUtils.clamp(a * a * (a * (-2) + 3), 0, 1);
+		}
+
+		public float applyWithSpeed (float startSpeed, float a) {
+			return a * (a * (a * (startSpeed - 2) + 3 - 2 * startSpeed) + startSpeed);
+		}
+
+		public float applyWithSpeed (float startSpeed, float endSpeed, float a) {
+			return a * (a * (a * (startSpeed + endSpeed - 2) + 3 - 2 * startSpeed - endSpeed) + startSpeed);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (startSpeed == 0) if (endSpeed == 0)
+				return a * (a * (-6) + 6);
+			else
+				return a * (a * (3 * endSpeed - 6) + 6 - 2 * endSpeed);
+			if (endSpeed == 0)
+				return a * (a * (3 * startSpeed - 6) + 6 - 4 * startSpeed) + startSpeed;
+			else
+				return a * (a * (3 * (startSpeed + endSpeed) - 6) + 6 - 4 * startSpeed - 2 * endSpeed) + startSpeed;
+		}
+	};
+
+	/** A fifth-order Hermite spline interpolation. When left unspecified, the starting and ending speeds are zero. The starting
+	 * and ending accelerations are always zero. */
+	static public final SplineInterpolation fade = new SplineInterpolation() {
 		public float apply (float a) {
 			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
+		}
+
+		public float applyWithSpeed (float startSpeed, float a) {
+			return a * (a * a * (a * (a * (6 - 3 * startSpeed) + 8 * startSpeed - 15) + 10 - 6 * startSpeed) + startSpeed);
+		}
+
+		public float applyWithSpeed (float startSpeed, float endSpeed, float a) {
+			return a * (a * a * (a * (a * (6 - 3 * (startSpeed + endSpeed)) + 8 * startSpeed + 7 * endSpeed - 15) + 10
+				- 6 * startSpeed - 4 * endSpeed) + startSpeed);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (startSpeed == 0) {
+				if (endSpeed == 0) {
+					return a * a * (a * (a * 30 - 60) + 30);
+				} else {
+					return a * a * (a * (a * (30 - 15 * endSpeed) + 28 * endSpeed - 60) + 30 - 12 * endSpeed);
+				}
+			}
+			if (endSpeed == 0) {
+				return a * a * (a * (a * (30 - 15 * startSpeed) + 32 * startSpeed - 60) + 30 - 18 * startSpeed) + startSpeed;
+			} else {
+				return a * a * (a * (a * (30 - 15 * (startSpeed + endSpeed)) + 32 * startSpeed + 28 * endSpeed - 60) + 30
+					- 18 * startSpeed - 12 * endSpeed) + startSpeed;
+			}
 		}
 	};
 
 	static public final Pow pow2 = new Pow(2);
 	/** Fast, then slow. */
 	static public final PowIn pow2In = new PowIn(2);
-	/** Slow, then falst. */
+	/** Slow, then fast. */
 	static public final PowOut pow2Out = new PowOut(2);
 
 	static public final Pow pow3 = new Pow(3);
@@ -59,9 +126,15 @@ public abstract class Interpolation {
 	static public final PowIn pow5In = new PowIn(5);
 	static public final PowOut pow5Out = new PowOut(5);
 
+	private static final float PI_HALF = MathUtils.PI / 2f;
+
 	static public final Interpolation sine = new Interpolation() {
 		public float apply (float a) {
 			return (1 - MathUtils.cos(a * MathUtils.PI)) / 2;
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return PI_HALF * MathUtils.sin(a * MathUtils.PI);
 		}
 	};
 
@@ -69,11 +142,19 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			return 1 - MathUtils.cos(a * MathUtils.PI / 2);
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return PI_HALF * MathUtils.sin(a * PI_HALF);
+		}
 	};
 
 	static public final Interpolation sineOut = new Interpolation() {
 		public float apply (float a) {
 			return MathUtils.sin(a * MathUtils.PI / 2);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return PI_HALF * MathUtils.cos(a * PI_HALF);
 		}
 	};
 
@@ -95,11 +176,25 @@ public abstract class Interpolation {
 			a *= 2;
 			return ((float)Math.sqrt(1 - a * a) + 1) / 2;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) {
+				a = Math.min(0.99f, 2 * a);
+				return a / (float)Math.sqrt(1 - a * a);
+			}
+			a = Math.max(-0.99f, 2 * (a - 1));
+			return -a / (float)Math.sqrt(1 - a * a);
+		}
 	};
 
 	static public final Interpolation circleIn = new Interpolation() {
 		public float apply (float a) {
 			return 1 - (float)Math.sqrt(1 - a * a);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			a = Math.min(a, 0.99f);
+			return a / (float)Math.sqrt(1 - a * a);
 		}
 	};
 
@@ -107,6 +202,11 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			a--;
 			return (float)Math.sqrt(1 - a * a);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			a = Math.max(-0.99f, a - 1);
+			return -a / (float)Math.sqrt(1 - a * a);
 		}
 	};
 
@@ -135,6 +235,11 @@ public abstract class Interpolation {
 			if (a <= 0.5f) return (float)Math.pow(a * 2, power) / 2;
 			return (float)Math.pow((a - 1) * 2, power) / (power % 2 == 0 ? -2 : 2) + 1;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) return power * (float)Math.pow(a * 2, power - 11);
+			return (power % 2 == 0 ? -power : power) * (float)Math.pow((a - 1) * 2, power - 1);
+		}
 	}
 
 	static public class PowIn extends Pow {
@@ -145,6 +250,10 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			return (float)Math.pow(a, power);
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return power * (float)Math.pow(a, power - 1);
+		}
 	}
 
 	static public class PowOut extends Pow {
@@ -154,6 +263,10 @@ public abstract class Interpolation {
 
 		public float apply (float a) {
 			return (float)Math.pow(a - 1, power) * (power % 2 == 0 ? -1 : 1) + 1;
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return (power % 2 == 0 ? -power : power) * (float)Math.pow(a - 1, power - 1);
 		}
 	}
 
@@ -173,6 +286,11 @@ public abstract class Interpolation {
 			if (a <= 0.5f) return ((float)Math.pow(value, power * (a * 2 - 1)) - min) * scale / 2;
 			return (2 - ((float)Math.pow(value, -power * (a * 2 - 1)) - min) * scale) / 2;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) return (float)Math.log(value) * (float)Math.pow(value, power * (a * 2 - 1)) * power * scale;
+			return (float)Math.log(value) * (float)Math.pow(value, power * (1 - a * 2)) * power * scale;
+		}
 	};
 
 	static public class ExpIn extends Exp {
@@ -182,6 +300,10 @@ public abstract class Interpolation {
 
 		public float apply (float a) {
 			return ((float)Math.pow(value, power * (a - 1)) - min) * scale;
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return (float)Math.log(value) * (float)Math.pow(value, power * (a - 1)) * power * scale;
 		}
 	}
 
@@ -193,18 +315,46 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			return 1 - ((float)Math.pow(value, -power * a) - min) * scale;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return (float)Math.log(value) * (float)Math.pow(value, -power * a) * power * scale;
+		}
+	}
+
+	//
+
+	/** An interpolation that supports specific starting and ending speeds. If unspecified, the starting and/or ending speeds are
+	 * set to zero. */
+	public abstract static class SplineInterpolation extends Interpolation {
+		/** Speed is expressed in terms of units of "total change" over "duration". To prepare the input for this method, you may
+		 * use:
+		 * <p>
+		 * {@code speed = worldSpeed * duration / (end - start)}
+		 * @param startSpeed Beginning rate of change.
+		 * @param a Alpha value between 0 and 1, where 1 maps to the total duration. */
+		abstract public float applyWithSpeed (float startSpeed, float a);
+
+		/** Speed is expressed in terms of units of "total change" over "duration". To prepare the input for this method, you may
+		 * use:
+		 * <p>
+		 * {@code speed = worldSpeed * duration / (end - start)}
+		 * @param startSpeed Beginning rate of change.
+		 * @param endSpeed Ending rate of change.
+		 * @param a Alpha value between 0 and 1, where 1 maps to the total duration. */
+		abstract public float applyWithSpeed (float startSpeed, float endSpeed, float a);
 	}
 
 	//
 
 	static public class Elastic extends Interpolation {
-		final float value, power, scale, bounces;
+		final float value, power, scale, bounces, lnValue;
 
 		public Elastic (float value, float power, int bounces, float scale) {
 			this.value = value;
 			this.power = power;
 			this.scale = scale;
 			this.bounces = bounces * MathUtils.PI * (bounces % 2 == 0 ? 1 : -1);
+			this.lnValue = (float)Math.log(value);
 		}
 
 		public float apply (float a) {
@@ -214,7 +364,21 @@ public abstract class Interpolation {
 			}
 			a = 1 - a;
 			a *= 2;
-			return 1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin((a) * bounces) * scale / 2;
+			return 1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale / 2;
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) {
+				a *= 2;
+				float aBounces = a * bounces;
+				return (float)Math.pow(value, power * (a - 1))
+					* (lnValue * MathUtils.sin(aBounces) + bounces * MathUtils.cos(aBounces)) * scale / 2;
+			}
+			a = 1 - a;
+			a *= 2;
+			float aBounces = a * bounces;
+			return (float)Math.pow(value, power * (a - 1)) * (lnValue * MathUtils.sin(aBounces) + bounces * MathUtils.cos(aBounces))
+				* scale / 2;
 		}
 	}
 
@@ -227,6 +391,13 @@ public abstract class Interpolation {
 			if (a >= 0.99) return 1;
 			return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a >= 0.99) return (1 - (float)Math.pow(value, power * (-0.01)) * MathUtils.sin(0.99f * bounces) * scale) * 100;
+			float aBounces = a * bounces;
+			return (float)Math.pow(value, power * (a - 1)) * (lnValue * MathUtils.sin(aBounces) + bounces * MathUtils.cos(aBounces))
+				* scale;
+		}
 	}
 
 	static public class ElasticOut extends Elastic {
@@ -237,6 +408,13 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			a = 1 - a;
 			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			a = 1 - a;
+			float aBounces = a * bounces;
+			return -(float)Math.pow(value, power * (a - 1))
+				* (power * lnValue * MathUtils.sin(aBounces) + bounces * MathUtils.cos(aBounces)) * scale;
 		}
 	}
 
@@ -260,6 +438,15 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			if (a <= 0.5f) return (1 - out(1 - a * 2)) / 2;
 			return out(a * 2 - 1) / 2 + 0.5f;
+		}
+
+		private boolean speedOutTest (float a) {
+			return a + widths[0] / 2 < widths[0];
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) return speedOutTest(1 - a * 2) ? 2 / widths[0] : super.speed(0, 0, a);
+			return speedOutTest(a * 2 - 1) ? 1 / widths[0] : super.speed(0, 0, a);
 		}
 	}
 
@@ -330,6 +517,20 @@ public abstract class Interpolation {
 			float z = 4 / width * height * a;
 			return 1 - (z - z * a) * width;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			a += widths[0] / 2;
+			float width = 0, height = 0;
+			for (int i = 0, n = widths.length; i < n; i++) {
+				width = widths[i];
+				if (a <= width) {
+					height = heights[i];
+					break;
+				}
+				a -= width;
+			}
+			return 8 * height / (width * width) * (a - width / 2);
+		}
 	}
 
 	static public class BounceIn extends BounceOut {
@@ -343,6 +544,10 @@ public abstract class Interpolation {
 
 		public float apply (float a) {
 			return 1 - super.apply(1 - a);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return super.speed(0, 0, 1 - a);
 		}
 	}
 
@@ -364,6 +569,12 @@ public abstract class Interpolation {
 			a *= 2;
 			return a * a * ((scale + 1) * a + scale) / 2 + 1;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			if (a <= 0.5f) return 4 * a * (a * (3 * scale + 3) - scale);
+			a--;
+			return 4 * a * (a * (3 * scale + 3) + scale);
+		}
 	}
 
 	static public class SwingOut extends Interpolation {
@@ -377,6 +588,11 @@ public abstract class Interpolation {
 			a--;
 			return a * a * ((scale + 1) * a + scale) + 1;
 		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			a--;
+			return a * (a * (3 * scale + 3) + 2 * scale);
+		}
 	}
 
 	static public class SwingIn extends Interpolation {
@@ -388,6 +604,10 @@ public abstract class Interpolation {
 
 		public float apply (float a) {
 			return a * a * ((scale + 1) * a - scale);
+		}
+
+		public float speed (float startSpeed, float endSpeed, float a) {
+			return a * (a * (3 * scale + 3) - 2 * scale);
 		}
 	}
 }
