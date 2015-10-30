@@ -32,10 +32,10 @@ import com.badlogic.gdx.utils.Pools;
  * @author davebaol
  * @author Alexander Dorokhov */
 public class GlyphLayout implements Poolable {
-	static private final Array<Color> colorStack = new Array(4);
-
 	public final Array<GlyphRun> runs = new Array();
 	public float width, height;
+
+	private final Array<Color> colorStack = new Array(4);
 
 	/** Creates an empty GlyphLayout. */
 	public GlyphLayout () {
@@ -94,7 +94,7 @@ public class GlyphLayout implements Poolable {
 		float x = 0, y = 0, width = 0;
 		int lines = 0;
 
-		Array<Color> colorStack = GlyphLayout.colorStack;
+		Array<Color> colorStack = this.colorStack;
 		Color nextColor = color;
 		colorStack.add(color);
 		Pool<Color> colorPool = Pools.get(Color.class);
