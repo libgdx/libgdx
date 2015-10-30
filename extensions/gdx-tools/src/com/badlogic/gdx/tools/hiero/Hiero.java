@@ -126,6 +126,7 @@ public class Hiero extends JFrame {
 	JTextPane sampleTextPane;
 	JSpinner padAdvanceXSpinner;
 	JList effectsList;
+	LwjglCanvas rendererCanvas;
 	JPanel gamePanel;
 	JTextField fontFileText;
 	JRadioButton fontFileRadio;
@@ -170,7 +171,8 @@ public class Hiero extends JFrame {
 		initialize();
 		splash.close();
 
-		gamePanel.add(new LwjglCanvas(new Renderer()).getCanvas());
+		rendererCanvas = new LwjglCanvas(new Renderer());
+		gamePanel.add(rendererCanvas.getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero.class);
 		java.awt.Color backgroundColor = EffectUtil.fromString(prefs.get("background", "000000"));
@@ -238,7 +240,7 @@ public class Hiero extends JFrame {
 				saveBm(f);
 			} else {
 				System.err.println("Unknown parameter: " + param);
-				System.exit(3);
+				exit(3);
 			}
 		}
 
@@ -375,6 +377,16 @@ public class Hiero extends JFrame {
 		}
 
 		updateFont();
+	}
+
+	void exit (final int exitCode) {
+		rendererCanvas.stop();
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				System.exit(exitCode);
+			}
+		});
 	}
 
 	private void initializeEvents () {
@@ -1412,7 +1424,7 @@ public class Hiero extends JFrame {
 					bmFont.save(saveBmFontFile);
 
 					if (batchMode) {
-						System.exit(0);
+						exit(0);
 					}
 				} catch (Throwable ex) {
 					System.out.println("Error saving BMFont files: " + saveBmFontFile.getAbsolutePath());
