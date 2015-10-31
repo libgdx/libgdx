@@ -622,8 +622,12 @@ public class FreeType {
 					int yWidth = y * width;
 					for (int x = 0; x < width; x++) {
 						//use the color value of the foreground color, blend alpha
-						byte alpha = src.get(ySrcPitch + x);
-						dst.put(yWidth + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * (alpha & 0xff)/255f));
+						final byte alpha = src.get(ySrcPitch + x);
+						final int src_aplha = srcRGBA & 0xff;
+						final int blend = alpha & 0xff;
+						final int tmp_alpha = (int)(src_aplha * blend/255f);
+						final int value = (srcRGBA & 0xffffff00) | tmp_alpha;
+						dst.put(yWidth + x, value);
 					}
 				}
 			}
