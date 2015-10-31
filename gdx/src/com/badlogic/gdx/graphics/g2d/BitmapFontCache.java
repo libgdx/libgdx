@@ -532,4 +532,5 @@ public class BitmapFontCache {
 	public int[] getIDX () {
 		return this.idx;
 	}
+	
 }
