@@ -68,7 +68,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 	protected Vector3 tmpV = new Vector3();
 
 	@Override
-	public void analyze (BaseLight light, Camera camera, Iterable<RenderableProvider> renderableProviders) {
+	public <T extends RenderableProvider> void analyze (BaseLight light, Camera camera, Iterable<T> renderableProviders) {
 		getRenderables(renderableProviders);
 		prepareCamera(camera);
 
@@ -87,7 +87,7 @@ public class AABBNearFarAnalyzer implements NearFarAnalyzer {
 		renderables.clear();
 	}
 
-	protected void getRenderables (Iterable<RenderableProvider> renderableProviders) {
+	protected <T extends RenderableProvider> void getRenderables (Iterable<T> renderableProviders) {
 		for (RenderableProvider renderableProvider : renderableProviders) {
 			renderableProvider.getRenderables(renderables, renderablesPool);
 		}
