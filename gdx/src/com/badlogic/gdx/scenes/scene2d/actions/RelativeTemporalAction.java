@@ -20,15 +20,30 @@ package com.badlogic.gdx.scenes.scene2d.actions;
  * @author Nathan Sweet */
 abstract public class RelativeTemporalAction extends TemporalAction {
 	private float lastPercent;
+	private float lastPercent1;
+	private float lastPercent2;
+	private float lastPercent3;
 
 	protected void begin () {
 		lastPercent = 0;
+		lastPercent1 = 0;
+		lastPercent2 = 0;
+		lastPercent3 = 0;
 	}
 
 	protected void update (float percent) {
 		updateRelative(percent - lastPercent);
 		lastPercent = percent;
 	}
+	
+	protected void updateIndependently (float percent0, float percent1, float percent2, float percent3){
+		updateRelativeIndependently(percent0 - lastPercent, percent1 - lastPercent1, percent2 - lastPercent2, percent3 - lastPercent3);
+		lastPercent = percent0;
+		lastPercent1 = percent1;
+		lastPercent2 = percent2;
+		lastPercent3 = percent3;
+	};
 
 	abstract protected void updateRelative (float percentDelta);
+	protected void updateRelativeIndependently (float percentDelta0, float percentDelta1, float percentDelta2, float percentDelta3){};
 }

@@ -100,6 +100,7 @@ public class GdxTests {
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
 		BitmapFontAtlasRegionTest.class,
+		InterpolationInterruptionTest.class,
 		BlitTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
