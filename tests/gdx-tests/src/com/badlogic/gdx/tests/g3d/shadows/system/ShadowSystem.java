@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
@@ -33,13 +34,15 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * // Init system:
  * Array&lt;ModelBatch&gt; passBatches = new Array&lt;ModelBatch&gt;();
  * ModelBatch mainBatch;
- * ShadowSystem system = new XXXShadowSystem(cam, instances);
+ * ShadowSystem system = new XXXShadowSystem();
+ * system.init();
  * for (int i = 0; i &lt; system.getPassQuantity(); i++) {
  * 	passBatches.add(new ModelBatch(system.getPassShaderProvider(i)));
  * }
  * mainBatch = new ModelBatch(system.getShaderProvider());
- * 
+ *
  * // Render scene with shadows:
+ * system.begin(camera, instances);
  * system.update();
  * for (int i = 0; i &lt; system.getPassQuantity(); i++) {
  * 	system.begin(i);
@@ -52,11 +55,12 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * 	camera = null;
  * 	system.end(i);
  * }
- * 
+ * system.end();
+ *
  * Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
  * Gdx.gl.glClearColor(0, 0, 0, 1);
  * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
- * 
+ *
  * mainBatch.begin(cam);
  * mainBatch.render(instances, environment);
  * mainBatch.end();
@@ -71,6 +75,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
  * </p>
  * @author realitix */
 public interface ShadowSystem {
+
+	/** Initialize system */
+	public void init ();
 
 	/** Return number of pass
 	 * @return int */
@@ -128,12 +135,21 @@ public interface ShadowSystem {
 	/** Update shadowSystem */
 	public void update ();
 
-	/** Begin pass n rendering */
+	/** Begin shadow system with main camera and renderable providers.
+	 * @param camera
+	 * @param renderableProviders */
+	public <T extends RenderableProvider> void begin (Camera camera, Iterable<T> renderableProviders);
+
+	/** Begin pass n rendering.
+	 * @param n Pass number */
 	public void begin (int n);
 
 	/** Switch light
 	 * @return Current camera */
 	public Camera next ();
+
+	/** End shadow system */
+	public void end ();
 
 	/** End pass n rendering */
 	public void end (int n);

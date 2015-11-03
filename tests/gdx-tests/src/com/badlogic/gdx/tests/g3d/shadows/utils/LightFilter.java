@@ -25,6 +25,7 @@ public interface LightFilter {
 	/** Return true if light should be used for shadow computation.
 	 * @param light Current light
 	 * @param camera Light's camera
+	 * @param mainCamera Main scene camera
 	 * @return boolean */
-	public boolean filter (BaseLight light, Camera camera);
+	public boolean filter (BaseLight light, Camera camera, Camera mainCamera);
 }
