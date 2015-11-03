@@ -196,8 +196,7 @@ public interface Batch extends Disposable {
 	 * current batch is flushed to the gpu. */
 	public void setProjectionMatrix (Matrix4 projection);
 
-	/** Sets the transform matrix to be used by this Batch. If this is called inside a {@link #begin()}/{@link #end()} block, the
-	 * current batch is flushed to the gpu. */
+	/** Sets the transform matrix to be used by this Batch. */
 	public void setTransformMatrix (Matrix4 transform);
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
