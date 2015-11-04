@@ -526,7 +526,7 @@ public class BitmapFontCache {
 		return layouts;
 	}
 
-	public int getVertexCount (int j) {
+	final public int getVertexCount (int j) {
 		return this.idx[j];
 	}
 }
