@@ -65,13 +65,13 @@ public class Queue<T> {
 
 	/** Enqueue given object (append after tail). Unless backing array needs resizing, operates in O(1) time.
 	 * @param object can be null
-	 * @return true if added, false if full (can only happen when resizable is false) */
-	public boolean push (T object) {
+	 * @throws IllegalStateException when full and not resizable */
+	public void push (T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
 			if (!resizable) {
-				return false;
+				throw new IllegalStateException("Queue is full");
 			} else {
 				resize(values.length << 1);// *2
 				values = this.values;
@@ -83,19 +83,18 @@ public class Queue<T> {
 			tail = 0;
 		}
 		size++;
-		return true;
 	}
 
 	/** Add given object to the deque, prepending to head. Is very similar to {@link #push(Object)} but the object is added to the
 	 * other side. Can be thought of as jumping the queue.
 	 * @param object can be null
-	 * @return true if added, false if full (can only happen when resizable is false) */
-	public boolean pushFront (T object) {
+	 * @throws IllegalStateException when full and not resizable */
+	public void pushFront (T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
 			if (!resizable) {
-				return false;
+				throw new IllegalStateException("Deque is full");
 			} else {
 				resize(values.length << 1);// *2
 				values = this.values;
@@ -111,7 +110,6 @@ public class Queue<T> {
 
 		this.head = head;
 		this.size++;
-		return true;
 	}
 
 	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize.
@@ -151,17 +149,8 @@ public class Queue<T> {
 	 * @throws NoSuchElementException when queue is empty */
 	public T pop () {
 		if (size == 0) {
-			throw new NoSuchElementException("Queue is empty");
-		}
-		return pop(null);
-	}
-
-	/** Dequeue next object in queue
-	 * @return next item in queue or `defaultValue` if empty */
-	public T pop (T defaultValue) {
-		if (size == 0) {
 			// Underflow
-			return defaultValue;
+			throw new NoSuchElementException("Queue is empty");
 		}
 
 		final T[] values = this.values;
@@ -225,6 +214,22 @@ public class Queue<T> {
 		return values[tail];
 	}
 
+	/** Retrieves the value in Queue without removing it. Indexing is from the front to back, zero based. Therefore get(0) is the
+	 * same as peek().
+	 * @throws NoSuchElementException when the index is negative or >= size */
+	public T get (int index) {
+		if (index < 0 || index >= size) {
+			throw new NoSuchElementException("Index " + index + " does not exist, size is " + size);
+		}
+		final T[] values = this.values;
+
+		int i = head + index;
+		if (i >= values.length) {
+			i -= values.length;
+		}
+		return values[i];
+	}
+
 	/** @return true if this queue can't hold any more values (always false when resizable) */
 	public boolean isFull () {
 		return !resizable && size == values.length;
@@ -264,14 +269,14 @@ public class Queue<T> {
 
 	public String toString () {
 		if (size == 0) {
-			return "Queue []";
+			return "[]";
 		}
 		final T[] values = this.values;
 		final int head = this.head;
 		final int tail = this.tail;
 
 		StringBuilder sb = new StringBuilder(64);
-		sb.append("Queue [");
+		sb.append('[');
 		sb.append(values[head]);
 		for (int i = (head + 1) % values.length; i != tail; i = (i + 1) % values.length) {
 			sb.append(", ").append(values[i]);

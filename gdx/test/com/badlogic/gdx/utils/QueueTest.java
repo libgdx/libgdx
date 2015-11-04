@@ -1,9 +1,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
+
+import static org.junit.Assert.*;
 
 public class QueueTest {
 
@@ -16,7 +18,11 @@ public class QueueTest {
 		for (int i = 0; i < 100; i++) {
 
 			for (int j = 0; j < i; j++) {
-				assertTrue("Failed to add element " + j + " (" + i + ")", q.push(j));
+				try {
+					q.push(j);
+				} catch (IllegalStateException e) {
+					fail("Failed to add element " + j + " (" + i + ")");
+				}
 				final Integer peeked = q.peekLast();
 				assertTrue("peekLast shows " + peeked + ", should be " + j + " (" + i + ")", peeked.equals(j));
 				final int size = q.size();
@@ -56,7 +62,11 @@ public class QueueTest {
 		for (int i = 0; i < 100; i++) {
 
 			for (int j = 0; j < i; j++) {
-				assertTrue("Failed to add element " + j + " (" + i + ")", q.pushFront(j));
+				try {
+					q.pushFront(j);
+				} catch (IllegalStateException e) {
+					fail("Failed to add element " + j + " (" + i + ")");
+				}
 				final Integer peeked = q.peek();
 				assertTrue("peek shows " + peeked + ", should be " + j + " (" + i + ")", peeked.equals(j));
 				final int size = q.size();
@@ -90,12 +100,21 @@ public class QueueTest {
 	public void nonResizableQueueTest () {
 		final Queue<Integer> q = new Queue<Integer>(5, false);
 		for (int i = 0; i < 5; i++) {
-			assertTrue("Failed to add element " + i, q.push(i));
+			try {
+				q.push(i);
+			} catch (IllegalStateException ise) {
+				fail("Failed to add element " + i);
+			}
 			assertTrue("Wrong size after " + i, q.size() == i + 1);
 		}
 		assertTrue("Not full when should be full", q.isFull());
 		for (int i = 5; i < 10; i++) {
-			assertFalse("Added element " + i, q.push(i));
+			try {
+				q.push(i);
+				fail("Added element " + i);
+			} catch (IllegalStateException e) {
+				// This is expected
+			}
 			assertTrue("Wrong size after " + i, q.size() == 5);
 			assertTrue("Not full when should be full (" + i + ")", q.isFull());
 		}
@@ -107,16 +126,43 @@ public class QueueTest {
 	}
 
 	@Test
+	public void getTest () {
+		final Queue<Integer> q = new Queue<Integer>(7, true);
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 4; j++) {
+				q.push(j);
+			}
+			assertEquals("get(0) is not equal to peek (" + i + ")", q.get(0), q.peek());
+			assertEquals("get(size-1) is not equal to peekLast (" + i + ")", q.get(q.size - 1), q.peekLast());
+			for (int j = 0; j < 4; j++) {
+				assertTrue(q.get(j) == j);
+			}
+			for (int j = 0; j < 4 - 1; j++) {
+				q.pop();
+				assertEquals("get(0) is not equal to peek (" + i + ")", q.get(0), q.peek());
+			}
+			q.pop();
+			assert q.size == 0; // Failing this means broken test
+			try {
+				q.get(0);
+				fail("get() on empty queue did not throw");
+			} catch (NoSuchElementException ignore) {
+				// Expected
+			}
+		}
+	}
+
+	@Test
 	public void toStringTest () {
 		{// Resizable
 			Queue<Integer> q = new Queue<Integer>(1, true);
-			assertTrue(q.toString().equals("Queue []"));
+			assertTrue(q.toString().equals("[]"));
 			q.push(4);
-			assertTrue(q.toString().equals("Queue [4]"));
+			assertTrue(q.toString().equals("[4]"));
 			q.push(5);
 			q.push(6);
 			q.push(7);
-			assertTrue(q.toString().equals("Queue [4, 5, 6, 7]"));
+			assertTrue(q.toString().equals("[4, 5, 6, 7]"));
 		}
 
 		{// Non-resizable
@@ -125,8 +171,12 @@ public class QueueTest {
 			nonResQ.push(2);
 			nonResQ.push(3);
 			nonResQ.push(4);
-			nonResQ.push(5);
-			assertTrue(nonResQ.toString().equals("Queue [1, 2, 3, 4]"));
+			try {
+				nonResQ.push(5);
+			} catch (IllegalStateException e) {
+				// Expected
+			}
+			assertTrue(nonResQ.toString().equals("[1, 2, 3, 4]"));
 		}
 	}
 
