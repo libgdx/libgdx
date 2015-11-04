@@ -313,7 +313,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 	 * the {@link Renderable#bones} member is not null then skinning is assumed and the renderable will be added as-is, by
 	 * reference. Otherwise the renderable will be merged with other renderables as much as possible, depending on the
 	 * {@link Mesh#getVertexAttributes()}, {@link Renderable#material} and primitiveType (in that order). The
-	 * {@link Renderable#environment}, {@link Renderable#shader} and {@link Renderable#userData} values (if any) are ignored.
+	 * {@link Renderable#environment}, {@link Renderable#shader} and {@link Renderable#userData} values (if any) are removed.
 	 * @param renderable The {@link Renderable} to add, should not change while the cache is needed. */
 	public void add (Renderable renderable) {
 		if (!building) throw new GdxRuntimeException("Can only add items to the ModelCache in between .begin() and .end()");
@@ -340,6 +340,10 @@ public class ModelCache implements Disposable, RenderableProvider {
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 		if (building) throw new GdxRuntimeException("Cannot render a ModelCache in between .begin() and .end()");
+		for (Renderable r : this.renderables) {
+			r.shader = null;
+			r.environment = null;
+		}
 		renderables.addAll(this.renderables);
 	}
 
