@@ -529,7 +529,7 @@ public class BitmapFontCache {
 	/** For expert usage -- returns indexes for vertex data entries. Using this method allows external implementations for custom
 	 * rendering.
 	 * @return array with numbers of vertex data entries per page. */
-        public int getVertexCount (int page) {
-            return this.idx[page];
-        }
+	public int[] getIDX () {
+		return this.idx;
+	}
 }
