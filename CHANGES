@@ -1,3 +1,6 @@
+[1.7.2]
+- Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
+
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
 - Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
