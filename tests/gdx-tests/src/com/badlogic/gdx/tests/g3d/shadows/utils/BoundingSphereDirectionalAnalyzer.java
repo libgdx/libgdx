@@ -56,8 +56,8 @@ public class BoundingSphereDirectionalAnalyzer implements DirectionalAnalyzer {
 		out.near = 0.5f * radius;
 		out.far = 2.5f * radius;
 
-		// Compute up vector
-		out.up.set(light.direction.y, light.direction.z, light.direction.x);
+		// Compute up vector (should not be equal to direction vector)
+		out.up.set(light.direction.y + 1, light.direction.z + 2, light.direction.x + 3).nor();
 
 		// Compute viewport (orthographic camera)
 		out.viewportWidth = radius;
