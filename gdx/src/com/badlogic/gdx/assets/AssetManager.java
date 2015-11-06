@@ -72,6 +72,7 @@ public class AssetManager implements Disposable {
 	final AsyncExecutor executor;
 
 	final Stack<AssetLoadingTask> tasks = new Stack();
+	final FileHandleResolver resolver = null;
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
@@ -92,6 +93,7 @@ public class AssetManager implements Disposable {
 	 * manually add the loaders you need, including any loaders they might depend on.
 	 * @param defaultLoaders whether to add the default loaders */
 	public AssetManager (FileHandleResolver resolver, boolean defaultLoaders) {
+		this.resolver = resolver;
 		if (defaultLoaders) {
 			setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
 			setLoader(Music.class, new MusicLoader(resolver));
@@ -110,6 +112,12 @@ public class AssetManager implements Disposable {
 			setLoader(Model.class, ".obj", new ObjLoader(resolver));
 		}
 		executor = new AsyncExecutor(1);
+	}
+	
+	/** Returns the {@link FileHandleResolver} used by this AssetManager instance
+	 * @return file handle resolver used by this AssetManager instance */
+	public FileHandleResolver getFileHandleResolver() {
+		return resolver;
 	}
 
 	/** @param fileName the asset file name
