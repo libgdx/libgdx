@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.Array;
  * @author mzechner */
 public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.MusicParameter> {
 
-	private Music music;
+	protected Music music;
 
 	public MusicLoader (FileHandleResolver resolver) {
 		super(resolver);
