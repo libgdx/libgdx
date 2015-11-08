@@ -215,6 +215,9 @@ public class Button extends Table implements Disableable {
 		if (isPressed && !isDisabled) {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
+		} else if (isChecked && !isDisabled) {
+			offsetX = style.checkedOffsetX;
+			offsetY = style.checkedOffsetY;
 		} else {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
@@ -262,7 +265,7 @@ public class Button extends Table implements Disableable {
 		/** Optional. */
 		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}
@@ -284,6 +287,9 @@ public class Button extends Table implements Disableable {
 			this.pressedOffsetY = style.pressedOffsetY;
 			this.unpressedOffsetX = style.unpressedOffsetX;
 			this.unpressedOffsetY = style.unpressedOffsetY;
+			this.checkedOffsetX = style.checkedOffsetX;
+			this.checkedOffsetY = style.checkedOffsetY;
+			
 		}
 	}
 }
