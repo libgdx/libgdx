@@ -82,6 +82,10 @@ public class ShaderProgram implements Disposable {
 
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;
+	
+	/** code that is always added to every shader (both vertex and fragment), typically used to inject a #version line. Note that
+	 * this is added as-is, you should include a newline (`\n`) if needed. */
+	public static String prependCode = "";
 
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
@@ -149,6 +153,11 @@ public class ShaderProgram implements Disposable {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
+		if (prependCode != null && prependCode.length() > 0) {
+			vertexShader = prependCode + vertexShader;
+			fragmentShader = prependCode + fragmentShader;
+		}
+		
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
 		this.matrix = BufferUtils.newFloatBuffer(16);
