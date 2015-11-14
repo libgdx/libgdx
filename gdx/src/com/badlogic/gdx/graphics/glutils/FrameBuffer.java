@@ -40,12 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
  * @author mzechner, realitix */
 public class FrameBuffer extends GLFrameBuffer<Texture> {
 
-	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
-	 *
-	 * @param format
-	 * @param width
-	 * @param height
-	 * @param hasDepth */
+	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
 		this(format, width, height, hasDepth, false);
 	}
@@ -66,7 +61,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	protected Texture createColorTexture () {
 		int glFormat = Gdx2DPixmap.toGlFormat(Pixmap.Format.toGdx2DPixmapFormat(format));
 		int glType = Gdx2DPixmap.toGlType(Pixmap.Format.toGdx2DPixmapFormat(format));
-		GlOnlyTextureData data = new GlOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
+		GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
 		Texture result = new Texture(data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);

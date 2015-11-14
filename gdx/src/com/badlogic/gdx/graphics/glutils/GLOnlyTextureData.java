@@ -17,14 +17,15 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A {@link TextureData} implementation which should be used to create gl only textures. This TextureData fits perfectly for
- * FrameBuffer */
-public class GlOnlyTextureData implements TextureData {
+ * FrameBuffer. The data is not managed. */
+public class GLOnlyTextureData implements TextureData {
 
 	/** width and height */
 	int width = 0;
@@ -37,16 +38,20 @@ public class GlOnlyTextureData implements TextureData {
 	int format;
 	int type;
 
-	/** @param w Width
-	 * @param h Height
-	 * @param mipLevel MipMapLevel
-	 * @param internalFormat OpenGL internal format
-	 * @param format Opengl format
-	 * @param type Opengl type */
-	public GlOnlyTextureData (int w, int h, int mipLevel, int internalFormat, int format, int type) {
-		this.width = w;
-		this.height = h;
-		this.mipLevel = mipLevel;
+	/** @see "https://www.khronos.org/opengles/sdk/docs/man/xhtml/glTexImage2D.xml"
+	 * @param internalFormat Specifies the internal format of the texture. Must be one of the following symbolic constants:
+	 *           {@link GL20.GL_ALPHA}, {@link GL20.GL_LUMINANCE}, {@link GL20.GL_LUMINANCE_ALPHA}, {@link GL20.GL_RGB},
+	 *           {@link GL20.GL_RGBA}.
+	 * @param format Specifies the format of the texel data. Must match internalformat. The following symbolic values are accepted:
+	 *           {@link GL20.GL_ALPHA}, {@link GL20.GL_RGB}, {@link GL20.GL_RGBA}, {@link GL20.GL_LUMINANCE}, and
+	 *           {@link GL20.GL_LUMINANCE_ALPHA}.
+	 * @param type Specifies the data type of the texel data. The following symbolic values are accepted:
+	 *           {@link GL20.GL_UNSIGNED_BYTE}, {@link GL20.GL_UNSIGNED_SHORT_5_6_5}, {@link GL20.GL_UNSIGNED_SHORT_4_4_4_4}, and
+	 *           {@link GL20.GL_UNSIGNED_SHORT_5_5_5_1}. */
+	public GLOnlyTextureData (int width, int height, int mipMapLevel, int internalFormat, int format, int type) {
+		this.width = width;
+		this.height = height;
+		this.mipLevel = mipMapLevel;
 		this.internalFormat = internalFormat;
 		this.format = format;
 		this.type = type;
@@ -105,6 +110,6 @@ public class GlOnlyTextureData implements TextureData {
 
 	@Override
 	public boolean isManaged () {
-		return true;
+		return false;
 	}
 }
