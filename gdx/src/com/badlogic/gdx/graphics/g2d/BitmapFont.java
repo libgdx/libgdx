@@ -330,6 +330,7 @@ public class BitmapFont implements Disposable {
 			g.xoffset += Math.round((maxAdvance - g.xadvance) / 2);
 			g.xadvance = maxAdvance;
 			g.kerning = null;
+			g.fixedWidth = true;
 		}
 	}
 
@@ -392,6 +393,7 @@ public class BitmapFont implements Disposable {
 		public int xoffset, yoffset;
 		public int xadvance;
 		public byte[][] kerning;
+		public boolean fixedWidth;
 
 		/** The index to the texture page that holds this glyph. */
 		public int page = 0;
@@ -774,16 +776,27 @@ public class BitmapFont implements Disposable {
 				if (glyph == null) continue;
 				glyphs.add(glyph);
 
-				if (lastGlyph == null)
-					xAdvances.add(-glyph.xoffset * scaleX - padLeft); // First glyph.
-				else
+				if (lastGlyph == null) { // First glyph.
+					if(glyph.fixedWidth) {
+						xAdvances.add(0);
+					} else {
+						xAdvances.add(-glyph.xoffset * scaleX - padLeft);
+					}
+				} else {
 					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				}
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
-			if (lastGlyph != null) xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX - padRight);
+			if (lastGlyph != null) {
+				if(lastGlyph.fixedWidth) {
+					xAdvances.add(lastGlyph.xadvance * scaleX - padRight);
+				} else {
+					xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX - padRight);
+				}
+			}
 		}
 
 		/** Returns the first valid glyph index to use to wrap to the next line, starting at the specified start index and
