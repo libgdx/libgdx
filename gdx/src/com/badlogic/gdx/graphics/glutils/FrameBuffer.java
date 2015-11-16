@@ -59,8 +59,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	@Override
 	protected Texture createColorTexture () {
-		int glFormat = Gdx2DPixmap.toGlFormat(Pixmap.Format.toGdx2DPixmapFormat(format));
-		int glType = Gdx2DPixmap.toGlType(Pixmap.Format.toGdx2DPixmapFormat(format));
+		int glFormat = Pixmap.Format.toGlFormat(format);
+		int glType = Pixmap.Format.toGlType(format);
 		GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
 		Texture result = new Texture(data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);

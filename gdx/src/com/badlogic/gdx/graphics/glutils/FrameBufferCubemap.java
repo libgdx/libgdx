@@ -90,8 +90,8 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 
 	@Override
 	protected Cubemap createColorTexture () {
-		int glFormat = Gdx2DPixmap.toGlFormat(Pixmap.Format.toGdx2DPixmapFormat(format));
-		int glType = Gdx2DPixmap.toGlType(Pixmap.Format.toGdx2DPixmapFormat(format));
+		int glFormat = Pixmap.Format.toGlFormat(format);
+		int glType = Pixmap.Format.toGlType(format);
 		GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
 		Cubemap result = new Cubemap(data, data, data, data, data, data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
