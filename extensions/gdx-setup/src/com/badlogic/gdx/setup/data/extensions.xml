@@ -107,4 +107,28 @@
 			</html>
 		</projects>
 	</extension>
+	<extension>
+       <name>gdx-facebook</name>
+       <description>Provides cross-platform support for Facebook Graph API</description>
+       <package>de.tomgrill.gdxfacebook</package>
+       <version>1.1.0</version>
+       <compatibility>1.7.0</compatibility>
+       <website>https://github.com/TomGrill/gdx-facebook</website>
+       <gwtInherits></gwtInherits>
+       <projects>
+			<core>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core</dependency>
+			</core>
+			<desktop>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-desktop</dependency>
+			</desktop>
+			<android>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-android</dependency>	
+			</android>
+			<ios>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
+			</ios>
+			<html>null</html>
+		</projects>
+    </extension>
 </extensions>
