@@ -540,7 +540,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 		// circle button on Xperia Play shouldn't need catchBack == true
 		if (keyCode == Keys.BUTTON_CIRCLE) return true;
-		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
+		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK && !e.isLongPress()) return true;
 		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
 		return false;
 	}
