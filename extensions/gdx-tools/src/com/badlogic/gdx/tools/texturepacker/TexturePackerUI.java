@@ -565,6 +565,7 @@ public class TexturePackerUI extends JFrame {
 			uiOutput.setText(file.getAbsolutePath());
 		}
 	}
+	
 	protected void uiPackActionPerformed(ActionEvent evt) {
 		if (uiPackName.getText().length() == 0) {
 			showErrorMsg("Pack name is empty!");
