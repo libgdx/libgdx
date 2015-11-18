@@ -458,9 +458,10 @@ public class Actor {
 	}
 
 	public void setWidth (float width) {
-		float oldWidth = this.width;
-		this.width = width;
-		if (width != oldWidth) sizeChanged();
+		if (this.width != width) {
+			this.width = width;
+			sizeChanged();
+		}
 	}
 
 	public float getHeight () {
@@ -468,9 +469,10 @@ public class Actor {
 	}
 
 	public void setHeight (float height) {
-		float oldHeight = this.height;
-		this.height = height;
-		if (height != oldHeight) sizeChanged();
+		if (this.height != height) {
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	/** Returns y plus height. */
@@ -497,25 +499,29 @@ public class Actor {
 
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
-		this.width = width;
-		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float size) {
-		width += size;
-		height += size;
-		sizeChanged();
+		if (size != 0) {
+			width += size;
+			height += size;
+			sizeChanged();
+		}
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float width, float height) {
-		this.width += width;
-		this.height += height;
-		sizeChanged();
+		if (width != 0 || height != 0) {
+			this.width += width;
+			this.height += height;
+			sizeChanged();
+		}
 	}
 
 	/** Set bounds the x, y, width, and height. */
@@ -616,16 +622,18 @@ public class Actor {
 	}
 
 	public void setRotation (float degrees) {
-		float oldRotation = this.rotation;
-		this.rotation = degrees;
-		if (degrees != oldRotation) rotationChanged();
+		if (this.rotation != degrees) {
+			this.rotation = degrees;
+			rotationChanged();
+		}
 	}
 
 	/** Adds the specified rotation to the current rotation. */
 	public void rotateBy (float amountInDegrees) {
-		rotation += amountInDegrees;
-		if (amountInDegrees != 0)
+		if (amountInDegrees != 0) {
+			rotation += amountInDegrees;
 			rotationChanged();
+		}
 	}
 
 	public void setColor (Color color) {
