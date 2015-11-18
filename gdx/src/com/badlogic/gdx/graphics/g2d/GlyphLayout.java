@@ -63,8 +63,8 @@ public class GlyphLayout implements Poolable {
 		setText(font, str, 0, str.length(), font.getColor(), 0, Align.left, false, null);
 	}
 
-	/** Calls {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) setText} with the whole string
-	 * and no truncation. */
+	/** Calls {@link #setText(BitmapFont, CharSequence, int, int, Color, float, int, boolean, String) setText} with the whole
+	 * string and no truncation. */
 	public void setText (BitmapFont font, CharSequence str, Color color, float targetWidth, int halign, boolean wrap) {
 		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
@@ -72,6 +72,7 @@ public class GlyphLayout implements Poolable {
 	/** @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
 	 *           {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
 	 *           portions of the text.
+	 * @param halign Horizontal alignment of the text, see {@link Align}.
 	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
 	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
 	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
@@ -146,7 +147,7 @@ public class GlyphLayout implements Poolable {
 						x += xAdvance;
 
 						// Don't wrap if the glyph would fit with just its width (no xadvance or kerning).
-						if (wrap && x > targetWidth && i > 1 && x - xAdvance //
+						if (wrap && x > targetWidth && i > 1 && x - xAdvance
 							+ (run.glyphs.get(i - 1).xoffset + run.glyphs.get(i - 1).width) * fontData.scaleX - 0.0001f > targetWidth) {
 
 							if (truncate != null) {
@@ -253,13 +254,13 @@ public class GlyphLayout implements Poolable {
 			run.glyphs.truncate(count - 1);
 			run.xAdvances.truncate(count);
 			adjustLastGlyph(fontData, run);
-			run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
+			if (truncateRun.xAdvances.size > 0) run.xAdvances.addAll(truncateRun.xAdvances, 1, truncateRun.xAdvances.size - 1);
 		} else {
 			// No run glyphs fit, use only truncate glyphs.
 			run.glyphs.clear();
 			run.xAdvances.clear();
 			run.xAdvances.addAll(truncateRun.xAdvances);
-			run.width += truncateRun.xAdvances.get(0);
+			if (truncateRun.xAdvances.size > 0) run.width += truncateRun.xAdvances.get(0);
 		}
 		run.glyphs.addAll(truncateRun.glyphs);
 		run.width += truncateWidth;
