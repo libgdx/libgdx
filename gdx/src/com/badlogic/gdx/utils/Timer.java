@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 
@@ -199,7 +199,7 @@ public class Timer {
 	/** Manages the single timer thread. Stops thread on libgdx application pause and dispose, starts thread on resume.
 	 * @author Nathan Sweet */
 	static class TimerThread implements Runnable, LifecycleListener {
-		Application app;
+		Files files;
 		private long pauseMillis;
 
 		public TimerThread () {
@@ -210,7 +210,7 @@ public class Timer {
 		public void run () {
 			while (true) {
 				synchronized (instances) {
-					if (app != Gdx.app) return;
+					if (files != Gdx.files) return;
 
 					long timeMillis = System.nanoTime() / 1000000;
 					long waitMillis = 5000;
@@ -222,7 +222,7 @@ public class Timer {
 						}
 					}
 
-					if (app != Gdx.app) return;
+					if (files != Gdx.files) return;
 
 					try {
 						if (waitMillis > 0) instances.wait(waitMillis);
@@ -239,7 +239,7 @@ public class Timer {
 					instances.get(i).delay(delayMillis);
 				}
 			}
-			app = Gdx.app;
+			files = Gdx.files;
 			Thread t = new Thread(this, "Timer");
 			t.setDaemon(true);
 			t.start();
@@ -249,7 +249,7 @@ public class Timer {
 		public void pause () {
 			pauseMillis = System.nanoTime() / 1000000;
 			synchronized (instances) {
-				app = null;
+				files = null;
 				wake();
 			}
 			thread = null;
