@@ -16,12 +16,19 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import static com.badlogic.gdx.Gdx.*;
+
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +37,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.PixelFormat;
@@ -49,18 +57,21 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
- * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
- * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
+/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses {@link AWTGLCanvas},
+ * which allows multiple LwjglAWTCanvas to be used in a single application. All OpenGL calls are done on the EDT. Note that you
+ * may need to call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with
+ * shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglAWTCanvas implements Application {
-	final LwjglGraphics graphics;
-	final OpenALAudio audio;
-	final LwjglFiles files;
-	final LwjglAWTInput input;
-	final LwjglNet net;
+	static int instanceCount;
+
+	LwjglGraphics graphics;
+	OpenALAudio audio;
+	LwjglFiles files;
+	LwjglAWTInput input;
+	LwjglNet net;
 	final ApplicationListener listener;
-	final AWTGLCanvas canvas;
+	AWTGLCanvas canvas;
 	final Array<Runnable> runnables = new Array();
 	final Array<Runnable> executedRunnables = new Array();
 	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
@@ -69,7 +80,7 @@ public class LwjglAWTCanvas implements Application {
 	int lastHeight;
 	int logLevel = LOG_INFO;
 	final String logTag = "LwjglAWTCanvas";
-	private Cursor cursor;
+	Cursor cursor;
 
 	public LwjglAWTCanvas (ApplicationListener listener) {
 		this(listener, null, null);
@@ -80,13 +91,16 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	public LwjglAWTCanvas (ApplicationListener listener, LwjglApplicationConfiguration config) {
-		this(listener, null, null);
+		this(listener, config, null);
 	}
 
-	public LwjglAWTCanvas (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglAWTCanvas sharedContextCanvas) {
+	public LwjglAWTCanvas (ApplicationListener listener, LwjglApplicationConfiguration config,
+		LwjglAWTCanvas sharedContextCanvas) {
+		this.listener = listener;
 		if (config == null) config = new LwjglApplicationConfiguration();
 
 		LwjglNativesLoader.load();
+		instanceCount++;
 
 		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ? sharedContextCanvas.canvas : null;
 		try {
@@ -107,16 +121,20 @@ public class LwjglAWTCanvas implements Application {
 				@Override
 				public void paintGL () {
 					try {
-						LwjglAWTCanvas.this.render();
+						render();
 						repaint();
-					} catch (LWJGLException ex) {
-						throw new GdxRuntimeException(ex);
+					} catch (Throwable ex) {
+						exception(ex);
 					}
 				}
 			};
-		} catch (LWJGLException ex) {
-			throw new GdxRuntimeException(ex);
+		} catch (Throwable ex) {
+			exception(ex);
+			return;
 		}
+
+		canvas.setBackground(new Color(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
+			config.initialBackgroundColor.b, config.initialBackgroundColor.a));
 
 		graphics = new LwjglGraphics(canvas, config) {
 			@Override
@@ -148,27 +166,10 @@ public class LwjglAWTCanvas implements Application {
 			}
 		};
 
-		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) {
-			audio = new OpenALAudio();
-			Gdx.audio = audio;
-		} else {
-			audio = null;
-		}
-		if (Gdx.files == null) {
-			files = new LwjglFiles();
-			Gdx.files = files;
-		} else {
-			files = null;
-		}
-		if (Gdx.net == null) {
-			net = new LwjglNet();
-			Gdx.net = net;
-		} else {
-			net = null;
-		}
+		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) audio = new OpenALAudio();
+		if (Gdx.files == null) files = new LwjglFiles();
+		if (Gdx.net == null) net = new LwjglNet();
 		input = new LwjglAWTInput(this);
-		this.listener = listener;
-
 		setGlobals();
 	}
 
@@ -241,9 +242,9 @@ public class LwjglAWTCanvas implements Application {
 			lastHeight = Math.max(1, graphics.getHeight());
 			listener.resize(lastWidth, lastHeight);
 			start();
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			stopped();
-			throw new GdxRuntimeException(ex);
+			exception(ex);
 		}
 	}
 
@@ -254,7 +255,6 @@ public class LwjglAWTCanvas implements Application {
 		canvas.setCursor(cursor);
 
 		boolean shouldRender = false;
-
 		int width = Math.max(1, graphics.getWidth());
 		int height = Math.max(1, graphics.getHeight());
 		if (lastWidth != width || lastHeight != height) {
@@ -282,7 +282,7 @@ public class LwjglAWTCanvas implements Application {
 			canvas.swapBuffers();
 		}
 
-		Display.sync(getFrameRate());
+		Display.sync(getFrameRate() * instanceCount);
 	}
 
 	public boolean executeRunnables () {
@@ -358,6 +358,8 @@ public class LwjglAWTCanvas implements Application {
 		if (files != null) Gdx.files = null;
 
 		if (net != null) Gdx.net = null;
+
+		instanceCount--;
 
 		stopped();
 	}
@@ -469,8 +471,8 @@ public class LwjglAWTCanvas implements Application {
 		try {
 			canvas.makeCurrent();
 			setGlobals();
-		} catch (LWJGLException ex) {
-			throw new GdxRuntimeException(ex);
+		} catch (Throwable ex) {
+			exception(ex);
 		}
 	}
 
@@ -478,8 +480,9 @@ public class LwjglAWTCanvas implements Application {
 	public boolean isCurrent () {
 		try {
 			return canvas.isCurrent();
-		} catch (LWJGLException ex) {
-			throw new GdxRuntimeException(ex);
+		} catch (Throwable ex) {
+			exception(ex);
+			return false;
 		}
 	}
 
@@ -500,5 +503,10 @@ public class LwjglAWTCanvas implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		stop();
 	}
 }
