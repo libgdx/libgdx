@@ -1,7 +1,7 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.6.5-SNAPSHOT"
-    robovmVersion = "1.5.0"
+    VERSION = "1.7.2-SNAPSHOT"
+    robovmVersion = "1.9.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"

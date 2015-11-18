@@ -12,13 +12,13 @@
 	<!-- the compilerPrefix for the C & C++ compilers -->
 	<property name="compilerPrefix" value=""/>	
 	<property name="iphoneos-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin"/>
-	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/"/>
+	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/"/>
 	<property name="iphonesimulator-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin"/>
-	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.2.sdk"/>
+	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator9.1.sdk"/>
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -miphoneos-version-min=6.0"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -29,7 +29,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1"/>
+	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=6.0"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -126,7 +126,7 @@
 		</exec>
 	</target>
 	
-	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<!-- compiles all C and C++ files to object files in the build directory, for x86_64 builds-->
 	<target name="compile-x86_64" depends="create-build-dir">
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
@@ -180,12 +180,12 @@
 		</exec>
 	</target>
 	
-	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<!-- compiles all C and C++ files to object files in the build directory, for armv7 builds-->
 	<target name="compile-arm" depends="create-build-dir">
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 ${g++-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -fembed-bitcode ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -201,7 +201,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 ${gcc-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -fembed-bitcode ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -234,12 +234,12 @@
 		</exec>
 	</target>
 	
-		<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+		<!-- compiles all C and C++ files to object files in the build directory, for arm64 builds-->
 	<target name="compile-arm64" depends="create-build-dir,clean-objfiles">
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 ${g++-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -fembed-bitcode ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -255,7 +255,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 ${gcc-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -fembed-bitcode ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>

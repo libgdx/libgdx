@@ -69,6 +69,14 @@ public class Pixmap implements Disposable {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
 			throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
 		}
+		
+		public static int toGlFormat (Format format) {
+			return Gdx2DPixmap.toGlFormat(toGdx2DPixmapFormat(format));
+		}
+		
+		public static int toGlType (Format format) {
+			return Gdx2DPixmap.toGlType(toGdx2DPixmapFormat(format));
+		}
 	}
 
 	/** Blending functions to be set with {@link Pixmap#setBlending}.

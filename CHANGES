@@ -1,5 +1,7 @@
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
+- Added GLOnlyTextureData, which is now the default for FrameBuffer and FrameBufferCubemap, see #3539
+- Added rotationChanged() for Actor class, called when rotation changes, see https://github.com/libgdx/libgdx/pull/3563
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename

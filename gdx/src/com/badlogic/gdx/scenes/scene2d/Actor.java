@@ -491,6 +491,10 @@ public class Actor {
 	protected void sizeChanged () {
 	}
 
+	/** Called when the actor's rotation has been changed. */
+	protected void rotationChanged () {
+	}
+
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
 		float oldWidth = this.width;
@@ -612,12 +616,16 @@ public class Actor {
 	}
 
 	public void setRotation (float degrees) {
+		float oldRotation = this.rotation;
 		this.rotation = degrees;
+		if (degrees != oldRotation) rotationChanged();
 	}
 
 	/** Adds the specified rotation to the current rotation. */
 	public void rotateBy (float amountInDegrees) {
 		rotation += amountInDegrees;
+		if (amountInDegrees != 0)
+			rotationChanged();
 	}
 
 	public void setColor (Color color) {
