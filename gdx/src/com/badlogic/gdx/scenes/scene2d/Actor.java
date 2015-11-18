@@ -195,8 +195,8 @@ public class Actor {
 	}
 
 	/** Returns the deepest actor that contains the specified point and is {@link #getTouchable() touchable} and
-	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system (0,0
-	 * is the bottom left of the actor and width,height is the upper right).
+	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system
+	 * (0,0 is the bottom left of the actor and width,height is the upper right).
 	 * <p>
 	 * This method is used to delegate touchDown, mouse, and enter/exit events. If this method returns null, those events will not
 	 * occur on this Actor.
@@ -218,7 +218,6 @@ public class Actor {
 	}
 
 	/** Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
-	 * 
 	 * @see InputListener
 	 * @see ClickListener */
 	public boolean addListener (EventListener listener) {
@@ -425,7 +424,8 @@ public class Actor {
 		}
 	}
 
-	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
+	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
 	public void setPosition (float x, float y, int alignment) {
 		if ((alignment & right) != 0)
 			x -= width;
@@ -633,12 +633,14 @@ public class Actor {
 		return color;
 	}
 
-	/** Retrieve custom actor name set with {@link Actor#setName(String)}, used for easier identification */
+	/** @see #setName(String)
+	 * @return May be null. */
 	public String getName () {
 		return name;
 	}
 
-	/** Sets a name for easier identification of the actor in application code.
+	/** Set the actor's name, which is used for identification convenience and by {@link #toString()}.
+	 * @param name May be null.
 	 * @see Group#findActor(String) */
 	public void setName (String name) {
 		this.name = name;
@@ -683,9 +685,9 @@ public class Actor {
 		return clipBegin(x, y, width, height);
 	}
 
-	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The transform
-	 * matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call to
-	 * {@link #clipEnd()} if true is returned.
+	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The
+	 * transform matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call
+	 * to {@link #clipEnd()} if true is returned.
 	 * @return false if the clipping area is zero and no drawing should occur.
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {

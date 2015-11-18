@@ -58,10 +58,10 @@ public class Group extends Actor implements Cullable {
 		if (transform) resetTransform(batch);
 	}
 
-	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
-	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
-	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
-	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)}
+	 * after this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false
+	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
+	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (Batch batch, float parentAlpha) {
 		parentAlpha *= this.color.a;
 		SnapshotArray<Actor> children = this.children;
@@ -140,10 +140,10 @@ public class Group extends Actor implements Cullable {
 		if (transform) resetTransform(shapes);
 	}
 
-	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
-	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
-	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
-	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)}
+	 * after this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false
+	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
+	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawDebugChildren (ShapeRenderer shapes) {
 		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
@@ -210,8 +210,8 @@ public class Group extends Actor implements Cullable {
 		batch.setTransformMatrix(transform);
 	}
 
-	/** Restores the batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to be
-	 * flushed. */
+	/** Restores the batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to
+	 * be flushed. */
 	protected void resetTransform (Batch batch) {
 		batch.setTransformMatrix(oldTransform);
 	}
@@ -231,12 +231,14 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
-	 * actors! */
+	 * actors!
+	 * @param cullingArea May be null. */
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
-	/** @see #setCullingArea(Rectangle) */
+	/** @return May be null.
+	 * @see #setCullingArea(Rectangle) */
 	public Rectangle getCullingArea () {
 		return cullingArea;
 	}
@@ -347,7 +349,8 @@ public class Group extends Actor implements Cullable {
 		clearChildren();
 	}
 
-	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the group. */
+	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the
+	 * group. */
 	public <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)
