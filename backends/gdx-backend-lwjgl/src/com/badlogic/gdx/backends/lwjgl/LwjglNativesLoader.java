@@ -53,15 +53,22 @@ public final class LwjglNativesLoader {
 		try {
 			if (isWindows) {
 				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio)
-					loader.extractFileTo(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir);
+				if (!LwjglApplicationConfiguration.disableAudio) {
+					String windowsOpenALFile = is64Bit ? "OpenAL64.dll" : "OpenAL32.dll";
+					loader.extractFileTo(windowsOpenALFile, new File(nativesDir, windowsOpenALFile));
+				}
 			} else if (isMac) {
 				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFileTo("openal.dylib", nativesDir);
+				if (!LwjglApplicationConfiguration.disableAudio) {
+					String macOpenALFile = "openal.dylib";
+					loader.extractFileTo(macOpenALFile, new File(nativesDir, macOpenALFile));
+				}
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio)
-					loader.extractFileTo(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir);
+				if (!LwjglApplicationConfiguration.disableAudio) {
+					String linuxOpenALFile = is64Bit ? "libopenal64.so" : "libopenal.so";
+					loader.extractFileTo(linuxOpenALFile, new File(nativesDir, linuxOpenALFile));
+				}
 			}
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Unable to extract LWJGL natives.", ex);
