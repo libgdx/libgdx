@@ -300,6 +300,20 @@ public interface MeshPartBuilder {
 	 * @param numIndices The number of indices of the part of the mesh to copy. */
 	public void addMesh (Mesh mesh, int indexOffset, int numIndices);
 
+	/** Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the
+	 * vertices are not indexed by the indices array. If you want to add only the vertices that are actually indexed, then
+	 * use the {@link #addMesh(float[], short[], int, int)} method instead.
+	 * @param vertices The vertices to copy, must be in the same vertex layout as the mesh being build.
+	 * @param indices Array containing the indices to copy, each index should be valid in the vertices array. */
+	public void addMesh (float[] vertices, short[] indices);
+	
+	/** Copies a (part of a) mesh to the mesh (part) currently being build.
+	 * @param vertices The vertices to (partly) copy, must be in the same vertex layout as the mesh being build.
+	 * @param indices Array containing the indices to (partly) copy, each index should be valid in the vertices array. 
+	 * @param indexOffset The zero-based offset of the first index of the part of indices array to copy.
+	 * @param numIndices The number of indices of the part of the indices array to copy. */
+	public void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices);
+
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */
 	public static class VertexInfo implements Poolable {

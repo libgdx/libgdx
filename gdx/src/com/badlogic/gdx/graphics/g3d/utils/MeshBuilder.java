@@ -162,6 +162,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.indices.clear();
 		this.parts.clear();
 		this.vindex = 0;
+		this.lastIndex = -1;
 		this.istart = 0;
 		this.part = null;
 		this.stride = attributes.vertexSize / 4;
@@ -268,6 +269,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.indices.clear();
 		this.parts.clear();
 		this.vindex = 0;
+		this.lastIndex = -1;
 		this.istart = 0;
 		this.part = null;
 	}
@@ -1316,7 +1318,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	private static IntIntMap indicesMap = null;
 
-	private void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
+	@Override
+	public void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
 		if (indicesMap == null)
 			indicesMap = new IntIntMap(numIndices);
 		else {
@@ -1324,7 +1327,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			indicesMap.ensureCapacity(numIndices);
 		}
 		ensureIndices(numIndices);
-		ensureVertices(vertices.length < numIndices ? vertices.length : numIndices); // a bit naive perhaps?
+		final int numVertices = vertices.length / stride;
+		ensureVertices(numVertices < numIndices ? numVertices : numIndices);
 		for (int i = 0; i < numIndices; i++) {
 			final int sidx = indices[i];
 			int didx = indicesMap.get(sidx, -1);
@@ -1334,5 +1338,19 @@ public class MeshBuilder implements MeshPartBuilder {
 			}
 			index((short)didx);
 		}
+	}
+	
+	@Override
+	public void addMesh (float[] vertices, short[] indices) {
+		final short offset = (short)(lastIndex + 1);
+		
+		final int numVertices = vertices.length / stride;
+		ensureVertices(numVertices);
+		for (int v = 0; v < vertices.length; v += stride)
+			addVertex(vertices, v);
+		
+		ensureIndices(indices.length);
+		for (int i = 0; i < indices.length; ++i)
+			index((short)(indices[i] + offset));
 	}
 }
