@@ -26,8 +26,8 @@ import com.badlogic.gdx.utils.Sort;
 
 import java.util.Comparator;
 
-/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
- * to pack into the smallest bin possible.
+/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is
+ * used to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker implements Packer {
 	private RectComparator rectComparator = new RectComparator();
@@ -71,41 +71,57 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		Array<Page> pages = new Array();
-		while (inputRects.size > 0) {
+		while (inputRects.size > 0)
+
+		{
 			Page result = packPage(inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
 		return pages;
+
 	}
 
 	private Page packPage (Array<Rect> inputRects) {
+		int paddingX = settings.paddingX, paddingY = settings.paddingY;
+		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
 		int edgePaddingX = 0, edgePaddingY = 0;
-		if (!settings.duplicatePadding) { // if duplicatePadding, edges get only half padding.
-			edgePaddingX = settings.paddingX;
-			edgePaddingY = settings.paddingY;
+		if (settings.edgePadding) {
+			if (settings.duplicatePadding) { // If duplicatePadding, edges get only half padding.
+				maxWidth -= paddingX;
+				maxHeight -= paddingY;
+			} else {
+				maxWidth -= paddingX * 2;
+				maxHeight -= paddingY * 2;
+				edgePaddingX = paddingX;
+				edgePaddingY = paddingY;
+			}
 		}
+
 		// Find min size.
-		int minWidth = Integer.MAX_VALUE;
-		int minHeight = Integer.MAX_VALUE;
+		int minWidth = Integer.MAX_VALUE, minHeight = Integer.MAX_VALUE;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
 			Rect rect = inputRects.get(i);
 			minWidth = Math.min(minWidth, rect.width);
 			minHeight = Math.min(minHeight, rect.height);
+			float width = rect.width - paddingX, height = rect.height - paddingY;
 			if (settings.rotation) {
-				if ((rect.width > settings.maxWidth || rect.height > settings.maxHeight)
-					&& (rect.width > settings.maxHeight || rect.height > settings.maxWidth)) {
+				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
+					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
+						: "";
 					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
-						+ " and padding " + settings.paddingX + "," + settings.paddingY + ": " + rect);
+						+ paddingMessage + ": " + rect.name + "[" + width + "," + height + "]");
 				}
 			} else {
-				if (rect.width > settings.maxWidth) {
-					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + " and paddingX "
-						+ settings.paddingX + ": " + rect);
+				if (width > maxWidth) {
+					String paddingMessage = edgePaddingX > 0 ? (" and X edge padding " + paddingX) : "";
+					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
+						+ rect.name + "[" + width + "," + height + "]");
 				}
-				if (rect.height > settings.maxHeight && (!settings.rotation || rect.width > settings.maxHeight)) {
-					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + " and paddingY "
-						+ settings.paddingY + ": " + rect);
+				if (height > maxHeight && (!settings.rotation || width > maxHeight)) {
+					String paddingMessage = edgePaddingY > 0 ? (" and Y edge padding " + paddingY) : "";
+					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
+						+ rect.name + "[" + width + "," + height + "]");
 				}
 			}
 		}
@@ -169,8 +185,8 @@ public class MaxRectsPacker implements Packer {
 		}
 	}
 
-	/** @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not all
-	 *           rects may be packed. */
+	/** @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not
+	 *           all rects may be packed. */
 	private Page packAtSize (boolean fully, int width, int height, Array<Rect> inputRects) {
 		Page bestResult = null;
 		for (int i = 0, n = methods.length; i < n; i++) {
@@ -523,7 +539,8 @@ public class MaxRectsPacker implements Packer {
 			return bestNode;
 		}
 
-		private Rect findPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight,
+			boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = Integer.MAX_VALUE; // best area fit, score2 is best short side fit
@@ -584,13 +601,14 @@ public class MaxRectsPacker implements Packer {
 					score += commonIntervalLength(usedRectangles.get(i).y, usedRectangles.get(i).y + usedRectangles.get(i).height, y,
 						y + height);
 				if (usedRectangles.get(i).y == y + height || usedRectangles.get(i).y + usedRectangles.get(i).height == y)
-					score += commonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x, x
-						+ width);
+					score += commonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x,
+						x + width);
 			}
 			return score;
 		}
 
-		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight,
+			boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = -1; // best contact score
@@ -679,7 +697,7 @@ public class MaxRectsPacker implements Packer {
 			 * freeRectangles[i+1].height) { freeRectangles.erase(freeRectangles.begin() + i); --i; }
 			 */
 
-			// / Go through each pair and remove any rectangle that is redundant.
+			// Go through each pair and remove any rectangle that is redundant.
 			for (int i = 0; i < freeRectangles.size; i++)
 				for (int j = i + 1; j < freeRectangles.size; ++j) {
 					if (isContainedIn(freeRectangles.get(i), freeRectangles.get(j))) {

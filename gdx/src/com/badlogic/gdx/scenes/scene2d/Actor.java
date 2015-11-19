@@ -195,8 +195,8 @@ public class Actor {
 	}
 
 	/** Returns the deepest actor that contains the specified point and is {@link #getTouchable() touchable} and
-	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system (0,0
-	 * is the bottom left of the actor and width,height is the upper right).
+	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system
+	 * (0,0 is the bottom left of the actor and width,height is the upper right).
 	 * <p>
 	 * This method is used to delegate touchDown, mouse, and enter/exit events. If this method returns null, those events will not
 	 * occur on this Actor.
@@ -218,7 +218,6 @@ public class Actor {
 	}
 
 	/** Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
-	 * 
 	 * @see InputListener
 	 * @see ClickListener */
 	public boolean addListener (EventListener listener) {
@@ -425,7 +424,8 @@ public class Actor {
 		}
 	}
 
-	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer coordinates. */
+	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
 	public void setPosition (float x, float y, int alignment) {
 		if ((alignment & right) != 0)
 			x -= width;
@@ -458,9 +458,10 @@ public class Actor {
 	}
 
 	public void setWidth (float width) {
-		float oldWidth = this.width;
-		this.width = width;
-		if (width != oldWidth) sizeChanged();
+		if (this.width != width) {
+			this.width = width;
+			sizeChanged();
+		}
 	}
 
 	public float getHeight () {
@@ -468,9 +469,10 @@ public class Actor {
 	}
 
 	public void setHeight (float height) {
-		float oldHeight = this.height;
-		this.height = height;
-		if (height != oldHeight) sizeChanged();
+		if (this.height != height) {
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	/** Returns y plus height. */
@@ -497,25 +499,29 @@ public class Actor {
 
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
-		this.width = width;
-		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float size) {
-		width += size;
-		height += size;
-		sizeChanged();
+		if (size != 0) {
+			width += size;
+			height += size;
+			sizeChanged();
+		}
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float width, float height) {
-		this.width += width;
-		this.height += height;
-		sizeChanged();
+		if (width != 0 || height != 0) {
+			this.width += width;
+			this.height += height;
+			sizeChanged();
+		}
 	}
 
 	/** Set bounds the x, y, width, and height. */
@@ -616,16 +622,18 @@ public class Actor {
 	}
 
 	public void setRotation (float degrees) {
-		float oldRotation = this.rotation;
-		this.rotation = degrees;
-		if (degrees != oldRotation) rotationChanged();
+		if (this.rotation != degrees) {
+			this.rotation = degrees;
+			rotationChanged();
+		}
 	}
 
 	/** Adds the specified rotation to the current rotation. */
 	public void rotateBy (float amountInDegrees) {
-		rotation += amountInDegrees;
-		if (amountInDegrees != 0)
+		if (amountInDegrees != 0) {
+			rotation += amountInDegrees;
 			rotationChanged();
+		}
 	}
 
 	public void setColor (Color color) {
@@ -641,12 +649,14 @@ public class Actor {
 		return color;
 	}
 
-	/** Retrieve custom actor name set with {@link Actor#setName(String)}, used for easier identification */
+	/** @see #setName(String)
+	 * @return May be null. */
 	public String getName () {
 		return name;
 	}
 
-	/** Sets a name for easier identification of the actor in application code.
+	/** Set the actor's name, which is used for identification convenience and by {@link #toString()}.
+	 * @param name May be null.
 	 * @see Group#findActor(String) */
 	public void setName (String name) {
 		this.name = name;
@@ -691,9 +701,9 @@ public class Actor {
 		return clipBegin(x, y, width, height);
 	}
 
-	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The transform
-	 * matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call to
-	 * {@link #clipEnd()} if true is returned.
+	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The
+	 * transform matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call
+	 * to {@link #clipEnd()} if true is returned.
 	 * @return false if the clipping area is zero and no drawing should occur.
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {

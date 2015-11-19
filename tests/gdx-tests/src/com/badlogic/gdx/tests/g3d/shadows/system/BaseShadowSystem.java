@@ -241,9 +241,7 @@ public abstract class BaseShadowSystem implements ShadowSystem, Disposable {
 		}
 
 		for (ObjectMap.Entry<DirectionalLight, LightProperties> e : dirCameras) {
-			e.value.camera.direction.set(e.key.direction);
 			directionalAnalyzer.analyze(e.key, e.value.camera, camera).update();
-			e.value.camera.update();
 		}
 
 		for (ObjectMap.Entry<PointLight, PointLightProperties> e : pointCameras) {
