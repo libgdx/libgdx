@@ -28,6 +28,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.service.wallpaper.WallpaperService.Engine;
@@ -477,7 +478,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
-			if (e.getKeyCode() >= SUPPORTED_KEYS) return false;
+			if (e.getKeyCode() < 0 || e.getKeyCode() >= SUPPORTED_KEYS) {
+				return false;
+			}
 			
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
@@ -572,6 +575,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 		this.catchMenu = catchMenu;
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return catchMenu;
 	}
 
 	@Override
@@ -710,7 +718,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return vibrator != null;
+		if (peripheral == Peripheral.Vibrator)
+			return (Build.VERSION.SDK_INT >= 11 && vibrator != null) ? vibrator.hasVibrator() : vibrator != null;
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
 	}

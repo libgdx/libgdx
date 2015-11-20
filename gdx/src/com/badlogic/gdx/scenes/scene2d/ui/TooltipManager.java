@@ -33,7 +33,8 @@ public class TooltipManager {
 	static private TooltipManager instance;
 	static private Application app;
 
-	/** Seconds from when an actor is hovered to when the tooltip is shown. Default is 2. */
+	/** Seconds from when an actor is hovered to when the tooltip is shown. Default is 2. Call {@link #hideAll()} after changing to
+	 * reset internal state. */
 	public float initialTime = 2;
 	/** Once a tooltip is shown, this is used instead of {@link #initialTime}. Default is 0. */
 	public float subsequentTime = 0;
@@ -125,11 +126,16 @@ public class TooltipManager {
 	/** Called when tooltip is hidden. Default implementation sets actions to animate hiding and to remove the actor from the stage
 	 * when the actions are complete. A subclass must at least remove the actor. */
 	protected void hideAction (Tooltip tooltip) {
-		tooltip.container.addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)),
-			removeActor()));
+		tooltip.container
+			.addAction(sequence(parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), removeActor()));
 	}
 
 	public void hideAll () {
+		resetTask.cancel();
+		showTask.cancel();
+		time = initialTime;
+		showTooltip = null;
+
 		for (Tooltip tooltip : shown)
 			tooltip.hide();
 		shown.clear();

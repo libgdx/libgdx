@@ -203,4 +203,14 @@ public class Polyline implements Shape2D {
 		this.y += y;
 		dirty = true;
 	}
+
+	@Override
+	public boolean contains (Vector2 point) {
+		return false;
+	}
+
+	@Override
+	public boolean contains (float x, float y) {
+		return false;
+	}
 }

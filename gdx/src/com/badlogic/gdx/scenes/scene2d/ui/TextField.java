@@ -831,7 +831,7 @@ public class TextField extends Widget implements Disableable {
 					copy();
 					return true;
 				}
-				if (keycode == Keys.X || keycode == Keys.DEL) {
+				if (keycode == Keys.X) {
 					cut(true);
 					return true;
 				}
@@ -933,6 +933,8 @@ public class TextField extends Widget implements Disableable {
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+			
+			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
 			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
 				next(UIUtils.shift());

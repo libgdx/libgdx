@@ -102,6 +102,7 @@ import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -368,6 +369,11 @@ public class GwtTestWrapper extends GdxTest {
 		public void setCatchMenuKey (boolean catchMenu) {
 			input.setCatchMenuKey(catchMenu);
 		}
+		
+		@Override
+		public boolean isCatchMenuKey () {
+			return input.isCatchMenuKey();
+		}
 
 		@Override
 		public void setInputProcessor (InputProcessor processor) {
@@ -575,6 +581,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new MipMapTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new ModelCacheTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

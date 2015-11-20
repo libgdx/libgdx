@@ -435,6 +435,17 @@ public class RemoteInput implements Runnable, Input {
 	public boolean isCatchBackKey() {
 		return false;
 	}
+	
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
+
 
 	@Override
 	public void setInputProcessor (InputProcessor processor) {
@@ -502,12 +513,6 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -159,6 +159,11 @@ import com.badlogic.gdx.math.Matrix4;
 %include "BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h"
 
 %{
+#include <BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h>
+%}
+%include "BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h"
+
+%{
 #include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
 %}
 %include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"

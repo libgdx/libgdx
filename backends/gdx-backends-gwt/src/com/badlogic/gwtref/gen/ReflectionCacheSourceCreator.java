@@ -673,7 +673,7 @@ public class ReflectionCacheSourceCreator {
 			b.append("new Class[] {");
 			for (JClassType typeArg : typeArgs) {
 				if (typeArg.isWildcard() != null)
-					b.append("Object.class");
+					b.append("null");
 				else if (!isVisible(typeArg))
 					b.append("null");
 				else if (typeArg.isClassOrInterface() != null)

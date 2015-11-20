@@ -80,7 +80,7 @@ public class LwjglCursor implements Cursor {
 			}
 
 			lwjglCursor = new org.lwjgl.input.Cursor(pixmap.getWidth(), pixmap.getHeight(), xHotspot, pixmap.getHeight() - yHotspot
-				- 4, 1, IntBuffer.wrap(pixelsARGBflipped), null);
+				- 1, 1, IntBuffer.wrap(pixelsARGBflipped), null);
 		} catch (LWJGLException e) {
 			throw new GdxRuntimeException("Could not create cursor image.", e);
 		}

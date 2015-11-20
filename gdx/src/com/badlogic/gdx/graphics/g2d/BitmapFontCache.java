@@ -446,7 +446,8 @@ public class BitmapFontCache {
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.
 	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
-	public GlyphLayout setText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap) {
+	public GlyphLayout setText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap) {
 		clear();
 		return addText(str, x, y, start, end, targetWidth, halign, wrap);
 	}
@@ -476,7 +477,8 @@ public class BitmapFontCache {
 	 * @param start The first character of the string to draw.
 	 * @param end The last character of the string to draw (exclusive).
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */
-	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap) {
+	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap) {
 		GlyphLayout layout = Pools.obtain(GlyphLayout.class);
 		pooledLayouts.add(layout);
 		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, null);
@@ -520,6 +522,10 @@ public class BitmapFontCache {
 
 	public float[] getVertices (int page) {
 		return pageVertices[page];
+	}
+
+	public int getVertexCount (int page) {
+		return idx[page];
 	}
 
 	public Array<GlyphLayout> getLayouts () {

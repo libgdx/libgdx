@@ -51,6 +51,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
 	private final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
+	private final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
+
 	/** the color buffer texture **/
 	protected T colorTexture;
 
@@ -68,6 +70,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the stencilbuffer render object handle **/
 	private int stencilbufferHandle;
 
+	/** the depth stencil packed render buffer object handle **/
+	private int depthStencilPackedBufferHandle;
+
 	/** width **/
 	protected final int width;
 
@@ -79,6 +84,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** stencil **/
 	protected final boolean hasStencil;
+
+	/** if has depth stencil packed buffer **/
+	private boolean hasDepthStencilPackedBuffer;
 
 	/** format **/
 	protected final Pixmap.Format format;
@@ -171,16 +179,42 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
+
+		if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && hasDepth && hasStencil
+			&& Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil")) {
+			if (hasDepth) {
+				gl.glDeleteRenderbuffer(depthbufferHandle);
+				depthbufferHandle = 0;
+			}
+			if (hasStencil) {
+				gl.glDeleteRenderbuffer(stencilbufferHandle);
+				stencilbufferHandle = 0;
+			}
+
+			depthStencilPackedBufferHandle = gl.glGenRenderbuffer();
+			hasDepthStencilPackedBuffer = true;
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, colorTexture.getWidth(), colorTexture.getHeight());
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
+
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
+			result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
+		}
+
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			disposeColorTexture(colorTexture);
 
-			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
-
-			if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+			if (hasDepthStencilPackedBuffer) {
+				gl.glDeleteBuffer(depthStencilPackedBufferHandle);
+			} else {
+				if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
+				if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+			}
 
 			gl.glDeleteFramebuffer(framebufferHandle);
 
@@ -202,10 +236,13 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		GL20 gl = Gdx.gl20;
 
 		disposeColorTexture(colorTexture);
-		
-		if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
 
-		if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+		if (hasDepthStencilPackedBuffer) {
+			gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
+		} else {
+			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
+			if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+		}
 
 		gl.glDeleteFramebuffer(framebufferHandle);
 
@@ -259,14 +296,19 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		return framebufferHandle;
 	}
 
-	/** @return The OpenGL handle of the (optional) depth buffer (see {@link GL20#glGenRenderbuffer()}) */
+	/** @return The OpenGL handle of the (optional) depth buffer (see {@link GL20#glGenRenderbuffer()}). May return 0 even if depth buffer enabled */
 	public int getDepthBufferHandle () {
 		return depthbufferHandle;
 	}
 
-	/** @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}) */
+	/** @return The OpenGL handle of the (optional) stencil buffer (see {@link GL20#glGenRenderbuffer()}). May return 0 even if stencil buffer enabled */
 	public int getStencilBufferHandle () {
 		return stencilbufferHandle;
+	}
+	
+	/** @return The OpenGL handle of the packed depth & stencil buffer (GL_DEPTH24_STENCIL8_OES) or 0 if not used. **/
+	protected int getDepthStencilPackedBuffer () {
+		return depthStencilPackedBufferHandle;
 	}
 
 	/** @return the height of the framebuffer in pixels */

@@ -113,6 +113,8 @@ public:
 #	define BT_MAKE_ID(a,b,c,d) ( (int)(d)<<24 | (int)(c)<<16 | (b)<<8 | (a) )
 #endif
 
+
+#define BT_MULTIBODY_CODE       BT_MAKE_ID('M','B','D','Y')
 #define BT_SOFTBODY_CODE		BT_MAKE_ID('S','B','D','Y')
 #define BT_COLLISIONOBJECT_CODE BT_MAKE_ID('C','O','B','J')
 #define BT_RIGIDBODY_CODE		BT_MAKE_ID('R','B','D','Y')
@@ -172,6 +174,7 @@ protected:
 	btAlignedObjectArray<short>			mTlens;
 	btHashMap<btHashInt, int>			mStructReverse;
 	btHashMap<btHashString,int>	mTypeLookup;
+	
 
 
 	btHashMap<btHashPtr,void*>	m_chunkP;
@@ -183,6 +186,7 @@ protected:
 
 	int					m_totalSize;
 	unsigned char*		m_buffer;
+	bool                m_ownsBuffer;
 	int					m_currentSize;
 	void*				m_dna;
 	int					m_dnaLength;
@@ -194,6 +198,7 @@ protected:
 
 protected:
 
+	
 	virtual	void*	findPointer(void* oldPtr)
 	{
 		void** ptr = m_chunkP.find(oldPtr);
@@ -206,7 +211,7 @@ protected:
 
 
 
-		void	writeDNA()
+		virtual void	writeDNA()
 		{
 			btChunk* dnaChunk = allocate(m_dnaLength,1);
 			memcpy(dnaChunk->m_oldPtr,m_dna,m_dnaLength);
@@ -382,17 +387,25 @@ protected:
 
 public:
 
+	btHashMap<btHashPtr,void*> m_skipPointers;
 
 
-
-		btDefaultSerializer(int totalSize=0)
+		btDefaultSerializer(int totalSize=0, unsigned char*	buffer=0)
 			:m_totalSize(totalSize),
 			m_currentSize(0),
 			m_dna(0),
 			m_dnaLength(0),
 			m_serializationFlags(0)
 		{
-			m_buffer = m_totalSize?(unsigned char*)btAlignedAlloc(totalSize,16):0;
+		    if (buffer==0)
+            {
+                m_buffer = m_totalSize?(unsigned char*)btAlignedAlloc(totalSize,16):0;
+                m_ownsBuffer = true;
+            } else
+            {
+                m_buffer = buffer;
+                m_ownsBuffer = false;
+            }
 
 			const bool VOID_IS_8 = ((sizeof(void*)==8));
 
@@ -427,10 +440,16 @@ public:
 
 		virtual ~btDefaultSerializer()
 		{
-			if (m_buffer)
+			if (m_buffer && m_ownsBuffer)
 				btAlignedFree(m_buffer);
 			if (m_dna)
 				btAlignedFree(m_dna);
+		}
+
+		void	insertHeader()
+		{
+			writeHeader(m_buffer);
+			m_currentSize += BT_HEADER_LENGTH;
 		}
 
 		void	writeHeader(unsigned char* buffer) const
@@ -465,7 +484,7 @@ public:
 
 			buffer[9] = '2';
 			buffer[10] = '8';
-			buffer[11] = '3';
+			buffer[11] = '4';
 
 		}
 
@@ -513,6 +532,7 @@ public:
 			mTlens.clear();
 			mStructReverse.clear();
 			mTypeLookup.clear();
+			m_skipPointers.clear();
 			m_chunkP.clear();
 			m_nameMap.clear();
 			m_uniquePointers.clear();
@@ -529,6 +549,13 @@ public:
 			{
 				return uptr->m_ptr;
 			}
+
+			void** ptr2 = m_skipPointers[oldPtr];
+            if (ptr2)
+			{
+				return 0;
+			}
+
 			m_uniqueIdGenerator++;
 
 			btPointerUid uid;
@@ -682,10 +709,15 @@ struct btInMemorySerializer : public btDefaultSerializer
     btHashMap<btHashPtr,btChunk*> m_uid2ChunkPtr;
     btHashMap<btHashPtr,void*> m_orgPtr2UniqueDataPtr;
     btHashMap<btHashString,const void*> m_names2Ptr;
-    btHashMap<btHashPtr,void*> m_skipPointers;
+    
 
     btBulletSerializedArrays    m_arrays;
 
+    btInMemorySerializer(int totalSize=0, unsigned char*	buffer=0)
+    :btDefaultSerializer(totalSize,buffer)
+    {
+        
+    }
 
     virtual void startSerialization()
     {
@@ -693,6 +725,8 @@ struct btInMemorySerializer : public btDefaultSerializer
         //todo: m_arrays.clear();
         btDefaultSerializer::startSerialization();
     }
+
+    
 
     btChunk* findChunkFromUniquePointer(void* uniquePointer)
     {

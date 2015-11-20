@@ -80,7 +80,8 @@ public class Table extends WidgetGroup {
 		this(null);
 	}
 
-	/** Creates a table with a skin, which enables the {@link #add(String)} and {@link #add(String, String)} methods to be used. */
+	/** Creates a table with a skin, which enables the {@link #add(CharSequence)} and {@link #add(CharSequence, String)} methods to
+	 * be used. */
 	public Table (Skin skin) {
 		this.skin = skin;
 
@@ -250,25 +251,25 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text) {
+	public Cell<Label> add (CharSequence text) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String labelStyleName) {
+	public Cell<Label> add (CharSequence text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, Color color) {
+	public Cell<Label> add (CharSequence text, String fontName, Color color) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, String colorName) {
+	public Cell<Label> add (CharSequence text, String fontName, String colorName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
@@ -839,40 +840,6 @@ public class Table extends WidgetGroup {
 				expandWidth[ii] = expandX;
 		}
 
-		// Distribute any additional min and pref width added by colspanned cells to the columns spanned.
-		for (int i = 0; i < cellCount; i++) {
-			Cell c = cells.get(i);
-			int colspan = c.colspan;
-			if (colspan == 1) continue;
-			int column = c.column;
-
-			Actor a = c.actor;
-			float minWidth = c.minWidth.get(a);
-			float prefWidth = c.prefWidth.get(a);
-			float maxWidth = c.maxWidth.get(a);
-			if (prefWidth < minWidth) prefWidth = minWidth;
-			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
-
-			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
-				spannedMinWidth += columnMinWidth[ii];
-				spannedPrefWidth += columnPrefWidth[ii];
-			}
-
-			// Distribute extra space using expand, if any columns have expand.
-			float totalExpandWidth = 0;
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
-				totalExpandWidth += expandWidth[ii];
-
-			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
-			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
-				float ratio = totalExpandWidth == 0 ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
-				columnMinWidth[ii] += extraMinWidth * ratio;
-				columnPrefWidth[ii] += extraPrefWidth * ratio;
-			}
-		}
-
 		// Collect uniform size.
 		float uniformMinWidth = 0, uniformMinHeight = 0;
 		float uniformPrefWidth = 0, uniformPrefHeight = 0;
@@ -906,6 +873,40 @@ public class Table extends WidgetGroup {
 					rowMinHeight[c.row] = uniformMinHeight + vpadding;
 					rowPrefHeight[c.row] = uniformPrefHeight + vpadding;
 				}
+			}
+		}
+
+		// Distribute any additional min and pref width added by colspanned cells to the columns spanned.
+		for (int i = 0; i < cellCount; i++) {
+			Cell c = cells.get(i);
+			int colspan = c.colspan;
+			if (colspan == 1) continue;
+			int column = c.column;
+
+			Actor a = c.actor;
+			float minWidth = c.minWidth.get(a);
+			float prefWidth = c.prefWidth.get(a);
+			float maxWidth = c.maxWidth.get(a);
+			if (prefWidth < minWidth) prefWidth = minWidth;
+			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
+
+			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
+				spannedMinWidth += columnMinWidth[ii];
+				spannedPrefWidth += columnPrefWidth[ii];
+			}
+
+			// Distribute extra space using expand, if any columns have expand.
+			float totalExpandWidth = 0;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
+				totalExpandWidth += expandWidth[ii];
+
+			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
+			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
+				float ratio = totalExpandWidth == 0 ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
+				columnMinWidth[ii] += extraMinWidth * ratio;
+				columnPrefWidth[ii] += extraPrefWidth * ratio;
 			}
 		}
 

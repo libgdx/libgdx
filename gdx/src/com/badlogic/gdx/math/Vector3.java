@@ -18,6 +18,7 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
@@ -105,6 +106,31 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return This vector for chaining */
 	public Vector3 set (final Vector2 vector, float z) {
 		return this.set(vector.x, vector.y, z);
+	}
+
+	/** Sets the components from the given spherical coordinate
+	 * @param azimuthalAngle The angle between x-axis in radians [0, 2pi]
+	 * @param polarAngle The angle between z-axis in radians [0, pi]
+	 * @return This vector for chaining */
+	public Vector3 setFromSpherical (float azimuthalAngle, float polarAngle) {
+		float cosPolar = MathUtils.cos(polarAngle);
+		float sinPolar = MathUtils.sin(polarAngle);
+
+		float cosAzim = MathUtils.cos(azimuthalAngle);
+		float sinAzim = MathUtils.sin(azimuthalAngle);
+
+		return this.set(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
+	}
+
+	@Override
+	public Vector3 setToRandomDirection () {
+		float u = MathUtils.random();
+		float v = MathUtils.random();
+
+		float theta = MathUtils.PI2 * u; // azimuthal angle
+		float phi = (float)Math.acos(2f * v - 1f); // polar angle
+
+		return this.setFromSpherical(theta, phi);
 	}
 
 	@Override
@@ -531,7 +557,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		z += alpha * (target.z - z);
 		return this;
 	}
-	
+
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
@@ -563,11 +589,31 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
 
-    @Override
+	/** Converts this {@code Vector3} to a string in the format {@code (x,y,z)}.
+	 * @return a string representation of this object. */
+	@Override
 	public String toString () {
-		return "[" + x + ", " + y + ", " + z + "]";
+		return "(" + x + "," + y + "," + z + ")";
 	}
 
+	/** Sets this {@code Vector3} to the value represented by the specified string according to the format of {@link #toString()}.
+	 * @param v the string.
+	 * @return this vector for chaining */
+	public Vector3 fromString (String v) {
+		int s0 = v.indexOf(',', 1);
+		int s1 = v.indexOf(',', s0 + 1);
+		if (s0 != -1 && s1 != -1 && v.charAt(0) == '(' && v.charAt(v.length() - 1) == ')') {
+			try {
+				float x = Float.parseFloat(v.substring(1, s0));
+				float y = Float.parseFloat(v.substring(s0 + 1, s1));
+				float z = Float.parseFloat(v.substring(s1 + 1, v.length() - 1));
+				return this.set(x, y, z);
+			} catch (NumberFormatException ex) {
+				// Throw a GdxRuntimeException
+			}
+		}
+		throw new GdxRuntimeException("Malformed Vector3: " + v);
+	}
 
 	@Override
 	public Vector3 limit (float limit) {
@@ -578,35 +624,30 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 limit2 (float limit2) {
 		float len2 = len2();
 		if (len2 > limit2) {
-			scl((float) Math.sqrt(limit2 / len2));
+			scl((float)Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}
 
 	@Override
-	public Vector3 setLength ( float len ) {
-		return setLength2( len * len );
+	public Vector3 setLength (float len) {
+		return setLength2(len * len);
 	}
 
 	@Override
-	public Vector3 setLength2 ( float len2 ) {
+	public Vector3 setLength2 (float len2) {
 		float oldLen2 = len2();
-		return ( oldLen2 == 0 || oldLen2 == len2 )
-				? this
-				: scl((float) Math.sqrt( len2 / oldLen2 ));
+		return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float)Math.sqrt(len2 / oldLen2));
 	}
 
 	@Override
 	public Vector3 clamp (float min, float max) {
 		final float len2 = len2();
-		if (len2 == 0f)
-			return this;
+		if (len2 == 0f) return this;
 		float max2 = max * max;
-		if (len2 > max2)
-			return scl((float)Math.sqrt(max2 / len2));
+		if (len2 > max2) return scl((float)Math.sqrt(max2 / len2));
 		float min2 = min * min;
-		if (len2 < min2)
-			return scl((float)Math.sqrt(min2 / len2));
+		if (len2 < min2) return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 

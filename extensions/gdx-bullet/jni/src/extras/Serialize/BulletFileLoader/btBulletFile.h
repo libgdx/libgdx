@@ -21,6 +21,7 @@ subject to the following restrictions:
 #include "LinearMath/btAlignedObjectArray.h"
 #include "bDefines.h"
 
+
 #include "LinearMath/btSerializer.h"
 
 
@@ -37,6 +38,8 @@ namespace bParse {
 		char*	m_DnaCopy;
 				
 	public:
+
+		btAlignedObjectArray<bStructHandle*>	m_multiBodies;
 
 		btAlignedObjectArray<bStructHandle*>	m_softBodies;
 
@@ -65,7 +68,7 @@ namespace bParse {
 
 		virtual	void	addDataBlock(char* dataBlock);
 	
-
+		
 		// experimental
 		virtual int		write(const char* fileName, bool fixupPointers=false);
 

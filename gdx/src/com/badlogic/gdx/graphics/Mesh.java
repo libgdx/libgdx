@@ -133,8 +133,8 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
-	private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
-		if(Gdx.gl30 != null) {
+	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
+		if (Gdx.gl30 != null) {
 			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
 		} else {
 			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
@@ -150,28 +150,28 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		switch(type) {
-			case VertexBufferObject:
-				vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObject(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexBufferObjectSubData:
-				vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexBufferObjectWithVAO:
-				vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexArray:
-			default:
-				vertices = new VertexArray(maxVertices, attributes);
-				indices = new IndexArray(maxIndices);
-				isVertexArray = true;
-				break;
+		switch (type) {
+		case VertexBufferObject:
+			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexBufferObjectSubData:
+			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexBufferObjectWithVAO:
+			vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexArray:
+		default:
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexArray(maxIndices);
+			isVertexArray = true;
+			break;
 		}
 
 		addManagedMesh(Gdx.app, this);
@@ -609,14 +609,15 @@ public class Mesh implements Disposable {
 
 	/** Extends the specified {@link BoundingBox} with the specified part.
 	 * @param out the bounding box to store the result in.
-	 * @param offset the start index of the part.
-	 * @param count the amount of indices the part contains.
+	 * @param offset the start of the part.
+	 * @param count the size of the part.
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox (final BoundingBox out, int offset, int count, final Matrix4 transform) {
-		int numIndices = getNumIndices();
-		if (offset < 0 || count < 1 || offset + count > numIndices)
-			throw new GdxRuntimeException("Not enough indices ( offset=" + offset + ", count=" + count + ", max=" + numIndices
-				+ " )");
+		final int numIndices = getNumIndices();
+		final int numVertices = getNumVertices();
+		final int max = numIndices == 0 ? numVertices : numIndices;
+		if (offset < 0 || count < 1 || offset + count > max)
+			throw new GdxRuntimeException("Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
 		final FloatBuffer verts = vertices.getBuffer();
 		final ShortBuffer index = indices.getBuffer();
@@ -627,27 +628,54 @@ public class Mesh implements Disposable {
 
 		switch (posAttrib.numComponents) {
 		case 1:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), 0, 0);
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), 0, 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), 0, 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		case 2:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		case 3:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		}

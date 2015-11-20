@@ -180,7 +180,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
-			layout.setText(font, items.get(i).toString());
+			layout.setText(font, toString(items.get(i)));
 			maxItemWidth = Math.max(layout.width, maxItemWidth);
 		}
 		layoutPool.free(layout);
@@ -230,7 +230,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 		T selected = selection.first();
 		if (selected != null) {
-			String string = selected.toString();
+			String string = toString(selected);
 			if (background != null) {
 				width -= background.getLeftWidth() + background.getRightWidth();
 				height -= background.getBottomHeight() + background.getTopHeight();
@@ -296,6 +296,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return prefHeight;
 	}
 
+	protected String toString (T obj) {
+		return obj.toString();
+	}
+
 	public void showList () {
 		if (items.size == 0) return;
 		selectBoxList.show(getStage());
@@ -342,7 +346,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setFadeScrollBars(false);
 			setScrollingDisabled(true, false);
 
-			list = new List(selectBox.style.listStyle);
+			list = new List<T>(selectBox.style.listStyle) {
+				@Override
+				protected String toString (T obj) {
+					return selectBox.toString(obj);
+				}
+			};
 			list.setTouchable(Touchable.disabled);
 			setWidget(list);
 

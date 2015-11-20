@@ -15,6 +15,8 @@
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
 		<exclude name="**/FreeType*.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
+		<exclude name="**/HeightField.java"/> <!-- Incompatible type due to emulation -->
+		<exclude name="**/HeightMapTest.java"/> <!-- Incompatible type due to emulation -->
 		<exclude name="**/I18NMessageTest.java"/> <!-- MessageBundle -->
 		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
 		<exclude name="**/JpegTest.java"/> <!-- native -->

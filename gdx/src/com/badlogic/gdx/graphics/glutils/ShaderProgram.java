@@ -178,7 +178,7 @@ public class ShaderProgram implements Disposable {
 			return;
 		}
 
-		program = linkProgram();
+		program = linkProgram(createProgram());
 		if (program == -1) {
 			isCompiled = false;
 			return;
@@ -212,10 +212,15 @@ public class ShaderProgram implements Disposable {
 		return shader;
 	}
 
-	private int linkProgram () {
+	protected int createProgram () {
 		GL20 gl = Gdx.gl20;
 		int program = gl.glCreateProgram();
-		if (program == 0) return -1;
+		return program != 0 ? program : -1;
+	}
+
+	private int linkProgram (int program) {
+		GL20 gl = Gdx.gl20;
+		if (program == -1) return -1;
 
 		gl.glAttachShader(program, vertexShaderHandle);
 		gl.glAttachShader(program, fragmentShaderHandle);

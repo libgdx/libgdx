@@ -248,6 +248,11 @@ public class GwtInput implements Input {
 	}
 
 	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
+
+	@Override
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
@@ -963,4 +968,5 @@ public class GwtInput implements Input {
 	private static final int KEY_BACKSLASH = 220;
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
+
 }

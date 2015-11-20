@@ -190,7 +190,7 @@ public abstract class BaseShader implements Shader {
 			}
 		}
 		if (renderable != null) {
-			final VertexAttributes attrs = renderable.mesh.getVertexAttributes();
+			final VertexAttributes attrs = renderable.meshPart.mesh.getVertexAttributes();
 			final int c = attrs.size();
 			for (int i = 0; i < c; i++) {
 				final VertexAttribute attr = attrs.get(i);
@@ -235,12 +235,12 @@ public abstract class BaseShader implements Shader {
 	public void render (Renderable renderable, final Attributes combinedAttributes) {
 		for (int u, i = 0; i < localUniforms.size; ++i)
 			if (setters.get(u = localUniforms.get(i)) != null) setters.get(u).set(this, u, renderable, combinedAttributes);
-		if (currentMesh != renderable.mesh) {
+		if (currentMesh != renderable.meshPart.mesh) {
 			if (currentMesh != null) currentMesh.unbind(program, tempArray.items);
-			currentMesh = renderable.mesh;
-			currentMesh.bind(program, getAttributeLocations(renderable.mesh.getVertexAttributes()));
+			currentMesh = renderable.meshPart.mesh;
+			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()));
 		}
-		renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize, false);
+		renderable.meshPart.render(program, false);
 	}
 
 	@Override

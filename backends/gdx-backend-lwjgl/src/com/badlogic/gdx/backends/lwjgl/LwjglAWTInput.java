@@ -54,7 +54,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.IntSet;
@@ -100,6 +99,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		}
 	};
 
+	private final LwjglAWTCanvas lwjglAwtCanvas;
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	int touchX = 0;
@@ -119,8 +119,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	Robot robot = null;
 	long currentEventTimeStamp;
 
-	public LwjglAWTInput (Canvas canvas) {
-		setListeners(canvas);
+	public LwjglAWTInput (LwjglAWTCanvas lwjglAwtCanvas) {
+		this.lwjglAwtCanvas = lwjglAwtCanvas;
+		setListeners(lwjglAwtCanvas.getCanvas());
 		try {
 			robot = new Robot(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
 		} catch (HeadlessException e) {
@@ -395,7 +396,17 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
-	public boolean isCatchBackKey() {
+	public boolean isCatchBackKey () {
+		return false;
+	}
+
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
 		return false;
 	}
 
@@ -420,7 +431,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -440,7 +451,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -453,13 +464,13 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		touchX = e.getX();
 		touchY = e.getY();
 		checkCatched(e);
-		Gdx.graphics.requestRendering();
+		lwjglAwtCanvas.graphics.requestRendering();
 	}
 
 	@Override
 	public void mouseExited (MouseEvent e) {
 		checkCatched(e);
-		Gdx.graphics.requestRendering();
+		lwjglAwtCanvas.graphics.requestRendering();
 	}
 
 	private void checkCatched (MouseEvent e) {
@@ -497,7 +508,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			touchY = event.y;
 			touchDown = true;
 			pressedButtons.add(event.button);
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -519,7 +530,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			touchY = event.y;
 			pressedButtons.remove(event.button);
 			if (pressedButtons.size == 0) touchDown = false;
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -532,7 +543,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.scrollAmount = e.getWheelRotation();
 			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -549,7 +560,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 				keyCount++;
 				keys[event.keyCode] = true;
 			}
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -566,7 +577,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 				keyCount--;
 				keys[event.keyCode] = false;
 			}
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -579,7 +590,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.type = KeyEvent.KEY_TYPED;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			Gdx.graphics.requestRendering();
+			lwjglAwtCanvas.graphics.requestRendering();
 		}
 	}
 
@@ -806,12 +817,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		}
 	}
 
-  @Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
@@ -822,4 +827,5 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		// TODO Auto-generated method stub
 
 	}
+
 }

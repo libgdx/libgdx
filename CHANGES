@@ -1,5 +1,22 @@
-[1.6.6]
+[1.7.2]
+- Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
+- Added GLOnlyTextureData, which is now the default for FrameBuffer and FrameBufferCubemap, see #3539
+
+[1.7.1]
+- Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
+- Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
+- API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
+- Added Vector#setToRandomDirection(), see #3222
+- Updated to stb_image v2.08
+- Added Node#copy(), used when creating a ModelInstance from a Model to allow using custom nodes
+- Add ModelCache, see https://github.com/libgdx/libgdx/wiki/ModelCache
+- Updated bullet to v2.83.6
+- Updated to RoboVM 1.9, for free life-time license read http://www.badlogicgames.com/wordpress/?p=3762
+
+[1.7.0]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/
+- Fixed an issue with UTF8 decoding in GWT emulation of InputStreamReader
+- Updated to RoboVM 1.8 for iOS 9 support.
 
 [1.6.5]
 - Objects from animated tiles in TMX maps are now supported.
