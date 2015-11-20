@@ -16,17 +16,18 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.IOException;
-
 import android.media.MediaPlayer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
+import java.io.IOException;
+
 public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	private final AndroidAudio audio;
 	private MediaPlayer player;
 	private boolean isPrepared = true;
+	private boolean isPaused = false;
 	protected boolean wasPlaying = false;
 	private float volume = 1f;
 	protected OnCompletionListener onCompletionListener;
@@ -69,8 +70,9 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	@Override
 	public void pause () {
 		if (player == null) return;
-		if (player.isPlaying()) {			
+		if (player.isPlaying()) {
 			player.pause();
+			isPaused = true;
 		}
 		wasPlaying = false;
 	}
@@ -84,6 +86,11 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 			if (!isPrepared) {
 				player.prepare();
 				isPrepared = true;
+			}
+			if (isPaused) {
+				isPaused = false;
+			} else if (player.getCurrentPosition() != 0) {
+				player.seekTo(0);
 			}
 			player.start();
 		} catch (IllegalStateException e) {
@@ -130,10 +137,8 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	@Override
 	public void stop () {
 		if (player == null) return;
-		if (isPrepared) {
-			player.seekTo(0);
-		}
 		player.stop();
+		isPaused = false;
 		isPrepared = false;
 	}
 
