@@ -29,6 +29,8 @@ import com.badlogic.gdx.tests.g3d.shadows.utils.ShadowMapAllocator;
  * @author realitix */
 public abstract class FirstPassBaseShadowSystem extends BaseShadowSystem {
 
+	protected static int FIRST_PASS = 0;
+
 	public FirstPassBaseShadowSystem () {
 		super();
 	}
@@ -38,13 +40,9 @@ public abstract class FirstPassBaseShadowSystem extends BaseShadowSystem {
 		super(nearFarAnalyzer, allocator, directionalAnalyzer, lightFilter);
 	}
 
-	protected static int FIRST_PASS = 0;
-
 	@Override
 	protected void init (int n) {
-		if (n == FIRST_PASS) {
-			init1();
-		}
+		if (n == FIRST_PASS) init1();
 	}
 
 	protected void init1 () {
