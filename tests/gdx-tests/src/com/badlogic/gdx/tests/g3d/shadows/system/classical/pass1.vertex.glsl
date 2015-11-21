@@ -1,17 +1,5 @@
-#ifdef GL_ES
-#define LOWP lowp
-#define MED mediump
-#define HIGH highp
-precision mediump float;
-#else
-#define MED
-#define LOWP
-#define HIGH
-#endif
-
-uniform mat4 u_projViewWorldTrans;
 attribute vec3 a_position;
-
+uniform mat4 u_projViewWorldTrans;
 
 #ifdef boneWeight0Flag
 #define boneWeightsFlag
