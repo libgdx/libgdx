@@ -241,6 +241,10 @@ public interface Input {
 		public static final int F10 = 253;
 		public static final int F11 = 254;
 		public static final int F12 = 255;
+		
+		public static boolean isValidKeyCode(int keycode) {
+			return 0 <= keycode && keycode <= 255;
+		}
 
 		/** @return a human readable representation of the keycode. The returned value can be used in
 		 *         {@link Input.Keys#valueOf(String)} */
