@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
@@ -77,21 +75,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
-		public void didRotate (UIInterfaceOrientation orientation) {
-			super.didRotate(orientation);
-			// get the view size and update graphics
-			// FIXME: supporting BOTH (landscape+portrait at same time) is
-			// currently not working correctly (needs fix)
-			// FIXME screen orientation needs to be stored for
-			// Input#getNativeOrientation
-			CGSize bounds = app.getBounds(this);
-			graphics.width = (int)bounds.getWidth();
-			graphics.height = (int)bounds.getHeight();
-			graphics.makeCurrent();
-			app.listener.resize(graphics.width, graphics.height);
-		}
-
-		@Override
 		public UIInterfaceOrientationMask getSupportedInterfaceOrientations () {
 			long mask = 0;
 			if (app.config.orientationLandscape) {
@@ -120,6 +103,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			}
 		}
 
+		@Override
+		public void viewDidLayoutSubviews () {
+			super.viewDidLayoutSubviews();
+			// get the view size and update graphics
+			CGRect bounds = app.getBounds();
+			graphics.width = (int)bounds.getWidth();
+			graphics.height = (int)bounds.getHeight();
+			graphics.makeCurrent();
+			app.listener.resize(graphics.width, graphics.height);
+		}
+		
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
 		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
@@ -164,36 +158,36 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (CGSize bounds, float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
-		GL20 gl20) {
+	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
 		this.config = config;
+
+		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
 		width = (int)bounds.getWidth();
 		height = (int)bounds.getHeight();
-		app.debug(tag, bounds.getWidth() + "x" + bounds.getHeight() + ", " + scale);
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
 
-		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
+		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
-				IOSGraphics.this.input.touchDown(touches, event);
+				IOSGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesCancelled:withEvent:")
 			public void touchesCancelled (@Pointer long touches, UIEvent event) {
-				IOSGraphics.this.input.touchUp(touches, event);
+				IOSGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesEnded:withEvent:")
 			public void touchesEnded (@Pointer long touches, UIEvent event) {
-				IOSGraphics.this.input.touchUp(touches, event);
+				IOSGraphics.this.input.onTouch(touches);
 			}
 
 			@Method(selector = "touchesMoved:withEvent:")
 			public void touchesMoved (@Pointer long touches, UIEvent event) {
-				IOSGraphics.this.input.touchMoved(touches, event);
+				IOSGraphics.this.input.onTouch(touches);
 			}
 
 			@Override
