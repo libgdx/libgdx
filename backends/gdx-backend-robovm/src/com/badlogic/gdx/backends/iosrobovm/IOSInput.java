@@ -16,6 +16,16 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pool;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
@@ -26,10 +36,7 @@ import org.robovm.apple.uikit.UIAlertView;
 import org.robovm.apple.uikit.UIAlertViewDelegate;
 import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
 import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIKeyboardType;
 import org.robovm.apple.uikit.UIReturnKeyType;
 import org.robovm.apple.uikit.UITextAutocapitalizationType;
@@ -45,18 +52,6 @@ import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.MachineSizedUInt;
 import org.robovm.rt.bro.annotation.Pointer;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -85,24 +80,24 @@ public class IOSInput implements Input {
 
 	private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<UITouch>(UITouch.class);
 	static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(UIAcceleration.class);
-	
+
 	IOSApplication app;
 	IOSApplicationConfiguration config;
-	int[] deltaX = new int[MAX_TOUCHES];
-	int[] deltaY = new int[MAX_TOUCHES];
-	int[] touchX = new int[MAX_TOUCHES];
-	int[] touchY = new int[MAX_TOUCHES];
+	final int[] deltaX = new int[MAX_TOUCHES];
+	final int[] deltaY = new int[MAX_TOUCHES];
+	final int[] touchX = new int[MAX_TOUCHES];
+	final int[] touchY = new int[MAX_TOUCHES];
 	// we store the pointer to the UITouch struct here, or 0
-	long[] touchDown = new long[MAX_TOUCHES];
+	final long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
 	boolean justTouched = false;
-	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
+	final Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
 		@Override
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
 	};
-	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
+	final Array<TouchEvent> touchEvents = new Array<TouchEvent>();
 	TouchEvent currentEvent = null;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
@@ -134,7 +129,7 @@ public class IOSInput implements Input {
 			//setupMagnetometer();
 		}
 	}
-	
+
 	private void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
@@ -158,20 +153,20 @@ public class IOSInput implements Input {
 
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
-//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;	
+//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;
 //	private void setupAccelerometer () {
 //		if (config.useAccelerometer) {
-//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);			
+//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
 //			accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
 //				@Override
 //				public void invoke(CMAccelerometerData accelData, NSError error) {
-//					updateAccelerometer(accelData);					
+//					updateAccelerometer(accelData);
 //				}
 //			};
 //			motionManager.startAccelerometerUpdates(new NSOperationQueue(), accelVoid);
 //		}
 //	}
-	
+
 	// need to retain a reference so GC doesn't get right of the
 	// object passed to the native thread
 //	VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
@@ -187,7 +182,7 @@ public class IOSInput implements Input {
 //		};
 //		motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
 //	}
-	
+
 //	private void updateAccelerometer (CMAccelerometerData data) {
 //		float x = (float) data.getAcceleration().x() * 10f;
 //		float y = (float) data.getAcceleration().y() * 10f;
@@ -196,20 +191,20 @@ public class IOSInput implements Input {
 //		acceleration[1] = -y;
 //		acceleration[2] = -z;
 //	}
-//	
+//
 //	private void updateRotation (CMMagnetometerData data) {
 //		final float eX = (float) data.getMagneticField().x();
 //		final float eY = (float) data.getMagneticField().y();
 //		final float eZ = (float) data.getMagneticField().z();
-//				
+//
 //		float gX = acceleration[0];
 //		float gY = acceleration[1];
 //		float gZ = acceleration[2];
-//		
+//
 //		float cX = eY * gZ - eZ * gY;
 //		float cY = eZ * gX - eX * gZ;
 //		float cZ = eX * gY - eY * gX;
-//		
+//
 //		final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
 //		final float invertC = 1.0f / normal;
 //		cX *= invertC;
@@ -222,11 +217,11 @@ public class IOSInput implements Input {
 //		final float mX = gY * cZ - gZ * cY;
 //		final float mY = gZ * cX - gX * cZ;
 //		final float mZ = gX * cY - gY * cX;
-//		
+//
 //		R[0] = cX;	R[1] = cY;	R[2] = cZ;
 //		R[3] = mX;	R[4] = mY;	R[5] = mZ;
 //		R[6] = gX;	R[7] = gY;	R[8] = gZ;
-//		
+//
 //		rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
 //		rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
 //		rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
@@ -347,35 +342,15 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
+	public void getTextInput (TextInputListener listener, String title, String text, String hint) {
 		buildUIAlertView(listener, title, text, hint).show();
-	}	
-
-	// hack for software keyboard support
-	// uses a hidden textfield to capture input
-	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
-
-	private class HiddenTextField extends UITextField {
-		public HiddenTextField (CGRect frame) {
-			super(frame);
-
-			setKeyboardType(UIKeyboardType.Default);
-			setReturnKeyType(UIReturnKeyType.Done);
-			setAutocapitalizationType(UITextAutocapitalizationType.None);
-			setAutocorrectionType(UITextAutocorrectionType.No);
-			setSpellCheckingType(UITextSpellCheckingType.No);
-			setHidden(true);
-		}
-
-		@Override
-		public void deleteBackward () {
-			app.input.inputProcessor.keyTyped((char)8);
-			super.deleteBackward();
-			Gdx.graphics.requestRendering();
-		}
 	}
 
-	private UITextField textfield = null;
+	// hack for software keyboard support
+	// uses a hidden textField to capture input
+	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+
+	private UITextField textField = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
@@ -391,8 +366,8 @@ public class IOSInput implements Input {
 			char[] chars = new char[string.length()];
 			string.getChars(0, string.length(), chars, 0);
 
-			for (int i = 0; i < chars.length; i++) {
-				app.input.inputProcessor.keyTyped(chars[i]);
+			for (char c : chars) {
+				app.input.inputProcessor.keyTyped(c);
 			}
 			Gdx.graphics.requestRendering();
 
@@ -420,43 +395,41 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
-		if (textfield == null) createDefaultTextField();
+		if (textField == null) createDefaultTextField();
 		if (visible) {
-			textfield.becomeFirstResponder();
-			textfield.setDelegate(textDelegate);
+			textField.becomeFirstResponder();
+			textField.setDelegate(textDelegate);
 		} else {
-			textfield.resignFirstResponder();
+			textField.resignFirstResponder();
 		}
 	}
-	
-	/**
-	 * Set the keyboard to close when the UITextField return key is pressed
-	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
-	 */
+
+	/** Set the keyboard to close when the UITextField return key is pressed
+	 * @param shouldClose Whether or not the keyboard should clsoe on return key press */
 	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
 		keyboardCloseOnReturn = shouldClose;
 	}
-	
+
 	public UITextField getKeyboardTextField () {
-		if (textfield == null) createDefaultTextField();
-		return textfield;
+		if (textField == null) createDefaultTextField();
+		return textField;
 	}
-	
+
 	private void createDefaultTextField () {
-		textfield = new UITextField(new CGRect(10, 10, 100, 50));
-		//Parameters
+		textField = new UITextField(new CGRect(10, 10, 100, 50));
+		// Parameters
 		// Setting parameters
-		textfield.setKeyboardType(UIKeyboardType.Default);
-		textfield.setReturnKeyType(UIReturnKeyType.Done);
-		textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
-		textfield.setAutocorrectionType(UITextAutocorrectionType.No);
-		textfield.setSpellCheckingType(UITextSpellCheckingType.No);
-		textfield.setHidden(true);
+		textField.setKeyboardType(UIKeyboardType.Default);
+		textField.setReturnKeyType(UIReturnKeyType.Done);
+		textField.setAutocapitalizationType(UITextAutocapitalizationType.None);
+		textField.setAutocorrectionType(UITextAutocorrectionType.No);
+		textField.setSpellCheckingType(UITextSpellCheckingType.No);
+		textField.setHidden(true);
 		// Text field needs to have at least one symbol - so we can use backspace
-		textfield.setText("x");
-		app.getUIViewController().getView().addSubview(textfield);
+		textField.setText("x");
+		app.getUIViewController().getView().addSubview(textField);
 	}
-	
+
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
 
@@ -534,7 +507,7 @@ public class IOSInput implements Input {
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey() {
 		return false;
@@ -556,25 +529,35 @@ public class IOSInput implements Input {
 		if (peripheral == Peripheral.MultitouchScreen) return true;
 		if (peripheral == Peripheral.Vibrator) return hasVibrator;
 		if (peripheral == Peripheral.Compass) return compassSupported;
-		// if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		return false;
 	}
 
 	@Override
 	public int getRotation () {
-		UIInterfaceOrientation orientation = app.graphics.viewController != null ? app.graphics.viewController
-			.getInterfaceOrientation() : UIApplication.getSharedApplication().getStatusBarOrientation();
 		// we measure orientation counter clockwise, just like on Android
-		if (orientation == UIInterfaceOrientation.Portrait) return 0;
-		if (orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
-		if (orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
-		if (orientation == UIInterfaceOrientation.LandscapeRight) return 90;
-		return 0;
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+			return 270;
+		case PortraitUpsideDown:
+			return 180;
+		case LandscapeRight:
+			return 90;
+		case Portrait:
+		default:
+			return 0;
+		}
 	}
 
 	@Override
 	public Orientation getNativeOrientation () {
-		return Orientation.Portrait;
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+		case LandscapeRight:
+			return Orientation.Landscape;
+		default:
+			return Orientation.Portrait;
+		}
 	}
 
 	@Override
@@ -590,18 +573,8 @@ public class IOSInput implements Input {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	public void touchDown (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	public void touchUp (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	public void touchMoved (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
+	protected void onTouch (long touches) {
+		toTouchEvents(touches);
 		Gdx.graphics.requestRendering();
 	}
 
@@ -658,18 +631,27 @@ public class IOSInput implements Input {
 		public static native @MachineSizedUInt long count (@Pointer long thiz);
 	}
 
-	private void toTouchEvents (long touches, UIEvent uiEvent) {
+	private void toTouchEvents (long touches) {
 		long array = NSSetExtensions.allObjects(touches);
 		int length = (int)NSArrayExtensions.count(array);
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
-			CGPoint loc = touch.getLocationInView(touch.getView());
+			final int locX, locY;
+			// Get and map the location to our drawing space
+			{
+				CGPoint loc = touch.getLocationInView(touch.getWindow());
+				final CGRect bounds = app.getCachedBounds();
+				locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
+				locY = (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
+				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
+			}
+
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.getX() * app.displayScaleFactor);
-				event.y = (int)(loc.getY() * app.displayScaleFactor);
+				event.x = locX;
+				event.y = locY;
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
