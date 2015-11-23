@@ -46,7 +46,7 @@ public class ColorTest extends GdxTest {
 		column1.add("LIGHT_GRAY", "default", Color.LIGHT_GRAY).row();
 		column1.add("GRAY", "default", Color.GRAY).row();
 		column1.add("DARK_GRAY", "default", Color.DARK_GRAY).row();
-		
+
 		column1.add("BLUE", "default", Color.BLUE).row();
 		column1.add("NAVY", "default", Color.NAVY).row();
 		column1.add("ROYAL", "default", Color.ROYAL).row();
@@ -61,12 +61,12 @@ public class ColorTest extends GdxTest {
 		column2.add("LIME", "default", Color.LIME).row();
 		column2.add("FOREST", "default", Color.FOREST).row();
 		column2.add("OLIVE", "default", Color.OLIVE).row();
-		
+
 		column2.add("YELLOW", "default", Color.YELLOW).row();
 		column2.add("GOLD", "default", Color.GOLD).row();
 		column2.add("GOLDENROD", "default", Color.GOLDENROD).row();
 		column2.add("ORANGE", "default", Color.ORANGE).row();
-		
+
 		column2.add("BROWN", "default", Color.BROWN).row();
 		column2.add("TAN", "default", Color.TAN).row();
 		column2.add("FIREBRICK", "default", Color.FIREBRICK).row();
