@@ -889,15 +889,12 @@ public class Table extends WidgetGroup {
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 
 			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
+			float totalExpandWidth = 0;
 			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
 				spannedMinWidth += columnMinWidth[ii];
 				spannedPrefWidth += columnPrefWidth[ii];
+				totalExpandWidth += expandWidth[ii]; // Distribute extra space using expand, if any columns have expand.
 			}
-
-			// Distribute extra space using expand, if any columns have expand.
-			float totalExpandWidth = 0;
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
-				totalExpandWidth += expandWidth[ii];
 
 			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
 			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
