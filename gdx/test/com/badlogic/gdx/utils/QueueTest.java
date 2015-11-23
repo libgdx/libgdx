@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -127,16 +128,51 @@ public class QueueTest {
 
 	@Test
 	public void toStringTest () {
-		{// Resizable
-			Queue<Integer> q = new Queue<Integer>(1);
-			assertTrue(q.toString().equals("[]"));
-			q.addLast(4);
-			assertTrue(q.toString().equals("[4]"));
-			q.addLast(5);
-			q.addLast(6);
-			q.addLast(7);
-			assertTrue(q.toString().equals("[4, 5, 6, 7]"));
+		Queue<Integer> q = new Queue<Integer>(1);
+		assertTrue(q.toString().equals("[]"));
+		q.addLast(4);
+		assertTrue(q.toString().equals("[4]"));
+		q.addLast(5);
+		q.addLast(6);
+		q.addLast(7);
+		assertTrue(q.toString().equals("[4, 5, 6, 7]"));
+	}
+
+	@Test
+	public void hashEqualsText () {
+		Queue<Integer> q1 = new Queue<Integer>();
+		Queue<Integer> q2 = new Queue<Integer>();
+
+		assertEqualsAndHash(q1, q2);
+		q1.addFirst(1);
+		assertNotEquals(q1, q2);
+		q2.addFirst(1);
+		assertEqualsAndHash(q1, q2);
+
+		q1.clear();
+		q1.addLast(1);
+		q1.addLast(2);
+		q2.addLast(2);
+		assertEqualsAndHash(q1, q2);
+
+		for (int i = 0; i < 100; i++) {
+			q1.addLast(i);
+			q1.addLast(i);
+			q1.removeFirst();
+
+			assertNotEquals(q1, q2);
+
+			q2.addLast(i);
+			q2.addLast(i);
+			q2.removeFirst();
+
+			assertEqualsAndHash(q1, q2);
 		}
+	}
+
+	private void assertEqualsAndHash (Queue<?> q1, Queue<?> q2) {
+		assertEquals(q1, q2);
+		assertEquals("Hash codes are not equal", q1.hashCode(), q2.hashCode());
 	}
 
 }
