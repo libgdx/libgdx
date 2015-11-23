@@ -788,7 +788,7 @@ public class Table extends WidgetGroup {
 			int column = c.column, row = c.row, colspan = c.colspan;
 			Actor a = c.actor;
 
-			// Collect columns/rows that expand.
+			// Collect rows that expand and colspan=1 columns that expand.
 			if (c.expandY != 0 && expandHeight[row] == 0) expandHeight[row] = c.expandY;
 			if (colspan == 1 && c.expandX != 0 && expandWidth[column] == 0) expandWidth[column] = c.expandX;
 
@@ -827,30 +827,28 @@ public class Table extends WidgetGroup {
 			rowMinHeight[row] = Math.max(rowMinHeight[row], minHeight + vpadding);
 		}
 
-		// Colspan with expand will expand all spanned columns if none of the spanned columns have expand.
-		outer:
-		for (int i = 0; i < cellCount; i++) {
-			Cell c = cells.get(i);
-			int expandX = c.expandX;
-			if (expandX == 0) continue;
-			int column = c.column, nn = column + c.colspan;
-			for (int ii = column; ii < nn; ii++)
-				if (expandWidth[ii] != 0) continue outer;
-			for (int ii = column; ii < nn; ii++)
-				expandWidth[ii] = expandX;
-		}
-
-		// Collect uniform size.
 		float uniformMinWidth = 0, uniformMinHeight = 0;
 		float uniformPrefWidth = 0, uniformPrefHeight = 0;
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			int column = c.column;
+
+			// Colspan with expand will expand all spanned columns if none of the spanned columns have expand.
+			int expandX = c.expandX;
+			outer:
+			if (expandX != 0) {
+				int nn = column + c.colspan;
+				for (int ii = column; ii < nn; ii++)
+					if (expandWidth[ii] != 0) break outer;
+				for (int ii = column; ii < nn; ii++)
+					expandWidth[ii] = expandX;
+			}
 
 			// Collect uniform sizes.
 			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
 				float hpadding = c.computedPadLeft + c.computedPadRight;
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column] - hpadding);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column] - hpadding);
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[column] - hpadding);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[column] - hpadding);
 			}
 			if (c.uniformY == Boolean.TRUE) {
 				float vpadding = c.computedPadTop + c.computedPadBottom;
@@ -1155,8 +1153,8 @@ public class Table extends WidgetGroup {
 			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
-				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth, rowHeight[c.row] - c.computedPadTop
-					- c.computedPadBottom, debugCellColor);
+				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth,
+					rowHeight[c.row] - c.computedPadTop - c.computedPadBottom, debugCellColor);
 			}
 
 			if (c.endRow) {
