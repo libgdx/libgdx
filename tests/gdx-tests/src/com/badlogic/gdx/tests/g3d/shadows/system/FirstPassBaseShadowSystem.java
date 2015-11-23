@@ -20,10 +20,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.tests.g3d.shadows.utils.DirectionalAnalyzer;
+import com.badlogic.gdx.tests.g3d.shadows.utils.LightFilter;
+import com.badlogic.gdx.tests.g3d.shadows.utils.NearFarAnalyzer;
+import com.badlogic.gdx.tests.g3d.shadows.utils.ShadowMapAllocator;
 
 /** FirstPassBaseShadowSystem assumes that the first pass renders all depth map in one texture.
  * @author realitix */
 public abstract class FirstPassBaseShadowSystem extends BaseShadowSystem {
+
+	public FirstPassBaseShadowSystem () {
+		super();
+	}
+
+	public FirstPassBaseShadowSystem (NearFarAnalyzer nearFarAnalyzer, ShadowMapAllocator allocator,
+		DirectionalAnalyzer directionalAnalyzer, LightFilter lightFilter) {
+		super(nearFarAnalyzer, allocator, directionalAnalyzer, lightFilter);
+	}
 
 	protected static int FIRST_PASS = 0;
 

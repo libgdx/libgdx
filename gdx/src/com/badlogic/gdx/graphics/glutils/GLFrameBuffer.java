@@ -183,7 +183,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && hasDepth && hasStencil
-			&& Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil")) {
+			&& (Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil") ||
+				Gdx.graphics.supportsExtension("GL_EXT_packed_depth_stencil"))) {
 			if (hasDepth) {
 				gl.glDeleteRenderbuffer(depthbufferHandle);
 				depthbufferHandle = 0;
