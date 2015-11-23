@@ -16,13 +16,18 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
  * internal values after execution.
  * 
  * @author mzechner */
-public class Color {
+public class Color implements Serializable {
 	public static final Color CLEAR = new Color(0, 0, 0, 0);
 	public static final Color BLACK = new Color(0, 0, 0, 1);
 
@@ -65,7 +70,7 @@ public class Color {
 	public static final Color MAROON = new Color(0xb03060ff);
 
 	/** the red, green, blue and alpha components **/
-	public float r, g, b, a;
+	public transient float r, g, b, a;
 
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {
@@ -482,4 +487,16 @@ public class Color {
 	public Color cpy () {
 		return new Color(this);
 	}
+
+	/* Use rgba888 representation to reduce the stream's size */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		out.writeInt(rgba8888(r, g, b, a));
+	}
+
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		rgba8888ToColor(this, in.readInt());
+	}
+
 }
