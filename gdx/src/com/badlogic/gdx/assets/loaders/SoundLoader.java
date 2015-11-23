@@ -34,6 +34,15 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
 		super(resolver);
 	}
 
+	/** Returns the {@link Sound} instance currently loaded by this
+	 * {@link SoundLoader}.
+	 * 
+	 * @return the currently loaded {@link Sound}, otherwise {@code null} if
+	 *         no {@link Sound} has been loaded yet. */
+	protected Sound getLoadedSound () {
+		return sound;
+	}
+	
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, FileHandle file, SoundParameter parameter) {
 		sound = Gdx.audio.newSound(file);
