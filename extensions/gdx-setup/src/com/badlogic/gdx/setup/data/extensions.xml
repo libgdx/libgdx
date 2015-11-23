@@ -22,7 +22,7 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>0.9.2</version>
+		<version>0.9.4</version>
 		<compatibility>1.7.1</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
