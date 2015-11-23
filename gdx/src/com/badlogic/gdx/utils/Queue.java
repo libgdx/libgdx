@@ -20,62 +20,51 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 import java.util.NoSuchElementException;
 
-/** Automatically resizing FIFO queue. Values in backing queue rotate around so push and pop are O(1) (unless resizing in push).
- * Also provides deque functionality via {@link #popLast()} and {@link #pushFront(Object)}. This collection is not thread-safe. */
+/** Automatically resizing queue. Values in backing queue rotate around so add and remove to/from ends are O(1) (unless resizing in
+ * add). Also provides deque functionality via {@link #removeLast()} and {@link #addFirst(Object)}. This collection is not
+ * thread-safe. */
 public class Queue<T> {
 
-	/** Contains values waiting in this queue. Pop and push indices go in circle around this array, wrapping at the end. */
+	/** Contains values waiting in this queue. Head and tail indices go in circle around this array, wrapping at the end. */
 	protected T[] values;
 
-	/** Index to dequeue/remove from. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
+	/** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. NOTE: Do not
+	 * manipulate this value directly. */
 	protected int head = 0;
 
-	/** Index to enqueue/add to. Logically bigger than head. Usually points to an empty values position, but when full (size ==
-	 * values.length) points to the head. */
+	/** Index of last element. Logically bigger than head. Usually points to an empty position, but points to the head when full
+	 * (size == values.length). NOTE: Do not manipulate this value directly. */
 	protected int tail = 0;
 
-	/** Amount of things currently enqueued. */
-	protected int size = 0;
+	/** Amount of elements currently in the queue. NOTE: Do not manipulate this value directly. */
+	public int size = 0;
 
-	/** Non resizable queues will have limited capacity.
-	 * @see Queue#push(Object) */
-	public boolean resizable;
-
-	/** Create a new Queue which can hold 15 values without resizing. */
+	/** Create a new Queue which can hold 16 values without needing to resize backing array. */
 	public Queue () {
-		this(16, true);
+		this(16);
 	}
 
-	/** Create a new Queue which can hold `initialSize` values without resizing. */
-	public Queue (int initialSize, boolean resizable) {
+	/** Create a new Queue which can hold `initialSize` values without needing to resize backing array. */
+	public Queue (int initialSize) {
 		// noinspection unchecked
 		this.values = (T[])new Object[initialSize];
-		this.resizable = resizable;
 	}
 
-	/** Create a new Queue which can hold `initialSize` values without resizing. This creates backing array of correct type via
-	 * reflection. Use this only if you are accessing backing array directly.
-	 * <p/>
-	 * NOTE: Worth using only if you know what are you doing. */
-	public Queue (int initialSize, boolean resizable, Class<T> type) {
+	/** Create a new Queue which can hold `initialSize` values without needing to resize backing array. This creates backing array
+	 * of correct type via reflection. Necessary only if you want to access the backing array directly. */
+	public Queue (int initialSize, Class<T> type) {
 		// noinspection unchecked
 		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
-		this.resizable = resizable;
 	}
 
-	/** Enqueue given object (append after tail). Unless backing array needs resizing, operates in O(1) time.
-	 * @param object can be null
-	 * @throws IllegalStateException when full and not resizable */
-	public void push (T object) {
+	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
+	 * @param object can be null */
+	public void addLast (T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
-			if (!resizable) {
-				throw new IllegalStateException("Queue is full");
-			} else {
-				resize(values.length << 1);// *2
-				values = this.values;
-			}
+			resize(values.length << 1);// * 2
+			values = this.values;
 		}
 
 		values[tail++] = object;
@@ -85,20 +74,15 @@ public class Queue<T> {
 		size++;
 	}
 
-	/** Add given object to the deque, prepending to head. Is very similar to {@link #push(Object)} but the object is added to the
-	 * other side. Can be thought of as jumping the queue.
-	 * @param object can be null
-	 * @throws IllegalStateException when full and not resizable */
-	public void pushFront (T object) {
+	/** Prepend given object to the head. (enqueue to head)
+	 * @see #addLast(Object)
+	 * @param object can be null */
+	public void addFirst (T object) {
 		T[] values = this.values;
 
 		if (size == values.length) {
-			if (!resizable) {
-				throw new IllegalStateException("Deque is full");
-			} else {
-				resize(values.length << 1);// *2
-				values = this.values;
-			}
+			resize(values.length << 1);// * 2
+			values = this.values;
 		}
 
 		int head = this.head;
@@ -112,9 +96,7 @@ public class Queue<T> {
 		this.size++;
 	}
 
-	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize.
-	 * <p/>
-	 * NOTE: This WILL resize non-resizable arrays. */
+	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize. */
 	public void ensureCapacity (int additional) {
 		final int needed = size + additional;
 		if (values.length < needed) {
@@ -144,10 +126,10 @@ public class Queue<T> {
 		this.tail = size;
 	}
 
-	/** Dequeue next object in queue
-	 * @return next item in queue
+	/** Remove the first item from the queue. (dequeue from head) Always O(1).
+	 * @return removed object
 	 * @throws NoSuchElementException when queue is empty */
-	public T pop () {
+	public T removeFirst () {
 		if (size == 0) {
 			// Underflow
 			throw new NoSuchElementException("Queue is empty");
@@ -166,10 +148,11 @@ public class Queue<T> {
 		return result;
 	}
 
-	/** Remove item which was added last to this deque. Works the same way as {@link #pop()}, but from the other side.
-	 * @return last item in queue
+	/** Remove the last item from the queue. (dequeue from tail)
+	 * @see #removeFirst()
+	 * @return removed object
 	 * @throws NoSuchElementException when queue is empty */
-	public T popLast () {
+	public T removeLast () {
 		if (size == 0) {
 			throw new NoSuchElementException("Deque is empty");
 		}
@@ -188,9 +171,11 @@ public class Queue<T> {
 		return result;
 	}
 
-	/** Returns the next item in queue.
+	/** Returns the first (head) item in the queue (without removing it).
+	 * @see #addFirst(Object)
+	 * @see #removeFirst()
 	 * @throws NoSuchElementException when queue is empty */
-	public T peek () {
+	public T first () {
 		if (size == 0) {
 			// Underflow
 			throw new NoSuchElementException("Queue is empty");
@@ -198,9 +183,11 @@ public class Queue<T> {
 		return values[head];
 	}
 
-	/** @return the last item in deque.
-	 * @throws NoSuchElementException when the deque is empty */
-	public T peekLast () {
+	/** Returns the last (tail) item in the queue (without removing it).
+	 * @see #addLast(Object)
+	 * @see #removeLast()
+	 * @throws NoSuchElementException when queue is empty */
+	public T last () {
 		if (size == 0) {
 			// Underflow
 			throw new NoSuchElementException("Deque is empty");
@@ -215,7 +202,7 @@ public class Queue<T> {
 	}
 
 	/** Retrieves the value in Queue without removing it. Indexing is from the front to back, zero based. Therefore get(0) is the
-	 * same as peek().
+	 * same as {@link #first()}.
 	 * @throws NoSuchElementException when the index is negative or >= size */
 	public T get (int index) {
 		if (index < 0 || index >= size) {
@@ -228,16 +215,6 @@ public class Queue<T> {
 			i -= values.length;
 		}
 		return values[i];
-	}
-
-	/** @return true if this queue can't hold any more values (always false when resizable) */
-	public boolean isFull () {
-		return !resizable && size == values.length;
-	}
-
-	/** @return amount of values waiting in this queue */
-	public int size () {
-		return size;
 	}
 
 	/** Removes all values from this queue. (Values in backing array are set to null to prevent memory leak, so this operates in
