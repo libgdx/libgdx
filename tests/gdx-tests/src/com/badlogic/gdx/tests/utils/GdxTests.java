@@ -107,6 +107,7 @@ public class GdxTests {
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
 		CollectionsTest.class,
+		ColorTest.class,
 		ContainerTest.class,
 		CpuSpriteBatchTest.class,
 		CullTest.class,
