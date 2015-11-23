@@ -635,16 +635,16 @@ public class BitmapFont implements Disposable {
 				spaceWidth = spaceGlyph.width;
 
 				Glyph xGlyph = null;
-				for (int i = 0; i < xChars.length; i++) {
-					xGlyph = getGlyph(xChars[i]);
+				for (char xChar : xChars) {
+					xGlyph = getGlyph(xChar);
 					if (xGlyph != null) break;
 				}
 				if (xGlyph == null) xGlyph = getFirstGlyph();
 				xHeight = xGlyph.height - padY;
 
 				Glyph capGlyph = null;
-				for (int i = 0; i < capChars.length; i++) {
-					capGlyph = getGlyph(capChars[i]);
+				for (char capChar : capChars) {
+					capGlyph = getGlyph(capChar);
 					if (capGlyph != null) break;
 				}
 				if (capGlyph == null) {
@@ -786,26 +786,18 @@ public class BitmapFont implements Disposable {
 				if (glyph == null) continue;
 				glyphs.add(glyph);
 
-				if (lastGlyph == null) { // First glyph.
-					if(glyph.fixedWidth) {
-						xAdvances.add(0);
-					} else {
-						xAdvances.add(-glyph.xoffset * scaleX - padLeft);
-					}
-				} else {
+				if (lastGlyph == null) // First glyph.
+					xAdvances.add(glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft);
+				else
 					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
-				}
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
 			}
 			if (lastGlyph != null) {
-				if(lastGlyph.fixedWidth) {
-					xAdvances.add(lastGlyph.xadvance * scaleX - padRight);
-				} else {
-					xAdvances.add((lastGlyph.xoffset + lastGlyph.width) * scaleX - padRight);
-				}
+				int lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance : lastGlyph.xoffset + lastGlyph.width;
+				xAdvances.add(lastGlyphWidth * scaleX - padRight);
 			}
 		}
 
