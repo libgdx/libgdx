@@ -16,42 +16,40 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
 import java.util.NoSuchElementException;
 
-/** Automatically resizing queue. Values in backing queue rotate around so add and remove to/from ends are O(1) (unless resizing in
- * add). Also provides deque functionality via {@link #removeLast()} and {@link #addFirst(Object)}. This collection is not
- * thread-safe. */
-public class Queue<T> {
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
-	/** Contains values waiting in this queue. Head and tail indices go in circle around this array, wrapping at the end. */
+/** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
+ * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
+ * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
+public class Queue<T> {
+	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
 	protected T[] values;
 
-	/** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. NOTE: Do not
-	 * manipulate this value directly. */
+	/** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
 	protected int head = 0;
 
 	/** Index of last element. Logically bigger than head. Usually points to an empty position, but points to the head when full
-	 * (size == values.length). NOTE: Do not manipulate this value directly. */
+	 * (size == values.length). */
 	protected int tail = 0;
 
-	/** Amount of elements currently in the queue. NOTE: Do not manipulate this value directly. */
+	/** Number of elements in the queue. */
 	public int size = 0;
 
-	/** Create a new Queue which can hold 16 values without needing to resize backing array. */
+	/** Creates a new Queue which can hold 16 values without needing to resize backing array. */
 	public Queue () {
 		this(16);
 	}
 
-	/** Create a new Queue which can hold `initialSize` values without needing to resize backing array. */
+	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public Queue (int initialSize) {
 		// noinspection unchecked
 		this.values = (T[])new Object[initialSize];
 	}
 
-	/** Create a new Queue which can hold `initialSize` values without needing to resize backing array. This creates backing array
-	 * of correct type via reflection. Necessary only if you want to access the backing array directly. */
+	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
+	 * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly. */
 	public Queue (int initialSize, Class<T> type) {
 		// noinspection unchecked
 		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
@@ -74,7 +72,7 @@ public class Queue<T> {
 		size++;
 	}
 
-	/** Prepend given object to the head. (enqueue to head)
+	/** Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
 	 * @see #addLast(Object)
 	 * @param object can be null */
 	public void addFirst (T object) {
@@ -96,7 +94,8 @@ public class Queue<T> {
 		this.size++;
 	}
 
-	/** Optionally resize backing array so adding `additional` amount of entries won't cause resize. */
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
+	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additional) {
 		final int needed = size + additional;
 		if (values.length < needed) {
@@ -132,7 +131,7 @@ public class Queue<T> {
 	public T removeFirst () {
 		if (size == 0) {
 			// Underflow
-			throw new NoSuchElementException("Queue is empty");
+			throw new NoSuchElementException("Queue is empty.");
 		}
 
 		final T[] values = this.values;
@@ -148,13 +147,13 @@ public class Queue<T> {
 		return result;
 	}
 
-	/** Remove the last item from the queue. (dequeue from tail)
+	/** Remove the last item from the queue. (dequeue from tail) Always O(1).
 	 * @see #removeFirst()
 	 * @return removed object
 	 * @throws NoSuchElementException when queue is empty */
 	public T removeLast () {
 		if (size == 0) {
-			throw new NoSuchElementException("Deque is empty");
+			throw new NoSuchElementException("Queue is empty.");
 		}
 
 		final T[] values = this.values;
@@ -178,7 +177,7 @@ public class Queue<T> {
 	public T first () {
 		if (size == 0) {
 			// Underflow
-			throw new NoSuchElementException("Queue is empty");
+			throw new NoSuchElementException("Queue is empty.");
 		}
 		return values[head];
 	}
@@ -190,7 +189,7 @@ public class Queue<T> {
 	public T last () {
 		if (size == 0) {
 			// Underflow
-			throw new NoSuchElementException("Deque is empty");
+			throw new NoSuchElementException("Queue is empty.");
 		}
 		final T[] values = this.values;
 		int tail = this.tail;
@@ -201,13 +200,12 @@ public class Queue<T> {
 		return values[tail];
 	}
 
-	/** Retrieves the value in Queue without removing it. Indexing is from the front to back, zero based. Therefore get(0) is the
+	/** Retrieves the value in queue without removing it. Indexing is from the front to back, zero based. Therefore get(0) is the
 	 * same as {@link #first()}.
-	 * @throws NoSuchElementException when the index is negative or >= size */
+	 * @throws IndexOutOfBoundsException when the index is negative or >= size */
 	public T get (int index) {
-		if (index < 0 || index >= size) {
-			throw new NoSuchElementException("Index " + index + " does not exist, size is " + size);
-		}
+		if (index < 0) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
 		final T[] values = this.values;
 
 		int i = head + index;
@@ -217,8 +215,8 @@ public class Queue<T> {
 		return values[i];
 	}
 
-	/** Removes all values from this queue. (Values in backing array are set to null to prevent memory leak, so this operates in
-	 * O(n).) */
+	/** Removes all values from this queue. Values in backing array are set to null to prevent memory leak, so this operates in
+	 * O(n). */
 	public void clear () {
 		if (size == 0) return;
 		final T[] values = this.values;
