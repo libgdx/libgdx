@@ -16,14 +16,16 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.badlogic.gdx.utils.Array.ArrayIterable;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
  * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
-public class Queue<T> {
+public class Queue<T> implements Iterable<T> {
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
 	protected T[] values;
 
@@ -36,6 +38,8 @@ public class Queue<T> {
 
 	/** Number of elements in the queue. */
 	public int size = 0;
+
+	private QueueIterable iterable;
 
 	/** Creates a new Queue which can hold 16 values without needing to resize backing array. */
 	public Queue () {
@@ -170,6 +174,76 @@ public class Queue<T> {
 		return result;
 	}
 
+	/** Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return An index of first occurrence of value in queue or -1 if no such value exists */
+	public int indexOf (T value, boolean identity) {
+		if (size == 0) return -1;
+		T[] values = this.values;
+		int head = this.head, tail = this.tail;
+		if (identity || value == null) {
+			if (head < tail) {
+				for (int i = head, n = tail; i < n; i++)
+					if (values[i] == value) return i;
+			} else {
+				for (int i = head, n = values.length; i < n; i++)
+					if (values[i] == value) return i - head;
+				for (int i = 0, n = tail; i < n; i++)
+					if (values[i] == value) return i + values.length - head;
+			}
+		} else {
+			if (head < tail) {
+				for (int i = head, n = tail; i < n; i++)
+					if (value.equals(values[i])) return i;
+			} else {
+				for (int i = head, n = values.length; i < n; i++)
+					if (value.equals(values[i])) return i - head;
+				for (int i = 0, n = tail; i < n; i++)
+					if (value.equals(values[i])) return i + values.length - head;
+			}
+		}
+		return -1;
+	}
+
+	/** Removes the first instance of the specified value in the queue.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return true if value was found and removed, false otherwise */
+	public boolean removeValue (T value, boolean identity) {
+		int index = indexOf(value, identity);
+		if (index == -1) return false;
+		removeIndex(index);
+		return true;
+	}
+
+	/** Removes and returns the item at the specified index. */
+	public T removeIndex (int index) {
+		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+
+		T[] values = this.values;
+		int head = this.head, tail = this.tail;
+		index += head;
+		T value;
+		if (head < tail) { // index is between head and tail.
+			value = (T)values[index];
+			System.arraycopy(values, index + 1, values, index, tail - index);
+			values[tail] = null;
+			this.tail--;
+		} else if (index >= values.length) { // index is between 0 and tail.
+			index -= values.length;
+			value = (T)values[index];
+			System.arraycopy(values, index + 1, values, index, tail - index);
+			this.tail--;
+		} else { // index is between head and values.length.
+			value = (T)values[index];
+			System.arraycopy(values, head, values, head + 1, index - head);
+			values[head] = null;
+			this.head++;
+		}
+		size--;
+		return value;
+	}
+
 	/** Returns the first (head) item in the queue (without removing it).
 	 * @see #addFirst(Object)
 	 * @see #removeFirst()
@@ -204,8 +278,8 @@ public class Queue<T> {
 	 * same as {@link #first()}.
 	 * @throws IndexOutOfBoundsException when the index is negative or >= size */
 	public T get (int index) {
-		if (index < 0) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
-		if (index >= size) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
+		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		final T[] values = this.values;
 
 		int i = head + index;
@@ -240,6 +314,13 @@ public class Queue<T> {
 		this.head = 0;
 		this.tail = 0;
 		this.size = 0;
+	}
+
+	/** Returns an iterator for the items in the queue. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link QueueIterator} constructor for nested or multithreaded iteration. */
+	public Iterator<T> iterator () {
+		if (iterable == null) iterable = new QueueIterable(this);
+		return iterable.iterator();
 	}
 
 	public String toString () {
@@ -307,5 +388,92 @@ public class Queue<T> {
 			if (itsIndex == itsBackingLength) itsIndex = 0;
 		}
 		return true;
+	}
+
+	static public class QueueIterator<T> implements Iterator<T>, Iterable<T> {
+		private final Queue<T> queue;
+		private final boolean allowRemove;
+		int index;
+		boolean valid = true;
+
+// QueueIterable<T> iterable;
+
+		public QueueIterator (Queue<T> queue) {
+			this(queue, true);
+		}
+
+		public QueueIterator (Queue<T> queue, boolean allowRemove) {
+			this.queue = queue;
+			this.allowRemove = allowRemove;
+		}
+
+		public boolean hasNext () {
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
+			return index < queue.size;
+		}
+
+		public T next () {
+			if (index >= queue.size) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
+			return queue.get(index++);
+		}
+
+		public void remove () {
+			if (!allowRemove) throw new GdxRuntimeException("Remove not allowed.");
+			index--;
+			queue.removeIndex(index);
+		}
+
+		public void reset () {
+			index = 0;
+		}
+
+		public Iterator<T> iterator () {
+			return this;
+		}
+	}
+
+	static public class QueueIterable<T> implements Iterable<T> {
+		private final Queue<T> queue;
+		private final boolean allowRemove;
+		private QueueIterator iterator1, iterator2;
+
+// java.io.StringWriter lastAcquire = new java.io.StringWriter();
+
+		public QueueIterable (Queue<T> queue) {
+			this(queue, true);
+		}
+
+		public QueueIterable (Queue<T> queue, boolean allowRemove) {
+			this.queue = queue;
+			this.allowRemove = allowRemove;
+		}
+
+		public Iterator<T> iterator () {
+// lastAcquire.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
+			if (iterator1 == null) {
+				iterator1 = new QueueIterator(queue, allowRemove);
+				iterator2 = new QueueIterator(queue, allowRemove);
+// iterator1.iterable = this;
+// iterator2.iterable = this;
+			}
+			if (!iterator1.valid) {
+				iterator1.index = 0;
+				iterator1.valid = true;
+				iterator2.valid = false;
+				return iterator1;
+			}
+			iterator2.index = 0;
+			iterator2.valid = true;
+			iterator1.valid = false;
+			return iterator2;
+		}
 	}
 }

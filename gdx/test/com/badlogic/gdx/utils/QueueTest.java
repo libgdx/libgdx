@@ -1,14 +1,11 @@
 
 package com.badlogic.gdx.utils;
 
+import static org.junit.Assert.*;
+
+import java.util.Iterator;
+
 import org.junit.Test;
-
-import java.util.NoSuchElementException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class QueueTest {
 
@@ -120,10 +117,126 @@ public class QueueTest {
 			try {
 				q.get(0);
 				fail("get() on empty queue did not throw");
-			} catch (NoSuchElementException ignore) {
+			} catch (IndexOutOfBoundsException ignore) {
 				// Expected
 			}
 		}
+	}
+
+	@Test
+	public void removeTest () {
+		final Queue<Integer> q = new Queue<Integer>();
+
+		// Test head < tail.
+		for (int j = 0; j <= 6; j++)
+			q.addLast(j);
+		assertValues(q, 0, 1, 2, 3, 4, 5, 6);
+		q.removeIndex(0);
+		assertValues(q, 1, 2, 3, 4, 5, 6);
+		q.removeIndex(1);
+		assertValues(q, 1, 3, 4, 5, 6);
+		q.removeIndex(4);
+		assertValues(q, 1, 3, 4, 5);
+		q.removeIndex(2);
+		assertValues(q, 1, 3, 5);
+
+		// Test head >= tail and index >= head.
+		q.clear();
+		for (int j = 2; j >= 0; j--)
+			q.addFirst(j);
+		for (int j = 3; j <= 6; j++)
+			q.addLast(j);
+		assertValues(q, 0, 1, 2, 3, 4, 5, 6);
+		q.removeIndex(1);
+		assertValues(q, 0, 2, 3, 4, 5, 6);
+		q.removeIndex(0);
+		assertValues(q, 2, 3, 4, 5, 6);
+
+		// Test head >= tail and index < tail.
+		q.clear();
+		for (int j = 2; j >= 0; j--)
+			q.addFirst(j);
+		for (int j = 3; j <= 6; j++)
+			q.addLast(j);
+		assertValues(q, 0, 1, 2, 3, 4, 5, 6);
+		q.removeIndex(5);
+		assertValues(q, 0, 1, 2, 3, 4, 6);
+		q.removeIndex(5);
+		assertValues(q, 0, 1, 2, 3, 4);
+	}
+
+	@Test
+	public void indexOfTest () {
+		final Queue<Integer> q = new Queue<Integer>();
+
+		// Test head < tail.
+		for (int j = 0; j <= 6; j++)
+			q.addLast(j);
+		for (int j = 0; j <= 6; j++)
+			assertEquals(q.indexOf(j, false), j);
+
+		// Test head >= tail.
+		q.clear();
+		for (int j = 2; j >= 0; j--)
+			q.addFirst(j);
+		for (int j = 3; j <= 6; j++)
+			q.addLast(j);
+		for (int j = 0; j <= 6; j++)
+			assertEquals(q.indexOf(j, false), j);
+	}
+
+	@Test
+	public void iteratorTest () {
+		final Queue<Integer> q = new Queue<Integer>();
+
+		// Test head < tail.
+		for (int j = 0; j <= 6; j++)
+			q.addLast(j);
+		Iterator<Integer> iter = q.iterator();
+		for (int j = 0; j <= 6; j++)
+			assertEquals(iter.next().intValue(), j);
+		iter = q.iterator();
+		iter.next();
+		iter.remove();
+		assertValues(q, 1, 2, 3, 4, 5, 6);
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 3, 4, 5, 6);
+		iter.next();
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 4, 5, 6);
+		iter.next();
+		iter.next();
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 4, 5);
+
+		// Test head >= tail.
+		q.clear();
+		for (int j = 2; j >= 0; j--)
+			q.addFirst(j);
+		for (int j = 3; j <= 6; j++)
+			q.addLast(j);
+		iter = q.iterator();
+		for (int j = 0; j <= 6; j++)
+			assertEquals(iter.next().intValue(), j);
+		iter = q.iterator();
+		iter.next();
+		iter.remove();
+		assertValues(q, 1, 2, 3, 4, 5, 6);
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 3, 4, 5, 6);
+		iter.next();
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 4, 5, 6);
+		iter.next();
+		iter.next();
+		iter.next();
+		iter.remove();
+		assertValues(q, 2, 4, 5);
 	}
 
 	@Test
@@ -175,4 +288,8 @@ public class QueueTest {
 		assertEquals("Hash codes are not equal", q1.hashCode(), q2.hashCode());
 	}
 
+	private void assertValues (Queue<Integer> q, Integer... values) {
+		for (int i = 0, n = values.length; i < n; i++)
+			if (values[i] != q.get(i)) fail(q + " != " + new Array(values));
+	}
 }
