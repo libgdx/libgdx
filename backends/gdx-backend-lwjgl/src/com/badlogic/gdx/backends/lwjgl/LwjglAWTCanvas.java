@@ -16,28 +16,23 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import static com.badlogic.gdx.Gdx.*;
-
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.util.ArrayList;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.PaintEvent;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.PixelFormat;
@@ -55,7 +50,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses {@link AWTGLCanvas},
  * which allows multiple LwjglAWTCanvas to be used in a single application. All OpenGL calls are done on the EDT. Note that you
@@ -107,6 +101,7 @@ public class LwjglAWTCanvas implements Application {
 			canvas = new AWTGLCanvas(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(), new PixelFormat(),
 				sharedDrawable) {
 				private final Dimension minSize = new Dimension(0, 0);
+				private final NonSystemPaint nonSystemPaint = new NonSystemPaint(this);
 
 				@Override
 				public Dimension getMinimumSize () {
@@ -121,8 +116,9 @@ public class LwjglAWTCanvas implements Application {
 				@Override
 				public void paintGL () {
 					try {
-						render();
-						repaint();
+						boolean systemPaint = !(EventQueue.getCurrentEvent() instanceof NonSystemPaint);
+						render(systemPaint);
+						Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(nonSystemPaint);
 					} catch (Throwable ex) {
 						exception(ex);
 					}
@@ -248,13 +244,12 @@ public class LwjglAWTCanvas implements Application {
 		}
 	}
 
-	void render () throws LWJGLException {
+	void render (boolean shouldRender) throws LWJGLException {
 		if (!running) return;
 
 		setGlobals();
 		canvas.setCursor(cursor);
 
-		boolean shouldRender = false;
 		int width = Math.max(1, graphics.getWidth());
 		int height = Math.max(1, graphics.getHeight());
 		if (lastWidth != width || lastHeight != height) {
@@ -508,5 +503,11 @@ public class LwjglAWTCanvas implements Application {
 	protected void exception (Throwable ex) {
 		ex.printStackTrace();
 		stop();
+	}
+
+	static public class NonSystemPaint extends PaintEvent {
+		public NonSystemPaint (AWTGLCanvas canvas) {
+			super(canvas, UPDATE, new Rectangle(0, 0, 99999, 99999));
+		}
 	}
 }
