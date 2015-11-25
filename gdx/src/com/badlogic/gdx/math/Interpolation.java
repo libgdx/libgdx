@@ -42,9 +42,9 @@ public abstract class Interpolation {
 	};
 
 	static public final Pow pow2 = new Pow(2);
-	/** Fast, then slow. */
+	/** Slow, then fast. */
 	static public final PowIn pow2In = new PowIn(2);
-	/** Slow, then falst. */
+	/** Fast, then slow. */
 	static public final PowOut pow2Out = new PowOut(2);
 
 	static public final Pow pow3 = new Pow(3);
