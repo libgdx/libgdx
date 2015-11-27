@@ -64,8 +64,6 @@ public class TextTooltip extends Tooltip<Label> {
 		if (!(style instanceof TextTooltipStyle)) throw new IllegalArgumentException("style must be a TextTooltipStyle.");
 		container.getActor().setStyle(style.label);
 		container.setBackground(style.background);
-		container.pack();
-		container.pack(); // Second pack is needed to recompute the label pref height in case the label wrapped on the first pack.
 	}
 
 	/** The style for a text tooltip, see {@link TextTooltip}.
