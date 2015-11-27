@@ -21,6 +21,7 @@ import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -85,6 +86,8 @@ public class LwjglApplicationConfiguration {
 	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+	/** Preferences file type on the desktop. Default is FileType.External */
+	public Files.FileType preferencesFileType = FileType.External;
 	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
 	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
 	/** enable HDPI mode on Mac OS X **/
