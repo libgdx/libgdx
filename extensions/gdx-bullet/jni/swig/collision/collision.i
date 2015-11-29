@@ -75,10 +75,7 @@ CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision
 %}
 %include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
 
-%{
-#include <BulletCollision/BroadphaseCollision/btDbvt.h>
-%}
-%include "BulletCollision/BroadphaseCollision/btDbvt.h"
+%include "./btDbvt.i"
 
 %{
 #include <BulletCollision/BroadphaseCollision/btQuantizedBvh.h>

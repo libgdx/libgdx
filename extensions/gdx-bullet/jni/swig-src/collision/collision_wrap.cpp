@@ -1449,6 +1449,12 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 
 #include <BulletCollision/BroadphaseCollision/btDbvt.h>
 
+SWIGINTERN void btDbvt_collideKDOP__SWIG_1(btDbvtNode const *root,btScalar const *normals,btScalar const *offsets,int count,btDbvt::ICollide &policy){
+		btDbvt::collideKDOP(root, (btVector3*)normals, offsets, count, policy);
+	}
+SWIGINTERN void btDbvt_collideOCL__SWIG_2(btDbvtNode const *root,btScalar const *normals,btScalar const *offsets,btVector3 const &sortaxis,int count,btDbvt::ICollide &policy,bool fullsort=true){
+		btDbvt::collideOCL(root, (btVector3*)normals, offsets, sortaxis, count, policy, fullsort);
+	}
 
 #include <BulletCollision/BroadphaseCollision/btQuantizedBvh.h>
 
@@ -9449,7 +9455,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvt_1collideKDOP(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jint jarg4, jlong jarg5, jobject jarg5_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvt_1collideKDOP_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jint jarg4, jlong jarg5, jobject jarg5_) {
   btDbvtNode *arg1 = (btDbvtNode *) 0 ;
   btVector3 *arg2 = (btVector3 *) 0 ;
   btScalar *arg3 = (btScalar *) 0 ;
@@ -9629,6 +9635,126 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   result = (int)btDbvt::allocate(*arg1,*arg2,(btDbvt::sStkNPS const &)*arg3);
   jresult = (jint)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvt_1collideKDOP_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jint jarg4, jlong jarg5, jobject jarg5_) {
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  btScalar *arg3 = (btScalar *) 0 ;
+  int arg4 ;
+  btDbvt::ICollide *arg5 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg5_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg4 = (int)jarg4; 
+  arg5 = *(btDbvt::ICollide **)&jarg5;
+  if (!arg5) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btDbvt::ICollide & reference is null");
+    return ;
+  } 
+  btDbvt_collideKDOP__SWIG_1((btDbvtNode const *)arg1,(float const *)arg2,(float const *)arg3,arg4,*arg5);
+  
+  
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvt_1collideOCL_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jobject jarg4, jint jarg5, jlong jarg6, jobject jarg6_, jboolean jarg7) {
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  btScalar *arg3 = (btScalar *) 0 ;
+  btVector3 *arg4 = 0 ;
+  int arg5 ;
+  btDbvt::ICollide *arg6 = 0 ;
+  bool arg7 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg6_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  btVector3 local_arg4;
+  gdx_setbtVector3FromVector3(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  arg5 = (int)jarg5; 
+  arg6 = *(btDbvt::ICollide **)&jarg6;
+  if (!arg6) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btDbvt::ICollide & reference is null");
+    return ;
+  } 
+  arg7 = jarg7 ? true : false; 
+  btDbvt_collideOCL__SWIG_2((btDbvtNode const *)arg1,(float const *)arg2,(float const *)arg3,(btVector3 const &)*arg4,arg5,*arg6,arg7);
+  
+  
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvt_1collideOCL_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jobject jarg4, jint jarg5, jlong jarg6, jobject jarg6_) {
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  btScalar *arg3 = (btScalar *) 0 ;
+  btVector3 *arg4 = 0 ;
+  int arg5 ;
+  btDbvt::ICollide *arg6 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg6_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  btVector3 local_arg4;
+  gdx_setbtVector3FromVector3(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  arg5 = (int)jarg5; 
+  arg6 = *(btDbvt::ICollide **)&jarg6;
+  if (!arg6) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btDbvt::ICollide & reference is null");
+    return ;
+  } 
+  btDbvt_collideOCL__SWIG_2((btDbvtNode const *)arg1,(float const *)arg2,(float const *)arg3,(btVector3 const &)*arg4,arg5,*arg6);
+  
+  
 }
 
 

@@ -699,7 +699,7 @@ public class btDbvt extends BulletBase {
   public static void collideKDOP(btDbvtNode root, btVector3 normals, java.nio.FloatBuffer offsets, int count, btDbvt.ICollide policy) {
     assert offsets.isDirect() : "Buffer must be allocated direct.";
     {
-      CollisionJNI.btDbvt_collideKDOP(btDbvtNode.getCPtr(root), root, btVector3.getCPtr(normals), normals, offsets, count, btDbvt.ICollide.getCPtr(policy), policy);
+      CollisionJNI.btDbvt_collideKDOP__SWIG_0(btDbvtNode.getCPtr(root), root, btVector3.getCPtr(normals), normals, offsets, count, btDbvt.ICollide.getCPtr(policy), policy);
     }
   }
 
@@ -730,6 +730,30 @@ public class btDbvt extends BulletBase {
 
   public static int allocate(SWIGTYPE_p_btAlignedObjectArrayT_int_t ifree, SWIGTYPE_p_btAlignedObjectArrayT_btDbvt__sStkNPS_t stock, btDbvt.sStkNPS value) {
     return CollisionJNI.btDbvt_allocate(SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(ifree), SWIGTYPE_p_btAlignedObjectArrayT_btDbvt__sStkNPS_t.getCPtr(stock), btDbvt.sStkNPS.getCPtr(value), value);
+  }
+
+  public static void collideKDOP(btDbvtNode root, java.nio.FloatBuffer normals, java.nio.FloatBuffer offsets, int count, btDbvt.ICollide policy) {
+    assert normals.isDirect() : "Buffer must be allocated direct.";
+    assert offsets.isDirect() : "Buffer must be allocated direct.";
+    {
+      CollisionJNI.btDbvt_collideKDOP__SWIG_1(btDbvtNode.getCPtr(root), root, normals, offsets, count, btDbvt.ICollide.getCPtr(policy), policy);
+    }
+  }
+
+  public static void collideOCL(btDbvtNode root, java.nio.FloatBuffer normals, java.nio.FloatBuffer offsets, Vector3 sortaxis, int count, btDbvt.ICollide policy, boolean fullsort) {
+    assert normals.isDirect() : "Buffer must be allocated direct.";
+    assert offsets.isDirect() : "Buffer must be allocated direct.";
+    {
+      CollisionJNI.btDbvt_collideOCL__SWIG_2(btDbvtNode.getCPtr(root), root, normals, offsets, sortaxis, count, btDbvt.ICollide.getCPtr(policy), policy, fullsort);
+    }
+  }
+
+  public static void collideOCL(btDbvtNode root, java.nio.FloatBuffer normals, java.nio.FloatBuffer offsets, Vector3 sortaxis, int count, btDbvt.ICollide policy) {
+    assert normals.isDirect() : "Buffer must be allocated direct.";
+    assert offsets.isDirect() : "Buffer must be allocated direct.";
+    {
+      CollisionJNI.btDbvt_collideOCL__SWIG_3(btDbvtNode.getCPtr(root), root, normals, offsets, sortaxis, count, btDbvt.ICollide.getCPtr(policy), policy);
+    }
   }
 
   public final static int SIMPLE_STACKSIZE = 64;

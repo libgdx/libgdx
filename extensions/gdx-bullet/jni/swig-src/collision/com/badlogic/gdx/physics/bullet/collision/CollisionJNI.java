@@ -236,12 +236,15 @@ public class CollisionJNI {
   public final static native void btDbvt_collideTV(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtAabbMm jarg3_, long jarg4, btDbvt.ICollide jarg4_);
   public final static native void btDbvt_rayTest(long jarg1, btDbvtNode jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btDbvt.ICollide jarg4_);
   public final static native void btDbvt_rayTestInternal(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, long[] jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btDbvt.ICollide jarg10_);
-  public final static native void btDbvt_collideKDOP(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, btDbvt.ICollide jarg5_);
+  public final static native void btDbvt_collideKDOP__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, btDbvt.ICollide jarg5_);
   public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_, boolean jarg7);
   public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_);
   public final static native void btDbvt_collideTU(long jarg1, btDbvtNode jarg1_, long jarg2, btDbvt.ICollide jarg2_);
   public final static native int btDbvt_nearest(java.nio.IntBuffer jarg1, long jarg2, btDbvt.sStkNPS jarg2_, float jarg3, int jarg4, int jarg5);
   public final static native int btDbvt_allocate(long jarg1, long jarg2, long jarg3, btDbvt.sStkNPS jarg3_);
+  public final static native void btDbvt_collideKDOP__SWIG_1(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, btDbvt.ICollide jarg5_);
+  public final static native void btDbvt_collideOCL__SWIG_2(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_, boolean jarg7);
+  public final static native void btDbvt_collideOCL__SWIG_3(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_);
   public final static native void btQuantizedBvhNode_quantizedAabbMin_set(long jarg1, btQuantizedBvhNode jarg1_, int[] jarg2);
   public final static native int[] btQuantizedBvhNode_quantizedAabbMin_get(long jarg1, btQuantizedBvhNode jarg1_);
   public final static native void btQuantizedBvhNode_quantizedAabbMax_set(long jarg1, btQuantizedBvhNode jarg1_, int[] jarg2);
