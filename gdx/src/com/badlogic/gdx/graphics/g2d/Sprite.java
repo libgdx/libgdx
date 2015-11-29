@@ -529,7 +529,17 @@ public class Sprite extends TextureRegion {
 	public float getY () {
 		return y;
 	}
-
+	
+	/** @return the center x of the sprite, not accounting for scale. */
+	public float getCenterX(){
+		return getX() + width / 2;
+	}
+	
+	/** @return the center y of the sprite, not accounting for scale. */
+	public float getCenterY(){
+		return getY() + height / 2;
+	}
+	
 	/** @return the width of the sprite, not accounting for scale. */
 	public float getWidth () {
 		return width;
