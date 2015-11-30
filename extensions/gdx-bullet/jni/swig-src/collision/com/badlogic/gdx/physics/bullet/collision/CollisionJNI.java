@@ -178,13 +178,6 @@ public class CollisionJNI {
   public final static native long btDbvt_sStkCLN_parent_get(long jarg1, btDbvt.sStkCLN jarg1_);
   public final static native long new_btDbvt_sStkCLN(long jarg1, btDbvtNode jarg1_, long jarg2, btDbvtNode jarg2_);
   public final static native void delete_btDbvt_sStkCLN(long jarg1);
-  public final static native void delete_btDbvt_ICollide(long jarg1);
-  public final static native void btDbvt_ICollide_Process__SWIG_0(long jarg1, btDbvt.ICollide jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_);
-  public final static native void btDbvt_ICollide_Process__SWIG_1(long jarg1, btDbvt.ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native void btDbvt_ICollide_Process__SWIG_2(long jarg1, btDbvt.ICollide jarg1_, long jarg2, btDbvtNode jarg2_, float jarg3);
-  public final static native boolean btDbvt_ICollide_Descent(long jarg1, btDbvt.ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native boolean btDbvt_ICollide_AllLeaves(long jarg1, btDbvt.ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
-  public final static native long new_btDbvt_ICollide();
   public final static native void delete_btDbvt_IWriter(long jarg1);
   public final static native void btDbvt_IWriter_Prepare(long jarg1, btDbvt.IWriter jarg1_, long jarg2, btDbvtNode jarg2_, int jarg3);
   public final static native void btDbvt_IWriter_WriteNode(long jarg1, btDbvt.IWriter jarg1_, long jarg2, btDbvtNode jarg2_, int jarg3, int jarg4, int jarg5, int jarg6);
@@ -229,22 +222,36 @@ public class CollisionJNI {
   public final static native int btDbvt_countLeaves(long jarg1, btDbvtNode jarg1_);
   public final static native void btDbvt_extractLeaves(long jarg1, btDbvtNode jarg1_, long jarg2);
   public final static native void btDbvt_benchmark();
-  public final static native void btDbvt_enumNodes(long jarg1, btDbvtNode jarg1_, long jarg2, btDbvt.ICollide jarg2_);
-  public final static native void btDbvt_enumLeaves(long jarg1, btDbvtNode jarg1_, long jarg2, btDbvt.ICollide jarg2_);
-  public final static native void btDbvt_collideTT(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_, long jarg4, btDbvt.ICollide jarg4_);
-  public final static native void btDbvt_collideTTpersistentStack(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_, long jarg4, btDbvt.ICollide jarg4_);
-  public final static native void btDbvt_collideTV(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtAabbMm jarg3_, long jarg4, btDbvt.ICollide jarg4_);
-  public final static native void btDbvt_rayTest(long jarg1, btDbvtNode jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btDbvt.ICollide jarg4_);
-  public final static native void btDbvt_rayTestInternal(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, long[] jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btDbvt.ICollide jarg10_);
-  public final static native void btDbvt_collideKDOP__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, btDbvt.ICollide jarg5_);
-  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_, boolean jarg7);
-  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_);
-  public final static native void btDbvt_collideTU(long jarg1, btDbvtNode jarg1_, long jarg2, btDbvt.ICollide jarg2_);
+  public final static native void btDbvt_enumNodes(long jarg1, btDbvtNode jarg1_, long jarg2, ICollide jarg2_);
+  public final static native void btDbvt_enumLeaves(long jarg1, btDbvtNode jarg1_, long jarg2, ICollide jarg2_);
+  public final static native void btDbvt_collideTT(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_, long jarg4, ICollide jarg4_);
+  public final static native void btDbvt_collideTTpersistentStack(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_, long jarg4, ICollide jarg4_);
+  public final static native void btDbvt_collideTV(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtAabbMm jarg3_, long jarg4, ICollide jarg4_);
+  public final static native void btDbvt_rayTest(long jarg1, btDbvtNode jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, ICollide jarg4_);
+  public final static native void btDbvt_rayTestInternal(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, long[] jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, ICollide jarg10_);
+  public final static native void btDbvt_collideKDOP__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, ICollide jarg5_);
+  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, ICollide jarg6_, boolean jarg7);
+  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, ICollide jarg6_);
+  public final static native void btDbvt_collideTU(long jarg1, btDbvtNode jarg1_, long jarg2, ICollide jarg2_);
   public final static native int btDbvt_nearest(java.nio.IntBuffer jarg1, long jarg2, btDbvt.sStkNPS jarg2_, float jarg3, int jarg4, int jarg5);
   public final static native int btDbvt_allocate(long jarg1, long jarg2, long jarg3, btDbvt.sStkNPS jarg3_);
-  public final static native void btDbvt_collideKDOP__SWIG_1(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, btDbvt.ICollide jarg5_);
-  public final static native void btDbvt_collideOCL__SWIG_2(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_, boolean jarg7);
-  public final static native void btDbvt_collideOCL__SWIG_3(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, btDbvt.ICollide jarg6_);
+  public final static native void btDbvt_collideKDOP__SWIG_1(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, int jarg4, long jarg5, ICollide jarg5_);
+  public final static native void btDbvt_collideOCL__SWIG_2(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, ICollide jarg6_, boolean jarg7);
+  public final static native void btDbvt_collideOCL__SWIG_3(long jarg1, btDbvtNode jarg1_, java.nio.FloatBuffer jarg2, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, ICollide jarg6_);
+  public final static native void delete_ICollide(long jarg1);
+  public final static native void ICollide_Process__SWIG_0(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_);
+  public final static native void ICollide_ProcessSwigExplicitICollide__SWIG_0(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtNode jarg3_);
+  public final static native void ICollide_Process__SWIG_1(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native void ICollide_ProcessSwigExplicitICollide__SWIG_1(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native void ICollide_Process__SWIG_2(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_, float jarg3);
+  public final static native void ICollide_ProcessSwigExplicitICollide__SWIG_2(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_, float jarg3);
+  public final static native boolean ICollide_Descent(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native boolean ICollide_DescentSwigExplicitICollide(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native boolean ICollide_AllLeaves(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native boolean ICollide_AllLeavesSwigExplicitICollide(long jarg1, ICollide jarg1_, long jarg2, btDbvtNode jarg2_);
+  public final static native long new_ICollide();
+  public final static native void ICollide_director_connect(ICollide obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ICollide_change_ownership(ICollide obj, long cptr, boolean take_or_release);
   public final static native void btDbvtProxy_leaf_set(long jarg1, btDbvtProxy jarg1_, long jarg2, btDbvtNode jarg2_);
   public final static native long btDbvtProxy_leaf_get(long jarg1, btDbvtProxy jarg1_);
   public final static native void btDbvtProxy_links_set(long jarg1, btDbvtProxy jarg1_, long jarg2);
@@ -3014,6 +3021,21 @@ public class CollisionJNI {
   }
   public static boolean SwigDirector_btBroadphaseRayCallback_process(btBroadphaseRayCallback jself, long proxy) {
     return jself.process((proxy == 0) ? null : new btBroadphaseProxy(proxy, false));
+  }
+  public static void SwigDirector_ICollide_Process__SWIG_0(ICollide jself, long arg0, long arg1) {
+    jself.Process((arg0 == 0) ? null : new btDbvtNode(arg0, false), (arg1 == 0) ? null : new btDbvtNode(arg1, false));
+  }
+  public static void SwigDirector_ICollide_Process__SWIG_1(ICollide jself, long arg0) {
+    jself.Process((arg0 == 0) ? null : new btDbvtNode(arg0, false));
+  }
+  public static void SwigDirector_ICollide_Process__SWIG_2(ICollide jself, long n, float arg1) {
+    jself.Process((n == 0) ? null : new btDbvtNode(n, false), arg1);
+  }
+  public static boolean SwigDirector_ICollide_Descent(ICollide jself, long arg0) {
+    return jself.Descent((arg0 == 0) ? null : new btDbvtNode(arg0, false));
+  }
+  public static boolean SwigDirector_ICollide_AllLeaves(ICollide jself, long arg0) {
+    return jself.AllLeaves((arg0 == 0) ? null : new btDbvtNode(arg0, false));
   }
   public static void SwigDirector_btNodeOverlapCallback_processNode(btNodeOverlapCallback jself, int subPart, int triangleIndex) {
     jself.processNode(subPart, triangleIndex);

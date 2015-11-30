@@ -3439,7 +3439,7 @@ public class btSoftBody extends btCollisionObject {
   
   }
 
-  static public class RayFromToCaster extends btDbvt.ICollide {
+  static public class RayFromToCaster extends ICollide {
   	private long swigCPtr;
   	
   	protected RayFromToCaster(final String className, long cPtr, boolean cMemoryOwn) {

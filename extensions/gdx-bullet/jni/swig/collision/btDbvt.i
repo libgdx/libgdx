@@ -1,4 +1,7 @@
-%module btDbvt
+%module(directors="1") btDbvt
+
+%feature("flatnested") btDbvt::ICollide;
+%feature("director") ICollide;
 
 %{
 #include <BulletCollision/BroadphaseCollision/btDbvt.h>
