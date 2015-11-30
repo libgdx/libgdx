@@ -769,6 +769,7 @@ public class Json {
 			throw ex;
 		} catch (RuntimeException runtimeEx) {
 			SerializationException ex = new SerializationException(runtimeEx);
+			ex.addTrace(jsonValue.trace());
 			ex.addTrace(field.getName() + " (" + field.getDeclaringClass().getName() + ")");
 			throw ex;
 		}
@@ -783,8 +784,12 @@ public class Json {
 				if (ignoreUnknownFields) {
 					if (debug) System.out.println("Ignoring unknown field: " + child.name() + " (" + type.getName() + ")");
 					continue;
-				} else
-					throw new SerializationException("Field not found: " + child.name() + " (" + type.getName() + ")");
+				} else {
+					SerializationException ex = new SerializationException(
+						"Field not found: " + child.name() + " (" + type.getName() + ")");
+					ex.addTrace(child.trace());
+					throw ex;
+				}
 			}
 			Field field = metadata.field;
 			try {
@@ -796,6 +801,7 @@ public class Json {
 				throw ex;
 			} catch (RuntimeException runtimeEx) {
 				SerializationException ex = new SerializationException(runtimeEx);
+				ex.addTrace(child.trace());
 				ex.addTrace(field.getName() + " (" + type.getName() + ")");
 				throw ex;
 			}

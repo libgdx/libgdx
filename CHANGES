@@ -4,6 +4,7 @@
 - Added rotationChanged() for Actor class, called when rotation changes, see https://github.com/libgdx/libgdx/pull/3563
 - Fixed crash on MacOS when enumerating connected gamepads.
 - ParticleEmitter no longer says it's complete when it's set to continuous, see #3516
+- Improved JSON parsing and object mapping error messages.
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename

@@ -32,17 +32,19 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * for (JsonValue entry = map.child; entry != null; entry = entry.next)
  * 	System.out.println(entry.name + " = " + entry.asString());
  * </pre>
+ * 
  * @author Nathan Sweet */
 public class JsonValue implements Iterable<JsonValue> {
 	private ValueType type;
 
+	/** May be null. */
 	private String stringValue;
 	private double doubleValue;
 	private long longValue;
 
 	public String name;
 	/** May be null. */
-	public JsonValue child, next, prev;
+	public JsonValue child, next, prev, parent;
 	public int size;
 
 	public JsonValue (ValueType type) {
@@ -849,6 +851,12 @@ public class JsonValue implements Iterable<JsonValue> {
 		this.name = name;
 	}
 
+	/** Returns the parent for this value.
+	 * @return May be null. */
+	public JsonValue parent () {
+		return parent;
+	}
+
 	/** Returns the first child for this object or array.
 	 * @return May be null. */
 	public JsonValue child () {
@@ -1058,5 +1066,29 @@ public class JsonValue implements Iterable<JsonValue> {
 
 		/** Arrays of floats won't wrap. */
 		public boolean wrapNumericArrays;
+	}
+
+	/** Returns a human readable string representing the path from the root of the JSON object graph to this value. */
+	public String trace () {
+		if (parent == null) {
+			if (type == ValueType.array) return "[]";
+			if (type == ValueType.object) return "{}";
+			return "";
+		}
+		String trace;
+		if (parent.type == ValueType.array) {
+			trace = "[]";
+			int i = 0;
+			for (JsonValue child = parent.child; child != null; child = child.next, i++) {
+				if (child == this) {
+					trace = "[" + i + "]";
+					break;
+				}
+			}
+		} else if (name.indexOf('.') != -1)
+			trace = ".\"" + name.replace("\"", "\\\"") + "\"";
+		else
+			trace = '.' + name;
+		return parent.trace() + trace;
 	}
 }
