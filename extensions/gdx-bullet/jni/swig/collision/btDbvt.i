@@ -44,3 +44,18 @@
 		return &($self->m_sets[1]);
 	}
 };
+
+%extend btDbvtNode {
+	btDbvtNode *getChild(const int &index) {
+		return $self->childs[index];
+	}
+	
+	btDbvtNode *getChild0() {
+		return $self->childs[0];
+	}
+	
+	btDbvtNode *getChild1() {
+		return $self->childs[1];
+	}
+};
+
