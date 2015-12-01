@@ -731,6 +731,10 @@ public class Json {
 		return (T)readValue(type, elementType, new JsonReader().parse(json));
 	}
 
+	public <T> T fromJson (T object, String json) {
+		return readObject(object, null, new JsonReader().parse(json));
+	}
+
 	public void readField (Object object, String name, JsonValue jsonData) {
 		readField(object, name, name, null, jsonData);
 	}
@@ -883,35 +887,7 @@ public class Json {
 					return readValue("value", type, jsonData);
 				}
 
-				Object object = newInstance(type);
-
-				if (object instanceof Serializable) {
-					((Serializable)object).read(this, jsonData);
-					return (T)object;
-				}
-
-				// JSON object special cases.
-				if (object instanceof ObjectMap) {
-					ObjectMap result = (ObjectMap)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
-					return (T)result;
-				}
-				if (object instanceof ArrayMap) {
-					ArrayMap result = (ArrayMap)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
-					return (T)result;
-				}
-				if (object instanceof Map) {
-					Map result = (Map)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
-					return (T)result;
-				}
-
-				readFields(object, jsonData);
-				return (T)object;
+				return readObject(newInstance(type), elementType, jsonData);
 			}
 		}
 
@@ -1001,6 +977,37 @@ public class Json {
 		}
 
 		return null;
+	}
+
+	/** @param elementType May be null if the type is unknown. */
+	public <T> T readObject (Object object, Class elementType, JsonValue jsonData) {
+		if (object instanceof Serializable) {
+			((Serializable)object).read(this, jsonData);
+			return (T)object;
+		}
+
+		// JSON object special cases.
+		if (object instanceof ObjectMap) {
+			ObjectMap result = (ObjectMap)object;
+			for (JsonValue child = jsonData.child; child != null; child = child.next)
+				result.put(child.name(), readValue(elementType, null, child));
+			return (T)result;
+		}
+		if (object instanceof ArrayMap) {
+			ArrayMap result = (ArrayMap)object;
+			for (JsonValue child = jsonData.child; child != null; child = child.next)
+				result.put(child.name(), readValue(elementType, null, child));
+			return (T)result;
+		}
+		if (object instanceof Map) {
+			Map result = (Map)object;
+			for (JsonValue child = jsonData.child; child != null; child = child.next)
+				result.put(child.name(), readValue(elementType, null, child));
+			return (T)result;
+		}
+
+		readFields(object, jsonData);
+		return (T)object;
 	}
 
 	private String convertToString (Enum e) {
