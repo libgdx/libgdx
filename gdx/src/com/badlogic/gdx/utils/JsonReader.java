@@ -544,8 +544,9 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
+			int start = Math.max(0, p - 32);
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
-				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
+				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -575,12 +576,12 @@ public class JsonReader implements BaseJsonReader {
 
 	private static char[] init__json_trans_keys_0 () {
 		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 34, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13,
-			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47,
-			125, 9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42,
-			47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10,
-			9, 10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 34, 13, 32, 34, 44,
-			47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32,
-			47, 9, 10, 13, 32, 47, 9, 10, 0};
+			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 125,
+			9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47,
+			13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9,
+			10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 34, 13, 32, 34, 44, 47,
+			58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32, 47,
+			9, 10, 13, 32, 47, 9, 10, 0};
 	}
 
 	private static final char _json_trans_keys[] = init__json_trans_keys_0();
@@ -600,8 +601,8 @@ public class JsonReader implements BaseJsonReader {
 	private static final byte _json_range_lengths[] = init__json_range_lengths_0();
 
 	private static short[] init__json_index_offsets_0 () {
-		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 90, 93, 96, 105, 108, 111, 113, 116, 119,
-			130, 138, 146, 157, 159, 170, 173, 176, 187, 190, 193, 196, 201, 206, 207};
+		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 90, 93, 96, 105, 108, 111, 113, 116, 119, 130,
+			138, 146, 157, 159, 170, 173, 176, 187, 190, 193, 196, 201, 206, 207};
 	}
 
 	private static final short _json_index_offsets[] = init__json_index_offsets_0();
@@ -619,9 +620,9 @@ public class JsonReader implements BaseJsonReader {
 	private static final byte _json_indicies[] = init__json_indicies_0();
 
 	private static byte[] init__json_trans_targs_0 () {
-		return new byte[] {35, 1, 3, 0, 4, 36, 36, 36, 36, 1, 6, 5, 13, 17, 22, 37, 7, 8, 9, 7, 8, 9, 7, 10, 20, 21, 11, 11, 11,
-			12, 17, 19, 37, 11, 12, 19, 14, 16, 15, 14, 12, 18, 17, 11, 9, 5, 24, 23, 27, 31, 34, 25, 38, 25, 25, 26, 31, 33, 38,
-			25, 26, 33, 28, 30, 29, 28, 26, 32, 31, 25, 23, 2, 36, 2};
+		return new byte[] {35, 1, 3, 0, 4, 36, 36, 36, 36, 1, 6, 5, 13, 17, 22, 37, 7, 8, 9, 7, 8, 9, 7, 10, 20, 21, 11, 11, 11, 12,
+			17, 19, 37, 11, 12, 19, 14, 16, 15, 14, 12, 18, 17, 11, 9, 5, 24, 23, 27, 31, 34, 25, 38, 25, 25, 26, 31, 33, 38, 25, 26,
+			33, 28, 30, 29, 28, 26, 32, 31, 25, 23, 2, 36, 2};
 	}
 
 	private static final byte _json_trans_targs[] = init__json_trans_targs_0();
@@ -649,7 +650,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 336 "JsonReader.rl"
+	// line 337 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);
@@ -661,6 +662,7 @@ public class JsonReader implements BaseJsonReader {
 			current = child;
 			root = child;
 		} else if (current.isArray() || current.isObject()) {
+			child.parent = current;
 			if (current.size == 0)
 				current.child = child;
 			else {
