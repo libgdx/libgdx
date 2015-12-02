@@ -275,4 +275,8 @@ public final class ClassReflection {
 		if (annotation != null) return new Annotation(annotation);
 		return null;
 	}
+	
+	static public Class[] getInterfaces (Class c) {
+		return ReflectionCache.getType(c).getInterfaces();
+	}
 }
