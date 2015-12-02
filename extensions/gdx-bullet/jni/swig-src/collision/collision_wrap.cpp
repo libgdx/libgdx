@@ -1449,6 +1449,15 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 
 #include <BulletCollision/BroadphaseCollision/btDbvt.h>
 
+SWIGINTERN btDbvtNode *btDbvtNode_getChild(btDbvtNode *self,int const &index){
+		return self->childs[index];
+	}
+SWIGINTERN btDbvtNode *btDbvtNode_getChild0(btDbvtNode *self){
+		return self->childs[0];
+	}
+SWIGINTERN btDbvtNode *btDbvtNode_getChild1(btDbvtNode *self){
+		return self->childs[1];
+	}
 SWIGINTERN void btDbvt_collideKDOP__SWIG_1(btDbvtNode const *root,btScalar const *normals,btScalar const *offsets,int count,btDbvt::ICollide &policy){
 		btDbvt::collideKDOP(root, (btVector3*)normals, offsets, count, policy);
 	}
@@ -8257,6 +8266,55 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   arg1 = *(btDbvtNode **)&jarg1; 
   result = (int) ((arg1)->dataAsInt);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvtNode_1getChild(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  int *arg2 = 0 ;
+  int temp2 ;
+  btDbvtNode *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  temp2 = (int)jarg2; 
+  arg2 = &temp2; 
+  result = (btDbvtNode *)btDbvtNode_getChild(arg1,(int const &)*arg2);
+  *(btDbvtNode **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvtNode_1getChild0(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  btDbvtNode *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  result = (btDbvtNode *)btDbvtNode_getChild0(arg1);
+  *(btDbvtNode **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btDbvtNode_1getChild1(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDbvtNode *arg1 = (btDbvtNode *) 0 ;
+  btDbvtNode *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDbvtNode **)&jarg1; 
+  result = (btDbvtNode *)btDbvtNode_getChild1(arg1);
+  *(btDbvtNode **)&jresult = result; 
   return jresult;
 }
 

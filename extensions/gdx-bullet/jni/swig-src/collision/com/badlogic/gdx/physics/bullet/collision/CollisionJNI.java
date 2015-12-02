@@ -148,6 +148,9 @@ public class CollisionJNI {
   public final static native long btDbvtNode_data_get(long jarg1, btDbvtNode jarg1_);
   public final static native void btDbvtNode_dataAsInt_set(long jarg1, btDbvtNode jarg1_, int jarg2);
   public final static native int btDbvtNode_dataAsInt_get(long jarg1, btDbvtNode jarg1_);
+  public final static native long btDbvtNode_getChild(long jarg1, btDbvtNode jarg1_, int jarg2);
+  public final static native long btDbvtNode_getChild0(long jarg1, btDbvtNode jarg1_);
+  public final static native long btDbvtNode_getChild1(long jarg1, btDbvtNode jarg1_);
   public final static native long new_btDbvtNode();
   public final static native void delete_btDbvtNode(long jarg1);
   public final static native void btDbvt_sStkNN_a_set(long jarg1, btDbvt.sStkNN jarg1_, long jarg2, btDbvtNode jarg2_);

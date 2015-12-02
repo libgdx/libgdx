@@ -109,6 +109,21 @@ public class btDbvtNode extends BulletBase {
     return CollisionJNI.btDbvtNode_dataAsInt_get(swigCPtr, this);
   }
 
+  public btDbvtNode getChild(int index) {
+    long cPtr = CollisionJNI.btDbvtNode_getChild(swigCPtr, this, index);
+    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
+  }
+
+  public btDbvtNode getChild0() {
+    long cPtr = CollisionJNI.btDbvtNode_getChild0(swigCPtr, this);
+    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
+  }
+
+  public btDbvtNode getChild1() {
+    long cPtr = CollisionJNI.btDbvtNode_getChild1(swigCPtr, this);
+    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
+  }
+
   public btDbvtNode() {
     this(CollisionJNI.new_btDbvtNode(), true);
   }
