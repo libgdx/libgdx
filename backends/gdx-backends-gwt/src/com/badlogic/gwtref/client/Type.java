@@ -32,12 +32,14 @@ public class Type {
 	private static final Constructor[] EMPTY_CONSTRUCTORS = new Constructor[0];
 	private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 	private static final Set<Class> EMPTY_ASSIGNABLES = Collections.unmodifiableSet(new HashSet<Class>());
-
+	private static final Set<Class> EMPTY_INTERFACES = Collections.unmodifiableSet(new HashSet<Class>());
+	
 	final String name;
 	final int id;
 	final Class clazz;
 	final CachedTypeLookup superClass;
 	final Set<Class> assignables;
+	final Set<Class> interfaces;
 	boolean isAbstract;
 	boolean isInterface;
 	boolean isPrimitive;
@@ -58,12 +60,13 @@ public class Type {
 	private Field[] allFields;
 	private Method[] allMethods;
 
-	public Type (String name, int id, Class clazz, Class superClass, Set<Class> assignables) {
+	public Type (String name, int id, Class clazz, Class superClass, Set<Class> assignables, Set<Class> interfaces) {
 		this.name = name;
 		this.id = id;
 		this.clazz = clazz;
 		this.superClass = new CachedTypeLookup(superClass);
 		this.assignables = assignables != null ? assignables : EMPTY_ASSIGNABLES;
+		this.interfaces = interfaces != null ? interfaces : EMPTY_INTERFACES;
 	}
 
 	/** @return a new instance of this type created via the default constructor which must be public. */
@@ -91,6 +94,10 @@ public class Type {
 	public boolean isAssignableFrom (Type otherType) {
 		return clazz == otherType.clazz || (clazz == Object.class && !otherType.isPrimitive)
 			|| otherType.assignables.contains(clazz);
+	}
+	
+	public Class[] getInterfaces() {
+		return interfaces.toArray(new Class[this.interfaces.size()]);
 	}
 
 	/** @param name the name of the field
