@@ -681,11 +681,10 @@ public class Actor {
 		if (parent == null) return;
 		Array<Actor> children = parent.children;
 		if (children.size == 1) return;
+		index = Math.min(index, children.size - 1);
+		if (index == children.indexOf(this, true)) return;
 		if (!children.removeValue(this, true)) return;
-		if (index >= children.size)
-			children.add(this);
-		else
-			children.insert(index, this);
+		children.insert(index, this);
 	}
 
 	/** Returns the z-index of this actor.
