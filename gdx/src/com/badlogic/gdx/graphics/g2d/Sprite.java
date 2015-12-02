@@ -17,11 +17,13 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import static com.badlogic.gdx.utils.Align.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Holds the geometry, color, and texture information for drawing 2D sprites using {@link Batch}. A Sprite has a position and a
@@ -187,6 +189,25 @@ public class Sprite extends TextureRegion {
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
 	}
+	
+	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
+	public void setPosition (float x, float y, int alignment) {
+		if ((alignment & right) != 0)
+			x -= width;
+		else if ((alignment & left) == 0) //
+			x -= width / 2;
+
+		if ((alignment & top) != 0)
+			y -= height;
+		else if ((alignment & bottom) == 0) //
+			y -= height / 2;
+
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
 
 	/** Sets the x position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
@@ -201,6 +222,31 @@ public class Sprite extends TextureRegion {
 	public void setY (float y) {
 		translateY(y - this.y);
 	}
+	
+	/** Sets the x position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
+	public void setX(float x, int alignment) {
+		if ((alignment & right) != 0)
+			x -= width;
+		else if ((alignment & left) == 0)
+			x -= width / 2;
+
+		if (this.x != x)
+			this.x = x;
+	}
+	
+	/** Sets the y position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
+	public void setY(float y, int alignment) {
+		if ((alignment & top) != 0)
+			y -= height;
+		else if ((alignment & bottom) == 0)
+			y -= height / 2;
+
+		if (this.y != y)
+			this.y = y;
+	}
+
 	
 	/** Sets the x position so that it is centered on the given x parameter */
 	public void setCenterX(float x){
@@ -530,14 +576,34 @@ public class Sprite extends TextureRegion {
 		return y;
 	}
 	
+	/** Returns the X position of the specified {@link Align alignment}. */
+	public float getX (int alignment) {
+		float x = this.x;
+		if ((alignment & right) != 0)
+			x += width;
+		else if ((alignment & left) == 0)
+			x += width / 2;
+		return x;
+	}
+	
+	/** Returns the Y position of the specified {@link Align alignment}. */
+	public float getY (int alignment) {
+		float y = this.y;
+		if ((alignment & top) != 0)
+			y += height;
+		else if ((alignment & bottom) == 0) //
+			y += height / 2;
+		return y;
+	}
+	
 	/** @return the center x of the sprite, not accounting for scale. */
 	public float getCenterX(){
-		return getX() + width / 2;
+		return getX(Align.center);
 	}
 	
 	/** @return the center y of the sprite, not accounting for scale. */
 	public float getCenterY(){
-		return getY() + height / 2;
+		return getY(Align.center);
 	}
 	
 	/** @return the width of the sprite, not accounting for scale. */
