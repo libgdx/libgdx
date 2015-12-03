@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 /** Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
  * shader for (unlit) rendering.</p> *
@@ -36,7 +37,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	private int numVertices;
 
 	private final Mesh mesh;
-	private ShaderProgram shader;
+	private ShaderProgram defaultShader;
+	private ShaderProgram customShader;
 	private boolean ownsShader;
 	private final int numTexCoords;
 	private final int vertexSize;
@@ -48,19 +50,26 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	private final String[] shaderUniformNames;
 
 	public ImmediateModeRenderer20 (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
-		ownsShader = true;
+		this(5000, hasNormals, hasColors, numTexCoords, null);
 	}
 
 	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords) {
-		this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
-		ownsShader = true;
+		this(maxVertices, hasNormals, hasColors, numTexCoords, null);
 	}
 
-	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, ShaderProgram shader) {
+	/**
+	 * @param defaultShader The default shader to use. This is not owned by the ImmediateModeRenderer and must be disposed separately. May be
+	 * left null to allow ImmediateModeRenderer to create and dispose its own default shader.
+	 */
+	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords, ShaderProgram defaultShader) {
 		this.maxVertices = maxVertices;
 		this.numTexCoords = numTexCoords;
-		this.shader = shader;
+		
+		if (defaultShader == null) {
+			this.defaultShader = createDefaultShader(hasNormals, hasColors, numTexCoords);
+			ownsShader = true;
+		} else
+			this.defaultShader = defaultShader;
 
 		VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, numTexCoords);
 		mesh = new Mesh(false, maxVertices, 0, attribs);
@@ -94,9 +103,14 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	public void setShader (ShaderProgram shader) {
-		if (ownsShader) this.shader.dispose();
-		this.shader = shader;
-		ownsShader = false;
+		flush();
+		customShader = shader;
+	}
+	
+	public ShaderProgram getShader (){
+		if (customShader != null)
+			return customShader;
+		return defaultShader;
 	}
 
 	public void begin (Matrix4 projModelView, int primitiveType) {
@@ -143,6 +157,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	public void flush () {
 		if (numVertices == 0) return;
+		final ShaderProgram shader = customShader != null ? customShader : defaultShader;
 		shader.begin();
 		shader.setUniformMatrix("u_projModelView", projModelView);
 		for (int i = 0; i < numTexCoords; i++)
@@ -169,8 +184,9 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		return maxVertices;
 	}
 
+	@Override
 	public void dispose () {
-		if (ownsShader && shader != null) shader.dispose();
+		if (ownsShader && defaultShader != null) defaultShader.dispose();
 		mesh.dispose();
 	}
 
