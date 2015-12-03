@@ -41,7 +41,6 @@ public class GwtGraphics implements Graphics {
 	float time = 0;
 	int frames;
 	GwtApplicationConfiguration config;
-	boolean inFullscreenMode = false;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		Canvas canvasWidget = Canvas.createIfSupported();
@@ -125,8 +124,24 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean supportsDisplayModeChange () {
-		return true;
+		return supportsFullscreenJSNI();
 	}
+
+	private native boolean supportsFullscreenJSNI () /*-{
+		if ("fullscreenEnabled" in $doc) {
+			return $doc.fullscreenEnabled;
+		}
+		if ("webkitFullscreenEnabled" in $doc) {
+			return $doc.webkitFullscreenEnabled;
+		}
+		if ("mozFullScreenEnabled" in $doc) {
+			return $doc.mozFullScreenEnabled;
+		}
+		if ("msFullscreenEnabled" in $doc) {
+			return $doc.msFullscreenEnabled;
+		}
+		return false;
+	}-*/;
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
@@ -142,6 +157,21 @@ public class GwtGraphics implements Graphics {
 	}-*/;
 
 	private native boolean isFullscreenJSNI () /*-{
+		// Standards compliant check for fullscreen
+		if ("fullscreenElement" in $doc) {
+			return $doc.fullscreenElement != null;
+		}
+		// Vendor prefixed versions of standard check
+		if ("msFullscreenElement" in $doc) {
+			return $doc.msFullscreenElement != null;
+		}
+		if ("webkitFullscreenElement" in $doc) {
+			return $doc.webkitFullscreenElement != null;
+		}
+		if ("mozFullScreenElement" in $doc) { // Yes, with a capital 'S'
+			return $doc.mozFullScreenElement != null;
+		}
+		// Older, non-standard ways of checking for fullscreen
 		if ("webkitIsFullScreen" in $doc) {
 			return $doc.webkitIsFullScreen;
 		}
@@ -159,6 +189,20 @@ public class GwtGraphics implements Graphics {
 	}
 
 	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element) /*-{
+		// Attempt to use the non-prefixed standard API (https://fullscreen.spec.whatwg.org)
+		if (element.requestFullscreen) {
+			element.width = $wnd.screen.width;
+			element.height = $wnd.screen.height;
+			element.requestFullscreen();
+			$doc
+					.addEventListener(
+							"fullscreenchange",
+							function() {
+								graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+							}, false);
+			return true;
+		}
+		// Attempt to the vendor specific variants of the API
 		if (element.webkitRequestFullScreen) {
 			element.width = $wnd.screen.width;
 			element.height = $wnd.screen.height;
@@ -183,14 +227,33 @@ public class GwtGraphics implements Graphics {
 							}, false);
 			return true;
 		}
+		if (element.msRequestFullscreen) {
+			element.width = $wnd.screen.width;
+			element.height = $wnd.screen.height;
+			element.msRequestFullscreen();
+			$doc
+					.addEventListener(
+							"msfullscreenchange",
+							function() {
+								graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+							}, false);
+			return true;
+		}
+
 		return false;
 	}-*/;
 
 	private native void exitFullscreen () /*-{
+		if ($doc.exitFullscreen)
+			$doc.exitFullscreen();
+		if ($doc.msExitFullscreen)
+			$doc.msExitFullscreen();
 		if ($doc.webkitExitFullscreen)
 			$doc.webkitExitFullscreen();
 		if ($doc.mozExitFullscreen)
 			$doc.mozExitFullscreen();
+		if ($doc.webkitCancelFullScreen) // Old WebKit
+			$doc.webkitCancelFullScreen();
 	}-*/;
 
 	@Override
@@ -286,7 +349,7 @@ public class GwtGraphics implements Graphics {
 	public GL30 getGL30 () {
 		return null;
 	}
-	
+
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return new GwtCursor(pixmap, xHotspot, yHotspot);
