@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2015 See AUTHORS file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,7 +27,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.ExpandableSprite;
+import com.badlogic.gdx.graphics.g2d.ExpandedSprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -53,18 +54,12 @@ public class SpriteExtraAttributesTest extends GdxTest {
 	float orbitRadius;
 	float elapsed;
 
-	static final String ROTATION_ATTRIBUTE = "a_rotation";
-	static final String SHININESS_ATTRIBUTE = "a_shininess";
-
 	/** For simplicity, doesn't check to ensure second sprite is referencing same Texture as first. */
-	static class DoubleSprite extends ExpandableSprite {
-		static final VertexAttribute[] ATTRIBUTES = {VertexAttribute.TexCoords(1),
-			new VertexAttribute(Usage.Generic, 1, ROTATION_ATTRIBUTE), new VertexAttribute(Usage.Generic, 1, SHININESS_ATTRIBUTE)};
-		private static final Template TEMPLATE = new Template(ATTRIBUTES);
+	static class DoubleSprite extends ExpandedSprite {
+		public static final Template TEMPLATE = new Template(VertexAttribute.TexCoords(1),
+			new VertexAttribute(Usage.Generic, 1, "a_rotation"), new VertexAttribute(Usage.Generic, 1, "a_shininess"));
 
 		private TextureRegion secondRegion;
-		float uTwo1, uTwo2, vTwo1, vTwo2;
-		final Vector2 tmp = new Vector2();
 
 		public DoubleSprite (TextureRegion firstRegion, TextureRegion secondRegion, float shininess) {
 			super(TEMPLATE, firstRegion);
@@ -74,35 +69,35 @@ public class SpriteExtraAttributesTest extends GdxTest {
 
 		public void setSecondSpriteRegion (TextureRegion region) {
 			secondRegion = region;
-			uTwo1 = region.getU();
-			uTwo2 = region.getU2();
-			vTwo1 = region.getV();
-			vTwo2 = region.getV2();
+			float u = region.getU();
+			float u2 = region.getU2();
+			float v = region.getV();
+			float v2 = region.getV2();
 
-			AttributesMapping attributes = DoubleSprite.this.attributes;
+			setExtraAttributeValue(u, 0, 0, 0); // 1st attribute == texCoords, 1st component == U, 1st vertex
+			setExtraAttributeValue(v2, 0, 1, 0); // 1st attribute == texCoords, 2nd component == V, 1st vertex
 
-			setExtraAttributeValue(uTwo1, 0, 0, 0); // 1st attribute == texCoords, 1st element == U, 1st vertex
-			setExtraAttributeValue(vTwo2, 0, 1, 0); // 1st attribute == texCoords, 2nd element == V, 1st vertex
+			setExtraAttributeValue(u, 0, 0, 1); // 1st attribute == texCoords, 1st component == U, 2nd vertex
+			setExtraAttributeValue(v, 0, 1, 1); // 1st attribute == texCoords, 2nd component == V, 2nd vertex
 
-			setExtraAttributeValue(uTwo1, 0, 0, 1); // 1st attribute == texCoords, 1st element == U, 2nd vertex
-			setExtraAttributeValue(vTwo1, 0, 1, 1); // 1st attribute == texCoords, 2nd element == V, 2nd vertex
+			setExtraAttributeValue(u2, 0, 0, 2); // 1st attribute == texCoords, 1st component == U, 3rd vertex
+			setExtraAttributeValue(v, 0, 1, 2); // 1st attribute == texCoords, 2nd component == V, 3rd vertex
 
-			setExtraAttributeValue(uTwo2, 0, 0, 2); // 1st attribute == texCoords, 1st element == U, 3rd vertex
-			setExtraAttributeValue(vTwo1, 0, 1, 2); // 1st attribute == texCoords, 2nd element == V, 3rd vertex
-
-			setExtraAttributeValue(uTwo2, 0, 0, 3); // 1st attribute == texCoords, 1st element == U, 4th vertex
-			setExtraAttributeValue(vTwo2, 0, 1, 3); // 1st attribute == texCoords, 2nd element == V, 4th vertex
+			setExtraAttributeValue(u2, 0, 0, 3); // 1st attribute == texCoords, 1st component == U, 4th vertex
+			setExtraAttributeValue(v2, 0, 1, 3); // 1st attribute == texCoords, 2nd component == V, 4th vertex
 		}
 
 		public void setShininess (float shininess) {
-			setExtraAttributeValue(shininess, 2, 0); // 3rd attribute == shininess, 1st and only element
+			setExtraAttributeSoleValue(shininess, 2); // 3rd attribute == shininess
 		}
 
 		@Override
 		public float[] getVertices () {
-			float[] vertices = super.getVertices();
-			setExtraAttributeValue(getRotation() * MathUtils.degRad, 1, 0); // 2nd attribute == rotation, 1st and only element
-			return vertices;
+			// Apply rotation as a vertex attribute so it can be used in shader to transform light direction
+			setExtraAttributeSoleValue(getRotation() * MathUtils.degRad, "a_rotation"); // string lookup theoretically slower (just
+																													// testing)
+
+			return super.getVertices();
 		}
 	}
 
@@ -116,14 +111,21 @@ public class SpriteExtraAttributesTest extends GdxTest {
 		for (int i = 0; i < 2; i++) {
 			orbitSprites.add(new DoubleSprite(textureAtlas.findRegion("wood_diffuse"), textureAtlas.findRegion("wood_norm"), 30f));
 			orbitSprites.add(new DoubleSprite(textureAtlas.findRegion("brick_diffuse"), textureAtlas.findRegion("brick_norm"), 3f));
-			orbitSprites.add(new DoubleSprite(textureAtlas.findRegion("brickRound_diffuse"), textureAtlas
-				.findRegion("brickRound_norm"), 3f));
+			orbitSprites
+				.add(new DoubleSprite(textureAtlas.findRegion("brickRound_diffuse"), textureAtlas.findRegion("brickRound_norm"), 3f));
 		}
 		for (DoubleSprite ds : orbitSprites)
 			ds.setOriginCenter();
 
-		shader = createShader();
-		batch = new SpriteBatch(1000, null, DoubleSprite.ATTRIBUTES);
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/litsprite.vert").readString(),
+			Gdx.files.internal("data/shaders/litsprite.frag.").readString());
+		shader.begin();
+		shader.setUniformf("u_ambient", new Color(0.05f, 0.05f, 0.1f, 1));
+		shader.setUniformf("u_specularStrength", 0.7f);
+		shader.setUniformf("u_attenuation", 0.002f);
+		shader.end();
+
+		batch = new SpriteBatch(1000, null, DoubleSprite.TEMPLATE.getExtraAttributes());
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		cam = new OrthographicCamera();
@@ -177,10 +179,15 @@ public class SpriteExtraAttributesTest extends GdxTest {
 		batch.draw(sprite, 0, 0, 50, 50);
 		batch.end();
 
-		shapeRenderer.setProjectionMatrix(cam.combined);
-		shapeRenderer.begin();
-		shapeRenderer.circle(lightPosition.x, lightPosition.y, 20);
-		shapeRenderer.end();
+		if (autoLight) {
+			shapeRenderer.setProjectionMatrix(cam.combined);
+			shapeRenderer.begin();
+			shapeRenderer.setColor(0, 0, 0, 1);
+			shapeRenderer.circle(lightPosition.x, lightPosition.y, 4);
+			shapeRenderer.setColor(1, 1, 1, 1);
+			shapeRenderer.circle(lightPosition.x, lightPosition.y, 3);
+			shapeRenderer.end();
+		}
 	}
 
 	@Override
@@ -188,93 +195,7 @@ public class SpriteExtraAttributesTest extends GdxTest {
 		shader.dispose();
 	}
 
-	static public ShaderProgram createShader () {
-		String vertexShader = "attribute vec4 "
-			+ ShaderProgram.POSITION_ATTRIBUTE
-			+ ";\n" //
-			+ "attribute vec4 "
-			+ ShaderProgram.COLOR_ATTRIBUTE
-			+ ";\n" //
-			+ "attribute vec2 "
-			+ ShaderProgram.TEXCOORD_ATTRIBUTE
-			+ "0;\n" //
-			+ "attribute vec2 "
-			+ ShaderProgram.TEXCOORD_ATTRIBUTE
-			+ "1;\n" //
-			+ "attribute float "
-			+ ROTATION_ATTRIBUTE
-			+ ";\n" //
-			+ "attribute float "
-			+ SHININESS_ATTRIBUTE
-			+ ";\n" //
-			+ "uniform mat4 u_projTrans;\n" //
-			+ "uniform vec3 u_lightPosition;\n"
-			+ "varying vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords0;\n" //
-			+ "varying vec2 v_texCoords1;\n" //
-			+ "varying vec3 v_lightDir;\n" //
-			+ "varying vec3 v_pos;\n" //
-			+ "varying float v_shininess;\n" //
-			+ "\n" //
-			+ "void main()\n" //
-			+ "{\n" //
-			+ "   v_color = "
-			+ ShaderProgram.COLOR_ATTRIBUTE
-			+ ";\n" //
-			+ "   v_color.a = v_color.a * (255.0/254.0);\n" //
-			+ "   v_texCoords0 = "
-			+ ShaderProgram.TEXCOORD_ATTRIBUTE
-			+ "0;\n" //
-			+ "   v_texCoords1 = "
-			+ ShaderProgram.TEXCOORD_ATTRIBUTE
-			+ "1;\n" //
-			+ "   gl_Position =  u_projTrans * "
-			+ ShaderProgram.POSITION_ATTRIBUTE
-			+ ";\n" //
-			+ "   vec2 tangent = vec2(cos(" + ROTATION_ATTRIBUTE + "), sin(" + ROTATION_ATTRIBUTE + "));\n"
-			+ "   vec2 binormal = vec2(-tangent.y, tangent.x);\n" + "   v_lightDir = u_lightPosition.xyz - "
-			+ ShaderProgram.POSITION_ATTRIBUTE + ";\n"
-			+ "   v_lightDir = vec3(dot(v_lightDir.xy, tangent), dot(v_lightDir.xy, binormal), v_lightDir.z);\n"// rotate to tangent
-// space
-			+ "   v_pos = " + ShaderProgram.POSITION_ATTRIBUTE + ".xyz;\n" + "   v_shininess = " + SHININESS_ATTRIBUTE + ";\n" //
-			+ "}\n";
-		String fragmentShader = "#ifdef GL_ES\n" //
-			+ "#define LOWP lowp\n" //
-			+ "precision mediump float;\n" //
-			+ "#else\n" //
-			+ "#define LOWP \n" //
-			+ "#endif\n" //
-			+ "varying LOWP vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords0;\n" //
-			+ "varying vec2 v_texCoords1;\n" //
-			+ "varying vec3 v_lightDir;\n" //
-			+ "varying vec3 v_pos;\n" //
-			+ "varying float v_shininess;\n" //
-			+ "uniform vec3 u_camPosition;\n"
-			+ "uniform sampler2D u_texture;\n" //
-			+ "const vec3 AMBIENT = vec3(0.05, 0.05, 0.1);\n" //
-			+ "const float SPEC_STRENGTH = 0.7;\n" //
-			+ "const float ATT_FACTOR = 0.002;\n" //
-			+ "void main()\n"//
-			+ "{\n" //
-			+ "  float lightDist2 = dot(v_lightDir, v_lightDir);\n"
-			+ "  normalize(v_lightDir);\n"
-			+ "  vec3 viewDir = normalize(u_camPosition - v_pos);\n"
-			+ "  vec3 halfDir = normalize(v_lightDir + viewDir);\n"
-			+ "  LOWP vec4 texture = texture2D (u_texture, v_texCoords0);\n"
-			+ "  LOWP vec3 normal = texture2D (u_texture, v_texCoords1).xyz * 2.0 - 1.0;\n"
-			+ "  float att = 1.0 / (1.0 + ATT_FACTOR * lightDist2);\n"
-			+ "  LOWP vec3 diffuse = min(1.0, (max(0.0, dot(normal, v_lightDir)) * att + AMBIENT)) * texture.rgb;\n"
-			+ "  float specular = SPEC_STRENGTH * pow(max(0.0, dot(normal, halfDir)), v_shininess);\n"
-			+ "  gl_FragColor = v_color * vec4(diffuse + specular, texture.a);\n" //
-			+ "}";
-
-		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
-		return shader;
-	}
-
-	InputAdapter inputAdapter = new InputAdapter() {
+	private InputAdapter inputAdapter = new InputAdapter() {
 
 		final Vector3 tmp = new Vector3();
 
