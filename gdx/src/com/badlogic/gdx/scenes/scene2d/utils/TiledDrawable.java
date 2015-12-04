@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /** Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
  * @author Nathan Sweet */
 public class TiledDrawable extends TextureRegionDrawable {
+	private float tint = Color.WHITE.toFloatBits();
+
 	public TiledDrawable () {
 		super();
 	}
@@ -36,6 +39,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 	}
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
+		float batchColor = batch.getPackedColor();
+		batch.setColor(tint);
 		TextureRegion region = getRegion();
 		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionHeight();
 		int fullX = (int)(width / regionWidth), fullY = (int)(height / regionHeight);
@@ -78,5 +83,13 @@ public class TiledDrawable extends TextureRegionDrawable {
 				x += regionWidth;
 			}
 		}
+		batch.setColor(batchColor);
+	}
+
+	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
+	public TiledDrawable tintTiled (Color tint) {
+		TiledDrawable drawable = new TiledDrawable(this);
+		drawable.tint = tint.toFloatBits();
+		return drawable;
 	}
 }
