@@ -49,24 +49,25 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
-	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public IdentityMap () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new map with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IdentityMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IdentityMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -460,7 +461,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {

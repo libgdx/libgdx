@@ -48,24 +48,25 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
-	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectMap () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new map with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -414,8 +415,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		stashSize = 0;
 	}
 
-	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation.
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
 	public boolean containsValue (Object value, boolean identity) {
@@ -478,7 +479,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {
@@ -546,12 +547,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		for (int i = 0, n = capacity + stashSize; i < n; i++) {
 			K key = keyTable[i];
 			if (key != null) {
-				 V value = valueTable[i];
-				 if (value == null) {
-					 if (!other.containsKey(key) || other.get(key) != null) {
-						 return false;
-					 }
-				 } else {
+				V value = valueTable[i];
+				if (value == null) {
+					if (!other.containsKey(key) || other.get(key) != null) {
+						return false;
+					}
+				} else {
 					if (!value.equals(other.get(key))) {
 						return false;
 					}
@@ -638,8 +639,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);

@@ -45,24 +45,25 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	private ObjectSetIterator iterator1, iterator2;
 
-	/** Creates a new set with an initial capacity of 32 and a load factor of 0.8. This set will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectSet () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new set with a load factor of 0.8. This set will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new set with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectSet (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectSet (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -307,7 +308,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
+	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead. */
 	public void shrink (int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
@@ -316,7 +317,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		resize(maximumCapacity);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the set and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear (int maximumCapacity) {
 		if (capacity <= maximumCapacity) {
 			clear();
@@ -366,7 +367,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {

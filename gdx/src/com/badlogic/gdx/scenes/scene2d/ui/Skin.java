@@ -82,8 +82,8 @@ public class Skin implements Disposable {
 		load(skinFile);
 	}
 
-	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin is
-	 * disposed. */
+	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin
+	 * is disposed. */
 	public Skin (TextureAtlas atlas) {
 		this.atlas = atlas;
 		addRegions(atlas);
@@ -116,7 +116,7 @@ public class Skin implements Disposable {
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) {
-			typeResources = new ObjectMap();
+			typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
 			resources.put(type, typeResources);
 		}
 		typeResources.put(name, resource);
@@ -280,8 +280,8 @@ public class Skin implements Disposable {
 				if (sprite != null)
 					drawable = new SpriteDrawable(sprite);
 				else
-					throw new GdxRuntimeException("No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: "
-						+ name);
+					throw new GdxRuntimeException(
+						"No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: " + name);
 			}
 		}
 
@@ -427,8 +427,8 @@ public class Skin implements Disposable {
 					try {
 						add(valueEntry.name(), object, addType);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": "
-							+ valueEntry.name(), ex);
+						throw new SerializationException(
+							"Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name(), ex);
 					}
 				}
 			}

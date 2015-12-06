@@ -158,7 +158,7 @@ public class Json {
 		for (int i = classHierarchy.size - 1; i >= 0; i--)
 			Collections.addAll(allFields, ClassReflection.getDeclaredFields(classHierarchy.get(i)));
 
-		OrderedMap<String, FieldMetadata> nameToField = new OrderedMap();
+		OrderedMap<String, FieldMetadata> nameToField = new OrderedMap(allFields.size());
 		for (int i = 0, n = allFields.size(); i < n; i++) {
 			Field field = allFields.get(i);
 
