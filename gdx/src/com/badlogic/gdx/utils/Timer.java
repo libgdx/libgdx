@@ -69,7 +69,7 @@ public class Timer {
 			task.intervalMillis = (long)(intervalSeconds * 1000);
 			task.repeatCount = repeatCount;
 		}
-		synchronized (tasks) {
+		synchronized (this) {
 			tasks.add(task);
 		}
 		wake();
@@ -96,15 +96,23 @@ public class Timer {
 
 	/** Cancels all tasks. */
 	public void clear () {
-		synchronized (tasks) {
+		synchronized (this) {
 			for (int i = 0, n = tasks.size; i < n; i++)
 				tasks.get(i).cancel();
 			tasks.clear();
 		}
 	}
 
+	/** Returns true if the timer has no tasks in the queue. Note that this can change at any time. Synchronize on the timer
+	 * instance to prevent tasks being added, removed, or updated. */
+	public boolean isEmpty () {
+		synchronized (this) {
+			return tasks.size == 0;
+		}
+	}
+
 	long update (long timeMillis, long waitMillis) {
-		synchronized (tasks) {
+		synchronized (this) {
 			for (int i = 0, n = tasks.size; i < n; i++) {
 				Task task = tasks.get(i);
 				synchronized (task) {
@@ -133,7 +141,7 @@ public class Timer {
 
 	/** Adds the specified delay to all tasks. */
 	public void delay (long delayMillis) {
-		synchronized (tasks) {
+		synchronized (this) {
 			for (int i = 0, n = tasks.size; i < n; i++) {
 				Task task = tasks.get(i);
 				synchronized (task) {
