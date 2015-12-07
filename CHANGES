@@ -5,7 +5,11 @@
 - Fixed crash on MacOS when enumerating connected gamepads.
 - ParticleEmitter no longer says it's complete when it's set to continuous, see #3516
 - Improved JSON parsing and object mapping error messages.
-- Updated freetype from version 2.5.5 to 2.6.2
+- Updated FreeType from version 2.5.5 to 2.6.2.
+- Fixed corrupt FreeType rendering for some font sizes.
+- API Change: FreeTypeFontParameter has new fields for rendering borders and shadows.
+- FreeTypeFontParameter can render much better fonts at small sizes using gamma settings.
+- BitmapFont can now render missing (tofu) glyph for glyphs not in the font.
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
