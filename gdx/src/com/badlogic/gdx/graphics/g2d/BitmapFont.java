@@ -178,18 +178,10 @@ public class BitmapFont implements Disposable {
 	protected void load (BitmapFontData data) {
 		for (Glyph[] page : data.glyphs) {
 			if (page == null) continue;
-			for (Glyph glyph : page) {
-				if (glyph == null) continue;
-
-				TextureRegion region = regions.get(glyph.page);
-				if (region == null) {
-					// TODO: support null regions by parsing scaleW / scaleH ?
-					throw new IllegalArgumentException("BitmapFont texture region array cannot contain null elements.");
-				}
-
-				data.setGlyphRegion(glyph, region);
-			}
+			for (Glyph glyph : page)
+				if (glyph != null) data.setGlyphRegion(glyph, regions.get(glyph.page));
 		}
+		if (data.missingGlyph != null) data.setGlyphRegion(data.missingGlyph, regions.get(data.missingGlyph.page));
 	}
 
 	/** Draws text at the specified position.
@@ -459,6 +451,9 @@ public class BitmapFont implements Disposable {
 		public float cursorX;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
+		/** The glyph to display for characters not in the font. May be null. */
+		public Glyph missingGlyph;
+
 		/** The width of the space character. */
 		public float spaceWidth;
 		/** The x-height, which is the distance from the top of most lowercase characters to the baseline. */
@@ -563,7 +558,9 @@ public class BitmapFont implements Disposable {
 					tokens.nextToken();
 					tokens.nextToken();
 					int ch = Integer.parseInt(tokens.nextToken());
-					if (ch <= Character.MAX_VALUE)
+					if (ch == -1)
+						missingGlyph = glyph;
+					else if (ch <= Character.MAX_VALUE)
 						setGlyph(ch, glyph);
 					else
 						continue;
@@ -757,7 +754,9 @@ public class BitmapFont implements Disposable {
 			throw new GdxRuntimeException("No glyphs found.");
 		}
 
+		/** Returns true if the font has the glyph, or if the font has a {@link #missingGlyph}. */
 		public boolean hasGlyph (char ch) {
+			if (missingGlyph != null) return true;
 			return getGlyph(ch) != null;
 		}
 
@@ -776,6 +775,7 @@ public class BitmapFont implements Disposable {
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end) {
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
+			Glyph missingGlyph = this.missingGlyph;
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 
@@ -783,7 +783,11 @@ public class BitmapFont implements Disposable {
 			while (start < end) {
 				char ch = str.charAt(start++);
 				Glyph glyph = getGlyph(ch);
-				if (glyph == null) continue;
+				if (glyph == null) {
+					if (missingGlyph == null) continue;
+					glyph = missingGlyph;
+				}
+
 				glyphs.add(glyph);
 
 				if (lastGlyph == null) // First glyph.
