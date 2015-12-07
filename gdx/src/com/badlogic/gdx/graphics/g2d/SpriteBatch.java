@@ -37,6 +37,9 @@ public class SpriteBatch implements Batch {
 	private Mesh mesh;
 
 	final float[] vertices;
+	final int vertexSize;
+	final int spriteSize;
+	final int extrasStride;
 	int idx = 0;
 	Texture lastTexture = null;
 	float invTexWidth = 0, invTexHeight = 0;
@@ -68,15 +71,21 @@ public class SpriteBatch implements Batch {
 	public int maxSpritesInBatch = 0;
 
 	/** Constructs a new SpriteBatch with a size of 1000, one buffer, and the default shader.
-	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram) */
+	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram, VertexAttribute...) */
 	public SpriteBatch () {
 		this(1000, null);
 	}
 
 	/** Constructs a SpriteBatch with one buffer and the default shader.
-	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram) */
+	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram, VertexAttribute...) */
 	public SpriteBatch (int size) {
 		this(size, null);
+	}
+
+	/** Constructs a new SpriteBatch with one buffer and a custom default shader.
+	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram, VertexAttribute...) */
+	public SpriteBatch (int size, ShaderProgram defaultShader) {
+		this(size, defaultShader, (VertexAttribute[])null);
 	}
 
 	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
@@ -86,8 +95,16 @@ public class SpriteBatch implements Batch {
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link #createDefaultShader()}.
 	 * @param size The max number of sprites in a single batch. Max of 5460.
-	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
-	public SpriteBatch (int size, ShaderProgram defaultShader) {
+	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
+	 * @param extraAttributes Additional vertex attributes that this SpriteBatch will support beyond the basic ones (Position,
+	 *           ColorPacked, TextureCoordinates), in the order they will be expected by the Mesh. If any draw method besides
+	 *           {@link #draw (Texture, float[], int, int)} is used, the extra vertex attributes will contain data that
+	 *           may be left over from a previous flush. If any extra vertex attributes are provided, this SpriteBatch can not be
+	 *           used for drawing standard objects that have their own {@code draw(Batch batch)} methods, such as
+	 *           {@linkplain Sprite}, {@linkplain BitmapFont}, and {@linkplain com.badlogic.gdx.scenes.scene2d.Stage Stage}. The
+	 *           {@linkplain ExpandedSprite} class can be used as a prototype for creating objects that can be drawn with the
+	 *           extra attributes. */
+	public SpriteBatch (int size, ShaderProgram defaultShader, VertexAttribute... extraAttributes) {
 		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
@@ -95,13 +112,23 @@ public class SpriteBatch implements Batch {
 		if (Gdx.gl30 != null) {
 			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
 		}
-		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+		int extrasVertexSize = VertexAttribute.calculateSize(extraAttributes);
+		vertexSize = Sprite.VERTEX_SIZE + extrasVertexSize;
+		spriteSize = 4 * vertexSize;
+		extrasStride = extrasVertexSize + 1;
+		int vaIdx = 0;
+		VertexAttribute[] attributes = new VertexAttribute[3 + (extraAttributes == null ? 0 : extraAttributes.length)];
+		attributes[vaIdx++] = new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE);
+		attributes[vaIdx++] = new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE);
+		attributes[vaIdx++] = new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0");
+		if (extraAttributes != null) for (VertexAttribute va : extraAttributes) {
+			attributes[vaIdx++] = va;
+		}
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, attributes);
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		vertices = new float[size * Sprite.SPRITE_SIZE];
+		vertices = new float[size * spriteSize];
 
 		int len = size * 6;
 		short[] indices = new short[len];
@@ -326,30 +353,35 @@ public class SpriteBatch implements Batch {
 		}
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -385,30 +417,35 @@ public class SpriteBatch implements Batch {
 		}
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -431,30 +468,35 @@ public class SpriteBatch implements Batch {
 		final float fy2 = y + srcHeight;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -473,30 +515,35 @@ public class SpriteBatch implements Batch {
 		final float fy2 = y + height;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -524,30 +571,35 @@ public class SpriteBatch implements Batch {
 		final float v2 = 0;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -606,30 +658,35 @@ public class SpriteBatch implements Batch {
 		final float v2 = region.v;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -726,30 +783,35 @@ public class SpriteBatch implements Batch {
 		final float v2 = region.v;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -862,30 +924,35 @@ public class SpriteBatch implements Batch {
 		}
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
 		vertices[idx++] = u1;
-		vertices[idx++] = v1;
+		vertices[idx] = v1;
+		idx += extrasStride;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
 		vertices[idx++] = color;
 		vertices[idx++] = u3;
-		vertices[idx++] = v3;
+		vertices[idx] = v3;
+		idx += extrasStride;
 
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
 		vertices[idx++] = color;
 		vertices[idx++] = u4;
-		vertices[idx++] = v4;
+		vertices[idx] = v4;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -918,30 +985,35 @@ public class SpriteBatch implements Batch {
 		float v2 = region.v;
 
 		float color = this.color;
+		int extrasStride = this.extrasStride;
 		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
 		vertices[idx++] = color;
 		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx] = v2;
+		idx += extrasStride;
 
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
+		idx += extrasStride;
 		this.idx = idx;
 	}
 
@@ -951,7 +1023,7 @@ public class SpriteBatch implements Batch {
 
 		renderCalls++;
 		totalRenderCalls++;
-		int spritesInBatch = idx / 20;
+		int spritesInBatch = idx / spriteSize;
 		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
 		int count = spritesInBatch * 6;
 

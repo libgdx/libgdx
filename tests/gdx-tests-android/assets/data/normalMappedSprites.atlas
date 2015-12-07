@@ -1,0 +1,62 @@
+
+normalMappedSprites.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+badlogic_diffuse
+  rotate: false
+  xy: 2, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+badlogic_norm
+  rotate: false
+  xy: 260, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+brickRound_diffuse
+  rotate: false
+  xy: 518, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+brickRound_norm
+  rotate: false
+  xy: 776, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+brick_diffuse
+  rotate: false
+  xy: 1034, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+brick_norm
+  rotate: false
+  xy: 1292, 204
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+wood_diffuse
+  rotate: false
+  xy: 2, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+wood_norm
+  rotate: false
+  xy: 1550, 260
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1

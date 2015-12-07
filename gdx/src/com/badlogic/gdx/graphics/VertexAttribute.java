@@ -110,6 +110,16 @@ public final class VertexAttribute {
 		return new VertexAttribute(Usage.BoneWeight, 2, "a_boneWeight" + unit, unit);
 	}
 
+	/** @return The total number of vertex array indices used. */
+	public static int calculateSize (VertexAttribute... attributes) {
+		if (attributes == null) return 0;
+		int size = 0;
+		for (VertexAttribute va : attributes) {
+			size += va.usage == Usage.ColorPacked ? 1 : va.numComponents;
+		}
+		return size;
+	}
+
 	/** Tests to determine if the passed object was created with the same parameters */
 	@Override
 	public boolean equals (final Object obj) {
