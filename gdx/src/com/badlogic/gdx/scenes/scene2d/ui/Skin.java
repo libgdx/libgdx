@@ -51,7 +51,23 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
+ * When using JSON, classes are instantiated by their field names, with the following exceptions:
+ * <ul><li>{@linkplain TextureRegionDrawable} and {@linkplain NinePatchDrawable} do not need to be described in the Json. For any 
+ * Drawable parameter in the Json, using the name of a TextureRegion that is in the Skin's atlas will automatically generate
+ * a TextureRegionDrawable or NinePatchDrawable, registered with that same name, if one doesn't yet exist.
+ * <li>{@linkplain Color} can be specified by its fields (although omitting <code>a</code> results in alpha of 1), or 
+ * instead by a hex value, such as <code>hex: ff8080ff</code>.
+ * <li>{@linkplain BitmapFont} can be specified not by its fields, but by <code>file</code> (the font file path relative to the 
+ * directory the Json file is in), <code>scaledSize</code> (the desired capHeight of the font), <code>flip</code> (whether to flip 
+ * the font for use with a Y-down coordinate system), and <code>markupEnabled</code> (for supporting 
+ * <a href="https://github.com/libgdx/libgdx/wiki/Color-Markup-Language">markup</a>).
+ * <li>{@linkplain TiledDrawable} can be specified not by its fields, but by the parameter <code>region</code> which should be 
+ * the name of a texture region in the skin's atlas. This will generate a TiledDrawable based on the specified TextureRegion. 
+ * </ul><p>
+ * Furthermore, although {@linkplain TintedDrawable} is specified by its fields (<code>name</code> and <code>color</code>), it 
+ * does not produce an actual TintedDrawable object, but rather creates a tinted copy of a Drawable.
+ * <p>
+ * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
@@ -331,7 +347,9 @@ public class Skin implements Disposable {
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
 		Drawable newDrawable;
-		if (drawable instanceof TextureRegionDrawable)
+		if (drawable instanceof TiledDrawable)
+			newDrawable = ((TiledDrawable)drawable).tintTiled(tint);
+		else if (drawable instanceof TextureRegionDrawable)
 			newDrawable = ((TextureRegionDrawable)drawable).tint(tint);
 		else if (drawable instanceof NinePatchDrawable)
 			newDrawable = ((NinePatchDrawable)drawable).tint(tint);
@@ -468,6 +486,15 @@ public class Skin implements Disposable {
 				}
 			}
 		});
+		
+		json.setSerializer(TiledDrawable.class, new Json.ReadOnlySerializer() {
+         public Object read (Json json, JsonValue jsonData, Class type) {
+             String name = json.readValue("region", String.class, jsonData);
+             TiledDrawable drawable = new TiledDrawable(getRegion(name));;
+             drawable.setName(jsonData.name + " (" + name + ", tiled)");
+             return drawable;
+         }
+     });
 
 		json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
 			public Color read (Json json, JsonValue jsonData, Class type) {
