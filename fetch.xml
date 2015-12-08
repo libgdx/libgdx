@@ -45,6 +45,7 @@
         <get src="${domain}/x86/libgdx.so" dest="tmp/x86"/>
         <get src="${domain}/x86/libgdx.so" dest="gdx/libs/x86"/>
         <get src="${domain}/ios/libgdx.a" dest="gdx/libs/ios32"/>
+        <get src="${domain}/ios/libgdx.a.tvos" dest="gdx/libs/ios32"/>
         <get src="${domain}/ios/libObjectAL.a" dest="gdx/libs/ios32"/>
 		
         <!-- robovm snapshot jars for robovm backend -->
@@ -60,6 +61,7 @@
         <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="tmp/x86"/>
         <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a" dest="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a.tvos" dest="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
 		
 		<!-- bullet natives -->
 		<mkdir dir="extensions/gdx-bullet/libs/ios32"/>
@@ -71,6 +73,7 @@
         <get src="${domain}/extensions/gdx-bullet/x86/libgdx-bullet.so" dest="tmp/x86"/>
         <get src="${domain}/extensions/gdx-bullet/x86/libgdx-bullet.so" dest="extensions/gdx-bullet/libs/x86"/>
         <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a" dest="extensions/gdx-bullet/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.a.tvos" dest="extensions/gdx-bullet/libs/ios32"/>
 		
 		<!-- controllers natives, desktop only -->
 		<mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs/ios32"/>
@@ -86,6 +89,7 @@
         <get src="${domain}/extensions/gdx-freetype/x86/libgdx-freetype.so" dest="tmp/x86"/>
         <get src="${domain}/extensions/gdx-freetype/x86/libgdx-freetype.so" dest="extensions/gdx-freetype/libs/x86"/>
         <get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="extensions/gdx-freetype/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a.tvos" dest="extensions/gdx-freetype/libs/ios32"/>
 
 		<!-- jglfw -->
 		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
