@@ -1,7 +1,7 @@
 <!-- Call this to fetch all the natives from the build server -->
 <project name="fetch-natives" default="all">
-	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
-    <property name="robovm" value="http://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
+	<property name="domain" value="https://libgdx.badlogicgames.com/nightlies/dist"/>
+    <property name="robovm" value="https://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
     
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
