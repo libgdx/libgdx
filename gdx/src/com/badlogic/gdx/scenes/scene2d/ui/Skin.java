@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
+ * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
@@ -255,6 +255,9 @@ public class Skin implements Disposable {
 
 		drawable = optional(name, TiledDrawable.class);
 		if (drawable != null) return drawable;
+		
+		drawable = optional(name, TextureRegionDrawable.class);
+		if (drawable != null) return drawable;
 
 		// Use texture or texture region. If it has splits, use ninepatch. If it has rotation or whitespace stripping, use sprite.
 		try {
@@ -270,7 +273,7 @@ public class Skin implements Disposable {
 		} catch (GdxRuntimeException ignored) {
 		}
 
-		// Check for explicit registration of ninepatch, sprite, or tiled drawable.
+		// Check for explicit registration of ninepatch or sprite
 		if (drawable == null) {
 			NinePatch patch = optional(name, NinePatch.class);
 			if (patch != null)
@@ -331,7 +334,9 @@ public class Skin implements Disposable {
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
 		Drawable newDrawable;
-		if (drawable instanceof TextureRegionDrawable)
+		if (drawable instanceof TiledDrawable)
+			newDrawable = ((TiledDrawable)drawable).tintTiled(tint);
+		else if (drawable instanceof TextureRegionDrawable)
 			newDrawable = ((TextureRegionDrawable)drawable).tint(tint);
 		else if (drawable instanceof NinePatchDrawable)
 			newDrawable = ((NinePatchDrawable)drawable).tint(tint);
