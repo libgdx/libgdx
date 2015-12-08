@@ -31,9 +31,9 @@
   </fileSets>
   <files>
     <file>
-      <source>${project.build.directory}/ios/libgdx.a.tvos</source>
+      <source>${project.build.directory}/ios/libgdx-bullet.a.tvos</source>
       <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
-      <destName>libgdx.a</destName>
+      <destName>libgdx-bullet.a</destName>
     </file>
   </files>
 </assembly>
