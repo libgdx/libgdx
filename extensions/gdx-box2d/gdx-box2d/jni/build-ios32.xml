@@ -19,7 +19,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -miphoneos-version-min=6.0"/>
+	<property name="gcc-opts" value="-c -Wall -O2"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -30,7 +30,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=6.0"/>
+	<property name="g++-opts" value="-c -Wall -O2"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -92,7 +92,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 ${gcc-opts}"/>
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 -miphoneos-version-min=6.0 ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -129,7 +129,7 @@
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 ${g++-opts}"/>
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 -miphoneos-version-min=6.0 ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -144,7 +144,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 ${gcc-opts}"/>
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch x86_64 -miphoneos-version-min=6.0 ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -181,7 +181,7 @@
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -fembed-bitcode ${g++-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -miphoneos-version-min=6.0 -fembed-bitcode ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -233,7 +233,7 @@
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -fembed-bitcode ${g++-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -miphoneos-version-min=6.0 -fembed-bitcode ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -285,7 +285,7 @@
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${tvossimulator-sdk} -arch x86_64 ${g++-opts}"/>
+			<arg line="-isysroot ${tvossimulator-sdk} -arch x86_64 -mtvos-version-min=9.0 ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -300,7 +300,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${tvossimulator-sdk} -arch x86_64 ${gcc-opts}"/>
+			<arg line="-isysroot ${tvossimulator-sdk} -arch x86_64 -mtvos-version-min=9.0 ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -337,7 +337,7 @@
 		<mkdir dir="${buildDir}"/>
 		<antcall target="clean-objfiles"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${tvos-sdk} -arch arm64 -fembed-bitcode ${g++-opts}"/>
+			<arg line="-isysroot ${tvos-sdk} -arch arm64 -mtvos-version-min=9.0 -fembed-bitcode ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -352,7 +352,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${tvos-sdk} -arch arm64 -fembed-bitcode ${gcc-opts}"/>
+			<arg line="-isysroot ${tvos-sdk} -arch arm64 -mtvos-version-min=9.0 -fembed-bitcode ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
