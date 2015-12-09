@@ -31,7 +31,7 @@
   </fileSets>
   <files>
     <file>
-      <source>${project.build.directory}/ios/libObjectAL.a</source>
+      <source>${project.build.directory}/ios/libObjectAL.a.tvos</source>
       <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
       <destName>libObjectAL.a</destName>
     </file>
