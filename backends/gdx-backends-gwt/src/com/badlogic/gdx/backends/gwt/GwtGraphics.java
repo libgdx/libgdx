@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -30,6 +31,23 @@ import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
 public class GwtGraphics implements Graphics {
+
+	/* Enum values from http://www.w3.org/TR/screen-orientation. Filtered based on what the browsers actually support. */
+	public enum OrientationLockType {
+		LANDSCAPE("landscape"), PORTRAIT("portrait"), PORTRAIT_PRIMARY("portrait-primary"), PORTRAIT_SECONDARY(
+			"portrait-secondary"), LANDSCAPE_PRIMARY("landscape-primary"), LANDSCAPE_SECONDARY("landscape-secondary");
+
+		private final String name;
+
+		private OrientationLockType (String name) {
+			this.name = name;
+		}
+
+		public String getName () {
+			return name;
+		}
+	};
+
 	CanvasElement canvas;
 	WebGLRenderingContext context;
 	GL20 gl;
@@ -185,6 +203,10 @@ public class GwtGraphics implements Graphics {
 		if (!isFullscreen()) {
 			canvas.setWidth(config.width);
 			canvas.setHeight(config.height);
+			if (config.fullscreenOrientation != null) unlockOrientation();
+		} else {
+			/* We just managed to go full-screen. Check if the user has requested a specific orientation. */
+			if (config.fullscreenOrientation != null) lockOrientation(config.fullscreenOrientation);
 		}
 	}
 
@@ -279,6 +301,61 @@ public class GwtGraphics implements Graphics {
 			return true;
 		}
 	}
+
+	/** Attempt to lock the orientation. Typically only supported when in full-screen mode.
+	 * 
+	 * @param orientation the orientation to attempt locking
+	 * @return did the locking succeed */
+	public boolean lockOrientation (OrientationLockType orientation) {
+		return lockOrientationJSNI(orientation.getName());
+	}
+
+	/** Attempt to unlock the orientation.
+	 * 
+	 * @return did the unlocking succeed */
+	public boolean unlockOrientation () {
+		return unlockOrientationJSNI();
+	}
+
+	private native boolean lockOrientationJSNI (String orientationEnumValue) /*-{
+		var screen = $wnd.screen;
+
+		// Attempt to find the lockOrientation function 
+		screen.gdxLockOrientation = screen.lockOrientation
+				|| screen.mozLockOrientation || screen.msLockOrientation
+				|| screen.webkitLockOrientation;
+
+		if (screen.gdxLockOrientation) {
+			return screen.gdxLockOrientation(orientationEnumValue);
+		}
+		// Actually, the Chrome guys do things a little different for now
+		else if (screen.orientation && screen.orientation.lock) {
+			screen.orientation.lock(orientationEnumValue);
+			// The Chrome API is async, so we can't at this point tell if we succeeded
+			return true;
+		}
+		return false;
+	}-*/;
+
+	private native boolean unlockOrientationJSNI () /*-{
+		var screen = $wnd.screen;
+
+		// Attempt to find the lockOrientation function 
+		screen.gdxUnlockOrientation = screen.unlockOrientation
+				|| screen.mozUnlockOrientation || screen.msUnlockOrientation
+				|| screen.webkitUnlockOrientation;
+
+		if (screen.gdxUnlockOrientation) {
+			return screen.gdxUnlockOrientation();
+		}
+		// Actually, the Chrome guys do things a little different for now
+		else if (screen.orientation && screen.orientation.unlock) {
+			screen.orientation.unlock();
+			// The Chrome API is async, so we can't at this point tell if we succeeded
+			return true;
+		}
+		return false;
+	}-*/;
 
 	@Override
 	public BufferFormat getBufferFormat () {
