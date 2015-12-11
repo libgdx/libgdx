@@ -184,7 +184,7 @@ public class CpuSpriteBatch extends SpriteBatch {
 		if (!adjustNeeded) {
 			super.draw(texture, x, y, width, height, u, v, u2, v2);
 		} else {
-			drawAdjustedUV(texture, x, y, 0, 0, texture.getWidth(), texture.getHeight(), 1, 1, 0, u, v, u2, v2, false, false);
+			drawAdjustedUV(texture, x, y, 0, 0, width, height, 1, 1, 0, u, v, u2, v2, false, false);
 		}
 	}
 
