@@ -74,7 +74,7 @@
 	<target name="compile-386" depends="clean,create-build-dir">
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 ${g++-opts}"/>
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 -miphoneos-version-min=6.0 ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -193,7 +193,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -fembed-bitcode ${gcc-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 -miphoneos-version-min=6.0 -fembed-bitcode ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -245,7 +245,7 @@
 			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -fembed-bitcode ${gcc-opts}"/>
+			<arg line="-isysroot ${iphoneos-sdk} -arch arm64 -miphoneos-version-min=6.0 -fembed-bitcode ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
