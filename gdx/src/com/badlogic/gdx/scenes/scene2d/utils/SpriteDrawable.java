@@ -82,14 +82,18 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
 	public SpriteDrawable tint (Color tint) {
-		SpriteDrawable drawable = new SpriteDrawable(this);
-		Sprite sprite = drawable.getSprite();
+		Sprite newSprite;
 		if (sprite instanceof AtlasSprite)
-			sprite = new AtlasSprite((AtlasSprite)sprite);
+			newSprite = new AtlasSprite((AtlasSprite)sprite);
 		else
-			sprite = new Sprite(sprite);
-		sprite.setColor(tint);
-		drawable.setSprite(sprite);
+			newSprite = new Sprite(sprite);
+		newSprite.setColor(tint);
+		newSprite.setSize(getMinWidth(), getMinHeight());
+		SpriteDrawable drawable = new SpriteDrawable(newSprite);
+		drawable.setLeftWidth(getLeftWidth());
+		drawable.setRightWidth(getRightWidth());
+		drawable.setTopHeight(getTopHeight());
+		drawable.setBottomHeight(getBottomHeight());
 		return drawable;
 	}
 }
