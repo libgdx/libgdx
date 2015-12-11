@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
+ * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();

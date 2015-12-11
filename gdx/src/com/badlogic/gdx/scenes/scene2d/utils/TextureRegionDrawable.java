@@ -61,7 +61,7 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 	}
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
-	public SpriteDrawable tint (Color tint) {
+	public Drawable tint (Color tint) {
 		Sprite sprite;
 		if (region instanceof AtlasRegion)
 			sprite = new AtlasSprite((AtlasRegion)region);
