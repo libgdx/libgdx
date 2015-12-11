@@ -107,9 +107,20 @@
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>tvos-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a.tvos</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-            
+
             <!-- if we have pre-built versions, replace the downloaded versions with those -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
