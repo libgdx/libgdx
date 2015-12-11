@@ -64,6 +64,7 @@ public class TextTooltip extends Tooltip<Label> {
 		if (!(style instanceof TextTooltipStyle)) throw new IllegalArgumentException("style must be a TextTooltipStyle.");
 		container.getActor().setStyle(style.label);
 		container.setBackground(style.background);
+		container.maxWidth(style.wrapWidth);
 	}
 
 	/** The style for a text tooltip, see {@link TextTooltip}.
@@ -72,6 +73,8 @@ public class TextTooltip extends Tooltip<Label> {
 		public LabelStyle label;
 		/** Optional. */
 		public Drawable background;
+		/** Optional, 0 means don't wrap. */
+		public float wrapWidth;
 
 		public TextTooltipStyle () {
 		}
