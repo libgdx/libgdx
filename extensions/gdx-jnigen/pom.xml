@@ -14,9 +14,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.code.javaparser</groupId>
-      <artifactId>javaparser</artifactId>
-      <version>1.0.8</version>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>2.3.0</version>
     </dependency>
   </dependencies>
 
