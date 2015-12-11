@@ -68,6 +68,12 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 		else
 			sprite = new Sprite(region);
 		sprite.setColor(tint);
-		return new SpriteDrawable(sprite);
+		sprite.setSize(getMinWidth(), getMinHeight());
+		SpriteDrawable drawable = new SpriteDrawable(sprite);
+		drawable.setLeftWidth(getLeftWidth());
+		drawable.setRightWidth(getRightWidth());
+		drawable.setTopHeight(getTopHeight());
+		drawable.setBottomHeight(getBottomHeight());
+		return drawable;
 	}
 }
