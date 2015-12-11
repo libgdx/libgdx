@@ -131,28 +131,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		return bitmapped;
 	}
 
-	/** Generates a new {@link BitmapFont}, containing glyphs for the given characters. The size is expressed in pixels. Throws a
-	 * GdxRuntimeException if the font could not be generated. Using big sizes might cause such an exception. All characters need
-	 * to fit onto a single texture.
-	 * @param size the size in pixels
-	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
-	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
-	public BitmapFont generateFont (int size, String characters, boolean flip) {
-		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
-		BitmapFont font = new BitmapFont(data, data.regions, true);
-		font.setOwnsTexture(true);
-		return font;
-	}
-
-	/** Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws a GdxRuntimeException if the font could not be
-	 * generated. Using big sizes might cause such an exception.
-	 * @param size the size of the font in pixels
-	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
-	public BitmapFont generateFont (int size) {
-		return generateFont(size, DEFAULT_CHARS, false);
-	}
-
 	public BitmapFont generateFont (FreeTypeFontParameter parameter) {
 		return generateFont(parameter, new FreeTypeBitmapFontData());
 	}
@@ -267,32 +245,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
 	 * @param size the size in pixels */
 	public FreeTypeBitmapFontData generateData (int size) {
-		return generateData(size, DEFAULT_CHARS, false, null);
-	}
-
-	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
-	 * 
-	 * @param size the size in pixels
-	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
-	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
-	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
-		return generateData(size, characters, flip, null);
-	}
-
-	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException if something went wrong.
-	 * 
-	 * @param size the size in pixels
-	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
-	 * @param packer the optional PixmapPacker to use
-	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
-	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = size;
-		parameter.characters = characters;
-		parameter.flip = flip;
-		parameter.packer = packer;
 		return generateData(parameter);
 	}
 
@@ -348,6 +302,8 @@ public class FreeTypeFontGenerator implements Disposable {
 			break;
 		}
 		if (data.xHeight == 0) throw new GdxRuntimeException("No x-height character found in font");
+
+		// determine cap height
 		for (char capChar : data.capChars) {
 			if (!face.loadChar(capChar, FreeType.FT_LOAD_DEFAULT)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
@@ -512,7 +468,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			for (int i = 0, n = parameter.shadowRenderCount - 1; i < n; i++)
 				shadowPixmap.drawPixmap(shadowPixmap, 0, 0);
 
-			// Multiple the shadow by the shadow color alpha.
+			// Multiply the shadow by the shadow color alpha.
 			ByteBuffer pixels = shadowPixmap.getPixels();
 			for (int y = 0, w4 = w * 4; y < h; y++)
 				for (int x = y * w4 + 3, n = x + w4; x < n; x += 4)
@@ -555,7 +511,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		Rectangle rect = packer.pack(mainPixmap);
-
 		glyph.page = packer.getPages().size - 1; // Glyph is always packed into the last page for now.
 		glyph.srcX = (int)rect.x;
 		glyph.srcY = (int)rect.y;
@@ -566,8 +521,6 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		mainPixmap.dispose();
 		mainGlyph.dispose();
-
-		if (missing) data.setGlyph(0, glyph);
 
 		return glyph;
 	}
