@@ -195,7 +195,7 @@ project(":extensions:gdx-freetype") {
 }
 
 project(":extensions:gdx-jnigen") {
-    dependencies { compile "com.google.code.javaparser:javaparser:1.0.8" }
+    dependencies { compile "com.github.javaparser:javaparser-core:2.3.0" }
 }
 
 project(":extensions:gdx-setup") {
