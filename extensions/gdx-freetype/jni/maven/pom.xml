@@ -84,6 +84,16 @@
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>tvos-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx-freetype.a.tvos</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
