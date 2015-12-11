@@ -314,6 +314,10 @@ public class Tree extends WidgetGroup {
 		this.ySpacing = ySpacing;
 	}
 
+	public float getYSpacing () {
+		return ySpacing;
+	}
+
 	/** Sets the amount of horizontal space between the node actors and icons. */
 	public void setIconSpacing (float left, float right) {
 		this.iconSpacingLeft = left;

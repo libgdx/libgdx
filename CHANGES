@@ -10,6 +10,9 @@
 - API Change: FreeTypeFontParameter has new fields for rendering borders and shadows.
 - FreeTypeFontParameter can render much better fonts at small sizes using gamma settings.
 - BitmapFont can now render missing (tofu) glyph for glyphs not in the font.
+- FreeTypeFontGenerator depreacted methods removed.
+- Fixed BitmapFont color tags changing glyph spacing versus not using color tags. BitmapFont#getGlyphs has a new paramter. See #3455.
+- Skin's TintedDrawable now works with TiledDrawable. #3627
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
