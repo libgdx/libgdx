@@ -434,7 +434,7 @@ public class BitmapFont implements Disposable {
 		public FileHandle fontFile;
 		public boolean flipped;
 		public float padTop, padRight, padBottom, padLeft;
-		/** The distance from one line of text to the next. */
+		/** The distance from one line of text to the next. To set this value, use {@link #setLineHeight(float)}. */
 		public float lineHeight;
 		/** The distance from the top of most uppercase characters to the baseline. Since the drawing position is the cap height of
 		 * the first line, the cap height can be used to get the location of the baseline. */
