@@ -188,6 +188,7 @@ public class GdxTests {
 		RotationTest.class,
 		RunnablePostTest.class,
 		StageDebugTest.class,
+		ScreenCapturerTest.class,
 		Scene2dTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
