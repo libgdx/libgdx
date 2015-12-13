@@ -51,7 +51,7 @@ public class ScreenCapturerTest extends GdxTest{
 		Timer.schedule(new Task(){
 		    @Override
 		    public void run() {
-		   	 ScreenCapturer.disableGrayScale();
+		   	 ScreenCapturer.disableEffects();
 		       ScreenCapturer.saveScreenshotZoom(80,80,300,300);
 		    }
 		}, 4);

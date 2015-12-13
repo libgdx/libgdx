@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.PixmapIO;
 public class ScreenCapturer {
 	 private static int screenshotNumber = 1;
 	 private static boolean grayScale = false;
+	 private static boolean effects = true;
 	 
 	 
 	 /**
@@ -99,7 +100,9 @@ public class ScreenCapturer {
     private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown){
         final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
         
-        manipulate(pixmap);
+        if(effects){
+      	  manipulate(pixmap);
+        }
         
         if (yDown) {
             // Flip the pixmap upside down
@@ -146,6 +149,7 @@ public class ScreenCapturer {
      * Sets the gray scale flag to true or false 
      */
     public static void setGrayScale(){
+   	 effects = true;
    	 grayScale = true;
     }
     
@@ -162,6 +166,20 @@ public class ScreenCapturer {
      */
     public static void disableGrayScale(){
    	 grayScale = false;
+    }
+    
+    /**
+     * Disables effects
+     */
+    public static void disableEffects(){
+   	 effects = false;
+    }
+    
+    /**
+     * Enables effects
+     */
+    public static void enableEffects(){
+   	 effects = true;
     }
 
 }
