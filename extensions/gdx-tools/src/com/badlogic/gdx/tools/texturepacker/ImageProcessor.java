@@ -21,9 +21,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -35,8 +34,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
@@ -400,7 +397,7 @@ public class ImageProcessor {
 			raster.getPixel(x, y, rgba);
 			if (rgba[3] == breakA) return next;
 
-			if (!startPoint && (isNinePatchBlackPixel(rgba) || (ignoreRed && isNinePatchRedPixel(rgba))))
+			if (!startPoint && (isNotNinePatchBlackPixel(rgba) || (ignoreRed && isNotNinePatchRedPixel(rgba))))
 				splitError(x, y, rgba, name);
 
 			next++;
@@ -409,11 +406,11 @@ public class ImageProcessor {
 		return 0;
 	}
 
-	private static boolean isNinePatchBlackPixel(int[] rgba) {
+	private static boolean isNotNinePatchBlackPixel(int[] rgba) {
 		return rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255;
 	}
 
-	private static boolean isNinePatchRedPixel(int[] rgba) {
+	private static boolean isNotNinePatchRedPixel(int[] rgba) {
 		return rgba[0] != 255 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255;
 	}
 
