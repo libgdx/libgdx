@@ -21,9 +21,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -35,8 +34,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
@@ -272,14 +269,14 @@ public class ImageProcessor {
 	private int[] getSplits (BufferedImage image, String name) {
 		WritableRaster raster = image.getRaster();
 
-		int startX = getSplitPoint(raster, name, 1, 0, true, true);
-		int endX = getSplitPoint(raster, name, startX, 0, false, true);
-		int startY = getSplitPoint(raster, name, 0, 1, true, false);
-		int endY = getSplitPoint(raster, name, 0, startY, false, false);
+		int startX = getSplitPoint(raster, name, 1, 0, true, true, settings.ignoreRedPixels);
+		int endX = getSplitPoint(raster, name, startX, 0, false, true, settings.ignoreRedPixels);
+		int startY = getSplitPoint(raster, name, 0, 1, true, false, settings.ignoreRedPixels);
+		int endY = getSplitPoint(raster, name, 0, startY, false, false, settings.ignoreRedPixels);
 
 		// Ensure pixels after the end are not invalid.
-		getSplitPoint(raster, name, endX + 1, 0, true, true);
-		getSplitPoint(raster, name, 0, endY + 1, true, false);
+		getSplitPoint(raster, name, endX + 1, 0, true, true, settings.ignoreRedPixels);
+		getSplitPoint(raster, name, 0, endY + 1, true, false, settings.ignoreRedPixels);
 
 		// No splits, or all splits.
 		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) return null;
@@ -318,18 +315,18 @@ public class ImageProcessor {
 		int bottom = raster.getHeight() - 1;
 		int right = raster.getWidth() - 1;
 
-		int startX = getSplitPoint(raster, name, 1, bottom, true, true);
-		int startY = getSplitPoint(raster, name, right, 1, true, false);
+		int startX = getSplitPoint(raster, name, 1, bottom, true, true, settings.ignoreRedPixels);
+		int startY = getSplitPoint(raster, name, right, 1, true, false, settings.ignoreRedPixels);
 
 		// No need to hunt for the end if a start was never found.
 		int endX = 0;
 		int endY = 0;
-		if (startX != 0) endX = getSplitPoint(raster, name, startX + 1, bottom, false, true);
-		if (startY != 0) endY = getSplitPoint(raster, name, right, startY + 1, false, false);
+		if (startX != 0) endX = getSplitPoint(raster, name, startX + 1, bottom, false, true, settings.ignoreRedPixels);
+		if (startY != 0) endY = getSplitPoint(raster, name, right, startY + 1, false, false, settings.ignoreRedPixels);
 
 		// Ensure pixels after the end are not invalid.
-		getSplitPoint(raster, name, endX + 1, bottom, true, true);
-		getSplitPoint(raster, name, right, endY + 1, true, false);
+		getSplitPoint(raster, name, endX + 1, bottom, true, true, settings.ignoreRedPixels);
+		getSplitPoint(raster, name, right, endY + 1, true, false, settings.ignoreRedPixels);
 
 		// No pads.
 		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) {
@@ -382,7 +379,7 @@ public class ImageProcessor {
 	 * axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent pixel
 	 * if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border which
 	 * will be stripped. */
-	static private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
+	static private int getSplitPoint(WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis, boolean ignoreRed) {
 		int[] rgba = new int[4];
 
 		int next = xAxis ? startX : startY;
@@ -400,12 +397,21 @@ public class ImageProcessor {
 			raster.getPixel(x, y, rgba);
 			if (rgba[3] == breakA) return next;
 
-			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) splitError(x, y, rgba, name);
+			if (!startPoint && (isNinePatchBlackPixel(rgba) || (ignoreRed && isNinePatchRedPixel(rgba))))
+				splitError(x, y, rgba, name);
 
 			next++;
 		}
 
 		return 0;
+	}
+
+	private static boolean isNinePatchBlackPixel(int[] rgba) {
+		return rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255;
+	}
+
+	private static boolean isNinePatchRedPixel(int[] rgba) {
+		return rgba[0] != 255 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255;
 	}
 
 	static private String hash (BufferedImage image) {

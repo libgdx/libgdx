@@ -16,24 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -44,6 +26,22 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /** @author Nathan Sweet */
 public class TexturePacker {
@@ -553,6 +551,7 @@ public class TexturePacker {
 		public float[] scale = {1};
 		public String[] scaleSuffix = {""};
 		public String atlasExtension = ".atlas";
+		public boolean ignoreRedPixels;
 
 		public Settings () {
 		}
@@ -594,6 +593,7 @@ public class TexturePacker {
 			scale = settings.scale;
 			scaleSuffix = settings.scaleSuffix;
 			atlasExtension = settings.atlasExtension;
+			ignoreRedPixels = settings.ignoreRedPixels;
 		}
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
