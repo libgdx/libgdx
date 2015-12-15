@@ -18,16 +18,17 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 
-public interface ImmediateModeRenderer {
+public interface ImmediateModeRenderer extends Disposable {
 	public void begin (Matrix4 projModelView, int primitiveType);
 
 	public void flush ();
-	
+
 	public void color (Color color);
 
 	public void color (float r, float g, float b, float a);
-	
+
 	public void color (float colorBits);
 
 	public void texCoord (float u, float v);
@@ -42,5 +43,9 @@ public interface ImmediateModeRenderer {
 
 	public int getMaxVertices ();
 
-	public void dispose ();
+	/** Set a custom shader to use instead of the default shader.
+	 * @param shader A custom shader, or null to return to using the default shader. */
+	public void setShader (ShaderProgram shader);
+
+	public ShaderProgram getShader ();
 }
