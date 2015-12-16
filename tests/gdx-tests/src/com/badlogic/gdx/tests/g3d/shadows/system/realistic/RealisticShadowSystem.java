@@ -32,6 +32,9 @@ import com.badlogic.gdx.tests.g3d.shadows.utils.ShadowMapAllocator;
  * @author realitix */
 public class RealisticShadowSystem extends FirstPassBaseShadowSystem {
 
+	/** Number of pass before render the scene */
+	public static final int PASS_QUANTITY = 1;
+
 	public RealisticShadowSystem () {
 		super();
 	}
@@ -40,9 +43,6 @@ public class RealisticShadowSystem extends FirstPassBaseShadowSystem {
 		DirectionalAnalyzer directionalAnalyzer, LightFilter lightFilter) {
 		super(nearFarAnalyzer, allocator, directionalAnalyzer, lightFilter);
 	}
-
-	/** Number of pass before render the scene */
-	public static final int PASS_QUANTITY = 1;
 
 	@Override
 	public int getPassQuantity () {
