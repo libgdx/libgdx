@@ -97,11 +97,12 @@ public class BitmapFontCache {
 		x += xAmount;
 		y += yAmount;
 
-		for (int j = 0, length = pageVertices.length; j < length; j++) {
-			float[] vertices = pageVertices[j];
-			for (int i = 0, n = idx[j]; i < n; i += 5) {
-				vertices[i] += xAmount;
-				vertices[i + 1] += yAmount;
+		float[][] pageVertices = this.pageVertices;
+		for (int i = 0, n = pageVertices.length; i < n; i++) {
+			float[] vertices = pageVertices[i];
+			for (int ii = 0, nn = idx[i]; ii < nn; ii += 5) {
+				vertices[ii] += xAmount;
+				vertices[ii + 1] += yAmount;
 			}
 		}
 	}
