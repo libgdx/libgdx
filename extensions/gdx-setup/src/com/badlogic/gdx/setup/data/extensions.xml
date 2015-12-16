@@ -44,8 +44,8 @@
 		<name>VisRuntime</name>
 		<description>Runtime for VisEditor</description>
 		<package>com.kotcrab.vis.runtime</package>
-		<version>0.2.1</version>
-		<compatibility>1.6.4</compatibility>
+		<version>0.3.0</version>
+		<compatibility>1.7.1</compatibility>
 		<website>http://vis.kotcrab.com</website>
 		<gwtInherits>
 		    <inherit>com.kotcrab.vis.vis-runtime</inherit>
@@ -58,6 +58,8 @@
 			<android></android>
 			<ios></ios>
 			<html>
+				<dependency>com.kotcrab.vis:vis-runtime-gwt</dependency>
+				<dependency>com.kotcrab.vis:vis-runtime-gwt:sources</dependency>
 				<dependency>com.kotcrab.vis:vis-runtime:sources</dependency>
 			</html>
 		</projects>
