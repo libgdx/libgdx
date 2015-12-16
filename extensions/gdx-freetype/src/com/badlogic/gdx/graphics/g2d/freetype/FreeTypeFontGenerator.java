@@ -118,10 +118,14 @@ public class FreeTypeFontGenerator implements Disposable {
 		setPixelSizes(0, 15);
 	}
 
+	private boolean loadChar (int c) {
+		return face.loadChar(c, FreeType.FT_LOAD_DEFAULT | FreeType.FT_LOAD_FORCE_AUTOHINT);
+	}
+
 	private boolean checkForBitmapFont () {
 		if (((face.getFaceFlags() & FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
 			&& ((face.getFaceFlags() & FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL)) {
-			if (face.loadChar(32, FreeType.FT_LOAD_DEFAULT)) {
+			if (loadChar(32)) {
 				GlyphSlot slot = face.getGlyph();
 				if (slot.getFormat() == 1651078259) {
 					bitmapped = true;
@@ -203,7 +207,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// Try to load character
-		if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
+		if (!loadChar(c)) {
 			throw new GdxRuntimeException("Unable to load character!");
 		}
 
@@ -281,7 +285,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
 			for (int c = 32; c < (32 + face.getNumGlyphs()); c++) {
-				if (face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
+				if (loadChar(c)) {
 					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight;
 				}
@@ -289,7 +293,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// determine space width
-		if (face.loadChar(' ', FreeType.FT_LOAD_DEFAULT) || face.loadChar('l', FreeType.FT_LOAD_DEFAULT)) {
+		if (loadChar(' ') || loadChar('l')) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
@@ -297,7 +301,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine x-height
 		for (char xChar : data.xChars) {
-			if (!face.loadChar(xChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!loadChar(xChar)) continue;
 			data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -305,7 +309,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine cap height
 		for (char capChar : data.capChars) {
-			if (!face.loadChar(capChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!loadChar(capChar)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -412,7 +416,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		boolean missing = face.getCharIndex(c) == 0;
 		if (missing) return null;
 
-		if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
+		if (!loadChar(c)) {
 			Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char: " + c);
 			return null;
 		}

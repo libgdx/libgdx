@@ -14,6 +14,7 @@
 - Fixed BitmapFont color tags changing glyph spacing versus not using color tags. BitmapFont#getGlyphs has a new paramter. See #3455.
 - Skin's TintedDrawable now works with TiledDrawable. #3627
 - Updated jnigen to Java Parser 2.3.0 (http://javaparser.github.io/javaparser/).
+- FreeType fonts no longer look terrible at small size. This is a big deal!
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
