@@ -1,3 +1,5 @@
+[1.7.3]
+
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
 - Added GLOnlyTextureData, which is now the default for FrameBuffer and FrameBufferCubemap, see #3539
@@ -15,6 +17,7 @@
 - Skin's TintedDrawable now works with TiledDrawable. #3627
 - Updated jnigen to Java Parser 2.3.0 (http://javaparser.github.io/javaparser/).
 - FreeType fonts no longer look terrible at small size. This is a big deal!
+- Updated to RoboVM 1.12.0, includes tvOS support!
 
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
