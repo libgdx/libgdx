@@ -423,6 +423,15 @@ public class Actor {
 			positionChanged();
 		}
 	}
+	
+	/** Sets the position of the actor's bottom left corner. */
+	public void setPosition (Vector2 position) {
+		if (this.x != position.x || this.y != position.y) {
+			this.x = position.x;
+			this.y = position.y;
+			positionChanged();
+		}
+	}
 
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
 	 * coordinates. */
