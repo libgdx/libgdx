@@ -1,4 +1,6 @@
 [1.7.3]
+- API Change: Rewrote FreeType shadow rendering (much better).
+- Added spaceX/Y to FreeType fonts.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970

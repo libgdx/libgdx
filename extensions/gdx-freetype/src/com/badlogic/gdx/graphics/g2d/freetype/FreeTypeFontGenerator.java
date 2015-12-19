@@ -123,8 +123,9 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	private boolean checkForBitmapFont () {
-		if (((face.getFaceFlags() & FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
-			&& ((face.getFaceFlags() & FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL)) {
+		int faceFlags = face.getFaceFlags();
+		if (((faceFlags & FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
+			&& ((faceFlags & FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL)) {
 			if (loadChar(32)) {
 				GlyphSlot slot = face.getGlyph();
 				if (slot.getFormat() == 1651078259) {
@@ -291,6 +292,7 @@ public class FreeTypeFontGenerator implements Disposable {
 				}
 			}
 		}
+		data.lineHeight += parameter.spaceY;
 
 		// determine space width
 		if (loadChar(' ') || loadChar('l')) {
@@ -400,7 +402,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Glyph spaceGlyph = data.getGlyph(' ');
 		if (spaceGlyph == null) {
 			spaceGlyph = new Glyph();
-			spaceGlyph.xadvance = (int)data.spaceWidth;
+			spaceGlyph.xadvance = (int)data.spaceWidth + parameter.spaceX;
 			spaceGlyph.id = (int)' ';
 			data.setGlyph(' ', spaceGlyph);
 		}
@@ -433,21 +435,24 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (mainBitmap.getWidth() == 0 || mainBitmap.getRows() == 0) return null;
 		Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color, parameter.gamma);
 
+		int offsetX = 0, offsetY = 0;
 		if (parameter.borderWidth > 0) {
 			// execute stroker; this generates a glyph "extended" along the outline
+			int top = mainGlyph.getTop(), left = mainGlyph.getLeft();
 			FreeType.Glyph borderGlyph = slot.getGlyph();
 			borderGlyph.strokeBorder(stroker, false);
 			borderGlyph.toBitmap(FreeType.FT_RENDER_MODE_NORMAL);
-			Bitmap borderBitmap = borderGlyph.getBitmap();
+			offsetX = left - borderGlyph.getLeft();
+			offsetY = -(top - borderGlyph.getTop());
 
-			// render border (pixmap is bigger than main)
+			// Render border (pixmap is bigger than main).
+			Bitmap borderBitmap = borderGlyph.getBitmap();
 			Pixmap borderPixmap = borderBitmap.getPixmap(Format.RGBA8888, parameter.borderColor, parameter.borderGamma);
 
-			// draw main glyph on top of border
-			for (int i = 0, n = parameter.renderCount; i < n; i++) {
-				borderPixmap.drawPixmap(mainPixmap, mainGlyph.getLeft() - borderGlyph.getLeft(),
-					-(mainGlyph.getTop() - borderGlyph.getTop()));
-			}
+			// Draw main glyph on top of border.
+			for (int i = 0, n = parameter.renderCount; i < n; i++)
+				borderPixmap.drawPixmap(mainPixmap, offsetX, offsetY);
+
 			mainPixmap.dispose();
 			mainGlyph.dispose();
 			mainPixmap = borderPixmap;
@@ -455,30 +460,32 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		if (parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0) {
-			// Render the shadow with full alpha.
-			float a = parameter.shadowColor.a;
-			parameter.shadowColor.a = 1;
-			Pixmap shadowPixmapSrc = mainBitmap.getPixmap(Format.RGBA8888, parameter.shadowColor, parameter.shadowGamma);
-			parameter.shadowColor.a = a;
+			int mainW = mainPixmap.getWidth(), mainH = mainPixmap.getHeight();
+			int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
+			int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
+			Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
 
-			// Create a new bigger Pixmap with shadowOffset applied and draw the shadow glyph.
-			int w = shadowPixmapSrc.getWidth() + Math.abs(parameter.shadowOffsetX);
-			int h = shadowPixmapSrc.getHeight() + Math.abs(parameter.shadowOffsetY);
-			Pixmap shadowPixmap = new Pixmap(w, h, Format.RGBA8888);
-			Blending blending = Pixmap.getBlending();
-			Pixmap.setBlending(Blending.None);
-			shadowPixmap.drawPixmap(shadowPixmapSrc, Math.max(parameter.shadowOffsetX, 0), Math.max(parameter.shadowOffsetY, 0));
-			Pixmap.setBlending(blending);
-			for (int i = 0, n = parameter.shadowRenderCount - 1; i < n; i++)
-				shadowPixmap.drawPixmap(shadowPixmap, 0, 0);
+			Color shadowColor = parameter.shadowColor;
+			byte r = (byte)(shadowColor.r * 255), g = (byte)(shadowColor.g * 255), b = (byte)(shadowColor.b * 255);
+			float a = shadowColor.a;
 
-			// Multiply the shadow by the shadow color alpha.
-			ByteBuffer pixels = shadowPixmap.getPixels();
-			for (int y = 0, w4 = w * 4; y < h; y++)
-				for (int x = y * w4 + 3, n = x + w4; x < n; x += 4)
-					pixels.put(x, (byte)((pixels.get(x) & 0xff) * a));
+			ByteBuffer mainPixels = mainPixmap.getPixels();
+			ByteBuffer shadowPixels = shadowPixmap.getPixels();
+			for (int y = 0; y < mainH; y++) {
+				int shadowRow = shadowW * (y + shadowOffsetY) + shadowOffsetX;
+				for (int x = 0; x < mainW; x++) {
+					int mainPixel = (mainW * y + x) * 4;
+					byte mainA = mainPixels.get(mainPixel + 3);
+					if (mainA == 0) continue;
+					int shadowPixel = (shadowRow + x) * 4;
+					shadowPixels.put(shadowPixel, r);
+					shadowPixels.put(shadowPixel + 1, g);
+					shadowPixels.put(shadowPixel + 2, b);
+					shadowPixels.put(shadowPixel + 3, (byte)((mainA & 0xff) * a));
+				}
+			}
 
-			// draw main glyph (with border) on top of shadow
+			// Draw main glyph (with any border) on top of shadow.
 			for (int i = 0, n = parameter.renderCount; i < n; i++)
 				shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
 			mainPixmap.dispose();
@@ -496,7 +503,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		glyph.height = mainPixmap.getHeight();
 		glyph.xoffset = mainGlyph.getLeft();
 		glyph.yoffset = parameter.flip ? -mainGlyph.getTop() + (int)baseLine : -(glyph.height - mainGlyph.getTop()) - (int)baseLine;
-		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth;
+		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
 
 		if (bitmapped) {
 			mainPixmap.setColor(Color.CLEAR);
@@ -651,12 +658,12 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int shadowOffsetX = 0;
 		/** Offset of text shadow on Y axis in pixels, 0 to disable */
 		public int shadowOffsetY = 0;
-		/** Number of times to render the shadow. The shadow color alpha is applied after the shadow renders. */
-		public int shadowRenderCount = 1;
 		/** Shadow color; only used if shadowOffset > 0 */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Values < 1 increase the shadow size. */
 		public float shadowGamma = 1.8f;
+		/** Pixels to add to glyph spacing. Can be negative. */
+		public int spaceX, spaceY;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
 		/** Whether the font should include kerning */
