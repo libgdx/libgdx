@@ -118,7 +118,6 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			final float tileWidthLowerCorner = (layerTileWidth - layerHexLength) / 2;
 			final float tileWidthUpperCorner = (layerTileWidth + layerHexLength) / 2;
 			final float layerTileHeight50 = layerTileHeight * 0.50f;
-			final float layerTileHeight150 = layerTileHeight * 1.50f;
 
 			final int row1 = Math.max(0, (int)((viewBounds.y - layerTileHeight50) / layerTileHeight));
 			final int row2 = Math.min(layerHeight, (int)((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
