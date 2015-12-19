@@ -40,8 +40,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
- * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
- * supported.
+ * the AngleCode BMFont text format that describes where each glyph is on the image.
  * <p>
  * Text is drawn using a {@link Batch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text, which
  * saves needing to compute the location of each glyph each frame.
