@@ -309,7 +309,6 @@ class Kerning {
 	}
 
 	private static class TTFInputStream extends ByteArrayInputStream {
-
 		public TTFInputStream (InputStream input) throws IOException {
 			super(readAllBytes(input));
 		}

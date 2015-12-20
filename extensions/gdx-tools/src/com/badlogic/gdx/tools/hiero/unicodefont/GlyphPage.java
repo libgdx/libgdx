@@ -22,9 +22,12 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +36,13 @@ import java.util.ListIterator;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
 
@@ -46,7 +54,8 @@ public class GlyphPage {
 	private final Texture texture;
 	private int pageX, pageY, rowHeight;
 	private boolean orderAscending;
-	private final List pageGlyphs = new ArrayList(32);
+	private final List<Glyph> pageGlyphs = new ArrayList(32);
+	private final List<String> hashes = new ArrayList(32);
 
 	/** @param pageWidth The width of the backing texture.
 	 * @param pageHeight The height of the backing texture. */
@@ -113,10 +122,7 @@ public class GlyphPage {
 				}
 			}
 
-			renderGlyph(glyph, width, height);
-			pageGlyphs.add(glyph);
-
-			pageX += width;
+			if (renderGlyph(glyph, width, height)) pageX += width;
 
 			iter.remove();
 			i++;
@@ -134,44 +140,106 @@ public class GlyphPage {
 	}
 
 	/** Loads a single glyph to the backing texture, if it fits. */
-	private void renderGlyph (Glyph glyph, int width, int height) {
-		// Draw the glyph to the scratch image using Java2D.
+	private boolean renderGlyph (Glyph glyph, int width, int height) {
 		scratchGraphics.setComposite(AlphaComposite.Clear);
 		scratchGraphics.fillRect(0, 0, MAX_GLYPH_SIZE, MAX_GLYPH_SIZE);
 		scratchGraphics.setComposite(AlphaComposite.SrcOver);
-		if (unicodeFont.getNativeRendering()) {
-			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();) {
-				Effect effect = (Effect)iter.next();
-				if (effect instanceof ColorEffect) scratchGraphics.setColor(((ColorEffect)effect).getColor());
+
+		ByteBuffer glyphPixels = scratchByteBuffer;
+		int format;
+		if (unicodeFont.getRenderType() == RenderType.FreeType && unicodeFont.bitmapFont != null) {
+			BitmapFontData data = unicodeFont.bitmapFont.getData();
+			BitmapFont.Glyph g = data.getGlyph((char)glyph.getCodePoint());
+			Pixmap fontPixmap = unicodeFont.bitmapFont.getRegions().get(g.page).getTexture().getTextureData().consumePixmap();
+
+			int fontWidth = fontPixmap.getWidth();
+			int padTop = unicodeFont.getPaddingTop(), padBottom = unicodeFont.getPaddingBottom();
+			int padLeftBytes = unicodeFont.getPaddingLeft() * 4;
+			int padXBytes = padLeftBytes + unicodeFont.getPaddingRight() * 4;
+			int glyphRowBytes = width * 4, fontRowBytes = g.width * 4;
+
+			ByteBuffer fontPixels = fontPixmap.getPixels();
+			byte[] row = new byte[glyphRowBytes];
+			glyphPixels.position(0);
+			for (int i = 0; i < padTop; i++)
+				glyphPixels.put(row);
+			glyphPixels.position((height - padBottom) * glyphRowBytes);
+			for (int i = 0; i < padBottom; i++)
+				glyphPixels.put(row);
+			glyphPixels.position(padTop * glyphRowBytes);
+			for (int y = 0, n = g.height; y < n; y++) {
+				fontPixels.position(((g.srcY + y) * fontWidth + g.srcX) * 4);
+				fontPixels.get(row, padLeftBytes, fontRowBytes);
+				glyphPixels.put(row);
 			}
-			scratchGraphics.setColor(java.awt.Color.white);
-			scratchGraphics.setFont(unicodeFont.getFont());
-			scratchGraphics.drawString("" + (char)glyph.getCodePoint(), 0, unicodeFont.getAscent());
+			fontPixels.position(0);
+			glyphPixels.position(height * glyphRowBytes);
+			glyphPixels.flip();
+			format = GL11.GL_RGBA;
 		} else {
-			scratchGraphics.setColor(java.awt.Color.white);
-			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();)
-				((Effect)iter.next()).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
-			glyph.setShape(null); // The shape will never be needed again.
+			// Draw the glyph to the scratch image using Java2D.
+			if (unicodeFont.getRenderType() == RenderType.Native) {
+				for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();) {
+					Effect effect = (Effect)iter.next();
+					if (effect instanceof ColorEffect) scratchGraphics.setColor(((ColorEffect)effect).getColor());
+				}
+				scratchGraphics.setColor(java.awt.Color.white);
+				scratchGraphics.setFont(unicodeFont.getFont());
+				scratchGraphics.drawString("" + (char)glyph.getCodePoint(), 0, unicodeFont.getAscent());
+			} else if (unicodeFont.getRenderType() == RenderType.Java) {
+				scratchGraphics.setColor(java.awt.Color.white);
+				for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();)
+					((Effect)iter.next()).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
+				glyph.setShape(null); // The shape will never be needed again.
+			}
+
+			width = Math.min(width, texture.getWidth());
+			height = Math.min(height, texture.getHeight());
+
+			WritableRaster raster = scratchImage.getRaster();
+			int[] row = new int[width];
+			for (int y = 0; y < height; y++) {
+				raster.getDataElements(0, y, width, 1, row);
+				scratchIntBuffer.put(row);
+			}
+			format = GL12.GL_BGRA;
 		}
 
-		width = Math.min(width, texture.getWidth());
-		height = Math.min(height, texture.getHeight());
-
-		WritableRaster raster = scratchImage.getRaster();
-		int[] row = new int[width];
-		for (int y = 0; y < height; y++) {
-			raster.getDataElements(0, y, width, 1, row);
-			scratchIntBuffer.put(row);
+		// Simple deduplication, doesn't work across pages of course.
+		String hash = "";
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(glyphPixels);
+			glyphPixels.clear();
+			BigInteger bigInt = new BigInteger(1, md.digest());
+			hash = bigInt.toString(16);
+		} catch (NoSuchAlgorithmException ex) {
 		}
-		GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, pageX, pageY, width, height, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE,
-			scratchByteBuffer);
-		scratchIntBuffer.clear();
+
+		try {
+			for (int i = 0, n = hashes.size(); i < n; i++) {
+				String other = hashes.get(i);
+				if (other.equals(hash)) {
+					Glyph dupe = pageGlyphs.get(i);
+					glyph.setTexture(dupe.texture, dupe.u, dupe.v, dupe.u2, dupe.v2);
+					System.out.println((char)glyph.getCodePoint() + " dupe of " + (char)dupe.getCodePoint());
+					return false;
+				}
+			}
+		} finally {
+			hashes.add(hash);
+			pageGlyphs.add(glyph);
+		}
+
+		Gdx.gl.glTexSubImage2D(texture.glTarget, 0, pageX, pageY, width, height, format, GL11.GL_UNSIGNED_BYTE, glyphPixels);
 
 		float u = pageX / (float)texture.getWidth();
 		float v = pageY / (float)texture.getHeight();
 		float u2 = (pageX + width) / (float)texture.getWidth();
 		float v2 = (pageY + height) / (float)texture.getHeight();
 		glyph.setTexture(texture, u, v, u2, v2);
+
+		return true;
 	}
 
 	/** Returns an iterator for the specified glyphs, sorted either ascending or descending. */
@@ -194,7 +262,7 @@ public class GlyphPage {
 	}
 
 	/** Returns the glyphs stored on this page. */
-	public List getGlyphs () {
+	public List<Glyph> getGlyphs () {
 		return pageGlyphs;
 	}
 
@@ -206,16 +274,20 @@ public class GlyphPage {
 	static public final int MAX_GLYPH_SIZE = 256;
 
 	static private ByteBuffer scratchByteBuffer = ByteBuffer.allocateDirect(MAX_GLYPH_SIZE * MAX_GLYPH_SIZE * 4);
+
 	static {
 		scratchByteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 	}
+
 	static private IntBuffer scratchIntBuffer = scratchByteBuffer.asIntBuffer();
 
 	static private BufferedImage scratchImage = new BufferedImage(MAX_GLYPH_SIZE, MAX_GLYPH_SIZE, BufferedImage.TYPE_INT_ARGB);
 	static Graphics2D scratchGraphics = (Graphics2D)scratchImage.getGraphics();
+
 	static {
 		scratchGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		scratchGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 	}
+
 	static public FontRenderContext renderContext = scratchGraphics.getFontRenderContext();
 }

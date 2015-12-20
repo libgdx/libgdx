@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType, OTF, and other FreeType supported fonts.
  * </p>
@@ -370,7 +371,10 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		if (stroker != null && !incremental) stroker.dispose();
 
+		data.missingGlyph = data.getGlyph('\u0000');
+
 		// Generate kerning.
+		parameter.kerning &= face.hasKerning();
 		if (parameter.kerning) {
 			for (int i = 0; i < charactersLength; i++) {
 				char firstChar = characters.charAt(i);
@@ -415,17 +419,15 @@ public class FreeTypeFontGenerator implements Disposable {
 	Glyph createGlyph (char c, FreeTypeBitmapFontData data, FreeTypeFontParameter parameter, Stroker stroker, float baseLine,
 		PixmapPacker packer) {
 
-		boolean missing = face.getCharIndex(c) == 0;
+		boolean missing = face.getCharIndex(c) == 0 && c != 0;
 		if (missing) return null;
 
-		if (!loadChar(c)) {
-			Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char: " + c);
-			return null;
-		}
+		if (!loadChar(c)) return null;
+
 		GlyphSlot slot = face.getGlyph();
 		FreeType.Glyph mainGlyph = slot.getGlyph();
 		try {
-			mainGlyph.toBitmap(FreeType.FT_RENDER_MODE_NORMAL);
+			mainGlyph.toBitmap(parameter.mono ? FreeType.FT_RENDER_MODE_MONO : FreeType.FT_RENDER_MODE_NORMAL);
 		} catch (GdxRuntimeException e) {
 			mainGlyph.dispose();
 			Gdx.app.log("FreeTypeFontGenerator", "Couldn't render char: " + c);
@@ -435,13 +437,19 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (mainBitmap.getWidth() == 0 || mainBitmap.getRows() == 0) return null;
 		Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color, parameter.gamma);
 
+		// BOZO - Hardcoded render count for Spine font.
+		parameter.gamma = 1.6f;
+		parameter.renderCount = 3;
+		parameter.shadowOffsetY = 1;
+		parameter.shadowColor = new Color(0, 0, 0, 0.45f);
+
 		int offsetX = 0, offsetY = 0;
 		if (parameter.borderWidth > 0) {
 			// execute stroker; this generates a glyph "extended" along the outline
 			int top = mainGlyph.getTop(), left = mainGlyph.getLeft();
 			FreeType.Glyph borderGlyph = slot.getGlyph();
 			borderGlyph.strokeBorder(stroker, false);
-			borderGlyph.toBitmap(FreeType.FT_RENDER_MODE_NORMAL);
+			borderGlyph.toBitmap(parameter.mono ? FreeType.FT_RENDER_MODE_MONO : FreeType.FT_RENDER_MODE_NORMAL);
 			offsetX = left - borderGlyph.getLeft();
 			offsetY = -(top - borderGlyph.getTop());
 
@@ -585,7 +593,8 @@ public class FreeTypeFontGenerator implements Disposable {
 			Glyph glyph = super.getGlyph(ch);
 			if (glyph == null && generator != null) {
 				generator.setPixelSizes(0, parameter.size);
-				glyph = generator.createGlyph(ch, this, parameter, stroker, (ascent + capHeight) / scaleY, packer);
+				float baseline = ((flipped ? -ascent : ascent) + capHeight) / scaleY;
+				glyph = generator.createGlyph(ch, this, parameter, stroker, baseline, packer);
 				if (glyph == null) return missingGlyph;
 
 				setGlyphRegion(glyph, regions.get(glyph.page));
@@ -593,8 +602,8 @@ public class FreeTypeFontGenerator implements Disposable {
 				glyphs.add(glyph);
 				dirty = true;
 
+				Face face = generator.face;
 				if (parameter.kerning) {
-					Face face = generator.face;
 					int glyphIndex = face.getCharIndex(ch);
 					for (int i = 0, n = glyphs.size; i < n; i++) {
 						Glyph other = glyphs.get(i);
@@ -640,6 +649,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	public static class FreeTypeFontParameter {
 		/** The size in pixels */
 		public int size = 16;
+		/** If true, font smoothing is disabled. */
+		public boolean mono;
 		/** Foreground color (required for non-black borders) */
 		public Color color = Color.WHITE;
 		/** Glyph gamma. Values > 1 reduce antialiasing. */
@@ -660,8 +671,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int shadowOffsetY = 0;
 		/** Shadow color; only used if shadowOffset > 0 */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
-		/** Values < 1 increase the shadow size. */
-		public float shadowGamma = 1.8f;
 		/** Pixels to add to glyph spacing. Can be negative. */
 		public int spaceX, spaceY;
 		/** The characters the font should contain */

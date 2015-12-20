@@ -16,18 +16,8 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
-import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
-import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
-import com.badlogic.gdx.utils.IntIntMap;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.font.GlyphMetrics;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -37,8 +27,21 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
+import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
+import com.badlogic.gdx.utils.IntIntMap;
 
 /** @author Nathan Sweet */
 public class BMFontUtil {
@@ -64,8 +67,8 @@ public class BMFontUtil {
 			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingLeft() + "," + unicodeFont.getPaddingBottom() + ","
 			+ unicodeFont.getPaddingRight() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
 			+ unicodeFont.getPaddingAdvanceY());
-		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW="
-			+ pageWidth + " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
+		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW=" + pageWidth
+			+ " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
 
 		int pageIndex = 0, glyphCount = 0;
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
@@ -82,11 +85,15 @@ public class BMFontUtil {
 
 		out.println("chars count=" + glyphCount);
 
-		// Always output space entry (codepoint 32).
-		int[] glyphMetrics = getGlyphMetrics(font, 32);
-		int xAdvance = glyphMetrics[1];
-		out.println("char id=32   x=0     y=0     width=0     height=0     xoffset=0     yoffset=" + unicodeFont.getAscent()
-			+ "    xadvance=" + xAdvance + "     page=0  chnl=0 ");
+		// Always output space and missing entries (codepoints 0 and 32).
+		Glyph missingGlyph = getGlyph('\u0000');
+		if (missingGlyph != null) writeGlyph(out, pageWidth, pageHeight, pageIndex, missingGlyph);
+
+		Glyph spaceGlyph = getGlyph(' ');
+		if (spaceGlyph != null) {
+			out.println("char id=32   x=0     y=0     width=0     height=0     xoffset=0     yoffset=" + unicodeFont.getAscent()
+				+ "    xadvance=" + spaceGlyph.getXAdvance() + "     page=0  chnl=0 ");
+		}
 
 		pageIndex = 0;
 		List allGlyphs = new ArrayList(512);
@@ -94,15 +101,7 @@ public class BMFontUtil {
 			GlyphPage page = (GlyphPage)pageIter.next();
 			for (Iterator glyphIter = page.getGlyphs().iterator(); glyphIter.hasNext();) {
 				Glyph glyph = (Glyph)glyphIter.next();
-
-				glyphMetrics = getGlyphMetrics(font, glyph.getCodePoint());
-				int xOffset = glyphMetrics[0];
-				xAdvance = glyphMetrics[1];
-
-				out.println("char id=" + glyph.getCodePoint() + "   " + "x=" + (int)(glyph.getU() * pageWidth) + "     y="
-					+ (int)(glyph.getV() * pageHeight) + "     width=" + glyph.getWidth() + "     height=" + glyph.getHeight()
-					+ "     xoffset=" + xOffset + "     yoffset=" + glyph.getYOffset() + "    xadvance=" + xAdvance + "     page="
-					+ pageIndex + "  chnl=0 ");
+				writeGlyph(out, pageWidth, pageHeight, pageIndex, glyph);
 			}
 			allGlyphs.addAll(page.getGlyphs());
 			pageIndex++;
@@ -186,22 +185,25 @@ public class BMFontUtil {
 		}
 	}
 
+	/** @return May be null. */
+	private Glyph getGlyph (char c) {
+		char[] chars = {c};
+		GlyphVector vector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
+			Font.LAYOUT_LEFT_TO_RIGHT);
+		Rectangle bounds = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0.5f, 0);
+		return unicodeFont.getGlyph(vector.getGlyphCode(0), c, bounds, vector, 0);
+	}
+
+	void writeGlyph (PrintStream out, int pageWidth, int pageHeight, int pageIndex, Glyph glyph) {
+		out.println("char id=" + glyph.getCodePoint() + "   " + "x=" + (int)(glyph.getU() * pageWidth) + "     y="
+			+ (int)(glyph.getV() * pageHeight) + "     width=" + glyph.getWidth() + "     height=" + glyph.getHeight()
+			+ "     xoffset=" + glyph.getXOffset() + "     yoffset=" + glyph.getYOffset() + "    xadvance=" + glyph.getXAdvance()
+			+ "     page=" + pageIndex + "  chnl=0 ");
+	}
+
 	private int getGlyphCode (Font font, int codePoint) {
 		char[] chars = Character.toChars(codePoint);
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 		return vector.getGlyphCode(0);
-	}
-
-	private int[] getGlyphMetrics (Font font, int codePoint) {
-		// xOffset and xAdvance will be incorrect for unicode characters such as combining marks or non-spacing characters
-		// (eg Pnujabi's "\u0A1C\u0A47") that require the context of surrounding glyphs to determine spacing, but thisis the
-		// best we can do with the BMFont format.
-		char[] chars = Character.toChars(codePoint);
-		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
-		GlyphMetrics metrics = vector.getGlyphMetrics(0);
-		int xOffset = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0.5f, 0).x - unicodeFont.getPaddingLeft();
-		int xAdvance = (int)(metrics.getAdvanceX() + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft() + unicodeFont
-			.getPaddingRight());
-		return new int[] {xOffset, xAdvance};
 	}
 }

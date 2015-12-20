@@ -603,26 +603,49 @@ public class FreeType {
 			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch) * bmp->width);
 		*/
 
-		public Pixmap getPixmap(Format format, Color color, float gamma) {
+		// @on
+		public Pixmap getPixmap (Format format, Color color, float gamma) {
 			int width = getWidth(), rows = getRows();
 			ByteBuffer src = getBuffer();
 			Pixmap pixmap;
-			int srcPitch = getPitch();
-			if (color == Color.WHITE && srcPitch == 1 && gamma == 1) {
+			int pixelMode = getPixelMode();
+			int rowBytes = Math.abs(getPitch()); // We currently ignore negative pitch.
+			if (color == Color.WHITE && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
 				pixmap = new Pixmap(width, rows, Format.Alpha);
 				BufferUtils.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {
 				pixmap = new Pixmap(width, rows, Format.RGBA8888);
-				int srcRGBA = Color.rgba8888(color);
+				int rgba = Color.rgba8888(color);
+				byte[] srcRow = new byte[rowBytes];
+				int[] dstRow = new int[width];
 				IntBuffer dst = pixmap.getPixels().asIntBuffer();
-				for (int y = 0; y < rows; y++) {
-					int ySrcPitch = y * srcPitch;
-					int yWidth = y * width;
-					for (int x = 0; x < width; x++) {
-						// use the color value of the foreground color, blend alpha
-						float alpha = (src.get(ySrcPitch + x) & 0xff) / 255f;
-						alpha = (float)Math.pow(alpha, gamma); // Inverse gamma. 
-						dst.put(yWidth + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * alpha));
+				if (pixelMode == FT_PIXEL_MODE_MONO) {
+					// Use the specified color for each set bit.
+					for (int y = 0; y < rows; y++) {
+						src.get(srcRow);
+						for (int i = 0, x = 0; x < width; i++, x += 8) {
+							byte b = srcRow[i];
+							for (int ii = 0, n = Math.min(8, width - x); ii < n; ii++) {
+								if ((b & (1 << (7 - ii))) != 0)
+									dstRow[x + ii] = rgba;
+								else
+									dstRow[x + ii] = 0;
+							}
+						}
+						dst.put(dstRow);
+					}
+				} else {
+					// Use the specified color for RGB, blend the FreeType bitmap with alpha.
+					int rgb = rgba & 0xffffff00;
+					int a = rgba & 0xff;
+					for (int y = 0; y < rows; y++) {
+						src.get(srcRow);
+						for (int x = 0; x < width; x++) {
+							float alpha = (srcRow[x] & 0xff) / 255f;
+							alpha = (float)Math.pow(alpha, gamma); // Inverse gamma.
+							dstRow[x] = rgb | (int)(a * alpha);
+						}
+						dst.put(dstRow);
 					}
 				}
 			}
@@ -638,6 +661,7 @@ public class FreeType {
 			}
 			return converted;
 		}
+		// @off
 
 		public int getNumGray() {
 			return getNumGray(address);
@@ -846,8 +870,7 @@ public class FreeType {
 	*/
 
 	public static int toInt (int value) {
-		if (value < 0) return (int)((value - 32) >> 6);
-		return (int)((value + 32) >> 6);
+		return ((value + 63) & -64) >> 6;
 	}
    
 //	public static void main (String[] args) throws Exception {

@@ -132,7 +132,7 @@ public class BitmapFontTest extends GdxTest {
 		}
 
 		// Test wrapping with label.
-		if (true) {
+		if (false) {
 			label.debug();
 			label.getStyle().font = font;
 			label.setStyle(label.getStyle());
