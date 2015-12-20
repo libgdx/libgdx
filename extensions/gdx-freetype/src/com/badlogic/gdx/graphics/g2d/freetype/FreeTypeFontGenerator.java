@@ -437,12 +437,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (mainBitmap.getWidth() == 0 || mainBitmap.getRows() == 0) return null;
 		Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color, parameter.gamma);
 
-		// BOZO - Hardcoded render count for Spine font.
-		parameter.gamma = 1.6f;
-		parameter.renderCount = 3;
-		parameter.shadowOffsetY = 1;
-		parameter.shadowColor = new Color(0, 0, 0, 0.45f);
-
 		int offsetX = 0, offsetY = 0;
 		if (parameter.borderWidth > 0) {
 			// execute stroker; this generates a glyph "extended" along the outline
