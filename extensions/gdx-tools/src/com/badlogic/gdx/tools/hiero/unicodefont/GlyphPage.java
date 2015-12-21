@@ -45,6 +45,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
+import com.badlogic.gdx.utils.Array;
 
 /** Stores a number of glyphs on a single texture.
  * @author Nathan Sweet */
@@ -52,10 +53,9 @@ public class GlyphPage {
 	private final UnicodeFont unicodeFont;
 	private final int pageWidth, pageHeight;
 	private final Texture texture;
-	private int pageX, pageY, rowHeight;
-	private boolean orderAscending;
 	private final List<Glyph> pageGlyphs = new ArrayList(32);
 	private final List<String> hashes = new ArrayList(32);
+	Array<Row> rows = new Array();
 
 	/** @param pageWidth The width of the backing texture.
 	 * @param pageHeight The height of the backing texture. */
@@ -65,6 +65,7 @@ public class GlyphPage {
 		this.pageHeight = pageHeight;
 
 		texture = new Texture(pageWidth, pageHeight, Format.RGBA8888);
+		rows.add(new Row());
 	}
 
 	/** Loads glyphs to the backing texture and sets the image on each loaded glyph. Loaded glyphs are removed from the list.
@@ -76,71 +77,61 @@ public class GlyphPage {
 	 *           glyphs.
 	 * @return The number of glyphs that were actually loaded. */
 	int loadGlyphs (List glyphs, int maxGlyphsToLoad) {
-		if (rowHeight != 0 && maxGlyphsToLoad == -1) {
-			// If this page has glyphs and we are not loading incrementally, return zero if any of the glyphs don't fit.
-			int testX = pageX;
-			int testY = pageY;
-			int testRowHeight = rowHeight;
-			for (Iterator iter = getIterator(glyphs); iter.hasNext();) {
-				Glyph glyph = (Glyph)iter.next();
-				int width = glyph.getWidth();
-				int height = glyph.getHeight();
-				if (testX + width >= pageWidth) {
-					testX = 0;
-					testY += testRowHeight;
-					testRowHeight = height;
-				} else if (height > testRowHeight) {
-					testRowHeight = height;
-				}
-				if (testY + testRowHeight >= pageWidth) return 0;
-				testX += width;
-			}
-		}
-
 		GL11.glColor4f(1, 1, 1, 1);
 		texture.bind();
 
-		int i = 0;
-		for (Iterator iter = getIterator(glyphs); iter.hasNext();) {
+		int loadedCount = 0;
+		for (Iterator iter = glyphs.iterator(); iter.hasNext();) {
 			Glyph glyph = (Glyph)iter.next();
 			int width = Math.min(MAX_GLYPH_SIZE, glyph.getWidth());
 			int height = Math.min(MAX_GLYPH_SIZE, glyph.getHeight());
-
-			if (rowHeight == 0) {
-				// The first glyph always fits.
-				rowHeight = height;
-			} else {
-				// Wrap to the next line if needed, or break if no more fit.
-				if (pageX + width >= pageWidth) {
-					if (pageY + rowHeight + height >= pageHeight) break;
-					pageX = 0;
-					pageY += rowHeight;
-					rowHeight = height;
-				} else if (height > rowHeight) {
-					if (pageY + height >= pageHeight) break;
-					rowHeight = height;
+			if (width == 0 || height == 0)
+				pageGlyphs.add(glyph);
+			else {
+				Row bestRow = null;
+				// Fit in any row before the last.
+				for (int ii = 0, nn = rows.size - 1; ii < nn; ii++) {
+					Row row = rows.get(ii);
+					if (row.x + width >= pageWidth) continue;
+					if (row.y + height >= pageHeight) continue;
+					if (height > row.height) continue;
+					if (bestRow == null || row.height < bestRow.height) bestRow = row;
 				}
-			}
+				if (bestRow == null) {
+					// Fit in last row, increasing height.
+					Row row = rows.peek();
+					if (row.y + height >= pageHeight) continue;
+					if (row.x + width < pageWidth) {
+						row.height = Math.max(row.height, height);
+						bestRow = row;
+					} else {
+						// Fit in new row.
+						bestRow = new Row();
+						bestRow.y = row.y + row.height;
+						bestRow.height = height;
+						rows.add(bestRow);
+					}
+				}
+				if (bestRow == null) continue;
 
-			if (renderGlyph(glyph, width, height)) pageX += width;
+				if (renderGlyph(glyph, bestRow.x, bestRow.y, width, height)) bestRow.x += width;
+			}
 
 			iter.remove();
-			i++;
-			if (i == maxGlyphsToLoad) {
-				// If loading incrementally, flip orderAscending so it won't change, since we'll probably load the rest next time.
-				orderAscending = !orderAscending;
-				break;
-			}
+			loadedCount++;
+			if (loadedCount == maxGlyphsToLoad) break;
+
 		}
 
-		// Every other batch of glyphs added to a page are sorted the opposite way to attempt to keep same size glyps together.
-		orderAscending = !orderAscending;
+		return loadedCount;
+	}
 
-		return i;
+	static class Row {
+		int x, y, height;
 	}
 
 	/** Loads a single glyph to the backing texture, if it fits. */
-	private boolean renderGlyph (Glyph glyph, int width, int height) {
+	private boolean renderGlyph (Glyph glyph, int pageX, int pageY, int width, int height) {
 		scratchGraphics.setComposite(AlphaComposite.Clear);
 		scratchGraphics.fillRect(0, 0, MAX_GLYPH_SIZE, MAX_GLYPH_SIZE);
 		scratchGraphics.setComposite(AlphaComposite.SrcOver);
@@ -210,11 +201,12 @@ public class GlyphPage {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			md.update(glyphPixels);
-			glyphPixels.clear();
 			BigInteger bigInt = new BigInteger(1, md.digest());
 			hash = bigInt.toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 		}
+		scratchByteBuffer.clear();
+		scratchIntBuffer.clear();
 
 		try {
 			for (int i = 0, n = hashes.size(); i < n; i++) {
@@ -222,7 +214,6 @@ public class GlyphPage {
 				if (other.equals(hash)) {
 					Glyph dupe = pageGlyphs.get(i);
 					glyph.setTexture(dupe.texture, dupe.u, dupe.v, dupe.u2, dupe.v2);
-					System.out.println((char)glyph.getCodePoint() + " dupe of " + (char)dupe.getCodePoint());
 					return false;
 				}
 			}
@@ -240,25 +231,6 @@ public class GlyphPage {
 		glyph.setTexture(texture, u, v, u2, v2);
 
 		return true;
-	}
-
-	/** Returns an iterator for the specified glyphs, sorted either ascending or descending. */
-	private Iterator getIterator (List glyphs) {
-		if (orderAscending) return glyphs.iterator();
-		final ListIterator iter = glyphs.listIterator(glyphs.size());
-		return new Iterator() {
-			public boolean hasNext () {
-				return iter.hasPrevious();
-			}
-
-			public Object next () {
-				return iter.previous();
-			}
-
-			public void remove () {
-				iter.remove();
-			}
-		};
 	}
 
 	/** Returns the glyphs stored on this page. */

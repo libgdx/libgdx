@@ -223,8 +223,6 @@ public class Hiero extends JFrame {
 		setSize(1024, 600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		sampleNeheButton.doClick();
 	}
 
 	private void parseArgs (String[] args) {
@@ -453,7 +451,10 @@ public class Hiero extends JFrame {
 							if (text.equals(lastText)) return;
 							lastText = text;
 							int caretPosition = textField.getCaretPosition();
-							spinner.setValue(Integer.valueOf(text));
+							try {
+								spinner.setValue(Integer.valueOf(text));
+							} catch (NumberFormatException ex) {
+							}
 							textField.setCaretPosition(caretPosition);
 						}
 					});
@@ -658,6 +659,7 @@ public class Hiero extends JFrame {
 		sampleNeheButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
 				sampleTextPane.setText(NEHE_CHARS);
+				resetCacheButton.doClick();
 			}
 		});
 
@@ -673,12 +675,14 @@ public class Hiero extends JFrame {
 					if (++count % 30 == 0) buffer.append('\n');
 				}
 				sampleTextPane.setText(buffer.toString());
+				resetCacheButton.doClick();
 			}
 		});
 
 		sampleExtendedButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
 				sampleTextPane.setText(EXTENDED_CHARS);
+				resetCacheButton.doClick();
 			}
 		});
 	}
@@ -1392,6 +1396,8 @@ public class Hiero extends JFrame {
 			glDisable(GL_LIGHTING);
 
 			batch = new SpriteBatch();
+
+			sampleNeheButton.doClick();
 		}
 
 		public void resize (int width, int height) {
@@ -1512,13 +1518,13 @@ public class Hiero extends JFrame {
 
 	static final String NEHE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n" //
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890 \n" //
-		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u007F";
+		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u0000\u007F";
 	static public final String EXTENDED_CHARS;
 
 	static {
 		StringBuilder buffer = new StringBuilder();
 		int i = 0;
-		for (int c : new int[] {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+		for (int c : new int[] {0, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
 			57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
 			87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
 			114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170,

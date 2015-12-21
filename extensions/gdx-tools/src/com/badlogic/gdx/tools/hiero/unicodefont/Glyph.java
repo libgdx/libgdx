@@ -49,12 +49,14 @@ public class Glyph {
 			if (g == null)
 				isMissing = true;
 			else {
-				width = (short)(g.width + padLeft + padRight);
-				height = (short)(g.height + padTop + padBottom);
+				boolean empty = g.width == 0 || g.height == 0;
+				width = empty ? 0 : (short)(g.width + padLeft + padRight);
+				height = empty ? 0 : (short)(g.height + padTop + padBottom);
 				yOffset = (short)(g.yoffset - padTop);
 				xOffset = g.xoffset - unicodeFont.getPaddingLeft();
 				xAdvance = g.xadvance + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft()
 					+ unicodeFont.getPaddingRight();
+				isMissing = codePoint == 0;
 			}
 
 		} else {
@@ -79,7 +81,7 @@ public class Glyph {
 			GlyphVector charVector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
 				Font.LAYOUT_LEFT_TO_RIGHT);
 			GlyphMetrics charMetrics = vector.getGlyphMetrics(0);
-			xOffset = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0.5f, 0).x - unicodeFont.getPaddingLeft();
+			xOffset = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0, 0).x - unicodeFont.getPaddingLeft();
 			xAdvance = (int)(metrics.getAdvanceX() + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft()
 				+ unicodeFont.getPaddingRight());
 

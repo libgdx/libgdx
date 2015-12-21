@@ -214,12 +214,6 @@ public class UnicodeFont {
 			Glyph glyph = (Glyph)iter.next();
 			int codePoint = glyph.getCodePoint();
 
-			// Don't load an image for a glyph with nothing to display.
-			if (glyph.getWidth() == 0 || codePoint == ' ') {
-				iter.remove();
-				continue;
-			}
-
 			// Only load the first missing glyph.
 			if (glyph.isMissing()) {
 				if (missingGlyph != null) {
@@ -386,7 +380,7 @@ public class UnicodeFont {
 	public void drawString (float x, float y, String text, Color col) {
 		drawString(x, y, text, col, 0, text.length());
 	}
- 
+
 	/** Returns the glyph for the specified codePoint. If the glyph does not exist yet, it is created and queued to be loaded. */
 	public Glyph getGlyph (int glyphCode, int codePoint, Rectangle bounds, GlyphVector vector, int index) {
 		if (glyphCode < 0 || glyphCode >= MAX_GLYPH_CODE) {
@@ -699,7 +693,7 @@ public class UnicodeFont {
 	/** Sorts glyphs by height, tallest first. */
 	static private final Comparator heightComparator = new Comparator() {
 		public int compare (Object o1, Object o2) {
-			return ((Glyph)o1).getHeight() - ((Glyph)o2).getHeight();
+			return ((Glyph)o2).getHeight() - ((Glyph)o1).getHeight();
 		}
 	};
 
