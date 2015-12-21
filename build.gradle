@@ -205,6 +205,7 @@ project(":extensions:gdx-setup") {
 project(":extensions:gdx-tools") {
     dependencies {
         compile files("../../gdx/libs/gdx-natives.jar")
+        compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
         compile project(":backends:gdx-backend-lwjgl")
         compile project(":backends:gdx-backend-headless")
         compile project(":extensions:gdx-freetype")
