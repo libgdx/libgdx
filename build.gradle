@@ -207,6 +207,7 @@ project(":extensions:gdx-tools") {
         compile files("../../gdx/libs/gdx-natives.jar")
         compile project(":backends:gdx-backend-lwjgl")
         compile project(":backends:gdx-backend-headless")
+        compile project(":extensions:gdx-freetype")
         optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
