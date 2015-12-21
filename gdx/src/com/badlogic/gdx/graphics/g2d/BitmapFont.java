@@ -557,7 +557,7 @@ public class BitmapFont implements Disposable {
 					tokens.nextToken();
 					tokens.nextToken();
 					int ch = Integer.parseInt(tokens.nextToken());
-					if (ch == -1)
+					if (ch <= 0)
 						missingGlyph = glyph;
 					else if (ch <= Character.MAX_VALUE)
 						setGlyph(ch, glyph);
