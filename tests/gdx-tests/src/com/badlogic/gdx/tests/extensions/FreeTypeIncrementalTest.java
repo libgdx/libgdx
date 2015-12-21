@@ -50,26 +50,12 @@ public class FreeTypeIncrementalTest extends GdxTest {
 
 		FreeTypeFontGenerator.setMaxTextureSize(128);
 
-		// GZIP decode the font. When the font is inside a JAR it is already compressed and this is not needed.
-		FileHandleStream file = new FileHandleStream("data/cjsongeb.ttf.gz") {
-			public InputStream read () {
-				try {
-					return new GZIPInputStream(Gdx.files.internal("data/cjsongeb.ttf.gz").read(), 4096);
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
-
-			public long length () {
-				return 3275360;
-			}
-		};
-		generator = new FreeTypeFontGenerator(file);
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf"));
 
 		FreeTypeFontParameter param = new FreeTypeFontParameter();
 		param.incremental = true;
 		param.size = 24;
-		param.characters = "howdY";
+		param.characters = "howdY\u0000";
 
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData() {
 			public int getWrapIndex (Array<Glyph> glyphs, int start) {
