@@ -781,6 +781,10 @@ public class BitmapFont implements Disposable {
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 
+			// Guess at number of glyphs needed.
+			glyphs.ensureCapacity(end - start);
+			xAdvances.ensureCapacity(end - start + 1);
+
 			Glyph lastGlyph = null;
 			while (start < end) {
 				char ch = str.charAt(start++);
