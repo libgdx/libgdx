@@ -417,7 +417,7 @@
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>
-		<exclude name="utils/ScreenUtils.java"/> <!-- Reason: Type mismatch Buffer->ByteBuffer -->
+		<include name="utils/ScreenUtils.java"/>
 		<include name="utils/Select.java"/>
 		<include name="utils/SerializationException.java"/> <!-- Emulated: Reflection -->
 		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->

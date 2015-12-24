@@ -17,6 +17,8 @@
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DirectReadWriteByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.typedarrays.shared.Uint8ClampedArray;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -85,7 +88,7 @@ public class Pixmap implements Disposable {
 	Canvas canvas;
 	Context2d context;
 	int id;
-	IntBuffer buffer;
+	ByteBuffer buffer;
 	int r = 255, g = 255, b = 255;
 	float a;
 	String color = make(r, g, b, a);
@@ -125,9 +128,7 @@ public class Pixmap implements Disposable {
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
 		context.setGlobalCompositeOperation(getComposite());
-		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;
-		buffer.put(0, id);
 		pixmaps.put(id, this);
 	}
 
@@ -180,7 +181,11 @@ public class Pixmap implements Disposable {
 		return height;
 	}
 
-	public Buffer getPixels () {
+	public ByteBuffer getPixels () {
+		if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
+		if (buffer == null) {
+			buffer = new DirectReadWriteByteBuffer(((Uint8ClampedArray)pixels).buffer());
+		}
 		return buffer;
 	}
 

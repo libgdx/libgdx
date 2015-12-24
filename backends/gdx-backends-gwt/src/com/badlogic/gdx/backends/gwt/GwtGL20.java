@@ -460,21 +460,14 @@ public class GwtGL20 implements GL20 {
 		if (pixels == null) {
 			gl.texImage2D(target, level, internalformat, width, height, border, format, type, null);
 		} else {
-			if (pixels.limit() > 1) {
-				HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
+			HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
 
-				ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-				int remainingBytes = pixels.remaining() * 4;
+			ArrayBufferView webGLArray = arrayHolder.getTypedArray();
 
-				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+			Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer());
 
-				Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+			gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
 
-				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
-			} else {
-				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-				gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
-			}
 		}
 	}
 
@@ -486,21 +479,13 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-        if (pixels.limit() > 1) {
-            HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
+		HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
 
-            ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-            int remainingBytes = pixels.remaining() * 4;
+		ArrayBufferView webGLArray = arrayHolder.getTypedArray();
+		Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer());
 
-            int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+		gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
 
-            Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
-
-            gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
-        } else {
-            Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer) pixels).get(0));
-            gl.texSubImage2D(target, level, xoffset, yoffset, format, type, pixmap.getCanvasElement());
-        }
 	}
 
 	@Override
