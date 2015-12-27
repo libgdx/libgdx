@@ -22,35 +22,23 @@
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>3.0.0b</version>
+      <version>${lwjgl3.version}</version>
       <classifier>natives-windows</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>3.0.0b</version>
+      <version>${lwjgl3.version}</version>
       <classifier>natives-linux</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>3.0.0b</version>
+      <version>${lwjgl3.version}</version>
       <classifier>natives-osx</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>3.0.0b</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>3.0.0b</version>
-    </dependency>
+    </dependency>    
 
     <dependency>
       <groupId>com.badlogicgames.jlayer</groupId>

@@ -45,6 +45,7 @@
     <android.version>4.4</android.version>
     <gwt.version>2.6.1</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
+    <lwjgl3.version>3.0.0b</lwjgl3.version>
     <jglfw.version>1.1</jglfw.version>
     <robovm.version>1.9.0</robovm.version>
   </properties>
@@ -56,11 +57,12 @@
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
+    <module>backends/gdx-backend-lwjgl3</module>
     <module>backends/gdx-backend-jglfw</module>
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
     <module>extensions/gdx-tools</module>
-	<module>extensions/gdx-box2d</module>
+    <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
     <module>extensions/gdx-controllers</module>
