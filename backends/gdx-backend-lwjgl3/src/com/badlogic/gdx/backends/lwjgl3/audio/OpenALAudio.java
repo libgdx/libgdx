@@ -16,12 +16,32 @@
 
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
+import static org.lwjgl.openal.AL10.AL_BUFFER;
+import static org.lwjgl.openal.AL10.AL_NO_ERROR;
+import static org.lwjgl.openal.AL10.AL_ORIENTATION;
+import static org.lwjgl.openal.AL10.AL_PAUSED;
+import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.openal.AL10.AL_POSITION;
+import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
+import static org.lwjgl.openal.AL10.AL_STOPPED;
+import static org.lwjgl.openal.AL10.AL_VELOCITY;
+import static org.lwjgl.openal.AL10.alDeleteSources;
+import static org.lwjgl.openal.AL10.alGenSources;
+import static org.lwjgl.openal.AL10.alGetError;
+import static org.lwjgl.openal.AL10.alGetSourcei;
+import static org.lwjgl.openal.AL10.alListenerfv;
+import static org.lwjgl.openal.AL10.alSourcePause;
+import static org.lwjgl.openal.AL10.alSourcePlay;
+import static org.lwjgl.openal.AL10.alSourceStop;
+import static org.lwjgl.openal.AL10.alSourcei;
+
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALContext;
+import org.lwjgl.openal.ALDevice;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -34,8 +54,6 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALAudio implements Audio {
@@ -51,6 +69,8 @@ public class OpenALAudio implements Audio {
 	private int mostRecetSound = -1;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	ALDevice device;
+	ALContext context;
 	boolean noDevice = false;
 
 	public OpenALAudio () {
@@ -67,12 +87,16 @@ public class OpenALAudio implements Audio {
 		registerMusic("wav", Wav.Music.class);
 		registerSound("mp3", Mp3.Sound.class);
 		registerMusic("mp3", Mp3.Music.class);
-
-		try {
-			AL.create();
-		} catch (LWJGLException ex) {
+		
+		device = ALDevice.create(null);
+		if(device == null) {
+			noDevice = true;			
+			return;
+		}
+		context = ALContext.create(device);
+		if(context == null) {
+			device.destroy();
 			noDevice = true;
-			ex.printStackTrace();
 			return;
 		}
 
@@ -88,11 +112,11 @@ public class OpenALAudio implements Audio {
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
-		alListener(AL_ORIENTATION, orientation);
+		alListenerfv(AL_ORIENTATION, orientation);
 		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
-		alListener(AL_VELOCITY, velocity);
+		alListenerfv(AL_VELOCITY, velocity);
 		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
-		alListener(AL_POSITION, position);
+		alListenerfv(AL_POSITION, position);
 		
 		recentSounds = new OpenALSound[simultaneousSources];
 	}
@@ -290,13 +314,8 @@ public class OpenALAudio implements Audio {
 		sourceToSoundId.clear();
 		soundIdToSource.clear();
 
-		AL.destroy();
-		while (AL.isCreated()) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
-		}
+		context.destroy();
+		device.destroy();			
 	}
 
 	public AudioDevice newAudioDevice (int sampleRate, final boolean isMono) {
