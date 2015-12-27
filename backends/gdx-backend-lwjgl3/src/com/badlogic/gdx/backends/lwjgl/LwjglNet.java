@@ -16,19 +16,17 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import org.lwjgl.Sys;
+import java.awt.Desktop;
+import java.net.URI;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.net.NetJavaSocketImpl;
-import com.badlogic.gdx.net.NetJavaServerSocketImpl;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
  * @author acoppes */
@@ -63,7 +61,12 @@ public class LwjglNet implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		return Sys.openURL(URI);
+		try {
+			Desktop.getDesktop().browse(new URI(URI));
+			return true;
+		} catch (Throwable t) {
+			return false;
+		}
 	}
 
 }
