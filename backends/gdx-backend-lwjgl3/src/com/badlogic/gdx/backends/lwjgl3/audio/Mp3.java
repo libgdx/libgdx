@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl.audio;
+package com.badlogic.gdx.backends.lwjgl3.audio;
 
 import java.io.ByteArrayOutputStream;
 

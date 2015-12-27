@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -134,12 +134,12 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetQueryiv (int target, int pname, IntBuffer params) {
-		GL15.glGetQuery(target, pname, params);
+		GL15.glGetQueryiv(target, pname, params);
 	}
 
 	@Override
 	public void glGetQueryObjectuiv (int id, int pname, IntBuffer params) {
-		GL15.glGetQueryObjectu(id, pname, params);
+		GL15.glGetQueryObjectuiv(id, pname, params);
 	}
 
 	@Override
@@ -149,7 +149,9 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public Buffer glGetBufferPointerv (int target, int pname) {
-		return GL15.glGetBufferPointer(target, pname);
+		// FIXME
+		// return GL15.glGetBufferPointer(target, pname);
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
@@ -159,33 +161,33 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glUniformMatrix2x3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix2x3(location, transpose, value);
+		GL21.glUniformMatrix2x3fv(location, transpose, value);
 	}
 
 	@Override
 	public void glUniformMatrix3x2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix3x2(location, transpose, value);
+		GL21.glUniformMatrix3x2fv(location, transpose, value);
 	}
 
 	@Override
 	public void glUniformMatrix2x4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix2x4(location, transpose, value);
+		GL21.glUniformMatrix2x4fv(location, transpose, value);
 	}
 
 	@Override
 	public void glUniformMatrix4x2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix4x2(location, transpose, value);
+		GL21.glUniformMatrix4x2fv(location, transpose, value);
 	}
 
 	@Override
 	public void glUniformMatrix3x4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix3x4(location, transpose, value);
+		GL21.glUniformMatrix3x4fv(location, transpose, value);
 	}
 
 
 	@Override
 	public void glUniformMatrix4x3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL21.glUniformMatrix4x3(location, transpose, value);
+		GL21.glUniformMatrix4x3fv(location, transpose, value);
 	}
 
 	@Override
@@ -256,7 +258,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
-		GL30.glGetRenderbufferParameter(target, pname, params);
+		GL30.glGetRenderbufferParameteriv(target, pname, params);
 	}
 
 	@Override
@@ -365,12 +367,12 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetVertexAttribIiv (int index, int pname, IntBuffer params) {
-		GL30.glGetVertexAttribI(index, pname, params);
+		GL30.glGetVertexAttribIiv(index, pname, params);
 	}
 
 	@Override
 	public void glGetVertexAttribIuiv (int index, int pname, IntBuffer params) {
-		GL30.glGetVertexAttribIu(index, pname, params);
+		GL30.glGetVertexAttribIuiv(index, pname, params);
 	}
 
 	@Override
@@ -385,7 +387,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 	
 	@Override
 	public void glGetUniformuiv (int program, int location, IntBuffer params) {
-		GL30.glGetUniformu(program, location, params);
+		GL30.glGetUniformuiv(program, location, params);
 	}
 
 	@Override
@@ -395,32 +397,32 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glUniform1uiv (int location, int count, IntBuffer value) {
-		GL30.glUniform1u(location, value);
+		GL30.glUniform1uiv(location, value);
 	}
 
 	@Override
 	public void glUniform3uiv (int location, int count, IntBuffer value) {
-		GL30.glUniform3u(location, value);
+		GL30.glUniform3uiv(location, value);
 	}
 
 	@Override
 	public void glUniform4uiv (int location, int count, IntBuffer value) {
-		GL30.glUniform4u(location, value);
+		GL30.glUniform4uiv(location, value);
 	}
 
 	@Override
 	public void glClearBufferiv (int buffer, int drawbuffer, IntBuffer value) {
-		GL30.glClearBuffer(buffer, drawbuffer, value);
+		GL30.glClearBufferiv(buffer, drawbuffer, value);
 	}
 
 	@Override
 	public void glClearBufferuiv (int buffer, int drawbuffer, IntBuffer value) {
-		GL30.glClearBufferu(buffer, drawbuffer, value);
+		GL30.glClearBufferuiv(buffer, drawbuffer, value);
 	}
 
 	@Override
 	public void glClearBufferfv (int buffer, int drawbuffer, FloatBuffer value) {
-		GL30.glClearBuffer(buffer, drawbuffer, value);
+		GL30.glClearBufferfv(buffer, drawbuffer, value);
 	}
 
 	@Override
@@ -445,7 +447,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params) {
-		GL31.glGetActiveUniforms(program, uniformIndices, pname, params);
+		GL31.glGetActiveUniformsiv(program, uniformIndices, pname, params);
 	}
 
 	@Override
@@ -486,7 +488,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glGetInteger64v (int pname, LongBuffer params) {
-		GL32.glGetInteger64(pname, params);
+		GL32.glGetInteger64v(pname, params);
 	}
 
 	@Override
@@ -535,7 +537,7 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glSamplerParameteriv (int sampler, int pname, IntBuffer param) {
-		GL33.glSamplerParameter(sampler, pname, param);
+		GL33.glSamplerParameteriv(sampler, pname, param);
 	}
 
 	@Override
@@ -545,18 +547,17 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 
 	@Override
 	public void glSamplerParameterfv (int sampler, int pname, FloatBuffer param) {
-		GL33.glSamplerParameter(sampler, pname, param);
+		GL33.glSamplerParameterfv(sampler, pname, param);
 	}
 
 	@Override
 	public void glGetSamplerParameteriv (int sampler, int pname, IntBuffer params) {
-		GL33.glGetSamplerParameterI(sampler, pname, params);
+		GL33.glGetSamplerParameterIiv(sampler, pname, params);
 	}
 
 	@Override
 	public void glGetSamplerParameterfv (int sampler, int pname, FloatBuffer params) {
-		GL33.glGetSamplerParameter(sampler, pname, params);
-		
+		GL33.glGetSamplerParameterfv(sampler, pname, params);		
 	}
 
 	@Override

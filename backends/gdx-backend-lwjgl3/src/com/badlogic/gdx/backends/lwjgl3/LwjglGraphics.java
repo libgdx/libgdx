@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.lwjgl3;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;

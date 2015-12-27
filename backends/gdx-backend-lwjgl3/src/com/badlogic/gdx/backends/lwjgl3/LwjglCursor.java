@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;

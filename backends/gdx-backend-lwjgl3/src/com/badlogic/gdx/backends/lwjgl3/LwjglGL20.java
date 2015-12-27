@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -379,7 +379,7 @@ class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glGetBooleanv (int pname, Buffer params) {
-		GL11.glGetBoolean(pname, (ByteBuffer)params);
+		((ByteBuffer)params).put(GL11.glGetBoolean(pname)?(byte)1: (byte)0);
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {

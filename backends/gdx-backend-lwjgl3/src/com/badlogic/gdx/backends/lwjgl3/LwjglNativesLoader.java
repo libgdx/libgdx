@@ -14,17 +14,19 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.lwjgl3;
 
-import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import static com.badlogic.gdx.utils.SharedLibraryLoader.is64Bit;
+import static com.badlogic.gdx.utils.SharedLibraryLoader.isLinux;
+import static com.badlogic.gdx.utils.SharedLibraryLoader.isMac;
+import static com.badlogic.gdx.utils.SharedLibraryLoader.isWindows;
 
 import java.io.File;
 import java.lang.reflect.Method;
+
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public final class LwjglNativesLoader {
 	static public boolean load = true;
