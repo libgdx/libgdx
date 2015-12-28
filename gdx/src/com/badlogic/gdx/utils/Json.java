@@ -860,7 +860,6 @@ public class Json {
 		if (jsonData.isObject()) {
 			String className = typeName == null ? null : jsonData.getString(typeName, null);
 			if (className != null) {
-				jsonData.remove(typeName);
 				type = getClass(className);
 				if (type == null) {
 					try {
