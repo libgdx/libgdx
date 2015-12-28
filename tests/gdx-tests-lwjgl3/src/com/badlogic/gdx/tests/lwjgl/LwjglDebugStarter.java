@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl3.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl3.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -31,7 +31,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
 		GdxTest test = new FreeTypeMetricsTest();		
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
 //		config.height = 241;

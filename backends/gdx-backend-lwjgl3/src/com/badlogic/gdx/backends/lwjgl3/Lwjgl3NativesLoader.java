@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
-public final class LwjglNativesLoader {
+public final class Lwjgl3NativesLoader {
 	static public boolean load = true;
 
 	static {
@@ -55,14 +55,14 @@ public final class LwjglNativesLoader {
 		try {
 			if (isWindows) {
 				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio)
+				if (!Lwjgl3ApplicationConfiguration.disableAudio)
 					loader.extractFileTo(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir);
 			} else if (isMac) {
 				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFileTo("openal.dylib", nativesDir);
+				if (!Lwjgl3ApplicationConfiguration.disableAudio) loader.extractFileTo("openal.dylib", nativesDir);
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio)
+				if (!Lwjgl3ApplicationConfiguration.disableAudio)
 					loader.extractFileTo(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir);
 			}
 		} catch (Throwable ex) {

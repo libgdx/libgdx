@@ -28,7 +28,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
-public class LwjglApplicationConfiguration {
+public class Lwjgl3ApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
 	 * natives are not needed. */
 	static public boolean disableAudio;
@@ -59,15 +59,11 @@ public class LwjglApplicationConfiguration {
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/
-	public boolean fullscreen = false;
-	/** used to emulate screen densities **/
-	public int overrideDensity = -1;
+	public boolean fullscreen = false;	
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
 	public String title;
-	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
-	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
 	/** the maximum number of sources that can be played simultaneously */
@@ -77,10 +73,6 @@ public class LwjglApplicationConfiguration {
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
-	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
-	public int foregroundFPS = 60;
-	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
-	public int backgroundFPS = 60;
 	/** Allows software OpenGL rendering if hardware acceleration was not available.
 	 * @see LwjglGraphics#isSoftwareMode() */
 	public boolean allowSoftwareMode = false;
@@ -89,7 +81,7 @@ public class LwjglApplicationConfiguration {
 	/** Preferences file type on the desktop. Default is FileType.External */
 	public Files.FileType preferencesFileType = FileType.External;
 	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
-	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
+	// public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
 	/** enable HDPI mode on Mac OS X **/
 	public boolean useHDPI = false;
 

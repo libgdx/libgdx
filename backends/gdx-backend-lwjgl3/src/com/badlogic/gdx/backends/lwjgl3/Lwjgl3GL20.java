@@ -34,11 +34,7 @@ import org.lwjgl.opengl.GL20;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** An implementation of the {@link GL20} interface based on LWJGL. Note that LWJGL shaders and OpenGL ES shaders will not be 100%
- * compatible. Some glGetXXX methods are not implemented.
- * 
- * @author mzechner */
-class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
+class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	private ByteBuffer buffer = null;
 	private FloatBuffer floatBuffer = null;
 	private IntBuffer intBuffer = null;

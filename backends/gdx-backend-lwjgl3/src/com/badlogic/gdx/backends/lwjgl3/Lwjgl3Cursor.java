@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class LwjglCursor implements Cursor {
+public class Lwjgl3Cursor implements Cursor {
 	/** Revert to the default system cursor */
 	public static void resetCursor () {
 		try {
@@ -23,7 +23,7 @@ public class LwjglCursor implements Cursor {
 
 	private org.lwjgl.input.Cursor lwjglCursor = null;
 
-	public LwjglCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+	public Lwjgl3Cursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 
 		try {
 			if (pixmap == null) {

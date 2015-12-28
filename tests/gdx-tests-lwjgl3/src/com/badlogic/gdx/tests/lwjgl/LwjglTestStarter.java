@@ -36,9 +36,9 @@ import javax.swing.UIManager;
 
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl3.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl3.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.LwjglFiles;
-import com.badlogic.gdx.backends.lwjgl3.LwjglPreferences;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Files;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -67,7 +67,7 @@ public class LwjglTestStarter extends JFrame {
 		if (test == null) {
 			return false;
 		}
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
 		config.title = testName;
@@ -111,7 +111,7 @@ public class LwjglTestStarter extends JFrame {
 				}
 			});
 
-			final Preferences prefs = new LwjglPreferences(new FileHandle(new LwjglFiles().getExternalStoragePath()
+			final Preferences prefs = new Lwjgl3Preferences(new FileHandle(new Lwjgl3Files().getExternalStoragePath()
 				+ ".prefs/lwjgl-tests"));
 			list.setSelectedValue(prefs.getString("last", null), true);
 

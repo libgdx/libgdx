@@ -24,23 +24,23 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner
  * @author Nathan Sweet */
-public final class LwjglFileHandle extends FileHandle {
-	public LwjglFileHandle (String fileName, FileType type) {
+public final class Lwjgl3FileHandle extends FileHandle {
+	public Lwjgl3FileHandle (String fileName, FileType type) {
 		super(fileName, type);
 	}
 
-	public LwjglFileHandle (File file, FileType type) {
+	public Lwjgl3FileHandle (File file, FileType type) {
 		super(file, type);
 	}
 
 	public FileHandle child (String name) {
-		if (file.getPath().length() == 0) return new LwjglFileHandle(new File(name), type);
-		return new LwjglFileHandle(new File(file, name), type);
+		if (file.getPath().length() == 0) return new Lwjgl3FileHandle(new File(name), type);
+		return new Lwjgl3FileHandle(new File(file, name), type);
 	}
 
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
-		return new LwjglFileHandle(new File(file.getParent(), name), type);
+		return new Lwjgl3FileHandle(new File(file.getParent(), name), type);
 	}
 
 	public FileHandle parent () {
@@ -51,12 +51,12 @@ public final class LwjglFileHandle extends FileHandle {
 			else
 				parent = new File("");
 		}
-		return new LwjglFileHandle(parent, type);
+		return new Lwjgl3FileHandle(parent, type);
 	}
 
 	public File file () {
-		if (type == FileType.External) return new File(LwjglFiles.externalPath, file.getPath());
-		if (type == FileType.Local) return new File(LwjglFiles.localPath, file.getPath());
+		if (type == FileType.External) return new File(Lwjgl3Files.externalPath, file.getPath());
+		if (type == FileType.Local) return new File(Lwjgl3Files.localPath, file.getPath());
 		return file;
 	}
 }

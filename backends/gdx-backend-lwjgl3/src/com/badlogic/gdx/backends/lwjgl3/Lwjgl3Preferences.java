@@ -32,16 +32,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-public class LwjglPreferences implements Preferences {
+public class Lwjgl3Preferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
-	public LwjglPreferences (String name, String directory) {
-		this(new LwjglFileHandle(new File(directory, name), FileType.External));
+	public Lwjgl3Preferences (String name, String directory) {
+		this(new Lwjgl3FileHandle(new File(directory, name), FileType.External));
 	}
 
-	public LwjglPreferences (FileHandle file) {
+	public Lwjgl3Preferences (FileHandle file) {
 		this.name = file.name();
 		this.file = file;
 		if (!file.exists()) return;

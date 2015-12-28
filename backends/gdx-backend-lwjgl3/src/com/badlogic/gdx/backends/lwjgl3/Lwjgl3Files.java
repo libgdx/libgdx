@@ -23,38 +23,38 @@ import com.badlogic.gdx.files.FileHandle;
 
 /** @author mzechner
  * @author Nathan Sweet */
-public final class LwjglFiles implements Files {
+public final class Lwjgl3Files implements Files {
 	static public final String externalPath = System.getProperty("user.home") + File.separator;
 	static public final String localPath = new File("").getAbsolutePath() + File.separator;
 	
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
-		return new LwjglFileHandle(fileName, type);
+		return new Lwjgl3FileHandle(fileName, type);
 	}
 
 	@Override
 	public FileHandle classpath (String path) {
-		return new LwjglFileHandle(path, FileType.Classpath);
+		return new Lwjgl3FileHandle(path, FileType.Classpath);
 	}
 
 	@Override
 	public FileHandle internal (String path) {
-		return new LwjglFileHandle(path, FileType.Internal);
+		return new Lwjgl3FileHandle(path, FileType.Internal);
 	}
 
 	@Override
 	public FileHandle external (String path) {
-		return new LwjglFileHandle(path, FileType.External);
+		return new Lwjgl3FileHandle(path, FileType.External);
 	}
 
 	@Override
 	public FileHandle absolute (String path) {
-		return new LwjglFileHandle(path, FileType.Absolute);
+		return new Lwjgl3FileHandle(path, FileType.Absolute);
 	}
 
 	@Override
 	public FileHandle local (String path) {
-		return new LwjglFileHandle(path, FileType.Local);
+		return new Lwjgl3FileHandle(path, FileType.Local);
 	}
 
 	@Override

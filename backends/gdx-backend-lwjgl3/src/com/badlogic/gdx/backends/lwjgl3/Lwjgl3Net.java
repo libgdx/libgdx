@@ -30,7 +30,7 @@ import com.badlogic.gdx.net.SocketHints;
 
 /** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
  * @author acoppes */
-public class LwjglNet implements Net {
+public class Lwjgl3Net implements Net {
 
 	NetJavaImpl netJavaImpl = new NetJavaImpl();
 
