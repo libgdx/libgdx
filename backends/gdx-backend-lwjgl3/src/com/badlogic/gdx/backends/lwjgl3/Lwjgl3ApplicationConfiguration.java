@@ -73,9 +73,6 @@ public class Lwjgl3ApplicationConfiguration {
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
-	/** Allows software OpenGL rendering if hardware acceleration was not available.
-	 * @see LwjglGraphics#isSoftwareMode() */
-	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
 	/** Preferences file type on the desktop. Default is FileType.External */
