@@ -29,6 +29,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -163,9 +164,8 @@ public class SuperKoalio extends GdxTest {
 		koala.velocity.add(0, GRAVITY);
 
 		// clamp the velocity to the maximum, x-axis only
-		if (Math.abs(koala.velocity.x) > Koala.MAX_VELOCITY) {
-			koala.velocity.x = Math.signum(koala.velocity.x) * Koala.MAX_VELOCITY;
-		}
+		koala.velocity.x = MathUtils.clamp(koala.velocity.x,
+				-Koala.MAX_VELOCITY, Koala.MAX_VELOCITY);
 
 		// If the velocity is < 1, set it to 0 and set state to Standing
 		if (Math.abs(koala.velocity.x) < 1) {
