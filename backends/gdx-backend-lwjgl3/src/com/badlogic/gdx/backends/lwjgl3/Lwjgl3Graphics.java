@@ -30,7 +30,7 @@ public class Lwjgl3Graphics implements Graphics {
 	
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
-		public void invoke(long windowHandle, int width, int height) {
+		public void invoke(long windowHandle, final int width, final int height) {
 			window.postRunnable(new Runnable() {
 				@Override
 				public void run() {					

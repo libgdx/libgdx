@@ -19,6 +19,12 @@
       <version>${project.version}</version>
     </dependency>
     
+  <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>      
+    </dependency>
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>

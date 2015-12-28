@@ -38,7 +38,6 @@ import static org.lwjgl.openal.AL10.alSourcei;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALContext;
 import org.lwjgl.openal.ALDevice;
