@@ -135,8 +135,6 @@ public class SuperKoalio extends GdxTest {
 		renderKoala(deltaTime);
 	}
 
-	private Vector2 tmp = new Vector2();
-
 	private void updateKoala (float deltaTime) {
 		if (deltaTime == 0) return;
 		koala.stateTime += deltaTime;
