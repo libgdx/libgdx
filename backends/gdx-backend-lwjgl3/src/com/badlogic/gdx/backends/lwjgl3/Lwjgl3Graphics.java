@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
@@ -31,14 +32,12 @@ public class Lwjgl3Graphics implements Graphics {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke(long windowHandle, final int width, final int height) {
-			window.postRunnable(new Runnable() {
-				@Override
-				public void run() {					
-					window.getListener().resize(width, height);
-				}
-			});			
+			GLFW.glfwMakeContextCurrent(windowHandle);
+			window.getListener().resize(width, height);
+			window.getListener().render();
+			GLFW.glfwSwapBuffers(windowHandle);			
 		}
-	};		
+	};
 	
 	public Lwjgl3Graphics(Lwjgl3Window window) {
 		this.window = window;
