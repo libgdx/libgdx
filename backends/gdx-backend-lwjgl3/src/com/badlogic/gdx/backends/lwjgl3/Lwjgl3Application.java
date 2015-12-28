@@ -108,6 +108,9 @@ public class Lwjgl3Application implements Application {
 	private void loop() {
 		while (running && windows.size > 0) {
 			Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
+			if(audio instanceof OpenALAudio) {
+				((OpenALAudio)audio).update();
+			}
 			for (Lwjgl3Window window : windows.values()) {
 				Gdx.graphics = window.getGraphics();
 				Gdx.gl = window.getGraphics().getGL30() != null ? window.getGraphics().getGL30()

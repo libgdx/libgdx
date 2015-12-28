@@ -51,7 +51,7 @@ class Lwjgl3Window implements Disposable {
 	
 	public void update(Array<LifecycleListener> lifecycleListeners) {
 		if(listenerInitialized == false) {
-			listener.create();
+			listener.create();			
 			listener.resize(graphics.getWidth(), graphics.getHeight());
 			listenerInitialized = true;
 		}

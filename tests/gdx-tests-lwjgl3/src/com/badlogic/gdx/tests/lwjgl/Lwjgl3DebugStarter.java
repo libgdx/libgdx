@@ -22,17 +22,20 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
+import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) {	
-		GdxTest test = new UITest();
-		DisplayMode mode = Lwjgl3ApplicationConfiguration.getDesktopDisplayMode();		
+		GdxTest test = new MusicTest();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setFromDisplayMode(mode);
+		config.width = 900;
+		config.height = 600;
+		config.vSyncEnabled = false;
 		new Lwjgl3Application(test, config);
 	}
 }
