@@ -16,11 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import static com.badlogic.gdx.utils.SharedLibraryLoader.is64Bit;
-import static com.badlogic.gdx.utils.SharedLibraryLoader.isLinux;
-import static com.badlogic.gdx.utils.SharedLibraryLoader.isMac;
-import static com.badlogic.gdx.utils.SharedLibraryLoader.isWindows;
-
 import java.io.File;
 import java.lang.reflect.Method;
 
@@ -53,17 +48,21 @@ public final class Lwjgl3NativesLoader {
 		SharedLibraryLoader loader = new SharedLibraryLoader();
 		File nativesDir = null;
 		try {
-			if (isWindows) {
-				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
-				if (!Lwjgl3ApplicationConfiguration.disableAudio)
-					loader.extractFileTo(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir);
-			} else if (isMac) {
+			if (SharedLibraryLoader.isWindows) {
+				nativesDir = loader.extractFile(SharedLibraryLoader.is64Bit ? "lwjgl.dll" : "lwjgl32.dll", null).getParentFile();
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "glfw.dll" : "glfw32.dll", nativesDir.getName());
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "jemalloc.dll" : "jemalloc32.dll", nativesDir.getName());				
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "OpenAL.dll" : "OpenAL32.dll", nativesDir.getName());				
+			} else if (SharedLibraryLoader.isMac) {
 				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
-				if (!Lwjgl3ApplicationConfiguration.disableAudio) loader.extractFileTo("openal.dylib", nativesDir);
-			} else if (isLinux) {
-				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
-				if (!Lwjgl3ApplicationConfiguration.disableAudio)
-					loader.extractFileTo(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir);
+				loader.extractFile("libglfw.dylib", nativesDir.getName());
+				loader.extractFile("libjemalloc.dylib", nativesDir.getName());
+				loader.extractFile("libopenal.dylib", nativesDir.getName());
+			} else if (SharedLibraryLoader.isLinux) {
+				nativesDir = loader.extractFile(SharedLibraryLoader.is64Bit ? "liblwjgl.so" : "liblwjgl32.so", null).getParentFile();				
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "libglfw.so" : "libglfw32.so", nativesDir.getName());
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "libjemalloc.so" : "libjemalloc32.so", nativesDir.getName());				
+				loader.extractFile(SharedLibraryLoader.is64Bit ? "libopenal.so" : "libopenal32.so", nativesDir.getName());
 			}
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Unable to extract LWJGL natives.", ex);
