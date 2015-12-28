@@ -65,6 +65,7 @@ public class Lwjgl3Application implements Application {
 	private volatile boolean running = true;
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	@SuppressWarnings("unused")
 	private GLFWErrorCallback errorCallback;
 
 	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {

@@ -82,8 +82,8 @@ public class Lwjgl3ApplicationConfiguration {
 	/** enable HDPI mode on Mac OS X **/
 	public boolean useHDPI = false;
 
-	Array<String> iconPaths = new Array();
-	Array<FileType> iconFileTypes = new Array();
+	Array<String> iconPaths = new Array<String>();
+	Array<FileType> iconFileTypes = new Array<FileType>();
 
 	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
 	 * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */
@@ -138,7 +138,6 @@ public class Lwjgl3ApplicationConfiguration {
 		java.awt.DisplayMode desktopMode = device.getDisplayMode();
 		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
 		ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
-		int idx = 0;
 		for (java.awt.DisplayMode mode : displayModes) {
 			boolean duplicate = false;
 			for (int i = 0; i < modes.size(); i++) {
