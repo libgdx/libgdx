@@ -16,17 +16,23 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.tests.BulletTestCollection;
+import com.badlogic.gdx.tests.DeltaTimeTest;
+import com.badlogic.gdx.tests.LifeCycleTest;
+import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class LwjglDebugStarter {
-	public static void main (String[] argv) {		
-		GdxTest test = new GdxTest() {};		
+public class Lwjgl3DebugStarter {
+	public static void main (String[] argv) {	
+		GdxTest test = new UITest();
+		DisplayMode mode = Lwjgl3ApplicationConfiguration.getDesktopDisplayMode();		
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.r = config.g = config.b = config.a = 8;
-		config.width = 960;
-		config.height = 600;
+		config.setFromDisplayMode(mode);
 		new Lwjgl3Application(test, config);
 	}
 }
