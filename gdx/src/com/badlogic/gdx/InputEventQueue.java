@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 /** Queues events that are later passed to the wrapped {@link InputProcessor}.
  * @author Nathan Sweet */
-public class InputProcessorQueue implements InputProcessor {
+public class InputEventQueue implements InputProcessor {
 	static private final int KEY_DOWN = 0;
 	static private final int KEY_UP = 1;
 	static private final int KEY_TYPED = 2;
@@ -36,10 +36,10 @@ public class InputProcessorQueue implements InputProcessor {
 	private final IntArray processingQueue = new IntArray();
 	private long currentEventTime;
 
-	public InputProcessorQueue () {
+	public InputEventQueue () {
 	}
 
-	public InputProcessorQueue (InputProcessor processor) {
+	public InputEventQueue (InputProcessor processor) {
 		this.processor = processor;
 	}
 

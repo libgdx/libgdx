@@ -24,6 +24,7 @@ import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) {	
-		GdxTest test = new MusicTest();
+		GdxTest test = new UITest();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 900;
 		config.height = 600;
