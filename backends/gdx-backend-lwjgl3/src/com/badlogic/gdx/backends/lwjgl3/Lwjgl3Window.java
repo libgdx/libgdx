@@ -51,9 +51,7 @@ class Lwjgl3Window implements Disposable {
 	
 	public void update(Array<LifecycleListener> lifecycleListeners) {
 		if(listenerInitialized == false) {
-			listener.create();			
-			listener.resize(graphics.getWidth(), graphics.getHeight());
-			listenerInitialized = true;
+			initializeListener();
 		}
 		synchronized(runnables) {
 			for(Runnable runnable: runnables) {
@@ -85,6 +83,18 @@ class Lwjgl3Window implements Disposable {
 	public void postRunnable(Runnable runnable) {
 		synchronized(runnables) {
 			runnables.add(runnable);
+		}
+	}
+
+	public boolean isListenerInitialized() {
+		return listenerInitialized;		
+	}
+
+	public void initializeListener() {
+		if(!listenerInitialized) {
+			listener.create();			
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+			listenerInitialized = true;		
 		}
 	}
 }

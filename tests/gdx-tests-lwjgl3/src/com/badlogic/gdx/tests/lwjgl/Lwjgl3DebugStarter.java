@@ -19,6 +19,8 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
@@ -27,12 +29,15 @@ import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
+import com.badlogic.gdx.tests.g3d.Animation3DTest;
+import com.badlogic.gdx.tests.g3d.BaseG3dHudTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) {	
-		GdxTest test = new UITest();
+		GdxTest test = new Animation3DTest();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 900;
 		config.height = 600;
