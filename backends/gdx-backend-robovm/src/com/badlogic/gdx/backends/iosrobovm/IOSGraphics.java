@@ -355,6 +355,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public int getHeight () {
 		return height;
 	}
+	
+	@Override
+	public int getFramebufferWidth() {
+		return width;
+	}
+
+	@Override
+	public int getFramebufferHeight() {
+		return height;
+	}
 
 	@Override
 	public float getDeltaTime () {

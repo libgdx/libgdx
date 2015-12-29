@@ -57,6 +57,16 @@ public class MockGraphics implements Graphics {
 	public int getHeight() {
 		return 0;
 	}
+	
+	@Override
+	public int getFramebufferWidth() {
+		return 0;
+	}
+
+	@Override
+	public int getFramebufferHeight() {
+		return 0;
+	}
 
 	@Override
 	public long getFrameId() {
@@ -198,5 +208,4 @@ public class MockGraphics implements Graphics {
 	@Override
 	public void setCursor (Cursor cursor) {
 	}
-
 }

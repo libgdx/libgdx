@@ -95,6 +95,16 @@ public class LwjglGraphics implements Graphics {
 		else
 			return (int)(Display.getWidth() * Display.getPixelScaleFactor());
 	}
+	
+	@Override
+	public int getFramebufferWidth () {
+		return getWidth();
+	}
+
+	@Override
+	public int getFramebufferHeight () {
+		return getHeight();
+	}
 
 	public boolean isGL20Available () {
 		return gl20 != null;

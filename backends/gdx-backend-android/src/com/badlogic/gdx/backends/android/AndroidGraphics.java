@@ -213,6 +213,16 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public int getWidth () {
 		return width;
 	}
+	
+	@Override
+	public int getFramebufferWidth () {
+		return width;
+	}
+
+	@Override
+	public int getFramebufferHeight () {
+		return height;
+	}
 
 	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
 	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the

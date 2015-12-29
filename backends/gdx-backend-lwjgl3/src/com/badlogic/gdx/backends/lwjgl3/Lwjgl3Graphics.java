@@ -105,6 +105,16 @@ public class Lwjgl3Graphics implements Graphics {
 	public int getHeight() {
 		return height;
 	}
+	
+	@Override
+	public int getFramebufferWidth() {
+		return width;
+	}
+
+	@Override
+	public int getFramebufferHeight() {
+		return height;
+	}
 
 	@Override
 	public long getFrameId() {
