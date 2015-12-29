@@ -38,7 +38,7 @@ public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 		return buf;
 	}
 
-	DirectReadWriteByteBuffer (ArrayBuffer backingArray) {
+	public DirectReadWriteByteBuffer (ArrayBuffer backingArray) {
 		super(backingArray);
 	}
 
@@ -98,7 +98,7 @@ public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 	}
 
 	protected boolean protectedHasArray () {
-		return true;
+		return false;
 	}
 
 	public ByteBuffer put (byte b) {

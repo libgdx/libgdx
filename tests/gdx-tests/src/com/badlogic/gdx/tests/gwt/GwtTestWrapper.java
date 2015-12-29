@@ -60,6 +60,7 @@ import com.badlogic.gdx.tests.DecalTest;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
+import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GLProfilerErrorTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
@@ -104,6 +105,7 @@ import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -524,6 +526,10 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
+				return new FramebufferToTextureTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
 				return new GestureDetectorTest();
 			}
 		}, new Instancer() {
@@ -537,6 +543,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GroupFadeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new HeightMapTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

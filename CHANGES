@@ -4,6 +4,7 @@
 - Higher quality FreeType font rendering.
 - Hiero updated to v5, now with FreeType support and other new features!
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
+- Pixmap.getPixels() in the GWT emulation now returns a real ByteBuffer, not an faked IntBuffer!
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
