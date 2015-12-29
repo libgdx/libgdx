@@ -33,7 +33,7 @@ public class Lwjgl3Input implements Input {
 	private final Lwjgl3Window window;
 	private InputProcessor inputProcessor;
 	private final InputEventQueue eventQueue = new InputEventQueue();
-	
+		
 	private int mouseX, mouseY;
 	private int mousePressed;
 	private int deltaX, deltaY;
@@ -94,12 +94,15 @@ public class Lwjgl3Input implements Input {
 	};
 	
 	private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
+		private int logicalMouseY;
+		private int logicalMouseX;
+
 		@Override
 		public void invoke(long windowHandle, double x, double y) {
-			deltaX = (int)x - mouseX;
-			deltaY = (int)y - mouseY;
-			mouseX = (int)x;
-			mouseY = (int)y;
+			deltaX = (int)x - logicalMouseX;
+			deltaY = (int)y - logicalMouseY;
+			mouseX = logicalMouseX = (int)x;
+			mouseY = logicalMouseY = (int)y;
 			
 			if(window.getConfig().useHDPI) {
 				float xScale = window.getGraphics().getBackBufferWidth() / (float)window.getGraphics().getLogicalWidth();
@@ -161,9 +164,7 @@ public class Lwjgl3Input implements Input {
 		glfwSetMouseButtonCallback(window.getWindowHandle(), mouseButtonCallback);
 	}	
 	
-	public void update() {
-		deltaX = 0;
-		deltaY = 0;
+	public void update() {		
 		justTouched = false;
 		
 		if (keyJustPressed) {
@@ -174,6 +175,8 @@ public class Lwjgl3Input implements Input {
 		}		
 		eventQueue.setProcessor(inputProcessor);
 		eventQueue.drain();
+		deltaX = 0;
+		deltaY = 0;
 	}	
 
 	@Override

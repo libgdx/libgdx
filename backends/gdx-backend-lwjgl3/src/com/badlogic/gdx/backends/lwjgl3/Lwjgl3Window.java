@@ -75,10 +75,10 @@ class Lwjgl3Window implements Disposable {
 			}
 			runnables.clear();
 		}
-		graphics.update();
-		input.update();
+		graphics.update();		
 		listener.render();
 		glfwSwapBuffers(windowHandle);
+		input.update();
 		glfwPollEvents();
 	}
 	
