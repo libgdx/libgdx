@@ -4,6 +4,7 @@
 - Higher quality FreeType font rendering.
 - Hiero updated to v5, now with FreeType support and other new features!
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
+- Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
