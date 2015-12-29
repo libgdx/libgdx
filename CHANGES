@@ -6,6 +6,14 @@
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
 - Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info.
 - Added Graphics#getFramebufferWidth and Graphics#getFramebufferHeight for HDPI handling
+- !IMPORTANT! Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
+please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
+using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics.getWidth/getHeight
+is in logical coordinates as dictated by the operating system, usually half the HDPI resolution. 
+The OpenGL drawing surface works in backbuffer coordinates at the full HDPI resolution. If you
+pass logical coordinates to glViewport and glScissor, you only affect a quarter of the real
+backbuffer size. Use HdpiUtils instead, it will do the right thing, while letting you continue
+to work in logical (aka returned by Gdx.graphics.getWidth/getHeight) coordinates.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
