@@ -120,10 +120,10 @@ public interface Graphics {
 	public int getHeight ();
 
 	/** @return the width of the framebuffer in physical pixels */
-	public int getFrameBufferWidth ();
+	public int getBackBufferWidth ();
 	
 	/** @return the height of the framebuffer in physical pixels */
-	public int getFrameBufferHeight ();
+	public int getBackBufferHeight ();
 
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of

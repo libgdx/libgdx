@@ -83,12 +83,12 @@ public class GwtGraphics implements Graphics {
 	}
 	
 	@Override
-	public int getFrameBufferWidth () {
+	public int getBackBufferWidth () {
 		return canvas.getWidth();
 	}
 
 	@Override
-	public int getFrameBufferHeight () {
+	public int getBackBufferHeight () {
 		return canvas.getHeight();
 	}
 

@@ -197,12 +197,12 @@ public class JglfwGraphics implements Graphics {
 	}
 	
 	@Override
-	public int getFrameBufferWidth () {
+	public int getBackBufferWidth () {
 		return width;
 	}
 
 	@Override
-	public int getFrameBufferHeight () {
+	public int getBackBufferHeight () {
 		return height;
 	}
 

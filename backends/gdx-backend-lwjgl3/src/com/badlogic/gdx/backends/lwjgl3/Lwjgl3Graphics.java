@@ -136,12 +136,12 @@ public class Lwjgl3Graphics implements Graphics {
 	}
 	
 	@Override
-	public int getFrameBufferWidth() {
+	public int getBackBufferWidth() {
 		return frameBufferWidth;
 	}
 
 	@Override
-	public int getFrameBufferHeight() {
+	public int getBackBufferHeight() {
 		return frameBufferHeight;
 	}
 	

@@ -102,8 +102,8 @@ public class Lwjgl3Input implements Input {
 			mouseY = (int)y;
 			
 			if(window.getConfig().useHDPI) {
-				float xScale = window.getGraphics().getFrameBufferWidth() / (float)window.getGraphics().getLogicalWidth();
-				float yScale = window.getGraphics().getFrameBufferHeight() / (float)window.getGraphics().getLogicalHeight();				
+				float xScale = window.getGraphics().getBackBufferWidth() / (float)window.getGraphics().getLogicalWidth();
+				float yScale = window.getGraphics().getBackBufferHeight() / (float)window.getGraphics().getLogicalHeight();				
 				deltaX = (int)(deltaX * xScale);
 				deltaY = (int)(deltaY * yScale);
 				mouseX = (int)(mouseX * xScale);
@@ -294,8 +294,8 @@ public class Lwjgl3Input implements Input {
 	@Override
 	public void setCursorPosition(int x, int y) {
 		if(window.getConfig().useHDPI) {
-			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getFrameBufferWidth();
-			float yScale = window.getGraphics().getLogicalHeight() / (float)window.getGraphics().getFrameBufferHeight();
+			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getBackBufferWidth();
+			float yScale = window.getGraphics().getLogicalHeight() / (float)window.getGraphics().getBackBufferHeight();
 			x = (int)(x * xScale);
 			y = (int)(y * yScale);
 		}

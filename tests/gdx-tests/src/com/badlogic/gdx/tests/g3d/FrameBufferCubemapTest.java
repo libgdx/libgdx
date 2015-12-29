@@ -67,7 +67,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 	}
 	
 	public void renderScene() {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		
 		// Render scene to screen

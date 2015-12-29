@@ -61,7 +61,7 @@ public class FullscreenTest extends GdxTest {
 			if (fullscreen) {
 				Gdx.graphics.setDisplayMode(480, 320, false);
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				fullscreen = false;
 			} else {
 				DisplayMode m = null;
@@ -77,7 +77,7 @@ public class FullscreenTest extends GdxTest {
 				
 				Gdx.graphics.setDisplayMode(m);
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				fullscreen = true;
 			}
 		}

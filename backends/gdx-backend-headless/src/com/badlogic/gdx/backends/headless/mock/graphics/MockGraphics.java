@@ -59,12 +59,12 @@ public class MockGraphics implements Graphics {
 	}
 	
 	@Override
-	public int getFrameBufferWidth() {
+	public int getBackBufferWidth() {
 		return 0;
 	}
 
 	@Override
-	public int getFrameBufferHeight() {
+	public int getBackBufferHeight() {
 		return 0;
 	}
 
