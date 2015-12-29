@@ -215,12 +215,12 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 	
 	@Override
-	public int getFramebufferWidth () {
+	public int getFrameBufferWidth () {
 		return width;
 	}
 
 	@Override
-	public int getFramebufferHeight () {
+	public int getFrameBufferHeight () {
 		return height;
 	}
 

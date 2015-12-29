@@ -24,8 +24,8 @@ class Lwjgl3Window implements Disposable {
 		this.windowHandle = windowHandle;
 		this.listener = listener;
 		this.config = config;
-		this.graphics = new Lwjgl3Graphics(this);
-		this.input = new Lwjgl3Input(this);		
+		this.input = new Lwjgl3Input(this);
+		this.graphics = new Lwjgl3Graphics(this);		
 	}
 
 	public ApplicationListener getListener() {

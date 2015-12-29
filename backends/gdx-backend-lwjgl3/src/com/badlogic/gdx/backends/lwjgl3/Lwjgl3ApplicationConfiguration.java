@@ -20,6 +20,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWVidMode.Buffer;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -29,23 +33,42 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3ApplicationConfiguration {
-	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
-	 * natives are not needed. */
+	/**
+	 * If true, OpenAL will not be used. This means
+	 * {@link Application#getAudio()} returns null and the gdx-openal.jar and
+	 * OpenAL natives are not needed.
+	 */
 	static public boolean disableAudio;
 
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;
-	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version is
-	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when
-	 * {@link #useGL30} is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a
-	 * lower value might cause some features not to function properly. OSX requires 3.2 though.
-	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	/**
+	 * The OpenGL context major version (the part in front of the decimal point)
+	 * used to emulate OpenGL ES 3.0, when the version is not supported it will
+	 * fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2).
+	 * Only used when {@link #useGL30} is true. OpenGL is fully compatible with
+	 * OpenGL ES 3.0 since version 4.3, setting the context version to a lower
+	 * value might cause some features not to function properly. OSX requires
+	 * 3.2 though.
+	 * 
+	 * @see <a href=
+	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
+	 *      LWJGL OSX ContextAttribs note</a>
+	 */
 	public int gles30ContextMajorVersion = 3;
-	/** The OpenGL context major version (the part after the decimal point) used to emulate OpenGL ES 3.0, when the version is not
-	 * supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when {@link #useGL30}
-	 * is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a lower value might
-	 * cause some features not to function properly. OSX requires 3.2 though.
-	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	/**
+	 * The OpenGL context major version (the part after the decimal point) used
+	 * to emulate OpenGL ES 3.0, when the version is not supported it will fall
+	 * back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only
+	 * used when {@link #useGL30} is true. OpenGL is fully compatible with
+	 * OpenGL ES 3.0 since version 4.3, setting the context version to a lower
+	 * value might cause some features not to function properly. OSX requires
+	 * 3.2 though.
+	 * 
+	 * @see <a href=
+	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
+	 *      LWJGL OSX ContextAttribs note</a>
+	 */
 	public int gles30ContextMinorVersion = 2;
 
 	/** number of bits per color channel **/
@@ -59,8 +82,11 @@ public class Lwjgl3ApplicationConfiguration {
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/
-	public boolean fullscreen = false;	
-	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
+	public boolean fullscreen = false;
+	/**
+	 * whether to enable vsync, can be changed at runtime via
+	 * {@link Graphics#setVSync(boolean)}
+	 **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
 	public String title;
@@ -77,24 +103,39 @@ public class Lwjgl3ApplicationConfiguration {
 	public String preferencesDirectory = ".prefs/";
 	/** Preferences file type on the desktop. Default is FileType.External */
 	public Files.FileType preferencesFileType = FileType.External;
-	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
+	/**
+	 * Callback used when trying to create a display, can handle failures,
+	 * default value is null (disabled)
+	 */
 	// public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
-	/** enable HDPI mode on Mac OS X **/
+	/**
+	 * Enable HDPI mode. {@link Graphics#getWidth()} and
+	 * {@link Graphics#getHeight()} will report the physical pixel size instead
+	 * of the logical pixel size. Mouse coordinates will also be given in
+	 * physical pixels instead of logical pixels.
+	 */
 	public boolean useHDPI = false;
 
 	Array<String> iconPaths = new Array<String>();
 	Array<FileType> iconFileTypes = new Array<FileType>();
 
-	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
-	 * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */
-	public void addIcon (String path, FileType fileType) {
+	/**
+	 * Adds a window icon. Icons are tried in the order added, the first one
+	 * that works is used. Typically three icons should be provided: 128x128
+	 * (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows).
+	 */
+	public void addIcon(String path, FileType fileType) {
 		iconPaths.add(path);
 		iconFileTypes.add(fileType);
 	}
 
-	/** Sets the r, g, b and a bits per channel based on the given {@link DisplayMode} and sets the fullscreen flag to true.
-	 * @param mode */
-	public void setFromDisplayMode (DisplayMode mode) {
+	/**
+	 * Sets the r, g, b and a bits per channel based on the given
+	 * {@link DisplayMode} and sets the fullscreen flag to true.
+	 * 
+	 * @param mode
+	 */
+	public void setFromDisplayMode(DisplayMode mode) {
 		this.width = mode.width;
 		this.height = mode.height;
 		if (mode.bitsPerPixel == 16) {
@@ -107,7 +148,7 @@ public class Lwjgl3ApplicationConfiguration {
 			this.r = 8;
 			this.g = 8;
 			this.b = 8;
-			this.a = 0;
+			this.a = 8;
 		}
 		if (mode.bitsPerPixel == 32) {
 			this.r = 8;
@@ -118,41 +159,22 @@ public class Lwjgl3ApplicationConfiguration {
 		this.fullscreen = true;
 	}
 
-	protected static class LwjglApplicationConfigurationDisplayMode extends DisplayMode {
-		protected LwjglApplicationConfigurationDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-		}
+	public static DisplayMode getDesktopDisplayMode() {
+		Lwjgl3Application.initializeGlfw();
+		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		return new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(), videoMode.refreshRate(),
+				videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 	}
 
-	public static DisplayMode getDesktopDisplayMode () {
-		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = genv.getDefaultScreenDevice();
-		java.awt.DisplayMode mode = device.getDisplayMode();
-		return new LwjglApplicationConfigurationDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(),
-			mode.getBitDepth());
-	}
-
-	public static DisplayMode[] getDisplayModes () {
-		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = genv.getDefaultScreenDevice();
-		java.awt.DisplayMode desktopMode = device.getDisplayMode();
-		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
-		ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
-		for (java.awt.DisplayMode mode : displayModes) {
-			boolean duplicate = false;
-			for (int i = 0; i < modes.size(); i++) {
-				if (modes.get(i).width == mode.getWidth() && modes.get(i).height == mode.getHeight()
-					&& modes.get(i).bitsPerPixel == mode.getBitDepth()) {
-					duplicate = true;
-					break;
-				}
-			}
-			if (duplicate) continue;
-			if (mode.getBitDepth() != desktopMode.getBitDepth()) continue;
-			modes.add(new LwjglApplicationConfigurationDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode
-				.getBitDepth()));
+	public static DisplayMode[] getDisplayModes() {
+		Lwjgl3Application.initializeGlfw();
+		Buffer videoModes = GLFW.glfwGetVideoModes(GLFW.glfwGetPrimaryMonitor());
+		DisplayMode[] result = new DisplayMode[videoModes.limit()];
+		for (int i = 0; i < result.length; i++) {
+			GLFWVidMode videoMode = videoModes.get(i);
+			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(),
+					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 		}
-
-		return modes.toArray(new DisplayMode[modes.size()]);
+		return result;
 	}
 }

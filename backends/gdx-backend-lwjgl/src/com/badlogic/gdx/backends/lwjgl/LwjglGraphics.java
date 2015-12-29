@@ -97,12 +97,12 @@ public class LwjglGraphics implements Graphics {
 	}
 	
 	@Override
-	public int getFramebufferWidth () {
+	public int getFrameBufferWidth () {
 		return getWidth();
 	}
 
 	@Override
-	public int getFramebufferHeight () {
+	public int getFrameBufferHeight () {
 		return getHeight();
 	}
 

@@ -19,7 +19,6 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -66,10 +65,20 @@ public class Lwjgl3Application implements Application {
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	@SuppressWarnings("unused")
-	private GLFWErrorCallback errorCallback;
+	private static GLFWErrorCallback errorCallback;
+	
+	static void initializeGlfw() {
+		if(errorCallback == null) {
+			Lwjgl3NativesLoader.load();
+			if (glfwInit() != GLFW_TRUE) {
+				throw new GdxRuntimeException("Unable to initialize GLFW");
+			}
+			errorCallback = GLFWErrorCallback.createPrint(System.err);
+		}
+	}
 
-	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		Lwjgl3NativesLoader.load();
+	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {		
+		initializeGlfw();
 		this.config = config;
 		Gdx.app = this;
 		if (!Lwjgl3ApplicationConfiguration.disableAudio) {
@@ -86,24 +95,10 @@ public class Lwjgl3Application implements Application {
 		this.files = Gdx.files = new Lwjgl3Files();
 		this.net = Gdx.net = new Lwjgl3Net();
 		this.clipboard = new Lwjgl3Clipboard();
-
-		if (glfwInit() != GLFW_TRUE) {
-			throw new GdxRuntimeException("Unable to initialize GLFW");
-		}
-		errorCallback = GLFWErrorCallback.createPrint(System.err);
-
+		
 		Lwjgl3Window window = createWindow(listener);
 		windows.put(window.getWindowHandle(), window);
 		loop();
-	}
-
-	private Lwjgl3Window createWindow(ApplicationListener listener) {
-		long windowHandle = createGlfwWindow(config.resizable, config.r, config.g, config.b, config.a, config.stencil,
-				config.depth, config.samples, config.width, config.height, config.title, config.fullscreen, config.x,
-				config.y, config.vSyncEnabled, config.initialBackgroundColor, 0);
-		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		glfwShowWindow(window.getWindowHandle());
-		return window;
 	}
 
 	private void loop() {
@@ -298,6 +293,15 @@ public class Lwjgl3Application implements Application {
 			lifecycleListeners.add(listener);
 		}
 	}
+	
+	private Lwjgl3Window createWindow(ApplicationListener listener) {
+		long windowHandle = createGlfwWindow(config.resizable, config.r, config.g, config.b, config.a, config.stencil,
+				config.depth, config.samples, config.width, config.height, config.title, config.fullscreen, config.x,
+				config.y, config.vSyncEnabled, config.initialBackgroundColor, 0);
+		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
+		glfwShowWindow(windowHandle);
+		return window;
+	}
 
 	public static long createGlfwWindow(boolean resizable, int r, int g, int b, int a, int stencil, int depth,
 			int samples, int width, int height, String title, boolean fullscreen, int x, int y, boolean vSyncEnabled,
@@ -318,19 +322,16 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-
-		if (x == -1 && y == -1) {
-			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-			glfwSetWindowPos(windowHandle, vidMode.width() / 2 - width / 2, vidMode.height() / 2 - height / 2);
-		} else {
-			glfwSetWindowPos(windowHandle, x, y);
-		}
-
-		if (title != null) {
-			glfwSetWindowTitle(windowHandle, title);
+		if(!fullscreen) {
+			if (x == -1 && y == -1) {
+				GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+				glfwSetWindowPos(windowHandle, vidMode.width() / 2 - width / 2, vidMode.height() / 2 - height / 2);
+			} else {
+				glfwSetWindowPos(windowHandle, x, y);
+			}				
 		}
 		glfwSwapInterval(vSyncEnabled ? 1 : 0);
-		glfwMakeContextCurrent(windowHandle);
+		glfwMakeContextCurrent(windowHandle);		
 		GL.createCapabilities();
 
 		String version = GL11.glGetString(GL20.GL_VERSION);

@@ -79,16 +79,26 @@ public class Lwjgl3Input implements Input {
 	
 	private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
 		@Override
-		public void invoke(long window, double x, double y) {
+		public void invoke(long windowHandle, double x, double y) {
 			deltaX = (int)x - mouseX;
 			deltaY = (int)y - mouseY;
 			mouseX = (int)x;
 			mouseY = (int)y;
+			
+			if(window.getConfig().useHDPI) {
+				float xScale = window.getGraphics().getFrameBufferWidth() / (float)window.getGraphics().getLogicalWidth();
+				float yScale = window.getGraphics().getFrameBufferHeight() / (float)window.getGraphics().getLogicalHeight();				
+				deltaX = (int)(deltaX * xScale);
+				deltaY = (int)(deltaY * yScale);
+				mouseX = (int)(mouseX * xScale);
+				mouseY = (int)(mouseY * yScale);
+			}
+			
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
 			if (mousePressed > 0) {								
-				eventQueue.touchDragged((int)x, (int)y, 0);
+				eventQueue.touchDragged(mouseX, mouseY, 0);
 			} else {								
-				eventQueue.mouseMoved((int)x, (int)y);
+				eventQueue.mouseMoved(mouseX, mouseY);
 			}			
 		}
 	};
@@ -124,7 +134,7 @@ public class Lwjgl3Input implements Input {
 	public Lwjgl3Input(Lwjgl3Window window) {
 		this.window = window;
 		windowHandleChanged(window.getWindowHandle());
-	}
+	}	
 	
 	
 	public void windowHandleChanged(long windowHandle) {		
@@ -267,6 +277,12 @@ public class Lwjgl3Input implements Input {
 
 	@Override
 	public void setCursorPosition(int x, int y) {
+		if(window.getConfig().useHDPI) {
+			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getFrameBufferWidth();
+			float yScale = window.getGraphics().getLogicalHeight() / (float)window.getGraphics().getFrameBufferHeight();
+			x = (int)(x * xScale);
+			y = (int)(y * yScale);
+		}
 		glfwSetCursorPos(window.getWindowHandle(), x, y);		
 	}
 	

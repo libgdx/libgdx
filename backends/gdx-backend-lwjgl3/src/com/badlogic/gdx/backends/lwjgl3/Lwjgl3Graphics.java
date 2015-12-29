@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -17,8 +18,10 @@ public class Lwjgl3Graphics implements Graphics {
 	private final Lwjgl3Window window;
 	private final GL20 gl20;
 	private final GL30 gl30;
-	private volatile int width;
-	private volatile int height;
+	private volatile int frameBufferWidth;
+	private volatile int frameBufferHeight;
+	private volatile int logicalWidth;
+	private volatile int logicalHeight;
 	private boolean isFullscreen;
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
@@ -26,18 +29,24 @@ public class Lwjgl3Graphics implements Graphics {
 	private long frameId;
 	private long frameCounterStart = 0;
 	private int frames;
-	private int fps;		
+	private int fps;
+	
+	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
 	
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke(long windowHandle, final int width, final int height) {
-			Lwjgl3Graphics.this.width = width;
-			Lwjgl3Graphics.this.height = height;			
+			Lwjgl3Graphics.this.frameBufferWidth = width;
+			Lwjgl3Graphics.this.frameBufferHeight = height;
+			GLFW.glfwGetWindowSize(windowHandle, tmpBuffer, tmpBuffer2);
+			Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
+			Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
 			if(!window.isListenerInitialized()) {
 				return;
 			}
 			GLFW.glfwMakeContextCurrent(windowHandle);
-			window.getListener().resize(width, height);
+			window.getListener().resize(getWidth(), getHeight());
 			window.getListener().render();
 			GLFW.glfwSwapBuffers(windowHandle);			
 		}
@@ -48,22 +57,19 @@ public class Lwjgl3Graphics implements Graphics {
 		this.gl20 = new Lwjgl3GL20();
 		this.gl30 = null;
 		updateFramebufferInfo();
-		setupCallbacks();		
+		GLFW.glfwSetFramebufferSizeCallback(window.getWindowHandle(), resizeCallback);		
 	}
 	
 	private void updateFramebufferInfo() {
-		IntBuffer width = BufferUtils.createIntBuffer(1);
-		IntBuffer height = BufferUtils.createIntBuffer(1);
-		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), width, height);
-		this.width = width.get(0);
-		this.height = height.get(0);
+		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		this.frameBufferWidth = tmpBuffer.get(0);
+		this.frameBufferHeight = tmpBuffer2.get(0);
+		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
+		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
 		this.isFullscreen = GLFW.glfwGetWindowMonitor(window.getWindowHandle()) != 0;
 		Lwjgl3ApplicationConfiguration config = window.getConfig();
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
-	}
-	
-	private void setupCallbacks() {
-		GLFW.glfwSetFramebufferSizeCallback(window.getWindowHandle(), resizeCallback);
 	}
 	
 	void update() {
@@ -98,22 +104,38 @@ public class Lwjgl3Graphics implements Graphics {
 
 	@Override
 	public int getWidth() {
-		return width;
+		if(window.getConfig().useHDPI) {
+			return frameBufferWidth;
+		} else {
+			return logicalWidth;
+		}
 	}
 
 	@Override
 	public int getHeight() {
-		return height;
+		if(window.getConfig().useHDPI) {
+			return frameBufferHeight;
+		} else {
+			return logicalHeight;
+		}
 	}
 	
 	@Override
-	public int getFramebufferWidth() {
-		return width;
+	public int getFrameBufferWidth() {
+		return frameBufferWidth;
 	}
 
 	@Override
-	public int getFramebufferHeight() {
-		return height;
+	public int getFrameBufferHeight() {
+		return frameBufferHeight;
+	}
+	
+	public int getLogicalWidth() {
+		return logicalWidth;
+	}
+	
+	public int getLogicalHeight() {
+		return logicalHeight;
 	}
 
 	@Override
@@ -173,19 +195,17 @@ public class Lwjgl3Graphics implements Graphics {
 
 	@Override
 	public DisplayMode[] getDisplayModes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Lwjgl3ApplicationConfiguration.getDisplayModes();
 	}
 
 	@Override
 	public DisplayMode getDesktopDisplayMode() {
-		// TODO Auto-generated method stub
-		return null;
+		return Lwjgl3ApplicationConfiguration.getDesktopDisplayMode();
 	}
 
 	@Override
 	public boolean setDisplayMode(DisplayMode displayMode) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
@@ -247,5 +267,11 @@ public class Lwjgl3Graphics implements Graphics {
 	@Override
 	public void setCursor(Cursor cursor) {
 		// TODO Auto-generated method stub
+	}
+	
+	public static class Lwjgl3DisplayMode extends DisplayMode {
+		Lwjgl3DisplayMode(int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
 	}
 }
