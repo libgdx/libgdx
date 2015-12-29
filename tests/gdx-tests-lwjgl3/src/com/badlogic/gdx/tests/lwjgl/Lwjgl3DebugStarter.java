@@ -39,9 +39,8 @@ public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) {	
 		GdxTest test = new UITest();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.width = 900;
-		config.height = 600;
 		config.vSyncEnabled = false;
+		config.useHDPI = false;
 		new Lwjgl3Application(test, config);
 	}
 }
