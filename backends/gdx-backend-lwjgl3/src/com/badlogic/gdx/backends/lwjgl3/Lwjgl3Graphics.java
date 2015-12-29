@@ -31,10 +31,12 @@ public class Lwjgl3Graphics implements Graphics {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke(long windowHandle, final int width, final int height) {
-			GLFW.glfwMakeContextCurrent(windowHandle);
+			Lwjgl3Graphics.this.width = width;
+			Lwjgl3Graphics.this.height = height;			
 			if(!window.isListenerInitialized()) {
-				window.initializeListener();
+				return;
 			}
+			GLFW.glfwMakeContextCurrent(windowHandle);
 			window.getListener().resize(width, height);
 			window.getListener().render();
 			GLFW.glfwSwapBuffers(windowHandle);			

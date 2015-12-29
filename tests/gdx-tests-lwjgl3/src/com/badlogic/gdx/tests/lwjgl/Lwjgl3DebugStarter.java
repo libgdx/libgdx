@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) {	
-		GdxTest test = new Animation3DTest();
+		GdxTest test = new LifeCycleTest();
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.width = 900;
 		config.height = 600;
