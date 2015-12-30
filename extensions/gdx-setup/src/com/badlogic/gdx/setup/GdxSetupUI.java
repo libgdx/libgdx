@@ -512,7 +512,7 @@ public class GdxSetupUI extends JFrame {
 					continue;
 				}
 				modules.add(projectType);
-				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
+				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName());
 				checkBox.setSelected(true);
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
@@ -547,7 +547,7 @@ public class GdxSetupUI extends JFrame {
 							depCounter++;
 							continue;
 						}
-						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
+						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.toString());
 						depCheckBox.setToolTipText(projDep.getDescription());
 						if (projDep.equals(ProjectDependency.BOX2D)) {
 							depCheckBox.setSelected(true);

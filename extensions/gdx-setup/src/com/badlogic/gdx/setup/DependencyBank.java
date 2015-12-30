@@ -68,6 +68,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"},
 			
+			"GDX Core",
 			"Core Library for LibGDX"
 		),
 		BULLET(
@@ -78,6 +79,7 @@ public class DependencyBank {
 			null,
 			null,
 			
+			"Bullet",
 			"3D Collision Detection and Rigid Body Dynamics"
 		),
 		FREETYPE(
@@ -88,6 +90,7 @@ public class DependencyBank {
 			null,
 			null,
 			
+			"FreeType",
 			"Generate BitmapFonts from .ttf font files"
 		),
 		TOOLS(
@@ -98,6 +101,7 @@ public class DependencyBank {
 			new String[]{},
 			new String[]{},
 			
+			"Tools",
 			"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"
 		),
 		CONTROLLERS(
@@ -108,6 +112,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.controllers.controllers-gwt"},
 
+			"Controllers",
 			"Controller/Gamepad API"
 		),
 		BOX2D(
@@ -118,6 +123,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"},
 			new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"},
 			
+			"Box2D",
 			"2D Physics Library"
 		),	
 		BOX2DLIGHTS(
@@ -128,6 +134,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"},
 			new String[]{"Box2DLights"},
 			
+			"Box2DLights",
 			"2D Lighting framework that utilises Box2D"
 		),
 		ASHLEY(
@@ -138,6 +145,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.ashley:ashley:$ashleyVersion:sources"},
 			new String[]{"com.badlogic.ashley_gwt"},
 			
+			"Ashley",
 			"Lightweight Entity framework"
 		),
 		AI(
@@ -148,6 +156,7 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"},
 			new String[]{"com.badlogic.gdx.ai"},
 			
+			"AI",
 			"Artificial Intelligence framework"
 		);
 
@@ -157,15 +166,17 @@ public class DependencyBank {
 		private String[] iosDependencies;
 		private String[] gwtDependencies;
 		private String[] gwtInherits;
+		private String name;
 		private String description;
 
-		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String description) {
+		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps, String[] gwtInhertis, String name, String description) {
 			this.coreDependencies = coreDeps;
 			this.desktopDependencies = desktopDeps;
 			this.androidDependencies = androidDeps;
 			this.iosDependencies = iosDeps;
 			this.gwtDependencies = gwtDeps;
 			this.gwtInherits = gwtInhertis;
+			this.name = name;
 			this.description = description;
 		}
 
@@ -192,15 +203,19 @@ public class DependencyBank {
 		public String getDescription() {
 			return description;
 		}
+
+		public String toString() {
+			return name;
+		}
 	}
 
 
 	public enum ProjectType {
-		CORE("core", new String[]{"java"}),
-		DESKTOP("desktop", new String[]{"java"}),
-		ANDROID("android", new String[]{"android"}),
-		IOS("ios", new String[]{"java", "robovm"}),
-		HTML("html", new String[]{"gwt", "war"});
+		CORE("Core", new String[]{"java"}),
+		DESKTOP("Desktop", new String[]{"java"}),
+		ANDROID("Android", new String[]{"android"}),
+		IOS("iOS", new String[]{"java", "robovm"}),
+		HTML("HTML", new String[]{"gwt", "war"});
 
 		private final String name;
 		private final String[] plugins;
