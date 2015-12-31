@@ -123,7 +123,7 @@ public class Lwjgl3Application implements Application {
 			if(audio instanceof OpenALAudio) {
 				((OpenALAudio)audio).update();
 			}
-			for (Lwjgl3Window window : windows.values()) {
+			for (Lwjgl3Window window : windows.values()) {				
 				Gdx.graphics = window.getGraphics();
 				Gdx.gl = window.getGraphics().getGL30() != null ? window.getGraphics().getGL30()
 						: window.getGraphics().getGL20();
@@ -142,6 +142,8 @@ public class Lwjgl3Application implements Application {
 			}
 			
 			synchronized(runnables) {
+				// FIXME need to make a copy of the array
+				// as Runnables can post other runnables
 				for(Runnable runnable: runnables) {
 					runnable.run();
 				}

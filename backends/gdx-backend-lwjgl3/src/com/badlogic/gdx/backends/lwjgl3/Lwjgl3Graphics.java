@@ -250,7 +250,7 @@ public class Lwjgl3Graphics implements Graphics {
 
 	@Override
 	public DisplayMode getDisplayMode() {
-		return Lwjgl3ApplicationConfiguration.getsDisplayMode();
+		return Lwjgl3ApplicationConfiguration.getDisplayMode();
 	}
 
 	@Override

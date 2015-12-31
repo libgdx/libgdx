@@ -160,7 +160,7 @@ public class Lwjgl3ApplicationConfiguration {
 		this.fullscreen = true;
 	}
 
-	public static DisplayMode getsDisplayMode() {
+	public static DisplayMode getDisplayMode() {
 		Lwjgl3Application.initializeGlfw();
 		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 		return new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(), videoMode.refreshRate(),
