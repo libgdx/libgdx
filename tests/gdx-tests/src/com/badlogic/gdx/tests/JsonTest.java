@@ -43,9 +43,12 @@ public class JsonTest extends GdxTest {
 		test.map.put("one", 1);
 		test.map.put("two", 2);
 		test.map.put("nine", 9);
-		test.array = new Array();
-		test.array.add("meow");
-		test.array.add("moo");
+		test.stringArray = new Array();
+		test.stringArray.add("meow");
+		test.stringArray.add("moo");
+		test.objectArray = new Array();
+		test.objectArray.add("meow");
+		test.objectArray.add(new Test1());
 		test.someEnum = SomeEnum.b;
 		roundTrip(test);
 
@@ -55,13 +58,13 @@ public class JsonTest extends GdxTest {
 		test = new Test1();
 		roundTrip(test);
 
-		test.array = new Array();
+		test.stringArray = new Array();
 		roundTrip(test);
 
-		test.array.add("meow");
+		test.stringArray.add("meow");
 		roundTrip(test);
 
-		test.array.add("moo");
+		test.stringArray.add("moo");
 		roundTrip(test);
 
 		test = new Test1();
@@ -169,7 +172,8 @@ public class JsonTest extends GdxTest {
 		public byte[] byteArrayField;
 		public Object object;
 		public ObjectMap<String, Integer> map;
-		public Array<String> array;
+		public Array<String> stringArray;
+		public Array objectArray;
 		public SomeEnum someEnum;
 
 		public boolean equals (Object obj) {
@@ -224,9 +228,9 @@ public class JsonTest extends GdxTest {
 				if (!map.values().toArray().equals(other.map.values().toArray())) return false;
 			}
 
-			if (array != other.array) {
-				if (array == null || other.array == null) return false;
-				if (!array.equals(other.array)) return false;
+			if (stringArray != other.stringArray) {
+				if (stringArray == null || other.stringArray == null) return false;
+				if (!stringArray.equals(other.stringArray)) return false;
 			}
 
 			if (byteField != other.byteField) return false;
