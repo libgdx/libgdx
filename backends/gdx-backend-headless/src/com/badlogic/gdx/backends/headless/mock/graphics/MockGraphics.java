@@ -129,17 +129,17 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode() {
+	public DisplayMode getDisplayMode() {
 		return null;
 	}
 
 	@Override
-	public boolean setDisplayMode(DisplayMode displayMode) {
+	public boolean setFullscreenMode(DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode(int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode(int width, int height, boolean fullscreen) {
 		return false;
 	}
 
@@ -207,5 +207,30 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+
+	@Override
+	public Monitor getPrimaryMonitor() {
+		return null;
+	}
+
+	@Override
+	public Monitor getMonitor() {
+		return null;
+	}
+
+	@Override
+	public Monitor[] getMonitors() {
+		return null;
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes(Monitor monitor) {
+		return null;
+	}
+
+	@Override
+	public DisplayMode getDisplayMode(Monitor monitor) {
+		return null;
 	}
 }

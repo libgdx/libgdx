@@ -150,13 +150,30 @@ public class LwjglGraphics implements Graphics {
 
 		if (canvas != null) {
 			Display.setParent(canvas);
-		} else {
-			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+		} else {			
+			boolean displayCreated = false;
+			
+			if(!config.fullscreen) {
+				displayCreated = setWindowedMode(config.width, config.height);
+			} else {				
+				DisplayMode bestMode = null;
+				for(DisplayMode mode: getDisplayModes()) {
+					if(mode.width == config.width && mode.height == config.height) {
+						if(bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
+							bestMode = mode;
+						}						
+					}
+				}
+				if(bestMode == null) {
+					bestMode = this.getDisplayMode();
+				}
+				displayCreated = setFullscreenMode(bestMode);
+			}
 			if (!displayCreated) {
 				if (config.setDisplayModeCallback != null) {
 					config = config.setDisplayModeCallback.onFailure(config);
 					if (config != null) {
-						displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+						displayCreated = setWindowedMode(config.width, config.height);
 					}
 				}
 				if (!displayCreated) {
@@ -280,13 +297,13 @@ public class LwjglGraphics implements Graphics {
 			}
 			try {
 				Display.create(new PixelFormat(0, 16, 8));
-				if (getDesktopDisplayMode().bitsPerPixel == 16) {
+				if (getDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0, false);
 				}
-				if (getDesktopDisplayMode().bitsPerPixel == 24) {
+				if (getDisplayMode().bitsPerPixel == 24) {
 					bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 8, 0, false);
 				}
-				if (getDesktopDisplayMode().bitsPerPixel == 32) {
+				if (getDisplayMode().bitsPerPixel == 32) {
 					bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 				}
 			} catch (Exception ex2) {
@@ -308,13 +325,13 @@ public class LwjglGraphics implements Graphics {
 					throw new GdxRuntimeException("OpenGL is not supported by the video driver"
 						+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
 				}
-				if (getDesktopDisplayMode().bitsPerPixel == 16) {
+				if (getDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
 				}
-				if (getDesktopDisplayMode().bitsPerPixel == 24) {
+				if (getDisplayMode().bitsPerPixel == 24) {
 					bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
 				}
-				if (getDesktopDisplayMode().bitsPerPixel == 32) {
+				if (getDisplayMode().bitsPerPixel == 32) {
 					bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
 				}
 			}
@@ -383,19 +400,34 @@ public class LwjglGraphics implements Graphics {
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
-
-	private class LwjglDisplayMode extends DisplayMode {
-		org.lwjgl.opengl.DisplayMode mode;
-
-		public LwjglDisplayMode (int width, int height, int refreshRate, int bitsPerPixel, org.lwjgl.opengl.DisplayMode mode) {
-			super(width, height, refreshRate, bitsPerPixel);
-			this.mode = mode;
-		}
-
+	
+	@Override
+	public Monitor getPrimaryMonitor () {		
+		return new LwjglMonitor(0, 0, "Primary Monitor");
 	}
 
 	@Override
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public Monitor getMonitor () {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors () {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
+		return new DisplayMode[] { getDisplayMode() };
+	}
+
+	@Override
+	public DisplayMode getDisplayMode (Monitor monitor) {
+		return getDisplayMode();
+	}
+
+	@Override
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		org.lwjgl.opengl.DisplayMode mode = ((LwjglDisplayMode)displayMode).mode;
 		try {
 			if (!mode.isFullscreenCapable()) {
@@ -416,14 +448,15 @@ public class LwjglGraphics implements Graphics {
 
 	/** Kindly stolen from http://lwjgl.org/wiki/index.php?title=LWJGL_Basics_5_(Fullscreen), not perfect but will do. */
 	@Override
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if (getWidth() == width && getHeight() == height && Display.isFullscreen() == fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
+		if (getWidth() == width && getHeight() == height && !Display.isFullscreen()) {
 			return true;
 		}
 
 		try {
 			org.lwjgl.opengl.DisplayMode targetDisplayMode = null;
-
+			boolean fullscreen = false;
+			
 			if (fullscreen) {
 				org.lwjgl.opengl.DisplayMode[] modes = Display.getAvailableDisplayModes();
 				int freq = 0;
@@ -499,7 +532,7 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		org.lwjgl.opengl.DisplayMode mode = Display.getDesktopDisplayMode();
 		return new LwjglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getFrequency(), mode.getBitsPerPixel(), mode);
 	}
@@ -589,6 +622,22 @@ public class LwjglGraphics implements Graphics {
 			LwjglCursor.resetCursor();
 		} else {
 			cursor.setSystemCursor();
+		}
+	}
+
+
+	private class LwjglDisplayMode extends DisplayMode {
+		org.lwjgl.opengl.DisplayMode mode;
+
+		public LwjglDisplayMode (int width, int height, int refreshRate, int bitsPerPixel, org.lwjgl.opengl.DisplayMode mode) {
+			super(width, height, refreshRate, bitsPerPixel);
+			this.mode = mode;
+		}
+	}
+	
+	private class LwjglMonitor extends Monitor {
+		protected LwjglMonitor (int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
 		}
 	}
 }

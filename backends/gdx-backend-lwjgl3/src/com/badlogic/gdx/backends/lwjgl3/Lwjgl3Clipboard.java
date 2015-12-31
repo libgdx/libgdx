@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class Lwjgl3Clipboard implements Clipboard, ClipboardOwner {
 	@Override
 	public String getContents () {
+		// FIXME don't use AWT
 		String result = "";
 		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable contents = clipboard.getContents(null);
@@ -49,6 +50,7 @@ public class Lwjgl3Clipboard implements Clipboard, ClipboardOwner {
 
 	@Override
 	public void setContents (String content) {
+		// FIXME don't use AWT
 		StringSelection stringSelection = new StringSelection(content);
 		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(stringSelection, this);

@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
@@ -29,6 +29,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.Graphics.Monitor;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
@@ -115,7 +117,6 @@ public class Lwjgl3ApplicationConfiguration {
 	 * physical pixels instead of logical pixels.
 	 */
 	public boolean useHDPI = false;
-
 	Array<String> iconPaths = new Array<String>();
 	Array<FileType> iconFileTypes = new Array<FileType>();
 
@@ -159,7 +160,7 @@ public class Lwjgl3ApplicationConfiguration {
 		this.fullscreen = true;
 	}
 
-	public static DisplayMode getDesktopDisplayMode() {
+	public static DisplayMode getsDisplayMode() {
 		Lwjgl3Application.initializeGlfw();
 		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
 		return new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(), videoMode.refreshRate(),
@@ -176,5 +177,41 @@ public class Lwjgl3ApplicationConfiguration {
 					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 		}
 		return result;
+	}
+	
+	public static DisplayMode[] getDisplayModes(Monitor monitor) {
+		Lwjgl3Application.initializeGlfw();
+		Buffer videoModes = GLFW.glfwGetVideoModes(GLFW.glfwGetPrimaryMonitor());
+		DisplayMode[] result = new DisplayMode[videoModes.limit()];
+		for (int i = 0; i < result.length; i++) {
+			GLFWVidMode videoMode = videoModes.get(i);
+			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(),
+					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
+		}
+		return result;
+	}
+	
+	public static Monitor getPrimaryMonitor() {
+		Lwjgl3Application.initializeGlfw();
+		return toLwjgl3Monitor(GLFW.glfwGetPrimaryMonitor());
+	}
+	
+	public static Monitor[] getMonitors() {
+		PointerBuffer glfwMonitors = GLFW.glfwGetMonitors();
+		Monitor[] monitors = new Monitor[glfwMonitors.limit()];
+		for(int i = 0; i < glfwMonitors.limit(); i++) {
+			monitors[i] = toLwjgl3Monitor(glfwMonitors.get(i));
+		}
+		return monitors;
+	}
+	
+	static Lwjgl3Monitor toLwjgl3Monitor(long glfwMonitor) {
+		IntBuffer tmp = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
+		GLFW.glfwGetMonitorPos(glfwMonitor, tmp, tmp2);
+		int virtualX = tmp.get(0);
+		int virtualY = tmp2.get(0);
+		String name = GLFW.glfwGetMonitorName(glfwMonitor);
+		return new Lwjgl3Monitor(virtualX, virtualY, name);
 	}
 }

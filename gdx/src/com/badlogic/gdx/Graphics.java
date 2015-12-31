@@ -55,9 +55,13 @@ public interface Graphics {
 	 * 
 	 * @author mzechner */
 	public class DisplayMode {
+		/** the width in physical pixels **/
 		public final int width;
+		/** the height in physical pixles **/
 		public final int height;
+		/** the refresh rate in Hertz **/
 		public final int refreshRate;
+		/** the number of bits per pixel, may exclude alpha **/
 		public final int bitsPerPixel;
 
 		protected DisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
@@ -69,6 +73,22 @@ public interface Graphics {
 
 		public String toString () {
 			return width + "x" + height + ", bpp: " + bitsPerPixel + ", hz: " + refreshRate;
+		}
+	}
+	
+	/** Describes a monitor
+	 * 
+	 * @author badlogic
+	 */
+	public class Monitor {
+		public final int virtualX;
+		public final int virtualY;
+		public final String name;
+		
+		protected Monitor (int virtualX, int virtualY, String name) {
+			this.virtualX = virtualX;
+			this.virtualY = virtualY;
+			this.name = name;
 		}
 	}
 
@@ -163,32 +183,44 @@ public interface Graphics {
 	 * @return the logical density of the Display. */
 	public float getDensity ();
 
-	/** Whether the given backend supports a display mode change via calling {@link Graphics#setDisplayMode(DisplayMode)}
+	/** Whether the given backend supports a display mode change via calling {@link Graphics#setFullscreenMode(DisplayMode)}
 	 * 
 	 * @return whether display mode changes are supported or not. */
 	public boolean supportsDisplayModeChange ();
+	
+	/** @return the primary monitor **/
+	public Monitor getPrimaryMonitor();
+	
+	/** @return the monitor the application's window is located on */
+	public Monitor getMonitor();
+	
+	/** @return the currently connected {@link Monitor}s */
+	public Monitor[] getMonitors();
 
-	/** @return the supported fullscreen {@link DisplayMode}(s). */
+	/** @return the supported fullscreen {@link DisplayMode}(s) of the primary monitor. */
 	public DisplayMode[] getDisplayModes ();
+	
+	/** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
+	public DisplayMode[] getDisplayModes(Monitor monitor);
 
-	/** @return the display mode of the primary graphics adapter. */
-	public DisplayMode getDesktopDisplayMode ();
+	/** @return the current {@link DisplayMode} of the primary monitor. */
+	public DisplayMode getDisplayMode ();
+	
+	/** @return the current {@link DisplayMode} of the given {@link Monitor} */
+	public DisplayMode getDisplayMode (Monitor monitor);
 
-	/** Sets the current {@link DisplayMode}. Returns false in case the operation failed. Not all backends support this method. See
-	 * {@link Graphics#supportsDisplayModeChange()}.
+	/** Sets the window to full-screen mode.
 	 * 
 	 * @param displayMode the display mode.
 	 * @return whether the operation succeeded. */
-	public boolean setDisplayMode (DisplayMode displayMode);
+	public boolean setFullscreenMode (DisplayMode displayMode);
 
-	/** Tries to set the display mode width the given width and height in pixels. Will always succeed if fullscreen is set to
-	 * false, in which case the application will be run in windowed mode. Use {@link Graphics#getDisplayModes()} to get a list of
-	 * supported fullscreen modes.
+	/** Sets the window to windowed mode.
 	 * 
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @param fullscreen whether to use fullscreen rendering or not */
-	public boolean setDisplayMode (int width, int height, boolean fullscreen);
+	 * @return whether the operation succeeded*/	
+	public boolean setWindowedMode (int width, int height);
 
 	/** Sets the title of the window. Ignored on Android.
 	 * 

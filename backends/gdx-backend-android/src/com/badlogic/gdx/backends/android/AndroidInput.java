@@ -169,7 +169,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
 		int rotation = getRotation();
-		DisplayMode mode = app.getGraphics().getDesktopDisplayMode();
+		DisplayMode mode = app.getGraphics().getDisplayMode();
 		if (((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
 			|| ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
 			nativeOrientation = Orientation.Landscape;
