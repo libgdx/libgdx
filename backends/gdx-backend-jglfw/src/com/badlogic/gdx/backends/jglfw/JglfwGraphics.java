@@ -319,7 +319,8 @@ public class JglfwGraphics implements Graphics {
 		return success;
 	}
 
-	public boolean setWindowedMode (int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
+		boolean fullscreen = false;
 		if (fullscreen || this.fullscreen) {
 			boolean success = createWindow(width, height, fullscreen);
 			if (success && fullscreen) sizeChanged(width, height);
