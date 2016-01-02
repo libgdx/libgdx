@@ -18,10 +18,12 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -86,12 +88,6 @@ class Lwjgl3Window implements Disposable {
 		return GLFW.glfwWindowShouldClose(windowHandle) == GLFW.GLFW_TRUE;
 	}
 
-	@Override
-	public void dispose() {
-		listener.pause();
-		listener.dispose();
-	}
-
 	public Lwjgl3ApplicationConfiguration getConfig() {
 		return config;
 	}
@@ -112,5 +108,37 @@ class Lwjgl3Window implements Disposable {
 			listener.resize(graphics.getWidth(), graphics.getHeight());
 			listenerInitialized = true;		
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		listener.pause();
+		listener.dispose();		
+		graphics.dispose();
+		input.dispose();
+		Gdx.app.log("Lwjgl3Graphics", "Destroying window handle 0x" + Long.toHexString(windowHandle));
+		glfwDestroyWindow(windowHandle);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (windowHandle ^ (windowHandle >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Lwjgl3Window other = (Lwjgl3Window) obj;
+		if (windowHandle != other.windowHandle)
+			return false;
+		return true;
 	}
 }

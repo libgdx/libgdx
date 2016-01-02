@@ -276,7 +276,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
 			GL11.glDrawElements(mode, (ShortBuffer)indices);
 		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer()); // FIXME yay...
+			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer());
 		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE)
 			GL11.glDrawElements(mode, (ByteBuffer)indices);
 		else

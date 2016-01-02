@@ -28,8 +28,10 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Lwjgl3Input implements Input {
+public class Lwjgl3Input implements Input, Disposable {
 	private final Lwjgl3Window window;
 	private InputProcessor inputProcessor;
 	private final InputEventQueue eventQueue = new InputEventQueue();
@@ -104,7 +106,7 @@ public class Lwjgl3Input implements Input {
 			mouseX = logicalMouseX = (int)x;
 			mouseY = logicalMouseY = (int)y;
 			
-			if(window.getConfig().useHDPI) {
+			if(window.getConfig().hdpiMode == HdpiMode.Pixels) {
 				float xScale = window.getGraphics().getBackBufferWidth() / (float)window.getGraphics().getLogicalWidth();
 				float yScale = window.getGraphics().getBackBufferHeight() / (float)window.getGraphics().getLogicalHeight();				
 				deltaX = (int)(deltaX * xScale);
@@ -155,8 +157,18 @@ public class Lwjgl3Input implements Input {
 		windowHandleChanged(window.getWindowHandle());
 	}	
 	
+	void resetPollingStates() {
+		justTouched = false;
+		keyJustPressed = false;
+		for (int i = 0; i < justPressedKeys.length; i++) {
+			justPressedKeys[i] = false;
+		}
+		eventQueue.setProcessor(null);
+		eventQueue.drain();
+	}
 	
-	public void windowHandleChanged(long windowHandle) {		
+	public void windowHandleChanged(long windowHandle) {
+		resetPollingStates();
 		glfwSetKeyCallback(window.getWindowHandle(), keyCallback);
 		glfwSetCharCallback(window.getWindowHandle(), charCallback);
 		glfwSetScrollCallback(window.getWindowHandle(), scrollCallback);
@@ -296,7 +308,7 @@ public class Lwjgl3Input implements Input {
 
 	@Override
 	public void setCursorPosition(int x, int y) {
-		if(window.getConfig().useHDPI) {
+		if(window.getConfig().hdpiMode == HdpiMode.Pixels) {
 			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getBackBufferWidth();
 			float yScale = window.getGraphics().getLogicalHeight() / (float)window.getGraphics().getBackBufferHeight();
 			x = (int)(x * xScale);
@@ -829,4 +841,12 @@ public class Lwjgl3Input implements Input {
 	public void getRotationMatrix(float[] matrix) {
 	}
 
+	@Override
+	public void dispose() {
+		keyCallback.release();
+		charCallback.release();
+		scrollCallback.release();
+		cursorPosCallback.release();
+		mouseButtonCallback.release();
+	}
 }

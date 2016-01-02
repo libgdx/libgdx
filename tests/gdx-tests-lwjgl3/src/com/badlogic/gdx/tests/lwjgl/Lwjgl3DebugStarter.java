@@ -76,6 +76,14 @@ public class Lwjgl3DebugStarter {
 					@Override
 					public boolean keyTyped (char character) {
 						System.out.println("Key typed: '" + character + "', " + (int)character);
+						
+						if(character == 'f') {
+							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+						}
+						if(character == 'w') {
+							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
+						}
+						
 						return false;
 					}
 				});
@@ -91,18 +99,13 @@ public class Lwjgl3DebugStarter {
 				batch.end();
 				if (Gdx.input.justTouched()) {
 					System.out.println("Just touched");
-				}
-				if (Gdx.input.isKeyJustPressed(Keys.ANY_KEY)) {
-					System.out.println("Pressed any key");
+					Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
 				}
 				fps.log();
 			}
 		};
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.width = 960;
-		config.height = 600;
-		config.fullscreen = true;
-		config.setFromDisplayMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
+		config.setWindowedMode(640, 480);
 		new Lwjgl3Application(test, config);
 	}
 }

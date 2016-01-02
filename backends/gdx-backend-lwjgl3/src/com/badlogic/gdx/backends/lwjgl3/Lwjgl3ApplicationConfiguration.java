@@ -24,101 +24,250 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Graphics.Monitor;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3ApplicationConfiguration {
-	/**
-	 * If true, OpenAL will not be used. This means
-	 * {@link Application#getAudio()} returns null and the gdx-openal.jar and
-	 * OpenAL natives are not needed.
-	 */
-	static public boolean disableAudio;
+	boolean disableAudio = false;
+	int audioDeviceSimultaneousSources = 16;
+	int audioDeviceBufferSize = 512;
+	int audioDeviceBufferCount = 9;
 
-	/** whether to attempt use OpenGL ES 3.0. **/
-	public boolean useGL30 = false;
-	/**
-	 * The OpenGL context major version (the part in front of the decimal point)
-	 * used to emulate OpenGL ES 3.0, when the version is not supported it will
-	 * fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2).
-	 * Only used when {@link #useGL30} is true. OpenGL is fully compatible with
-	 * OpenGL ES 3.0 since version 4.3, setting the context version to a lower
-	 * value might cause some features not to function properly. OSX requires
-	 * 3.2 though.
-	 * 
-	 * @see <a href=
-	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
-	 *      LWJGL OSX ContextAttribs note</a>
-	 */
-	public int gles30ContextMajorVersion = 3;
-	/**
-	 * The OpenGL context major version (the part after the decimal point) used
-	 * to emulate OpenGL ES 3.0, when the version is not supported it will fall
-	 * back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only
-	 * used when {@link #useGL30} is true. OpenGL is fully compatible with
-	 * OpenGL ES 3.0 since version 4.3, setting the context version to a lower
-	 * value might cause some features not to function properly. OSX requires
-	 * 3.2 though.
-	 * 
-	 * @see <a href=
-	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
-	 *      LWJGL OSX ContextAttribs note</a>
-	 */
-	public int gles30ContextMinorVersion = 2;
+	boolean useGL30 = false;
+	int gles30ContextMajorVersion = 3;
+	int gles30ContextMinorVersion = 2;
 
-	/** number of bits per color channel **/
-	public int r = 8, g = 8, b = 8, a = 8;
-	/** number of bits for depth and stencil buffer **/
-	public int depth = 16, stencil = 0;
-	/** number of samples for MSAA **/
-	public int samples = 0;
-	/** width & height of application window **/
-	public int width = 640, height = 480;
-	/** x & y of application window, -1 for center **/
-	public int x = -1, y = -1;
-	/** fullscreen **/
-	public boolean fullscreen = false;
-	/**
-	 * whether to enable vsync, can be changed at runtime via
-	 * {@link Graphics#setVSync(boolean)}
-	 **/
-	public boolean vSyncEnabled = true;
-	/** title of application **/
-	public String title;
-	/** whether the window is resizable **/
-	public boolean resizable = true;
-	/** the maximum number of sources that can be played simultaneously */
-	public int audioDeviceSimultaneousSources = 16;
-	/** the audio device buffer size in samples **/
-	public int audioDeviceBufferSize = 512;
-	/** the audio device buffer count **/
-	public int audioDeviceBufferCount = 9;
-	public Color initialBackgroundColor = Color.BLACK;
-	/** Preferences directory on the desktop. Default is ".prefs/". */
-	public String preferencesDirectory = ".prefs/";
-	/** Preferences file type on the desktop. Default is FileType.External */
-	public Files.FileType preferencesFileType = FileType.External;
-	/**
-	 * Callback used when trying to create a display, can handle failures,
-	 * default value is null (disabled)
-	 */
-	// public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
-	/**
-	 * Enable HDPI mode. {@link Graphics#getWidth()} and
-	 * {@link Graphics#getHeight()} will report the physical pixel size instead
-	 * of the logical pixel size. Mouse coordinates will also be given in
-	 * physical pixels instead of logical pixels.
-	 */
-	public boolean useHDPI = false;
+	int r = 8, g = 8, b = 8, a = 8;
+	int depth = 16, stencil = 0;
+	int samples = 0;
+
+	int windowX = -1;
+	int windowY = -1;
+	int windowWidth = 640;
+	int windowHeight = 480;
+	boolean windowResizable = true;
+	Lwjgl3DisplayMode fullscreenMode;
+
+	boolean vSyncEnabled = true;
+	String title = "";
+	Color initialBackgroundColor = Color.BLACK;
+
+	String preferencesDirectory = ".prefs/";
+	Files.FileType preferencesFileType = FileType.External;
+
+	HdpiMode hdpiMode = HdpiMode.Logical;
+	
 	Array<String> iconPaths = new Array<String>();
 	Array<FileType> iconFileTypes = new Array<FileType>();
+	
+	static Lwjgl3ApplicationConfiguration copy(Lwjgl3ApplicationConfiguration config) {
+		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
+		copy.disableAudio = config.disableAudio;
+		copy.audioDeviceSimultaneousSources = config.audioDeviceSimultaneousSources;
+		copy.audioDeviceBufferSize = config.audioDeviceBufferSize;
+		copy.audioDeviceBufferCount = config.audioDeviceBufferCount;
+		copy.useGL30 = config.useGL30;
+		copy.gles30ContextMajorVersion = config.gles30ContextMajorVersion;
+		copy.gles30ContextMinorVersion = config.gles30ContextMinorVersion;
+		copy.r = config.r;
+		copy.g = config.g;
+		copy.b = config.b;
+		copy.a = config.a;
+		copy.depth = config.depth;
+		copy.stencil = config.stencil;
+		copy.samples = config.samples;
+		copy.windowX = config.windowX;
+		copy.windowY = config.windowY;
+		copy.windowWidth = config.windowWidth;
+		copy.windowHeight = config.windowHeight;
+		copy.windowResizable = config.windowResizable;
+		copy.fullscreenMode = config.fullscreenMode;
+		copy.vSyncEnabled = config.vSyncEnabled;
+		copy.title = config.title;
+		copy.initialBackgroundColor = config.initialBackgroundColor;
+		copy.preferencesDirectory = config.preferencesDirectory;
+		copy.preferencesFileType = config.preferencesFileType;
+		copy.hdpiMode = config.hdpiMode;
+		copy.iconPaths = config.iconPaths;
+		copy.iconFileTypes = config.iconFileTypes;
+		return copy;
+	}
+	
+
+	/**
+	 * Whether to disable audio or not. If set to false, the returned audio
+	 * class instances like {@link Audio} or {@link Music} will be mock
+	 * implementations.
+	 */
+	public void disableAudio(boolean disableAudio) {
+		this.disableAudio = disableAudio;
+	}
+
+	/**
+	 * Sets the audio device configuration.
+	 * 
+	 * @param simultaniousSources
+	 *            the maximum number of sources that can be played
+	 *            simultaniously (default 16)
+	 * @param bufferSize
+	 *            the audio device buffer size in samples (default 512)
+	 * @param bufferCount
+	 *            the audio device buffer count (default 9)
+	 */
+	public void setAudioConfig(int simultaniousSources, int bufferSize, int bufferCount) {
+		this.audioDeviceSimultaneousSources = simultaniousSources;
+		this.audioDeviceBufferSize = bufferSize;
+		this.audioDeviceBufferCount = bufferCount;
+	}
+
+	/**
+	 * Sets whether to use OpenGL ES 3.0 emulation. If the given major/minor
+	 * version is not supported, the backend falls back to OpenGL ES 2.0
+	 * emulation. The default parameters for major and minor should be 3 and 2
+	 * respectively to be compatible with Mac OS X. Specifying major version 4
+	 * and minor version 2 will ensure that all OpenGL ES 3.0 features are
+	 * supported. Note however that Mac OS X does only support 3.2.
+	 * 
+	 * @see <a href=
+	 *      "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">
+	 *      LWJGL OSX ContextAttribs note
+	 * 
+	 * @param useGL30
+	 *            whether to use OpenGL ES 3.0
+	 * @param gles3MajorVersion
+	 *            OpenGL ES major version, use 3 as default
+	 * @param gles3MinorVersion
+	 *            OpenGL ES minor version, use 2 as default
+	 */
+	public void useOpenGL3(boolean useGL30, int gles3MajorVersion, int gles3MinorVersion) {
+		this.useGL30 = useGL30;
+		this.gles30ContextMajorVersion = gles3MajorVersion;
+		this.gles30ContextMinorVersion = gles3MinorVersion;
+	}
+
+	/**
+	 * Sets the bit depth of the color, depth and stencil buffer as well as
+	 * multi-sampling.
+	 * 
+	 * @param r
+	 *            red bits (default 8)
+	 * @param g
+	 *            green bits (default 8)
+	 * @param b
+	 *            blue bits (default 8)
+	 * @param a
+	 *            alpha bits (default 8)
+	 * @param depth
+	 *            depth bits (default 16)
+	 * @param stencil
+	 *            stencil bits (default 0)
+	 * @param samples
+	 *            MSAA samples (default 0)
+	 */
+	public void setBackbufferConfig(int r, int g, int b, int a, int depth, int stencil, int samples) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+		this.depth = depth;
+		this.stencil = stencil;
+	}
+
+	/**
+	 * Sets the app to use windowed mode.
+	 * 
+	 * @param width
+	 *            the width of the window (default 640)
+	 * @param height
+	 *            the height of the window (default 480)
+	 */
+	public void setWindowedMode(int width, int height) {
+		this.windowWidth = width;
+		this.windowHeight = height;		
+	}
+	
+	/** 
+	 * @param resizable whether the windowed mode window is resizable
+	 */
+	public void setResizable(boolean resizable) {
+		this.windowResizable = resizable;
+	}
+	
+	/**
+	 * Sets the position of the window in windowed mode on the
+	 * primary monitor. Default -1 for booth coordinates for centered.
+	 */
+	public void setWindowPosition(int x, int y) {
+		windowX = x;
+		windowY = y;
+	}
+
+	/**
+	 * Sets the app to use fullscreen mode. Use the static methods like
+	 * {@link #getDisplayMode()} on this class to enumerate connected monitors
+	 * and their fullscreen display modes.
+	 */
+	public void setFullscreenMode(DisplayMode mode) {
+		this.fullscreenMode = (Lwjgl3DisplayMode)mode;
+	}
+
+	/**
+	 * Sets whether to use vsync. This setting can be changed anytime at runtime
+	 * via {@link Graphics#setVsync(boolean)}.
+	 */
+	public void useVsync(boolean vsync) {
+		this.vSyncEnabled = vsync;
+	}
+
+	/**
+	 * Sets the window title. Defaults to empty string.
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
+	 * Sets the initial background color. Defaults to black.
+	 */
+	public void setInitialBackgroundColor(Color color) {
+		initialBackgroundColor = color;
+	}
+
+	/**
+	 * Sets the directory where {@link Preferences} will be stored, as well as
+	 * the file type to be used to store them. Defaults to "$USER_HOME/.prefs/"
+	 * and {@link FileType#External}.
+	 */
+	public void setPreferencesConfig(String preferencesDirectory, Files.FileType preferencesFileType) {
+		this.preferencesDirectory = preferencesDirectory;
+		this.preferencesFileType = preferencesFileType;
+	}
+
+	/**
+	 * Defines how HDPI monitors are handled. Operating systems may have a
+	 * per-monitor HDPI scale setting. The operating system may report window
+	 * width/height and mouse coordinates in a logical coordinate system at a
+	 * lower resolution than the actual physical resolution. This setting allows
+	 * you to specify whether you want to work in logical or raw pixel units.
+	 * See {@link HdpiMode} for more information. Note that some OpenGL
+	 * functions like {@link GL#glViewport()} and {@link GL#glScissor()} require
+	 * raw pixel units. Use {@link HdpiUtils} to help with the conversion if
+	 * HdpiMode is set to {@link HdpiMode#Logical}. Defaults to {@link HdpiMode#Logical}.
+	 */
+	public void setHdpiMode(HdpiMode mode) {
+		this.hdpiMode = mode;
+	}	
 
 	/**
 	 * Adds a window icon. Icons are tried in the order added, the first one
@@ -131,80 +280,75 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 
 	/**
-	 * Sets the r, g, b and a bits per channel based on the given
-	 * {@link DisplayMode} and sets the fullscreen flag to true.
-	 * 
-	 * @param mode
+	 * @return the currently active {@link DisplayMode} of the primary monitor
 	 */
-	public void setFromDisplayMode(DisplayMode mode) {
-		this.width = mode.width;
-		this.height = mode.height;
-		if (mode.bitsPerPixel == 16) {
-			this.r = 5;
-			this.g = 6;
-			this.b = 5;
-			this.a = 0;
-		}
-		if (mode.bitsPerPixel == 24) {
-			this.r = 8;
-			this.g = 8;
-			this.b = 8;
-			this.a = 8;
-		}
-		if (mode.bitsPerPixel == 32) {
-			this.r = 8;
-			this.g = 8;
-			this.b = 8;
-			this.a = 8;
-		}
-		this.fullscreen = true;
-	}
-
 	public static DisplayMode getDisplayMode() {
 		Lwjgl3Application.initializeGlfw();
 		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		return new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(), videoMode.refreshRate(),
+		return new Lwjgl3Graphics.Lwjgl3DisplayMode(GLFW.glfwGetPrimaryMonitor(), videoMode.width(), videoMode.height(), videoMode.refreshRate(),
+				videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
+	}
+	
+	/**
+	 * @return the currently active {@link DisplayMode} of the given monitor
+	 */
+	public static DisplayMode getDisplayMode(Monitor monitor) {
+		Lwjgl3Application.initializeGlfw();
+		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(((Lwjgl3Monitor)monitor).monitor);
+		return new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitor, videoMode.width(), videoMode.height(), videoMode.refreshRate(),
 				videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 	}
 
+	/**
+	 * @return the available {@link DisplayMode}s of the primary monitor
+	 */
 	public static DisplayMode[] getDisplayModes() {
 		Lwjgl3Application.initializeGlfw();
 		Buffer videoModes = GLFW.glfwGetVideoModes(GLFW.glfwGetPrimaryMonitor());
 		DisplayMode[] result = new DisplayMode[videoModes.limit()];
 		for (int i = 0; i < result.length; i++) {
 			GLFWVidMode videoMode = videoModes.get(i);
-			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(),
+			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(GLFW.glfwGetPrimaryMonitor(), videoMode.width(), videoMode.height(),
 					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 		}
 		return result;
 	}
-	
+
+	/**
+	 * @return the available {@link DisplayMode}s of the given {@link Monitor}
+	 */
 	public static DisplayMode[] getDisplayModes(Monitor monitor) {
 		Lwjgl3Application.initializeGlfw();
-		Buffer videoModes = GLFW.glfwGetVideoModes(GLFW.glfwGetPrimaryMonitor());
+		Buffer videoModes = GLFW.glfwGetVideoModes(((Lwjgl3Monitor)monitor).monitor);
 		DisplayMode[] result = new DisplayMode[videoModes.limit()];
 		for (int i = 0; i < result.length; i++) {
 			GLFWVidMode videoMode = videoModes.get(i);
-			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(videoMode.width(), videoMode.height(),
+			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitor, videoMode.width(), videoMode.height(),
 					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 		}
 		return result;
 	}
-	
+
+	/**
+	 * @return the primary {@link Monitor}
+	 */
 	public static Monitor getPrimaryMonitor() {
 		Lwjgl3Application.initializeGlfw();
 		return toLwjgl3Monitor(GLFW.glfwGetPrimaryMonitor());
 	}
-	
+
+	/**
+	 * @return the conntected {@link Monitor}s
+	 */
 	public static Monitor[] getMonitors() {
 		PointerBuffer glfwMonitors = GLFW.glfwGetMonitors();
 		Monitor[] monitors = new Monitor[glfwMonitors.limit()];
-		for(int i = 0; i < glfwMonitors.limit(); i++) {
+		for (int i = 0; i < glfwMonitors.limit(); i++) {
 			monitors[i] = toLwjgl3Monitor(glfwMonitors.get(i));
 		}
 		return monitors;
 	}
-	
+
 	static Lwjgl3Monitor toLwjgl3Monitor(long glfwMonitor) {
 		IntBuffer tmp = BufferUtils.createIntBuffer(1);
 		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
@@ -212,6 +356,25 @@ public class Lwjgl3ApplicationConfiguration {
 		int virtualX = tmp.get(0);
 		int virtualY = tmp2.get(0);
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
-		return new Lwjgl3Monitor(virtualX, virtualY, name);
+		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
 	}
+
+	public static enum HdpiMode {
+		/**
+		 * mouse coordinates, {@link Graphics#getWidth()} and
+		 * {@link Graphics#getHeight()} will return logical coordinates
+		 * according to the system defined HDPI scaling. Rendering will be
+		 * performed to a backbuffer at raw resolution. Use {@link HdpiUtils}
+		 * when calling {@link GL20#glScissor} or {@link GL20#glViewport} which
+		 * expect raw coordinates.
+		 */
+		Logical,
+
+		/**
+		 * Mouse coordinates, {@link Graphics#getWidth()} and
+		 * {@link Graphics#getHeight()} will return raw pixel coordinates
+		 * irrespective of the system defined HDPI scaling.
+		 */
+		Pixels
+	}		
 }
