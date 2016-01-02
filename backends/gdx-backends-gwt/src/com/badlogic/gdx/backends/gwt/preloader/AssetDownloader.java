@@ -147,6 +147,10 @@ public class AssetDownloader {
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
+		loadImage(url, mimeType, null, listener);
+	}
+	
+	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<ImageElement> listener) {
 		if (useBrowserCache || useInlineBase64) {
 			loadBinary(url, new AssetLoaderListener<Blob>() {
 				@Override
@@ -162,6 +166,9 @@ public class AssetDownloader {
 				@Override
 				public void onSuccess (Blob result) {
 					final ImageElement image = createImage();
+					if (crossOrigin != null) {
+						image.setAttribute("crossOrigin", crossOrigin);
+					}
 					hookImgListener(image, new ImgEventListener() {
 						@Override
 						public void onEvent (NativeEvent event) {
@@ -181,6 +188,9 @@ public class AssetDownloader {
 			});
 		} else {
 			final ImageElement image = createImage();
+			if (crossOrigin != null) {
+				image.setAttribute("crossOrigin", crossOrigin);
+			}
 			hookImgListener(image, new ImgEventListener() {
 				@Override
 				public void onEvent (NativeEvent event) {

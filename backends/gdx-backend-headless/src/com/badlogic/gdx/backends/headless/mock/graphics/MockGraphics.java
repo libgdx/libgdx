@@ -139,7 +139,7 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public boolean setWindowedMode(int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode(int width, int height) {
 		return false;
 	}
 

@@ -40,6 +40,8 @@
   the app's window is shown on. All backends except the LWJGL3 backend will report the
   primary monitor display mode instead of the actual monitor's display mode. Not a problem
   as all other backends run on systems with only a single monitor so far (primary monitor).
+- Added option to include credentials on cross-origin http requests (used only for GWT backend).
+- Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
