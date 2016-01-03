@@ -87,24 +87,29 @@ public class Lwjgl3DebugStarter {
 						}
 						
 						return false;
-					}
+					}										
 				});
 			}
 
 			@Override
 			public void render () {
-				Gdx.gl.glClearColor(r, 0, 0, 1);
+				Gdx.gl.glClearColor(1, 0, 0, 1);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				HdpiUtils.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+//				HdpiUtils.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.begin();
-				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " + Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);
-				batch.end();
-				if (Gdx.input.justTouched()) {
-					System.out.println("Just touched");
-					Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
-				}
+				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
+									  Gdx.graphics.getBackBufferWidth() + "x" + Gdx.graphics.getBackBufferHeight() + ", " +
+									  Gdx.input.getX() + ", " + Gdx.input.getY() + ", " + 
+									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);
+				batch.end();				
 				fps.log();
+			}
+
+			@Override
+			public void resize (int width, int height) {
+				Gdx.app.log("Test", "Resized " + width + "x" + height);
 			}
 		};
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

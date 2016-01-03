@@ -42,6 +42,7 @@
   as all other backends run on systems with only a single monitor so far (primary monitor).
 - Added option to include credentials on cross-origin http requests (used only for GWT backend).
 - Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
+- API Change: removed Sound#setPriority, this was only implemented for the Android backend. However, Android itself never honored priority settings.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970

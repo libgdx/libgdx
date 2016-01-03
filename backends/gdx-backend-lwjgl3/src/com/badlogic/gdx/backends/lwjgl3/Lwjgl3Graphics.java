@@ -24,6 +24,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.graphics.Cursor;
@@ -37,11 +38,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private final Lwjgl3Window window;
 	private final GL20 gl20;
 	private final GL30 gl30;
-	private volatile int frameBufferWidth;
-	private volatile int frameBufferHeight;
+	private volatile int backBufferWidth;
+	private volatile int backBufferHeight;
 	private volatile int logicalWidth;
 	private volatile int logicalHeight;
-	private BufferFormat bufferFormat;
+	private BufferFormat bufferFormat;	
 	private long lastFrameTime = -1;
 	private float deltaTime;
 	private long frameId;
@@ -80,8 +81,8 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	private void updateFramebufferInfo() {
 		GLFW.glfwGetFramebufferSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
-		this.frameBufferWidth = tmpBuffer.get(0);
-		this.frameBufferHeight = tmpBuffer2.get(0);
+		this.backBufferWidth = tmpBuffer.get(0);
+		this.backBufferHeight = tmpBuffer2.get(0);
 		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
 		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);		
@@ -124,7 +125,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public int getWidth() {
 		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
-			return frameBufferWidth;
+			return backBufferWidth;
 		} else {
 			return logicalWidth;
 		}
@@ -133,7 +134,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public int getHeight() {
 		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
-			return frameBufferHeight;
+			return backBufferHeight;
 		} else {
 			return logicalHeight;
 		}
@@ -141,12 +142,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public int getBackBufferWidth() {
-		return frameBufferWidth;
+		return backBufferWidth;
 	}
 
 	@Override
 	public int getBackBufferHeight() {
-		return frameBufferHeight;
+		return backBufferHeight;
 	}
 
 	public int getLogicalWidth() {
@@ -224,6 +225,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public Monitor getMonitor() {
+		Monitor[] monitors = getMonitors();
 		// FIXME figure out the monitor the window is on
 		return null;
 	}
@@ -263,13 +265,14 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates(); // need to drain all events and poll states
-		if(isFullscreen()) {
-			// FIXME can't resize if refresh rate changed compared to
-			// old fullscreen mode
+		if(isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
+			updateFramebufferInfo();
 			return true;
 		} else {		
-			return recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);
+			boolean result = recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);
+			updateFramebufferInfo();
+			return result;
 		}
 	}
 
@@ -278,9 +281,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		window.getInput().resetPollingStates(); // need to drain all events and poll states
 		if(!isFullscreen()) {					
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
+			updateFramebufferInfo();
 			return true;
 		} else {
-			return recreateWindow(width, height, null);
+			boolean result = recreateWindow(width, height, null);
+			updateFramebufferInfo();
+			return result;
 		}
 	}
 	

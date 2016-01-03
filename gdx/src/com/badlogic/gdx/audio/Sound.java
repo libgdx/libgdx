@@ -123,11 +123,5 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
-	public void setPan (long soundId, float pan, float volume);
-
-	/** Sets the priority of a sound currently being played back. Higher priority sounds will be considered last if the maximum
-	 * number of concurrently playing sounds is exceeded. This is only a hint and might not be honored by a backend implementation.
-	 * @param soundId the sound id as returned by {@link #play()} or {@link #loop()} and their overloaded equivalents.
-	 * @param priority the priority (0 == lowest) */
-	public void setPriority (long soundId, int priority);
+	public void setPan (long soundId, float pan, float volume);	
 }
