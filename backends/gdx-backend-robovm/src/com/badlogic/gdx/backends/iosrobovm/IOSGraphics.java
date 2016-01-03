@@ -355,6 +355,16 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public int getHeight () {
 		return height;
 	}
+	
+	@Override
+	public int getBackBufferWidth() {
+		return width;
+	}
+
+	@Override
+	public int getBackBufferHeight() {
+		return height;
+	}
 
 	@Override
 	public float getDeltaTime () {
@@ -408,28 +418,47 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[] {getDesktopDisplayMode()};
+		return new DisplayMode[] {getDisplayMode()};
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
 			+ bufferFormat.b + bufferFormat.a);
 	}
-
-	private class IOSDisplayMode extends DisplayMode {
-		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-		}
+	
+	@Override
+	public Monitor getPrimaryMonitor() {
+		return new IOSMonitor(0, 0, "Primary Monitor");
 	}
 
 	@Override
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public Monitor getMonitor() {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors() {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes(Monitor monitor) {
+		return getDisplayModes();
+	}
+
+	@Override
+	public DisplayMode getDisplayMode(Monitor monitor) {
+		return getDisplayMode();
+	}
+
+	@Override
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
 		return false;
 	}
 
@@ -501,5 +530,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	private class IOSDisplayMode extends DisplayMode {
+		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
+	}
+	
+	private class IOSMonitor extends Monitor {
+		protected IOSMonitor(int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
+		}
 	}
 }

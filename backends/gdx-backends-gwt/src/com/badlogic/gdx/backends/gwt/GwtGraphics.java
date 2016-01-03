@@ -81,6 +81,16 @@ public class GwtGraphics implements Graphics {
 	public int getHeight () {
 		return canvas.getHeight();
 	}
+	
+	@Override
+	public int getBackBufferWidth () {
+		return canvas.getWidth();
+	}
+
+	@Override
+	public int getBackBufferHeight () {
+		return canvas.getHeight();
+	}
 
 	@Override
 	public long getFrameId () {
@@ -257,27 +267,48 @@ public class GwtGraphics implements Graphics {
 	}-*/;
 
 	@Override
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		return new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8) {};
 	}
 
 	@Override
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		if (displayMode.width != getScreenWidthJSNI() && displayMode.height != getScreenHeightJSNI()) return false;
 		return setFullscreenJSNI(this, canvas);
 	}
 
 	@Override
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if (fullscreen) {
-			if (width != getScreenWidthJSNI() && height != getScreenHeightJSNI()) return false;
-			return setFullscreenJSNI(this, canvas);
-		} else {
-			if (isFullscreenJSNI()) exitFullscreen();
-			canvas.setWidth(width);
-			canvas.setHeight(height);
-			return true;
-		}
+	public boolean setWindowedMode (int width, int height) {		
+		if (isFullscreenJSNI()) exitFullscreen();
+		canvas.setWidth(width);
+		canvas.setHeight(height);
+		return true;
+	}
+	
+
+	@Override
+	public Monitor getPrimaryMonitor () {
+		return new GwtMonitor(0, 0, "Primary Monitor");
+	}
+
+	@Override
+	public Monitor getMonitor () {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors () {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
+		return getDisplayModes();
+	}
+
+	@Override
+	public DisplayMode getDisplayMode (Monitor monitor) {
+		return getDisplayMode();
 	}
 
 	@Override
@@ -361,6 +392,12 @@ public class GwtGraphics implements Graphics {
 			GwtCursor.resetCursor();
 		} else {
 			cursor.setSystemCursor();
+		}
+	}
+	
+	static class GwtMonitor extends Monitor {
+		protected GwtMonitor (int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
 		}
 	}
 }

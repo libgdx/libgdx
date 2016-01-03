@@ -357,6 +357,12 @@ public class FreeTypeFontGenerator implements Disposable {
 				parameter.borderStraight ? FreeType.FT_STROKER_LINEJOIN_MITER_FIXED : FreeType.FT_STROKER_LINEJOIN_ROUND, 0);
 		}
 
+		Glyph missingGlyph = createGlyph('\0', data, parameter, stroker, baseLine, packer);
+		if (missingGlyph != null && missingGlyph.width != 0 && missingGlyph.height != 0) {
+			data.setGlyph('\0', missingGlyph);
+			if (incremental) data.glyphs.add(missingGlyph);
+		}
+
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
 		for (int i = 0, n = charactersLength; i < n; i++) {
@@ -387,8 +393,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		if (stroker != null && !incremental) stroker.dispose();
-
-		data.missingGlyph = data.getGlyph('\u0000');
 
 		if (incremental) {
 			data.generator = this;

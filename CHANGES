@@ -4,6 +4,44 @@
 - Higher quality FreeType font rendering.
 - Hiero updated to v5, now with FreeType support and other new features!
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
+- Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info.
+- Added Graphics#getFramebufferWidth and Graphics#getFramebufferHeight for HDPI handling
+- API Change: Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
+  please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
+  using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics 
+  getWidth/getHeight is in logical coordinates as dictated by the operating system, usually half
+  the HDPI resolution. The OpenGL drawing surface works in backbuffer coordinates at the full
+  HDPI resolution. If you pass logical coordinates to glViewport and glScissor, you only 
+  affect a quarter of the real backbuffer size. Use HdpiUtils instead, it will do the right thing, while letting you continue to work in logical (aka returned by Gdx.graphics.getWidth/getHeight) coordinates.
+- API Change: Graphis#getDesktopDisplayMode() has been renamed to Graphics#getDisplayMode() and
+  returns the current display mode of the monitor the window is shown on (primary monitor on
+  all backends except LWJGL3, which supports real multi-monitor setups).
+- API Change: Graphics#getDisplayModes() return the display modes of the monitor the monitor
+  the window is shown on (primary monitor on all backends except LWJGL3 which supports real
+  multi-monitor setups).
+- API Change: Graphics#setDisplayMode(DisplayMode) has been renamed to 
+  Graphics#setFullscreenMode(). If the window is in windowed mode, it will be switched 
+  to fullscreen mode on the monitor from which the DisplayMode stems from.
+- API Change: Graphics#setDisplayMode(int, int, boolean) has been renamed to 
+  Graphics#setWindowedMode(int, int). This will NOT allow you to switch to fullscreen anymore, 
+  use Graphics#setFullscreenMode() instead. If the window is in fullscreen mode, it will be
+  switched to windowed mode on the monitor the window was in fullscreen mode on.
+ - API Addition: Graphics#Monitor, represents a monitor connected to the machine the app is
+  running on. A monitor is defined by a name and it's position relative to other connected
+  monitors. All backends except the LWJGL3 backend will report only the primary monitor
+ - API Addition: Graphics#getPrimaryMonitor() returns the primary monitor you usually want
+  to work with.
+ - API Addition: Graphics#getMonitor() returns the monitor your app's window is shown on,
+  which may not be the primary monitor in >= 2 monitor systems. All backends except the 
+  LWJGL3 backend will report only the primary monitor.
+ - API Addition: Graphics#getMonitors() returns all monitors connected to the system. All
+  backends except the LWJGL3 backend will only report the primary monitor.
+ - API Addition: Graphics#getDisplayMode(Monitor) returns the display mode of the monitor
+  the app's window is shown on. All backends except the LWJGL3 backend will report the
+  primary monitor display mode instead of the actual monitor's display mode. Not a problem
+  as all other backends run on systems with only a single monitor so far (primary monitor).
+- Added option to include credentials on cross-origin http requests (used only for GWT backend).
+- Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -93,7 +94,8 @@ public class BMFontUtil {
 		List allGlyphs = new ArrayList(512);
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
 			GlyphPage page = (GlyphPage)pageIter.next();
-			page.getGlyphs().sort(new Comparator<Glyph>() {
+			List<Glyph> glyphs = page.getGlyphs();
+			Collections.sort(glyphs, new Comparator<Glyph>() {
 				public int compare (Glyph o1, Glyph o2) {
 					return o1.getCodePoint() - o2.getCodePoint();
 				}

@@ -108,7 +108,7 @@ public class FloatTextureTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		fb.begin();

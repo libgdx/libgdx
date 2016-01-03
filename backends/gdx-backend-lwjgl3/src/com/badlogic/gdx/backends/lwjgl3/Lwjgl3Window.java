@@ -1,11 +1,29 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl3;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -24,8 +42,8 @@ class Lwjgl3Window implements Disposable {
 		this.windowHandle = windowHandle;
 		this.listener = listener;
 		this.config = config;
-		this.graphics = new Lwjgl3Graphics(this);
-		this.input = new Lwjgl3Input(this);		
+		this.input = new Lwjgl3Input(this);
+		this.graphics = new Lwjgl3Graphics(this);		
 	}
 
 	public ApplicationListener getListener() {
@@ -51,9 +69,7 @@ class Lwjgl3Window implements Disposable {
 	
 	public void update(Array<LifecycleListener> lifecycleListeners) {
 		if(listenerInitialized == false) {
-			listener.create();			
-			listener.resize(graphics.getWidth(), graphics.getHeight());
-			listenerInitialized = true;
+			initializeListener();
 		}
 		synchronized(runnables) {
 			for(Runnable runnable: runnables) {
@@ -61,21 +77,15 @@ class Lwjgl3Window implements Disposable {
 			}
 			runnables.clear();
 		}
-		graphics.update();
-		input.update();
+		graphics.update();		
 		listener.render();
 		glfwSwapBuffers(windowHandle);
+		input.update();
 		glfwPollEvents();
 	}
 	
 	public boolean shouldClose() {
 		return GLFW.glfwWindowShouldClose(windowHandle) == GLFW.GLFW_TRUE;
-	}
-
-	@Override
-	public void dispose() {
-		listener.pause();
-		listener.dispose();
 	}
 
 	public Lwjgl3ApplicationConfiguration getConfig() {
@@ -86,5 +96,49 @@ class Lwjgl3Window implements Disposable {
 		synchronized(runnables) {
 			runnables.add(runnable);
 		}
+	}
+
+	public boolean isListenerInitialized() {
+		return listenerInitialized;		
+	}
+
+	public void initializeListener() {
+		if(!listenerInitialized) {
+			listener.create();			
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+			listenerInitialized = true;		
+		}
+	}
+	
+	@Override
+	public void dispose() {
+		listener.pause();
+		listener.dispose();		
+		graphics.dispose();
+		input.dispose();
+		Gdx.app.log("Lwjgl3Graphics", "Destroying window handle 0x" + Long.toHexString(windowHandle));
+		glfwDestroyWindow(windowHandle);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (windowHandle ^ (windowHandle >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Lwjgl3Window other = (Lwjgl3Window) obj;
+		if (windowHandle != other.windowHandle)
+			return false;
+		return true;
 	}
 }

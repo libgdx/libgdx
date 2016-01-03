@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl3;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -12,12 +28,14 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Lwjgl3Input implements Input {
+public class Lwjgl3Input implements Input, Disposable {
 	private final Lwjgl3Window window;
 	private InputProcessor inputProcessor;
 	private final InputEventQueue eventQueue = new InputEventQueue();
-	
+		
 	private int mouseX, mouseY;
 	private int mousePressed;
 	private int deltaX, deltaY;
@@ -78,17 +96,30 @@ public class Lwjgl3Input implements Input {
 	};
 	
 	private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
+		private int logicalMouseY;
+		private int logicalMouseX;
+
 		@Override
-		public void invoke(long window, double x, double y) {
-			deltaX = (int)x - mouseX;
-			deltaY = (int)y - mouseY;
-			mouseX = (int)x;
-			mouseY = (int)y;
+		public void invoke(long windowHandle, double x, double y) {
+			deltaX = (int)x - logicalMouseX;
+			deltaY = (int)y - logicalMouseY;
+			mouseX = logicalMouseX = (int)x;
+			mouseY = logicalMouseY = (int)y;
+			
+			if(window.getConfig().hdpiMode == HdpiMode.Pixels) {
+				float xScale = window.getGraphics().getBackBufferWidth() / (float)window.getGraphics().getLogicalWidth();
+				float yScale = window.getGraphics().getBackBufferHeight() / (float)window.getGraphics().getLogicalHeight();				
+				deltaX = (int)(deltaX * xScale);
+				deltaY = (int)(deltaY * yScale);
+				mouseX = (int)(mouseX * xScale);
+				mouseY = (int)(mouseY * yScale);
+			}
+			
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
 			if (mousePressed > 0) {								
-				eventQueue.touchDragged((int)x, (int)y, 0);
+				eventQueue.touchDragged(mouseX, mouseY, 0);
 			} else {								
-				eventQueue.mouseMoved((int)x, (int)y);
+				eventQueue.mouseMoved(mouseX, mouseY);
 			}			
 		}
 	};
@@ -124,10 +155,20 @@ public class Lwjgl3Input implements Input {
 	public Lwjgl3Input(Lwjgl3Window window) {
 		this.window = window;
 		windowHandleChanged(window.getWindowHandle());
+	}	
+	
+	void resetPollingStates() {
+		justTouched = false;
+		keyJustPressed = false;
+		for (int i = 0; i < justPressedKeys.length; i++) {
+			justPressedKeys[i] = false;
+		}
+		eventQueue.setProcessor(null);
+		eventQueue.drain();
 	}
 	
-	
-	public void windowHandleChanged(long windowHandle) {		
+	public void windowHandleChanged(long windowHandle) {
+		resetPollingStates();
 		glfwSetKeyCallback(window.getWindowHandle(), keyCallback);
 		glfwSetCharCallback(window.getWindowHandle(), charCallback);
 		glfwSetScrollCallback(window.getWindowHandle(), scrollCallback);
@@ -135,9 +176,7 @@ public class Lwjgl3Input implements Input {
 		glfwSetMouseButtonCallback(window.getWindowHandle(), mouseButtonCallback);
 	}	
 	
-	public void update() {
-		deltaX = 0;
-		deltaY = 0;
+	public void update() {		
 		justTouched = false;
 		
 		if (keyJustPressed) {
@@ -148,6 +187,8 @@ public class Lwjgl3Input implements Input {
 		}		
 		eventQueue.setProcessor(inputProcessor);
 		eventQueue.drain();
+		deltaX = 0;
+		deltaY = 0;
 	}	
 
 	@Override
@@ -267,6 +308,12 @@ public class Lwjgl3Input implements Input {
 
 	@Override
 	public void setCursorPosition(int x, int y) {
+		if(window.getConfig().hdpiMode == HdpiMode.Pixels) {
+			float xScale = window.getGraphics().getLogicalWidth() / (float)window.getGraphics().getBackBufferWidth();
+			float yScale = window.getGraphics().getLogicalHeight() / (float)window.getGraphics().getBackBufferHeight();
+			x = (int)(x * xScale);
+			y = (int)(y * yScale);
+		}
 		glfwSetCursorPos(window.getWindowHandle(), x, y);		
 	}
 	
@@ -794,4 +841,12 @@ public class Lwjgl3Input implements Input {
 	public void getRotationMatrix(float[] matrix) {
 	}
 
+	@Override
+	public void dispose() {
+		keyCallback.release();
+		charCallback.release();
+		scrollCallback.release();
+		cursorPosCallback.release();
+		mouseButtonCallback.release();
+	}
 }
