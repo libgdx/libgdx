@@ -28,6 +28,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -57,22 +58,11 @@ public class Lwjgl3DebugStarter {
 			SpriteBatch batch;
 			BitmapFont font;
 			FPSLogger fps = new FPSLogger();
-
+			Texture texture;
+			
 			@Override
-			public void create () {
-				new Thread(new Runnable() {
-					@Override
-					public void run () {
-						while(true) {
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
-				}).start();
+			public void create () {				
+				texture = new Texture("data/badlogic.jpg");
 				batch = new SpriteBatch();
 				font = new BitmapFont();
 				Gdx.input.setInputProcessor(new InputAdapter() {
@@ -95,7 +85,8 @@ public class Lwjgl3DebugStarter {
 						
 						if(character == 'f') {
 							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
-							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+							Gdx.graphics.setFullscreenMode(modes[MathUtils.random(0, modes.length - 1)]);
 						}
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
@@ -107,6 +98,8 @@ public class Lwjgl3DebugStarter {
 					}										
 				});
 			}
+			
+			long start = System.nanoTime();
 
 			@Override
 			public void render () {
@@ -119,9 +112,17 @@ public class Lwjgl3DebugStarter {
 				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
 									  Gdx.graphics.getBackBufferWidth() + "x" + Gdx.graphics.getBackBufferHeight() + ", " +
 									  Gdx.input.getX() + ", " + Gdx.input.getY() + ", " + 
-									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);
-				batch.end();				
+									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);				
+				batch.draw(texture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				batch.end();
 				fps.log();
+				if(System.nanoTime() - start > 1000000000l) {
+					start = System.nanoTime();
+					Gdx.app.log("Test", Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
+									  Gdx.graphics.getBackBufferWidth() + "x" + Gdx.graphics.getBackBufferHeight() + ", " +
+									  Gdx.input.getX() + ", " + Gdx.input.getY() + ", " + 
+									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY());
+				}
 			}
 
 			@Override

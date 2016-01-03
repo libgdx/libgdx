@@ -285,30 +285,30 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
+		boolean result = false;
 		if(isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
-			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
-			updateFramebufferInfo();
-			return true;
+			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);			
+			result = true;
 		} else {		
-			boolean result = recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);
-			updateFramebufferInfo();
-			return result;
+			result = recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);						
 		}
+		updateFramebufferInfo();
+		return result;
 	}
 
 	@Override
 	public boolean setWindowedMode(int width, int height) {
 		window.getInput().resetPollingStates();
+		boolean result = false;
 		if(!isFullscreen()) {					
-			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
-			updateFramebufferInfo();
-			return true;
+			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);			
+			result = true;
 		} else {
 			// FIXME create windowed mode window on monitor fullscreen was on
-			boolean result = recreateWindow(width, height, null);
-			updateFramebufferInfo();
-			return result;
+			result = recreateWindow(width, height, null);
 		}
+		updateFramebufferInfo();
+		return result;
 	}
 	
 	private boolean recreateWindow(int width, int height, Lwjgl3DisplayMode displayMode) {
@@ -318,14 +318,13 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		try {
 			long oldHandle = window.getWindowHandle();
 			GLFW.glfwHideWindow(oldHandle);
+			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);			
+			
 			long windowHandle = Lwjgl3Application.createGlfwWindow(config, oldHandle);
-			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);
 			GLFW.glfwDestroyWindow(oldHandle);
-			
 			GLFW.glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
-			GLFW.glfwShowWindow(windowHandle);
-			
-			window.windowHandleChanged(windowHandle);
+			window.windowHandleChanged(windowHandle);			
+			GLFW.glfwShowWindow(windowHandle);						
 			return true;
 		} catch(GdxRuntimeException e) {
 			e.printStackTrace();

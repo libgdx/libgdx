@@ -356,14 +356,14 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		if (config.fullscreenMode != null) {
-			if (config.windowX == -1 && config.windowY == -1) {
-				GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-				glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
-			} else {
-				glfwSetWindowPos(windowHandle, config.windowX, config.windowHeight);
-			}
-		}
+//		if (config.fullscreenMode == null) {
+//			if (config.windowX == -1 && config.windowY == -1) {
+//				GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+//				glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
+//			} else {
+//				glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
+//			}
+//		}
 		glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		glfwMakeContextCurrent(windowHandle);
 		GL.createCapabilities();
