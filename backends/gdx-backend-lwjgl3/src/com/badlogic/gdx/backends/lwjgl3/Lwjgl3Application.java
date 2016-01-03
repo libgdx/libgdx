@@ -113,10 +113,13 @@ public class Lwjgl3Application implements Application {
 
 		Lwjgl3Window window = createWindow(config, listener);
 		windows.add(window);
-		// FIXME catch any exceptions thrown, make sure cleanup is performed
-		// stop audio, destroy windows, print stacktrace. See old LwjglApplication
-		loop();
-		cleanup();
+		try {
+			loop();
+		} catch(Throwable t) {
+			t.printStackTrace();
+		} finally {
+			cleanup();
+		}
 	}
 
 	private void loop() {
@@ -384,7 +387,6 @@ public class Lwjgl3Application implements Application {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			glfwSwapBuffers(windowHandle);
 		}
-		Gdx.app.log("Lwjgl3Application", "Created window handle 0x" + Long.toHexString(windowHandle));
 		return windowHandle;
 	}
 }

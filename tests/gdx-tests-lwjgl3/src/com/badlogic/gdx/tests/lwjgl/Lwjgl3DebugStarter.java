@@ -36,6 +36,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DeltaTimeTest;
+import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.tests.g3d.BaseG3dHudTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Lwjgl3DebugStarter {
 	public static void main (String[] argv) throws NoSuchFieldException, SecurityException, ClassNotFoundException {
@@ -58,6 +60,19 @@ public class Lwjgl3DebugStarter {
 
 			@Override
 			public void create () {
+				new Thread(new Runnable() {
+					@Override
+					public void run () {
+						while(true) {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}).start();
 				batch = new SpriteBatch();
 				font = new BitmapFont();
 				Gdx.input.setInputProcessor(new InputAdapter() {
@@ -85,7 +100,9 @@ public class Lwjgl3DebugStarter {
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
 						}
-						
+						if(character == 'e') {
+							throw new GdxRuntimeException("derp");
+						}						
 						return false;
 					}										
 				});

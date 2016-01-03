@@ -75,7 +75,7 @@ public class FullscreenTest extends GdxTest {
 					}
 				}
 				
-				Gdx.graphics.setFullscreenMode(m);
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				fullscreen = true;
