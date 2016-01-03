@@ -86,7 +86,12 @@ public class Lwjgl3DebugStarter {
 						if(character == 'f') {
 							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
 //							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-							Gdx.graphics.setFullscreenMode(modes[MathUtils.random(0, modes.length - 1)]);
+							for(DisplayMode mode: modes) {
+								if(mode.width == 1920 && mode.height == 1080) {
+									Gdx.graphics.setFullscreenMode(mode);
+									break;
+								}
+							}
 						}
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
@@ -131,7 +136,10 @@ public class Lwjgl3DebugStarter {
 			}
 		};
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setWindowedMode(640, 480);		
+		config.setWindowedMode(640, 480);
+		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
+			System.out.println(mode.width + "x" + mode.height);
+		}
 		new Lwjgl3Application(test, config);
 	}
 }

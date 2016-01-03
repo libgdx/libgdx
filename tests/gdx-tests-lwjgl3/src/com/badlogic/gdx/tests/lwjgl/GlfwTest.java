@@ -16,7 +16,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class GlfwTest {
 	private static long windowHandle;
-	private static boolean isFullscreen = true;
+	private static boolean isFullscreen = false;
 	private static int width = 640;
 	private static int height = 480;
 	private static char lastChar = 0;
@@ -75,11 +75,11 @@ public class GlfwTest {
 			height = 480;
 		} else {
 			// fullscreen, current resolution, works
-//			GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-//			glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
-//			width = mode.width();
-//			height = mode.height();			
-//			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
+			GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+			glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
+			width = mode.width();
+			height = mode.height();			
+			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
 			
 			// fake fullscreen, kinda works, but shows
 			// menu bar on Mac OS X
@@ -90,18 +90,17 @@ public class GlfwTest {
 //			windowHandle = glfwCreateWindow(width, height, "Test", 0, oldWindowHandle);			
 			
 			// fullscreen, not current resolution, fails
-			Buffer modes = glfwGetVideoModes(glfwGetPrimaryMonitor());
-			GLFWVidMode mode = null;
-			for(int i = 0; i < modes.limit(); i++) {
-				mode = modes.get(i);
-				if(mode.width() == 1024) {
-					break;
-				}
-			}
-			width = mode.width();
-			height = mode.height();			
-			glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
-			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
+//			Buffer modes = glfwGetVideoModes(glfwGetPrimaryMonitor());
+//			GLFWVidMode mode = null;
+//			for(int i = 0; i < modes.limit(); i++) {
+//				mode = modes.get(i);
+//				if(mode.width() == 1024) {
+//					break;
+//				}
+//			}
+//			width = 1920;
+//			height = 1080;			
+//			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
 		}
 		if (windowHandle == 0) {
 			throw new RuntimeException("Couldn't create window");
