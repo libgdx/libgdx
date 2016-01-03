@@ -226,8 +226,30 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public Monitor getMonitor() {
 		Monitor[] monitors = getMonitors();
-		// FIXME figure out the monitor the window is on
-		return null;
+		Monitor result = monitors[0];
+		
+		GLFW.glfwGetWindowPos(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		int windowX = tmpBuffer.get(0);
+		int windowY = tmpBuffer2.get(0);
+		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		int windowWidth = tmpBuffer.get(0);
+		int windowHeight = tmpBuffer2.get(0);		
+		int overlap;
+		int bestOverlap = 0;
+		
+		for (Monitor monitor: monitors) {
+	        DisplayMode mode = getDisplayMode(monitor);	        	        
+
+	        overlap =
+	            Math.max(0, Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX)) *
+	            Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
+
+	        if (bestOverlap < overlap) {
+	            bestOverlap = overlap;
+	            result = monitor;
+	        }
+	    }
+		return result;
 	}
 
 	@Override
@@ -242,8 +264,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public DisplayMode[] getDisplayModes() {
-		// FIXME pass in the monitor the window is on
-		return Lwjgl3ApplicationConfiguration.getDisplayModes();
+		return Lwjgl3ApplicationConfiguration.getDisplayModes(getMonitor());
 	}
 
 	@Override
@@ -253,8 +274,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public DisplayMode getDisplayMode() {
-		// FIXME pass in the monitor the window is on
-		return Lwjgl3ApplicationConfiguration.getDisplayMode();
+		return Lwjgl3ApplicationConfiguration.getDisplayMode(getMonitor());
 	}
 
 	@Override
@@ -264,7 +284,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
-		window.getInput().resetPollingStates(); // need to drain all events and poll states
+		window.getInput().resetPollingStates();
 		if(isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
 			updateFramebufferInfo();
@@ -278,12 +298,13 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public boolean setWindowedMode(int width, int height) {
-		window.getInput().resetPollingStates(); // need to drain all events and poll states
+		window.getInput().resetPollingStates();
 		if(!isFullscreen()) {					
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 			updateFramebufferInfo();
 			return true;
 		} else {
+			// FIXME create windowed mode window on monitor fullscreen was on
 			boolean result = recreateWindow(width, height, null);
 			updateFramebufferInfo();
 			return result;
@@ -291,12 +312,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 	
 	private boolean recreateWindow(int width, int height, Lwjgl3DisplayMode displayMode) {
-		// FIXME width/height aren't updated when switching to fullscreen mode
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setWindowedMode(width, height);
 		config.setFullscreenMode(displayMode);
 		try {
 			long oldHandle = window.getWindowHandle();
+			GLFW.glfwHideWindow(oldHandle);
 			long windowHandle = Lwjgl3Application.createGlfwWindow(config, oldHandle);
 			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);
 			GLFW.glfwDestroyWindow(oldHandle);
@@ -367,26 +388,28 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {
-		final long monitor;
+		final long monitorHandle;
 		
 		Lwjgl3DisplayMode(long monitor, int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
-			this.monitor = monitor;
+			this.monitorHandle = monitor;
 		}
 
 		public long getMonitor() {
-			return monitor;
+			return monitorHandle;
 		}
 	}
 
 	public static class Lwjgl3Monitor extends Monitor {
-		final long monitor;
+		final long monitorHandle;
+		
 		Lwjgl3Monitor(long monitor, int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
-			this.monitor = monitor;
+			this.monitorHandle = monitor;
 		}
-		public long getMonitor() {
-			return monitor;
+		
+		public long getMonitorHandle() {
+			return monitorHandle;
 		}
 	}
 

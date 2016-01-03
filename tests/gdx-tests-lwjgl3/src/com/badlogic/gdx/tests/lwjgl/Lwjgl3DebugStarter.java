@@ -80,7 +80,7 @@ public class Lwjgl3DebugStarter {
 						
 						if(character == 'f') {
 							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
-							Gdx.graphics.setFullscreenMode(modes[MathUtils.random(0, modes.length-1)]);
+							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 						}
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));

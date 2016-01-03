@@ -294,8 +294,8 @@ public class Lwjgl3ApplicationConfiguration {
 	 */
 	public static DisplayMode getDisplayMode(Monitor monitor) {
 		Lwjgl3Application.initializeGlfw();
-		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(((Lwjgl3Monitor)monitor).monitor);
-		return new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitor, videoMode.width(), videoMode.height(), videoMode.refreshRate(),
+		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(((Lwjgl3Monitor)monitor).monitorHandle);
+		return new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitorHandle, videoMode.width(), videoMode.height(), videoMode.refreshRate(),
 				videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 	}
 
@@ -319,11 +319,11 @@ public class Lwjgl3ApplicationConfiguration {
 	 */
 	public static DisplayMode[] getDisplayModes(Monitor monitor) {
 		Lwjgl3Application.initializeGlfw();
-		Buffer videoModes = GLFW.glfwGetVideoModes(((Lwjgl3Monitor)monitor).monitor);
+		Buffer videoModes = GLFW.glfwGetVideoModes(((Lwjgl3Monitor)monitor).monitorHandle);
 		DisplayMode[] result = new DisplayMode[videoModes.limit()];
 		for (int i = 0; i < result.length; i++) {
 			GLFWVidMode videoMode = videoModes.get(i);
-			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitor, videoMode.width(), videoMode.height(),
+			result[i] = new Lwjgl3Graphics.Lwjgl3DisplayMode(((Lwjgl3Monitor)monitor).monitorHandle, videoMode.width(), videoMode.height(),
 					videoMode.refreshRate(), videoMode.redBits() + videoMode.greenBits() + videoMode.blueBits());
 		}
 		return result;
