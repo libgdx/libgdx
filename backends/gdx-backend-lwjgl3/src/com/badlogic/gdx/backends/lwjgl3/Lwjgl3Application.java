@@ -117,6 +117,8 @@ public class Lwjgl3Application implements Application {
 
 		Lwjgl3Window window = createWindow(config, listener);
 		windows.add(window);
+		// FIXME catch any exceptions thrown, make sure cleanup is performed
+		// stop audio, destroy windows, print stacktrace. See old LwjglApplication
 		loop();
 		cleanup();
 	}
