@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DeltaTimeTest;
@@ -78,7 +79,8 @@ public class Lwjgl3DebugStarter {
 						System.out.println("Key typed: '" + character + "', " + (int)character);
 						
 						if(character == 'f') {
-							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
+							Gdx.graphics.setFullscreenMode(modes[MathUtils.random(0, modes.length-1)]);
 						}
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
@@ -93,9 +95,10 @@ public class Lwjgl3DebugStarter {
 			public void render () {
 				Gdx.gl.glClearColor(r, 0, 0, 1);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				HdpiUtils.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.begin();
-				font.draw(batch, Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);
+				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " + Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY(), 0, 20);
 				batch.end();
 				if (Gdx.input.justTouched()) {
 					System.out.println("Just touched");
@@ -105,7 +108,7 @@ public class Lwjgl3DebugStarter {
 			}
 		};
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setWindowedMode(640, 480);
+		config.setWindowedMode(640, 480);		
 		new Lwjgl3Application(test, config);
 	}
 }

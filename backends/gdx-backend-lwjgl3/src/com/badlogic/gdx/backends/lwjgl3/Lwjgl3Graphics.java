@@ -55,11 +55,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		@Override
 		public void invoke(long windowHandle, final int width, final int height) {
-			Lwjgl3Graphics.this.frameBufferWidth = width;
-			Lwjgl3Graphics.this.frameBufferHeight = height;
-			GLFW.glfwGetWindowSize(windowHandle, tmpBuffer, tmpBuffer2);
-			Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
-			Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
+			updateFramebufferInfo();
 			if (!window.isListenerInitialized()) {
 				return;
 			}
@@ -228,7 +224,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public Monitor getMonitor() {
-		// TODO Auto-generated method stub
+		// FIXME figure out the monitor the window is on
 		return null;
 	}
 
@@ -244,6 +240,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public DisplayMode[] getDisplayModes() {
+		// FIXME pass in the monitor the window is on
 		return Lwjgl3ApplicationConfiguration.getDisplayModes();
 	}
 
@@ -254,6 +251,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public DisplayMode getDisplayMode() {
+		// FIXME pass in the monitor the window is on
 		return Lwjgl3ApplicationConfiguration.getDisplayMode();
 	}
 
@@ -265,7 +263,14 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates(); // need to drain all events and poll states
-		return recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);
+		if(isFullscreen()) {
+			// FIXME can't resize if refresh rate changed compared to
+			// old fullscreen mode
+			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
+			return true;
+		} else {		
+			return recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);
+		}
 	}
 
 	@Override
@@ -280,7 +285,8 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 	
 	private boolean recreateWindow(int width, int height, Lwjgl3DisplayMode displayMode) {
-		Lwjgl3ApplicationConfiguration config = Lwjgl3ApplicationConfiguration.copy(window.getConfig());
+		// FIXME width/height aren't updated when switching to fullscreen mode
+		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setWindowedMode(width, height);
 		config.setFullscreenMode(displayMode);
 		try {

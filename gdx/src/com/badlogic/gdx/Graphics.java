@@ -197,13 +197,13 @@ public interface Graphics {
 	/** @return the currently connected {@link Monitor}s */
 	public Monitor[] getMonitors();
 
-	/** @return the supported fullscreen {@link DisplayMode}(s) of the primary monitor. */
+	/** @return the supported fullscreen {@link DisplayMode}(s) of the monitor the window is on */
 	public DisplayMode[] getDisplayModes ();
 	
 	/** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
 	public DisplayMode[] getDisplayModes(Monitor monitor);
 
-	/** @return the current {@link DisplayMode} of the primary monitor. */
+	/** @return the current {@link DisplayMode} of the monitor the window is on. */
 	public DisplayMode getDisplayMode ();
 	
 	/** @return the current {@link DisplayMode} of the given {@link Monitor} */

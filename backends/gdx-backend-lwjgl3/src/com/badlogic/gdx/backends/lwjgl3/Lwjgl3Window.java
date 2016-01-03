@@ -36,6 +36,7 @@ class Lwjgl3Window implements Disposable {
 	private final Lwjgl3Input input;
 	private final Lwjgl3ApplicationConfiguration config;
 	private final Array<Runnable> runnables = new Array<Runnable>();
+	private final Array<Runnable> executedRunnables = new Array<Runnable>();
 
 	public Lwjgl3Window(long windowHandle, ApplicationListener listener,
 			Lwjgl3ApplicationConfiguration config) {
@@ -71,12 +72,15 @@ class Lwjgl3Window implements Disposable {
 		if(listenerInitialized == false) {
 			initializeListener();
 		}
-		synchronized(runnables) {
-			for(Runnable runnable: runnables) {
-				runnable.run();
-			}
+		synchronized(runnables) {		
+			executedRunnables.addAll(runnables);
 			runnables.clear();
 		}
+		for(Runnable runnable: executedRunnables) {
+			runnable.run();
+		}		
+		executedRunnables.clear();
+		
 		graphics.update();		
 		listener.render();
 		glfwSwapBuffers(windowHandle);
@@ -115,8 +119,7 @@ class Lwjgl3Window implements Disposable {
 		listener.pause();
 		listener.dispose();		
 		graphics.dispose();
-		input.dispose();
-		Gdx.app.log("Lwjgl3Graphics", "Destroying window handle 0x" + Long.toHexString(windowHandle));
+		input.dispose();		
 		glfwDestroyWindow(windowHandle);
 	}
 

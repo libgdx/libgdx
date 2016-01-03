@@ -81,8 +81,7 @@ public class Lwjgl3Application implements Application {
 	private int logLevel = LOG_INFO;
 	private volatile boolean running = true;
 	private final Array<Runnable> runnables = new Array<Runnable>();
-	private final Array<Runnable> executedRunnables = new Array<Runnable>();
-	private final Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
+	private final Array<Runnable> executedRunnables = new Array<Runnable>();	
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	@SuppressWarnings("unused")
 	private static GLFWErrorCallback errorCallback;
@@ -99,7 +98,7 @@ public class Lwjgl3Application implements Application {
 
 	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		initializeGlfw();
-		this.config = config;
+		this.config = Lwjgl3ApplicationConfiguration.copy(config);
 		Gdx.app = this;
 		if (!config.disableAudio) {
 			try {
@@ -123,7 +122,9 @@ public class Lwjgl3Application implements Application {
 	}
 
 	private void loop() {
+		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
+			// FIXME put it on a separate thread
 			if (audio instanceof OpenALAudio) {
 				((OpenALAudio) audio).update();
 			}

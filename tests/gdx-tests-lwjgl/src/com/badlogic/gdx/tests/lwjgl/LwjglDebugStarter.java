@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.FullscreenTest;
+import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.UITest;
@@ -35,14 +36,13 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new FullscreenTest();		
+		GdxTest test = new InputTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;
-		config.height = 600;
-		config.fullscreen = true;
+		config.height = 600;		
 //		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
 		new LwjglApplication(test, config);
 	}

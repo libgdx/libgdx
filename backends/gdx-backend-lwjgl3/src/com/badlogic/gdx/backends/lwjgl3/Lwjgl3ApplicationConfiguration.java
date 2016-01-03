@@ -303,7 +303,7 @@ public class Lwjgl3ApplicationConfiguration {
 	 * @return the available {@link DisplayMode}s of the primary monitor
 	 */
 	public static DisplayMode[] getDisplayModes() {
-		Lwjgl3Application.initializeGlfw();
+		Lwjgl3Application.initializeGlfw(); 
 		Buffer videoModes = GLFW.glfwGetVideoModes(GLFW.glfwGetPrimaryMonitor());
 		DisplayMode[] result = new DisplayMode[videoModes.limit()];
 		for (int i = 0; i < result.length; i++) {
