@@ -26,6 +26,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,6 +47,7 @@ import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
+import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.BaseG3dHudTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -144,7 +146,7 @@ public class Lwjgl3DebugStarter {
 		config.setWindowedMode(640, 480);
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
-		}
-		new Lwjgl3Application(new CursorTest(), config);
+		}		
+		new Lwjgl3Application(new ControllersTest(), config);
 	}
 }
