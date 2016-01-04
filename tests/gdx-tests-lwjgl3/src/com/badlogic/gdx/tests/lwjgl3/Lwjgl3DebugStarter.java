@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.lwjgl;
+package com.badlogic.gdx.tests.lwjgl3;
 
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;

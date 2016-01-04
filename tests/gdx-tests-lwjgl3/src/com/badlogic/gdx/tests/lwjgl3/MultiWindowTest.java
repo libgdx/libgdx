@@ -1,6 +1,7 @@
-package com.badlogic.gdx.tests.lwjgl;
+package com.badlogic.gdx.tests.lwjgl3;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
@@ -10,12 +11,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.tests.BulletTestCollection;
+import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
+import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MultiWindowTest {
 	static Texture sharedTexture;
 	static SpriteBatch sharedSpriteBatch;
 	
 	public static class MainWindow extends ApplicationAdapter {
+		Class[] childWindowClasses = { ShaderCollectionTest.class, BulletTestCollection.class, UITest.class, Basic3DSceneTest.class };
+		
 		@Override
 		public void create () {
 			sharedSpriteBatch = new SpriteBatch();
@@ -37,23 +45,17 @@ public class MultiWindowTest {
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
-				app.newWindow(new ChildWindow(), config);
+				Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
+				ApplicationListener listener = null;
+				try {
+					listener = (ApplicationListener)clazz.newInstance();
+				} catch(Throwable t) {
+					new GdxRuntimeException("Couldn't instantiate app listener", t);
+				}
+				app.newWindow(listener, config);
 			}
 		}
-	}
-	
-	public static class ChildWindow extends ApplicationAdapter {
-
-		@Override
-		public void render () {
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			Gdx.gl.glClearColor(0, 0, 0, 1);
-			sharedSpriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			sharedSpriteBatch.begin();
-			sharedSpriteBatch.draw(sharedTexture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - 1);
-			sharedSpriteBatch.end();
-		}
-	}
+	}		
 	
 	public static void main(String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

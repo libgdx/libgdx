@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.tests.lwjgl;
+package com.badlogic.gdx.tests.lwjgl3;
 
 import static org.lwjgl.glfw.GLFW.*;
 
