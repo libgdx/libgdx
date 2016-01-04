@@ -137,6 +137,10 @@ public class SuperKoalio extends GdxTest {
 
 	private void updateKoala (float deltaTime) {
 		if (deltaTime == 0) return;
+
+		if (deltaTime > 0.1f)
+			deltaTime = 0.1f;
+
 		koala.stateTime += deltaTime;
 
 		// check input and apply to velocity & state
