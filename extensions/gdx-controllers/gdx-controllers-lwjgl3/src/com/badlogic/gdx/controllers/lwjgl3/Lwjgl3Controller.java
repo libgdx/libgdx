@@ -31,9 +31,20 @@ public class Lwjgl3Controller implements Controller {
 	void pollState() {
 		if(GLFW.glfwJoystickPresent(index) == GLFW.GLFW_FALSE) {
 			manager.disconnected(this);
+			return;
 		}
 		
 		FloatBuffer axes = GLFW.glfwGetJoystickAxes(index);
+		if(axes == null) {
+			manager.disconnected(this);
+			return;
+		}
+		ByteBuffer buttons = GLFW.glfwGetJoystickButtons(index);
+		if(buttons == null) {
+			manager.disconnected(this);
+			return;
+		}
+		
 		for(int i = 0; i < axes.limit(); i++) {
 			if(axisState[i] != axes.get(i)) {
 				for(ControllerListener listener: listeners) {
@@ -43,7 +54,7 @@ public class Lwjgl3Controller implements Controller {
 			}
 			axisState[i] = axes.get(i);
 		}
-		ByteBuffer buttons = GLFW.glfwGetJoystickButtons(index);
+
 		for(int i = 0; i < buttons.limit(); i++) {
 			if(buttonState[i] != (buttons.get(i) == GLFW.GLFW_PRESS)) {
 				for(ControllerListener listener: listeners) {

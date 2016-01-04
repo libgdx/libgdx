@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3ControllerManager implements ControllerManager {
 	final Array<Controller> controllers = new Array<Controller>();
+	final Array<Controller> polledControllers = new Array<Controller>();
 	final Array<ControllerListener> listeners = new Array<ControllerListener>();
 	
 	public Lwjgl3ControllerManager() {
@@ -29,9 +30,28 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 	}
 	
 	void pollState() {
-		for(Controller controller: controllers) {
+		for(int i = GLFW.GLFW_JOYSTICK_1; i < GLFW.GLFW_JOYSTICK_LAST; i++) {
+			if(GLFW.glfwJoystickPresent(i) == GLFW.GLFW_TRUE) {
+				boolean alreadyUsed = false;
+				for(int j = 0; j < controllers.size; j++) {
+					if(((Lwjgl3Controller)controllers.get(j)).index == i) {
+						alreadyUsed = true;
+						break;
+					}
+				}
+				if(!alreadyUsed) {
+					Lwjgl3Controller controller = new Lwjgl3Controller(this, i);
+					controllers.add(controller);
+					connected(controller);
+				}
+			}
+		}
+		
+		polledControllers.addAll(controllers);
+		for(Controller controller: polledControllers) {
 			((Lwjgl3Controller)controller).pollState();
 		}
+		polledControllers.clear();
 	}
 	
 	@Override
