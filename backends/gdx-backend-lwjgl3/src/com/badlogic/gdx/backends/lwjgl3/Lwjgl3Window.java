@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -82,9 +78,9 @@ public class Lwjgl3Window implements Disposable {
 		
 		graphics.update();		
 		listener.render();
-		glfwSwapBuffers(windowHandle);
+		GLFW.glfwSwapBuffers(windowHandle);
 		input.update();
-		glfwPollEvents();
+		GLFW.glfwPollEvents();
 	}
 	
 	public boolean shouldClose() {
@@ -119,7 +115,7 @@ public class Lwjgl3Window implements Disposable {
 		listener.dispose();		
 		graphics.dispose();
 		input.dispose();		
-		glfwDestroyWindow(windowHandle);
+		GLFW.glfwDestroyWindow(windowHandle);
 	}
 
 	@Override

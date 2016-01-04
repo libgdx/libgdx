@@ -34,7 +34,7 @@ public class Lwjgl3Cursor implements Cursor {
 	final Lwjgl3Window window;
 	Pixmap pixmapCopy;
 	GLFWImage glfwImage;
-	final long cursor;
+	final long glfwCursor;
 
 	Lwjgl3Cursor(Lwjgl3Window window, Pixmap pixmap, int xHotspot, int yHotspot) {
 		this.window = window;
@@ -69,7 +69,7 @@ public class Lwjgl3Cursor implements Cursor {
 		glfwImage.width(pixmapCopy.getWidth());
 		glfwImage.height(pixmapCopy.getHeight());
 		glfwImage.pixels(pixmapCopy.getPixels());
-		cursor = GLFW.glfwCreateCursor(glfwImage, xHotspot, yHotspot);
+		glfwCursor = GLFW.glfwCreateCursor(glfwImage, xHotspot, yHotspot);
 		cursors.add(this);
 	}
 
@@ -82,6 +82,7 @@ public class Lwjgl3Cursor implements Cursor {
 		pixmapCopy.dispose();
 		pixmapCopy = null;
 		glfwImage.free();
+		GLFW.glfwDestroyCursor(glfwCursor);
 	}
 
 	static void disposeAll() {

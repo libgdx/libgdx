@@ -386,7 +386,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setCursor(Cursor cursor) {
-		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor) cursor).cursor);
+		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor) cursor).glfwCursor);
 	}
 
 	@Override

@@ -16,27 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import static org.lwjgl.glfw.GLFW.GLFW_ALPHA_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_BLUE_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_DEPTH_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_GREEN_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_RED_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
-import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwExtensionSupported;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-
 import java.io.File;
 
 import org.lwjgl.glfw.GLFW;
@@ -83,7 +62,8 @@ public class Lwjgl3Application implements Application {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
-			if (glfwInit() != GLFW_TRUE) {
+			GLFW.glfwSetErrorCallback(errorCallback);
+			if (GLFW.glfwInit() != GLFW.GLFW_TRUE) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
 		}
@@ -137,7 +117,7 @@ public class Lwjgl3Application implements Application {
 				Gdx.gl30 = window.getGraphics().getGL30();
 				Gdx.input = window.getInput();
 
-				glfwMakeContextCurrent(window.getWindowHandle());
+				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
 					window.update(lifecycleListeners);
@@ -172,6 +152,7 @@ public class Lwjgl3Application implements Application {
 			((OpenALAudio) audio).dispose();
 		}
 		errorCallback.release();
+		GLFW.glfwTerminate();
 	}
 
 	@Override
@@ -341,32 +322,32 @@ public class Lwjgl3Application implements Application {
 	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		glfwShowWindow(windowHandle);
+		GLFW.glfwShowWindow(windowHandle);
 		return window;
 	}
 
 	public static long createGlfwWindow(Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {
-		glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, config.windowResizable ? GLFW_TRUE : GLFW_FALSE);
+		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		
 		if(sharedContextWindow == 0) {
-			glfwWindowHint(GLFW_RED_BITS, config.r);
-			glfwWindowHint(GLFW_GREEN_BITS, config.g);
-			glfwWindowHint(GLFW_BLUE_BITS, config.b);
-			glfwWindowHint(GLFW_ALPHA_BITS, config.a);
-			glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
-			glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
-			glfwWindowHint(GLFW_SAMPLES, config.samples);
+			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
+			GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
+			GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, config.b);
+			GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, config.a);
+			GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, config.stencil);
+			GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
+			GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 		}
 
 		long windowHandle = 0;
 		
 		if(config.fullscreenMode != null) {
 			// glfwWindowHint(GLFW.GLFW_REFRESH_RATE, config.fullscreenMode.refreshRate);
-			windowHandle = glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title, config.fullscreenMode.getMonitor(), sharedContextWindow);
+			windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title, config.fullscreenMode.getMonitor(), sharedContextWindow);
 		} else {
-			windowHandle = glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);			
+			windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);			
 		}
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
@@ -379,8 +360,8 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
 		}
-		glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
-		glfwMakeContextCurrent(windowHandle);
+		GLFW.glfwMakeContextCurrent(windowHandle);
+		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		GL.createCapabilities();
 		
 		String version = GL11.glGetString(GL20.GL_VERSION);
@@ -389,8 +370,8 @@ public class Lwjgl3Application implements Application {
 			throw new GdxRuntimeException(
 					"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
 		if (glMajorVersion == 2 || version.contains("2.1")) {
-			if (glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW_FALSE
-					&& glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW_FALSE) {
+			if (GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_FALSE
+					&& GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_FALSE) {
 				throw new GdxRuntimeException(
 						"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
 								+ ", FBO extension: false");
@@ -400,7 +381,7 @@ public class Lwjgl3Application implements Application {
 			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
 					config.initialBackgroundColor.a);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			glfwSwapBuffers(windowHandle);
+			GLFW.glfwSwapBuffers(windowHandle);
 		}
 		return windowHandle;
 	}
