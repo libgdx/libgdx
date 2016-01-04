@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.awt.Toolkit;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -24,10 +23,10 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.HdpiMode;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -42,7 +41,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private volatile int backBufferHeight;
 	private volatile int logicalWidth;
 	private volatile int logicalHeight;
-	private BufferFormat bufferFormat;	
+	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
 	private long frameId;
@@ -74,7 +73,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		updateFramebufferInfo();
 		GLFW.glfwSetFramebufferSizeCallback(window.getWindowHandle(), resizeCallback);
 	}
-	
+
 	public Lwjgl3Window getWindow() {
 		return window;
 	}
@@ -85,7 +84,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		this.backBufferHeight = tmpBuffer2.get(0);
 		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
-		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);		
+		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
 		Lwjgl3ApplicationConfiguration config = window.getConfig();
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil,
 				config.samples, false);
@@ -195,20 +194,20 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpcX() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeX = tmpBuffer.get(0);
-		DisplayMode mode = getDisplayMode();		
-		return mode.width / (float)sizeX * 10;		
+		DisplayMode mode = getDisplayMode();
+		return mode.width / (float) sizeX * 10;
 	}
 
 	@Override
 	public float getPpcY() {
-		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor) getMonitor();
 		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
 		int sizeY = tmpBuffer2.get(0);
-		DisplayMode mode = getDisplayMode();		
-		return mode.height / (float)sizeY * 10;
+		DisplayMode mode = getDisplayMode();
+		return mode.height / (float) sizeY * 10;
 	}
 
 	@Override
@@ -230,28 +229,30 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public Monitor getMonitor() {
 		Monitor[] monitors = getMonitors();
 		Monitor result = monitors[0];
-		
+
 		GLFW.glfwGetWindowPos(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		int windowX = tmpBuffer.get(0);
 		int windowY = tmpBuffer2.get(0);
 		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		int windowWidth = tmpBuffer.get(0);
-		int windowHeight = tmpBuffer2.get(0);		
+		int windowHeight = tmpBuffer2.get(0);
 		int overlap;
 		int bestOverlap = 0;
-		
-		for (Monitor monitor: monitors) {
-	        DisplayMode mode = getDisplayMode(monitor);	        	        
 
-	        overlap =
-	            Math.max(0, Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX)) *
-	            Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
+		for (Monitor monitor : monitors) {
+			DisplayMode mode = getDisplayMode(monitor);
 
-	        if (bestOverlap < overlap) {
-	            bestOverlap = overlap;
-	            result = monitor;
-	        }
-	    }
+			overlap = Math.max(0,
+					Math.min(windowX + windowWidth, monitor.virtualX + mode.width)
+							- Math.max(windowX, monitor.virtualX))
+					* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height)
+							- Math.max(windowY, monitor.virtualY));
+
+			if (bestOverlap < overlap) {
+				bestOverlap = overlap;
+				result = monitor;
+			}
+		}
 		return result;
 	}
 
@@ -289,11 +290,12 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
 		boolean result = false;
-		if(isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
-			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);			
+		if (isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(),
+				GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
+			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
 			result = true;
-		} else {		
-			result = recreateWindow(0, 0, (Lwjgl3DisplayMode)displayMode);						
+		} else {
+			result = recreateWindow(0, 0, (Lwjgl3DisplayMode) displayMode);
 		}
 		updateFramebufferInfo();
 		return result;
@@ -303,17 +305,16 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public boolean setWindowedMode(int width, int height) {
 		window.getInput().resetPollingStates();
 		boolean result = false;
-		if(!isFullscreen()) {					
-			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);			
+		if (!isFullscreen()) {
+			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 			result = true;
 		} else {
-			// FIXME create windowed mode window on monitor fullscreen was on
 			result = recreateWindow(width, height, null);
 		}
 		updateFramebufferInfo();
 		return result;
 	}
-	
+
 	private boolean recreateWindow(int width, int height, Lwjgl3DisplayMode displayMode) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setWindowedMode(width, height);
@@ -321,15 +322,15 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		try {
 			long oldHandle = window.getWindowHandle();
 			GLFW.glfwHideWindow(oldHandle);
-			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);			
-			
+			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);
+
 			long windowHandle = Lwjgl3Application.createGlfwWindow(config, oldHandle);
 			GLFW.glfwDestroyWindow(oldHandle);
 			GLFW.glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
-			window.windowHandleChanged(windowHandle);			
-			GLFW.glfwShowWindow(windowHandle);						
+			window.windowHandleChanged(windowHandle);
+			GLFW.glfwShowWindow(windowHandle);
 			return true;
-		} catch(GdxRuntimeException e) {
+		} catch (GdxRuntimeException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -380,18 +381,28 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public Cursor newCursor(Pixmap pixmap, int xHotspot, int yHotspot) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Lwjgl3Cursor(getWindow(), pixmap, xHotspot, yHotspot);
 	}
 
 	@Override
 	public void setCursor(Cursor cursor) {
-		// TODO Auto-generated method stub
+		GLFW.glfwSetCursor(getWindow().getWindowHandle(), ((Lwjgl3Cursor) cursor).cursor);
+	}
+
+	@Override
+	public void setSystemCursor(SystemCursor systemCursor) {
+		Lwjgl3Cursor.setSystemCursor(getWindow().getWindowHandle(), systemCursor);
+	}
+
+	@Override
+	public void dispose() {
+		this.resizeCallback.release();
+		Lwjgl3Cursor.disposeAll();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {
 		final long monitorHandle;
-		
+
 		Lwjgl3DisplayMode(long monitor, int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 			this.monitorHandle = monitor;
@@ -404,19 +415,14 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	public static class Lwjgl3Monitor extends Monitor {
 		final long monitorHandle;
-		
+
 		Lwjgl3Monitor(long monitor, int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
 			this.monitorHandle = monitor;
 		}
-		
+
 		public long getMonitorHandle() {
 			return monitorHandle;
 		}
-	}
-
-	@Override
-	public void dispose() {		
-		this.resizeCallback.release();
 	}
 }

@@ -279,6 +279,7 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		// FIXME
+		listener.canceled();
 	}
 
 	@Override
@@ -754,6 +755,15 @@ public class Lwjgl3Input implements Input, Disposable {
 			return 0;
 		}
 	}
+	
+	@Override
+	public void dispose() {
+		keyCallback.release();
+		charCallback.release();
+		scrollCallback.release();
+		cursorPosCallback.release();
+		mouseButtonCallback.release();
+	}
 
 	// --------------------------------------------------------------------------
 	// -------------------------- Nothing to see below this line except for stubs
@@ -839,14 +849,5 @@ public class Lwjgl3Input implements Input, Disposable {
 
 	@Override
 	public void getRotationMatrix(float[] matrix) {
-	}
-
-	@Override
-	public void dispose() {
-		keyCallback.release();
-		charCallback.release();
-		scrollCallback.release();
-		cursorPosCallback.release();
-		mouseButtonCallback.release();
 	}
 }

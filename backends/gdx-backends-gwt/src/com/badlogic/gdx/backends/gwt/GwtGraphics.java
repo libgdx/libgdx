@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -388,11 +389,12 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public void setCursor (Cursor cursor) {
-		if (cursor == null) {
-			GwtCursor.resetCursor();
-		} else {
-			cursor.setSystemCursor();
-		}
+		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", ((GwtCursor)cursor).cssCursorProperty);
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", "auto");
 	}
 	
 	static class GwtMonitor extends Monitor {

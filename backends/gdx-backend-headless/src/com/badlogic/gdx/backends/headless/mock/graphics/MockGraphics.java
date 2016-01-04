@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
@@ -207,6 +208,10 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 
 	@Override

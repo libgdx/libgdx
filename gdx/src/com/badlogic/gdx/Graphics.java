@@ -17,6 +17,7 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -282,4 +283,9 @@ public interface Graphics {
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor}, or null to revert to the default operating
 	 *           system cursor */
 	public void setCursor (Cursor cursor);
+	
+	/**
+	 * Sets one of the predefined {@link SystemCursor}s
+	 */
+	public void setSystemCursor(SystemCursor systemCursor);	
 }

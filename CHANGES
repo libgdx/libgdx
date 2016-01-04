@@ -43,6 +43,8 @@
 - Added option to include credentials on cross-origin http requests (used only for GWT backend).
 - Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
 - API Change: removed Sound#setPriority, this was only implemented for the Android backend. However, Android itself never honored priority settings.
+- API Change: cursor API has been cleaned up. To create a custom cursor, call Graphics#newCursor(), to set the custom cursor call Graphics#setCursor(), to set a system cursor call Graphics#setSystemCursor(). The Cursor#setSystemCursor method has been removed as that was not the
+right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. Note that system cursors only fully work on LWJGL3 as the other two backends lack a means to set a specific system cursor. These backends fall back to displaying an arrow cursor when setting any system cursor.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970

@@ -36,6 +36,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.BulletTestCollection;
+import com.badlogic.gdx.tests.CursorTest;
 import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.DpiTest;
 import com.badlogic.gdx.tests.FullscreenTest;
@@ -85,21 +86,24 @@ public class Lwjgl3DebugStarter {
 						System.out.println("Key typed: '" + character + "', " + (int)character);
 						
 						if(character == 'f') {
-							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
-//							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-							for(DisplayMode mode: modes) {
-								if(mode.width == 1920 && mode.height == 1080) {
-									Gdx.graphics.setFullscreenMode(mode);
-									break;
-								}
-							}
+							Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//							DisplayMode[] modes = Gdx.graphics.getDisplayModes();
+//							for(DisplayMode mode: modes) {
+//								if(mode.width == 1920 && mode.height == 1080) {
+//									Gdx.graphics.setFullscreenMode(mode);
+//									break;
+//								}
+//							}
 						}
 						if(character == 'w') {
 							Gdx.graphics.setWindowedMode(MathUtils.random(400, 800), MathUtils.random(400, 800));
 						}
 						if(character == 'e') {
 							throw new GdxRuntimeException("derp");
-						}						
+						}			
+						if(character == 'c') {
+							Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
+						}
 						return false;
 					}										
 				});
@@ -141,6 +145,6 @@ public class Lwjgl3DebugStarter {
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
 		}
-		new Lwjgl3Application(new DpiTest(), config);
+		new Lwjgl3Application(new CursorTest(), config);
 	}
 }

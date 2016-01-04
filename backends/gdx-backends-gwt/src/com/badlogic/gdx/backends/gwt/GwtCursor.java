@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.dom.client.CanvasElement;
 
 public class GwtCursor implements Cursor {
-	private String cssCursorProperty;
+	String cssCursorProperty;
 
 	public GwtCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		if (pixmap == null) {
@@ -64,11 +64,6 @@ public class GwtCursor implements Cursor {
 	}
 
 	@Override
-	public void setSystemCursor () {
-		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", cssCursorProperty);
-	}
-
-	public static void resetCursor () {
-		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", "auto");
+	public void dispose () {
 	}
 }

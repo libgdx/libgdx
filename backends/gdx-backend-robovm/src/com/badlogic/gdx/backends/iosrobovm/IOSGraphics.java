@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.utils.Array;
 
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
@@ -530,6 +531,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 	
 	private class IOSDisplayMode extends DisplayMode {

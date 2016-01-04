@@ -21,6 +21,7 @@ import java.awt.Toolkit;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -29,6 +30,7 @@ import org.lwjgl.opengl.PixelFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -618,13 +620,21 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
-		if (cursor == null) {
-			LwjglCursor.resetCursor();
-		} else {
-			cursor.setSystemCursor();
+		try {
+			Mouse.setNativeCursor(((LwjglCursor)cursor).lwjglCursor);
+		} catch (LWJGLException e) {
+			throw new GdxRuntimeException("Could not set cursor image.", e);
 		}
 	}
-
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+		try {
+			Mouse.setNativeCursor(null);
+		} catch (LWJGLException e) {
+			throw new GdxRuntimeException("Couldn't set system cursor");
+		}
+	}
 
 	private class LwjglDisplayMode extends DisplayMode {
 		org.lwjgl.opengl.DisplayMode mode;
@@ -639,5 +649,5 @@ public class LwjglGraphics implements Graphics {
 		protected LwjglMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
 		}
-	}
+	}	
 }

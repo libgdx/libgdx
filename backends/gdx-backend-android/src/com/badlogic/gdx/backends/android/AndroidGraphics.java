@@ -39,6 +39,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -658,6 +659,10 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 	
 	private class AndroidDisplayMode extends DisplayMode {
