@@ -27,7 +27,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-class Lwjgl3Window implements Disposable {
+public class Lwjgl3Window implements Disposable {
 	private long windowHandle;
 	private final ApplicationListener listener;
 	private boolean listenerInitialized = false;
@@ -37,7 +37,7 @@ class Lwjgl3Window implements Disposable {
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();
 
-	public Lwjgl3Window(long windowHandle, ApplicationListener listener,
+	Lwjgl3Window(long windowHandle, ApplicationListener listener,
 			Lwjgl3ApplicationConfiguration config) {
 		this.windowHandle = windowHandle;
 		this.listener = listener;

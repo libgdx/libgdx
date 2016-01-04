@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,7 +53,7 @@ public class MultiWindowTest {
 				} catch(Throwable t) {
 					new GdxRuntimeException("Couldn't instantiate app listener", t);
 				}
-				app.newWindow(listener, config);
+				Lwjgl3Window window = app.newWindow(listener, config);				
 			}
 		}
 	}		
