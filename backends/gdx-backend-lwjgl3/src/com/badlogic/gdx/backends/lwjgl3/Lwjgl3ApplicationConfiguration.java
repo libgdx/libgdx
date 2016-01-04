@@ -23,6 +23,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
+import org.lwjgl.opengl.GL;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -35,8 +36,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
-import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3ApplicationConfiguration {
 	boolean disableAudio = false;
@@ -68,9 +69,6 @@ public class Lwjgl3ApplicationConfiguration {
 
 	HdpiMode hdpiMode = HdpiMode.Logical;
 	
-	Array<String> iconPaths = new Array<String>();
-	Array<FileType> iconFileTypes = new Array<FileType>();
-	
 	static Lwjgl3ApplicationConfiguration copy(Lwjgl3ApplicationConfiguration config) {
 		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
 		copy.disableAudio = config.disableAudio;
@@ -99,8 +97,6 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.preferencesDirectory = config.preferencesDirectory;
 		copy.preferencesFileType = config.preferencesFileType;
 		copy.hdpiMode = config.hdpiMode;
-		copy.iconPaths = config.iconPaths;
-		copy.iconFileTypes = config.iconFileTypes;
 		return copy;
 	}
 	
@@ -268,18 +264,6 @@ public class Lwjgl3ApplicationConfiguration {
 	public void setHdpiMode(HdpiMode mode) {
 		this.hdpiMode = mode;
 	}	
-
-	/**
-	 * Adds a window icon. Icons are tried in the order added, the first one
-	 * that works is used. Typically three icons should be provided: 128x128
-	 * (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows).
-	 * 
-	 * FIXME
-	 */
-	public void addIcon(String path, FileType fileType) {
-		iconPaths.add(path);
-		iconFileTypes.add(fileType);
-	}
 
 	/**
 	 * @return the currently active {@link DisplayMode} of the primary monitor

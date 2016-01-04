@@ -30,11 +30,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwExtensionSupported;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -42,6 +39,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 
 import java.io.File;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -79,7 +77,6 @@ public class Lwjgl3Application implements Application {
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();	
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	@SuppressWarnings("unused")
 	private static GLFWErrorCallback errorCallback;
 
 	static void initializeGlfw() {
@@ -112,7 +109,7 @@ public class Lwjgl3Application implements Application {
 		this.net = Gdx.net = new Lwjgl3Net();
 		this.clipboard = new Lwjgl3Clipboard();
 
-		Lwjgl3Window window = createWindow(config, listener);
+		Lwjgl3Window window = createWindow(config, listener, 0);
 		windows.add(window);
 		try {
 			loop();
@@ -140,6 +137,7 @@ public class Lwjgl3Application implements Application {
 				Gdx.gl30 = window.getGraphics().getGL30();
 				Gdx.input = window.getInput();
 
+				glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
 					window.update(lifecycleListeners);
@@ -323,9 +321,25 @@ public class Lwjgl3Application implements Application {
 			lifecycleListeners.add(listener);
 		}
 	}
+	
+	/**
+	 * Creates a new {@link Lwjgl3Window} using the provided listener and {@link Lwjgl3WindowConfiguration}.
+	 */
+	public Lwjgl3Window newWindow(ApplicationListener listener, Lwjgl3WindowConfiguration config) {
+		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
+		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
+		appConfig.setWindowPosition(config.windowX, config.windowY);
+		appConfig.setResizable(config.windowResizable);
+		appConfig.setFullscreenMode(config.fullscreenMode);
+		appConfig.setTitle(config.title);
+		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);		
+		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
+		windows.add(window);
+		return window;
+	}
 
-	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener) {
-		long windowHandle = createGlfwWindow(config, 0);
+	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
+		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
 		glfwShowWindow(windowHandle);
 		return window;
@@ -357,14 +371,14 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-//		if (config.fullscreenMode == null) {
-//			if (config.windowX == -1 && config.windowY == -1) {
-//				GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-//				glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
-//			} else {
-//				glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
-//			}
-//		}
+		if (config.fullscreenMode == null) {
+			if (config.windowX == -1 && config.windowY == -1) {
+				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
+			} else {
+				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
+			}
+		}
 		glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		glfwMakeContextCurrent(windowHandle);
 		GL.createCapabilities();
