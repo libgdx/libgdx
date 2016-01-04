@@ -37,6 +37,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DeltaTimeTest;
+import com.badlogic.gdx.tests.DpiTest;
 import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MusicTest;
@@ -140,6 +141,6 @@ public class Lwjgl3DebugStarter {
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
 		}
-		new Lwjgl3Application(test, config);
+		new Lwjgl3Application(new DpiTest(), config);
 	}
 }

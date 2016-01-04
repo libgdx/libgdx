@@ -185,32 +185,35 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public float getPpiX() {
-		// FIXME
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return getPpcX() / 0.393701f;
 	}
 
 	@Override
 	public float getPpiY() {
-		// FIXME
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return getPpcY() / 0.393701f;
 	}
 
 	@Override
 	public float getPpcX() {
-		// FIXME
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
+		int sizeX = tmpBuffer.get(0);
+		DisplayMode mode = getDisplayMode();		
+		return mode.width / (float)sizeX * 10;		
 	}
 
 	@Override
 	public float getPpcY() {
-		// FIXME
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		GLFW.glfwGetMonitorPhysicalSize(monitor.monitorHandle, tmpBuffer, tmpBuffer2);
+		int sizeY = tmpBuffer2.get(0);
+		DisplayMode mode = getDisplayMode();		
+		return mode.height / (float)sizeY * 10;
 	}
 
 	@Override
 	public float getDensity() {
-		// FIXME
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 160f;
+		return getPpiX() / 160f;
 	}
 
 	@Override

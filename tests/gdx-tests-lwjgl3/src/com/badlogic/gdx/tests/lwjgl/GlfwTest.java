@@ -3,6 +3,9 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.nio.IntBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -12,24 +15,10 @@ import org.lwjgl.glfw.GLFWVidMode.Buffer;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-
 public class GlfwTest {
 	private static long windowHandle;
-	private static boolean isFullscreen = false;
-	private static int width = 640;
-	private static int height = 480;
-	private static char lastChar = 0;
-	private static Runnable runnable = null;
 	private static GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err);
 
-	static GLFWCharCallback charCallback = new GLFWCharCallback() {
-		@Override
-		public void invoke (long window, int codepoint) {
-			lastChar = (char)codepoint;
-		}
-	};
-	
 	public static void main (String[] argv) {
 		GLFW.glfwSetErrorCallback(errorCallback);
 		if (glfwInit() != GLFW_TRUE) {
@@ -37,13 +26,40 @@ public class GlfwTest {
 			System.exit(-1);
 		}
 
-		toggleFullscreen();				
+		glfwDefaultWindowHints();
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		
+		// fullscreen, not current resolution, fails
+		Buffer modes = glfwGetVideoModes(glfwGetPrimaryMonitor());
+		for(int i = 0; i < modes.limit(); i++) {
+			System.out.println(modes.get(i).width() + "x" + modes.get(i).height());
+		}
+		GLFWVidMode mode = modes.get(7);
+		System.out.println("Mode: " + mode.width() + "x" + mode.height());
+		windowHandle = glfwCreateWindow(mode.width(), mode.height(), "Test", glfwGetPrimaryMonitor(), 0);
+		if (windowHandle == 0) {
+			throw new RuntimeException("Couldn't create window");
+		}
+		glfwMakeContextCurrent(windowHandle);
+		GL.createCapabilities();
+		glfwSwapInterval(1);
+		glfwShowWindow(windowHandle);
 
-		while (glfwWindowShouldClose(windowHandle) != GLFW_TRUE) {						
-
-			GL11.glViewport(0, 0, width, height);
+		IntBuffer tmp = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
+		
+		int fbWidth = 0;
+		int fbHeight = 0;
+		
+		while (glfwWindowShouldClose(windowHandle) != GLFW_TRUE) {			
+			glfwGetFramebufferSize(windowHandle, tmp, tmp2);			
+			if(fbWidth != tmp.get(0) || fbHeight != tmp2.get(0)) {
+				fbWidth = tmp.get(0);
+				fbHeight = tmp2.get(0);
+				System.out.println("Framebuffer: " + tmp.get(0) + "x" + tmp2.get(0));
+//				GL11.glViewport(0, 0, tmp.get(0) * 2, tmp2.get(0) * 2);
+			}			
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			GL11.glRotatef(1f, 0, 0, 1);
 			GL11.glBegin(GL11.GL_TRIANGLES);
 			GL11.glVertex2f(-1f, -1f);
 			GL11.glVertex2f(1f, -1f);
@@ -51,68 +67,9 @@ public class GlfwTest {
 			GL11.glEnd();
 			glfwSwapBuffers(windowHandle);
 			glfwPollEvents();
-			
-			if(lastChar == 'f') {
-				toggleFullscreen();
-				lastChar = 0;
-			}
 		}
 
 		glfwDestroyWindow(windowHandle);		
 		glfwTerminate();
-		charCallback.release();
-	}
-	
-	private static void toggleFullscreen() {
-		glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);		
-		
-		long oldWindowHandle = windowHandle;
-		if(isFullscreen) {
-			windowHandle = glfwCreateWindow(640, 480, "Test", 0, oldWindowHandle);
-			width = 640;
-			height = 480;
-		} else {
-			// fullscreen, current resolution, works
-			GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-			glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
-			width = mode.width();
-			height = mode.height();			
-			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
-			
-			// fake fullscreen, kinda works, but shows
-			// menu bar on Mac OS X
-//			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-//			GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());			
-//			width = mode.width();
-//			height = mode.height();				
-//			windowHandle = glfwCreateWindow(width, height, "Test", 0, oldWindowHandle);			
-			
-			// fullscreen, not current resolution, fails
-//			Buffer modes = glfwGetVideoModes(glfwGetPrimaryMonitor());
-//			GLFWVidMode mode = null;
-//			for(int i = 0; i < modes.limit(); i++) {
-//				mode = modes.get(i);
-//				if(mode.width() == 1024) {
-//					break;
-//				}
-//			}
-//			width = 1920;
-//			height = 1080;			
-//			windowHandle = glfwCreateWindow(width, height, "Test", glfwGetPrimaryMonitor(), oldWindowHandle);
-		}
-		if (windowHandle == 0) {
-			throw new RuntimeException("Couldn't create window");
-		}
-		if(oldWindowHandle != 0) {
-			glfwDestroyWindow(oldWindowHandle);
-		}
-		glfwSetCharCallback(windowHandle, charCallback);
-		glfwMakeContextCurrent(windowHandle);
-		GL.createCapabilities();
-		glfwSwapInterval(1);
-		glfwShowWindow(windowHandle);
-		isFullscreen = !isFullscreen;
 	}
 }
