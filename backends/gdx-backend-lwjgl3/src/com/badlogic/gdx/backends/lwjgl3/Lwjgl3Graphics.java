@@ -290,8 +290,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
 		boolean result = false;
-		if (isFullscreen() && GLFW.glfwGetWindowAttrib(window.getWindowHandle(),
-				GLFW.GLFW_REFRESH_RATE) != displayMode.refreshRate) {
+		if (isFullscreen()) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
 			result = true;
 		} else {
@@ -328,7 +327,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			GLFW.glfwDestroyWindow(oldHandle);
 			GLFW.glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
 			window.windowHandleChanged(windowHandle);
-			GLFW.glfwShowWindow(windowHandle);
+			window.setVisible(true);
 			return true;
 		} catch (GdxRuntimeException e) {
 			e.printStackTrace();

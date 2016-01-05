@@ -26,6 +26,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
@@ -106,6 +109,26 @@ public class Lwjgl3DebugStarter {
 						if(character == 'c') {
 							Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
 						}
+						if(character == 'v') {
+							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
+							window.setVisible(false);
+						}
+						if(character == 's') {
+							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
+							window.setVisible(true);
+						}
+						if(character == 'q') {
+							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
+							window.closeWindow();
+						}
+						if(character == 'i') {
+							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
+							window.iconifyWindow();
+						}
+						if(character == 'r') {
+							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
+							window.deiconifyWindow();
+						}
 						return false;
 					}										
 				});
@@ -117,8 +140,7 @@ public class Lwjgl3DebugStarter {
 			public void render () {
 				Gdx.gl.glClearColor(1, 0, 0, 1);
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-//				HdpiUtils.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				HdpiUtils.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				batch.begin();
 				font.draw(batch, Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
@@ -128,25 +150,62 @@ public class Lwjgl3DebugStarter {
 				batch.draw(texture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 				batch.end();
 				fps.log();
-				if(System.nanoTime() - start > 1000000000l) {
-					start = System.nanoTime();
-					Gdx.app.log("Test", Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ", " +
-									  Gdx.graphics.getBackBufferWidth() + "x" + Gdx.graphics.getBackBufferHeight() + ", " +
-									  Gdx.input.getX() + ", " + Gdx.input.getY() + ", " + 
-									  Gdx.input.getDeltaX() + ", " + Gdx.input.getDeltaY());
-				}
 			}
 
 			@Override
 			public void resize (int width, int height) {
 				Gdx.app.log("Test", "Resized " + width + "x" + height);
 			}
+
+			@Override
+			public void resume () {
+				Gdx.app.log("Test", "resuming");
+			}
+
+			@Override
+			public void pause () {
+				Gdx.app.log("Test", "pausing");
+			}
+
+			@Override
+			public void dispose () {
+				Gdx.app.log("Test", "disposing");
+			}
 		};
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
+		config.setWindowListener(new Lwjgl3WindowListener() {
+
+			@Override
+			public void iconified () {
+				Gdx.app.log("Window", "iconified");
+			}
+
+			@Override
+			public void deiconified () {
+				Gdx.app.log("Window", "deiconified");				
+			}
+
+			@Override
+			public void focusLost () {
+				Gdx.app.log("Window", "focus lost");
+			}
+
+			@Override
+			public void focusGained () {
+				Gdx.app.log("Window", "focus gained");
+			}
+
+			@Override
+			public boolean windowIsClosing () {
+				Gdx.app.log("Window", "closing");
+				return false;
+			}
+			
+		});
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
 		}		
-		new Lwjgl3Application(new ControllersTest(), config);
+		new Lwjgl3Application(test, config);
 	}
 }

@@ -121,12 +121,12 @@ public class Lwjgl3Application implements Application {
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
 					window.update(lifecycleListeners);
-				}
-
+				}				
 				if (window.shouldClose()) {
 					closedWindows.add(window);
-				}
+				}				
 			}
+			GLFW.glfwPollEvents();
 
 			synchronized (runnables) {
 				executedRunnables.clear();
@@ -311,6 +311,8 @@ public class Lwjgl3Application implements Application {
 		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
 		appConfig.setWindowPosition(config.windowX, config.windowY);
 		appConfig.setResizable(config.windowResizable);
+		appConfig.setDecorated(config.windowDecorated);
+		appConfig.setWindowListener(config.windowListener);
 		appConfig.setFullscreenMode(config.fullscreenMode);
 		appConfig.setTitle(config.title);
 		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);		
@@ -322,11 +324,11 @@ public class Lwjgl3Application implements Application {
 	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		GLFW.glfwShowWindow(windowHandle);
+		window.setVisible(true);
 		return window;
 	}
 
-	public static long createGlfwWindow(Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {
+	static long createGlfwWindow(Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {
 		GLFW.glfwDefaultWindowHints();
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
@@ -347,6 +349,7 @@ public class Lwjgl3Application implements Application {
 			// glfwWindowHint(GLFW.GLFW_REFRESH_RATE, config.fullscreenMode.refreshRate);
 			windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title, config.fullscreenMode.getMonitor(), sharedContextWindow);
 		} else {
+			GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, config.windowDecorated? GLFW.GLFW_TRUE: GLFW.GLFW_FALSE);
 			windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);			
 		}
 		if (windowHandle == 0) {

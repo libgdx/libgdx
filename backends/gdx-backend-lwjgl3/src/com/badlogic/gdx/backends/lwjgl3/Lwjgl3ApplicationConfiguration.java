@@ -58,6 +58,8 @@ public class Lwjgl3ApplicationConfiguration {
 	int windowWidth = 640;
 	int windowHeight = 480;
 	boolean windowResizable = true;
+	boolean windowDecorated = true;
+	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
 
 	boolean vSyncEnabled = true;
@@ -90,6 +92,8 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.windowWidth = config.windowWidth;
 		copy.windowHeight = config.windowHeight;
 		copy.windowResizable = config.windowResizable;
+		copy.windowDecorated = config.windowDecorated;
+		copy.windowListener = config.windowListener;
 		copy.fullscreenMode = config.fullscreenMode;
 		copy.vSyncEnabled = config.vSyncEnabled;
 		copy.title = config.title;
@@ -194,10 +198,17 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 	
 	/** 
-	 * @param resizable whether the windowed mode window is resizable
+	 * @param resizable whether the windowed mode window is resizable (default false)
 	 */
 	public void setResizable(boolean resizable) {
 		this.windowResizable = resizable;
+	}
+	
+	/**
+	 * @param decorated whether the windowed mode window is decorated, i.e. displaying the title bars (default true)
+	 */
+	public void setDecorated(boolean decorated) {
+		this.windowDecorated = decorated;
 	}
 	
 	/**
@@ -207,6 +218,14 @@ public class Lwjgl3ApplicationConfiguration {
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
 		windowY = y;
+	}
+	
+	/**
+	 * Sets the {@link Lwjgl3WindowListener} which will be informed about
+	 * iconficiation, focus loss and window close events.
+	 */
+	public void setWindowListener(Lwjgl3WindowListener windowListener) {
+		this.windowListener = windowListener;
 	}
 
 	/**

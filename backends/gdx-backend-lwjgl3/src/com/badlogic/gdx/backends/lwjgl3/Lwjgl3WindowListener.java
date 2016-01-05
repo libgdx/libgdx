@@ -17,13 +17,41 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import com.badlogic.gdx.ApplicationListener;
+
 // FIXME wire this up with multi-window api
 // as a parameter to app#newWindow
 public interface Lwjgl3WindowListener {
-	void minimized();
-	void maximized(); // really need this?	
-	void focusGained();
+	/**
+	 * Called when the window is iconified, i.e. its minimize button
+	 * was clicked. The window's {@link ApplicationListener} will
+	 * be paused
+	 */
+	void iconified();
+	
+	/**
+	 * Called when the window is deiconified, i.e. its task bar
+	 * icon was clicked. The window's {@link ApplicationListener}
+	 * will be resumed.
+	 */
+	void deiconified();
+	
+	/**
+	 * Called when the window lost focus to another window. The
+	 * window's {@link ApplicationListener} will continue to be
+	 * called.
+	 */
 	void focusLost();
-	/** @return whether the window should actually close **/
+	
+	/**
+	 * Called when the window gained focus.
+	 */
+	void focusGained();		
+	
+	/** Called when the window is about to close due to a user action,
+	 * e.g. clicking the close button or pressing the window closing
+	 * keyboard shortcut.
+	 *  
+	 * @return whether the window should actually close **/
 	boolean windowIsClosing();
 }

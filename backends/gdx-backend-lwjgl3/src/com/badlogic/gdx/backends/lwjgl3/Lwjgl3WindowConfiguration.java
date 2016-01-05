@@ -26,6 +26,8 @@ public class Lwjgl3WindowConfiguration {
 	int windowWidth = 640;
 	int windowHeight = 480;
 	boolean windowResizable = true;
+	boolean windowDecorated = true;
+	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
@@ -51,12 +53,27 @@ public class Lwjgl3WindowConfiguration {
 	}
 	
 	/**
+	 * @param decorated whether the windowed mode window is decorated, i.e. displaying the title bars (default true)
+	 */
+	public void setDecorated(boolean decorated) {
+		this.windowDecorated = decorated;
+	}
+	
+	/**
 	 * Sets the position of the window in windowed mode on the
 	 * primary monitor. Default -1 for booth coordinates for centered.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
 		windowY = y;
+	}
+	
+	/**
+	 * Sets the {@link Lwjgl3WindowListener} which will be informed about
+	 * iconficiation, focus loss and window close events.
+	 */
+	public void setWindowListener(Lwjgl3WindowListener windowListener) {
+		this.windowListener = windowListener;
 	}
 
 	/**
