@@ -105,6 +105,18 @@ final public class LwjglInput implements Input {
 	public float getAccelerometerZ () {
 		return 0;
 	}
+	
+	public float getGyroscopeX () {
+		return 0;
+	}
+
+	public float getGyroscopeY () {
+		return 0;
+	}
+
+	public float getGyroscopeZ () {
+		return 0;
+	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -205,6 +217,10 @@ final public class LwjglInput implements Input {
 	}
 
 	public boolean isAccelerometerAvailable () {
+		return false;
+	}
+	
+	public boolean isGyroscopeAvailable () {
 		return false;
 	}
 
@@ -1065,4 +1081,5 @@ final public class LwjglInput implements Input {
 		int button;
 		int pointer;
 	}
+
 }

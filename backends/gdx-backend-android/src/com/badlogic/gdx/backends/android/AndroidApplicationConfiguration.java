@@ -37,6 +37,9 @@ public class AndroidApplicationConfiguration {
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
+	
+	/** whether to use the gyroscope. default: false **/
+	public boolean useGyroscope = false;
 
 	/** whether to use the compass. default: true **/
 	public boolean useCompass = true;
