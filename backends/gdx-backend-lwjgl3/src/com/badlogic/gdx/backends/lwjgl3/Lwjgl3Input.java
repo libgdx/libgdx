@@ -276,7 +276,7 @@ public class Lwjgl3Input implements Input, Disposable {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
-		// FIXME
+		// FIXME getTextInput does nothing
 		listener.canceled();
 	}
 

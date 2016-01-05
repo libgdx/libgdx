@@ -360,17 +360,18 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setContinuousRendering(boolean isContinuous) {
-		// TODO Auto-generated method stub
+		// FIXME implement non-continuous rendering
 	}
 
 	@Override
 	public boolean isContinuousRendering() {
+		// FIXME implement non-continuous rendering
 		return true;
 	}
 
 	@Override
 	public void requestRendering() {
-		// TODO Auto-generated method stub
+		// FIXME implement non-continuous rendering
 	}
 
 	@Override

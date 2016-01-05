@@ -19,8 +19,15 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import com.badlogic.gdx.ApplicationListener;
 
-// FIXME wire this up with multi-window api
-// as a parameter to app#newWindow
+/**
+ * Receives notifications of various window events, such as iconficiation,
+ * focus loss and gain, and window close events. Can be set per window
+ * via {@link Lwjgl3ApplicationConfiguration} and {@link Lwjgl3WindowConfiguration}.
+ * Close events can be cancled by returning false.
+ * 
+ * @author badlogic
+ *
+ */
 public interface Lwjgl3WindowListener {
 	/**
 	 * Called when the window is iconified, i.e. its minimize button
