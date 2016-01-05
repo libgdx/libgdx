@@ -1,5 +1,5 @@
 [1.8.1]
-
+- API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).
