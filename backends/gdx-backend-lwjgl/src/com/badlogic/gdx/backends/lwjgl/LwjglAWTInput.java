@@ -159,21 +159,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 		return 0;
 	}
 
-    @Override
-    public float getGyroscopeX () {
-    return 0;
-    }
-
-    @Override
-    public float getGyroscopeY () {
-    return 0;
-    }
-
-    @Override
-    public float getGyroscopeZ () {
-    return 0;
-    }
-
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -926,8 +911,6 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 
 	@Override
 	public void getRotationMatrix (float[] matrix) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -944,5 +927,4 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public float getGyroscopeZ () {
 		return 0;
 	}
-
 }

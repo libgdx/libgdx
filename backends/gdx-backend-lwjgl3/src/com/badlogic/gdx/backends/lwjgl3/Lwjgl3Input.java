@@ -848,4 +848,19 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public void getRotationMatrix(float[] matrix) {
 	}
+
+	@Override
+	public float getGyroscopeX() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		return 0;
+	}
 }
