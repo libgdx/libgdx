@@ -175,13 +175,14 @@ public class Lwjgl3ApplicationConfiguration {
 	 * @param samples
 	 *            MSAA samples (default 0)
 	 */
-	public void setBackbufferConfig(int r, int g, int b, int a, int depth, int stencil, int samples) {
+	public void setBackBufferConfig(int r, int g, int b, int a, int depth, int stencil, int samples) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.a = a;
 		this.depth = depth;
 		this.stencil = stencil;
+		this.samples = samples;
 	}
 
 	/**
