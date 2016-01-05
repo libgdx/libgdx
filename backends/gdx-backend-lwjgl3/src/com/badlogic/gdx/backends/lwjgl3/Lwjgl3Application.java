@@ -36,7 +36,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALAudio;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -57,6 +56,7 @@ public class Lwjgl3Application implements Application {
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();	
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private static GLFWErrorCallback errorCallback;
+	private static int versionMajor, versionMinor, versionRelease;
 
 	static void initializeGlfw() {
 		if (errorCallback == null) {
@@ -111,10 +111,9 @@ public class Lwjgl3Application implements Application {
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
 				Gdx.graphics = window.getGraphics();
-				Gdx.gl = window.getGraphics().getGL30() != null ? window.getGraphics().getGL30()
-						: window.getGraphics().getGL20();
-				Gdx.gl20 = window.getGraphics().getGL20();
 				Gdx.gl30 = window.getGraphics().getGL30();
+				Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : window.getGraphics().getGL20();
+				Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
 				Gdx.input = window.getInput();
 
 				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
@@ -343,6 +342,14 @@ public class Lwjgl3Application implements Application {
 			GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 		}
 
+		if (config.useGL30) {
+			//GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_API);
+			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
+			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
+			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
+			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+		}
+
 		long windowHandle = 0;
 		
 		if(config.fullscreenMode != null) {
@@ -366,20 +373,17 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		GL.createCapabilities();
-		
-		String version = GL11.glGetString(GL20.GL_VERSION);
-		int glMajorVersion = Integer.parseInt("" + version.charAt(0));
-		if (glMajorVersion <= 1)
-			throw new GdxRuntimeException(
-					"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
-		if (glMajorVersion == 2 || version.contains("2.1")) {
-			if (GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_FALSE
-					&& GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_FALSE) {
-				throw new GdxRuntimeException(
-						"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
-								+ ", FBO extension: false");
-			}
+
+		extractVersion();
+		if (!isOpenGLOrHigher(2, 0))
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
+					+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glInfo());
+
+		if (!supportsFBO()) {
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
+					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glInfo());
 		}
+
 		for (int i = 0; i < 2; i++) {
 			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
 					config.initialBackgroundColor.a);
@@ -387,5 +391,39 @@ public class Lwjgl3Application implements Application {
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
 		return windowHandle;
+	}
+
+	private static void extractVersion () {
+		// See https://www.opengl.org/wiki/GLAPI/glGetString, format is:
+		// <major> "." <minor> ("." <release>) (<space> (<vendor_specific_info>))
+		String version = GL11.glGetString(GL11.GL_VERSION);
+		try {
+			String[] v = version.split(" ", 2)[0].split("\\.", 3);
+			versionMajor = Integer.parseInt(v[0]);
+			versionMinor = Integer.parseInt(v[1]);
+			versionRelease = v.length > 2 ? Integer.parseInt(v[2]) : 0;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
+		}
+	}
+
+	private static boolean isOpenGLOrHigher (int major, int minor) {
+		return versionMajor > major || (versionMajor == major && versionMinor >= minor);
+	}
+
+	private static boolean supportsFBO () {
+		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
+		return isOpenGLOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
+				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
+	}
+
+	private static String glInfo () {
+		try {
+			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
+					+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
+					+ GL11.glGetString(GL11.GL_VERSION);
+		} catch (Throwable ignored) {
+		}
+		return "";
 	}
 }
