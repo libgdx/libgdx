@@ -605,7 +605,20 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		return Math.min(1, loaded / (float)toLoad);
+
+		int tasksLength = tasks.size();
+		float completedProgress = loaded / (float) toLoad;
+		float progressForCurrentAsset = 0;
+
+		if(tasksLength > 1) {
+			progressForCurrentAsset = 0.9f / (tasksLength * toLoad);
+		} else if(tasksLength == 1) {
+			AssetLoadingTask task = tasks.peek();
+			if(task.dependenciesInjected) {
+				progressForCurrentAsset = 0.9f / toLoad;
+			}
+		}
+		return Math.min(1, completedProgress + progressForCurrentAsset);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
