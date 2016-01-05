@@ -8,7 +8,7 @@
 - Hiero updated to v5, now with FreeType support and other new features!
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
 - Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info.
-- Added Graphics#getFramebufferWidth and Graphics#getFramebufferHeight for HDPI handling
+- Added Graphics#getBackBufferWidth and Graphics#getBackBufferHeight for HDPI handling
 - API Change: Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
   please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
   using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics 

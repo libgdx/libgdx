@@ -68,7 +68,8 @@ public class Lwjgl3DebugStarter {
 			Texture texture;
 			
 			@Override
-			public void create () {				
+			public void create () {			
+				BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
 				texture = new Texture("data/badlogic.jpg");
 				batch = new SpriteBatch();
 				font = new BitmapFont();
@@ -205,7 +206,9 @@ public class Lwjgl3DebugStarter {
 		});
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);
-		}		
+		}	
+
+		System.setProperty("java.awt.headless", "true"); 
 		new Lwjgl3Application(test, config);
 	}
 }
