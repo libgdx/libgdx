@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 
 /**
- * Actors that extend this are capable of being focused and receive keyboard input
+ * Actors that extend this are capable of being focused and receiving keyboard input
  *
  * @author arcnor
  */
