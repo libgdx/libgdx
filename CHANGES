@@ -4,6 +4,8 @@
 - Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
 - Added Gdx-Kiwi and gdx-lml to extensions, see https://github.com/libgdx/libgdx/pull/3597
 - Added Gyroscope support in Input, implemented for Android, see https://github.com/libgdx/libgdx/pull/3594
+- Fixed touch mapping on iOS, see https://github.com/libgdx/libgdx/pull/3590
+- Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).
