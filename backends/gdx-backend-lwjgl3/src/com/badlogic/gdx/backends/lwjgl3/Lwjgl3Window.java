@@ -87,7 +87,7 @@ public class Lwjgl3Window implements Disposable {
 	
 	private final GLFWWindowCloseCallback closeCallback = new GLFWWindowCloseCallback() {
 		@Override
-		public void invoke(long windowHandle) {
+		public void invoke(final long windowHandle) {
 			postRunnable(new Runnable() {
 				@Override
 				public void run() {
