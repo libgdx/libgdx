@@ -1,5 +1,9 @@
 [1.8.1]
 - API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
+- Fixed HexagonalTiledMapRenderer, see https://github.com/libgdx/libgdx/pull/3654
+- Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
+- Added Gdx-Kiwi and gdx-lml to extensions, see https://github.com/libgdx/libgdx/pull/3597
+- Added Gyroscope support in Input, implemented for Android, see https://github.com/libgdx/libgdx/pull/3594
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).
