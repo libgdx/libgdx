@@ -471,7 +471,7 @@ public class GwtGraphics implements Graphics {
 	
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
-		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", "auto");
+		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", GwtCursor.getNameForSystemCursor(systemCursor));
 	}
 	
 	static class GwtMonitor extends Monitor {
