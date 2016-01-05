@@ -310,8 +310,8 @@ public class TextField extends Widget implements Disableable, Focusable {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth,
-					textHAlign, false);
+				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset, 0, messageText.length(),
+					width - bgLeftWidth - bgRightWidth, textHAlign, false, "...");
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
@@ -349,8 +349,9 @@ public class TextField extends Widget implements Disableable, Focusable {
 	}
 
 	protected void drawCursor (Drawable cursorPatch, Batch batch, BitmapFont font, float x, float y) {
-		cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset
-			+ font.getData().cursorX, y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
+		cursorPatch.draw(batch,
+			x + textOffset + glyphPositions.get(cursor) - glyphPositions.get(visibleTextStart) + fontOffset + font.getData().cursorX,
+			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
 	void updateDisplayText () {
@@ -433,8 +434,7 @@ public class TextField extends Widget implements Disableable, Focusable {
 		if (content == null) return;
 		StringBuilder buffer = new StringBuilder();
 		int textLength = text.length();
-		if (hasSelection)
-			textLength -= Math.abs(cursor - selectionStart);
+		if (hasSelection) textLength -= Math.abs(cursor - selectionStart);
 		BitmapFontData data = style.font.getData();
 		for (int i = 0, n = content.length(); i < n; i++) {
 			if (!withinMaxLength(textLength + buffer.length())) break;
@@ -604,8 +604,8 @@ public class TextField extends Widget implements Disableable, Focusable {
 		return !cancelled;
 	}
 
-	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes the
-	 * text. */
+	/** If false, methods that change the text will not fire {@link ChangeEvent}, the event will be fired only when user changes
+	 * the text. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
@@ -976,7 +976,7 @@ public class TextField extends Widget implements Disableable, Focusable {
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
-			
+
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
 			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {

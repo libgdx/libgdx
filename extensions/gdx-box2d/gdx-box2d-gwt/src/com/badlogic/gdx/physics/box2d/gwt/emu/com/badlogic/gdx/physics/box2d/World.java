@@ -153,9 +153,10 @@ public final class World implements Disposable {
 	public void destroyBody (Body body) {
 		JointEdge jointEdge = body.body.getJointList();
 		while (jointEdge != null) {
+			JointEdge next = jointEdge.next;			
 			world.destroyJoint(jointEdge.joint);
 			joints.remove(jointEdge.joint);
-			jointEdge = jointEdge.next;
+			jointEdge = next;
 		}
 		world.destroyBody(body.body);
 		bodies.remove(body.body);

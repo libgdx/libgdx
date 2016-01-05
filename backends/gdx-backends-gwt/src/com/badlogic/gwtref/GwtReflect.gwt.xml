@@ -33,6 +33,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.OrderedMap" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.utils.Queue" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.VertexAttribute" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.model" />

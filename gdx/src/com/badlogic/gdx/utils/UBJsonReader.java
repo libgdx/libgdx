@@ -119,6 +119,7 @@ public class UBJsonReader implements BaseJsonReader {
 		long c = 0;
 		while (din.available() > 0 && type != ']') {
 			final JsonValue val = parse(din, type);
+			val.parent = result;
 			if (prev != null) {
 				val.prev = prev;
 				prev.next = val;
@@ -155,6 +156,7 @@ public class UBJsonReader implements BaseJsonReader {
 			final String key = parseString(din, true, type);
 			final JsonValue child = parse(din, valueType == 0 ? din.readByte() : valueType);
 			child.setName(key);
+			child.parent = result;
 			if (prev != null) {
 				child.prev = prev;
 				prev.next = child;
@@ -179,6 +181,7 @@ public class UBJsonReader implements BaseJsonReader {
 		JsonValue prev = null;
 		for (long i = 0; i < size; i++) {
 			final JsonValue val = parse(din, dataType);
+			val.parent = result;
 			if (prev != null) {
 				prev.next = val;
 				result.size++;

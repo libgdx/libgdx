@@ -93,9 +93,9 @@ public class DepthShader extends DefaultShader {
 		final Attributes attributes = combineAttributes(renderable);
 		this.numBones = renderable.bones == null ? 0 : config.numBones;
 		int w = 0;
-		final int n = renderable.mesh.getVertexAttributes().size();
+		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
+			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		weights = w;
@@ -124,13 +124,13 @@ public class DepthShader extends DefaultShader {
 			if (attributes.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
 				return false;
 		}
-		final boolean skinned = ((renderable.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
+		final boolean skinned = ((renderable.meshPart.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
 		if (skinned != (numBones > 0)) return false;
 		if (!skinned) return true;
 		int w = 0;
-		final int n = renderable.mesh.getVertexAttributes().size();
+		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
+			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		return w == weights;

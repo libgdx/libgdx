@@ -86,6 +86,13 @@ public class HttpRequestBuilder {
 		httpRequest.setFollowRedirects(followRedirects);
 		return this;
 	}
+	
+	/** @see HttpRequest#setIncludeCredentials(boolean) */
+	public HttpRequestBuilder includeCredentials (boolean includeCredentials) {
+		validate();
+		httpRequest.setIncludeCredentials(includeCredentials);
+		return this;
+	}
 
 	/** @see HttpRequest#setHeader(String, String) */
 	public HttpRequestBuilder header (String name, String value) {

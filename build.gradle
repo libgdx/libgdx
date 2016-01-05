@@ -1,7 +1,7 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.6.5-SNAPSHOT"
-    robovmVersion = "1.5.0"
+    VERSION = "1.7.2-SNAPSHOT"
+    robovmVersion = "1.9.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"
@@ -195,7 +195,7 @@ project(":extensions:gdx-freetype") {
 }
 
 project(":extensions:gdx-jnigen") {
-    dependencies { compile "com.google.code.javaparser:javaparser:1.0.8" }
+    dependencies { compile "com.github.javaparser:javaparser-core:2.3.0" }
 }
 
 project(":extensions:gdx-setup") {
@@ -205,8 +205,10 @@ project(":extensions:gdx-setup") {
 project(":extensions:gdx-tools") {
     dependencies {
         compile files("../../gdx/libs/gdx-natives.jar")
+        compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
         compile project(":backends:gdx-backend-lwjgl")
         compile project(":backends:gdx-backend-headless")
+        compile project(":extensions:gdx-freetype")
         optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }

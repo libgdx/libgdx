@@ -1,6 +1,90 @@
+[1.8.1]
+- API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
+- Fixed HexagonalTiledMapRenderer, see https://github.com/libgdx/libgdx/pull/3654
+- Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
+- Added Gdx-Kiwi and gdx-lml to extensions, see https://github.com/libgdx/libgdx/pull/3597
+- Added Gyroscope support in Input, implemented for Android, see https://github.com/libgdx/libgdx/pull/3594
+- Fixed touch mapping on iOS, see https://github.com/libgdx/libgdx/pull/3590
+- Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
+
+[1.8.0]
+- API Change: Rewrote FreeType shadow rendering (much better).
+- Added spaceX/Y to FreeType fonts.
+- Higher quality FreeType font rendering.
+- Hiero updated to v5, now with FreeType support and other new features!
+- GlyphLayout now allocates much, much less memory when processing long text that wraps.
+- Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info.
+- Added Graphics#getBackBufferWidth and Graphics#getBackBufferHeight for HDPI handling
+- API Change: Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
+  please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
+  using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics 
+  getWidth/getHeight is in logical coordinates as dictated by the operating system, usually half
+  the HDPI resolution. The OpenGL drawing surface works in backbuffer coordinates at the full
+  HDPI resolution. If you pass logical coordinates to glViewport and glScissor, you only 
+  affect a quarter of the real backbuffer size. Use HdpiUtils instead, it will do the right thing, while letting you continue to work in logical (aka returned by Gdx.graphics.getWidth/getHeight) coordinates.
+- API Change: Graphis#getDesktopDisplayMode() has been renamed to Graphics#getDisplayMode() and
+  returns the current display mode of the monitor the window is shown on (primary monitor on
+  all backends except LWJGL3, which supports real multi-monitor setups).
+- API Change: Graphics#getDisplayModes() return the display modes of the monitor the monitor
+  the window is shown on (primary monitor on all backends except LWJGL3 which supports real
+  multi-monitor setups).
+- API Change: Graphics#setDisplayMode(DisplayMode) has been renamed to 
+  Graphics#setFullscreenMode(). If the window is in windowed mode, it will be switched 
+  to fullscreen mode on the monitor from which the DisplayMode stems from.
+- API Change: Graphics#setDisplayMode(int, int, boolean) has been renamed to 
+  Graphics#setWindowedMode(int, int). This will NOT allow you to switch to fullscreen anymore, 
+  use Graphics#setFullscreenMode() instead. If the window is in fullscreen mode, it will be
+  switched to windowed mode on the monitor the window was in fullscreen mode on.
+ - API Addition: Graphics#Monitor, represents a monitor connected to the machine the app is
+  running on. A monitor is defined by a name and it's position relative to other connected
+  monitors. All backends except the LWJGL3 backend will report only the primary monitor
+ - API Addition: Graphics#getPrimaryMonitor() returns the primary monitor you usually want
+  to work with.
+ - API Addition: Graphics#getMonitor() returns the monitor your app's window is shown on,
+  which may not be the primary monitor in >= 2 monitor systems. All backends except the 
+  LWJGL3 backend will report only the primary monitor.
+ - API Addition: Graphics#getMonitors() returns all monitors connected to the system. All
+  backends except the LWJGL3 backend will only report the primary monitor.
+ - API Addition: Graphics#getDisplayMode(Monitor) returns the display mode of the monitor
+  the app's window is shown on. All backends except the LWJGL3 backend will report the
+  primary monitor display mode instead of the actual monitor's display mode. Not a problem
+  as all other backends run on systems with only a single monitor so far (primary monitor).
+- Added option to include credentials on cross-origin http requests (used only for GWT backend).
+- Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
+- API Change: removed Sound#setPriority, this was only implemented for the Android backend. However, Android itself never honored priority settings.
+- API Change: cursor API has been cleaned up. To create a custom cursor, call Graphics#newCursor(), to set the custom cursor call Graphics#setCursor(), to set a system cursor call Graphics#setSystemCursor(). The Cursor#setSystemCursor method has been removed as that was not the
+right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. Note that system cursors only fully work on LWJGL3 as the other two backends lack a means to set a specific system cursor. These backends fall back to displaying an arrow cursor when setting any system cursor.
+- API Addition: Added Lwjgl3WindowListener, allows you to hook into per-window iconficiation, focus and close events. Also allows you to prevent closing the window when a close event arrives.
+
+[1.7.2]
+- Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970
+- Added GLOnlyTextureData, which is now the default for FrameBuffer and FrameBufferCubemap, see #3539
+- Added rotationChanged() for Actor class, called when rotation changes, see https://github.com/libgdx/libgdx/pull/3563
+- Fixed crash on MacOS when enumerating connected gamepads.
+- ParticleEmitter no longer says it's complete when it's set to continuous, see #3516
+- Improved JSON parsing and object mapping error messages.
+- Updated FreeType from version 2.5.5 to 2.6.2.
+- Fixed corrupt FreeType rendering for some font sizes.
+- API Change: FreeTypeFontParameter has new fields for rendering borders and shadows.
+- FreeTypeFontParameter can render much better fonts at small sizes using gamma settings.
+- BitmapFont can now render missing (tofu) glyph for glyphs not in the font.
+- FreeTypeFontGenerator depreacted methods removed.
+- Fixed BitmapFont color tags changing glyph spacing versus not using color tags. BitmapFont#getGlyphs has a new paramter. See #3455.
+- Skin's TintedDrawable now works with TiledDrawable. #3627
+- Updated jnigen to Java Parser 2.3.0 (http://javaparser.github.io/javaparser/).
+- FreeType fonts no longer look terrible at small size. This is a big deal!
+- Updated to RoboVM 1.12.0, includes tvOS support!
+
 [1.7.1]
 - Fixes AtlasTmxMapLoader region name loading to tileset name instead of filename
 - Changes TiledMapPacker output, region names are tileset names, adjusts gid, defaults to one atlas per map
+- API Change: members of Renderable and MeshPart are changed, see https://github.com/libgdx/libgdx/pull/3483
+- Added Vector#setToRandomDirection(), see #3222
+- Updated to stb_image v2.08
+- Added Node#copy(), used when creating a ModelInstance from a Model to allow using custom nodes
+- Add ModelCache, see https://github.com/libgdx/libgdx/wiki/ModelCache
+- Updated bullet to v2.83.6
+- Updated to RoboVM 1.9, for free life-time license read http://www.badlogicgames.com/wordpress/?p=3762
 
 [1.7.0]
 - Gdx.input.setCursorImage removed, replaced with Gdx.graphics.setCursor and Gdx.graphics.newCursor see https://github.com/libgdx/libgdx/pull/2841/

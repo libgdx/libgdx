@@ -188,87 +188,105 @@ bool bFile::ok()
 	return (mFlags &FD_OK)!=0;
 }
 
+void bFile::setFileDNA(int verboseMode, char* dnaBuffer, int dnaLen)
+{
+		mFileDNA = new bDNA();
+	
+		///mFileDNA->init will convert part of DNA file endianness to current CPU endianness if necessary
+		mFileDNA->init((char*)dnaBuffer, dnaLen, (mFlags & FD_ENDIAN_SWAP)!=0);
+		
+		if (verboseMode & FD_VERBOSE_DUMP_DNA_TYPE_DEFINITIONS)
+			mFileDNA->dumpTypeDefinitions();
+}
+
 // ----------------------------------------------------- //
 void bFile::parseInternal(int verboseMode, char* memDna,int memDnaLength)
 {
 	if ( (mFlags &FD_OK) ==0)
 		return;
 
-	char *blenderData = mFileBuffer;
-	bChunkInd dna;
-	dna.oldPtr = 0;
-
-	char *tempBuffer = blenderData;
-	for (int i=0; i<mFileLen; i++)
+	if (mFlags & FD_FILEDNA_IS_MEMDNA)
 	{
-		// looking for the data's starting position
-		// and the start of SDNA decls
+		setFileDNA(verboseMode,memDna,memDnaLength);
+	}
 
-		if (!mDataStart && strncmp(tempBuffer, "REND", 4)==0)
-			mDataStart = i;
+	if (mFileDNA==0)
+	{
+		char *blenderData = mFileBuffer;
+		bChunkInd dna;
+		dna.oldPtr = 0;
 
-		if (strncmp(tempBuffer, "DNA1", 4)==0)
+		char *tempBuffer = blenderData;
+		for (int i=0; i<mFileLen; i++)
 		{
-			// read the DNA1 block and extract SDNA
-			if (getNextBlock(&dna, tempBuffer, mFlags) > 0)
+			// looking for the data's starting position
+			// and the start of SDNA decls
+
+			if (!mDataStart && strncmp(tempBuffer, "REND", 4)==0)
+				mDataStart = i;
+
+			if (strncmp(tempBuffer, "DNA1", 4)==0)
 			{
-				if (strncmp((tempBuffer + ChunkUtils::getOffset(mFlags)), "SDNANAME", 8) ==0) 
-					dna.oldPtr = (tempBuffer + ChunkUtils::getOffset(mFlags));
+				// read the DNA1 block and extract SDNA
+				if (getNextBlock(&dna, tempBuffer, mFlags) > 0)
+				{
+					if (strncmp((tempBuffer + ChunkUtils::getOffset(mFlags)), "SDNANAME", 8) ==0) 
+						dna.oldPtr = (tempBuffer + ChunkUtils::getOffset(mFlags));
+					else dna.oldPtr = 0;
+				}
 				else dna.oldPtr = 0;
-			}
-			else dna.oldPtr = 0;
-		} 
-		// Some Bullet files are missing the DNA1 block
-		// In Blender it's DNA1 + ChunkUtils::getOffset() + SDNA + NAME
-		// In Bullet tests its SDNA + NAME
-		else if (strncmp(tempBuffer, "SDNANAME", 8) ==0)
-		{
-			dna.oldPtr = blenderData + i;
-			dna.len = mFileLen-i;
-
-			// Also no REND block, so exit now.  
-			if (mVersion==276) break;
-		}
-
-        if (mDataStart && dna.oldPtr) break;
-		tempBuffer++;
-	}
-	if (!dna.oldPtr || !dna.len)
-	{
-		//printf("Failed to find DNA1+SDNA pair\n");
-		mFlags &= ~FD_OK;
-		return;
-	}
-
-
-	mFileDNA = new bDNA();
-	
-	
-	///mFileDNA->init will convert part of DNA file endianness to current CPU endianness if necessary
-	mFileDNA->init((char*)dna.oldPtr, dna.len, (mFlags & FD_ENDIAN_SWAP)!=0);
-	
-
-	if (mVersion==276)
-	{
-		int i;
-		for (i=0;i<mFileDNA->getNumNames();i++)
-		{
-			if (strcmp(mFileDNA->getName(i),"int")==0)
+			} 
+			// Some Bullet files are missing the DNA1 block
+			// In Blender it's DNA1 + ChunkUtils::getOffset() + SDNA + NAME
+			// In Bullet tests its SDNA + NAME
+			else if (strncmp(tempBuffer, "SDNANAME", 8) ==0)
 			{
-				mFlags |= FD_BROKEN_DNA;
+				dna.oldPtr = blenderData + i;
+				dna.len = mFileLen-i;
+
+				// Also no REND block, so exit now.  
+				if (mVersion==276) break;
+			}
+
+			if (mDataStart && dna.oldPtr) break;
+			tempBuffer++;
+		}
+		if (!dna.oldPtr || !dna.len)
+		{
+			//printf("Failed to find DNA1+SDNA pair\n");
+			mFlags &= ~FD_OK;
+			return;
+		}
+
+
+		mFileDNA = new bDNA();
+	
+	
+		///mFileDNA->init will convert part of DNA file endianness to current CPU endianness if necessary
+		mFileDNA->init((char*)dna.oldPtr, dna.len, (mFlags & FD_ENDIAN_SWAP)!=0);
+	
+
+		if (mVersion==276)
+		{
+			int i;
+			for (i=0;i<mFileDNA->getNumNames();i++)
+			{
+				if (strcmp(mFileDNA->getName(i),"int")==0)
+				{
+					mFlags |= FD_BROKEN_DNA;
+				}
+			}
+			if ((mFlags&FD_BROKEN_DNA)!=0)
+			{
+				//printf("warning: fixing some broken DNA version\n");
 			}
 		}
-		if ((mFlags&FD_BROKEN_DNA)!=0)
-		{
-			//printf("warning: fixing some broken DNA version\n");
-		}
+
+
+
+		if (verboseMode & FD_VERBOSE_DUMP_DNA_TYPE_DEFINITIONS)
+			mFileDNA->dumpTypeDefinitions();
 	}
-
-
-
-	if (verboseMode & FD_VERBOSE_DUMP_DNA_TYPE_DEFINITIONS)
-		mFileDNA->dumpTypeDefinitions();
-
 	mMemoryDNA = new bDNA();
 	int littleEndian= 1;
 	littleEndian= ((char*)&littleEndian)[0];
@@ -1584,11 +1602,11 @@ void	bFile::writeChunks(FILE* fp, bool fixupPointers)
 		// Ouch! need to rebuild the struct
 		short *oldStruct,*curStruct;
 		char *oldType, *newType;
-		int oldLen, curLen, reverseOld;
+		int  curLen, reverseOld;
 
 		oldStruct = fileDna->getStruct(dataChunk.dna_nr);
 		oldType = fileDna->getType(oldStruct[0]);
-		oldLen = fileDna->getLength(oldStruct[0]);
+		//int oldLen = fileDna->getLength(oldStruct[0]);
 		///don't try to convert Link block data, just memcpy it. Other data can be converted.
 		reverseOld = mMemoryDNA->getReverseType(oldType);
 		

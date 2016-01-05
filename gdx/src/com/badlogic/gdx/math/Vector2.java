@@ -247,28 +247,23 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	@Override
 	public Vector2 clamp (float min, float max) {
 		final float len2 = len2();
-		if (len2 == 0f)
-			return this;
+		if (len2 == 0f) return this;
 		float max2 = max * max;
-		if (len2 > max2)
-			return scl((float)Math.sqrt(max2 / len2));
+		if (len2 > max2) return scl((float)Math.sqrt(max2 / len2));
 		float min2 = min * min;
-		if (len2 < min2)
-			return scl((float)Math.sqrt(min2 / len2));
+		if (len2 < min2) return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 
 	@Override
-	public Vector2 setLength ( float len ) {
-		return setLength2( len * len );
+	public Vector2 setLength (float len) {
+		return setLength2(len * len);
 	}
 
 	@Override
-	public Vector2 setLength2 ( float len2 ) {
+	public Vector2 setLength2 (float len2) {
 		float oldLen2 = len2();
-		return ( oldLen2 == 0 || oldLen2 == len2 )
-				? this
-				: scl((float) Math.sqrt( len2 / oldLen2 ));
+		return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float)Math.sqrt(len2 / oldLen2));
 	}
 
 	/** Converts this {@code Vector2} to a string in the format {@code (x,y)}.
@@ -407,6 +402,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	@Override
 	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolation) {
 		return lerp(target, interpolation.apply(alpha));
+	}
+
+	@Override
+	public Vector2 setToRandomDirection () {
+		float theta = MathUtils.random(0f, MathUtils.PI2);
+		return this.set(MathUtils.cos(theta), MathUtils.sin(theta));
 	}
 
 	@Override

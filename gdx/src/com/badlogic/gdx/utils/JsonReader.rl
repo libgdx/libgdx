@@ -317,8 +317,9 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
+			int start = Math.max(0, p - 32);
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
-				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
+				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -344,6 +345,7 @@ public class JsonReader implements BaseJsonReader {
 			current = child;
 			root = child;
 		} else if (current.isArray() || current.isObject()) {
+			child.parent = current;
 			if (current.size == 0)
 				current.child = child;
 			else {

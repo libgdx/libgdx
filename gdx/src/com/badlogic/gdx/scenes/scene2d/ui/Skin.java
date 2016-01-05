@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
+ * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
@@ -82,8 +82,8 @@ public class Skin implements Disposable {
 		load(skinFile);
 	}
 
-	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin is
-	 * disposed. */
+	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin
+	 * is disposed. */
 	public Skin (TextureAtlas atlas) {
 		this.atlas = atlas;
 		addRegions(atlas);
@@ -116,7 +116,7 @@ public class Skin implements Disposable {
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) {
-			typeResources = new ObjectMap();
+			typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
 			resources.put(type, typeResources);
 		}
 		typeResources.put(name, resource);
@@ -128,10 +128,14 @@ public class Skin implements Disposable {
 		typeResources.remove(name);
 	}
 
+	/** Returns a resource named "default" for the specified type.
+	 * @throws GdxRuntimeException if the resource was not found. */
 	public <T> T get (Class<T> type) {
 		return get("default", type);
 	}
 
+	/** Returns a named resource of the specified type.
+	 * @throws GdxRuntimeException if the resource was not found. */
 	public <T> T get (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -148,6 +152,8 @@ public class Skin implements Disposable {
 		return (T)resource;
 	}
 
+	/** Returns a named resource of the specified type.
+	 * @return null if not found. */
 	public <T> T optional (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -253,9 +259,6 @@ public class Skin implements Disposable {
 		Drawable drawable = optional(name, Drawable.class);
 		if (drawable != null) return drawable;
 
-		drawable = optional(name, TiledDrawable.class);
-		if (drawable != null) return drawable;
-
 		// Use texture or texture region. If it has splits, use ninepatch. If it has rotation or whitespace stripping, use sprite.
 		try {
 			TextureRegion textureRegion = getRegion(name);
@@ -280,8 +283,8 @@ public class Skin implements Disposable {
 				if (sprite != null)
 					drawable = new SpriteDrawable(sprite);
 				else
-					throw new GdxRuntimeException("No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: "
-						+ name);
+					throw new GdxRuntimeException(
+						"No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: " + name);
 			}
 		}
 
@@ -317,6 +320,7 @@ public class Skin implements Disposable {
 
 	/** Returns a copy of the specified drawable. */
 	public Drawable newDrawable (Drawable drawable) {
+		if (drawable instanceof TiledDrawable) return new TiledDrawable((TiledDrawable)drawable);
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
@@ -379,7 +383,7 @@ public class Skin implements Disposable {
 		}
 	}
 
-	/** Returns the {@link TextureAtlas} that resources in this skin reference, or null. */
+	/** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
 	public TextureAtlas getAtlas () {
 		return atlas;
 	}
@@ -425,10 +429,12 @@ public class Skin implements Disposable {
 					Object object = json.readValue(type, valueEntry);
 					if (object == null) continue;
 					try {
-						add(valueEntry.name(), object, addType);
+						add(valueEntry.name, object, addType);
+						if (addType != Drawable.class && ClassReflection.isAssignableFrom(Drawable.class, addType))
+							add(valueEntry.name, object, Drawable.class);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": "
-							+ valueEntry.name(), ex);
+						throw new SerializationException(
+							"Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name, ex);
 					}
 				}
 			}

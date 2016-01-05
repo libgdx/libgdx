@@ -50,7 +50,6 @@ public class Tooltip<T extends Actor> extends InputListener {
 			}
 		};
 		container.setTouchable(Touchable.disabled);
-		container.pack();
 	}
 
 	public TooltipManager getManager () {
@@ -63,7 +62,6 @@ public class Tooltip<T extends Actor> extends InputListener {
 
 	public void setActor (T contents) {
 		container.setActor(contents);
-		container.pack();
 	}
 
 	public T getActor () {
@@ -100,6 +98,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 		Stage stage = actor.getStage();
 		if (stage == null) return;
 
+		container.pack();
 		float offsetX = manager.offsetX, offsetY = manager.offsetY, dist = manager.edgeDistance;
 		Vector2 point = actor.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
 		if (point.y < dist) point = actor.localToStageCoordinates(tmp.set(x + offsetX, y + offsetY));

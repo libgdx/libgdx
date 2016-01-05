@@ -39,6 +39,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
@@ -212,6 +213,16 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public int getWidth () {
 		return width;
+	}
+	
+	@Override
+	public int getBackBufferWidth () {
+		return width;
+	}
+
+	@Override
+	public int getBackBufferHeight () {
+		return height;
 	}
 
 	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
@@ -535,17 +546,42 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	@Override
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		return false;
+	}
+	
+	@Override
+	public Monitor getPrimaryMonitor () {
+		return new AndroidMonitor(0, 0, "Primary Monitor");
+	}
+
+	@Override
+	public Monitor getMonitor () {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors () {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
+		return getDisplayModes();
+	}
+
+	@Override
+	public DisplayMode getDisplayMode (Monitor monitor) {
+		return getDisplayMode();
 	}
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[] {getDesktopDisplayMode()};
+		return new DisplayMode[] {getDisplayMode()};
 	}
 
 	@Override
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
 		return false;
 	}
 
@@ -554,14 +590,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	}
 
-	private class AndroidDisplayMode extends DisplayMode {
-		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-		}
-	}
-
 	@Override
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
 		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
@@ -629,5 +659,21 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+	}
+	
+	private class AndroidDisplayMode extends DisplayMode {
+		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
+	}
+	
+	private class AndroidMonitor extends Monitor {
+		public AndroidMonitor (int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
+		}
 	}
 }

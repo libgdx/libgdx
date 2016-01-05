@@ -97,11 +97,12 @@ public class BitmapFontCache {
 		x += xAmount;
 		y += yAmount;
 
-		for (int j = 0, length = pageVertices.length; j < length; j++) {
-			float[] vertices = pageVertices[j];
-			for (int i = 0, n = idx[j]; i < n; i += 5) {
-				vertices[i] += xAmount;
-				vertices[i + 1] += yAmount;
+		float[][] pageVertices = this.pageVertices;
+		for (int i = 0, n = pageVertices.length; i < n; i++) {
+			float[] vertices = pageVertices[i];
+			for (int ii = 0, nn = idx[i]; ii < nn; ii += 5) {
+				vertices[ii] += xAmount;
+				vertices[ii + 1] += yAmount;
 			}
 		}
 	}
@@ -431,43 +432,59 @@ public class BitmapFontCache {
 	}
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public GlyphLayout setText (CharSequence str, float x, float y) {
 		clear();
 		return addText(str, x, y, 0, str.length(), 0, Align.left, false);
 	}
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public GlyphLayout setText (CharSequence str, float x, float y, float targetWidth, int halign, boolean wrap) {
 		clear();
 		return addText(str, x, y, 0, str.length(), targetWidth, halign, wrap);
 	}
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
-	public GlyphLayout setText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap) {
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
+	public GlyphLayout setText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap) {
 		clear();
 		return addText(str, x, y, start, end, targetWidth, halign, wrap);
 	}
 
+	/** Clears any cached glyphs and adds glyphs for the specified text.
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
+	public GlyphLayout setText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap, String truncate) {
+		clear();
+		return addText(str, x, y, start, end, targetWidth, halign, wrap, truncate);
+	}
+
 	/** Clears any cached glyphs and adds the specified glyphs.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public void setText (GlyphLayout layout, float x, float y) {
 		clear();
 		addText(layout, x, y);
 	}
 
 	/** Adds glyphs for the specified text.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public GlyphLayout addText (CharSequence str, float x, float y) {
-		return addText(str, x, y, 0, str.length(), 0, Align.left, false);
+		return addText(str, x, y, 0, str.length(), 0, Align.left, false, null);
 	}
 
 	/** Adds glyphs for the specified text.
-	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean) */
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public GlyphLayout addText (CharSequence str, float x, float y, float targetWidth, int halign, boolean wrap) {
-		return addText(str, x, y, 0, str.length(), targetWidth, halign, wrap);
+		return addText(str, x, y, 0, str.length(), targetWidth, halign, wrap, null);
+	}
+
+	/** Adds glyphs for the specified text.
+	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
+	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap) {
+		return addText(str, x, y, start, end, targetWidth, halign, wrap, null);
 	}
 
 	/** Adds glyphs for the the specified text.
@@ -475,11 +492,17 @@ public class BitmapFontCache {
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFontData#capHeight cap height}).
 	 * @param start The first character of the string to draw.
 	 * @param end The last character of the string to draw (exclusive).
+	 * @param targetWidth The width of the area the text will be drawn, for wrapping or truncation.
+	 * @param halign Horizontal alignment of the text, see {@link Align}.
+	 * @param wrap If true, the text will be wrapped within targetWidth.
+	 * @param truncate If not null, the text will be truncated within targetWidth with this string appended. May be an empty
+	 *           string.
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */
-	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign, boolean wrap) {
+	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
+		boolean wrap, String truncate) {
 		GlyphLayout layout = Pools.obtain(GlyphLayout.class);
 		pooledLayouts.add(layout);
-		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, null);
+		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, truncate);
 		addText(layout, x, y);
 		return layout;
 	}
@@ -520,6 +543,10 @@ public class BitmapFontCache {
 
 	public float[] getVertices (int page) {
 		return pageVertices[page];
+	}
+
+	public int getVertexCount (int page) {
+		return idx[page];
 	}
 
 	public Array<GlyphLayout> getLayouts () {

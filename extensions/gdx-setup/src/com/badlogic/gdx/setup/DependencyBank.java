@@ -6,10 +6,10 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.7.0";
+	static String libgdxVersion = "1.8.0";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.7.1-SNAPSHOT";
-	static String roboVMVersion = "1.8.0";
+	static String libgdxNightlyVersion = "1.8.1-SNAPSHOT";
+	static String roboVMVersion = "1.12.0";
 	static String buildToolsVersion = "23.0.1";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
@@ -22,13 +22,13 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.2.3";
+	static String androidPluginImport = "com.android.tools.build:gradle:1.5.0";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	
 	//Extension versions
 	static String box2DLightsVersion = "1.4";
-	static String ashleyVersion = "1.6.0";
-	static String aiVersion = "1.6.0";
+	static String ashleyVersion = "1.7.0";
+	static String aiVersion = "1.7.0";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 

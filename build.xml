@@ -79,6 +79,17 @@
 		</ant>
 	</target>
 
+	<!-- gdx lwjgl3 backend -->
+	<target name="gdx-backend-lwjgl3" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
+			<property name="jar" value="gdx-backend-lwjgl3"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- gdx jglfw backend -->
 	<target name="gdx-backend-jglfw" depends="gdx-core">
 		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
@@ -131,11 +142,12 @@
 
 	<!-- build the extensions -->
 	<!-- gdx tools -->
-	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl,gdx-backend-headless">
+	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl,gdx-backend-headless,gdx-freetype">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
 			<pathelement location="${distDir}/gdx-backend-headless.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-freetype/gdx-freetype.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="extensions/gdx-tools/assets"/>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-tools">
@@ -195,6 +207,19 @@
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
 			<property name="jar" value="gdx-controllers-desktop"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
+	<target name="gdx-controllers-lwjgl3" depends="gdx-core,gdx-controllers,gdx-backend-lwjgl3">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl3.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
+			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="jar" value="gdx-controllers-lwjgl3"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
@@ -307,7 +332,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-lwjgl3,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

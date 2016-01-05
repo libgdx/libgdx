@@ -260,14 +260,15 @@ public class Label extends Widget {
 		return lineAlign;
 	}
 
-	/** @param alignment Aligns each line of text horizontally and all the text vertically.
+	/** @param alignment Aligns all the text within the label (default left center) and each line of text horizontally (default
+	 *           left).
 	 * @see Align */
 	public void setAlignment (int alignment) {
 		setAlignment(alignment, alignment);
 	}
 
-	/** @param labelAlign Aligns all the text with the label widget.
-	 * @param lineAlign Aligns each line of text (left, right, or center).
+	/** @param labelAlign Aligns all the text within the label (default left center).
+	 * @param lineAlign Aligns each line of text horizontally (default left).
 	 * @see Align */
 	public void setAlignment (int labelAlign, int lineAlign) {
 		this.labelAlign = labelAlign;
@@ -321,7 +322,7 @@ public class Label extends Widget {
 	/** When true the text will be truncated "..." if it does not fit within the width of the label. Wrapping will not occur when
 	 * ellipsis is true. Default is false. */
 	public void setEllipsis (boolean ellipsis) {
-		if(ellipsis)
+		if (ellipsis)
 			this.ellipsis = "...";
 		else
 			this.ellipsis = null;

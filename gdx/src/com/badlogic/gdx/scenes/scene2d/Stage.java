@@ -181,7 +181,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
-	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
+	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}, limited to a minimum of 30fps. */
 	public void act () {
 		act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 	}
@@ -229,24 +229,30 @@ public class Stage extends InputAdapter implements Disposable {
 		Actor over = hit(tempCoords.x, tempCoords.y, true);
 		if (over == overLast) return overLast;
 
-		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
-		event.setStageX(tempCoords.x);
-		event.setStageY(tempCoords.y);
-		event.setPointer(pointer);
 		// Exit overLast.
 		if (overLast != null) {
+			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setStage(this);
+			event.setStageX(tempCoords.x);
+			event.setStageY(tempCoords.y);
+			event.setPointer(pointer);
 			event.setType(InputEvent.Type.exit);
 			event.setRelatedActor(over);
 			overLast.fire(event);
+			Pools.free(event);
 		}
 		// Enter over.
 		if (over != null) {
+			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setStage(this);
+			event.setStageX(tempCoords.x);
+			event.setStageY(tempCoords.y);
+			event.setPointer(pointer);
 			event.setType(InputEvent.Type.enter);
 			event.setRelatedActor(overLast);
 			over.fire(event);
+			Pools.free(event);
 		}
-		Pools.free(event);
 		return over;
 	}
 
@@ -822,6 +828,7 @@ public class Stage extends InputAdapter implements Disposable {
 		public void reset () {
 			listenerActor = null;
 			listener = null;
+			target = null;
 		}
 	}
 }

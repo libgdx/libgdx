@@ -57,7 +57,7 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/particle-fire.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/isotile.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 2, false);
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
 			packer.pack("fire " + count, pixmap2);

@@ -161,9 +161,4 @@ final class AndroidSound implements Sound {
 		streamIds.insert(0, streamId);
 		return streamId;
 	}
-
-	@Override
-	public void setPriority (long soundId, int priority) {
-		soundPool.setPriority((int)soundId, priority);
-	}
 }

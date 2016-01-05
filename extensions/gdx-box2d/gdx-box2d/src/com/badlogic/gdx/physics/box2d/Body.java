@@ -705,7 +705,7 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Get the sleeping state of this body.
-	 * @return true if the body is sleeping. */
+	 * @return true if the body is not sleeping. */
 	public boolean isAwake () {
 		return jniIsAwake(addr);
 	}

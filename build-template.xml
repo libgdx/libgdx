@@ -124,6 +124,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<copy failonerror="false" todir="${distDir}/ios">
 			<fileset dir="${libs}/ios32">
 				<include name="**/*.a"/>
+				<include name="**/*.a.tvos"/>
 			</fileset>
 		</copy>
 		

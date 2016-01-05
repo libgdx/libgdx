@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.8.1-SNAPSHOT</version>
         <relativePath>../../..</relativePath>
     </parent>
     
@@ -87,6 +87,17 @@
                     </execution>
 
                     <execution>
+                        <id>tvos-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx.a.tvos</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>ios-objectal</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -96,9 +107,20 @@
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>tvos-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a.tvos</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-            
+
             <!-- if we have pre-built versions, replace the downloaded versions with those -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>

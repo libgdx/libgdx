@@ -185,9 +185,4 @@ public class GwtSound implements Sound {
 			sounds[(int)soundId].setPan(pan, volume);
 		}
 	}
-
-	@Override
-	public void setPriority (long soundId, int priority) {
-		// FIXME
-	}
 }

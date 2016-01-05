@@ -15,8 +15,9 @@ subject to the following restrictions:
 
 #include "btWorldImporter.h"
 #include "btBulletDynamicsCommon.h"
+#ifdef USE_GIMPACT
 #include "BulletCollision/Gimpact/btGImpactShape.h"
-
+#endif
 btWorldImporter::btWorldImporter(btDynamicsWorld* world)
 :m_dynamicsWorld(world),
 m_verboseMode(0)
@@ -177,6 +178,7 @@ btCollisionShape* btWorldImporter::convertCollisionShape(  btCollisionShapeData*
 		}
 	case GIMPACT_SHAPE_PROXYTYPE:
 		{
+#ifdef USE_GIMPACT
 			btGImpactMeshShapeData* gimpactData = (btGImpactMeshShapeData*) shapeData;
 			if (gimpactData->m_gimpactSubType == CONST_GIMPACT_TRIMESH_SHAPE)
 			{
@@ -195,6 +197,7 @@ btCollisionShape* btWorldImporter::convertCollisionShape(  btCollisionShapeData*
 			{
 				printf("unsupported gimpact sub type\n");
 			}
+#endif//USE_GIMPACT
 			break;
 		}
 	//The btCapsuleShape* API has issue passing the margin/scaling/halfextents unmodified through the API
@@ -991,17 +994,17 @@ void	btWorldImporter::convertConstraintFloat(btTypedConstraintFloatData* constra
 					//6-dof: 3 linear followed by 3 angular
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i]);
+						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i],dofData->m_linearSpringStiffnessLimited[i]!=0);
 						dof->setEquilibriumPoint(i,dofData->m_linearEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i,dofData->m_linearEnableSpring[i]!=0);
-						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i]);
+						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i],dofData->m_linearSpringDampingLimited[i]);
 					}
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i]);
+						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i],dofData->m_angularSpringStiffnessLimited[i]);
 						dof->setEquilibriumPoint(i+3,dofData->m_angularEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i+3,dofData->m_angularEnableSpring[i]!=0);
-						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i]);
+						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i],dofData->m_angularSpringDampingLimited[i]);
 					}
 
 				}
@@ -1321,17 +1324,17 @@ void	btWorldImporter::convertConstraintDouble(btTypedConstraintDoubleData* const
 					//6-dof: 3 linear followed by 3 angular
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i]);
+						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i],dofData->m_linearSpringStiffnessLimited[i]);
 						dof->setEquilibriumPoint(i,dofData->m_linearEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i,dofData->m_linearEnableSpring[i]!=0);
-						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i]);
+						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i],dofData->m_linearSpringDampingLimited[i]);
 					}
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i]);
+						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i],dofData->m_angularSpringStiffnessLimited[i]);
 						dof->setEquilibriumPoint(i+3,dofData->m_angularEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i+3,dofData->m_angularEnableSpring[i]!=0);
-						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i]);
+						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i],dofData->m_angularSpringDampingLimited[i]);
 					}
 
 				}
@@ -1792,9 +1795,13 @@ btCollisionShape* btWorldImporter::createConvexTriangleMeshShape(btStridingMeshI
 }
 btGImpactMeshShape* btWorldImporter::createGimpactShape(btStridingMeshInterface* trimesh)
 {
+#ifdef USE_GIMPACT
 	btGImpactMeshShape* shape = new btGImpactMeshShape(trimesh);
 	m_allocatedCollisionShapes.push_back(shape);
 	return shape;
+#else
+	return 0;
+#endif
 	
 }
 btConvexHullShape* btWorldImporter::createConvexHullShape()

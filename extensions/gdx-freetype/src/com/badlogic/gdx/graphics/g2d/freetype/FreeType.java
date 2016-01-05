@@ -597,33 +597,55 @@ public class FreeType {
 				return BufferUtils.newByteBuffer(1);
 			return getBuffer(address);
 		}
-		
-		/**
-		 * @return Pixmap representing the glyph, needs to be disposed manually.
-		 */
-		public Pixmap getPixmap(Format format) {
-			return getPixmap(format, Color.WHITE);
-		}
 
-		public Pixmap getPixmap(Format format, Color color) {
-			int width = getWidth();
+		private static native ByteBuffer getBuffer(long bitmap); /*
+			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
+			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch) * bmp->width);
+		*/
+
+		// @on
+		public Pixmap getPixmap (Format format, Color color, float gamma) {
+			int width = getWidth(), rows = getRows();
 			ByteBuffer src = getBuffer();
 			Pixmap pixmap;
-			if (color == Color.WHITE) {
-				pixmap = new Pixmap(width, getRows(), Format.Alpha);
+			int pixelMode = getPixelMode();
+			int rowBytes = Math.abs(getPitch()); // We currently ignore negative pitch.
+			if (color == Color.WHITE && pixelMode == FT_PIXEL_MODE_GRAY && rowBytes == width && gamma == 1) {
+				pixmap = new Pixmap(width, rows, Format.Alpha);
 				BufferUtils.copy(src, pixmap.getPixels(), pixmap.getPixels().capacity());
 			} else {
-				pixmap = new Pixmap(width, getRows(), Format.RGBA8888);
-				int srcPitch = getPitch();
-				int srcRGBA = Color.rgba8888(color);
+				pixmap = new Pixmap(width, rows, Format.RGBA8888);
+				int rgba = Color.rgba8888(color);
+				byte[] srcRow = new byte[rowBytes];
+				int[] dstRow = new int[width];
 				IntBuffer dst = pixmap.getPixels().asIntBuffer();
-				for (int y = 0; y < getRows(); y++) {
-					int ySrcPitch = y * srcPitch;
-					int yWidth = y * width;
-					for (int x = 0; x < width; x++) {
-						//use the color value of the foreground color, blend alpha
-						byte alpha = src.get(ySrcPitch + x);
-						dst.put(yWidth + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * (alpha & 0xff)/255f));
+				if (pixelMode == FT_PIXEL_MODE_MONO) {
+					// Use the specified color for each set bit.
+					for (int y = 0; y < rows; y++) {
+						src.get(srcRow);
+						for (int i = 0, x = 0; x < width; i++, x += 8) {
+							byte b = srcRow[i];
+							for (int ii = 0, n = Math.min(8, width - x); ii < n; ii++) {
+								if ((b & (1 << (7 - ii))) != 0)
+									dstRow[x + ii] = rgba;
+								else
+									dstRow[x + ii] = 0;
+							}
+						}
+						dst.put(dstRow);
+					}
+				} else {
+					// Use the specified color for RGB, blend the FreeType bitmap with alpha.
+					int rgb = rgba & 0xffffff00;
+					int a = rgba & 0xff;
+					for (int y = 0; y < rows; y++) {
+						src.get(srcRow);
+						for (int x = 0; x < width; x++) {
+							float alpha = (srcRow[x] & 0xff) / 255f;
+							alpha = (float)Math.pow(alpha, gamma); // Inverse gamma.
+							dstRow[x] = rgb | (int)(a * alpha);
+						}
+						dst.put(dstRow);
 					}
 				}
 			}
@@ -639,12 +661,8 @@ public class FreeType {
 			}
 			return converted;
 		}
-		
-		private static native ByteBuffer getBuffer(long bitmap); /*
-			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
-			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
-		*/
-		
+		// @off
+
 		public int getNumGray() {
 			return getNumGray(address);
 		}
@@ -852,8 +870,7 @@ public class FreeType {
 	*/
 
 	public static int toInt (int value) {
-		if (value < 0) return (int)((value - 32) >> 6);
-		return (int)((value + 32) >> 6);
+		return ((value + 63) & -64) >> 6;
 	}
    
 //	public static void main (String[] args) throws Exception {

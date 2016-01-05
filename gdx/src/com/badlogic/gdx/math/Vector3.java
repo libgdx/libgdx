@@ -108,6 +108,31 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(vector.x, vector.y, z);
 	}
 
+	/** Sets the components from the given spherical coordinate
+	 * @param azimuthalAngle The angle between x-axis in radians [0, 2pi]
+	 * @param polarAngle The angle between z-axis in radians [0, pi]
+	 * @return This vector for chaining */
+	public Vector3 setFromSpherical (float azimuthalAngle, float polarAngle) {
+		float cosPolar = MathUtils.cos(polarAngle);
+		float sinPolar = MathUtils.sin(polarAngle);
+
+		float cosAzim = MathUtils.cos(azimuthalAngle);
+		float sinAzim = MathUtils.sin(azimuthalAngle);
+
+		return this.set(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
+	}
+
+	@Override
+	public Vector3 setToRandomDirection () {
+		float u = MathUtils.random();
+		float v = MathUtils.random();
+
+		float theta = MathUtils.PI2 * u; // azimuthal angle
+		float phi = (float)Math.acos(2f * v - 1f); // polar angle
+
+		return this.setFromSpherical(theta, phi);
+	}
+
 	@Override
 	public Vector3 cpy () {
 		return new Vector3(this);
@@ -532,7 +557,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		z += alpha * (target.z - z);
 		return this;
 	}
-	
+
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
@@ -599,35 +624,30 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 limit2 (float limit2) {
 		float len2 = len2();
 		if (len2 > limit2) {
-			scl((float) Math.sqrt(limit2 / len2));
+			scl((float)Math.sqrt(limit2 / len2));
 		}
 		return this;
 	}
 
 	@Override
-	public Vector3 setLength ( float len ) {
-		return setLength2( len * len );
+	public Vector3 setLength (float len) {
+		return setLength2(len * len);
 	}
 
 	@Override
-	public Vector3 setLength2 ( float len2 ) {
+	public Vector3 setLength2 (float len2) {
 		float oldLen2 = len2();
-		return ( oldLen2 == 0 || oldLen2 == len2 )
-				? this
-				: scl((float) Math.sqrt( len2 / oldLen2 ));
+		return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float)Math.sqrt(len2 / oldLen2));
 	}
 
 	@Override
 	public Vector3 clamp (float min, float max) {
 		final float len2 = len2();
-		if (len2 == 0f)
-			return this;
+		if (len2 == 0f) return this;
 		float max2 = max * max;
-		if (len2 > max2)
-			return scl((float)Math.sqrt(max2 / len2));
+		if (len2 > max2) return scl((float)Math.sqrt(max2 / len2));
 		float min2 = min * min;
-		if (len2 < min2)
-			return scl((float)Math.sqrt(min2 / len2));
+		if (len2 < min2) return scl((float)Math.sqrt(min2 / len2));
 		return this;
 	}
 

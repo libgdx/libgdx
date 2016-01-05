@@ -100,7 +100,6 @@
 #define DATA MAKE_ID('D','A','T','A')
 #define GLOB MAKE_ID('G','L','O','B')
 #define IMAG MAKE_ID('I','M','A','G')
-#define TEST MAKE_ID('T','E','S','T')
 #define USER MAKE_ID('U','S','E','R')
 
 

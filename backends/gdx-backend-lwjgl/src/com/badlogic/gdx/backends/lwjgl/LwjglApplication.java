@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.io.File;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -51,6 +52,7 @@ public class LwjglApplication implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 	protected String preferencesdir;
+	protected Files.FileType preferencesFileType;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
 		this(listener, createConfig(title, width, height));
@@ -92,6 +94,7 @@ public class LwjglApplication implements Application {
 		net = new LwjglNet();
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
+		this.preferencesFileType = config.preferencesFileType;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -314,7 +317,7 @@ public class LwjglApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name, this.preferencesdir);
+			Preferences prefs = new LwjglPreferences(new LwjglFileHandle(new File(preferencesdir, name), preferencesFileType));
 			preferences.put(name, prefs);
 			return prefs;
 		}

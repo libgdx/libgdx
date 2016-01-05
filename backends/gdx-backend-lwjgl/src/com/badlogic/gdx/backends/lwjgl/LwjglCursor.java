@@ -12,19 +12,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LwjglCursor implements Cursor {
-	/** Revert to the default system cursor */
-	public static void resetCursor () {
-		try {
-			Mouse.setNativeCursor(null);
-		} catch (LWJGLException e) {
-			throw new GdxRuntimeException("Could not set cursor image.", e);
-		}
-	}
-
-	private org.lwjgl.input.Cursor lwjglCursor = null;
+	org.lwjgl.input.Cursor lwjglCursor = null;
 
 	public LwjglCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
-
 		try {
 			if (pixmap == null) {
 				lwjglCursor = null;
@@ -87,12 +77,6 @@ public class LwjglCursor implements Cursor {
 	}
 
 	@Override
-	public void setSystemCursor () {
-		try {
-			Mouse.setNativeCursor(lwjglCursor);
-		} catch (LWJGLException e) {
-			throw new GdxRuntimeException("Could not set cursor image.", e);
-		}
+	public void dispose () {
 	}
-
 }

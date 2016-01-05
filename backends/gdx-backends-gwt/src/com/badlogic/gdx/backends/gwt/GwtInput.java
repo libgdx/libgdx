@@ -86,6 +86,24 @@ public class GwtInput implements Input {
 	public float getAccelerometerZ () {
 		return 0;
 	}
+	
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	@Override
 	public int getX () {

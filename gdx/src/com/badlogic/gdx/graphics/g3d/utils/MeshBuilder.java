@@ -30,6 +30,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -112,6 +113,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	private boolean vertexTransformationEnabled = false;
 	private final Matrix4 positionTransform = new Matrix4();
 	private final Matrix3 normalTransform = new Matrix3();
+	private final BoundingBox bounds = new BoundingBox();
 
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, only Position, Color, Normal and
 	 *           TextureCoordinates is supported. */
@@ -160,6 +162,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.indices.clear();
 		this.parts.clear();
 		this.vindex = 0;
+		this.lastIndex = -1;
 		this.istart = 0;
 		this.part = null;
 		this.stride = attributes.vertexSize / 4;
@@ -181,12 +184,17 @@ public class MeshBuilder implements MeshPartBuilder {
 		setVertexTransform(null);
 		setUVRange(null);
 		this.primitiveType = primitiveType;
+		bounds.inf();
 	}
 
 	private void endpart () {
 		if (part != null) {
-			part.indexOffset = istart;
-			part.numVertices = indices.size - istart;
+			bounds.getCenter(part.center);
+			bounds.getDimensions(part.halfExtents).scl(0.5f);
+			part.radius = part.halfExtents.len();
+			bounds.inf();
+			part.offset = istart;
+			part.size = indices.size - istart;
 			istart = indices.size;
 			part = null;
 		}
@@ -261,6 +269,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.indices.clear();
 		this.parts.clear();
 		this.vindex = 0;
+		this.lastIndex = -1;
 		this.istart = 0;
 		this.part = null;
 	}
@@ -553,6 +562,11 @@ public class MeshBuilder implements MeshPartBuilder {
 			transformPosition(vertices.items, o + posOffset, posSize, positionTransform);
 			if (norOffset >= 0) transformNormal(vertices.items, o + norOffset, 3, normalTransform);
 		}
+		
+		final float x = vertices.items[o+posOffset];
+		final float y = (posSize > 1) ? vertices.items[o+posOffset+1] : 0f;
+		final float z = (posSize > 2) ? vertices.items[o+posOffset+2] : 0f;
+		bounds.ext(x, y, z);
 
 		if (hasColor) {
 			if (colOffset >= 0) {
@@ -1279,7 +1293,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void addMesh (MeshPart meshpart) {
 		if (meshpart.primitiveType != primitiveType) throw new GdxRuntimeException("Primitive type doesn't match");
-		addMesh(meshpart.mesh, meshpart.indexOffset, meshpart.numVertices);
+		addMesh(meshpart.mesh, meshpart.offset, meshpart.size);
 	}
 
 	@Override
@@ -1304,7 +1318,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	private static IntIntMap indicesMap = null;
 
-	private void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
+	@Override
+	public void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {
 		if (indicesMap == null)
 			indicesMap = new IntIntMap(numIndices);
 		else {
@@ -1312,7 +1327,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			indicesMap.ensureCapacity(numIndices);
 		}
 		ensureIndices(numIndices);
-		ensureVertices(vertices.length < numIndices ? vertices.length : numIndices); // a bit naive perhaps?
+		final int numVertices = vertices.length / stride;
+		ensureVertices(numVertices < numIndices ? numVertices : numIndices);
 		for (int i = 0; i < numIndices; i++) {
 			final int sidx = indices[i];
 			int didx = indicesMap.get(sidx, -1);
@@ -1322,5 +1338,19 @@ public class MeshBuilder implements MeshPartBuilder {
 			}
 			index((short)didx);
 		}
+	}
+	
+	@Override
+	public void addMesh (float[] vertices, short[] indices) {
+		final short offset = (short)(lastIndex + 1);
+		
+		final int numVertices = vertices.length / stride;
+		ensureVertices(numVertices);
+		for (int v = 0; v < vertices.length; v += stride)
+			addVertex(vertices, v);
+		
+		ensureIndices(indices.length);
+		for (int i = 0; i < indices.length; ++i)
+			index((short)(indices[i] + offset));
 	}
 }

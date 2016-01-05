@@ -18,7 +18,6 @@
 		<exclude name="**/HeightField.java"/> <!-- Incompatible type due to emulation -->
 		<exclude name="**/HeightMapTest.java"/> <!-- Incompatible type due to emulation -->
 		<exclude name="**/I18NMessageTest.java"/> <!-- MessageBundle -->
-		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/JsonReaderTest.java"/> <!-- uses ArrayList -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->

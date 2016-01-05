@@ -249,10 +249,10 @@ public class ScrollPane extends WidgetGroup {
 
 	void clamp () {
 		if (!clamp) return;
-		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils.clamp(amountX,
-			0, maxX));
-		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils.clamp(amountY,
-			0, maxY));
+		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance)
+			: MathUtils.clamp(amountX, 0, maxX));
+		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance)
+			: MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	public void setStyle (ScrollPaneStyle style) {
@@ -303,8 +303,8 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !panning && //
-			// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 20% of the scroll area.
-			((!touchScrollH || (scrollX && maxX / (hScrollBounds.width - hKnobBounds.width) > areaWidth * 0.1f)) //
+		// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 20% of the scroll area.
+		((!touchScrollH || (scrollX && maxX / (hScrollBounds.width - hKnobBounds.width) > areaWidth * 0.1f)) //
 			&& (!touchScrollV || (scrollY && maxY / (vScrollBounds.height - vKnobBounds.height) > areaHeight * 0.1f))) //
 		) {
 			if (visualAmountX != amountX) {
@@ -336,9 +336,8 @@ public class ScrollPane extends WidgetGroup {
 					animating = true;
 				} else if (amountX > maxX) {
 					resetFade();
-					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX)
-						/ overscrollDistance)
-						* delta;
+					amountX -= (overscrollSpeedMin
+						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX) / overscrollDistance) * delta;
 					if (amountX < maxX) scrollX(maxX);
 					animating = true;
 				}
@@ -352,9 +351,8 @@ public class ScrollPane extends WidgetGroup {
 					animating = true;
 				} else if (amountY > maxY) {
 					resetFade();
-					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY)
-						/ overscrollDistance)
-						* delta;
+					amountY -= (overscrollSpeedMin
+						+ (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY) / overscrollDistance) * delta;
 					if (amountY < maxY) scrollY(maxY);
 					animating = true;
 				}
@@ -536,8 +534,7 @@ public class ScrollPane extends WidgetGroup {
 		// Setup transform for this group.
 		applyTransform(batch, computeTransform());
 
-		if (scrollX)
-			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
+		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
 		if (scrollY)
 			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
 
@@ -579,16 +576,14 @@ public class ScrollPane extends WidgetGroup {
 		// Draw the background ninepatch.
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) {
-			style.background.draw(batch, 0, 0, getWidth(), getHeight());
-			batch.flush();
-		}
+		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
 		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 
 		// Enable scissors for widget area and draw the widget.
+		batch.flush();
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawChildren(batch, parentAlpha);
 			batch.flush();
@@ -599,8 +594,8 @@ public class ScrollPane extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
 		if (scrollX && scrollY) {
 			if (style.corner != null) {
-				style.corner
-					.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width, vScrollBounds.y);
+				style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
+					vScrollBounds.y);
 			}
 		}
 		if (scrollX) {
@@ -766,7 +761,8 @@ public class ScrollPane extends WidgetGroup {
 		return amountY;
 	}
 
-	/** Sets the visual scroll amount equal to the scroll amount. This can be used when setting the scroll amount without animating. */
+	/** Sets the visual scroll amount equal to the scroll amount. This can be used when setting the scroll amount without
+	 * animating. */
 	public void updateVisualScroll () {
 		visualAmountX = amountX;
 		visualAmountY = amountY;
@@ -818,8 +814,8 @@ public class ScrollPane extends WidgetGroup {
 		flickScrollListener.getGestureDetector().setTapSquareSize(halfTapSquareSize);
 	}
 
-	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane widget's
-	 * coordinate system. */
+	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane
+	 * widget's coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
 		scrollTo(x, y, width, height, false, false);
 	}
@@ -898,6 +894,14 @@ public class ScrollPane extends WidgetGroup {
 		disableY = y;
 	}
 
+	public boolean isScrollingDisabledX () {
+		return disableX;
+	}
+
+	public boolean isScrollingDisabledY () {
+		return disableY;
+	}
+
 	public boolean isLeftEdge () {
 		return !scrollX || amountX <= 0;
 	}
@@ -951,8 +955,8 @@ public class ScrollPane extends WidgetGroup {
 		this.overscrollY = overscrollY;
 	}
 
-	/** For flick scroll, sets the overscroll distance in pixels and the speed it returns to the widget's bounds in seconds. Default
-	 * is 50, 30, 200. */
+	/** For flick scroll, sets the overscroll distance in pixels and the speed it returns to the widget's bounds in seconds.
+	 * Default is 50, 30, 200. */
 	public void setupOverscroll (float distance, float speedMin, float speedMax) {
 		overscrollDistance = distance;
 		overscrollSpeedMin = speedMin;
@@ -1007,9 +1011,9 @@ public class ScrollPane extends WidgetGroup {
 		this.smoothScrolling = smoothScrolling;
 	}
 
-	/** When false (the default), the widget is clipped so it is not drawn under the scrollbars. When true, the widget is clipped to
-	 * the entire scroll pane bounds and the scrollbars are drawn on top of the widget. If {@link #setFadeScrollBars(boolean)} is
-	 * true, the scroll bars are always drawn on top. */
+	/** When false (the default), the widget is clipped so it is not drawn under the scrollbars. When true, the widget is clipped
+	 * to the entire scroll pane bounds and the scrollbars are drawn on top of the widget. If {@link #setFadeScrollBars(boolean)}
+	 * is true, the scroll bars are always drawn on top. */
 	public void setScrollbarsOnTop (boolean scrollbarsOnTop) {
 		this.scrollbarsOnTop = scrollbarsOnTop;
 		invalidate();
@@ -1055,7 +1059,8 @@ public class ScrollPane extends WidgetGroup {
 		public ScrollPaneStyle () {
 		}
 
-		public ScrollPaneStyle (Drawable background, Drawable hScroll, Drawable hScrollKnob, Drawable vScroll, Drawable vScrollKnob) {
+		public ScrollPaneStyle (Drawable background, Drawable hScroll, Drawable hScrollKnob, Drawable vScroll,
+			Drawable vScrollKnob) {
 			this.background = background;
 			this.hScroll = hScroll;
 			this.hScrollKnob = hScrollKnob;

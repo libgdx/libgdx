@@ -19,6 +19,7 @@ subject to the following restrictions:
 #include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
 #include "btMultiBodySolverConstraint.h"
 
+#define DIRECTLY_UPDATE_VELOCITY_DURING_SOLVER_ITERATIONS
 
 class btMultiBody;
 
@@ -66,7 +67,7 @@ protected:
 
 	virtual btScalar solveSingleIteration(int iteration, btCollisionObject** bodies ,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 	void	applyDeltaVee(btScalar* deltaV, btScalar impulse, int velocityIndex, int ndof);
-
+	void writeBackSolverBodyToMultiBody(btMultiBodySolverConstraint& constraint, btScalar deltaTime);
 public:
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();

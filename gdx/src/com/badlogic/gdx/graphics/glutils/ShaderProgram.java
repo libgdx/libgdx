@@ -83,6 +83,14 @@ public class ShaderProgram implements Disposable {
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;
 
+	/** code that is always added to the vertex shader code, typically used to inject a #version line. Note that this is added
+	 * as-is, you should include a newline (`\n`) if needed. */
+	public static String prependVertexCode = "";
+
+	/** code that is always added to every fragment shader code, typically used to inject a #version line. Note that this is added
+	 * as-is, you should include a newline (`\n`) if needed. */
+	public static String prependFragmentCode = "";
+
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 
@@ -149,6 +157,11 @@ public class ShaderProgram implements Disposable {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
+		if (prependVertexCode != null && prependVertexCode.length() > 0)
+			vertexShader = prependVertexCode + vertexShader;
+		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
+			fragmentShader = prependFragmentCode + fragmentShader;
+
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
 		this.matrix = BufferUtils.newFloatBuffer(16);
@@ -178,7 +191,7 @@ public class ShaderProgram implements Disposable {
 			return;
 		}
 
-		program = linkProgram();
+		program = linkProgram(createProgram());
 		if (program == -1) {
 			isCompiled = false;
 			return;
@@ -212,10 +225,15 @@ public class ShaderProgram implements Disposable {
 		return shader;
 	}
 
-	private int linkProgram () {
+	protected int createProgram () {
 		GL20 gl = Gdx.gl20;
 		int program = gl.glCreateProgram();
-		if (program == 0) return -1;
+		return program != 0 ? program : -1;
+	}
+
+	private int linkProgram (int program) {
+		GL20 gl = Gdx.gl20;
+		if (program == -1) return -1;
 
 		gl.glAttachShader(program, vertexShaderHandle);
 		gl.glAttachShader(program, fragmentShaderHandle);
@@ -504,7 +522,7 @@ public class ShaderProgram implements Disposable {
 	 * @param matrix the matrix
 	 * @param transpose whether the matrix should be transposed */
 	public void setUniformMatrix (String name, Matrix4 matrix, boolean transpose) {
-		setUniformMatrix(fetchUniformLocation(name), matrix, transpose); 
+		setUniformMatrix(fetchUniformLocation(name), matrix, transpose);
 	}
 
 	public void setUniformMatrix (int location, Matrix4 matrix) {

@@ -144,8 +144,8 @@ public class ModelBuilder {
 		meshPart.id = id;
 		meshPart.primitiveType = primitiveType;
 		meshPart.mesh = mesh;
-		meshPart.indexOffset = offset;
-		meshPart.numVertices = size;
+		meshPart.offset = offset;
+		meshPart.size = size;
 		part(meshPart, material);
 		return meshPart;
 	}

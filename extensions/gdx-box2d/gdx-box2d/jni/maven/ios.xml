@@ -21,5 +21,19 @@
         <include>*.a</include>
       </includes>
     </fileSet>
+    <fileSet>
+        <directory>${project.basedir}</directory>
+        <outputDirectory>/META-INF/robovm/tvos</outputDirectory>
+        <includes>
+          <include>robovm.xml</include>
+        </includes>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>${project.build.directory}/ios/libgdx-box2d.a.tvos</source>
+      <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
+      <destName>libgdx-box2d.a</destName>
+    </file>
+  </files>
 </assembly>

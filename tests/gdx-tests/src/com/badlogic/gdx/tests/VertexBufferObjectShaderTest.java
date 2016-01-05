@@ -44,7 +44,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 	@Override
 	public void render () {
 		GL20 gl = Gdx.gl20;
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClearColor(0.7f, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
