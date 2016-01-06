@@ -57,6 +57,13 @@
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
     </dependency>
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <build>
