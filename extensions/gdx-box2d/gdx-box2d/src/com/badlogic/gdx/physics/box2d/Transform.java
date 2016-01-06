@@ -82,7 +82,7 @@ public class Transform {
 	public Vector2 getOrientation () {
 		return orientation.set(vals[COS], vals[SIN]);
 	}
-	/** @return Set where the body should "look at" */
+	/** Set where the body should "look at" */
 	public void setOrientation (Vector2 orientation) {
 		this.vals[COS] = orientation.x;
 		this.vals[SIN] = orientation.y;

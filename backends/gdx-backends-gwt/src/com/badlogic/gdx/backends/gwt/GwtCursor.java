@@ -62,6 +62,25 @@ public class GwtCursor implements Cursor {
 		cssCursorProperty += yHotspot;
 		cssCursorProperty += ",auto";
 	}
+	
+	static String getNameForSystemCursor (SystemCursor systemCursor) {
+		if (systemCursor == SystemCursor.Arrow) {
+			return "default";
+		} else if (systemCursor == SystemCursor.Crosshair) {
+			return "crosshair";
+		} else if (systemCursor == SystemCursor.Hand) {
+			return "pointer"; // Don't change to 'hand', 'hand' doesn't work in the newer IEs
+		} else if (systemCursor == SystemCursor.HorizontalResize) {
+			return "ew-resize";
+		} else if (systemCursor == SystemCursor.VerticalResize) {
+			return "ns-resize";
+		} else if (systemCursor == SystemCursor.Ibeam) {
+			return "text";
+		} else {
+			throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
+		}
+		
+	}
 
 	@Override
 	public void dispose () {
