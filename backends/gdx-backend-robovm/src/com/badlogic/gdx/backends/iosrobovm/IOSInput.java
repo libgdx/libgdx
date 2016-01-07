@@ -16,6 +16,16 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
+import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pool;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
@@ -42,17 +52,6 @@ import org.robovm.rt.VM;
 import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.annotation.MachineSizedUInt;
 import org.robovm.rt.bro.annotation.Pointer;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
-import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -658,16 +657,17 @@ public class IOSInput implements Input {
 	private void toTouchEvents (long touches) {
 		long array = NSSetExtensions.allObjects(touches);
 		int length = (int)NSArrayExtensions.count(array);
+		final IOSScreenBounds screenBounds = app.getScreenBounds();
+
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
 			final int locX, locY;
 			// Get and map the location to our drawing space
 			{
-				CGPoint loc = touch.getLocationInView(touch.getWindow());
-				final CGRect bounds = app.getCachedBounds();
-				locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
-				locY = (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
+				CGPoint loc = touch.getLocationInView(app.graphics.view);
+				locX = (int)(loc.getX() - screenBounds.x);
+				locY = (int)(loc.getY() - screenBounds.y);
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
