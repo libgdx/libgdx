@@ -256,7 +256,8 @@ public class TextField extends Widget implements Disableable {
 			int maxIndex = Math.max(cursor, selectionStart);
 			float minX = Math.max(glyphPositions[minIndex], -renderOffset);
 			float maxX = Math.min(glyphPositions[maxIndex], visibleWidth - renderOffset);
-			selectionX = minX + textOffset;
+			selectionX = minX;
+			if (renderOffset == 0) selectionX += textOffset;
 			selectionWidth = maxX - minX - style.font.getData().cursorX;
 		}
 	}
