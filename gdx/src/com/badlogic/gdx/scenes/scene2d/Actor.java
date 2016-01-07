@@ -202,7 +202,6 @@ public class Actor {
 	 * occur on this Actor.
 	 * <p>
 	 * The default implementation returns this actor if the point is within this actor's bounds.
-	 * 
 	 * @param touchable If true, the hit detection will respect the {@link #setTouchable(Touchable) touchability}.
 	 * @see Touchable */
 	public Actor hit (float x, float y, boolean touchable) {
