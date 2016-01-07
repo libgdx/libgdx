@@ -37,8 +37,8 @@ public final class ScreenUtils {
 	 * accessed via {@link TextureRegion#getTexture}. The texture is not managed and has to be reloaded manually on a context loss.
 	 * The returned TextureRegion is flipped along the Y axis by default. */
 	public static TextureRegion getFrameBufferTexture () {
-		final int w = Gdx.graphics.getWidth();
-		final int h = Gdx.graphics.getHeight();
+		final int w = Gdx.graphics.getBackBufferWidth();
+		final int h = Gdx.graphics.getBackBufferHeight();
 		return getFrameBufferTexture(0, 0, w, h);
 	}
 
@@ -84,8 +84,8 @@ public final class ScreenUtils {
 	 * 
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (boolean flipY) {
-		final int w = Gdx.graphics.getWidth();
-		final int h = Gdx.graphics.getHeight();
+		final int w = Gdx.graphics.getBackBufferWidth();
+		final int h = Gdx.graphics.getBackBufferHeight();
 		return getFrameBufferPixels(0, 0, w, h, flipY);
 	}
 
@@ -93,7 +93,7 @@ public final class ScreenUtils {
 	 * equal to the specified width * height * 4. The byte[] will always contain RGBA8888 data. If the width and height specified
 	 * are larger than the framebuffer dimensions, the Texture will be padded accordingly. Pixels that fall outside of the current
 	 * screen will have RGBA values of 0. Because of differences in screen and image origins the framebuffer contents should be
-	 * flipped along the Y axis if you intend save them to disk as a bitmap. Flipping is not cheap operation, so use this
+	 * flipped along the Y axis if you intend save them to disk as a bitmap. Flipping is not a cheap operation, so use this
 	 * functionality wisely.
 	 * 
 	 * @param flipY whether to flip pixels along Y axis */
