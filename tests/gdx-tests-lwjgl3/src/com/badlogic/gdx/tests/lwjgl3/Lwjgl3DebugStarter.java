@@ -130,6 +130,9 @@ public class Lwjgl3DebugStarter {
 							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.deiconifyWindow();
 						}
+						if(character == 'u') {
+							Gdx.net.openURI("https://google.com");
+						}
 						return false;
 					}										
 				});
