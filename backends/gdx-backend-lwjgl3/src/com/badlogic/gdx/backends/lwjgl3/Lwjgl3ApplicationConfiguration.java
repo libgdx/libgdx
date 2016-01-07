@@ -240,7 +240,7 @@ public class Lwjgl3ApplicationConfiguration {
 
 	/**
 	 * Sets whether to use vsync. This setting can be changed anytime at runtime
-	 * via {@link Graphics#setVsync(boolean)}.
+	 * via {@link Graphics#setVSync(boolean)}.
 	 */
 	public void useVsync(boolean vsync) {
 		this.vSyncEnabled = vsync;
@@ -347,6 +347,7 @@ public class Lwjgl3ApplicationConfiguration {
 	 * @return the conntected {@link Monitor}s
 	 */
 	public static Monitor[] getMonitors() {
+		Lwjgl3Application.initializeGlfw();
 		PointerBuffer glfwMonitors = GLFW.glfwGetMonitors();
 		Monitor[] monitors = new Monitor[glfwMonitors.limit()];
 		for (int i = 0; i < glfwMonitors.limit(); i++) {
