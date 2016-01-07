@@ -33,7 +33,7 @@ public class Lwjgl3Window implements Disposable {
 	private long windowHandle;
 	private final ApplicationListener listener;
 	private boolean listenerInitialized = false;
-	private final Lwjgl3WindowListener windowListener;
+	private Lwjgl3WindowListener windowListener;
 	private final Lwjgl3Graphics graphics;
 	private final Lwjgl3Input input;
 	private final Lwjgl3ApplicationConfiguration config;
@@ -120,6 +120,15 @@ public class Lwjgl3Window implements Disposable {
 	/** @return the {@link ApplicationListener} associated with this window **/	 
 	public ApplicationListener getListener() {
 		return listener;
+	}
+	
+	/** @return the {@link Lwjgl3WindowListener} set on this window **/
+	public Lwjgl3WindowListener getWindowListener() {
+		return windowListener;
+	}
+	
+	public void setWindowListener(Lwjgl3WindowListener listener) {
+		this.windowListener = listener;
 	}
 	
 	/**
