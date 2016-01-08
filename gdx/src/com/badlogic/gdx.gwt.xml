@@ -49,6 +49,8 @@
 		<include name="assets/loaders/TextureLoader.java"/> <!-- Emulated -->
 		
 	<!-- assets/loaders/resolvers -->		
+		<include name="assets/loaders/resolvers/AbsoluteFileHandleResolver.java"/>
+		<include name="assets/loaders/resolvers/LocalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/InternalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/ClasspathFileHandleResolver.java"/>
