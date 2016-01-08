@@ -324,7 +324,9 @@ public class Lwjgl3Input implements Input, Disposable {
 		case Keys.TAB:
 			return '\t';
 		case Keys.FORWARD_DEL:
-			return 127;
+			return 127;		
+		case Keys.ENTER:
+			return '\n';
 		}
 		return 0;
 	}
