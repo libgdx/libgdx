@@ -32,11 +32,7 @@ import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
-import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.*;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -130,7 +126,15 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
+		if (config.useGL30) {
+			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, 3);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		} else if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
 			GLSurfaceView20API18 view = new GLSurfaceView20API18(application.getContext(), resolutionStrategy);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
@@ -230,12 +234,21 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl20 != null) return;
+		String version = gl.glGetString(GL10.GL_VERSION);
+		if (config.useGL30 && version.contains("OpenGL ES 3.")) {
+			if (gl30 != null) return;
+			gl30 = new AndroidGL30();
 
-		gl20 = new AndroidGL20();
+			Gdx.gl = gl30;
+			Gdx.gl20 = gl30;
+			Gdx.gl30 = gl30;
+		} else {
+			if (gl20 != null) return;
+			gl20 = new AndroidGL20();
 
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
 
 		Gdx.app.log(LOG_TAG, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));

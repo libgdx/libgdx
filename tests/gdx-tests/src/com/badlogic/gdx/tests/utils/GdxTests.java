@@ -133,6 +133,7 @@ public class GdxTests {
 		ControllersTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
+		GLES30Test.class,
 		GLProfilerErrorTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
