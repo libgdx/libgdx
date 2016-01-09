@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.7.3-SNAPSHOT</version>
+    <version>1.8.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -56,6 +56,13 @@
         <groupId>org.jcraft</groupId>
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
+    </dependency>
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 

@@ -49,6 +49,8 @@
 		<include name="assets/loaders/TextureLoader.java"/> <!-- Emulated -->
 		
 	<!-- assets/loaders/resolvers -->		
+		<include name="assets/loaders/resolvers/AbsoluteFileHandleResolver.java"/>
+		<include name="assets/loaders/resolvers/LocalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/InternalFileHandleResolver.java"/>
 		<include name="assets/loaders/resolvers/ClasspathFileHandleResolver.java"/>
@@ -92,6 +94,7 @@
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<include name="graphics/g2d/CpuSpriteBatch.java"/>
+		<include name="graphics/g2d/DistanceFieldFont.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
 		<include name="graphics/g2d/GlyphLayout.java"/>
 		<include name="graphics/g2d/NinePatch.java"/>
@@ -108,7 +111,6 @@
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
 		<include name="graphics/g2d/SpriteCache.java"/>
-		<include name="graphics/g2d/TextMarkup.java"/>
 		<include name="graphics/g2d/TextureAtlas.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
 		
@@ -223,6 +225,7 @@
 		<include name="graphics/glutils/FrameBufferCubemap.java"/>
 		<include name="graphics/glutils/GLFrameBuffer.java"/>
 		<include name="graphics/glutils/GLOnlyTextureData.java"/>
+		<include name="graphics/glutils/HdpiUtils.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>

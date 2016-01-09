@@ -137,16 +137,16 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	protected int letterUnderCursor (float x) {
-		x -= renderOffset + textOffset;
-		int index = glyphPositions.size - 1;
+		x -= textOffset + fontOffset - style.font.getData().cursorX - glyphPositions.get(visibleTextStart);
+		int n = this.glyphPositions.size;
 		float[] glyphPositions = this.glyphPositions.items;
-		for (int i = 0, n = this.glyphPositions.size; i < n; i++) {
+		for (int i = 1; i < n; i++) {
 			if (glyphPositions[i] > x) {
-				index = i - 1;
-				break;
+				if (glyphPositions[i] - x <= x - glyphPositions[i - 1]) return i;
+				return i - 1;
 			}
 		}
-		return Math.max(0, index);
+		return n - 1;
 	}
 
 	protected boolean isWordCharacter (char c) {
@@ -211,55 +211,54 @@ public class TextField extends Widget implements Disableable {
 		float visibleWidth = getWidth();
 		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
+		int glyphCount = glyphPositions.size;
+		float[] glyphPositions = this.glyphPositions.items;
+
 		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
-		float position = glyphPositions.get(cursor);
-		float distance = position - Math.abs(renderOffset);
-		if (distance <= 0) {
-			if (cursor > 0)
-				renderOffset = -glyphPositions.get(cursor - 1);
-			else
-				renderOffset = 0;
-		} else if (distance > visibleWidth) {
-			renderOffset -= distance - visibleWidth;
+		float distance = glyphPositions[Math.max(0, cursor - 1)] + renderOffset;
+		if (distance <= 0)
+			renderOffset -= distance;
+		else {
+			int index = Math.min(glyphCount - 1, cursor + 1);
+			float minX = glyphPositions[index] - visibleWidth;
+			if (-renderOffset < minX) {
+				renderOffset = -minX;
+			}
 		}
 
 		// calculate first visible char based on render offset
 		visibleTextStart = 0;
-		textOffset = 0;
-		float start = Math.abs(renderOffset);
-		int glyphCount = glyphPositions.size;
-		float[] glyphPositions = this.glyphPositions.items;
-		float startPos = 0;
+		float startX = 0;
 		for (int i = 0; i < glyphCount; i++) {
-			if (glyphPositions[i] >= start) {
-				visibleTextStart = i;
-				startPos = glyphPositions[i];
-				textOffset = startPos - start;
+			if (glyphPositions[i] >= -renderOffset) {
+				visibleTextStart = Math.max(0, i);
+				startX = glyphPositions[i];
 				break;
 			}
 		}
 
 		// calculate last visible char based on visible width and render offset
-		visibleTextEnd = Math.min(displayText.length(), cursor + 1);
-		for (; visibleTextEnd <= displayText.length(); visibleTextEnd++) {
-			if (glyphPositions[visibleTextEnd] - startPos > visibleWidth) break;
-		}
+		int length = displayText.length();
+		visibleTextEnd = Math.min(length, cursor + 1);
+		for (; visibleTextEnd <= length; visibleTextEnd++)
+			if (glyphPositions[visibleTextEnd] > startX + visibleWidth) break;
 		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
+
+		if ((textHAlign & Align.left) == 0) {
+			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startX);
+			if ((textHAlign & Align.center) != 0) textOffset = Math.round(textOffset * 0.5f);
+		} else
+			textOffset = startX + renderOffset;
 
 		// calculate selection x position and width
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions[minIndex], startPos);
-			float maxX = Math.min(glyphPositions[maxIndex], glyphPositions[visibleTextEnd]);
+			float minX = Math.max(glyphPositions[minIndex], -renderOffset);
+			float maxX = Math.min(glyphPositions[maxIndex], visibleWidth - renderOffset);
 			selectionX = minX;
+			if (renderOffset == 0) selectionX += textOffset;
 			selectionWidth = maxX - minX - style.font.getData().cursorX;
-		}
-
-		if ((textHAlign & Align.left) == 0) {
-			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startPos);
-			if ((textHAlign & Align.center) != 0) textOffset = Math.round(textOffset * 0.5f);
-			if (hasSelection) selectionX += textOffset;
 		}
 	}
 

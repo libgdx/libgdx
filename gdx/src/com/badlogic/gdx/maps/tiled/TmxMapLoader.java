@@ -160,6 +160,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		int mapHeight = root.getIntAttribute("height", 0);
 		int tileWidth = root.getIntAttribute("tilewidth", 0);
 		int tileHeight = root.getIntAttribute("tileheight", 0);
+		int hexSideLength = root.getIntAttribute("hexsidelength", 0);
+		String staggerAxis = root.getAttribute("staggeraxis", null);
+		String staggerIndex = root.getAttribute("staggerindex", null);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
 
 		MapProperties mapProperties = map.getProperties();
@@ -170,6 +173,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		mapProperties.put("height", mapHeight);
 		mapProperties.put("tilewidth", tileWidth);
 		mapProperties.put("tileheight", tileHeight);
+		mapProperties.put("hexsidelength", hexSideLength);
+		if (staggerAxis != null) {
+			mapProperties.put("staggeraxis", staggerAxis);
+		}
+		if (staggerIndex != null) {
+			mapProperties.put("staggerindex", staggerIndex);
+		}
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}

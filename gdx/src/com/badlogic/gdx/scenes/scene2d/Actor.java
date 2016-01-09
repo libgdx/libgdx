@@ -108,7 +108,7 @@ public class Actor {
 	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor
 	 * actors as necessary. If this actor is not in the stage, the stage must be set before calling this method.
 	 * <p>
-	 * Events are fired in 2 phases.
+	 * Events are fired in 2 phases:
 	 * <ol>
 	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating downward to
 	 * (and including) this actor.</li>
@@ -202,7 +202,6 @@ public class Actor {
 	 * occur on this Actor.
 	 * <p>
 	 * The default implementation returns this actor if the point is within this actor's bounds.
-	 * 
 	 * @param touchable If true, the hit detection will respect the {@link #setTouchable(Touchable) touchability}.
 	 * @see Touchable */
 	public Actor hit (float x, float y, boolean touchable) {

@@ -40,6 +40,21 @@ public class MockInput implements Input {
 	public float getAccelerometerZ() {
 		return 0;
 	}
+	
+	@Override
+	public float getGyroscopeX() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		return 0;
+	}
 
 	@Override
 	public int getX() {

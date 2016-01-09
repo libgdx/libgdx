@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
@@ -131,7 +132,7 @@ public class JglfwGraphics implements Graphics {
 		this.fullscreen = fullscreen;
 		if (!fullscreen) {
 			if (x == -1 || y == -1) {
-				DisplayMode mode = getDesktopDisplayMode();
+				DisplayMode mode = getDisplayMode();
 				x = (mode.width - width) / 2;
 				y = (mode.height - height) / 2;
 			}
@@ -262,6 +263,31 @@ public class JglfwGraphics implements Graphics {
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
+	
+	@Override
+	public Monitor getPrimaryMonitor () {
+		return new JglfwMonitor(0, 0, "Primary Monitor");
+	}
+
+	@Override
+	public Monitor getMonitor () {
+		return getPrimaryMonitor();
+	}
+
+	@Override
+	public Monitor[] getMonitors () {
+		return new Monitor[] { getPrimaryMonitor() };
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
+		return getDisplayModes();
+	}
+
+	@Override
+	public DisplayMode getDisplayMode (Monitor monitor) {
+		return getDisplayMode();
+	}
 
 	private long getWindowMonitor () {
 		if (window != 0) {
@@ -278,12 +304,12 @@ public class JglfwGraphics implements Graphics {
 		return modes.toArray(DisplayMode.class);
 	}
 
-	public DisplayMode getDesktopDisplayMode () {
+	public DisplayMode getDisplayMode () {
 		GlfwVideoMode mode = glfwGetVideoMode(getWindowMonitor());
 		return new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits);
 	}
 
-	public boolean setDisplayMode (DisplayMode displayMode) {
+	public boolean setFullscreenMode (DisplayMode displayMode) {
 		bufferFormat = new BufferFormat( //
 			displayMode.bitsPerPixel == 16 ? 5 : 8, //
 			displayMode.bitsPerPixel == 16 ? 6 : 8, //
@@ -294,7 +320,8 @@ public class JglfwGraphics implements Graphics {
 		return success;
 	}
 
-	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	public boolean setWindowedMode (int width, int height) {
+		boolean fullscreen = false;
 		if (fullscreen || this.fullscreen) {
 			boolean success = createWindow(width, height, fullscreen);
 			if (success && fullscreen) sizeChanged(width, height);
@@ -400,12 +427,6 @@ public class JglfwGraphics implements Graphics {
 		}
 	}
 
-	static class JglfwDisplayMode extends DisplayMode {
-		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
-			super(width, height, refreshRate, bitsPerPixel);
-		}
-	}
-
 	@Override
 	public boolean isGL30Available () {
 		return false;
@@ -423,5 +444,21 @@ public class JglfwGraphics implements Graphics {
 
 	@Override
 	public void setCursor (Cursor cursor) {
+	}
+	
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+	}
+	
+	static class JglfwDisplayMode extends DisplayMode {
+		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
+	}
+	
+	static class JglfwMonitor extends Monitor {
+		public JglfwMonitor (int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
+		}
 	}
 }

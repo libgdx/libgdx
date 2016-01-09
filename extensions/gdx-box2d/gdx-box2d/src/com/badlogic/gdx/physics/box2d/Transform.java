@@ -30,6 +30,7 @@ public class Transform {
 	public float[] vals = new float[4];
 
 	private Vector2 position = new Vector2();
+	private Vector2 orientation = new Vector2();
 
 	public Transform () {
 
@@ -41,6 +42,13 @@ public class Transform {
 	public Transform (Vector2 position, float angle) {
 		setPosition(position);
 		setRotation(angle);
+	}
+	/** Constructs a new Transform instance with the given position and orientation
+	 * @param position the position
+	 * @param orientation where the transform is pointing*/
+	public Transform (Vector2 position, Vector2 orientation) {
+		setPosition(position);
+		setOrientation(orientation);
 	}
 
 	/** Transforms the given vector by this transform
@@ -66,9 +74,18 @@ public class Transform {
 		vals[COS] = c;
 		vals[SIN] = s;
 	}
-
+	
 	public float getRotation () {
 		return (float)Math.atan2(vals[SIN], vals[COS]);
+	}
+	/** @return A vector 2 pointing to where the body is facing */
+	public Vector2 getOrientation () {
+		return orientation.set(vals[COS], vals[SIN]);
+	}
+	/** Set where the body should "look at" */
+	public void setOrientation (Vector2 orientation) {
+		this.vals[COS] = orientation.x;
+		this.vals[SIN] = orientation.y;
 	}
 
 	/** Sets the position of this transform

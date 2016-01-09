@@ -16,32 +16,9 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import static org.lwjgl.glfw.GLFW.GLFW_ALPHA_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_BLUE_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_DEPTH_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_GREEN_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_RED_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
-import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwExtensionSupported;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-
 import java.io.File;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -59,17 +36,14 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALAudio;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class Lwjgl3Application implements Application {
 	private final Lwjgl3ApplicationConfiguration config;
-	private final LongMap<Lwjgl3Window> windows = new LongMap<Lwjgl3Window>();
+	private final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
 	private volatile Lwjgl3Window currentWindow;
 	private Audio audio;
 	private final Files files;
@@ -79,25 +53,28 @@ public class Lwjgl3Application implements Application {
 	private int logLevel = LOG_INFO;
 	private volatile boolean running = true;
 	private final Array<Runnable> runnables = new Array<Runnable>();
+	private final Array<Runnable> executedRunnables = new Array<Runnable>();	
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	@SuppressWarnings("unused")
 	private static GLFWErrorCallback errorCallback;
-	
+	private static int versionMajor, versionMinor, versionRelease;
+
 	static void initializeGlfw() {
-		if(errorCallback == null) {
+		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
-			if (glfwInit() != GLFW_TRUE) {
+			errorCallback = GLFWErrorCallback.createPrint(System.err);
+			GLFW.glfwSetErrorCallback(errorCallback);
+			if (GLFW.glfwInit() != GLFW.GLFW_TRUE) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
-			errorCallback = GLFWErrorCallback.createPrint(System.err);
 		}
 	}
 
-	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {		
+	public Lwjgl3Application(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		initializeGlfw();
-		this.config = config;
+		this.config = Lwjgl3ApplicationConfiguration.copy(config);
+		if (this.config.title == null) this.config.title = listener.getClass().getSimpleName();
 		Gdx.app = this;
-		if (!Lwjgl3ApplicationConfiguration.disableAudio) {
+		if (!config.disableAudio) {
 			try {
 				this.audio = Gdx.audio = new OpenALAudio(config.audioDeviceSimultaneousSources,
 						config.audioDeviceBufferCount, config.audioDeviceBufferSize);
@@ -111,55 +88,70 @@ public class Lwjgl3Application implements Application {
 		this.files = Gdx.files = new Lwjgl3Files();
 		this.net = Gdx.net = new Lwjgl3Net();
 		this.clipboard = new Lwjgl3Clipboard();
-		
-		Lwjgl3Window window = createWindow(listener);
-		windows.put(window.getWindowHandle(), window);
-		loop();
+
+		Lwjgl3Window window = createWindow(config, listener, 0);
+		windows.add(window);
+		try {
+			loop();
+		} catch(Throwable t) {
+			t.printStackTrace();
+		} finally {
+			cleanup();
+		}
 	}
 
 	private void loop() {
+		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
 		while (running && windows.size > 0) {
-			Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
-			if(audio instanceof OpenALAudio) {
-				((OpenALAudio)audio).update();
+			// FIXME put it on a separate thread
+			if (audio instanceof OpenALAudio) {
+				((OpenALAudio) audio).update();
 			}
-			for (Lwjgl3Window window : windows.values()) {
+
+			closedWindows.clear();
+			for (Lwjgl3Window window : windows) {
 				Gdx.graphics = window.getGraphics();
-				Gdx.gl = window.getGraphics().getGL30() != null ? window.getGraphics().getGL30()
-						: window.getGraphics().getGL20();
-				Gdx.gl20 = window.getGraphics().getGL20();
 				Gdx.gl30 = window.getGraphics().getGL30();
+				Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : window.getGraphics().getGL20();
+				Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
 				Gdx.input = window.getInput();
 
+				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
-				synchronized(lifecycleListeners) {
+				synchronized (lifecycleListeners) {
 					window.update(lifecycleListeners);
-				}
-
+				}				
 				if (window.shouldClose()) {
 					closedWindows.add(window);
-				}
+				}				
 			}
-			
-			synchronized(runnables) {
-				for(Runnable runnable: runnables) {
-					runnable.run();
-				}
+			GLFW.glfwPollEvents();
+
+			synchronized (runnables) {
+				executedRunnables.clear();
+				executedRunnables.addAll(runnables);
 				runnables.clear();
+			}
+			for (Runnable runnable : executedRunnables) {
+				runnable.run();
 			}
 
 			for (Lwjgl3Window closedWindow : closedWindows) {
-				closedWindow.dispose();
-				windows.remove(closedWindow.getWindowHandle());
-			}						
+				closedWindow.dispose();				
+				windows.removeValue(closedWindow, false);
+			}
 		}
+	}
 
-		for (Lwjgl3Window window : windows.values()) {
+	private void cleanup() {
+		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
 		}
+		errorCallback.release();
+		GLFW.glfwTerminate();
 	}
 
 	@Override
@@ -286,7 +278,7 @@ public class Lwjgl3Application implements Application {
 
 	@Override
 	public void postRunnable(Runnable runnable) {
-		synchronized(runnables) {
+		synchronized (runnables) {
 			runnables.add(runnable);
 		}
 	}
@@ -298,77 +290,140 @@ public class Lwjgl3Application implements Application {
 
 	@Override
 	public void addLifecycleListener(LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 	
-	private Lwjgl3Window createWindow(ApplicationListener listener) {
-		long windowHandle = createGlfwWindow(config.resizable, config.r, config.g, config.b, config.a, config.stencil,
-				config.depth, config.samples, config.width, config.height, config.title, config.fullscreen, config.x,
-				config.y, config.vSyncEnabled, config.initialBackgroundColor, 0);
-		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		glfwShowWindow(windowHandle);
+	/**
+	 * Creates a new {@link Lwjgl3Window} using the provided listener and {@link Lwjgl3WindowConfiguration}.
+	 */
+	public Lwjgl3Window newWindow(ApplicationListener listener, Lwjgl3WindowConfiguration config) {
+		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
+		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
+		appConfig.setWindowPosition(config.windowX, config.windowY);
+		appConfig.setResizable(config.windowResizable);
+		appConfig.setDecorated(config.windowDecorated);
+		appConfig.setWindowListener(config.windowListener);
+		appConfig.setFullscreenMode(config.fullscreenMode);
+		appConfig.setTitle(config.title);
+		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);		
+		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
+		windows.add(window);
 		return window;
 	}
 
-	public static long createGlfwWindow(boolean resizable, int r, int g, int b, int a, int stencil, int depth,
-			int samples, int width, int height, String title, boolean fullscreen, int x, int y, boolean vSyncEnabled,
-			Color initialBackgroundColor, long sharedContextWindow) {
-		glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
-		glfwWindowHint(GLFW_RED_BITS, r);
-		glfwWindowHint(GLFW_GREEN_BITS, g);
-		glfwWindowHint(GLFW_BLUE_BITS, b);
-		glfwWindowHint(GLFW_ALPHA_BITS, a);
-		glfwWindowHint(GLFW_STENCIL_BITS, stencil);
-		glfwWindowHint(GLFW_DEPTH_BITS, depth);
-		glfwWindowHint(GLFW_SAMPLES, samples);
+	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
+		long windowHandle = createGlfwWindow(config, sharedContext);
+		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
+		window.setVisible(true);
+		return window;
+	}
 
-		long windowHandle = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : 0,
-				sharedContextWindow);
+	static long createGlfwWindow(Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {
+		GLFW.glfwDefaultWindowHints();
+		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+		
+		if(sharedContextWindow == 0) {
+			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
+			GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, config.g);
+			GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, config.b);
+			GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, config.a);
+			GLFW.glfwWindowHint(GLFW.GLFW_STENCIL_BITS, config.stencil);
+			GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
+			GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
+		}
+
+		if (config.useGL30) {
+			//GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_API);
+			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
+			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
+			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
+			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+		}
+
+		long windowHandle = 0;
+		
+		if(config.fullscreenMode != null) {
+			// glfwWindowHint(GLFW.GLFW_REFRESH_RATE, config.fullscreenMode.refreshRate);
+			windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title, config.fullscreenMode.getMonitor(), sharedContextWindow);
+		} else {
+			GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, config.windowDecorated? GLFW.GLFW_TRUE: GLFW.GLFW_FALSE);
+			windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);			
+		}
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		if(!fullscreen) {
-			if (x == -1 && y == -1) {
-				GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-				glfwSetWindowPos(windowHandle, vidMode.width() / 2 - width / 2, vidMode.height() / 2 - height / 2);
+		if (config.fullscreenMode == null) {
+			if (config.windowX == -1 && config.windowY == -1) {
+				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
 			} else {
-				glfwSetWindowPos(windowHandle, x, y);
-			}				
-		}
-		glfwSwapInterval(vSyncEnabled ? 1 : 0);
-		glfwMakeContextCurrent(windowHandle);		
-		GL.createCapabilities();
-
-		String version = GL11.glGetString(GL20.GL_VERSION);
-		int glMajorVersion = Integer.parseInt("" + version.charAt(0));
-		if (glMajorVersion <= 1)
-			throw new GdxRuntimeException(
-					"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
-		if (glMajorVersion == 2 || version.contains("2.1")) {
-			if (glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW_FALSE
-					&& glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW_FALSE) {
-				throw new GdxRuntimeException(
-						"OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
-								+ ", FBO extension: false");
+				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
 		}
+		GLFW.glfwMakeContextCurrent(windowHandle);
+		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
+		GL.createCapabilities();
+
+		extractVersion();
+		if (!isOpenGLOrHigher(2, 0))
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
+					+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glInfo());
+
+		if (!supportsFBO()) {
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
+					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glInfo());
+		}
+
 		for (int i = 0; i < 2; i++) {
-			GL11.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b,
-					initialBackgroundColor.a);
+			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
+					config.initialBackgroundColor.a);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			glfwSwapBuffers(windowHandle);
-		}		
+			GLFW.glfwSwapBuffers(windowHandle);
+		}
 		return windowHandle;
+	}
+
+	private static void extractVersion () {
+		// See https://www.opengl.org/wiki/GLAPI/glGetString, format is:
+		// <major> "." <minor> ("." <release>) (<space> (<vendor_specific_info>))
+		String version = GL11.glGetString(GL11.GL_VERSION);
+		try {
+			String[] v = version.split(" ", 2)[0].split("\\.", 3);
+			versionMajor = Integer.parseInt(v[0]);
+			versionMinor = Integer.parseInt(v[1]);
+			versionRelease = v.length > 2 ? Integer.parseInt(v[2]) : 0;
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
+		}
+	}
+
+	private static boolean isOpenGLOrHigher (int major, int minor) {
+		return versionMajor > major || (versionMajor == major && versionMinor >= minor);
+	}
+
+	private static boolean supportsFBO () {
+		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
+		return isOpenGLOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
+				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
+	}
+
+	private static String glInfo () {
+		try {
+			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
+					+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
+					+ GL11.glGetString(GL11.GL_VERSION);
+		} catch (Throwable ignored) {
+		}
+		return "";
 	}
 }

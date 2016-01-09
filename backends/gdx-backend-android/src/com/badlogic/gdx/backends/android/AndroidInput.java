@@ -116,6 +116,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
+	public boolean gyroscopeAvailable = false;
+	private final float[] gyroscopeValues = new float[3];
 	private String text = null;
 	private TextInputListener textListener = null;
 	private Handler handle;
@@ -141,6 +143,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private final AndroidOnscreenKeyboard onscreenKeyboard;
 
 	private SensorEventListener accelerometerListener;
+	private SensorEventListener gyroscopeListener;
 	private SensorEventListener compassListener;
 
 	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
@@ -169,7 +172,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
 		int rotation = getRotation();
-		DisplayMode mode = app.getGraphics().getDesktopDisplayMode();
+		DisplayMode mode = app.getGraphics().getDisplayMode();
 		if (((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
 			|| ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
 			nativeOrientation = Orientation.Landscape;
@@ -191,6 +194,21 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public float getAccelerometerZ () {
 		return accelerometerValues[2];
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		return gyroscopeValues[0];
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		return gyroscopeValues[1];
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		return gyroscopeValues[2];
 	}
 
 	@Override
@@ -668,20 +686,33 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				accelerometerAvailable = false;
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-				accelerometerListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+				accelerometerListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues, this.gyroscopeValues);
 				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer,
 					SensorManager.SENSOR_DELAY_GAME);
 			}
 		} else
 			accelerometerAvailable = false;
-
+		
+		if (config.useGyroscope) {
+			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() == 0) {
+				gyroscopeAvailable = false;
+			} else {
+				Sensor gyroscope = manager.getSensorList(Sensor.TYPE_GYROSCOPE).get(0);
+				gyroscopeListener = new SensorListener(this.nativeOrientation, this.gyroscopeValues, this.magneticFieldValues, this.gyroscopeValues);
+				gyroscopeAvailable = manager.registerListener(gyroscopeListener, gyroscope,
+					SensorManager.SENSOR_DELAY_GAME);
+			}
+		} else
+			gyroscopeAvailable = false;
+		
 		if (config.useCompass) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 			if (sensor != null) {
 				compassAvailable = accelerometerAvailable;
 				if (compassAvailable) {
-					compassListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+					compassListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues, this.gyroscopeValues);
 					compassAvailable = manager.registerListener(compassListener, sensor, SensorManager.SENSOR_DELAY_GAME);
 				}
 			} else {
@@ -697,6 +728,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (accelerometerListener != null) {
 				manager.unregisterListener(accelerometerListener);
 				accelerometerListener = null;
+			}
+			if (gyroscopeListener != null) {
+				manager.unregisterListener(gyroscopeListener);
+				gyroscopeListener = null;
 			}
 			if (compassListener != null) {
 				manager.unregisterListener(compassListener);
@@ -715,6 +750,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
+		if (peripheral == Peripheral.Gyroscope) return gyroscopeAvailable;
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
@@ -859,11 +895,13 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		final float[] accelerometerValues;
 		final float[] magneticFieldValues;
 		final Orientation nativeOrientation;
+		final float[] gyroscopeValues;
 
-		SensorListener (Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues) {
+		SensorListener (Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues, float[] gyroscopeValues) {
 			this.accelerometerValues = accelerometerValues;
 			this.magneticFieldValues = magneticFieldValues;
 			this.nativeOrientation = nativeOrientation;
+			this.gyroscopeValues = gyroscopeValues;
 		}
 
 		@Override
@@ -884,6 +922,15 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
+			}
+			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+				if (nativeOrientation == Orientation.Portrait) {
+					System.arraycopy(event.values, 0, gyroscopeValues, 0, gyroscopeValues.length);
+				} else {
+					gyroscopeValues[0] = event.values[1];
+					gyroscopeValues[1] = -event.values[0];
+					gyroscopeValues[2] = event.values[2];
+				}
 			}
 		}
 	}

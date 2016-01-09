@@ -59,7 +59,7 @@ public class FullscreenTest extends GdxTest {
 		
 		if (Gdx.input.justTouched()) {
 			if (fullscreen) {
-				Gdx.graphics.setDisplayMode(480, 320, false);
+				Gdx.graphics.setWindowedMode(480, 320);
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				fullscreen = false;
@@ -75,7 +75,7 @@ public class FullscreenTest extends GdxTest {
 					}
 				}
 				
-				Gdx.graphics.setDisplayMode(m);
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 				fullscreen = true;
