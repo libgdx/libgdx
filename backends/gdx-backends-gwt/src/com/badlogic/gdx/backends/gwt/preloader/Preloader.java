@@ -241,56 +241,40 @@ public class Preloader {
 		return directories.containsKey(url);
 	}
 
-	private boolean isChild(String path, String url) {
-		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
+	public FileHandle[] list (final String url) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, url);
+			}
+		});
 	}
 
-	public FileHandle[] list (String url) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, url)) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String url, final FileFilter filter) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, url) && filter.accept(new File(path));
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
-	public FileHandle[] list (String url, FileFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, url) && filter.accept(new File(path))) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String url, final FilenameFilter filter) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1));
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
-	public FileHandle[] list (String url, FilenameFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1))) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
+	public FileHandle[] list (final String url, final String suffix) {
+		return getMatchedAssetFiles(new FilePathFilter() {
+			@Override
+			public boolean accept (String path) {
+				return isChild(path, url) && path.endsWith(suffix);
 			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
-	}
-
-	public FileHandle[] list (String url, String suffix) {
-		Array<FileHandle> files = new Array<FileHandle>();
-		for (String path : texts.keys()) {
-			if (isChild(path, url) && path.endsWith(suffix)) {
-				files.add(new GwtFileHandle(this, path, FileType.Internal));
-			}
-		}
-		FileHandle[] list = new FileHandle[files.size];
-		System.arraycopy(files.items, 0, list, 0, list.length);
-		return list;
+		});
 	}
 
 	public long length (String url) {
@@ -313,4 +297,32 @@ public class Preloader {
 		return 0;
 	}
 
+	boolean isChild (String path, String url) {
+		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
+	}
+
+	private static interface FilePathFilter {
+		public boolean accept (String path);
+	}
+
+	private FileHandle[] getMatchedAssetFiles (FilePathFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		addMatchedPathesToFileHandleArray(directories.keys(), filter, files);
+		addMatchedPathesToFileHandleArray(images.keys(), filter, files);
+		addMatchedPathesToFileHandleArray(audio.keys(), filter, files);
+		addMatchedPathesToFileHandleArray(texts.keys(), filter, files);
+		addMatchedPathesToFileHandleArray(binaries.keys(), filter, files);
+
+		FileHandle[] filesArray = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, filesArray, 0, filesArray.length);
+		return filesArray;
+	}
+
+	private void addMatchedPathesToFileHandleArray (Iterable<String> pathesIter, FilePathFilter filter, Array<FileHandle> into) {
+		for (String path : pathesIter) {
+			if (filter.accept(path)) {
+				into.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+	}
 }
