@@ -139,15 +139,17 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
 			Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
-			checkEglError("Before eglCreateContext", egl);
+			checkEglError("Before eglCreateContext "+targetGLESVersion, egl);
 			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-			checkEglError("After eglCreateContext", egl);
+			boolean success = checkEglError("After eglCreateContext "+targetGLESVersion, egl);
 
-			if (context == null && GLSurfaceView20.targetGLESVersion == 3) {
+			if ((!success || context == null) && GLSurfaceView20.targetGLESVersion > 2) {
+				Log.w(TAG, "Falling back to GLES 2");
 				GLSurfaceView20.targetGLESVersion = 2;
 				return createContext(egl, display, eglConfig);
 			}
+			Log.w(TAG, "Returning a GLES "+targetGLESVersion+" context");
 			return context;
 		}
 
@@ -156,11 +158,14 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		}
 	}
 
-	static void checkEglError (String prompt, EGL10 egl) {
+	static boolean checkEglError (String prompt, EGL10 egl) {
 		int error;
+		boolean result = true;
 		while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS) {
+			result = false;
 			Log.e(TAG, String.format("%s: EGL error: 0x%x", prompt, error));
 		}
+		return result;
 	}
 
 	private static class ConfigChooser implements GLSurfaceView.EGLConfigChooser {

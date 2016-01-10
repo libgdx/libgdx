@@ -237,7 +237,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		extractVersion(gl);
 		if (config.useGL30 && AndroidGraphics.major > 2) {
 			if (gl30 != null) return;
-			gl30 = new AndroidGL30();
+			gl20 = gl30 = new AndroidGL30();
 
 			Gdx.gl = gl30;
 			Gdx.gl20 = gl30;
