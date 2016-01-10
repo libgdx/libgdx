@@ -140,7 +140,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
 			Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
 			checkEglError("Before eglCreateContext", egl);
-			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, targetGLESVersion, EGL10.EGL_NONE};
+			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
 			checkEglError("After eglCreateContext", egl);
 

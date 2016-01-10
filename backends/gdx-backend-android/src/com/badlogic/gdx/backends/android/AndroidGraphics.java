@@ -32,7 +32,11 @@ import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.backends.android.surfaceview.*;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
+import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
+import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
@@ -60,6 +64,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
 	 * kill the current process to avoid ANR */
 	static volatile boolean enforceContinuousRendering = false;
+
+	/** The OpenGlES version */
+	static int major, minor;
 
 	final View view;
 	int width;
@@ -127,15 +134,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (config.useGL30) {
-			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, 3);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
+		if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
 			GLSurfaceView20API18 view = new GLSurfaceView20API18(application.getContext(), resolutionStrategy);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
@@ -144,7 +143,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			view.setRenderer(this);
 			return view;
 		} else {
-			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
 			else
@@ -235,8 +234,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		String version = gl.glGetString(GL10.GL_VERSION);
-		if (config.useGL30 && version.contains("OpenGL ES 3.")) {
+		extractVersion(gl);
+		if (config.useGL30 && AndroidGraphics.major > 2) {
 			if (gl30 != null) return;
 			gl30 = new AndroidGL30();
 
@@ -255,6 +254,19 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
 		Gdx.app.log(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
 		Gdx.app.log(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
+	}
+
+	private static void extractVersion (javax.microedition.khronos.opengles.GL10 gl) {
+		//Returns a version or release number of the form:
+		//OpenGL<space>ES<space><version number><space><vendor-specific information>.
+		String version = gl.glGetString(GL10.GL_VERSION);
+		try {
+			String[] versionSplit = version.split(" ")[2].split("\\.", 2);
+			major = Integer.parseInt(versionSplit[0]);
+			minor = Integer.parseInt(versionSplit[1]);
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
+		}
 	}
 
 	@Override
