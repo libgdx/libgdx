@@ -133,6 +133,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
+	GL30 gl30;
 	int width;
 	int height;
 	long lastFrameTime;
@@ -159,16 +160,28 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+	public IOSGraphics (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
 		this.config = config;
 
 		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
 		width = (int)bounds.getWidth();
 		height = (int)bounds.getHeight();
-		this.gl20 = gl20;
 
-		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+		if (useGLES30) {
+			context = new EAGLContext(EAGLRenderingAPI.OpenGLES3);
+			if (context != null)
+				gl20 = gl30 = new IOSGLES30();
+			else
+				Gdx.app.log("IOGraphics", "OpenGL ES 3.0 not supported, falling back on 2.0");
+		}
+		if (context == null) {
+			context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+			gl20 = new IOSGLES20();
+			gl30 = null;
+		}
+
+
 
 		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
 			@Method(selector = "touchesBegan:withEvent:")
