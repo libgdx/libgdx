@@ -45,7 +45,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	private static final boolean DEBUG = false;
 
 	final ResolutionStrategy resolutionStrategy;
-	private static int targetGLESVersion;
+	static int targetGLESVersion;
 
 	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
