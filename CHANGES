@@ -7,6 +7,7 @@
 - Fixed touch mapping on iOS, see https://github.com/libgdx/libgdx/pull/3590
 - Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
 - Added system cursors to GWT, fix 'Ibeam' system cursor not working on LWJGL3.
+- Added experimental AndroidApplicationConfiguration#useGL30 and IOSApplicationConfiguration#useGL30 for testing OpenGL ES 3.0 support on mobile devices, do not use in production.
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).
