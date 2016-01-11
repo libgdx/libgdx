@@ -65,6 +65,9 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * kill the current process to avoid ANR */
 	static volatile boolean enforceContinuousRendering = false;
 
+	/** The OpenGlES version */
+	static int major, minor;
+
 	final View view;
 	int width;
 	int height;
@@ -140,7 +143,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			view.setRenderer(this);
 			return view;
 		} else {
-			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
 			else
@@ -231,17 +234,39 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl20 != null) return;
+		extractVersion(gl);
+		if (config.useGL30 && AndroidGraphics.major > 2) {
+			if (gl30 != null) return;
+			gl20 = gl30 = new AndroidGL30();
 
-		gl20 = new AndroidGL20();
+			Gdx.gl = gl30;
+			Gdx.gl20 = gl30;
+			Gdx.gl30 = gl30;
+		} else {
+			if (gl20 != null) return;
+			gl20 = new AndroidGL20();
 
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
 
 		Gdx.app.log(LOG_TAG, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
 		Gdx.app.log(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
 		Gdx.app.log(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
+	}
+
+	private static void extractVersion (javax.microedition.khronos.opengles.GL10 gl) {
+		//Returns a version or release number of the form:
+		//OpenGL<space>ES<space><version number><space><vendor-specific information>.
+		String version = gl.glGetString(GL10.GL_VERSION);
+		try {
+			String[] versionSplit = version.split(" ")[2].split("\\.", 2);
+			major = Integer.parseInt(versionSplit[0]);
+			minor = Integer.parseInt(versionSplit[1]);
+		} catch (Throwable t) {
+			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
+		}
 	}
 
 	@Override

@@ -166,8 +166,13 @@ public class GlyphLayout implements Poolable {
 									|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
 									wrapIndex = i - 1;
 								}
-								GlyphRun next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
-								runs.add(next);
+								GlyphRun next;
+								if (wrapIndex == 0)
+									next = run; // No wrap index, move entire run to next line.
+								else {
+									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
+									runs.add(next);
+								}
 
 								// Start the loop over with the new run on the next line.
 								width = Math.max(width, run.x + run.width);

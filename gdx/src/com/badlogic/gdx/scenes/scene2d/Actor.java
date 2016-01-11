@@ -108,7 +108,7 @@ public class Actor {
 	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor
 	 * actors as necessary. If this actor is not in the stage, the stage must be set before calling this method.
 	 * <p>
-	 * Events are fired in 2 phases.
+	 * Events are fired in 2 phases:
 	 * <ol>
 	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating downward to
 	 * (and including) this actor.</li>

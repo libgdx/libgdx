@@ -147,14 +147,11 @@ public class IOSApplication implements Application {
 			}
 		}
 
-		GL20 gl20 = new IOSGLES20();
-
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
-
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(scale, this, config, input, gl20);
+		this.graphics = new IOSGraphics(scale, this, config, input, config.useGL30);
+		Gdx.gl = Gdx.gl20 = graphics.gl20;
+		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
