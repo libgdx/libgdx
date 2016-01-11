@@ -322,7 +322,7 @@ public class GestureDetector extends InputAdapter {
 		public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2);
 
 		/** Called when no longer pinching. */
-		public boolean pinchStop ();
+		public void pinchStop ();
 	}
 
 	/** Derrive from this if you only want to implement a subset of {@link GestureListener}.
@@ -369,8 +369,7 @@ public class GestureDetector extends InputAdapter {
 		}
 
 		@Override
-		public boolean pinchStop () {
-			return false;
+		public void pinchStop () {
 		}
 	}
 

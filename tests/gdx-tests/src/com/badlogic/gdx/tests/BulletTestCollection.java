@@ -208,7 +208,6 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	}
 
 	@Override
-	public boolean pinchStop () {
-		return false;
+	public void pinchStop () {
 	}
 }

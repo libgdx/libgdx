@@ -173,7 +173,6 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean pinchStop () {
-		return false;
+	public void pinchStop () {
 	}
 }

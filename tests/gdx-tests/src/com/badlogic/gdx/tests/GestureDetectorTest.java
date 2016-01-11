@@ -103,8 +103,7 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 		}
 
 		@Override
-		public boolean pinchStop () {
-			return false;
+		public void pinchStop () {
 		}
 	}
 

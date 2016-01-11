@@ -139,7 +139,6 @@ public class BulletTest implements ApplicationListener, InputProcessor, GestureL
 	}
 
 	@Override
-	public boolean pinchStop () {
-		return false;
+	public void pinchStop () {
 	}
 }
