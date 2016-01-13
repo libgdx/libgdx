@@ -56,7 +56,7 @@ public class BaseBulletTest extends BulletTest {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
 		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null) {
-			System.load(customDesktopLib);
+	///	System.load(customDesktopLib);  // GWT wont work with this line.
 		} else
 			Bullet.init();
 		Gdx.app.log("Bullet", "Version = " + LinearMath.btGetVersion());

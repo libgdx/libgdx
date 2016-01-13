@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
+<module>
+	<source path="bullet">
+	
+		<exclude name="**/bt**.java"/> 
+		<exclude name="**/CollisionObjectWrapper.java"/> 
+		<exclude name="**/SoftRigidAnchorData.java"/> 
+		<exclude name="**/HullResult.java"/> 
+		<exclude name="**/PHullResult.java"/> 
+		<exclude name="**/BT_BOX_BOX_TRANSFORM_CACHE.java"/> 
+		<exclude name="**/ClosestNotMeConvexResultCallback.java"/> 
+		<exclude name="**/GIM_BVH_DATA.java"/> 
+		<exclude name="**/SoftBodyPoseData.java"/> 
+		<exclude name="**/LocalConvexResult.java"/> 
+		<exclude name="**/ConvexResultCallback.java"/> 
+<!-- 		<exclude name="**/btTransform.java"/>  -->
+		<exclude name="**/btMotionState.java"/> 
+		<exclude name="**/btRigidBody.java"/> 
+		<exclude name="**/btVector3.java"/> 
+		<exclude name="**/InternalTickCallback.java"/> 
+		<exclude name="**/ContactListener.java"/> 
+		<exclude name="**/SoftBodyLinkData.java"/> 
+		<exclude name="**/SoftBodyMaterialData.java"/> 
+<!-- 		<exclude name="**/DebugDrawer.java"/>  -->
+		<exclude name="**/btIDebugDraw.java"/> 
+		<exclude name="**/CustomCollisionDispatcher.java"/> 
+		<exclude name="**/ClosestNotMeRayResultCallback.java"/> 
+		<exclude name="**/LinearMath.java"/> 
+		<exclude name="**/SphereTriangleDetector.java"/> 
+		<exclude name="**/ClosestConvexResultCallback.java"/> 
+		<exclude name="**/GIM_CONTACT.java"/> 
+		<exclude name="**/SoftBodyConfigData.java"/> 
+		<exclude name="**/fDrawFlags.java"/> 
+		<exclude name="**/HullDesc.java"/> 
+		<exclude name="**/AllHitsRayResultCallback.java"/> 
+		<exclude name="**/ConvexH.java"/> 
+		<exclude name="**/ContactCache.java"/> 
+		<exclude name="**/GIM_BVH_TREE_NODE.java"/> 
+		<exclude name="**/SoftBodyClusterData.java"/> 
+		<exclude name="**/LocalRayResult.java"/> 
+		<exclude name="**/SoftBodyFaceData.java"/> 
+		<exclude name="**/GIM_TRIANGLE_CONTACT.java"/> 
+		<exclude name="**/ContactResultCallback.java"/> 
+		<exclude name="**/ClosestRayResultCallback.java"/> 
+		<exclude name="**/RayResultCallback.java"/> 
+		<exclude name="**/Collision.java"/> 
+		<exclude name="**/int4.java"/> 
+		<exclude name="**/GIM_PAIR.java"/> 
+		<exclude name="**/ICollide.java"/> 
+		<exclude name="**/GIM_BVH_DATA_ARRAY.java"/> 
+		<exclude name="**/GdxCollisionObjectBridge.java"/> 
+		<exclude name="**/BT_QUANTIZED_BVH_NODE.java"/> 
+		<exclude name="**/LocalShapeInfo.java"/> 
+		<exclude name="**/btIDebugDraw.java"/> 
+		<exclude name="**/HullLibrary.java"/> 
+		<exclude name="**/SoftBodyTetraData.java"/> 
+		<exclude name="**/Dynamics.java"/> 
+		<exclude name="**/Softbody.java"/> 
+		<exclude name="**/SoftBodyNodeData.java"/> 
+		<exclude name="**/GrahamVector3.java"/> 
+		<exclude name="**/GIM_BVH_TREE_NODE_ARRAY.java"/> 
+		<exclude name="**/GIM_QUANTIZED_BVH_NODE_ARRAY.java"/> 
+		
+		
+		<exclude name="**/CollisionJNI.java"/> 
+		<exclude name="**/ExtrasJNI.java"/> 
+		<exclude name="**/LinearMathJNI.java"/> 
+		<exclude name="**/SoftbodyJNI.java"/> 
+		<exclude name="**/DynamicsJNI.java"/> 
+		<exclude name="**/btBulletWorldImporter.java"/> 
+		<exclude name="**/Bullet.java"/> 
+<!-- 		<exclude name="**/BulletBase.java"/>  -->
+		<exclude name="**/BulletBuild.java"/> 
+
+	</source>
+</module>
