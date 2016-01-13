@@ -101,13 +101,14 @@ public class Type {
 	}
 
 	/** @param name the name of the field
-	 * @return the public field of this type or one of its super interfaces with the given name or null. See
-	 *         {@link Class#getField(String)}. */
-	public Field getField (String name) {
+	 * @return the public field of this type or one of its super interfaces with the given name. See
+	 *         {@link Class#getField(String)}.
+	 * @throws NoSuchFieldException */
+	public Field getField (String name) throws NoSuchFieldException {
 		for (Field f : getFields()) {
 			if (f.name.equals(name)) return f;
 		}
-		return null;
+		throw new NoSuchFieldException();
 	}
 
 	/** @return an array containing all the public fields of this class and its super classes. See {@link Class#getFields()}. */
@@ -126,12 +127,22 @@ public class Type {
 		return allFields;
 	}
 
+	/** @param name the name of the field
+	 * @return the declared field of this type. See {@link Class#getDeclaredField(String)}.
+	 * @throws NoSuchFieldException */
+	public Field getDeclaredField (String name) throws NoSuchFieldException {
+		for (Field f : getDeclaredFields()) {
+			if (f.name.equals(name)) return f;
+		}
+		throw new NoSuchFieldException();
+	}
+	
 	/** @return an array containing all the fields of this class, including private and protected fields. See
 	 *         {@link Class#getDeclaredFields()}. */
 	public Field[] getDeclaredFields () {
 		return fields;
 	}
-
+	
 	/** @param name the name of the method
 	 * @param parameterTypes the types of the parameters of the method
 	 * @return the public method that matches the name and parameter types of this type or one of its super interfaces.
@@ -159,6 +170,17 @@ public class Type {
 		return allMethods;
 	}
 
+	/** @param name the name of the method
+	 * @param parameterTypes the types of the parameters of the method
+	 * @return the declared method that matches the name and parameter types of this type.
+	 * @throws NoSuchMethodException */
+	public Method getDeclaredMethod (String name, Class... parameterTypes) throws NoSuchMethodException {
+		for (Method m : getDeclaredMethods()) {
+			if (m.match(name, parameterTypes)) return m;
+		}
+		throw new NoSuchMethodException();
+	}
+	
 	/** @return an array containing all methods of this class, including abstract, private and protected methods. See
 	 *         {@link Class#getDeclaredMethods()}. */
 	public Method[] getDeclaredMethods () {
