@@ -62,7 +62,7 @@ public class LwjglTestStarter extends JFrame {
 	 * @return {@code true} if the test was found and run, {@code false} otherwise
 	 */
 	public static boolean runTest (String testName) {
-		boolean useGL30 = false;
+		boolean useGL30 = true;
 		GdxTest test = GdxTests.newTest(testName);
 		if (test == null) {
 			return false;

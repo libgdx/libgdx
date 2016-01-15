@@ -106,7 +106,7 @@ public class FrameBufferPlus implements Disposable {
     protected static class Attachment implements Pool.Poolable {
         /* set to define format */
         public boolean isTexture, isDepthStencil;
-        public int format, type;
+        public int format, baseFormat, type;
         public int attachment;
 
         /* set by the build() method -- the "concrete" implementation of this contract */
@@ -156,7 +156,7 @@ public class FrameBufferPlus implements Disposable {
             if (colorAttachment > 0 && !Gdx.graphics.isGL30Available()) {
                 throw new IllegalStateException("FrameBufferPlus couldn't be constructed: GLES 3.0+ is required for MRT");
             }
-            this.colorAttachments[this.colorAttachment] = genAttachment(true, COLOR_FORMATS[colorIdx], COLOR_TYPES[colorIdx], GL30.GL_COLOR_ATTACHMENT0 + this.colorAttachment);
+            this.colorAttachments[this.colorAttachment] = genAttachment(true, COLOR_FORMATS[colorIdx], COLOR_FORMATS[colorIdx], COLOR_TYPES[colorIdx], GL30.GL_COLOR_ATTACHMENT0 + this.colorAttachment);
             this.colorAttachment++;
             return this;
         }
@@ -169,15 +169,16 @@ public class FrameBufferPlus implements Disposable {
             if (colorAttachment > 0 && !Gdx.graphics.isGL30Available()) {
                 throw new IllegalStateException("FrameBufferPlus couldn't be constructed: GLES 3.0+ is required for MRT");
             }
-            this.colorAttachments[this.colorAttachment] = genAttachment(false, COLOR_FORMATS[colorIdx], COLOR_TYPES[colorIdx], GL30.GL_COLOR_ATTACHMENT0 + this.colorAttachment);
+            this.colorAttachments[this.colorAttachment] = genAttachment(false, COLOR_FORMATS[colorIdx], COLOR_FORMATS[colorIdx], COLOR_TYPES[colorIdx], GL30.GL_COLOR_ATTACHMENT0 + this.colorAttachment);
             this.colorAttachment++;
             return this;
         }
 
-        private Attachment genAttachment(boolean isTexture, int format, int type, int attachment) {
+        private Attachment genAttachment(boolean isTexture, int format, int baseFormat, int type, int attachment) {
             Attachment a = attachmentPool.obtain();
             a.isTexture = isTexture;
             a.format = format;
+            a.baseFormat = baseFormat;
             a.type = type;
             a.attachment = attachment;
             return a;
@@ -199,10 +200,10 @@ public class FrameBufferPlus implements Disposable {
 
             if (depthStencilIdx != -1) {
                 this.hasStencil = true;
-                this.depthAttachment = genAttachment(false, DEPTH_STENCIL_FORMATS[depthStencilIdx], DEPTH_STENCIL_TYPES[depthStencilIdx], GL30.GL_DEPTH_ATTACHMENT);
+                this.depthAttachment = genAttachment(false, DEPTH_STENCIL_FORMATS[depthStencilIdx], GL30.GL_DEPTH_STENCIL, DEPTH_STENCIL_TYPES[depthStencilIdx], GL30.GL_DEPTH_ATTACHMENT);
                 this.depthAttachment.isDepthStencil = true;
             } else {
-                this.depthAttachment = genAttachment(false, DEPTH_FORMATS[depthIdx], DEPTH_TYPES[depthIdx], GL30.GL_DEPTH_ATTACHMENT);
+                this.depthAttachment = genAttachment(false, DEPTH_FORMATS[depthIdx], GL30.GL_DEPTH_COMPONENT, DEPTH_TYPES[depthIdx], GL30.GL_DEPTH_ATTACHMENT);
                 this.depthAttachment.isDepthStencil = false;
             }
             return this;
@@ -212,7 +213,7 @@ public class FrameBufferPlus implements Disposable {
             if (!Gdx.graphics.isGL30Available()) {
                 throw new IllegalStateException("FrameBufferPlus couldn't be constructed: GLES 3.0+ is required for depth texture attachment");
             }
-            addDepthTexture(preferredFormat);
+            addDepthRenderBuffer(preferredFormat);
             this.depthAttachment.isTexture = true;
             return this;
         }
@@ -237,7 +238,7 @@ public class FrameBufferPlus implements Disposable {
             if (this.depthAttachment != null) {
                 finalAttachments[i++] = this.depthAttachment;
             } else if (this.hasStencil) {
-                finalAttachments[i++] = genAttachment(false, STENCIL_FORMAT, 0, GL30.GL_STENCIL_ATTACHMENT);
+                finalAttachments[i++] = genAttachment(false, STENCIL_FORMAT, GL30.GL_STENCIL, 0, GL30.GL_STENCIL_ATTACHMENT);
             }
             return new FrameBufferPlus(width, height, finalAttachments);
         }
@@ -296,6 +297,8 @@ public class FrameBufferPlus implements Disposable {
         return builder.build();
     }
 
+    /** Actually builds the frame buffer object and all associated handles.
+     */
     protected void build () {
         GL20 gl = Gdx.gl20;
 
@@ -318,7 +321,7 @@ public class FrameBufferPlus implements Disposable {
 
             // create the texture/renderbuffer
             if (a.isTexture) {
-                a.texture = new Texture(new GLOnlyTextureData(width, height, 0, a.format, a.format, a.type));
+                a.texture = new Texture(new GLOnlyTextureData(width, height, 0, a.format, a.baseFormat, a.type));
                 a.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
                 a.texture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
             }
