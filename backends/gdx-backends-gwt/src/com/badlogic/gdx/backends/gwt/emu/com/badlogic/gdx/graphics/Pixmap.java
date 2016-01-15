@@ -416,6 +416,7 @@ public class Pixmap implements Disposable {
 		context.lineTo(x2, y2);
 		fillOrStrokePath(drawType);
 		context.closePath();
+		pixels = null;
 	}
 	
 	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
