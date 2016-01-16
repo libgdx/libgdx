@@ -106,18 +106,16 @@ public class btDbvt extends BulletBase {
     }
   
     public btDbvtNode getA() {
-      long cPtr = CollisionJNI.btDbvt_sStkNN_a_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkNN_a_get(swigCPtr, this), false);
+  }
   
     public void setB(btDbvtNode value) {
       CollisionJNI.btDbvt_sStkNN_b_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
     }
   
     public btDbvtNode getB() {
-      long cPtr = CollisionJNI.btDbvt_sStkNN_b_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkNN_b_get(swigCPtr, this), false);
+  }
   
     public sStkNN() {
       this(CollisionJNI.new_btDbvt_sStkNN__SWIG_0(), true);
@@ -177,9 +175,8 @@ public class btDbvt extends BulletBase {
     }
   
     public btDbvtNode getNode() {
-      long cPtr = CollisionJNI.btDbvt_sStkNP_node_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkNP_node_get(swigCPtr, this), false);
+  }
   
     public void setMask(int value) {
       CollisionJNI.btDbvt_sStkNP_mask_set(swigCPtr, this, value);
@@ -243,9 +240,8 @@ public class btDbvt extends BulletBase {
     }
   
     public btDbvtNode getNode() {
-      long cPtr = CollisionJNI.btDbvt_sStkNPS_node_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkNPS_node_get(swigCPtr, this), false);
+  }
   
     public void setMask(int value) {
       CollisionJNI.btDbvt_sStkNPS_mask_set(swigCPtr, this, value);
@@ -321,18 +317,16 @@ public class btDbvt extends BulletBase {
     }
   
     public btDbvtNode getNode() {
-      long cPtr = CollisionJNI.btDbvt_sStkCLN_node_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkCLN_node_get(swigCPtr, this), false);
+  }
   
     public void setParent(btDbvtNode value) {
       CollisionJNI.btDbvt_sStkCLN_parent_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
     }
   
     public btDbvtNode getParent() {
-      long cPtr = CollisionJNI.btDbvt_sStkCLN_parent_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_sStkCLN_parent_get(swigCPtr, this), false);
+  }
   
     public sStkCLN(btDbvtNode n, btDbvtNode p) {
       this(CollisionJNI.new_btDbvt_sStkCLN(btDbvtNode.getCPtr(n), n, btDbvtNode.getCPtr(p), p), true);
@@ -455,18 +449,16 @@ public class btDbvt extends BulletBase {
   }
 
   public btDbvtNode getRoot() {
-    long cPtr = CollisionJNI.btDbvt_root_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_root_get(swigCPtr, this), false);
+}
 
   public void setFree(btDbvtNode value) {
     CollisionJNI.btDbvt_free_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
   }
 
   public btDbvtNode getFree() {
-    long cPtr = CollisionJNI.btDbvt_free_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_free_get(swigCPtr, this), false);
+}
 
   public void setLkhd(int value) {
     CollisionJNI.btDbvt_lkhd_set(swigCPtr, this, value);
@@ -539,9 +531,8 @@ public class btDbvt extends BulletBase {
   }
 
   public btDbvtNode insert(btDbvtAabbMm box, long data) {
-    long cPtr = CollisionJNI.btDbvt_insert(swigCPtr, this, btDbvtAabbMm.getCPtr(box), box, data);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvt_insert(swigCPtr, this, btDbvtAabbMm.getCPtr(box), box, data), false);
+}
 
   public void update(btDbvtNode leaf, int lookahead) {
     CollisionJNI.btDbvt_update__SWIG_0(swigCPtr, this, btDbvtNode.getCPtr(leaf), leaf, lookahead);
