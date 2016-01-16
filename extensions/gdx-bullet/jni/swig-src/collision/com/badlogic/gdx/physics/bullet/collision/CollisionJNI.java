@@ -3026,19 +3026,19 @@ public class CollisionJNI {
     return jself.process((proxy == 0) ? null : new btBroadphaseProxy(proxy, false));
   }
   public static void SwigDirector_ICollide_Process__SWIG_0(ICollide jself, long arg0, long arg1) {
-    jself.Process((arg0 == 0) ? null : new btDbvtNode(arg0, false), (arg1 == 0) ? null : new btDbvtNode(arg1, false));
+    jself.Process(btDbvtNode.obtainForArgument(arg0, false), btDbvtNode.obtainForArgument(arg1, false));
   }
   public static void SwigDirector_ICollide_Process__SWIG_1(ICollide jself, long arg0) {
-    jself.Process((arg0 == 0) ? null : new btDbvtNode(arg0, false));
+    jself.Process(btDbvtNode.obtainForArgument(arg0, false));
   }
   public static void SwigDirector_ICollide_Process__SWIG_2(ICollide jself, long n, float arg1) {
-    jself.Process((n == 0) ? null : new btDbvtNode(n, false), arg1);
+    jself.Process(btDbvtNode.obtainForArgument(n, false), arg1);
   }
   public static boolean SwigDirector_ICollide_Descent(ICollide jself, long arg0) {
-    return jself.Descent((arg0 == 0) ? null : new btDbvtNode(arg0, false));
+    return jself.Descent(btDbvtNode.obtainForArgument(arg0, false));
   }
   public static boolean SwigDirector_ICollide_AllLeaves(ICollide jself, long arg0) {
-    return jself.AllLeaves((arg0 == 0) ? null : new btDbvtNode(arg0, false));
+    return jself.AllLeaves(btDbvtNode.obtainForArgument(arg0, false));
   }
   public static void SwigDirector_btNodeOverlapCallback_processNode(btNodeOverlapCallback jself, int subPart, int triangleIndex) {
     jself.processNode(subPart, triangleIndex);
