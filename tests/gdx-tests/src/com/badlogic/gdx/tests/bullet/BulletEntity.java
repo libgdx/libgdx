@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
@@ -31,6 +33,9 @@ public class BulletEntity extends BaseEntity {
 	private final static Matrix4 tmpM = new Matrix4();
 	public BulletEntity.MotionState motionState;
 	public btCollisionObject body;
+
+	public final BoundingBox boundingBox = new BoundingBox();
+	public final float boundingBoxRadius;
 
 	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
 		this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), x, y, z);
@@ -52,6 +57,9 @@ public class BulletEntity extends BaseEntity {
 		this.modelInstance = modelInstance;
 		this.transform = this.modelInstance.transform;
 		this.body = body;
+
+		modelInstance.calculateBoundingBox(boundingBox);
+		boundingBoxRadius = boundingBox.getDimensions(new Vector3()).len() * 0.5f;
 
 		if (body != null) {
 			body.userData = this;
