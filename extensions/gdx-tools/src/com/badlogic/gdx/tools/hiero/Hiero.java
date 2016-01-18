@@ -300,15 +300,15 @@ public class Hiero extends JFrame {
 		}
 
 		unicodeFont.setMono(monoCheckBox.isSelected());
-		unicodeFont.setGamma(((Double)gammaSpinner.getValue()).floatValue());
-		unicodeFont.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
-		unicodeFont.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
-		unicodeFont.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
-		unicodeFont.setPaddingLeft(((Integer)padLeftSpinner.getValue()).intValue());
-		unicodeFont.setPaddingAdvanceX(((Integer)padAdvanceXSpinner.getValue()).intValue());
-		unicodeFont.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
-		unicodeFont.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
-		unicodeFont.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		unicodeFont.setGamma(((Number)gammaSpinner.getValue()).floatValue());
+		unicodeFont.setPaddingTop(((Number)padTopSpinner.getValue()).intValue());
+		unicodeFont.setPaddingRight(((Number)padRightSpinner.getValue()).intValue());
+		unicodeFont.setPaddingBottom(((Number)padBottomSpinner.getValue()).intValue());
+		unicodeFont.setPaddingLeft(((Number)padLeftSpinner.getValue()).intValue());
+		unicodeFont.setPaddingAdvanceX(((Number)padAdvanceXSpinner.getValue()).intValue());
+		unicodeFont.setPaddingAdvanceY(((Number)padAdvanceYSpinner.getValue()).intValue());
+		unicodeFont.setGlyphPageWidth(((Number)glyphPageWidthCombo.getSelectedItem()).intValue());
+		unicodeFont.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		if (nativeRadio.isSelected())
 			unicodeFont.setRenderType(RenderType.Native);
 		else if (freeTypeRadio.isSelected())
@@ -344,15 +344,15 @@ public class Hiero extends JFrame {
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
 		settings.setMono(monoCheckBox.isSelected());
-		settings.setGamma(((Double)gammaSpinner.getValue()).floatValue());
-		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
-		settings.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
-		settings.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
-		settings.setPaddingLeft(((Integer)padLeftSpinner.getValue()).intValue());
-		settings.setPaddingAdvanceX(((Integer)padAdvanceXSpinner.getValue()).intValue());
-		settings.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
-		settings.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
-		settings.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		settings.setGamma(((Number)gammaSpinner.getValue()).floatValue());
+		settings.setPaddingTop(((Number)padTopSpinner.getValue()).intValue());
+		settings.setPaddingRight(((Number)padRightSpinner.getValue()).intValue());
+		settings.setPaddingBottom(((Number)padBottomSpinner.getValue()).intValue());
+		settings.setPaddingLeft(((Number)padLeftSpinner.getValue()).intValue());
+		settings.setPaddingAdvanceX(((Number)padAdvanceXSpinner.getValue()).intValue());
+		settings.setPaddingAdvanceY(((Number)padAdvanceYSpinner.getValue()).intValue());
+		settings.setGlyphPageWidth(((Number)glyphPageWidthCombo.getSelectedItem()).intValue());
+		settings.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		settings.setGlyphText(sampleTextPane.getText());
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
 			EffectPanel panel = (EffectPanel)iter.next();
