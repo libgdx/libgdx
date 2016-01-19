@@ -441,6 +441,14 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 						tile = animatedTile;
 					}
 
+					Element objectgroupElement = tileElement.getChildByName("objectgroup");
+					if (objectgroupElement != null) {
+
+						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
+							loadObject(map, tile.getObjects(), objectElement);
+						}
+					}
+
 					String terrain = tileElement.getAttribute("terrain", null);
 					if (terrain != null) {
 						tile.getProperties().put("terrain", terrain);

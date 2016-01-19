@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -117,7 +118,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer, objectElement);
+				loadObject(map, layer.getObjects(), objectElement);
 			}
 
 			map.getLayers().add(layer);
@@ -165,7 +166,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		layer.setVisible(visible);
 	}
 
-	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
+	protected void loadObject (TiledMap map, MapObjects objects, Element element) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 
@@ -251,7 +252,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
-			layer.getObjects().add(object);
+			objects.add(object);
 		}
 	}
 
