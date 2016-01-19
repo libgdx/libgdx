@@ -22,11 +22,11 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>0.9.4</version>
+		<version>0.9.5</version>
 		<compatibility>1.7.1</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
-		    <inherit>com.kotcrab.vis.vis-ui</inherit>
+			<inherit>com.kotcrab.vis.vis-ui</inherit>
 		</gwtInherits>
 		<projects>
 			<core>
@@ -48,7 +48,7 @@
 		<compatibility>1.7.1</compatibility>
 		<website>http://vis.kotcrab.com</website>
 		<gwtInherits>
-		    <inherit>com.kotcrab.vis.vis-runtime</inherit>
+			<inherit>com.kotcrab.vis.vis-runtime</inherit>
 		</gwtInherits>
 		<projects>
 			<core>
@@ -58,6 +58,9 @@
 			<android></android>
 			<ios></ios>
 			<html>
+				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.2.1</dependency>
+				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.2.1:sources</dependency>
+				<dependency external="true">net.onedaybeard.artemis:artemis-odb:1.2.1:sources</dependency>
 				<dependency>com.kotcrab.vis:vis-runtime-gwt</dependency>
 				<dependency>com.kotcrab.vis:vis-runtime-gwt:sources</dependency>
 				<dependency>com.kotcrab.vis:vis-runtime:sources</dependency>
@@ -110,14 +113,14 @@
 		</projects>
 	</extension>
 	<extension>
-       <name>gdx-facebook</name>
-       <description>Provides cross-platform support for Facebook Graph API</description>
-       <package>de.tomgrill.gdxfacebook</package>
-       <version>1.1.1</version>
-       <compatibility>1.7.0</compatibility>
-       <website>https://github.com/TomGrill/gdx-facebook</website>
-       <gwtInherits></gwtInherits>
-       <projects>
+	   <name>gdx-facebook</name>
+	   <description>Provides cross-platform support for Facebook Graph API</description>
+	   <package>de.tomgrill.gdxfacebook</package>
+	   <version>1.1.1</version>
+	   <compatibility>1.7.0</compatibility>
+	   <website>https://github.com/TomGrill/gdx-facebook</website>
+	   <gwtInherits></gwtInherits>
+	   <projects>
 			<core>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core</dependency>
 			</core>
@@ -132,16 +135,16 @@
 			</ios>
 			<html>null</html>
 		</projects>
-    </extension>
+	</extension>
 	<extension>
-       <name>gdx-dialogs</name>
-       <description>Provides cross-platform support for native dialogs</description>
-       <package>de.tomgrill.gdxdialogs</package>
-       <version>1.0.0</version>
-       <compatibility>1.7.0</compatibility>
-       <website>https://github.com/TomGrill/gdx-dialogs</website>
-       <gwtInherits></gwtInherits>
-       <projects>
+	   <name>gdx-dialogs</name>
+	   <description>Provides cross-platform support for native dialogs</description>
+	   <package>de.tomgrill.gdxdialogs</package>
+	   <version>1.0.0</version>
+	   <compatibility>1.7.0</compatibility>
+	   <website>https://github.com/TomGrill/gdx-dialogs</website>
+	   <gwtInherits></gwtInherits>
+	   <projects>
 			<core>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-core</dependency>
 			</core>
@@ -156,7 +159,7 @@
 			</ios>
 			<html>null</html>
 		</projects>
-    </extension>
+	</extension>
 	<extension>
 		<name>gdx-kiwi</name>
 		<description>Guava-inspired utilities for LibGDX.</description>
