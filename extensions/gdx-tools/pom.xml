@@ -36,6 +36,13 @@
     </dependency>
 
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-freetype-platform</artifactId>
+      <version>${project.version}</version>
+      <classifier>natives-desktop</classifier>
+    </dependency>
+
+    <dependency>
       <groupId>com.badlogicgames.gdx</groupId>
       <artifactId>gdx-platform</artifactId>
       <version>${project.version}</version>
