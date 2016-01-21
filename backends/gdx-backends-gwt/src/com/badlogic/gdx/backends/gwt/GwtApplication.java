@@ -198,7 +198,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					mainLoop();
 				} catch (Throwable t) {
 					error("GwtApplication", "exception: " + t.getMessage(), t);
-					throw new RuntimeException(t);
+					throw t;
 				}
 				AnimationScheduler.get().requestAnimationFrame(this, graphics.canvas);
 			}
