@@ -27,9 +27,8 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.glutils.FrameBufferPlus;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
@@ -48,7 +47,7 @@ public class FrameBufferPlusTest extends GdxTest implements ApplicationListener 
 	public ModelInstance ship;
 	public ModelInstance space;
 
-	public FrameBufferPlus frameBuffer;
+	public FrameBuffer frameBuffer;
 	public Mesh fullscreenQuad;
 	public ShaderProgram flatTextureShader;
 
@@ -91,9 +90,9 @@ public class FrameBufferPlusTest extends GdxTest implements ApplicationListener 
 
 	@Override
 	public void create () {
-		frameBuffer = new FrameBufferPlus.Builder(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-				.addColorTexture(GL20.GL_RGBA)
-				.addDepthTexture(GL30.GL_DEPTH24_STENCIL8)
+		frameBuffer = new FrameBuffer.Builder(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+				.addColorTexture(GL20.GL_RGBA, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE)
+				.addDepthTexture(GL30.GL_DEPTH24_STENCIL8, GL30.GL_UNSIGNED_INT_24_8)
 				.build();
 
 		modelBatch = new ModelBatch();
