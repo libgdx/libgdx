@@ -389,7 +389,9 @@ public class FreeTypeFontGenerator implements Disposable {
 
 			heightsCount--;
 			heights[best] = heights[heightsCount];
+			char tmpChar = characters[best];
 			characters[best] = characters[heightsCount];
+			characters[heightsCount] = tmpChar;
 		}
 
 		if (stroker != null && !incremental) stroker.dispose();
