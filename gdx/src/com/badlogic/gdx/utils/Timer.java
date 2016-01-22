@@ -188,7 +188,12 @@ public class Timer {
 		long executeTimeMillis;
 		long intervalMillis;
 		int repeatCount = CANCELLED;
-		Application app = Gdx.app; // Need to store the app when the task was created for multiple LwjglAWTCanvas.
+		Application app;
+
+		public Task () {
+			app = Gdx.app; // Need to store the app when the task was created for multiple LwjglAWTCanvas.
+			if (app == null) throw new IllegalStateException("Gdx.app not available.");
+		}
 
 		/** If this is the last time the task will be ran or the task is first cancelled, it may be scheduled again in this
 		 * method. */
