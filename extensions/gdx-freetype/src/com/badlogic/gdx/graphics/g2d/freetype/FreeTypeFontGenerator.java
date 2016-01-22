@@ -120,8 +120,31 @@ public class FreeTypeFontGenerator implements Disposable {
 		setPixelSizes(0, 15);
 	}
 
+	private int getLoadingFlags (FreeTypeFontParameter parameter) {
+		int loadingFlags = FreeType.FT_LOAD_DEFAULT;
+		switch (parameter.hinting) {
+		case None:
+			loadingFlags |= FreeType.FT_LOAD_NO_HINTING;
+			break;
+		case Slight:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_LIGHT;
+			break;
+		case Medium:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_NORMAL;
+			break;
+		case Full:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_MONO;
+			break;
+		}
+		return loadingFlags;
+	}
+
 	private boolean loadChar (int c) {
-		return face.loadChar(c, FreeType.FT_LOAD_DEFAULT | FreeType.FT_LOAD_FORCE_AUTOHINT);
+		return loadChar(c, FreeType.FT_LOAD_DEFAULT | FreeType.FT_LOAD_FORCE_AUTOHINT);
+	}
+
+	private boolean loadChar (int c, int flags) {
+		return face.loadChar(c, flags);
 	}
 
 	private boolean checkForBitmapFont () {
@@ -274,6 +297,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
 		boolean incremental = parameter.incremental;
+		int flags = getLoadingFlags(parameter);
 
 		setPixelSizes(0, parameter.size);
 
@@ -288,7 +312,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
 			for (int c = 32; c < (32 + face.getNumGlyphs()); c++) {
-				if (loadChar(c)) {
+				if (loadChar(c, flags)) {
 					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight;
 				}
@@ -297,7 +321,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.lineHeight += parameter.spaceY;
 
 		// determine space width
-		if (loadChar(' ') || loadChar('l')) {
+		if (loadChar(' ', flags) || loadChar('l', flags)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
@@ -305,7 +329,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine x-height
 		for (char xChar : data.xChars) {
-			if (!loadChar(xChar)) continue;
+			if (!loadChar(xChar, flags)) continue;
 			data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -313,7 +337,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine cap height
 		for (char capChar : data.capChars) {
-			if (!loadChar(capChar)) continue;
+			if (!loadChar(capChar, flags)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -366,7 +390,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
 		for (int i = 0, n = charactersLength; i < n; i++) {
-			int height = loadChar(characters[i]) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
+			int height = loadChar(characters[i], flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
 			heights[i] = height;
 		}
 		int heightsCount = heights.length;
@@ -452,7 +476,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		boolean missing = face.getCharIndex(c) == 0 && c != 0;
 		if (missing) return null;
 
-		if (!loadChar(c)) return null;
+		if (!loadChar(c, getLoadingFlags(parameter))) return null;
 
 		GlyphSlot slot = face.getGlyph();
 		FreeType.Glyph mainGlyph = slot.getGlyph();
@@ -661,6 +685,18 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 	}
 
+	/** Font smoothing algorithm. */
+	public static enum Hinting {
+		/** Disable hinting. Generated glyphs will look blurry. */
+		None,
+		/** Light hinting with fuzzy edges, but close to the original shape */
+		Slight,
+		/** Default hinting */
+		Medium,
+		/** Strong hinting with crisp edges at the expense of shape fidelity */
+		Full
+	}
+
 	/** Parameter container class that helps configure how {@link FreeTypeBitmapFontData} and {@link BitmapFont} instances are
 	 * generated.
 	 * 
@@ -676,6 +712,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int size = 16;
 		/** If true, font smoothing is disabled. */
 		public boolean mono;
+		/** Strength of hinting when smoothing is enabled */
+		public Hinting hinting = Hinting.Medium;
 		/** Foreground color (required for non-black borders) */
 		public Color color = Color.WHITE;
 		/** Glyph gamma. Values > 1 reduce antialiasing. */
