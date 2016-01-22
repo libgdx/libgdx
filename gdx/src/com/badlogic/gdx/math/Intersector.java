@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -137,6 +138,81 @@ public final class Intersector {
 			j = i;
 		}
 		return oddNodes;
+	}
+
+	/** Intersects the two closed polygons and returns the polygon resulting from the intersection.
+	 *  Follows the Sutherland-Hodgman algorithm.
+	 *
+	 * @param p1 The polygon that is being clipped
+	 * @param p2 The clip polygon
+	 * @param overlap The intersection of the two polygons (optional)
+	 * @return Whether the two polygons intersect.
+	 */
+	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		//Convert polygons into more practical format
+		ArrayList<Vector2> p1Points = new ArrayList<Vector2>();
+		ArrayList<Vector2> p2Points = new ArrayList<Vector2>();
+		for (int i = 0; i < p1.getVertices().length; i += 2) {
+			p1Points.add(new Vector2(p1.getVertices()[i], p1.getVertices()[i + 1]));
+		}
+		for (int i = 0; i < p2.getVertices().length; i += 2) {
+			p2Points.add(new Vector2(p2.getVertices()[i], p2.getVertices()[i + 1]));
+		}
+
+		//Reusable point for determining the point of intersection between two line segments
+		Vector2 intersectionPoint;
+		ArrayList<Vector2> outputList = p1Points;
+		ArrayList<Vector2> inputList = new ArrayList<Vector2>();
+		Vector2 edgePoint1;
+		Vector2 edgePoint2;
+		//Define the current points of the clip edge
+		for (int i = 0; i < p2Points.size(); i++) {
+			edgePoint1 = p2Points.get(i);
+			//Wrap around to beginning of array if index points to the end
+			edgePoint2 = i < p2Points.size() - 1 ? p2Points.get(i + 1) : p2Points.get(0);
+			inputList.clear();
+			//Add all elements to input list
+			for (Vector2 p : outputList) {
+				inputList.add(p);
+			}
+			outputList.clear();
+
+			if (inputList.isEmpty()) {
+				return false;
+			}
+
+			Vector2 s = inputList.get(inputList.size() - 1);
+
+			for (Vector2 e : inputList) {
+				Vector2 intersection = new Vector2();
+				//determine if point is inside clip edge
+				if (Intersector.pointLineSide(edgePoint2, edgePoint1, e) > 0) {
+					if (!(Intersector.pointLineSide(edgePoint2, edgePoint1, s) > 0)) {
+						Intersector.intersectLines(s, e, edgePoint1, edgePoint2, intersection);
+						outputList.add(intersection);
+					}
+					outputList.add(e);
+				} else if (Intersector.pointLineSide(edgePoint2, edgePoint1, s) > 0) {
+					Intersector.intersectLines(s, e, edgePoint1, edgePoint2, intersection);
+					outputList.add(intersection);
+				}
+				s = e;
+			}
+		}
+		if (!outputList.isEmpty()) {
+			float verts[] = new float[outputList.size() * 2];
+			int i = 0;
+			for (Vector2 vector2 : outputList) {
+				verts[i] = vector2.x;
+				verts[i + 1] = vector2.y;
+				i += 2;
+			}
+			overlap.setVertices(verts);
+			return true;
+		} else {
+			overlap.setVertices(new float[0]);
+			return false;
+		}
 	}
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
