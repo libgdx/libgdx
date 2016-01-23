@@ -445,7 +445,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					if (objectgroupElement != null) {
 
 						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
-							loadObject(map, tile.getObjects(), objectElement);
+							loadObject(map, tile, objectElement);
 						}
 					}
 

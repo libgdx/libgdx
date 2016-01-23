@@ -442,7 +442,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 					if (objectgroupElement != null) {
 
 						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
-							loadObject(map, tile.getObjects(), objectElement);
+							loadObject(map, tile, objectElement);
 						}
 					}
 

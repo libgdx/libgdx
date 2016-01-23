@@ -118,7 +118,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer.getObjects(), objectElement);
+				loadObject(map, layer, objectElement);
 			}
 
 			map.getLayers().add(layer);
@@ -166,7 +166,15 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		layer.setVisible(visible);
 	}
 
-	protected void loadObject (TiledMap map, MapObjects objects, Element element) {
+	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
+		loadObject(map, layer.getObjects(), element, mapHeightInPixels);
+	}
+
+	protected void loadObject (TiledMap map, TiledMapTile tile, Element element) {
+		loadObject(map, tile.getObjects(), element, tile.getTextureRegion().getRegionHeight());
+	}
+
+	protected void loadObject (TiledMap map, MapObjects objects, Element element, float heightInPixels) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 
@@ -174,7 +182,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
 			float x = element.getFloatAttribute("x", 0) * scaleX;
-			float y = (flipY ? (mapHeightInPixels - element.getFloatAttribute("y", 0)) : element.getFloatAttribute("y", 0)) * scaleY;
+			float y = (flipY ? (heightInPixels - element.getFloatAttribute("y", 0)) : element.getFloatAttribute("y", 0)) * scaleY;
 
 			float width = element.getFloatAttribute("width", 0) * scaleX;
 			float height = element.getFloatAttribute("height", 0) * scaleY;
