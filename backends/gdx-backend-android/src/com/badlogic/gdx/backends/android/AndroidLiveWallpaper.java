@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
@@ -65,7 +66,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
@@ -339,7 +340,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	}
 
 	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
+	public SnapshotArray<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
 
