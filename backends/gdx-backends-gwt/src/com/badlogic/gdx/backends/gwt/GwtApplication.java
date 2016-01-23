@@ -188,7 +188,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		} catch (Throwable t) {
 			error("GwtApplication", "exception: " + t.getMessage(), t);
 			t.printStackTrace();
-			throw new RuntimeException(t);
+			Util.throwEx(t);
 		}
 
 		AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
@@ -198,11 +198,23 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					mainLoop();
 				} catch (Throwable t) {
 					error("GwtApplication", "exception: " + t.getMessage(), t);
-					throw new RuntimeException(t);
+					t.printStackTrace();
+					Util.throwEx(t);
 				}
 				AnimationScheduler.get().requestAnimationFrame(this, graphics.canvas);
 			}
 		}, graphics.canvas);
+	}
+	
+	private static class Util {
+		@SuppressWarnings("unchecked")
+		private static <T extends Throwable> void throwEx (Throwable exception, Object dummy) throws T {
+			throw (T)exception;
+		}
+
+		protected static void throwEx (Throwable exception) {
+			Util.<RuntimeException> throwEx(exception, null);
+		}
 	}
 
 	void mainLoop() {
