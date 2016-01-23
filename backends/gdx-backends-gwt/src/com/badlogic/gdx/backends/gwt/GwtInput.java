@@ -167,7 +167,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched[0];
+		return pressedButtons.contains(button) && touched[0];
 	}
 
 	@Override
