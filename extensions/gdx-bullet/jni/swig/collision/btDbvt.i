@@ -102,5 +102,13 @@
 	btDbvtNode *getChild1() {
 		return $self->childs[1];
 	}
+	
+	btBroadphaseProxy *getDataAsProxy() {
+	    return (btBroadphaseProxy*)$self->data;
+	}
+	
+	btCollisionObject *getDataAsProxyClientObject() {
+	    return ($self->isleaf()) ? (btCollisionObject*)((btBroadphaseProxy*)$self->data)->m_clientObject : NULL;
+	}
 };
 

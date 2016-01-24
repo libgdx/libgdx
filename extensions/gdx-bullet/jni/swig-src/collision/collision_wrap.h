@@ -41,25 +41,6 @@ protected:
     Swig::BoolArray<1> swig_override;
 };
 
-struct SwigDirector_ICollide : public btDbvt::ICollide, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ICollide(JNIEnv *jenv);
-    virtual ~SwigDirector_ICollide();
-    virtual void Process(btDbvtNode const *arg0, btDbvtNode const *arg1);
-    virtual void Process(btDbvtNode const *arg0);
-    virtual void Process(btDbvtNode const *n, btScalar arg1);
-    virtual bool Descent(btDbvtNode const *arg0);
-    virtual bool AllLeaves(btDbvtNode const *arg0);
-public:
-    bool swig_overrides(int n) {
-      return (n < 5 ? swig_override[n] : false);
-    }
-protected:
-    Swig::BoolArray<5> swig_override;
-};
-
 class SwigDirector_btNodeOverlapCallback : public btNodeOverlapCallback, public Swig::Director {
 
 public:
@@ -150,6 +131,25 @@ public:
     }
 protected:
     Swig::BoolArray<1> swig_override;
+};
+
+struct SwigDirector_ICollide : public btDbvt::ICollide, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ICollide(JNIEnv *jenv);
+    virtual ~SwigDirector_ICollide();
+    virtual void Process(btDbvtNode const *arg0, btDbvtNode const *arg1);
+    virtual void Process(btDbvtNode const *arg0);
+    virtual void Process(btDbvtNode const *n, btScalar arg1);
+    virtual bool Descent(btDbvtNode const *arg0);
+    virtual bool AllLeaves(btDbvtNode const *arg0);
+public:
+    bool swig_overrides(int n) {
+      return (n < 5 ? swig_override[n] : false);
+    }
+protected:
+    Swig::BoolArray<5> swig_override;
 };
 
 class SwigDirector_btConvexTriangleCallback : public btConvexTriangleCallback, public Swig::Director {
