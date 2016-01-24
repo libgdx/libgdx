@@ -108,6 +108,9 @@ public class Lwjgl3Application implements Application {
 				((OpenALAudio) audio).update();
 			}
 
+			GLFW.glfwPollEvents();
+
+			boolean haveWork = false;
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
 				Gdx.graphics = window.getGraphics();
@@ -119,26 +122,40 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					window.update(lifecycleListeners);
-				}				
+					haveWork |= window.update(lifecycleListeners);
+				}
 				if (window.shouldClose()) {
 					closedWindows.add(window);
-				}				
+				}
 			}
-			GLFW.glfwPollEvents();
+			for (Lwjgl3Window closedWindow : closedWindows) {
+				closedWindow.dispose();
+				windows.removeValue(closedWindow, false);
+			}
 
 			synchronized (runnables) {
-				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
 			}
-			for (Runnable runnable : executedRunnables) {
-				runnable.run();
+			if (executedRunnables.size > 0) {
+				for (Runnable runnable : executedRunnables) {
+					runnable.run();
+				}
+				executedRunnables.clear();
+				haveWork = true;
+				// Need to refresh all windows after runnable.
+				for (Lwjgl3Window window : windows) {
+					window.getGraphics().requestRendering();
+				}
 			}
 
-			for (Lwjgl3Window closedWindow : closedWindows) {
-				closedWindow.dispose();				
-				windows.removeValue(closedWindow, false);
+			if (!haveWork) {
+				// Sleep if there was nothing to do and continuous rendering is disabled.
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 		}
 	}
