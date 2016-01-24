@@ -1,4 +1,6 @@
-[1.8.1]
+[1.9.1]
+
+[1.9.0]
 - API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
 - Fixed HexagonalTiledMapRenderer, see https://github.com/libgdx/libgdx/pull/3654
 - Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
