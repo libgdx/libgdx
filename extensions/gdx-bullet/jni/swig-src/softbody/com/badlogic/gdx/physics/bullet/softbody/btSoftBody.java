@@ -1065,9 +1065,8 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btDbvtNode getLeaf() {
-      long cPtr = SoftbodyJNI.btSoftBody_Node_leaf_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(SoftbodyJNI.btSoftBody_Node_leaf_get(swigCPtr, this), false);
+  }
   
     public void setBattach(int value) {
       SoftbodyJNI.btSoftBody_Node_battach_set(swigCPtr, this, value);
@@ -1264,9 +1263,8 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btDbvtNode getLeaf() {
-      long cPtr = SoftbodyJNI.btSoftBody_Face_leaf_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(SoftbodyJNI.btSoftBody_Face_leaf_get(swigCPtr, this), false);
+  }
   
     public Face() {
       this(SoftbodyJNI.new_btSoftBody_Face(), true);
@@ -1339,9 +1337,8 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btDbvtNode getLeaf() {
-      long cPtr = SoftbodyJNI.btSoftBody_Tetra_leaf_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(SoftbodyJNI.btSoftBody_Tetra_leaf_get(swigCPtr, this), false);
+  }
   
     public void setC0(btVector3 value) {
       SoftbodyJNI.btSoftBody_Tetra_c0_set(swigCPtr, this, btVector3.getCPtr(value), value);
@@ -2091,9 +2088,8 @@ public class btSoftBody extends btCollisionObject {
     }
   
     public btDbvtNode getLeaf() {
-      long cPtr = SoftbodyJNI.btSoftBody_Cluster_leaf_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-    }
+  	return btDbvtNode.internalTemp(SoftbodyJNI.btSoftBody_Cluster_leaf_get(swigCPtr, this), false);
+  }
   
     public void setNdamping(float value) {
       SoftbodyJNI.btSoftBody_Cluster_ndamping_set(swigCPtr, this, value);

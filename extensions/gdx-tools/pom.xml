@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.9.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -33,6 +33,13 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>gdx-freetype</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-freetype-platform</artifactId>
+      <version>${project.version}</version>
+      <classifier>natives-desktop</classifier>
     </dependency>
 
     <dependency>

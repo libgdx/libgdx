@@ -30,6 +30,8 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FileHandle {
+	protected File file;
+	protected FileType type;
 
 	protected FileHandle () {
 	}

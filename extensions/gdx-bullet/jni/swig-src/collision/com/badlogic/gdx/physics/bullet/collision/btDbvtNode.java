@@ -58,23 +58,37 @@ public class btDbvtNode extends BulletBase {
 		super.delete();
 	}
 
+	private final static btDbvtNode temp = new btDbvtNode(0, false);
+	/** Obtains a temporary instance, used by native methods that return a btDbvtNode instance */
+	public static btDbvtNode internalTemp(long cPtr, boolean own) {
+		temp.reset(cPtr, own);
+		return temp;
+	}
+	private static btDbvtNode[] argumentInstances = new btDbvtNode[] {new btDbvtNode(0, false),
+		new btDbvtNode(0, false), new btDbvtNode(0, false), new btDbvtNode(0, false)};
+	private static int argumentIndex = -1;
+	/** Obtains a temporary instance, used for callback methods with one or more btDbvtNode arguments */
+	protected static btDbvtNode obtainForArgument(final long swigCPtr, boolean owner) {
+		btDbvtNode instance = argumentInstances[argumentIndex = (argumentIndex + 1) & 3];
+		instance.reset(swigCPtr, owner);
+		return instance;
+	}
+
   public void setVolume(btDbvtAabbMm value) {
     CollisionJNI.btDbvtNode_volume_set(swigCPtr, this, btDbvtAabbMm.getCPtr(value), value);
   }
 
   public btDbvtAabbMm getVolume() {
-    long cPtr = CollisionJNI.btDbvtNode_volume_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtAabbMm(cPtr, false);
-  }
+	return btDbvtAabbMm.internalTemp(CollisionJNI.btDbvtNode_volume_get(swigCPtr, this), false);
+}
 
   public void setParent(btDbvtNode value) {
     CollisionJNI.btDbvtNode_parent_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
   }
 
   public btDbvtNode getParent() {
-    long cPtr = CollisionJNI.btDbvtNode_parent_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvtNode_parent_get(swigCPtr, this), false);
+}
 
   public boolean isleaf() {
     return CollisionJNI.btDbvtNode_isleaf(swigCPtr, this);
@@ -110,19 +124,16 @@ public class btDbvtNode extends BulletBase {
   }
 
   public btDbvtNode getChild(int index) {
-    long cPtr = CollisionJNI.btDbvtNode_getChild(swigCPtr, this, index);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvtNode_getChild(swigCPtr, this, index), false);
+}
 
   public btDbvtNode getChild0() {
-    long cPtr = CollisionJNI.btDbvtNode_getChild0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvtNode_getChild0(swigCPtr, this), false);
+}
 
   public btDbvtNode getChild1() {
-    long cPtr = CollisionJNI.btDbvtNode_getChild1(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvtNode_getChild1(swigCPtr, this), false);
+}
 
   public btDbvtNode() {
     this(CollisionJNI.new_btDbvtNode(), true);

@@ -8,5 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry exported="true" kind="lib" path="libs/AppleJavaExtensions-1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -21,7 +21,7 @@ android {
 
 // sets up the Android Eclipse project, using the old Ant based build.
 eclipse {
-	// need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
+	// need to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
 	// ignores any nodes added in classpath.file.withXml
 	sourceSets {
 		main {
