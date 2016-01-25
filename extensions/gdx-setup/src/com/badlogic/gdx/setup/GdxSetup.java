@@ -63,7 +63,7 @@ public class GdxSetup {
 		int[] targetToolVersion = convertTools(DependencyBank.buildToolsVersion);
 		if (compareVersions(targetToolVersion, localToolVersion)) {
 			int value = JOptionPane.showConfirmDialog(null,
-				"You have a more recent version of android build tools than the recommended.\nDo you want to use this version?",
+				"You have a more recent version of android build tools than the recommended.\nDo you want to use your more recent version?",
 				"Warning!", JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
 				JOptionPane.showMessageDialog(null, "Using build tools: " + DependencyBank.buildToolsVersion);
@@ -81,7 +81,7 @@ public class GdxSetup {
 		int newestLocalApi = getLatestApi(apis);
 		if (newestLocalApi > Integer.valueOf(DependencyBank.androidAPILevel)) {
 			int value = JOptionPane.showConfirmDialog(null,
-				"You have a more recent Android API than the recommended.\nDo you want to use this version?", "Warning!",
+				"You have a more recent Android API than the recommended.\nDo you want to use your more recent version?", "Warning!",
 				JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
 				JOptionPane.showMessageDialog(null, "Using API level: " + DependencyBank.androidAPILevel);
