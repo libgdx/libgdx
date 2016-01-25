@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -256,18 +259,24 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
 		Gdx.app.log(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
+	
+	// Some manufactures (Samsung) like to add chars to version number, ignore those:
+	private static int parseInt(String v, int defaultValue) {
+		try {
+			return ((Number)NumberFormat.getInstance().parse(v)).intValue();
+		} catch (ParseException e) {
+			Gdx.app.error(LOG_TAG, "Error parsing number: " + v +", assuming: " + defaultValue);
+			return defaultValue;
+		}
+	}
 
 	private static void extractVersion (javax.microedition.khronos.opengles.GL10 gl) {
 		//Returns a version or release number of the form:
 		//OpenGL<space>ES<space><version number><space><vendor-specific information>.
 		String version = gl.glGetString(GL10.GL_VERSION);
-		try {
-			String[] versionSplit = version.split(" ")[2].split("\\.", 2);
-			major = Integer.parseInt(versionSplit[0]);
-			minor = Integer.parseInt(versionSplit[1]);
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
-		}
+		String[] versionSplit = version.split(" ")[2].split("\\.", 2);
+		major = parseInt(versionSplit[0], 2);
+		minor = versionSplit.length < 2 ? 0 : parseInt(versionSplit[1], 0);
 	}
 
 	@Override
