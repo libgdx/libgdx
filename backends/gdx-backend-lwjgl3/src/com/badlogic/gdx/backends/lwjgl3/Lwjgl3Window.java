@@ -216,8 +216,8 @@ public class Lwjgl3Window implements Disposable {
 		this.windowHandle = windowHandle;
 		input.windowHandleChanged(windowHandle);
 	}
-	
-	void update(Array<LifecycleListener> lifecycleListeners) {
+
+	boolean update(Array<LifecycleListener> lifecycleListeners) {
 		if(listenerInitialized == false) {
 			initializeListener();
 		}
@@ -225,19 +225,25 @@ public class Lwjgl3Window implements Disposable {
 			executedRunnables.addAll(runnables);
 			runnables.clear();
 		}
-		for(Runnable runnable: executedRunnables) {
-			runnable.run();
-		}		
-		executedRunnables.clear();
-		
-		if(!iconified) {
-			graphics.update();		
+		if(executedRunnables.size > 0) {
+			for(Runnable runnable: executedRunnables) {
+				runnable.run();
+			}
+			executedRunnables.clear();
+			graphics.requestRendering();
+		}
+		if(!iconified)
+			input.update();
+
+		if(graphics.shouldRender() && !iconified) {
+			graphics.update();
 			listener.render();
 			GLFW.glfwSwapBuffers(windowHandle);
-			input.update();		
+			return true;
 		}
+		return false;
 	}
-	
+
 	boolean shouldClose() {
 		return GLFW.glfwWindowShouldClose(windowHandle) == GLFW.GLFW_TRUE;
 	}
