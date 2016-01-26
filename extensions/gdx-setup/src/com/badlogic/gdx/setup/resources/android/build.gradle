@@ -30,6 +30,7 @@ task copyAndroidNatives() {
     file("libs/armeabi-v7a/").mkdirs();
     file("libs/arm64-v8a/").mkdirs();
     file("libs/x86_64/").mkdirs();
+    file("libs/x86/").mkdirs();
 
     configurations.natives.files.each { jar ->
         def outputDir = null
