@@ -103,7 +103,11 @@ public class Skin implements Disposable {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			add(region.name, region, TextureRegion.class);
+			String name = region.name;
+			if (region.index != -1) {
+			    name += "_" + region.index;
+			}
+			add(name, region, TextureRegion.class);
 		}
 	}
 
