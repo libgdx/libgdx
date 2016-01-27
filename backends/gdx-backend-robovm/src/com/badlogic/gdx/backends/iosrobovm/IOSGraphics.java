@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.glkit.GLKView;
@@ -157,6 +159,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
+	GLVersion glVersion;
 	GLKView view;
 	IOSUIViewController viewController;
 
@@ -181,6 +184,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
+		String versionString = gl20.glGetString(GL20.GL_VERSION);
+		String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+		String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
 
 		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
@@ -391,6 +398,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public GraphicsType getType () {
 		return GraphicsType.iOSGL;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override

@@ -20,6 +20,8 @@ import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
@@ -41,10 +43,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
 public class LwjglGraphics implements Graphics {
-	/** The OpenGL (not ES) version */
-	static int major, minor, release;
+
 	/** The suppored OpenGL extensions */
 	static Array<String> extensions;
+	static GLVersion glVersion;
 
 	GL20 gl20;
 	GL30 gl30;
@@ -126,6 +128,10 @@ public class LwjglGraphics implements Graphics {
 
 	public GraphicsType getType () {
 		return GraphicsType.LWJGL;
+	}
+
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	public int getFramesPerSecond () {
@@ -219,22 +225,15 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	private static void extractVersion () {
-		// See https://www.opengl.org/wiki/GLAPI/glGetString, format is:
-		// <major> "." <minor> ("." <release>) (<space> (<vendor_specific_info>))
-		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
-		try {
-			String[] v = version.split(" ", 2)[0].split("\\.", 3);
-			major = Integer.parseInt(v[0]);
-			minor = Integer.parseInt(v[1]);
-			release = v.length > 2 ? Integer.parseInt(v[2]) : 0;
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
-		}
+		String versionString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
+		String vendorString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VENDOR);
+		String rendererString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 	}
 
 	private static void extractExtensions () {
 		extensions = new Array<String>();
-		if (isOpenGLOrHigher(3, 2)) {
+		if (glVersion.isVersionEqualToOrHigher(3, 2)) {
 			int numExtensions = GL11.glGetInteger(GL30.GL_NUM_EXTENSIONS);
 			for (int i = 0; i < numExtensions; ++i)
 				extensions.add(org.lwjgl.opengl.GL30.glGetStringi(GL20.GL_EXTENSIONS, i));
@@ -243,27 +242,22 @@ public class LwjglGraphics implements Graphics {
 		}
 	}
 
-	/** @return whether the supported OpenGL (not ES) version is equal or higher to the specified version. */
-	private static boolean isOpenGLOrHigher (int major, int minor) {
-		return LwjglGraphics.major > major || (LwjglGraphics.major == major && LwjglGraphics.minor >= minor);
-	}
-
 	/** @return whether the supported OpenGL (not ES) version is compatible with OpenGL ES 3.x. */
 	private static boolean fullCompatibleWithGLES3 () {
 		// OpenGL ES 3.0 is compatible with OpenGL 4.3 core, see http://en.wikipedia.org/wiki/OpenGL_ES#OpenGL_ES_3.0
-		return isOpenGLOrHigher(4, 3);
+		return glVersion.isVersionEqualToOrHigher(4, 3);
 	}
 
 	/** @return whether the supported OpenGL (not ES) version is compatible with OpenGL ES 2.x. */
 	private static boolean fullCompatibleWithGLES2 () {
 		// OpenGL ES 2.0 is compatible with OpenGL 4.1 core
 		// see https://www.opengl.org/registry/specs/ARB/ES2_compatibility.txt
-		return isOpenGLOrHigher(4, 1) || extensions.contains("GL_ARB_ES2_compatibility", false);
+		return glVersion.isVersionEqualToOrHigher(4, 1) || extensions.contains("GL_ARB_ES2_compatibility", false);
 	}
 
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
-		return isOpenGLOrHigher(3, 0) || extensions.contains("GL_EXT_framebuffer_object", false)
+		return glVersion.isVersionEqualToOrHigher(3, 0) || extensions.contains("GL_EXT_framebuffer_object", false)
 			|| extensions.contains("GL_ARB_framebuffer_object", false);
 	}
 
@@ -323,9 +317,7 @@ public class LwjglGraphics implements Graphics {
 						createDisplayPixelFormat(useGL30, gles30ContextMajor, gles30ContextMinor);
 						return;
 					}
-					String glInfo = glInfo();
-					throw new GdxRuntimeException("OpenGL is not supported by the video driver"
-						+ (glInfo.isEmpty() ? "." : (":" + glInfo())), ex3);
+					throw new GdxRuntimeException("OpenGL is not supported by the video driver: " + glVersion.getDebugVersionString(), ex3);
 				}
 				if (getDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
@@ -348,28 +340,18 @@ public class LwjglGraphics implements Graphics {
 			gl20 = new LwjglGL20();
 		}
 
-		if (!isOpenGLOrHigher(2, 0))
+		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glInfo());
+				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
 
 		if (!supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glInfo());
+				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 		Gdx.gl30 = gl30;
-	}
-
-	private String glInfo () {
-		try {
-			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
-				+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
-				+ GL11.glGetString(GL11.GL_VERSION);
-		} catch (Throwable ignored) {
-		}
-		return "";
 	}
 
 	@Override

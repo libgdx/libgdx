@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -51,6 +53,7 @@ public class GwtGraphics implements Graphics {
 
 	CanvasElement canvas;
 	WebGLRenderingContext context;
+	GLVersion glVersion;
 	GL20 gl;
 	String extensions;
 	float fps = 0;
@@ -80,6 +83,11 @@ public class GwtGraphics implements Graphics {
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, config.width, config.height);
 		this.gl = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
+
+		String versionString = gl.glGetString(GL20.GL_VERSION);
+		String vendorString = gl.glGetString(GL20.GL_VENDOR);
+		String rendererString = gl.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString);
 	}
 
 	public WebGLRenderingContext getContext () {
@@ -129,6 +137,11 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public GraphicsType getType () {
 		return GraphicsType.WebGL;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override

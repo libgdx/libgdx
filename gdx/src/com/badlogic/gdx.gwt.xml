@@ -225,6 +225,7 @@
 		<include name="graphics/glutils/FrameBufferCubemap.java"/>
 		<include name="graphics/glutils/GLFrameBuffer.java"/>
 		<include name="graphics/glutils/GLOnlyTextureData.java"/>
+		<include name="graphics/glutils/GLVersion.java"/>
 		<include name="graphics/glutils/HdpiUtils.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer.java"/>
 		<include name="graphics/glutils/ImmediateModeRenderer10.java"/>

@@ -16,12 +16,14 @@
 
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
@@ -33,7 +35,7 @@ public class MockGraphics implements Graphics {
 	int frames = 0;
 	int fps;
 	long lastTime = System.nanoTime();
-
+	GLVersion glVersion = new GLVersion(Application.ApplicationType.HeadlessDesktop, "", "", "");
 	@Override
 	public boolean isGL30Available() {
 		return false;
@@ -92,6 +94,11 @@ public class MockGraphics implements Graphics {
 	@Override
 	public GraphicsType getType() {
 		return GraphicsType.Mock;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override
