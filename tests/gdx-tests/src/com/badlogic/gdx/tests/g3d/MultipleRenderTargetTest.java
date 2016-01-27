@@ -257,6 +257,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 			mrtSceneShader.setUniformf("lights[" + i + "].lightColor", light.color);
 		}
 		mrtSceneShader.setUniformf("u_viewPos", camera.position);
+		mrtSceneShader.setUniformMatrix("u_inverseProjectionMatrix", camera.invProjectionView);
 		quad.render(mrtSceneShader, GL30.GL_TRIANGLE_FAN);
 		mrtSceneShader.end();
 		renderContext.end();

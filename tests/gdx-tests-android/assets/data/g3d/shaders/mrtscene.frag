@@ -4,6 +4,7 @@ in vec4 v_color;
 in vec2 v_texCoords;
 
 uniform vec3 u_viewPos;
+uniform mat4 u_inverseProjectionMatrix;
 
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_normalTexture;
@@ -23,13 +24,21 @@ uniform Light lights[NUM_LIGHTS];
 void main () {
     vec4 diffuse = texture(u_diffuseTexture, v_texCoords);
     vec3 normal = normalize(texture(u_normalTexture, v_texCoords).xyz);
-    vec3 position = texture(u_positionTexture, v_texCoords).xyz;
-    float depth = texture(u_depthTexture, v_texCoords).x;
+    //vec3 position = texture(u_positionTexture, v_texCoords).xyz;
     float specular = diffuse.a;
 
+    float near = 1.0;
+    float far = 100.0;
+
+    float depth = texture(u_depthTexture, v_texCoords).x * 2.0 - 1.0;
+
+    vec4 ndc = vec4(v_texCoords * 2.0 - 1.0, depth, 1.0);
+
+    vec4 position = (u_inverseProjectionMatrix * ndc);
+    position /= position.w;
 
     vec3 lighting = diffuse.xyz * 0.3; //ambient
-    vec3 viewDir = normalize(u_viewPos - position);
+    vec3 viewDir = normalize(u_viewPos - position.xyz);
 
     vec3 halfview;
     float spec;
@@ -62,7 +71,7 @@ void main () {
 
 
     //global light
-    vec3 globalLightDir = normalize(vec3(0.0, 100.0, 0.0) - position);
+    vec3 globalLightDir = normalize(vec3(0.0, 100.0, 0.0) - position.xyz);
     vec3 global = max(dot(normal, globalLightDir), 0.0) * globalLightColor * diffuse.xyz;
 
     //specular
