@@ -198,6 +198,21 @@ public class Skin implements Disposable {
 		return region;
 	}
 
+	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
+	public Array<TextureRegion> getRegions (String regionName) {
+		Array<TextureRegion> regions = null;
+		int i = 0;
+		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
+		if (region != null) {
+			regions = new Array<TextureRegion>();
+			while (region != null) {
+				regions.add(region);
+				region = optional(regionName + "_" + (i++), TextureRegion.class);
+			}
+		}
+		return regions;
+	}
+
 	/** Returns a registered tiled drawable. If no tiled drawable is found but a region exists with the name, a tiled drawable is
 	 * created from the region and stored in the skin. */
 	public TiledDrawable getTiledDrawable (String name) {
