@@ -1,4 +1,6 @@
 [1.9.1]
+- API Change: Override GwtApplication#createApplicationListener() to create your ApplicationListener
+  on GWT, overriding GwtApplication#getApplicationListener() isn't needed anymore, see https://github.com/libgdx/libgdx/issues/3628
 
 [1.9.0]
 - API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig

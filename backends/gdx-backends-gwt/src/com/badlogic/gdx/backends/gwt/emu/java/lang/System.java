@@ -116,7 +116,7 @@ public final class System {
   }-*/;
 
   private static native double currentTimeMillis0() /*-{
-    return (new Date()).getTime();
+    return Date.now();
   }-*/;
 
   /**

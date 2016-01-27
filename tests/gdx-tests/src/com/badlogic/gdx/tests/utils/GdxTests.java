@@ -60,6 +60,7 @@ import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.MeshBuilderTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
@@ -166,6 +167,7 @@ public class GdxTests {
 		ModelTest.class,
 		ModelCacheTest.class,
 		MoveSpriteExample.class,
+		MultipleRenderTargetTest.class,
 		MultitouchTest.class,
 		MusicTest.class,
 		NetAPITest.class,
