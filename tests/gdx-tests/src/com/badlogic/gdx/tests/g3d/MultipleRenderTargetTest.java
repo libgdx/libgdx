@@ -528,14 +528,14 @@ public class MultipleRenderTargetTest extends GdxTest {
 			gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 
 			//rgba
-			Texture diffuse = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGBA,
+			Texture diffuse = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGBA8,
 				GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE);
 			//rgb
-			Texture normal = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGB16F,
-				GL30.GL_RGB, GL30.GL_FLOAT);
+			Texture normal = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGB8,
+				GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
 			//rgb
-			Texture position = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGB16F,
-				GL30.GL_RGB, GL30.GL_FLOAT);
+			Texture position = createColorTexture(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, GL30.GL_RGB8,
+				GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
 			Texture depth = createDepthTexture();
 
 			colorTextures.add(diffuse);
