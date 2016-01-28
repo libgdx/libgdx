@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -34,7 +35,8 @@ public final class Intersector {
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
-
+	private final static FloatArray floatArray = new FloatArray();
+	private final static FloatArray floatArray2 = new FloatArray();
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
 	 * check is performed that this is the case.
 	 * 
@@ -140,6 +142,12 @@ public final class Intersector {
 		return oddNodes;
 	}
 
+	private final static Vector2 ip = new Vector2();
+	private final static Vector2 ep1 = new Vector2();
+	private final static Vector2 ep2 = new Vector2();
+	private final static Vector2 s = new Vector2();
+	private final static Vector2 e = new Vector2();
+
 	/** Intersects the two closed polygons and returns the polygon resulting from the intersection.
 	 *  Follows the Sutherland-Hodgman algorithm.
 	 *
@@ -149,68 +157,48 @@ public final class Intersector {
 	 * @return Whether the two polygons intersect.
 	 */
 	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
-		//Convert polygons into more practical format
-		ArrayList<Vector2> p1Points = new ArrayList<Vector2>();
-		ArrayList<Vector2> p2Points = new ArrayList<Vector2>();
-		for (int i = 0; i < p1.getVertices().length; i += 2) {
-			p1Points.add(new Vector2(p1.getVertices()[i], p1.getVertices()[i + 1]));
-		}
-		for (int i = 0; i < p2.getVertices().length; i += 2) {
-			p2Points.add(new Vector2(p2.getVertices()[i], p2.getVertices()[i + 1]));
-		}
-
-		//Reusable point for determining the point of intersection between two line segments
-		Vector2 intersectionPoint;
-		ArrayList<Vector2> outputList = p1Points;
-		ArrayList<Vector2> inputList = new ArrayList<Vector2>();
-		Vector2 edgePoint1;
-		Vector2 edgePoint2;
-		//Define the current points of the clip edge
-		for (int i = 0; i < p2Points.size(); i++) {
-			edgePoint1 = p2Points.get(i);
-			//Wrap around to beginning of array if index points to the end
-			edgePoint2 = i < p2Points.size() - 1 ? p2Points.get(i + 1) : p2Points.get(0);
-			inputList.clear();
-			//Add all elements to input list
-			for (Vector2 p : outputList) {
-				inputList.add(p);
+		//reusable points to trace edges around polygon
+		floatArray2.clear();
+		floatArray.clear();
+		floatArray2.addAll(p1.getTransformedVertices());
+		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
+			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i+1]);
+			//wrap around to beginning of array if index points to end;
+			if (i < p2.getTransformedVertices().length - 2) {
+				ep2.set(p2.getTransformedVertices()[i + 2], p2.getTransformedVertices()[i + 3]);
+			} else {
+				ep2.set(p2.getTransformedVertices()[0], p2.getTransformedVertices()[1]);
 			}
-			outputList.clear();
-
-			if (inputList.isEmpty()) {
+			if (floatArray2.size == 0) {
 				return false;
 			}
-
-			Vector2 s = inputList.get(inputList.size() - 1);
-
-			for (Vector2 e : inputList) {
-				Vector2 intersection = new Vector2();
+			s.set(floatArray2.get(floatArray2.size - 2), floatArray2.get(floatArray2.size - 1));
+			for (int j = 0; j < floatArray2.size; j += 2) {
+				e.set(floatArray2.get(j), floatArray2.get(j + 1));
 				//determine if point is inside clip edge
-				if (Intersector.pointLineSide(edgePoint2, edgePoint1, e) > 0) {
-					if (!(Intersector.pointLineSide(edgePoint2, edgePoint1, s) > 0)) {
-						Intersector.intersectLines(s, e, edgePoint1, edgePoint2, intersection);
-						outputList.add(intersection);
+				if (Intersector.pointLineSide(ep2, ep1, e) > 0) {
+					if (!(Intersector.pointLineSide(ep2, ep1, s) > 0)) {
+						Intersector.intersectLines(s, e, ep1, ep2, ip);
+						floatArray.add(ip.x);
+						floatArray.add(ip.y);
 					}
-					outputList.add(e);
-				} else if (Intersector.pointLineSide(edgePoint2, edgePoint1, s) > 0) {
-					Intersector.intersectLines(s, e, edgePoint1, edgePoint2, intersection);
-					outputList.add(intersection);
+					floatArray.add(e.x);
+					floatArray.add(e.y);
+				} else if (Intersector.pointLineSide(ep2, ep1, s) > 0) {
+					Intersector.intersectLines(s, e, ep1, ep2, ip);
+					floatArray.add(ip.x);
+					floatArray.add(ip.y);
 				}
-				s = e;
+				s.set(e.x, e.y);
 			}
+			floatArray2.clear();
+			floatArray2.addAll(floatArray);
+			floatArray.clear();
 		}
-		if (!outputList.isEmpty()) {
-			float verts[] = new float[outputList.size() * 2];
-			int i = 0;
-			for (Vector2 vector2 : outputList) {
-				verts[i] = vector2.x;
-				verts[i + 1] = vector2.y;
-				i += 2;
-			}
-			overlap.setVertices(verts);
+		if (! (floatArray2.size == 0)) {
+			overlap.setVertices(floatArray2.toArray());
 			return true;
 		} else {
-			overlap.setVertices(new float[0]);
 			return false;
 		}
 	}
