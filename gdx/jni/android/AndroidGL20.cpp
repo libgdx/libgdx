@@ -98,7 +98,7 @@ getPointer(JNIEnv *_env, jobject buffer, jarray *array, jint *remaining)
             getBasePointerID, buffer);
     if (pointer != 0L) {
         *array = NULL;
-        return (void *) (jint) pointer;
+        return (void *) pointer;
     }
 
     *array = (jarray) _env->CallStaticObjectMethod(nioAccessClass,
