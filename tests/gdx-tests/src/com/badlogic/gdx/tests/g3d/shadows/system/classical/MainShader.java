@@ -55,7 +55,7 @@ public class MainShader extends DefaultShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				// Value must be float type to work !
-				shader.set(inputID, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight());
+				shader.set(inputID, (float)Gdx.graphics.getBackBufferWidth(), (float)Gdx.graphics.getBackBufferHeight());
 			}
 		};
 	}
