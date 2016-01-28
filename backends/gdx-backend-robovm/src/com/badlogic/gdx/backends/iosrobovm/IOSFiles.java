@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import java.io.File;
+
+import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSBundle;
 
 import com.badlogic.gdx.Files;
@@ -27,13 +30,32 @@ public class IOSFiles implements Files {
 	static final String appDir = System.getenv("HOME");
 	static final String externalPath = appDir + "/Documents/";
 	static final String localPath = appDir + "/Library/local/";
-	static final String internalPath = NSBundle.getMainBundle().getBundlePath();
-
-	public IOSFiles () {
+	static String internalPath = NSBundle.getMainBundle().getBundlePath();
+	
+	private String frameworkName;
+	
+	public IOSFiles (String frameworkName) {
+		this.frameworkName = frameworkName;
 		new FileHandle(externalPath).mkdirs();
 		new FileHandle(localPath).mkdirs();
+		
+		if (frameworkName != null) {
+			// get the path for the framework
+			NSArray<NSBundle>allFrameworks = NSBundle.getAllFrameworks();
+			for (int i = 0; i < allFrameworks.size(); i++) {
+				NSBundle frameworkBundle = allFrameworks.get(i);
+				if (frameworkBundle.getBundlePath().contains(frameworkName)) {
+					internalPath = frameworkBundle.getBundlePath() + "/Resources";
+					break;
+				}
+			} 
+		}
 	}
 
+	public IOSFiles () {
+		this(null);
+	}
+	
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
 		return new IOSFileHandle(fileName, type);

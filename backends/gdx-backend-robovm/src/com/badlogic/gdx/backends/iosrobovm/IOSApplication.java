@@ -48,7 +48,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -89,6 +88,7 @@ public class IOSApplication implements Application {
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIWindow previousWindow;
 	ApplicationListener listener;
 	IOSViewControllerListener viewControllerListener;
 	IOSApplicationConfiguration config;
@@ -97,6 +97,8 @@ public class IOSApplication implements Application {
 	IOSFiles files;
 	IOSInput input;
 	IOSNet net;
+	// if not null, the application is launched as a framework
+	String frameworkName;
 	int logLevel = Application.LOG_DEBUG;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
@@ -113,6 +115,45 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 
+	// Explicitly bootstraps and launch libGDX from a framework embedded in a native app
+	public void launch(String frameworkName) {
+		this.frameworkName = frameworkName;
+		UIApplication application = UIApplication.getSharedApplication();
+		previousWindow = application.getKeyWindow();
+		didFinishLaunching(application, null);
+	}
+	
+	// Explicitly destroy libGDX when launched from a framework embedded in a native app 
+	public void destroy() {
+		this.frameworkName = null;
+		UIApplication application = UIApplication.getSharedApplication();
+		willResignActive(application);
+		willTerminate(application);
+		previousWindow.makeKeyAndVisible();
+		 
+		uiApp = null;
+		uiWindow = null;
+		previousWindow = null;
+		listener = null;
+		viewControllerListener = null;
+		config = null;
+		graphics = null;
+		audio = null;
+		files = null;
+		input = null;
+		net = null;
+		
+		Gdx.app = null;
+		Gdx.graphics = null;
+		Gdx.audio = null;
+		Gdx.input = null;
+		Gdx.files = null;
+		Gdx.net = null;
+		Gdx.gl = null;
+		Gdx.gl20 = null;
+		Gdx.gl30 = null;
+	}
+
 	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
@@ -120,6 +161,7 @@ public class IOSApplication implements Application {
 		// enable or disable screen dimming
 		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
 
+ 		uiApp.getApplicationState();
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
 
@@ -152,18 +194,15 @@ public class IOSApplication implements Application {
 		this.graphics = new IOSGraphics(scale, this, config, input, config.useGL30);
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
-		this.files = new IOSFiles();
+		this.files = new IOSFiles(frameworkName);
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
-
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
 		Gdx.audio = this.audio;
 		Gdx.input = this.input;
 		Gdx.net = this.net;
-
 		this.input.setupPeripherals();
-
 		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.uiWindow.makeKeyAndVisible();
@@ -197,12 +236,9 @@ public class IOSApplication implements Application {
 		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
 		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
 		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
-
 		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
-
 		double screenWidth = screenBounds.getWidth();
 		double screenHeight = screenBounds.getHeight();
-
 		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
 		switch (statusBarOrientation) {
 		case LandscapeLeft:
@@ -215,11 +251,9 @@ public class IOSApplication implements Application {
 				screenWidth = tmp;
 			}
 		}
-
 		// update width/height depending on display scaling selected
 		screenWidth *= displayScaleFactor;
 		screenHeight *= displayScaleFactor;
-
 		if (statusBarHeight != 0.0) {
 			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
 			statusBarHeight *= displayScaleFactor;
@@ -229,7 +263,6 @@ public class IOSApplication implements Application {
 		}
 
 		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
-
 		return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
 	}
 
@@ -308,6 +341,10 @@ public class IOSApplication implements Application {
 		return net;
 	}
 
+	public String getFrameworkName() {
+		return frameworkName;
+	}
+	
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel > LOG_NONE) {
