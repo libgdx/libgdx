@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.ShortArray;
  * Without causing an additional flush or render call
  *
  * @author Avetis Zakharyan
-*/
+ */
 public class RepeatablePolygonSprite {
 
     private TextureRegion region;
@@ -40,32 +40,33 @@ public class RepeatablePolygonSprite {
     private Array<Integer> gridPosMap = new Array<Integer>();
 
     private Array<float[]> vertices = new Array<float[]>();
-    private Array<short[]> indexes = new Array<short[]>();
+    private Array<short[]> indices = new Array<short[]>();
 
     private int cols, rows;
     private float gridWidth, gridHeight;
 
-    private Vector2 offset = new Vector2();
-
     public float x = 0;
     public float y = 0;
     private Color color = Color.WHITE;
+    private Vector2 offset = new Vector2();
 
-    public RepeatablePolygonSprite() {
-        this.density = -1;
-    }
 
     /**
-     * @param density amount of squares per polygon width
-     */
-    public RepeatablePolygonSprite(float density) {
-        this.density = density;
-    }
-
-    /**
-     * Sets texture region and outlining vertices
+     * Sets polygon with repeating texture region, the size of repeating grid is equal to region size
+     * @param region - region to repeat
+     * @param vertices - cw vertices of polygon
      */
     public void setPolygon(TextureRegion region, float[] vertices) {
+        setPolygon(region, vertices, -1);
+    }
+
+    /**
+     * Sets polygon with repeating texture region, the size of repeating grid is equal to region size
+     * @param region - region to repeat
+     * @param vertices - cw vertices of polygon
+     * @param density - number of regions per polygon width bound
+     */
+    public void setPolygon(TextureRegion region, float[] vertices, float density) {
 
         this.region = region;
 
@@ -108,7 +109,7 @@ public class RepeatablePolygonSprite {
                     if(verts.length > 0) {
                         parts.add(snapToGrid(verts));
                         ShortArray arr = triangulator.computeTriangles(verts);
-                        indexes.add(arr.toArray());
+                        indices.add(arr.toArray());
                         gridPosMap.add(col*rows+row);
                     }
                 } catch (IllegalArgumentException e) {
@@ -121,6 +122,12 @@ public class RepeatablePolygonSprite {
     }
 
 
+    /**
+     * This is a garbage, due to Intersector returning values slightly different then the grid values
+     * Snapping exactly to grid is important, so that during bulidVertices method, it can be figured out
+     * if points is on the wall of it's own grid box or not, to set u/v properly.
+     * Any other implementations are welcome
+     */
     private float[] snapToGrid(float[] vertices) {
         for(int i = 0; i < vertices.length; i+=2) {
             float numX = (vertices[i] / gridWidth) % 1;
@@ -137,8 +144,8 @@ public class RepeatablePolygonSprite {
     }
 
     /**
-     * This is kind of a garbage, but I am forced to do this, because Intersector is returning duplicates.
-     * probably should be fixed in intersector
+     * Intersector is returning duplicate points, when polygons overlap exactly,
+     * probably should be fixed in Intersector, when done this patch can be removed
      */
     private float[] removeDuplicateVertices(float[] vertices) {
         Array<Vector2> list = new Array<Vector2>();
@@ -158,6 +165,11 @@ public class RepeatablePolygonSprite {
         return vertices;
     }
 
+    /**
+     * Offsets polygon to 0 coordinate for ease of calculations, later offset is put back on final render
+     * @param vertices
+     * @return offsetted vertices
+     */
     private float[] offset(float[] vertices) {
         offset.set(vertices[0], vertices[1]);
         for(int i = 0; i < vertices.length-1; i+=2) {
@@ -176,6 +188,9 @@ public class RepeatablePolygonSprite {
         return vertices;
     }
 
+    /**
+     * Builds final vertices with vertex attributes like coordinates, color and region u/v
+     */
     private void buildVertices() {
         vertices.clear();
         for(int i = 0; i < parts.size; i++) {
@@ -191,6 +206,8 @@ public class RepeatablePolygonSprite {
                 fullVerts[idx++] = verts[j] + offset.x + x;
                 fullVerts[idx++] = verts[j+1] + offset.y + y;
 
+                fullVerts[idx++] = color.toFloatBits();
+
                 float u = (verts[j] % gridWidth) / gridWidth;
                 float v = (verts[j+1] % gridHeight) / gridHeight;
                 if(verts[j] == col*gridWidth) u = 0f;
@@ -199,8 +216,6 @@ public class RepeatablePolygonSprite {
                 if(verts[j+1] == (row+1)*gridHeight)v = 1f;
                 u = region.getU() + (region.getU2() - region.getU()) * u;
                 v = region.getV() + (region.getV2() - region.getV()) * v;
-
-                fullVerts[idx++] = color.toFloatBits();
                 fullVerts[idx++] = u;
                 fullVerts[idx++] = v;
             }
@@ -214,10 +229,13 @@ public class RepeatablePolygonSprite {
             buildVertices();
         }
         for(int i = 0; i < vertices.size; i++) {
-            batch.draw(region.getTexture(), vertices.get(i), 0, vertices.get(i).length, indexes.get(i), 0, indexes.get(i).length);
+            batch.draw(region.getTexture(), vertices.get(i), 0, vertices.get(i).length, indices.get(i), 0, indices.get(i).length);
         }
     }
 
+    /**
+     * @param color - Tint color to be applied to entire polygon
+     */
     public void setColor(Color color) {
         this.color = color;
         dirty = true;
