@@ -213,6 +213,9 @@
 		<include name="graphics/g3d/utils/TextureBinder.java"/>
 		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
 		<include name="graphics/g3d/utils/TextureProvider.java"/>
+
+	<!-- graphics/g3d/utils/helper -->
+		<include name="graphics/g3d/utils/helper/CameraHelper.java"/>
 		
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
