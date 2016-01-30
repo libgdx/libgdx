@@ -66,6 +66,7 @@ import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
@@ -223,6 +224,7 @@ public class GdxTests {
 		TextButtonTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
+		TextureArrayTest.class,
 		TextureDataTest.class,
 		TextureDownloadTest.class,
 		TextureFormatTest.class,

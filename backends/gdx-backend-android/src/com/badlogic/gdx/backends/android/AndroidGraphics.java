@@ -48,6 +48,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
@@ -305,6 +306,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
 		Cubemap.invalidateAllCubemaps(app);
+		TextureArray.invalidateAllTextureArrays(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
@@ -536,6 +538,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.clearAllMeshes(app);
 		Texture.clearAllTextures(app);
 		Cubemap.clearAllCubemaps(app);
+		TextureArray.clearAllTextureArrays(app);
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 
