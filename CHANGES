@@ -2,6 +2,7 @@
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
 - Fixed bug in AndroidGL20.cpp which cast a pointer to a 32-bit int. Crash on 64-bit ARM, but only for a specific code path and address...
 - Fixed multiple controllers registering on same index with LWJGL3, see https://github.com/libgdx/libgdx/issues/3774
+- Fixed GwtFileHandle that was only returning text assets when listing a directory, now returns all children
 
 [1.9.1]
 - API Change: Override GwtApplication#createApplicationListener() to create your ApplicationListener
