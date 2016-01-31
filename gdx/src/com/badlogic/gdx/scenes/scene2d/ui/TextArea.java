@@ -380,7 +380,7 @@ public class TextArea extends TextField {
 
 		@Override
 		public boolean keyDown (InputEvent event, int keycode) {
-			super.keyDown(event, keycode);
+			boolean result = super.keyDown(event, keycode);
 			Stage stage = getStage();
 			if (stage != null && stage.getKeyboardFocus() == TextArea.this) {
 				boolean repeat = false;
@@ -418,7 +418,7 @@ public class TextArea extends TextField {
 				showCursor();
 				return true;
 			}
-			return false;
+			return result;
 		}
 
 		@Override

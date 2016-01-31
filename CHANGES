@@ -1,4 +1,14 @@
-[1.8.1]
+[1.9.2]
+- Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
+- Fixed bug in AndroidGL20.cpp which cast a pointer to a 32-bit int. Crash on 64-bit ARM, but only for a specific code path and address...
+- Fixed multiple controllers registering on same index with LWJGL3, see https://github.com/libgdx/libgdx/issues/3774
+
+[1.9.1]
+- API Change: Override GwtApplication#createApplicationListener() to create your ApplicationListener
+  on GWT, overriding GwtApplication#getApplicationListener() isn't needed anymore, see https://github.com/libgdx/libgdx/issues/3628
+- Fixed ARM64 and x86_64 binaries for Android
+
+[1.9.0]
 - API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
 - Fixed HexagonalTiledMapRenderer, see https://github.com/libgdx/libgdx/pull/3654
 - Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
@@ -7,6 +17,9 @@
 - Fixed touch mapping on iOS, see https://github.com/libgdx/libgdx/pull/3590
 - Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
 - Added system cursors to GWT, fix 'Ibeam' system cursor not working on LWJGL3.
+- Added experimental AndroidApplicationConfiguration#useGL30 and IOSApplicationConfiguration#useGL30 for testing OpenGL ES 3.0 support on mobile devices, do not use in production.
+- Fix broken kerning for FreeType fonts, see https://github.com/libgdx/libgdx/pull/3756
+- Added ARM64 and x86_64 binaries for Android
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).

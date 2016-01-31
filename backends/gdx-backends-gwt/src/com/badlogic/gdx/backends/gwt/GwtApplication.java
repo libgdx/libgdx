@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
- * {@link #getApplicationListener()}. Clients can override the default loading screen via
+ * {@link #createApplicationListener()}. Clients can override the default loading screen via
  * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
@@ -89,9 +89,16 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 	
 	@Override
+	public ApplicationListener getApplicationListener() {
+		return listener;
+	}
+	
+	public abstract ApplicationListener createApplicationListener();
+	
+	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
-		this.listener = getApplicationListener();
+		this.listener = createApplicationListener();
 		this.config = getConfig();
 		this.log = config.log;
 

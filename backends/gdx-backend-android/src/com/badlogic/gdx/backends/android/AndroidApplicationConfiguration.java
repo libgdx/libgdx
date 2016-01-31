@@ -73,7 +73,7 @@ public class AndroidApplicationConfiguration {
 	public boolean useImmersiveMode = false;
 
 	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
-	 *  When GL ES 3* is enabled, {@link com.badlogic.gdx.Gdx.gl30} can be used to access it's functionality. Requires at least Android 4.3 (API level 18).
+	 *  When GL ES 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
   	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
 

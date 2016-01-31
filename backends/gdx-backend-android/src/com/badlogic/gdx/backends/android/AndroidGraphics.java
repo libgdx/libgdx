@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -45,11 +48,13 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -255,18 +260,24 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
 		Gdx.app.log(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
+	
+	// Some manufactures (Samsung) like to add chars to version number, ignore those:
+	private static int parseInt(String v, int defaultValue) {
+		try {
+			return ((Number)NumberFormat.getInstance().parse(v)).intValue();
+		} catch (ParseException e) {
+			Gdx.app.error(LOG_TAG, "Error parsing number: " + v +", assuming: " + defaultValue);
+			return defaultValue;
+		}
+	}
 
 	private static void extractVersion (javax.microedition.khronos.opengles.GL10 gl) {
 		//Returns a version or release number of the form:
 		//OpenGL<space>ES<space><version number><space><vendor-specific information>.
 		String version = gl.glGetString(GL10.GL_VERSION);
-		try {
-			String[] versionSplit = version.split(" ")[2].split("\\.", 2);
-			major = Integer.parseInt(versionSplit[0]);
-			minor = Integer.parseInt(versionSplit[1]);
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
-		}
+		String[] versionSplit = version.split(" ")[2].split("\\.", 2);
+		major = parseInt(versionSplit[0], 2);
+		minor = versionSplit.length < 2 ? 0 : parseInt(versionSplit[1], 0);
 	}
 
 	@Override
@@ -295,6 +306,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
 		Cubemap.invalidateAllCubemaps(app);
+		TextureArray.invalidateAllTextureArrays(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
@@ -431,11 +443,13 @@ public class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			Array<LifecycleListener> listeners = app.getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.resume();
+			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+			synchronized (lifecycleListeners) {
+				LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+					listeners[i].resume();
 				}
+				lifecycleListeners.end();
 			}
 			app.getApplicationListener().resume();
 			Gdx.app.log(LOG_TAG, "resumed");
@@ -461,10 +475,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lpause) {
-			Array<LifecycleListener> listeners = app.getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.pause();
+			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+			synchronized (lifecycleListeners) {
+				LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+					listeners[i].pause();
 				}
 			}
 			app.getApplicationListener().pause();
@@ -472,10 +487,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = app.getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.dispose();
+			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+			synchronized (lifecycleListeners) {
+				LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+					listeners[i].dispose();
 				}
 			}
 			app.getApplicationListener().dispose();
@@ -522,6 +538,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.clearAllMeshes(app);
 		Texture.clearAllTextures(app);
 		Cubemap.clearAllCubemaps(app);
+		TextureArray.clearAllTextureArrays(app);
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 

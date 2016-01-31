@@ -51,6 +51,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener)} method specifying the configuration for
@@ -72,7 +73,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
@@ -407,7 +408,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
+	public SnapshotArray<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
 

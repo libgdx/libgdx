@@ -333,6 +333,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			GLFW.glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
 			window.windowHandleChanged(windowHandle);
 			window.setVisible(true);
+			if(displayMode != null) {
+				window.getListener().resize(displayMode.width, displayMode.height);
+			} else {
+				window.getListener().resize(width, height);
+			}
 			return true;
 		} catch (GdxRuntimeException e) {
 			e.printStackTrace();

@@ -248,7 +248,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
-		this.gl20 = gl20;
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = IOSDevice.getDevice(machineString);
