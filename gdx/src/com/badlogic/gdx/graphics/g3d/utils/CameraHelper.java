@@ -41,21 +41,23 @@ import com.badlogic.gdx.utils.Pool;
  * camera.update();
  * helper.update();
  * modelBatch.render(helper);
+ * // After using it
+ * helper.dispose();
  * </pre>
  * @author realitix */
 public class CameraHelper implements RenderableProvider, Disposable {
 	private Camera camera;
 	private Mesh mesh;
-	private Material material = new Material();
-	private Color colorFrustum = new Color(1, 0.66f, 0, 1);
-	private Color colorCone = new Color(1, 0, 0, 1);
-	private Color colorUp = new Color(0, 0.66f, 1, 1);
-	private Color colorTarget = new Color(1, 1, 1, 1);
-	private Color colorCross = new Color(0.2f, 0.2f, 0.2f, 1);
+	private Color frustumColor = new Color(1, 0.66f, 0, 1);
+	private Color coneColor = new Color(1, 0, 0, 1);
+	private Color upColor = new Color(0, 0.66f, 1, 1);
+	private Color targetColor = new Color(1, 1, 1, 1);
+	private Color crossColor = new Color(0.2f, 0.2f, 0.2f, 1);
 	private float vertices[];
 	private int id;
 	private Vector3 tmp = new Vector3();
 	private Vector3 tmp2 = new Vector3();
+	private Renderable renderable = new Renderable();
 
 	/** Create camera helper
 	 * @param camera */
@@ -65,6 +67,7 @@ public class CameraHelper implements RenderableProvider, Disposable {
 	}
 
 	private void init () {
+		// Init indices
 		short[] indices = new short[] {
 			// Near
 			0, 1, 1, 2, 2, 3, 3, 0,
@@ -83,13 +86,21 @@ public class CameraHelper implements RenderableProvider, Disposable {
 			// Up triangle
 			19, 2, 2, 3, 3, 19};
 
+		// Init mesh
 		int maxVertices = 20;
 		mesh = new Mesh(false, maxVertices, indices.length, new VertexAttribute(Usage.Position, 3, "a_position"),
-			new VertexAttribute(
-			Usage.ColorUnpacked, 4, "a_color"));
+			new VertexAttribute(Usage.ColorPacked, 4, "a_color"));
+		mesh.setIndices(indices, 0, indices.length);
+
+		// Init vertices
 		vertices = new float[maxVertices * (mesh.getVertexSize() / 4)];
 
-		mesh.setIndices(indices, 0, indices.length);
+		// Init renderable
+		renderable.meshPart.mesh = mesh;
+		renderable.meshPart.offset = 0;
+		renderable.meshPart.size = mesh.getNumIndices();
+		renderable.meshPart.primitiveType = GL20.GL_LINES;
+		renderable.material = new Material();
 	}
 
 	/** Update cameraHelper mesh. You should call this method if you update your camera. */
@@ -99,36 +110,39 @@ public class CameraHelper implements RenderableProvider, Disposable {
 
 		// 0 - 7 = Frustum points
 		for (int i = 0; i < planePoints.length; i++) {
-			vertice(planePoints[i], colorFrustum);
+			vertice(planePoints[i], frustumColor);
 		}
 
 		// 8 = Camera position
-		vertice(camera.position, colorCone);
+		vertice(camera.position, coneColor);
 
 		// 9 - 12 = Cross near
-		vertice(middlePoint(planePoints[1], planePoints[0]), colorCross);
-		vertice(middlePoint(planePoints[3], planePoints[2]), colorCross);
-		vertice(middlePoint(planePoints[2], planePoints[1]), colorCross);
-		vertice(middlePoint(planePoints[3], planePoints[0]), colorCross);
+		vertice(middlePoint(planePoints[1], planePoints[0]), crossColor);
+		vertice(middlePoint(planePoints[3], planePoints[2]), crossColor);
+		vertice(middlePoint(planePoints[2], planePoints[1]), crossColor);
+		vertice(middlePoint(planePoints[3], planePoints[0]), crossColor);
 
 		// 13 - 16 = Cross far
-		vertice(middlePoint(planePoints[5], planePoints[4]), colorCross);
-		vertice(middlePoint(planePoints[7], planePoints[6]), colorCross);
-		vertice(middlePoint(planePoints[6], planePoints[5]), colorCross);
-		vertice(middlePoint(planePoints[7], planePoints[4]), colorCross);
+		vertice(middlePoint(planePoints[5], planePoints[4]), crossColor);
+		vertice(middlePoint(planePoints[7], planePoints[6]), crossColor);
+		vertice(middlePoint(planePoints[6], planePoints[5]), crossColor);
+		vertice(middlePoint(planePoints[7], planePoints[4]), crossColor);
 
 		// 17 - 18 = Target point
-		vertice(centerPoint(planePoints[0], planePoints[1], planePoints[2]), colorCross);
-		vertice(centerPoint(planePoints[4], planePoints[5], planePoints[6]), colorTarget);
+		vertice(centerPoint(planePoints[0], planePoints[1], planePoints[2]), crossColor);
+		vertice(centerPoint(planePoints[4], planePoints[5], planePoints[6]), targetColor);
 
 		// 19 = Up vertice
 		float halfNearSize = tmp.set(planePoints[1]).sub(planePoints[0]).scl(0.5f).len();
 		Vector3 centerNear = centerPoint(planePoints[0], planePoints[1], planePoints[2]);
 		tmp.set(camera.up).scl(halfNearSize * 2);
-		vertice(centerNear.add(tmp), colorUp);
+		vertice(centerNear.add(tmp), upColor);
 
 		// Set vertices
 		mesh.setVertices(vertices, 0, id);
+
+		// Update meshPart center, halfExtends and radius
+		renderable.meshPart.update();
 	}
 
 	/** Return the middle point of the segment
@@ -156,55 +170,42 @@ public class CameraHelper implements RenderableProvider, Disposable {
 		vertices[id++] = point.x;
 		vertices[id++] = point.y;
 		vertices[id++] = point.z;
-		vertices[id++] = color.r;
-		vertices[id++] = color.g;
-		vertices[id++] = color.b;
-		vertices[id++] = color.a;
+		vertices[id++] = color.toFloatBits();
 	}
 
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
-		Renderable r = pool.obtain();
-		r.worldTransform.idt();
-		r.meshPart.mesh = mesh;
-		r.meshPart.offset = 0;
-		r.meshPart.size = mesh.getNumIndices();
-		r.meshPart.primitiveType = GL20.GL_LINES;
-		r.material = material;
-		r.bones = null;
-		r.userData = null;
-
-		renderables.add(r);
+		renderables.add(renderable);
 	}
 
 	/** Set frustum color
 	 * @param color */
-	public void setColorFrustum (Color color) {
-		colorFrustum.set(color);
+	public void setFrustumColor (Color color) {
+		frustumColor.set(color);
 	}
 
 	/** Set cone color. Starting from camera position to near plane.
 	 * @param color */
-	public void setColorCone (Color color) {
-		colorCone.set(color);
+	public void setConeColor (Color color) {
+		coneColor.set(color);
 	}
 
 	/** Set up color.
 	 * @param color */
-	public void setColorUp (Color color) {
-		colorUp.set(color);
+	public void setUpColor (Color color) {
+		upColor.set(color);
 	}
 
 	/** Set color for line starting from camera position to far plane.
 	 * @param color */
-	public void setColorTarget (Color color) {
-		colorTarget.set(color);
+	public void setTargetColor (Color color) {
+		targetColor.set(color);
 	}
 
 	/** Set cross color
 	 * @param color */
-	public void setColorCross (Color color) {
-		colorCross.set(color);
+	public void setCrossColor (Color color) {
+		crossColor.set(color);
 	}
 
 	@Override
