@@ -64,6 +64,7 @@ public class CameraHelper implements RenderableProvider, Disposable {
 	public CameraHelper (Camera camera) {
 		this.camera = camera;
 		init();
+		update();
 	}
 
 	private void init () {
