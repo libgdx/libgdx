@@ -61,4 +61,12 @@ public interface Lwjgl3WindowListener {
 	 *  
 	 * @return whether the window should actually close **/
 	boolean windowIsClosing();
+	
+	/**
+	 * Called when external files are dropped into the window,
+	 * e.g from the Desktop.
+	 * 
+	 * @param files array with absolute paths to the files
+	 */
+	void filesDropped(String[] files);
 }

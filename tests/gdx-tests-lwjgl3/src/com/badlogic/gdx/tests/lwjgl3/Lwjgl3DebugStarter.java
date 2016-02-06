@@ -201,9 +201,13 @@ public class Lwjgl3DebugStarter {
 			}
 
 			@Override
-			public boolean windowIsClosing () {
+			public boolean closeRequested () {
 				Gdx.app.log("Window", "closing");
 				return false;
+			}
+
+			@Override
+			public void filesDropped (String[] files) {				
 			}
 			
 		});
