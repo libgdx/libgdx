@@ -20,9 +20,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -298,7 +301,7 @@ public class TexturePacker {
 			}
 		}
 
-		FileWriter writer = new FileWriter(packFile, true);
+		Writer writer = new OutputStreamWriter(new FileOutputStream(packFile, true), "UTF-8");
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
@@ -322,7 +325,7 @@ public class TexturePacker {
 		writer.close();
 	}
 
-	private void writeRect (FileWriter writer, Page page, Rect rect, String name) throws IOException {
+	private void writeRect (Writer writer, Page page, Rect rect, String name) throws IOException {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
