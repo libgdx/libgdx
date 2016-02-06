@@ -1,3 +1,5 @@
+[1.9.3]
+
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
 - Fixed bug in AndroidGL20.cpp which cast a pointer to a 32-bit int. Crash on 64-bit ARM, but only for a specific code path and address...
