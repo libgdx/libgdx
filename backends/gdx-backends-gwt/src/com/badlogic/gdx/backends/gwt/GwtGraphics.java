@@ -395,9 +395,12 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public boolean supportsExtension (String extension) {
-		if (extensions == null) extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
-		return extensions.contains(extension);
+	public boolean supportsExtension (String extensionName) {
+		// Contrary to regular OpenGL, WebGL extensions need to be explicitly enabled before they can be used. See
+		// https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Using_Extensions
+		// Thus, it is not safe to use an extension just because context.getSupportedExtensions() tells you it is available.
+		// We need to call getExtension() to enable it.
+		return context.getExtension(extensionName) != null;
 	}
 
 	public void update () {
