@@ -24,10 +24,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
 /** Camera helper helps you to visualize your camera. Of course, you shouldn't use camera helper with your rendering camera.
@@ -45,7 +43,7 @@ import com.badlogic.gdx.utils.Pool;
  * helper.dispose();
  * </pre>
  * @author realitix */
-public class CameraHelper implements RenderableProvider, Disposable {
+public class CameraHelper implements Helper {
 	private Camera camera;
 	private Mesh mesh;
 	private Color frustumColor = new Color(1, 0.66f, 0, 1);
@@ -105,6 +103,7 @@ public class CameraHelper implements RenderableProvider, Disposable {
 	}
 
 	/** Update cameraHelper mesh. You should call this method if you update your camera. */
+	@Override
 	public void update () {
 		id = 0;
 		Vector3[] planePoints = camera.frustum.planePoints;
