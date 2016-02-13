@@ -197,6 +197,7 @@
 		<include name="graphics/g3d/utils/AnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
+		<include name="graphics/g3d/utils/CameraHelper.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
@@ -213,7 +214,7 @@
 		<include name="graphics/g3d/utils/TextureBinder.java"/>
 		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
 		<include name="graphics/g3d/utils/TextureProvider.java"/>
-		
+
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->

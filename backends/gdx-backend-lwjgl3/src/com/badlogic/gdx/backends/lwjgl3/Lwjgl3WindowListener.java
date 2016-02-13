@@ -23,7 +23,7 @@ import com.badlogic.gdx.ApplicationListener;
  * Receives notifications of various window events, such as iconficiation,
  * focus loss and gain, and window close events. Can be set per window
  * via {@link Lwjgl3ApplicationConfiguration} and {@link Lwjgl3WindowConfiguration}.
- * Close events can be cancled by returning false.
+ * Close events can be canceled by returning false.
  * 
  * @author badlogic
  *
@@ -55,12 +55,11 @@ public interface Lwjgl3WindowListener {
 	 */
 	void focusGained();		
 	
-	/** Called when the window is about to close due to a user action,
-	 * e.g. clicking the close button or pressing the window closing
-	 * keyboard shortcut.
-	 *  
+	/** Called when the user requested to close the window, e.g. clicking
+	 * the close button or pressing the window closing keyboard shortcut.
+	 *
 	 * @return whether the window should actually close **/
-	boolean windowIsClosing();
+	boolean closeRequested();
 	
 	/**
 	 * Called when external files are dropped into the window,
@@ -69,4 +68,5 @@ public interface Lwjgl3WindowListener {
 	 * @param files array with absolute paths to the files
 	 */
 	void filesDropped(String[] files);
+
 }

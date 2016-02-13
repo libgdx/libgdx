@@ -199,7 +199,7 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 	
 	/** 
-	 * @param resizable whether the windowed mode window is resizable (default false)
+	 * @param resizable whether the windowed mode window is resizable (default true)
 	 */
 	public void setResizable(boolean resizable) {
 		this.windowResizable = resizable;

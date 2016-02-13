@@ -95,7 +95,7 @@ public class Lwjgl3Window implements Disposable {
 				@Override
 				public void run() {
 					if(windowListener != null) {
-						if(!windowListener.windowIsClosing()) {
+						if(!windowListener.closeRequested()) {
 							GLFW.glfwSetWindowShouldClose(windowHandle, GLFW.GLFW_FALSE);
 						}
 					}
