@@ -20,6 +20,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWDropCallback;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowIconifyCallback;
@@ -100,6 +101,21 @@ public class Lwjgl3Window implements Disposable {
 			});	
 		}
 	};
+	
+	private final GLFWDropCallback dropCallback = new GLFWDropCallback() {
+		@Override
+		public void invoke(final long windowHandle, final int count, final long names) {
+			final String[] files = getNames(count, names);
+			postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					if(windowListener != null) {
+						windowListener.filesDropped(files);
+					}
+				}
+			});	
+		}
+	};
 
 	Lwjgl3Window(long windowHandle, ApplicationListener listener,
 			Lwjgl3ApplicationConfiguration config) {
@@ -115,6 +131,7 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback);
+		GLFW.glfwSetDropCallback(windowHandle, dropCallback);
 	}
 
 	/** @return the {@link ApplicationListener} associated with this window **/	 
@@ -267,11 +284,13 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwSetWindowFocusCallback(windowHandle, null);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, null);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, null);
+		GLFW.glfwSetDropCallback(windowHandle, null);
 		GLFW.glfwDestroyWindow(windowHandle);
 		
 		focusCallback.release();
 		iconifyCallback.release();
 		closeCallback.release();
+		dropCallback.release();
 	}
 
 	@Override

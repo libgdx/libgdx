@@ -1,4 +1,5 @@
 [1.9.3]
+- API Change: Lwjgl3WindowListener -> filesDropped(String[] files) adds drag'n drop support for the lwjgl3 backend
 - Added isComplete() to ParticleEffect to make it easier to know when all the emitters are done, behaves the same as in the 2D API.
 - API Change: renamed Lwjgl3WindowListener.windowIsClosing() to closeRequested() to better communicate its intent.
 
