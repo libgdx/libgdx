@@ -94,7 +94,10 @@ public class Lwjgl3Application implements Application {
 		try {
 			loop();
 		} catch(Throwable t) {
-			t.printStackTrace();
+			if (t instanceof RuntimeException)
+				throw (RuntimeException) t;
+			else
+				throw new GdxRuntimeException(t);
 		} finally {
 			cleanup();
 		}
