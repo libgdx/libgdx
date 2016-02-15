@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -26,6 +28,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.gwt.inject.JsInjector;
+import com.badlogic.gdx.backends.gwt.inject.JsInjector.Injectable;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
@@ -44,6 +48,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -78,6 +83,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 	private Clipboard clipboard;
 	LoadingListener loadingListener;
+	private Array<Injectable> injectables;
 
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
@@ -97,6 +103,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	
 	@Override
 	public void onModuleLoad () {
+		injectables = new Array<Injectable>();
+		Injectable[] injectablesArray = ((JsInjector)GWT.create(JsInjector.class)).getInjectables();
+		for (Injectable inj : injectablesArray) {
+			injectables.add(inj);// Necessary due to GWT and use of generators...
+			inj.inject();
+		}
 		GwtApplication.agentInfo = computeAgentInfo();
 		this.listener = createApplicationListener();
 		this.config = getConfig();
@@ -187,29 +199,79 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.net = new GwtNet();
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
-
-		// tell listener about app creation
-		try {
-			listener.create();
-			listener.resize(graphics.getWidth(), graphics.getHeight());
-		} catch (Throwable t) {
-			error("GwtApplication", "exception: " + t.getMessage(), t);
-			t.printStackTrace();
-			throw new RuntimeException(t);
+		
+		removeAllInjected();
+		if (injectables.size > 0) { // Only inject if injectables are left
+			waitForInjection();
+		} else{
+			createAndStartMainLoop();
 		}
+	}
 
-		AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
+
+	private void waitForInjection () {
+		new com.google.gwt.user.client.Timer() {
+			int repeatingCount = 50;
+			int count;
+			boolean mainLoopStarted;
+
 			@Override
-			public void execute (double timestamp) {
-				try {
-					mainLoop();
-				} catch (Throwable t) {
-					error("GwtApplication", "exception: " + t.getMessage(), t);
-					throw new RuntimeException(t);
+			public void run () {
+				if (count < repeatingCount) {
+					removeAllInjected();
+					if (injectables.size == 0) {
+						cancel();
+					}
+				} else {
+					cancel();
 				}
-				AnimationScheduler.get().requestAnimationFrame(this, graphics.canvas);
+				count++;
 			}
-		}, graphics.canvas);
+
+			@Override
+			public void cancel () {
+				super.cancel();
+				if (mainLoopStarted == false) {
+					mainLoopStarted = true;
+					createAndStartMainLoop();
+				}
+			}
+		}.scheduleRepeating(100);
+	}
+	
+	private void createAndStartMainLoop () {
+		// tell listener about app creation
+			try {
+				listener.create();
+				listener.resize(graphics.getWidth(), graphics.getHeight());
+			} catch (Throwable t) {
+				error("GwtApplication", "exception: " + t.getMessage(), t);
+				t.printStackTrace();
+				throw new RuntimeException(t);
+			}
+
+			AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
+				@Override
+				public void execute (double timestamp) {
+					try {
+						mainLoop();
+					} catch (Throwable t) {
+						error("GwtApplication", "exception: " + t.getMessage(), t);
+						throw new RuntimeException(t);
+					}
+					AnimationScheduler.get().requestAnimationFrame(this, graphics.canvas);
+				}
+			}, graphics.canvas);
+	}
+
+	/** Removes all injectables that either failed injection or succeeded injection */
+	private void removeAllInjected () {
+		Iterator<Injectable> it = injectables.iterator();
+		while (it.hasNext()) {
+			Injectable next = it.next();
+			if (next.isSuccess()) it.remove();
+			if (next.isError()) it.remove();
+		}
 	}
 
 	void mainLoop() {

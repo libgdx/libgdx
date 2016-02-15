@@ -29,4 +29,7 @@
 	<generate-with class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundleGenerator">
 		<when-type-assignable class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundle"/>
 	</generate-with>
+	<generate-with class="com.badlogic.gdx.backends.gwt.inject.JsInjectorGenerator">
+		<when-type-assignable class="com.badlogic.gdx.backends.gwt.inject.JsInjector"/>
+	</generate-with>
 </module>

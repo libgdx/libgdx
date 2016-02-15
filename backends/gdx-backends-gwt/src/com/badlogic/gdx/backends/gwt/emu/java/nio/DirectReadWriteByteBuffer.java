@@ -38,7 +38,7 @@ public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 		return buf;
 	}
 
-	DirectReadWriteByteBuffer (ArrayBuffer backingArray) {
+	public DirectReadWriteByteBuffer (ArrayBuffer backingArray) {
 		super(backingArray);
 	}
 
@@ -46,7 +46,7 @@ public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 		super(capacity);
 	}
 
-	DirectReadWriteByteBuffer (ArrayBuffer backingArray, int capacity, int arrayOffset) {
+	public DirectReadWriteByteBuffer (ArrayBuffer backingArray, int capacity, int arrayOffset) {
 		super(backingArray, capacity, arrayOffset);
 	}
 
