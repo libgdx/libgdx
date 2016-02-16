@@ -86,6 +86,8 @@ public class OpenALAudio implements Audio {
 		registerMusic("wav", Wav.Music.class);
 		registerSound("mp3", Mp3.Sound.class);
 		registerMusic("mp3", Mp3.Music.class);
+		registerSound("m4a", M4a.Sound.class);
+		registerMusic("m4a", M4a.Music.class);
 		
 		device = ALDevice.create(null);
 		if(device == null) {

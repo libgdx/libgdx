@@ -12,6 +12,13 @@
   <packaging>jar</packaging>
   <name>libGDX LWJGL Backend</name>
 
+  <repositories>
+    <repository>
+      <id>athou-repo</id>
+      <url>https://github.com/Athou/maven-repository/raw/master/repo</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -47,6 +54,12 @@
         <groupId>org.jcraft</groupId>
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sourceforge.jaadec</groupId>
+      <artifactId>jaad</artifactId>
+      <version>0.8.3</version>
     </dependency>
   </dependencies>
 
