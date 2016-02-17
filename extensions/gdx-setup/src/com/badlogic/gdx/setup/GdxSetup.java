@@ -477,12 +477,13 @@ public class GdxSetup {
 
 	private static void printHelp () {
 		System.out
-			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation>");
+			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> [--excludeModules <modules>]");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
-		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified");
+		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified. Ignored if android module is excluded");
+		System.out.println("excludeModules ... the modules to exclude on the project generation separated by ';'. Optional");
 	}
 
 	private static Map<String, String> parseArgs (String[] args) {
@@ -499,6 +500,18 @@ public class GdxSetup {
 		}
 		return params;
 	}
+
+	 private static List<String> parseExcludedModules (String excludedModules) {
+		  List<String> excludedModulesList = new ArrayList<String>();
+
+		  while (excludedModules.contains(";")) {
+				excludedModulesList.add(excludedModules.substring(0, excludedModules.indexOf(";")).toLowerCase());
+				excludedModules = excludedModules.substring(excludedModules.indexOf(";") + 1);
+		  }
+		  excludedModulesList.add(excludedModules.toLowerCase());
+
+		  return excludedModulesList;
+	 }
 
 	private String parseGwtInherits (ProjectBuilder builder) {
 		String parsed = "";
@@ -535,29 +548,48 @@ public class GdxSetup {
 
 	public static void main (String[] args) throws IOException {
 		Map<String, String> params = parseArgs(args);
+		List<String> excludedModules = null;
+		if (params.containsKey("excludeModules"))
+			excludedModules = parseExcludedModules(params.get("excludeModules"));
+
 		if (!params.containsKey("dir") ||
 			!params.containsKey("name") ||
 			!params.containsKey("package") ||
 			!params.containsKey("mainClass") ||
-			((!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null))) {
+			(!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null &&
+				(excludedModules == null || !excludedModules.contains("android")))) {
 			new GdxSetupUI();
 			printHelp();
 		} else {
 			String sdkLocation = "";
-			if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
-				sdkLocation = System.getenv("ANDROID_HOME");
-			} else {
-				sdkLocation = params.get("sdkLocation");
-			}
+			 if (excludedModules == null || !excludedModules.contains("android")) {
+				  if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
+						sdkLocation = System.getenv("ANDROID_HOME");
+				  } else {
+						sdkLocation = params.get("sdkLocation");
+				  }
+			 }
 
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();
+
 			projects.add(ProjectType.CORE);
-			projects.add(ProjectType.DESKTOP);
-			projects.add(ProjectType.ANDROID);
-			projects.add(ProjectType.IOS);
-			projects.add(ProjectType.HTML);
+			 if (excludedModules == null) {
+				  projects.add(ProjectType.DESKTOP);
+				  projects.add(ProjectType.ANDROID);
+				  projects.add(ProjectType.IOS);
+				  projects.add(ProjectType.HTML);
+			 } else {
+				  if (!excludedModules.contains("desktop"))
+						projects.add(ProjectType.DESKTOP);
+				  if (!excludedModules.contains("android"))
+						projects.add(ProjectType.ANDROID);
+				  if (!excludedModules.contains("ios"))
+						projects.add(ProjectType.IOS);
+				  if (!excludedModules.contains("html"))
+						projects.add(ProjectType.HTML);
+			 }
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
 			dependencies.add(bank.getDependency(ProjectDependency.GDX));
