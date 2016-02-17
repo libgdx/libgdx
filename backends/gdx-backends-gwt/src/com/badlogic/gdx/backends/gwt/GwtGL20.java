@@ -462,14 +462,15 @@ public class GwtGL20 implements GL20 {
 		} else {
 			if (pixels.limit() > 1) {
 				HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
-
 				ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-				int remainingBytes = pixels.remaining() * 4;
-
-				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-
-				Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
-
+				ArrayBufferView buffer;
+				if (pixels instanceof FloatBuffer) {
+					buffer = webGLArray;
+				} else {
+					int remainingBytes = pixels.remaining() * 4;
+					int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+				}
 				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
 			} else {
 				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
@@ -488,14 +489,15 @@ public class GwtGL20 implements GL20 {
 		Buffer pixels) {
         if (pixels.limit() > 1) {
             HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
-
             ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-            int remainingBytes = pixels.remaining() * 4;
-
-            int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-
-            Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
-
+            ArrayBufferView buffer;
+				if (pixels instanceof FloatBuffer) {
+					buffer = webGLArray;
+				} else {
+					int remainingBytes = pixels.remaining() * 4;
+					int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+				}
             gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
         } else {
             Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer) pixels).get(0));
