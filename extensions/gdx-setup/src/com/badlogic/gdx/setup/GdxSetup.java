@@ -477,13 +477,14 @@ public class GdxSetup {
 
 	private static void printHelp () {
 		System.out
-			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> [--excludeModules <modules>]");
+			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> [--excludeModules <modules>] [--extensions <extensions>]");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
 		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified. Ignored if android module is excluded");
 		System.out.println("excludeModules ... the modules to exclude on the project generation separated by ';'. Optional");
+		System.out.println("extensions ... the extensions to include in the project separated by ';'. Optional");
 	}
 
 	private static Map<String, String> parseArgs (String[] args) {
@@ -511,6 +512,32 @@ public class GdxSetup {
 		  excludedModulesList.add(excludedModules.toLowerCase());
 
 		  return excludedModulesList;
+	 }
+
+	 private static List<Dependency> parseDependencies (String dependencies, DependencyBank bank) {
+		  List<String> dependencyNames = new ArrayList<String>();
+		  while (dependencies.contains(";")) {
+				dependencyNames.add(dependencies.substring(0, dependencies.indexOf(";")).toLowerCase());
+				dependencies = dependencies.substring(dependencies.indexOf(";") + 1);
+		  }
+		  dependencyNames.add(dependencies.toLowerCase());
+
+		  Map<String, Dependency> dependencyMap = new HashMap<String, Dependency>();
+		  for (ProjectDependency pd : ProjectDependency.values()) {
+				dependencyMap.put(pd.name().toLowerCase(), bank.getDependency(pd));
+		  }
+
+		  List<Dependency> dependencyList = new ArrayList<Dependency>();
+		  dependencyList.add(bank.getDependency(ProjectDependency.GDX));
+		  for (String name : dependencyNames) {
+				if (dependencyMap.containsKey(name)) {
+					 System.out.println("Extension " + name + " found");
+					 dependencyList.add(dependencyMap.get(name));
+				} else
+					 System.out.println("Extension " + name + " not found");
+		  }
+
+		  return dependencyList;
 	 }
 
 	private String parseGwtInherits (ProjectBuilder builder) {
@@ -592,7 +619,11 @@ public class GdxSetup {
 			 }
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
-			dependencies.add(bank.getDependency(ProjectDependency.GDX));
+			if (params.containsKey("extensions")) {
+				 dependencies.addAll(parseDependencies(params.get("extensions"), bank));
+			} else {
+				 dependencies.add(bank.getDependency(ProjectDependency.GDX));
+			}
 
 			builder.buildProject(projects, dependencies);
 			builder.build();
