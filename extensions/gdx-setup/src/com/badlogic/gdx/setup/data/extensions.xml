@@ -164,8 +164,8 @@
 		<name>gdx-kiwi</name>
 		<description>Guava-inspired utilities for LibGDX.</description>
 		<package>com.github.czyzby.kiwi</package>
-		<version>1.5.1.8.0</version>
-		<compatibility>1.8.0</compatibility>
+		<version>1.5.1.9.2</version>
+		<compatibility>1.9.2</compatibility>
 		<website>https://github.com/czyzby/gdx-kiwi</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.kiwi.GdxKiwi</inherit>
@@ -186,8 +186,8 @@
 		<name>gdx-lml</name>
 		<description>Parser of HTML-like templates into Scene2D actors.</description>
 		<package>com.github.czyzby.lml</package>
-		<version>1.5.1.8.0</version>
-		<compatibility>1.8.0</compatibility>
+		<version>1.5.1.9.2</version>
+		<compatibility>1.9.2</compatibility>
 		<website>https://github.com/czyzby/gdx-lml</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.lml.GdxLml</inherit>
