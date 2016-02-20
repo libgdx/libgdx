@@ -37,7 +37,6 @@ public class RepeatablePolygonSprite {
     private boolean dirty = true;
 
     private Array<float[]> parts = new Array<float[]>();
-    private Array<Integer> gridPosMap = new Array<Integer>();
 
     private Array<float[]> vertices = new Array<float[]>();
     private Array<short[]> indices = new Array<short[]>();
@@ -110,10 +109,13 @@ public class RepeatablePolygonSprite {
                         parts.add(snapToGrid(verts));
                         ShortArray arr = triangulator.computeTriangles(verts);
                         indices.add(arr.toArray());
-                        gridPosMap.add(col*rows+row);
+                    } else {
+                        // adding null for key consistancy, needed to get col/row from key
+                        // the other alternative is to make parts - IntMap<FloatArray>
+                        parts.add(null);
                     }
                 } catch (IllegalArgumentException e) {
-
+                    parts.add(null);
                 }
             }
         }
@@ -198,9 +200,8 @@ public class RepeatablePolygonSprite {
             float[] fullVerts = new float[5 * verts.length/2];
             int idx = 0;
 
-            int gridPos = gridPosMap.get(i);
-            int col = gridPos / rows;
-            int row = gridPos % rows;
+            int col = i / rows;
+            int row = i % rows;
 
             for(int j = 0; j < verts.length; j+=2) {
                 fullVerts[idx++] = verts[j] + offset.x + x;
