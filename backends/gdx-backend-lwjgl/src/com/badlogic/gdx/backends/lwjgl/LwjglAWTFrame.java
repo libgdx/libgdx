@@ -25,11 +25,12 @@ import javax.swing.JFrame;
 /** Wraps an {@link LwjglAWTCanvas} in a resizable {@link JFrame}. */
 public class LwjglAWTFrame extends JFrame {
 	final LwjglAWTCanvas lwjglAWTCanvas;
+	private Thread shutdownHook;
 
-	public LwjglAWTFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+	public LwjglAWTFrame (ApplicationListener listener, String title, int width, int height) {
 		super(title);
 
-		lwjglAWTCanvas = new LwjglAWTCanvas(listener, useGL2) {
+		lwjglAWTCanvas = new LwjglAWTCanvas(listener) {
 			protected void stopped () {
 				LwjglAWTFrame.this.dispose();
 			}
@@ -56,11 +57,7 @@ public class LwjglAWTFrame extends JFrame {
 		};
 		getContentPane().add(lwjglAWTCanvas.getCanvas());
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run () {
-				Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
-			}
-		});
+		setHaltOnShutdown(true);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(width, height));
@@ -69,6 +66,23 @@ public class LwjglAWTFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		lwjglAWTCanvas.getCanvas().requestFocus();
+	}
+
+	/** When true, <code>Runtime.getRuntime().halt(0);</code> is used when the JVM shuts down. This prevents Swing shutdown hooks
+	 * from causing a deadlock and keeping the JVM alive indefinitely. Default is true. */
+	public void setHaltOnShutdown (boolean halt) {
+		if (halt) {
+			if (shutdownHook != null) return;
+			shutdownHook = new Thread() {
+				public void run () {
+					Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
+				}
+			};
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+		} else if (shutdownHook != null) {
+			Runtime.getRuntime().removeShutdownHook(shutdownHook);
+			shutdownHook = null;
+		}
 	}
 
 	/** Called before the JFrame is shown. */

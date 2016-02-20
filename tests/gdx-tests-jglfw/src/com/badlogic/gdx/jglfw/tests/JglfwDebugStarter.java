@@ -35,7 +35,6 @@ public class JglfwDebugStarter {
 		GdxTest test = new SuperKoalio();
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.vSync = true;
-		config.useGL20 = test.needsGL20();
 		new JglfwApplication(test, config);
 	}
 }

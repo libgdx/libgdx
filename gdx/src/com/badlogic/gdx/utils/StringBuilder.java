@@ -31,18 +31,20 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int length;
 
 	private static final char[] digits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-	
-	/** @return the number of characters required to represent the specified value with the specified radix */ 
-	public static int numChars(int value, int radix) {
+
+	/** @return the number of characters required to represent the specified value with the specified radix */
+	public static int numChars (int value, int radix) {
 		int result = (value < 0) ? 2 : 1;
-		while ((value /= radix) != 0) ++result;
+		while ((value /= radix) != 0)
+			++result;
 		return result;
 	}
-	
+
 	/** @return the number of characters required to represent the specified value with the specified radix */
-	public static int numChars(long value, int radix) {
+	public static int numChars (long value, int radix) {
 		int result = (value < 0) ? 2 : 1;
-		while ((value /= radix) != 0) ++result;
+		while ((value /= radix) != 0)
+			++result;
 		return result;
 	}
 
@@ -719,8 +721,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
-	 * without memory allocation.
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @return this builder.
@@ -728,9 +730,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (int value) {
 		return append(value, 0);
 	}
-	
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
-	 * without memory allocation.
+
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @param minLength the minimum number of characters to add
@@ -739,9 +741,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (int value, int minLength) {
 		return append(value, minLength, '0');
 	}
-	
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
-	 * without memory allocation.
+
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
+	 * memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @param minLength the minimum number of characters to add
@@ -784,7 +786,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (long value) {
 		return append(value, 0);
 	}
-	
+
 	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
 	 * without memory allocation.
 	 * 
@@ -794,7 +796,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (long value, int minLength) {
 		return append(value, minLength, '0');
 	}
-		
+
 	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
 	 * without memory allocation.
 	 * 
@@ -917,6 +919,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (CharSequence csq) {
 		if (csq == null) {
 			appendNull();
+		} else if (csq instanceof StringBuilder) {
+			StringBuilder builder = (StringBuilder)csq;
+			append0(builder.chars, 0, builder.length);
 		} else {
 			append0(csq.toString());
 		}
@@ -1162,6 +1167,34 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder replace (int start, int end, String str) {
 		replace0(start, end, str);
 		return this;
+	}
+
+	/** Replaces all instances of {@code find} with {@code replace}. */
+	public StringBuilder replace (String find, String replace) {
+		int findLength = find.length(), replaceLength = replace.length();
+		int index = 0;
+		while (true) {
+			index = indexOf(find, index);
+			if (index == -1) break;
+			replace0(index, index + findLength, replace);
+			index += replaceLength;
+		}
+		return this;
+	}
+
+	/** Replaces all instances of {@code find} with {@code replace}. */
+	public StringBuilder replace (char find, String replace) {
+		int replaceLength = replace.length();
+		int index = 0;
+		while (true) {
+			while (true) {
+				if (index == length) return this;
+				if (chars[index] == find) break;
+				index++;
+			}
+			replace0(index, index + 1, replace);
+			index += replaceLength;
+		}
 	}
 
 	/** Reverses the order of characters in this builder.

@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -116,7 +116,7 @@ public class SortedSpriteTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// sort the sprites (not necessary if we know
 		// the are already sorted).

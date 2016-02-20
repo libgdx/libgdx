@@ -21,14 +21,15 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 
-
-public class IOSGLES20 implements GL20, GLCommon
+public class IOSGLES20 implements GL20
 {	
 	public IOSGLES20() {
 		init();
 	}
+	
+	/** last viewport set, needed because GLKView resets the viewport on each call to render... amazing **/
+	public static int x, y, width, height;
 	
 	private static native void init( );	
 	
@@ -89,16 +90,24 @@ public class IOSGLES20 implements GL20, GLCommon
 	public native void glCullFace ( int mode );
 
 	public native void glDeleteBuffers ( int n, IntBuffer buffers );
+	
+	public native void glDeleteBuffer(int buffer);
 
 	public native void glDeleteFramebuffers ( int n, IntBuffer framebuffers );
+	
+	public native void glDeleteFramebuffer(int framebuffer);
 
 	public native void glDeleteProgram ( int program );
 
 	public native void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers );
+	
+	public native void glDeleteRenderbuffer(int renderbuffer);
 
 	public native void glDeleteShader ( int shader );
 
 	public native void glDeleteTextures ( int n, IntBuffer textures );
+	
+	public native void glDeleteTexture(int texture);
 
 	public native void glDepthFunc ( int func );
 
@@ -133,14 +142,22 @@ public class IOSGLES20 implements GL20, GLCommon
 	public native void glFrontFace ( int mode );
 
 	public native void glGenBuffers ( int n, IntBuffer buffers );
+	
+	public native int glGenBuffer();
 
 	public native void glGenerateMipmap ( int target );
 
 	public native void glGenFramebuffers ( int n, IntBuffer framebuffers );
+	
+	public native int glGenFramebuffer();
 
 	public native void glGenRenderbuffers ( int n, IntBuffer renderbuffers );
-
+	
+	public native int glGenRenderbuffer();
+	
 	public native void glGenTextures ( int n, IntBuffer textures );
+	
+	public native int glGenTexture();
 
 	public native String glGetActiveAttrib ( int program, int index, IntBuffer size, Buffer type );
 
@@ -260,39 +277,61 @@ public class IOSGLES20 implements GL20, GLCommon
 
 	public native void glUniform1fv ( int location, int count, FloatBuffer v );
 
+	public native void glUniform1fv(int location, int count, float[] v, int offset);
+	
 	public native void glUniform1i ( int location, int x );
 
 	public native void glUniform1iv ( int location, int count, IntBuffer v );
+	
+	public native void glUniform1iv(int location, int count, int[] v, int offset);
 
 	public native void glUniform2f ( int location, float x, float y );
 
 	public native void glUniform2fv ( int location, int count, FloatBuffer v );
+	
+	public native void glUniform2fv(int location, int count, float[] v, int offset);
 
 	public native void glUniform2i ( int location, int x, int y );
 
 	public native void glUniform2iv ( int location, int count, IntBuffer v );
+	
+	public native void glUniform2iv(int location, int count, int[] v, int offset);
 
 	public native void glUniform3f ( int location, float x, float y, float z );
 
 	public native void glUniform3fv ( int location, int count, FloatBuffer v );
+	
+	public native void glUniform3fv(int location, int count, float[] v, int offset);
 
 	public native void glUniform3i ( int location, int x, int y, int z );
 
 	public native void glUniform3iv ( int location, int count, IntBuffer v );
-
+	
+	public native void glUniform3iv(int location, int count, int[] v, int offset);
+	
 	public native void glUniform4f ( int location, float x, float y, float z, float w );
 
 	public native void glUniform4fv ( int location, int count, FloatBuffer v );
+	
+	public native void glUniform4fv(int location, int count, float[] v, int offset);
 
 	public native void glUniform4i ( int location, int x, int y, int z, int w );
 
 	public native void glUniform4iv ( int location, int count, IntBuffer v );
+	
+	public native void glUniform4iv(int location, int count, int[] v, int offset);
 
 	public native void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value );
+	
+	public native void glUniformMatrix2fv(int location, int count, boolean transpose, float[] value, int offset);
 
 	public native void glUniformMatrix3fv ( int location, int count, boolean transpose, FloatBuffer value );
+	
+	public native void glUniformMatrix3fv(int location, int count, boolean transpose, float[] value, int offset);
 
 	public native void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value );
+	
+	public native void glUniformMatrix4fv(int location, int count, boolean transpose, float[] value, int offset);
 
 	public native void glUseProgram ( int program );
 
@@ -318,5 +357,13 @@ public class IOSGLES20 implements GL20, GLCommon
 	
 	public native void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, int ptr );
 
-	public native void glViewport ( int x, int y, int width, int height );
+	public void glViewport(int x, int y, int width, int height) {
+		IOSGLES20.x = x;
+		IOSGLES20.y = y;
+		IOSGLES20.width = width;
+		IOSGLES20.height = height;
+		glViewportJni(x, y, width, height);
+	}
+	
+	public native void glViewportJni ( int x, int y, int width, int height );
 }

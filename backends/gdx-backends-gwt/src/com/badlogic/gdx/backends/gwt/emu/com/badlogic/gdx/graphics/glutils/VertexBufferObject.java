@@ -17,11 +17,8 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -52,8 +49,6 @@ import com.badlogic.gdx.utils.BufferUtils;
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class VertexBufferObject implements VertexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
 	int bufferHandle;
@@ -82,17 +77,8 @@ public class VertexBufferObject implements VertexData {
 
 		buffer = BufferUtils.newFloatBuffer(this.attributes.vertexSize / 4 * numVertices);
 		buffer.flip();
-		bufferHandle = createBufferObject();
-		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
-	}
-
-	private int createBufferObject () {
-		tmpHandle.clear();
-		if (Gdx.gl20 != null)
-			Gdx.gl20.glGenBuffers(1, tmpHandle);
-		else
-			Gdx.gl11.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
+		bufferHandle = Gdx.gl20.glGenBuffer();
+		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 	}
 
 	@Override
@@ -118,13 +104,7 @@ public class VertexBufferObject implements VertexData {
 
 	private void bufferChanged() {
 		if (isBound) {
-			if (Gdx.gl20 != null) {
-				GL20 gl = Gdx.gl20;
-				gl.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
-			} else {
-				GL11 gl = Gdx.gl11;
-				gl.glBufferData(GL11.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
-			}
+			Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
 			isDirty = false;
 		}
 	}
@@ -146,57 +126,6 @@ public class VertexBufferObject implements VertexData {
 		BufferUtils.copy(vertices, sourceOffset, count, buffer);
 		buffer.position(pos);
 		bufferChanged();
-	}
-
-	@Override
-	public void bind () {
-		GL11 gl = Gdx.gl11;
-
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferHandle);
-		if (isDirty) {
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, buffer.limit(), buffer, usage);
-			isDirty = false;
-		}
-
-		int textureUnit = 0;
-		int numAttributes = attributes.size();
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-
-			switch (attribute.usage) {
-			case Usage.Position:
-				gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				gl.glVertexPointer(attribute.numComponents, GL10.GL_FLOAT, attributes.vertexSize, attribute.offset);
-				break;
-
-			case Usage.Color:
-			case Usage.ColorPacked:
-				int colorType = GL10.GL_FLOAT;
-				if (attribute.usage == Usage.ColorPacked) colorType = GL11.GL_UNSIGNED_BYTE;
-
-				gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-				gl.glColorPointer(attribute.numComponents, colorType, attributes.vertexSize, attribute.offset);
-				break;
-
-			case Usage.Normal:
-				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-				gl.glNormalPointer(GL10.GL_FLOAT, attributes.vertexSize, attribute.offset);
-				break;
-
-			case Usage.TextureCoordinates:
-				gl.glClientActiveTexture(GL10.GL_TEXTURE0 + textureUnit);
-				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-				gl.glTexCoordPointer(attribute.numComponents, GL10.GL_FLOAT, attributes.vertexSize, attribute.offset);
-				textureUnit++;
-				break;
-
-			default:
-				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
-			}
-		}
-
-		isBound = true;
 	}
 
 	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
@@ -254,40 +183,6 @@ public class VertexBufferObject implements VertexData {
 		}
 		isBound = true;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void unbind () {
-		GL11 gl = Gdx.gl11;
-		int textureUnit = 0;
-		int numAttributes = attributes.size();
-
-		for (int i = 0; i < numAttributes; i++) {
-
-			VertexAttribute attribute = attributes.get(i);
-			switch (attribute.usage) {
-			case Usage.Position:
-				break; // no-op, we also need a position bound in gles
-			case Usage.Color:
-			case Usage.ColorPacked:
-				gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
-				break;
-			case Usage.Normal:
-				gl.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-				break;
-			case Usage.TextureCoordinates:
-				gl.glClientActiveTexture(GL11.GL_TEXTURE0 + textureUnit);
-				gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				textureUnit++;
-				break;
-			default:
-				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
-			}
-		}
-
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-		isBound = false;
-	}
 	
 	/** Unbinds this VertexBufferObject.
 	 * 
@@ -318,29 +213,16 @@ public class VertexBufferObject implements VertexData {
 
 	/** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
-		bufferHandle = createBufferObject();
+		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
 
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		if (Gdx.gl20 != null) {
-			tmpHandle.clear();
-			tmpHandle.put(bufferHandle);
-			tmpHandle.flip();
-			GL20 gl = Gdx.gl20;
-			gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-			gl.glDeleteBuffers(1, tmpHandle);
-			bufferHandle = 0;
-		} else {
-			tmpHandle.clear();
-			tmpHandle.put(bufferHandle);
-			tmpHandle.flip();
-			GL11 gl = Gdx.gl11;
-			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-			gl.glDeleteBuffers(1, tmpHandle);
-			bufferHandle = 0;
-		}
+		GL20 gl = Gdx.gl20;
+		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+		gl.glDeleteBuffer(bufferHandle);
+		bufferHandle = 0;		
 	}
 }

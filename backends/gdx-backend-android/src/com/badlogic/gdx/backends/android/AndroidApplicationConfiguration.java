@@ -17,21 +17,16 @@
 package com.badlogic.gdx.backends.android;
 
 import android.media.SoundPool;
-import android.os.PowerManager.WakeLock;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 
 /** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
  * battery among other things.
  * @author mzechner */
 public class AndroidApplicationConfiguration {
-	/** whether to use OpenGL ES 2.0 or not. default: false **/
-	public boolean useGL20 = false;
-
 	/** number of bits per color channel **/
 	public int r = 5, g = 6, b = 5, a = 0;
 
@@ -43,6 +38,9 @@ public class AndroidApplicationConfiguration {
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
+	
+	/** whether to use the gyroscope. default: false **/
+	public boolean useGyroscope = false;
 
 	/** whether to use the compass. default: true **/
 	public boolean useCompass = true;
@@ -51,13 +49,15 @@ public class AndroidApplicationConfiguration {
 	 * pre Android 2.0 devices. default: 0 **/
 	public int touchSleepTime = 0;
 
-	/** whether to use a {@link WakeLock} or not. In case this is true you have to add the permission "android.permission.WAKE_LOCK"
-	 * to your manifest file. default: false */
+	/** whether to keep the screen on and at full brightness or not while running the application. default: false */
 	public boolean useWakelock = false;
 
 	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
 	 * less 14. default: false **/
 	public boolean hideStatusBar = false;
+
+	/** whether to disable Android audio support. default: false */
+	public boolean disableAudio = false;
 
 	/** the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
 	 * constructor argument. */
@@ -65,12 +65,21 @@ public class AndroidApplicationConfiguration {
 
 	/** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
 	public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
-	
-	/** if the app is a livewallpaper, whether it should get full touch events **/
-	public boolean getTouchEventsForLiveWallpaper = false; 
 
-	/** whether to use {@link GLSurfaceViewAPI18} in place of the classic {@link GLSurfaceViewCupcake} on Android API 10 and lower.
-	 * In case this is true {@link GLSurfaceViewAPI18} will be used. This implementation properly supports attach to and detach
-	 * from window. default: false */
-	public boolean useGLSurfaceViewAPI18 = false;
+	/** if the app is a livewallpaper, whether it should get full touch events **/
+	public boolean getTouchEventsForLiveWallpaper = false;
+
+	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
+	public boolean useImmersiveMode = false;
+
+	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
+	 *  When GL ES 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
+  	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
+	@Deprecated public boolean useGL30 = false;
+
+	/** whether to use {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} in place of the classic
+	 * {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20} on Android API 10 and lower.
+	 * In case this is true {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} will be used.
+	 * This implementation properly supports attach to and detach from window. default: false */
+	public boolean useGLSurfaceView20API18 = false;
 }

@@ -10,10 +10,12 @@
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
-	<property name="compilerPrefix" value=""/>	
+	<property name="compilerPrefix" value=""/>
+	<!--  the compilerSuffix for the C & C++ compilers -->	
+	<property name="compilerSuffix" value="" />	
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="${compilerPrefix}gcc"/>	
+	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
@@ -23,7 +25,7 @@
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="${compilerPrefix}g++"/>
+	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
@@ -35,8 +37,8 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++"/>
+	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++"/>
 	<property name="libraries" value="-ldinput8 -ldxguid"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
@@ -116,6 +118,7 @@
 			<fileset refid="gcc-files"/>
 			<compositemapper>
 				<mapper type="glob" from="*.c" to="*.o"/>
+				<mapper type="glob" from="*.m" to="*.o"/>
 			</compositemapper>
 		</apply>
 	</target>	

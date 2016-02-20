@@ -1258,10 +1258,10 @@ td.datePickerMonth {
 }
 
 .gdx-meter.red > span {
-	background-color: #f0a3a3;
-	background-image: -moz-linear-gradient(top, #f0a3a3, #f42323);
-	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #f0a3a3),color-stop(1, #f42323));
-	background-image: -webkit-linear-gradient(#f0a3a3, #f42323);
+	background-color: #e44d3c;
+	background-image: -moz-linear-gradient(top, #e55f50, #e44d3c);
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #e55f50),color-stop(1, #e44d3c));
+	background-image: -webkit-linear-gradient(#e55f50, #e44d3c);
 }
 
 .gdx-meter.nostripes > span > span, .gdx-meter.nostripes > span:after {

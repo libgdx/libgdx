@@ -16,12 +16,14 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
+
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,9 +35,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
-
-import static com.badlogic.gdx.graphics.g2d.Sprite.*;
 
 /** Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
  * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
@@ -79,12 +80,18 @@ public class SpriteCache implements Disposable {
 
 	private Cache currentCache;
 	private final Array<Texture> textures = new Array(8);
-	private final Array<Integer> counts = new Array(8);
+	private final IntArray counts = new IntArray(8);
 
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
 	private ShaderProgram customShader = null;
+
+	/** Number of render calls since the last {@link #begin()}. **/
+	public int renderCalls = 0;
+
+	/** Number of rendering calls, ever. Will not be reset unless set manually. **/
+	public int totalRenderCalls = 0;
 
 	/** Creates a cache that uses indexed geometry and can contain up to 1000 images. */
 	public SpriteCache () {
@@ -247,7 +254,7 @@ public class SpriteCache implements Disposable {
 			textures.add(texture);
 			counts.add(count);
 		} else
-			counts.set(lastIndex, counts.get(lastIndex) + count);
+			counts.incr(lastIndex, count);
 
 		mesh.getVerticesBuffer().put(vertices, offset, length);
 	}
@@ -839,61 +846,39 @@ public class SpriteCache implements Disposable {
 	/** Prepares the OpenGL state for SpriteCache rendering. */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("end must be called before begin.");
+		renderCalls = 0;
+		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;
-			gl.glDepthMask(false);
-			gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl20.glDepthMask(false);
 
-			gl.glMatrixMode(GL10.GL_PROJECTION);
-			gl.glLoadMatrixf(projectionMatrix.val, 0);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glLoadMatrixf(transformMatrix.val, 0);
-
-			mesh.bind();
+		if (customShader != null) {
+			customShader.begin();
+			customShader.setUniformMatrix("u_proj", projectionMatrix);
+			customShader.setUniformMatrix("u_trans", transformMatrix);
+			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+			customShader.setUniformi("u_texture", 0);
+			mesh.bind(customShader);
 		} else {
-			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-
-			GL20 gl = Gdx.gl20;
-			gl.glDepthMask(false);
-
-			if (customShader != null) {
-				customShader.begin();
-				customShader.setUniformMatrix("u_proj", projectionMatrix);
-				customShader.setUniformMatrix("u_trans", transformMatrix);
-				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-				customShader.setUniformi("u_texture", 0);
-				mesh.bind(customShader);
-			} else {
-				shader.begin();
-				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
-				shader.setUniformi("u_texture", 0);
-				mesh.bind(shader);
-			}
-
+			shader.begin();
+			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+			shader.setUniformi("u_texture", 0);
+			mesh.bind(shader);
 		}
 		drawing = true;
 	}
 
-	/** Completes rendering for this SpriteCache.f */
+	/** Completes rendering for this SpriteCache. */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
 
-		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;
-			gl.glDepthMask(true);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-			mesh.unbind();
-		} else {
-			shader.end();
-			GL20 gl = Gdx.gl20;
-			gl.glDepthMask(true);
-			if (customShader != null)
-				mesh.unbind(customShader);
-			else
-				mesh.unbind(shader);
-		}
+		shader.end();
+		GL20 gl = Gdx.gl20;
+		gl.glDepthMask(true);
+		if (customShader != null)
+			mesh.unbind(customShader);
+		else
+			mesh.unbind(shader);
 	}
 
 	/** Draws all the images defined for the specified cache ID. */
@@ -905,24 +890,18 @@ public class SpriteCache implements Disposable {
 		int offset = cache.offset / (verticesPerImage * VERTEX_SIZE) * 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
-		if (Gdx.graphics.isGL20Available()) {
-			for (int i = 0, n = cache.textureCount; i < n; i++) {
-				int count = counts[i];
-				textures[i].bind();
-				if (customShader != null)
-					mesh.render(customShader, GL10.GL_TRIANGLES, offset, count);
-				else
-					mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
-				offset += count;
-			}
-		} else {
-			for (int i = 0, n = cache.textureCount; i < n; i++) {
-				int count = counts[i];
-				textures[i].bind();
-				mesh.render(GL10.GL_TRIANGLES, offset, count);
-				offset += count;
-			}
+		int textureCount = cache.textureCount;
+		for (int i = 0; i < textureCount; i++) {
+			int count = counts[i];
+			textures[i].bind();
+			if (customShader != null)
+				mesh.render(customShader, GL20.GL_TRIANGLES, offset, count);
+			else
+				mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
+			offset += count;
 		}
+		renderCalls += textureCount;
+		totalRenderCalls += textureCount;
 	}
 
 	/** Draws a subset of images defined for the specified cache ID.
@@ -936,34 +915,23 @@ public class SpriteCache implements Disposable {
 		length *= 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
-		if (Gdx.graphics.isGL20Available()) {
-			for (int i = 0, n = cache.textureCount; i < n; i++) {
-				textures[i].bind();
-				int count = counts[i];
-				if (count > length) {
-					i = n;
-					count = length;
-				} else
-					length -= count;
-				if (customShader != null)
-					mesh.render(customShader, GL10.GL_TRIANGLES, offset, count);
-				else
-					mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
-				offset += count;
-			}
-		} else {
-			for (int i = 0, n = cache.textureCount; i < n; i++) {
-				textures[i].bind();
-				int count = counts[i];
-				if (count > length) {
-					i = n;
-					count = length;
-				} else
-					length -= count;
-				mesh.render(GL10.GL_TRIANGLES, offset, count);
-				offset += count;
-			}
+		int textureCount = cache.textureCount;
+		for (int i = 0; i < textureCount; i++) {
+			textures[i].bind();
+			int count = counts[i];
+			if (count > length) {
+				i = textureCount;
+				count = length;
+			} else
+				length -= count;
+			if (customShader != null)
+				mesh.render(customShader, GL20.GL_TRIANGLES, offset, count);
+			else
+				mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
+			offset += count;
 		}
+		renderCalls += cache.textureCount;
+		totalRenderCalls += textureCount;
 	}
 
 	/** Releases all resources held by this SpriteCache. */
@@ -1005,7 +973,6 @@ public class SpriteCache implements Disposable {
 	}
 
 	static ShaderProgram createDefaultShader () {
-		if (!Gdx.graphics.isGL20Available()) return null;
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
@@ -1016,6 +983,7 @@ public class SpriteCache implements Disposable {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_color.a = v_color.a * (255.0/254.0);\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";

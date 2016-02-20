@@ -16,11 +16,7 @@
 
 package com.badlogic.gdx.utils.reflect;
 
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-import com.badlogic.gwtref.client.ReflectionCache;
+import com.badlogic.gwtref.client.Type;
 
 /** Provides information about, and access to, a single field of a class or interface.
  * @author nexsoftware */
@@ -48,11 +44,11 @@ public final class Field {
 	}
 
 	public boolean isAccessible () {
-		return field.isAccessible();
+		return field.isPublic();
 	}
 
 	public void setAccessible (boolean accessible) {
-		field.setAccessible(accessible);
+		// NOOP in GWT
 	}
 
 	/** Return true if the field does not include any of the {@code private}, {@code protected}, or {@code public} modifiers. */
@@ -103,7 +99,43 @@ public final class Field {
 	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
 	 * null otherwise. */
 	public Class getElementType (int index) {
-		return field.getElementType(index).getClassOfType();
+		Type elementType = field.getElementType(index);
+		return elementType != null ? elementType.getClassOfType() : null;
+	}
+
+	/** Returns true if the field includes an annotation of the provided class type. */
+	public boolean isAnnotationPresent (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by this field,
+	 * or an empty array if there are none. Does not include inherited annotations. */
+	public Annotation[] getDeclaredAnnotations () {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
+
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this field doesn't
+	 * have such an annotation. This is a convenience function if the caller knows already which annotation
+	 * type he's looking for. */
+	public Annotation getDeclaredAnnotation (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return new Annotation(annotation);
+			}
+		}
+		return null;
 	}
 
 	/** Returns the value of the field on the supplied object. */

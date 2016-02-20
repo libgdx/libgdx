@@ -53,8 +53,6 @@ public class JglfwApplicationConfiguration {
 	public boolean vSync = true;
 	/** True if the window is resizable. **/
 	public boolean resizable = true;
-	/** True to attempt to use OpenGL ES 2.0. Note {@link Gdx#gl20} may be null even when this is true. **/
-	public boolean useGL20;
 	/** True to call System.exit() when the main loop is complete. **/
 	public boolean forceExit = true;
 	/** True to have a title and border around the window. **/
@@ -66,11 +64,13 @@ public class JglfwApplicationConfiguration {
 	/** True to hide the window when it is created. The window must be shown with {@link JglfwGraphics#show()}. **/
 	public boolean hidden;
 	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
-	public int foregroundFPS;
+	public int foregroundFPS = 60;
 	/** Target framerate when the window is in the background. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
-	public int backgroundFPS;
+	public int backgroundFPS = 60;
 	/** Target framerate when the window is hidden or minimized. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
 	public int hiddenFPS = -1;
+	/** Prefrences location on desktop. Default: current directory + ".prefs" */
+	public String preferencesLocation = ".prefs/";
 
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

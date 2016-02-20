@@ -16,10 +16,11 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -29,7 +30,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
- * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.
+ * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.<br>
+ * <br>
+ * The button's padding is set to the background drawable's padding when the background changes, overwriting any padding set
+ * manually. Padding can still be set on the button's table cells.
  * <p>
  * {@link ChangeEvent} is fired when the button is clicked. Cancelling the event will restore the checked button state to what is
  * was previously.
@@ -41,21 +45,20 @@ public class Button extends Table implements Disableable {
 	boolean isChecked, isDisabled;
 	ButtonGroup buttonGroup;
 	private ClickListener clickListener;
+	private boolean programmaticChangeEvents = true;
 
 	public Button (Skin skin) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (Skin skin, String styleName) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(styleName, ButtonStyle.class));
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (Actor child, Skin skin, String styleName) {
@@ -66,15 +69,13 @@ public class Button extends Table implements Disableable {
 		initialize();
 		add(child);
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	/** Creates a button without setting the style or size. At least a style must be set before using this button. */
@@ -86,8 +87,8 @@ public class Button extends Table implements Disableable {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-				if (isDisabled) return;
-				setChecked(!isChecked);
+				if (isDisabled()) return;
+				setChecked(!isChecked, true);
 			}
 		});
 	}
@@ -109,18 +110,23 @@ public class Button extends Table implements Disableable {
 	}
 
 	public void setChecked (boolean isChecked) {
+		setChecked(isChecked, programmaticChangeEvents);
+	}
+
+	void setChecked (boolean isChecked, boolean fireEvent) {
 		if (this.isChecked == isChecked) return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
-		if (!isDisabled) {
+
+		if (fireEvent) {
 			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) this.isChecked = !isChecked;
 			Pools.free(changeEvent);
 		}
 	}
 
-	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent}, so can be used to
-	 * simulate a button click. */
+	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent} (if programmatic change
+	 * events are enabled), so can be used to simulate a button click. */
 	public void toggle () {
 		setChecked(!isChecked);
 	}
@@ -130,7 +136,7 @@ public class Button extends Table implements Disableable {
 	}
 
 	public boolean isPressed () {
-		return clickListener.isPressed();
+		return clickListener.isVisualPressed();
 	}
 
 	public boolean isOver () {
@@ -150,22 +156,29 @@ public class Button extends Table implements Disableable {
 		this.isDisabled = isDisabled;
 	}
 
+	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}, event will be fired only when user clicked the button */
+	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
+		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
-		Drawable background = style.up;
-		if (background == null) {
-			background = style.down;
-			if (background == null) background = style.checked;
+		Drawable background = null;
+		if (isPressed() && !isDisabled()) {
+			background = style.down == null ? style.up : style.down;
+		} else {
+			if (isDisabled() && style.disabled != null)
+				background = style.disabled;
+			else if (isChecked && style.checked != null)
+				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
+			else if (isOver() && style.over != null)
+				background = style.over;
+			else
+				background = style.up;
 		}
-		if (background != null) {
-			padBottom(background.getBottomHeight());
-			padTop(background.getTopHeight());
-			padLeft(background.getLeftWidth());
-			padRight(background.getRightWidth());
-		}
-		invalidateHierarchy();
+		setBackground(background);
 	}
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
@@ -174,43 +187,52 @@ public class Button extends Table implements Disableable {
 		return style;
 	}
 
+	/** @return May be null. */
+	public ButtonGroup getButtonGroup () {
+		return buttonGroup;
+	}
+
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
+		boolean isPressed = isPressed();
+		boolean isDisabled = isDisabled();
+
 		Drawable background = null;
+		if (isDisabled && style.disabled != null)
+			background = style.disabled;
+		else if (isPressed && style.down != null)
+			background = style.down;
+		else if (isChecked && style.checked != null)
+			background = (style.checkedOver != null && isOver()) ? style.checkedOver : style.checked;
+		else if (isOver() && style.over != null)
+			background = style.over;
+		else if (style.up != null) //
+			background = style.up;
+		setBackground(background);
+
 		float offsetX = 0, offsetY = 0;
-		if (isPressed() && !isDisabled) {
-			background = style.down == null ? style.up : style.down;
+		if (isPressed && !isDisabled) {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
+		} else if (isChecked && !isDisabled) {
+			offsetX = style.checkedOffsetX;
+			offsetY = style.checkedOffsetY;
 		} else {
-			if (isDisabled && style.disabled != null)
-				background = style.disabled;
-			else if (isChecked && style.checked != null)
-				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
-			else if (isOver() && style.over != null)
-				background = style.over;
-			else
-				background = style.up;
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
 
-		if (background != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(offsetX, offsetY);
+			children.get(i).moveBy(offsetX, offsetY);
 		super.draw(batch, parentAlpha);
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(-offsetX, -offsetY);
-	}
+			children.get(i).moveBy(-offsetX, -offsetY);
 
-	protected void drawBackground (Batch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage != null && stage.getActionsRequestRendering() && isPressed != clickListener.isPressed())
+			Gdx.graphics.requestRendering();
 	}
 
 	public float getPrefWidth () {
@@ -243,9 +265,7 @@ public class Button extends Table implements Disableable {
 		/** Optional. */
 		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY;
-		/** Optional. */
-		public float unpressedOffsetX, unpressedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
 
 		public ButtonStyle () {
 		}
@@ -267,6 +287,9 @@ public class Button extends Table implements Disableable {
 			this.pressedOffsetY = style.pressedOffsetY;
 			this.unpressedOffsetX = style.unpressedOffsetX;
 			this.unpressedOffsetY = style.unpressedOffsetY;
+			this.checkedOffsetX = style.checkedOffsetX;
+			this.checkedOffsetY = style.checkedOffsetY;
+			
 		}
 	}
 }

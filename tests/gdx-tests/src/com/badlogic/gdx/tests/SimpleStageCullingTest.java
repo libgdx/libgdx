@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -28,10 +28,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 
@@ -110,7 +110,7 @@ public class SimpleStageCullingTest extends GdxTest {
 	@Override
 	public void create () {
 		// create a stage and a camera controller so we can pan the view.
-		stage = new Stage(480, 320, false);
+		stage = new Stage();;
 		camController = new OrthoCamController((OrthographicCamera)stage.getCamera()); // we know it's an ortho cam at this point!
 		Gdx.input.setInputProcessor(camController);
 
@@ -131,7 +131,7 @@ public class SimpleStageCullingTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 
 		// check how many actors are visible.
@@ -152,10 +152,5 @@ public class SimpleStageCullingTest extends GdxTest {
 		texture.dispose();
 		batch.dispose();
 		font.dispose();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

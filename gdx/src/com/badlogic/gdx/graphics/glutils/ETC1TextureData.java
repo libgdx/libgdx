@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -50,7 +49,7 @@ public class ETC1TextureData implements TextureData {
 
 	@Override
 	public TextureDataType getType () {
-		return TextureDataType.Compressed;
+		return TextureDataType.Custom;
 	}
 
 	@Override
@@ -71,10 +70,10 @@ public class ETC1TextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData (int target) {
+	public void consumeCustomData (int target) {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
-		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture") || Gdx.graphics.isGL20Available() == false) {
+		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
 			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
@@ -82,8 +81,8 @@ public class ETC1TextureData implements TextureData {
 			pixmap.dispose();
 			useMipMaps = false;
 		} else {
-			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0,
-				data.compressedData.capacity() - data.dataOffset, data.compressedData);
+			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, data.compressedData.capacity()
+				- data.dataOffset, data.compressedData);
 			if (useMipMaps()) Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		}
 		data.dispose();

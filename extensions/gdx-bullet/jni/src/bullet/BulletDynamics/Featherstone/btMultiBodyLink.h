@@ -24,6 +24,22 @@ enum	btMultiBodyLinkFlags
 {
 	BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION = 1
 };
+
+//both defines are now permanently enabled
+#define BT_MULTIBODYLINK_INCLUDE_PLANAR_JOINTS
+#define TEST_SPATIAL_ALGEBRA_LAYER
+
+//
+// Various spatial helper functions
+//
+
+//namespace {
+
+
+#include "LinearMath/btSpatialAlgebra.h"
+
+//}
+
 //
 // Link struct
 //
@@ -33,75 +49,182 @@ struct btMultibodyLink
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-    btScalar joint_pos;    // qi
+    btScalar m_mass;         // mass of link
+    btVector3 m_inertiaLocal;   // inertia of link (local frame; diagonal)
 
-    btScalar mass;         // mass of link
-    btVector3 inertia;   // inertia of link (local frame; diagonal)
+    int m_parent;         // index of the parent link (assumed to be < index of this link), or -1 if parent is the base link.
 
-    int parent;         // index of the parent link (assumed to be < index of this link), or -1 if parent is the base link.
+    btQuaternion m_zeroRotParentToThis;    // rotates vectors in parent-frame to vectors in local-frame (when q=0). constant.
 
-    btQuaternion zero_rot_parent_to_this;    // rotates vectors in parent-frame to vectors in local-frame (when q=0). constant.
+    btVector3 m_dVector;   // vector from the inboard joint pos to this link's COM. (local frame.) constant.
+	//this is set to zero for planar joint (see also m_eVector comment)
+	
+    // m_eVector is constant, but depends on the joint type:
+    // revolute, fixed, prismatic, spherical: vector from parent's COM to the pivot point, in PARENT's frame.
+	// planar: vector from COM of parent to COM of this link, WHEN Q = 0. (local frame.)
+	// todo: fix the planar so it is consistent with the other joints
+	
+    btVector3 m_eVector;
 
-    // "axis" = spatial joint axis (Mirtich Defn 9 p104). (expressed in local frame.) constant.
-    // for prismatic: axis_top = zero;
-    //                axis_bottom = unit vector along the joint axis.
-    // for revolute: axis_top = unit vector along the rotation axis (u);
-    //               axis_bottom = u cross d_vector.
-    btVector3 axis_top;
-    btVector3 axis_bottom;
+	btSpatialMotionVector m_absFrameTotVelocity, m_absFrameLocVelocity;
 
-    btVector3 d_vector;   // vector from the inboard joint pos to this link's COM. (local frame.) constant. set for revolute joints only.
+	enum eFeatherstoneJointType
+	{
+		eRevolute = 0,
+		ePrismatic = 1,
+		eSpherical = 2,
+		ePlanar = 3,
+		eFixed = 4,
+		eInvalid
+	};
 
-    // e_vector is constant, but depends on the joint type
-    // prismatic: vector from COM of parent to COM of this link, WHEN Q = 0. (local frame.)
-    // revolute: vector from parent's COM to the pivot point, in PARENT's frame.
-    btVector3 e_vector;
+	
 
-    bool is_revolute;   // true = revolute, false = prismatic
+	// "axis" = spatial joint axis (Mirtich Defn 9 p104). (expressed in local frame.) constant.
+    // for prismatic: m_axesTop[0] = zero;
+    //                m_axesBottom[0] = unit vector along the joint axis.
+    // for revolute: m_axesTop[0] = unit vector along the rotation axis (u);
+    //               m_axesBottom[0] = u cross m_dVector (i.e. COM linear motion due to the rotation at the joint)
+	//
+	// for spherical: m_axesTop[0][1][2] (u1,u2,u3) form a 3x3 identity matrix (3 rotation axes)
+	//				  m_axesBottom[0][1][2] cross u1,u2,u3 (i.e. COM linear motion due to the rotation at the joint)
+	//
+	// for planar: m_axesTop[0] = unit vector along the rotation axis (u); defines the plane of motion
+	//			   m_axesTop[1][2] = zero
+	//			   m_axesBottom[0] = zero
+	//			   m_axesBottom[1][2] = unit vectors along the translational axes on that plane		
+	btSpatialMotionVector m_axes[6];
+	void setAxisTop(int dof, const btVector3 &axis) { m_axes[dof].m_topVec = axis; }
+	void setAxisBottom(int dof, const btVector3 &axis) { m_axes[dof].m_bottomVec = axis; }
+	void setAxisTop(int dof, const btScalar &x, const btScalar &y, const btScalar &z) { m_axes[dof].m_topVec.setValue(x, y, z); }
+	void setAxisBottom(int dof, const btScalar &x, const btScalar &y, const btScalar &z) { m_axes[dof].m_bottomVec.setValue(x, y, z); }
+	const btVector3 & getAxisTop(int dof) const { return m_axes[dof].m_topVec; }
+	const btVector3 & getAxisBottom(int dof) const { return m_axes[dof].m_bottomVec; }
 
-    btQuaternion cached_rot_parent_to_this;   // rotates vectors in parent frame to vectors in local frame
-    btVector3 cached_r_vector;                // vector from COM of parent to COM of this link, in local frame.
+	int m_dofOffset, m_cfgOffset;
 
-    btVector3 applied_force;    // In WORLD frame
-    btVector3 applied_torque;   // In WORLD frame
-    btScalar joint_torque;
+    btQuaternion m_cachedRotParentToThis;   // rotates vectors in parent frame to vectors in local frame
+    btVector3 m_cachedRVector;                // vector from COM of parent to COM of this link, in local frame.
 
+    btVector3 m_appliedForce;    // In WORLD frame
+    btVector3 m_appliedTorque;   // In WORLD frame
+
+btVector3 m_appliedConstraintForce;    // In WORLD frame
+    btVector3 m_appliedConstraintTorque;   // In WORLD frame
+
+	btScalar m_jointPos[7];
+    
+    //m_jointTorque is the joint torque applied by the user using 'addJointTorque'.
+    //It gets set to zero after each internal stepSimulation call
+	btScalar m_jointTorque[6];
+    
 	class btMultiBodyLinkCollider* m_collider;
 	int m_flags;
+	
+	
+	int m_dofCount, m_posVarCount;				//redundant but handy
+	
+	eFeatherstoneJointType m_jointType;
+	
+	struct btMultiBodyJointFeedback*	m_jointFeedback;
+
+	btTransform	m_cachedWorldTransform;//this cache is updated when calling btMultiBody::forwardKinematics
+
+	const char* m_linkName;//m_linkName memory needs to be managed by the developer/user!
+	const char* m_jointName;//m_jointName memory needs to be managed by the developer/user!
 
     // ctor: set some sensible defaults
 	btMultibodyLink()
-		: joint_pos(0),
-			mass(1),
-			parent(-1),
-			zero_rot_parent_to_this(1, 0, 0, 0),
-			is_revolute(false),
-			cached_rot_parent_to_this(1, 0, 0, 0),
-			joint_torque(0),
+		: 	m_mass(1),
+			m_parent(-1),
+			m_zeroRotParentToThis(0, 0, 0, 1),
+			m_cachedRotParentToThis(0, 0, 0, 1),
 			m_collider(0),
-			m_flags(0)
+			m_flags(0),
+			m_dofCount(0),
+			m_posVarCount(0),
+			m_jointType(btMultibodyLink::eInvalid),
+			m_jointFeedback(0),
+			m_linkName(0),
+			m_jointName(0)
 	{
-		inertia.setValue(1, 1, 1);
-		axis_top.setValue(0, 0, 0);
-		axis_bottom.setValue(1, 0, 0);
-		d_vector.setValue(0, 0, 0);
-		e_vector.setValue(0, 0, 0);
-		cached_r_vector.setValue(0, 0, 0);
-		applied_force.setValue( 0, 0, 0);
-		applied_torque.setValue(0, 0, 0);
+		
+		m_inertiaLocal.setValue(1, 1, 1);
+		setAxisTop(0, 0., 0., 0.);
+		setAxisBottom(0, 1., 0., 0.);
+		m_dVector.setValue(0, 0, 0);
+		m_eVector.setValue(0, 0, 0);
+		m_cachedRVector.setValue(0, 0, 0);
+		m_appliedForce.setValue( 0, 0, 0);
+		m_appliedTorque.setValue(0, 0, 0);
+		//		
+		m_jointPos[0] = m_jointPos[1] = m_jointPos[2] = m_jointPos[4] = m_jointPos[5] = m_jointPos[6] = 0.f;
+		m_jointPos[3] = 1.f;			//"quat.w"
+		m_jointTorque[0] = m_jointTorque[1] = m_jointTorque[2] = m_jointTorque[3] = m_jointTorque[4] = m_jointTorque[5] = 0.f;
+		m_cachedWorldTransform.setIdentity();
 	}
 
-    // routine to update cached_rot_parent_to_this and cached_r_vector
+    // routine to update m_cachedRotParentToThis and m_cachedRVector
     void updateCache()
 	{
-		if (is_revolute) 
+		//multidof
+		if (m_jointType == eRevolute) 
 		{
-			cached_rot_parent_to_this = btQuaternion(axis_top,-joint_pos) * zero_rot_parent_to_this;
-			cached_r_vector = d_vector + quatRotate(cached_rot_parent_to_this,e_vector);
+			m_cachedRotParentToThis = btQuaternion(getAxisTop(0),-m_jointPos[0]) * m_zeroRotParentToThis;
+			m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
 		} else 
 		{
-			// cached_rot_parent_to_this never changes, so no need to update
-			cached_r_vector = e_vector + joint_pos * axis_bottom;
+			// m_cachedRotParentToThis never changes, so no need to update
+			m_cachedRVector = m_eVector + m_jointPos[0] * getAxisBottom(0);
+		}
+	}
+
+	void updateCacheMultiDof(btScalar *pq = 0)
+	{
+		btScalar *pJointPos = (pq ? pq : &m_jointPos[0]);
+
+		switch(m_jointType)
+		{
+			case eRevolute:
+			{
+				m_cachedRotParentToThis = btQuaternion(getAxisTop(0),-pJointPos[0]) * m_zeroRotParentToThis;
+				m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
+
+				break;
+			}
+			case ePrismatic:
+			{
+				// m_cachedRotParentToThis never changes, so no need to update
+				m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector) + pJointPos[0] * getAxisBottom(0);
+
+				break;
+			}
+			case eSpherical:
+			{
+				m_cachedRotParentToThis = btQuaternion(pJointPos[0], pJointPos[1], pJointPos[2], -pJointPos[3]) * m_zeroRotParentToThis;
+				m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
+
+				break;
+			}
+			case ePlanar:
+			{
+				m_cachedRotParentToThis = btQuaternion(getAxisTop(0),-pJointPos[0]) * m_zeroRotParentToThis;				
+				m_cachedRVector = quatRotate(btQuaternion(getAxisTop(0),-pJointPos[0]), pJointPos[1] * getAxisBottom(1) + pJointPos[2] * getAxisBottom(2)) + quatRotate(m_cachedRotParentToThis,m_eVector);				
+
+				break;
+			}
+			case eFixed:
+			{
+				m_cachedRotParentToThis = m_zeroRotParentToThis;
+				m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
+
+				break;
+			}
+			default:
+			{
+				//invalid type
+				btAssert(0);
+			}
 		}
 	}
 };

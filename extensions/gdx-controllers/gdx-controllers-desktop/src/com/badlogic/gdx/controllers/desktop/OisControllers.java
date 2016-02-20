@@ -40,10 +40,15 @@ import javax.swing.SwingUtilities;
 /** @author Nathan Sweet */
 public class OisControllers {
 	final DesktopControllerManager manager;
-	final Ois ois = new Ois(getWindowHandle());
-	final OisController[] controllers;
+	long hwnd = getWindowHandle();
+	Ois ois = new Ois(hwnd);
+	OisController[] controllers;
 
-	public OisControllers (DesktopControllerManager manager) {
+	private static final boolean IS_MAC = System.getProperty("os.name").toLowerCase().contains("mac");
+	private static final boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().contains("windows");
+	private static final long CHECK_FOR_LOST_WINDOW_HANDLE_INTERVAL = 1000000000L; // in nanoseconds. 1000000000 == 1 second
+
+	public OisControllers (final DesktopControllerManager manager) {
 		this.manager = manager;
 		ArrayList<OisJoystick> joysticks = ois.getJoysticks();
 		controllers = new OisController[joysticks.size()];
@@ -54,7 +59,30 @@ public class OisControllers {
 		}
 
 		new Runnable() {
+
+			private long lastCheckForLostWindowHandleTime;
+
 			public void run () {
+				// we won't do the rather heavy check for a lost window handle each and every frame, but rather each second only
+				long now = System.nanoTime();
+				if (now - lastCheckForLostWindowHandleTime > CHECK_FOR_LOST_WINDOW_HANDLE_INTERVAL) {
+					lastCheckForLostWindowHandleTime = now;
+
+					long newWindowHandle = getWindowHandle();
+					if (hwnd != newWindowHandle) {
+						hwnd = newWindowHandle;
+						ois = new Ois(newWindowHandle);
+
+						ArrayList<OisJoystick> joysticks = ois.getJoysticks();
+						controllers = new OisController[joysticks.size()];
+						manager.controllers.clear();
+						for (int i = 0, n = joysticks.size(); i < n; i++) {
+							OisJoystick joystick = joysticks.get(i);
+							controllers[i] = new OisController(joystick);
+							manager.controllers.add(controllers[i]);
+						}
+					}
+				}
 				ois.update();
 				Gdx.app.postRunnable(this);
 			}
@@ -202,7 +230,7 @@ public class OisControllers {
 	/** Returns the window handle from LWJGL needed by OIS. */
 	static public long getWindowHandle () {
 		// don't need a window handle for Mac OS X
-		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+		if (IS_MAC) {
 			return 0;
 		}
 
@@ -221,8 +249,7 @@ public class OisControllers {
 				Method getImplementation = displayClass.getDeclaredMethod("getImplementation", new Class[0]);
 				getImplementation.setAccessible(true);
 				Object display = getImplementation.invoke(null, (Object[])null);
-				String fieldName = System.getProperty("os.name").toLowerCase().contains("windows") ? "hwnd" : "parent_window";
-				Field field = display.getClass().getDeclaredField(fieldName);
+				Field field = display.getClass().getDeclaredField(IS_WINDOWS ? "hwnd" : "parent_window");
 				field.setAccessible(true);
 				return (Long)field.get(display);
 			}

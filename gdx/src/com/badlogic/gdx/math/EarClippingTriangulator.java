@@ -64,6 +64,7 @@ public class EarClippingTriangulator {
 	public ShortArray computeTriangles (float[] vertices, int offset, int count) {
 		this.vertices = vertices;
 		int vertexCount = this.vertexCount = count / 2;
+		int vertexOffset = offset / 2;
 
 		ShortArray indicesArray = this.indicesArray;
 		indicesArray.clear();
@@ -72,10 +73,10 @@ public class EarClippingTriangulator {
 		short[] indices = this.indices = indicesArray.items;
 		if (areVerticesClockwise(vertices, offset, count)) {
 			for (short i = 0; i < vertexCount; i++)
-				indices[i] = i;
+				indices[i] = (short)(vertexOffset + i);
 		} else {
 			for (int i = 0, n = vertexCount - 1; i < vertexCount; i++)
-				indices[i] = (short)(n - i); // Reversed.
+				indices[i] = (short)(vertexOffset + n - i); // Reversed.
 		}
 
 		IntArray vertexTypes = this.vertexTypes;
@@ -170,9 +171,10 @@ public class EarClippingTriangulator {
 				float vy = vertices[v + 1];
 				// Because the polygon has clockwise winding order, the area sign will be positive if the point is strictly inside.
 				// It will be 0 on the edge, which we want to include as well.
-				if (computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy) >= 0) {
-					if (computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy) >= 0) {
-						if (computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy) >= 0) return false;
+				// note: check the edge defined by p1->p3 first since this fails _far_ more then the other 2 checks.
+				if (computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy) >= 0) {
+					if (computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy) >= 0) {
+						if (computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy) >= 0) return false;
 					}
 				}
 			}
@@ -211,10 +213,10 @@ public class EarClippingTriangulator {
 			p2y = vertices[i + 3];
 			area += p1x * p2y - p2x * p1y;
 		}
-		p1x = vertices[count - 2];
-		p1y = vertices[count - 1];
-		p2x = vertices[0];
-		p2y = vertices[1];
+		p1x = vertices[offset + count - 2];
+		p1y = vertices[offset + count - 1];
+		p2x = vertices[offset];
+		p2y = vertices[offset + 1];
 		return area + p1x * p2y - p2x * p1y < 0;
 	}
 

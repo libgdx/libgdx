@@ -22,14 +22,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
  * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
- * 
  * @author mzechner
  * @author Nathan Sweet */
 public class SharedLibraryLoader {
@@ -38,10 +39,16 @@ public class SharedLibraryLoader {
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
-	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
+	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
+		|| System.getProperty("os.arch").equals("x86_64");
+
+	// JDK 8 only.
+	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
+
 	static {
-		String vm = System.getProperty("java.vm.name");
-		if (vm != null && vm.contains("Dalvik")) {
+		String vm = System.getProperty("java.runtime.name");
+		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
 			isWindows = false;
 			isLinux = false;
@@ -87,8 +94,8 @@ public class SharedLibraryLoader {
 	/** Maps a platform independent library name to a platform dependent name. */
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
-		if (isLinux) return "lib" + libraryName + (is64Bit ? "64.so" : ".so");
-		if (isMac) return "lib" + libraryName + ".dylib";
+		if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
+		if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
 		return libraryName;
 	}
 
@@ -131,7 +138,7 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+	/** Extracts the specified file to the specified directory if it does not already exist or the CRC does not match. If file
 	 * extraction fails and the file exists at java.library.path, that file is returned.
 	 * @param sourcePath The file to extract from the classpath or JAR.
 	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
@@ -142,6 +149,11 @@ public class SharedLibraryLoader {
 			if (dirName == null) dirName = sourceCrc;
 
 			File extractedFile = getExtractedFile(dirName, new File(sourcePath).getName());
+			if (extractedFile == null) {
+				extractedFile = getExtractedFile(UUID.randomUUID().toString(), new File(sourcePath).getName());
+				if (extractedFile == null) throw new GdxRuntimeException(
+					"Unable to find writable path to extract file. Is the user home directory writable?");
+			}
 			return extractFile(sourcePath, sourceCrc, extractedFile);
 		} catch (RuntimeException ex) {
 			// Fallback to file at java.library.path location, eg for applets.
@@ -151,11 +163,20 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds. */
+	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+	 * extraction fails and the file exists at java.library.path, that file is returned.
+	 * @param sourcePath The file to extract from the classpath or JAR.
+	 * @param dir The location where the extracted file will be written. */
+	public void extractFileTo (String sourcePath, File dir) throws IOException {
+		extractFile(sourcePath, crc(readFile(sourcePath)), new File(dir, new File(sourcePath).getName()));
+	}
+
+	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
+	 * @return null if a writable path could not be found. */
 	private File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
-		File idealFile = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
-			+ dirName, fileName);
+		File idealFile = new File(
+			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
 		if (canWrite(idealFile)) return idealFile;
 
 		// System provided temp directory.
@@ -176,22 +197,45 @@ public class SharedLibraryLoader {
 		file = new File(".temp/" + dirName, fileName);
 		if (canWrite(file)) return file;
 
-		return idealFile; // Will likely fail, but we did our best.
+		return null;
 	}
 
 	/** Returns true if the parent directories of the file can be created and the file can be written. */
 	private boolean canWrite (File file) {
-		if (file.canWrite()) return true; // File exists and is writable.
 		File parent = file.getParentFile();
-		parent.mkdirs();
-		if (!parent.isDirectory()) return false;
+		File testFile;
+		if (file.exists()) {
+			if (!file.canWrite() || !canExecute(file)) return false;
+			// Don't overwrite existing file just to check if we can write to directory.
+			testFile = new File(parent, UUID.randomUUID().toString());
+		} else {
+			parent.mkdirs();
+			if (!parent.isDirectory()) return false;
+			testFile = file;
+		}
 		try {
-			new FileOutputStream(file).close();
-			file.delete();
+			new FileOutputStream(testFile).close();
+			if (!canExecute(testFile)) return false;
 			return true;
 		} catch (Throwable ex) {
 			return false;
+		} finally {
+			testFile.delete();
 		}
+	}
+
+	private boolean canExecute (File file) {
+		try {
+			Method canExecute = File.class.getMethod("canExecute");
+			if ((Boolean)canExecute.invoke(file)) return true;
+
+			Method setExecutable = File.class.getMethod("setExecutable", boolean.class, boolean.class);
+			setExecutable.invoke(file, true, false);
+
+			return (Boolean)canExecute.invoke(file);
+		} catch (Exception ignored) {
+		}
+		return false;
 	}
 
 	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
@@ -218,7 +262,8 @@ public class SharedLibraryLoader {
 				input.close();
 				output.close();
 			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(), ex);
+				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(),
+					ex);
 			}
 		}
 
@@ -269,7 +314,6 @@ public class SharedLibraryLoader {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;
 		} catch (Throwable ex) {
-			ex.printStackTrace();
 			return ex;
 		}
 	}

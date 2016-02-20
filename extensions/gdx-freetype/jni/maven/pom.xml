@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.9.3-SNAPSHOT</version>
         <relativePath>../../../../</relativePath>
     </parent>
     
@@ -41,6 +41,27 @@
                         </configuration>
                     </execution>
                     
+                    <execution>
+                        <id>x86-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx-freetype.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>x86_64-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86_64</cacheDirectory>
+                            <url>${base.url}/x86_64/libgdx-freetype.so</url>
+                            <outputDirectory>${project.build.directory}/x86_64</outputDirectory>
+                        </configuration>
+                    </execution>
 
                     <execution>
                         <id>armeabi-gdx</id>
@@ -65,12 +86,33 @@
                     </execution>
 
                     <execution>
+                        <id>arm64-v8a-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/arm64-v8a</cacheDirectory>
+                            <url>${base.url}/arm64-v8a/libgdx-freetype.so</url>
+                            <outputDirectory>${project.build.directory}/arm64-v8a</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>ios-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
                             <url>${base.url}/ios/libgdx-freetype.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>tvos-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx-freetype.a.tvos</url>
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
@@ -93,10 +135,39 @@
                                 <resource><directory>${basedir}/../../libs/linux32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/linux64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows32</directory></resource>
                                 <resource><directory>${basedir}/../../libs/windows64</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/desktop</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-local-x86</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-local-x86_64</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86_64</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86_64</outputDirectory>
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
@@ -129,6 +200,20 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-local-arm64-v8a</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/arm64-v8a</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/arm64-v8a</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-local-ios</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -151,9 +236,12 @@
                 <version>2.4</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>desktop.xml</descriptor>                        
+                        <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>
+                        <descriptor>x86_64.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
+                        <descriptor>arm64-v8a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>
                     </descriptors>
                 </configuration>

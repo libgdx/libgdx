@@ -18,33 +18,25 @@ package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 public class ModelTest extends BaseG3dHudTest {
 	protected Environment environment;
-	
-	ObjectMap<ModelInstance, AnimationController> animationControllers = new ObjectMap<ModelInstance, AnimationController>(); 
+
+	ObjectMap<ModelInstance, AnimationController> animationControllers = new ObjectMap<ModelInstance, AnimationController>();
 
 	@Override
 	public void create () {
@@ -52,25 +44,26 @@ public class ModelTest extends BaseG3dHudTest {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
-		
-		cam.position.set(1,1,1);
-		cam.lookAt(0,0,0);
+
+		cam.position.set(1, 1, 1);
+		cam.lookAt(0, 0, 0);
 		cam.update();
 		showAxes = true;
-		
+
 		onModelClicked("g3d/teapot.g3db");
 	}
 
-	private final Vector3 tmpV = new Vector3();
+	private final Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
 	private final Quaternion tmpQ = new Quaternion();
 	private final BoundingBox bounds = new BoundingBox();
+
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
 			e.value.update(Gdx.graphics.getDeltaTime());
 		batch.render(instances, environment);
 	}
-	
+
 	@Override
 	protected void getStatus (StringBuilder stringBuilder) {
 		super.getStatus(stringBuilder);
@@ -82,41 +75,39 @@ public class ModelTest extends BaseG3dHudTest {
 			}
 		}
 	}
-	
+
 	protected String currentlyLoading;
+
 	@Override
-	protected void onModelClicked(final String name) {
-		if (name == null)
-			return;
-		
-		currentlyLoading = "data/"+name; 
+	protected void onModelClicked (final String name) {
+		if (name == null) return;
+
+		currentlyLoading = "data/" + name;
 		assets.load(currentlyLoading, Model.class);
 		loading = true;
 	}
 
 	@Override
-	protected void onLoaded() {
-		if (currentlyLoading == null || currentlyLoading.isEmpty())
-			return;
-		
+	protected void onLoaded () {
+		if (currentlyLoading == null || currentlyLoading.length() == 0) return;
+
 		instances.clear();
 		animationControllers.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
 		instance.transform = transform;
 		instances.add(instance);
-		if (instance.animations.size > 0)
-			animationControllers.put(instance, new AnimationController(instance));
+		if (instance.animations.size > 0) animationControllers.put(instance, new AnimationController(instance));
 		currentlyLoading = null;
-		
+
 		instance.calculateBoundingBox(bounds);
-		cam.position.set(1,1,1).nor().scl(bounds.getDimensions().len() * 0.75f + bounds.getCenter().len());
-		cam.up.set(0,1,0);
-		cam.lookAt(0,0,0);
-		cam.far = 50f + bounds.getDimensions().len() * 2.0f;
+		cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions(tmpV1).len() * 0.75f + bounds.getCenter(tmpV2).len());
+		cam.up.set(0, 1, 0);
+		cam.lookAt(0, 0, 0);
+		cam.far = 50f + bounds.getDimensions(tmpV1).len() * 2.0f;
 		cam.update();
 	}
-	
-	protected void switchAnimation() {
+
+	protected void switchAnimation () {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries()) {
 			int animIndex = 0;
 			if (e.value.current != null) {
@@ -134,14 +125,8 @@ public class ModelTest extends BaseG3dHudTest {
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-	
-	@Override
 	public boolean keyUp (int keycode) {
-		if (keycode == Keys.SPACE || keycode == Keys.MENU)
-			switchAnimation();
+		if (keycode == Keys.SPACE || keycode == Keys.MENU) switchAnimation();
 		return super.keyUp(keycode);
 	}
 }

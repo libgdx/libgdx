@@ -19,6 +19,8 @@ package com.badlogic.gdx.files;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -28,6 +30,24 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FileHandle {
+	protected File file;
+	protected FileType type;
+
+	protected FileHandle () {
+	}
+
+	public FileHandle (String fileName) {
+	}
+
+	public FileHandle (File file) {
+	}
+
+	protected FileHandle (String fileName, FileType type) {
+	}
+
+	protected FileHandle (File file, FileType type) {
+	}
+
 	public String path () {
 		throw new GdxRuntimeException("Stub");
 	}
@@ -124,6 +144,15 @@ public class FileHandle {
 		throw new GdxRuntimeException("Stub");
 	}
 
+	/** Returns a buffered stream for writing to this file. Parent directories will be created if necessary.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @param bufferSize The size of the buffer.
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
+	public OutputStream write (boolean append, int bufferSize) {
+		throw new GdxRuntimeException("Stub");
+	}
+
 	/** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
 	 * will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
@@ -180,6 +209,22 @@ public class FileHandle {
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, int offset, int length, boolean append) {
+		throw new GdxRuntimeException("Stub");
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FileFilter filter) {
+		throw new GdxRuntimeException("Stub");
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FilenameFilter filter) {
 		throw new GdxRuntimeException("Stub");
 	}
 

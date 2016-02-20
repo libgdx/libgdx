@@ -17,8 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -32,10 +31,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
@@ -47,25 +48,27 @@ public class LwjglApplication implements Application {
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
 	protected boolean running = true;
-	protected final Array<Runnable> runnables = new Array();
-	protected final Array<Runnable> executedRunnables = new Array();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final Array<Runnable> runnables = new Array<Runnable>();
+	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
+	protected String preferencesdir;
+	protected Files.FileType preferencesFileType;
 
-	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-		this(listener, createConfig(title, width, height, useGL2));
+	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
+		this(listener, createConfig(title, width, height));
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, null, 640, 480, false);
+		this(listener, null, 640, 480);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		this(listener, config, new LwjglGraphics(config));
 	}
 
-	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
-		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas, useGL2));
+	public LwjglApplication (ApplicationListener listener, Canvas canvas) {
+		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas));
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
@@ -78,13 +81,21 @@ public class LwjglApplication implements Application {
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
 		this.graphics = graphics;
-		if (!LwjglApplicationConfiguration.disableAudio)
-			audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-				config.audioDeviceBufferSize);
+		if (!LwjglApplicationConfiguration.disableAudio) {
+			try {
+				audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+					config.audioDeviceBufferSize);
+			} catch (Throwable t) {
+				log("LwjglApplication", "Couldn't initialize audio, disabling audio", t);
+				LwjglApplicationConfiguration.disableAudio = true;
+			}
+		}
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
 		this.listener = listener;
+		this.preferencesdir = config.preferencesDirectory;
+		this.preferencesFileType = config.preferencesFileType;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -95,12 +106,11 @@ public class LwjglApplication implements Application {
 		initialize();
 	}
 
-	private static LwjglApplicationConfiguration createConfig (String title, int width, int height, boolean useGL2) {
+	private static LwjglApplicationConfiguration createConfig (String title, int width, int height) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = title;
 		config.width = width;
 		config.height = height;
-		config.useGL20 = useGL2;
 		config.vSyncEnabled = true;
 		return config;
 	}
@@ -114,6 +124,7 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (audio != null) audio.dispose();
+					Gdx.input.setCursorCatched(false);
 					if (t instanceof RuntimeException)
 						throw (RuntimeException)t;
 					else
@@ -125,7 +136,7 @@ public class LwjglApplication implements Application {
 	}
 
 	void mainLoop () {
-		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
+		SnapshotArray<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		try {
 			graphics.setupDisplay();
@@ -134,8 +145,7 @@ public class LwjglApplication implements Application {
 		}
 
 		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
-		graphics.resize = false;
+		graphics.resize = true;
 
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
@@ -150,18 +160,22 @@ public class LwjglApplication implements Application {
 			if (wasActive && !isActive) { // if it's just recently minimized from active state
 				wasActive = false;
 				synchronized (lifecycleListeners) {
-					for (LifecycleListener listener : lifecycleListeners)
-						listener.pause();
+					LifecycleListener[] listeners = lifecycleListeners.begin();
+					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
+						 listeners[i].pause();
+					lifecycleListeners.end();
 				}
 				listener.pause();
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
-				listener.resume();
 				synchronized (lifecycleListeners) {
-					for (LifecycleListener listener : lifecycleListeners)
-						listener.resume();
+					LifecycleListener[] listeners = lifecycleListeners.begin();
+					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
+						listeners[i].resume();
+					lifecycleListeners.end();
 				}
+				listener.resume();
 			}
 
 			boolean shouldRender = false;
@@ -179,13 +193,14 @@ public class LwjglApplication implements Application {
 			} else {
 				graphics.config.x = Display.getX();
 				graphics.config.y = Display.getY();
-				if (graphics.resize || Display.wasResized() || Display.getWidth() != graphics.config.width
-					|| Display.getHeight() != graphics.config.height) {
+				if (graphics.resize || Display.wasResized()
+					|| (int)(Display.getWidth() * Display.getPixelScaleFactor()) != graphics.config.width
+					|| (int)(Display.getHeight() * Display.getPixelScaleFactor()) != graphics.config.height) {
 					graphics.resize = false;
-					Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-					graphics.config.width = Display.getWidth();
-					graphics.config.height = Display.getHeight();
-					if (listener != null) listener.resize(Display.getWidth(), Display.getHeight());
+					graphics.config.width = (int)(Display.getWidth() * Display.getPixelScaleFactor());
+					graphics.config.height = (int)(Display.getHeight() * Display.getPixelScaleFactor());
+					Gdx.gl.glViewport(0, 0, graphics.config.width, graphics.config.height);
+					if (listener != null) listener.resize(graphics.config.width, graphics.config.height);
 					graphics.requestRendering();
 				}
 			}
@@ -204,6 +219,7 @@ public class LwjglApplication implements Application {
 			int frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
+				graphics.frameId++;
 				listener.render();
 				Display.update(false);
 			} else {
@@ -216,10 +232,12 @@ public class LwjglApplication implements Application {
 		}
 
 		synchronized (lifecycleListeners) {
-			for (LifecycleListener listener : lifecycleListeners) {
-				listener.pause();
-				listener.dispose();
+			LifecycleListener[] listeners = lifecycleListeners.begin();
+			for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+				listeners[i].pause();
+				listeners[i].dispose();
 			}
+			lifecycleListeners.end();
 		}
 		listener.pause();
 		listener.dispose();
@@ -230,13 +248,14 @@ public class LwjglApplication implements Application {
 
 	public boolean executeRunnables () {
 		synchronized (runnables) {
-			executedRunnables.addAll(runnables);
+			for (int i = runnables.size - 1; i >= 0; i--)
+				executedRunnables.add(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = 0; i < executedRunnables.size; i++)
-			executedRunnables.get(i).run();
-		executedRunnables.clear();
+		do
+			executedRunnables.pop().run();
+		while (executedRunnables.size > 0);
 		return true;
 	}
 
@@ -298,14 +317,14 @@ public class LwjglApplication implements Application {
 		return getJavaHeap();
 	}
 
-	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
+	ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
 
 	@Override
 	public Preferences getPreferences (String name) {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name);
+			Preferences prefs = new LwjglPreferences(new LwjglFileHandle(new File(preferencesdir, name), preferencesFileType));
 			preferences.put(name, prefs);
 			return prefs;
 		}
@@ -375,7 +394,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

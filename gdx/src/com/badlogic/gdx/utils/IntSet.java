@@ -46,24 +46,25 @@ public class IntSet {
 
 	private IntSetIterator iterator1, iterator2;
 
-	/** Creates a new sets with an initial capacity of 32 and a load factor of 0.8. This set will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
 	public IntSet () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new set with a load factor of 0.8. This set will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new set with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IntSet (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IntSet (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -75,6 +76,15 @@ public class IntSet {
 		pushIterations = Math.max(Math.min(capacity, 8), (int)Math.sqrt(capacity) / 8);
 
 		keyTable = new int[capacity + stashCapacity];
+	}
+
+	/** Creates a new set identical to the specified set. */
+	public IntSet (IntSet set) {
+		this(set.capacity, set.loadFactor);
+		stashSize = set.stashSize;
+		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
+		size = set.size;
+		hasZeroValue = set.hasZeroValue;
 	}
 
 	/** Returns true if the key was not already in the set. */
@@ -128,7 +138,27 @@ public class IntSet {
 		return true;
 	}
 
-	public void putAll (IntSet set) {
+	public void addAll (IntArray array) {
+		addAll(array, 0, array.size);
+	}
+
+	public void addAll (IntArray array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
+		addAll(array.items, offset, length);
+	}
+
+	public void addAll (int... array) {
+		addAll(array, 0, array.length);
+	}
+
+	public void addAll (int[] array, int offset, int length) {
+		ensureCapacity(length);
+		for (int i = offset, n = i + length; i < n; i++)
+			add(array[i]);
+	}
+
+	public void addAll (IntSet set) {
 		ensureCapacity(set.size);
 		IntSetIterator iterator = set.iterator();
 		while (iterator.hasNext)
@@ -304,7 +334,7 @@ public class IntSet {
 		resize(maximumCapacity);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	/** Clears the set and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear (int maximumCapacity) {
 		if (capacity <= maximumCapacity) {
 			clear();
@@ -316,6 +346,7 @@ public class IntSet {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		int[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
 			keyTable[i] = EMPTY;
@@ -344,11 +375,19 @@ public class IntSet {
 		return false;
 	}
 
-	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	public int first () {
+		if (hasZeroValue) return 0;
+		int[] keyTable = this.keyTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
+			if (keyTable[i] != EMPTY) return keyTable[i];
+		throw new IllegalStateException("IntSet is empty.");
+	}
+
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {
@@ -384,6 +423,23 @@ public class IntSet {
 	private int hash3 (int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
+	}
+
+	public int hashCode () {
+		int h = 0;
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
+			if (keyTable[i] != EMPTY) h += keyTable[i];
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (!(obj instanceof IntSet)) return false;
+		IntSet other = (IntSet)obj;
+		if (other.size != size) return false;
+		if (other.hasZeroValue != hasZeroValue) return false;
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
+			if (keyTable[i] != EMPTY && !other.contains(keyTable[i])) return false;
+		return true;
 	}
 
 	public String toString () {
@@ -431,13 +487,10 @@ public class IntSet {
 		return iterator2;
 	}
 
-	static public class Entry<V> {
-		public int key;
-		public V value;
-
-		public String toString () {
-			return key + "=" + value;
-		}
+	static public IntSet with (int... array) {
+		IntSet set = new IntSet();
+		set.addAll(array);
+		return set;
 	}
 
 	static public class IntSetIterator {
@@ -482,6 +535,8 @@ public class IntSet {
 				throw new IllegalStateException("next must be called before remove.");
 			} else if (currentIndex >= set.capacity) {
 				set.removeStashIndex(currentIndex);
+				nextIndex = currentIndex - 1;
+				findNextIndex();
 			} else {
 				set.keyTable[currentIndex] = EMPTY;
 			}

@@ -129,6 +129,16 @@ public class SnapshotArray<T> extends Array<T> {
 		return super.removeIndex(index);
 	}
 
+	public void removeRange (int start, int end) {
+		modified();
+		super.removeRange(start, end);
+	}
+
+	public boolean removeAll (Array<? extends T> array, boolean identity) {
+		modified();
+		return super.removeAll(array, identity);
+	}
+
 	public T pop () {
 		modified();
 		return super.pop();
@@ -144,7 +154,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super.sort();
 	}
 
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		modified();
 		super.sort(comparator);
 	}
@@ -162,5 +172,10 @@ public class SnapshotArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		modified();
 		super.truncate(newSize);
+	}
+
+	/** @see #SnapshotArray(Object[]) */
+	static public <T> SnapshotArray<T> with (T... array) {
+		return new SnapshotArray(array);
 	}
 }

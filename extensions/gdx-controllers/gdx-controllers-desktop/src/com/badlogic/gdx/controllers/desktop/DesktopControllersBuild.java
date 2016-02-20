@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
@@ -26,29 +27,16 @@ public class DesktopControllersBuild {
 	public static void main (String[] args) throws Exception {
 		new NativeCodeGenerator().generate("src/", "bin/", "jni/");
 		BuildConfig buildConfig = new BuildConfig("gdx-controllers-desktop");
-		
-		String[] windowsSrc = {"*.cpp",
-			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/win32/*.cpp"
-		};
-		
-		String[] linuxSrc = { "*.cpp",
-			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/linux/*.cpp"
-		};
-		
-		String[] mac64Src = { "*.cpp",
-			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/mac/*.mm",
-			"ois-v1-4svn/src/mac/MacHIDManager.cpp",
-			"ois-v1-4svn/src/mac/MacJoyStick.cpp",
-		};
-		
-		String[] includes = new String[] {
-			"ois-v1-4svn/includes",
-			"dinput/"
-		};
-		
+
+		String[] windowsSrc = {"*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/win32/*.cpp"};
+
+		String[] linuxSrc = {"*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/linux/*.cpp"};
+
+		String[] mac64Src = {"*.cpp", "ois-v1-4svn/src/*.cpp", "ois-v1-4svn/src/mac/*.mm", "ois-v1-4svn/src/mac/MacHIDManager.cpp",
+			"ois-v1-4svn/src/mac/MacJoyStick.cpp",};
+
+		String[] includes = new String[] {"ois-v1-4svn/includes", "dinput/"};
+
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.buildFileName = "build-windows32home.xml";
 		win32home.excludeFromMasterBuildFile = true;
@@ -58,17 +46,17 @@ public class DesktopControllersBuild {
 		win32home.headerDirs = includes;
 		win32home.cIncludes = new String[0];
 		win32home.libraries = "-ldinput8 -ldxguid";
-		
+
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.cppIncludes = windowsSrc;
 		win32.headerDirs = includes;
 		win32.libraries = "-ldinput8 -ldxguid";
-		
+
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.cppIncludes = windowsSrc;
 		win64.headerDirs = includes;
 		win64.libraries = "-ldinput8 -ldxguid";
-		
+
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cppIncludes = linuxSrc;
 		lin32.headerDirs = includes;
@@ -78,17 +66,23 @@ public class DesktopControllersBuild {
 		lin64.cppIncludes = linuxSrc;
 		lin64.headerDirs = includes;
 		lin64.libraries = "-lX11";
-		
+
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppIncludes = mac64Src;
 		mac.headerDirs = includes;
 		mac.cppFlags += " -x objective-c++";
 		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
-		if(!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
-			throw new Exception("build failed");
-		}
-		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
+		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cppIncludes = mac64Src;
+		mac64.headerDirs = includes;
+		mac64.cppFlags += " -x objective-c++";
+		mac64.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
+
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, mac64);
+//		if (!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
+//			throw new Exception("build failed");
+//		}
+//		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
 	}
 }

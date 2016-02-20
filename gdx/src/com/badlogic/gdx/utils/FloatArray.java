@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.math.MathUtils;
+
+import java.util.Arrays;
 
 /** A resizable, ordered or unordered float array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
@@ -187,6 +187,22 @@ public class FloatArray {
 		return value;
 	}
 
+	/** Removes the items between the specified indices, inclusive. */
+	public void removeRange (int start, int end) {
+		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
+		float[] items = this.items;
+		int count = end - start + 1;
+		if (ordered)
+			System.arraycopy(items, start + count, items, start, size - (start + count));
+		else {
+			int lastIndex = this.size - 1;
+			for (int i = 0; i < count; i++)
+				items[start + i] = items[lastIndex - i];
+		}
+		size -= count;
+	}
+
 	/** Removes from this array all of elements contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (FloatArray array) {
@@ -227,13 +243,14 @@ public class FloatArray {
 	}
 
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added. */
-	public void shrink () {
-		if (items.length == size) return;
-		resize(size);
+	 * been removed, or if it is known that more items will not be added.
+	 * @return {@link #items} */
+	public float[] shrink () {
+		if (items.length != size) resize(size);
+		return items;
 	}
 
-	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public float[] ensureCapacity (int additionalCapacity) {
@@ -292,14 +309,42 @@ public class FloatArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		float[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + Float.floatToIntBits(items[i]);
+		return h;
+	}
+
 	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!ordered) return false;
+		if (!(object instanceof FloatArray)) return false;
+		FloatArray array = (FloatArray)object;
+		if (!array.ordered) return false;
+		int n = size;
+		if (n != array.size) return false;
+		float[] items1 = this.items;
+		float[] items2 = array.items;
+		for (int i = 0; i < n; i++)
+			if (items1[i] != items2[i]) return false;
+		return true;
+	}
+
+	public boolean equals (Object object, float epsilon) {
 		if (object == this) return true;
 		if (!(object instanceof FloatArray)) return false;
 		FloatArray array = (FloatArray)object;
 		int n = size;
 		if (n != array.size) return false;
+		if (!ordered) return false;
+		if (!array.ordered) return false;
+		float[] items1 = this.items;
+		float[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (Math.abs(items1[i] - items2[i]) > epsilon) return false;
 		return true;
 	}
 
@@ -327,5 +372,10 @@ public class FloatArray {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #FloatArray(float[]) */
+	static public FloatArray with (float... array) {
+		return new FloatArray(array);
 	}
 }

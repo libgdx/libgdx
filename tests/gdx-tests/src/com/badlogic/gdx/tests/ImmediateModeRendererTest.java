@@ -17,10 +17,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,9 +36,10 @@ public class ImmediateModeRendererTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 		texture.bind();
-		renderer.begin(projMatrix, GL10.GL_TRIANGLES);
+		renderer.begin(projMatrix, GL20.GL_TRIANGLES);
 		renderer.texCoord(0, 0);
 		renderer.color(1, 0, 0, 1);
 		renderer.vertex(-0.5f, -0.5f, 0);
@@ -54,16 +54,7 @@ public class ImmediateModeRendererTest extends GdxTest {
 
 	@Override
 	public void create () {
-		if (Gdx.graphics.isGL20Available())
-			renderer = new ImmediateModeRenderer20(false, true, 1);
-		else
-			renderer = new ImmediateModeRenderer10();
+		renderer = new ImmediateModeRenderer20(false, true, 1);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 }

@@ -114,42 +114,146 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV4M4Jni
- * Signature: (Ljava/nio/Buffer;III[F)V
+ * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni__Ljava_nio_Buffer_2II_3FI
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV4M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV3M4Jni
- * Signature: (Ljava/nio/Buffer;III[F)V
+ * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni__Ljava_nio_Buffer_2II_3FI
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV3M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV2M4Jni
- * Signature: (Ljava/nio/Buffer;III[F)V
+ * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni__Ljava_nio_Buffer_2II_3FI
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV2M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV3M3Jni
- * Signature: (Ljava/nio/Buffer;III[F)V
+ * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni__Ljava_nio_Buffer_2II_3FI
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV3M3Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV2M3Jni
- * Signature: (Ljava/nio/Buffer;III[F)V
+ * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni__Ljava_nio_Buffer_2II_3FI
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV2M3Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: (Ljava/nio/Buffer;IILjava/nio/Buffer;II)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2IILjava_nio_Buffer_2II
+  (JNIEnv *, jclass, jobject, jint, jint, jobject, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: ([FIILjava/nio/Buffer;II)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava_nio_Buffer_2II
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jobject, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: (Ljava/nio/Buffer;II[FII)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2II_3FII
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: ([FII[FII)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FII_3FII
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: (Ljava/nio/Buffer;IILjava/nio/Buffer;IIF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2IILjava_nio_Buffer_2IIF
+  (JNIEnv *, jclass, jobject, jint, jint, jobject, jint, jint, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: ([FIILjava/nio/Buffer;IIF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FIILjava_nio_Buffer_2IIF
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jobject, jint, jint, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: (Ljava/nio/Buffer;II[FIIF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find__Ljava_nio_Buffer_2II_3FIIF
+  (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint, jint, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    find
+ * Signature: ([FII[FIIF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_find___3FII_3FIIF
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint, jint, jfloat);
 
 #ifdef __cplusplus
 }

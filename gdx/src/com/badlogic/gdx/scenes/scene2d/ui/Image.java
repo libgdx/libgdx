@@ -22,10 +22,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
 /** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
@@ -81,8 +82,7 @@ public class Image extends Widget {
 		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void layout () {
@@ -123,19 +123,15 @@ public class Image extends Widget {
 		float scaleX = getScaleX();
 		float scaleY = getScaleY();
 
-		if (drawable != null) {
-			if (drawable.getClass() == TextureRegionDrawable.class) {
-				TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
-				float rotation = getRotation();
-				if (scaleX == 1 && scaleY == 1 && rotation == 0)
-					batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
-				else {
-					batch.draw(region, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY, imageWidth, imageHeight,
-						scaleX, scaleY, rotation);
-				}
-			} else
-				drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
+		if (drawable instanceof TransformDrawable) {
+			float rotation = getRotation();
+			if (scaleX != 1 || scaleY != 1 || rotation != 0) {
+				((TransformDrawable)drawable).draw(batch, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY,
+					imageWidth, imageHeight, scaleX, scaleY, rotation);
+				return;
+			}
 		}
+		if (drawable != null) drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 	}
 
 	public void setDrawable (Skin skin, String drawableName) {

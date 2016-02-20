@@ -26,10 +26,10 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map
  * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by index, which
- * makes iteration fast. Like {@link Array}, if ordered is false, * this class avoids a memory copy when removing elements (the
- * last element is moved to the removed element's position).
+ * makes iteration fast. Like {@link Array}, if ordered is false, this class avoids a memory copy when removing elements (the last
+ * element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class ArrayMap<K, V> {
+public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public K[] keys;
 	public V[] values;
 	public int size;
@@ -83,23 +83,29 @@ public class ArrayMap<K, V> {
 		System.arraycopy(array.values, 0, values, 0, size);
 	}
 
-	public void put (K key, V value) {
-		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
+	public int put (K key, V value) {
 		int index = indexOfKey(key);
-		if (index == -1) index = size++;
+		if (index == -1) {
+			if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
+			index = size++;
+		}
 		keys[index] = key;
 		values[index] = value;
+		return index;
 	}
 
-	public void put (K key, V value, int index) {
-		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
+	public int put (K key, V value, int index) {
 		int existingIndex = indexOfKey(key);
-		if (existingIndex != -1) removeIndex(existingIndex);
+		if (existingIndex != -1)
+			removeIndex(existingIndex);
+		else if (size == keys.length) //
+			resize(Math.max(8, (int)(size * 1.75f)));
 		System.arraycopy(keys, index, keys, index + 1, size - index);
 		System.arraycopy(values, index, values, index + 1, size - index);
 		keys[index] = key;
 		values[index] = value;
 		size++;
+		return index;
 	}
 
 	public void putAll (ArrayMap map) {
@@ -133,7 +139,7 @@ public class ArrayMap<K, V> {
 
 	/** Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
 	 * value is found.
-	 * @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
@@ -205,7 +211,7 @@ public class ArrayMap<K, V> {
 		return false;
 	}
 
-	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
+	/** @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public boolean containsValue (V value, boolean identity) {
 		V[] values = this.values;
 		int i = size - 1;
@@ -338,8 +344,8 @@ public class ArrayMap<K, V> {
 		resize(size);
 	}
 
-	/** Increases the size of the backing arrays to acommodate the specified number of additional entries. Useful before adding many
-	 * entries to avoid multiple backing array resizes. */
+	/** Increases the size of the backing arrays to accommodate the specified number of additional entries. Useful before adding
+	 * many entries to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= keys.length) resize(Math.max(8, sizeNeeded));
@@ -392,6 +398,42 @@ public class ArrayMap<K, V> {
 		size = newSize;
 	}
 
+	public int hashCode () {
+		K[] keys = this.keys;
+		V[] values = this.values;
+		int h = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			K key = keys[i];
+			V value = values[i];
+			if (key != null) h += key.hashCode() * 31;
+			if (value != null) h += value.hashCode();
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ArrayMap)) return false;
+		ArrayMap<K, V> other = (ArrayMap) obj;
+		if (other.size != size) return false;
+		K[] keys = this.keys;
+		V[] values = this.values;
+		for (int i = 0, n = size; i < n; i++) {
+			K key = keys[i];
+			V value = values[i];
+			if (value == null) {
+				if (!other.containsKey(key) || other.get(key) != null) {
+					return false;
+				}
+			} else {
+				if (!value.equals(other.get(key))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "{}";
 		K[] keys = this.keys;
@@ -409,6 +451,10 @@ public class ArrayMap<K, V> {
 		}
 		buffer.append('}');
 		return buffer.toString();
+	}
+
+	public Iterator<Entry<K, V>> iterator () {
+		return entries();
 	}
 
 	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
@@ -542,6 +588,11 @@ public class ArrayMap<K, V> {
 		public Array<V> toArray () {
 			return new Array(true, map.values, index, map.size - index);
 		}
+
+		public Array<V> toArray (Array array) {
+			array.addAll(map.values, index, map.size - index);
+			return array;
+		}
 	}
 
 	static public class Keys<K> implements Iterable<K>, Iterator<K> {
@@ -579,6 +630,11 @@ public class ArrayMap<K, V> {
 
 		public Array<K> toArray () {
 			return new Array(true, map.keys, index, map.size - index);
+		}
+
+		public Array<K> toArray (Array array) {
+			array.addAll(map.keys, index, map.size - index);
+			return array;
 		}
 	}
 }

@@ -21,7 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -32,11 +32,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.StreamUtils;
 
 public class TextureDownloadTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	TextureRegion image;
 	BitmapFont font;
 	SpriteBatch batch;
@@ -59,7 +54,7 @@ public class TextureDownloadTest extends GdxTest {
 					while (true) {
 						int length = in.read(out, readBytes, out.length - readBytes);
 						if (length == -1) break;
-						readBytes += length;						
+						readBytes += length;
 					}
 					return readBytes;
 				} catch (Exception ex) {
@@ -100,7 +95,7 @@ public class TextureDownloadTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (image != null) {
 			batch.begin();

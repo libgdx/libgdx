@@ -1,14 +1,12 @@
 <resources>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-		<item name="android:windowIsTranslucent">true</item>
+    <style name="GdxTheme" parent="android:Theme">
 		<item name="android:windowBackground">@android:color/transparent</item>
-		<item name="android:windowContentOverlay">@null</item>
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowIsFloating">false</item>
-		<item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>

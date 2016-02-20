@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Pool;
  * Can produce invisible artifacts when transparent decals overlap each other.
  * </p>
  * <p>
- * Needs to be explicitely disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
+ * Needs to be explicitly disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
  * </p>
  * <p>
  * States (* = any, EV = entry value - same as value before flush):<br/>
@@ -85,7 +85,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	Pool<Array<Decal>> arrayPool = new Pool<Array<Decal>>(16) {
 		@Override
 		protected Array<Decal> newObject () {
-			return new Array<Decal>();
+			return new Array();
 		}
 	};
 	Array<Array<Decal>> usedArrays = new Array<Array<Decal>>();
@@ -105,12 +105,12 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			}
 		});
 	}
-	
-	public CameraGroupStrategy(Camera camera, Comparator<Decal> sorter) {
+
+	public CameraGroupStrategy (Camera camera, Comparator<Decal> sorter) {
 		this.camera = camera;
 		this.cameraSorter = sorter;
 		createDefaultShader();
-		
+
 	}
 
 	public void setCamera (Camera camera) {
@@ -129,7 +129,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
 			contents.sort(cameraSorter);
 		} else {
 			for (int i = 0, n = contents.size; i < n; i++) {
@@ -158,64 +158,51 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glDisable(GL10.GL_BLEND);
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void beforeGroups () {
-		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		if (shader != null) {
-			shader.begin();
-			shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
-			shader.setUniformi("u_texture", 0);
-		} else {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-			Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
-			Gdx.gl10.glLoadMatrixf(camera.projection.val, 0);
-			Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
-			Gdx.gl10.glLoadMatrixf(camera.view.val, 0);
-		}
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		shader.begin();
+		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
+		shader.setUniformi("u_texture", 0);
 	}
 
 	@Override
 	public void afterGroups () {
-		if (shader != null) {
-			shader.end();
-		}
-		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
-		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
+		shader.end();
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 
 	private void createDefaultShader () {
-		if (Gdx.graphics.isGL20Available()) {
-			String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-				+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-				+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-				+ "uniform mat4 u_projectionViewMatrix;\n" //
-				+ "varying vec4 v_color;\n" //
-				+ "varying vec2 v_texCoords;\n" //
-				+ "\n" //
-				+ "void main()\n" //
-				+ "{\n" //
-				+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-				+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-				+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-				+ "}\n";
-			String fragmentShader = "#ifdef GL_ES\n" //
-				+ "precision mediump float;\n" //
-				+ "#endif\n" //
-				+ "varying vec4 v_color;\n" //
-				+ "varying vec2 v_texCoords;\n" //
-				+ "uniform sampler2D u_texture;\n" //
-				+ "void main()\n"//
-				+ "{\n" //
-				+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
-				+ "}";
+		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+			+ "uniform mat4 u_projectionViewMatrix;\n" //
+			+ "varying vec4 v_color;\n" //
+			+ "varying vec2 v_texCoords;\n" //
+			+ "\n" //
+			+ "void main()\n" //
+			+ "{\n" //
+			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+			+ "}\n";
+		String fragmentShader = "#ifdef GL_ES\n" //
+			+ "precision mediump float;\n" //
+			+ "#endif\n" //
+			+ "varying vec4 v_color;\n" //
+			+ "varying vec2 v_texCoords;\n" //
+			+ "uniform sampler2D u_texture;\n" //
+			+ "void main()\n"//
+			+ "{\n" //
+			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
+			+ "}";
 
-			shader = new ShaderProgram(vertexShader, fragmentShader);
-			if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
-		}
+		shader = new ShaderProgram(vertexShader, fragmentShader);
+		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 
 	@Override

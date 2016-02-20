@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,8 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.Selection;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
 
 /** A tree widget where each node has an icon, actor, and child nodes.
  * <p>
@@ -37,16 +36,12 @@ import com.badlogic.gdx.utils.Pools;
  * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
-	final Array<Node> selectedNodes = new Array();
+	final Selection<Node> selection;
 	float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
-	boolean multiSelect = true;
-	boolean toggleSelect = true;
 	private Node foundNode;
 	Node overNode;
 	private ClickListener clickListener;
@@ -60,58 +55,42 @@ public class Tree extends WidgetGroup {
 	}
 
 	public Tree (TreeStyle style) {
+		selection = new Selection();
+		selection.setActor(this);
+		selection.setMultiple(true);
 		setStyle(style);
 		initialize();
 	}
 
 	private void initialize () {
 		addListener(clickListener = new ClickListener() {
-			private boolean isCtrlPressed () {
-				if (isMac)
-					return Gdx.input.isKeyPressed(Keys.SYM);
-				else
-					return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
-			}
-
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
 				if (node != getNodeAt(getTouchDownY())) return;
-				if (multiSelect && selectedNodes.size > 0
-					&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
-					// Select range (shift/ctrl).
-					float low = selectedNodes.first().actor.getY();
+				if (selection.getMultiple() && selection.hasItems() && UIUtils.shift()) {
+					// Select range (shift).
+					float low = selection.getLastSelected().actor.getY();
 					float high = node.actor.getY();
-					if (!isCtrlPressed()) selectedNodes.clear();
+					if (!UIUtils.ctrl()) selection.clear();
 					if (low > high)
 						selectNodes(rootNodes, high, low);
 					else
 						selectNodes(rootNodes, low, high);
-					fireChangeEvent();
+					selection.fireChangeEvent();
 					return;
 				}
-				if (!multiSelect || !isCtrlPressed()) {
-					if (node.children.size > 0) {
-						// Toggle expanded.
-						float rowX = node.actor.getX();
-						if (node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
-						if (x < rowX) {
-							node.setExpanded(!node.expanded);
-							return;
-						}
-					}
-					if (!node.isSelectable()) return;
-					boolean unselect = toggleSelect && selectedNodes.size == 1 && selectedNodes.contains(node, true);
-					selectedNodes.clear();
-					if (unselect) {
-						fireChangeEvent();
+				if (node.children.size > 0 && (!selection.getMultiple() || !UIUtils.ctrl())) {
+					// Toggle expanded.
+					float rowX = node.actor.getX();
+					if (node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
+					if (x < rowX) {
+						node.setExpanded(!node.expanded);
 						return;
 					}
-				} else if (!node.isSelectable()) //
-					return;
-				// Select single (ctrl).
-				if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
-				fireChangeEvent();
+				}
+				if (!node.isSelectable()) return;
+				selection.choose(node);
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -156,16 +135,9 @@ public class Tree extends WidgetGroup {
 	/** Removes all tree nodes. */
 	public void clearChildren () {
 		super.clearChildren();
-		rootNodes.clear();
-		selectedNodes.clear();
 		setOverNode(null);
-		fireChangeEvent();
-	}
-
-	void fireChangeEvent () {
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		fire(changeEvent);
-		Pools.free(changeEvent);
+		rootNodes.clear();
+		selection.clear();
 	}
 
 	public Array<Node> getNodes () {
@@ -237,11 +209,8 @@ public class Tree extends WidgetGroup {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Color color = getColor();
-		if (style.background != null) {
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-			batch.setColor(Color.WHITE);
-		}
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, leftColumnWidth);
 		super.draw(batch, parentAlpha); // Draw actors.
 	}
@@ -254,7 +223,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			Actor actor = node.actor;
 
-			if (selectedNodes.contains(node, true) && style.selection != null) {
+			if (selection.contains(node) && style.selection != null) {
 				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
 			} else if (node == overNode && style.over != null) {
 				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
@@ -305,42 +274,13 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			if (node.actor.getY() < low) break;
 			if (!node.isSelectable()) continue;
-			if (node.actor.getY() <= high && !selectedNodes.contains(node, true)) selectedNodes.add(node);
+			if (node.actor.getY() <= high) selection.add(node);
 			if (node.expanded) selectNodes(node.children, low, high);
 		}
 	}
 
-	public Array<Node> getSelection () {
-		return selectedNodes;
-	}
-
-	public void setSelection (Node node) {
-		selectedNodes.clear();
-		if (node != null) selectedNodes.add(node);
-		fireChangeEvent();
-	}
-
-	public void setSelection (Array<Node> nodes) {
-		selectedNodes.clear();
-		selectedNodes.addAll(nodes);
-		fireChangeEvent();
-	}
-
-	public void addSelection (Node node) {
-		if (node == null) return;
-		selectedNodes.add(node);
-		fireChangeEvent();
-	}
-
-	public void removeSelection (Node node) {
-		if (node == null) return;
-		selectedNodes.removeValue(node, true);
-		fireChangeEvent();
-	}
-
-	public void clearSelection () {
-		selectedNodes.clear();
-		fireChangeEvent();
+	public Selection<Node> getSelection () {
+		return selection;
 	}
 
 	public TreeStyle getStyle () {
@@ -364,9 +304,18 @@ public class Tree extends WidgetGroup {
 		this.padding = padding;
 	}
 
+	/** Returns the amount of horizontal space for indentation level. */
+	public float getIndentSpacing () {
+		return indentSpacing;
+	}
+
 	/** Sets the amount of vertical space between nodes. */
 	public void setYSpacing (float ySpacing) {
 		this.ySpacing = ySpacing;
+	}
+
+	public float getYSpacing () {
+		return ySpacing;
 	}
 
 	/** Sets the amount of horizontal space between the node actors and icons. */
@@ -451,14 +400,6 @@ public class Tree extends WidgetGroup {
 	/** Returns the click listener the tree uses for clicking on nodes and the over node. */
 	public ClickListener getClickListener () {
 		return clickListener;
-	}
-
-	public void setMultiSelect (boolean multiSelect) {
-		this.multiSelect = multiSelect;
-	}
-
-	public void setToggleSelect (boolean toggleSelect) {
-		this.toggleSelect = toggleSelect;
 	}
 
 	static public class Node {
@@ -598,6 +539,16 @@ public class Tree extends WidgetGroup {
 
 		public Drawable getIcon () {
 			return icon;
+		}
+
+		public int getLevel () {
+			int level = 0;
+			Node current = this;
+			do {
+				level++;
+				current = current.getParent();
+			} while (current != null);
+			return level;
 		}
 
 		/** Returns this node or the child node with the specified object, or null. */

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -40,12 +40,45 @@ public class Gdx2DPixmap implements Disposable {
 	public static final int GDX2D_BLEND_NONE = 0;
 	public static final int GDX2D_BLEND_SRC_OVER = 1;
 
-	final long basePtr;
-	final int width;
-	final int height;
-	final int format;
-	final ByteBuffer pixelPtr;
-	final long[] nativeData = new long[4];
+	public static int toGlFormat (int format) {
+		switch (format) {
+		case GDX2D_FORMAT_ALPHA:
+			return GL20.GL_ALPHA;
+		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+			return GL20.GL_LUMINANCE_ALPHA;
+		case GDX2D_FORMAT_RGB888:
+		case GDX2D_FORMAT_RGB565:
+			return GL20.GL_RGB;
+		case GDX2D_FORMAT_RGBA8888:
+		case GDX2D_FORMAT_RGBA4444:
+			return GL20.GL_RGBA;
+		default:
+			throw new GdxRuntimeException("unknown format: " + format);
+		}
+	}
+
+	public static int toGlType (int format) {
+		switch (format) {
+		case GDX2D_FORMAT_ALPHA:
+		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+		case GDX2D_FORMAT_RGB888:
+		case GDX2D_FORMAT_RGBA8888:
+			return GL20.GL_UNSIGNED_BYTE;
+		case GDX2D_FORMAT_RGB565:
+			return GL20.GL_UNSIGNED_SHORT_5_6_5;
+		case GDX2D_FORMAT_RGBA4444:
+			return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
+		default:
+			throw new GdxRuntimeException("unknown format: " + format);
+		}
+	}
+
+	long basePtr;
+	int width;
+	int height;
+	int format;
+	ByteBuffer pixelPtr;
+	long[] nativeData = new long[4];
 
 	static {
 		setBlend(GDX2D_BLEND_SRC_OVER);
@@ -53,13 +86,17 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
-		pixelPtr = load(nativeData, encodedData, offset, len, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
+		pixelPtr = load(nativeData, encodedData, offset, len);
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+
+		if (requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
 
 	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
@@ -72,19 +109,23 @@ public class Gdx2DPixmap implements Disposable {
 		}
 
 		buffer = bytes.toByteArray();
-		pixelPtr = load(nativeData, buffer, 0, buffer.length, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
+		pixelPtr = load(nativeData, buffer, 0, buffer.length);
+		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+
+		if (requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
 
 	/** @throws GdxRuntimeException if allocation failed. */
 	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new GdxRuntimeException("couldn't load pixmap");
+		if (pixelPtr == null) throw new GdxRuntimeException("Error loading pixmap.");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
@@ -100,6 +141,19 @@ public class Gdx2DPixmap implements Disposable {
 		this.format = (int)nativeData[3];
 	}
 
+	private void convert (int requestedFormat) {
+		Gdx2DPixmap pixmap = new Gdx2DPixmap(width, height, requestedFormat);
+		pixmap.drawPixmap(this, 0, 0, 0, 0, width, height);
+		dispose();
+		this.basePtr = pixmap.basePtr;
+		this.format = pixmap.format;
+		this.height = pixmap.height;
+		this.nativeData = pixmap.nativeData;
+		this.pixelPtr = pixmap.pixelPtr;
+		this.width = pixmap.width;
+	}
+
+	@Override
 	public void dispose () {
 		free(basePtr);
 	}
@@ -182,20 +236,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public int getGLInternalFormat () {
-		switch (format) {
-		case GDX2D_FORMAT_ALPHA:
-			return GL10.GL_ALPHA;
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
-			return GL10.GL_LUMINANCE_ALPHA;
-		case GDX2D_FORMAT_RGB888:
-		case GDX2D_FORMAT_RGB565:
-			return GL10.GL_RGB;
-		case GDX2D_FORMAT_RGBA8888:
-		case GDX2D_FORMAT_RGBA4444:
-			return GL10.GL_RGBA;
-		default:
-			throw new GdxRuntimeException("unknown format: " + format);
-		}
+		return toGlFormat(format);
 	}
 
 	public int getGLFormat () {
@@ -203,19 +244,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public int getGLType () {
-		switch (format) {
-		case GDX2D_FORMAT_ALPHA:
-		case GDX2D_FORMAT_LUMINANCE_ALPHA:
-		case GDX2D_FORMAT_RGB888:
-		case GDX2D_FORMAT_RGBA8888:
-			return GL10.GL_UNSIGNED_BYTE;
-		case GDX2D_FORMAT_RGB565:
-			return GL10.GL_UNSIGNED_SHORT_5_6_5;
-		case GDX2D_FORMAT_RGBA4444:
-			return GL10.GL_UNSIGNED_SHORT_4_4_4_4;
-		default:
-			throw new GdxRuntimeException("unknown format: " + format);
-		}
+		return toGlType(format);
 	}
 
 	public String getFormatString () {
@@ -242,15 +271,15 @@ public class Gdx2DPixmap implements Disposable {
 	#include <gdx2d/gdx2d.h>
 	#include <stdlib.h>
 	 */
-	
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*MANUAL	
+
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, requestedFormat);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
-	
+
 		if(pixmap==0)
 			return 0;
-	
+
 		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 		p_native_data[0] = (jlong)pixmap;
@@ -258,15 +287,15 @@ public class Gdx2DPixmap implements Disposable {
 		p_native_data[2] = pixmap->height;
 		p_native_data[3] = pixmap->format;
 		env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-	
+
 		return pixel_buffer;
-	*/
+	 */
 
 	private static native ByteBuffer newPixmap (long[] nativeData, int width, int height, int format); /*MANUAL
 		gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
 		if(pixmap==0)
 			return 0;
-	
+
 		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 		p_native_data[0] = (jlong)pixmap;
@@ -274,64 +303,64 @@ public class Gdx2DPixmap implements Disposable {
 		p_native_data[2] = pixmap->height;
 		p_native_data[3] = pixmap->format;
 		env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
-	
+
 		return pixel_buffer;
-	*/
+	 */
 
 	private static native void free (long pixmap); /*
 		gdx2d_free((gdx2d_pixmap*)pixmap);
-	*/
+	 */
 
 	private static native void clear (long pixmap, int color); /*
 		gdx2d_clear((gdx2d_pixmap*)pixmap, color);
-	*/
+	 */
 
 	private static native void setPixel (long pixmap, int x, int y, int color); /*
 		gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
-	*/
+	 */
 
 	private static native int getPixel (long pixmap, int x, int y); /*
 		return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
-	*/
+	 */
 
 	private static native void drawLine (long pixmap, int x, int y, int x2, int y2, int color); /*
 		gdx2d_draw_line((gdx2d_pixmap*)pixmap, x, y, x2, y2, color);
-	*/
+	 */
 
 	private static native void drawRect (long pixmap, int x, int y, int width, int height, int color); /*
 		gdx2d_draw_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
-	*/
+	 */
 
 	private static native void drawCircle (long pixmap, int x, int y, int radius, int color); /*
-		gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);	
-	*/
+		gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+	 */
 
 	private static native void fillRect (long pixmap, int x, int y, int width, int height, int color); /*
 		gdx2d_fill_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
-	*/
+	 */
 
 	private static native void fillCircle (long pixmap, int x, int y, int radius, int color); /*
 		gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
-	*/
+	 */
 
 	private static native void fillTriangle (long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
 		gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
-	*/
+	 */
 
 	private static native void drawPixmap (long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
 		int dstY, int dstWidth, int dstHeight); /*
 		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
-	*/
+		 */
 
 	public static native void setBlend (int blend); /*
 		gdx2d_set_blend(blend);
-	*/
+	 */
 
 	public static native void setScale (int scale); /*
 		gdx2d_set_scale(scale);
-	*/
+	 */
 
 	public static native String getFailureReason (); /*
      return env->NewStringUTF(gdx2d_get_failure_reason());
-   */
+	 */
 }

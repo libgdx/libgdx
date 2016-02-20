@@ -175,13 +175,13 @@ public class XmlReader {
 						while (_nacts-- > 0) {
 							switch (_xml_actions[_acts++]) {
 							case 0:
-								// line 94 "XmlReader.rl"
+							// line 94 "XmlReader.rl"
 							{
 								s = p;
 							}
 								break;
 							case 1:
-								// line 95 "XmlReader.rl"
+							// line 95 "XmlReader.rl"
 							{
 								char c = data[s];
 								if (c == '?' || c == '!') {
@@ -198,8 +198,6 @@ public class XmlReader {
 											p++;
 										text(new String(data, s, p - s - 2));
 									} else if (c == '!' && data[s + 1] == '-' && data[s + 2] == '-') {
-										// from http://www.w3.org/TR/REC-xml/#syntax
-										// Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
 										p = s + 3;
 										while (data[p] != '-' || data[p + 1] != '-' || data[p + 2] != '>')
 											p++;
@@ -218,7 +216,7 @@ public class XmlReader {
 							}
 								break;
 							case 2:
-								// line 125 "XmlReader.rl"
+							// line 125 "XmlReader.rl"
 							{
 								hasBody = false;
 								close();
@@ -230,7 +228,7 @@ public class XmlReader {
 							}
 								break;
 							case 3:
-								// line 130 "XmlReader.rl"
+							// line 130 "XmlReader.rl"
 							{
 								close();
 								{
@@ -241,7 +239,7 @@ public class XmlReader {
 							}
 								break;
 							case 4:
-								// line 134 "XmlReader.rl"
+							// line 134 "XmlReader.rl"
 							{
 								if (hasBody) {
 									cs = 15;
@@ -251,19 +249,19 @@ public class XmlReader {
 							}
 								break;
 							case 5:
-								// line 137 "XmlReader.rl"
+							// line 137 "XmlReader.rl"
 							{
 								attributeName = new String(data, s, p - s);
 							}
 								break;
 							case 6:
-								// line 140 "XmlReader.rl"
+							// line 140 "XmlReader.rl"
 							{
 								attribute(attributeName, new String(data, s, p - s));
 							}
 								break;
 							case 7:
-								// line 143 "XmlReader.rl"
+							// line 143 "XmlReader.rl"
 							{
 								int end = p;
 								while (end != s) {
@@ -301,7 +299,7 @@ public class XmlReader {
 									text(new String(data, s, end - s));
 							}
 								break;
-								// line 286 "XmlReader.java"
+							// line 286 "XmlReader.java"
 							}
 						}
 					}
@@ -436,6 +434,7 @@ public class XmlReader {
 		if (name.equals("amp")) return "&";
 		if (name.equals("apos")) return "'";
 		if (name.equals("quot")) return "\"";
+		if (name.startsWith("#x")) return Character.toString((char)Integer.parseInt(name.substring(2), 16));
 		return null;
 	}
 
@@ -495,9 +494,9 @@ public class XmlReader {
 		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
-		public Element getChild (int i) {
+		public Element getChild (int index) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			return children.get(i);
+			return children.get(index);
 		}
 
 		public void addChild (Element element) {

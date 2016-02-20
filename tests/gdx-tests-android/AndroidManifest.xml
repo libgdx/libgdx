@@ -4,12 +4,12 @@
       android:versionCode="1"
       android:versionName="1.0"
       android:installLocation="preferExternal">
-	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="16"/>
+	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
-	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-feature android:name="android.software.live_wallpaper" />
 		
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
@@ -18,14 +18,25 @@
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
+				<category android:name="tv.ouya.intent.category.GAME"/>
 			</intent-filter>
 		</activity>
 		
+		<activity android:name=".FragmentTestStarter"
+				  android:label="@string/app_name_fragments"
+				  android:configChanges="keyboard|keyboardHidden|orientation"
+				  android:screenOrientation="landscape">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
 		<activity android:name=".GdxTestActivity" 
 				  android:label="Gdx Test"
 				  android:configChanges="keyboard|keyboardHidden|orientation"
 				  android:screenOrientation="landscape"/>
-		
+
 		<activity android:name=".LivewallpaperSettings" 
 				  android:label="Livewallpaper Settings">
 			<intent-filter>

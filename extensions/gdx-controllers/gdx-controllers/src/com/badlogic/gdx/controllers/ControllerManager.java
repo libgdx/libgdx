@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.utils.Array;
@@ -24,4 +25,7 @@ public interface ControllerManager {
 	public void addListener (ControllerListener listener);
 
 	public void removeListener (ControllerListener listener);
+
+	/** Clear all listeners */
+	public void clearListeners ();
 }

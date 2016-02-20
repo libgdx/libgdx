@@ -18,9 +18,9 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
 import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.tests.bullet.CollisionWorldTest.TestContactResultCallback;
@@ -33,25 +33,24 @@ public class CollisionTest extends ShootTest {
 	Array<BulletEntity> hits = new Array<BulletEntity>();
 	Array<BulletEntity> contacts = new Array<BulletEntity>();
 	Array<Color> colors = new Array<Color>();
-	
-	public class TestContactResultCallback extends ContactResultCallback
-	{
+
+	public class TestContactResultCallback extends ContactResultCallback {
 		@Override
 		public float addSingleResult (btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0,
 			btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-			btCollisionObject other = colObj0Wrap.getCollisionObject() == projectile.body ?
-					colObj1Wrap.getCollisionObject() : colObj0Wrap.getCollisionObject();
+			btCollisionObject other = colObj0Wrap.getCollisionObject() == projectile.body ? colObj1Wrap.getCollisionObject()
+				: colObj0Wrap.getCollisionObject();
 			if (other != null && other.userData != null && other.userData instanceof BulletEntity) {
 				BulletEntity ent = (BulletEntity)other.userData;
-				if (ent != ground && !hits.contains(ent, true))
-					hits.add((BulletEntity)other.userData);
+				if (ent != ground && !hits.contains(ent, true)) hits.add((BulletEntity)other.userData);
 			}
 			return 0f;
 		}
 	}
+
 	TestContactResultCallback contactCB;
-	
-	public void updateContactInfo() {
+
+	public void updateContactInfo () {
 		int n = world.dispatcher.getNumManifolds();
 		for (int i = 0; i < n; i++) {
 			btPersistentManifold manifold = world.dispatcher.getManifoldByIndexInternal(i);
@@ -59,14 +58,12 @@ public class CollisionTest extends ShootTest {
 			btCollisionObject objB = manifold.getBody1();
 			if (objA != ground.body && objB != ground.body) {
 				if (objA.userData != null && objA.userData instanceof BulletEntity) {
-					BulletEntity ent = (BulletEntity)objA.userData; 
-					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true))
-						contacts.add(ent);
+					BulletEntity ent = (BulletEntity)objA.userData;
+					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true)) contacts.add(ent);
 				}
 				if (objB.userData != null && objB.userData instanceof BulletEntity) {
 					BulletEntity ent = (BulletEntity)objB.userData;
-					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true))
-						contacts.add(ent);
+					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true)) contacts.add(ent);
 				}
 			}
 		}
@@ -75,30 +72,31 @@ public class CollisionTest extends ShootTest {
 	@Override
 	public void create () {
 		super.create();
-		
+
 		contactCB = new TestContactResultCallback();
 	}
-	
+
 	@Override
 	public void render () {
 		process();
 	}
-	
+
 	private Pool<Color> colorPool = new Pool<Color>() {
-		@Override 
+		@Override
 		protected Color newObject () {
 			return new Color();
 		}
 	};
-	public void process() {
+
+	public void process () {
 		Color color = null;
 		update();
 		hits.clear();
 		contacts.clear();
-		
+
 		// Note that this might miss collisions, use InternalTickCallback to check for collision on every tick.
 		// See InternalTickTest on how to implement it.
-		
+
 		// Check what the projectile hits
 		if (projectile != null) {
 			color = projectile.getColor();
@@ -107,7 +105,7 @@ public class CollisionTest extends ShootTest {
 		}
 		// Check for other collisions
 		updateContactInfo();
-		
+
 		if (hits.size > 0) {
 			for (int i = 0; i < hits.size; i++) {
 				colors.add(colorPool.obtain().set(hits.get(i).getColor()));
@@ -121,22 +119,21 @@ public class CollisionTest extends ShootTest {
 			}
 		}
 		render(false);
-		if (projectile != null)
-			projectile.setColor(color);
+		if (projectile != null) projectile.setColor(color);
 		for (int i = 0; i < hits.size; i++)
 			hits.get(i).setColor(colors.get(i));
 		for (int i = 0; i < contacts.size; i++)
-			contacts.get(i).setColor(colors.get(hits.size+i));
+			contacts.get(i).setColor(colors.get(hits.size + i));
 		colorPool.freeAll(colors);
 		colors.clear();
 	}
-	
+
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
 		projectile = shoot(x, y);
 		return true;
 	}
-	
+
 	@Override
 	public void dispose () {
 		super.dispose();

@@ -41,8 +41,6 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 		PooledEffect (ParticleEffect effect) {
 			super(effect);
 		}
-		
-		
 
 		@Override
 		public void reset () {

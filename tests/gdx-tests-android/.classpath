@@ -5,14 +5,13 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-tests"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-audio"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers-android"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="lib" path="/gdx-backend-android/libs/support-v4-19.0.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

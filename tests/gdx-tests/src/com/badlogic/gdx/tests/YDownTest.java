@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -54,10 +54,10 @@ public class YDownTest extends GdxTest {
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
-		
+
 		// a texture atlas, note the boolean
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
-		
+
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");
 		sprite.setPosition(0, 0);
@@ -73,8 +73,8 @@ public class YDownTest extends GdxTest {
 		// a stage which uses our y-down camera and a simple actor (see MyActor below),
 		// which uses the flipped region. The key here is to
 		// set our y-down camera on the stage, the rest is just for demo purposes.
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		stage.setCamera(camera);
+		stage = new Stage();
+		stage.getViewport().setCamera(camera);
 		image = new MyActor(region);
 		image.setPosition(100, 100);
 		stage.addActor(image);
@@ -93,7 +93,7 @@ public class YDownTest extends GdxTest {
 	public void render () {
 		// clear the screen, update the camera and make the sprite batch
 		// use its matrices.
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
@@ -150,7 +150,7 @@ public class YDownTest extends GdxTest {
 
 					// adjust the actor's position by (current mouse position - last mouse position)
 					// in the actor's coordinate system.
-					translate(x - lastX, y - lastY);
+					moveBy(x - lastX, y - lastY);
 
 					// save the current mouse position as the basis for the next drag event.
 					// we adjust by the same delta so next time drag is called, lastX/lastY

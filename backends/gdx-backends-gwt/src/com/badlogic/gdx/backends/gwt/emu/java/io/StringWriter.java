@@ -11,8 +11,16 @@
 package java.io;
 
 public class StringWriter extends Writer {
-	private final StringBuilder out = new StringBuilder();
+	private final StringBuilder out;
 
+	public StringWriter() {
+		out = new StringBuilder();
+	}
+	
+	public StringWriter(int initialCapacity) {
+		out = new StringBuilder(initialCapacity);
+	}
+	
 	public void write (char[] b, int offset, int length) throws IOException {
 		out.append(b, offset, length);
 	}

@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,11 +27,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class AnimationTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	class Caveman {
 		static final float VELOCITY = 20;
@@ -84,7 +79,7 @@ public class AnimationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		for (int i = 0; i < cavemen.length; i++) {
 			Caveman caveman = cavemen[i];

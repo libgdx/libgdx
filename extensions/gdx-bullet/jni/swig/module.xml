@@ -32,7 +32,7 @@
 			<arg value="${module.package}" />
 			<arg value="-I${basedir}/../src/bullet" />
 			<arg value="-I${basedir}/../src/custom" />
-			<arg value="-I${basedir}/../src/extras/serialize" />
+			<arg value="-I${basedir}/../src/extras/Serialize" />
 			<!-- Disable Bullet profiling -->
 			<arg value="-DBT_NO_PROFILE" />
 			<arg value="-outdir" />
@@ -51,6 +51,8 @@
 			<regexp pattern="(SwigDirector_[\w]+) \*director = dynamic_cast&lt;(SwigDirector_[\w]+ \*)&gt;\(obj\);" />
 			<substitution expression="\1 *director = (\2)(obj);" />
 		</replaceregexp>
+		
+		<replace file="${module.wrapper}" token="bool ExceptionMatches" value="inline bool ExceptionMatches" />
 
 	</target>
 	

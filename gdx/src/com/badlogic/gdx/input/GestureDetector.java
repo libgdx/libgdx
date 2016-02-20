@@ -261,8 +261,8 @@ public class GestureDetector extends InputAdapter {
 		inTapSquare = false;
 	}
 
-	public void setTapSquareSize (int tapSquareSize) {
-		this.tapSquareSize = tapSquareSize;
+	public void setTapSquareSize (float halfTapSquareSize) {
+		this.tapSquareSize = halfTapSquareSize;
 	}
 
 	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps. */

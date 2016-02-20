@@ -13,101 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers;
 
 import java.util.ResourceBundle.Control;
 
 import com.badlogic.gdx.math.Vector3;
 
-/** Registered with {@link Controllers} or a specific
- * {@link Controller} instance to receive events.
+/** Registered with {@link Controllers} or a specific {@link Controller} instance to receive events.
  * @author Nathan Sweet */
 public interface ControllerListener {
-	/**
-	 * A {@link Controller} got connected.
-	 * @param controller
-	 */
-	public void connected(Controller controller);
-	
-	/**
-	 * A {@link Controller} got disconnected.
-	 * @param controller
-	 */
-	public void disconnected(Controller controller);
-	
-	/**
-	 * A button on the {@link Controller} was pressed. The 
-	 * buttonCode is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts button constants for known controllers.
+	/** A {@link Controller} got connected.
+	 * @param controller */
+	public void connected (Controller controller);
+
+	/** A {@link Controller} got disconnected.
+	 * @param controller */
+	public void disconnected (Controller controller);
+
+	/** A button on the {@link Controller} was pressed. The buttonCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts button constants for known controllers.
 	 * @param controller
 	 * @param buttonCode
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean buttonDown (Controller controller, int buttonCode);
 
-	/**
-	 * A button on the {@link Controller} was released. The
-	 * buttonCode is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts button constants for known controllers.
+	/** A button on the {@link Controller} was released. The buttonCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts button constants for known controllers.
 	 * @param controller
 	 * @param buttonCode
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean buttonUp (Controller controller, int buttonCode);
 
-	/**
-	 * An axis on the {@link Controller} moved. The axisCode is controller specific.
-	 * The axis value is in the range [-1, 1]. The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts axes constants for known controllers.
+	/** An axis on the {@link Controller} moved. The axisCode is controller specific. The axis value is in the range [-1, 1]. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts axes constants for known controllers.
 	 * @param controller
 	 * @param axisCode
 	 * @param value the axis value, -1 to 1
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean axisMoved (Controller controller, int axisCode, float value);
 
-	/**
-	 * A POV on the {@link Controller} moved. The povCode is controller specific.
-	 * The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts POV constants for known controllers.
+	/** A POV on the {@link Controller} moved. The povCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts POV constants for known controllers.
 	 * @param controller
 	 * @param povCode
 	 * @param value
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean povMoved (Controller controller, int povCode, PovDirection value);
 
-	/**
-	 * An x-slider on the {@link Controller} moved. The sliderCode is controller specific.
-	 * The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts slider constants for known controllers.
+	/** An x-slider on the {@link Controller} moved. The sliderCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts slider constants for known controllers.
 	 * @param controller
 	 * @param sliderCode
 	 * @param value
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean xSliderMoved (Controller controller, int sliderCode, boolean value);
 
-	/**
-	 * An y-slider on the {@link Controller} moved. The sliderCode is controller specific.
-	 * The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts slider constants for known controllers.
+	/** An y-slider on the {@link Controller} moved. The sliderCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts slider constants for known controllers.
 	 * @param controller
 	 * @param sliderCode
 	 * @param value
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean ySliderMoved (Controller controller, int sliderCode, boolean value);
 
-	/**
-	 * An accelerometer value on the {@link Controller} changed. The accelerometerCode is
-	 * controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
-	 * package hosts slider constants for known controllers. The value is a {@link Vector3}
-	 * representing the acceleration on a 3-axis accelerometer in m/s^2.
+	/** An accelerometer value on the {@link Controller} changed. The accelerometerCode is controller specific. The
+	 * <code>com.badlogic.gdx.controllers.mapping</code> package hosts slider constants for known controllers. The value is a
+	 * {@link Vector3} representing the acceleration on a 3-axis accelerometer in m/s^2.
 	 * @param controller
 	 * @param accelerometerCode
 	 * @param value
-	 * @return whether to hand the event to other listeners.
-	 */
+	 * @return whether to hand the event to other listeners. */
 	public boolean accelerometerMoved (Controller controller, int accelerometerCode, Vector3 value);
 }

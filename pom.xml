@@ -10,13 +10,13 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.9.3-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
-  <description>Android/desktop game development framework.</description>
+  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
-    <url>https://code.google.com/p/libgdx/issues/list</url>
+    <url>https://github.com/libgdx/libgdx/issues</url>
   </issueManagement>
 
   <licenses>
@@ -42,26 +42,32 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <android.version>4.2</android.version>
-    <gwt.version>2.5.0</gwt.version>
-    <lwjgl.version>2.9.0</lwjgl.version>
-    <robovm.version>0.0.6</robovm.version>
+    <android.version>4.4</android.version>
+    <gwt.version>2.6.1</gwt.version>
+    <lwjgl.version>2.9.2</lwjgl.version>
+    <lwjgl3.version>3.0.0b</lwjgl3.version>
+    <jglfw.version>1.1</jglfw.version>
+    <robovm.version>1.9.0</robovm.version>
   </properties>
 
   <modules>
     <module>extensions/gdx-jnigen</module>
     <module>gdx</module>
     <module>gdx/jni/maven</module>
-    <module>backends/gdx-openal</module>
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
+    <module>backends/gdx-backend-lwjgl3</module>
+    <module>backends/gdx-backend-jglfw</module>
     <module>backends/gdx-backends-gwt</module>
+    <module>backends/gdx-backend-headless</module>
     <module>extensions/gdx-tools</module>
-    <module>extensions/gdx-freetype</module>
-    <module>extensions/gdx-freetype/jni/maven</module>
+    <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
+    <module>extensions/gdx-controllers</module>
+    <module>extensions/gdx-freetype</module>
+    <module>extensions/gdx-freetype/jni/maven</module>    
   </modules>
 
   <build>
@@ -75,16 +81,12 @@
           <target>1.6</target>
           <fork>true</fork>
           <showWarnings>true</showWarnings>
-<!--
-          <showDeprecation>true</showDeprecation>
-          <compilerArgument>-Xlint" "-Xlint:-serial" "-Xlint:-path</compilerArgument>
--->
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>2.6</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -92,12 +94,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.17</version>
         <configuration>
           <includes><include>**/*Test.java</include></includes>
         </configuration>
@@ -105,10 +107,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.9.1</version>
         <configuration>
           <quiet>true</quiet>
           <show>public</show>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
       </plugin>
       <plugin>

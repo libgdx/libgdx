@@ -32,7 +32,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 //import android.content.pm.ConfigurationInfo;
 import android.graphics.PixelFormat;
-import android.opengl.GLSurfaceView;
+import android.opengl.GLDebugHelper;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
 //import android.os.SystemProperties;
@@ -43,13 +43,13 @@ import android.view.SurfaceView;
 
 /**
  * 
- *************************************************************************** 
- * NOTE:                                                                   *
- * This class is a slightly modified copy of android.opengl.GLSurfaceView  *
- * from Android 4.3 source code (API 18).                                  *
- ***************************************************************************
+ * <b>This class is a slightly modified copy of android.opengl.GLSurfaceView
+ * from Android 4.3 source code (API 18).
+ * It is intended to be used on Android 2.x if you need proper support for
+ * onAttachedToWindow and onDetachedFromWindow methods.<b>
+ * <p>
  * 
- * An implementation of SurfaceView that uses the dedicated surface for
+ * It's an implementation of SurfaceView that uses the dedicated surface for
  * displaying OpenGL rendering.
  * <p>
  * A GLSurfaceView provides the following features:
@@ -217,15 +217,12 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      */
     public final static int DEBUG_LOG_GL_CALLS = 2;
 
-    final ResolutionStrategy resolutionStrategy;
-
     /**
      * Standard View constructor. In order to render something, you
      * must call {@link #setRenderer} to register a renderer.
      */
-    public GLSurfaceViewAPI18(Context context, ResolutionStrategy resolutionStrategy) {
+    public GLSurfaceViewAPI18(Context context) {
         super(context);
-        this.resolutionStrategy = resolutionStrategy;
         init();
     }
 
@@ -233,16 +230,9 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      * Standard View constructor. In order to render something, you
      * must call {@link #setRenderer} to register a renderer.
      */
-    public GLSurfaceViewAPI18(Context context, AttributeSet attrs, ResolutionStrategy resolutionStrategy) {
+    public GLSurfaceViewAPI18(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.resolutionStrategy = resolutionStrategy;
         init();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(measures.width, measures.height);
     }
 
     @Override
@@ -258,21 +248,19 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
         }
     }
 
-    @SuppressWarnings("deprecation")
 	private void init() {
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+        int sdkVersion = android.os.Build.VERSION.SDK_INT;
         // setFormat is done by SurfaceView in SDK 2.3 and newer.
         if (sdkVersion <= 8) {	// SDK 2.2 or older
             holder.setFormat(PixelFormat.RGB_565);
         }
-        // setType is not needed for SDK 2.0 or newer.
-        if (sdkVersion <= 4) {	// SDK 1.6 or older
-            holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-        }
+        // setType is not needed for SDK 2.0 or newer. Uncomment this
+        // statement if back-porting this code to older SDKs.
+        // holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
     }
 
     /**
@@ -779,7 +767,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      * An interface for customizing the eglCreateContext and eglDestroyContext calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory)}
+     * {@link GLSurfaceViewAPI18#setEGLContextFactory(EGLContextFactory)}
      */
     public interface EGLContextFactory {
         EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
@@ -813,7 +801,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      * An interface for customizing the eglCreateWindowSurface and eglDestroySurface calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLWindowSurfaceFactory(android.opengl.GLSurfaceView.EGLWindowSurfaceFactory)}
+     * {@link GLSurfaceViewAPI18#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
      */
     public interface EGLWindowSurfaceFactory {
         /**
@@ -1220,8 +1208,46 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
             Log.w(tag, formatEglError(function, error));
         }
 
+        // Method taken from class android.opengl.EGLLogWrapper which is package-private
+        private static String getErrorString(int error) {
+            switch (error) {
+            case EGL10.EGL_SUCCESS:
+                return "EGL_SUCCESS";
+            case EGL10.EGL_NOT_INITIALIZED:
+                return "EGL_NOT_INITIALIZED";
+            case EGL10.EGL_BAD_ACCESS:
+                return "EGL_BAD_ACCESS";
+            case EGL10.EGL_BAD_ALLOC:
+                return "EGL_BAD_ALLOC";
+            case EGL10.EGL_BAD_ATTRIBUTE:
+                return "EGL_BAD_ATTRIBUTE";
+            case EGL10.EGL_BAD_CONFIG:
+                return "EGL_BAD_CONFIG";
+            case EGL10.EGL_BAD_CONTEXT:
+                return "EGL_BAD_CONTEXT";
+            case EGL10.EGL_BAD_CURRENT_SURFACE:
+                return "EGL_BAD_CURRENT_SURFACE";
+            case EGL10.EGL_BAD_DISPLAY:
+                return "EGL_BAD_DISPLAY";
+            case EGL10.EGL_BAD_MATCH:
+                return "EGL_BAD_MATCH";
+            case EGL10.EGL_BAD_NATIVE_PIXMAP:
+                return "EGL_BAD_NATIVE_PIXMAP";
+            case EGL10.EGL_BAD_NATIVE_WINDOW:
+                return "EGL_BAD_NATIVE_WINDOW";
+            case EGL10.EGL_BAD_PARAMETER:
+                return "EGL_BAD_PARAMETER";
+            case EGL10.EGL_BAD_SURFACE:
+                return "EGL_BAD_SURFACE";
+            case EGL11.EGL_CONTEXT_LOST:
+                return "EGL_CONTEXT_LOST";
+            default:
+                return "0x" + Integer.toHexString(error);
+            }
+        }
+
         public static String formatEglError(String function, int error) {
-            return function + " failed: " + EGLLogWrapper.getErrorString(error);
+            return function + " failed: " + getErrorString(error);
         }
 
         private WeakReference<GLSurfaceViewAPI18> mGLSurfaceViewWeakRef;
@@ -1920,8 +1946,8 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
 //                        "ro.opengles.version",
 //                        ConfigurationInfo.GL_ES_VERSION_UNDEFINED);
             	// SystemProperties is a hidden class that is not part of the public SDK
-            	// so we force GL ES version lower than 2.0
-                mGLESVersion = kGLES_20 / 2;
+            	// so we force GL ES version to 2.0
+                mGLESVersion = kGLES_20;
                 if (mGLESVersion >= kGLES_20) {
                     mMultipleGLESContextsAllowed = true;
                 }

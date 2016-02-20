@@ -36,7 +36,7 @@ public class ParticleEffectLoader extends SynchronousAssetLoader<ParticleEffect,
 	public ParticleEffect load (AssetManager am, String fileName, FileHandle file, ParticleEffectParameter param) {
 		ParticleEffect effect = new ParticleEffect();
 		if (param != null && param.atlasFile != null)
-			effect.load(file, am.get(param.atlasFile, TextureAtlas.class));
+			effect.load(file, am.get(param.atlasFile, TextureAtlas.class), param.atlasPrefix);
 		else if (param != null && param.imagesDir != null)
 			effect.load(file, param.imagesDir);
 		else
@@ -48,7 +48,7 @@ public class ParticleEffectLoader extends SynchronousAssetLoader<ParticleEffect,
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, ParticleEffectParameter param) {
 		Array<AssetDescriptor> deps = null;
 		if (param != null && param.atlasFile != null) {
-			deps = new Array<AssetDescriptor>();
+			deps = new Array();
 			deps.add(new AssetDescriptor<TextureAtlas>(param.atlasFile, TextureAtlas.class));
 		}
 		return deps;
@@ -59,6 +59,8 @@ public class ParticleEffectLoader extends SynchronousAssetLoader<ParticleEffect,
 	public static class ParticleEffectParameter extends AssetLoaderParameters<ParticleEffect> {
 		/** Atlas file name. */
 		public String atlasFile;
+		/** Optional prefix to image names **/
+		public String atlasPrefix;
 		/** Image directory. */
 		public FileHandle imagesDir;
 	}

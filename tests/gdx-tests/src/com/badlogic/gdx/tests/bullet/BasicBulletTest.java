@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -28,12 +29,9 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
@@ -46,7 +44,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBodyConstructionInfo;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.Array;
@@ -56,7 +54,7 @@ public class BasicBulletTest extends BulletTest {
 	ModelBatch modelBatch;
 	Environment lights;
 	ModelBuilder modelBuilder = new ModelBuilder();
-	
+
 	btCollisionConfiguration collisionConfiguration;
 	btCollisionDispatcher dispatcher;
 	btBroadphaseInterface broadphase;
@@ -70,17 +68,17 @@ public class BasicBulletTest extends BulletTest {
 	Array<btDefaultMotionState> motionStates = new Array<btDefaultMotionState>();
 	Array<btRigidBodyConstructionInfo> bodyInfos = new Array<btRigidBodyConstructionInfo>();
 	Array<btCollisionShape> shapes = new Array<btCollisionShape>();
-	Array<btRigidBody> bodies = new Array<btRigidBody>();	
+	Array<btRigidBody> bodies = new Array<btRigidBody>();
 
 	@Override
 	public void create () {
 		super.create();
 		instructions = "Swipe for next test";
-		
+
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.2f, 0.2f, 0.2f, 1.f));
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f));
-		
+
 		// Set up the camera
 		final float width = Gdx.graphics.getWidth();
 		final float height = Gdx.graphics.getHeight();
@@ -94,13 +92,33 @@ public class BasicBulletTest extends BulletTest {
 		// Create the model batch
 		modelBatch = new ModelBatch();
 		// Create some basic models
-		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, 
-			new Material(ColorAttribute.createDiffuse(Color.BLUE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
-			Usage.Position | Usage.Normal);
+		final Model groundModel = modelBuilder.createRect(
+			20f,
+			0f,
+			-20f,
+			-20f,
+			0f,
+			-20f,
+			-20f,
+			0f,
+			20f,
+			20f,
+			0f,
+			20f,
+			0,
+			1,
+			0,
+			new Material(ColorAttribute.createDiffuse(Color.BLUE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+				.createShininess(16f)), Usage.Position | Usage.Normal);
 		models.add(groundModel);
-		final Model sphereModel = modelBuilder.createSphere(1f, 1f, 1f, 10, 10,
-			new Material(ColorAttribute.createDiffuse(Color.RED), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), 
-			Usage.Position | Usage.Normal);
+		final Model sphereModel = modelBuilder.createSphere(
+			1f,
+			1f,
+			1f,
+			10,
+			10,
+			new Material(ColorAttribute.createDiffuse(Color.RED), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+				.createShininess(64f)), Usage.Position | Usage.Normal);
 		models.add(sphereModel);
 		// Load the bullet library
 		BaseBulletTest.init(); // Normally use: Bullet.init();
@@ -134,10 +152,10 @@ public class BasicBulletTest extends BulletTest {
 		// Create the spheres
 		for (float x = -10f; x <= 10f; x += 2f) {
 			for (float y = 5f; y <= 15f; y += 2f) {
-				for (float z = 0f; z <= 0f; z+= 2f) {
+				for (float z = 0f; z <= 0f; z += 2f) {
 					ModelInstance sphere = new ModelInstance(sphereModel);
 					instances.add(sphere);
-					sphere.transform.trn(x+0.1f*MathUtils.random(), y+0.1f*MathUtils.random(), z+0.1f*MathUtils.random());
+					sphere.transform.trn(x + 0.1f * MathUtils.random(), y + 0.1f * MathUtils.random(), z + 0.1f * MathUtils.random());
 					btDefaultMotionState sphereMotionState = new btDefaultMotionState();
 					sphereMotionState.setWorldTransform(sphere.transform);
 					motionStates.add(sphereMotionState);
@@ -149,33 +167,33 @@ public class BasicBulletTest extends BulletTest {
 			}
 		}
 	}
-	
+
 	@Override
 	public void render () {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
 		fpsCounter.put(Gdx.graphics.getFramesPerSecond());
-		
+
 		performanceCounter.tick();
 		performanceCounter.start();
 		((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), 5);
 		performanceCounter.stop();
-		
+
 		int c = motionStates.size;
 		for (int i = 0; i < c; i++) {
 			motionStates.get(i).getWorldTransform(instances.get(i).transform);
 		}
-		
+
 		modelBatch.begin(camera);
 		modelBatch.render(instances, lights);
 		modelBatch.end();
-		
+
 		performance.setLength(0);
 		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
-			.append((int)(performanceCounter.load.value*100f)).append("%");
+			.append((int)(performanceCounter.load.value * 100f)).append("%");
 	}
-	
+
 	@Override
 	public void dispose () {
 		collisionWorld.dispose();
@@ -183,7 +201,7 @@ public class BasicBulletTest extends BulletTest {
 		broadphase.dispose();
 		dispatcher.dispose();
 		collisionConfiguration.dispose();
-		
+
 		for (btRigidBody body : bodies)
 			body.dispose();
 		bodies.clear();
@@ -196,7 +214,7 @@ public class BasicBulletTest extends BulletTest {
 		for (btRigidBodyConstructionInfo info : bodyInfos)
 			info.dispose();
 		bodyInfos.clear();
-		
+
 		modelBatch.dispose();
 		instances.clear();
 		for (Model model : models)

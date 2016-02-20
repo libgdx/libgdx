@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.badlogicgames.gdx</groupId>
+        <artifactId>gdx-controllers-parent</artifactId>
+        <version>1.9.3-SNAPSHOT</version>
+        <relativePath>../../../</relativePath>
+    </parent>
+    
+    <artifactId>gdx-controllers-platform</artifactId>
+    <packaging>jar</packaging>
+    <name>libGDX Controllers Native Libraries</name>
+    
+    <properties>
+        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-controllers/</base.url>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>gdx-controllers</artifactId>
+        <version>${project.version}</version>        
+    </dependency>
+    </dependencies>
+    
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        
+        <plugins>
+            <!-- first download an unpack the native libraries -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>maven-download-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>desktop</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+                            <url>${base.url}/gdx-controllers-desktop-natives.jar</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.directory}/desktop</outputDirectory>
+                        </configuration>
+                    </execution>                                     
+                </executions>
+            </plugin>
+            
+            <!-- if we have pre-built versions, replace the downloaded versions with those -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-local-desktop</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/linux32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/linux64</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx64</directory></resource>
+                                <resource><directory>${basedir}/../../libs/windows32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/windows64</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/desktop</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>                    
+                </executions>
+            </plugin>
+            
+            <!-- finally package everything up into jar files -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>desktop.xml</descriptor>                        
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

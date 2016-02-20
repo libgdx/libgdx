@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.gwt;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,17 +40,18 @@ public class GwtFileHandle extends FileHandle {
 	private final String file;
 	private final FileType type;
 
-	protected GwtFileHandle (Preloader preloader, String fileName, FileType type) {
-		if (type != FileType.Internal && type != FileType.Classpath) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
+	public GwtFileHandle (Preloader preloader, String fileName, FileType type) {
+		if (type != FileType.Internal && type != FileType.Classpath)
+			throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
 		this.preloader = preloader;
-		this.file = fileName.replace('\\', '/');
+		this.file = fixSlashes(fileName);
 		this.type = type;
 	}
 
 	public GwtFileHandle (String path) {
 		this.type = FileType.Internal;
 		this.preloader = ((GwtApplication)Gdx.app).getPreloader();
-		this.file = path.replace('\\', '/');
+		this.file = fixSlashes(path);
 	}
 
 	public String path () {
@@ -57,9 +60,7 @@ public class GwtFileHandle extends FileHandle {
 
 	public String name () {
 		int index = file.lastIndexOf('/');
-		index = Math.max(index, file.lastIndexOf('\\'));
 		if (index < 0) return file;
-		// FIXME for paths
 		return file.substring(index + 1);
 	}
 
@@ -82,7 +83,7 @@ public class GwtFileHandle extends FileHandle {
 		String path = file;
 		int dotIndex = path.lastIndexOf('.');
 		if (dotIndex == -1) return path;
-		return path.substring(0, dotIndex).replace('\\', '/');
+		return path.substring(0, dotIndex);
 	}
 
 	public FileType type () {
@@ -291,12 +292,28 @@ public class GwtFileHandle extends FileHandle {
 		return preloader.list(file);
 	}
 
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FileFilter filter) {
+		return preloader.list(file, filter);
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FilenameFilter filter) {
+		return preloader.list(file, filter);
+	}
+
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
 	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
 	 * will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (String suffix) {
-		throw new GdxRuntimeException("Not implemented");
+		return preloader.list(file, suffix);
 	}
 
 	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
@@ -310,19 +327,19 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		return new GwtFileHandle(preloader, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name, FileType.Internal);
+		return new GwtFileHandle(preloader, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name,
+			FileType.Internal);
 	}
 
 	public FileHandle parent () {
 		int index = file.lastIndexOf("/");
 		String dir = "";
-		if (index > 0) dir = file.substring(0, index + 1);
+		if (index > 0) dir = file.substring(0, index);
 		return new GwtFileHandle(preloader, dir, type);
 	}
 
 	public FileHandle sibling (String name) {
-		name = name.replace('\\', '/');
-		return parent().child(name);
+		return parent().child(fixSlashes(name));
 	}
 
 	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
@@ -383,4 +400,13 @@ public class GwtFileHandle extends FileHandle {
 	public String toString () {
 		return file;
 	}
+
+	private static String fixSlashes(String path) {
+		path = path.replace('\\', '/');
+		if (path.endsWith("/")) {
+			path = path.substring(0, path.length() - 1);
+		}
+		return path;
+	}
+
 }

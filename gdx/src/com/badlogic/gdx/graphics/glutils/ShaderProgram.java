@@ -32,11 +32,11 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Array;
 
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program useable with OpenGL ES 2.0.
@@ -69,7 +69,7 @@ import com.badlogic.gdx.utils.Array;
 public class ShaderProgram implements Disposable {
 	/** default name for position attributes **/
 	public static final String POSITION_ATTRIBUTE = "a_position";
-	/** default name for normal attribtues **/
+	/** default name for normal attributes **/
 	public static final String NORMAL_ATTRIBUTE = "a_normal";
 	/** default name for color attributes **/
 	public static final String COLOR_ATTRIBUTE = "a_color";
@@ -83,13 +83,21 @@ public class ShaderProgram implements Disposable {
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;
 
+	/** code that is always added to the vertex shader code, typically used to inject a #version line. Note that this is added
+	 * as-is, you should include a newline (`\n`) if needed. */
+	public static String prependVertexCode = "";
+
+	/** code that is always added to every fragment shader code, typically used to inject a #version line. Note that this is added
+	 * as-is, you should include a newline (`\n`) if needed. */
+	public static String prependFragmentCode = "";
+
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
 
-	/** whether this program compiled succesfully **/
+	/** whether this program compiled successfully **/
 	private boolean isCompiled;
 
 	/** uniform lookup **/
@@ -137,15 +145,10 @@ public class ShaderProgram implements Disposable {
 	/** whether this shader was invalidated **/
 	private boolean invalidated;
 
-	/** direct buffer for passing float and int uniform arrays **/
-	private ByteBuffer buffer = null;
-	private FloatBuffer floatBuffer = null;
-	private IntBuffer intBuffer = null;
-
 	/** reference count **/
 	private int refCount = 0;
 
-	/** Construcs a new ShaderProgram and immediately compiles it.
+	/** Constructs a new ShaderProgram and immediately compiles it.
 	 * 
 	 * @param vertexShader the vertex shader
 	 * @param fragmentShader the fragment shader */
@@ -153,6 +156,11 @@ public class ShaderProgram implements Disposable {
 	public ShaderProgram (String vertexShader, String fragmentShader) {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
+
+		if (prependVertexCode != null && prependVertexCode.length() > 0)
+			vertexShader = prependVertexCode + vertexShader;
+		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
+			fragmentShader = prependFragmentCode + fragmentShader;
 
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
@@ -183,7 +191,7 @@ public class ShaderProgram implements Disposable {
 			return;
 		}
 
-		program = linkProgram();
+		program = linkProgram(createProgram());
 		if (program == -1) {
 			isCompiled = false;
 			return;
@@ -193,7 +201,7 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private int loadShader (int type, String source) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		IntBuffer intbuf = BufferUtils.newIntBuffer(1);
 
 		int shader = gl.glCreateShader(type);
@@ -217,10 +225,15 @@ public class ShaderProgram implements Disposable {
 		return shader;
 	}
 
-	private int linkProgram () {
-		GL20 gl = Gdx.graphics.getGL20();
+	protected int createProgram () {
+		GL20 gl = Gdx.gl20;
 		int program = gl.glCreateProgram();
-		if (program == 0) return -1;
+		return program != 0 ? program : -1;
+	}
+
+	private int linkProgram (int program) {
+		GL20 gl = Gdx.gl20;
+		if (program == -1) return -1;
 
 		gl.glAttachShader(program, vertexShaderHandle);
 		gl.glAttachShader(program, fragmentShaderHandle);
@@ -267,7 +280,7 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private int fetchAttributeLocation (String name) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		// -2 == not yet cached
 		// -1 == cached but not found
 		int location;
@@ -278,13 +291,12 @@ public class ShaderProgram implements Disposable {
 		return location;
 	}
 
-	
 	private int fetchUniformLocation (String name) {
 		return fetchUniformLocation(name, pedantic);
 	}
 
 	public int fetchUniformLocation (String name, boolean pedantic) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		// -2 == not yet cached
 		// -1 == cached but not found
 		int location;
@@ -296,65 +308,61 @@ public class ShaderProgram implements Disposable {
 		return location;
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value the value */
 	public void setUniformi (String name, int value) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform1i(location, value);
 	}
-	
+
 	public void setUniformi (int location, int value) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform1i(location, value);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
 	 * @param value2 the second value */
 	public void setUniformi (String name, int value1, int value2) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform2i(location, value1, value2);
 	}
-	
+
 	public void setUniformi (int location, int value1, int value2) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform2i(location, value1, value2);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
 	 * @param value2 the second value
 	 * @param value3 the third value */
 	public void setUniformi (String name, int value1, int value2, int value3) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform3i(location, value1, value2, value3);
 	}
-	
+
 	public void setUniformi (int location, int value1, int value2, int value3) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform3i(location, value1, value2, value3);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -362,77 +370,73 @@ public class ShaderProgram implements Disposable {
 	 * @param value3 the third value
 	 * @param value4 the fourth value */
 	public void setUniformi (String name, int value1, int value2, int value3, int value4) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform4i(location, value1, value2, value3, value4);
 	}
-	
+
 	public void setUniformi (int location, int value1, int value2, int value3, int value4) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform4i(location, value1, value2, value3, value4);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value the value */
 	public void setUniformf (String name, float value) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform1f(location, value);
 	}
-	
+
 	public void setUniformf (int location, float value) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform1f(location, value);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
 	 * @param value2 the second value */
 	public void setUniformf (String name, float value1, float value2) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform2f(location, value1, value2);
 	}
-	
+
 	public void setUniformf (int location, float value1, float value2) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform2f(location, value1, value2);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
 	 * @param value2 the second value
 	 * @param value3 the third value */
 	public void setUniformf (String name, float value1, float value2, float value3) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform3f(location, value1, value2, value3);
 	}
-	
+
 	public void setUniformf (int location, float value1, float value2, float value3) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform3f(location, value1, value2, value3);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -440,96 +444,71 @@ public class ShaderProgram implements Disposable {
 	 * @param value3 the third value
 	 * @param value4 the fourth value */
 	public void setUniformf (String name, float value1, float value2, float value3, float value4) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		gl.glUniform4f(location, value1, value2, value3, value4);
 	}
-	
+
 	public void setUniformf (int location, float value1, float value2, float value3, float value4) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUniform4f(location, value1, value2, value3, value4);
 	}
 
 	public void setUniform1fv (String name, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform1fv(location, length, floatBuffer);
+		gl.glUniform1fv(location, length, values, offset);
 	}
-	
+
 	public void setUniform1fv (int location, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform1fv(location, length, floatBuffer);
+		gl.glUniform1fv(location, length, values, offset);
 	}
 
 	public void setUniform2fv (String name, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform2fv(location, length / 2, floatBuffer);
+		gl.glUniform2fv(location, length / 2, values, offset);
 	}
-	
+
 	public void setUniform2fv (int location, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform2fv(location, length / 2, floatBuffer);
+		gl.glUniform2fv(location, length / 2, values, offset);
 	}
 
 	public void setUniform3fv (String name, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform3fv(location, length / 3, floatBuffer);
+		gl.glUniform3fv(location, length / 3, values, offset);
 	}
-	
+
 	public void setUniform3fv (int location, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform3fv(location, length / 3, floatBuffer);
+		gl.glUniform3fv(location, length / 3, values, offset);
 	}
 
 	public void setUniform4fv (String name, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform4fv(location, length / 4, floatBuffer);
-	}
-	
-	public void setUniform4fv (int location, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
-		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniform4fv(location, length / 4, floatBuffer);
+		gl.glUniform4fv(location, length / 4, values, offset);
 	}
 
-	/** Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	public void setUniform4fv (int location, float[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		gl.glUniform4fv(location, length / 4, values, offset);
+	}
+
+	/** Sets the uniform matrix with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param matrix the matrix */
@@ -537,35 +516,26 @@ public class ShaderProgram implements Disposable {
 		setUniformMatrix(name, matrix, false);
 	}
 
-	/** Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform matrix with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
-	 * @param transpose whether the matrix shouls be transposed */
+	 * @param transpose whether the matrix should be transposed */
 	public void setUniformMatrix (String name, Matrix4 matrix, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
-		checkManaged();
-		int location = fetchUniformLocation(name);
-		this.matrix.clear();
-		BufferUtils.copy(matrix.val, this.matrix, matrix.val.length, 0);
-		gl.glUniformMatrix4fv(location, 1, transpose, this.matrix);
+		setUniformMatrix(fetchUniformLocation(name), matrix, transpose);
 	}
-	
+
 	public void setUniformMatrix (int location, Matrix4 matrix) {
 		setUniformMatrix(location, matrix, false);
 	}
-	
+
 	public void setUniformMatrix (int location, Matrix4 matrix, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		this.matrix.clear();
-		BufferUtils.copy(matrix.val, this.matrix, matrix.val.length, 0);
-		gl.glUniformMatrix4fv(location, 1, transpose, this.matrix);
+		gl.glUniformMatrix4fv(location, 1, transpose, matrix.val, 0);
 	}
 
-	/** Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform matrix with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param matrix the matrix */
@@ -573,123 +543,98 @@ public class ShaderProgram implements Disposable {
 		setUniformMatrix(name, matrix, false);
 	}
 
-	/** Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform matrix with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
 	 * @param transpose whether the uniform matrix should be transposed */
 	public void setUniformMatrix (String name, Matrix3 matrix, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
-		checkManaged();
-		int location = fetchUniformLocation(name);
-		float[] vals = matrix.getValues();
-		this.matrix.clear();
-		BufferUtils.copy(vals, this.matrix, vals.length, 0);
-		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
+		setUniformMatrix(fetchUniformLocation(name), matrix, transpose);
 	}
-	
+
 	public void setUniformMatrix (int location, Matrix3 matrix) {
 		setUniformMatrix(location, matrix, false);
 	}
-	
+
 	public void setUniformMatrix (int location, Matrix3 matrix, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		float[] vals = matrix.getValues();
-		this.matrix.clear();
-		BufferUtils.copy(vals, this.matrix, vals.length, 0);
-		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
+		gl.glUniformMatrix3fv(location, 1, transpose, matrix.val, 0);
 	}
 
-	/** Sets an array of uniform matrices with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets an array of uniform matrices with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param buffer buffer containing the matrix data
 	 * @param transpose whether the uniform matrix should be transposed */
 	public void setUniformMatrix3fv (String name, FloatBuffer buffer, int count, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		buffer.position(0);
 		int location = fetchUniformLocation(name);
 		gl.glUniformMatrix3fv(location, count, transpose, buffer);
 	}
 
-	/** Sets an array of uniform matrices with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets an array of uniform matrices with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param buffer buffer containing the matrix data
 	 * @param transpose whether the uniform matrix should be transposed */
 	public void setUniformMatrix4fv (String name, FloatBuffer buffer, int count, boolean transpose) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		buffer.position(0);
 		int location = fetchUniformLocation(name);
 		gl.glUniformMatrix4fv(location, count, transpose, buffer);
 	}
-	
+
 	public void setUniformMatrix4fv (int location, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		gl.glUniformMatrix4fv(location, length / 16, false, floatBuffer);
-	}
-	
-	public void setUniformMatrix4fv (String name, float[] values, int offset, int length) {
-		GL20 gl = Gdx.graphics.getGL20();
-		checkManaged();
-		ensureBufferCapacity(length << 2);
-		floatBuffer.clear();
-		BufferUtils.copy(values, floatBuffer, length, offset);
-		int location = fetchUniformLocation(name);
-		gl.glUniformMatrix4fv(location, length / 16, false, floatBuffer);
+		gl.glUniformMatrix4fv(location, length / 16, false, values, offset);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	public void setUniformMatrix4fv (String name, float[] values, int offset, int length) {
+		setUniformMatrix4fv(fetchUniformLocation(name), values, offset, length);
+	}
+
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param values x and y as the first and second values respectively */
 	public void setUniformf (String name, Vector2 values) {
 		setUniformf(name, values.x, values.y);
 	}
-	
+
 	public void setUniformf (int location, Vector2 values) {
 		setUniformf(location, values.x, values.y);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param values x, y and z as the first, second and third values respectively */
 	public void setUniformf (String name, Vector3 values) {
 		setUniformf(name, values.x, values.y, values.z);
 	}
-	
+
 	public void setUniformf (int location, Vector3 values) {
 		setUniformf(location, values.x, values.y, values.z);
 	}
 
-	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the name of the uniform
 	 * @param values r, g, b and a as the first through fourth values respectively */
 	public void setUniformf (String name, Color values) {
 		setUniformf(name, values.r, values.g, values.b, values.a);
 	}
-	
+
 	public void setUniformf (int location, Color values) {
 		setUniformf(location, values.r, values.g, values.b, values.a);
 	}
 
-	/** Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+	/** Sets the vertex attribute with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -699,7 +644,7 @@ public class ShaderProgram implements Disposable {
 	 * @param stride the stride in bytes between successive attributes
 	 * @param buffer the buffer containing the vertex attributes. */
 	public void setVertexAttribute (String name, int size, int type, boolean normalize, int stride, Buffer buffer) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchAttributeLocation(name);
 		if (location == -1) return;
@@ -707,13 +652,12 @@ public class ShaderProgram implements Disposable {
 	}
 
 	public void setVertexAttribute (int location, int size, int type, boolean normalize, int stride, Buffer buffer) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, buffer);
 	}
-	
-	/** Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link #begin()}/{@link #end()} block.
+
+	/** Sets the vertex attribute with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -723,15 +667,15 @@ public class ShaderProgram implements Disposable {
 	 * @param stride the stride in bytes between successive attributes
 	 * @param offset byte offset into the vertex buffer object bound to GL20.GL_ARRAY_BUFFER. */
 	public void setVertexAttribute (String name, int size, int type, boolean normalize, int stride, int offset) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchAttributeLocation(name);
 		if (location == -1) return;
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
 	}
-	
+
 	public void setVertexAttribute (int location, int size, int type, boolean normalize, int stride, int offset) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
 	}
@@ -739,7 +683,7 @@ public class ShaderProgram implements Disposable {
 	/** Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call
 	 * {@link ShaderProgram#end()}. */
 	public void begin () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glUseProgram(program);
 	}
@@ -747,13 +691,13 @@ public class ShaderProgram implements Disposable {
 	/** Disables this shader. Must be called when one is done with the shader. Don't mix it with dispose, that will release the
 	 * shader resources. */
 	public void end () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		gl.glUseProgram(0);
 	}
 
 	/** Disposes all resources associated with this shader. Must be called when the shader is no longer used. */
 	public void dispose () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		gl.glUseProgram(0);
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
@@ -765,15 +709,15 @@ public class ShaderProgram implements Disposable {
 	 * 
 	 * @param name the vertex attribute name */
 	public void disableVertexAttribute (String name) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchAttributeLocation(name);
 		if (location == -1) return;
 		gl.glDisableVertexAttribArray(location);
 	}
-	
+
 	public void disableVertexAttribute (int location) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glDisableVertexAttribArray(location);
 	}
@@ -782,15 +726,15 @@ public class ShaderProgram implements Disposable {
 	 * 
 	 * @param name the vertex attribute name */
 	public void enableVertexAttribute (String name) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		int location = fetchAttributeLocation(name);
 		if (location == -1) return;
 		gl.glEnableVertexAttribArray(location);
 	}
-	
+
 	public void enableVertexAttribute (int location) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		checkManaged();
 		gl.glEnableVertexAttribArray(location);
 	}
@@ -812,7 +756,7 @@ public class ShaderProgram implements Disposable {
 	/** Invalidates all shaders so the next time they are used new handles are generated
 	 * @param app */
 	public static void invalidateAllShaderPrograms (Application app) {
-		if (Gdx.graphics.getGL20() == null) return;
+		if (Gdx.gl20 == null) return;
 
 		Array<ShaderProgram> shaderArray = shaders.get(app);
 		if (shaderArray == null) return;
@@ -847,17 +791,9 @@ public class ShaderProgram implements Disposable {
 	 * @param value3 the third value
 	 * @param value4 the fourth value */
 	public void setAttributef (String name, float value1, float value2, float value3, float value4) {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		int location = fetchAttributeLocation(name);
 		gl.glVertexAttrib4f(location, value1, value2, value3, value4);
-	}
-
-	private void ensureBufferCapacity (int numBytes) {
-		if (buffer == null || buffer.capacity() < numBytes) {
-			buffer = BufferUtils.newByteBuffer(numBytes);
-			floatBuffer = buffer.asFloatBuffer();
-			intBuffer = buffer.asIntBuffer();
-		}
 	}
 
 	IntBuffer params = BufferUtils.newIntBuffer(1);
@@ -960,18 +896,14 @@ public class ShaderProgram implements Disposable {
 	public String[] getUniforms () {
 		return uniformNames;
 	}
-	
-	/**
-	 * @return the source of the vertex shader
-	 */
-	public String getVertexShaderSource() {
+
+	/** @return the source of the vertex shader */
+	public String getVertexShaderSource () {
 		return vertexShaderSource;
 	}
-	
-	/**
-	 * @return the source of the fragment shader
-	 */
-	public String getFragmentShaderSource() {
+
+	/** @return the source of the fragment shader */
+	public String getFragmentShaderSource () {
 		return fragmentShaderSource;
 	}
 }

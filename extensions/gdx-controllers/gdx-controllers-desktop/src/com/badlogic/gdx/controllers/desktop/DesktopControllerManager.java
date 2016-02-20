@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.controllers.Controller;
@@ -41,5 +42,10 @@ public class DesktopControllerManager implements ControllerManager {
 
 	public void removeListener (ControllerListener listener) {
 		listeners.removeValue(listener, true);
+	}
+
+	@Override
+	public void clearListeners () {
+		listeners.clear();
 	}
 }

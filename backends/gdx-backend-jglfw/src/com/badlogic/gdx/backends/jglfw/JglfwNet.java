@@ -16,12 +16,17 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.awt.Desktop;
@@ -36,24 +41,37 @@ public class JglfwNet implements Net {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
 
+	@Override
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		netJavaImpl.cancelHttpRequest(httpRequest);
+	}
+	
+	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
+	}
+
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new JglfwServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new JglfwSocket(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
-	public void openURI (String uri) {
-		if (!Desktop.isDesktopSupported()) return;
-
-		Desktop desktop = Desktop.getDesktop();
-		if (!desktop.isSupported(Desktop.Action.BROWSE)) return;
-
-		try {
-			desktop.browse(new URI(uri));
-		} catch (Exception ex) {
-			throw new GdxRuntimeException(ex);
+	public boolean openURI (String uri) {
+		boolean result = false;
+		if (Desktop.isDesktopSupported()) {
+			Desktop desktop = Desktop.getDesktop();
+			if (desktop.isSupported(Desktop.Action.BROWSE)) {
+				try {
+					desktop.browse(new URI(uri));
+					result = true;
+				} catch (Exception e) {
+					Gdx.app.error("JglfwNet", "Unable to open URI:" + uri, e);
+				}
+			}
 		}
+		return result;
 	}
 }

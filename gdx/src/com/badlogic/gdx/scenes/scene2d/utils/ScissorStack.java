@@ -18,15 +18,14 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-/** A stack of {@link Rectangle} objects to be used for clipping via {@link GLCommon#glScissor(int, int, int, int)}. When a new
+/** A stack of {@link Rectangle} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
  * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
  * the real top of the stack.
  * @author mzechner */
@@ -37,8 +36,10 @@ public class ScissorStack {
 
 	/** Pushes a new scissor {@link Rectangle} onto the stack, merging it with the current top of the stack. The minimal area of
 	 * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
-	 * {@link GLCommon#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
-	 * this will also enable {@link GL10#GL_SCISSOR_TEST} automatically.
+	 * {@link GL20#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
+	 * this will also enable {@link GL20#GL_SCISSOR_TEST} automatically.
+	 * <p>
+	 * Any drawing should be flushed before pushing scissors.
 	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
 	 *         no drawing should occur. */
 	public static boolean pushScissors (Rectangle scissor) {
@@ -46,7 +47,7 @@ public class ScissorStack {
 
 		if (scissors.size == 0) {
 			if (scissor.width < 1 || scissor.height < 1) return false;
-			Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 		} else {
 			// merge scissors
 			Rectangle parent = scissors.get(scissors.size - 1);
@@ -64,21 +65,27 @@ public class ScissorStack {
 			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
-		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
+		HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		return true;
 	}
 
 	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new top of stack rectangle. In case
-	 * no more rectangles are on the stack, {@link GL10#GL_SCISSOR_TEST} is disabled. */
+	 * no more rectangles are on the stack, {@link GL20#GL_SCISSOR_TEST} is disabled.
+	 * <p>
+	 * Any drawing should be flushed before popping scissors. */
 	public static Rectangle popScissors () {
 		Rectangle old = scissors.pop();
 		if (scissors.size == 0)
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		else {
 			Rectangle scissor = scissors.peek();
-			Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
+			HdpiUtils.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		}
 		return old;
+	}
+
+	public static Rectangle peekScissors () {
+		return scissors.peek();
 	}
 
 	private static void fix (Rectangle rect) {
@@ -96,11 +103,17 @@ public class ScissorStack {
 		}
 	}
 
+	/** Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
+	 * @see #calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
+	public static void calculateScissors (Camera camera, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
+		calculateScissors(camera, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), batchTransform, area, scissor);
+	}
+
 	/** Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Matrix4} and
 	 * an axis aligned {@link Rectangle}. The rectangle will get transformed by the camera and transform matrices and is then
 	 * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
 	 * the Matrix4 have rotational components, the output of this method will not be suitable for
-	 * {@link GLCommon#glScissor(int, int, int, int)}.
+	 * {@link GL20#glScissor(int, int, int, int)}.
 	 * @param camera the {@link Camera}
 	 * @param batchTransform the transformation {@link Matrix4}
 	 * @param area the {@link Rectangle} to transform to window coordinates
@@ -130,19 +143,5 @@ public class ScissorStack {
 			viewport.set(scissor);
 			return viewport;
 		}
-	}
-
-	/** Transforms a point to real window coordinates (as oposed to OpenGL ES window coordinates), where the origin is in the top
-	 * left and the the y-axis is pointing downwards
-	 * @param camera the {@link Camera}
-	 * @param transformMatrix the transformation {@link Matrix4}
-	 * @param point the point to be transformed. */
-	public static void toWindowCoordinates (Camera camera, Matrix4 transformMatrix, Vector2 point) {
-		tmp.set(point.x, point.y, 0);
-		tmp.mul(transformMatrix);
-		camera.project(tmp);
-		tmp.y = Gdx.graphics.getHeight() - tmp.y;
-		point.x = tmp.x;
-		point.y = tmp.y;
 	}
 }

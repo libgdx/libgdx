@@ -17,19 +17,19 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
+import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader.AtlasTiledMapLoaderParameters;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader.AtlasTiledMapLoaderParameters;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
@@ -43,6 +43,8 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 	private AssetManager assetManager;
 	private BitmapFont font;
 	private SpriteBatch batch;
+	String errorMessage;
+	private String fileName = "data/maps/tiled-atlas-processed/test.tmx";
 
 	@Override
 	public void create () {
@@ -66,28 +68,33 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 		params.textureMagFilter = TextureFilter.Linear;
 
 		assetManager = new AssetManager();
+		assetManager.setErrorListener(new AssetErrorListener() {
+			@Override
+			public void error (AssetDescriptor asset, Throwable throwable) {
+				errorMessage = throwable.getMessage();
+			}
+		});
+
 		assetManager.setLoader(TiledMap.class, new AtlasTmxMapLoader(new InternalFileHandleResolver()));
-//		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class, params);
-		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class);
-		assetManager.finishLoading();
-		map = assetManager.get("data/maps/tiled-atlas-processed/test.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+		assetManager.load(fileName, TiledMap.class);
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		renderer.setView(camera);
-		renderer.render();
+		assetManager.update();
+		if (renderer == null && assetManager.isLoaded(fileName)) {
+			map = assetManager.get(fileName);
+			renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+		} else if (renderer != null) {
+			renderer.setView(camera);
+			renderer.render();
+		}
 		batch.begin();
+		if (errorMessage != null) font.draw(batch, "ERROR (OK if running in GWT): " + errorMessage, 10, 50);
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

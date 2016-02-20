@@ -17,16 +17,11 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /** <p>
@@ -35,7 +30,7 @@ import com.badlogic.gdx.utils.BufferUtils;
  * </p>
  * 
  * <p>
- * This class does not support shaders and for that matter OpenGL ES 2.0. For this {@link VertexBufferObject}s are needed.
+ * This class is not compatible with OpenGL 3+ core profiles. For this {@link VertexBufferObject}s are needed.
  * </p>
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
@@ -90,7 +85,7 @@ public class VertexArray implements VertexData {
 		buffer.position(0);
 		buffer.limit(count);
 	}
-	
+
 	@Override
 	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
 		final int pos = byteBuffer.position();
@@ -98,134 +93,54 @@ public class VertexArray implements VertexData {
 		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
 		byteBuffer.position(pos);
 	}
-	
-	@Override
-	public void bind () {
-		GL10 gl = Gdx.gl10;
-		int textureUnit = 0;
-		int numAttributes = attributes.size();
 
-		byteBuffer.limit(buffer.limit() * 4);
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-
-			switch (attribute.usage) {
-			case Usage.Position:
-				byteBuffer.position(attribute.offset);
-				gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				gl.glVertexPointer(attribute.numComponents, GL10.GL_FLOAT, attributes.vertexSize, byteBuffer);
-				break;
-
-			case Usage.Color:
-			case Usage.ColorPacked:
-				int colorType = GL10.GL_FLOAT;
-				if (attribute.usage == Usage.ColorPacked) colorType = GL11.GL_UNSIGNED_BYTE;
-				byteBuffer.position(attribute.offset);
-				gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-				gl.glColorPointer(attribute.numComponents, colorType, attributes.vertexSize, byteBuffer);
-				break;
-
-			case Usage.Normal:
-				byteBuffer.position(attribute.offset);
-				gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-				gl.glNormalPointer(GL10.GL_FLOAT, attributes.vertexSize, byteBuffer);
-				break;
-
-			case Usage.TextureCoordinates:
-				gl.glClientActiveTexture(GL10.GL_TEXTURE0 + textureUnit);
-				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-				byteBuffer.position(attribute.offset);
-				gl.glTexCoordPointer(attribute.numComponents, GL10.GL_FLOAT, attributes.vertexSize, byteBuffer);
-				textureUnit++;
-				break;
-
-			default:
-				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
-			}
-		}
-
-		isBound = true;
-	}
-
-	@Override
-	public void unbind () {
-		GL10 gl = Gdx.gl10;
-		int textureUnit = 0;
-		int numAttributes = attributes.size();
-
-		for (int i = 0; i < numAttributes; i++) {
-
-			VertexAttribute attribute = attributes.get(i);
-			switch (attribute.usage) {
-			case Usage.Position:
-				break; // no-op, we always need a position bound in gles
-			case Usage.Color:
-			case Usage.ColorPacked:
-				gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
-				break;
-			case Usage.Normal:
-				gl.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-				break;
-			case Usage.TextureCoordinates:
-				gl.glClientActiveTexture(GL11.GL_TEXTURE0 + textureUnit);
-				gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				textureUnit++;
-				break;
-			default:
-				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
-			}
-		}
-		byteBuffer.position(0);
-		isBound = false;
-	}
-	
 	@Override
 	public void bind (final ShaderProgram shader) {
 		bind(shader, null);
 	}
-	
+
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		byteBuffer.limit(buffer.limit() * 4);
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				
-				byteBuffer.position(attribute.offset);
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
-						attributes.vertexSize, byteBuffer);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
-						attributes.vertexSize, byteBuffer);
+
+				if (attribute.type == GL20.GL_FLOAT) {
+					buffer.position(attribute.offset / 4);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+							buffer);
+				} else {
+					byteBuffer.position(attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+						byteBuffer);
+				}
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				
-				byteBuffer.position(attribute.offset);
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
-						attributes.vertexSize, byteBuffer);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
-						attributes.vertexSize, byteBuffer);
+
+				if (attribute.type == GL20.GL_FLOAT) {
+					buffer.position(attribute.offset / 4);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+							buffer);
+				} else {
+					byteBuffer.position(attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+						byteBuffer);
+				}
 			}
 		}
 		isBound = true;
 	}
-	
+
 	/** Unbinds this VertexBufferObject.
 	 * 
 	 * @param shader the shader */
@@ -233,10 +148,9 @@ public class VertexArray implements VertexData {
 	public void unbind (ShaderProgram shader) {
 		unbind(shader, null);
 	}
-	
+
 	@Override
 	public void unbind (ShaderProgram shader, int[] locations) {
-		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
@@ -245,8 +159,7 @@ public class VertexArray implements VertexData {
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final int location = locations[i];
-				if (location >= 0)
-					shader.disableVertexAttribute(location);
+				if (location >= 0) shader.disableVertexAttribute(location);
 			}
 		}
 		isBound = false;
@@ -255,5 +168,9 @@ public class VertexArray implements VertexData {
 	@Override
 	public VertexAttributes getAttributes () {
 		return attributes;
+	}
+	
+	@Override
+	public void invalidate () {
 	}
 }

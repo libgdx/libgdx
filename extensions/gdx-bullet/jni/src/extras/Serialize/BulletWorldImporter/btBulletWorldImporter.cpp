@@ -18,8 +18,9 @@ subject to the following restrictions:
 #include "../BulletFileLoader/btBulletFile.h"
 
 #include "btBulletDynamicsCommon.h"
+#ifndef USE_GIMPACT
 #include "BulletCollision/Gimpact/btGImpactShape.h"
-
+#endif
 
 
 //#define USE_INTERNAL_EDGE_UTILITY
@@ -37,12 +38,23 @@ btBulletWorldImporter::~btBulletWorldImporter()
 }
 
 
-bool	btBulletWorldImporter::loadFile( const char* fileName)
+bool	btBulletWorldImporter::loadFile( const char* fileName, const char* preSwapFilenameOut)
 {
 	bParse::btBulletFile* bulletFile2 = new bParse::btBulletFile(fileName);
 
+	
 	bool result = loadFileFromMemory(bulletFile2);
-
+	//now you could save the file in 'native' format using
+	//bulletFile2->writeFile("native.bullet");
+	if (result)
+	{
+		if (preSwapFilenameOut)
+		{
+			bulletFile2->preSwap();
+			bulletFile2->writeFile(preSwapFilenameOut);
+		}
+		
+	}
 	delete bulletFile2;
 	
 	return result;
@@ -294,7 +306,10 @@ bool	btBulletWorldImporter::convertAllObjects(  bParse::btBulletFile* bulletFile
 	
 	for (i=0;i<bulletFile2->m_constraints.size();i++)
 	{
-		btTypedConstraintData* constraintData = (btTypedConstraintData*)bulletFile2->m_constraints[i];
+		btTypedConstraintData2* constraintData = (btTypedConstraintData2*)bulletFile2->m_constraints[i];
+		btTypedConstraintFloatData* singleC = (btTypedConstraintFloatData*)bulletFile2->m_constraints[i];
+		btTypedConstraintDoubleData* doubleC = (btTypedConstraintDoubleData*)bulletFile2->m_constraints[i];
+
 		btCollisionObject** colAptr = m_bodyMap.find(constraintData->m_rbA);
 		btCollisionObject** colBptr = m_bodyMap.find(constraintData->m_rbB);
 
@@ -317,7 +332,29 @@ bool	btBulletWorldImporter::convertAllObjects(  bParse::btBulletFile* bulletFile
 			continue;
 				
 		bool isDoublePrecisionData = (bulletFile2->getFlags() & bParse::FD_DOUBLE_PRECISION)!=0;
-		convertConstraint(constraintData, rbA,rbB,isDoublePrecisionData, bulletFile2->getVersion());
+		
+		if (isDoublePrecisionData)
+		{
+			if (bulletFile2->getVersion()>=282)
+			{
+				btTypedConstraintDoubleData* dc = (btTypedConstraintDoubleData*)constraintData;
+				convertConstraintDouble(dc, rbA,rbB, bulletFile2->getVersion());
+			} else
+			{
+				//double-precision constraints were messed up until 2.82, try to recover data...
+				
+				btTypedConstraintData* oldData = (btTypedConstraintData*)constraintData;
+				
+				convertConstraintBackwardsCompatible281(oldData, rbA,rbB, bulletFile2->getVersion());
+
+			}
+		}
+		else
+		{
+			btTypedConstraintFloatData* dc = (btTypedConstraintFloatData*)constraintData;
+			convertConstraintFloat(dc, rbA,rbB, bulletFile2->getVersion());
+		}
+		
 
 	}
 

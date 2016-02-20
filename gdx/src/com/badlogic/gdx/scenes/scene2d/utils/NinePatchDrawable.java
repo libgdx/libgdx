@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 
@@ -60,5 +61,12 @@ public class NinePatchDrawable extends BaseDrawable {
 
 	public NinePatch getPatch () {
 		return patch;
+	}
+
+	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
+	public NinePatchDrawable tint (Color tint) {
+		NinePatchDrawable drawable = new NinePatchDrawable(this);
+		drawable.setPatch(new NinePatch(drawable.getPatch(), tint));
+		return drawable;
 	}
 }

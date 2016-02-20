@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math;
 
 /** @author Nathan Sweet */
-public class GeometryUtils {
+public final class GeometryUtils {
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 	/** Computes the barycentric coordinates v,w for the specified point in the triangle.
@@ -62,6 +62,13 @@ public class GeometryUtils {
 		return interpolatedOut;
 	}
 
+	/** Returns an interpolated value given the barycentric coordinates of a point in a triangle and the values at each vertex.
+	 * @return interpolatedOut */
+	static public float fromBarycoord (Vector2 barycentric, float a, float b, float c) {
+		float u = 1 - barycentric.x - barycentric.y;
+		return u * a + barycentric.x * b + barycentric.y * c;
+	}
+
 	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
 	 * Float.Nan is returned.
 	 * @param a the first coefficient of the quadric equation
@@ -88,10 +95,31 @@ public class GeometryUtils {
 		return Float.NaN;
 	}
 
+	static public boolean colinear (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float dx21 = x2 - x1, dy21 = y2 - y1;
+		float dx32 = x3 - x2, dy32 = y3 - y2;
+		float det = dx32 * dy21 - dx21 * dy32;
+		return Math.abs(det) < MathUtils.FLOAT_ROUNDING_ERROR;
+	}
+
 	static public Vector2 triangleCentroid (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid) {
 		centroid.x = (x1 + x2 + x3) / 3;
 		centroid.y = (y1 + y2 + y3) / 3;
 		return centroid;
+	}
+
+	/** Returns the circumcenter of the triangle. The input points must not be colinear. */
+	static public Vector2 triangleCircumcenter (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 circumcenter) {
+		float dx21 = x2 - x1, dy21 = y2 - y1;
+		float dx32 = x3 - x2, dy32 = y3 - y2;
+		float dx13 = x1 - x3, dy13 = y1 - y3;
+		float det = dx32 * dy21 - dx21 * dy32;
+		if (Math.abs(det) < MathUtils.FLOAT_ROUNDING_ERROR)
+			throw new IllegalArgumentException("Triangle points must not be colinear.");
+		det *= 2;
+		float sqr1 = x1 * x1 + y1 * y1, sqr2 = x2 * x2 + y2 * y2, sqr3 = x3 * x3 + y3 * y3;
+		circumcenter.set((sqr1 * dy32 + sqr2 * dy13 + sqr3 * dy21) / det, -(sqr1 * dx32 + sqr2 * dx13 + sqr3 * dx21) / det);
+		return circumcenter;
 	}
 
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -111,7 +139,7 @@ public class GeometryUtils {
 
 	/** Returns the centroid for the specified non-self-intersecting polygon. */
 	static public Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
-		if (polygon.length < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
+		if (count < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
 		float x = 0, y = 0;
 
 		float signedArea = 0;
@@ -136,23 +164,64 @@ public class GeometryUtils {
 		x += (x0 + x1) * a;
 		y += (y0 + y1) * a;
 
-		signedArea *= 0.5f;
-		centroid.x = x / (6 * signedArea);
-		centroid.y = y / (6 * signedArea);
+		if (signedArea == 0) {
+			centroid.x = 0;
+			centroid.y = 0;
+		} else {
+			signedArea *= 0.5f;
+			centroid.x = x / (6 * signedArea);
+			centroid.y = y / (6 * signedArea);
+		}
 		return centroid;
 	}
 
+	/** Computes the area for a convex polygon. */
 	static public float polygonArea (float[] polygon, int offset, int count) {
 		float area = 0;
 		for (int i = offset, n = offset + count; i < n; i += 2) {
 			int x1 = i;
 			int y1 = i + 1;
 			int x2 = (i + 2) % n;
+			if(x2 < offset)
+				x2 += offset;
 			int y2 = (i + 3) % n;
+			if(y2 < offset)
+				y2 += offset;
 			area += polygon[x1] * polygon[y2];
 			area -= polygon[x2] * polygon[y1];
 		}
 		area *= 0.5f;
 		return area;
+	}
+
+	static public void ensureCCW (float[] polygon) {
+		if (!areVerticesClockwise(polygon, 0, polygon.length)) return;
+		int lastX = polygon.length - 2;
+		for (int i = 0, n = polygon.length / 2; i < n; i += 2) {
+			int other = lastX - i;
+			float x = polygon[i];
+			float y = polygon[i + 1];
+			polygon[i] = polygon[other];
+			polygon[i + 1] = polygon[other + 1];
+			polygon[other] = x;
+			polygon[other + 1] = y;
+		}
+	}
+
+	static private boolean areVerticesClockwise (float[] polygon, int offset, int count) {
+		if (count <= 2) return false;
+		float area = 0, p1x, p1y, p2x, p2y;
+		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
+			p1x = polygon[i];
+			p1y = polygon[i + 1];
+			p2x = polygon[i + 2];
+			p2y = polygon[i + 3];
+			area += p1x * p2y - p2x * p1y;
+		}
+		p1x = polygon[count - 2];
+		p1y = polygon[count - 1];
+		p2x = polygon[0];
+		p2y = polygon[1];
+		return area + p1x * p2y - p2x * p1y < 0;
 	}
 }

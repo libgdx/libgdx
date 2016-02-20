@@ -24,9 +24,9 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class CustomTmxMapLoader extends TmxMapLoader {
 //
-//	@Override
-//	protected void loadTileSet (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
-//		super.loadTileSet(map, element, tmxFile, imageResolver);
-//	}
-//	
+// @Override
+// protected void loadTileSet (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+// super.loadTileSet(map, element, tmxFile, imageResolver);
+// }
+//
 }

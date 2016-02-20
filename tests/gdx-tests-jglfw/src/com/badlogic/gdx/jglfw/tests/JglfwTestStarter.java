@@ -16,19 +16,7 @@
 
 package com.badlogic.gdx.jglfw.tests;
 
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.jglfw.JglfwApplication;
-import com.badlogic.gdx.backends.jglfw.JglfwApplicationConfiguration;
-import com.badlogic.gdx.backends.jglfw.JglfwFiles;
-import com.badlogic.gdx.backends.jglfw.JglfwPreferences;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.tests.utils.GdxTests;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +33,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.jglfw.JglfwApplication;
+import com.badlogic.gdx.backends.jglfw.JglfwApplicationConfiguration;
+import com.badlogic.gdx.backends.jglfw.JglfwFiles;
+import com.badlogic.gdx.backends.jglfw.JglfwPreferences;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class JglfwTestStarter extends JFrame {
 	public JglfwTestStarter () throws HeadlessException {
@@ -68,7 +67,6 @@ public class JglfwTestStarter extends JFrame {
 		config.width = 640;
 		config.height = 480;
 		config.title = testName;
-		config.useGL20 = test.needsGL20();
 		config.forceExit = false;
 		return new JglfwApplication(test, config);
 	}

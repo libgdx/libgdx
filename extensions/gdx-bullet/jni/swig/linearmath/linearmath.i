@@ -18,6 +18,9 @@ static  int btInfinityMask = 0x7F800000;
  * btScalar.h defines macros the other types need, so process it first.  
  * It also defines some static functions that end up in gdxBulletJNI.java.
  */
+%ignore btInfMaskConverter;
+%ignore btInfinityMask;
+%ignore btGetInfinityMask();
 %include "LinearMath/btScalar.h"
 
 %include "btTransform.i"
@@ -47,14 +50,10 @@ static  int btInfinityMask = 0x7F800000;
 %}
 %include "LinearMath/btAabbUtil2.h"
 
-DISABLE_POOLED_TYPEMAP(btTransform);
-DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
-ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
-ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>

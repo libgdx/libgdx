@@ -24,21 +24,21 @@ public final class ArrayReflection {
 
 	/** Creates a new array with the specified component type and length. */
 	static public Object newInstance (Class c, int size) {
-		return ReflectionCache.instance.newArray(c, size);
+		return ReflectionCache.newArray(c, size);
 	}
 
 	/** Returns the length of the supplied array. */
 	static public int getLength (Object array) {
-		return ReflectionCache.instance.getArrayLength(ReflectionCache.getType(array.getClass()), array);
+		return ReflectionCache.getType(array.getClass()).getArrayLength(array);
 	}
 
 	/** Returns the value of the indexed component in the supplied array. */
 	static public Object get (Object array, int index) {
-		return ReflectionCache.instance.getArrayElement(ReflectionCache.getType(array.getClass()), array, index);
+		return ReflectionCache.getType(array.getClass()).getArrayElement(array, index);
 	}
 
 	/** Sets the value of the indexed component in the supplied array to the supplied value. */
 	static public void set (Object array, int index, Object value) {
-		ReflectionCache.instance.setArrayElement(ReflectionCache.getType(array.getClass()), array, index, value);
+		ReflectionCache.getType(array.getClass()).setArrayElement(array, index, value);
 	}
 }

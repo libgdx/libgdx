@@ -18,12 +18,8 @@ package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * A base implementation for {@link ControllerListener}. Subclass this
- * if you are only intersted in a few specific events.
- * @author mzechner
- *
- */
+/** A base implementation for {@link ControllerListener}. Subclass this if you are only interested in a few specific events.
+ * @author mzechner */
 public class ControllerAdapter implements ControllerListener {
 	@Override
 	public boolean buttonDown (Controller controller, int buttonIndex) {

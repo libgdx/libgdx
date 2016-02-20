@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.badlogicgames.gdx</groupId>
+    <artifactId>gdx-parent</artifactId>
+    <version>1.9.3-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>gdx-box2d-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>libGDX Box2D Parent</name>
+
+  <modules>
+    <module>gdx-box2d</module>
+    <module>gdx-box2d/jni/maven</module>
+    <module>gdx-box2d-gwt</module>
+  </modules>
+</project>

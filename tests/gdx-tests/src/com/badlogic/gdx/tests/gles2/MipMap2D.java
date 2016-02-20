@@ -34,11 +34,6 @@ public class MipMap2D extends GdxTest {
 	Mesh mesh;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void create () {
 		String vertexShader = "uniform float u_offset;      \n" + "attribute vec4 a_position;   \n"
 			+ "attribute vec2 a_texCoord;   \n" + "varying vec2 v_texCoord;     \n" + "void main()                  \n"
@@ -86,7 +81,7 @@ public class MipMap2D extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);

@@ -16,13 +16,8 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -30,11 +25,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
-import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
@@ -120,7 +115,7 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 		private btCollisionDispatcher dispatcher;
 		private btDbvtBroadphase pairCache;
 		private btCollisionWorld collisionWorld;
-		Vector3[] vectors;
+		Vector3[] vectors = new Vector3[]{new Vector3(), new Vector3()};
 
 		public ConvexHullDistance () {
 			collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -150,10 +145,8 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 			public float addSingleResult (btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0,
 				btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
 
-				btVector3 startVector = cp.getPositionWorldOnA();
-				btVector3 endVector = cp.getPositionWorldOnB();
-
-				vectors = new Vector3[] {new Vector3(startVector.getFloats()), new Vector3(endVector.getFloats())};
+				cp.getPositionWorldOnA(vectors[0]);
+				cp.getPositionWorldOnB(vectors[1]);
 
 				return 1.f;
 			}

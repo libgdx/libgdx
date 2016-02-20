@@ -24,8 +24,10 @@
     <string>${app.build}</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
     <key>UIStatusBarHidden</key>
-    <true/>
+    <false/>
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>
@@ -39,6 +41,7 @@
     <array>
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationPortrait</string>
     </array>
 </dict>
 </plist>

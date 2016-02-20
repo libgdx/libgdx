@@ -39,6 +39,15 @@ public class WidgetGroup extends Group implements Layout {
 	private boolean fillParent;
 	private boolean layoutEnabled = true;
 
+	public WidgetGroup () {
+	}
+
+	/** Creates a new widget group containing the specified actors. */
+	public WidgetGroup (Actor... actors) {
+		for (Actor actor : actors)
+			addActor(actor);
+	}
+
 	public float getMinWidth () {
 		return getPrefWidth();
 	}
@@ -70,7 +79,7 @@ public class WidgetGroup extends Group implements Layout {
 	}
 
 	private void setLayoutEnabled (Group parent, boolean enabled) {
-		SnapshotArray<Actor> children = getChildren();
+		SnapshotArray<Actor> children = parent.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor actor = children.get(i);
 			if (actor instanceof Layout)
@@ -82,11 +91,11 @@ public class WidgetGroup extends Group implements Layout {
 
 	public void validate () {
 		if (!layoutEnabled) return;
+
 		Group parent = getParent();
 		if (fillParent && parent != null) {
-			Stage stage = getStage();
-
 			float parentWidth, parentHeight;
+			Stage stage = getStage();
 			if (stage != null && parent == stage.getRoot()) {
 				parentWidth = stage.getWidth();
 				parentHeight = stage.getHeight();
@@ -130,14 +139,14 @@ public class WidgetGroup extends Group implements Layout {
 	}
 
 	public void pack () {
-		float newWidth = getPrefWidth();
-		float newHeight = getPrefHeight();
-		if (newWidth != getWidth() || newHeight != getHeight()) {
-			setWidth(newWidth);
-			setHeight(newHeight);
-			invalidate();
-		}
+		setSize(getPrefWidth(), getPrefHeight());
 		validate();
+		// Some situations require another layout. Eg, a wrapped label doesn't know its pref height until it knows its width, so it
+		// calls invalidateHierarchy() in layout() if its pref height has changed.
+		if (needsLayout) {
+			setSize(getPrefWidth(), getPrefHeight());
+			validate();
+		}
 	}
 
 	public void setFillParent (boolean fillParent) {

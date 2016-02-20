@@ -29,15 +29,15 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 public class ShaderLoader {
 	public FileHandle root;
-	
+
 	public ObjectMap<String, ObjectMap<String, String>> snippets = new ObjectMap<String, ObjectMap<String, String>>();
 	private Array<String> includes = new Array<String>();
-	
-	public ShaderLoader(FileHandle root) {
+
+	public ShaderLoader (FileHandle root) {
 		this.root = root;
 	}
-	
-	public ShaderProgram load(String vertex, String fragment) {
+
+	public ShaderProgram load (String vertex, String fragment) {
 		StringBuilder out = new StringBuilder();
 		load(out, vertex);
 		vertex = out.toString();
@@ -48,38 +48,37 @@ public class ShaderLoader {
 		includes.clear();
 		return new ShaderProgram(vertex, fragment);
 	}
-	
-	public String load(final String name) {
+
+	public String load (final String name) {
 		StringBuilder out = new StringBuilder();
 		load(out, name);
 		includes.clear();
 		return out.toString();
 	}
-	
-	protected void load(final StringBuilder out, final String name) {
+
+	protected void load (final StringBuilder out, final String name) {
 		final int idx = name.lastIndexOf(':');
 		final String fileName = idx < 0 ? name : name.substring(0, idx);
-		final String snipName = idx < 0 || (idx >= name.length() - 1) ? "" : name.substring(idx+1);
+		final String snipName = idx < 0 || (idx >= name.length() - 1) ? "" : name.substring(idx + 1);
 		ObjectMap<String, String> snips = snippets.get(fileName, null);
 		if (snips == null) {
 			snips = parse(root.child(fileName));
 			snippets.put(fileName, snips);
 		}
 		String result = snips.get(snipName, null);
-		if (result == null)
-			throw new GdxRuntimeException("No snippet ["+snipName+"] in file "+root.child(fileName).path());
+		if (result == null) throw new GdxRuntimeException("No snippet [" + snipName + "] in file " + root.child(fileName).path());
 		parse(out, fileName, result);
 	}
-	
-	protected void parse(final StringBuilder out, final String currentFile, final String code) {
+
+	protected void parse (final StringBuilder out, final String currentFile, final String code) {
 		String[] lines = code.split("\n");
 		int idx, jdx;
 		for (final String line : lines) {
-			if (((idx = line.indexOf("#include")) == 0) && ((idx = line.indexOf("\"", idx)) > 0) && ((jdx = line.indexOf("\"", ++idx)) > idx)) {
+			if (((idx = line.indexOf("#include")) == 0) && ((idx = line.indexOf("\"", idx)) > 0)
+				&& ((jdx = line.indexOf("\"", ++idx)) > idx)) {
 				String name = line.substring(idx, jdx);
 				if (name.length() > 0) {
-					if (name.charAt(0) == ':')
-						name = currentFile + name;
+					if (name.charAt(0) == ':') name = currentFile + name;
 					if (!includes.contains(name, false)) {
 						includes.add(name);
 						load(out, name);
@@ -89,9 +88,10 @@ public class ShaderLoader {
 				out.append(line.trim()).append("\r\n");
 		}
 	}
-	
+
 	final static StringBuilder stringBuilder = new StringBuilder();
-	protected ObjectMap<String, String> parse(final FileHandle file) {
+
+	protected ObjectMap<String, String> parse (final FileHandle file) {
 		ObjectMap<String, String> result = new ObjectMap<String, String>();
 		BufferedReader reader = file.reader(1024);
 		String line;
@@ -99,10 +99,9 @@ public class ShaderLoader {
 		stringBuilder.setLength(0);
 		int idx;
 		try {
-			while((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null) {
 				if (line.length() > 3 && line.charAt(0) == '[' && (idx = line.indexOf(']')) > 1) {
-					if (snipName.length() > 0 || stringBuilder.length() > 0)
-						result.put(snipName, stringBuilder.toString());
+					if (snipName.length() > 0 || stringBuilder.length() > 0) result.put(snipName, stringBuilder.toString());
 					stringBuilder.setLength(0);
 					snipName = line.substring(1, idx);
 				} else
@@ -111,11 +110,10 @@ public class ShaderLoader {
 		} catch (IOException e) {
 			throw new GdxRuntimeException(e);
 		}
-		if (snipName.length() > 0 || stringBuilder.length() > 0)
-			result.put(snipName, stringBuilder.toString());
+		if (snipName.length() > 0 || stringBuilder.length() > 0) result.put(snipName, stringBuilder.toString());
 		return result;
 	}
-	
+
 	@Override
 	public String toString () {
 		stringBuilder.setLength(0);

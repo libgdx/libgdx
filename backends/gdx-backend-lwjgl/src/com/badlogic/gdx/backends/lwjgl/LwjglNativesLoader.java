@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -53,14 +54,14 @@ public final class LwjglNativesLoader {
 			if (isWindows) {
 				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
 				if (!LwjglApplicationConfiguration.disableAudio)
-					loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
+					loader.extractFileTo(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir);
 			} else if (isMac) {
-				nativesDir = loader.extractFile("liblwjgl.jnilib", null).getParentFile();
-				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFile("openal.dylib", nativesDir.getName());
+				nativesDir = loader.extractFile("liblwjgl.dylib", null).getParentFile();
+				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFileTo("openal.dylib", nativesDir);
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
 				if (!LwjglApplicationConfiguration.disableAudio)
-					loader.extractFile(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir.getName());
+					loader.extractFileTo(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir);
 			}
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Unable to extract LWJGL natives.", ex);

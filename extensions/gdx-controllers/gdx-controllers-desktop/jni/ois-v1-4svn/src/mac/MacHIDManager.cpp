@@ -205,9 +205,10 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 	IOObjectRelease(iterator);
 }
 
-const char* getCString(CFStringRef cfString) {
+const char* getCString(CFStringRef cfString, bool* requireFree) {
 	const char *useUTF8StringPtr = NULL;
 	UInt8 *freeUTF8StringPtr = NULL;
+	*requireFree = false;
 
 	CFIndex stringLength = CFStringGetLength(cfString), usedBytes = 0L;
 
@@ -218,6 +219,7 @@ const char* getCString(CFStringRef cfString) {
 					stringLength, &usedBytes);
 			freeUTF8StringPtr[usedBytes] = 0;
 			useUTF8StringPtr = (const char *) freeUTF8StringPtr;
+			*requireFree = true;
 		}
 	}
 
@@ -228,15 +230,17 @@ const char* getCString(CFStringRef cfString) {
 HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propertyMap)
 {
 	HidInfo* info = new HidInfo();
+	bool requireFree;
 	
 	info->type = OISJoyStick;
 
 	CFStringRef str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDManufacturerKey);
 	if (str) {
-		const char* str_c = getCString(str);
+		const char* str_c = getCString(str, &requireFree);
 		if(str_c) {
 			info->vendor = str_c;
-			free((char*)str_c);
+			if (requireFree)
+				free((char*)str_c);
 		} else {
 			info->vendor = "Unknown Vendor";
 		}
@@ -244,10 +248,11 @@ HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propert
 
 	str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDProductKey);
 	if (str) {
-		const char* str_c = getCString(str);
+		const char* str_c = getCString(str, &requireFree);
 		if(str_c) {
 			info->productKey = str_c;
-			free((char*)str_c);
+			if (requireFree)
+				free((char*)str_c);
 		} else {
 			info->productKey = "Unknown Product";
 		}

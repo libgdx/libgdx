@@ -19,12 +19,13 @@ package com.badlogic.gdx.tests.extensions;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class FreeTypeTest extends GdxTest {
@@ -44,30 +45,36 @@ public class FreeTypeTest extends GdxTest {
 		}
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), flip);
 		FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
-		
+
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-		FreeTypeBitmapFontData fontData = generator.generateData(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
-		ftFont = generator.generateFont(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
+
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 15;
+		parameter.flip = flip;
+		parameter.genMipMaps = true;
+		// parameter.shadowOffsetX = 1;
+		// parameter.shadowOffsetY = 1;
+		// parameter.shadowColor = Color.GREEN;
+		// parameter.borderWidth = 1f;
+		// parameter.borderColor = Color.PURPLE;
+
+		FreeTypeBitmapFontData fontData = generator.generateData(parameter);
+		ftFont = generator.generateFont(parameter);
 		generator.dispose();
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
 		font.setColor(Color.RED);
-		font.drawMultiLine(batch, "This is a test\nAnd another line\n()Â§$%&/!12390#", 100, 112);
-		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()Â§$%&/!12390#", 100, 112);
+		font.draw(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
+		ftFont.draw(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
 // batch.disableBlending();
 		batch.draw(ftFont.getRegion(), 300, 0);
 // batch.enableBlending();
 		batch.end();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

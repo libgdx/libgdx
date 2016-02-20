@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -31,7 +31,7 @@ public class TextButtonTest extends GdxTest {
 
 	@Override
 	public void create () {
-		stage = new Stage(0, 0, false, new SpriteBatch());
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		for (int i = 0; i < 1; i++) {
@@ -47,18 +47,17 @@ public class TextButtonTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		Gdx.app.log("X", "FPS: " + Gdx.graphics.getFramesPerSecond());
-		Gdx.app.log("X", "GL20: " + Gdx.graphics.isGL20Available());
-		SpriteBatch spriteBatch = (SpriteBatch)stage.getSpriteBatch();
+		SpriteBatch spriteBatch = (SpriteBatch)stage.getBatch();
 		Gdx.app.log("X", "render calls: " + spriteBatch.totalRenderCalls);
 		spriteBatch.totalRenderCalls = 0;
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

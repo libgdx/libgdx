@@ -29,6 +29,8 @@ public class Ray implements Serializable {
 	public final Vector3 origin = new Vector3();
 	public final Vector3 direction = new Vector3();
 
+	public Ray () { }
+	
 	/** Constructor, sets the starting position of the ray and the direction.
 	 * 
 	 * @param origin The starting position
@@ -43,19 +45,11 @@ public class Ray implements Serializable {
 		return new Ray(this.origin, this.direction);
 	}
 
-	/** @deprecated Use {@link #getEndPoint(Vector3, float)} instead.
-	 * Returns the endpoint given the distance. This is calculated as startpoint + distance * direction.
-	 * @param distance The distance from the end point to the start point.
-	 * @return The end point */
-	public Vector3 getEndPoint (float distance) {
-		return getEndPoint(new Vector3(), distance);
-	}
-
 	/** Returns the endpoint given the distance. This is calculated as startpoint + distance * direction.
 	 * @param out The vector to set to the result
 	 * @param distance The distance from the end point to the start point.
 	 * @return The out param */
-	public Vector3 getEndPoint(final Vector3 out, final float distance) {
+	public Vector3 getEndPoint (final Vector3 out, final float distance) {
 		return out.set(direction).scl(distance).add(origin);
 	}
 
@@ -112,5 +106,22 @@ public class Ray implements Serializable {
 		this.origin.set(ray.origin);
 		this.direction.set(ray.direction);
 		return this;
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (o == this) return true;
+		if (o == null || o.getClass() != this.getClass()) return false;
+		Ray r = (Ray)o;
+		return this.direction.equals(r.direction) && this.origin.equals(r.origin);
+	}
+
+	@Override
+	public int hashCode () {
+		final int prime = 73;
+		int result = 1;
+		result = prime * result + this.direction.hashCode();
+		result = prime * result + this.origin.hashCode();
+		return result;
 	}
 }

@@ -74,9 +74,10 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** Adds a case insensitive suffix for matching input files. */
 	public FileProcessor addInputSuffix (String... suffixes) {
 		for (String suffix : suffixes)
-			addInputRegex(".*" + Pattern.quote(suffix));
+			addInputRegex("(?i).*" + Pattern.quote(suffix));
 		return this;
 	}
 

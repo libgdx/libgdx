@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 
 public class TiledMapAssetManagerTest extends GdxTest {
-	
+
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -39,23 +39,23 @@ public class TiledMapAssetManagerTest extends GdxTest {
 	private AssetManager assetManager;
 	private BitmapFont font;
 	private SpriteBatch batch;
-	
+
 	@Override
-	public void create() {		
+	public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-		
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
 		camera.zoom = 2;
 		camera.update();
-		
+
 		cameraController = new OrthoCamController(camera);
 		Gdx.input.setInputProcessor(cameraController);
-	
+
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		
+
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		assetManager.load("data/maps/tiled/isometric_grass_and_water.tmx", TiledMap.class);
@@ -65,19 +65,14 @@ public class TiledMapAssetManagerTest extends GdxTest {
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
-	}
-	
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

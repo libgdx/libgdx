@@ -105,12 +105,12 @@ btDefaultCollisionConfiguration::btDefaultCollisionConfiguration(const btDefault
 	int maxSize = sizeof(btConvexConvexAlgorithm);
 	int maxSize2 = sizeof(btConvexConcaveCollisionAlgorithm);
 	int maxSize3 = sizeof(btCompoundCollisionAlgorithm);
-	int sl = sizeof(btConvexSeparatingDistanceUtil);
-	sl = sizeof(btGjkPairDetector);
+	int maxSize4 = sizeof(btCompoundCompoundCollisionAlgorithm);
+
 	int	collisionAlgorithmMaxElementSize = btMax(maxSize,constructionInfo.m_customCollisionAlgorithmMaxElementSize);
 	collisionAlgorithmMaxElementSize = btMax(collisionAlgorithmMaxElementSize,maxSize2);
 	collisionAlgorithmMaxElementSize = btMax(collisionAlgorithmMaxElementSize,maxSize3);
-
+	collisionAlgorithmMaxElementSize = btMax(collisionAlgorithmMaxElementSize,maxSize4);
 		
 	if (constructionInfo.m_persistentManifoldPool)
 	{

@@ -23,10 +23,10 @@ import java.util.Comparator;
  * IllegalStateException. Only {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, and add methods are allowed.
  * <p>
  * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
- * problem..
+ * problem.
  * @author Nathan Sweet */
 public class DelayedRemovalArray<T> extends Array<T> {
-	private boolean iterating;
+	private int iterating;
 	private IntArray remove = new IntArray(0);
 
 	public DelayedRemovalArray () {
@@ -62,13 +62,16 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	}
 
 	public void begin () {
-		iterating = true;
+		iterating++;
 	}
 
 	public void end () {
-		iterating = false;
-		for (int i = 0, n = remove.size; i < n; i++)
-			removeIndex(remove.pop());
+		if (iterating == 0) throw new IllegalStateException("begin must be called before end.");
+		iterating--;
+		if (iterating == 0) {
+			for (int i = 0, n = remove.size; i < n; i++)
+				removeIndex(remove.pop());
+		}
 	}
 
 	private void remove (int index) {
@@ -84,7 +87,7 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	}
 
 	public boolean removeValue (T value, boolean identity) {
-		if (iterating) {
+		if (iterating > 0) {
 			int index = indexOf(value, identity);
 			if (index == -1) return false;
 			remove(index);
@@ -94,60 +97,73 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	}
 
 	public T removeIndex (int index) {
-		if (iterating) {
+		if (iterating > 0) {
 			remove(index);
 			return get(index);
 		}
 		return super.removeIndex(index);
 	}
 
+	public void removeRange (int start, int end) {
+		if (iterating > 0) {
+			for (int i = end; i >= start; i--)
+				remove(i);
+		} else
+			super.removeRange(start, end);
+	}
+
 	public void set (int index, T value) {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.set(index, value);
 	}
 
 	public void insert (int index, T value) {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.insert(index, value);
 	}
 
 	public void swap (int first, int second) {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.swap(first, second);
 	}
 
 	public T pop () {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		return super.pop();
 	}
 
 	public void clear () {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.clear();
 	}
 
 	public void sort () {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.sort();
 	}
 
-	public void sort (Comparator<T> comparator) {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+	public void sort (Comparator<? super T> comparator) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.sort(comparator);
 	}
 
 	public void reverse () {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.reverse();
 	}
 
 	public void shuffle () {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.shuffle();
 	}
 
 	public void truncate (int newSize) {
-		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.truncate(newSize);
+	}
+
+	/** @see #DelayedRemovalArray(Object[]) */
+	static public <T> DelayedRemovalArray<T> with (T... array) {
+		return new DelayedRemovalArray(array);
 	}
 }

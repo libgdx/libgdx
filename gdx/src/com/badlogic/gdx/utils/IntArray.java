@@ -114,12 +114,12 @@ public class IntArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] += value;
 	}
-	
+
 	public void mul (int index, int value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
 	}
-	
+
 	public void insert (int index, int value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		int[] items = this.items;
@@ -187,6 +187,22 @@ public class IntArray {
 		return value;
 	}
 
+	/** Removes the items between the specified indices, inclusive. */
+	public void removeRange (int start, int end) {
+		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
+		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
+		int[] items = this.items;
+		int count = end - start + 1;
+		if (ordered)
+			System.arraycopy(items, start + count, items, start, size - (start + count));
+		else {
+			int lastIndex = this.size - 1;
+			for (int i = 0; i < count; i++)
+				items[start + i] = items[lastIndex - i];
+		}
+		size -= count;
+	}
+
 	/** Removes from this array all of elements contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (IntArray array) {
@@ -227,13 +243,14 @@ public class IntArray {
 	}
 
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added. */
-	public void shrink () {
-		if (items.length == size) return;
-		resize(size);
+	 * been removed, or if it is known that more items will not be added.
+	 * @return {@link #items} */
+	public int[] shrink () {
+		if (items.length != size) resize(size);
+		return items;
 	}
 
-	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
 	 * @return {@link #items} */
 	public int[] ensureCapacity (int additionalCapacity) {
@@ -292,12 +309,25 @@ public class IntArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		int[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + items[i];
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof IntArray)) return false;
 		IntArray array = (IntArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		int[] items1 = this.items;
+		int[] items2 = array.items;
 		for (int i = 0; i < n; i++)
 			if (items[i] != array.items[i]) return false;
 		return true;
@@ -327,5 +357,10 @@ public class IntArray {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #IntArray(int[]) */
+	static public IntArray with (int... array) {
+		return new IntArray(array);
 	}
 }

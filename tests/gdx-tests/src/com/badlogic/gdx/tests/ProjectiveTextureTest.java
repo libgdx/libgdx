@@ -48,11 +48,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ProjectiveTextureTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 	PerspectiveCamera cam;
 	PerspectiveCamera projector;
 	Texture texture;
@@ -81,7 +76,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		multiplexer.addProcessor(controller);
 		Gdx.input.setInputProcessor(multiplexer);
 
-		renderer = new ImmediateModeRenderer20(false, true, 0);
+		// renderer = new ImmediateModeRenderer20(false, true, 0);
 	}
 
 	public void setupScene () {
@@ -89,7 +84,7 @@ public class ProjectiveTextureTest extends GdxTest {
 			Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		plane.setVertices(new float[] {-10, -1, 10, 0, 1, 0, 10, -1, 10, 0, 1, 0, 10, -1, -10, 0, 1, 0, -10, -1, -10, 0, 1, 0});
 		plane.setIndices(new short[] {3, 2, 1, 1, 0, 3});
-		
+
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 
@@ -107,10 +102,11 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 
 	public void setupUI () {
-		ui = new Stage(480, 320, true);
+		ui = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		TextButton reload = new TextButton("Reload Shaders", skin.get(TextButtonStyle.class));
-		camera = new SelectBox(new String[] {"Camera", "Light"}, skin.get(SelectBoxStyle.class));
+		camera = new SelectBox(skin.get(SelectBoxStyle.class));
+		camera.setItems("Camera", "Light");
 		fps = new Label("fps: ", skin.get(LabelStyle.class));
 
 		Table table = new Table();
@@ -156,23 +152,24 @@ public class ProjectiveTextureTest extends GdxTest {
 		texture.bind();
 		projTexShader.begin();
 
-		if (camera.getSelectionIndex() == 0) {
+		if (camera.getSelectedIndex() == 0) {
 			renderMesh(projTexShader, cam.combined, projector.combined, planeTrans, plane, Color.WHITE);
-			/* TODO: Fix method rendering
-			renderMesh(projTexShader, cam.combined, projector.combined, cubeTrans, cube, Color.WHITE);
-			*/
+			/*
+			 * TODO: Fix method rendering renderMesh(projTexShader, cam.combined, projector.combined, cubeTrans, cube, Color.WHITE);
+			 */
 		} else {
 			renderMesh(projTexShader, projector.combined, projector.combined, planeTrans, plane, Color.WHITE);
-			/* TODO: Fix method rendering
-			renderMesh(projTexShader, projector.combined, projector.combined, cubeTrans, cube, Color.WHITE);
-			*/
+			/*
+			 * TODO: Fix method rendering renderMesh(projTexShader, projector.combined, projector.combined, cubeTrans, cube,
+			 * Color.WHITE);
+			 */
 		}
 
 		projTexShader.end();
 
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		ui.act();
 		ui.draw();
-		Table.drawDebug(ui);
 	}
 
 	Vector3 position = new Vector3();
@@ -198,6 +195,6 @@ public class ProjectiveTextureTest extends GdxTest {
 		projTexShader.dispose();
 		ui.dispose();
 		skin.dispose();
-		renderer.dispose();
+		// renderer.dispose();
 	}
 }

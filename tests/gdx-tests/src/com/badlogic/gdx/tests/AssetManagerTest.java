@@ -17,37 +17,35 @@
 package com.badlogic.gdx.tests;
 
 import java.nio.IntBuffer;
+import java.util.Locale;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 	AssetManager manager;
 	BitmapFont font;
 	SpriteBatch batch;
 	int frame = 0;
 	int reloads = 0;
+	float elapsed = 0;
 
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_ERROR);
@@ -76,7 +74,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	private Texture tex1;
 
 	private void load () {
-//		Gdx.app.setLogLevel(Logger.DEBUG);
+// Gdx.app.setLogLevel(Logger.DEBUG);
 		start = TimeUtils.nanoTime();
 		tex1 = new Texture("data/animation.png");
 		tex2 = new TextureAtlas(Gdx.files.internal("data/pack"));
@@ -89,15 +87,16 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 
 		start = TimeUtils.nanoTime();
 		manager.load("data/animation.png", Texture.class);
-//		manager.load("data/pack1.png", Texture.class);
+// manager.load("data/pack1.png", Texture.class);
 		manager.load("data/pack", TextureAtlas.class);
-//		manager.load("data/verdana39.png", Texture.class);
+// manager.load("data/verdana39.png", Texture.class);
 		manager.load("data/verdana39.fnt", BitmapFont.class);
-//		manager.load("data/multipagefont.fnt", BitmapFont.class);
+// manager.load("data/multipagefont.fnt", BitmapFont.class);
 
 // manager.load("data/test.etc1", Texture.class);
 // manager.load("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class, new
 // TileMapRendererLoader.TileMapParameter("data/tiledmap/", 8, 8));
+		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
 	}
 
 	private void unload () {
@@ -109,14 +108,15 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // renderer.dispose();
 
 		manager.unload("data/animation.png");
-//		manager.unload("data/pack1.png");
+// manager.unload("data/pack1.png");
 		manager.unload("data/pack");
-//		manager.unload("data/verdana39.png");
+// manager.unload("data/verdana39.png");
 		manager.unload("data/verdana39.fnt");
-//		manager.unload("data/multipagefont.fnt");
+// manager.unload("data/multipagefont.fnt");
 
 // manager.unload("data/test.etc1");
 // manager.unload("data/tiledmap/tilemap csv.tmx");
+		manager.unload("data/i18n/message2");
 	}
 
 	private void invalidateTexture (Texture texture) {
@@ -126,39 +126,46 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		boolean result = manager.update();
-		if (result & !diagnosed) {
-			diagnosed = true;
-			System.out.println("took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
-			unload();
-			load();
-			diagnosed = false;
-			reloads++;
+		if (result) {
+			if (!diagnosed) {
+				diagnosed = true;
+				System.out.println("took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
+				elapsed = 0;
+			} else {
+				elapsed += Gdx.graphics.getRawDeltaTime();
+				if (elapsed > 0.2f) {
+					unload();
+					load();
+					diagnosed = false;
+					reloads++;
+				}
+			}
 		}
 		frame++;
-		
+
 		batch.begin();
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
 		if (manager.isLoaded("data/pack"))
 			batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt"))
-			manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 200);
-		if (manager.isLoaded("data/multipagefont.fnt")) 
-			manager.get("data/multipagefont.fnt", BitmapFont.class).draw(batch, "This is a test qpRPN multi page!", 100, 200);
-		
-//		System.out.println(Arrays.toString(manager.getAssetNames().items));
-		
-		
+			manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 80);
+		if (manager.isLoaded("data/multipagefont.fnt"))
+			manager.get("data/multipagefont.fnt", BitmapFont.class).draw(batch, "This is a test qpRPN multi page!", 100, 80);
+
+// System.out.println(Arrays.toString(manager.getAssetNames().items));
+
 // if (manager.isLoaded("data/test.etc1")) batch.draw(manager.get("data/test.etc1", Texture.class), 0, 0);
 // if (manager.isLoaded("data/tiledmap/tilemap csv.tmx")) manager.get("data/tiledmap/tilemap csv.tmx",
 // TileMapRenderer.class).render();
+		if (manager.isLoaded("data/i18n/message2")) font.draw(batch, manager.get("data/i18n/message2", I18NBundle.class).get("msg"), 100, 400);
+
 		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
-		
-		
+
 // if(Gdx.input.justTouched()) {
 // Texture.invalidateAllTextures(Gdx.app);
 // diagnosed = false;

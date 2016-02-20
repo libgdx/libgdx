@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math;
 
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
-public class Polygon {
+public class Polygon implements Shape2D {
 	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -115,15 +115,7 @@ public class Polygon {
 	 * @throws IllegalArgumentException if less than 6 elements, representing 3 points, are provided */
 	public void setVertices (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
-
-		// if the provided vertices are the same length, we can copy them into localVertices
-		if (localVertices.length == vertices.length) {
-			for (int i = 0; i < localVertices.length; i++) {
-				localVertices[i] = vertices[i];
-			}
-		} else {
-			localVertices = vertices;
-		}
+		localVertices = vertices;
 		dirty = true;
 	}
 
@@ -202,6 +194,7 @@ public class Polygon {
 	}
 
 	/** Returns whether an x, y pair is contained within the polygon. */
+	@Override
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
@@ -215,6 +208,11 @@ public class Polygon {
 			if (((y1 <= y && y < y2) || (y2 <= y && y < y1)) && x < ((x2 - x1) / (y2 - y1) * (y - y1) + x1)) intersects++;
 		}
 		return (intersects & 1) == 1;
+	}
+
+	@Override
+	public boolean contains (Vector2 point) {
+		return contains(point.x, point.y);
 	}
 
 	/** Returns the x-coordinate of the polygon's position within the world. */

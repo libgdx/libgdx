@@ -4,10 +4,10 @@ com.badlogic.gdx.graphics.Color: {
 	green: { a: 1, b: 0, g: 1, r: 0 },
 	white: { a: 1, b: 1, g: 1, r: 1 },
 	red: { a: 1, b: 0, g: 0, r: 1 },
-	black: { a: 1, b: 0, g: 0, r: 0 }
+	black: { a: 1, b: 0, g: 0, r: 0 },
 },
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-	dialogDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } }
+	dialogDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } },
 },
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: { down: default-round-down, up: default-round },
@@ -35,8 +35,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: { titleFont: default-font, background: default-window, titleFontColor: white },
 	dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialogDim }
 },
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	default-horizontal: { background: default-slider, knob: default-slider-knob },
+	default-vertical: { background: default-slider, knob: default-round-large }
+},
 com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
-	default-horizontal: { background: default-slider, knob: default-slider-knob }
+	default-horizontal: { background: default-slider, knob: default-slider-knob },
+	default-vertical: { background: default-slider, knob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: { font: default-font, fontColor: white }
@@ -48,12 +53,18 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: white }
 },
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-	default: { fontColorUnselected: white, selection: default-rect-pad, fontColorSelected: white, font: default-font }
+	default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: default-font }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
 	default: { background: default-pane, knob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 	default: { minus: tree-minus, plus: tree-plus, selection: default-select-selection }
-}
+},
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: { font: default-font, fontColor: white },
+		background: default-pane, wrapWidth: 150
+	}
+},
 }

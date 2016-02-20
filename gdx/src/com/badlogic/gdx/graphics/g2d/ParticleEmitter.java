@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
-
-// BOZO - Javadoc.
-// BOZO - Add a duplicate emitter button.
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -85,6 +82,8 @@ public class ParticleEmitter {
 	private boolean aligned;
 	private boolean behind;
 	private boolean additive = true;
+	private boolean premultipliedAlpha = false;
+	boolean cleansUpBlendFunction = true;
 
 	public ParticleEmitter () {
 		initialize();
@@ -98,6 +97,7 @@ public class ParticleEmitter {
 	public ParticleEmitter (ParticleEmitter emitter) {
 		sprite = emitter.sprite;
 		name = emitter.name;
+		imagePath = emitter.imagePath;
 		setMaxParticleCount(emitter.maxParticleCount);
 		minParticleCount = emitter.minParticleCount;
 		delayValue.load(emitter.delayValue);
@@ -123,6 +123,8 @@ public class ParticleEmitter {
 		aligned = emitter.aligned;
 		behind = emitter.behind;
 		additive = emitter.additive;
+		premultipliedAlpha = emitter.premultipliedAlpha;
+		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 	}
 
 	private void initialize () {
@@ -177,7 +179,7 @@ public class ParticleEmitter {
 	}
 
 	public void update (float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+		accumulator += delta * 1000;
 		if (accumulator < 1) return;
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
@@ -230,21 +232,29 @@ public class ParticleEmitter {
 	}
 
 	public void draw (Batch batch) {
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-
+		if (premultipliedAlpha) {
+			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		} else {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
 
-		for (int i = 0, n = active.length; i < n; i++)
+		for (int i = 0, n = active.length; i < n; i++) {
 			if (active[i]) particles[i].draw(batch);
+		}
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 	}
 
 	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
 	 * {@link #draw(Batch)} separately. */
 	public void draw (Batch batch, float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+		accumulator += delta * 1000;
 		if (accumulator < 1) {
 			draw(batch);
 			return;
@@ -252,7 +262,13 @@ public class ParticleEmitter {
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		if (premultipliedAlpha) {
+			batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		} else if (additive) {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		} else {
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -270,7 +286,8 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (cleansUpBlendFunction && (additive || premultipliedAlpha))
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
@@ -473,7 +490,7 @@ public class ParticleEmitter {
 				float radius2 = radiusX * radiusX;
 				while (true) {
 					float px = MathUtils.random(width) - radiusX;
-					float py = MathUtils.random(width) - radiusX;
+					float py = MathUtils.random(height) - radiusY;
 					if (px * px + py * py <= radius2) {
 						x += px;
 						y += py / scaleY;
@@ -557,9 +574,15 @@ public class ParticleEmitter {
 			color = tintValue.getColor(percent);
 		else
 			color = particle.tint;
-		particle.setColor(color[0], color[1], color[2],
-			particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
 
+		if (premultipliedAlpha) {
+			float alphaMultiplier = additive ? 0 : 1;
+			float a = particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent);
+			particle.setColor(color[0] * a, color[1] * a, color[2] * a, a * alphaMultiplier);
+		} else {
+			particle.setColor(color[0], color[1], color[2],
+				particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
+		}
 		return true;
 	}
 
@@ -712,12 +735,38 @@ public class ParticleEmitter {
 		this.additive = additive;
 	}
 
+	/** @return Whether this ParticleEmitter automatically returns the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend
+	 *         function to the alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. */
+	public boolean cleansUpBlendFunction () {
+		return cleansUpBlendFunction;
+	}
+
+	/** Set whether to automatically return the {@link com.badlogic.gdx.graphics.g2d.Batch Batch}'s blend function to the
+	 * alpha-blending default (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) when done drawing. Is true by default. If set to false, the
+	 * Batch's blend function is left as it was for drawing this ParticleEmitter, which prevents the Batch from being flushed
+	 * repeatedly if consecutive ParticleEmitters with the same additive or pre-multiplied alpha state are drawn in a row.
+	 * <p>
+	 * IMPORTANT: If set to false and if the next object to use this Batch expects alpha blending, you are responsible for setting
+	 * the Batch's blend function to (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) before that next object is drawn.
+	 * @param cleansUpBlendFunction */
+	public void setCleansUpBlendFunction (boolean cleansUpBlendFunction) {
+		this.cleansUpBlendFunction = cleansUpBlendFunction;
+	}
+
 	public boolean isBehind () {
 		return behind;
 	}
 
 	public void setBehind (boolean behind) {
 		this.behind = behind;
+	}
+
+	public boolean isPremultipliedAlpha () {
+		return premultipliedAlpha;
+	}
+
+	public void setPremultipliedAlpha (boolean premultipliedAlpha) {
+		this.premultipliedAlpha = premultipliedAlpha;
 	}
 
 	public int getMinParticleCount () {
@@ -733,6 +782,7 @@ public class ParticleEmitter {
 	}
 
 	public boolean isComplete () {
+		if (continuous) return false;
 		if (delayTimer < delay) return false;
 		return durationTimer >= duration && activeCount == 0;
 	}
@@ -854,6 +904,9 @@ public class ParticleEmitter {
 		output.write("aligned: " + aligned + "\n");
 		output.write("additive: " + additive + "\n");
 		output.write("behind: " + behind + "\n");
+		output.write("premultipliedAlpha: " + premultipliedAlpha + "\n");
+		output.write("- Image Path -\n");
+		output.write(imagePath + "\n");
 	}
 
 	public void load (BufferedReader reader) throws IOException {
@@ -904,16 +957,32 @@ public class ParticleEmitter {
 			aligned = readBoolean(reader, "aligned");
 			additive = readBoolean(reader, "additive");
 			behind = readBoolean(reader, "behind");
+
+			// Backwards compatibility
+			String line = reader.readLine();
+			if (line.startsWith("premultipliedAlpha")) {
+				premultipliedAlpha = readBoolean(line);
+				reader.readLine();
+			}
+			setImagePath(reader.readLine());
 		} catch (RuntimeException ex) {
 			if (name == null) throw ex;
 			throw new RuntimeException("Error parsing emitter: " + name, ex);
 		}
 	}
 
+	static String readString (String line) throws IOException {
+		return line.substring(line.indexOf(":") + 1).trim();
+	}
+
 	static String readString (BufferedReader reader, String name) throws IOException {
 		String line = reader.readLine();
 		if (line == null) throw new IOException("Missing value: " + name);
-		return line.substring(line.indexOf(":") + 1).trim();
+		return readString(line);
+	}
+
+	static boolean readBoolean (String line) throws IOException {
+		return Boolean.parseBoolean(readString(line));
 	}
 
 	static boolean readBoolean (BufferedReader reader, String name) throws IOException {
@@ -1205,10 +1274,12 @@ public class ParticleEmitter {
 			this.timeline = timeline;
 		}
 
+		/** @return the r, g and b values for every timeline position */
 		public float[] getColors () {
 			return colors;
 		}
 
+		/** @param colors the r, g and b values for every timeline position */
 		public void setColors (float[] colors) {
 			this.colors = colors;
 		}

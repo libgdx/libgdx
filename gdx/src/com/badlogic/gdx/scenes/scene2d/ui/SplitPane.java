@@ -73,8 +73,7 @@ public class SplitPane extends WidgetGroup {
 		setStyle(style);
 		setFirstWidget(firstWidget);
 		setSecondWidget(secondWidget);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 		initialize();
 	}
 
@@ -164,24 +163,22 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth () {
-		float width = 0;
-		if (firstWidget != null)
-			width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
-		if (secondWidget != null)
-			width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
-		if (!vertical) width += style.handle.getMinWidth();
-		return width;
+		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget
+			.getWidth());
+		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth()
+			: secondWidget.getWidth());
+		if (vertical) return Math.max(first, second);
+		return first + style.handle.getMinWidth() + second;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float height = 0;
-		if (firstWidget != null)
-			height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
-		if (secondWidget != null)
-			height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
-		if (vertical) height += style.handle.getMinHeight();
-		return height;
+		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight()
+			: firstWidget.getHeight());
+		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight()
+			: secondWidget.getHeight());
+		if (!vertical) return Math.max(first, second);
+		return first + style.handle.getMinHeight() + second;
 	}
 
 	public float getMinWidth () {
@@ -237,6 +234,7 @@ public class SplitPane extends WidgetGroup {
 		applyTransform(batch, computeTransform());
 		Matrix4 transform = batch.getTransformMatrix();
 		if (firstWidget != null) {
+			batch.flush();
 			getStage().calculateScissors(firstWidgetBounds, firstScissors);
 			if (ScissorStack.pushScissors(firstScissors)) {
 				if (firstWidget.isVisible()) firstWidget.draw(batch, parentAlpha * color.a);
@@ -245,6 +243,7 @@ public class SplitPane extends WidgetGroup {
 			}
 		}
 		if (secondWidget != null) {
+			batch.flush();
 			getStage().calculateScissors(secondWidgetBounds, secondScissors);
 			if (ScissorStack.pushScissors(secondScissors)) {
 				if (secondWidget.isVisible()) secondWidget.draw(batch, parentAlpha * color.a);
@@ -252,7 +251,7 @@ public class SplitPane extends WidgetGroup {
 				ScissorStack.popScissors();
 			}
 		}
-		batch.setColor(color.r, color.g, color.b, color.a);
+		batch.setColor(color.r, color.g, color.b, parentAlpha * color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}
@@ -274,7 +273,7 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	public void setMaxSplitAmount (float maxAmount) {
-		if (maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be >= 0");
+		if (maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be <= 1");
 		if (maxAmount <= minAmount) throw new GdxRuntimeException("maxAmount has to be > minAmount");
 		this.maxAmount = maxAmount;
 	}
