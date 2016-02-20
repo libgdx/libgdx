@@ -197,6 +197,8 @@ public class RepeatablePolygonSprite {
         vertices.clear();
         for(int i = 0; i < parts.size; i++) {
             float verts[] = parts.get(i);
+            if(verts == null) continue;
+
             float[] fullVerts = new float[5 * verts.length/2];
             int idx = 0;
 
