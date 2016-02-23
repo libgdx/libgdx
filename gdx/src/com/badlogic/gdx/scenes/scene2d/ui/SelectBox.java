@@ -16,11 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -28,11 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
@@ -40,11 +31,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.*;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -66,6 +55,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	private ClickListener clickListener;
 	boolean disabled;
 	private GlyphLayout layout = new GlyphLayout();
+	private int selectedAlignment = Align.left;
 
 	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
@@ -240,9 +230,21 @@ public class SelectBox<T> extends Widget implements Disableable {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			layout.setText(font, string, 0, string.length(), font.getColor(), width, Align.left, false, "...");
+			layout.setText(font, string, 0, string.length(), font.getColor(), width, selectedAlignment, false, "...");
 			font.draw(batch, layout, x, y);
 		}
+	}
+
+	/**
+	 * Sets the alignment of the items in the list.
+	 * @param listAlignment The alignment. Use Align constants.
+	 */
+	public void setListAlignment(int listAlignment){
+		this.getList().setListAlignment(listAlignment);
+	}
+
+	public void setSelectedAlignment(int alignment){
+		this.selectedAlignment = alignment;
 	}
 
 	/** Get the set of selected items, useful when multiple items are selected

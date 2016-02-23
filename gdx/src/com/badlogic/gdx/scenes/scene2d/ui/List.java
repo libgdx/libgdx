@@ -27,10 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.*;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -47,6 +44,8 @@ public class List<T> extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
+	private GlyphLayout layout = new GlyphLayout();
+	private int listAlignment = Align.left;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -158,7 +157,9 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				font.draw(batch, toString(item), x + textOffsetX, y + itemY - textOffsetY);
+				String string = item.toString();
+				layout.setText(font, string, 0, string.length(), font.getColor(), width, listAlignment, false, "...");
+				font.draw(batch, layout, x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
@@ -168,6 +169,14 @@ public class List<T> extends Widget implements Cullable {
 			}
 			itemY -= itemHeight;
 		}
+	}
+
+	/**
+	 * Sets the alignment of the items in the list.
+	 * @param listAlignment The alignment. Use Align constants.
+     */
+	public void setListAlignment(int listAlignment){
+		this.listAlignment = listAlignment;
 	}
 
 	public ArraySelection<T> getSelection () {
