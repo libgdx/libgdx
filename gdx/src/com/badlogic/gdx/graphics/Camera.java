@@ -71,8 +71,8 @@ public abstract class Camera {
 
 	/** Recalculates the direction of the camera to look at the point (x, y, z). This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at
-	 * @param y the x-coordinate of the point to look at
-	 * @param z the x-coordinate of the point to look at */
+	 * @param y the y-coordinate of the point to look at
+	 * @param z the z-coordinate of the point to look at */
 	public void lookAt (float x, float y, float z) {
 		tmpVec.set(x, y, z).sub(position).nor();
 		if (!tmpVec.isZero()) {
