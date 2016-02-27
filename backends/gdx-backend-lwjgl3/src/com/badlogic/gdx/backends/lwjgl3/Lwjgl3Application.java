@@ -150,6 +150,7 @@ public class Lwjgl3Application implements Application {
 		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
+		Lwjgl3Cursor.disposeSystemCursors();
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
 		}

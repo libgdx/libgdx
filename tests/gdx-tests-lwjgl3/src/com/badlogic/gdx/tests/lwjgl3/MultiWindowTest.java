@@ -47,16 +47,19 @@ public class MultiWindowTest {
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
 				Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
-				ApplicationListener listener = null;
-				try {
-					listener = (ApplicationListener)clazz.newInstance();
-				} catch(Throwable t) {
-					new GdxRuntimeException("Couldn't instantiate app listener", t);
-				}
-				Lwjgl3Window window = app.newWindow(listener, config);				
+				ApplicationListener listener = createChildWindowClass(clazz);
+				Lwjgl3Window window = app.newWindow(listener, config);
 			}
 		}
-	}		
+
+		public ApplicationListener createChildWindowClass(Class clazz) {
+			try {
+				return (ApplicationListener) clazz.newInstance();
+			} catch(Throwable t) {
+				throw new GdxRuntimeException("Couldn't instantiate app listener", t);
+			}
+		}
+	}
 	
 	public static void main(String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

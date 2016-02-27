@@ -278,7 +278,8 @@ public class Lwjgl3Window implements Disposable {
 	@Override
 	public void dispose() {
 		listener.pause();
-		listener.dispose();		
+		listener.dispose();
+		Lwjgl3Cursor.dispose(this);
 		graphics.dispose();
 		input.dispose();
 		GLFW.glfwSetWindowFocusCallback(windowHandle, null);

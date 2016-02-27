@@ -85,10 +85,16 @@ public class Lwjgl3Cursor implements Cursor {
 		GLFW.glfwDestroyCursor(glfwCursor);
 	}
 
-	static void disposeAll() {
-		while (cursors.size > 0) {
-			cursors.removeIndex(0).dispose();
+	static void dispose(Lwjgl3Window window) {
+		for (int i = cursors.size - 1; i >= 0; i--) {
+			Lwjgl3Cursor cursor = cursors.get(i);
+			if (cursor.window.equals(window)) {
+				cursors.removeIndex(i).dispose();
+			}
 		}
+	}
+
+	static void disposeSystemCursors() {
 		for (long systemCursor : systemCursors.values()) {
 			GLFW.glfwDestroyCursor(systemCursor);
 		}
