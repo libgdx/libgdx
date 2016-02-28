@@ -407,7 +407,6 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public void dispose() {
 		this.resizeCallback.release();
-		Lwjgl3Cursor.disposeAll();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {
