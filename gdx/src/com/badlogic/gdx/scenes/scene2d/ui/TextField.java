@@ -96,6 +96,9 @@ public class TextField extends Widget implements Disableable {
 	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
 
+	String undoText = "";
+	long lastChangeTime;
+
 	boolean passwordMode;
 	private StringBuilder passwordBuffer;
 	private char passwordCharacter = BULLET;
@@ -436,6 +439,7 @@ public class TextField extends Widget implements Disableable {
 			if (!withinMaxLength(textLength + buffer.length())) break;
 			char c = content.charAt(i);
 			if (!(writeEnters && (c == ENTER_ANDROID || c == ENTER_DESKTOP))) {
+				if (c == '\r' || c == '\n') continue;
 				if (onlyFontChars && !data.hasGlyph(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
 			}
@@ -839,6 +843,13 @@ public class TextField extends Widget implements Disableable {
 					selectAll();
 					return true;
 				}
+				if (keycode == Keys.Z) {
+					String oldText = text;
+					setText(undoText);
+					undoText = oldText;
+					updateDisplayText();
+					return true;
+				}
 			}
 
 			if (UIUtils.shift()) {
@@ -965,7 +976,13 @@ public class TextField extends Widget implements Disableable {
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
-					if (!changeText(oldText, text)) cursor = oldCursor;
+					String tempUndoText = undoText;
+					if (changeText(oldText, text)) {
+						long time = System.currentTimeMillis();
+						if (time - 750 > lastChangeTime) undoText = oldText;
+						lastChangeTime = time;
+					} else
+						cursor = oldCursor;
 					updateDisplayText();
 				}
 			}
