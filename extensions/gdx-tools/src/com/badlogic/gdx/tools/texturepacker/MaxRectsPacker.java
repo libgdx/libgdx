@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Packer;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
@@ -23,8 +25,6 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
-
-import java.util.Comparator;
 
 /** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is
  * used to pack into the smallest bin possible.
@@ -596,42 +596,43 @@ public class MaxRectsPacker implements Packer {
 			if (x == 0 || x + width == binWidth) score += height;
 			if (y == 0 || y + height == binHeight) score += width;
 
-			for (int i = 0; i < usedRectangles.size; i++) {
-				if (usedRectangles.get(i).x == x + width || usedRectangles.get(i).x + usedRectangles.get(i).width == x)
-					score += commonIntervalLength(usedRectangles.get(i).y, usedRectangles.get(i).y + usedRectangles.get(i).height, y,
-						y + height);
-				if (usedRectangles.get(i).y == y + height || usedRectangles.get(i).y + usedRectangles.get(i).height == y)
-					score += commonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x,
-						x + width);
+			Array<Rect> usedRectangles = this.usedRectangles;
+			for (int i = 0, n = usedRectangles.size; i < n; i++) {
+				Rect rect = usedRectangles.get(i);
+				if (rect.x == x + width || rect.x + rect.width == x)
+					score += commonIntervalLength(rect.y, rect.y + rect.height, y, y + height);
+				if (rect.y == y + height || rect.y + rect.height == y)
+					score += commonIntervalLength(rect.x, rect.x + rect.width, x, x + width);
 			}
 			return score;
 		}
 
 		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight,
 			boolean rotate) {
-			Rect bestNode = new Rect();
 
+			Rect bestNode = new Rect();
 			bestNode.score1 = -1; // best contact score
 
-			for (int i = 0; i < freeRectangles.size; i++) {
+			Array<Rect> freeRectangles = this.freeRectangles;
+			for (int i = 0, n = freeRectangles.size; i < n; i++) {
 				// Try to place the rectangle in upright (non-rotated) orientation.
-				if (freeRectangles.get(i).width >= width && freeRectangles.get(i).height >= height) {
-					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, width, height);
+				Rect free = freeRectangles.get(i);
+				if (free.width >= width && free.height >= height) {
+					int score = contactPointScoreNode(free.x, free.y, width, height);
 					if (score > bestNode.score1) {
-						bestNode.x = freeRectangles.get(i).x;
-						bestNode.y = freeRectangles.get(i).y;
+						bestNode.x = free.x;
+						bestNode.y = free.y;
 						bestNode.width = width;
 						bestNode.height = height;
 						bestNode.score1 = score;
 						bestNode.rotated = false;
 					}
 				}
-				if (rotate && freeRectangles.get(i).width >= rotatedWidth && freeRectangles.get(i).height >= rotatedHeight) {
-					// This was width,height -- bug fixed?
-					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, rotatedWidth, rotatedHeight);
+				if (rotate && free.width >= rotatedWidth && free.height >= rotatedHeight) {
+					int score = contactPointScoreNode(free.x, free.y, rotatedWidth, rotatedHeight);
 					if (score > bestNode.score1) {
-						bestNode.x = freeRectangles.get(i).x;
-						bestNode.y = freeRectangles.get(i).y;
+						bestNode.x = free.x;
+						bestNode.y = free.y;
 						bestNode.width = rotatedWidth;
 						bestNode.height = rotatedHeight;
 						bestNode.score1 = score;
@@ -698,16 +699,21 @@ public class MaxRectsPacker implements Packer {
 			 */
 
 			// Go through each pair and remove any rectangle that is redundant.
-			for (int i = 0; i < freeRectangles.size; i++)
-				for (int j = i + 1; j < freeRectangles.size; ++j) {
-					if (isContainedIn(freeRectangles.get(i), freeRectangles.get(j))) {
+			Array<Rect> freeRectangles = this.freeRectangles;
+			for (int i = 0, n = freeRectangles.size; i < n; i++)
+				for (int j = i + 1; j < n; ++j) {
+					Rect rect1 = freeRectangles.get(i);
+					Rect rect2 = freeRectangles.get(j);
+					if (isContainedIn(rect1, rect2)) {
 						freeRectangles.removeIndex(i);
 						--i;
+						--n;
 						break;
 					}
-					if (isContainedIn(freeRectangles.get(j), freeRectangles.get(i))) {
+					if (isContainedIn(rect2, rect1)) {
 						freeRectangles.removeIndex(j);
 						--j;
+						--n;
 					}
 				}
 		}
