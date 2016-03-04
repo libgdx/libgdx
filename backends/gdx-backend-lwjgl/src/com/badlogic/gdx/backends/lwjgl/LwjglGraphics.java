@@ -37,6 +37,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
@@ -620,6 +621,9 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
+		if (canvas != null && SharedLibraryLoader.isMac) {
+			return;
+		}
 		try {
 			Mouse.setNativeCursor(((LwjglCursor)cursor).lwjglCursor);
 		} catch (LWJGLException e) {
@@ -629,6 +633,9 @@ public class LwjglGraphics implements Graphics {
 	
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+		if (canvas != null && SharedLibraryLoader.isMac) {
+			return;
+		}
 		try {
 			Mouse.setNativeCursor(null);
 		} catch (LWJGLException e) {
