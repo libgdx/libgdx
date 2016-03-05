@@ -82,7 +82,7 @@ public class GridPoint3 implements Serializable {
 	 * @param other The other point
 	 * @return the squared distance between this point and the other point.
 	 */
-	public float dst2(GridPoint3 other) {
+	public float dst2 (GridPoint3 other) {
 		int xd = other.x - x;
 		int yd = other.y - y;
 		int zd = other.z - z;
@@ -96,7 +96,7 @@ public class GridPoint3 implements Serializable {
 	 * @param z The z-coordinate of the other point
 	 * @return the squared distance between this point and the other point.
 	 */
-	public float dst2(int x, int y, int z) {
+	public float dst2 (int x, int y, int z) {
 		int xd = x - this.x;
 		int yd = y - this.y;
 		int zd = z - this.z;
@@ -108,12 +108,12 @@ public class GridPoint3 implements Serializable {
 	 * @param other The other point
 	 * @return the distance between this point and the other vector.
 	 */
-	public float dst(GridPoint3 other) {
+	public float dst (GridPoint3 other) {
 		int xd = other.x - x;
 		int yd = other.y - y;
 		int zd = other.z - z;
 
-		return (float) Math.sqrt(xd * xd + yd * yd + zd * zd);
+		return (float)Math.sqrt(xd * xd + yd * yd + zd * zd);
 	}
 
 	/**
@@ -122,12 +122,12 @@ public class GridPoint3 implements Serializable {
 	 * @param z The z-coordinate of the other point
 	 * @return the distance between this point and the other point.
 	 */
-	public float dst(int x, int y, int z) {
+	public float dst (int x, int y, int z) {
 		int xd = x - this.x;
 		int yd = y - this.y;
 		int zd = z - this.z;
 
-		return (float) Math.sqrt(xd * xd + yd * yd + zd * zd);
+		return (float)Math.sqrt(xd * xd + yd * yd + zd * zd);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class GridPoint3 implements Serializable {
 	 * @param other The other point
 	 * @return this 3d grid point for chaining.
 	 */
-	public GridPoint3 add(GridPoint3 other) {
+	public GridPoint3 add (GridPoint3 other) {
 		x += other.x;
 		y += other.y;
 		z += other.z;
@@ -151,7 +151,7 @@ public class GridPoint3 implements Serializable {
 	 * @param z The z-coordinate of the other point
 	 * @return this 3d grid point for chaining.
 	 */
-	public GridPoint3 add(int x, int y, int z) {
+	public GridPoint3 add (int x, int y, int z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;
@@ -164,7 +164,7 @@ public class GridPoint3 implements Serializable {
 	 * @param other The other point
 	 * @return this 3d grid point for chaining.
 	 */
-	public GridPoint3 sub(GridPoint3 other) {
+	public GridPoint3 sub (GridPoint3 other) {
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
@@ -179,7 +179,7 @@ public class GridPoint3 implements Serializable {
 	 * @param z The z-coordinate of the other point
 	 * @return this 3d grid point for chaining.
 	 */
-	public GridPoint3 sub(int x, int y, int z) {
+	public GridPoint3 sub (int x, int y, int z) {
 		this.x -= x;
 		this.y -= y;
 		this.z -= z;
@@ -189,7 +189,7 @@ public class GridPoint3 implements Serializable {
 	/**
 	 * @return a copy of this grid point
 	 */
-	public GridPoint3 cpy() {
+	public GridPoint3 cpy () {
 		return new GridPoint3(this);
 	}
 
@@ -212,7 +212,7 @@ public class GridPoint3 implements Serializable {
 	}
 
 	@Override
-	public String toString() {
+	public String toString () {
 		return "(" + x + ", " + y + ", " + z + ")";
 	}
 }
