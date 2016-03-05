@@ -45,8 +45,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner, Thorsten Schleinzer */
 public class IndexBufferObject implements IndexData {
-	ShortBuffer buffer;
-	ByteBuffer byteBuffer;
+	final ShortBuffer buffer;
+	final ByteBuffer byteBuffer;
 	int bufferHandle;
 	final boolean isDirect;
 	boolean isDirty = true;
@@ -129,6 +129,21 @@ public class IndexBufferObject implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
+
+		if (isBound) {
+			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+			isDirty = false;
+		}
+	}
+
+	@Override
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count) {
+		isDirty = true;
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 2);
+		BufferUtils.copy(indices, offset, byteBuffer, count);
+		byteBuffer.position(pos);
+		buffer.position(0);
 
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);

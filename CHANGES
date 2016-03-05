@@ -2,6 +2,7 @@
 - API Change: Lwjgl3WindowListener -> filesDropped(String[] files) adds drag'n drop support for the lwjgl3 backend
 - Added isComplete() to ParticleEffect to make it easier to know when all the emitters are done, behaves the same as in the 2D API.
 - API Change: renamed Lwjgl3WindowListener.windowIsClosing() to closeRequested() to better communicate its intent.
+- Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData. 
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
