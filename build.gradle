@@ -14,10 +14,15 @@ ext {
 }
 
 buildscript {
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
         classpath "org.robovm:robovm-gradle-plugin:1.5.0"
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }
 
@@ -260,9 +265,12 @@ project(":tests:gdx-tests-android") {
 }
 
 project(":tests:gdx-tests-gwt") {
+    apply plugin: "gwt"
+    apply plugin: "war"
     dependencies {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backends-gwt")
+        compile project(":extensions:gdx-box2d:gdx-box2d-gwt")
     }
 }
 

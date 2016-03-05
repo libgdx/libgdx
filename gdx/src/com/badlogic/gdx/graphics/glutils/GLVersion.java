@@ -87,8 +87,8 @@ public class GLVersion {
 	/** Forgiving parsing of gl major, minor and release versions as some manufacturers don't adhere to spec **/
 	private int parseInt (String v, int defaultValue) {
 		try {
-			return ((Number)NumberFormat.getInstance().parse(v)).intValue();
-		} catch (ParseException e) {
+			return Integer.parseInt(v);
+		} catch (NumberFormatException nfe) {
 			Gdx.app.error("LibGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
 			return defaultValue;
 		}
