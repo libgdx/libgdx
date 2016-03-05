@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
@@ -164,6 +165,9 @@ public interface Graphics {
 
 	/** @return the {@link GraphicsType} of this Graphics instance */
 	public GraphicsType getType ();
+
+	/** @return the {@link GLVersion} of this Graphics instance */
+	public GLVersion getGLVersion ();
 
 	/** @return the pixels per inch on the x-axis */
 	public float getPpiX ();

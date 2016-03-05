@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.jglfw;
 
 import static com.badlogic.jglfw.Glfw.*;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
@@ -41,7 +43,7 @@ public class JglfwGraphics implements Graphics {
 	static final boolean isWindows = System.getProperty("os.name").contains("Windows");
 	static final boolean isLinux = System.getProperty("os.name").contains("Linux");
 
-	static int glMajorVersion, glMinorVersion;
+	static GLVersion glVersion;
 
 	long window;
 	private boolean fullscreen;
@@ -85,15 +87,17 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		// Create GL.
-		String version = GL.glGetString(GL20.GL_VERSION);
-		glMajorVersion = Integer.parseInt("" + version.charAt(0));
-		glMinorVersion = Integer.parseInt("" + version.charAt(2));
+		String versionString = GL.glGetString(GL20.GL_VERSION);
+		String vendorString = GL.glGetString(GL20.GL_VENDOR);
+		String rendererString = GL.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 
-		if (glMajorVersion <= 1)
-			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
-		if (glMajorVersion == 2 || version.contains("2.1")) {
+
+		if (glVersion.getMajorVersion() <= 1)
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + glVersion.getMajorVersion() + ":" + glVersion.getMinorVersion());
+		if (glVersion.getMajorVersion() == 2) {
 			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
-				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + glVersion.getMajorVersion() + ":" + glVersion.getMinorVersion()
 					+ ", FBO extension: false");
 			}
 		}
@@ -225,6 +229,10 @@ public class JglfwGraphics implements Graphics {
 
 	public GraphicsType getType () {
 		return GraphicsType.JGLFW;
+	}
+
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	public float getPpiX () {

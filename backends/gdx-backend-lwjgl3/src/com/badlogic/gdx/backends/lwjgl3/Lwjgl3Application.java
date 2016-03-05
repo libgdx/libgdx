@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.File;
 
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -56,7 +57,7 @@ public class Lwjgl3Application implements Application {
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();	
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private static GLFWErrorCallback errorCallback;
-	private static int versionMajor, versionMinor, versionRelease;
+	private static GLVersion glVersion;
 
 	static void initializeGlfw() {
 		if (errorCallback == null) {
@@ -378,14 +379,14 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
 		GL.createCapabilities();
 
-		extractVersion();
-		if (!isOpenGLOrHigher(2, 0))
+		initiateGL();
+		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-					+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glInfo());
+					+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
 
 		if (!supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glInfo());
+					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
 		for (int i = 0; i < 2; i++) {
@@ -397,37 +398,17 @@ public class Lwjgl3Application implements Application {
 		return windowHandle;
 	}
 
-	private static void extractVersion () {
-		// See https://www.opengl.org/wiki/GLAPI/glGetString, format is:
-		// <major> "." <minor> ("." <release>) (<space> (<vendor_specific_info>))
-		String version = GL11.glGetString(GL11.GL_VERSION);
-		try {
-			String[] v = version.split(" ", 2)[0].split("\\.", 3);
-			versionMajor = Integer.parseInt(v[0]);
-			versionMinor = Integer.parseInt(v[1]);
-			versionRelease = v.length > 2 ? Integer.parseInt(v[2]) : 0;
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Error extracting the OpenGL version: " + version, t);
-		}
-	}
-
-	private static boolean isOpenGLOrHigher (int major, int minor) {
-		return versionMajor > major || (versionMajor == major && versionMinor >= minor);
+	private static void initiateGL () {
+		String versionString = GL11.glGetString(GL11.GL_VERSION);
+		String vendorString = GL11.glGetString(GL11.GL_VENDOR);
+		String rendererString = GL11.glGetString(GL11.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 	}
 
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
-		return isOpenGLOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
+		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
 				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
 	}
 
-	private static String glInfo () {
-		try {
-			return GL11.glGetString(GL11.GL_VENDOR) + "\n" //
-					+ GL11.glGetString(GL11.GL_RENDERER) + "\n" //
-					+ GL11.glGetString(GL11.GL_VERSION);
-		} catch (Throwable ignored) {
-		}
-		return "";
-	}
 }

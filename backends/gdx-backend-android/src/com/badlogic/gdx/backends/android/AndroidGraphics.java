@@ -32,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
@@ -50,6 +51,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
@@ -70,9 +72,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * kill the current process to avoid ANR */
 	static volatile boolean enforceContinuousRendering = false;
 
-	/** The OpenGlES version */
-	static int major, minor;
-
 	final View view;
 	int width;
 	int height;
@@ -80,6 +79,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	GL20 gl20;
 	GL30 gl30;
 	EGLContext eglContext;
+	GLVersion glVersion;
 	String extensions;
 
 	protected long lastFrameTime = System.nanoTime();
@@ -239,8 +239,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		extractVersion(gl);
-		if (config.useGL30 && AndroidGraphics.major > 2) {
+		String versionString = gl.glGetString(GL10.GL_VERSION);
+		String vendorString = gl.glGetString(GL10.GL_VENDOR);
+		String rendererString = gl.glGetString(GL10.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
+		if (config.useGL30 && glVersion.getMajorVersion() > 2) {
 			if (gl30 != null) return;
 			gl20 = gl30 = new AndroidGL30();
 
@@ -259,25 +262,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
 		Gdx.app.log(LOG_TAG, "OGL version: " + gl.glGetString(GL10.GL_VERSION));
 		Gdx.app.log(LOG_TAG, "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
-	}
-	
-	// Some manufactures (Samsung) like to add chars to version number, ignore those:
-	private static int parseInt(String v, int defaultValue) {
-		try {
-			return ((Number)NumberFormat.getInstance().parse(v)).intValue();
-		} catch (ParseException e) {
-			Gdx.app.error(LOG_TAG, "Error parsing number: " + v +", assuming: " + defaultValue);
-			return defaultValue;
-		}
-	}
-
-	private static void extractVersion (javax.microedition.khronos.opengles.GL10 gl) {
-		//Returns a version or release number of the form:
-		//OpenGL<space>ES<space><version number><space><vendor-specific information>.
-		String version = gl.glGetString(GL10.GL_VERSION);
-		String[] versionSplit = version.split(" ")[2].split("\\.", 2);
-		major = parseInt(versionSplit[0], 2);
-		minor = versionSplit.length < 2 ? 0 : parseInt(versionSplit[1], 0);
 	}
 
 	@Override
@@ -526,6 +510,12 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public GraphicsType getType () {
 		return GraphicsType.AndroidGL;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	/** {@inheritDoc} */
