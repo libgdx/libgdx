@@ -271,6 +271,7 @@ project(":tests:gdx-tests-gwt") {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backends-gwt")
         compile project(":extensions:gdx-box2d:gdx-box2d-gwt")
+        compile project(":extensions:gdx-controllers:gdx-controllers-gwt")
     }
 }
 
