@@ -402,7 +402,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public DisplayMode[] getDisplayModes (Monitor monitor) {
-		return new DisplayMode[] { getDisplayMode() };
+		return getDisplayModes();
 	}
 
 	@Override
@@ -517,7 +517,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public DisplayMode getDisplayMode () {
-		org.lwjgl.opengl.DisplayMode mode = Display.getDesktopDisplayMode();
+		org.lwjgl.opengl.DisplayMode mode = Display.getDisplayMode();
 		return new LwjglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getFrequency(), mode.getBitsPerPixel(), mode);
 	}
 
