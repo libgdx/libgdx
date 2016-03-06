@@ -92,13 +92,13 @@ public class JsonReader implements BaseJsonReader {
 
 		try {
 
-			// line 3 "JsonReader.java"
+			// line 97 "JsonReader.java"
 			{
 				cs = json_start;
 				top = 0;
 			}
 
-			// line 8 "JsonReader.java"
+			// line 103 "JsonReader.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -421,7 +421,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 313 "JsonReader.java"
+								// line 408 "JsonReader.java"
 								}
 							}
 						}
@@ -518,7 +518,7 @@ public class JsonReader implements BaseJsonReader {
 									s = p;
 								}
 									break;
-								// line 411 "JsonReader.java"
+								// line 506 "JsonReader.java"
 								}
 							}
 						}
@@ -560,7 +560,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 421 "JsonReader.java"
+	// line 548 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
