@@ -14,17 +14,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
 import com.badlogic.gdx.utils.Array;
 
 public class ETC1AtlasCompressorTest implements ApplicationListener {
 
-	private String atlasPath;
-	private FileHandle atlasFile;
+	private String regularAtlasPath;
+	private FileHandle regularAtlasPathFile;
 
-	public ETC1AtlasCompressorTest (String atlasPath) {
-		this.atlasPath = atlasPath;
-		this.atlasFile = new FileHandle(atlasPath);
+	private String etc1AtlasPath;
+	private FileHandle etc1AtlasPathFile;
+
+	public ETC1AtlasCompressorTest (String regularAtlasPath, String etc1AtlasPath) {
+		this.regularAtlasPath = regularAtlasPath;
+		this.regularAtlasPathFile = new FileHandle(regularAtlasPath);
+
+		this.etc1AtlasPath = etc1AtlasPath;
+		this.etc1AtlasPathFile = new FileHandle(etc1AtlasPath);
 	}
 
 	public static void main (String[] args) throws Exception {
@@ -33,28 +38,32 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 
 		FileHandle homeFolder = new FileHandle(new File(applicationHomePathString));
 		FileHandle spritesFolder = homeFolder.child("sprites");
-		FileHandle atlasFolder = homeFolder.child("atlas");
+		FileHandle regularAtlasFolder = homeFolder.child("atlas");
+		FileHandle etc1AtlasFolder = homeFolder.child("atlas-etc1");
 
 		String outputAtlasFilename = "atlas_test.atlas";
 		String pngInputDir = spritesFolder.path();
-		String atlasOutputDir = atlasFolder.path();
+		String regularAtlasOutputDir = regularAtlasFolder.path();
+		String etc1AtlasOutputDir = etc1AtlasFolder.path();
 
-		prepareTestAtlas(pngInputDir, atlasOutputDir, outputAtlasFilename);
+		prepareTestAtlas(pngInputDir, regularAtlasOutputDir, outputAtlasFilename);
+		prepareTestAtlas(pngInputDir, etc1AtlasOutputDir, outputAtlasFilename);
 
-		String atlasFilePathString = atlasFolder.child(outputAtlasFilename).path();
+		String regularAtlasFilePathString = regularAtlasFolder.child(outputAtlasFilename).path();
+		String etc1AtlasFilePathString = etc1AtlasFolder.child(outputAtlasFilename).path();
 
 		boolean COMPRESS = true;
 
 		if (COMPRESS) {
 			ETC1AtlasCompressorSettings settings = ETC1AtlasCompressor.newCompressionSettings();
-			settings.setAtlasFilePathString(atlasFilePathString);
+			settings.setAtlasFilePathString(etc1AtlasFilePathString);
 			ETC1AtlasCompressionResult compressionResult = ETC1AtlasCompressor.compress(settings);
 			log();
 			compressionResult.print();
 		}
 
 		log("Showing compressed sprites");
-		new LwjglApplication(new ETC1AtlasCompressorTest(atlasFilePathString), "", 768, 768 * 3 / 4);
+		new LwjglApplication(new ETC1AtlasCompressorTest(regularAtlasFilePathString, etc1AtlasFilePathString), "", 1024, 768);
 
 	}
 
@@ -87,19 +96,34 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 	/// -------------------------------------------------------------------------------------------------
 
 	SpriteBatch batch;
-	Array<Page> pages;
-	private TextureAtlas atlas;
-	private Array<Sprite> sprites;
+
+	private TextureAtlas regularAtlas;
+	private Array<Sprite> regularSprites;
+
+	private TextureAtlas etc1Atlas;
+	private Array<Sprite> etc1Sprites;
 
 	public void create () {
 		batch = new SpriteBatch();
 
-		atlas = new TextureAtlas(this.atlasFile);
-		sprites = atlas.createSprites();
+		regularAtlas = new TextureAtlas(this.regularAtlasPathFile);
+		regularSprites = regularAtlas.createSprites();
+
+		etc1Atlas = new TextureAtlas(this.etc1AtlasPathFile);
+		etc1Sprites = etc1Atlas.createSprites();
 		float x = 0;
-		for (int i = 0; i < sprites.size; i++) {
-			Sprite sprite = sprites.get(i);
+		float y = 0;
+		for (int i = 0; i < regularSprites.size; i++) {
+			Sprite sprite = regularSprites.get(i);
 			sprite.setX(x);
+			x = x + sprite.getWidth() * 0.9f;
+			y = Math.max(y, sprite.getHeight());
+		}
+		x = 0;
+		for (int i = 0; i < etc1Sprites.size; i++) {
+			Sprite sprite = etc1Sprites.get(i);
+			sprite.setX(x);
+			sprite.setY(y * 1.1f);
 			x = x + sprite.getWidth() * 0.9f;
 		}
 
@@ -110,14 +134,18 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 
 		int x = 20, y = 20;
 		batch.begin();
-		for (Sprite sprite : sprites) {
+		for (Sprite sprite : regularSprites) {
+			sprite.draw(batch);
+		}
+		for (Sprite sprite : etc1Sprites) {
 			sprite.draw(batch);
 		}
 		batch.end();
 	}
 
 	public void resize (int width, int height) {
-		batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		float m = 0.6f;
+		batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth() * m, Gdx.graphics.getHeight() * m));
 	}
 
 	@Override
