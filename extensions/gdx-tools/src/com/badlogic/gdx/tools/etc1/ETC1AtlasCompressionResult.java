@@ -3,21 +3,21 @@ package com.badlogic.gdx.tools.etc1;
 
 import java.util.ArrayList;
 
-public class AtlasETC1CompressionResult {
+public class ETC1AtlasCompressionResult {
 
 	static class TextureFileRenaming {
 
-		private String old_page_file_name;
-		private String new_page_file_name;
+		private String oldPageFileName;
+		private String newPageFileName;
 
-		public TextureFileRenaming (String old_page_file_name, String new_page_file_name) {
-			this.old_page_file_name = old_page_file_name;
-			this.new_page_file_name = new_page_file_name;
+		public TextureFileRenaming (String oldPageFileName, String newPageFileName) {
+			this.oldPageFileName = oldPageFileName;
+			this.newPageFileName = newPageFileName;
 		}
 
 		@Override
 		public String toString () {
-			return "" + old_page_file_name + " :-> " + new_page_file_name + "";
+			return oldPageFileName + " :-> " + newPageFileName;
 		}
 
 	}
@@ -29,8 +29,8 @@ public class AtlasETC1CompressionResult {
 		atlas = path;
 	}
 
-	public void addCompressedTextureNames (String old_page_file_name, String new_page_file_name) {
-		TextureFileRenaming renaming = new TextureFileRenaming(old_page_file_name, new_page_file_name);
+	public void addCompressedTextureNames (String oldPageFileName, String newPageFileName) {
+		TextureFileRenaming renaming = new TextureFileRenaming(oldPageFileName, newPageFileName);
 		textures.add(renaming);
 	}
 
@@ -45,11 +45,11 @@ public class AtlasETC1CompressionResult {
 	}
 
 	private void log (String tag, Object message) {
-		AtlasETC1Compressor.log(tag, message);
+		ETC1AtlasCompressor.log(tag, message);
 	}
 
 	private void log (Object message) {
-		AtlasETC1Compressor.log(message);
+		ETC1AtlasCompressor.log(message);
 	}
 
 	public String getAtlasPath () {
