@@ -66,12 +66,7 @@ public class ETC1AtlasCompressor {
 		if (parameterValue != null) {
 			return parameterValue;
 		}
-		reportError("Parameter <" + parameterName + "> is null");
-		return null;
-	}
-
-	private static void reportError (String errMessage) {
-		throw new RuntimeException(errMessage);
+		throw new NullPointerException("Parameter <" + parameterName + "> is null");
 	}
 
 	public static void log (String tag, Object message) {
