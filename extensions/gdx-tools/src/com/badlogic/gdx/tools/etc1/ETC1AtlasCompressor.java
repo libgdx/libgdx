@@ -17,6 +17,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
 
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.etc1;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class ETC1AtlasCompressor {
 	public static ETC1AtlasCompressionResult compress (ETC1AtlasCompressorSettings settings) throws Exception {
 
 		String atlasFilePathString = checkNull("atlas_file_path_string", settings.getAtlasFilePathString());
-		log();
+
 		log("compressing atlas to ETC1", atlasFilePathString);
 		GdxNativesLoader.load();
 
@@ -66,8 +67,8 @@ public class ETC1AtlasCompressor {
 			atlasData = atlasData.replaceAll(oldPageFileName, newPageFileName);
 
 			FileHandle compressedPageFile = pageFile.parent().child(newPageFileName);
-			log("page " + i, pageFile);
-			log(" to", compressedPageFile);
+			log("  page " + i, pageFile);
+			log("   to", compressedPageFile);
 
 			result.addCompressedTextureNames(oldPageFileName, newPageFileName);
 
@@ -97,6 +98,27 @@ public class ETC1AtlasCompressor {
 
 	public static void log () {
 		System.out.println();
+	}
+
+	public static void main (String[] args) throws Exception {
+		String atlasFilePath = null;
+		String outputDir = null;
+		switch (args.length) {
+
+		case 1:
+			atlasFilePath = args[0];
+			break;
+		default:
+			log("Usage: %inputAtlasFile%");
+			System.exit(0);
+		}
+
+		ETC1AtlasCompressorSettings settings = ETC1AtlasCompressor.newCompressionSettings();
+		settings.setAtlasFilePathString(atlasFilePath);
+		ETC1AtlasCompressionResult compressionResult = ETC1AtlasCompressor.compress(settings);
+		log();
+		compressionResult.print();
+
 	}
 
 }

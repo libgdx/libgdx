@@ -75,6 +75,7 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 		if (COMPRESS) {
 			ETC1AtlasCompressorSettings settings = ETC1AtlasCompressor.newCompressionSettings();
 			settings.setAtlasFilePathString(etc1AtlasFilePathString);
+			log();
 			ETC1AtlasCompressionResult compressionResult = ETC1AtlasCompressor.compress(settings);
 			log();
 			compressionResult.print();
