@@ -16,9 +16,12 @@
 
 package com.badlogic.gdx.tools.etc1;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class ETC1AtlasCompressorSettings {
 
 	private String atlasFilePathString;
+	private Color transparentColor;
 
 	public void setAtlasFilePathString (String atlasFilePathString) {
 		this.atlasFilePathString = atlasFilePathString;
@@ -27,5 +30,14 @@ public class ETC1AtlasCompressorSettings {
 	public String getAtlasFilePathString () {
 		return atlasFilePathString;
 	}
+
+	public Color getTransparentColor () {
+		return transparentColor;
+	}
+
+	public void setTransparentColor (Color transparentColor) {
+		this.transparentColor = transparentColor;
+	}
+
 
 }

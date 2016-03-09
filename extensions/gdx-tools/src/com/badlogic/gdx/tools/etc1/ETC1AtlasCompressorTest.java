@@ -22,6 +22,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -72,6 +73,8 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 		if (COMPRESS) {
 			ETC1AtlasCompressorSettings settings = ETC1AtlasCompressor.newCompressionSettings();
 			settings.setAtlasFilePathString(etc1AtlasFilePathString);
+			Color fuxia = new com.badlogic.gdx.graphics.Color(1f, 0f, 1f, 1f);
+			settings.setTransparentColor(fuxia);
 			log();
 			ETC1AtlasCompressionResult compressionResult = ETC1AtlasCompressor.compress(settings);
 			log();
@@ -89,7 +92,7 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 		log("outputAtlasFilename", outputAtlasFilename);
 
 		TexturePacker.Settings atlasSettings = new TexturePacker.Settings();
-		atlasSettings.debug = true;
+		atlasSettings.debug = !true;
 		atlasSettings.maxWidth = 512;
 		atlasSettings.maxHeight = 256;
 		atlasSettings.format = Format.RGBA8888;
@@ -127,15 +130,16 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 
 		etc1Atlas = new TextureAtlas(this.etc1AtlasPathFile);
 		etc1Sprites = etc1Atlas.createSprites();
-		float x = 0;
-		float y = 0;
+		float x = 10;
+		float y = 10;
 		for (int i = 0; i < regularSprites.size; i++) {
 			Sprite sprite = regularSprites.get(i);
 			sprite.setX(x);
+			sprite.setY(10);
 			x = x + sprite.getWidth() * 0.9f;
 			y = Math.max(y, sprite.getHeight());
 		}
-		x = 0;
+		x = 10;
 		for (int i = 0; i < etc1Sprites.size; i++) {
 			Sprite sprite = etc1Sprites.get(i);
 			sprite.setX(x);

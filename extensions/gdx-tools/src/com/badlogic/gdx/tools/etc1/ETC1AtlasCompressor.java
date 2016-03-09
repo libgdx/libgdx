@@ -50,7 +50,7 @@ public class ETC1AtlasCompressor {
 
 		String atlasData = atlasFile.readString();
 
-		ETC1Compressor.process(atlasFolder.path(), atlasFolder.path(), false, true);
+		ETC1Compressor.process(atlasFolder.path(), atlasFolder.path(), false, true, settings.getTransparentColor());
 
 		for (int i = 0; i < pages.size; i++) {
 			Page page_i = pages.get(i);

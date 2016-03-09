@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.ETC1;
@@ -36,6 +37,8 @@ public class ETC1Compressor {
 			setOutputSuffix(".etc1");
 		}
 
+		Color transparentColor = Color.MAGENTA.cpy();
+
 		@Override
 		protected void processFile (Entry entry) throws Exception {
 			System.out.println("Processing " + entry.inputFile);
@@ -43,6 +46,8 @@ public class ETC1Compressor {
 			if (pixmap.getFormat() != Format.RGB888 && pixmap.getFormat() != Format.RGB565) {
 				System.out.println("Converting from " + pixmap.getFormat() + " to RGB888!");
 				Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
+				tmp.setColor(this.transparentColor);
+				tmp.fill();
 				tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 				pixmap.dispose();
 				pixmap = tmp;
@@ -58,15 +63,29 @@ public class ETC1Compressor {
 					throw new Exception("Couldn't create output directory '" + entryDir.outputDir + "'");
 			}
 		}
+
+		public void setTransparentColor (Color transparentColor) {
+			if (transparentColor == null) {
+				this.transparentColor.set(1, 0, 1, 1);
+			} else {
+				this.transparentColor.set(transparentColor);
+			}
+		}
+	}
+
+	public static void process (String inputDirectory, String outputDirectory, boolean recursive, boolean flatten,
+		Color transparentColor) throws Exception {
+		GdxNativesLoader.load();
+		ETC1FileProcessor processor = new ETC1FileProcessor();
+		processor.setTransparentColor(transparentColor);
+		processor.setRecursive(recursive);
+		processor.setFlattenOutput(flatten);
+		processor.process(new File(inputDirectory), new File(outputDirectory));
 	}
 
 	public static void process (String inputDirectory, String outputDirectory, boolean recursive, boolean flatten)
 		throws Exception {
-		GdxNativesLoader.load();
-		ETC1FileProcessor processor = new ETC1FileProcessor();
-		processor.setRecursive(recursive);
-		processor.setFlattenOutput(flatten);
-		processor.process(new File(inputDirectory), new File(outputDirectory));
+		process(inputDirectory, outputDirectory, recursive, flatten, null);
 	}
 
 	public static void main (String[] args) throws Exception {
