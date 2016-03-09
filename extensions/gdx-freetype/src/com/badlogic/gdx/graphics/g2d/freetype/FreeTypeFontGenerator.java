@@ -347,6 +347,10 @@ public class FreeTypeFontGenerator implements Disposable {
 			packer = new PixmapPacker(size, size, Format.RGBA8888, 1, false, packStrategy);
 			packer.setCurrentTransparentColor(parameter.color);
 			packer.getCurrentTransparentColor().a = 0;
+			if (parameter.borderWidth > 0) {
+				packer.setCurrentTransparentColor(parameter.borderColor);
+				packer.getCurrentTransparentColor().a = 0;
+			}
 		}
 
 		if (incremental) data.glyphs = new Array(charactersLength + 32);
