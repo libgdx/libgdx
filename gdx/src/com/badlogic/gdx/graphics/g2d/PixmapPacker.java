@@ -101,6 +101,7 @@ public class PixmapPacker implements Disposable {
 	Format pageFormat;
 	int padding;
 	boolean duplicateBorder;
+	Color currentTransparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
 
@@ -348,6 +349,9 @@ public class PixmapPacker implements Disposable {
 
 		public Page (PixmapPacker packer) {
 			image = new Pixmap(packer.pageWidth, packer.pageHeight, packer.pageFormat);
+			final Color transparentColor = packer.getCurrentTransparentColor();
+			this.image.setColor(transparentColor);
+			this.image.fill();
 		}
 
 		public Pixmap getPixmap () {
@@ -573,6 +577,7 @@ public class PixmapPacker implements Disposable {
 
 			public SkylinePage (PixmapPacker packer) {
 				super(packer);
+
 			}
 
 			static class Row {
@@ -580,4 +585,13 @@ public class PixmapPacker implements Disposable {
 			}
 		}
 	}
+
+	public Color getCurrentTransparentColor () {
+		return this.currentTransparentColor;
+	}
+
+	public void setCurrentTransparentColor (Color color) {
+		this.currentTransparentColor.set(color);
+	}
+
 }
