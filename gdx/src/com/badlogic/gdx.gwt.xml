@@ -84,8 +84,8 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
-		<include name="graphics/TextureArray.java"/>
-		<include name="graphics/TextureArrayData.java"/>
+		<exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
+		<exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
 		<include name="graphics/VertexAttribute.java"/>
 		<include name="graphics/VertexAttributes.java"/>
@@ -220,7 +220,7 @@
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FacedCubemapData.java"/>
-		<include name="graphics/glutils/FileTextureArrayData.java"/>
+		<exclude name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>

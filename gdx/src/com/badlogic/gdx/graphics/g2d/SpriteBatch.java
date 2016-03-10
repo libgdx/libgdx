@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -34,6 +35,10 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
+	/** @deprecated Do not use, this field is for testing only and is likely to be removed. Sets the {@link VertexDataType} to be
+	 *             used when gles 3 is not available, defaults to {@link VertexDataType#VertexArray}. */
+	@Deprecated public static VertexDataType defaultVertexDataType = VertexDataType.VertexArray;
+
 	private Mesh mesh;
 
 	final float[] vertices;
@@ -91,10 +96,8 @@ public class SpriteBatch implements Batch {
 		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
-		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if (Gdx.gl30 != null) {
-			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
-		}
+		VertexDataType vertexDataType = (Gdx.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
+
 		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
