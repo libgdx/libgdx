@@ -62,6 +62,7 @@ public class ETC1Compressor {
 	}
 
 	public static void compressFile (File inputFile, File outputFile, Color transparentColor) {
+		GdxNativesLoader.load();
 		System.out.println("Processing " + inputFile);
 		Pixmap pixmap = new Pixmap(new FileHandle(inputFile));
 		if (pixmap.getFormat() != Format.RGB888 && pixmap.getFormat() != Format.RGB565) {

@@ -18,6 +18,8 @@ package com.badlogic.gdx.tools.etc1;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class ETC1AtlasCompressionResult {
 
 	static class TextureFileRenaming {
@@ -40,8 +42,14 @@ public class ETC1AtlasCompressionResult {
 	private String atlas;
 	private ArrayList<TextureFileRenaming> textures = new ArrayList<TextureFileRenaming>();
 
+	private Color transparentColor;
+
 	public void setAtlasFilePath (String path) {
 		atlas = path;
+	}
+
+	public void setTransparentColor (Color transparentColor) {
+		this.transparentColor = transparentColor;
 	}
 
 	public void addCompressedTextureNames (String oldPageFileName, String newPageFileName) {
@@ -52,6 +60,7 @@ public class ETC1AtlasCompressionResult {
 	public void print () {
 		log("AtlasETC1CompressionResult[" + textures.size() + "]");
 		log(" atlas file", atlas);
+		log(" transparent color", transparentColor);
 		for (int i = 0; i < textures.size(); i++) {
 			TextureFileRenaming renaming = textures.get(i);
 			log("   " + i, renaming);

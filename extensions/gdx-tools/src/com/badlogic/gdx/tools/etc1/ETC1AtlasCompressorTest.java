@@ -73,8 +73,8 @@ public class ETC1AtlasCompressorTest implements ApplicationListener {
 		if (COMPRESS) {
 			ETC1AtlasCompressorSettings settings = ETC1AtlasCompressor.newCompressionSettings();
 			settings.setAtlasFilePathString(etc1AtlasFilePathString);
-			Color fuxia = new com.badlogic.gdx.graphics.Color(1f, 0f, 1f, 1f);
-			settings.setTransparentColor(fuxia);
+//			Color fuxia = new com.badlogic.gdx.graphics.Color(1f, 0f, 1f, 1f);
+//			settings.setTransparentColor(fuxia);
 			log();
 			ETC1AtlasCompressionResult compressionResult = ETC1AtlasCompressor.compress(settings);
 			log();

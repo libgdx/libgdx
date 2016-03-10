@@ -19,6 +19,7 @@ package com.badlogic.gdx.tools.etc1;
 import java.io.File;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.utils.Array;
@@ -50,8 +51,9 @@ public class ETC1AtlasCompressor {
 
 		String atlasData = atlasFile.readString();
 
-		ETC1Compressor.process(atlasFolder.path(), atlasFolder.path(), false, true, settings.getTransparentColor());
-
+		Color transparentColor = settings.getTransparentColor();
+		transparentColor = checkNullCollorSetDefault(transparentColor);
+		result.setTransparentColor(transparentColor);
 		for (int i = 0; i < pages.size; i++) {
 			Page page_i = pages.get(i);
 			FileHandle pageFile = page_i.textureFile;
@@ -59,6 +61,8 @@ public class ETC1AtlasCompressor {
 			String oldPageFileName = pageFile.name();
 			String pageFileName = pageFile.nameWithoutExtension();
 			String newPageFileName = pageFileName + ".etc1";
+// tell ETC1Compressor to process only related files, not the whole folder
+			compressTexture(atlasFolder, oldPageFileName, newPageFileName, transparentColor);
 
 			atlasData = atlasData.replaceAll(oldPageFileName, newPageFileName);
 
@@ -75,6 +79,21 @@ public class ETC1AtlasCompressor {
 		atlasFile.writeString(atlasData, false);
 
 		return result;
+	}
+
+	private static Color checkNullCollorSetDefault (Color color) {
+		if (color == null) {
+			return Color.MAGENTA;
+		}
+		return color;
+	}
+
+	private static void compressTexture (FileHandle atlasFolder, String oldPageFileName, String newPageFileName,
+		Color transparentColor) {
+		FileHandle oldPageFile = atlasFolder.child(oldPageFileName);
+		FileHandle newPageFile = atlasFolder.child(newPageFileName);
+// compressFile(oldPageFile, newPageFile, transparentColor);
+		ETC1Compressor.compressFile(oldPageFile.file(), newPageFile.file(), transparentColor);
 	}
 
 	private static <T> T checkNull (String parameterName, T parameterValue) {
