@@ -84,6 +84,8 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
+		<include name="graphics/TextureArray.java"/>
+		<include name="graphics/TextureArrayData.java"/>
 		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
 		<include name="graphics/VertexAttribute.java"/>
 		<include name="graphics/VertexAttributes.java"/>
@@ -218,6 +220,7 @@
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FacedCubemapData.java"/>
+		<include name="graphics/glutils/FileTextureArrayData.java"/>
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
@@ -384,6 +387,7 @@
 		<include name="utils/DelayedRemovalArray.java"/>
 		<include name="utils/Disposable.java"/>
 		<include name="utils/FloatArray.java"/>
+		<include name="utils/FlushablePool.java"/>
 		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
