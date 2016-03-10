@@ -186,12 +186,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		String versionString = gl20.glGetString(GL20.GL_VERSION);
-		String vendorString = gl20.glGetString(GL20.GL_VENDOR);
-		String rendererString = gl20.glGetString(GL20.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
-
-
 		view = new GLKView(new CGRect(0, 0, bounds.getWidth(), bounds.getHeight()), context) {
 			@Method(selector = "touchesBegan:withEvent:")
 			public void touchesBegan (@Pointer long touches, UIEvent event) {
@@ -316,6 +310,11 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
+
+			String versionString = gl20.glGetString(GL20.GL_VERSION);
+			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 		}
 		if (appPaused) {
 			return;
