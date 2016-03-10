@@ -114,7 +114,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			graphics.width = (int)bounds.getWidth();
 			graphics.height = (int)bounds.getHeight();
 			graphics.makeCurrent();
-			app.listener.resize(graphics.width, graphics.height);
+			if (graphics.created) {
+				app.listener.resize(graphics.width, graphics.height);
+			}
 		}
 		
 		@Callback
