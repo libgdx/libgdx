@@ -114,12 +114,13 @@ public class ETC1 {
 		 * @param outputStream java.io.OutputStream. */
 		public void write (OutputStream outputStream) {
 			DataOutputStream write = null;
+			GZIPOutputStream gzip = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
 			compressedData.position(0);
 			compressedData.limit(compressedData.capacity());
 			try {
-				GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
+				gzip = new GZIPOutputStream(outputStream);
 				write = new DataOutputStream(gzip);
 				write.writeInt(compressedData.capacity());
 				while (writtenBytes != compressedData.capacity()) {
@@ -128,12 +129,13 @@ public class ETC1 {
 					write.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
 				}
-				gzip.flush();
+
+				write.close();
+
 				gzip.close();
+
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write PKM", e);
-			} finally {
-				StreamUtils.closeQuietly(write);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());
