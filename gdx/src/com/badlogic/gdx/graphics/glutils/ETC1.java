@@ -107,6 +107,8 @@ public class ETC1 {
 				os.close();
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+			} finally {
+				StreamUtils.closeQuietly(os);
 			}
 		}
 
