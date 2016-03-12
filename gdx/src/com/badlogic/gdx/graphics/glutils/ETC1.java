@@ -104,10 +104,11 @@ public class ETC1 {
 			try {
 				fileStream = file.write(false);
 				write(fileStream);
-				fileStream.close();
+				fileStream.flush();
 			} catch (Exception e) {
-				StreamUtils.closeQuietly(fileStream);
 				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+			} finally {
+				StreamUtils.closeQuietly(fileStream);
 			}
 		}
 
@@ -131,13 +132,14 @@ public class ETC1 {
 					writtenBytes += bytesToWrite;
 				}
 
-				dataStream.close();
-				gzipStream.close();
+				dataStream.flush();
+				gzipStream.flush();
 
 			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't write PKM", e);
+			} finally {
 				StreamUtils.closeQuietly(dataStream);
 				StreamUtils.closeQuietly(gzipStream);
-				throw new GdxRuntimeException("Couldn't write PKM", e);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());
