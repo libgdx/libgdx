@@ -183,12 +183,8 @@ public final class Intersector {
 				if (Intersector.pointLineSide(ep2, ep1, e) > 0) {
 					if (!(Intersector.pointLineSide(ep2, ep1, s) > 0)) {
 						Intersector.intersectLines(s, e, ep1, ep2, ip);
-						if (floatArray.size >= 2) {
-							if (!((floatArray.get(floatArray.size - 2) == ip.x) && (floatArray.get(floatArray.size - 1) == ip.y))) {
-								floatArray.add(ip.x);
-								floatArray.add(ip.y);
-							}
-						} else {
+						if (floatArray.size < 2 || floatArray.get(floatArray.size-2) != ip.x || floatArray.get(floatArray.size-1) != ip.y)
+						{
 							floatArray.add(ip.x);
 							floatArray.add(ip.y);
 						}
