@@ -100,43 +100,43 @@ public class ETC1 {
 		/** Writes the ETC1Data with a PKM header to the given file.
 		 * @param file the file. */
 		public void write (FileHandle file) {
-			OutputStream os = null;
+			OutputStream fileStream = null;
 			try {
-				os = file.write(false);
-				write(os);
-				os.close();
+				fileStream = file.write(false);
+				write(fileStream);
+				fileStream.close();
 			} catch (Exception e) {
+				StreamUtils.closeQuietly(fileStream);
 				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
-			} finally {
-				StreamUtils.closeQuietly(os);
 			}
 		}
 
 		/** Writes the ETC1Data with a PKM header to the outputStream.
 		 * @param outputStream java.io.OutputStream. */
 		public void write (OutputStream outputStream) {
-			DataOutputStream write = null;
-			GZIPOutputStream gzip = null;
+			DataOutputStream dataStream = null;
+			GZIPOutputStream gzipStream = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
 			compressedData.position(0);
 			compressedData.limit(compressedData.capacity());
 			try {
-				gzip = new GZIPOutputStream(outputStream);
-				write = new DataOutputStream(gzip);
-				write.writeInt(compressedData.capacity());
+				gzipStream = new GZIPOutputStream(outputStream);
+				dataStream = new DataOutputStream(gzipStream);
+				dataStream.writeInt(compressedData.capacity());
 				while (writtenBytes != compressedData.capacity()) {
 					int bytesToWrite = Math.min(compressedData.remaining(), buffer.length);
 					compressedData.get(buffer, 0, bytesToWrite);
-					write.write(buffer, 0, bytesToWrite);
+					dataStream.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
 				}
 
-				write.close();
-
-				gzip.close();
+				dataStream.close();
+				gzipStream.close();
 
 			} catch (Exception e) {
+				StreamUtils.closeQuietly(dataStream);
+				StreamUtils.closeQuietly(gzipStream);
 				throw new GdxRuntimeException("Couldn't write PKM", e);
 			}
 			compressedData.position(dataOffset);
