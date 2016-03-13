@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
@@ -60,30 +61,70 @@ public class ETC1 {
 			checkNPOT();
 		}
 
+		public ETC1Data (ETC1Data specs) {
+			this.width = specs.width;
+			this.height = specs.height;
+			this.compressedData = specs.compressedData;
+			this.dataOffset = specs.dataOffset;
+			checkNPOT();
+		}
+
+		@Deprecated // Backward compatibility, please use ETC1Data.read(pkmFile) instead
 		public ETC1Data (FileHandle pkmFile) {
-			byte[] buffer = new byte[1024 * 10];
-			DataInputStream in = null;
+			this(ETC1Data.read(pkmFile));
+		}
+
+		public static ETC1Data read (FileHandle pkmFile) {
+			InputStream fileStream = null;
 			try {
-				in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(pkmFile.read())));
-				int fileSize = in.readInt();
+				fileStream = pkmFile.read();
+				final ETC1Data data = read(fileStream);
+				return data;
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't load pkm from " + pkmFile, e);
+			} finally {
+				StreamUtils.closeQuietly(fileStream);
+			}
+		}
+
+		public static ETC1Data read (java.io.InputStream inputStream) {
+
+			byte[] buffer = new byte[1024 * 10];
+			DataInputStream dataStream = null;
+			GZIPInputStream gzipStream = null;
+			BufferedInputStream bufferedStream = null;
+			ByteBuffer compressedData = null;
+			int width;
+			int height;
+			int dataOffset;
+			try {
+				gzipStream = new GZIPInputStream(inputStream);
+				bufferedStream = new BufferedInputStream(gzipStream);
+				dataStream = new DataInputStream(bufferedStream);
+				int fileSize = dataStream.readInt();
 				compressedData = BufferUtils.newUnsafeByteBuffer(fileSize);
 				int readBytes = 0;
-				while ((readBytes = in.read(buffer)) != -1) {
+				while ((readBytes = dataStream.read(buffer)) != -1) {
 					compressedData.put(buffer, 0, readBytes);
 				}
 				compressedData.position(0);
 				compressedData.limit(compressedData.capacity());
 			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
+				throw new GdxRuntimeException("Couldn't load pkm", e);
 			} finally {
-				StreamUtils.closeQuietly(in);
+				StreamUtils.closeQuietly(dataStream);
+				StreamUtils.closeQuietly(bufferedStream);
+				StreamUtils.closeQuietly(gzipStream);
+
 			}
 
 			width = getWidthPKM(compressedData, 0);
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
 			compressedData.position(dataOffset);
-			checkNPOT();
+
+			ETC1Data destination = new ETC1Data(width, height, compressedData, dataOffset);
+			return destination;
 		}
 
 		private void checkNPOT () {
