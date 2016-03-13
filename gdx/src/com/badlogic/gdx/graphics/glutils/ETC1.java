@@ -86,7 +86,7 @@ public class ETC1 {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm from " + pkmFile, e);
 			} finally {
-				StreamUtils.closeQuietly(fileStream);// it wasn't really created here but someone must to close it.
+				StreamUtils.closeQuietly(fileStream);
 			}
 		}
 
