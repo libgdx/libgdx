@@ -345,11 +345,11 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 			ownsAtlas = true;
 			packer = new PixmapPacker(size, size, Format.RGBA8888, 1, false, packStrategy);
-			packer.setCurrentTransparentColor(parameter.color);
-			packer.getCurrentTransparentColor().a = 0;
+			packer.setTransparentColor(parameter.color);
+			packer.getTransparentColor().a = 0;
 			if (parameter.borderWidth > 0) {
-				packer.setCurrentTransparentColor(parameter.borderColor);
-				packer.getCurrentTransparentColor().a = 0;
+				packer.setTransparentColor(parameter.borderColor);
+				packer.getTransparentColor().a = 0;
 			}
 		}
 
