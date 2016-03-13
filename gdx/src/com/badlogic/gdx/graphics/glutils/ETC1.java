@@ -19,11 +19,11 @@ package com.badlogic.gdx.graphics.glutils;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -100,24 +100,46 @@ public class ETC1 {
 		/** Writes the ETC1Data with a PKM header to the given file.
 		 * @param file the file. */
 		public void write (FileHandle file) {
-			DataOutputStream write = null;
+			OutputStream fileStream = null;
+			try {
+				fileStream = file.write(false);
+				write(fileStream);
+				fileStream.flush();
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+			} finally {
+				StreamUtils.closeQuietly(fileStream);
+			}
+		}
+
+		/** Writes the ETC1Data with a PKM header to the outputStream.
+		 * @param outputStream java.io.OutputStream. */
+		public void write (OutputStream outputStream) {
+			DataOutputStream dataStream = null;
+			GZIPOutputStream gzipStream = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
 			compressedData.position(0);
 			compressedData.limit(compressedData.capacity());
 			try {
-				write = new DataOutputStream(new GZIPOutputStream(file.write(false)));
-				write.writeInt(compressedData.capacity());
+				gzipStream = new GZIPOutputStream(outputStream);
+				dataStream = new DataOutputStream(gzipStream);
+				dataStream.writeInt(compressedData.capacity());
 				while (writtenBytes != compressedData.capacity()) {
 					int bytesToWrite = Math.min(compressedData.remaining(), buffer.length);
 					compressedData.get(buffer, 0, bytesToWrite);
-					write.write(buffer, 0, bytesToWrite);
+					dataStream.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
 				}
+
+				dataStream.flush();
+				gzipStream.flush();
+
 			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+				throw new GdxRuntimeException("Couldn't write PKM", e);
 			} finally {
-				StreamUtils.closeQuietly(write);
+				StreamUtils.closeQuietly(dataStream);
+				StreamUtils.closeQuietly(gzipStream);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());
