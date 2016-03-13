@@ -158,7 +158,7 @@ public class KTXProcessor {
 						texWidth = ktx.getWidth();
 						texHeight = ktx.getHeight();
 					} else if (file.name().toLowerCase().endsWith(".etc1")) {
-						etc1 = new ETC1Data(file);
+						etc1 = ETC1Data.read(file);
 						nLevels = 1;
 						texWidth = etc1.width;
 						texHeight = etc1.height;
