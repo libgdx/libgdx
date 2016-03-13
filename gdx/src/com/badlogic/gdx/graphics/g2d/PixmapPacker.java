@@ -101,7 +101,7 @@ public class PixmapPacker implements Disposable {
 	Format pageFormat;
 	int padding;
 	boolean duplicateBorder;
-	Color currentTransparentColor = new Color(0f, 0f, 0f, 0f);
+	Color transparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
 
@@ -349,7 +349,7 @@ public class PixmapPacker implements Disposable {
 
 		public Page (PixmapPacker packer) {
 			image = new Pixmap(packer.pageWidth, packer.pageHeight, packer.pageFormat);
-			final Color transparentColor = packer.getCurrentTransparentColor();
+			final Color transparentColor = packer.getTransparentColor();
 			this.image.setColor(transparentColor);
 			this.image.fill();
 		}
@@ -586,12 +586,12 @@ public class PixmapPacker implements Disposable {
 		}
 	}
 
-	public Color getCurrentTransparentColor () {
-		return this.currentTransparentColor;
+	public Color getTransparentColor () {
+		return this.transparentColor;
 	}
 
-	public void setCurrentTransparentColor (Color color) {
-		this.currentTransparentColor.set(color);
+	public void setTransparentColor (Color color) {
+		this.transparentColor.set(color);
 	}
 
 }
