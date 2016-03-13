@@ -313,6 +313,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
+		Gdx.app = null;
+		Gdx.input = null;
+		Gdx.audio = null;
+		Gdx.files = null;
+		Gdx.graphics = null;
+		Gdx.net = null;
 	}
 
 	@Override
