@@ -51,7 +51,7 @@ public class ETC1 {
 		/** the optional PKM header and compressed image data **/
 		public final ByteBuffer compressedData;
 		/** the offset in bytes to the actual compressed data. Might be 16 if this contains a PKM header, 0 otherwise **/
-		public int dataOffset;
+		public final int dataOffset;
 
 		public ETC1Data (int width, int height, ByteBuffer compressedData, int dataOffset) {
 			this.width = width;
