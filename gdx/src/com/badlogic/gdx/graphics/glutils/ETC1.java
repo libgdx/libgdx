@@ -45,16 +45,13 @@ public class ETC1 {
 	 * @author mzechner */
 	public final static class ETC1Data implements Disposable {
 		/** the width in pixels **/
-		public int width;
+		public final int width;
 		/** the height in pixels **/
-		public int height;
+		public final int height;
 		/** the optional PKM header and compressed image data **/
-		public ByteBuffer compressedData;
+		public final ByteBuffer compressedData;
 		/** the offset in bytes to the actual compressed data. Might be 16 if this contains a PKM header, 0 otherwise **/
 		public int dataOffset;
-
-		ETC1Data () {
-		}
 
 		public ETC1Data (int width, int height, ByteBuffer compressedData, int dataOffset) {
 			this.width = width;
@@ -91,24 +88,24 @@ public class ETC1 {
 		}
 
 		public static ETC1Data read (java.io.InputStream inputStream) {
-			ETC1Data destination = new ETC1Data();
 
 			byte[] buffer = new byte[1024 * 10];
 			DataInputStream dataStream = null;
 			GZIPInputStream gzipStream = null;
 			BufferedInputStream bufferedStream = null;
+			ByteBuffer compressedData = null;
 			try {
 				gzipStream = new GZIPInputStream(inputStream);
 				bufferedStream = new BufferedInputStream(gzipStream);
 				dataStream = new DataInputStream(bufferedStream);
 				int fileSize = dataStream.readInt();
-				destination.compressedData = BufferUtils.newUnsafeByteBuffer(fileSize);
+				compressedData = BufferUtils.newUnsafeByteBuffer(fileSize);
 				int readBytes = 0;
 				while ((readBytes = dataStream.read(buffer)) != -1) {
-					destination.compressedData.put(buffer, 0, readBytes);
+					compressedData.put(buffer, 0, readBytes);
 				}
-				destination.compressedData.position(0);
-				destination.compressedData.limit(destination.compressedData.capacity());
+				compressedData.position(0);
+				compressedData.limit(compressedData.capacity());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm", e);
 			} finally {
@@ -118,12 +115,13 @@ public class ETC1 {
 
 			}
 
-			destination.width = getWidthPKM(destination.compressedData, 0);
-			destination.height = getHeightPKM(destination.compressedData, 0);
-			destination.dataOffset = PKM_HEADER_SIZE;
-			destination.compressedData.position(destination.dataOffset);
-			checkNPOT(destination.width, destination.height);
+			int width = getWidthPKM(compressedData, 0);
+			int height = getHeightPKM(compressedData, 0);
+			int dataOffset = PKM_HEADER_SIZE;
+			compressedData.position(dataOffset);
+			checkNPOT(width, height);
 
+			ETC1Data destination = new ETC1Data(width, height, compressedData, dataOffset);
 			return destination;
 		}
 
