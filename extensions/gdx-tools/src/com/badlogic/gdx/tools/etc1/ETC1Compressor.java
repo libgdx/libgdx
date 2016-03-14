@@ -91,17 +91,6 @@ public class ETC1Compressor {
 		pkm.dispose();
 	}
 
-// public static void deCompress (String etc1File, String restoredPngFile) {
-// GdxNativesLoader.load();
-// FileHandle inputFile = new FileHandle(etc1File);
-// FileHandle outputFile = new FileHandle(restoredPngFile);
-// System.out.println("Restoring " + inputFile);
-// ETC1Data etc1Data = new ETC1Data(inputFile);
-// Pixmap etc1Pixmap = ETC1.decodeImage(etc1Data, Format.RGB888);
-// PixmapIO.writePNG(outputFile, etc1Pixmap);
-//
-// }
-
 	public static void deCompress (String etc1File, String restoredPngFile) throws IOException {
 		GdxNativesLoader.load();
 		FileHandle inputFile = new FileHandle(etc1File);
