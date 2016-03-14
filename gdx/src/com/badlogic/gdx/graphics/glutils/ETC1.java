@@ -43,7 +43,7 @@ public class ETC1 {
 
 	/** Class for storing ETC1 compressed image data.
 	 * @author mzechner */
-	public static class ETC1Data implements Disposable {
+	public final static class ETC1Data implements Disposable {
 		/** the width in pixels **/
 		public final int width;
 		/** the height in pixels **/
