@@ -17,6 +17,8 @@
 package com.badlogic.gdx.tools.etc1;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -76,28 +78,53 @@ public class ETC1Compressor {
 		if (transparentColor == null) {
 			transparentColor = FUXIA;
 		}
-		
+
 		Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
 		tmp.setColor(transparentColor);
 		tmp.fill();
 		tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		ETC1Data pkm = ETC1.encodeImagePKM(tmp);
 		tmp.dispose();
-		
+
 		pkm.write(outputStream);
 		outputStream.flush();
 		pkm.dispose();
 	}
 
-	public static void deCompress (String etc1File, String restoredPngFile) {
+// public static void deCompress (String etc1File, String restoredPngFile) {
+// GdxNativesLoader.load();
+// FileHandle inputFile = new FileHandle(etc1File);
+// FileHandle outputFile = new FileHandle(restoredPngFile);
+// System.out.println("Restoring " + inputFile);
+// ETC1Data etc1Data = new ETC1Data(inputFile);
+// Pixmap etc1Pixmap = ETC1.decodeImage(etc1Data, Format.RGB888);
+// PixmapIO.writePNG(outputFile, etc1Pixmap);
+//
+// }
+
+	public static void deCompress (String etc1File, String restoredPngFile) throws IOException {
 		GdxNativesLoader.load();
 		FileHandle inputFile = new FileHandle(etc1File);
 		FileHandle outputFile = new FileHandle(restoredPngFile);
 		System.out.println("Restoring " + inputFile);
-		ETC1Data etc1Data = new ETC1Data(inputFile);
-		Pixmap etc1Pixmap = ETC1.decodeImage(etc1Data, Format.RGB888);
-		PixmapIO.writePNG(outputFile, etc1Pixmap);
 
+		InputStream fileStream = inputFile.read();
+		ETC1DeCompressorParams params = new ETC1DeCompressorParams();
+		params.setInputStream(fileStream);
+		ETC1DeCompressinResult result = ETC1Compressor.deCompress(params);
+		fileStream.close();
+		Pixmap etc1Pixmap = result.getPixmap();
+		System.out.println("Writing " + outputFile);
+		PixmapIO.writePNG(outputFile, etc1Pixmap);
 	}
 
+	public static ETC1DeCompressinResult deCompress (ETC1DeCompressorParams params) {
+		InputStream inputStream = params.getInputStream();
+		ETC1Data etc1Data = ETC1Data.read(inputStream);
+		Pixmap etc1Pixmap = ETC1.decodeImage(etc1Data, Format.RGB888);
+		etc1Data.dispose();
+		ETC1DeCompressinResult result = new ETC1DeCompressinResult();
+		result.setPixmap(etc1Pixmap);
+		return result;
+	}
 }
