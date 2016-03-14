@@ -78,7 +78,7 @@ public class ETC1Compressor {
 		}
 		
 		Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
-		tmp.setColor(FUXIA);
+		tmp.setColor(transparentColor);
 		tmp.fill();
 		tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		ETC1Data pkm = ETC1.encodeImagePKM(tmp);
