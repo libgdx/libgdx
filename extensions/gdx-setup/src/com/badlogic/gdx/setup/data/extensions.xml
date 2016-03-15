@@ -69,10 +69,10 @@
 	</extension>
 	<extension>
 		<name>libgdx-utils</name>
-		<description>additional features and helper classes</description>
+		<description>Various utilities and features</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.2</version>
-		<compatibility>1.7.1</compatibility>
+		<version>0.13.3</version>
+		<compatibility>1.9.2</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils</inherit>
@@ -91,10 +91,10 @@
 	</extension>
 	<extension>
 		<name>libgdx-utils-box2d</name>
-		<description>additional features and helper classes for the official Box2D extension</description>
+		<description>Various utilities and features for the Box2D extension</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.2</version>
-		<compatibility>1.7.1</compatibility>
+		<version>0.13.3</version>
+		<compatibility>1.9.2</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils-box2d</inherit>
