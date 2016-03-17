@@ -320,7 +320,8 @@ public class Lwjgl3Application implements Application {
 		appConfig.setWindowListener(config.windowListener);
 		appConfig.setFullscreenMode(config.fullscreenMode);
 		appConfig.setTitle(config.title);
-		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);		
+		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);
+		appConfig.setInitialVisible(config.initialVisible);
 		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 		windows.add(window);
 		return window;
@@ -329,7 +330,7 @@ public class Lwjgl3Application implements Application {
 	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		window.setVisible(true);
+		window.setVisible(config.initialVisible);
 		return window;
 	}
 

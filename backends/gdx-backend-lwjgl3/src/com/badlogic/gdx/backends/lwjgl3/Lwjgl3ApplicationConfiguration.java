@@ -65,6 +65,7 @@ public class Lwjgl3ApplicationConfiguration {
 	boolean vSyncEnabled = true;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
+	boolean initialVisible = true;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
@@ -98,12 +99,20 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.vSyncEnabled = config.vSyncEnabled;
 		copy.title = config.title;
 		copy.initialBackgroundColor = config.initialBackgroundColor;
+		copy.initialVisible = config.initialVisible;
 		copy.preferencesDirectory = config.preferencesDirectory;
 		copy.preferencesFileType = config.preferencesFileType;
 		copy.hdpiMode = config.hdpiMode;
 		return copy;
 	}
 	
+	/**
+	 * @param visibility
+	 * 				whether the window will be visible on creation. (default true)
+	 */
+	public void setInitialVisible(boolean visibility) {
+		this.initialVisible = visibility;
+	}
 
 	/**
 	 * Whether to disable audio or not. If set to false, the returned audio
