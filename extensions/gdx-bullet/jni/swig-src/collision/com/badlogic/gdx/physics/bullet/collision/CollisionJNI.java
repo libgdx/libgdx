@@ -2501,7 +2501,7 @@ public class CollisionJNI {
   public final static native void ContactCache_director_connect(ContactCache obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactCache_change_ownership(ContactCache obj, long cptr, boolean take_or_release);
   public final static native int btBroadphasePairArray_size(long jarg1, btBroadphasePairArray jarg1_);
-  public final static native btBroadphasePair btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
+  public final static native long btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
   public final static native int btBroadphasePairArray_getCollisionObjects(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
   public final static native int btBroadphasePairArray_getCollisionObjectsValue(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
   public final static native long new_btBroadphasePairArray();
