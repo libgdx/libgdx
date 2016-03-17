@@ -64,11 +64,11 @@ public final class VertexAttribute {
 				usage == Usage.ColorPacked, alias, index);
 	}
 	
-	public VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias) {
+	protected VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias) {
 		this(usage, numComponents, type, normalized, alias, 0);
 	}
 	
-	public VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias, int index) {
+	protected VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias, int index) {
 		this.usage = usage;
 		this.numComponents = numComponents;
 		this.type = type;
