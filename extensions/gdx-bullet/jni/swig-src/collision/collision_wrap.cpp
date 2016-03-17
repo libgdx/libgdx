@@ -2368,6 +2368,9 @@ SWIGINTERN bool ContactListener_setEvents(ContactListener *self){
  /*SWIG_JavaArrayArgout##Longlong(jenv, jarr$argnum, (long long *)$1, $input);*/ 
  /*SWIG_JavaArrayArgout##Float(jenv, jarr$argnum, (float *)$1, $input);*/ 
  /*SWIG_JavaArrayArgout##Double(jenv, jarr$argnum, (double *)$1, $input);*/ 
+SWIGINTERN btBroadphasePair *btAlignedObjectArray_Sl_btBroadphasePair_Sg__at(btAlignedObjectArray< btBroadphasePair > *self,int n){
+		return &(self->at(n));
+	}
 SWIGINTERN int btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjects(btAlignedObjectArray< btBroadphasePair > *self,int result[],int max,int other){
 		static btManifoldArray marr;
 		const int n = self->size();
@@ -46210,8 +46213,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jobject jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
   btAlignedObjectArray< btBroadphasePair > *arg1 = (btAlignedObjectArray< btBroadphasePair > *) 0 ;
   int arg2 ;
   btBroadphasePair *result = 0 ;
@@ -46221,8 +46224,8 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jarg1_;
   arg1 = *(btAlignedObjectArray< btBroadphasePair > **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = (btBroadphasePair *) &((btAlignedObjectArray< btBroadphasePair > const *)arg1)->at(arg2);
-  jresult = gdx_getTempbtBroadphasePair(jenv, &result, false);
+  result = (btBroadphasePair *)btAlignedObjectArray_Sl_btBroadphasePair_Sg__at(arg1,arg2);
+  *(btBroadphasePair **)&jresult = result; 
   return jresult;
 }
 

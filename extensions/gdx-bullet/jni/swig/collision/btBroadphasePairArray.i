@@ -30,10 +30,14 @@
 class btAlignedObjectArray<btBroadphasePair> {
 public:
 	SIMD_FORCE_INLINE	int size() const;
-	SIMD_FORCE_INLINE const btBroadphasePair& at(int n) const;
 };
 
 %extend btAlignedObjectArray<btBroadphasePair> {
+
+	btBroadphasePair *at(int n) {
+		return &($self->at(n));
+	}
+
 	int getCollisionObjects(int result[], int max, int other) {
 		static btManifoldArray marr;
 		const int n = $self->size();
