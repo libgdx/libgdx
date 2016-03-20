@@ -107,8 +107,7 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 	
 	/**
-	 * @param visibility
-	 * 				whether the window will be visible on creation. (default true)
+	 * @param visibility whether the window will be visible on creation. (default true)
 	 */
 	public void setInitialVisible(boolean visibility) {
 		this.initialVisible = visibility;
