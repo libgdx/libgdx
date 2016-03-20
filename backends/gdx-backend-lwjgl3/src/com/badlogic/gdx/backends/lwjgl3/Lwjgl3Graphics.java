@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -368,6 +368,26 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			title = "";
 		}
 		GLFW.glfwSetWindowTitle(window.getWindowHandle(), title);
+	}
+
+	/**
+	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
+	 * for the changes to take effect.
+	 */
+	@Override
+	public void setUndecorated(boolean undecorated) {
+		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
+		config.setDecorated(!undecorated);
+	}
+
+	/**
+	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
+	 * for the changes to take effect.
+	 */
+	@Override
+	public void setResizable(boolean resizable) {
+		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
+		config.setResizable(resizable);
 	}
 
 	@Override

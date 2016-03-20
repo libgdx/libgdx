@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -100,7 +100,7 @@ public class LwjglGraphics implements Graphics {
 		else
 			return (int)(Display.getWidth() * Display.getPixelScaleFactor());
 	}
-	
+
 	@Override
 	public int getBackBufferWidth () {
 		return getWidth();
@@ -159,18 +159,18 @@ public class LwjglGraphics implements Graphics {
 
 		if (canvas != null) {
 			Display.setParent(canvas);
-		} else {			
+		} else {
 			boolean displayCreated = false;
-			
+
 			if(!config.fullscreen) {
 				displayCreated = setWindowedMode(config.width, config.height);
-			} else {				
+			} else {
 				DisplayMode bestMode = null;
 				for(DisplayMode mode: getDisplayModes()) {
 					if(mode.width == config.width && mode.height == config.height) {
 						if(bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
 							bestMode = mode;
-						}						
+						}
 					}
 				}
 				if(bestMode == null) {
@@ -215,7 +215,7 @@ public class LwjglGraphics implements Graphics {
 		createDisplayPixelFormat(config.useGL30, config.gles30ContextMajorVersion, config.gles30ContextMinorVersion);
 		initiateGL();
 	}
-	
+
 	/**
 	 * Only needed when setupDisplay() is not called.
 	 */
@@ -385,9 +385,9 @@ public class LwjglGraphics implements Graphics {
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
-	
+
 	@Override
-	public Monitor getPrimaryMonitor () {		
+	public Monitor getPrimaryMonitor () {
 		return new LwjglMonitor(0, 0, "Primary Monitor");
 	}
 
@@ -441,7 +441,7 @@ public class LwjglGraphics implements Graphics {
 		try {
 			org.lwjgl.opengl.DisplayMode targetDisplayMode = null;
 			boolean fullscreen = false;
-			
+
 			if (fullscreen) {
 				org.lwjgl.opengl.DisplayMode[] modes = Display.getAvailableDisplayModes();
 				int freq = 0;
@@ -527,6 +527,25 @@ public class LwjglGraphics implements Graphics {
 		Display.setTitle(title);
 	}
 
+	/**
+	 * Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take
+	 * effect.
+	 */
+	@Override
+	public void setUndecorated (boolean undecorated) {
+		System.setProperty("org.lwjgl.opengl.Window.undecorated", undecorated ? "true" : "false");
+	}
+
+	/**
+	 * Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take
+	 * effect.
+	 */
+	@Override
+	public void setResizable (boolean resizable) {
+		this.config.resizable = resizable;
+		Display.setResizable(resizable);
+	}
+
 	@Override
 	public BufferFormat getBufferFormat () {
 		return bufferFormat;
@@ -595,7 +614,7 @@ public class LwjglGraphics implements Graphics {
 		 *         to create the display a second time */
 		public LwjglApplicationConfiguration onFailure (LwjglApplicationConfiguration initialConfig);
 	}
-	
+
 	@Override
 	public com.badlogic.gdx.graphics.Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return new LwjglCursor(pixmap, xHotspot, yHotspot);
@@ -612,7 +631,7 @@ public class LwjglGraphics implements Graphics {
 			throw new GdxRuntimeException("Could not set cursor image.", e);
 		}
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 		if (canvas != null && SharedLibraryLoader.isMac) {
@@ -633,10 +652,10 @@ public class LwjglGraphics implements Graphics {
 			this.mode = mode;
 		}
 	}
-	
+
 	private class LwjglMonitor extends Monitor {
 		protected LwjglMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
 		}
-	}	
+	}
 }
