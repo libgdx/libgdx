@@ -96,6 +96,8 @@ public class UBJsonReader implements BaseJsonReader {
 			return new JsonValue(parseString(din, type));
 		else if (type == 'a' || type == 'A')
 			return parseData(din, type);
+		else if (type == 'C')
+			return new JsonValue(din.readChar());
 		else
 			throw new GdxRuntimeException("Unrecognized data type");
 	}
