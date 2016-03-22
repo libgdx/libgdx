@@ -70,6 +70,8 @@ public class LwjglApplicationConfiguration {
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
+	/** whether the window is undecorated **/
+	public boolean undecorated = false;
 	/** the maximum number of sources that can be played simultaneously */
 	public int audioDeviceSimultaneousSources = 16;
 	/** the audio device buffer size in samples **/
