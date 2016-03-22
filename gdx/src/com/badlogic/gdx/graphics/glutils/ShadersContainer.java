@@ -6,38 +6,22 @@ import com.badlogic.gdx.utils.Array;
 
 public class ShadersContainer {
 
-// private final ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 	Application app = null;
-	Array<ShaderProgram> shaders_list;
+	final Array<ShaderProgram> shaders_list = new Array<ShaderProgram>();
 
-	public Array<ShaderProgram> get (Application app) {
-		checkConsistency(app);
-		return shaders_list;
-	}
+	public void clearAllShaderPrograms (Application app) {
+		if (this.app == null) {
+			err(app);
+		} else if (this.app != app) {
+			err(app);
+		}
 
-	public void remove (Application app) {
-		checkConsistency(app);
 		shaders_list.clear();
 		this.app = null;
-		log("remove " + app);
-	}
-
-	private void checkConsistency (Application app) {
-		if (app != this.app) {
-			l("app=" + app);
-			l("this.app=" + this.app);
-			throw new Error("Shaders structure is corrupted");
-		}
+		log("clearAllShaderPrograms " + app);
 	}
 
 	private void log (String string) {
-// l("ShadersContainer[" + this.shaders.size + "] :: " + string);
-// Array<Application> keys = this.shaders.keys().toArray();
-// for (int i = 0; i < this.shaders.size; i++) {
-// Application key = keys.get(i);
-// Array<ShaderProgram> vallue = shaders.get(key);
-//
-// }
 		l("    " + string + " :-> " + shaders_list);
 	}
 
@@ -45,19 +29,38 @@ public class ShadersContainer {
 		System.out.println("# " + string);
 	}
 
-	public void put (Application app, Array<ShaderProgram> managedResources) {
-		this.app = app;
-		if (this.shaders_list != null) {
-			throw new Error("Shaders structure is corrupted");
-		}
-		this.shaders_list = managedResources;
-// shaders.put(app, managedResources);
-// new Error("#").printStackTrace();
-		log("put " + app);
-	}
-
 	public int size () {
 		return shaders_list.size;
+	}
+
+	public void addManagedShader (Application app, ShaderProgram shaderProgram) {
+		if (this.app == null) {
+			this.app = app;
+		} else if (this.app != app) {
+			err(app);
+		}
+		this.shaders_list.add(shaderProgram);
+		log("addManagedShader " + app);
+	}
+
+	private void err (Application app) {
+		l("app=" + app);
+		l("this.app=" + this.app);
+		throw new Error("Shaders structure is corrupted");
+	}
+
+	public void dispose () {
+		if (this.app != null) {
+			this.app = null;
+			this.shaders_list.clear();
+		}
+	}
+
+	public void invalidateAll (Application app) {
+		for (int i = 0; i < this.shaders_list.size; i++) {
+			shaders_list.get(i).invalidated = true;
+			shaders_list.get(i).checkManaged();
+		}
 	}
 
 }

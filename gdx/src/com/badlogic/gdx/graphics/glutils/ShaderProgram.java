@@ -32,7 +32,6 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
@@ -142,7 +141,7 @@ public class ShaderProgram implements Disposable {
 	private final String fragmentShaderSource;
 
 	/** whether this shader was invalidated **/
-	private boolean invalidated;
+	 boolean invalidated;
 
 	/** reference count **/
 	private int refCount = 0;
@@ -699,7 +698,7 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).removeValue(this, true);
+		shaders.dispose();
 	}
 
 	/** Disables the vertex attribute with the given name
@@ -736,7 +735,7 @@ public class ShaderProgram implements Disposable {
 		gl.glEnableVertexAttribArray(location);
 	}
 
-	private void checkManaged () {
+	 void checkManaged () {
 		if (invalidated) {
 			compileShaders(vertexShaderSource, fragmentShaderSource);
 			invalidated = false;
@@ -744,10 +743,7 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void addManagedShader (Application app, ShaderProgram shaderProgram) {
-		Array<ShaderProgram> managedResources = shaders.get(app);
-		if (managedResources == null) managedResources = new Array<ShaderProgram>();
-		managedResources.add(shaderProgram);
-		shaders.put(app, managedResources);
+		shaders.addManagedShader(app, shaderProgram);
 	}
 
 	/** Invalidates all shaders so the next time they are used new handles are generated
@@ -755,17 +751,11 @@ public class ShaderProgram implements Disposable {
 	public static void invalidateAllShaderPrograms (Application app) {
 		if (Gdx.gl20 == null) return;
 
-		Array<ShaderProgram> shaderArray = shaders.get(app);
-		if (shaderArray == null) return;
-
-		for (int i = 0; i < shaderArray.size; i++) {
-			shaderArray.get(i).invalidated = true;
-			shaderArray.get(i).checkManaged();
-		}
+		shaders.invalidateAll(app);
 	}
 
 	public static void clearAllShaderPrograms (Application app) {
-		shaders.remove(app);
+		shaders.clearAllShaderPrograms(app);
 	}
 
 	public static String getManagedStatus () {
