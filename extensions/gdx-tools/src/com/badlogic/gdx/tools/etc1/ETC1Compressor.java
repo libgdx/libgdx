@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.glutils.ETC1;
-import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
+import com.badlogic.gdx.graphics.glutils.ETC1Data;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class ETC1Compressor {
