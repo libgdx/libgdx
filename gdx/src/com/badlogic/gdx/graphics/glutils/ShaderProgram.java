@@ -36,7 +36,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
-import com.badlogic.gdx.utils.ObjectMap;
 
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program useable with OpenGL ES 2.0.
@@ -92,7 +91,7 @@ public class ShaderProgram implements Disposable {
 	public static String prependFragmentCode = "";
 
 	/** the list of currently available shaders **/
-	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
+	private final static ShadersContainer shaders = new ShadersContainer();
 
 	/** the log **/
 	private String log = "";
@@ -157,10 +156,8 @@ public class ShaderProgram implements Disposable {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-		if (prependVertexCode != null && prependVertexCode.length() > 0)
-			vertexShader = prependVertexCode + vertexShader;
-		if (prependFragmentCode != null && prependFragmentCode.length() > 0)
-			fragmentShader = prependFragmentCode + fragmentShader;
+		if (prependVertexCode != null && prependVertexCode.length() > 0) vertexShader = prependVertexCode + vertexShader;
+		if (prependFragmentCode != null && prependFragmentCode.length() > 0) fragmentShader = prependFragmentCode + fragmentShader;
 
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
@@ -775,10 +772,10 @@ public class ShaderProgram implements Disposable {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		builder.append("Managed shaders/app: { ");
-		for (Application app : shaders.keys()) {
-			builder.append(shaders.get(app).size);
-			builder.append(" ");
-		}
+// for (Application app : shaders.keys()) {
+		builder.append(shaders.size());
+		builder.append(" ");
+// }
 		builder.append("}");
 		return builder.toString();
 	}
