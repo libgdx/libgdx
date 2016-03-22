@@ -17,48 +17,21 @@
 package com.badlogic.gdx.tools.etc1;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.glutils.ETC1;
-import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class ETC1Compressor {
-	static class ETC1FileProcessor extends FileProcessor {
-		ETC1FileProcessor () {
-			addInputSuffix(".png");
-			addInputSuffix(".jpg");
-			addInputSuffix(".jpeg");
-			addInputSuffix(".bmp");
-			setOutputSuffix(".etc1");
-		}
-
-		@Override
-		protected void processFile (Entry entry) throws Exception {
-			System.out.println("Processing " + entry.inputFile);
-			Pixmap pixmap = new Pixmap(new FileHandle(entry.inputFile));
-			if (pixmap.getFormat() != Format.RGB888 && pixmap.getFormat() != Format.RGB565) {
-				System.out.println("Converting from " + pixmap.getFormat() + " to RGB888!");
-				Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
-				tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-				pixmap.dispose();
-				pixmap = tmp;
-			}
-			ETC1.encodeImagePKM(pixmap).write(new FileHandle(entry.outputFile));
-			pixmap.dispose();
-		}
-
-		@Override
-		protected void processDir (Entry entryDir, ArrayList<Entry> value) throws Exception {
-			if (!entryDir.outputDir.exists()) {
-				if (!entryDir.outputDir.mkdirs())
-					throw new Exception("Couldn't create output directory '" + entryDir.outputDir + "'");
-			}
-		}
-	}
+	private static final Color FUXIA = new Color(1, 0, 1, 1);
 
 	public static void process (String inputDirectory, String outputDirectory, boolean recursive, boolean flatten)
 		throws Exception {
@@ -75,5 +48,72 @@ public class ETC1Compressor {
 			System.exit(-1);
 		}
 		ETC1Compressor.process(args[0], args[1], true, false);
+	}
+
+	public static void compress (String inputFilePath, String outputFilePath) throws Exception {
+		ETC1CompressorParams params = new ETC1CompressorParams();
+		FileHandle inputFile = new FileHandle(inputFilePath);
+		FileHandle outputFile = new FileHandle(outputFilePath);
+		System.out.println("Processing " + inputFile);
+		GdxNativesLoader.load();
+
+		Pixmap pixmap = new Pixmap(inputFile);
+		params.setInputPixmap(pixmap);
+
+		OutputStream fileStream = outputFile.write(false);
+		params.setOutputStream(fileStream);
+
+		ETC1Compressor.compress(params);
+		pixmap.dispose();
+
+		System.out.println("Writing " + outputFile);
+		fileStream.close();
+
+	}
+
+	public static void compress (ETC1CompressorParams params) throws Exception {
+		final Pixmap pixmap = params.getInputPixmap();
+		Color transparentColor = params.getTransparentColor();
+		OutputStream outputStream = params.getOutputStream();
+		if (transparentColor == null) {
+			transparentColor = FUXIA;
+		}
+
+		Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
+		tmp.setColor(transparentColor);
+		tmp.fill();
+		tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+		ETC1Data pkm = ETC1.encodeImagePKM(tmp);
+		tmp.dispose();
+
+		pkm.write(outputStream);
+		outputStream.flush();
+		pkm.dispose();
+	}
+
+	public static void deCompress (String etc1File, String restoredPngFile) throws IOException {
+		GdxNativesLoader.load();
+		FileHandle inputFile = new FileHandle(etc1File);
+		FileHandle outputFile = new FileHandle(restoredPngFile);
+		System.out.println("Restoring " + inputFile);
+
+		InputStream fileStream = inputFile.read();
+		ETC1DeCompressorParams params = new ETC1DeCompressorParams();
+		params.setInputStream(fileStream);
+		ETC1DeCompressinResult result = ETC1Compressor.deCompress(params);
+		fileStream.close();
+		Pixmap etc1Pixmap = result.getPixmap();
+		System.out.println("Writing " + outputFile);
+		PixmapIO.writePNG(outputFile, etc1Pixmap);
+	}
+
+	public static ETC1DeCompressinResult deCompress (ETC1DeCompressorParams params) {
+		InputStream inputStream = params.getInputStream();
+		ETC1Data etc1Data = ETC1Data.read(inputStream);
+		Pixmap etc1Pixmap = ETC1.decodeImage(etc1Data, Format.RGB888);
+		etc1Data.dispose();
+		ETC1DeCompressinResult result = new ETC1DeCompressinResult();
+		result.setPixmap(etc1Pixmap);
+		return result;
 	}
 }
