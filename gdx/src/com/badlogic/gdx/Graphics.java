@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,14 +47,14 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
  * @author mzechner */
 public interface Graphics {
 	/** Enumeration describing different types of {@link Graphics} implementations.
-	 * 
+	 *
 	 * @author mzechner */
 	public enum GraphicsType {
 		AndroidGL, LWJGL, Angle, WebGL, iOSGL, JGLFW, Mock, LWJGL3
 	}
 
 	/** Describe a fullscreen display mode
-	 * 
+	 *
 	 * @author mzechner */
 	public class DisplayMode {
 		/** the width in physical pixels **/
@@ -77,16 +77,16 @@ public interface Graphics {
 			return width + "x" + height + ", bpp: " + bitsPerPixel + ", hz: " + refreshRate;
 		}
 	}
-	
+
 	/** Describes a monitor
-	 * 
+	 *
 	 * @author badlogic
 	 */
 	public class Monitor {
 		public final int virtualX;
 		public final int virtualY;
 		public final String name;
-		
+
 		protected Monitor (int virtualX, int virtualY, String name) {
 			this.virtualX = virtualX;
 			this.virtualY = virtualY;
@@ -125,7 +125,7 @@ public interface Graphics {
 	/** Returns whether OpenGL ES 3.0 is available. If it is you can get an instance of {@link GL30} via {@link #getGL30()} to
 	 * access OpenGL ES 3.0 functionality. Note that this functionality will only be available if you instructed the
 	 * {@link Application} instance to use OpenGL ES 3.0!
-	 * 
+	 *
 	 * @return whether OpenGL ES 3.0 is available */
 	public boolean isGL30Available ();
 
@@ -143,7 +143,7 @@ public interface Graphics {
 
 	/** @return the width of the framebuffer in physical pixels */
 	public int getBackBufferWidth ();
-	
+
 	/** @return the height of the framebuffer in physical pixels */
 	public int getBackBufferHeight ();
 
@@ -184,56 +184,81 @@ public interface Graphics {
 	/** This is a scaling factor for the Density Independent Pixel unit, following the same conventions as
 	 * android.util.DisplayMetrics#density, where one DIP is one pixel on an approximately 160 dpi screen. Thus on a 160dpi screen
 	 * this density value will be 1; on a 120 dpi screen it would be .75; etc.
-	 * 
+	 *
 	 * @return the logical density of the Display. */
 	public float getDensity ();
 
 	/** Whether the given backend supports a display mode change via calling {@link Graphics#setFullscreenMode(DisplayMode)}
-	 * 
+	 *
 	 * @return whether display mode changes are supported or not. */
 	public boolean supportsDisplayModeChange ();
-	
+
 	/** @return the primary monitor **/
 	public Monitor getPrimaryMonitor();
-	
+
 	/** @return the monitor the application's window is located on */
 	public Monitor getMonitor();
-	
+
 	/** @return the currently connected {@link Monitor}s */
 	public Monitor[] getMonitors();
 
 	/** @return the supported fullscreen {@link DisplayMode}(s) of the monitor the window is on */
 	public DisplayMode[] getDisplayModes ();
-	
+
 	/** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
 	public DisplayMode[] getDisplayModes(Monitor monitor);
 
 	/** @return the current {@link DisplayMode} of the monitor the window is on. */
 	public DisplayMode getDisplayMode ();
-	
+
 	/** @return the current {@link DisplayMode} of the given {@link Monitor} */
 	public DisplayMode getDisplayMode (Monitor monitor);
 
 	/** Sets the window to full-screen mode.
-	 * 
+	 *
 	 * @param displayMode the display mode.
 	 * @return whether the operation succeeded. */
 	public boolean setFullscreenMode (DisplayMode displayMode);
 
 	/** Sets the window to windowed mode.
-	 * 
+	 *
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @return whether the operation succeeded*/	
+	 * @return whether the operation succeeded*/
 	public boolean setWindowedMode (int width, int height);
 
 	/** Sets the title of the window. Ignored on Android.
-	 * 
+	 *
 	 * @param title the title. */
 	public void setTitle (String title);
 
+	/** Sets the window decoration as enabled or disabled. On Android, this will enable/disable
+	 *  the menu bar.
+	 *
+	 *  Note that immediate behavior of this method may vary depending on the implementation. It
+	 *  may be necessary for the window to be recreated in order for the changes to take effect.
+	 *  Consult the documentation for the backend in use for more information.
+	 *
+	 *  Supported on all GDX desktop backends and on Android (to disable the menu bar).
+	 *
+	 * @param undecorated true if the window border or status bar should be hidden. false otherwise.
+	 */
+	public void setUndecorated (boolean undecorated);
+
+	/** Sets whether or not the window should be resizable. Ignored on Android.
+	 *
+	 *  Note that immediate behavior of this method may vary depending on the implementation. It
+	 *  may be necessary for the window to be recreated in order for the changes to take effect.
+	 *  Consult the documentation for the backend in use for more information.
+	 *
+	 *  Supported on all GDX desktop backends.
+	 *
+	 * @param resizable
+	 */
+	public void setResizable (boolean resizable);
+
 	/** Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.
-	 * 
+	 *
 	 * @param vsync vsync enabled or not. */
 	public void setVSync (boolean vsync);
 
@@ -246,16 +271,16 @@ public interface Graphics {
 
 	/** Sets whether to render continuously. In case rendering is performed non-continuously, the following events will trigger a
 	 * redraw:
-	 * 
+	 *
 	 * <ul>
 	 * <li>A call to {@link #requestRendering()}</li>
 	 * <li>Input events from the touch screen/mouse or keyboard</li>
 	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}</li>
 	 * </ul>
-	 * 
+	 *
 	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. This method can be called from any
 	 * thread.
-	 * 
+	 *
 	 * @param isContinuous whether the rendering should be continuous or not. */
 	public void setContinuousRendering (boolean isContinuous);
 
@@ -272,7 +297,7 @@ public interface Graphics {
 	 * width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit
 	 * (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the system cursor by calling
 	 * {@link #setCursor(Cursor)} .
-	 * 
+	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
@@ -282,12 +307,12 @@ public interface Graphics {
 	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
 	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
 	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
-	 * 
+	 *
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor} */
 	public void setCursor (Cursor cursor);
-	
+
 	/**
 	 * Sets one of the predefined {@link SystemCursor}s
 	 */
-	public void setSystemCursor(SystemCursor systemCursor);	
+	public void setSystemCursor(SystemCursor systemCursor);
 }
