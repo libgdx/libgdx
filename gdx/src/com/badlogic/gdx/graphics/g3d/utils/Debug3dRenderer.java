@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -51,9 +52,6 @@ import com.badlogic.gdx.utils.Pool;
  * @author realitix */
 public class Debug3dRenderer implements Disposable, RenderableProvider {
 
-	/** Final renderable */
-	private final Renderable renderable = new Renderable();
-
 	/** Builder used to update the mesh */
 	private final MeshBuilder builder;
 
@@ -61,19 +59,21 @@ public class Debug3dRenderer implements Disposable, RenderableProvider {
 	private final Mesh mesh;
 
 	private boolean building;
+	private final String id = "id";
+	private final Renderable renderable = new Renderable();
 
-	/** Create a Debug3dRenderer */
+	/** Create a Debug3dRenderer with default values */
 	public Debug3dRenderer () {
-		this(5000, 5000);
+		this(5000, 5000, new VertexAttributes(new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+			Usage.ColorPacked, 4, "a_color")), GL20.GL_LINES);
 	}
 
 	/** Create a Debug3dRenderer with parameters
 	 * @param maxVertices max vertices in mesh
-	 * @param maxIndices max indices in mesh */
-	public Debug3dRenderer (int maxVertices, int maxIndices) {
-		VertexAttributes attributes = new VertexAttributes(new VertexAttribute(Usage.Position, 3, "a_position"),
-			new VertexAttribute(Usage.ColorPacked, 4, "a_color"));
-
+	 * @param maxIndices max indices in mesh
+	 * @param attributes vertex attributes
+	 * @param primitiveType */
+	public Debug3dRenderer (int maxVertices, int maxIndices, VertexAttributes attributes, int primitiveType) {
 		// Init mesh
 		mesh = new Mesh(false, maxVertices, maxIndices, attributes);
 
@@ -82,16 +82,23 @@ public class Debug3dRenderer implements Disposable, RenderableProvider {
 
 		// Init renderable
 		renderable.meshPart.mesh = mesh;
-		renderable.meshPart.primitiveType = GL20.GL_LINES;
+		renderable.meshPart.primitiveType = primitiveType;
 		renderable.material = new Material();
 	}
 
-	/** Initialize Debug3dRender for mesh generation */
+	/** Initialize Debug3dRender for mesh generation with GL_LINES primitive type */
 	public MeshPartBuilder begin () {
+		return begin(GL20.GL_LINES);
+	}
+
+	/** Initialize Debug3dRender for mesh generation
+	 * @param primitiveType OpenGL primitive type */
+	public MeshPartBuilder begin (int primitiveType) {
 		if (building) throw new GdxRuntimeException("Call end() after calling begin()");
 		building = true;
 
-		builder.begin(mesh.getVertexAttributes(), GL20.GL_LINES);
+		builder.begin(mesh.getVertexAttributes());
+		builder.part(id, primitiveType, renderable.meshPart);
 		return builder;
 	}
 
@@ -101,15 +108,23 @@ public class Debug3dRenderer implements Disposable, RenderableProvider {
 		building = false;
 
 		builder.end(mesh);
-
-		renderable.meshPart.offset = 0;
-		renderable.meshPart.size = mesh.getNumIndices();
-		renderable.meshPart.update();
 	}
 
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 		renderables.add(renderable);
+	}
+
+	/** Allows to customize the material.
+	 * @return material */
+	public Material getMaterial () {
+		return renderable.material;
+	}
+
+	/** Allows to customize the world transform matrix.
+	 * @return world transform */
+	public Matrix4 getWorldTransform () {
+		return renderable.worldTransform;
 	}
 
 	@Override

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
@@ -9,21 +24,14 @@ import com.badlogic.gdx.math.Vector3;
 /** FrustumShapeBuilder builds camera or frustum.
  * 
  * @author realitix */
-public class FrustumShapeBuilder {
-
-	/** Color used to set default value */
-	private static final Color tmpColor = new Color();
-
-	/** Vector3 used during vertices generation */
-	private static final Vector3 tmp = new Vector3();
-	private static final Vector3 tmp2 = new Vector3();
+public class FrustumShapeBuilder extends BaseShapeBuilder {
 
 	/** Build camera with default colors
 	 * @param builder MeshPartBuilder
 	 * @param camera Camera */
 	public static void build (MeshPartBuilder builder, Camera camera) {
-		build(builder, camera, tmpColor.set(1, 0.66f, 0, 1).cpy(), tmpColor.set(1, 0, 0, 1).cpy(), tmpColor.set(0, 0.66f, 1, 1)
-			.cpy(), tmpColor.set(1, 1, 1, 1).cpy(), tmpColor.set(0.2f, 0.2f, 0.2f, 1).cpy());
+		build(builder, camera, tmpColor0.set(1, 0.66f, 0, 1), tmpColor1.set(1, 0, 0, 1), tmpColor2.set(0, 0.66f, 1, 1),
+			tmpColor3.set(1, 1, 1, 1), tmpColor4.set(0.2f, 0.2f, 0.2f, 1));
 	}
 
 	/** Build Camera with custom colors
@@ -51,10 +59,10 @@ public class FrustumShapeBuilder {
 		builder.line(camera.position, targetColor, centerPoint(planePoints[4], planePoints[5], planePoints[6]), targetColor);
 
 		// Up triangle
-		float halfNearSize = tmp.set(planePoints[1]).sub(planePoints[0]).scl(0.5f).len();
+		float halfNearSize = tmpV0.set(planePoints[1]).sub(planePoints[0]).scl(0.5f).len();
 		Vector3 centerNear = centerPoint(planePoints[0], planePoints[1], planePoints[2]);
-		tmp.set(camera.up).scl(halfNearSize * 2);
-		centerNear.add(tmp);
+		tmpV0.set(camera.up).scl(halfNearSize * 2);
+		centerNear.add(tmpV0);
 
 		builder.line(centerNear, upColor, planePoints[2], upColor);
 		builder.line(planePoints[2], upColor, planePoints[3], upColor);
@@ -105,8 +113,8 @@ public class FrustumShapeBuilder {
 	 * @param point1 Second segment's point
 	 * @return the middle point */
 	private static Vector3 middlePoint (Vector3 point0, Vector3 point1) {
-		tmp.set(point1).sub(point0).scl(0.5f);
-		return tmp2.set(point0).add(tmp);
+		tmpV0.set(point1).sub(point0).scl(0.5f);
+		return tmpV1.set(point0).add(tmpV0);
 	}
 
 	/** Return center point's rectangle
@@ -115,9 +123,9 @@ public class FrustumShapeBuilder {
 	 * @param point2
 	 * @return the center point */
 	private static Vector3 centerPoint (Vector3 point0, Vector3 point1, Vector3 point2) {
-		tmp.set(point1).sub(point0).scl(0.5f);
-		tmp2.set(point0).add(tmp);
-		tmp.set(point2).sub(point1).scl(0.5f);
-		return tmp2.add(tmp);
+		tmpV0.set(point1).sub(point0).scl(0.5f);
+		tmpV1.set(point0).add(tmpV0);
+		tmpV0.set(point2).sub(point1).scl(0.5f);
+		return tmpV1.add(tmpV0);
 	}
 }
