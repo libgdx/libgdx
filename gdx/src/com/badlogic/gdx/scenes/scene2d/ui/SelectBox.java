@@ -256,7 +256,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/**
 	 * Sets the alignment of the selected element.
-	 * @param alignment
+	 * @param alignment The alignment. Use Align constants.
      */
 	public void setSelectedAlignment(int alignment){
 		this.selectedAlignment = alignment;
