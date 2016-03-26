@@ -27,7 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -159,7 +163,7 @@ public class List<T> extends Widget implements Cullable {
 				}
 				String string = item.toString();
 				layout.setText(font, string, 0, string.length(), font.getColor(), width, listAlignment, false, "...");
-				font.draw(batch, layout, x + textOffsetX, y + itemY - textOffsetY);
+				font.draw(batch, toString(item), x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
@@ -174,7 +178,7 @@ public class List<T> extends Widget implements Cullable {
 	/**
 	 * Sets the alignment of the items in the list.
 	 * @param listAlignment The alignment. Use Align constants.
-     */
+	 */
 	public void setListAlignment(int listAlignment){
 		this.listAlignment = listAlignment;
 	}
