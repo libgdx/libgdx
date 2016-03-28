@@ -6,6 +6,7 @@
 - API Change: renamed Lwjgl3WindowListener.windowIsClosing() to closeRequested() to better communicate its intent.
 - Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData. 
 - Added FlushablePool
+- Added Linux mappings to com.badlogic.gdx.controllers.mappings.Xbox
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
