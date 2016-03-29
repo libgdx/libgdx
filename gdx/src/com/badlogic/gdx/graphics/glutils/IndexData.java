@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.Buffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -50,6 +49,13 @@ public interface IndexData extends Disposable {
 	 * instantly.
 	 * @param indices the index data to copy */
 	public void setIndices (ShortBuffer indices);
+
+	/** Update (a portion of) the indices.
+	 * @param targetOffset offset in indices buffer
+	 * @param indices the index data
+	 * @param offset the offset to start copying the data from
+	 * @param count the number of shorts to copy */
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count);
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.

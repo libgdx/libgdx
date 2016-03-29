@@ -197,6 +197,9 @@ public class SharedLibraryLoader {
 		file = new File(".temp/" + dirName, fileName);
 		if (canWrite(file)) return file;
 
+		// We are running in the OS X sandbox.
+		if (System.getenv("APP_SANDBOX_CONTAINER_ID") != null) return idealFile;
+
 		return null;
 	}
 

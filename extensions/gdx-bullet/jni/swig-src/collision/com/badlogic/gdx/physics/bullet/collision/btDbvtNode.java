@@ -135,6 +135,14 @@ public class btDbvtNode extends BulletBase {
 	return btDbvtNode.internalTemp(CollisionJNI.btDbvtNode_getChild1(swigCPtr, this), false);
 }
 
+  public btBroadphaseProxy getDataAsProxy() {
+	return btBroadphaseProxy.internalTemp(CollisionJNI.btDbvtNode_getDataAsProxy(swigCPtr, this), false);
+}
+
+  public btCollisionObject getDataAsProxyClientObject() {
+	return btCollisionObject.getInstance(CollisionJNI.btDbvtNode_getDataAsProxyClientObject(swigCPtr, this), false);
+}
+
   public btDbvtNode() {
     this(CollisionJNI.new_btDbvtNode(), true);
   }

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -33,7 +35,8 @@ public final class Intersector {
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
-
+	private final static FloatArray floatArray = new FloatArray();
+	private final static FloatArray floatArray2 = new FloatArray();
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
 	 * check is performed that this is the case.
 	 * 
@@ -137,6 +140,74 @@ public final class Intersector {
 			j = i;
 		}
 		return oddNodes;
+	}
+
+	private final static Vector2 ip = new Vector2();
+	private final static Vector2 ep1 = new Vector2();
+	private final static Vector2 ep2 = new Vector2();
+	private final static Vector2 s = new Vector2();
+	private final static Vector2 e = new Vector2();
+
+	/** Intersects two resulting polygons with the same winding and sets the overlap polygon
+	 *  resulting from the intersection.
+	 *  Follows the Sutherland-Hodgman algorithm.
+	 *
+	 * @param p1 The polygon that is being clipped
+	 * @param p2 The clip polygon
+	 * @param overlap The intersection of the two polygons (optional)
+	 * @return Whether the two polygons intersect.
+	 */
+	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		//reusable points to trace edges around polygon
+		floatArray2.clear();
+		floatArray.clear();
+		floatArray2.addAll(p1.getTransformedVertices());
+		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
+			return false;
+		}
+		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
+			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i+1]);
+			//wrap around to beginning of array if index points to end;
+			if (i < p2.getTransformedVertices().length - 2) {
+				ep2.set(p2.getTransformedVertices()[i + 2], p2.getTransformedVertices()[i + 3]);
+			} else {
+				ep2.set(p2.getTransformedVertices()[0], p2.getTransformedVertices()[1]);
+			}
+			if (floatArray2.size == 0) {
+				return false;
+			}
+			s.set(floatArray2.get(floatArray2.size - 2), floatArray2.get(floatArray2.size - 1));
+			for (int j = 0; j < floatArray2.size; j += 2) {
+				e.set(floatArray2.get(j), floatArray2.get(j + 1));
+				//determine if point is inside clip edge
+				if (Intersector.pointLineSide(ep2, ep1, e) > 0) {
+					if (!(Intersector.pointLineSide(ep2, ep1, s) > 0)) {
+						Intersector.intersectLines(s, e, ep1, ep2, ip);
+						if (floatArray.size < 2 || floatArray.get(floatArray.size-2) != ip.x || floatArray.get(floatArray.size-1) != ip.y)
+						{
+							floatArray.add(ip.x);
+							floatArray.add(ip.y);
+						}
+					}
+					floatArray.add(e.x);
+					floatArray.add(e.y);
+				} else if (Intersector.pointLineSide(ep2, ep1, s) > 0) {
+					Intersector.intersectLines(s, e, ep1, ep2, ip);
+					floatArray.add(ip.x);
+					floatArray.add(ip.y);
+				}
+				s.set(e.x, e.y);
+			}
+			floatArray2.clear();
+			floatArray2.addAll(floatArray);
+			floatArray.clear();
+		}
+		if (! (floatArray2.size == 0)) {
+			overlap.setVertices(floatArray2.toArray());
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */

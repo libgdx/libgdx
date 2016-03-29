@@ -22,8 +22,8 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>0.9.5</version>
-		<compatibility>1.7.1</compatibility>
+		<version>1.0.1</version>
+		<compatibility>1.9.2</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
 			<inherit>com.kotcrab.vis.vis-ui</inherit>
@@ -44,8 +44,8 @@
 		<name>VisRuntime</name>
 		<description>Runtime for VisEditor</description>
 		<package>com.kotcrab.vis.runtime</package>
-		<version>0.3.0</version>
-		<compatibility>1.7.1</compatibility>
+		<version>0.3.1</version>
+		<compatibility>1.9.2</compatibility>
 		<website>http://vis.kotcrab.com</website>
 		<gwtInherits>
 			<inherit>com.kotcrab.vis.vis-runtime</inherit>
@@ -69,10 +69,10 @@
 	</extension>
 	<extension>
 		<name>libgdx-utils</name>
-		<description>additional features and helper classes</description>
+		<description>Various utilities and features</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.2</version>
-		<compatibility>1.7.1</compatibility>
+		<version>0.13.3</version>
+		<compatibility>1.9.2</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils</inherit>
@@ -91,10 +91,10 @@
 	</extension>
 	<extension>
 		<name>libgdx-utils-box2d</name>
-		<description>additional features and helper classes for the official Box2D extension</description>
+		<description>Various utilities and features for the Box2D extension</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.2</version>
-		<compatibility>1.7.1</compatibility>
+		<version>0.13.3</version>
+		<compatibility>1.9.2</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils-box2d</inherit>
@@ -164,8 +164,8 @@
 		<name>gdx-kiwi</name>
 		<description>Guava-inspired utilities for LibGDX.</description>
 		<package>com.github.czyzby.kiwi</package>
-		<version>1.5.1.8.0</version>
-		<compatibility>1.8.0</compatibility>
+		<version>1.5.1.9.2</version>
+		<compatibility>1.9.2</compatibility>
 		<website>https://github.com/czyzby/gdx-kiwi</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.kiwi.GdxKiwi</inherit>
@@ -186,8 +186,8 @@
 		<name>gdx-lml</name>
 		<description>Parser of HTML-like templates into Scene2D actors.</description>
 		<package>com.github.czyzby.lml</package>
-		<version>1.5.1.8.0</version>
-		<compatibility>1.8.0</compatibility>
+		<version>1.5.1.9.2</version>
+		<compatibility>1.9.2</compatibility>
 		<website>https://github.com/czyzby/gdx-lml</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.lml.GdxLml</inherit>
@@ -205,4 +205,29 @@
 			</html>
 		</projects>
 	</extension>
+    <extension>
+        <name>gdx-lml-vis</name>
+        <description>Parser of HTML-like templates into VisUI actors.</description>
+        <package>com.github.czyzby.lml.vis</package>
+        <version>1.5.1.9.2</version>
+        <compatibility>1.9.2</compatibility>
+        <website>https://github.com/czyzby/gdx-lml-vis</website>
+        <gwtInherits>
+            <inherit>com.github.czyzby.lml.vis.GdxLmlVis</inherit>
+        </gwtInherits>
+        <projects>
+            <core>
+                <dependency>com.github.czyzby:gdx-lml-vis</dependency>
+            </core>
+            <desktop></desktop>
+            <android></android>
+            <ios></ios>
+            <html>
+                <dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
+                <dependency>com.github.czyzby:gdx-lml:sources</dependency>
+                <dependency>com.github.czyzby:gdx-lml-vis:sources</dependency>
+                <dependency external="true">com.kotcrab.vis:vis-ui:1.0.1:sources</dependency>
+            </html>
+        </projects>
+    </extension>
 </extensions>

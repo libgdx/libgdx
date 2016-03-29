@@ -24,7 +24,11 @@ public class Lwjgl3WindowAdapter implements Lwjgl3WindowListener {
 	}
 
 	@Override
-	public boolean windowIsClosing() {
+	public boolean closeRequested() {
 		return true;
+	}
+	
+	@Override
+	public void filesDropped(String[] files) {	
 	}
 }

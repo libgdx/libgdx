@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -51,6 +53,7 @@ public class GwtGraphics implements Graphics {
 
 	CanvasElement canvas;
 	WebGLRenderingContext context;
+	GLVersion glVersion;
 	GL20 gl;
 	String extensions;
 	float fps = 0;
@@ -80,6 +83,11 @@ public class GwtGraphics implements Graphics {
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, config.width, config.height);
 		this.gl = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
+
+		String versionString = gl.glGetString(GL20.GL_VERSION);
+		String vendorString = gl.glGetString(GL20.GL_VENDOR);
+		String rendererString = gl.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString);
 	}
 
 	public WebGLRenderingContext getContext () {
@@ -100,7 +108,7 @@ public class GwtGraphics implements Graphics {
 	public int getHeight () {
 		return canvas.getHeight();
 	}
-	
+
 	@Override
 	public int getBackBufferWidth () {
 		return canvas.getWidth();
@@ -129,6 +137,11 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public GraphicsType getType () {
 		return GraphicsType.WebGL;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override
@@ -301,13 +314,13 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public boolean setWindowedMode (int width, int height) {		
+	public boolean setWindowedMode (int width, int height) {
 		if (isFullscreenJSNI()) exitFullscreen();
 		canvas.setWidth(width);
 		canvas.setHeight(height);
 		return true;
 	}
-	
+
 
 	@Override
 	public Monitor getPrimaryMonitor () {
@@ -335,7 +348,7 @@ public class GwtGraphics implements Graphics {
 	}
 
 	/** Attempt to lock the orientation. Typically only supported when in full-screen mode.
-	 * 
+	 *
 	 * @param orientation the orientation to attempt locking
 	 * @return did the locking succeed */
 	public boolean lockOrientation (OrientationLockType orientation) {
@@ -343,7 +356,7 @@ public class GwtGraphics implements Graphics {
 	}
 
 	/** Attempt to unlock the orientation.
-	 * 
+	 *
 	 * @return did the unlocking succeed */
 	public boolean unlockOrientation () {
 		return unlockOrientationJSNI();
@@ -352,7 +365,7 @@ public class GwtGraphics implements Graphics {
 	private native boolean lockOrientationJSNI (String orientationEnumValue) /*-{
 		var screen = $wnd.screen;
 
-		// Attempt to find the lockOrientation function 
+		// Attempt to find the lockOrientation function
 		screen.gdxLockOrientation = screen.lockOrientation
 				|| screen.mozLockOrientation || screen.msLockOrientation
 				|| screen.webkitLockOrientation;
@@ -372,7 +385,7 @@ public class GwtGraphics implements Graphics {
 	private native boolean unlockOrientationJSNI () /*-{
 		var screen = $wnd.screen;
 
-		// Attempt to find the lockOrientation function 
+		// Attempt to find the lockOrientation function
 		screen.gdxUnlockOrientation = screen.unlockOrientation
 				|| screen.mozUnlockOrientation || screen.msUnlockOrientation
 				|| screen.webkitUnlockOrientation;
@@ -415,6 +428,14 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public void setTitle (String title) {
+	}
+
+	@Override
+	public void setUndecorated (boolean undecorated) {
+	}
+
+	@Override
+	public void setResizable (boolean resizable) {
 	}
 
 	@Override
@@ -468,12 +489,12 @@ public class GwtGraphics implements Graphics {
 	public void setCursor (Cursor cursor) {
 		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", ((GwtCursor)cursor).cssCursorProperty);
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", GwtCursor.getNameForSystemCursor(systemCursor));
 	}
-	
+
 	static class GwtMonitor extends Monitor {
 		protected GwtMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);

@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
@@ -351,39 +352,5 @@ public class ModelCache implements Disposable, RenderableProvider {
 	public void dispose () {
 		if (building) throw new GdxRuntimeException("Cannot dispose a ModelCache in between .begin() and .end()");
 		meshPool.dispose();
-	}
-
-	/** Keeps track of the obtained items and frees them on the call to {@link #flush()}.
-	 * @author Xoppa */
-	private static abstract class FlushablePool<T> extends Pool<T> {
-		protected Array<T> obtained = new Array<T>();
-
-		public FlushablePool () {
-		}
-
-		@Override
-		public T obtain () {
-			T result = super.obtain();
-			obtained.add(result);
-			return result;
-		}
-
-		/** Frees all obtained instances. */
-		public void flush () {
-			super.freeAll(obtained);
-			obtained.clear();
-		}
-
-		@Override
-		public void free (T object) {
-			obtained.removeValue(object, true);
-			super.free(object);
-		}
-
-		@Override
-		public void freeAll (Array<T> objects) {
-			obtained.removeAll(objects, true);
-			super.freeAll(objects);
-		}
 	}
 }

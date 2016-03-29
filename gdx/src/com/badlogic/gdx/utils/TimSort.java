@@ -83,7 +83,7 @@ class TimSort<T> {
 	private final int[] runBase;
 	private final int[] runLen;
 
-	/** Asserts have been placed in if-statements for performace. To enable them, set this field to true and enable them in VM with
+	/** Asserts have been placed in if-statements for performance. To enable them, set this field to true and enable them in VM with
 	 * a command line flag. If you modify this class, please do test the asserts! */
 	private static final boolean DEBUG = false;
 
@@ -263,7 +263,7 @@ class TimSort<T> {
 			/*
 			 * The invariants still hold: pivot >= all in [lo, left) and pivot < all in [left, start), so pivot belongs at left. Note
 			 * that if there are elements equal to pivot, left points to the first slot after them -- that's why this sort is stable.
-			 * Slide elements over to make room to make room for pivot.
+			 * Slide elements over to make room for pivot.
 			 */
 			int n = start - left; // The number of elements to move
 			// Switch is just an optimization for arraycopy in default case

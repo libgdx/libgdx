@@ -50,7 +50,6 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 	public void create () {
 		modelBatch = new ModelBatch();
 		lights = new Environment();
-		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 

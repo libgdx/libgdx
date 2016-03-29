@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.jglfw;
 
 import static com.badlogic.jglfw.Glfw.*;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -27,8 +28,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.Glfw;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
@@ -41,7 +44,7 @@ public class JglfwGraphics implements Graphics {
 	static final boolean isWindows = System.getProperty("os.name").contains("Windows");
 	static final boolean isLinux = System.getProperty("os.name").contains("Linux");
 
-	static int glMajorVersion, glMinorVersion;
+	static GLVersion glVersion;
 
 	long window;
 	private boolean fullscreen;
@@ -85,15 +88,17 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		// Create GL.
-		String version = GL.glGetString(GL20.GL_VERSION);
-		glMajorVersion = Integer.parseInt("" + version.charAt(0));
-		glMinorVersion = Integer.parseInt("" + version.charAt(2));
+		String versionString = GL.glGetString(GL20.GL_VERSION);
+		String vendorString = GL.glGetString(GL20.GL_VENDOR);
+		String rendererString = GL.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 
-		if (glMajorVersion <= 1)
-			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
-		if (glMajorVersion == 2 || version.contains("2.1")) {
+
+		if (glVersion.getMajorVersion() <= 1)
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + glVersion.getMajorVersion() + ":" + glVersion.getMinorVersion());
+		if (glVersion.getMajorVersion() == 2) {
 			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
-				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + glVersion.getMajorVersion() + ":" + glVersion.getMinorVersion()
 					+ ", FBO extension: false");
 			}
 		}
@@ -196,7 +201,7 @@ public class JglfwGraphics implements Graphics {
 	public int getHeight () {
 		return height;
 	}
-	
+
 	@Override
 	public int getBackBufferWidth () {
 		return width;
@@ -225,6 +230,10 @@ public class JglfwGraphics implements Graphics {
 
 	public GraphicsType getType () {
 		return GraphicsType.JGLFW;
+	}
+
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	public float getPpiX () {
@@ -263,7 +272,7 @@ public class JglfwGraphics implements Graphics {
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
-	
+
 	@Override
 	public Monitor getPrimaryMonitor () {
 		return new JglfwMonitor(0, 0, "Primary Monitor");
@@ -336,6 +345,22 @@ public class JglfwGraphics implements Graphics {
 		if (title == null) title = "";
 		glfwSetWindowTitle(window, title);
 		this.title = title;
+	}
+
+	/**
+	 * Note: GLFW requires that the window be recreated for this change to take effect.
+	 */
+	@Override
+	public void setUndecorated (boolean undecorated) {
+		this.undecorated = undecorated;
+	}
+
+	/**
+	 * Note: GLFW requires that the window be recreated for this change to take effect.
+	 */
+	@Override
+	public void setResizable (boolean resizable) {
+		this.resizable = resizable;
 	}
 
 	public void setVSync (boolean vsync) {
@@ -436,7 +461,7 @@ public class JglfwGraphics implements Graphics {
 	public GL30 getGL30 () {
 		return null;
 	}
-	
+
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return null;
@@ -445,17 +470,17 @@ public class JglfwGraphics implements Graphics {
 	@Override
 	public void setCursor (Cursor cursor) {
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	static class JglfwDisplayMode extends DisplayMode {
 		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
 	}
-	
+
 	static class JglfwMonitor extends Monitor {
 		public JglfwMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
