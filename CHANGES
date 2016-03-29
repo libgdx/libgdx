@@ -27,6 +27,7 @@
 - Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
 - Added system cursors to GWT, fix 'Ibeam' system cursor not working on LWJGL3.
 - Added experimental AndroidApplicationConfiguration#useGL30 and IOSApplicationConfiguration#useGL30 for testing OpenGL ES 3.0 support on mobile devices, do not use in production.
+- API Addition: GestureDetector#pinchStop() called when no longer pinching.
 - Fix broken kerning for FreeType fonts, see https://github.com/libgdx/libgdx/pull/3756
 - Added ARM64 and x86_64 binaries for Android
 - API Addition: FreeTypeFontParameter has an additional field for tweaking hinting, see https://github.com/libgdx/libgdx/pull/3757

@@ -171,4 +171,8 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
 		return false;
 	}
+
+	@Override
+	public void pinchStop () {
+	}
 }
