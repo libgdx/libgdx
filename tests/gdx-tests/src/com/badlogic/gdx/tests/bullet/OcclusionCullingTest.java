@@ -107,7 +107,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	private ModelInstance frustumInstance;
 	private PerspectiveCamera overviewCam;
 
-	private final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
+	final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
 
 	// Program state variables
 	private CullingPolicy cullingPolicy = CullingPolicy.OCCLUSION;
