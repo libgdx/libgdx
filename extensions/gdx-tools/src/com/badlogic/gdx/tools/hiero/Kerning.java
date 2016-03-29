@@ -146,26 +146,43 @@ class Kerning {
 			int lookupPosition = lookupListPosition + lookupOffsets[i];
 			input.seek(lookupPosition);
 			int type = input.readUnsignedShort();
-			if (type == 2) {
-				readPairAdjustments(lookupPosition);
-			}
+			readSubtables(type, lookupPosition);
 		}
 	}
 
-	private void readPairAdjustments (int lookupPosition) throws IOException {
+	private void readSubtables ( int type, int lookupPosition) throws IOException {
 		input.skip(2);
 		int subTableCount = input.readUnsignedShort();
 		int[] subTableOffsets = input.readUnsignedShortArray(subTableCount);
 
 		for (int i = 0; i < subTableCount; i++) {
 			int subTablePosition = lookupPosition + subTableOffsets[i];
-			input.seek((int) subTablePosition);
-			int type = input.readUnsignedShort();
-			if (type == 1) {
-				readPairPositioningAdjustmentFormat1(subTablePosition);
-			} else if (type == 2) {
-				readPairPositioningAdjustmentFormat2(subTablePosition);
-			}
+			readSubtable(type, subTablePosition);
+		}
+	}
+
+	private void readSubtable (int type, int subTablePosition) throws IOException {
+		input.seek(subTablePosition);
+		if (type == 2) {
+			readPairAdjustmentSubtable(subTablePosition);
+		} else if (type == 9) {
+			readExtensionPositioningSubtable(subTablePosition);
+		}
+	}
+
+	private void readPairAdjustmentSubtable(int subTablePosition) throws IOException {
+		int type = input.readUnsignedShort();
+		if (type == 1) {
+			readPairPositioningAdjustmentFormat1(subTablePosition);
+		} else if (type == 2) {
+			readPairPositioningAdjustmentFormat2(subTablePosition);
+		}
+	}
+
+	private void readExtensionPositioningSubtable (int subTablePosition) throws IOException {
+		int type = input.readUnsignedShort();
+		if (type == 1) {
+			readExtensionPositioningFormat1(subTablePosition);
 		}
 	}
 
@@ -207,9 +224,25 @@ class Kerning {
 		int class2Count = input.readUnsignedShort();
 
 		int position = input.getPosition();
+
+		input.seek((int) (subTablePosition + coverageOffset));
+		int[] coverage = readCoverageTable();
+
+		input.seek(position);
 		IntArray[] glyphsByClass1 = readClassDefinition(subTablePosition + classDefOffset1, class1Count);
 		IntArray[] glyphsByClass2 = readClassDefinition(subTablePosition + classDefOffset2, class2Count);
 		input.seek(position);
+
+		for (int i = 0; i < coverage.length; i++) {
+			int glyph = coverage[i];
+			boolean found = false;
+			for (int j = 1; j < class1Count && !found; j++) {
+				found = glyphsByClass1[j].contains(glyph);
+			}
+			if (!found) {
+				glyphsByClass1[0].add(glyph);
+			}
+		}
 
 		for (int i = 0; i < class1Count; i++) {
 			for (int j = 0; j < class2Count; j++) {
@@ -225,6 +258,12 @@ class Kerning {
 				}
 			}
 		}
+	}
+
+	private void readExtensionPositioningFormat1 (int subTablePosition) throws IOException {
+		int lookupType = input.readUnsignedShort();
+		int lookupPosition = subTablePosition + (int) input.readUnsignedLong();
+		readSubtable(lookupType, lookupPosition);
 	}
 
 	private IntArray[] readClassDefinition (int position, int classCount) throws IOException {
