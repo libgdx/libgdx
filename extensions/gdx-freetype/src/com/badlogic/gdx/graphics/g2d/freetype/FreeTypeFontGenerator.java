@@ -127,12 +127,21 @@ public class FreeTypeFontGenerator implements Disposable {
 			loadingFlags |= FreeType.FT_LOAD_NO_HINTING;
 			break;
 		case Slight:
-			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_LIGHT;
+			loadingFlags |= FreeType.FT_LOAD_TARGET_LIGHT;
 			break;
 		case Medium:
-			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_NORMAL;
+			loadingFlags |= FreeType.FT_LOAD_TARGET_NORMAL;
 			break;
 		case Full:
+			loadingFlags |= FreeType.FT_LOAD_TARGET_MONO;
+			break;
+		case AutoSlight:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_LIGHT;
+			break;
+		case AutoMedium:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_NORMAL;
+			break;
+		case AutoFull:
 			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_MONO;
 			break;
 		}
@@ -691,10 +700,16 @@ public class FreeTypeFontGenerator implements Disposable {
 		None,
 		/** Light hinting with fuzzy edges, but close to the original shape */
 		Slight,
-		/** Default hinting */
+		/** Average hinting */
 		Medium,
 		/** Strong hinting with crisp edges at the expense of shape fidelity */
-		Full
+		Full,
+		/** Light hinting with fuzzy edges, but close to the original shape. Uses the FreeType auto-hinter. */
+		AutoSlight,
+		/** Average hinting. Uses the FreeType auto-hinter. */
+		AutoMedium,
+		/** Strong hinting with crisp edges at the expense of shape fidelity. Uses the FreeType auto-hinter. */
+		AutoFull,
 	}
 
 	/** Parameter container class that helps configure how {@link FreeTypeBitmapFontData} and {@link BitmapFont} instances are
@@ -712,8 +727,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int size = 16;
 		/** If true, font smoothing is disabled. */
 		public boolean mono;
-		/** Strength of hinting when smoothing is enabled */
-		public Hinting hinting = Hinting.Medium;
+		/** Strength of hinting */
+		public Hinting hinting = Hinting.AutoMedium;
 		/** Foreground color (required for non-black borders) */
 		public Color color = Color.WHITE;
 		/** Glyph gamma. Values > 1 reduce antialiasing. */
