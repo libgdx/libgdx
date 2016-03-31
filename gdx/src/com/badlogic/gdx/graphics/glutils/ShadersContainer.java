@@ -18,7 +18,7 @@ public class ShadersContainer {
 
 		shaders_list.clear();
 		this.app = null;
-		log("clearAllShaderPrograms " + app);
+// log("clearAllShaderPrograms " + app);
 	}
 
 	private void log (String string) {
@@ -40,7 +40,7 @@ public class ShadersContainer {
 			err(app);
 		}
 		this.shaders_list.add(shaderProgram);
-		log("addManagedShader " + app);
+// log("addManagedShader " + app);
 	}
 
 	private void err (Application app) {
