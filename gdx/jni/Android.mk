@@ -73,7 +73,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := gdx
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/src $(LOCAL_PATH)/libwebp/src
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/libwebp/src
 
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ \
                 -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD \
