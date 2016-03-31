@@ -258,8 +258,8 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
+		if (viewport.getScreenHeight() - screenY < viewport.getScreenY()
+			|| viewport.getScreenHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
 
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
@@ -364,8 +364,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
 		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
+		if (viewport.getScreenHeight() - screenY < viewport.getScreenY()
+			|| viewport.getScreenHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
 
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
