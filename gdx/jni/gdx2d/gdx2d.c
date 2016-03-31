@@ -16,6 +16,7 @@
 #define STBI_NO_FAILURE_STRINGS
 #include "stb_image.h"
 #include "jpgd_c.h"
+#include "../libwebp/webp/decode.h"
 
 static uint32_t gdx2d_blend = GDX2D_BLEND_NONE;
 static uint32_t gdx2d_scale = GDX2D_SCALE_NEAREST;
@@ -224,6 +225,10 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
     
 	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
+	if (pixels == NULL) {
+		pixels = WebPDecodeRGBA(buffer, len, &width, &height);
+		format = 4;
+	}
 	if (pixels == NULL) {
 		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
 	}
