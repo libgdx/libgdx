@@ -161,9 +161,9 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				String string = item.toString();
+				String string = toString(item);
 				layout.setText(font, string, 0, string.length(), font.getColor(), width, listAlignment, false, "...");
-				font.draw(batch, toString(item), x + textOffsetX, y + itemY - textOffsetY);
+				font.draw(batch, layout, x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
