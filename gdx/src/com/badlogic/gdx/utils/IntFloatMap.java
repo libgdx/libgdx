@@ -87,7 +87,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Creates a new map identical to the specified map. */
 	public IntFloatMap (IntFloatMap map) {
-		this(map.capacity, map.loadFactor);
+		this((int)Math.floor(map.capacity * map.loadFactor), map.loadFactor);
 		stashSize = map.stashSize;
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);

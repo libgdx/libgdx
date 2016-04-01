@@ -1,4 +1,5 @@
 [1.9.3]
+- API Addition: GestureDetector#pinchStop() called when no longer pinching
 - API Addition: Gdx.graphics.setUndecorated/setResizable API added to Graphics https://github.com/libgdx/libgdx/pull/3847
 - API Addition: Gdx.graphics.getGLVersion(), grab the GL version and implementation type. https://github.com/libgdx/libgdx/pull/3788
 - API Change: Lwjgl3WindowListener -> filesDropped(String[] files) adds drag'n drop support for the lwjgl3 backend
@@ -30,6 +31,7 @@
 - Added experimental AndroidApplicationConfiguration#useGL30 and IOSApplicationConfiguration#useGL30 for testing OpenGL ES 3.0 support on mobile devices, do not use in production.
 - Fix broken kerning for FreeType fonts, see https://github.com/libgdx/libgdx/pull/3756
 - Added ARM64 and x86_64 binaries for Android
+- API Addition: FreeTypeFontParameter has an additional field for tweaking hinting, see https://github.com/libgdx/libgdx/pull/3757
 
 [1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).

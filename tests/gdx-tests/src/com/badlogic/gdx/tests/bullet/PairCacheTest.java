@@ -182,7 +182,8 @@ public class PairCacheTest extends BaseBulletTest {
 
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
-		if (useFrustumCam = !useFrustumCam)
+		useFrustumCam = !useFrustumCam;
+		if (useFrustumCam)
 			camera = frustumCam;
 		else
 			camera = overviewCam;
