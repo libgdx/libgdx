@@ -63,7 +63,7 @@ public class AndroidNdkScriptGenerator {
 		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Android.mk.template", FileType.Classpath)
 			.readString();
 
-		StringBuffer srcFiles = new StringBuffer();
+		StringBuilder srcFiles = new StringBuilder();
 		for (int i = 0; i < files.size(); i++) {
 			if (i > 0) srcFiles.append("\t");
 			srcFiles.append(files.get(i).path().replace('\\', '/').replace(config.jniDir.toString() + "/", ""));
@@ -73,7 +73,7 @@ public class AndroidNdkScriptGenerator {
 				srcFiles.append("\n");
 		}
 
-		StringBuffer headerDirs = new StringBuffer();
+		StringBuilder headerDirs = new StringBuilder();
 		for (String headerDir : target.headerDirs) {
 			headerDirs.append(headerDir);
 			headerDirs.append(" ");

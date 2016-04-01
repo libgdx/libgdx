@@ -23,14 +23,14 @@ import com.badlogic.gdx.files.FileHandle;
 public class AssetsFileGenerator {
 	public static void main (String[] args) {
 		FileHandle file = new FileHandle(args[0]);
-		StringBuffer list = new StringBuffer();
+		StringBuilder  list = new StringBuilder ();
 		args[0] = args[0].replace("\\", "/");
 		if (!args[0].endsWith("/")) args[0] = args[0] + "/";
 		traverse(file, args[0], list);
 		new FileHandle(args[0] + "/assets.txt").writeString(list.toString(), false);
 	}
 
-	private static final void traverse (FileHandle directory, String base, StringBuffer list) {
+	private static final void traverse (FileHandle directory, String base, StringBuilder  list) {
 		if (directory.name().equals(".svn")) return;
 		String dirName = directory.toString().replace("\\", "/").replace(base, "") + "/";
 		System.out.println(dirName);

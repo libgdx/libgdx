@@ -691,7 +691,7 @@ public class AssetManager implements Disposable {
 
 	/** @return a string containing ref count and dependency information for all assets. */
 	public synchronized String getDiagnostics () {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (String fileName : assetTypes.keys()) {
 			buffer.append(fileName);
 			buffer.append(", ");
