@@ -22,7 +22,7 @@ abstract public class RelativeTemporalAction extends TemporalAction {
 	private float lastPercent;
 
 	protected void begin () {
-		lastPercent = 0;
+		lastPercent = isReverse() ? 1 : 0;
 	}
 
 	protected void update (float percent) {
