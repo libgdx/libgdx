@@ -770,11 +770,6 @@ public class ShaderProgram implements Disposable {
 		return builder.toString();
 	}
 
-	/** @return the number of managed shader programs currently loaded */
-	public static int getNumManagedShaderPrograms () {
-		return shaders.get(Gdx.app).size;
-	}
-
 	/** Sets the given attribute
 	 * 
 	 * @param name the name of the attribute
