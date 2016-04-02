@@ -199,13 +199,16 @@
 		<include name="graphics/g3d/utils/AnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
+		<include name="graphics/g3d/utils/BaseShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/BoxShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
+		<include name="graphics/g3d/utils/Debug3dRenderer.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
 		<include name="graphics/g3d/utils/DepthShaderProvider.java"/>
 		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
-		<include name="graphics/g3d/utils/GLES10ShaderProvider.java"/>
+		<include name="graphics/g3d/utils/FrustumShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
 		<include name="graphics/g3d/utils/ModelBuilder.java"/>
