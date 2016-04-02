@@ -261,7 +261,8 @@ public class GdxTests {
 		FreeTypeTest.class,
 		InternationalFontsTest.class,
 		PngTest.class,
-		JsonTest.class
+		JsonTest.class,
+		XboxControllerTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,

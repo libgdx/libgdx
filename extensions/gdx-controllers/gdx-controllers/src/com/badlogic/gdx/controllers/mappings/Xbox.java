@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,15 @@ package com.badlogic.gdx.controllers.mappings;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.jglfw.utils.SharedLibraryLoader;
 
 /** Mappings for the Xbox series of controllers. Works only on desktop so far.
- * 
+ *
  * See <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/360_controller.svg/450px-360_controller.svg.png">this
  * image</a> which describes each button and axes.
- * 
+ *
  * All codes are for buttons expect the L_STICK_XXX, R_STICK_XXX, L_BUMPER and R_BUMPER codes, which are axes.
- * 
+ *
  * @author badlogic */
 public class Xbox {
 	// Buttons
@@ -42,11 +43,14 @@ public class Xbox {
 	public static final int DPAD_DOWN;
 	public static final int DPAD_LEFT;
 	public static final int DPAD_RIGHT;
+	public static final int L3;
+	public static final int R3;
+
 
 	// Axes
-	/** left trigger, -1 if not pressed, 1 if pressed **/
+	/** left trigger, -1 if not pressed, 1 if pressed, 0 is initial value **/
 	public static final int L_TRIGGER;
-	/** right trigger, -1 if not pressed, 1 if pressed **/
+	/** right trigger, -1 if not pressed, 1 if pressed, 0 is initial value **/
 	public static final int R_TRIGGER;
 	/** left stick vertical axis, -1 if up, 1 if down **/
 	public static final int L_STICK_VERTICAL_AXIS;
@@ -78,26 +82,30 @@ public class Xbox {
 			L_STICK_HORIZONTAL_AXIS = -1;
 			R_STICK_VERTICAL_AXIS = -1;
 			R_STICK_HORIZONTAL_AXIS = -1;
+			L3 = -1;
+			R3 = -1;
 		} else if (SharedLibraryLoader.isLinux) {
-			A = -1;
-			B = -1;
-			X = -1;
-			Y = -1;
-			GUIDE = -1;
-			L_BUMPER = -1;
-			R_BUMPER = -1;
-			BACK = -1;
-			START = -1;
-			DPAD_UP = -1;
-			DPAD_DOWN = -1;
-			DPAD_LEFT = -1;
-			DPAD_RIGHT = -1;
-			L_TRIGGER = -1;
-			R_TRIGGER = -1;
-			L_STICK_VERTICAL_AXIS = -1;
-			L_STICK_HORIZONTAL_AXIS = -1;
-			R_STICK_VERTICAL_AXIS = -1;
-			R_STICK_HORIZONTAL_AXIS = -1;
+			A = 0;
+			B = 1;
+			X = 2;
+			Y = 3;
+			GUIDE = 8;
+			L_BUMPER = 4;
+			R_BUMPER = 5;
+			BACK = 6;
+			START = 7;
+			DPAD_UP = 0;
+			DPAD_DOWN = 1;
+			DPAD_LEFT = 2;
+			DPAD_RIGHT = 3;
+			L_TRIGGER = 2;
+			R_TRIGGER = 5;
+			L_STICK_VERTICAL_AXIS = 1;
+			L_STICK_HORIZONTAL_AXIS = 0;
+			R_STICK_VERTICAL_AXIS = 4;
+			R_STICK_HORIZONTAL_AXIS = 3;
+			L3 = 9;
+			R3 = 10;
 		} else if (SharedLibraryLoader.isMac) {
 			A = 11;
 			B = 12;
@@ -118,6 +126,8 @@ public class Xbox {
 			L_STICK_HORIZONTAL_AXIS = 2;
 			R_STICK_VERTICAL_AXIS = 5;
 			R_STICK_HORIZONTAL_AXIS = 4;
+			L3 = -1;
+			R3 = -1;
 		} else {
 			A = -1;
 			B = -1;
@@ -138,12 +148,14 @@ public class Xbox {
 			L_STICK_HORIZONTAL_AXIS = -1;
 			R_STICK_VERTICAL_AXIS = -1;
 			R_STICK_HORIZONTAL_AXIS = -1;
+			L3 = -1;
+			R3 = -1;
 		}
 	}
-	
+
 	/** @return whether the {@link Controller} is an Xbox controller
 	 */
 	public static boolean isXboxController(Controller controller) {
-		return controller.getName().contains("Xbox");
+		return controller.getName().matches("(.*)(X-?[Bb]ox|Microsoft PC-joystick)(.*)");
 	}
 }
