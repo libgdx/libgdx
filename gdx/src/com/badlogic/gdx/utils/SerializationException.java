@@ -19,7 +19,7 @@ package com.badlogic.gdx.utils;
 /** Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.
  * @author Nathan Sweet */
 public class SerializationException extends RuntimeException {
-	private StringBuffer trace;
+	private StringBuilder  trace;
 
 	public SerializationException () {
 		super();
@@ -51,7 +51,7 @@ public class SerializationException extends RuntimeException {
 
 	public String getMessage () {
 		if (trace == null) return super.getMessage();
-		StringBuffer buffer = new StringBuffer(512);
+		StringBuilder  buffer = new StringBuilder (512);
 		buffer.append(super.getMessage());
 		if (buffer.length() > 0) buffer.append('\n');
 		buffer.append("Serialization trace:");
@@ -63,7 +63,7 @@ public class SerializationException extends RuntimeException {
 	 * can catch {@link SerializationException}, add trace information, and rethrow the exception. */
 	public void addTrace (String info) {
 		if (info == null) throw new IllegalArgumentException("info cannot be null.");
-		if (trace == null) trace = new StringBuffer(512);
+		if (trace == null) trace = new StringBuilder (512);
 		trace.append('\n');
 		trace.append(info);
 	}
