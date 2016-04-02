@@ -150,7 +150,7 @@ varying float v_fog;
 #endif // fogFlag
 
 
-#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+#if numDirectionalLights > 0
 struct DirectionalLight
 {
 	vec3 color;
@@ -159,7 +159,7 @@ struct DirectionalLight
 uniform DirectionalLight u_dirLights[numDirectionalLights];
 #endif // numDirectionalLights
 
-#if defined(numPointLights) && (numPointLights > 0)
+#if numPointLights > 0
 struct PointLight
 {
 	vec3 color;
@@ -305,7 +305,7 @@ void main() {
 			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
 			
-		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+		#if (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -u_dirLights[i].direction;
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
@@ -318,7 +318,7 @@ void main() {
 			}
 		#endif // numDirectionalLights
 
-		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+		#if (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
 				vec3 lightDir = u_pointLights[i].position - pos.xyz;
 				float dist2 = dot(lightDir, lightDir);
