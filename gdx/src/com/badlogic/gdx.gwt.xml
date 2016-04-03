@@ -212,6 +212,7 @@
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
 		<include name="graphics/g3d/utils/ModelBuilder.java"/>
+		<include name="graphics/g3d/utils/RenderableShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/RenderableSorter.java"/>
 		<include name="graphics/g3d/utils/RenderContext.java"/>
 		<include name="graphics/g3d/utils/ShaderProvider.java"/>
