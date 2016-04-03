@@ -725,7 +725,6 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private Matrix3 normalMatrix = new Matrix3();
-	private Camera camera;
 	private float time;
 	private boolean lightsSet;
 
