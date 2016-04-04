@@ -16,8 +16,13 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.FloatBuffer;
+
+import javafx.beans.binding.FloatBinding;
+
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
 
 /** A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is needed for
  * the fixed function pipeline of OpenGL ES 1.x. Generic attributes are not supported in the fixed function pipeline. The number
@@ -63,11 +68,62 @@ public final class VertexAttribute {
 		this(usage, numComponents, usage == Usage.ColorPacked ? GL20.GL_UNSIGNED_BYTE : GL20.GL_FLOAT, 
 				usage == Usage.ColorPacked, alias, index);
 	}
-	
+	/** Constructs a new VertexAttribute.<br>
+	 * <b>
+	 * <font color=#ff0000>
+	 * Warning:this protected constructor provide a way to extends vertex attribute for some special use.
+	 * if you use this constructor,must careful with vertices buffers.
+	 * <li>
+	 * Mesh represents vertices data as {@link FloatBuffer} by {@link Mesh#getVerticesBuffer()},
+	 * it means you had better keep vertex size equals n*4( n is a integer,4 means 4 bytes per float).In other words,if you don't that,
+	 * it will be difficult to update vertices data.
+	 * </li>
+	 * <li>
+	 * 	with {@link VertexArray},{@link VertexArray#bind(ShaderProgram)} already says something like: if you don't keep  a float vertex attribute'offset  equals n*4( n is a integer,4 means 4 bytes per float), GL will get wrong offset. 
+	 * 	<pre>	buffer.position(attribute.offset / 4);</pre>
+	 * 	the above code miss decimal part when attribute'offset not  equals n*4
+	 * </li>
+	 * 	<br>
+	 * 	Maybe there has more note points,just be careful with it.
+	 * </font>
+	 * </b>
+	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
+	 *           pipeline.
+	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
+	 * @param type the OpenGL type of each component, e.g. {@link GL20#GL_FLOAT} or {@link GL20#GL_UNSIGNED_BYTE} 
+	 * @param normalized  whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) 
+	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
+	 **/
 	protected VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias) {
 		this(usage, numComponents, type, normalized, alias, 0);
 	}
-	
+	/** Constructs a new VertexAttribute.<br>
+	 * <b>
+	 * <font color=#ff0000>
+	 * Warning:this protected constructor provide a way to extends vertex attribute for some special use.
+	 * if you use this constructor,must careful with vertices buffers.
+	 * <li>
+	 * Mesh represents vertices data as {@link FloatBuffer} by {@link Mesh#getVerticesBuffer()},
+	 * it means you had better keep vertex size equals n*4( n is a integer,4 means 4 bytes per float).In other words,if you don't that,
+	 * it will be difficult to update vertices data.
+	 * </li>
+	 * <li>
+	 * 	with {@link VertexArray},{@link VertexArray#bind(ShaderProgram)} already says something like: if you don't keep  a float vertex attribute'offset  equals n*4( n is a integer,4 means 4 bytes per float), GL will get wrong offset. 
+	 * 	<pre>	buffer.position(attribute.offset / 4);</pre>
+	 * 	the above code miss decimal part when attribute'offset not  equals n*4
+	 * </li>
+	 * 	<br>
+	 * 	Maybe there has more note points,just be careful with it.
+	 * </font>
+	 * </b>
+	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
+	 *           pipeline.
+	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
+	 * @param type the OpenGL type of each component, e.g. {@link GL20#GL_FLOAT} or {@link GL20#GL_UNSIGNED_BYTE} 
+	 * @param normalized  whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) 
+	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
+	 * @param index unit/index of the attribute, used for boneweights and texture coordinates.
+	 **/
 	protected VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias, int index) {
 		this.usage = usage;
 		this.numComponents = numComponents;
