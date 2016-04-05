@@ -38,7 +38,7 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 	private static float[] vertices;
 	private final static RenderablePool renderablesPool = new RenderablePool();
 	private final static Array<Renderable> renderables = new Array<Renderable>();
-	private static final int FLOAT = 4;
+	private static final int FLOAT_BYTES = 4;
 
 	/** Builds normal, tangent and binormal of a RenderableProvider with default colors (normal blue, tangent red, binormal green).
 	 * @param builder
@@ -83,27 +83,28 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 		// Position
 		int positionOffset = -1;
 		if (mesh.getVertexAttribute(Usage.Position) != null)
-			positionOffset = mesh.getVertexAttribute(Usage.Position).offset / FLOAT;
+			positionOffset = mesh.getVertexAttribute(Usage.Position).offset / FLOAT_BYTES;
 
 		// Normal
 		int normalOffset = -1;
-		if (mesh.getVertexAttribute(Usage.Normal) != null) normalOffset = mesh.getVertexAttribute(Usage.Normal).offset / FLOAT;
+		if (mesh.getVertexAttribute(Usage.Normal) != null) normalOffset = mesh.getVertexAttribute(Usage.Normal).offset / FLOAT_BYTES;
 
 		// Tangent
 		int tangentOffset = -1;
-		if (mesh.getVertexAttribute(Usage.Tangent) != null) tangentOffset = mesh.getVertexAttribute(Usage.Tangent).offset / FLOAT;
+		if (mesh.getVertexAttribute(Usage.Tangent) != null) tangentOffset = mesh.getVertexAttribute(Usage.Tangent).offset / FLOAT_BYTES;
 
 		// Binormal
 		int binormalOffset = -1;
 		if (mesh.getVertexAttribute(Usage.BiNormal) != null)
-			binormalOffset = mesh.getVertexAttribute(Usage.BiNormal).offset / FLOAT;
+			binormalOffset = mesh.getVertexAttribute(Usage.BiNormal).offset / FLOAT_BYTES;
 
-		int attributesSize = mesh.getVertexSize() / FLOAT;
+		int attributesSize = mesh.getVertexSize() / FLOAT_BYTES;
 
 		ensureVerticesCapacity(attributesSize);
 
 		int i = renderable.meshPart.offset;
-		while (i < renderable.meshPart.size) {
+		int last = i + renderable.meshPart.size;
+		while (i < last) {
 
 			if (mesh.getNumIndices() > 0) {
 				mesh.getIndices(i, 1, indices, 0);
