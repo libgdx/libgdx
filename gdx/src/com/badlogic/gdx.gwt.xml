@@ -199,8 +199,6 @@
 		<include name="graphics/g3d/utils/AnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
-		<include name="graphics/g3d/utils/BaseShapeBuilder.java"/>
-		<include name="graphics/g3d/utils/BoxShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
 		<include name="graphics/g3d/utils/Debug3dRenderer.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
@@ -208,11 +206,9 @@
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
 		<include name="graphics/g3d/utils/DepthShaderProvider.java"/>
 		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
-		<include name="graphics/g3d/utils/FrustumShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
 		<include name="graphics/g3d/utils/ModelBuilder.java"/>
-		<include name="graphics/g3d/utils/RenderableShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/RenderableSorter.java"/>
 		<include name="graphics/g3d/utils/RenderContext.java"/>
 		<include name="graphics/g3d/utils/ShaderProvider.java"/>
@@ -220,6 +216,18 @@
 		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
 		<include name="graphics/g3d/utils/TextureProvider.java"/>
 		
+	<!-- graphics/g3d/utils/shapebuilders -->
+		<include name="graphics/g3d/utils/shapebuilders/ArrowShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/BaseShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/BoxShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/CapsuleShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/CylinderShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/EllipseShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/FrustumShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/PatchShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/RenderableShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/SphereShapeBuilder.java"/>
+
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->

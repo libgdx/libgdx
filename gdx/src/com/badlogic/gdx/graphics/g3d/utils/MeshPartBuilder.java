@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -30,6 +31,9 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public interface MeshPartBuilder {
 	/** @return The {@link MeshPart} currently building. */
 	public MeshPart getMeshPart ();
+
+	/** @return The primitive type used for building, e.g. {@link GL20#GL_TRIANGLES} or {@link GL20#GL_LINES}. */
+	public int getPrimitiveType ();
 
 	/** @return The {@link VertexAttributes} available for building. */
 	public VertexAttributes getAttributes ();
@@ -59,6 +63,33 @@ public interface MeshPartBuilder {
 
 	/** Sets whether vertex transformation is enabled. */
 	public void setVertexTransformationEnabled (boolean enabled);
+
+	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
+	 * adding many vertices to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add */
+	public void ensureVertices (int numVertices);
+
+	/** Increases the size of the backing indices array to accommodate the specified number of additional indices. Useful before
+	 * adding many indices to avoid multiple backing array resizes.
+	 * @param numIndices The number of indices you are about to add */
+	public void ensureIndices (int numIndices);
+
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
+	 * indices. Useful before adding many vertices and indices to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add
+	 * @param numIndices The number of indices you are about to add */
+	public void ensureCapacity (int numVertices, int numIndices);
+
+	/** Increases the size of the backing indices array to accommodate the specified number of additional triangles. Useful before
+	 * adding many triangles using {@link #triangle(short, short, short)} to avoid multiple backing array resizes. The actual
+	 * number of indices accounted for depends on the primitive type (see {@link #getPrimitiveType()}).
+	 * @param numTriangles The number of triangles you are about to add */
+	public void ensureTriangleIndices (int numTriangles);
+
+	/** Increases the size of the backing indices array to accommodate the specified number of additional rectangles. Useful before
+	 * adding many rectangles using {@link #rect(short, short, short, short)} to avoid multiple backing array resizes.
+	 * @param numRectangles The number of rectangles you are about to add */
+	public void ensureRectangleIndices (int numRectangles);
 
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex (final float... values);
@@ -131,165 +162,10 @@ public interface MeshPartBuilder {
 	public void rect (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
 		float x01, float y01, float z01, float normalX, float normalY, float normalZ);
 
-	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
-		int divisionsV);
-
-	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
-		int divisionsV);
-
-	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
-		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV);
-
-	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
-		VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
-
-	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void box (Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110, Vector3 corner001,
-		Vector3 corner011, Vector3 corner101, Vector3 corner111);
-
-	/** Add a box given the matrix. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void box (Matrix4 transform);
-
-	/** Add a box with the specified dimensions. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
-	public void box (float width, float height, float depth);
-
-	/** Add a box at the specified location, with the specified dimensions */
-	public void box (float x, float y, float z, float width, float height, float depth);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
-		final Vector3 binormal);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
-		final Vector3 binormal, float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
-		float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
-		final Vector3 tangent, final Vector3 binormal);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
-		float binormalZ);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom,
-		float angleTo);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
-		final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo);
-
-	/** Add a circle */
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
-		float binormalZ, float angleFrom, float angleTo);
-
-	/** Add an ellipse */
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ,
-		float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo);
-
-	/** Add an ellipse */
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo);
-
-	/** Add an ellipse */
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ);
-
-	/** Add an ellipse */
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
-		Vector3 normal);
-
-	/** Add a cylinder */
-	public void cylinder (float width, float height, float depth, int divisions);
-
-	/** Add a cylinder */
-	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo);
-
-	/** Add a cylinder */
-	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close);
-
-	/** Add a cone */
-	public void cone (float width, float height, float depth, int divisions);
-
-	/** Add a cone */
-	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo);
-
-	/** Add a sphere */
-	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV);
-
-	/** Add a sphere */
-	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV);
-
-	/** Add a sphere */
-	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo,
-		float angleVFrom, float angleVTo);
-
-	/** Add a sphere */
-	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
-		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo);
-
-	/** Add a capsule */
-	public void capsule (float radius, float height, int divisions);
-
-	/** Add an arrow
-	 * @param x1 source x
-	 * @param y1 source y
-	 * @param z1 source z
-	 * @param x2 destination x
-	 * @param y2 destination y
-	 * @param z2 destination z
-	 * @param capLength is the height of the cap in percentage, must be in (0,1)
-	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
-	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
-	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
-		int divisions);
-
 	/** Copies a mesh to the mesh (part) currently being build.
 	 * @param mesh The mesh to copy, must have the same vertex attributes and must be indexed. */
 	public void addMesh (Mesh mesh);
-	
+
 	/** Copies a MeshPart to the mesh (part) currently being build.
 	 * @param meshpart The MeshPart to copy, must have the same vertex attributes, primitive type and must be indexed. */
 	public void addMesh (MeshPart meshpart);
@@ -300,16 +176,16 @@ public interface MeshPartBuilder {
 	 * @param numIndices The number of indices of the part of the mesh to copy. */
 	public void addMesh (Mesh mesh, int indexOffset, int numIndices);
 
-	/** Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the
-	 * vertices are not indexed by the indices array. If you want to add only the vertices that are actually indexed, then
-	 * use the {@link #addMesh(float[], short[], int, int)} method instead.
+	/** Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the vertices are
+	 * not indexed by the indices array. If you want to add only the vertices that are actually indexed, then use the
+	 * {@link #addMesh(float[], short[], int, int)} method instead.
 	 * @param vertices The vertices to copy, must be in the same vertex layout as the mesh being build.
 	 * @param indices Array containing the indices to copy, each index should be valid in the vertices array. */
 	public void addMesh (float[] vertices, short[] indices);
-	
+
 	/** Copies a (part of a) mesh to the mesh (part) currently being build.
 	 * @param vertices The vertices to (partly) copy, must be in the same vertex layout as the mesh being build.
-	 * @param indices Array containing the indices to (partly) copy, each index should be valid in the vertices array. 
+	 * @param indices Array containing the indices to (partly) copy, each index should be valid in the vertices array.
 	 * @param indexOffset The zero-based offset of the first index of the part of indices array to copy.
 	 * @param numIndices The number of indices of the part of the indices array to copy. */
 	public void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices);
@@ -408,4 +284,192 @@ public interface MeshPartBuilder {
 			return this;
 		}
 	}
+
+	// TODO: The following methods are deprecated and will be removed in a future release
+
+
+	/** @deprecated use PatchShapeBuilder.build instead. */
+	@Deprecated
+	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
+		int divisionsV);
+
+	/** @deprecated use PatchShapeBuilder.build instead. */
+	@Deprecated
+	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
+		int divisionsV);
+
+	/** @deprecated use PatchShapeBuilder.build instead. */
+	@Deprecated
+	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
+		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV);
+
+	/** @deprecated use BoxShapeBuilder.build instead. */
+	@Deprecated
+	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
+		VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
+
+	/** @deprecated use BoxShapeBuilder.build instead. */
+	@Deprecated
+	public void box (Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110, Vector3 corner001,
+		Vector3 corner011, Vector3 corner101, Vector3 corner111);
+
+	/** @deprecated use BoxShapeBuilder.build instead. */
+	@Deprecated
+	public void box (Matrix4 transform);
+
+	/** @deprecated use BoxShapeBuilder.build instead. */
+	@Deprecated
+	public void box (float width, float height, float depth);
+
+	/** @deprecated use BoxShapeBuilder.build instead. */
+	@Deprecated
+	public void box (float x, float y, float z, float width, float height, float depth);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
+		final Vector3 binormal);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
+		final Vector3 binormal, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
+		float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
+		final Vector3 tangent, final Vector3 binormal);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
+		float binormalZ);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom,
+		float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
+		final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
+		float binormalZ, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ,
+		float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ);
+
+	/** @deprecated Use EllipseShapeBuilder.build instead. */
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
+		Vector3 normal);
+	
+	/** @deprecated Use CylinderShapeBuilder.build instead. */
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions);
+
+	/** @deprecated Use CylinderShapeBuilder.build instead. */
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo);
+
+	/** @deprecated Use CylinderShapeBuilder.build instead. */
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close);
+
+	/** @deprecated Use ConeShapeBuilder.build instead. */
+	@Deprecated
+	public void cone (float width, float height, float depth, int divisions);
+
+	/** @deprecated Use ConeShapeBuilder.build instead. */
+	@Deprecated
+	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo);
+
+	/** @deprecated Use SphereShapeBuilder.build instead. */
+	@Deprecated
+	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV);
+
+	/** @deprecated Use SphereShapeBuilder.build instead. */
+	@Deprecated
+	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV);
+
+	/** @deprecated Use SphereShapeBuilder.build instead. */
+	@Deprecated
+	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo,
+		float angleVFrom, float angleVTo);
+
+	/** @deprecated Use SphereShapeBuilder.build instead. */
+	@Deprecated
+	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
+		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo);
+
+	/** @deprecated Use CapsuleShapeBuilder.build instead. */
+	@Deprecated
+	public void capsule (float radius, float height, int divisions);
+	
+	/** @deprecated Use ArrowShapeBuilder.build instead. */
+	@Deprecated
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions);
 }
