@@ -8,6 +8,7 @@
 - Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData. 
 - Added FlushablePool
 - Added Debug3dRenderer see https://github.com/libgdx/libgdx/pull/3953
+- API Change: moved shape builder logic out of MeshBuilder, see: https://github.com/libgdx/libgdx/pull/3996
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
