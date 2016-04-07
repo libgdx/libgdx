@@ -1227,9 +1227,10 @@ public class MeshBuilder implements MeshPartBuilder {
 			for (int iu = 0; iu <= divisionsU; iu++) {
 				angleU = auo + stepU * iu;
 				u = 1f - us * iu;
-				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
+				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t);
 				curr1.normal.set(curr1.position).nor();
 				curr1.uv.set(u, v);
+				curr1.position.mul(transform);
 				tmpIndices.set(tempOffset, vertex(curr1));
 				final int o = tempOffset + s;
 				if ((iv > 0) && (iu > 0)) // FIXME don't duplicate lines and points
