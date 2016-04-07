@@ -796,68 +796,80 @@ public class MeshBuilder implements MeshPartBuilder {
 	// TODO: The following methods are deprecated and will be removed in a future release
 	
 	@Override
+	@Deprecated
 	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
 		int divisionsV) {
 		PatchShapeBuilder.build(this, corner00, corner10, corner11, corner01, divisionsU, divisionsV);
 	}
 
 	@Override
+	@Deprecated
 	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
 		int divisionsV) {
 		PatchShapeBuilder.build(this, corner00, corner10, corner11, corner01, normal, divisionsU, divisionsV);
 	}
 
 	@Override
+	@Deprecated
 	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
 		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
 		PatchShapeBuilder.build(this, x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, divisionsU, divisionsV);
 	}
 	
 	@Override
+	@Deprecated
 	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
 		VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
 		BoxShapeBuilder.build(this, corner000, corner010, corner100, corner110, corner001, corner011, corner101, corner111);
 	}
 
 	@Override
+	@Deprecated
 	public void box (Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110, Vector3 corner001,
 		Vector3 corner011, Vector3 corner101, Vector3 corner111) {
 		BoxShapeBuilder.build(this, corner000, corner010, corner100, corner110, corner001, corner011, corner101, corner111);
 	}
 
 	@Override
+	@Deprecated
 	public void box (Matrix4 transform) {
 		BoxShapeBuilder.build(this, transform);
 	}
 
 	@Override
+	@Deprecated
 	public void box (float width, float height, float depth) {
 		BoxShapeBuilder.build(this, width, height, depth);
 	}
 
 	@Override
+	@Deprecated
 	public void box (float x, float y, float z, float width, float height, float depth) {
 		BoxShapeBuilder.build(this, x, y, z, width, height, depth);
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ) {
 		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ);
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal) {
 		EllipseShapeBuilder.build(this, radius, divisions, center, normal);
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
 		final Vector3 binormal) {
 		EllipseShapeBuilder.build(this, radius, divisions, center, normal, tangent, binormal);
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ) {
 		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
@@ -865,6 +877,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float angleFrom, float angleTo) {
 		EllipseShapeBuilder
@@ -872,11 +885,13 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo) {
 		EllipseShapeBuilder.build(this, radius, divisions, center, normal, angleFrom, angleTo);
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
 		final Vector3 binormal, float angleFrom, float angleTo) {
 		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z,
@@ -884,6 +899,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
 		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
 		float angleFrom, float angleTo) {
@@ -892,23 +908,27 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
 		float normalY, float normalZ) {
 		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal) {
 		EllipseShapeBuilder.build(this, width, height, divisions, center, normal);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
 		final Vector3 tangent, final Vector3 binormal) {
 		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, tangent, binormal);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
 		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
 		float binormalZ) {
@@ -917,6 +937,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
 		float normalY, float normalZ, float angleFrom, float angleTo) {
 		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom,
@@ -924,18 +945,21 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom,
 		float angleTo) {
 		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, angleFrom, angleTo);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
 		final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo) {
 		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, tangent, binormal, angleFrom, angleTo);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
 		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
 		float binormalZ, float angleFrom, float angleTo) {
@@ -944,12 +968,14 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
 		Vector3 normal) {
 		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, center, normal);
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
 		float centerY, float centerZ, float normalX, float normalY, float normalZ) {
 		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX,
@@ -957,6 +983,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
 		float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo) {
 		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX,
@@ -964,6 +991,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
 		float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ,
 		float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo) {
@@ -972,47 +1000,56 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void cylinder (float width, float height, float depth, int divisions) {
 		CylinderShapeBuilder.build(this, width, height, depth, divisions);
 	}
 
 	@Override
+	@Deprecated
 	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
 		CylinderShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo);
 	}
 
 	@Override
+	@Deprecated
 	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close) {
 		CylinderShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo, close);
 	}
 
 	@Override
+	@Deprecated
 	public void cone (float width, float height, float depth, int divisions) {
 		cone(width, height, depth, divisions, 0, 360);
 	}
 
 	@Override
+	@Deprecated
 	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
 		ConeShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
+	@Deprecated
 	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV) {
 		SphereShapeBuilder.build(this, width, height, depth, divisionsU, divisionsV);
 	}
 
 	@Override
+	@Deprecated
 	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV) {
 		SphereShapeBuilder.build(this, transform, width, height, depth, divisionsU, divisionsV);
 	}
 
 	@Override
+	@Deprecated
 	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo,
 		float angleVFrom, float angleVTo) {
 		SphereShapeBuilder.build(this, width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 
 	@Override
+	@Deprecated
 	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
 		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
 		SphereShapeBuilder.build(this, transform, width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom,
@@ -1020,11 +1057,13 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
+	@Deprecated
 	public void capsule (float radius, float height, int divisions) {
 		CapsuleShapeBuilder.build(this, radius, height, divisions);
 	}
 	
 	@Override
+	@Deprecated
 	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
 		int divisions) {
 		ArrowShapeBuilder.build(this, x1, y1, z1, x2, y2, z2, capLength, stemThickness, divisions);
