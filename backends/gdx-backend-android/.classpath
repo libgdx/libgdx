@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/rana-api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/red-triplane-api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/red-triplane-fokker-api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/jfixby-cmns-api"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/jfixby-cmns-api-android"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
