@@ -337,7 +337,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	}
 
-	void processEvents () {
+	public void processEvents () {
 		synchronized (this) {
 			justTouched = false;
 			if (keyJustPressed) {

@@ -16,24 +16,14 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLSurfaceView;
-import android.opengl.GLSurfaceView.EGLConfigChooser;
-import android.opengl.GLSurfaceView.Renderer;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.View;
-import android.view.WindowManager.LayoutParams;
-
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
@@ -54,10 +44,16 @@ import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
+
+import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.EGLConfigChooser;
+import android.opengl.GLSurfaceView.Renderer;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager.LayoutParams;
 
 /** An implementation of {@link Graphics} for Android.
  *
@@ -67,10 +63,10 @@ public class AndroidGraphics implements Graphics, Renderer {
 	private static final String LOG_TAG = "AndroidGraphics";
 
 	/** When {@link AndroidFragmentApplication#onPause()} or {@link AndroidApplication#onPause()} call
-	 * {@link AndroidGraphics#pause()} they <b>MUST</b> enforce continuous rendering. If not, {@link #onDrawFrame(GL10)} will not
-	 * be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
-	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method will
-	 * kill the current process to avoid ANR */
+	 * {@link AndroidGraphics#pause()} they <b>MUST</b> enforce continuous rendering. If not, {@link #onDrawFrame(GL10)} will
+	 * not be called in the GLThread while {@link #pause()} is sleeping in the Android UI Thread which will cause the
+	 * {@link AndroidGraphics#pause} variable never be set to false. As a result, the {@link AndroidGraphics#pause()} method
+	 * will kill the current process to avoid ANR */
 	static volatile boolean enforceContinuousRendering = false;
 
 	final View view;
@@ -84,12 +80,12 @@ public class AndroidGraphics implements Graphics, Renderer {
 	String extensions;
 
 	protected long lastFrameTime = System.nanoTime();
-	protected float deltaTime = 0;
+// protected float deltaTimeFloat = 0;
 	protected long frameStart = System.nanoTime();
 	protected long frameId = -1;
 	protected int frames = 0;
 	protected int fps;
-	protected WindowedMean mean = new WindowedMean(5);
+// protected WindowedMean mean = new WindowedMean(5);
 
 	volatile boolean created = false;
 	volatile boolean running = false;
@@ -122,6 +118,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			view.setFocusable(true);
 			view.setFocusableInTouchMode(true);
 		}
+		System.out.println("RedAndroidGraphics_START");
 	}
 
 	protected void preserveEGLContextOnPause () {
@@ -234,8 +231,8 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return height;
 	}
 
-	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
-	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
+	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11
+	 * but fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
 	 * Motorola CLIQ and the Samsung Behold II.
 	 *
 	 * @param gl */
@@ -300,7 +297,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
-		this.mean = new WindowedMean(5);
+// this.mean = new WindowedMean(5);
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
@@ -337,17 +334,21 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return defValue;
 	}
 
-	Object synch = new Object();
+	final Object lock = new Object();
+
+	private long systemNanoTime;
+
+	private long timeDeltaLong;
 
 	void resume () {
-		synchronized (synch) {
+		synchronized (lock) {
 			running = true;
 			resume = true;
 		}
 	}
 
 	void pause () {
-		synchronized (synch) {
+		synchronized (lock) {
 			if (!running) return;
 			running = false;
 			pause = true;
@@ -359,7 +360,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 					// deadlock and killing process. This can easily be triggered by opening the
 					// Recent Apps list and then double-tapping the Recent Apps button with
 					// ~500ms between taps.
-					synch.wait(4000);
+					lock.wait(4000);
 					if (pause) {
 						// pause will never go false if onDrawFrame is never called by the GLThread
 						// when entering this method, we MUST enforce continuous rendering
@@ -374,13 +375,13 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	void destroy () {
-		synchronized (synch) {
+		synchronized (lock) {
 			running = false;
 			destroy = true;
 
 			while (destroy) {
 				try {
-					synch.wait();
+					lock.wait();
 				} catch (InterruptedException ex) {
 					Gdx.app.log(LOG_TAG, "waiting for destroy synchronization failed!");
 				}
@@ -388,107 +389,119 @@ public class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
+	boolean lrunning_onDrawFrame = false;
+	boolean lpause_onDrawFrame = false;
+	boolean ldestroy_onDrawFrame = false;
+	boolean lresume_onDrawFrame = false;
+
+	int i_onDrawFrame_A;
+	int i_onDrawFrame_B;
+	int i_onDrawFrame_C;
+	int i_onDrawFrame_D;
+
+	private ApplicationListener appListener;
+
 	@Override
-	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
-		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = time;
+	public final void onDrawFrame (final javax.microedition.khronos.opengles.GL10 gl) {
+		this.appListener = this.app.getApplicationListener();
+		this.systemNanoTime = System.nanoTime();
+		this.timeDeltaLong = this.systemNanoTime - this.lastFrameTime;
+		this.lastFrameTime = this.systemNanoTime;
 
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
-		if (!resume) {
-			mean.addValue(deltaTime);
+		if (!this.resume) {
 		} else {
-			deltaTime = 0;
+			this.timeDeltaLong = 0L;
 		}
 
-		boolean lrunning = false;
-		boolean lpause = false;
-		boolean ldestroy = false;
-		boolean lresume = false;
+		this.lrunning_onDrawFrame = false;
+		this.lpause_onDrawFrame = false;
+		this.ldestroy_onDrawFrame = false;
+		this.lresume_onDrawFrame = false;
 
-		synchronized (synch) {
-			lrunning = running;
-			lpause = pause;
-			ldestroy = destroy;
-			lresume = resume;
+		synchronized (this.lock) {
+			this.lrunning_onDrawFrame = this.running;
+			this.lpause_onDrawFrame = this.pause;
+			this.ldestroy_onDrawFrame = this.destroy;
+			this.lresume_onDrawFrame = this.resume;
 
-			if (resume) {
-				resume = false;
+			if (this.resume) {
+				this.resume = false;
 			}
 
-			if (pause) {
-				pause = false;
-				synch.notifyAll();
+			if (this.pause) {
+				this.pause = false;
+				this.lock.notifyAll();
 			}
 
-			if (destroy) {
-				destroy = false;
-				synch.notifyAll();
+			if (this.destroy) {
+				this.destroy = false;
+				this.lock.notifyAll();
 			}
 		}
 
-		if (lresume) {
-			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+		if (this.lresume_onDrawFrame) {
+			final SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
 			synchronized (lifecycleListeners) {
-				LifecycleListener[] listeners = lifecycleListeners.begin();
-				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
-					listeners[i].resume();
+				final LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (this.i_onDrawFrame_A = 0; this.i_onDrawFrame_A < lifecycleListeners.size; this.i_onDrawFrame_A++) {
+					listeners[i_onDrawFrame_A].resume();
 				}
 				lifecycleListeners.end();
 			}
-			app.getApplicationListener().resume();
+			this.appListener.resume();
 			Gdx.app.log(LOG_TAG, "resumed");
 		}
 
-		if (lrunning) {
-			synchronized (app.getRunnables()) {
-				app.getExecutedRunnables().clear();
-				app.getExecutedRunnables().addAll(app.getRunnables());
-				app.getRunnables().clear();
+		if (this.lrunning_onDrawFrame) {
+			synchronized (this.app.getRunnables()) {
+				this.app.getExecutedRunnables().clear();
+				this.app.getExecutedRunnables().addAll(this.app.getRunnables());
+				this.app.getRunnables().clear();
 			}
 
-			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
+			for (this.i_onDrawFrame_B = 0; this.i_onDrawFrame_B < this.app.getExecutedRunnables().size; this.i_onDrawFrame_B++) {
 				try {
-					app.getExecutedRunnables().get(i).run();
+					this.app.getExecutedRunnables().get(this.i_onDrawFrame_B).run();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
-			app.getInput().processEvents();
-			frameId++;
-			app.getApplicationListener().render();
+			this.app.getInput().processEvents();
+			this.frameId++;
+			this.appListener.render();
 		}
 
-		if (lpause) {
-			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+		if (this.lpause_onDrawFrame) {
+			final SnapshotArray<LifecycleListener> lifecycleListeners = this.app.getLifecycleListeners();
 			synchronized (lifecycleListeners) {
-				LifecycleListener[] listeners = lifecycleListeners.begin();
-				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
-					listeners[i].pause();
+				final LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (this.i_onDrawFrame_C = 0; this.i_onDrawFrame_C < lifecycleListeners.size; this.i_onDrawFrame_C++) {
+					listeners[this.i_onDrawFrame_C].pause();
 				}
 			}
-			app.getApplicationListener().pause();
+			this.appListener.pause();
 			Gdx.app.log(LOG_TAG, "paused");
 		}
 
-		if (ldestroy) {
-			SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+		if (this.ldestroy_onDrawFrame) {
+			final SnapshotArray<LifecycleListener> lifecycleListeners = this.app.getLifecycleListeners();
 			synchronized (lifecycleListeners) {
-				LifecycleListener[] listeners = lifecycleListeners.begin();
-				for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
-					listeners[i].dispose();
+				final LifecycleListener[] listeners = lifecycleListeners.begin();
+				for (this.i_onDrawFrame_D = 0; this.i_onDrawFrame_D < lifecycleListeners.size; this.i_onDrawFrame_D++) {
+					listeners[this.i_onDrawFrame_D].dispose();
 				}
 			}
-			app.getApplicationListener().dispose();
+			this.appListener.dispose();
 			Gdx.app.log(LOG_TAG, "destroyed");
 		}
 
-		if (time - frameStart > 1000000000) {
-			fps = frames;
-			frames = 0;
-			frameStart = time;
+		if (this.systemNanoTime - this.frameStart > 1000000000L) {
+			this.fps = this.frames;
+			this.frames = 0;
+			this.frameStart = this.systemNanoTime;
 		}
-		frames++;
+		this.frames++;
 	}
 
 	@Override
@@ -499,12 +512,13 @@ public class AndroidGraphics implements Graphics, Renderer {
 	/** {@inheritDoc} */
 	@Override
 	public float getDeltaTime () {
-		return mean.getMean() == 0 ? deltaTime : mean.getMean();
+// return mean.getMean() == 0 ? deltaTimeFloat : mean.getMean();
+		return this.timeDeltaLong / 1000000000.0f;
 	}
 
 	@Override
 	public float getRawDeltaTime () {
-		return deltaTime;
+		return this.timeDeltaLong / 1000000000.0f;
 	}
 
 	/** {@inheritDoc} */
@@ -595,7 +609,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public Monitor[] getMonitors () {
-		return new Monitor[] { getPrimaryMonitor() };
+		return new Monitor[] {getPrimaryMonitor()};
 	}
 
 	@Override
@@ -664,7 +678,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
-			mean.clear();
+// mean.clear();
 		}
 	}
 
