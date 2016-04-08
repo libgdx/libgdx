@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.ETC1;
-import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
+import com.badlogic.gdx.graphics.glutils.ETC1Data;
 import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;

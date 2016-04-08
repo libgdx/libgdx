@@ -53,7 +53,7 @@ public class AssetDescriptor<T> {
 
 	@Override
 	public String toString () {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(fileName);
 		buffer.append(", ");
 		buffer.append(type.getName());
