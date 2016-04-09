@@ -67,6 +67,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
@@ -142,6 +143,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
+		this.clipboard = new AndroidClipboard(this);
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -376,13 +378,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
 
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
 		return clipboard;
 	}
 
