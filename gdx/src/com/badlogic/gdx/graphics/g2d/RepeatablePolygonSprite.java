@@ -82,7 +82,7 @@ public class RepeatablePolygonSprite {
 
         if(density == -1) density = boundRect.getWidth()/region.getRegionWidth();
 
-        float regionAspectRatio = region.getRegionHeight() / region.getRegionWidth();
+        float regionAspectRatio = (float) region.getRegionHeight() / (float) region.getRegionWidth();
         cols = (int) (Math.ceil(density));
         gridWidth = boundRect.getWidth() / density;
         gridHeight = regionAspectRatio * gridWidth;
@@ -102,19 +102,15 @@ public class RepeatablePolygonSprite {
                 verts[idx] = (row) * gridHeight;
                 tmpPoly.setVertices(verts);
 
-                try {
-                    Intersector.intersectPolygons(polygon, tmpPoly, intersectionPoly);
-                    verts = removeDuplicateVertices(intersectionPoly.getVertices());
-                    if(verts.length > 0) {
-                        parts.add(snapToGrid(verts));
-                        ShortArray arr = triangulator.computeTriangles(verts);
-                        indices.add(arr.toArray());
-                    } else {
-                        // adding null for key consistancy, needed to get col/row from key
-                        // the other alternative is to make parts - IntMap<FloatArray>
-                        parts.add(null);
-                    }
-                } catch (IllegalArgumentException e) {
+                Intersector.intersectPolygons(polygon, tmpPoly, intersectionPoly);
+                verts = intersectionPoly.getVertices();
+                if(verts.length > 0) {
+                    parts.add(snapToGrid(verts));
+                    ShortArray arr = triangulator.computeTriangles(verts);
+                    indices.add(arr.toArray());
+                } else {
+                    // adding null for key consistancy, needed to get col/row from key
+                    // the other alternative is to make parts - IntMap<FloatArray>
                     parts.add(null);
                 }
             }
@@ -145,27 +141,6 @@ public class RepeatablePolygonSprite {
         return vertices;
     }
 
-    /**
-     * Intersector is returning duplicate points, when polygons overlap exactly,
-     * probably should be fixed in Intersector, when done this patch can be removed
-     */
-    private float[] removeDuplicateVertices(float[] vertices) {
-        Array<Vector2> list = new Array<Vector2>();
-        for(int i = 0; i < vertices.length; i+=2) {
-            Vector2 vec = new Vector2(vertices[i], vertices[i+1]);
-            if(!list.contains(vec, false)) {
-                list.add(vec);
-            }
-        }
-        vertices = new float[list.size*2];
-        int i = 0;
-        for(Vector2 vec: list) {
-            vertices[i++] = vec.x;
-            vertices[i++] = vec.y;
-        }
-
-        return vertices;
-    }
 
     /**
      * Offsets polygon to 0 coordinate for ease of calculations, later offset is put back on final render
