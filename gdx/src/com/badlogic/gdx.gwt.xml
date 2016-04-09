@@ -109,6 +109,7 @@
 		<include name="graphics/g2d/PolygonRegion.java"/>
 		<include name="graphics/g2d/PolygonRegionLoader.java"/>
 		<include name="graphics/g2d/PolygonSprite.java"/>
+		<include name="graphics/g2d/RepeatablePolygonSprite.java"/>
 		<include name="graphics/g2d/PolygonSpriteBatch.java"/>
 		<include name="graphics/g2d/Sprite.java"/>
 		<include name="graphics/g2d/SpriteBatch.java"/>
