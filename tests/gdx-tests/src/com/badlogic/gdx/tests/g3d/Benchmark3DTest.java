@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
@@ -191,13 +193,17 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append(GLProfiler.vertexCount.total);
 		vertexCountLabel.setText(stringBuilder);
 
+		DirectionalLightsAttribute dirLights = (DirectionalLightsAttribute)environment.get(DirectionalLightsAttribute.Type);
+		PointLightsAttribute pointLights = (PointLightsAttribute)environment.get(PointLightsAttribute.Type);
+		
 		stringBuilder.setLength(0);
 		stringBuilder.append("Lights: ");
-		stringBuilder.append(environment.directionalLights.size + environment.pointLights.size);
+		
+		stringBuilder.append((dirLights == null ? 0 : dirLights.lights.size) + (pointLights == null ? 0 : pointLights.lights.size));
 		stringBuilder.append(", Directional: ");
-		stringBuilder.append(environment.directionalLights.size);
+		stringBuilder.append(dirLights == null ? 0 : dirLights.lights.size);
 		stringBuilder.append(", Point: ");
-		stringBuilder.append(environment.pointLights.size);
+		stringBuilder.append(pointLights == null ? 0 : pointLights.lights.size);
 		lightsLabel.setText(stringBuilder);
 
 		GLProfiler.reset();

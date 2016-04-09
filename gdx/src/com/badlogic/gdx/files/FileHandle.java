@@ -291,7 +291,7 @@ public class FileHandle {
 		OutputStream output = null;
 		try {
 			output = write(append);
-			StreamUtils.copyStream(input, output, 4096);
+			StreamUtils.copyStream(input, output);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {
@@ -485,17 +485,14 @@ public class FileHandle {
 		return file().isDirectory();
 	}
 
-	/** Returns a handle to the child with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
-	 *            doesn't exist. */
+	/** Returns a handle to the child with the specified name. */
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
 	}
 
 	/** Returns a handle to the sibling with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
-	 *            doesn't exist, or this file is the root. */
+	 * @throws GdxRuntimeException if this file is the root. */
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new FileHandle(new File(file.getParent(), name), type);

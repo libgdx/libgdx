@@ -189,7 +189,7 @@ bool	btCollisionDispatcher::needsCollision(const btCollisionObject* body0,const 
 
 	if ((!body0->isActive()) && (!body1->isActive()))
 		needsCollision = false;
-	else if (!body0->checkCollideWith(body1))
+	else if ((!body0->checkCollideWith(body1)) || (!body1->checkCollideWith(body0)))
 		needsCollision = false;
 	
 	return needsCollision ;

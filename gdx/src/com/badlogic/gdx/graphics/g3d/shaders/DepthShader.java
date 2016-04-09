@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
@@ -89,11 +90,12 @@ public class DepthShader extends DefaultShader {
 
 	public DepthShader (final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		super(renderable, config, shaderProgram);
+		final Attributes attributes = combineAttributes(renderable);
 		this.numBones = renderable.bones == null ? 0 : config.numBones;
 		int w = 0;
-		final int n = renderable.mesh.getVertexAttributes().size();
+		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
+			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		weights = w;
@@ -115,38 +117,48 @@ public class DepthShader extends DefaultShader {
 
 	@Override
 	public boolean canRender (Renderable renderable) {
-		if (renderable.material.has(BlendingAttribute.Type)) {
-			if ((materialMask & BlendingAttribute.Type) != BlendingAttribute.Type)
+		final Attributes attributes = combineAttributes(renderable);
+		if (attributes.has(BlendingAttribute.Type)) {
+			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type)
 				return false;
-			if (renderable.material.has(TextureAttribute.Diffuse) != ((materialMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
+			if (attributes.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
 				return false;
 		}
-		final boolean skinned = ((renderable.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
+		final boolean skinned = ((renderable.meshPart.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
 		if (skinned != (numBones > 0)) return false;
 		if (!skinned) return true;
 		int w = 0;
-		final int n = renderable.mesh.getVertexAttributes().size();
+		final int n = renderable.meshPart.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {
-			final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
+			final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		return w == weights;
 	}
 	
 	@Override
-	public void render (final Renderable renderable) {
-		if (renderable.material.has(BlendingAttribute.Type)) {
-			final BlendingAttribute blending = (BlendingAttribute)renderable.material.get(BlendingAttribute.Type);
-			renderable.material.remove(BlendingAttribute.Type);
-			final boolean hasAlphaTest = renderable.material.has(FloatAttribute.AlphaTest);
+	public void render (Renderable renderable, Attributes combinedAttributes) {
+		if (combinedAttributes.has(BlendingAttribute.Type)) {
+			final BlendingAttribute blending = (BlendingAttribute)combinedAttributes.get(BlendingAttribute.Type);
+			combinedAttributes.remove(BlendingAttribute.Type);
+			final boolean hasAlphaTest = combinedAttributes.has(FloatAttribute.AlphaTest);
 			if (!hasAlphaTest)
-				renderable.material.set(alphaTestAttribute);
-			if (blending.opacity >= ((FloatAttribute)renderable.material.get(FloatAttribute.AlphaTest)).value)
-				super.render(renderable);
+				combinedAttributes.set(alphaTestAttribute);
+			if (blending.opacity >= ((FloatAttribute)combinedAttributes.get(FloatAttribute.AlphaTest)).value)
+				super.render(renderable, combinedAttributes);
 			if (!hasAlphaTest)
-				renderable.material.remove(FloatAttribute.AlphaTest);
-			renderable.material.set(blending);
+				combinedAttributes.remove(FloatAttribute.AlphaTest);
+			combinedAttributes.set(blending);
 		} else
-			super.render(renderable);
+			super.render(renderable, combinedAttributes);
+	}
+	
+	private final static Attributes tmpAttributes = new Attributes();
+	// TODO: Move responsibility for combining attributes to RenderableProvider
+	private static final Attributes combineAttributes(final Renderable renderable) {
+		tmpAttributes.clear();
+		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
+		if (renderable.material != null) tmpAttributes.set(renderable.material);
+		return tmpAttributes;
 	}
 }

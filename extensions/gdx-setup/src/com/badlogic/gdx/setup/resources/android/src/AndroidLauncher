@@ -1,4 +1,4 @@
-package %PACKAGE%.android;
+package %PACKAGE%;
 
 import android.os.Bundle;
 

@@ -31,10 +31,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Node {
 	/** the id, may be null, FIXME is this unique? **/
 	public String id;
-	/** @deprecated Use {@link #getParent()} instead. **/
-	@Deprecated public Node parent; // TODO: Make private
-	/** @deprecated Use {@link #getChildren()} instead. **/
-	@Deprecated public final Array<Node> children = new Array<Node>(2); // TODO: Make private
 	/** Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
 	 * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
 	 * of its parent transform. */
@@ -54,6 +50,9 @@ public class Node {
 	public final Matrix4 globalTransform = new Matrix4();
 
 	public Array<NodePart> parts = new Array<NodePart>(2);
+
+	protected Node parent;
+	private final Array<Node> children = new Array<Node>(2);
 
 	/** Calculates the local transform based on the translation, scale and rotation
 	 * @return the local transform */
@@ -128,9 +127,9 @@ public class Node {
 			if (part.enabled) {
 				final MeshPart meshPart = part.meshPart;
 				if (transform)
-					meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices, globalTransform);
+					meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size, globalTransform);
 				else
-					meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices);
+					meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size);
 			}
 		}
 		final int childCount = children.size;
@@ -199,7 +198,7 @@ public class Node {
 	 * @param child The Node to add as child of this Node
 	 * @return the zero-based index of the child */
 	public <T extends Node> int insertChild (int index, final T child) {
-		for (Node p = this; p != null; p = child.getParent()) {
+		for (Node p = this; p != null; p = p.getParent()) {
 			if (p == child) throw new GdxRuntimeException("Cannot add a parent as a child");
 		}
 		Node p = child.getParent();
@@ -220,8 +219,7 @@ public class Node {
 	 * @param nodes The nodes to add as child of this Node
 	 * @return the zero-based index of the first inserted child */
 	public <T extends Node> int insertChildren (int index, final Iterable<T> nodes) {
-		if (index < 0 || index > children.size)
-			index = children.size;
+		if (index < 0 || index > children.size) index = children.size;
 		int i = index;
 		for (T child : nodes)
 			insertChild(i++, child);
@@ -252,6 +250,46 @@ public class Node {
 	/** @return Whether (true) is this Node is a child node of another node or not (false). */
 	public boolean hasParent () {
 		return parent != null;
+	}
+
+	/** Creates a nested copy of this Node, any child nodes are copied using this method as well. The {@link #parts} are copied
+	 * using the {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by reference. If you
+	 * intend to use the copy in a different node tree (e.g. a different Model or ModelInstance) then you will need to update these
+	 * references afterwards.
+	 * 
+	 * Override this method in your custom Node class to instantiate that class, in that case you should override the
+	 * {@link #set(Node)} method as well. */
+	public Node copy () {
+		return new Node().set(this);
+	}
+
+	/** Creates a nested copy of this Node, any child nodes are copied using the {@link #copy()} method. This will detach this node
+	 * from its parent, but does not attach it to the parent of node being copied. The {@link #parts} are copied using the
+	 * {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by reference. If you intend to
+	 * use this node in a different node tree (e.g. a different Model or ModelInstance) then you will need to update these
+	 * references afterwards.
+	 * 
+	 * Override this method in your custom Node class to copy any additional fields you've added.
+	 * @return This Node for chaining */
+	protected Node set (Node other) {
+		detach();
+		id = other.id;
+		isAnimated = other.isAnimated;
+		inheritTransform = other.inheritTransform;
+		translation.set(other.translation);
+		rotation.set(other.rotation);
+		scale.set(other.scale);
+		localTransform.set(other.localTransform);
+		globalTransform.set(other.globalTransform);
+		parts.clear();
+		for (NodePart nodePart : other.parts) {
+			parts.add(nodePart.copy());
+		}
+		children.clear();
+		for (Node child : other.getChildren()) {
+			addChild(child.copy());
+		}
+		return this;
 	}
 
 	/** Helper method to recursive fetch a node from an array

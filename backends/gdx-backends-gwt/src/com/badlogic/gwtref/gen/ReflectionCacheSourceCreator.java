@@ -147,6 +147,16 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		// gather all types from explicitly requested packages
+		try {
+			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
+			for (String s : prop.getValues()) {
+				JClassType type = typeOracle.findType(s);
+				if (type != null) gatherTypes(type.getErasedType(), types);
+			}
+		} catch (BadPropertyValueException e) {
+		}
+
 		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
@@ -481,6 +491,7 @@ public class ReflectionCacheSourceCreator {
 		if (c != null && (isVisible(c.getSuperclass())))
 			superClass = c.getSuperclass().getErasedType().getQualifiedSourceName() + ".class";
 		String assignables = null;
+		String interfaces = null;
 
 		if (c != null && c.getFlattenedSupertypeHierarchy() != null) {
 			assignables = "new HashSet<Class>(Arrays.asList(";
@@ -497,16 +508,31 @@ public class ReflectionCacheSourceCreator {
 				assignables = null;
 		}
 
-		String varName = "c" + id;
-		pb("private static Type " + varName + ";");
-		pb("private static Type " + varName + "() {");
-		pb("if(" + varName + "!=null) return " + varName + ";");
-		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ");");
-
 		if (c == null) {
 			// if it's not a class, it may be an interface instead
 			c = t.isInterface();
 		}
+		
+		if (c != null && c.getImplementedInterfaces() != null) {
+			interfaces = "new HashSet<Class>(Arrays.asList(";
+			boolean used = false;
+			for (JType i : c.getImplementedInterfaces()) {
+				if (!isVisible(i) || i.equals(t)) continue;
+				if (used) interfaces += ", ";
+				interfaces += i.getErasedType().getQualifiedSourceName() + ".class";
+				used = true;
+			}
+			if (used)
+				interfaces += "))";
+			else
+				interfaces = null;
+		}
+		
+		String varName = "c" + id;
+		pb("private static Type " + varName + ";");
+		pb("private static Type " + varName + "() {");
+		pb("if(" + varName + "!=null) return " + varName + ";");
+		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", " + interfaces + ");");
 
 		if (c != null) {
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
@@ -620,8 +646,7 @@ public class ReflectionCacheSourceCreator {
 					}
 					stub.isConstructor = true;
 					stub.returnType = stub.enclosingType;
-				}
-
+				}				
 				stub.jnsi = "";
 				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
@@ -650,7 +675,7 @@ public class ReflectionCacheSourceCreator {
 
 				pb(stub.isAbstract + ", " + stub.isFinal + ", " + stub.isStatic + ", " + m.isDefaultAccess() + ", " + m.isPrivate()
 					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", "
-					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "),");
+					+ stub.isMethod + ", " + stub.isConstructor + ", " + stub.methodId + "," + getAnnotations(m.getDeclaredAnnotations()) + "),");
 			}
 			pb("};");
 		}
@@ -664,7 +689,7 @@ public class ReflectionCacheSourceCreator {
 			b.append("new Class[] {");
 			for (JClassType typeArg : typeArgs) {
 				if (typeArg.isWildcard() != null)
-					b.append("Object.class");
+					b.append("null");
 				else if (!isVisible(typeArg))
 					b.append("null");
 				else if (typeArg.isClassOrInterface() != null)

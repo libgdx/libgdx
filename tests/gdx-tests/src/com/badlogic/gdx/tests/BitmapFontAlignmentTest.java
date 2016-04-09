@@ -23,11 +23,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 
 /** Shows how to align single line, wrapped, and multi line text within a rectangle. */
 public class BitmapFontAlignmentTest extends GdxTest {
@@ -37,6 +38,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 	private BitmapFontCache cache;
 	private Sprite logoSprite;
 	int renderMode;
+	GlyphLayout layout;
 
 	@Override
 	public void create () {
@@ -55,7 +57,8 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
 			"data/verdana39.png", FileType.Internal), false);
-		cache = new BitmapFontCache(font);
+		cache = font.newFontCache();
+		layout = new GlyphLayout();
 	}
 
 	@Override
@@ -94,9 +97,9 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float width = logoSprite.getWidth();
 		float height = logoSprite.getHeight();
 
-		TextBounds bounds = font.getBounds(text);
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		layout.setText(font, text);
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 
 		font.draw(spriteBatch, text, x, y);
 	}
@@ -109,11 +112,11 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float height = logoSprite.getHeight();
 
 		// Obviously you wouldn't set the cache text every frame in real code.
-		TextBounds bounds = cache.setMultiLineText(text, 0, 0);
+		GlyphLayout layout = cache.setText(text, 0, 0);
 		cache.setColors(Color.BLUE, 1, 4);
 
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 		cache.setPosition(x, y);
 
 		cache.draw(spriteBatch);
@@ -126,14 +129,17 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float width = logoSprite.getWidth();
 		float height = logoSprite.getHeight();
 
-		TextBounds bounds = font.getWrappedBounds(text, width);
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		layout.setText(font, text, Color.WHITE, width, Align.left, true);
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 
-		font.drawWrapped(spriteBatch, text, x, y, width);
+		font.draw(spriteBatch, text, x, y, width, Align.left, true);
+
+		// More efficient to draw the layout used for bounds:
+		// font.draw(spriteBatch, layout, x, y);
 
 		// Note that wrapped text can be aligned:
-		// font.drawWrapped(spriteBatch, text, x, y, width, HAlignment.CENTER);
+		// font.draw(spriteBatch, text, x, y, width, Align.center, true);
 	}
 
 	private void renderWrappedCached () {
@@ -144,13 +150,13 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float height = logoSprite.getHeight();
 
 		// Obviously you wouldn't set the cache text every frame in real code.
-		TextBounds bounds = cache.setWrappedText(text, 0, 0, width);
+		GlyphLayout layout = cache.setText(text, 0, 0, width, Align.left, true);
 
 		// Note that wrapped text can be aligned:
 		// cache.setWrappedText(text, 0, 0, width, HAlignment.CENTER);
 
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 		cache.setPosition(x, y);
 
 		cache.draw(spriteBatch);
@@ -163,14 +169,14 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float width = logoSprite.getWidth();
 		float height = logoSprite.getHeight();
 
-		TextBounds bounds = font.getMultiLineBounds(text);
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		layout.setText(font, text);
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 
-		font.drawMultiLine(spriteBatch, text, x, y);
+		font.draw(spriteBatch, text, x, y);
 
 		// Note that multi line text can be aligned:
-		// font.drawMultiLine(spriteBatch, text, x, y, width, HAlignment.CENTER);
+		// font.draw(spriteBatch, text, x, y, width, Align.center, false);
 	}
 
 	private void renderMultiLineCached () {
@@ -182,13 +188,13 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		float height = logoSprite.getHeight();
 
 		// Obviously you wouldn't set the cache text every frame in real code.
-		TextBounds bounds = cache.setMultiLineText(text, 0, 0);
+		GlyphLayout layout = cache.setText(text, 0, 0);
 
 		// Note that multi line text can be aligned:
-		// cache.setMultiLineText(text, 0, 0, width, HAlignment.CENTER);
+		// cache.setText(text, 0, 0, width, Align.center, false);
 
-		x += width / 2 - bounds.width / 2;
-		y += height / 2 + bounds.height / 2;
+		x += width / 2 - layout.width / 2;
+		y += height / 2 + layout.height / 2;
 		cache.setPosition(x, y);
 
 		cache.draw(spriteBatch);

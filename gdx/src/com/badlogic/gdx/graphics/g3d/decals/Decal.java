@@ -55,10 +55,15 @@ public class Decal {
 	public Vector2 transformationOffset = null;
 	protected Vector2 dimensions = new Vector2();
 
-	protected DecalMaterial material = new DecalMaterial();
+	protected DecalMaterial material;
 	protected boolean updated = false;
 
 	public Decal () {
+		this.material = new DecalMaterial();
+	}
+
+	public Decal (DecalMaterial material) {
+		this.material = material;
 	}
 
 	/** Sets the color of all four vertices to the specified color
@@ -562,6 +567,14 @@ public class Decal {
 		return material;
 	}
 
+	/**Set material
+	 * 
+	 * @param material custom material
+	 */
+	public void setMaterial (DecalMaterial material) {
+		this.material = material;
+	}
+
 	final static Vector3 dir = new Vector3();
 
 	/** Sets the rotation of the Decal to face the given point. Useful for billboarding.
@@ -661,4 +674,25 @@ public class Decal {
 		decal.setColor(1, 1, 1, 1);
 		return decal;
 	}
+
+	/** Creates a decal using the region for texturing and the specified blending parameters for blending
+	 * 
+	 * @param width Width of the decal in world units
+	 * @param height Height of the decal in world units
+	 * @param textureRegion TextureRegion to use
+	 * @param srcBlendFactor Source blend used by glBlendFunc
+	 * @param dstBlendFactor Destination blend used by glBlendFunc
+	 * @param material Custom decal material
+	 * @return Created decal */
+	public static Decal newDecal (float width, float height, TextureRegion textureRegion, int srcBlendFactor, int dstBlendFactor,
+		DecalMaterial material) {
+		Decal decal = new Decal(material);
+		decal.setTextureRegion(textureRegion);
+		decal.setBlending(srcBlendFactor, dstBlendFactor);
+		decal.dimensions.x = width;
+		decal.dimensions.y = height;
+		decal.setColor(1, 1, 1, 1);
+		return decal;
+	}
+
 }

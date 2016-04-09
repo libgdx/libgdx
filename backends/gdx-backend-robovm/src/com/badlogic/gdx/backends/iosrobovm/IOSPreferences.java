@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSNumber;
 import org.robovm.apple.foundation.NSObject;
@@ -30,13 +31,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class IOSPreferences implements Preferences {
-
 	NSMutableDictionary<NSString, NSObject> nsDictionary;
-	String filePath;
+	File file;
 
 	public IOSPreferences (NSMutableDictionary<NSString, NSObject> nsDictionary, String filePath) {
 		this.nsDictionary = nsDictionary;
-		this.filePath = filePath;
+		this.file = new File(filePath);
 	}
 
 	@Override
@@ -185,11 +185,10 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		boolean fileWritten = nsDictionary.write(new File(filePath), false);
-		if (fileWritten)
-			Gdx.app.debug("IOSPreferences", "NSDictionary file written");
-		else
-			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + filePath);
+		NSAutoreleasePool pool = new NSAutoreleasePool();
+		if (!nsDictionary.write(file, false)) {
+			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
+		}
+		pool.close();
 	}
-
 }

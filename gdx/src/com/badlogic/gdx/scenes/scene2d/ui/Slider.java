@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -35,6 +37,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class Slider extends ProgressBar {
 	int draggingPointer = -1;
+	boolean mouseOver;
+	private Interpolation visualInterpolationInverse = Interpolation.linear;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -80,6 +84,16 @@ public class Slider extends ProgressBar {
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y);
 			}
+
+			@Override
+			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				if (pointer == -1) mouseOver = true;
+			}
+
+			@Override
+			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+				if (pointer == -1) mouseOver = false;
+			}
 		});
 	}
 
@@ -95,9 +109,16 @@ public class Slider extends ProgressBar {
 		return (SliderStyle)super.getStyle();
 	}
 
+	protected Drawable getKnobDrawable () {
+		SliderStyle style = getStyle();
+		return (disabled && style.disabledKnob != null) ? style.disabledKnob
+			: (isDragging() && style.knobDown != null) ? style.knobDown : ((mouseOver && style.knobOver != null) ? style.knobOver
+				: style.knob);
+	}
+
 	boolean calculatePositionAndValue (float x, float y) {
 		final SliderStyle style = getStyle();
-		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable knob = getKnobDrawable();
 		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
@@ -110,14 +131,14 @@ public class Slider extends ProgressBar {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
 			position = y - bg.getBottomHeight() - knobHeight * 0.5f;
-			value = min + (max - min) * (position / (height - knobHeight));
+			value = min + (max - min) * visualInterpolationInverse.apply(position / (height - knobHeight));
 			position = Math.max(0, position);
 			position = Math.min(height - knobHeight, position);
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
 			position = x - bg.getLeftWidth() - knobWidth * 0.5f;
-			value = min + (max - min) * (position / (width - knobWidth));
+			value = min + (max - min) * visualInterpolationInverse.apply(position / (width - knobWidth));
 			position = Math.max(0, position);
 			position = Math.min(width - knobWidth, position);
 		}
@@ -133,10 +154,19 @@ public class Slider extends ProgressBar {
 		return draggingPointer != -1;
 	}
 
+	/** Sets the inverse interpolation to use for display. This should perform the inverse of the
+	 * {@link #setVisualInterpolation(Interpolation) visual interpolation}. */
+	public void setVisualInterpolationInverse (Interpolation interpolation) {
+		this.visualInterpolationInverse = interpolation;
+	}
+
 	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
+		/** Optional. */
+		public Drawable knobOver, knobDown;
+
 		public SliderStyle () {
 		}
 
@@ -146,6 +176,8 @@ public class Slider extends ProgressBar {
 
 		public SliderStyle (SliderStyle style) {
 			super(style);
+			this.knobOver = style.knobOver;
+			this.knobDown = style.knobDown;
 		}
 	}
 }

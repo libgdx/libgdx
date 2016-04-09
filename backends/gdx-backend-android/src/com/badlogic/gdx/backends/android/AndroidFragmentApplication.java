@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -62,7 +63,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 
@@ -87,6 +88,12 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public void onDetach () {
 		super.onDetach();
 		this.callbacks = null;
+		Gdx.app = null;
+		Gdx.input = null;
+		Gdx.audio = null;
+		Gdx.files = null;
+		Gdx.graphics = null;
+		Gdx.net = null;
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -214,8 +221,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		input.onPause();
 
 		// davebaol & mobidevelop:
-		// This fragment is currently being removed from its activity or the activity is in the process of finishing
-		if (isRemoving() || getActivity().isFinishing()) {
+		// This fragment (or one of the parent)  is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
@@ -420,7 +427,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
+	public SnapshotArray<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
 
@@ -463,5 +470,23 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public WindowManager getWindowManager () {
 		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+	}
+
+	/**
+	* Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
+	*
+	* @return true - one of the parent fragments is being removed
+	*/
+	private boolean isAnyParentFragmentRemoving() {
+		Fragment fragment = getParentFragment();
+
+		 while (fragment != null) {
+			if (fragment.isRemoving())
+				return true;
+
+			fragment = fragment.getParentFragment();
+		}
+
+		return false;
 	}
 }

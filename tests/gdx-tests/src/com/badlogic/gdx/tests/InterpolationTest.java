@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -46,7 +47,7 @@ public class InterpolationTest extends GdxTest {
 	List<String> list;
 	String interpolationNames[], selectedInterpolation;
 	private ShapeRenderer renderer;
-	float graphSize = 400, steps = graphSize / 2, time = 0, duration = 2.5f;
+	float graphSize, steps, time = 0, duration = 2.5f;
 	Vector2 startPosition = new Vector2(), targetPosition = new Vector2(), position = new Vector2();
 
 	/** resets {@link #startPosition} and {@link #targetPosition} */
@@ -67,7 +68,7 @@ public class InterpolationTest extends GdxTest {
 	/** @return the {@link #selectedInterpolation selected} interpolation */
 	private Interpolation getInterpolation (String name) {
 		try {
-			return (Interpolation)Interpolation.class.getField(name).get(null);
+			return (Interpolation)ClassReflection.getField(Interpolation.class, name).get(null);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -88,12 +89,13 @@ public class InterpolationTest extends GdxTest {
 		// see how many fields are actually interpolations (for safety; other fields may be added with future)
 		int interpolationMembers = 0;
 		for (int i = 0; i < interpolationFields.length; i++)
-			if (Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass())) interpolationMembers++;
+			if (ClassReflection.isAssignableFrom(Interpolation.class, interpolationFields[i].getDeclaringClass()))
+				interpolationMembers++;
 
 		// get interpolation names
 		interpolationNames = new String[interpolationMembers];
 		for (int i = 0; i < interpolationFields.length; i++)
-			if (Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass()))
+			if (ClassReflection.isAssignableFrom(Interpolation.class, interpolationFields[i].getDeclaringClass()))
 				interpolationNames[i] = interpolationFields[i].getName();
 		selectedInterpolation = interpolationNames[0];
 
@@ -146,8 +148,8 @@ public class InterpolationTest extends GdxTest {
 		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getBatch().begin();
-		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2 - list.getStyle().font.getBounds(text).width
-			/ 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
+		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2, bottomLeftY + graphSize
+			+ list.getStyle().font.getLineHeight(), 0, Align.center, false);
 		stage.getBatch().end();
 
 		renderer.begin(ShapeType.Line);
@@ -191,6 +193,9 @@ public class InterpolationTest extends GdxTest {
 		table.invalidateHierarchy();
 
 		renderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
+
+		graphSize = 0.75f * Math.min(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+		steps = graphSize * 0.5f;
 	}
 
 	public void dispose () {

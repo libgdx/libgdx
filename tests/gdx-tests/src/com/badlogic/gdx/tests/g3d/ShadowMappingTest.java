@@ -51,7 +51,6 @@ public class ShadowMappingTest extends GdxTest {
 		modelBatch = new ModelBatch();
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .4f, .4f, .4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		environment.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -1f, -.8f,
 			-.2f));
 		environment.shadowMap = shadowLight;
@@ -65,7 +64,7 @@ public class ShadowMappingTest extends GdxTest {
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshPartBuilder mpb = modelBuilder.part("parts", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.Color,
+		MeshPartBuilder mpb = modelBuilder.part("parts", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.ColorUnpacked,
 			new Material(ColorAttribute.createDiffuse(Color.WHITE)));
 		mpb.setColor(1f, 1f, 1f, 1f);
 		mpb.box(0, -1.5f, 0, 10, 1, 10);
@@ -83,7 +82,8 @@ public class ShadowMappingTest extends GdxTest {
 	public void render () {
 		camController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		shadowLight.begin(Vector3.Zero, cam.direction);
@@ -91,8 +91,6 @@ public class ShadowMappingTest extends GdxTest {
 		shadowBatch.render(instance);
 		shadowBatch.end();
 		shadowLight.end();
-
-		Gdx.gl.glClearColor(0, 0, 0, 1);
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);

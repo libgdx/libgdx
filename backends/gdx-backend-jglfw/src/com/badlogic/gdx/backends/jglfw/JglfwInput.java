@@ -36,9 +36,8 @@ import javax.swing.event.DocumentListener;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
@@ -47,7 +46,7 @@ import com.badlogic.jglfw.GlfwCallbackAdapter;
  * @author Nathan Sweet */
 public class JglfwInput implements Input {
 	final JglfwApplication app;
-	final InputProcessorQueue processorQueue;
+	final InputEventQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
 	boolean keyJustPressed = false;
@@ -117,7 +116,7 @@ public class JglfwInput implements Input {
 		};
 
 		if (queueEvents)
-			inputProcessor = processorQueue = new InputProcessorQueue(inputProcessor);
+			inputProcessor = processorQueue = new InputEventQueue(inputProcessor);
 		else
 			processorQueue = null;
 
@@ -261,6 +260,11 @@ public class JglfwInput implements Input {
 
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
+	}
 
 	public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
@@ -292,10 +296,6 @@ public class JglfwInput implements Input {
 
 	public void setCursorPosition (int x, int y) {
 		glfwSetCursorPos(app.graphics.window, x, y);
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
@@ -840,6 +840,7 @@ public class JglfwInput implements Input {
 		}
 
 		public void character (long window, char character) {
+			if ((character & 0xff00) == 0xf700) return;
 			lastCharacter = character;
 			processor.keyTyped(character);
 		}
@@ -878,5 +879,23 @@ public class JglfwInput implements Input {
 			else
 				processor.mouseMoved(x, y);
 		}
+	}
+
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

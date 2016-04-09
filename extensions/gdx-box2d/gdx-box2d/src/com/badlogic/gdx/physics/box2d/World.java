@@ -325,8 +325,11 @@ b2ContactFilter defaultFilter;
 		this.bodies.remove(body.addr);
 		Array<Fixture> fixtureList = body.getFixtureList();
 		while(fixtureList.size > 0) {
-			this.fixtures.remove(fixtureList.removeIndex(0).addr).setUserData(null);
-		}
+			Fixture fixtureToDelete = fixtureList.removeIndex(0);
+ 			this.fixtures.remove(fixtureToDelete.addr).setUserData(null);
+ 			freeFixtures.free(fixtureToDelete);
+ 		}
+		
 		freeBodies.free(body);
 	}
 
@@ -1022,8 +1025,18 @@ b2ContactFilter defaultFilter;
 	 * @param point1 the ray starting point
 	 * @param point2 the ray ending point */
 	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		rayCast(callback, point1.x, point1.y, point2.x, point2.y);
+	}
+
+	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
+	 * @param callback a user implemented callback class.
+	 * @param point1X the ray starting point X
+	 * @param point1Y the ray starting point Y
+	 * @param point2X the ray ending point X
+	 * @param point2Y the ray ending point Y */
+	public void rayCast (RayCastCallback callback, float point1X, float point1Y, float point2X, float point2Y) {
 		rayCastCallback = callback;
-		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
+		jniRayCast(addr, point1X, point1Y, point2X, point2Y);
 	}
 
 	private RayCastCallback rayCastCallback = null;

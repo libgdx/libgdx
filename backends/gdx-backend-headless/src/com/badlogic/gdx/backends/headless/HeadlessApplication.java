@@ -50,6 +50,7 @@ public class HeadlessApplication implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	private String preferencesdir;
 	private final long renderInterval;
 
 	public HeadlessApplication(ApplicationListener listener) {
@@ -69,6 +70,8 @@ public class HeadlessApplication implements Application {
 		this.graphics = new MockGraphics();
 		this.audio = new MockAudio();
 		this.input = new MockInput();
+
+		this.preferencesdir = config.preferencesDirectory;
 
 		Gdx.app = this;
 		Gdx.files = files;
@@ -143,7 +146,7 @@ public class HeadlessApplication implements Application {
 	public boolean executeRunnables () {
 		synchronized (runnables) {
 			for (int i = runnables.size - 1; i >= 0; i--)
-				executedRunnables.addAll(runnables.get(i));
+				executedRunnables.add(runnables.get(i));
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
@@ -209,7 +212,7 @@ public class HeadlessApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new HeadlessPreferences(name, ".prefs/");
+			Preferences prefs = new HeadlessPreferences(name, this.preferencesdir);
 			preferences.put(name, prefs);
 			return prefs;
 		}

@@ -59,15 +59,13 @@ PHY_ScalarType hdt, bool flipQuadEdges
 )
 {
 	// validation
-	btAssert(heightStickWidth > 1 && "bad width");
-	btAssert(heightStickLength > 1 && "bad length");
-	btAssert(heightfieldData && "null heightfield data");
+	btAssert(heightStickWidth > 1);// && "bad width");
+	btAssert(heightStickLength > 1);// && "bad length");
+	btAssert(heightfieldData);// && "null heightfield data");
 	// btAssert(heightScale) -- do we care?  Trust caller here
-	btAssert(minHeight <= maxHeight && "bad min/max height");
-	btAssert(upAxis >= 0 && upAxis < 3 &&
-	    "bad upAxis--should be in range [0,2]");
-	btAssert(hdt != PHY_UCHAR || hdt != PHY_FLOAT || hdt != PHY_SHORT &&
-	    "Bad height data type enum");
+	btAssert(minHeight <= maxHeight);// && "bad min/max height");
+	btAssert(upAxis >= 0 && upAxis < 3);// && "bad upAxis--should be in range [0,2]");
+	btAssert(hdt != PHY_UCHAR || hdt != PHY_FLOAT || hdt != PHY_SHORT);// && "Bad height data type enum");
 
 	// initialize member variables
 	m_shapeType = TERRAIN_SHAPE_PROXYTYPE;
@@ -110,7 +108,7 @@ PHY_ScalarType hdt, bool flipQuadEdges
 	default:
 		{
 			//need to get valid m_upAxis
-			btAssert(0 && "Bad m_upAxis");
+			btAssert(0);// && "Bad m_upAxis");
 		}
 	}
 
@@ -365,14 +363,15 @@ void	btHeightfieldTerrainShape::processAllTriangles(btTriangleCallback* callback
 			{
         //first triangle
         getVertex(x,j,vertices[0]);
-        getVertex(x+1,j,vertices[1]);
-        getVertex(x+1,j+1,vertices[2]);
+		getVertex(x, j + 1, vertices[1]);
+		getVertex(x + 1, j + 1, vertices[2]);
         callback->processTriangle(vertices,x,j);
         //second triangle
       //  getVertex(x,j,vertices[0]);//already got this vertex before, thanks to Danny Chapman
         getVertex(x+1,j+1,vertices[1]);
-        getVertex(x,j+1,vertices[2]);
-        callback->processTriangle(vertices,x,j);				
+		getVertex(x + 1, j, vertices[2]);
+		callback->processTriangle(vertices, x, j);
+
 			} else
 			{
         //first triangle

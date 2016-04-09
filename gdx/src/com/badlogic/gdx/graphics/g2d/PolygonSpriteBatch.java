@@ -16,7 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.g2d.Sprite.*;
+import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -109,13 +110,19 @@ public class PolygonSpriteBatch implements Batch {
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
 	 * @param size The max number of vertices and number of triangles in a single batch. Max of 10920.
-	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
+	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed
+	 *           separately. */
 	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
 		// 32767 is max index, so 32767 / 3 - (32767 / 3 % 3) = 10920.
 		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
 
-		mesh = new Mesh(VertexDataType.VertexArray, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
+		if (Gdx.gl30 != null) {
+			vertexDataType = VertexDataType.VertexBufferObjectWithVAO;
+		}
+		mesh = new Mesh(vertexDataType, false, size, size * 3,
+			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		vertices = new float[size * VERTEX_SIZE];
@@ -207,8 +214,8 @@ public class PolygonSpriteBatch implements Batch {
 		final Texture texture = region.region.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -246,8 +253,8 @@ public class PolygonSpriteBatch implements Batch {
 		final Texture texture = textureRegion.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -291,8 +298,8 @@ public class PolygonSpriteBatch implements Batch {
 		Texture texture = textureRegion.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -1295,6 +1302,14 @@ public class PolygonSpriteBatch implements Batch {
 				this.shader.begin();
 			setupMatrices();
 		}
+	}
+
+	@Override
+	public ShaderProgram getShader () {
+		if (customShader == null) {
+			return shader;
+		}
+		return customShader;
 	}
 
 	@Override

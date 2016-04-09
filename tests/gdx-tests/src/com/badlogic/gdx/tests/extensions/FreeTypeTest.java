@@ -52,6 +52,11 @@ public class FreeTypeTest extends GdxTest {
 		parameter.size = 15;
 		parameter.flip = flip;
 		parameter.genMipMaps = true;
+		// parameter.shadowOffsetX = 1;
+		// parameter.shadowOffsetY = 1;
+		// parameter.shadowColor = Color.GREEN;
+		// parameter.borderWidth = 1f;
+		// parameter.borderColor = Color.PURPLE;
 
 		FreeTypeBitmapFontData fontData = generator.generateData(parameter);
 		ftFont = generator.generateFont(parameter);
@@ -65,8 +70,8 @@ public class FreeTypeTest extends GdxTest {
 
 		batch.begin();
 		font.setColor(Color.RED);
-		font.drawMultiLine(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
-		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
+		font.draw(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
+		ftFont.draw(batch, "This is a test\nAnd another line\n()����$%&/!12390#", 100, 112);
 // batch.disableBlending();
 		batch.draw(ftFont.getRegion(), 300, 0);
 // batch.enableBlending();

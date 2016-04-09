@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.apple.foundation.NSArray;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALBuffer;
 import com.badlogic.gdx.backends.iosrobovm.objectal.ALChannelSource;
@@ -63,7 +64,7 @@ public class IOSSound implements Sound {
 
 	public long play (float volume, float pitch, float pan, boolean loop) {
 		if (streamIds.size == 8) streamIds.pop();
-		ALSource soundSource = OALSimpleAudio.sharedInstance().playEffect(soundPath, volume, pitch, pan, loop);
+		ALSource soundSource = OALSimpleAudio.sharedInstance().playBuffer(soundBuffer, volume, pitch, pan, loop);
 		if (soundSource == null) return -1;
 		if (soundSource.getSourceId() == -1) return -1;
 		streamIds.insert(0, soundSource.getSourceId());
@@ -95,7 +96,8 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void dispose () {
-		OALSimpleAudio.sharedInstance().unloadEffect(soundPath);
+		stop();
+		soundBuffer.dispose();
 	}
 
 	@Override
@@ -129,11 +131,6 @@ public class IOSSound implements Sound {
 			source.setPan(pan);
 			source.setVolume(volume);
 		}
-	}
-
-	@Override
-	public void setPriority (long soundId, int priority) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

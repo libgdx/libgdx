@@ -64,33 +64,13 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter object () throws IOException {
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named && !current.array) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		stack.add(current = new JsonObject(false));
 		return this;
 	}
 
 	public JsonWriter array () throws IOException {
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named && !current.array) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		stack.add(current = new JsonObject(true));
 		return this;
 	}
@@ -98,25 +78,35 @@ public class JsonWriter extends Writer {
 	public JsonWriter value (Object value) throws IOException {
 		if (quoteLongValues
 			&& (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)) {
-			value = String.valueOf(value);
+			value = value.toString();
 		} else if (value instanceof Number) {
 			Number number = (Number)value;
 			long longValue = number.longValue();
 			if (number.doubleValue() == longValue) value = longValue;
 		}
-		if (current != null) {
-			if (current.array) {
-				if (!current.needsComma)
-					current.needsComma = true;
-				else
-					writer.write(',');
-			} else {
-				if (!named) throw new IllegalStateException("Name must be set.");
-				named = false;
-			}
-		}
+		requireCommaOrName();
 		writer.write(outputType.quoteValue(value));
 		return this;
+	}
+
+	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter json (String json) throws IOException {
+		requireCommaOrName();
+		writer.write(json);
+		return this;
+	}
+
+	private void requireCommaOrName () throws IOException {
+		if (current == null) return;
+		if (current.array) {
+			if (!current.needsComma)
+				current.needsComma = true;
+			else
+				writer.write(',');
+		} else {
+			if (!named) throw new IllegalStateException("Name must be set.");
+			named = false;
+		}
 	}
 
 	public JsonWriter object (String name) throws IOException {
@@ -129,6 +119,11 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter set (String name, Object value) throws IOException {
 		return name(name).value(value);
+	}
+
+	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter json (String name, String json) throws IOException {
+		return name(name).json(json);
 	}
 
 	public JsonWriter pop () throws IOException {
@@ -167,17 +162,17 @@ public class JsonWriter extends Writer {
 	}
 
 	static public enum OutputType {
-		/** Normal JSON, with all its quotes. */
+		/** Normal JSON, with all its double quotes. */
 		json,
-		/** Like JSON, but names are only quoted if necessary. */
+		/** Like JSON, but names are only double quoted if necessary. */
 		javascript,
 		/** Like JSON, but:
 		 * <ul>
-		 * <li>Names only require quotes if they start with <code>space</code> or any of <code>":,}/</code> or they contain
+		 * <li>Names only require double quotes if they start with <code>space</code> or any of <code>":,}/</code> or they contain
 		 * <code>//</code> or <code>/*</code> or <code>:</code>.
-		 * <li>Values only require quotes if they start with <code>space</code> or any of <code>":,{[]/</code> or they contain
-		 * <code>//</code> or <code>/*</code> or any of <code>}],</code> or they are equal to <code>true</code>, <code>false</code>
-		 * , or <code>null</code>.
+		 * <li>Values only require double quotes if they start with <code>space</code> or any of <code>":,{[]/</code> or they
+		 * contain <code>//</code> or <code>/*</code> or any of <code>}],</code> or they are equal to <code>true</code>,
+		 * <code>false</code> , or <code>null</code>.
 		 * <li>Newlines are treated as commas, making commas optional in many cases.
 		 * <li>C style comments may be used: <code>//...</code> or <code>/*...*<b></b>/</code>
 		 * </ul> */
@@ -188,26 +183,31 @@ public class JsonWriter extends Writer {
 		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
 
 		public String quoteValue (Object value) {
-			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
-			String string = String.valueOf(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
-				.replace("\t", "\\t");
+			if (value == null) return "null";
+			String string = value.toString();
+			if (value instanceof Number || value instanceof Boolean) return string;
+			StringBuilder buffer = new StringBuilder(string);
+			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
-				int length = string.length();
-				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
+				int length = buffer.length();
+				if (length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
+					return buffer.toString();
 			}
-			return '"' + string.replace("\"", "\\\"") + '"';
+			return '"' + buffer.replace('"', "\\\"").toString() + '"';
 		}
 
 		public String quoteName (String value) {
-			value = value.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
+			StringBuilder buffer = new StringBuilder(value);
+			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
 			switch (this) {
 			case minimal:
-				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(value).matches()) return value;
+				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
+					return buffer.toString();
 			case javascript:
-				if (javascriptPattern.matcher(value).matches()) return value;
+				if (javascriptPattern.matcher(buffer).matches()) return buffer.toString();
 			}
-			return '"' + value.replace("\"", "\\\"") + '"';
+			return '"' + buffer.replace('"', "\\\"").toString() + '"';
 		}
 	}
 }

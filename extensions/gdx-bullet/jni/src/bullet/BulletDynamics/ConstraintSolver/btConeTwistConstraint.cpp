@@ -540,8 +540,8 @@ void btConeTwistConstraint::calcAngleInfo()
 	m_solveTwistLimit = false;
 	m_solveSwingLimit = false;
 
-	btVector3 b1Axis1,b1Axis2,b1Axis3;
-	btVector3 b2Axis1,b2Axis2;
+	btVector3 b1Axis1(0,0,0),b1Axis2(0,0,0),b1Axis3(0,0,0);
+	btVector3 b2Axis1(0,0,0),b2Axis2(0,0,0);
 
 	b1Axis1 = getRigidBodyA().getCenterOfMassTransform().getBasis() * this->m_rbAFrame.getBasis().getColumn(0);
 	b2Axis1 = getRigidBodyB().getCenterOfMassTransform().getBasis() * this->m_rbBFrame.getBasis().getColumn(0);
@@ -778,8 +778,10 @@ void btConeTwistConstraint::calcAngleInfo2(const btTransform& transA, const btTr
 				target[2] = x * ivA[2] + y * jvA[2] + z * kvA[2];
 				target.normalize();
 				m_swingAxis = -ivB.cross(target);
-				m_swingCorrection = m_swingAxis.length();
-				m_swingAxis.normalize();
+                                m_swingCorrection = m_swingAxis.length();
+
+                                if (!btFuzzyZero(m_swingCorrection))
+                                    m_swingAxis.normalize();
 			}
 		}
 
@@ -983,8 +985,8 @@ void btConeTwistConstraint::adjustSwingAxisToUseEllipseNormal(btVector3& vSwingA
 
 void btConeTwistConstraint::setMotorTarget(const btQuaternion &q)
 {
-	btTransform trACur = m_rbA.getCenterOfMassTransform();
-	btTransform trBCur = m_rbB.getCenterOfMassTransform();
+	//btTransform trACur = m_rbA.getCenterOfMassTransform();
+	//btTransform trBCur = m_rbB.getCenterOfMassTransform();
 //	btTransform trABCur = trBCur.inverse() * trACur;
 //	btQuaternion qABCur = trABCur.getRotation();
 //	btTransform trConstraintCur = (trBCur * m_rbBFrame).inverse() * (trACur * m_rbAFrame);

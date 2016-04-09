@@ -39,12 +39,15 @@ protected:
 	btVectorXu m_xSplit2;
 
 	btAlignedObjectArray<int> m_limitDependencies;
-	btConstraintArray m_allConstraintArray;
+	btAlignedObjectArray<btSolverConstraint*>	m_allConstraintPtrArray;
 	btMLCPSolverInterface* m_solver;
 	int m_fallback;
+	btScalar m_cfm;
 
 	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 	virtual btScalar solveGroupCacheFriendlyIterations(btCollisionObject** bodies ,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
+
+
 	virtual void createMLCP(const btContactSolverInfo& infoGlobal);
 	virtual void createMLCPFast(const btContactSolverInfo& infoGlobal);
 
@@ -68,6 +71,15 @@ public:
 	void setNumFallbacks(int num)
 	{
 		m_fallback = num;
+	}
+
+	btScalar	getCfm() const
+	{
+		return m_cfm;
+	}
+	void setCfm(btScalar cfm)
+	{
+		m_cfm = cfm;
 	}
 
 	virtual btConstraintSolverType	getSolverType() const

@@ -43,21 +43,37 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
- * @author mzechner */
+ * @author mzechner, Thorsten Schleinzer */
 public class IndexBufferObject implements IndexData {
-	ShortBuffer buffer;
-	ByteBuffer byteBuffer;
+	final ShortBuffer buffer;
+	final ByteBuffer byteBuffer;
 	int bufferHandle;
 	final boolean isDirect;
 	boolean isDirty = true;
 	boolean isBound = false;
 	final int usage;
 
+	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
+	private final boolean empty;
+
+	/** Creates a new static IndexBufferObject to be used with vertex arrays.
+	 * 
+	 * @param maxIndices the maximum number of indices this buffer can hold */
+	public IndexBufferObject (int maxIndices) {
+		this(true, maxIndices);
+	}
+
 	/** Creates a new IndexBufferObject.
 	 * 
 	 * @param isStatic whether the index buffer is static
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObject (boolean isStatic, int maxIndices) {
+
+		empty = maxIndices == 0;
+		if (empty) {
+			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
+		}
+
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		isDirect = true;
 
@@ -68,28 +84,14 @@ public class IndexBufferObject implements IndexData {
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 	}
 
-	/** Creates a new IndexBufferObject to be used with vertex arrays.
-	 * 
-	 * @param maxIndices the maximum number of indices this buffer can hold */
-	public IndexBufferObject (int maxIndices) {
-		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
-		this.isDirect = true;
-
-		buffer = byteBuffer.asShortBuffer();
-		buffer.flip();
-		byteBuffer.flip();
-		bufferHandle = Gdx.gl20.glGenBuffer();
-		usage = GL20.GL_STATIC_DRAW;
-	}
-
 	/** @return the number of indices currently stored in this buffer */
 	public int getNumIndices () {
-		return buffer.limit();
+		return empty ? 0 : buffer.limit();
 	}
 
 	/** @return the maximum number of indices this IndexBufferObject can store. */
 	public int getNumMaxIndices () {
-		return buffer.capacity();
+		return empty ? 0 : buffer.capacity();
 	}
 
 	/** <p>
@@ -117,7 +119,7 @@ public class IndexBufferObject implements IndexData {
 			isDirty = false;
 		}
 	}
-	
+
 	public void setIndices (ShortBuffer indices) {
 		isDirty = true;
 		int pos = indices.position();
@@ -127,13 +129,27 @@ public class IndexBufferObject implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
-		
+
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 	}
 
+	@Override
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count) {
+		isDirty = true;
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 2);
+		BufferUtils.copy(indices, offset, byteBuffer, count);
+		byteBuffer.position(pos);
+		buffer.position(0);
+
+		if (isBound) {
+			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
+			isDirty = false;
+		}
+	}
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.

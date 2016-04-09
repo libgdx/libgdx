@@ -35,6 +35,10 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
+	/** @deprecated Do not use, this field is for testing only and is likely to be removed. Sets the {@link VertexDataType} to be
+	 *             used when gles 3 is not available, defaults to {@link VertexDataType#VertexArray}. */
+	@Deprecated public static VertexDataType defaultVertexDataType = VertexDataType.VertexArray;
+
 	private Mesh mesh;
 
 	final float[] vertices;
@@ -92,7 +96,9 @@ public class SpriteBatch implements Batch {
 		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
-		mesh = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
+		VertexDataType vertexDataType = (Gdx.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
+
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
@@ -215,7 +221,7 @@ public class SpriteBatch implements Batch {
 	}
 
 	@Override
-	public float getPackedColor() {
+	public float getPackedColor () {
 		return color;
 	}
 
@@ -1067,6 +1073,14 @@ public class SpriteBatch implements Batch {
 				this.shader.begin();
 			setupMatrices();
 		}
+	}
+
+	@Override
+	public ShaderProgram getShader () {
+		if (customShader == null) {
+			return shader;
+		}
+		return customShader;
 	}
 
 	@Override

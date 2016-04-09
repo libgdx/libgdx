@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Packer;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
@@ -24,10 +26,8 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
 
-import java.util.Comparator;
-
-/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
- * to pack into the smallest bin possible.
+/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is
+ * used to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker implements Packer {
 	private RectComparator rectComparator = new RectComparator();
@@ -71,48 +71,64 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		Array<Page> pages = new Array();
-		while (inputRects.size > 0) {
+		while (inputRects.size > 0)
+
+		{
 			Page result = packPage(inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
 		return pages;
+
 	}
 
 	private Page packPage (Array<Rect> inputRects) {
+		int paddingX = settings.paddingX, paddingY = settings.paddingY;
+		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
 		int edgePaddingX = 0, edgePaddingY = 0;
-		if (!settings.duplicatePadding) { // if duplicatePadding, edges get only half padding.
-			edgePaddingX = settings.paddingX;
-			edgePaddingY = settings.paddingY;
+		if (settings.edgePadding) {
+			if (settings.duplicatePadding) { // If duplicatePadding, edges get only half padding.
+				maxWidth -= paddingX;
+				maxHeight -= paddingY;
+			} else {
+				maxWidth -= paddingX * 2;
+				maxHeight -= paddingY * 2;
+				edgePaddingX = paddingX;
+				edgePaddingY = paddingY;
+			}
 		}
+
 		// Find min size.
-		int minWidth = Integer.MAX_VALUE;
-		int minHeight = Integer.MAX_VALUE;
+		int minWidth = Integer.MAX_VALUE, minHeight = Integer.MAX_VALUE;
 		for (int i = 0, nn = inputRects.size; i < nn; i++) {
 			Rect rect = inputRects.get(i);
 			minWidth = Math.min(minWidth, rect.width);
 			minHeight = Math.min(minHeight, rect.height);
+			float width = rect.width - paddingX, height = rect.height - paddingY;
 			if (settings.rotation) {
-				if ((rect.width > settings.maxWidth || rect.height > settings.maxHeight)
-					&& (rect.width > settings.maxHeight || rect.height > settings.maxWidth)) {
+				if ((width > maxWidth || height > maxHeight) && (width > maxHeight || height > maxWidth)) {
+					String paddingMessage = (edgePaddingX > 0 || edgePaddingY > 0) ? (" and edge padding " + paddingX + "," + paddingY)
+						: "";
 					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
-						+ " and padding " + settings.paddingX + "," + settings.paddingY + ": " + rect);
+						+ paddingMessage + ": " + rect.name + "[" + width + "," + height + "]");
 				}
 			} else {
-				if (rect.width > settings.maxWidth) {
-					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + " and paddingX "
-						+ settings.paddingX + ": " + rect);
+				if (width > maxWidth) {
+					String paddingMessage = edgePaddingX > 0 ? (" and X edge padding " + paddingX) : "";
+					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + paddingMessage + ": "
+						+ rect.name + "[" + width + "," + height + "]");
 				}
-				if (rect.height > settings.maxHeight && (!settings.rotation || rect.width > settings.maxHeight)) {
-					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + " and paddingY "
-						+ settings.paddingY + ": " + rect);
+				if (height > maxHeight && (!settings.rotation || width > maxHeight)) {
+					String paddingMessage = edgePaddingY > 0 ? (" and Y edge padding " + paddingY) : "";
+					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + paddingMessage + ": "
+						+ rect.name + "[" + width + "," + height + "]");
 				}
 			}
 		}
 		minWidth = Math.max(minWidth, settings.minWidth);
 		minHeight = Math.max(minHeight, settings.minHeight);
 
-		System.out.print("Packing");
+		if (!settings.silent) System.out.print("Packing");
 
 		// Find the minimal page size that fits all rects.
 		Page bestResult = null;
@@ -123,12 +139,14 @@ public class MaxRectsPacker implements Packer {
 			int size = sizeSearch.reset(), i = 0;
 			while (size != -1) {
 				Page result = packAtSize(true, size - edgePaddingX, size - edgePaddingY, inputRects);
-				if (++i % 70 == 0) System.out.println();
-				System.out.print(".");
+				if (!settings.silent) {
+					if (++i % 70 == 0) System.out.println();
+					System.out.print(".");
+				}
 				bestResult = getBest(bestResult, result);
 				size = sizeSearch.next(result == null);
 			}
-			System.out.println();
+			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
 			if (bestResult == null) bestResult = packAtSize(false, maxSize - edgePaddingX, maxSize - edgePaddingY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
@@ -144,8 +162,10 @@ public class MaxRectsPacker implements Packer {
 				Page bestWidthResult = null;
 				while (width != -1) {
 					Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
-					if (++i % 70 == 0) System.out.println();
-					System.out.print(".");
+					if (!settings.silent) {
+						if (++i % 70 == 0) System.out.println();
+						System.out.print(".");
+					}
 					bestWidthResult = getBest(bestWidthResult, result);
 					width = widthSearch.next(result == null);
 					if (settings.square) height = width;
@@ -156,7 +176,7 @@ public class MaxRectsPacker implements Packer {
 				if (height == -1) break;
 				width = widthSearch.reset();
 			}
-			System.out.println();
+			if (!settings.silent) System.out.println();
 			// Rects don't fit on one page. Fill a whole page and return.
 			if (bestResult == null)
 				bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
@@ -165,8 +185,8 @@ public class MaxRectsPacker implements Packer {
 		}
 	}
 
-	/** @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not all
-	 *           rects may be packed. */
+	/** @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not
+	 *           all rects may be packed. */
 	private Page packAtSize (boolean fully, int width, int height, Array<Rect> inputRects) {
 		Page bestResult = null;
 		for (int i = 0, n = methods.length; i < n; i++) {
@@ -519,7 +539,8 @@ public class MaxRectsPacker implements Packer {
 			return bestNode;
 		}
 
-		private Rect findPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight,
+			boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = Integer.MAX_VALUE; // best area fit, score2 is best short side fit
@@ -575,41 +596,43 @@ public class MaxRectsPacker implements Packer {
 			if (x == 0 || x + width == binWidth) score += height;
 			if (y == 0 || y + height == binHeight) score += width;
 
-			for (int i = 0; i < usedRectangles.size; i++) {
-				if (usedRectangles.get(i).x == x + width || usedRectangles.get(i).x + usedRectangles.get(i).width == x)
-					score += commonIntervalLength(usedRectangles.get(i).y, usedRectangles.get(i).y + usedRectangles.get(i).height, y,
-						y + height);
-				if (usedRectangles.get(i).y == y + height || usedRectangles.get(i).y + usedRectangles.get(i).height == y)
-					score += commonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x, x
-						+ width);
+			Array<Rect> usedRectangles = this.usedRectangles;
+			for (int i = 0, n = usedRectangles.size; i < n; i++) {
+				Rect rect = usedRectangles.get(i);
+				if (rect.x == x + width || rect.x + rect.width == x)
+					score += commonIntervalLength(rect.y, rect.y + rect.height, y, y + height);
+				if (rect.y == y + height || rect.y + rect.height == y)
+					score += commonIntervalLength(rect.x, rect.x + rect.width, x, x + width);
 			}
 			return score;
 		}
 
-		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
-			Rect bestNode = new Rect();
+		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight,
+			boolean rotate) {
 
+			Rect bestNode = new Rect();
 			bestNode.score1 = -1; // best contact score
 
-			for (int i = 0; i < freeRectangles.size; i++) {
+			Array<Rect> freeRectangles = this.freeRectangles;
+			for (int i = 0, n = freeRectangles.size; i < n; i++) {
 				// Try to place the rectangle in upright (non-rotated) orientation.
-				if (freeRectangles.get(i).width >= width && freeRectangles.get(i).height >= height) {
-					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, width, height);
+				Rect free = freeRectangles.get(i);
+				if (free.width >= width && free.height >= height) {
+					int score = contactPointScoreNode(free.x, free.y, width, height);
 					if (score > bestNode.score1) {
-						bestNode.x = freeRectangles.get(i).x;
-						bestNode.y = freeRectangles.get(i).y;
+						bestNode.x = free.x;
+						bestNode.y = free.y;
 						bestNode.width = width;
 						bestNode.height = height;
 						bestNode.score1 = score;
 						bestNode.rotated = false;
 					}
 				}
-				if (rotate && freeRectangles.get(i).width >= rotatedWidth && freeRectangles.get(i).height >= rotatedHeight) {
-					// This was width,height -- bug fixed?
-					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, rotatedWidth, rotatedHeight);
+				if (rotate && free.width >= rotatedWidth && free.height >= rotatedHeight) {
+					int score = contactPointScoreNode(free.x, free.y, rotatedWidth, rotatedHeight);
 					if (score > bestNode.score1) {
-						bestNode.x = freeRectangles.get(i).x;
-						bestNode.y = freeRectangles.get(i).y;
+						bestNode.x = free.x;
+						bestNode.y = free.y;
 						bestNode.width = rotatedWidth;
 						bestNode.height = rotatedHeight;
 						bestNode.score1 = score;
@@ -675,17 +698,22 @@ public class MaxRectsPacker implements Packer {
 			 * freeRectangles[i+1].height) { freeRectangles.erase(freeRectangles.begin() + i); --i; }
 			 */
 
-			// / Go through each pair and remove any rectangle that is redundant.
-			for (int i = 0; i < freeRectangles.size; i++)
-				for (int j = i + 1; j < freeRectangles.size; ++j) {
-					if (isContainedIn(freeRectangles.get(i), freeRectangles.get(j))) {
+			// Go through each pair and remove any rectangle that is redundant.
+			Array<Rect> freeRectangles = this.freeRectangles;
+			for (int i = 0, n = freeRectangles.size; i < n; i++)
+				for (int j = i + 1; j < n; ++j) {
+					Rect rect1 = freeRectangles.get(i);
+					Rect rect2 = freeRectangles.get(j);
+					if (isContainedIn(rect1, rect2)) {
 						freeRectangles.removeIndex(i);
 						--i;
+						--n;
 						break;
 					}
-					if (isContainedIn(freeRectangles.get(j), freeRectangles.get(i))) {
+					if (isContainedIn(rect2, rect1)) {
 						freeRectangles.removeIndex(j);
 						--j;
+						--n;
 					}
 				}
 		}

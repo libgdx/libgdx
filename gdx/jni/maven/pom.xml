@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.5.4-SNAPSHOT</version>
+        <version>1.9.3-SNAPSHOT</version>
         <relativePath>../../..</relativePath>
     </parent>
     
@@ -54,6 +54,17 @@
                     </execution>
 
                     <execution>
+                        <id>x86_64-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86_64</cacheDirectory>
+                            <url>${base.url}/x86_64/libgdx.so</url>
+                            <outputDirectory>${project.build.directory}/x86_64</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>armeabi-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -76,12 +87,34 @@
                     </execution>
 
                     <execution>
+                        <id>arm64-v8a-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/arm64-v8a</cacheDirectory>
+                            <url>${base.url}/arm64-v8a/libgdx.so</url>
+                            <outputDirectory>${project.build.directory}/arm64-v8a</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>ios-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
                             <url>${base.url}/ios/libgdx.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>tvos-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx.a.tvos</url>
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
@@ -96,9 +129,20 @@
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>tvos-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a.tvos</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-            
+
             <!-- if we have pre-built versions, replace the downloaded versions with those -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -138,6 +182,20 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-local-x86_64</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86_64</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86_64</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-local-armeabi</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -166,6 +224,20 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-local-arm64-v8a</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/arm64-v8a</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/arm64-v8a</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-local-ios</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -190,8 +262,10 @@
                     <descriptors>
                         <descriptor>desktop.xml</descriptor>
                         <descriptor>x86.xml</descriptor>
+                        <descriptor>x86_64.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
+                        <descriptor>arm64-v8a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>
                     </descriptors>
                 </configuration>

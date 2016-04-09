@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
- * {@link #getApplicationListener()}. Clients can override the default loading screen via
+ * {@link #createApplicationListener()}. Clients can override the default loading screen via
  * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
@@ -89,9 +89,16 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 	
 	@Override
+	public ApplicationListener getApplicationListener() {
+		return listener;
+	}
+	
+	public abstract ApplicationListener createApplicationListener();
+	
+	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
-		this.listener = getApplicationListener();
+		this.listener = createApplicationListener();
 		this.config = getConfig();
 		this.log = config.log;
 
@@ -312,7 +319,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
 			System.out.println(getStackTrace(exception));
@@ -323,7 +330,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.err.println(tag + ": " + message);
 		}
@@ -333,7 +340,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
 			System.out.println(getStackTrace(exception));
@@ -354,13 +361,22 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
 			System.out.println(getStackTrace(exception));
 		}
 	}
-
+	
+	private String getMessages (Throwable e) {
+		StringBuffer buffer = new StringBuffer();
+		while (e != null) {
+			buffer.append(e.getMessage() + "\n");
+			e = e.getCause();
+		}
+		return buffer.toString();
+	}
+	
 	private String getStackTrace (Throwable e) {
 		StringBuffer buffer = new StringBuffer();
 		for (StackTraceElement trace : e.getStackTrace()) {

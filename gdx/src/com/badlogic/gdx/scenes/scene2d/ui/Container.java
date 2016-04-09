@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.Align;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
  * {@link Table} with a single cell but is more lightweight.
@@ -45,9 +45,8 @@ public class Container<T extends Actor> extends WidgetGroup {
 			if (clip) {
 				batch.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
-				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
-					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
-				if (draw) {
+				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+					getHeight() - padBottom - padTop.get(this))) {
 					drawChildren(batch, parentAlpha);
 					batch.flush();
 					clipEnd();
@@ -154,6 +153,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	/** @param actor May be null. */
 	public void setActor (T actor) {
 		if (actor == this) throw new IllegalArgumentException("actor cannot be the Container.");
+		if (actor == this.actor) return;
 		if (this.actor != null) super.removeActor(this.actor);
 		this.actor = actor;
 		if (actor != null) super.addActor(actor);
@@ -597,7 +597,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefWidth () {
 		float v = prefWidth.get(actor);
 		if (background != null) v = Math.max(v, background.getMinWidth());
-		return v + padLeft.get(this) + padRight.get(this);
+		return Math.max(getMinWidth(), v + padLeft.get(this) + padRight.get(this));
 	}
 
 	public Value getPrefHeightValue () {
@@ -607,7 +607,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefHeight () {
 		float v = prefHeight.get(actor);
 		if (background != null) v = Math.max(v, background.getMinHeight());
-		return v + padTop.get(this) + padBottom.get(this);
+		return Math.max(getMinHeight(), v + padTop.get(this) + padBottom.get(this));
 	}
 
 	public Value getMaxWidthValue () {

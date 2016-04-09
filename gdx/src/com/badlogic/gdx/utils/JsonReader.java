@@ -92,13 +92,13 @@ public class JsonReader implements BaseJsonReader {
 
 		try {
 
-			// line 3 "JsonReader.java"
+			// line 97 "JsonReader.java"
 			{
 				cs = json_start;
 				top = 0;
 			}
 
-			// line 8 "JsonReader.java"
+			// line 103 "JsonReader.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -239,14 +239,14 @@ public class JsonReader implements BaseJsonReader {
 											if (couldBeDouble) {
 												try {
 													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value));
+													number(name, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											} else if (couldBeLong) {
 												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 												try {
-													number(name, Long.parseLong(value));
+													number(name, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
@@ -394,7 +394,7 @@ public class JsonReader implements BaseJsonReader {
 										}
 									}
 									p--;
-									while (data[p] == ' ')
+									while (Character.isSpace(data[p]))
 										p--;
 								}
 									break;
@@ -421,7 +421,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 313 "JsonReader.java"
+								// line 408 "JsonReader.java"
 								}
 							}
 						}
@@ -498,14 +498,14 @@ public class JsonReader implements BaseJsonReader {
 											if (couldBeDouble) {
 												try {
 													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value));
+													number(name, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											} else if (couldBeLong) {
 												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 												try {
-													number(name, Long.parseLong(value));
+													number(name, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
@@ -518,7 +518,7 @@ public class JsonReader implements BaseJsonReader {
 									s = p;
 								}
 									break;
-								// line 411 "JsonReader.java"
+								// line 506 "JsonReader.java"
 								}
 							}
 						}
@@ -544,8 +544,9 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
+			int start = Math.max(0, p - 32);
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
-				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
+				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -559,7 +560,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 421 "JsonReader.java"
+	// line 548 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
@@ -575,12 +576,12 @@ public class JsonReader implements BaseJsonReader {
 
 	private static char[] init__json_trans_keys_0 () {
 		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 34, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13,
-			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47,
-			125, 9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42,
-			47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10,
-			9, 10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 34, 13, 32, 34, 44,
-			47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32,
-			47, 9, 10, 13, 32, 47, 9, 10, 0};
+			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 125,
+			9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47,
+			13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9,
+			10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 34, 13, 32, 34, 44, 47,
+			58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32, 47,
+			9, 10, 13, 32, 47, 9, 10, 0};
 	}
 
 	private static final char _json_trans_keys[] = init__json_trans_keys_0();
@@ -600,8 +601,8 @@ public class JsonReader implements BaseJsonReader {
 	private static final byte _json_range_lengths[] = init__json_range_lengths_0();
 
 	private static short[] init__json_index_offsets_0 () {
-		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 90, 93, 96, 105, 108, 111, 113, 116, 119,
-			130, 138, 146, 157, 159, 170, 173, 176, 187, 190, 193, 196, 201, 206, 207};
+		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 90, 93, 96, 105, 108, 111, 113, 116, 119, 130,
+			138, 146, 157, 159, 170, 173, 176, 187, 190, 193, 196, 201, 206, 207};
 	}
 
 	private static final short _json_index_offsets[] = init__json_index_offsets_0();
@@ -619,9 +620,9 @@ public class JsonReader implements BaseJsonReader {
 	private static final byte _json_indicies[] = init__json_indicies_0();
 
 	private static byte[] init__json_trans_targs_0 () {
-		return new byte[] {35, 1, 3, 0, 4, 36, 36, 36, 36, 1, 6, 5, 13, 17, 22, 37, 7, 8, 9, 7, 8, 9, 7, 10, 20, 21, 11, 11, 11,
-			12, 17, 19, 37, 11, 12, 19, 14, 16, 15, 14, 12, 18, 17, 11, 9, 5, 24, 23, 27, 31, 34, 25, 38, 25, 25, 26, 31, 33, 38,
-			25, 26, 33, 28, 30, 29, 28, 26, 32, 31, 25, 23, 2, 36, 2};
+		return new byte[] {35, 1, 3, 0, 4, 36, 36, 36, 36, 1, 6, 5, 13, 17, 22, 37, 7, 8, 9, 7, 8, 9, 7, 10, 20, 21, 11, 11, 11, 12,
+			17, 19, 37, 11, 12, 19, 14, 16, 15, 14, 12, 18, 17, 11, 9, 5, 24, 23, 27, 31, 34, 25, 38, 25, 25, 26, 31, 33, 38, 25, 26,
+			33, 28, 30, 29, 28, 26, 32, 31, 25, 23, 2, 36, 2};
 	}
 
 	private static final byte _json_trans_targs[] = init__json_trans_targs_0();
@@ -649,7 +650,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 336 "JsonReader.rl"
+	// line 337 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);
@@ -661,6 +662,7 @@ public class JsonReader implements BaseJsonReader {
 			current = child;
 			root = child;
 		} else if (current.isArray() || current.isObject()) {
+			child.parent = current;
 			if (current.size == 0)
 				current.child = child;
 			else {
@@ -698,12 +700,12 @@ public class JsonReader implements BaseJsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, double value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, long value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
 	protected void bool (String name, boolean value) {

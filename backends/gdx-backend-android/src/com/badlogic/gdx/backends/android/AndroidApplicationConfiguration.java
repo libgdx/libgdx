@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.media.SoundPool;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -37,6 +38,9 @@ public class AndroidApplicationConfiguration {
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
+	
+	/** whether to use the gyroscope. default: false **/
+	public boolean useGyroscope = false;
 
 	/** whether to use the compass. default: true **/
 	public boolean useCompass = true;
@@ -67,6 +71,11 @@ public class AndroidApplicationConfiguration {
 
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = false;
+
+	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
+	 *  When GL ES 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level 18).
+  	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
+	@Deprecated public boolean useGL30 = false;
 
 	/** whether to use {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18} in place of the classic
 	 * {@link com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20} on Android API 10 and lower.

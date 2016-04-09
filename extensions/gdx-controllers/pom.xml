@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.5.4-SNAPSHOT</version>
+    <version>1.9.3-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -16,6 +16,7 @@
     <module>gdx-controllers</module>
     <module>gdx-controllers-desktop</module>
     <module>gdx-controllers-desktop/jni/maven</module>
+    <module>gdx-controllers-lwjgl3</module>
     <module>gdx-controllers-android</module>
     <module>gdx-controllers-gwt</module>
   </modules>

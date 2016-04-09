@@ -138,7 +138,7 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+	/** Extracts the specified file to the specified directory if it does not already exist or the CRC does not match. If file
 	 * extraction fails and the file exists at java.library.path, that file is returned.
 	 * @param sourcePath The file to extract from the classpath or JAR.
 	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
@@ -149,6 +149,11 @@ public class SharedLibraryLoader {
 			if (dirName == null) dirName = sourceCrc;
 
 			File extractedFile = getExtractedFile(dirName, new File(sourcePath).getName());
+			if (extractedFile == null) {
+				extractedFile = getExtractedFile(UUID.randomUUID().toString(), new File(sourcePath).getName());
+				if (extractedFile == null) throw new GdxRuntimeException(
+					"Unable to find writable path to extract file. Is the user home directory writable?");
+			}
 			return extractFile(sourcePath, sourceCrc, extractedFile);
 		} catch (RuntimeException ex) {
 			// Fallback to file at java.library.path location, eg for applets.
@@ -158,11 +163,20 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds. */
+	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+	 * extraction fails and the file exists at java.library.path, that file is returned.
+	 * @param sourcePath The file to extract from the classpath or JAR.
+	 * @param dir The location where the extracted file will be written. */
+	public void extractFileTo (String sourcePath, File dir) throws IOException {
+		extractFile(sourcePath, crc(readFile(sourcePath)), new File(dir, new File(sourcePath).getName()));
+	}
+
+	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
+	 * @return null if a writable path could not be found. */
 	private File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
-		File idealFile = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
-			+ dirName, fileName);
+		File idealFile = new File(
+			System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + dirName, fileName);
 		if (canWrite(idealFile)) return idealFile;
 
 		// System provided temp directory.
@@ -183,7 +197,10 @@ public class SharedLibraryLoader {
 		file = new File(".temp/" + dirName, fileName);
 		if (canWrite(file)) return file;
 
-		return idealFile; // Will likely fail, but we did our best.
+		// We are running in the OS X sandbox.
+		if (System.getenv("APP_SANDBOX_CONTAINER_ID") != null) return idealFile;
+
+		return null;
 	}
 
 	/** Returns true if the parent directories of the file can be created and the file can be written. */
@@ -248,7 +265,8 @@ public class SharedLibraryLoader {
 				input.close();
 				output.close();
 			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(), ex);
+				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(),
+					ex);
 			}
 		}
 
@@ -299,7 +317,6 @@ public class SharedLibraryLoader {
 			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
 			return null;
 		} catch (Throwable ex) {
-			ex.printStackTrace();
 			return ex;
 		}
 	}

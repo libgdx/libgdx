@@ -28,17 +28,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.tools.hiero.HieroSettings;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 // BOZO - Look at actual pixels to determine glyph size, current size sometimes selects blank pixels (eg Calibri, 45, 'o').
@@ -59,24 +67,20 @@ public class UnicodeFont {
 	private String ttfFileRef;
 	private int ascent, descent, leading, spaceWidth;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private final List glyphPages = new ArrayList();
-	private final List queuedGlyphs = new ArrayList(256);
-	private final List effects = new ArrayList();
+	private final List<GlyphPage> glyphPages = new ArrayList();
+	private final List<Glyph> queuedGlyphs = new ArrayList(256);
+	private final List<Effect> effects = new ArrayList();
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private Glyph missingGlyph;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
-	private final DisplayList emptyDisplayList = new DisplayList();
-	private boolean nativeRendering;
+	RenderType renderType;
 
-	private int baseDisplayListID = -1;
-	int eldestDisplayListID;
-	private final LinkedHashMap displayLists = new LinkedHashMap(DISPLAY_LIST_CACHE_SIZE, 1, true) {
-		protected boolean removeEldestEntry (Entry eldest) {
-			DisplayList displayList = (DisplayList)eldest.getValue();
-			if (displayList != null) eldestDisplayListID = displayList.id;
-			return size() > DISPLAY_LIST_CACHE_SIZE;
-		}
-	};
+	BitmapFont bitmapFont;
+	private FreeTypeFontGenerator generator;
+	private BitmapFontCache cache;
+	private GlyphLayout layout;
+	private boolean mono;
+	private float gamma;
 
 	/** @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
 	 * @param hieroFileRef The file system or classpath location of the Hiero settings file. */
@@ -179,8 +183,8 @@ public class UnicodeFont {
 		}
 	}
 
-	/** Queues the glyphs in the ASCII character set (codepoints 32 through 255) to be loaded. Note that the glyphs are not actually
-	 * loaded until {@link #loadGlyphs()} is called. */
+	/** Queues the glyphs in the ASCII character set (codepoints 32 through 255) to be loaded. Note that the glyphs are not
+	 * actually loaded until {@link #loadGlyphs()} is called. */
 	public void addAsciiGlyphs () {
 		addGlyphs(32, 255);
 	}
@@ -209,12 +213,6 @@ public class UnicodeFont {
 		for (Iterator iter = queuedGlyphs.iterator(); iter.hasNext();) {
 			Glyph glyph = (Glyph)iter.next();
 			int codePoint = glyph.getCodePoint();
-
-			// Don't load an image for a glyph with nothing to display.
-			if (glyph.getWidth() == 0 || codePoint == ' ') {
-				iter.remove();
-				continue;
-			}
 
 			// Only load the first missing glyph.
 			if (glyph.isMissing()) {
@@ -246,36 +244,20 @@ public class UnicodeFont {
 		return true;
 	}
 
-	/** Clears all loaded and queued glyphs. */
-	public void clearGlyphs () {
-		for (int i = 0; i < PAGES; i++)
-			glyphs[i] = null;
-
+	/** Releases all resources used by this UnicodeFont. This method should be called when this UnicodeFont instance is no longer
+	 * needed. */
+	public void dispose () {
 		for (Iterator iter = glyphPages.iterator(); iter.hasNext();) {
 			GlyphPage page = (GlyphPage)iter.next();
 			page.getTexture().dispose();
 		}
-		glyphPages.clear();
-
-		if (baseDisplayListID != -1) {
-			GL11.glDeleteLists(baseDisplayListID, displayLists.size());
-			baseDisplayListID = -1;
+		if (bitmapFont != null) {
+			bitmapFont.dispose();
+			generator.dispose();
 		}
-
-		queuedGlyphs.clear();
-		missingGlyph = null;
 	}
 
-	/** Releases all resources used by this UnicodeFont. This method should be called when this UnicodeFont instance is no longer
-	 * needed. */
-	public void destroy () {
-		// The destroy() method is just to provide a consistent API for releasing resources.
-		clearGlyphs();
-	}
-
-	/** Identical to {@link #drawString(float, float, String, Color, int, int)} but returns a DisplayList which provides access to
-	 * the width and height of the text drawn. */
-	public void drawDisplayList (float x, float y, String text, Color color, int startIndex, int endIndex) {
+	public void drawString (float x, float y, String text, Color color, int startIndex, int endIndex) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		if (text.length() == 0) return;
 		if (color == null) throw new IllegalArgumentException("color cannot be null.");
@@ -283,12 +265,51 @@ public class UnicodeFont {
 		x -= paddingLeft;
 		y -= paddingTop;
 
-		String displayListKey = text.substring(startIndex, endIndex);
-
 		GL11.glColor4f(color.r, color.g, color.b, color.a);
-
 		GL11.glTranslatef(x, y, 0);
 
+		if (renderType == RenderType.FreeType && bitmapFont != null)
+			drawBitmap(text, startIndex, endIndex);
+		else
+			drawUnicode(text, startIndex, endIndex);
+
+		GL11.glTranslatef(-x, -y, 0);
+	}
+
+	static private final int X = 0, Y = 1, U = 3, V = 4;
+	static private final int X2 = 10, Y2 = 11, U2 = 13, V2 = 14;
+
+	private void drawBitmap (String text, int startIndex, int endIndex) {
+		BitmapFontData data = bitmapFont.getData();
+		int padY = paddingTop + paddingBottom + paddingAdvanceY;
+		data.setLineHeight(data.lineHeight + padY);
+		layout.setText(bitmapFont, text);
+		data.setLineHeight(data.lineHeight - padY);
+		for (GlyphRun run : layout.runs)
+			for (int i = 0, n = run.xAdvances.size; i < n; i++)
+				run.xAdvances.incr(i, paddingAdvanceX + paddingLeft + paddingRight);
+		cache.setText(layout, paddingLeft, paddingRight);
+
+		Array<TextureRegion> regions = bitmapFont.getRegions();
+		for (int i = 0, n = regions.size; i < n; i++) {
+			regions.get(i).getTexture().bind();
+			GL11.glBegin(GL11.GL_QUADS);
+			float[] vertices = cache.getVertices(i);
+			for (int ii = 0, nn = vertices.length; ii < nn; ii += 20) {
+				GL11.glTexCoord2f(vertices[ii + U], vertices[ii + V]);
+				GL11.glVertex3f(vertices[ii + X], vertices[ii + Y], 0);
+				GL11.glTexCoord2f(vertices[ii + U], vertices[ii + V2]);
+				GL11.glVertex3f(vertices[ii + X], vertices[ii + Y2], 0);
+				GL11.glTexCoord2f(vertices[ii + U2], vertices[ii + V2]);
+				GL11.glVertex3f(vertices[ii + X2], vertices[ii + Y2], 0);
+				GL11.glTexCoord2f(vertices[ii + U2], vertices[ii + V]);
+				GL11.glVertex3f(vertices[ii + X2], vertices[ii + Y], 0);
+			}
+			GL11.glEnd();
+		}
+	}
+
+	private void drawUnicode (String text, int startIndex, int endIndex) {
 		char[] chars = text.substring(0, endIndex).toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 
@@ -347,15 +368,9 @@ public class UnicodeFont {
 				extraY += getLineHeight();
 				lines++;
 				totalHeight = 0;
-			} else if (nativeRendering) offsetX += bounds.width;
+			} else if (renderType == RenderType.Native) offsetX += bounds.width;
 		}
 		if (lastBind != null) GL11.glEnd();
-
-		GL11.glTranslatef(-x, -y, 0);
-	}
-
-	public void drawString (float x, float y, String text, Color color, int startIndex, int endIndex) {
-		drawDisplayList(x, y, text, color, startIndex, endIndex);
 	}
 
 	public void drawString (float x, float y, String text) {
@@ -367,7 +382,7 @@ public class UnicodeFont {
 	}
 
 	/** Returns the glyph for the specified codePoint. If the glyph does not exist yet, it is created and queued to be loaded. */
-	private Glyph getGlyph (int glyphCode, int codePoint, Rectangle bounds, GlyphVector vector, int index) {
+	public Glyph getGlyph (int glyphCode, int codePoint, Rectangle bounds, GlyphVector vector, int index) {
 		if (glyphCode < 0 || glyphCode >= MAX_GLYPH_CODE) {
 			// GlyphVector#getGlyphCode sometimes returns negative numbers on OS X!?
 			return new Glyph(codePoint, bounds, vector, index, this) {
@@ -394,7 +409,7 @@ public class UnicodeFont {
 	private Rectangle getGlyphBounds (GlyphVector vector, int index, int codePoint) {
 		Rectangle bounds;
 		bounds = vector.getGlyphPixelBounds(index, GlyphPage.renderContext, 0, 0);
-		if (nativeRendering) {
+		if (renderType == RenderType.Native) {
 			if (bounds.width == 0 || bounds.height == 0)
 				bounds = new Rectangle();
 			else
@@ -461,6 +476,8 @@ public class UnicodeFont {
 	/** Returns the distance from the y drawing location to the top most pixel of the specified text. */
 	public int getYOffset (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
+
+		if (renderType == RenderType.FreeType && bitmapFont != null) return (int)bitmapFont.getAscent();
 
 		int index = text.indexOf('\n');
 		if (index != -1) text = text.substring(0, index);
@@ -589,12 +606,51 @@ public class UnicodeFont {
 		return effects;
 	}
 
-	public void setNativeRendering (boolean nativeRendering) {
-		this.nativeRendering = nativeRendering;
+	public boolean getMono () {
+		return mono;
 	}
 
-	public boolean getNativeRendering () {
-		return nativeRendering;
+	public void setMono (boolean mono) {
+		this.mono = mono;
+	}
+
+	public float getGamma () {
+		return gamma;
+	}
+
+	public void setGamma (float gamma) {
+		this.gamma = gamma;
+	}
+
+	public RenderType getRenderType () {
+		return renderType;
+	}
+
+	public void setRenderType (RenderType renderType) {
+		this.renderType = renderType;
+
+		if (renderType != RenderType.FreeType) {
+			if (bitmapFont != null) {
+				bitmapFont.dispose();
+				generator.dispose();
+			}
+		} else {
+			String fontFile = getFontFile();
+			if (fontFile != null) {
+				generator = new FreeTypeFontGenerator(Gdx.files.absolute(fontFile));
+				FreeTypeFontParameter param = new FreeTypeFontParameter();
+				param.size = font.getSize();
+				param.incremental = true;
+				param.flip = true;
+				param.mono = mono;
+				param.gamma = gamma;
+				bitmapFont = generator.generateFont(param);
+				if (bitmapFont.getData().missingGlyph == null)
+					bitmapFont.getData().missingGlyph = bitmapFont.getData().getGlyph('\ufffd');
+				cache = bitmapFont.newFontCache();
+				layout = new GlyphLayout();
+			}
+		}
 	}
 
 	/** Returns the path to the TTF file for this UnicodeFont, or null. If this UnicodeFont was created without specifying the TTF
@@ -603,8 +659,15 @@ public class UnicodeFont {
 		if (ttfFileRef == null) {
 			// Worst case if this UnicodeFont was loaded without a ttfFileRef, try to get the font file from Sun's classes.
 			try {
-				Object font2D = Class.forName("sun.font.FontManager").getDeclaredMethod("getFont2D", new Class[] {Font.class})
-					.invoke(null, new Object[] {font});
+				Object font2D;
+				try {
+					// Java 7+.
+					font2D = Class.forName("sun.font.FontUtilities").getDeclaredMethod("getFont2D", new Class[] {Font.class})
+						.invoke(null, new Object[] {font});
+				} catch (Throwable ignored) {
+					font2D = Class.forName("sun.font.FontManager").getDeclaredMethod("getFont2D", new Class[] {Font.class})
+						.invoke(null, new Object[] {font});
+				}
 				Field platNameField = Class.forName("sun.font.PhysicalFont").getDeclaredField("platName");
 				platNameField.setAccessible(true);
 				ttfFileRef = (String)platNameField.get(font2D);
@@ -630,19 +693,11 @@ public class UnicodeFont {
 	/** Sorts glyphs by height, tallest first. */
 	static private final Comparator heightComparator = new Comparator() {
 		public int compare (Object o1, Object o2) {
-			return ((Glyph)o1).getHeight() - ((Glyph)o2).getHeight();
+			return ((Glyph)o2).getHeight() - ((Glyph)o1).getHeight();
 		}
 	};
 
-	public class DisplayList {
-		boolean invalid;
-		int id;
-		Short yOffset;
-
-		public short width, height;
-		public Object userData;
-
-		DisplayList () {
-		}
+	static public enum RenderType {
+		Java, Native, FreeType
 	}
 }

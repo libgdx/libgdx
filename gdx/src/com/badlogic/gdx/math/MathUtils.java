@@ -20,7 +20,7 @@ import java.util.Random;
 
 /** Utility and fast math functions.
  * <p>
- * Thanks to Riven on JavaGaming.org for the basis of sin/cos/atan2/floor/ceil.
+ * Thanks to Riven on JavaGaming.org for the basis of sin/cos/floor/ceil.
  * @author Nathan Sweet */
 public final class MathUtils {
 	static public final float nanoToSec = 1 / 1000000000f;
@@ -50,6 +50,7 @@ public final class MathUtils {
 
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
+
 		static {
 			for (int i = 0; i < SIN_COUNT; i++)
 				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
@@ -80,52 +81,22 @@ public final class MathUtils {
 
 	// ---
 
-	static private final int ATAN2_BITS = 7; // Adjust for accuracy.
-	static private final int ATAN2_BITS2 = ATAN2_BITS << 1;
-	static private final int ATAN2_MASK = ~(-1 << ATAN2_BITS2);
-	static private final int ATAN2_COUNT = ATAN2_MASK + 1;
-	static final int ATAN2_DIM = (int)Math.sqrt(ATAN2_COUNT);
-	static private final float INV_ATAN2_DIM_MINUS_1 = 1.0f / (ATAN2_DIM - 1);
-
-	static private class Atan2 {
-		static final float[] table = new float[ATAN2_COUNT];
-		static {
-			for (int i = 0; i < ATAN2_DIM; i++) {
-				for (int j = 0; j < ATAN2_DIM; j++) {
-					float x0 = (float)i / ATAN2_DIM;
-					float y0 = (float)j / ATAN2_DIM;
-					table[j * ATAN2_DIM + i] = (float)Math.atan2(y0, x0);
-				}
-			}
-		}
-	}
-
-	/** Returns atan2 in radians from a lookup table. */
+	/** Returns atan2 in radians, faster but less accurate than Math.atan2. Average error of 0.00231 radians (0.1323 degrees),
+	 * largest error of 0.00488 radians (0.2796 degrees). */
 	static public float atan2 (float y, float x) {
-		float add, mul;
-		if (x < 0) {
-			if (y < 0) {
-				y = -y;
-				mul = 1;
-			} else
-				mul = -1;
-			x = -x;
-			add = -PI;
-		} else {
-			if (y < 0) {
-				y = -y;
-				mul = -1;
-			} else
-				mul = 1;
-			add = 0;
+		if (x == 0f) {
+			if (y > 0f) return PI / 2;
+			if (y == 0f) return 0f;
+			return -PI / 2;
 		}
-		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
-
-		if (invDiv == Float.POSITIVE_INFINITY) return ((float)Math.atan2(y, x) + add) * mul;
-
-		int xi = (int)(x * invDiv);
-		int yi = (int)(y * invDiv);
-		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
+		final float atan, z = y / x;
+		if (Math.abs(z) < 1f) {
+			atan = z / (1f + 0.28f * z * z);
+			if (x < 0f) return atan + (y < 0f ? -PI : PI);
+			return atan;
+		}
+		atan = PI / 2 - z / (z * z + 0.28f);
+		return y < 0f ? atan - PI : atan;
 	}
 
 	// ---
@@ -202,11 +173,11 @@ public final class MathUtils {
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where the
 	 * {@code mode} argument defaults to the midpoint between the bounds, giving a symmetric distribution.
 	 * <p>
-	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (max - min) * .5f)}
+	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (min + max) * .5f)}
 	 * @param min the lower limit
 	 * @param max the upper limit */
 	public static float randomTriangular (float min, float max) {
-		return randomTriangular(min, max, min + (max - min) * 0.5f);
+		return randomTriangular(min, max, (min + max) * 0.5f);
 	}
 
 	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values
@@ -278,6 +249,30 @@ public final class MathUtils {
 		return fromValue + (toValue - fromValue) * progress;
 	}
 
+	/** Linearly interpolates between two angles in radians. Takes into account that angles wrap at two pi and always takes the
+	 * direction with the smallest delta angle.
+	 * 
+	 * @param fromRadians start angle in radians
+	 * @param toRadians target angle in radians
+	 * @param progress interpolation value in the range [0, 1]
+	 * @return the interpolated angle in the range [0, PI2[ */
+	public static float lerpAngle (float fromRadians, float toRadians, float progress) {
+		float delta = ((toRadians - fromRadians + PI2 + PI) % PI2) - PI;
+		return (fromRadians + delta * progress + PI2) % PI2;
+	}
+
+	/** Linearly interpolates between two angles in degrees. Takes into account that angles wrap at 360 degrees and always takes
+	 * the direction with the smallest delta angle.
+	 * 
+	 * @param fromDegrees start angle in degrees
+	 * @param toDegrees target angle in degrees
+	 * @param progress interpolation value in the range [0, 1]
+	 * @return the interpolated angle in the range [0, 360[ */
+	public static float lerpAngleDeg (float fromDegrees, float toDegrees, float progress) {
+		float delta = ((toDegrees - fromDegrees + 360 + 180) % 360) - 180;
+		return (fromDegrees + delta * progress + 360) % 360;
+	}
+
 	// ---
 
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
@@ -288,37 +283,37 @@ public final class MathUtils {
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
-	static public int floor (float x) {
-		return (int)(x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
+	static public int floor (float value) {
+		return (int)(value + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats that are
 	 * positive. Note this method simply casts the float to int. */
-	static public int floorPositive (float x) {
-		return (int)x;
+	static public int floorPositive (float value) {
+		return (int)value;
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
-	static public int ceil (float x) {
-		return (int)(x + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
+	static public int ceil (float value) {
+		return (int)(value + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that
 	 * are positive. */
-	static public int ceilPositive (float x) {
-		return (int)(x + CEIL);
+	static public int ceilPositive (float value) {
+		return (int)(value + CEIL);
 	}
 
 	/** Returns the closest integer to the specified float. This method will only properly round floats from -(2^14) to
 	 * (Float.MAX_VALUE - 2^14). */
-	static public int round (float x) {
-		return (int)(x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+	static public int round (float value) {
+		return (int)(value + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
 	}
 
 	/** Returns the closest integer to the specified float. This method will only properly round floats that are positive. */
-	static public int roundPositive (float x) {
-		return (int)(x + 0.5f);
+	static public int roundPositive (float value) {
+		return (int)(value + 0.5f);
 	}
 
 	/** Returns true if the value is zero (using the default tolerance as upper bound) */
@@ -347,13 +342,13 @@ public final class MathUtils {
 		return Math.abs(a - b) <= tolerance;
 	}
 
-	/** @return the logarithm of x with base a */
-	static public float log (float a, float x) {
-		return (float)(Math.log(x) / Math.log(a));
+	/** @return the logarithm of value with base a */
+	static public float log (float a, float value) {
+		return (float)(Math.log(value) / Math.log(a));
 	}
 
-	/** @return the logarithm of x with base 2 */
-	static public float log2 (float x) {
-		return log(2, x);
+	/** @return the logarithm of value with base 2 */
+	static public float log2 (float value) {
+		return log(2, value);
 	}
 }

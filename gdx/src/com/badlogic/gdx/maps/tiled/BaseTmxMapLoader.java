@@ -1,6 +1,14 @@
 
 package com.badlogic.gdx.maps.tiled;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -15,8 +23,8 @@ import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Base64Coder;
@@ -24,12 +32,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
 
 public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>> extends AsynchronousAssetLoader<TiledMap, P> {
 
@@ -42,6 +44,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		public TextureFilter textureMagFilter = TextureFilter.Nearest;
 		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
 		public boolean convertObjectToTileSpace = false;
+		/** Whether to flip all Y coordinates so that Y positive is down. All LibGDX renderers require flipped Y coordinates, and
+		 * thus flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
+		public boolean flipY = true;
 	}
 
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -52,6 +57,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
 	protected boolean convertObjectToTileSpace;
+	protected boolean flipY = true;
 
 	protected int mapTileWidth;
 	protected int mapTileHeight;
@@ -87,7 +93,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					if (tile != null) {
 						Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 						cell.setTile(tile);
-						layer.setCell(x, height - 1 - y, cell);
+						layer.setCell(x, flipY ? height - 1 - y : y, cell);
 					}
 				}
 			}
@@ -121,7 +127,10 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected void loadImageLayer (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			int x = Integer.parseInt(element.getAttribute("x", "0"));
-			int y = mapHeightInPixels - Integer.parseInt(element.getAttribute("y", "0"));
+			int y = Integer.parseInt(element.getAttribute("y", "0"));
+
+			if (flipY) y = mapHeightInPixels - y;
+
 			TextureRegion texture = null;
 
 			Element image = element.getChildByName("image");
@@ -164,7 +173,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
 			float x = element.getFloatAttribute("x", 0) * scaleX;
-			float y = (mapHeightInPixels - element.getFloatAttribute("y", 0)) * scaleY;
+			float y = (flipY ? (mapHeightInPixels - element.getFloatAttribute("y", 0)) : element.getFloatAttribute("y", 0)) * scaleY;
 
 			float width = element.getFloatAttribute("width", 0) * scaleX;
 			float height = element.getFloatAttribute("height", 0) * scaleY;
@@ -177,7 +186,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
+						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
 					}
 					Polygon polygon = new Polygon(vertices);
 					polygon.setPosition(x, y);
@@ -188,28 +197,36 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
+						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
 					}
 					Polyline polyline = new Polyline(vertices);
 					polyline.setPosition(x, y);
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
-					object = new EllipseMapObject(x, y - height, width, height);
+					object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
 				}
 			}
 			if (object == null) {
-				int gid = -1;
-				if ((gid = element.getIntAttribute("gid", -1)) != -1) {
-					TiledMapTile tile = map.getTileSets().getTile(gid);
-					TextureMapObject textureMapObject = new TextureMapObject(tile.getTextureRegion());
-					textureMapObject.setX(x);
-					textureMapObject.setY(y - height);
-					textureMapObject.setScaleX(scaleX);
-					textureMapObject.setScaleY(scaleY);
-					textureMapObject.setRotation(element.getFloatAttribute("rotation", 0));
-					object = textureMapObject;
+				String gid = null;
+				if ((gid = element.getAttribute("gid", null)) != null) {
+					int id = (int)Long.parseLong(gid);
+					boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+					boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+
+					TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
+					TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally, flipVertically);
+					TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
+					tiledMapTileMapObject.getProperties().put("gid", id);
+					tiledMapTileMapObject.setX(x);
+					tiledMapTileMapObject.setY(flipY ? y : y - height);
+					float objectWidth = element.getFloatAttribute("width", textureRegion.getRegionWidth());
+					float objectHeight = element.getFloatAttribute("height", textureRegion.getRegionHeight());
+					tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
+					tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
+					tiledMapTileMapObject.setRotation(element.getFloatAttribute("rotation", 0));
+					object = tiledMapTileMapObject;
 				} else {
-					object = new RectangleMapObject(x, y - height, width, height);
+					object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
 				}
 			}
 			object.setName(element.getAttribute("name", null));
@@ -221,12 +238,12 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
-			int gid = element.getIntAttribute("gid", -1);
-			if (gid != -1) {
-				object.getProperties().put("gid", gid);
+			int id = element.getIntAttribute("id", 0);
+			if (id != 0) {
+				object.getProperties().put("id", id);
 			}
-			object.getProperties().put("x", x * scaleX);
-			object.getProperties().put("y", (y - height) * scaleY);
+			object.getProperties().put("x", x);
+			object.getProperties().put("y", (flipY ? y - height : y));
 			object.getProperties().put("width", width);
 			object.getProperties().put("height", height);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
@@ -294,9 +311,9 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 						if (compression == null)
 							is = new ByteArrayInputStream(bytes);
 						else if (compression.equals("gzip"))
-							is = new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length);
+							is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
 						else if (compression.equals("zlib"))
-							is = new InflaterInputStream(new ByteArrayInputStream(bytes));
+							is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
 						else
 							throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
 
@@ -330,7 +347,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	}
 
 	protected static int unsignedByteToInt (byte b) {
-		return (int)b & 0xFF;
+		return b & 0xFF;
 	}
 
 	protected static FileHandle getRelativeFileHandle (FileHandle file, String path) {

@@ -18,27 +18,31 @@ package com.badlogic.gdx.tests.superkoalio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-/** Super Mario Brothers like very basic platformer, using a tile map build via <a href="http://www.mapeditor.org/">Tiled</a> and a
+/** Super Mario Brothers-like very basic platformer, using a tile map built using <a href="http://www.mapeditor.org/">Tiled</a> and a
  * tileset and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a></p>
- * 
- * Shows simple platformer collision detection as well as on-the-fly map modifications through destructable blocks!
+ *
+ * Shows simple platformer collision detection as well as on-the-fly map modifications through destructible blocks!
  * @author mzechner */
 public class SuperKoalio extends GdxTest {
 	/** The player character, has state and state time, */
@@ -79,6 +83,9 @@ public class SuperKoalio extends GdxTest {
 
 	private static final float GRAVITY = -2.5f;
 
+	private boolean debug = false;
+	private ShapeRenderer debugRenderer;
+
 	@Override
 	public void create () {
 		// load the koala frames, split them, and assign them to Animations
@@ -107,6 +114,8 @@ public class SuperKoalio extends GdxTest {
 		// create the Koala we want to move around the world
 		koala = new Koala();
 		koala.position.set(20, 20);
+
+		debugRenderer = new ShapeRenderer();
 	}
 
 	@Override
@@ -125,23 +134,28 @@ public class SuperKoalio extends GdxTest {
 		camera.position.x = koala.position.x;
 		camera.update();
 
-		// set the tile map rendere view based on what the
-		// camera sees and render the map
+		// set the TiledMapRenderer view based on what the
+		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
 
 		// render the koala
 		renderKoala(deltaTime);
-	}
 
-	private Vector2 tmp = new Vector2();
+		// render debug rectangles
+		if (debug) renderDebug();
+	}
 
 	private void updateKoala (float deltaTime) {
 		if (deltaTime == 0) return;
+
+		if (deltaTime > 0.1f)
+			deltaTime = 0.1f;
+
 		koala.stateTime += deltaTime;
 
 		// check input and apply to velocity & state
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || isTouched(0.75f, 1)) && koala.grounded) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || isTouched(0.5f, 1)) && koala.grounded) {
 			koala.velocity.y += Koala.JUMP_VELOCITY;
 			koala.state = Koala.State.Jumping;
 			koala.grounded = false;
@@ -159,15 +173,17 @@ public class SuperKoalio extends GdxTest {
 			koala.facesRight = true;
 		}
 
+		if (Gdx.input.isKeyJustPressed(Keys.B))
+			debug = !debug;
+
 		// apply gravity if we are falling
 		koala.velocity.add(0, GRAVITY);
 
 		// clamp the velocity to the maximum, x-axis only
-		if (Math.abs(koala.velocity.x) > Koala.MAX_VELOCITY) {
-			koala.velocity.x = Math.signum(koala.velocity.x) * Koala.MAX_VELOCITY;
-		}
+		koala.velocity.x = MathUtils.clamp(koala.velocity.x,
+				-Koala.MAX_VELOCITY, Koala.MAX_VELOCITY);
 
-		// clamp the velocity to 0 if it's < 1, and set the state to standign
+		// If the velocity is < 1, set it to 0 and set state to Standing
 		if (Math.abs(koala.velocity.x) < 1) {
 			koala.velocity.x = 0;
 			if (koala.grounded) koala.state = Koala.State.Standing;
@@ -200,7 +216,7 @@ public class SuperKoalio extends GdxTest {
 		}
 		koalaRect.x = koala.position.x;
 
-		// if the koala is moving upwards, check the tiles to the top of it's
+		// if the koala is moving upwards, check the tiles to the top of its
 		// top bounding box edge, otherwise check the ones to the bottom
 		if (koala.velocity.y > 0) {
 			startY = endY = (int)(koala.position.y + Koala.HEIGHT + koala.velocity.y);
@@ -219,7 +235,7 @@ public class SuperKoalio extends GdxTest {
 				if (koala.velocity.y > 0) {
 					koala.position.y = tile.y - Koala.HEIGHT;
 					// we hit a block jumping upwards, let's destroy it!
-					TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
+					TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
 					layer.setCell((int)tile.x, (int)tile.y, null);
 				} else {
 					koala.position.y = tile.y + tile.height;
@@ -240,14 +256,13 @@ public class SuperKoalio extends GdxTest {
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
-
 	}
 
 	private boolean isTouched (float startX, float endX) {
-		// check if any finge is touch the area between startX and endX
+		// Check for touch inputs between startX and endX
 		// startX/endX are given between 0 (left edge of the screen) and 1 (right edge of the screen)
 		for (int i = 0; i < 2; i++) {
-			float x = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
+			float x = Gdx.input.getX(i) / (float)Gdx.graphics.getWidth();
 			if (Gdx.input.isTouched(i) && (x >= startX && x <= endX)) {
 				return true;
 			}
@@ -256,7 +271,7 @@ public class SuperKoalio extends GdxTest {
 	}
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
-		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
 		rectPool.freeAll(tiles);
 		tiles.clear();
 		for (int y = startY; y <= endY; y++) {
@@ -297,6 +312,27 @@ public class SuperKoalio extends GdxTest {
 			batch.draw(frame, koala.position.x + Koala.WIDTH, koala.position.y, -Koala.WIDTH, Koala.HEIGHT);
 		}
 		batch.end();
+	}
+
+	private void renderDebug () {
+		debugRenderer.setProjectionMatrix(camera.combined);
+		debugRenderer.begin(ShapeType.Line);
+
+		debugRenderer.setColor(Color.RED);
+		debugRenderer.rect(koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
+
+		debugRenderer.setColor(Color.YELLOW);
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
+		for (int y = 0; y <= layer.getHeight(); y++) {
+			for (int x = 0; x <= layer.getWidth(); x++) {
+				Cell cell = layer.getCell(x, y);
+				if (cell != null) {
+					if (camera.frustum.boundsInFrustum(x + 0.5f, y + 0.5f, 0, 1, 1, 0))
+						debugRenderer.rect(x, y, 1, 1);
+				}
+			}
+		}
+		debugRenderer.end();
 	}
 
 	@Override

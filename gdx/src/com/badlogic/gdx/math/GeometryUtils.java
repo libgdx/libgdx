@@ -98,7 +98,6 @@ public final class GeometryUtils {
 	static public boolean colinear (float x1, float y1, float x2, float y2, float x3, float y3) {
 		float dx21 = x2 - x1, dy21 = y2 - y1;
 		float dx32 = x3 - x2, dy32 = y3 - y2;
-		float dx13 = x1 - x3, dy13 = y1 - y3;
 		float det = dx32 * dy21 - dx21 * dy32;
 		return Math.abs(det) < MathUtils.FLOAT_ROUNDING_ERROR;
 	}
@@ -165,9 +164,14 @@ public final class GeometryUtils {
 		x += (x0 + x1) * a;
 		y += (y0 + y1) * a;
 
-		signedArea *= 0.5f;
-		centroid.x = x / (6 * signedArea);
-		centroid.y = y / (6 * signedArea);
+		if (signedArea == 0) {
+			centroid.x = 0;
+			centroid.y = 0;
+		} else {
+			signedArea *= 0.5f;
+			centroid.x = x / (6 * signedArea);
+			centroid.y = y / (6 * signedArea);
+		}
 		return centroid;
 	}
 
@@ -178,7 +182,11 @@ public final class GeometryUtils {
 			int x1 = i;
 			int y1 = i + 1;
 			int x2 = (i + 2) % n;
+			if(x2 < offset)
+				x2 += offset;
 			int y2 = (i + 3) % n;
+			if(y2 < offset)
+				y2 += offset;
 			area += polygon[x1] * polygon[y2];
 			area -= polygon[x2] * polygon[y1];
 		}

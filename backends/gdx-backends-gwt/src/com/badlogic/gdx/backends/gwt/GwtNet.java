@@ -24,7 +24,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.HttpStatus;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -79,13 +81,16 @@ public class GwtNet implements Net {
 			Map<String, List<String>> headers = new HashMap<String, List<String>>();
 			Header[] responseHeaders = response.getHeaders();
 			for (int i = 0; i < responseHeaders.length; i++) {
-				String headerName = responseHeaders[i].getName();
-				List<String> headerValues = headers.get(headerName);
-				if (headerValues == null) {
-					headerValues = new ArrayList<String>();
-					headers.put(headerName, headerValues);
+				Header header = responseHeaders[i];
+				if (header != null) {
+					String headerName = responseHeaders[i].getName();
+					List<String> headerValues = headers.get(headerName);
+					if (headerValues == null) {
+						headerValues = new ArrayList<String>();
+						headers.put(headerName, headerValues);
+					}
+					headerValues.add(responseHeaders[i].getValue());
 				}
-				headerValues.add(responseHeaders[i].getValue());
 			}
 			return headers;
 		}
@@ -141,6 +146,8 @@ public class GwtNet implements Net {
 
 		builder.setTimeoutMillis(httpRequest.getTimeOut());
 
+		builder.setIncludeCredentials(httpRequest.getIncludeCredentials());
+		
 		try {
 			Request request = builder.sendRequest(valueInBody ? value : null, new RequestCallback() {
 
@@ -179,6 +186,11 @@ public class GwtNet implements Net {
 			listeners.remove(httpRequest);
 		}
 	}
+	
+	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
@@ -191,7 +203,8 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
+	public boolean openURI (String URI) {
 		Window.open(URI, "_blank", null);
+		return true;
 	}
 }

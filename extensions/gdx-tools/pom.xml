@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.5.4-SNAPSHOT</version>
+    <version>1.9.3-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -28,36 +28,18 @@
       <artifactId>gdx-backend-headless</artifactId>
       <version>${project.version}</version>
     </dependency>
-
+    
     <dependency>
-      <groupId>de.matthiasmann</groupId>
-      <artifactId>javafreetype</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/libs/JavaFreeType.jar</systemPath>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-freetype</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>de.matthiasmann</groupId>
-      <artifactId>themeeditor</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/libs/TWLThemeEditor.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>org.xmlpull</groupId>
-      <artifactId>xpp3</artifactId>
-      <version>1.1.4c</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/libs/xpp3-1.1.4c.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>3.0.9</version>
-      <scope>provided</scope>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx-freetype-platform</artifactId>
+      <version>${project.version}</version>
+      <classifier>natives-desktop</classifier>
     </dependency>
 
     <dependency>

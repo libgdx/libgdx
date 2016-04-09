@@ -101,6 +101,10 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 				if (Math.abs(velY) < 0.01f) velY = 0;
 			}
 		}
+
+		@Override
+		public void pinchStop () {
+		}
 	}
 
 	@Override

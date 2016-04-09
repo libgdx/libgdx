@@ -159,14 +159,14 @@ public class JsonReader implements BaseJsonReader {
 						if (couldBeDouble) {
 							try {
 								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-								number(name, Double.parseDouble(value));
+								number(name, Double.parseDouble(value), value);
 								break outer;
 							} catch (NumberFormatException ignored) {
 							}
 						} else if (couldBeLong) {
 							if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 							try {
-								number(name, Long.parseLong(value));
+								number(name, Long.parseLong(value), value);
 								break outer;
 							} catch (NumberFormatException ignored) {
 							}
@@ -264,7 +264,7 @@ public class JsonReader implements BaseJsonReader {
 					}
 				}
 				p--;
-				while (data[p] == ' ')
+				while (Character.isSpace(data[p]))
 					p--;
 			}
 			action quotedChars {
@@ -317,8 +317,9 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
+			int start = Math.max(0, p - 32);
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
-				+ new String(data, p, Math.min(256, pe - p)), parseRuntimeEx);
+				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -344,6 +345,7 @@ public class JsonReader implements BaseJsonReader {
 			current = child;
 			root = child;
 		} else if (current.isArray() || current.isObject()) {
+			child.parent = current;
 			if (current.size == 0)
 				current.child = child;
 			else {
@@ -381,12 +383,12 @@ public class JsonReader implements BaseJsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, double value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, long value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
 	protected void bool (String name, boolean value) {

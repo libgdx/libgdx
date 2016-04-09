@@ -35,9 +35,9 @@ public class PixmapPackerIO {
 	
 	/** Additional parameters which will be used when writing a PixmapPacker. */
 	public static class SaveParameters {
-		ImageFormat format = ImageFormat.PNG;
-		TextureFilter minFilter = TextureFilter.Nearest;
-		TextureFilter magFilter = TextureFilter.Nearest;
+		public ImageFormat format = ImageFormat.PNG;
+		public TextureFilter minFilter = TextureFilter.Nearest;
+		public TextureFilter magFilter = TextureFilter.Nearest;
 	}
 
 	/** Saves the provided PixmapPacker to the provided file. The resulting file will use the standard TextureAtlas file format and

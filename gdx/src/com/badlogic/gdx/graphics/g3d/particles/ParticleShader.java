@@ -179,7 +179,7 @@ public class ParticleShader extends BaseShader {
 		this.program = shaderProgram;
 		this.renderable = renderable;
 		materialMask = renderable.material.getMask() | optionalAttributes;
-		vertexMask = renderable.mesh.getVertexAttributes().getMask();
+		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
 
 		if (!config.ignoreUnimplemented && (implementedFlags & materialMask) != materialMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+materialMask+")");
@@ -227,7 +227,7 @@ public class ParticleShader extends BaseShader {
 	@Override
 	public boolean canRender(final Renderable renderable) {
 		return (materialMask == (renderable.material.getMask() | optionalAttributes)) && 
-			(vertexMask == renderable.mesh.getVertexAttributes().getMask());
+			(vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMask());
 	}
 	
 	@Override

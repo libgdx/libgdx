@@ -16,13 +16,15 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Arrays;
-import java.util.List;
+import com.badlogic.gdx.utils.FloatArray;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -33,7 +35,8 @@ public final class Intersector {
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
-
+	private final static FloatArray floatArray = new FloatArray();
+	private final static FloatArray floatArray2 = new FloatArray();
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
 	 * check is performed that this is the case.
 	 * 
@@ -137,6 +140,74 @@ public final class Intersector {
 			j = i;
 		}
 		return oddNodes;
+	}
+
+	private final static Vector2 ip = new Vector2();
+	private final static Vector2 ep1 = new Vector2();
+	private final static Vector2 ep2 = new Vector2();
+	private final static Vector2 s = new Vector2();
+	private final static Vector2 e = new Vector2();
+
+	/** Intersects two resulting polygons with the same winding and sets the overlap polygon
+	 *  resulting from the intersection.
+	 *  Follows the Sutherland-Hodgman algorithm.
+	 *
+	 * @param p1 The polygon that is being clipped
+	 * @param p2 The clip polygon
+	 * @param overlap The intersection of the two polygons (optional)
+	 * @return Whether the two polygons intersect.
+	 */
+	public static boolean intersectPolygons (Polygon p1, Polygon p2, Polygon overlap) {
+		//reusable points to trace edges around polygon
+		floatArray2.clear();
+		floatArray.clear();
+		floatArray2.addAll(p1.getTransformedVertices());
+		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
+			return false;
+		}
+		for (int i = 0; i < p2.getTransformedVertices().length; i += 2) {
+			ep1.set(p2.getTransformedVertices()[i], p2.getTransformedVertices()[i+1]);
+			//wrap around to beginning of array if index points to end;
+			if (i < p2.getTransformedVertices().length - 2) {
+				ep2.set(p2.getTransformedVertices()[i + 2], p2.getTransformedVertices()[i + 3]);
+			} else {
+				ep2.set(p2.getTransformedVertices()[0], p2.getTransformedVertices()[1]);
+			}
+			if (floatArray2.size == 0) {
+				return false;
+			}
+			s.set(floatArray2.get(floatArray2.size - 2), floatArray2.get(floatArray2.size - 1));
+			for (int j = 0; j < floatArray2.size; j += 2) {
+				e.set(floatArray2.get(j), floatArray2.get(j + 1));
+				//determine if point is inside clip edge
+				if (Intersector.pointLineSide(ep2, ep1, e) > 0) {
+					if (!(Intersector.pointLineSide(ep2, ep1, s) > 0)) {
+						Intersector.intersectLines(s, e, ep1, ep2, ip);
+						if (floatArray.size < 2 || floatArray.get(floatArray.size-2) != ip.x || floatArray.get(floatArray.size-1) != ip.y)
+						{
+							floatArray.add(ip.x);
+							floatArray.add(ip.y);
+						}
+					}
+					floatArray.add(e.x);
+					floatArray.add(e.y);
+				} else if (Intersector.pointLineSide(ep2, ep1, s) > 0) {
+					Intersector.intersectLines(s, e, ep1, ep2, ip);
+					floatArray.add(ip.x);
+					floatArray.add(ip.y);
+				}
+				s.set(e.x, e.y);
+			}
+			floatArray2.clear();
+			floatArray2.addAll(floatArray);
+			floatArray.clear();
+		}
+		if (! (floatArray2.size == 0)) {
+			overlap.setVertices(floatArray2.toArray());
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
@@ -312,32 +383,42 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return True in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
-		p.set(t1, t2, t3);
-		if (!intersectRayPlane(ray, p, i)) return false;
-
-		v0.set(t3).sub(t1);
-		v1.set(t2).sub(t1);
-		v2.set(i).sub(t1);
-
-		float dot00 = v0.dot(v0);
-		float dot01 = v0.dot(v1);
-		float dot02 = v0.dot(v2);
-		float dot11 = v1.dot(v1);
-		float dot12 = v1.dot(v2);
-
-		float denom = dot00 * dot11 - dot01 * dot01;
-		if (denom == 0) return false;
-
-		float u = (dot11 * dot02 - dot01 * dot12) / denom;
-		float v = (dot00 * dot12 - dot01 * dot02) / denom;
-
-		if (u >= 0 && v >= 0 && u + v <= 1) {
-			if (intersection != null) intersection.set(i);
-			return true;
-		} else {
+		Vector3 edge1 = v0.set(t2).sub(t1);
+		Vector3 edge2 = v1.set(t3).sub(t1);
+		
+		Vector3 pvec = v2.set(ray.direction).crs(edge2);
+		float det = edge1.dot(pvec);
+		if (MathUtils.isZero(det)) {
+			p.set(t1, t2, t3);
+			if (p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
+				if (intersection != null) intersection.set(ray.origin);
+				return true;
+			}
 			return false;
 		}
+		
+		det = 1.0f / det;
 
+		Vector3 tvec = i.set(ray.origin).sub(t1);
+		float u = tvec.dot(pvec) * det;
+		if (u < 0.0f || u > 1.0f) return false;
+		
+		Vector3 qvec = tvec.crs(edge1);
+		float v = ray.direction.dot(qvec) * det;
+		if (v < 0.0f || u + v > 1.0f) return false;
+		
+		float t = edge2.dot(qvec) * det;
+		if (t < 0) return false;
+		
+		if (intersection != null) {
+			if (t <= MathUtils.FLOAT_ROUNDING_ERROR) {
+				intersection.set(ray.origin);
+			} else {
+				ray.getEndPoint(intersection, t);
+			}
+		}
+		
+		return true;
 	}
 
 	private static final Vector3 dir = new Vector3();
@@ -363,15 +444,22 @@ public final class Intersector {
 	}
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
+	 * This intersection is defined as the point on the ray closest to the origin which is within the specified
+	 * bounds.
+	 * 
+	 * <p>The returned intersection (if any) is guaranteed to be within the bounds of the bounding box, but
+	 * it can occasionally diverge slightly from ray, due to small floating-point errors.</p>
+	 * 
+	 * <p>If the origin of the ray is inside the box, this method returns true and the intersection point is
+	 * set to the origin of the ray, accordingly to the definition above.</p>
 	 * 
 	 * @param ray The ray
 	 * @param box The box
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRayBounds (Ray ray, BoundingBox box, Vector3 intersection) {
-		v0.set(ray.origin).sub(box.min);
-		v1.set(ray.origin).sub(box.max);
-		if (v0.x > 0 && v0.y > 0 && v0.z > 0 && v1.x < 0 && v1.y < 0 && v1.z < 0) {
+		if (box.contains(ray.origin)) {
+			if (intersection != null) intersection.set(ray.origin);
 			return true;
 		}
 		float lowest = 0, t;
@@ -445,6 +533,21 @@ public final class Intersector {
 		}
 		if (hit && intersection != null) {
 			intersection.set(ray.direction).scl(lowest).add(ray.origin);
+			if (intersection.x < box.min.x) {
+				intersection.x = box.min.x;
+			} else if (intersection.x > box.max.x) {
+				intersection.x = box.max.x;
+			}
+			if (intersection.y < box.min.y) {
+				intersection.y = box.min.y;
+			} else if (intersection.y > box.max.y) {
+				intersection.y = box.max.y;
+			}
+			if (intersection.z < box.min.z) {
+				intersection.z = box.min.z;
+			} else if (intersection.z > box.max.z) {
+				intersection.z = box.max.z;
+			}
 		}
 		return hit;
 	}
@@ -454,13 +557,8 @@ public final class Intersector {
 	 * @param ray The ray
 	 * @param box The bounding box
 	 * @return Whether the ray and the bounding box intersect. */
-	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
-	 * 
-	 * @param ray The ray
-	 * @param box The bounding box
-	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		return intersectRayBoundsFast(ray, box.getCenter(), box.getDimensions());
+		return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
@@ -1004,7 +1102,7 @@ public final class Intersector {
 	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
 	 * </ul>
 	 * 
-	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, y3. One can add additional attributes per vertex which
+	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, z3. One can add additional attributes per vertex which
 	 * will be interpolated if split, such as texture coordinates or normals. Note that these additional attributes won't be
 	 * normalized, as might be necessary in case of normals.
 	 * 
@@ -1034,13 +1132,13 @@ public final class Intersector {
 
 		// set number of triangles
 		split.total = 3;
-		split.numFront = (r1 ? 1 : 0) + (r2 ? 1 : 0) + (r3 ? 1 : 0);
+		split.numFront = (r1 ? 0 : 1) + (r2 ? 0 : 1) + (r3 ? 0 : 1);
 		split.numBack = split.total - split.numFront;
 
 		// hard case, split the three edges on the plane
 		// determine which array to fill first, front or back, flip if we
 		// cross the plane
-		split.setSide(r1);
+		split.setSide(!r1);
 
 		// split first edge
 		int first = 0;
@@ -1123,51 +1221,7 @@ public final class Intersector {
 			split[offset + i] = a + t * (b - a);
 		}
 	}
-
-	public static void main (String[] args) {
-		Plane plane = new Plane(new Vector3(1, 0, 0), 0);
-		SplitTriangle split = new SplitTriangle(3);
-		float[] fTriangle = {-10, 0, 10, -1, 0, 0, -10, 0, 10};
-		Intersector.splitTriangle(fTriangle, plane, split);
-		System.out.println(split);
-
-		float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10};
-		Intersector.splitTriangle(triangle, plane, split);
-		System.out.println(split);
-
-		Circle c1 = new Circle(0, 0, 1);
-		Circle c2 = new Circle(0, 0, 1);
-		Circle c3 = new Circle(2, 0, 1);
-		Circle c4 = new Circle(0, 0, 2);
-		System.out.println("Circle test cases");
-		System.out.println(c1.overlaps(c1)); // true
-		System.out.println(c1.overlaps(c2)); // true
-		System.out.println(c1.overlaps(c3)); // false
-		System.out.println(c1.overlaps(c4)); // true
-		System.out.println(c4.overlaps(c1)); // true
-		System.out.println(c1.contains(0, 1)); // true
-		System.out.println(c1.contains(0, 2)); // false
-		System.out.println(c1.contains(c1)); // true
-		System.out.println(c1.contains(c4)); // false
-		System.out.println(c4.contains(c1)); // true
-
-		System.out.println("Rectangle test cases");
-		Rectangle r1 = new Rectangle(0, 0, 1, 1);
-		Rectangle r2 = new Rectangle(1, 0, 2, 1);
-		System.out.println(r1.overlaps(r1)); // true
-		System.out.println(r1.overlaps(r2)); // false
-		System.out.println(r1.contains(0, 0)); // true
-
-		System.out.println("BoundingBox test cases");
-		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
-		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
-		System.out.println(b1.contains(Vector3.Zero)); // true
-		System.out.println(b1.contains(b1)); // true
-		System.out.println(b1.contains(b2)); // false
-
-		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
-	}
-
+	
 	public static class SplitTriangle {
 		public float[] front;
 		public float[] back;
@@ -1221,8 +1275,13 @@ public final class Intersector {
 		}
 	}
 
+	/**
+	 * Minimum translation required to separate two polygons.
+	 */
 	public static class MinimumTranslationVector {
+		/** Unit length vector that indicates the direction for the separation */
 		public Vector2 normal = new Vector2();
+		/** Distance of the translation required for the separation */
 		public float depth = 0;
 	}
 }

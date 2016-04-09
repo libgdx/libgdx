@@ -152,6 +152,8 @@ public interface Net {
 
 		private boolean followRedirects = true;
 
+		private boolean includeCredentials = false;
+		
 		public HttpRequest () {
 			this.headers = new HashMap<String, String>();
 		}
@@ -210,6 +212,12 @@ public interface Net {
 			}
 		}
 
+		/** Sets whether a cross-origin request will include credentials. Only used on GWT backend to allow cross-origin requests
+		 * to include credentials such as cookies, authorization headers, etc... */
+		public void setIncludeCredentials (boolean includeCredentials) {
+			this.includeCredentials = includeCredentials;
+		}
+		
 		/** Sets the HTTP method of the HttpRequest. */
 		public void setMethod (String httpMethod) {
 			this.httpMethod = httpMethod;
@@ -254,6 +262,11 @@ public interface Net {
 		/** Returns whether 301 and 302 redirects are followed. By default true. Whether to follow redirects. */
 		public boolean getFollowRedirects () {
 			return followRedirects;
+		}
+		
+		/** Returns whether a cross-origin request will include credentials. By default false. */
+		public boolean getIncludeCredentials () {
+			return includeCredentials;
 		}
 
 		@Override
@@ -320,6 +333,16 @@ public interface Net {
 	public enum Protocol {
 		TCP
 	}
+	
+	/** Creates a new server socket on the given address and port, using the given {@link Protocol}, waiting for incoming connections.
+	 * 
+	 * @param hostname the hostname or ip address to bind the socket to
+	 * @param port the port to listen on
+	 * @param hints additional {@link ServerSocketHints} used to create the socket. Input null to use the default setting provided
+	 *           by the system.
+	 * @return the {@link ServerSocket}
+	 * @throws GdxRuntimeException in case the socket couldn't be opened */
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints);
 
 	/** Creates a new server socket on the given port, using the given {@link Protocol}, waiting for incoming connections.
 	 * 
@@ -341,8 +364,11 @@ public interface Net {
 
 	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the
 	 * application registered for handling URIs of the specified type is invoked. The application is determined from the protocol
-	 * and path of the URI.
+	 * and path of the URI. A best effort is made to open the given URI; however, since external applications are involved, no guarantee
+	 * can be made as to whether the URI was actually opened. If it is known that the URI was not opened, false will be returned; 
+	 * otherwise, true will be returned.
 	 * 
-	 * @param URI the URI to be opened. */
-	public void openURI (String URI);
+	 * @param URI the URI to be opened.
+	 * @return false if it is known the uri was not opened, true otherwise. */
+	public boolean openURI (String URI);
 }

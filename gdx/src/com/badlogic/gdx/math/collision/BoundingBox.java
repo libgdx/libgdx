@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /** Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the
  * bounding box's center, dimensions and corner points.
- * 
+ *
  * @author badlogicgames@gmail.com, Xoppa */
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
@@ -36,15 +36,6 @@ public class BoundingBox implements Serializable {
 
 	private final Vector3 cnt = new Vector3();
 	private final Vector3 dim = new Vector3();
-
-	@Deprecated private Vector3[] corners;
-
-	/** @deprecated Use {@link #getCenter(Vector3)}
-	 * @return the center of the bounding box */
-	@Deprecated
-	public Vector3 getCenter () {
-		return cnt;
-	}
 
 	/** @param out The {@link Vector3} to receive the center of the bounding box.
 	 * @return The vector specified with the out argument. */
@@ -62,30 +53,6 @@ public class BoundingBox implements Serializable {
 
 	public float getCenterZ () {
 		return cnt.z;
-	}
-
-	@Deprecated
-	protected void updateCorners () {
-	}
-
-	/** @deprecated Use the getCornerXYZ methods instead
-	 * @return the corners of this bounding box */
-	@Deprecated
-	public Vector3[] getCorners () {
-		if (corners == null) {
-			corners = new Vector3[8];
-			for (int i = 0; i < 8; i++)
-				corners[i] = new Vector3();
-		}
-		corners[0].set(min.x, min.y, min.z);
-		corners[1].set(max.x, min.y, min.z);
-		corners[2].set(max.x, max.y, min.z);
-		corners[3].set(min.x, max.y, min.z);
-		corners[4].set(min.x, min.y, max.z);
-		corners[5].set(max.x, min.y, max.z);
-		corners[6].set(max.x, max.y, max.z);
-		corners[7].set(min.x, max.y, max.z);
-		return corners;
 	}
 
 	public Vector3 getCorner000 (final Vector3 out) {
@@ -120,13 +87,6 @@ public class BoundingBox implements Serializable {
 		return out.set(max.x, max.y, max.z);
 	}
 
-	/** @deprecated Use {@link #getDimensions(Vector3)} instead
-	 * @return The dimensions of this bounding box on all three axis */
-	@Deprecated
-	public Vector3 getDimensions () {
-		return dim;
-	}
-
 	/** @param out The {@link Vector3} to receive the dimensions of this bounding box on all three axis.
 	 * @return The vector specified with the out argument */
 	public Vector3 getDimensions (final Vector3 out) {
@@ -145,24 +105,10 @@ public class BoundingBox implements Serializable {
 		return dim.z;
 	}
 
-	/** @deprecated Use {@link #getMin(Vector3)} instead.
-	 * @return The minimum vector */
-	@Deprecated
-	public Vector3 getMin () {
-		return min;
-	}
-
 	/** @param out The {@link Vector3} to receive the minimum values.
 	 * @return The vector specified with the out argument */
 	public Vector3 getMin (final Vector3 out) {
 		return out.set(min);
-	}
-
-	/** @deprecated Use {@link #getMax(Vector3)} instead
-	 * @return The maximum vector */
-	@Deprecated
-	public Vector3 getMax () {
-		return max;
 	}
 
 	/** @param out The {@link Vector3} to receive the maximum values.
@@ -177,14 +123,14 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Constructs a new bounding box from the given bounding box.
-	 * 
+	 *
 	 * @param bounds The bounding box to copy */
 	public BoundingBox (BoundingBox bounds) {
 		this.set(bounds);
 	}
 
 	/** Constructs the new bounding box using the given minimum and maximum vector.
-	 * 
+	 *
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector */
 	public BoundingBox (Vector3 minimum, Vector3 maximum) {
@@ -192,7 +138,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the given bounding box.
-	 * 
+	 *
 	 * @param bounds The bounds.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (BoundingBox bounds) {
@@ -200,7 +146,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the given minimum and maximum vector.
-	 * 
+	 *
 	 * @param minimum The minimum vector
 	 * @param maximum The maximum vector
 	 * @return This bounding box for chaining. */
@@ -215,7 +161,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.
-	 * 
+	 *
 	 * @param points The points.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (Vector3[] points) {
@@ -226,7 +172,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.
-	 * 
+	 *
 	 * @param points The points.
 	 * @return This bounding box for chaining. */
 	public BoundingBox set (List<Vector3> points) {
@@ -237,7 +183,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Sets the minimum and maximum vector to positive and negative infinity.
-	 * 
+	 *
 	 * @return This bounding box for chaining. */
 	public BoundingBox inf () {
 		min.set(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
@@ -268,7 +214,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Extends this bounding box by the given bounding box.
-	 * 
+	 *
 	 * @param a_bounds The bounding box
 	 * @return This bounding box for chaining. */
 	public BoundingBox ext (BoundingBox a_bounds) {
@@ -276,8 +222,18 @@ public class BoundingBox implements Serializable {
 			max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
 
+	/** Extends this bounding box by the given sphere.
+	 *
+	 * @param center Sphere center
+	 * @param radius Sphere radius
+	 * @return This bounding box for chaining. */
+	public BoundingBox ext (Vector3 center, float radius) {
+		return this.set(min.set(min(min.x, center.x - radius), min(min.y, center.y - radius), min(min.z, center.z - radius)),
+			max.set(max(max.x, center.x + radius), max(max.y, center.y + radius), max(max.z, center.z + radius)));
+	}
+
 	/** Extends this bounding box by the given transformed bounding box.
-	 * 
+	 *
 	 * @param bounds The bounding box
 	 * @param transform The transformation matrix to apply to bounds, before using it to extend this bounding box.
 	 * @return This bounding box for chaining. */
@@ -295,7 +251,7 @@ public class BoundingBox implements Serializable {
 
 	/** Multiplies the bounding box by the given matrix. This is achieved by multiplying the 8 corner points and then calculating
 	 * the minimum and maximum vectors from the transformed points.
-	 * 
+	 *
 	 * @param transform The matrix
 	 * @return This bounding box for chaining. */
 	public BoundingBox mul (Matrix4 transform) {
@@ -354,7 +310,7 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Extends the bounding box by the given vector.
-	 * 
+	 *
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate
 	 * @param z The z-coordinate

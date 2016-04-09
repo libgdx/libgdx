@@ -23,6 +23,7 @@ import java.awt.EventQueue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Application;
@@ -40,11 +41,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
-/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
- * EDT. This is slightly less efficient than a dedicated thread, but greatly simplifies synchronization. Note that you may need to
- * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
+/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses
+ * {@link Display#setParent(Canvas)}, which is preferred over {@link AWTGLCanvas} but is limited to a single LwjglCanvas in an
+ * application. All OpenGL calls are done on the EDT. Note that you may need to call {@link #stop()} or a Swing application may
+ * deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
+	static boolean isWindows = System.getProperty("os.name").contains("Windows");
+
 	LwjglGraphics graphics;
 	OpenALAudio audio;
 	LwjglFiles files;
@@ -104,14 +108,14 @@ public class LwjglCanvas implements Application {
 				LwjglCanvas.this.setTitle(title);
 			}
 
-			public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-				if (!super.setDisplayMode(width, height, fullscreen)) return false;
+			public boolean setWindowedMode (int width, int height, boolean fullscreen) {
+				if (!super.setWindowedMode(width, height)) return false;
 				if (!fullscreen) LwjglCanvas.this.setDisplayMode(width, height);
 				return true;
 			}
 
-			public boolean setDisplayMode (DisplayMode displayMode) {
-				if (!super.setDisplayMode(displayMode)) return false;
+			public boolean setFullscreenMode (DisplayMode displayMode) {
+				if (!super.setFullscreenMode(displayMode)) return false;
 				LwjglCanvas.this.setDisplayMode(displayMode.width, displayMode.height);
 				return true;
 			}
@@ -207,6 +211,7 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					Display.processMessages();
+					if (cursor != null || !isWindows) canvas.setCursor(cursor);
 
 					boolean shouldRender = false;
 
@@ -238,8 +243,6 @@ public class LwjglCanvas implements Application {
 						Display.update(false);
 					}
 
-					canvas.setCursor(cursor);
-
 					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
 					exception(ex);
@@ -256,8 +259,9 @@ public class LwjglCanvas implements Application {
 			runnables.clear();
 		}
 		if (executedRunnables.size == 0) return false;
-		for (int i = executedRunnables.size - 1; i >= 0; i--)
-			executedRunnables.removeIndex(i).run();
+		do
+			executedRunnables.pop().run();
+		while (executedRunnables.size > 0);
 		return true;
 	}
 

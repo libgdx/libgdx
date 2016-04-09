@@ -75,6 +75,8 @@ public class AssetManager implements Disposable {
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
+        
+	final FileHandleResolver resolver;
 
 	Logger log = new Logger("AssetManager", Application.LOG_NONE);
 
@@ -85,22 +87,39 @@ public class AssetManager implements Disposable {
 
 	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager (FileHandleResolver resolver) {
-		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
-		setLoader(Music.class, new MusicLoader(resolver));
-		setLoader(Pixmap.class, new PixmapLoader(resolver));
-		setLoader(Sound.class, new SoundLoader(resolver));
-		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
-		setLoader(Texture.class, new TextureLoader(resolver));
-		setLoader(Skin.class, new SkinLoader(resolver));
-		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
-		setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
-			new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
-		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
-		setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
-		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
-		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
-		setLoader(Model.class, ".obj", new ObjLoader(resolver));
+		this(resolver, true);
+	}
+
+	/** Creates a new AssetManager with optionally all default loaders. If you don't add the default loaders then you do have to
+	 * manually add the loaders you need, including any loaders they might depend on.
+	 * @param defaultLoaders whether to add the default loaders */
+	public AssetManager (FileHandleResolver resolver, boolean defaultLoaders) {
+		this.resolver = resolver;
+		if (defaultLoaders) {
+			setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+			setLoader(Music.class, new MusicLoader(resolver));
+			setLoader(Pixmap.class, new PixmapLoader(resolver));
+			setLoader(Sound.class, new SoundLoader(resolver));
+			setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+			setLoader(Texture.class, new TextureLoader(resolver));
+			setLoader(Skin.class, new SkinLoader(resolver));
+			setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+			setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
+				new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
+			setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
+			setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
+			setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
+			setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
+			setLoader(Model.class, ".obj", new ObjLoader(resolver));
+		}
 		executor = new AsyncExecutor(1);
+	}
+
+	/** Returns the {@link FileHandleResolver} for which this AssetManager
+	 * was loaded with.
+	 * @return the file handle resolver which this AssetManager uses */
+	public FileHandleResolver getFileHandleResolver () {
+		return resolver;
 	}
 
 	/** @param fileName the asset file name
@@ -151,6 +170,17 @@ public class AssetManager implements Disposable {
 	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
+		// check if it's currently processed (and the first element in the stack, thus not a dependency)
+		// and cancel if necessary
+		if (tasks.size() > 0) {
+			AssetLoadingTask currAsset = tasks.firstElement();
+			if (currAsset.assetDesc.fileName.equals(fileName)) {
+				currAsset.cancel = true;
+				log.debug("Unload (from tasks): " + fileName);
+				return;
+			}
+		}
+
 		// check if it's in the queue
 		int foundIndex = -1;
 		for (int i = 0; i < loadQueue.size; i++) {
@@ -164,17 +194,6 @@ public class AssetManager implements Disposable {
 			loadQueue.removeIndex(foundIndex);
 			log.debug("Unload (from queue): " + fileName);
 			return;
-		}
-
-		// check if it's currently processed (and the first element in the stack, thus not a dependency)
-		// and cancel if necessary
-		if (tasks.size() > 0) {
-			AssetLoadingTask currAsset = tasks.firstElement();
-			if (currAsset.assetDesc.fileName.equals(fileName)) {
-				currAsset.cancel = true;
-				log.debug("Unload (from tasks): " + fileName);
-				return;
-			}
 		}
 
 		// get the asset and its type
@@ -379,7 +398,7 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	/** Blocks until the specified aseet is loaded.
+	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
 	public void finishLoadingAsset (String fileName) {
 		log.debug("Waiting for asset to be loaded: " + fileName);
@@ -470,34 +489,45 @@ public class AssetManager implements Disposable {
 	}
 
 	/** Updates the current task on the top of the task stack.
-	 * @return true if the asset is loaded. */
+	 * @return true if the asset is loaded or the task was cancelled. */
 	private boolean updateTask () {
 		AssetLoadingTask task = tasks.peek();
-		// if the task has finished loading
-		if (task.update()) {
-			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
 
+		boolean complete = true;
+		try {
+			complete = task.cancel || task.update();
+		} catch (RuntimeException ex) {
+			task.cancel = true;
+			taskFailed(task.assetDesc, ex);
+		}
+
+		// if the task has been cancelled or has finished loading
+		if (complete) {
 			// increase the number of loaded assets and pop the task from the stack
 			if (tasks.size() == 1) loaded++;
 			tasks.pop();
 
-			// remove the asset if it was canceled.
-			if (task.cancel) {
-				unload(task.assetDesc.fileName);
-			} else {
-				// otherwise, if a listener was found in the parameter invoke it
-				if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
-					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
-				}
+			if (task.cancel) return true;
 
-				long endTime = TimeUtils.nanoTime();
-				log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
+			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
+
+			// otherwise, if a listener was found in the parameter invoke it
+			if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
+				task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 			}
 
+			long endTime = TimeUtils.nanoTime();
+			log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
+
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+	}
+
+	/** Called when a task throws an exception during loading. The default implementation rethrows the exception. A subclass may
+	 * supress the default implementation when loading assets where loading failure is recoverable. */
+	protected void taskFailed (AssetDescriptor assetDesc, RuntimeException ex) {
+		throw ex;
 	}
 
 	private void incrementRefCountedDependencies (String parent) {
@@ -569,7 +599,7 @@ public class AssetManager implements Disposable {
 
 	/** @return the number of currently queued assets */
 	public synchronized int getQueuedAssets () {
-		return loadQueue.size + (tasks.size());
+		return loadQueue.size + tasks.size();
 	}
 
 	/** @return the progress in percent of completion. */

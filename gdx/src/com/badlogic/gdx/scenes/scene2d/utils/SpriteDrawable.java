@@ -40,19 +40,34 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	}
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
-		draw(batch, x, y, width / 2f, height / 2f, width, height, 1f, 1f, 0f);
+		Color spriteColor = sprite.getColor();
+		float batchColor = batch.getPackedColor();
+		sprite.setColor(batch.getColor().mul(spriteColor));
+
+		sprite.setRotation(0);
+		sprite.setScale(1, 1);
+		sprite.setBounds(x, y, width, height);
+		sprite.draw(batch);
+
+		sprite.setColor(spriteColor);
+		batch.setColor(batchColor);
 	}
 
 	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
+
+		Color spriteColor = sprite.getColor();
+		float batchColor = batch.getPackedColor();
+		sprite.setColor(batch.getColor().mul(spriteColor));
+
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
 		sprite.setScale(scaleX, scaleY);
 		sprite.setBounds(x, y, width, height);
-		Color color = sprite.getColor();
-		sprite.setColor(Color.tmp.set(color).mul(batch.getColor()));
 		sprite.draw(batch);
-		sprite.setColor(color);
+
+		sprite.setColor(spriteColor);
+		batch.setColor(batchColor);
 	}
 
 	public void setSprite (Sprite sprite) {
@@ -67,14 +82,18 @@ public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 
 	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
 	public SpriteDrawable tint (Color tint) {
-		SpriteDrawable drawable = new SpriteDrawable(this);
-		Sprite sprite = drawable.getSprite();
+		Sprite newSprite;
 		if (sprite instanceof AtlasSprite)
-			sprite = new AtlasSprite((AtlasSprite)sprite);
+			newSprite = new AtlasSprite((AtlasSprite)sprite);
 		else
-			sprite = new Sprite(sprite);
-		sprite.setColor(tint);
-		drawable.setSprite(sprite);
+			newSprite = new Sprite(sprite);
+		newSprite.setColor(tint);
+		newSprite.setSize(getMinWidth(), getMinHeight());
+		SpriteDrawable drawable = new SpriteDrawable(newSprite);
+		drawable.setLeftWidth(getLeftWidth());
+		drawable.setRightWidth(getRightWidth());
+		drawable.setTopHeight(getTopHeight());
+		drawable.setBottomHeight(getBottomHeight());
 		return drawable;
 	}
 }

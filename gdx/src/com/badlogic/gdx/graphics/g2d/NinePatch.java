@@ -56,7 +56,7 @@ public class NinePatch {
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
 	private final Color color = new Color(Color.WHITE);
-	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
+	private float padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
 	/** Create a ninepatch by cutting up the given texture into nine patches. The subsequent parameters define the 4 lines that will
 	 * cut the texture region into 9 pieces.
@@ -442,7 +442,7 @@ public class NinePatch {
 
 	/** Set the padding for content inside this ninepatch. By default the padding is set to match the exterior of the ninepatch, so
 	 * the content should fit exactly within the middle patch. */
-	public void setPadding (int left, int right, int top, int bottom) {
+	public void setPadding (float left, float right, float top, float bottom) {
 		this.padLeft = left;
 		this.padRight = right;
 		this.padTop = top;
@@ -455,8 +455,8 @@ public class NinePatch {
 		return padLeft;
 	}
 
-	/** See {@link #setPadding(int, int, int, int)} */
-	public void setPadLeft (int left) {
+	/** See {@link #setPadding(float, float, float, float)} */
+	public void setPadLeft (float left) {
 		this.padLeft = left;
 	}
 
@@ -466,8 +466,8 @@ public class NinePatch {
 		return padRight;
 	}
 
-	/** See {@link #setPadding(int, int, int, int)} */
-	public void setPadRight (int right) {
+	/** See {@link #setPadding(float, float, float, float)} */
+	public void setPadRight (float right) {
 		this.padRight = right;
 	}
 
@@ -477,8 +477,8 @@ public class NinePatch {
 		return padTop;
 	}
 
-	/** See {@link #setPadding(int, int, int, int)} */
-	public void setPadTop (int top) {
+	/** See {@link #setPadding(float, float, float, float)} */
+	public void setPadTop (float top) {
 		this.padTop = top;
 	}
 
@@ -488,8 +488,8 @@ public class NinePatch {
 		return padBottom;
 	}
 
-	/** See {@link #setPadding(int, int, int, int)} */
-	public void setPadBottom (int bottom) {
+	/** See {@link #setPadding(float, float, float, float)} */
+	public void setPadBottom (float bottom) {
 		this.padBottom = bottom;
 	}
 
@@ -499,10 +499,12 @@ public class NinePatch {
 		rightWidth *= scaleX;
 		topHeight *= scaleY;
 		bottomHeight *= scaleY;
-		padLeft *= scaleX;
-		padRight *= scaleX;
-		padTop *= scaleY;
-		padBottom *= scaleY;
+		middleWidth *= scaleX;
+		middleHeight *= scaleY;
+		if (padLeft != -1) padLeft *= scaleX;
+		if (padRight != -1) padRight *= scaleX;
+		if (padTop != -1) padTop *= scaleY;
+		if (padBottom != -1) padBottom *= scaleY;
 	}
 
 	public Texture getTexture () {

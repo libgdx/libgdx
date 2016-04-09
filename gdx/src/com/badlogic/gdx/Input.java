@@ -558,18 +558,24 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
 	}
 
-	/** @return The value of the accelerometer on its x-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the x axis. (rad/s) */
 	public float getAccelerometerX ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the y axis. (rad/s) */
 	public float getAccelerometerY ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the z axis. (rad/s) */
 	public float getAccelerometerZ ();
 
+	public float getGyroscopeX ();
+
+	public float getGyroscopeY ();
+
+	public float getGyroscopeZ ();
+	
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
@@ -717,6 +723,9 @@ public interface Input {
 	 * 
 	 * @param catchMenu whether to catch the menu button */
 	public void setCatchMenuKey (boolean catchMenu);
+	
+	/** @return whether the menu button is currently being caught */
+	public boolean isCatchMenuKey ();
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
@@ -756,15 +765,4 @@ public interface Input {
 	 * @param x the x-position
 	 * @param y the y-position */
 	public void setCursorPosition (int x, int y);
-
-	/** Only viable on the desktop. Will set the mouse cursor image to the image represented by the
-	 * {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format, width & height must be powers-of-two
-	 * greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). To revert to
-	 * the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
-	 * 
-	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default
-	 *           operating system cursor
-	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
-	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner) */
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot);
 }

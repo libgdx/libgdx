@@ -22,7 +22,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -85,6 +84,24 @@ public class GwtInput implements Input {
 
 	@Override
 	public float getAccelerometerZ () {
+		return 0;
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -150,7 +167,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched[0];
+		return pressedButtons.contains(button) && touched[0];
 	}
 
 	@Override
@@ -246,6 +263,11 @@ public class GwtInput implements Input {
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
 	}
 
 	@Override
@@ -373,10 +395,6 @@ public class GwtInput implements Input {
 	@Override
 	public void setCursorPosition (int x, int y) {
 		// FIXME??
-	}
-
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 	}
 
 	// kindly borrowed from our dear playn friends...
@@ -968,4 +986,5 @@ public class GwtInput implements Input {
 	private static final int KEY_BACKSLASH = 220;
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
+
 }

@@ -98,12 +98,12 @@ public class Quaternion implements Serializable {
 		return new Quaternion(this);
 	}
 
-	/** @return the euclidian length of the specified quaternion */
+	/** @return the euclidean length of the specified quaternion */
 	public final static float len (final float x, final float y, final float z, final float w) {
 		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	/** @return the euclidian length of this quaternion */
+	/** @return the euclidean length of this quaternion */
 	public float len () {
 		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
 	}
@@ -302,10 +302,10 @@ public class Quaternion implements Serializable {
 	 * @param w the w component of the other quaternion to multiply with
 	 * @return This quaternion for chaining */
 	public Quaternion mulLeft (final float x, final float y, final float z, final float w) {
-		final float newX = w * this.x + x * this.w + y * this.z - z * y;
-		final float newY = w * this.y + y * this.w + z * this.x - x * z;
-		final float newZ = w * this.z + z * this.w + x * this.y - y * x;
-		final float newW = w * this.w - x * this.x - y * this.y - z * z;
+		final float newX = w * this.x + x * this.w + y * this.z - z * this.y;
+		final float newY = w * this.y + y * this.w + z * this.x - x * this.z;
+		final float newZ = w * this.z + z * this.w + x * this.y - y * this.x;
+		final float newW = w * this.w - x * this.x - y * this.y - z * this.z;
 		this.x = newX;
 		this.y = newY;
 		this.z = newZ;
@@ -501,7 +501,7 @@ public class Quaternion implements Serializable {
 			xx *= lx;
 			xy *= lx;
 			xz *= lx;
-			yz *= ly;
+			yx *= ly;
 			yy *= ly;
 			yz *= ly;
 			zx *= lz;
@@ -571,32 +571,32 @@ public class Quaternion implements Serializable {
 	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
-	 * [0,1]. Taken from. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
+	 * [0,1]. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
 	 * @param end the end quaternion
 	 * @param alpha alpha in the range [0,1]
 	 * @return this quaternion for chaining */
 	public Quaternion slerp (Quaternion end, float alpha) {
-		final float dot = dot(end);
-		float absDot = dot < 0.f ? -dot : dot;
+		final float d = this.x * end.x + this.y * end.y + this.z * end.z + this.w * end.w;
+		float absDot = d < 0.f ? -d : d;
 
 		// Set the first and second scale for the interpolation
-		float scale0 = 1 - alpha;
+		float scale0 = 1f - alpha;
 		float scale1 = alpha;
 
 		// Check if the angle between the 2 quaternions was big enough to
 		// warrant such calculations
 		if ((1 - absDot) > 0.1) {// Get the angle between the 2 quaternions,
 			// and then store the sin() of that angle
-			final double angle = Math.acos(absDot);
-			final double invSinTheta = 1f / Math.sin(angle);
+			final float angle = (float)Math.acos(absDot);
+			final float invSinTheta = 1f / (float)Math.sin(angle);
 
 			// Calculate the scale for q1 and q2, according to the angle and
 			// it's sine value
-			scale0 = (float)(Math.sin((1 - alpha) * angle) * invSinTheta);
-			scale1 = (float)(Math.sin((alpha * angle)) * invSinTheta);
+			scale0 = ((float)Math.sin((1f - alpha) * angle) * invSinTheta);
+			scale1 = ((float)Math.sin((alpha * angle)) * invSinTheta);
 		}
 
-		if (dot < 0.f) scale1 = -scale1;
+		if (d < 0.f) scale1 = -scale1;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.

@@ -16,16 +16,24 @@
 
 package com.badlogic.gdx.graphics.profiling;
 
+import static com.badlogic.gdx.graphics.GL20.GL_INVALID_ENUM;
+import static com.badlogic.gdx.graphics.GL20.GL_INVALID_FRAMEBUFFER_OPERATION;
+import static com.badlogic.gdx.graphics.GL20.GL_INVALID_OPERATION;
+import static com.badlogic.gdx.graphics.GL20.GL_INVALID_VALUE;
+import static com.badlogic.gdx.graphics.GL20.GL_OUT_OF_MEMORY;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.FloatCounter;
 
-/** This class will collect statistics about the GL calls. All calls to it will get counted and delegated to the actual GL20 or
- * GL30 instance.
+/** When enabled, collects statistics about GL calls and checks for GL errors.
+ * Enabling will wrap Gdx.gl* instances with delegate classes which provide described functionality
+ * and route GL calls to the actual GL instances.
  * 
  * @see GL20Profiler
  * @see GL30Profiler
  * 
- * @author Daniel Holderbaum */
+ * @author Daniel Holderbaum
+ * @author Jan Polák */
 public abstract class GLProfiler {
 
 	/** All calls to any GL function since the last reset. */
@@ -41,13 +49,37 @@ public abstract class GLProfiler {
 	public static int shaderSwitches;
 
 	/** The amount rendered vertices since the last reset. */
-	public static FloatCounter vertexCount = new FloatCounter(0);
+	public static final FloatCounter vertexCount = new FloatCounter(0);
 
+	public static String resolveErrorNumber (int error) {
+		switch (error) {
+		case GL_INVALID_VALUE:
+			return "GL_INVALID_VALUE";
+		case GL_INVALID_OPERATION:
+			return "GL_INVALID_OPERATION";
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			return "GL_INVALID_FRAMEBUFFER_OPERATION";
+		case GL_INVALID_ENUM:
+			return "GL_INVALID_ENUM";
+		case GL_OUT_OF_MEMORY:
+			return "GL_OUT_OF_MEMORY";
+		default:
+			return "number " + error;
+		}
+	}
+
+	/** This listener will be called when GLProfiler is enabled and any GL call sets an error number (retrievable by glGetError call).
+	 *
+	 * Default is {@link GLErrorListener#LOGGING_LISTENER}. */
+	public static GLErrorListener listener = GLErrorListener.LOGGING_LISTENER;
+	
 	/** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
 	public static void enable () {
-		Gdx.gl30 = Gdx.gl30 == null ? null : new GL30Profiler(Gdx.gl30);
-		Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : new GL20Profiler(Gdx.gl20);
-		Gdx.gl = Gdx.gl20;
+		if (!isEnabled()) {
+			Gdx.gl30 = Gdx.gl30 == null ? null : new GL30Profiler(Gdx.gl30);
+			Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : new GL20Profiler(Gdx.gl20);
+			Gdx.gl = Gdx.gl20;
+		}
 	}
 
 	/** Disables profiling by resetting the {@code GL20} and {@code GL30} instances with the original ones. */
@@ -56,8 +88,14 @@ public abstract class GLProfiler {
 		if (Gdx.gl20 != null && Gdx.gl20 instanceof GL20Profiler) Gdx.gl20 = ((GL20Profiler)Gdx.gl).gl20;
 		if (Gdx.gl != null && Gdx.gl instanceof GL20Profiler) Gdx.gl = ((GL20Profiler)Gdx.gl).gl20;
 	}
+	
+	/** @return Whether profiling is currently enabled */
+	public static boolean isEnabled() {
+		return Gdx.gl30 instanceof GL30Profiler || Gdx.gl20 instanceof GL20Profiler;
+	}
 
-	/** Will reset the statistical information which has been collected so far. This should be called after every frame. */
+	/** Will reset the statistical information which has been collected so far. This should be called after every frame.
+	 * Error listener is kept as it is. */
 	public static void reset () {
 		calls = 0;
 		textureBindings = 0;

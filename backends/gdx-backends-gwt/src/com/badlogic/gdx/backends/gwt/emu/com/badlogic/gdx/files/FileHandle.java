@@ -18,6 +18,7 @@ package com.badlogic.gdx.files;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.InputStream;
@@ -29,6 +30,24 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FileHandle {
+	protected File file;
+	protected FileType type;
+
+	protected FileHandle () {
+	}
+
+	public FileHandle (String fileName) {
+	}
+
+	public FileHandle (File file) {
+	}
+
+	protected FileHandle (String fileName, FileType type) {
+	}
+
+	protected FileHandle (File file, FileType type) {
+	}
+
 	public String path () {
 		throw new GdxRuntimeException("Stub");
 	}

@@ -694,7 +694,7 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Set the sleep state of the body. A sleeping body has very low CPU cost.
-	 * @param flag set to true to put body to sleep, false to wake it. */
+	 * @param flag set to true to wake the body, false to put it to sleep. */
 	public void setAwake (boolean flag) {
 		jniSetAwake(addr, flag);
 	}
@@ -705,7 +705,7 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Get the sleeping state of this body.
-	 * @return true if the body is sleeping. */
+	 * @return true if the body is not sleeping. */
 	public boolean isAwake () {
 		return jniIsAwake(addr);
 	}

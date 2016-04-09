@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.FacedCubemapData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -43,31 +44,47 @@ public class Cubemap extends GLTexture {
 	/** Enum to identify each side of a Cubemap */
 	public enum CubemapSide {
 		/** The positive X and first side of the cubemap */
-		PositiveX(0, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X),
+		PositiveX(0, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, -1, 0, 1, 0, 0),
 		/** The negative X and second side of the cubemap */
-		NegativeX(1, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_X),
+		NegativeX(1, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, -1, 0, -1, 0, 0),
 		/** The positive Y and third side of the cubemap */
-		PositiveY(2, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Y),
+		PositiveY(2, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, 0, 1, 0, 1, 0),
 		/** The negative Y and fourth side of the cubemap */
-		NegativeY(3, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y),
+		NegativeY(3, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, 0, -1, 0, -1, 0),
 		/** The positive Z and fifth side of the cubemap */
-		PositiveZ(4, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z),
+		PositiveZ(4, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, -1, 0, 0, 0, 1),
 		/** The negative Z and sixth side of the cubemap */
-		NegativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+		NegativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, -1, 0, 0, 0, -1);
 
 		/** The zero based index of the side in the cubemap */
 		public final int index;
 		/** The OpenGL target (used for glTexImage2D) of the side. */
 		public final int glEnum;
+		/** The up vector to target the side. */
+		public final Vector3 up;
+		/** The direction vector to target the side. */
+		public final Vector3 direction;
 
-		CubemapSide (int index, int glEnum) {
+		CubemapSide (int index, int glEnum, float upX, float upY, float upZ, float directionX, float directionY, float directionZ) {
 			this.index = index;
 			this.glEnum = glEnum;
+			this.up = new Vector3(upX, upY, upZ);
+			this.direction = new Vector3(directionX, directionY, directionZ);
 		}
 
 		/** @return The OpenGL target (used for glTexImage2D) of the side. */
 		public int getGLEnum () {
 			return glEnum;
+		}
+
+		/** @return The up vector of the side. */
+		public Vector3 getUp (Vector3 out) {
+			return out.set(up);
+		}
+
+		/** @return The direction vector of the side. */
+		public Vector3 getDirection (Vector3 out) {
+			return out.set(direction);
 		}
 	}
 
@@ -89,9 +106,9 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
 	public Cubemap (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ,
 		FileHandle negativeZ, boolean useMipMaps) {
-		this(createTextureData(positiveX, useMipMaps), createTextureData(negativeX, useMipMaps), createTextureData(positiveY,
-			useMipMaps), createTextureData(negativeY, useMipMaps), createTextureData(positiveZ, useMipMaps), createTextureData(
-			negativeZ, useMipMaps));
+		this(TextureData.Factory.loadFromFile(positiveX, useMipMaps), TextureData.Factory.loadFromFile(negativeX, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveY, useMipMaps), TextureData.Factory.loadFromFile(negativeY, useMipMaps),
+			TextureData.Factory.loadFromFile(positiveZ, useMipMaps), TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
 
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
@@ -151,7 +168,7 @@ public class Cubemap extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
-		glHandle = createGLHandle();
+		glHandle = Gdx.gl.glGenTexture();
 		load(data);
 	}
 
@@ -171,6 +188,7 @@ public class Cubemap extends GLTexture {
 	}
 
 	/** Disposes all resources associated with the cubemap */
+	@Override
 	public void dispose () {
 		// this is a hack. reason: we have to set the glHandle to 0 for textures that are
 		// reloaded through the asset manager as we first remove (and thus dispose) the texture
@@ -243,7 +261,7 @@ public class Cubemap extends GLTexture {
 
 					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					cubemap.glHandle = GLTexture.createGLHandle();
+					cubemap.glHandle = Gdx.gl.glGenTexture();
 					assetManager.load(fileName, Cubemap.class, params);
 				}
 			}

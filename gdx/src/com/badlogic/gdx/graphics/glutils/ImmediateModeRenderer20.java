@@ -111,6 +111,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	public void color (float r, float g, float b, float a) {
 		vertices[vertexIdx + colorOffset] = Color.toFloatBits(r, g, b, a);
 	}
+	
+	public void color (float colorBits) {
+		vertices[vertexIdx + colorOffset] = colorBits;
+	}
 
 	public void texCoord (float u, float v) {
 		final int idx = vertexIdx + texCoordOffset;

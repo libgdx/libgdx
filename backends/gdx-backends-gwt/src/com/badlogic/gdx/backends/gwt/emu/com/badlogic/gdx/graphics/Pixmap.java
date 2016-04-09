@@ -42,6 +42,28 @@ public class Pixmap implements Disposable {
 	 * @author mzechner */
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
+		
+		public static int toGlFormat (Format format) {
+			if (format == Alpha) return GL20.GL_ALPHA;
+			if (format == Intensity) return GL20.GL_ALPHA;
+			if (format == LuminanceAlpha) return GL20.GL_LUMINANCE_ALPHA;
+			if (format == RGB565) return GL20.GL_RGB;
+			if (format == RGB888) return GL20.GL_RGB;
+			if (format == RGBA4444) return GL20.GL_RGBA;
+			if (format == RGBA8888) return GL20.GL_RGBA;
+			throw new GdxRuntimeException("unknown format: " + format);
+		}
+		
+		public static int toGlType (Format format) {
+			if (format == Alpha) return GL20.GL_UNSIGNED_BYTE;
+			if (format == Intensity) return GL20.GL_UNSIGNED_BYTE;
+			if (format == LuminanceAlpha) return GL20.GL_UNSIGNED_BYTE;
+			if (format == RGB565) return GL20.GL_UNSIGNED_SHORT_5_6_5;
+			if (format == RGB888) return GL20.GL_UNSIGNED_BYTE;
+			if (format == RGBA4444) return GL20.GL_UNSIGNED_SHORT_4_4_4_4;
+			if (format == RGBA8888) return GL20.GL_UNSIGNED_BYTE;
+			throw new GdxRuntimeException("unknown format: " + format);
+		}
 	}
 
 	/** Blending functions to be set with {@link Pixmap#setBlending}.
@@ -207,6 +229,7 @@ public class Pixmap implements Disposable {
 
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill () {
+		context.clearRect(0, 0, getWidth(), getHeight());
 		rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
 	}
 
@@ -358,7 +381,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.arc(x, y, radius, 0, 2 * Math.PI, false);
 			fillOrStrokePath(drawType);
@@ -378,7 +401,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.moveTo(x, y);
 			context.lineTo(x2, y2);
@@ -393,13 +416,14 @@ public class Pixmap implements Disposable {
 		context.lineTo(x2, y2);
 		fillOrStrokePath(drawType);
 		context.closePath();
+		pixels = null;
 	}
 	
 	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.rect(x, y, width, height);
 			fillOrStrokePath(drawType);
@@ -419,7 +443,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.moveTo(x1,y1);
 			context.lineTo(x2,y2);
@@ -445,7 +469,7 @@ public class Pixmap implements Disposable {
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
-			context.setGlobalCompositeOperation("clear");
+			context.setGlobalCompositeOperation("destination-out");
 			context.beginPath();
 			context.rect(dstX, dstY, dstWidth, dstHeight);
 			fillOrStrokePath(DrawType.FILL);

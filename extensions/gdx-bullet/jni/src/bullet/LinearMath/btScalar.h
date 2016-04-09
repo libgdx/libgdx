@@ -28,7 +28,7 @@ subject to the following restrictions:
 #include <float.h>
 
 /* SVN $Revision$ on $Date$ from http://bullet.googlecode.com*/
-#define BT_BULLET_VERSION 282
+#define BT_BULLET_VERSION 283
 
 inline int	btGetVersion()
 {
@@ -48,6 +48,11 @@ inline int	btGetVersion()
 			#define ATTRIBUTE_ALIGNED16(a) a
 			#define ATTRIBUTE_ALIGNED64(a) a
 			#define ATTRIBUTE_ALIGNED128(a) a
+		#elif (_M_ARM)
+			#define SIMD_FORCE_INLINE __forceinline
+			#define ATTRIBUTE_ALIGNED16(a) __declspec() a
+			#define ATTRIBUTE_ALIGNED64(a) __declspec() a
+			#define ATTRIBUTE_ALIGNED128(a) __declspec () a
 		#else
 			//#define BT_HAS_ALIGNED_ALLOCATOR
 			#pragma warning(disable : 4324) // disable padding warning
@@ -67,13 +72,20 @@ inline int	btGetVersion()
  			#define btFsel(a,b,c) __fsel((a),(b),(c))
 		#else
 
-#if (defined (_WIN32) && (_MSC_VER) && _MSC_VER >= 1400) && (!defined (BT_USE_DOUBLE_PRECISION))
+#if defined (_M_ARM)
+            //Do not turn SSE on for ARM (may want to turn on BT_USE_NEON however)
+#elif (defined (_WIN32) && (_MSC_VER) && _MSC_VER >= 1400) && (!defined (BT_USE_DOUBLE_PRECISION))
 			#if _MSC_VER>1400
 				#define BT_USE_SIMD_VECTOR3
 			#endif
 
 			#define BT_USE_SSE
 			#ifdef BT_USE_SSE
+
+#if (_MSC_FULL_VER >= 170050727)//Visual Studio 2012 can compile SSE4/FMA3 (but SSE4/FMA3 is not enabled by default)
+			#define BT_ALLOW_SSE4
+#endif //(_MSC_FULL_VER >= 160040219)
+
 			//BT_USE_SSE_IN_API is disabled under Windows by default, because 
 			//it makes it harder to integrate Bullet into your application under Windows 
 			//(structured embedding Bullet structs/classes need to be 16-byte aligned)
@@ -164,7 +176,7 @@ inline int	btGetVersion()
 #if (defined (__APPLE__) && (!defined (BT_USE_DOUBLE_PRECISION)))
 	#include <TargetConditionals.h>
 	#if (defined (__i386__) || defined (__x86_64__)) && (!(TARGET_IPHONE_SIMULATOR))
-		///#define BT_USE_SIMD_VECTOR3
+		//#define BT_USE_SIMD_VECTOR3
 		//#define BT_USE_SSE
 		//BT_USE_SSE_IN_API is enabled on Mac OSX by default, because memory is automatically aligned on 16-byte boundaries
 		//if apps run into issues, we will disable the next line
@@ -285,6 +297,10 @@ static int btNanMask = 0x7F800001;
 #ifndef BT_INFINITY
 static  int btInfinityMask = 0x7F800000;
 #define BT_INFINITY (*(float*)&btInfinityMask)
+inline int btGetInfinityMask()//suppress stupid compiler warning
+{
+	return btInfinityMask;
+}
 #endif
 
 //use this, in case there are clashes (such as xnamath.h)
@@ -335,8 +351,23 @@ inline __m128 operator * (const __m128 A, const __m128 B)
 #else//BT_USE_NEON
 
 	#ifndef BT_INFINITY
-	static  int btInfinityMask = 0x7F800000;
-	#define BT_INFINITY (*(float*)&btInfinityMask)
+		struct btInfMaskConverter
+		{
+		        union {
+		                float mask;
+		                int intmask;
+		        };
+		        btInfMaskConverter(int mask=0x7F800000)
+		        :intmask(mask)
+		        {
+		        }
+		};
+		static btInfMaskConverter btInfinityMask = 0x7F800000;
+		#define BT_INFINITY (btInfinityMask.mask)
+		inline int btGetInfinityMask()//suppress stupid compiler warning
+		{
+		        return btInfinityMask.intmask;
+		}
 	#endif
 #endif//BT_USE_NEON
 
@@ -388,19 +419,30 @@ SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmod(x,y); }
 SIMD_FORCE_INLINE btScalar btSqrt(btScalar y) 
 { 
 #ifdef USE_APPROXIMATION
+#ifdef __LP64__
+    float xhalf = 0.5f*y;
+    int i = *(int*)&y;
+    i = 0x5f375a86 - (i>>1);
+    y = *(float*)&i;
+    y = y*(1.5f - xhalf*y*y);
+    y = y*(1.5f - xhalf*y*y);
+    y = y*(1.5f - xhalf*y*y);
+    y=1/y;
+    return y;
+#else
     double x, z, tempf;
     unsigned long *tfptr = ((unsigned long *)&tempf) + 1;
-
-	tempf = y;
-	*tfptr = (0xbfcdd90a - *tfptr)>>1; /* estimate of 1/sqrt(y) */
-	x =  tempf;
-	z =  y*btScalar(0.5);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);         /* iteration formula     */
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	x = (btScalar(1.5)*x)-(x*x)*(x*z);
-	return x*y;
+    tempf = y;
+    *tfptr = (0xbfcdd90a - *tfptr)>>1; /* estimate of 1/sqrt(y) */
+    x =  tempf;
+    z =  y*btScalar(0.5);
+    x = (btScalar(1.5)*x)-(x*x)*(x*z);         /* iteration formula     */
+    x = (btScalar(1.5)*x)-(x*x)*(x*z);
+    x = (btScalar(1.5)*x)-(x*x)*(x*z);
+    x = (btScalar(1.5)*x)-(x*x)*(x*z);
+    x = (btScalar(1.5)*x)-(x*x)*(x*z);
+    return x*y;
+#endif
 #else
 	return sqrtf(y); 
 #endif
@@ -433,7 +475,7 @@ SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmodf(x,y); }
 #endif
 
 #define SIMD_PI           btScalar(3.1415926535897932384626433832795029)
-#define SIMD_2_PI         btScalar(2.0) * SIMD_PI
+#define SIMD_2_PI         (btScalar(2.0) * SIMD_PI)
 #define SIMD_HALF_PI      (SIMD_PI * btScalar(0.5))
 #define SIMD_RADS_PER_DEG (SIMD_2_PI / btScalar(360.0))
 #define SIMD_DEGS_PER_RAD  (btScalar(360.0) / SIMD_2_PI)
@@ -445,9 +487,17 @@ SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmodf(x,y); }
 #ifdef BT_USE_DOUBLE_PRECISION
 #define SIMD_EPSILON      DBL_EPSILON
 #define SIMD_INFINITY     DBL_MAX
+#define BT_ONE			1.0
+#define BT_ZERO			0.0
+#define BT_TWO			2.0
+#define BT_HALF			0.5
 #else
 #define SIMD_EPSILON      FLT_EPSILON
 #define SIMD_INFINITY     FLT_MAX
+#define BT_ONE			1.0f
+#define BT_ZERO			0.0f
+#define BT_TWO			2.0f
+#define BT_HALF			0.5f
 #endif
 
 SIMD_FORCE_INLINE btScalar btAtan2Fast(btScalar y, btScalar x) 
@@ -728,5 +778,6 @@ template <typename T>T* btAlignPointer(T* unalignedPtr, size_t alignment)
 	converter.integer &= bit_mask;
 	return converter.ptr;
 }
+
 
 #endif //BT_SCALAR_H

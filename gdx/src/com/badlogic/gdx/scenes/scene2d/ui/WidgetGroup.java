@@ -39,6 +39,15 @@ public class WidgetGroup extends Group implements Layout {
 	private boolean fillParent;
 	private boolean layoutEnabled = true;
 
+	public WidgetGroup () {
+	}
+
+	/** Creates a new widget group containing the specified actors. */
+	public WidgetGroup (Actor... actors) {
+		for (Actor actor : actors)
+			addActor(actor);
+	}
+
 	public float getMinWidth () {
 		return getPrefWidth();
 	}
@@ -82,11 +91,11 @@ public class WidgetGroup extends Group implements Layout {
 
 	public void validate () {
 		if (!layoutEnabled) return;
+
 		Group parent = getParent();
 		if (fillParent && parent != null) {
-			Stage stage = getStage();
-
 			float parentWidth, parentHeight;
+			Stage stage = getStage();
 			if (stage != null && parent == stage.getRoot()) {
 				parentWidth = stage.getWidth();
 				parentHeight = stage.getHeight();

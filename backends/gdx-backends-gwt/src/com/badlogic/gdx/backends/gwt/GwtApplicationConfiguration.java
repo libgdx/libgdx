@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
@@ -42,6 +43,14 @@ public class GwtApplicationConfiguration {
 	public boolean preferFlash = true;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
+	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
+	 * effectively allows transparent backgrounds in GWT, at a performance cost. **/
+	public boolean alpha = false;
+	/** whether to use premultipliedalpha, may have performance impact  **/
+	public boolean premultipliedAlpha = false;
+	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
+	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
+	public OrientationLockType fullscreenOrientation;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

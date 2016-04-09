@@ -83,9 +83,9 @@ public class GwtTest extends GdxTest {
 		sprite.setOrigin(32, 32);
 
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
-		cache = new BitmapFontCache(font);
+		cache = font.newFontCache();
 		cache.setColor(Color.RED);
-		cache.setMultiLineText("This is a Test", 0, 0);
+		cache.setText("This is a Test", 0, 0);
 
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 	}

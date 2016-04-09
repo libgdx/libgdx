@@ -181,7 +181,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
-	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
+	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}, limited to a minimum of 30fps. */
 	public void act () {
 		act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 	}
@@ -219,7 +219,6 @@ public class Stage extends InputAdapter implements Disposable {
 		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
-		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		root.act(delta);
 	}
 
@@ -229,24 +228,30 @@ public class Stage extends InputAdapter implements Disposable {
 		Actor over = hit(tempCoords.x, tempCoords.y, true);
 		if (over == overLast) return overLast;
 
-		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
-		event.setStageX(tempCoords.x);
-		event.setStageY(tempCoords.y);
-		event.setPointer(pointer);
 		// Exit overLast.
 		if (overLast != null) {
+			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setStage(this);
+			event.setStageX(tempCoords.x);
+			event.setStageY(tempCoords.y);
+			event.setPointer(pointer);
 			event.setType(InputEvent.Type.exit);
 			event.setRelatedActor(over);
 			overLast.fire(event);
+			Pools.free(event);
 		}
 		// Enter over.
 		if (over != null) {
+			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setStage(this);
+			event.setStageX(tempCoords.x);
+			event.setStageY(tempCoords.y);
+			event.setPointer(pointer);
 			event.setType(InputEvent.Type.enter);
 			event.setRelatedActor(overLast);
 			over.fire(event);
+			Pools.free(event);
 		}
-		Pools.free(event);
 		return over;
 	}
 
@@ -536,8 +541,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Adds an actor to the root of the stage.
-	 * @see Group#addActor(Actor)
-	 * @see Actor#remove() */
+	 * @see Group#addActor(Actor) */
 	public void addActor (Actor actor) {
 		root.addActor(actor);
 	}
@@ -636,7 +640,7 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.scroll);
-		Actor oldScrollFocus = keyboardFocus;
+		Actor oldScrollFocus = scrollFocus;
 		if (oldScrollFocus != null) {
 			event.setFocused(false);
 			event.setRelatedActor(actor);
@@ -823,6 +827,7 @@ public class Stage extends InputAdapter implements Disposable {
 		public void reset () {
 			listenerActor = null;
 			listener = null;
+			target = null;
 		}
 	}
 }
