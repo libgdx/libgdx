@@ -62,6 +62,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
@@ -92,6 +93,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
 		this.listener = listener;
+		clipboard = new AndroidClipboard(this.getService());
 
 		// Unlike activity, fragment and daydream applications there's no need for a specialized audio listener.
 		// See description in onPause method.
@@ -251,13 +253,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		return new AndroidPreferences(service.getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(service);
-		}
 		return clipboard;
 	}
 

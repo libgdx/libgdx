@@ -58,6 +58,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
@@ -165,6 +166,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.clipboard = new AndroidClipboard(getActivity());
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -312,13 +314,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return new AndroidPreferences(getActivity().getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(getActivity());
-		}
 		return clipboard;
 	}
 
