@@ -65,12 +65,12 @@ public class Method {
 
 	/** @return the {@link Class} of the enclosing type. */
 	public Class getEnclosingType () {
-		return enclosingType.getClass();
+		return enclosingType.clazz;
 	}
 
 	/** @return the {@link Class} of the return type or null. */
 	public Class getReturnType () {
-		return returnType.getClass();
+		return returnType.clazz;
 	}
 
 	/** @return the list of parameters, can be a zero size array. */
