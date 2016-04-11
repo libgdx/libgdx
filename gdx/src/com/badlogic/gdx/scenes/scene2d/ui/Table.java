@@ -320,10 +320,10 @@ public class Table extends WidgetGroup {
 		super.clearChildren();
 	}
 
-	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
-	 * cell, column, and row defaults. */
+	/** Removes all actors and cells from the table (same as {@link #clearChildren()}) and additionally resets all table properties
+	 * and cell, column, and row defaults. */
 	public void reset () {
-		clear();
+		clearChildren();
 		padTop = backgroundTop;
 		padLeft = backgroundLeft;
 		padBottom = backgroundBottom;
