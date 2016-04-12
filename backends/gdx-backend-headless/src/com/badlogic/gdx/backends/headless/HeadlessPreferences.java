@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 public class HeadlessPreferences implements Preferences {
-	private final String name;
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
@@ -42,7 +41,6 @@ public class HeadlessPreferences implements Preferences {
 	}
 
 	public HeadlessPreferences(FileHandle file) {
-		this.name = file.name();
 		this.file = file;
 		if (!file.exists()) return;
 		InputStream in = null;
