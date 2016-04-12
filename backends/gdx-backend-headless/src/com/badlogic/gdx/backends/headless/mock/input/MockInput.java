@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.headless.mock.input;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 
