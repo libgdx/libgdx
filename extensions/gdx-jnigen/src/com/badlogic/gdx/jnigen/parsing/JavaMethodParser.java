@@ -17,6 +17,8 @@
 package com.badlogic.gdx.jnigen.parsing;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public interface JavaMethodParser {
 	public ArrayList<JavaSegment> parse (String classFile) throws Exception;
@@ -92,6 +94,10 @@ public interface JavaMethodParser {
 		public boolean isPlainOldDataType () {
 			return !isString() && !isPrimitiveArray() && !isBuffer() && !isObject();
 		}
+		
+		public boolean isCriticalNativeAllowed () {
+			return isPrimitiveArray() || isPlainOldDataType();
+		}
 
 		public String getBufferCType () {
 			if (!this.isBuffer()) throw new RuntimeException("ArgumentType " + this + " is not a Buffer!");
@@ -116,6 +122,19 @@ public interface JavaMethodParser {
 			if (this == LongArray) return "long long*";
 			if (this == FloatArray) return "float*";
 			if (this == DoubleArray) return "double*";
+			throw new RuntimeException("Unknown Array type " + this);
+		}
+		
+		public String getArrayJniType () {
+			if (!this.isPrimitiveArray()) throw new RuntimeException("ArgumentType " + this + " is not an Array!");
+			if (this == BooleanArray) return "jboolean*";
+			if (this == ByteArray) return "jbyte*";
+			if (this == CharArray) return "jchar*";
+			if (this == ShortArray) return "jshort*";
+			if (this == IntegerArray) return "jint*";
+			if (this == LongArray) return "jlong*";
+			if (this == FloatArray) return "jfloat*";
+			if (this == DoubleArray) return "jdouble*";
 			throw new RuntimeException("Unknown Array type " + this);
 		}
 
@@ -149,10 +168,14 @@ public interface JavaMethodParser {
 
 	/** @author mzechner */
 	public static class JavaMethod implements JavaSegment {
+		//Because Critical Native haven't JNIEnv* and jclass
+		private static final Pattern CRITICAL_NATIVE_CHECKER = Pattern.compile("\\b(env)\\W|\\b(clazz)\\W");
 		private final String className;
 		private final String name;
 		private final boolean isStatic;
 		private boolean isManual;
+		private boolean isCriticalNative;
+		private boolean assertCritical = false;
 		private final String returnType;
 		private String nativeCode;
 		private final ArrayList<Argument> arguments;
@@ -160,7 +183,7 @@ public interface JavaMethodParser {
 		private final int startIndex;
 		private final int endIndex;
 
-		public JavaMethod (String className, String name, boolean isStatic, String returnType, String nativeCode,
+		public JavaMethod (String className, String name, boolean isStatic, boolean isSynchronized, String returnType, String nativeCode,
 			ArrayList<Argument> arguments, int startIndex, int endIndex) {
 			this.className = className;
 			this.name = name;
@@ -170,6 +193,15 @@ public interface JavaMethodParser {
 			this.arguments = arguments;
 			this.startIndex = startIndex;
 			this.endIndex = endIndex;
+			isCriticalNative = isStatic && !isSynchronized;
+			if (isCriticalNative) {
+				for (Argument arg : arguments) {
+					if (!arg.type.isCriticalNativeAllowed()) {
+						isCriticalNative = false;
+					}
+				}
+				checkCriticalNative();
+			}
 			for (Argument arg : arguments) {
 				if (arg.type.isPrimitiveArray() || arg.type.isBuffer() || arg.type.isString()) {
 					hasDisposableArgument = true;
@@ -189,12 +221,64 @@ public interface JavaMethodParser {
 
 		public void setManual (boolean isManual) {
 			this.isManual = isManual;
+			if(!isManual) // Do not generate critical native for manual setup
+				isCriticalNative = false;
 		}
 
 		public boolean isManual () {
 			return this.isManual;
 		}
 
+		/**
+		 * <p>Critical natives are alternative native functions in Hotspot JVM since Java7. 
+		 * They are designed to improve performance of the native methods which only pass 
+		 * a few primitives and some arrays (from 10 to 1K elements).</p>
+		 * 
+		 * <p>The declaration of a critical native is similar to normal native function,
+		 * but it starts with <b>JavaCritical_</b> instead of <b>Java_</b>, and it hasn't
+		 * <b>JNIEnv*</b> and <b>jclass</b> argument. The standard implementation must be 
+		 * preserved. Not only for running in other JVMs, but also because Hotspot has a 
+		 * "lazy entry policy" for critical native. The first time calling critical native 
+		 * will always run the normal native function (starts with "Java_"). After some times 
+		 * (could be hundreds) the Hotspot will replace the normal function with 
+		 * critical one (starts with "JavaCritical_").</p>
+		 * 
+		 * <p>Critical native has some limits:</p>
+		 * <ul>
+		 * <li>The method must be <b>static</b> and <b>non-synchronized</b>.</li>
+		 * <li>Can't use JNIEnv* and jclass.</li>
+		 * <li>Arguments must be <b>primitives</b> or <b>primitive arrays</b>, 
+		 * the primitive array will be passed in two parts: First one is a <b>jint</b>, 
+		 * stand for the length of array. Second one is the pointer of raw array data.</li>
+		 * <li>It will block GC.</li>
+		 * <li>Only available in Hotspot JVM of Java7+.</li>
+		 * </ul>
+		 * 
+		 * For example:<br/><br/>
+		 * 
+		 * If a native method is:<br/><br/>
+		 * 
+		 * public static native void foo(int i, float[] a1, float[] a2); //in somepackage.Someclass <br/><br/>
+		 * 
+		 * The normal native function is: <br/><br/>
+		 * 
+		 * Java_somepackage_Someclass_foo(JNIEnv*, jclass, jint, jfloatArray, jfloatArray); <br/><br/>
+		 * 
+		 * The critical native function is: <br/><br/>
+		 * 
+		 * JavaCritical_somepackage_Someclass_foo(jint, jint, float*, jint, float*); <br/><br/>
+		 * 
+		 * <p>For more informations, visit <a href="
+		 * http://stackoverflow.com/questions/36298111/is-it-possible-to-use-sun-misc-unsafe-to-call-c-functions-without-jni/36309652#36309652
+		 * ">the original post in Stackoverflow</a>
+		 * </p>
+		 * 
+		 * @return is this method a Critical Native method, and should generate JNI code for it.
+		 */
+		public boolean isCriticalNative () {
+			return isCriticalNative;
+		}
+		
 		public String getReturnType () {
 			return returnType;
 		}
@@ -205,6 +289,23 @@ public interface JavaMethodParser {
 
 		public void setNativeCode (String nativeCode) {
 			this.nativeCode = nativeCode;
+			checkCriticalNative();
+		}
+		
+		public boolean isAssertCritical () {
+			return assertCritical;
+		}
+
+		public void assertCritical () {
+			this.assertCritical = true;
+		}
+
+		private void checkCriticalNative() {
+			if (!isCriticalNative || nativeCode == null)
+				return;
+			if (CRITICAL_NATIVE_CHECKER.matcher(nativeCode).find()) {
+				isCriticalNative = false;
+			}
 		}
 
 		public ArrayList<Argument> getArguments () {

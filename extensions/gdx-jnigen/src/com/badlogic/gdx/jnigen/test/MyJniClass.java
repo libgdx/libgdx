@@ -31,100 +31,130 @@ public class MyJniClass {
 	public static native void test (boolean boolArg, byte byteArg, char charArg, short shortArg, int intArg, long longArg,
 		float floatArg, double doubleArg, Buffer byteBuffer, boolean[] boolArray, char[] charArray, short[] shortArray,
 		int[] intArray, long[] longArray, float[] floatArray, double[] doubleArray, double[][] multidim, String string); /*
-																																								 * printf(
-																																								 * "boolean: %s\n"
-																																								 * ,
-																																								 * boolArg
-																																								 * ?
-																																								 * "true":
-																																								 * "false"
-																																								 * );
-																																								 * printf(
-																																								 * "byte: %d\n"
-																																								 * ,
-																																								 * byteArg
-																																								 * );
-																																								 * printf(
-																																								 * "char: %c\n"
-																																								 * ,
-																																								 * charArg
-																																								 * );
-																																								 * printf(
-																																								 * "short: %d\n"
-																																								 * ,
-																																								 * shortArg
-																																								 * );
-																																								 * printf(
-																																								 * "int: %d\n"
-																																								 * ,
-																																								 * intArg
-																																								 * );
-																																								 * printf(
-																																								 * "long: %l\n"
-																																								 * ,
-																																								 * longArg
-																																								 * );
-																																								 * printf(
-																																								 * "float: %f\n"
-																																								 * ,
-																																								 * floatArg
-																																								 * );
-																																								 * printf(
-																																								 * "double: %d\n"
-																																								 * ,
-																																								 * doubleArg
-																																								 * );
-																																								 * printf(
-																																								 * "byteBuffer: %d\n"
-																																								 * ,
-																																								 * byteBuffer
-																																								 * [0]);
-																																								 * printf(
-																																								 * "bool[0]: %s\n"
-																																								 * ,
-																																								 * boolArray
-																																								 * [
-																																								 * 0]?"true"
-																																								 * :
-																																								 * "false"
-																																								 * );
-																																								 * printf(
-																																								 * "char[0]: %c\n"
-																																								 * ,
-																																								 * charArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "short[0]: %d\n"
-																																								 * ,
-																																								 * shortArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "int[0]: %d\n"
-																																								 * ,
-																																								 * intArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "long[0]: %ll\n"
-																																								 * ,
-																																								 * longArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "float[0]: %f\n"
-																																								 * ,
-																																								 * floatArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "double[0]: %f\n"
-																																								 * ,
-																																								 * doubleArray
-																																								 * [0]);
-																																								 * printf(
-																																								 * "string: %s fuck this nuts\n"
-																																								 * ,
-																																								 * string
-																																								 * );
+																																								  printf(
+																																								  "boolean: %s\n"
+																																								  ,
+																																								  boolArg
+																																								  ?
+																																								  "true":
+																																								  "false"
+																																								  );
+																																								  printf(
+																																								  "byte: %d\n"
+																																								  ,
+																																								  byteArg
+																																								  );
+																																								  printf(
+																																								  "char: %c\n"
+																																								  ,
+																																								  charArg
+																																								  );
+																																								  printf(
+																																								  "short: %d\n"
+																																								  ,
+																																								  shortArg
+																																								  );
+																																								  printf(
+																																								  "int: %d\n"
+																																								  ,
+																																								  intArg
+																																								  );
+																																								  printf(
+																																								  "long: %l\n"
+																																								  ,
+																																								  longArg
+																																								  );
+																																								  printf(
+																																								  "float: %f\n"
+																																								  ,
+																																								  floatArg
+																																								  );
+																																								  printf(
+																																								  "double: %d\n"
+																																								  ,
+																																								  doubleArg
+																																								  );
+																																								  printf(
+																																								  "byteBuffer: %d\n"
+																																								  ,
+																																								  byteBuffer
+																																								  [0]);
+																																								  printf(
+																																								  "bool[0]: %s\n"
+																																								  ,
+																																								  boolArray
+																																								  [
+																																								  0]?"true"
+																																								  :
+																																								  "false"
+																																								  );
+																																								  printf(
+																																								  "char[0]: %c\n"
+																																								  ,
+																																								  charArray
+																																								  [0]);
+																																								  printf(
+																																								  "short[0]: %d\n"
+																																								  ,
+																																								  shortArray
+																																								  [0]);
+																																								  printf(
+																																								  "int[0]: %d\n"
+																																								  ,
+																																								  intArray
+																																								  [0]);
+																																								  printf(
+																																								  "long[0]: %ll\n"
+																																								  ,
+																																								  longArray
+																																								  [0]);
+																																								  printf(
+																																								  "float[0]: %f\n"
+																																								  ,
+																																								  floatArray
+																																								  [0]);
+																																								  printf(
+																																								  "double[0]: %f\n"
+																																								  ,
+																																								  doubleArray
+																																								  [0]);
+																																								  printf(
+																																								  "string: %s fuck this nuts\n"
+																																								  ,
+																																								  string
+																																								  );
 																																								 */
 
+	public static native boolean testCriticalNative(
+		boolean boolArg, byte byteArg, char charArg, short shortArg, int intArg, long longArg, float floatArg, double doubleArg, 
+		boolean[] boolArray, char[] charArray, short[] shortArray, int[] intArray, long[] longArray, float[] floatArray, double[] doubleArray); /*CRITICAL
+	  if(!_isCriticalNative)
+	    return false;
+	  printf("boolean: %s\n", boolArg ? "true": "false");               
+	  printf("byte: %d\n", byteArg);
+	  printf("char: %c\n", charArg);               
+	  printf("short: %d\n", shortArg);               
+	  printf("int: %d\n", intArg);               
+	  printf("long: %l\n", longArg);               
+	  printf("float: %f\n", floatArg);               
+	  printf("double: %f\n", doubleArg);
+	  for(int i=0; i < boolArrayLength; i++)       
+	  	printf("bool[%d]: %s\n", i, boolArray[i]?"true":"false");
+	  for(int i=0; i < charArrayLength; i++)       
+	  	printf("char[%d]: %c\n", i, charArray[i]);
+	  for(int i=0; i < shortArrayLength; i++)
+	  	printf("short[%d]: %c\n", i, shortArray[i]);
+	  for(int i=0; i < intArrayLength; i++)
+	  	printf("int[%d]: %c\n", i, intArray[i]);
+	  for(int i=0; i < longArrayLength; i++)
+	  	printf("long[%d]: %l\n", i, longArray[i]);
+	  for(int i=0; i < floatArrayLength; i++)
+	  	printf("float[%d]: %f\n", i, floatArray[i]);
+	  for(int i=0; i < doubleArrayLength; i++)
+	     printf("float[%d]: %f\n", i, floatArray[i]);  
+	  return true;
+	 */
+	
 	// @off
 	/*JNI
 	#include <stdio.h>

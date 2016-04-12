@@ -37,6 +37,7 @@ import java.util.Stack;
 
 public class RobustJavaMethodParser implements JavaMethodParser {
 	private static final String JNI_MANUAL = "MANUAL";
+	private static final String JNI_CRITICAL = "CRITICAL";
 	private static final Map<String, ArgumentType> plainOldDataTypes;
 	private static final Map<String, ArgumentType> arrayTypes;
 	private static final Map<String, ArgumentType> bufferTypes;
@@ -107,6 +108,9 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 					if (section.getNativeCode().startsWith(JNI_MANUAL)) {
 						section.setNativeCode(section.getNativeCode().substring(JNI_MANUAL.length()));
 						method.setManual(true);
+					} else if (section.getNativeCode().startsWith(JNI_CRITICAL)) {
+						section.setNativeCode(section.getNativeCode().substring(JNI_CRITICAL.length()));
+						method.assertCritical();
 					}
 					method.setNativeCode(section.getNativeCode());
 					break;
@@ -137,6 +141,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		String className = classStack.peek().getName();
 		String name = method.getName();
 		boolean isStatic = ModifierSet.hasModifier(method.getModifiers(), ModifierSet.STATIC);
+		boolean isSynchronized = ModifierSet.hasModifier(method.getModifiers(), ModifierSet.SYNCHRONIZED);
 		String returnType = method.getType().toString();
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
 
@@ -146,7 +151,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 			}
 		}
 
-		return new JavaMethod(className, name, isStatic, returnType, null, arguments, method.getBeginLine(), method.getEndLine());
+		return new JavaMethod(className, name, isStatic, isSynchronized, returnType, null, arguments, method.getBeginLine(), method.getEndLine());
 	}
 
 	private ArgumentType getArgumentType (Parameter parameter) {
