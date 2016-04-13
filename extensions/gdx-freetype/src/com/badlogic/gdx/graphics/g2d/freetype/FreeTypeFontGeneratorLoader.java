@@ -47,6 +47,7 @@ public class FreeTypeFontGeneratorLoader extends
 		} else {
 			generator = new FreeTypeFontGenerator(file);
 		}
+        generator.setMaxTextureSize(parameter.maxTextureSize);
 		return generator;
 	}
 
@@ -56,5 +57,8 @@ public class FreeTypeFontGeneratorLoader extends
 	}
 	
 	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
+        /** The maximum texture size allowed by generateData, when storing in a texture atlas. Multiple texture pages will be created
+         * if necessary. Default is 1024.*/
+        public int maxTextureSize = 1024;
 	}
 }

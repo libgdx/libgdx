@@ -7,8 +7,6 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Array;
 
@@ -27,7 +25,9 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 		public String fontFileName;
 		/** the parameters used to generate the font, e.g. size, characters, etc. **/
 		public FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
-	}
+        /** the parameters used to generate the generator, e.g. maxTextureSize **/
+        public FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters generatorParameters = new FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters();
+    }
 
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter) {
@@ -45,7 +45,7 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter) {
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
-		deps.add(new AssetDescriptor<FreeTypeFontGenerator>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class));
+		deps.add(new AssetDescriptor<FreeTypeFontGenerator>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class, parameter.generatorParameters));
 		return deps;
 	}
 }
