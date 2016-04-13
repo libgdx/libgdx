@@ -221,6 +221,7 @@
 		<include name="graphics/g3d/utils/shapebuilders/BaseShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/shapebuilders/BoxShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/shapebuilders/CapsuleShapeBuilder.java"/>
+		<include name="graphics/g3d/utils/shapebuilders/ConeShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/shapebuilders/CylinderShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/shapebuilders/EllipseShapeBuilder.java"/>
 		<include name="graphics/g3d/utils/shapebuilders/FrustumShapeBuilder.java"/>

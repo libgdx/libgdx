@@ -41,6 +41,8 @@
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
+		<exclude name="**/TextureArrayTest.java"/> <!-- GLES 3.0 -->
+		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0 -->
 	</source>
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
 </module>
