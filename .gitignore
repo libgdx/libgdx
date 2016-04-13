@@ -17,6 +17,7 @@ gen/
 gen-external-apklibs/
 armeabi/
 armeabi-v7a/
+arm64-v8a/
 linux32/
 linux64/
 windows32/
@@ -27,6 +28,8 @@ Debug/
 Release/
 x64/
 x86/
+x86_64/
+robovm-build/
 ipch/
 /dist
 
@@ -36,6 +39,8 @@ ipch/
 *.userprefs
 *.sdf
 *.class
+hs_err_pid*
+Thumbs.db
 
 libgdx-*.zip
 libgdx-*.zip.MD5
