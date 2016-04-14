@@ -25,6 +25,7 @@ import com.badlogic.gdx.jnigen.parsing.CMethodParser.CMethod;
 import com.badlogic.gdx.jnigen.parsing.CMethodParser.CMethodParserResult;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.Argument;
+import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.ArgumentType;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JavaMethod;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JavaSegment;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JniSection;
@@ -265,7 +266,22 @@ public class NativeCodeGenerator {
 						System.out.print("Generating C/C++ for '" + file + "'...");
 						generateHFile(file);
 						generateCppFile(javaSegments, hFile, cppFile);
-						System.out.println("done");
+						int methodNum = 0, criticalNum = 0;
+						for (JavaSegment segment : javaSegments) {
+							if (segment instanceof JavaMethod) {
+								JavaMethod javaMethod = (JavaMethod)segment;
+								methodNum++;
+								if (javaMethod.isCriticalNative())
+									criticalNum++;
+							}
+						}
+						StringBuilder sb = new StringBuilder("done. ");
+						sb.append(methodNum).append(" native method").append(methodNum>1?"s":"").append(" generated");
+						if (criticalNum>0) {
+							sb.append(" (include ").append(criticalNum).append(" critical Native").append(criticalNum>1?"s)":")");
+						}
+						sb.append(".");
+						System.out.println(sb.toString());
 					}
 				}
 			}
@@ -376,10 +392,15 @@ public class NativeCodeGenerator {
 
 		// check if the user wants to do manual setup of JNI args
 		boolean isManual = javaMethod.isManual();
+		
+		if (javaMethod.isAssertCritical() && !javaMethod.isCriticalNative())
+			throw new RuntimeException("Native method " + javaMethod.getName() + 
+				" had been asserted that it is a critical native, but it dosen't meet the requirements.");
 
-		// if we have disposable arguments (string, buffer, array) and if there is a return
+		// if the native function is critical native,
+		// or if we have disposable arguments (string, buffer, array) and if there is a return
 		// in the native code (conservative, not syntactically checked), emit a wrapper method.
-		if (javaMethod.hasDisposableArgument() && javaMethod.getNativeCode().contains("return")) {
+		if (javaMethod.isCriticalNative() || (javaMethod.hasDisposableArgument() && javaMethod.getNativeCode().contains("return"))) {
 			// if the method is marked as manual, we just emit the signature and let the
 			// user do whatever she wants.
 			if (isManual) {
@@ -414,6 +435,9 @@ public class NativeCodeGenerator {
 					buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
 				}
 				buffer.append("}\n\n");
+				
+				if (javaMethod.isCriticalNative())
+					emitCriticalNative(buffer, javaMethod, cMethod, wrappedMethodName);
 			}
 		} else {
 			emitMethodSignature(buffer, javaMethod, cMethod, null);
@@ -432,7 +456,7 @@ public class NativeCodeGenerator {
 	protected void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
 		// emit a line marker
 		emitLineMarker(buffer, javaMethod.getEndIndex());
-
+		
 		// FIXME add tabs cleanup
 		buffer.append(javaMethod.getNativeCode());
 		buffer.append("\n");
@@ -447,7 +471,8 @@ public class NativeCodeGenerator {
 		// emit head, consisting of JNIEXPORT,return type and method name
 		// if this is a wrapped method, prefix the method name
 		String wrappedMethodName = null;
-		if (additionalArguments != null) {
+		boolean isEmittingWrappedMethod = additionalArguments != null;
+		if (isEmittingWrappedMethod) {
 			String[] tokens = cMethod.getHead().replace("\r\n", "").replace("\n", "").split(" ");
 			wrappedMethodName = JNI_WRAPPER_PREFIX + tokens[3];
 			buffer.append("static inline ");
@@ -461,28 +486,48 @@ public class NativeCodeGenerator {
 
 		// construct argument list
 		// Differentiate between static and instance method, then output each argument
-		if (javaMethod.isStatic()) {
+		if (isEmittingWrappedMethod && // only generate special arguments in the wrapped method
+			javaMethod.isCriticalNative()) {
+			buffer.append("(bool _isCriticalNative");
+		} else if (javaMethod.isStatic()) {
 			buffer.append("(JNIEnv* env, jclass clazz");
 		} else {
 			buffer.append("(JNIEnv* env, jobject object");
 		}
 		if (javaMethod.getArguments().size() > 0) buffer.append(", ");
-		for (int i = 0; i < javaMethod.getArguments().size(); i++) {
-			// output the argument type as defined in the header
-			buffer.append(cMethod.getArgumentTypes()[i + 2]);
-			buffer.append(" ");
-			// if this is not a POD or an object, we need to add a prefix
-			// as we will output JNI code to get pointers to strings, arrays
-			// and direct buffers.
-			Argument javaArg = javaMethod.getArguments().get(i);
-			if (!javaArg.getType().isPlainOldDataType() && !javaArg.getType().isObject() && appendPrefix) {
-				buffer.append(JNI_ARG_PREFIX);
+		
+		if (!isEmittingWrappedMethod || !javaMethod.isCriticalNative()) {
+			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
+				// output the argument type as defined in the header
+				buffer.append(cMethod.getArgumentTypes()[i + 2]);
+				buffer.append(" ");
+				// if this is not a POD or an object, we need to add a prefix
+				// as we will output JNI code to get pointers to strings, arrays
+				// and direct buffers.
+				Argument javaArg = javaMethod.getArguments().get(i);
+				if (!javaArg.getType().isPlainOldDataType() && !javaArg.getType().isObject() && appendPrefix) {
+					buffer.append(JNI_ARG_PREFIX);
+				}
+				// output the name of the argument
+				buffer.append(javaArg.getName());
+	
+				// comma, if this is not the last argument
+				if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
 			}
-			// output the name of the argument
-			buffer.append(javaArg.getName());
-
-			// comma, if this is not the last argument
-			if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
+		} else {
+			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
+				Argument javaArg = javaMethod.getArguments().get(i);
+				if (javaArg.getType().isPrimitiveArray()) {
+					if (usedArrayLength(javaMethod, javaArg)) {
+						buffer.append("jint ").append(getArrayLengthArgument(javaArg)).append(", ");
+					}
+					buffer.append(javaArg.getType().getArrayJniType());
+				} else {
+					buffer.append(cMethod.getArgumentTypes()[i + 2]);
+				}
+				buffer.append(" ").append(javaArg.getName());
+				if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
+			}
 		}
 
 		// if this is a wrapper method signature, add the additional arguments
@@ -499,12 +544,40 @@ public class NativeCodeGenerator {
 
 	private void emitJniSetupCode (StringBuffer buffer, JavaMethod javaMethod, StringBuffer additionalArgs,
 		StringBuffer wrapperArgs) {
-		// add environment and class/object as the two first arguments for
-		// wrapped method.
-		if (javaMethod.isStatic()) {
+		if (javaMethod.isCriticalNative()) {
+			wrapperArgs.append("false, ");  // set _isCriticalNative false
+		} else if (javaMethod.isStatic()) {  // add environment and class/object as the two first arguments for wrapped method.
 			wrapperArgs.append("env, clazz, ");
 		} else {
 			wrapperArgs.append("env, object, ");
+		}
+		
+		if (javaMethod.isCriticalNative()) {
+			StringBuilder lengthGetterBuffer = new StringBuilder();
+			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
+				Argument arg = javaMethod.getArguments().get(i);
+				if (arg.getType().isPrimitiveArray()) {
+					String varLength = getArrayLengthArgument(arg);
+					String type = arg.getType().getArrayCType();
+					buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetPrimitiveArrayCritical(" 
+										+ JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
+					if (usedArrayLength(javaMethod, arg)) {
+						wrapperArgs.append(varLength);
+						lengthGetterBuffer.append("\tjsize " + varLength + " = env->GetArrayLength(" 
+													+ JNI_ARG_PREFIX + arg.getName() + ");\n");
+						wrapperArgs.append(", ");
+					}
+				}
+				if (arg.getType() == ArgumentType.BooleanArray) // Fix "cannot convert 'bool*' to 'jboolean* {aka unsigned char*}'"
+					wrapperArgs.append("(jboolean*)");
+				if (arg.getType() == ArgumentType.IntegerArray) // Fix "cannot convert 'int*' to 'jint* {aka long int*}'"
+					wrapperArgs.append("(jint*)");
+				wrapperArgs.append(arg.getName());
+				if (i < javaMethod.getArguments().size() - 1) wrapperArgs.append(", ");
+			}
+			buffer.append(lengthGetterBuffer.toString());
+			buffer.append("\n");
+			return;
 		}
 
 		// arguments for wrapper method
@@ -563,7 +636,7 @@ public class NativeCodeGenerator {
 				wrapperArgs.append(arg.getName());
 			}
 		}
-
+		
 		// new line for separation
 		buffer.append("\n");
 	}
@@ -586,5 +659,60 @@ public class NativeCodeGenerator {
 
 		// new line for separation
 		buffer.append("\n");
+	}
+	
+	/**
+	 * Does the native codes used the length of array
+	 */
+	private boolean usedArrayLength(JavaMethod javaMethod, Argument argument) {
+		return javaMethod.getNativeCode().contains(getArrayLengthArgument(argument));
+	}
+	
+	private String getArrayLengthArgument(Argument argument) {
+	// FIXME if someone uses both "array" and "arrayLength" as arguments...
+		return argument.getName() + "Length";
+	}
+	
+	private void emitCriticalNative (StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod, String wrapperName) {
+		if (!javaMethod.isCriticalNative())
+			throw new RuntimeException(javaMethod.getName() + " is not a critical native method");
+		String methodName = cMethod.getHead().replaceFirst("Java_", "JavaCritical_");
+		StringBuilder paramBuffer = new StringBuilder("true"); // set _isCriticalNative true
+		// only generate in desktop-end
+		buffer.append("#if defined(_WIN32) || defined(__linux__) || defined(__APPLE__)\n")
+				.append("\n")
+				.append("extern \"C\" ") // stop name mangling
+				.append(methodName).append("(");
+		boolean firstArgument = true;
+		for (Argument arg : javaMethod.getArguments()) {
+			ArgumentType type = arg.getType();
+			if (firstArgument)
+				firstArgument = false;
+			else
+				buffer.append(",");
+			
+			if (type.isPlainOldDataType()) {
+				String name = arg.getName();
+				buffer.append(" ").append(type.getJniType()).append(" ").append(name);
+				paramBuffer.append(", ").append(name);
+			} else if (type.isPrimitiveArray()) {
+				String name = arg.getName();
+				buffer.append(" jint ").append(name).append("Length").append(", ")
+						.append(type.getArrayJniType()).append(" ").append(name);
+				String varLength = getArrayLengthArgument(arg);
+				if (usedArrayLength(javaMethod, arg)) {
+					paramBuffer.append(", ").append(varLength);
+				}
+				paramBuffer.append(", ").append(name);
+			} else {
+				throw new RuntimeException("Illegal argument in critical native:" + arg.getName() + "(" + type + ")");
+			}
+		}
+		buffer.append(")\n{\n\t");
+		String[] tokens = methodName.split(" ");
+		if (!tokens[1].equals("void"))
+			buffer.append("return ");
+		buffer.append(wrapperName).append("(").append(paramBuffer.toString()).append(");\n}\n\n");
+		buffer.append("#endif\n\n");
 	}
 }
