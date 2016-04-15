@@ -110,7 +110,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 						method.setManual(true);
 					} else if (section.getNativeCode().startsWith(JNI_CRITICAL)) {
 						section.setNativeCode(section.getNativeCode().substring(JNI_CRITICAL.length()));
-						method.assertCritical();
+						method.enableCritical();
 					}
 					method.setNativeCode(section.getNativeCode());
 					break;

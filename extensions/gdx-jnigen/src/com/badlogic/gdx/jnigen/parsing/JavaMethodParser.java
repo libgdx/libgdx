@@ -174,8 +174,8 @@ public interface JavaMethodParser {
 		private final String name;
 		private final boolean isStatic;
 		private boolean isManual;
-		private boolean isCriticalNative;
-		private boolean assertCritical = false;
+		private boolean isSatisfyCritical;
+		private boolean isEnableCritical = false;
 		private final String returnType;
 		private String nativeCode;
 		private final ArrayList<Argument> arguments;
@@ -193,11 +193,11 @@ public interface JavaMethodParser {
 			this.arguments = arguments;
 			this.startIndex = startIndex;
 			this.endIndex = endIndex;
-			isCriticalNative = isStatic && !isSynchronized;
-			if (isCriticalNative) {
+			isSatisfyCritical = isStatic && !isSynchronized;
+			if (isSatisfyCritical) {
 				for (Argument arg : arguments) {
 					if (!arg.type.isCriticalNativeAllowed()) {
-						isCriticalNative = false;
+						isSatisfyCritical = false;
 					}
 				}
 				checkCriticalNative();
@@ -222,7 +222,7 @@ public interface JavaMethodParser {
 		public void setManual (boolean isManual) {
 			this.isManual = isManual;
 			if(!isManual) // Do not generate critical native for manual setup
-				isCriticalNative = false;
+				isSatisfyCritical = false;
 		}
 
 		public boolean isManual () {
@@ -266,17 +266,17 @@ public interface JavaMethodParser {
 		 * 
 		 * The critical native function is: <br/><br/>
 		 * 
-		 * JavaCritical_somepackage_Someclass_foo(jint, jint, float*, jint, float*); <br/><br/>
+		 * JavaCritical_somepackage_Someclass_foo(jint, jint, jfloat*, jint, jfloat*); <br/><br/>
 		 * 
 		 * <p>For more informations, visit <a href="
 		 * http://stackoverflow.com/questions/36298111/is-it-possible-to-use-sun-misc-unsafe-to-call-c-functions-without-jni/36309652#36309652
 		 * ">the original post in Stackoverflow</a>
 		 * </p>
 		 * 
-		 * @return is this method a Critical Native method, and should generate JNI code for it.
+		 * @return Does this method have been marked as a Critical Native method, and also satisfy the conditions.
 		 */
 		public boolean isCriticalNative () {
-			return isCriticalNative;
+			return isSatisfyCritical && isEnableCritical;
 		}
 		
 		public String getReturnType () {
@@ -292,19 +292,27 @@ public interface JavaMethodParser {
 			checkCriticalNative();
 		}
 		
-		public boolean isAssertCritical () {
-			return assertCritical;
+		public boolean isEnableCritical() {
+			return isEnableCritical;
 		}
 
-		public void assertCritical () {
-			this.assertCritical = true;
+		/**
+		 * Mark this method as a critical native. Enable the generating. 
+		 * If this method doesn't satisfy the requirements of critical native, 
+		 * Jnigen will throw an exception while emitting codes.
+		 */
+		public void enableCritical () {
+			this.isEnableCritical = true;
 		}
 
+		/**
+		 * Check if the codes of this method used "env" or "clazz". They shouldn't appear in critical native.
+		 */
 		private void checkCriticalNative() {
-			if (!isCriticalNative || nativeCode == null)
+			if (!isSatisfyCritical || nativeCode == null)
 				return;
 			if (CRITICAL_NATIVE_CHECKER.matcher(nativeCode).find()) {
-				isCriticalNative = false;
+				isSatisfyCritical = false;
 			}
 		}
 

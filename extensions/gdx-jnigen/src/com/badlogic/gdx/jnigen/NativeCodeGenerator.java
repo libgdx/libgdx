@@ -320,6 +320,7 @@ public class NativeCodeGenerator {
 		ArrayList<CMethod> cMethods = cMethodParser.parse(headerFileContent).getMethods();
 
 		StringBuffer buffer = new StringBuffer();
+		StringBuffer criticalBuffer = new StringBuffer();
 		emitHeaderInclude(buffer, hFile.name());
 
 		for (JavaSegment segment : javaSegments) {
@@ -336,8 +337,21 @@ public class NativeCodeGenerator {
 				if (cMethod == null)
 					throw new RuntimeException("Couldn't find C method for Java method '" + javaMethod.getClassName() + "#"
 						+ javaMethod.getName() + "'");
-				emitJavaMethod(buffer, javaMethod, cMethod);
+				emitJavaMethod(buffer, criticalBuffer, javaMethod, cMethod);
 			}
+		}
+		if (criticalBuffer.length() > 0) {
+			buffer.append("#if defined(_WIN32) || defined(__linux__) \n") // only generate in desktop
+					.append("	#define __DESKTOP__ \n")
+					.append("#elif defined(__APPLE__) \n")
+					.append("	#include <TargetConditionals.h> \n")
+					.append("	#if defined(TARGET_OS_MAC) && !defined(TARGET_OS_IPHONE) \n")
+					.append("		#define __DESKTOP__ \n")
+					.append("	#endif \n")
+					.append("#endif \n")
+					.append("#if defined(__DESKTOP__) \n")
+					.append(criticalBuffer)
+					.append("#endif \n");
 		}
 		cppFile.writeString(buffer.toString(), false, "UTF-8");
 	}
@@ -381,7 +395,7 @@ public class NativeCodeGenerator {
 		buffer.append(section.getNativeCode().replace("\r", ""));
 	}
 
-	private void emitJavaMethod (StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod) {
+	private void emitJavaMethod (StringBuffer buffer, StringBuffer criticalBuffer, JavaMethod javaMethod, CMethod cMethod) {
 		// get the setup and cleanup code for arrays, buffers and strings
 		StringBuffer jniSetupCode = new StringBuffer();
 		StringBuffer jniCleanupCode = new StringBuffer();
@@ -393,9 +407,9 @@ public class NativeCodeGenerator {
 		// check if the user wants to do manual setup of JNI args
 		boolean isManual = javaMethod.isManual();
 		
-		if (javaMethod.isAssertCritical() && !javaMethod.isCriticalNative())
+		if (javaMethod.isEnableCritical() && !javaMethod.isCriticalNative())
 			throw new RuntimeException("Native method " + javaMethod.getName() + 
-				" had been asserted that it is a critical native, but it dosen't meet the requirements.");
+				" had been marked as a critical native, but it doesn't meet the requirements.");
 
 		// if the native function is critical native,
 		// or if we have disposable arguments (string, buffer, array) and if there is a return
@@ -437,7 +451,7 @@ public class NativeCodeGenerator {
 				buffer.append("}\n\n");
 				
 				if (javaMethod.isCriticalNative())
-					emitCriticalNative(buffer, javaMethod, cMethod, wrappedMethodName);
+					emitCriticalNative(criticalBuffer, javaMethod, cMethod, wrappedMethodName);
 			}
 		} else {
 			emitMethodSignature(buffer, javaMethod, cMethod, null);
@@ -496,7 +510,23 @@ public class NativeCodeGenerator {
 		}
 		if (javaMethod.getArguments().size() > 0) buffer.append(", ");
 		
-		if (!isEmittingWrappedMethod || !javaMethod.isCriticalNative()) {
+		if (isEmittingWrappedMethod && javaMethod.isCriticalNative()) {
+			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
+				Argument javaArg = javaMethod.getArguments().get(i);
+				// emitting array. The format looks like "jint arrayLength, jXXX* array" or just "jXXX* array".
+				// Depends on whether the codes used arrayLength or not.
+				if (javaArg.getType().isPrimitiveArray()) {
+					if (usedArrayLength(javaMethod, javaArg)) {
+						buffer.append("jint ").append(getArrayLengthArgument(javaArg)).append(", ");
+					}
+					buffer.append(javaArg.getType().getArrayJniType());
+				} else {
+					buffer.append(cMethod.getArgumentTypes()[i + 2]);
+				}
+				buffer.append(" ").append(javaArg.getName());
+				if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
+			}
+		} else {
 			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
 				// output the argument type as defined in the header
 				buffer.append(cMethod.getArgumentTypes()[i + 2]);
@@ -512,20 +542,6 @@ public class NativeCodeGenerator {
 				buffer.append(javaArg.getName());
 	
 				// comma, if this is not the last argument
-				if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
-			}
-		} else {
-			for (int i = 0; i < javaMethod.getArguments().size(); i++) {
-				Argument javaArg = javaMethod.getArguments().get(i);
-				if (javaArg.getType().isPrimitiveArray()) {
-					if (usedArrayLength(javaMethod, javaArg)) {
-						buffer.append("jint ").append(getArrayLengthArgument(javaArg)).append(", ");
-					}
-					buffer.append(javaArg.getType().getArrayJniType());
-				} else {
-					buffer.append(cMethod.getArgumentTypes()[i + 2]);
-				}
-				buffer.append(" ").append(javaArg.getName());
 				if (i < javaMethod.getArguments().size() - 1) buffer.append(", ");
 			}
 		}
@@ -673,33 +689,29 @@ public class NativeCodeGenerator {
 		return argument.getName() + "Length";
 	}
 	
-	private void emitCriticalNative (StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod, String wrapperName) {
+	private void emitCriticalNative (StringBuffer criticalBuffer, JavaMethod javaMethod, CMethod cMethod, String wrapperName) {
 		if (!javaMethod.isCriticalNative())
 			throw new RuntimeException(javaMethod.getName() + " is not a critical native method");
 		String methodName = cMethod.getHead().replaceFirst("Java_", "JavaCritical_");
+		// stop name mangling
+		criticalBuffer.append("extern \"C\" ").append(methodName).append("(");
 		StringBuilder paramBuffer = new StringBuilder("true"); // set _isCriticalNative true
-		// only generate in desktop
-		// TODO find a better way to differentiate desktop and others. 
-		buffer.append("#if defined(_WIN32) || defined(__linux__) || defined(__APPLE__)\n")
-				.append("\n")
-				.append("extern \"C\" ") // stop name mangling
-				.append(methodName).append("(");
 		boolean firstArgument = true;
 		for (Argument arg : javaMethod.getArguments()) {
 			ArgumentType type = arg.getType();
 			if (firstArgument)
 				firstArgument = false;
 			else
-				buffer.append(",");
+				criticalBuffer.append(",");
 			
 			if (type.isPlainOldDataType()) {
 				String name = arg.getName();
-				buffer.append(" ").append(type.getJniType()).append(" ").append(name);
+				criticalBuffer.append(" ").append(type.getJniType()).append(" ").append(name);
 				paramBuffer.append(", ").append(name);
 			} else if (type.isPrimitiveArray()) {
 				String name = arg.getName();
 				String varLength = getArrayLengthArgument(arg);
-				buffer.append(" jint ").append(varLength).append(", ")
+				criticalBuffer.append(" jint ").append(varLength).append(", ")
 						.append(type.getArrayJniType()).append(" ").append(name);
 				if (usedArrayLength(javaMethod, arg)) {
 					paramBuffer.append(", ").append(varLength);
@@ -709,11 +721,10 @@ public class NativeCodeGenerator {
 				throw new RuntimeException("Illegal argument in critical native:" + arg.getName() + "(" + type + ")");
 			}
 		}
-		buffer.append(")\n{\n\t");
+		criticalBuffer.append(")\n{\n\t");
 		String[] tokens = methodName.split(" ");
 		if (!tokens[1].equals("void"))
-			buffer.append("return ");
-		buffer.append(wrapperName).append("(").append(paramBuffer.toString()).append(");\n}\n\n");
-		buffer.append("#endif\n\n");
+			criticalBuffer.append("return ");
+		criticalBuffer.append(wrapperName).append("(").append(paramBuffer.toString()).append(");\n}\n");
 	}
 }
