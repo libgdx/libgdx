@@ -52,6 +52,7 @@ import com.badlogic.gdx.math.Matrix4;
 %}
 
 %feature("director") InternalTickCallback;
+%feature("director") CustomActionInterface;
 
 %include "./btRigidBody.i"
 
@@ -76,6 +77,11 @@ import com.badlogic.gdx.math.Matrix4;
 #include <BulletDynamics/Dynamics/btActionInterface.h>
 %}
 %include "BulletDynamics/Dynamics/btActionInterface.h"
+
+%{
+#include <gdx/dynamics/CustomActionInterface.h>
+%}
+%include "gdx/dynamics/CustomActionInterface.h"
 
 %{
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
