@@ -85,8 +85,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform cameraPosition = new Uniform("u_cameraPosition");
 		public final static Uniform cameraDirection = new Uniform("u_cameraDirection");
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
-		public final static Uniform cameraNear = new Uniform("u_cameraNear");
-		public final static Uniform cameraFar = new Uniform("u_cameraFar");
+		public final static Uniform cameraNearFar = new Uniform("u_cameraNearFar");
 
 		public final static Uniform worldTrans = new Uniform("u_worldTrans");
 		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
@@ -159,16 +158,10 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, shader.camera.up);
 			}
 		};
-		public final static Setter cameraNear = new GlobalSetter() {
+		public final static Setter cameraNearFar = new GlobalSetter() {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				shader.set(inputID, shader.camera.near);
-			}
-		};
-		public final static Setter cameraFar = new GlobalSetter() {
-			@Override
-			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				shader.set(inputID, shader.camera.far);
+				shader.set(inputID, shader.camera.near, shader.camera.far);
 			}
 		};
 		public final static Setter worldTrans = new LocalSetter() {
@@ -424,8 +417,7 @@ public class DefaultShader extends BaseShader {
 	public final int u_cameraPosition;
 	public final int u_cameraDirection;
 	public final int u_cameraUp;
-	public final int u_cameraNear;
-	public final int u_cameraFar;
+	public final int u_cameraNearFar;
 	public final int u_time;
 	// Object uniforms
 	public final int u_worldTrans;
@@ -561,8 +553,7 @@ public class DefaultShader extends BaseShader {
 		u_cameraPosition = register(Inputs.cameraPosition, Setters.cameraPosition);
 		u_cameraDirection = register(Inputs.cameraDirection, Setters.cameraDirection);
 		u_cameraUp = register(Inputs.cameraUp, Setters.cameraUp);
-		u_cameraNear = register(Inputs.cameraNear, Setters.cameraNear);
-		u_cameraFar = register(Inputs.cameraFar, Setters.cameraFar);
+		u_cameraNearFar = register(Inputs.cameraNearFar, Setters.cameraNearFar);
 		u_time = register(new Uniform("u_time"));
 		// Object uniforms
 		u_worldTrans = register(Inputs.worldTrans, Setters.worldTrans);
