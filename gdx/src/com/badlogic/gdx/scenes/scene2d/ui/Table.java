@@ -141,7 +141,7 @@ public class Table extends WidgetGroup {
 	public void setBackground (Drawable background) {
 		if (this.background == background) return;
 		float padTopOld = getPadTop(), padLeftOld = getPadLeft(), padBottomOld = getPadBottom(), padRightOld = getPadRight();
-		this.background = background;
+		this.background = background; // The default pad values use the background's padding.
 		float padTopNew = getPadTop(), padLeftNew = getPadLeft(), padBottomNew = getPadBottom(), padRightNew = getPadRight();
 		if (padTopOld + padBottomOld != padTopNew + padBottomNew || padLeftOld + padRightOld != padLeftNew + padRightNew)
 			invalidateHierarchy();
