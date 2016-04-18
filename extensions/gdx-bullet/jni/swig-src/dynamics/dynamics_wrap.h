@@ -36,10 +36,10 @@ public:
     virtual void updateAction(btScalar timeStep);
 public:
     bool swig_overrides(int n) {
-      return (n < 3 ? swig_override[n] : false);
+      return (n < 2 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<3> swig_override;
+    Swig::BoolArray<2> swig_override;
 };
 
 

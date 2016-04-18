@@ -75,11 +75,7 @@ public class CustomActionInterface extends btActionInterface {
   }
 
   public void updateAction(float timeStep) {
-    DynamicsJNI.CustomActionInterface_updateAction__SWIG_0(swigCPtr, this, timeStep);
-  }
-
-  public void updateAction(btCollisionWorld collisionWorld, float timeStep) {
-    if (getClass() == CustomActionInterface.class) DynamicsJNI.CustomActionInterface_updateAction__SWIG_1(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld, timeStep); else DynamicsJNI.CustomActionInterface_updateActionSwigExplicitCustomActionInterface__SWIG_1(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld, timeStep);
+    DynamicsJNI.CustomActionInterface_updateAction(swigCPtr, this, timeStep);
   }
 
   public CustomActionInterface() {

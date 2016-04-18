@@ -659,7 +659,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_DynamicsJNI = NULL;
-    jmethodID director_method_ids[4];
+    jmethodID director_method_ids[3];
   }
 }
 
@@ -2062,31 +2062,7 @@ SwigDirector_CustomActionInterface::~SwigDirector_CustomActionInterface() {
 
 
 void SwigDirector_CustomActionInterface::updateAction(btCollisionWorld *collisionWorld, btScalar timeStep) {
-  JNIEnvWrapper swigjnienv(this) ;
-  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
-  jobject swigjobj = (jobject) NULL ;
-  jlong jcollisionWorld = 0 ;
-  jfloat jtimeStep  ;
-  
-  if (!swig_override[0]) {
-    CustomActionInterface::updateAction(collisionWorld,timeStep);
-    return;
-  }
-  swigjobj = swig_get_self(jenv);
-  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *((btCollisionWorld **)&jcollisionWorld) = (btCollisionWorld *) collisionWorld; 
-    jtimeStep = (jfloat) timeStep;
-    jenv->CallStaticVoidMethod(Swig::jclass_DynamicsJNI, Swig::director_method_ids[1], swigjobj, jcollisionWorld, jtimeStep);
-    jthrowable swigerror = jenv->ExceptionOccurred();
-    if (swigerror) {
-      jenv->ExceptionClear();
-      throw Swig::DirectorException(jenv, swigerror);
-    }
-    
-  } else {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in CustomActionInterface::updateAction ");
-  }
-  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  CustomActionInterface::updateAction(collisionWorld,timeStep);
 }
 
 void SwigDirector_CustomActionInterface::debugDraw(btIDebugDraw *debugDrawer) {
@@ -2095,14 +2071,14 @@ void SwigDirector_CustomActionInterface::debugDraw(btIDebugDraw *debugDrawer) {
   jobject swigjobj = (jobject) NULL ;
   jlong jdebugDrawer = 0 ;
   
-  if (!swig_override[1]) {
+  if (!swig_override[0]) {
     SWIG_JavaThrowException(JNIEnvWrapper(this).getJNIEnv(), SWIG_JavaDirectorPureVirtual, "Attempted to invoke pure virtual method CustomActionInterface::debugDraw.");
     return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btIDebugDraw **)&jdebugDrawer) = (btIDebugDraw *) debugDrawer; 
-    jenv->CallStaticVoidMethod(Swig::jclass_DynamicsJNI, Swig::director_method_ids[2], swigjobj, jdebugDrawer);
+    jenv->CallStaticVoidMethod(Swig::jclass_DynamicsJNI, Swig::director_method_ids[1], swigjobj, jdebugDrawer);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -2121,14 +2097,14 @@ void SwigDirector_CustomActionInterface::updateAction(btScalar timeStep) {
   jobject swigjobj = (jobject) NULL ;
   jfloat jtimeStep  ;
   
-  if (!swig_override[2]) {
+  if (!swig_override[1]) {
     SWIG_JavaThrowException(JNIEnvWrapper(this).getJNIEnv(), SWIG_JavaDirectorPureVirtual, "Attempted to invoke pure virtual method CustomActionInterface::updateAction.");
     return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jtimeStep = (jfloat) timeStep;
-    jenv->CallStaticVoidMethod(Swig::jclass_DynamicsJNI, Swig::director_method_ids[3], swigjobj, jtimeStep);
+    jenv->CallStaticVoidMethod(Swig::jclass_DynamicsJNI, Swig::director_method_ids[2], swigjobj, jtimeStep);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -2148,9 +2124,6 @@ void SwigDirector_CustomActionInterface::swig_connect_director(JNIEnv *jenv, job
     jmethodID base_methid;
   } methods[] = {
     {
-      "updateAction", "(Lcom/badlogic/gdx/physics/bullet/collision/btCollisionWorld;F)V", NULL 
-    },
-    {
       "debugDraw", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;)V", NULL 
     },
     {
@@ -2167,7 +2140,7 @@ void SwigDirector_CustomActionInterface::swig_connect_director(JNIEnv *jenv, job
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 2; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -8901,7 +8874,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_CustomActionInterface_1updateAction_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_CustomActionInterface_1updateAction(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
   CustomActionInterface *arg1 = (CustomActionInterface *) 0 ;
   btScalar arg2 ;
   
@@ -8911,38 +8884,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   arg1 = *(CustomActionInterface **)&jarg1; 
   arg2 = (btScalar)jarg2; 
   (arg1)->updateAction(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_CustomActionInterface_1updateAction_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloat jarg3) {
-  CustomActionInterface *arg1 = (CustomActionInterface *) 0 ;
-  btCollisionWorld *arg2 = (btCollisionWorld *) 0 ;
-  btScalar arg3 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(CustomActionInterface **)&jarg1; 
-  arg2 = *(btCollisionWorld **)&jarg2; 
-  arg3 = (btScalar)jarg3; 
-  (arg1)->updateAction(arg2,arg3);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_CustomActionInterface_1updateActionSwigExplicitCustomActionInterface_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloat jarg3) {
-  CustomActionInterface *arg1 = (CustomActionInterface *) 0 ;
-  btCollisionWorld *arg2 = (btCollisionWorld *) 0 ;
-  btScalar arg3 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(CustomActionInterface **)&jarg1; 
-  arg2 = *(btCollisionWorld **)&jarg2; 
-  arg3 = (btScalar)jarg3; 
-  (arg1)->CustomActionInterface::updateAction(arg2,arg3);
 }
 
 
@@ -31656,18 +31597,15 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   static struct {
     const char *method;
     const char *signature;
-  } methods[4] = {
+  } methods[3] = {
     {
       "SwigDirector_InternalTickCallback_onInternalTick", "(Lcom/badlogic/gdx/physics/bullet/dynamics/InternalTickCallback;JF)V" 
-    },
-    {
-      "SwigDirector_CustomActionInterface_updateAction__SWIG_1", "(Lcom/badlogic/gdx/physics/bullet/dynamics/CustomActionInterface;JF)V" 
     },
     {
       "SwigDirector_CustomActionInterface_debugDraw", "(Lcom/badlogic/gdx/physics/bullet/dynamics/CustomActionInterface;J)V" 
     },
     {
-      "SwigDirector_CustomActionInterface_updateAction__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/dynamics/CustomActionInterface;F)V" 
+      "SwigDirector_CustomActionInterface_updateAction", "(Lcom/badlogic/gdx/physics/bullet/dynamics/CustomActionInterface;F)V" 
     }
   };
   Swig::jclass_DynamicsJNI = (jclass) jenv->NewGlobalRef(jcls);

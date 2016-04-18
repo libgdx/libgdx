@@ -53,6 +53,8 @@ import com.badlogic.gdx.math.Matrix4;
 
 %feature("director") InternalTickCallback;
 %feature("director") CustomActionInterface;
+%ignore CustomActionInterface::updateAction(btCollisionWorld*, btScalar);
+%ignore CustomActionInterface::debugDraw(btIDebugDraw*);
 
 %include "./btRigidBody.i"
 
