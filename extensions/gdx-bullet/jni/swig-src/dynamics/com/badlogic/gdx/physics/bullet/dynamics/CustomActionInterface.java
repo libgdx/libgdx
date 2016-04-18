@@ -78,6 +78,10 @@ public class CustomActionInterface extends btActionInterface {
     DynamicsJNI.CustomActionInterface_updateAction(swigCPtr, this, timeStep);
   }
 
+  public void debugDraw() {
+    DynamicsJNI.CustomActionInterface_debugDraw(swigCPtr, this);
+  }
+
   public CustomActionInterface() {
     this(DynamicsJNI.new_CustomActionInterface(), true);
     DynamicsJNI.CustomActionInterface_director_connect(this, swigCPtr, swigCMemOwn, true);

@@ -34,6 +34,7 @@ public:
     virtual void updateAction(btCollisionWorld *collisionWorld, btScalar timeStep);
     virtual void debugDraw(btIDebugDraw *debugDrawer);
     virtual void updateAction(btScalar timeStep);
+    virtual void debugDraw();
 public:
     bool swig_overrides(int n) {
       return (n < 2 ? swig_override[n] : false);

@@ -477,6 +477,7 @@ public class DynamicsJNI {
   public final static native void btActionInterface_updateAction(long jarg1, btActionInterface jarg1_, long jarg2, btCollisionWorld jarg2_, float jarg3);
   public final static native void btActionInterface_debugDraw(long jarg1, btActionInterface jarg1_, long jarg2, btIDebugDraw jarg2_);
   public final static native void CustomActionInterface_updateAction(long jarg1, CustomActionInterface jarg1_, float jarg2);
+  public final static native void CustomActionInterface_debugDraw(long jarg1, CustomActionInterface jarg1_);
   public final static native long new_CustomActionInterface();
   public final static native void delete_CustomActionInterface(long jarg1);
   public final static native void CustomActionInterface_director_connect(CustomActionInterface obj, long cptr, boolean mem_own, boolean weak_global);
@@ -1940,11 +1941,11 @@ public class DynamicsJNI {
   public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback jself, long dynamicsWorld, float timeStep) {
     jself.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
   }
-  public static void SwigDirector_CustomActionInterface_debugDraw(CustomActionInterface jself, long debugDrawer) {
-    jself.debugDraw((debugDrawer == 0) ? null : new btIDebugDraw(debugDrawer, false));
-  }
   public static void SwigDirector_CustomActionInterface_updateAction(CustomActionInterface jself, float timeStep) {
     jself.updateAction(timeStep);
+  }
+  public static void SwigDirector_CustomActionInterface_debugDraw(CustomActionInterface jself) {
+    jself.debugDraw();
   }
 
   private final static native void swig_module_init();
