@@ -50,7 +50,7 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 		}
 	}
 
-	private static short[] indices = new short[1];
+	private static short[] indices;
 	private static float[] vertices;
 	private final static RenderablePool renderablesPool = new RenderablePool();
 	private final static Array<Renderable> renderables = new Array<Renderable>();
@@ -117,39 +117,46 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 			binormalOffset = mesh.getVertexAttribute(Usage.BiNormal).offset / FLOAT_BYTES;
 
 		int attributesSize = mesh.getVertexSize() / FLOAT_BYTES;
+		int verticesOffset = 0;
+		int verticesQuantity = 0;
 
-		ensureVerticesCapacity(attributesSize);
+		if (mesh.getNumIndices() > 0) {
+			// Get min vertice to max vertice in indices array
+			ensureIndicesCapacity(mesh.getNumIndices());
+			mesh.getIndices(renderable.meshPart.offset, renderable.meshPart.size, indices, 0);
 
-		int i = renderable.meshPart.offset;
-		int last = i + renderable.meshPart.size;
-		// FIXME: don't copy the vertices/indices over one at a time, see https://github.com/libgdx/libgdx/pull/3988
-		while (i < last) {
+			short minVertice = minVerticeInIndices();
+			short maxVertice = maxVerticeInIndices();
 
-			if (mesh.getNumIndices() > 0) {
-				mesh.getIndices(i, 1, indices, 0);
-				mesh.getVertices(indices[0] * attributesSize, attributesSize, vertices, 0);
-				i++;
-			} else {
-				mesh.getVertices(i * attributesSize, attributesSize, vertices, 0);
-				i += attributesSize;
-			}
+			verticesOffset = minVertice;
+			verticesQuantity = maxVertice - minVertice;
+		} else {
+			verticesOffset = renderable.meshPart.offset;
+			verticesQuantity = renderable.meshPart.size;
+		}
+
+		ensureVerticesCapacity(verticesQuantity * attributesSize);
+		mesh.getVertices(verticesOffset * attributesSize, verticesQuantity * attributesSize, vertices, 0);
+
+		for (int i = verticesOffset; i < verticesQuantity; i++) {
+			int id = i * attributesSize;
 
 			// Vertex position
-			tmpV0.set(vertices[positionOffset], vertices[positionOffset + 1], vertices[positionOffset + 2]);
+			tmpV0.set(vertices[id + positionOffset], vertices[id + positionOffset + 1], vertices[id + positionOffset + 2]);
 
 			// Vertex normal, tangent, binormal
 			if (normalOffset != -1) {
-				tmpV1.set(vertices[normalOffset], vertices[normalOffset + 1], vertices[normalOffset + 2]);
+				tmpV1.set(vertices[id + normalOffset], vertices[id + normalOffset + 1], vertices[id + normalOffset + 2]);
 				tmpV2.set(tmpV0).add(tmpV1.scl(vectorSize));
 			}
 
 			if (tangentOffset != -1) {
-				tmpV3.set(vertices[tangentOffset], vertices[tangentOffset + 1], vertices[tangentOffset + 2]);
+				tmpV3.set(vertices[id + tangentOffset], vertices[id + tangentOffset + 1], vertices[id + tangentOffset + 2]);
 				tmpV4.set(tmpV0).add(tmpV3.scl(vectorSize));
 			}
 
 			if (binormalOffset != -1) {
-				tmpV5.set(vertices[binormalOffset], vertices[binormalOffset + 1], vertices[binormalOffset + 2]);
+				tmpV5.set(vertices[id + binormalOffset], vertices[id + binormalOffset + 1], vertices[id + binormalOffset + 2]);
 				tmpV6.set(tmpV0).add(tmpV5.scl(vectorSize));
 			}
 
@@ -179,5 +186,23 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 
 	private static void ensureVerticesCapacity (int capacity) {
 		if (vertices == null || vertices.length < capacity) vertices = new float[capacity];
+	}
+
+	private static void ensureIndicesCapacity (int capacity) {
+		if (indices == null || indices.length < capacity) indices = new short[capacity];
+	}
+
+	private static short minVerticeInIndices () {
+		short min = (short)32767;
+		for (int i = 0; i < indices.length; i++)
+			if (indices[i] < min) min = indices[i];
+		return min;
+	}
+
+	private static short maxVerticeInIndices () {
+		short max = (short)-32768;
+		for (int i = 0; i < indices.length; i++)
+			if (indices[i] > max) max = indices[i];
+		return max;
 	}
 }
