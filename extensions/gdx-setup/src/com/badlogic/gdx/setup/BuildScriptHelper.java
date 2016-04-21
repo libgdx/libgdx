@@ -36,6 +36,9 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, DependencyBank.jCenter);
 		}
+		if (projects.contains(ProjectType.IOSMOE)) {
+			write(wr, "maven { url " + DependencyBank.moeLocalUrl + " }");
+		}
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
@@ -47,6 +50,9 @@ public class BuildScriptHelper {
 		}
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
+		}
+		if (projects.contains(ProjectType.IOSMOE)) {
+			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
 		}
 		write(wr, "}");
 		write(wr, "}");
@@ -98,7 +104,7 @@ public class BuildScriptHelper {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
+				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
 					write(wr, "compile \"" + moduleDependency + "\"");
@@ -109,7 +115,7 @@ public class BuildScriptHelper {
 	}
 
 	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.ANDROID)) {
+		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
 			write(wr, "configurations { natives }");
 		}
 	}

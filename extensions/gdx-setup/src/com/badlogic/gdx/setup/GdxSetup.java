@@ -321,6 +321,10 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
 		}
 
+		if(builder.modules.contains(ProjectType.IOSMOE)) {
+
+		}
+
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%APP_NAME_ESCAPED%", appName.replace("'", "\\'"));
@@ -606,6 +610,7 @@ public class GdxSetup {
 				  projects.add(ProjectType.DESKTOP);
 				  projects.add(ProjectType.ANDROID);
 				  projects.add(ProjectType.IOS);
+				  projects.add(ProjectType.IOSMOE);
 				  projects.add(ProjectType.HTML);
 			 } else {
 				  if (!excludedModules.contains("desktop"))
@@ -614,6 +619,8 @@ public class GdxSetup {
 						projects.add(ProjectType.ANDROID);
 				  if (!excludedModules.contains("ios"))
 						projects.add(ProjectType.IOS);
+				  if (!excludedModules.contains("iosmoe"))
+					  	projects.add(ProjectType.IOSMOE);
 				  if (!excludedModules.contains("html"))
 						projects.add(ProjectType.HTML);
 			 }
