@@ -32,6 +32,7 @@ public class DependencyBank {
 	static String gwtVersion = "2.6.0";
 
 	//Repositories
+	static String mavenLocal = "mavenLocal()";
 	static String mavenCentral = "mavenCentral()";
 	static String jCenter = "jcenter()";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
@@ -47,7 +48,7 @@ public class DependencyBank {
 	//Extension versions
 	static String box2DLightsVersion = "1.4";
 	static String ashleyVersion = "1.7.0";
-	static String aiVersion = "1.8.0";
+	static String aiVersion = "1.8.0";	
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 
