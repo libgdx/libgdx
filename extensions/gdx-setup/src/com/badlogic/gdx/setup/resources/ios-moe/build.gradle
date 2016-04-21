@@ -36,6 +36,7 @@ task copyNatives << {
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 xrt {
+    sdkVersion = "9.2"
 }
 
 buildApp.dependsOn copyNatives

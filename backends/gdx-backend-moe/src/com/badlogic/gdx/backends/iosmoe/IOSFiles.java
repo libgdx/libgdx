@@ -26,7 +26,7 @@ public class IOSFiles implements Files {
 	static final String appDir = System.getenv("HOME");
 	static final String externalPath = appDir + "/Documents/";
 	static final String localPath = appDir + "/Library/local/";
-	static final String internalPath = NSBundle.mainBundle().bundlePath() + "/asssets/";
+	static final String internalPath = NSBundle.mainBundle().bundlePath() + "/assets/";
 
 	public IOSFiles () {
 		new FileHandle(externalPath).mkdirs();
