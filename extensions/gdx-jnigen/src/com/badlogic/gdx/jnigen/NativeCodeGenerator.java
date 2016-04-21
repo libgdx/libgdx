@@ -341,15 +341,7 @@ public class NativeCodeGenerator {
 			}
 		}
 		if (criticalBuffer.length() > 0) {
-			buffer.append("#if defined(_WIN32) || defined(__linux__) \n") // only generate in desktop
-					.append("	#define __DESKTOP__ \n")
-					.append("#elif defined(__APPLE__) \n")
-					.append("	#include <TargetConditionals.h> \n")
-					.append("	#if defined(TARGET_OS_MAC) && !defined(TARGET_OS_IPHONE) \n")
-					.append("		#define __DESKTOP__ \n")
-					.append("	#endif \n")
-					.append("#endif \n")
-					.append("#if defined(__DESKTOP__) \n")
+			buffer.append("#if defined(__DESKTOP__) \n") // Only generate in desktop. Defined in BuildTarget.newDefaultTarget
 					.append(criticalBuffer)
 					.append("#endif \n");
 		}
