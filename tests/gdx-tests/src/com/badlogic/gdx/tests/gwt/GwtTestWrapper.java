@@ -19,13 +19,11 @@ package com.badlogic.gdx.tests.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,7 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.AccelerometerTest;
 import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
-import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
@@ -104,6 +101,7 @@ import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -521,6 +519,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new DecalTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new DisplayModeTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
