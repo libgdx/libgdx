@@ -184,7 +184,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		NSAutoreleasePool pool = NSAutoreleasePool.alloc();
+		NSAutoreleasePool pool = NSAutoreleasePool.alloc().init();
 		if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
 			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
 		}

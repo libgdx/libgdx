@@ -58,7 +58,7 @@ public class IOSAudio implements Audio {
 	@Override
 	public Music newMusic (FileHandle fileHandle) {
 		String path = fileHandle.file().getPath().replace('\\', '/');
-		OALAudioTrack track = OALAudioTrack.alloc();
+		OALAudioTrack track = OALAudioTrack.alloc().init();
 		if (track != null) {
 			if (track.preloadFile(path)) {
 				return new IOSMusic(track);

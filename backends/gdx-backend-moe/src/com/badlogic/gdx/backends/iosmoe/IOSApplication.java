@@ -387,7 +387,7 @@ public class IOSApplication implements Application {
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
-			nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary.alloc();
+			nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary.alloc().init();
 			nsDictionary.writeToFileAtomically(path, false);
 		}
 		return new IOSPreferences(nsDictionary, finalPath.getAbsolutePath());

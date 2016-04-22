@@ -188,7 +188,7 @@ public class GdxSetupUI extends JFrame {
 
 		if (modules.contains(ProjectType.IOSMOE)) {
 			if (System.getenv("INTEL_MULTI_OS_ENGINE_HOME") == null) {
-				JOptionPane.showMessageDialog(this,	"Please install Intel Multi OS engine to use the ios-moe backend.");
+				JOptionPane.showMessageDialog(this, "Please install Intel Multi OS engine to use the ios-moe backend.");
 				return;
 			}
 		}

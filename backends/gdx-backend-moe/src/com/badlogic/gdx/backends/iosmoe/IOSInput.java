@@ -88,7 +88,7 @@ public class IOSInput implements Input {
 	}
 
 	void setupPeripherals () {
-		motionManager = CMMotionManager.alloc();
+		motionManager = CMMotionManager.alloc().init();
 		setupAccelerometer();
 		setupCompass();
 		UIDevice device = UIDevice.currentDevice();
@@ -109,7 +109,7 @@ public class IOSInput implements Input {
 					updateAccelerometer(cmAccelerometerData);
 				}
 			};
-			motionManager.startAccelerometerUpdatesToQueueWithHandler(NSOperationQueue.alloc(), handler);
+			motionManager.startAccelerometerUpdatesToQueueWithHandler(NSOperationQueue.alloc().init(), handler);
 		}
 	}
 	
@@ -126,7 +126,7 @@ public class IOSInput implements Input {
 			}
 		};
 
-		motionManager.startMagnetometerUpdatesToQueueWithHandler(NSOperationQueue.alloc(), handler);
+		motionManager.startMagnetometerUpdatesToQueueWithHandler(NSOperationQueue.alloc().init(), handler);
 	}
 	
 	private void updateAccelerometer (CMAccelerometerData data) {
@@ -428,7 +428,7 @@ public class IOSInput implements Input {
 		};
 
 		// build the view
-		final UIAlertView uiAlertView = UIAlertView.alloc();
+		final UIAlertView uiAlertView = UIAlertView.alloc().init();
 		uiAlertView.setTitle(title);
 		uiAlertView.addButtonWithTitle("Cancel");
 		uiAlertView.addButtonWithTitle("Ok");
