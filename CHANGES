@@ -11,6 +11,12 @@
 - API Change: moved shape builder logic out of MeshBuilder, see: https://github.com/libgdx/libgdx/pull/3996
 - API Change: Table reset now calls clearChildren, not clear.
 - Fixed crashes in AndroidMusic.java when isPlaying is called. Errors are now logged only rather than crashing the app.
+- Added emulation of ScreenUtils for GWT
+- Improved performance of glReadPixels() on GWT. New method is 20-30 times faster
+- Fixed crash on Mac when using LWJGL2, custom cursors and embedding the game in an AWT window
+- Fixed getDisplayModes(Monitor monitor) returning wrong data on LWJGL2 backend
+- Fixed Gdx.input.getCurrentEventTime() not being set on LWJGL3, fixes GestureDetector and flick scroll not working
+- Fixed not being able to select non-latin characters in TextFields
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
