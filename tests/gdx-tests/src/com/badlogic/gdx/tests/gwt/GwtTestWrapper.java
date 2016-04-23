@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.tests.gwt;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -37,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.AccelerometerTest;
 import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
+import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
@@ -131,6 +135,12 @@ public class GwtTestWrapper extends GdxTest {
 		ScrollPane scroll = new ScrollPane(table);
 		container.add(scroll).expand().fill();
 		table.pad(10).defaults().expandX().space(4);
+		Arrays.sort(tests, new Comparator<Instancer>() {
+			@Override
+			public int compare (Instancer o1, Instancer o2) {
+				return o1.instance().getClass().getName().compareTo(o2.instance().getClass().getName());
+			}
+		});
 		for (final Instancer instancer : tests) {
 			table.row();
 			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
