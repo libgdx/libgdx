@@ -90,8 +90,11 @@ public final class ScreenUtils {
 		var imgData = ctx.createImageData(width, height);
 		var data = imgData.data;
 
-		for (var i = 0, len = width * height * 4; i < len; i++) {
+		for (var i = 0, len = width * height; i < len; i++) {
 			data[i] = pixels[i] & 0xff;
+			data[i+1] = pixels[i+1] & 0xff;
+			data[i+2] = pixels[i+2] & 0xff;
+			data[i+3] = pixels[i+3] & 0xff;
 		}
 		ctx.putImageData(imgData, 0, 0);
 	}-*/;
