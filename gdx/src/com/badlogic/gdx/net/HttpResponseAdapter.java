@@ -1,12 +1,13 @@
 package com.badlogic.gdx.net;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 
-/** Adapter class for {@link com.badlogic.gdx.Net.HttpResponseListener}} */
+/** Convenience implementation of {@link HttpResponseListener}. Derive from this and only override what you need.
+ * @author nrallakis */
 public class HttpResponseAdapter implements HttpResponseListener {
-
 	@Override
 	public void handleHttpResponse (HttpResponse httpResponse) {
 	}
@@ -18,5 +19,5 @@ public class HttpResponseAdapter implements HttpResponseListener {
 	@Override
 	public void cancelled () {
 	}
-
+	
 }
