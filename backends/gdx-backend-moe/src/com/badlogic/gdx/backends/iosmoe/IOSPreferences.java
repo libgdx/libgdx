@@ -52,7 +52,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public Preferences putLong (String key, long val) {
-		nsDictionary.put(convertKey(key), NSNumber.numberWithLong(val));
+		nsDictionary.put(convertKey(key), NSNumber.numberWithLongLong(val));
 		return this;
 	}
 
@@ -106,7 +106,7 @@ public class IOSPreferences implements Preferences {
 	public long getLong (String key) {
 		NSNumber value = (NSNumber)nsDictionary.get(convertKey(key));
 		if (value == null) return 0L;
-		return value.longValue();
+		return value.longLongValue();
 	}
 
 	@Override
@@ -118,7 +118,8 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public String getString (String key) {
-		NSString value = (NSString)nsDictionary.get(convertKey(key));
+		//Implicit mapping from NSString to String apparently?
+		Object value = nsDictionary.get(convertKey(key));
 		if (value == null) return "";
 		return value.toString();
 	}
@@ -179,7 +180,7 @@ public class IOSPreferences implements Preferences {
 	}
 
 	private NSString convertKey (String key) {
-		return NSString.stringWithString(key);
+		return NSString.alloc().initWithString(key);
 	}
 
 	@Override
@@ -188,6 +189,6 @@ public class IOSPreferences implements Preferences {
 		if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
 			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
 		}
-		pool.dealloc();
+		pool.drain();
 	}
 }
