@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.iosmoe;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
@@ -28,17 +27,9 @@ import ios.audiotoolbox.c.AudioToolbox;
 import ios.coregraphics.struct.CGPoint;
 import ios.coregraphics.struct.CGRect;
 import ios.coregraphics.struct.CGSize;
-import ios.coremotion.CMAccelerometerData;
-import ios.coremotion.CMMagnetometerData;
-import ios.coremotion.CMMotionManager;
-import ios.foundation.NSError;
-import ios.foundation.NSOperationQueue;
 import ios.foundation.NSSet;
 import ios.foundation.struct.NSRange;
-import ios.uikit.UIAlertView;
-import ios.uikit.UIDevice;
-import ios.uikit.UITextField;
-import ios.uikit.UITouch;
+import ios.uikit.*;
 import ios.uikit.enums.UIAlertViewStyle;
 import ios.uikit.enums.UIDeviceOrientation;
 import ios.uikit.enums.UIKeyboardType;
@@ -47,6 +38,7 @@ import ios.uikit.enums.UITextAutocapitalizationType;
 import ios.uikit.enums.UITextAutocorrectionType;
 import ios.uikit.enums.UITextSpellCheckingType;
 import ios.uikit.enums.UITouchPhase;
+import ios.uikit.protocol.UIAccelerometerDelegate;
 import ios.uikit.protocol.UIAlertViewDelegate;
 import ios.uikit.protocol.UITextFieldDelegate;
 
@@ -60,7 +52,7 @@ public class IOSInput implements Input {
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
 	// we store the pointer to the UITouch struct here, or 0
-	long[] touchDown = new long[MAX_TOUCHES];
+	UITouch[] touchDown = new UITouch[MAX_TOUCHES];
 	int numTouched = 0;
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
@@ -70,6 +62,7 @@ public class IOSInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
+	private final Object _sync = new Object();
 	TouchEvent currentEvent = null;
 	float[] acceleration = new float[3];
 	float[] rotation = new float[3];
@@ -77,7 +70,8 @@ public class IOSInput implements Input {
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
-	CMMotionManager motionManager;
+	//CMMotionManager motionManager;
+	UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
@@ -88,7 +82,7 @@ public class IOSInput implements Input {
 	}
 
 	void setupPeripherals () {
-		motionManager = CMMotionManager.alloc().init();
+		//motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
 		UIDevice device = UIDevice.currentDevice();
@@ -97,81 +91,104 @@ public class IOSInput implements Input {
 
 	private void setupCompass () {
 		if (config.useCompass) {
-			setupMagnetometer();
+			//setupMagnetometer();
 		}
 	}
+
 	private void setupAccelerometer () {
 		if (config.useAccelerometer) {
-			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
-			CMMotionManager.Block_startAccelerometerUpdatesToQueueWithHandler handler = new CMMotionManager.Block_startAccelerometerUpdatesToQueueWithHandler() {
-				@Override
-				public void call_startAccelerometerUpdatesToQueueWithHandler (CMAccelerometerData cmAccelerometerData, NSError nsError) {
-					updateAccelerometer(cmAccelerometerData);
+			accelerometerDelegate = new UIAccelerometerDelegate() {
+				public void didAccelerate (UIAccelerometer accelerometer, UIAcceleration acc) {
+					//UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
+					float x = (float)acc.x() * 10;
+					float y = (float)acc.y() * 10;
+					float z = (float)acc.z() * 10;
+
+					acceleration[0] = -x;
+					acceleration[1] = -y;
+					acceleration[2] = -z;
 				}
 			};
-			motionManager.startAccelerometerUpdatesToQueueWithHandler(NSOperationQueue.alloc().init(), handler);
+			UIAccelerometer.sharedAccelerometer().setDelegate(accelerometerDelegate);
+			UIAccelerometer.sharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
 		}
 	}
-	
 
-	private void setupMagnetometer () {
-		if (motionManager.isMagnetometerAvailable() && config.useCompass) compassSupported = true;
-		else return;
-		motionManager.setMagnetometerUpdateInterval(config.magnetometerUpdate);
+	// need to retain a reference so GC doesn't get right of the
+	// object passed to the native thread
+//	VoidBlock2<CMAccelerometerData, NSError> accelVoid = null;
+//	private void setupAccelerometer () {
+//		if (config.useAccelerometer) {
+//			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
+//			accelVoid = new VoidBlock2<CMAccelerometerData, NSError>() {
+//				@Override
+//				public void invoke(CMAccelerometerData accelData, NSError error) {
+//					updateAccelerometer(accelData);
+//				}
+//			};
+//			motionManager.startAccelerometerUpdates(new NSOperationQueue(), accelVoid);
+//		}
+//	}
 
-		CMMotionManager.Block_startMagnetometerUpdatesToQueueWithHandler handler = new CMMotionManager.Block_startMagnetometerUpdatesToQueueWithHandler() {
-			@Override
-			public void call_startMagnetometerUpdatesToQueueWithHandler (CMMagnetometerData cmMagnetometerData, NSError nsError) {
-				updateRotation(cmMagnetometerData);
-			}
-		};
+	// need to retain a reference so GC doesn't get right of the
+	// object passed to the native thread
+//	VoidBlock2<CMMagnetometerData, NSError> magnetVoid = null;
+//	private void setupMagnetometer () {
+//		if (motionManager.isMagnetometerAvailable() && config.useCompass) compassSupported = true;
+//		else return;
+//		motionManager.setMagnetometerUpdateInterval(config.magnetometerUpdate);
+//		magnetVoid = new VoidBlock2<CMMagnetometerData, NSError>() {
+//			@Override
+//			public void invoke(CMMagnetometerData magnetData, NSError error) {
+//				updateRotation(magnetData);
+//			}
+//		};
+//		motionManager.startMagnetometerUpdates(new NSOperationQueue(), magnetVoid);
+//	}
 
-		motionManager.startMagnetometerUpdatesToQueueWithHandler(NSOperationQueue.alloc().init(), handler);
-	}
-	
-	private void updateAccelerometer (CMAccelerometerData data) {
-		float x = (float) data.acceleration().x() * 10f;
-		float y = (float) data.acceleration().y() * 10f;
-		float z = (float) data.acceleration().z() * 10f;
-		acceleration[0] = -x;
-		acceleration[1] = -y;
-		acceleration[2] = -z;
-	}
-
-	private void updateRotation (CMMagnetometerData data) {
-		final float eX = (float) data.magneticField().x();
-		final float eY = (float) data.magneticField().y();
-		final float eZ = (float) data.magneticField().z();
-
-		float gX = acceleration[0];
-		float gY = acceleration[1];
-		float gZ = acceleration[2];
-
-		float cX = eY * gZ - eZ * gY;
-		float cY = eZ * gX - eX * gZ;
-		float cZ = eX * gY - eY * gX;
-
-		final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
-		final float invertC = 1.0f / normal;
-		cX *= invertC;
-		cY *= invertC;
-		cZ *= invertC;
-		final float invertG = 1.0f / (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-		gX *= invertG;
-		gY *= invertG;
-		gZ *= invertG;
-		final float mX = gY * cZ - gZ * cY;
-		final float mY = gZ * cX - gX * cZ;
-		final float mZ = gX * cY - gY * cX;
-
-		R[0] = cX;	R[1] = cY;	R[2] = cZ;
-		R[3] = mX;	R[4] = mY;	R[5] = mZ;
-		R[6] = gX;	R[7] = gY;	R[8] = gZ;
-
-		rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
-		rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
-		rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
-	}
+//	private void updateAccelerometer (CMAccelerometerData data) {
+//		float x = (float) data.getAcceleration().x() * 10f;
+//		float y = (float) data.getAcceleration().y() * 10f;
+//		float z = (float) data.getAcceleration().z() * 10f;
+//		acceleration[0] = -x;
+//		acceleration[1] = -y;
+//		acceleration[2] = -z;
+//	}
+//
+//	private void updateRotation (CMMagnetometerData data) {
+//		final float eX = (float) data.getMagneticField().x();
+//		final float eY = (float) data.getMagneticField().y();
+//		final float eZ = (float) data.getMagneticField().z();
+//
+//		float gX = acceleration[0];
+//		float gY = acceleration[1];
+//		float gZ = acceleration[2];
+//
+//		float cX = eY * gZ - eZ * gY;
+//		float cY = eZ * gX - eX * gZ;
+//		float cZ = eX * gY - eY * gX;
+//
+//		final float normal = (float) Math.sqrt(cX * cX + cY * cY + cZ * cZ);
+//		final float invertC = 1.0f / normal;
+//		cX *= invertC;
+//		cY *= invertC;
+//		cZ *= invertC;
+//		final float invertG = 1.0f / (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
+//		gX *= invertG;
+//		gY *= invertG;
+//		gZ *= invertG;
+//		final float mX = gY * cZ - gZ * cY;
+//		final float mY = gZ * cX - gX * cZ;
+//		final float mZ = gX * cY - gY * cX;
+//
+//		R[0] = cX;	R[1] = cY;	R[2] = cZ;
+//		R[3] = mX;	R[4] = mY;	R[5] = mZ;
+//		R[6] = gX;	R[7] = gY;	R[8] = gZ;
+//
+//		rotation[0] = (float) Math.atan2(R[1], R[4]) * MathUtils.radDeg;
+//		rotation[1] = (float) Math.asin(-R[7]) * MathUtils.radDeg;
+//		rotation[2] = (float) Math.atan2(-R[6], R[8]) * MathUtils.radDeg;
+//	}
 
 	@Override
 	public float getAccelerometerX () {
@@ -187,7 +204,7 @@ public class IOSInput implements Input {
 	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
-	
+
 
 	@Override
 	public float getAzimuth () {
@@ -256,7 +273,7 @@ public class IOSInput implements Input {
 	@Override
 	public boolean isTouched () {
 		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
-			if (touchDown[pointer] != 0) {
+			if (touchDown[pointer] != null) {
 				return true;
 			}
 		}
@@ -270,7 +287,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched (int pointer) {
-		return touchDown[pointer] != 0;
+		return touchDown[pointer] != null;
 	}
 
 	@Override
@@ -291,7 +308,7 @@ public class IOSInput implements Input {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		buildUIAlertView(listener, title, text, hint).show();
-	}	
+	}
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
@@ -370,7 +387,7 @@ public class IOSInput implements Input {
 			textfield.resignFirstResponder();
 		}
 	}
-	
+
 	/**
 	 * Set the keyboard to close when the UITextField return key is pressed
 	 * @param shouldClose Whether or not the keyboard should clsoe on return key press
@@ -378,12 +395,12 @@ public class IOSInput implements Input {
 	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
 		keyboardCloseOnReturn = shouldClose;
 	}
-	
+
 	public UITextField getKeyboardTextField () {
 		if (textfield == null) createDefaultTextField();
 		return textfield;
 	}
-	
+
 	private void createDefaultTextField () {
 		textfield = UITextField.alloc();
 		textfield.initWithFrame(new CGRect(new CGPoint(10, 10), new CGSize(100, 50)));
@@ -399,7 +416,7 @@ public class IOSInput implements Input {
 		textfield.setText("x");
 		app.getUIViewController().view().addSubview(textfield);
 	}
-	
+
 	// Issue 773 indicates this may solve a premature GC issue
 
 	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
@@ -474,7 +491,7 @@ public class IOSInput implements Input {
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey() {
 		return false;
@@ -544,15 +561,12 @@ public class IOSInput implements Input {
 				if (event.phase == UITouchPhase.Began) {
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
 					if (numTouched == 1) justTouched = true;
-					break;
 				}
 				if (event.phase == UITouchPhase.Cancelled || event.phase == UITouchPhase.Ended) {
 					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
-					break;
 				}
 				if (event.phase == UITouchPhase.Moved || event.phase == UITouchPhase.Stationary) {
 					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
-					break;
 				}
 			}
 			touchEventPool.freeAll(touchEvents);
@@ -562,15 +576,14 @@ public class IOSInput implements Input {
 
 	private int getFreePointer () {
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == 0) return i;
+			if (touchDown[i] == null) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find free pointer id!");
 	}
 
 	private int findPointer (UITouch touch) {
-		long ptr = 0;
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == ptr) return i;
+			if (touchDown[i] == touch) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
@@ -587,7 +600,7 @@ public class IOSInput implements Input {
 				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
 
-			synchronized (touchEvents) {
+			synchronized (_sync) {
 				long phase = touch.phase();
 				TouchEvent event = touchEventPool.obtain();
 				event.x = locX;
@@ -598,7 +611,7 @@ public class IOSInput implements Input {
 
 				if (phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
-					touchDown[event.pointer] = 0;
+					touchDown[event.pointer] = touch;
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
@@ -615,8 +628,8 @@ public class IOSInput implements Input {
 				}
 
 				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
-					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0;
+                    event.pointer = findPointer(touch);
+					touchDown[event.pointer] = null;
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
