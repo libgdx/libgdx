@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class IOSPreferences implements Preferences {
-	NSMutableDictionary<NSString, NSObject> nsDictionary;
+	NSMutableDictionary<NSString, Object> nsDictionary;
 	File file;
 
-	public IOSPreferences (NSMutableDictionary<NSString, NSObject> nsDictionary, String filePath) {
+	public IOSPreferences (NSMutableDictionary<NSString, Object> nsDictionary, String filePath) {
 		this.nsDictionary = nsDictionary;
 		this.file = new File(filePath);
 	}
@@ -118,7 +118,9 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public String getString (String key) {
-		NSString value = (NSString)nsDictionary.get(convertKey(key));
+		// fix java.lang.ClassCastException: java.lang.String cannot be cast to ios.foundation.NSString
+
+		Object value = nsDictionary.get(convertKey(key));
 		if (value == null) return "";
 		return value.toString();
 	}
@@ -157,7 +159,7 @@ public class IOSPreferences implements Preferences {
 	public Map<String, ?> get () {
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (NSString key : nsDictionary.keySet()) {
-			NSObject value = nsDictionary.get(key);
+			Object value = nsDictionary.get(key);
 			map.put(key.toString(), value.toString());
 		}
 		return map;
@@ -184,10 +186,10 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		NSAutoreleasePool pool = NSAutoreleasePool.alloc().init();
+		//NSAutoreleasePool pool = NSAutoreleasePool.alloc().init();
 		if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
 			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
 		}
-		pool.dealloc();
+		//pool.drain();
 	}
 }
