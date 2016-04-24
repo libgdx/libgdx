@@ -82,6 +82,9 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
+	/** @TODO: Emulate Y up on GWT backend */
+	public static int DEFAULT_Y_UP = 0;
+
 	int width;
 	int height;
 	Format format;
@@ -105,6 +108,10 @@ public class Pixmap implements Disposable {
 	public Context2d getContext() {
 		ensureCanvasExists();
 		return context;
+	}
+
+	public Pixmap (FileHandle file, int yUp) {
+		this(file);
 	}
 
 	private static Composite getComposite () {

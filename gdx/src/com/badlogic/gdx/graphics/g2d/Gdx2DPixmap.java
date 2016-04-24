@@ -80,8 +80,8 @@ public class Gdx2DPixmap implements Disposable {
 	ByteBuffer pixelPtr;
 	long[] nativeData = new long[4];
 
-	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
-		pixelPtr = load(nativeData, encodedData, offset, len);
+	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat, int yUp) throws IOException {
+		pixelPtr = load(nativeData, encodedData, offset, len, yUp);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
@@ -94,7 +94,7 @@ public class Gdx2DPixmap implements Disposable {
 		}
 	}
 
-	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
+	public Gdx2DPixmap (InputStream in, int requestedFormat, int yUp) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
 		int readBytes = 0;
@@ -104,7 +104,7 @@ public class Gdx2DPixmap implements Disposable {
 		}
 
 		buffer = bytes.toByteArray();
-		pixelPtr = load(nativeData, buffer, 0, buffer.length);
+		pixelPtr = load(nativeData, buffer, 0, buffer.length, yUp);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
 		basePtr = nativeData[0];
@@ -206,9 +206,9 @@ public class Gdx2DPixmap implements Disposable {
 		setScale(basePtr, scale);
 	}
 
-	public static Gdx2DPixmap newPixmap (InputStream in, int requestedFormat) {
+	public static Gdx2DPixmap newPixmap (InputStream in, int requestedFormat, int yUp) {
 		try {
-			return new Gdx2DPixmap(in, requestedFormat);
+			return new Gdx2DPixmap(in, requestedFormat, yUp);
 		} catch (IOException e) {
 			return null;
 		}
@@ -275,9 +275,9 @@ public class Gdx2DPixmap implements Disposable {
 	#include <stdlib.h>
 	 */
 
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int flipY); /*MANUAL
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, flipY);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 
 		if(pixmap==0)

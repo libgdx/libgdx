@@ -1,15 +1,15 @@
 #include <com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h>
 
-//@line:273
+//@line:270
 
 	#include <gdx2d/gdx2d.h>
 	#include <stdlib.h>
-	 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load(JNIEnv* env, jclass clazz, jlongArray nativeData, jbyteArray buffer, jint offset, jint len) {
+	 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load(JNIEnv* env, jclass clazz, jlongArray nativeData, jbyteArray buffer, jint offset, jint len, jint flipY) {
 
-//@line:278
+//@line:275
 
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, flipY);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 
 		if(pixmap==0)
