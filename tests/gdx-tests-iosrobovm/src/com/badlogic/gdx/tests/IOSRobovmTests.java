@@ -28,7 +28,8 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
 		config.useAccelerometer = false;
-		return new IOSApplication(new AccelerometerTest(), config);
+		config.useGL30 = true;
+		return new IOSApplication(new GLES30Test(), config);
 	}
 
 	public static void main(String[] argv) {

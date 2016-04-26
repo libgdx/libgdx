@@ -93,7 +93,7 @@ public class BitmapFontTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Test wrapping or truncation with the font directly.
-		if (true) {
+		if (!true) {
 			// BitmapFont font = label.getStyle().font;
 			BitmapFont font = this.font;
 			font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
@@ -108,7 +108,7 @@ public class BitmapFontTest extends GdxTest {
 
 			spriteBatch.begin();
 			String text = "your new";
-			// text = "How quickly [RED]daft jumping zebras vex.";
+			 text = "How quickly [RED]daft jumping zebras vex.";
 			// text = "Another font wrap is-sue, this time with    multiple whitespace characters.";
 			text = "test with AGWlWi      AGWlWi issue";
 			if (true) { // Test wrap.
@@ -132,13 +132,13 @@ public class BitmapFontTest extends GdxTest {
 		}
 
 		// Test wrapping with label.
-		if (true) {
+		if (false) {
 			label.debug();
 			label.getStyle().font = font;
 			label.setStyle(label.getStyle());
-			label.setText("How quickly [RED]daft jumping zebras vex.");
+			label.setText("How quickly [RED]daft[] jumping zebras vex.");
 			label.setWrap(true);
-			label.setEllipsis(true);
+//			label.setEllipsis(true);
 			label.setAlignment(Align.center, Align.right);
 			label.setWidth(Gdx.input.getX() - label.getX());
 			label.setHeight(label.getPrefHeight());

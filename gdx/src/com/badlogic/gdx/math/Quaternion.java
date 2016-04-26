@@ -302,10 +302,10 @@ public class Quaternion implements Serializable {
 	 * @param w the w component of the other quaternion to multiply with
 	 * @return This quaternion for chaining */
 	public Quaternion mulLeft (final float x, final float y, final float z, final float w) {
-		final float newX = w * this.x + x * this.w + y * this.z - z * y;
-		final float newY = w * this.y + y * this.w + z * this.x - x * z;
-		final float newZ = w * this.z + z * this.w + x * this.y - y * x;
-		final float newW = w * this.w - x * this.x - y * this.y - z * z;
+		final float newX = w * this.x + x * this.w + y * this.z - z * this.y;
+		final float newY = w * this.y + y * this.w + z * this.x - x * this.z;
+		final float newZ = w * this.z + z * this.w + x * this.y - y * this.x;
+		final float newW = w * this.w - x * this.x - y * this.y - z * this.z;
 		this.x = newX;
 		this.y = newY;
 		this.z = newZ;
@@ -571,7 +571,7 @@ public class Quaternion implements Serializable {
 	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
-	 * [0,1]. Taken from. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
+	 * [0,1]. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
 	 * @param end the end quaternion
 	 * @param alpha alpha in the range [0,1]
 	 * @return this quaternion for chaining */

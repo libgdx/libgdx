@@ -365,7 +365,7 @@ public class HeightField implements Disposable {
 
 		float[] dest = new float[width * height];
 		for (int i = 0; i < dest.length; ++i) {
-			int v = source[sourceOffset + i * 3];
+			int v = source[sourceOffset + i * bytesPerColor];
 			v = v < 0 ? 256 + v : v;
 			dest[i] = (float)v / 255f;
 		}

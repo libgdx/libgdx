@@ -36,7 +36,7 @@ import javax.swing.event.DocumentListener;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
@@ -46,7 +46,7 @@ import com.badlogic.jglfw.GlfwCallbackAdapter;
  * @author Nathan Sweet */
 public class JglfwInput implements Input {
 	final JglfwApplication app;
-	final InputProcessorQueue processorQueue;
+	final InputEventQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
 	boolean keyJustPressed = false;
@@ -116,7 +116,7 @@ public class JglfwInput implements Input {
 		};
 
 		if (queueEvents)
-			inputProcessor = processorQueue = new InputProcessorQueue(inputProcessor);
+			inputProcessor = processorQueue = new InputEventQueue(inputProcessor);
 		else
 			processorQueue = null;
 
@@ -879,5 +879,23 @@ public class JglfwInput implements Input {
 			else
 				processor.mouseMoved(x, y);
 		}
+	}
+
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

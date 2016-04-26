@@ -21,5 +21,24 @@
         <include>*.a</include>
       </includes>
     </fileSet>
+    <fileSet>
+        <directory>${project.basedir}</directory>
+        <outputDirectory>/META-INF/robovm/tvos</outputDirectory>
+        <includes>
+          <include>robovm.xml</include>
+        </includes>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>${project.build.directory}/ios/libObjectAL.a.tvos</source>
+      <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
+      <destName>libObjectAL.a</destName>
+    </file>
+    <file>
+      <source>${project.build.directory}/ios/libgdx.a.tvos</source>
+      <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
+      <destName>libgdx.a</destName>
+    </file>
+  </files>
 </assembly>

@@ -237,4 +237,9 @@ public final class ClassReflection {
 		}
 		return null;
 	}
+
+	static public Class[] getInterfaces(Class c) {
+		return c.getInterfaces();
+	}
+
 }

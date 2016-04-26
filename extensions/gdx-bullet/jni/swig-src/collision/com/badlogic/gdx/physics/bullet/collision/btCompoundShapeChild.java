@@ -97,9 +97,8 @@ public class btCompoundShapeChild extends BulletBase {
   }
 
   public btDbvtNode getNode() {
-    long cPtr = CollisionJNI.btCompoundShapeChild_node_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btCompoundShapeChild_node_get(swigCPtr, this), false);
+}
 
   public btCompoundShapeChild() {
     this(CollisionJNI.new_btCompoundShapeChild(), true);

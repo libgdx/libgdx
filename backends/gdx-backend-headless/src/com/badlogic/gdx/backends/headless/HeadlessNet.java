@@ -29,7 +29,6 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Headless implementation of the {@link com.badlogic.gdx.Net} API, based on LWJGL implementation
  * @author acoppes

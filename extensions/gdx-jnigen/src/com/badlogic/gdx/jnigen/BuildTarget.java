@@ -154,8 +154,8 @@ public class BuildTarget {
 			// iOS, 386 simulator and armv7a, compiled to fat static lib
 			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0],
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -miphoneos-version-min=5.1",
-				"-c -Wall -O2 -miphoneos-version-min=5.1",
+				"-c -Wall -O2",
+				"-c -Wall -O2",
 				"rcs");
 			return ios;
 		}

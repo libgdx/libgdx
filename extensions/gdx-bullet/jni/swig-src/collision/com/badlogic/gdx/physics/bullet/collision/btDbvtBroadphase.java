@@ -266,6 +266,21 @@ public class btDbvtBroadphase extends btBroadphaseInterface {
     CollisionJNI.btDbvtBroadphase_benchmark(btBroadphaseInterface.getCPtr(arg0), arg0);
   }
 
+  public btDbvt getSet(int index) {
+    long cPtr = CollisionJNI.btDbvtBroadphase_getSet(swigCPtr, this, index);
+    return (cPtr == 0) ? null : new btDbvt(cPtr, false);
+  }
+
+  public btDbvt getSet0() {
+    long cPtr = CollisionJNI.btDbvtBroadphase_getSet0(swigCPtr, this);
+    return (cPtr == 0) ? null : new btDbvt(cPtr, false);
+  }
+
+  public btDbvt getSet1() {
+    long cPtr = CollisionJNI.btDbvtBroadphase_getSet1(swigCPtr, this);
+    return (cPtr == 0) ? null : new btDbvt(cPtr, false);
+  }
+
   public final static int DYNAMIC_SET = 0;
   public final static int FIXED_SET = 1;
   public final static int STAGECOUNT = 2;

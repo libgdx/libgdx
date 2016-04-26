@@ -73,6 +73,16 @@ public class ParticleEffect implements Disposable, ResourceData.Configurable{
 		for (int i = 0, n = controllers.size; i < n; i++)
 			controllers.get(i).draw();
 	}
+	
+	public boolean isComplete() {
+		for (int i = 0, n = controllers.size; i < n; i++) {
+			if (!controllers.get(i).isComplete()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 
 	/** Sets the given transform matrix on each controller.*/
 	public void setTransform (Matrix4 transform) {

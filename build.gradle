@@ -1,21 +1,28 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.6.5-SNAPSHOT"
-    robovmVersion = "1.5.0"
+    VERSION = "1.7.2-SNAPSHOT"
+    robovmVersion = "1.9.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"
     lwjglVersion = "2.9.2"
+    lwjgl3Version = "3.0.0b"
     jlayerVersion = "1.0.1-gdx"
     jorbisVersion = "0.0.17"
     junitVersion = "4.11"
+    appleExtensionVersion = "1.4"
 }
 
 buildscript {
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
         classpath "org.robovm:robovm-gradle-plugin:1.5.0"
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }
 
@@ -84,6 +91,19 @@ project(":backends:gdx-backend-lwjgl") {
         compile project(":gdx")
         compile "org.lwjgl.lwjgl:lwjgl:$lwjglVersion"
         compile "org.lwjgl.lwjgl:lwjgl_util:$lwjglVersion"
+        compile "com.badlogicgames.jlayer:jlayer:$jlayerVersion"
+        compile "org.jcraft:jorbis:$jorbisVersion"
+    }
+}
+
+project(":backends:gdx-backend-lwjgl3") {
+    dependencies {
+        compile project(":gdx")
+        compile "org.lwjgl:lwjgl:$lwjgl3Version"
+        compile "org.lwjgl:lwjgl-platform:$lwjgl3Version:natives-linux"
+        compile "org.lwjgl:lwjgl-platform:$lwjgl3Version:natives-windows"
+        compile "org.lwjgl:lwjgl-platform:$lwjgl3Version:natives-osx"
+        compile "com.apple:AppleJavaExtensions:$appleExtensionVersion"
         compile "com.badlogicgames.jlayer:jlayer:$jlayerVersion"
         compile "org.jcraft:jorbis:$jorbisVersion"
     }
@@ -173,6 +193,15 @@ project(":extensions:gdx-controllers:gdx-controllers-desktop") {
     }
 }
 
+project(":extensions:gdx-controllers:gdx-controllers-lwjgl3") {
+    dependencies {
+        compile project(":gdx");
+        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":backends:gdx-backend-lwjgl3");
+        optional project(":extensions:gdx-jnigen")
+    }
+}
+
 project(":extensions:gdx-controllers:gdx-controllers-gwt") {
     dependencies {
         compile project(":gdx");
@@ -195,7 +224,7 @@ project(":extensions:gdx-freetype") {
 }
 
 project(":extensions:gdx-jnigen") {
-    dependencies { compile "com.google.code.javaparser:javaparser:1.0.8" }
+    dependencies { compile "com.github.javaparser:javaparser-core:2.3.0" }
 }
 
 project(":extensions:gdx-setup") {
@@ -205,8 +234,10 @@ project(":extensions:gdx-setup") {
 project(":extensions:gdx-tools") {
     dependencies {
         compile files("../../gdx/libs/gdx-natives.jar")
+        compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
         compile project(":backends:gdx-backend-lwjgl")
         compile project(":backends:gdx-backend-headless")
+        compile project(":extensions:gdx-freetype")
         optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
@@ -234,9 +265,13 @@ project(":tests:gdx-tests-android") {
 }
 
 project(":tests:gdx-tests-gwt") {
+    apply plugin: "gwt"
+    apply plugin: "war"
     dependencies {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backends-gwt")
+        compile project(":extensions:gdx-box2d:gdx-box2d-gwt")
+        compile project(":extensions:gdx-controllers:gdx-controllers-gwt")
     }
 }
 
@@ -286,6 +321,31 @@ project(":tests:gdx-tests-lwjgl") {
         compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
         compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
         compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+        compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
+    }
+
+    eclipse.project.linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/gdx-tests-android/assets'
+    task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
+        doLast {
+            def classpath = new XmlParser().parse(file(".classpath"))
+            new Node(classpath, "classpathentry", [kind: 'src', path: 'assets']);
+            def writer = new FileWriter(file(".classpath"))
+            def printer = new XmlNodePrinter(new PrintWriter(writer))
+            printer.setPreserveWhitespace(true)
+            printer.print(classpath)
+        }
+    }
+}
+
+project(":tests:gdx-tests-lwjgl3") {
+    dependencies {
+        compile project(":tests:gdx-tests")
+        compile project(":backends:gdx-backend-lwjgl3")
+        compile files("../../gdx/libs/gdx-natives.jar")
+        compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
+        compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
+        compile files("../../extensions/gdx-controllers/gdx-controllers-lwjgl3/libs/gdx-controllers-desktop-natives.jar")
+        compile project(":extensions:gdx-controllers:gdx-controllers-lwjgl3")
         compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
     }
 

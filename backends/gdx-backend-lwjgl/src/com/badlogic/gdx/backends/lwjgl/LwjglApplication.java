@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.io.File;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -35,6 +36,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
@@ -48,9 +50,10 @@ public class LwjglApplication implements Application {
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected String preferencesdir;
+	protected Files.FileType preferencesFileType;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
 		this(listener, createConfig(title, width, height));
@@ -92,6 +95,7 @@ public class LwjglApplication implements Application {
 		net = new LwjglNet();
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
+		this.preferencesFileType = config.preferencesFileType;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -132,7 +136,7 @@ public class LwjglApplication implements Application {
 	}
 
 	void mainLoop () {
-		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
+		SnapshotArray<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		try {
 			graphics.setupDisplay();
@@ -156,16 +160,20 @@ public class LwjglApplication implements Application {
 			if (wasActive && !isActive) { // if it's just recently minimized from active state
 				wasActive = false;
 				synchronized (lifecycleListeners) {
-					for (LifecycleListener listener : lifecycleListeners)
-						listener.pause();
+					LifecycleListener[] listeners = lifecycleListeners.begin();
+					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
+						 listeners[i].pause();
+					lifecycleListeners.end();
 				}
 				listener.pause();
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
 				synchronized (lifecycleListeners) {
-					for (LifecycleListener listener : lifecycleListeners)
-						listener.resume();
+					LifecycleListener[] listeners = lifecycleListeners.begin();
+					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
+						listeners[i].resume();
+					lifecycleListeners.end();
 				}
 				listener.resume();
 			}
@@ -224,10 +232,12 @@ public class LwjglApplication implements Application {
 		}
 
 		synchronized (lifecycleListeners) {
-			for (LifecycleListener listener : lifecycleListeners) {
-				listener.pause();
-				listener.dispose();
+			LifecycleListener[] listeners = lifecycleListeners.begin();
+			for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+				listeners[i].pause();
+				listeners[i].dispose();
 			}
+			lifecycleListeners.end();
 		}
 		listener.pause();
 		listener.dispose();
@@ -314,7 +324,7 @@ public class LwjglApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name, this.preferencesdir);
+			Preferences prefs = new LwjglPreferences(new LwjglFileHandle(new File(preferencesdir, name), preferencesFileType));
 			preferences.put(name, prefs);
 			return prefs;
 		}

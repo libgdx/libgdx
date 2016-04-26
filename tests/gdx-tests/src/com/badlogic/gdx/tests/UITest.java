@@ -132,7 +132,7 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
-		buttonMulti.addListener(new TextTooltip("This is a tooltip!", skin));
+		buttonMulti.addListener(new TextTooltip("This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!", skin));
 		Table tooltipTable = new Table(skin);
 		tooltipTable.pad(10).background("default-round");
 		tooltipTable.add(new TextButton("Fancy tooltip!", skin));

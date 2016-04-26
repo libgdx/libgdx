@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.badlogicgames.gdx</groupId>
+    <artifactId>gdx-parent</artifactId>
+    <version>1.9.3-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>gdx-backend-lwjgl3</artifactId>
+  <packaging>jar</packaging>
+  <name>libGDX LWJGL 3 Backend</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+  <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>      
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-platform</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-windows</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-platform</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-linux</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-platform</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-osx</classifier>
+    </dependency>    
+
+    <dependency>
+      <groupId>com.badlogicgames.jlayer</groupId>
+      <artifactId>jlayer</artifactId>
+      <version>1.0.1-gdx</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.jcraft</groupId>
+        <artifactId>jorbis</artifactId>
+        <version>0.0.17</version>
+    </dependency>
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>com/badlogic/gdx/backends/gwt/emu/java/lang/System.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

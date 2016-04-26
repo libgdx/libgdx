@@ -74,9 +74,11 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	
 	<target name="compile-natives" depends="init, check-natives" if="natives-present">
 		<mkdir dir="${libs}/android32" />
+		<mkdir dir="{libs}/arm64-v8a" />
 		<mkdir dir="${libs}/armeabi" />
 		<mkdir dir="${libs}/armeabi-v7a" />
 		<mkdir dir="${libs}/x86" />
+		<mkdir dir="${libs}/x86_64" />
 		<mkdir dir="${libs}/linux32" />
 		<mkdir dir="${libs}/linux64" />
 		<mkdir dir="${libs}/macosx32" />
@@ -106,6 +108,11 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</copy>
 		
 		<!-- copy shared libs for android & ios -->
+		<copy failonerror="false" todir="${distDir}/arm64-v8a">
+			<fileset dir="${libs}/arm64-v8a">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
 		<copy failonerror="false" todir="${distDir}/armeabi">
 			<fileset dir="${libs}/armeabi">
 				<include name="**/*.so"/>
@@ -121,9 +128,15 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
+		<copy failonerror="false" todir="${distDir}/x86_64">
+			<fileset dir="${libs}/x86_64">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
 		<copy failonerror="false" todir="${distDir}/ios">
 			<fileset dir="${libs}/ios32">
 				<include name="**/*.a"/>
+				<include name="**/*.a.tvos"/>
 			</fileset>
 		</copy>
 		

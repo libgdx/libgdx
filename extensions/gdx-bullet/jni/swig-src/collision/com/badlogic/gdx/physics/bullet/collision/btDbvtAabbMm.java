@@ -58,6 +58,22 @@ public class btDbvtAabbMm extends BulletBase {
 		super.delete();
 	}
 
+	private final static btDbvtAabbMm temp = new btDbvtAabbMm(0, false);
+	/** Obtains a temporary instance, used by native methods that return a btDbvtAabbMm instance */
+	public static btDbvtAabbMm internalTemp(long cPtr, boolean own) {
+		temp.reset(cPtr, own);
+		return temp;
+	}
+	private static btDbvtAabbMm[] argumentInstances = new btDbvtAabbMm[] {new btDbvtAabbMm(0, false),
+		new btDbvtAabbMm(0, false), new btDbvtAabbMm(0, false), new btDbvtAabbMm(0, false)};
+	private static int argumentIndex = -1;
+	/** Obtains a temporary instance, used for callback methods with one or more btDbvtAabbMm arguments */
+	protected static btDbvtAabbMm obtainForArgument(final long swigCPtr, boolean owner) {
+		btDbvtAabbMm instance = argumentInstances[argumentIndex = (argumentIndex + 1) & 3];
+		instance.reset(swigCPtr, owner);
+		return instance;
+	}
+
   public Vector3 Center() {
 	return CollisionJNI.btDbvtAabbMm_Center(swigCPtr, this);
 }

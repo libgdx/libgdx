@@ -78,9 +78,9 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
 
-	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of backing
-	 * array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
-	 * grown. */
+	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of
+	 * backing array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array
+	 * to be grown. */
 	public Array (T[] array) {
 		this(true, array, 0, array.length);
 	}
@@ -155,6 +155,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns if this array contains value.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if array contains value, false if it doesn't */
 	public boolean contains (T value, boolean identity) {
@@ -170,7 +171,8 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	/** Returns an index of first occurrence of value in array or -1 if no such value exists
+	/** Returns the index of first occurrence of value in the array, or -1 if no such value exists.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of first occurrence of value in array or -1 if no such value exists */
 	public int indexOf (T value, boolean identity) {
@@ -187,6 +189,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an index of last occurrence of value in array or -1 if no such value exists. Search is started from the end of an
 	 * array.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of last occurrence of value in array or -1 if no such value exists */
 	public int lastIndexOf (T value, boolean identity) {
@@ -202,6 +205,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes the first instance of the specified value in the array.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
 	public boolean removeValue (T value, boolean identity) {
@@ -315,8 +319,8 @@ public class Array<T> implements Iterable<T> {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public T[] shrink () {
 		if (items.length != size) resize(size);
@@ -568,7 +572,7 @@ public class Array<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
 
-//		java.io.StringWriter lastAcquire = new java.io.StringWriter();
+// java.io.StringWriter lastAcquire = new java.io.StringWriter();
 
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
@@ -585,8 +589,8 @@ public class Array<T> implements Iterable<T> {
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
-//				iterator1.iterable = this;
-//				iterator2.iterable = this;
+// iterator1.iterable = this;
+// iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;

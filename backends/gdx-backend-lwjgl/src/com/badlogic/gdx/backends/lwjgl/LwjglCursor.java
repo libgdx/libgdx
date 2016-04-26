@@ -5,26 +5,20 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglCursor implements Cursor {
-	/** Revert to the default system cursor */
-	public static void resetCursor () {
-		try {
-			Mouse.setNativeCursor(null);
-		} catch (LWJGLException e) {
-			throw new GdxRuntimeException("Could not set cursor image.", e);
-		}
-	}
-
-	private org.lwjgl.input.Cursor lwjglCursor = null;
+	org.lwjgl.input.Cursor lwjglCursor = null;
 
 	public LwjglCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
-
+		if (((LwjglGraphics)Gdx.graphics).canvas != null && SharedLibraryLoader.isMac) {
+			return;
+		}
 		try {
 			if (pixmap == null) {
 				lwjglCursor = null;
@@ -87,12 +81,6 @@ public class LwjglCursor implements Cursor {
 	}
 
 	@Override
-	public void setSystemCursor () {
-		try {
-			Mouse.setNativeCursor(lwjglCursor);
-		} catch (LWJGLException e) {
-			throw new GdxRuntimeException("Could not set cursor image.", e);
-		}
+	public void dispose () {
 	}
-
 }

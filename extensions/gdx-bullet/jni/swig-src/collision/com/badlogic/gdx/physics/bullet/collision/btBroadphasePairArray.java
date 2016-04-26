@@ -84,7 +84,7 @@ public class btBroadphasePairArray extends BulletBase {
   }
 
   public btBroadphasePair at(int n) {
-	return CollisionJNI.btBroadphasePairArray_at(swigCPtr, this, n);
+	return btBroadphasePair.internalTemp(CollisionJNI.btBroadphasePairArray_at(swigCPtr, this, n), false);
 }
 
   public int getCollisionObjects(int[] result, int max, int other) {

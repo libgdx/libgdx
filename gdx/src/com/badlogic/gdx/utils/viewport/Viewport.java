@@ -20,6 +20,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -45,7 +46,7 @@ public abstract class Viewport {
 	/** Applies the viewport to the camera and sets the glViewport.
 	 * @param centerCamera If true, the camera position is set to the center of the world. */
 	public void apply (boolean centerCamera) {
-		Gdx.gl.glViewport(screenX, screenY, screenWidth, screenHeight);
+		HdpiUtils.glViewport(screenX, screenY, screenWidth, screenHeight);
 		camera.viewportWidth = worldWidth;
 		camera.viewportHeight = worldHeight;
 		if (centerCamera) camera.position.set(worldWidth / 2, worldHeight / 2, 0);

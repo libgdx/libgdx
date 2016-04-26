@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
@@ -89,12 +90,15 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 
 	@Override
 	protected Cubemap createColorTexture () {
-		Cubemap result = new Cubemap(width, height, width, format);
+		int glFormat = Pixmap.Format.toGlFormat(format);
+		int glType = Pixmap.Format.toGlType(format);
+		GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
+		Cubemap result = new Cubemap(data, data, data, data, data, data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
 	}
-	
+
 	@Override
 	protected void disposeColorTexture (Cubemap colorTexture) {
 		colorTexture.dispose();

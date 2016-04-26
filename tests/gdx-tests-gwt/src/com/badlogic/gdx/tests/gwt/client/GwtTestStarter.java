@@ -31,7 +31,7 @@ public class GwtTestStarter extends GwtApplication {
 	}
 
 	@Override
-	public ApplicationListener getApplicationListener () {
+	public ApplicationListener createApplicationListener () {
 		return new GwtTestWrapper();
 	}
 }

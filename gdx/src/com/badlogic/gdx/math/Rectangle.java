@@ -17,6 +17,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.Scaling;
 
 /** Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com */
@@ -324,7 +325,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** Fits this rectangle around another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
 	 * other rectangle (e.g. Having a camera translate and scale to show a given area)
 	 * @param rect the other rectangle to fit this rectangle around
-	 * @return this rectangle for chaining */
+	 * @return this rectangle for chaining
+	 * @see Scaling */
 	public Rectangle fitOutside (Rectangle rect) {
 		float ratio = getAspectRatio();
 
@@ -343,7 +345,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** Fits this rectangle into another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
 	 * other rectangle (e.g. Scaling a texture within a arbitrary cell without squeezing)
 	 * @param rect the other rectangle to fit this rectangle inside
-	 * @return this rectangle for chaining */
+	 * @return this rectangle for chaining
+	 * @see Scaling */
 	public Rectangle fitInside (Rectangle rect) {
 		float ratio = getAspectRatio();
 
@@ -365,7 +368,8 @@ public class Rectangle implements Serializable, Shape2D {
 		return "[" + x + "," + y + "," + width + "," + height + "]";
 	}
 
-	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}.
+	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}
+	 * .
 	 * @param v the string.
 	 * @return this rectangle for chaining */
 	public Rectangle fromString (String v) {

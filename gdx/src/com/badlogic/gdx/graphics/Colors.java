@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public final class Colors {
 
 	private static final ObjectMap<String, Color> map = new ObjectMap<String, Color>();
+
 	static {
 		reset();
 	}
@@ -38,7 +39,8 @@ public final class Colors {
 	 * {@code Colors.getColors().get(name)}
 	 * 
 	 * @param name the name of the color
-	 * @return the color to which the specified {@code name} is mapped, or {@code null} if there was no mapping for {@code name}. */
+	 * @return the color to which the specified {@code name} is mapped, or {@code null} if there was no mapping for {@code name}
+	 *         . */
 	public static Color get (String name) {
 		return map.get(name);
 	}
@@ -48,7 +50,8 @@ public final class Colors {
 	 * 
 	 * @param name the name of the color
 	 * @param color the color
-	 * @return the previous {@code color} associated with {@code name}, or {@code null} if there was no mapping for {@code name}. */
+	 * @return the previous {@code color} associated with {@code name}, or {@code null} if there was no mapping for {@code name}
+	 *         . */
 	public static Color put (String name, Color color) {
 		return map.put(name, color);
 	}
@@ -63,11 +66,11 @@ public final class Colors {
 		map.put("LIGHT_GRAY", Color.LIGHT_GRAY);
 		map.put("GRAY", Color.GRAY);
 		map.put("DARK_GRAY", Color.DARK_GRAY);
-		map.put("SLATE", Color.SLATE);
 
 		map.put("BLUE", Color.BLUE);
 		map.put("NAVY", Color.NAVY);
 		map.put("ROYAL", Color.ROYAL);
+		map.put("SLATE", Color.SLATE);
 		map.put("SKY", Color.SKY);
 		map.put("CYAN", Color.CYAN);
 		map.put("TEAL", Color.TEAL);
@@ -81,14 +84,15 @@ public final class Colors {
 		map.put("YELLOW", Color.YELLOW);
 		map.put("GOLD", Color.GOLD);
 		map.put("GOLDENROD", Color.GOLDENROD);
+		map.put("ORANGE", Color.ORANGE);
 
 		map.put("BROWN", Color.BROWN);
 		map.put("TAN", Color.TAN);
 		map.put("FIREBRICK", Color.FIREBRICK);
 
 		map.put("RED", Color.RED);
+		map.put("SCARLET", Color.SCARLET);
 		map.put("CORAL", Color.CORAL);
-		map.put("ORANGE", Color.ORANGE);
 		map.put("SALMON", Color.SALMON);
 		map.put("PINK", Color.PINK);
 		map.put("MAGENTA", Color.MAGENTA);

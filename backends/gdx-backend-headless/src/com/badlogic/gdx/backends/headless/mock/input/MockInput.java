@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.headless.mock.input;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 
@@ -38,6 +37,21 @@ public class MockInput implements Input {
 
 	@Override
 	public float getAccelerometerZ() {
+		return 0;
+	}
+	
+	@Override
+	public float getGyroscopeX() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
 		return 0;
 	}
 

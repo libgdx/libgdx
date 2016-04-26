@@ -1,17 +1,36 @@
 #!/bin/bash
-curl https://codeload.github.com/kstenerud/ObjectAL-for-iPhone/legacy.tar.gz/master -o objectal.tar.gz
-tar xvfz objectal.tar.gz
-cd kstenerud-ObjectAL-for-iPhone-a2252f3/ObjectAL
-xcodebuild -arch armv7 -sdk iphoneos
-cp build/Release-iphoneos/libObjectAl.a build/libObjectAl.a.armv7
-xcodebuild -arch arm64 -sdk iphoneos
-cp build/Release-iphoneos/libObjectAl.a build/libObjectAl.a.arm64
-xcodebuild -arch i386 -sdk iphonesimulator
-cp build/Release-iphonesimulator/libObjectAl.a build/libObjectAl.a.i386
-xcodebuild -arch x86_64 -sdk iphonesimulator
-cp build/Release-iphonesimulator/libObjectAl.a build/libObjectAl.a.x86_64
-lipo build/libObjectAL.a.armv7 build/libObjectAL.a.arm64 build/libObjectAL.a.i386 build/libObjectAL.a.x86_64 -create -output build/libObjectAL.a
-cp build/libObjectAL.a ../../../../gdx/libs/ios32/
-cd ../..
-rm objectal.tar.gz
-rm -r kstenerud-ObjectAL-for-iPhone-a2252f3/
+
+BASE=$(cd $(dirname $0); pwd -P)
+
+BUILD_DIR=$BASE/target/objectal
+rm -rf $BUILD_DIR
+mkdir -p $BUILD_DIR
+
+curl https://codeload.github.com/libgdx/ObjectAL-for-iPhone/legacy.tar.gz/master -o $BUILD_DIR/objectal.tar.gz
+
+tar xvfz $BUILD_DIR/objectal.tar.gz -C $BUILD_DIR --strip-components 1
+
+XCODEPROJ=$BUILD_DIR/ObjectAL/ObjectAL.xcodeproj
+
+xcodebuild -project $XCODEPROJ -arch armv7  -sdk iphoneos         CONFIGURATION_BUILD_DIR=$BUILD_DIR/armv7  OTHER_CFLAGS="-fembed-bitcode -miphoneos-version-min=6.0"
+xcodebuild -project $XCODEPROJ -arch arm64  -sdk iphoneos         CONFIGURATION_BUILD_DIR=$BUILD_DIR/arm64  OTHER_CFLAGS="-fembed-bitcode -miphoneos-version-min=6.0"
+xcodebuild -project $XCODEPROJ -arch i386   -sdk iphonesimulator  CONFIGURATION_BUILD_DIR=$BUILD_DIR/i386   OTHER_CFLAGS="-miphoneos-version-min=6.0"
+xcodebuild -project $XCODEPROJ -arch x86_64 -sdk iphonesimulator  CONFIGURATION_BUILD_DIR=$BUILD_DIR/x86_64 OTHER_CFLAGS="-miphoneos-version-min=6.0"
+xcodebuild -project $XCODEPROJ -arch arm64  -sdk appletvos        CONFIGURATION_BUILD_DIR=$BUILD_DIR/tvos-arm64 OTHER_CFLAGS="-fembed-bitcode -mtvos-version-min=9.0"
+xcodebuild -project $XCODEPROJ -arch x86_64 -sdk appletvsimulator CONFIGURATION_BUILD_DIR=$BUILD_DIR/tvos-x86_64 OTHER_CFLAGS="-mtvos-version-min=9.0"
+
+lipo $BUILD_DIR/armv7/libObjectAL.a \
+     $BUILD_DIR/arm64/libObjectAL.a \
+     $BUILD_DIR/i386/libObjectAL.a \
+     $BUILD_DIR/x86_64/libObjectAL.a \
+     -create \
+     -output $BUILD_DIR/libObjectAL.a
+
+cp $BUILD_DIR/libObjectAL.a $BASE/../../gdx/libs/ios32/
+
+lipo $BUILD_DIR/tvos-arm64/libObjectAL.a \
+     $BUILD_DIR/tvos-x86_64/libObjectAL.a \
+     -create \
+     -output $BUILD_DIR/libObjectAL.a.tvos
+
+cp $BUILD_DIR/libObjectAL.a.tvos $BASE/../../gdx/libs/ios32/

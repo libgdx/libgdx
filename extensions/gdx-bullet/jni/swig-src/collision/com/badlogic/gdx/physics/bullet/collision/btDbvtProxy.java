@@ -63,9 +63,8 @@ public class btDbvtProxy extends btBroadphaseProxy {
   }
 
   public btDbvtNode getLeaf() {
-    long cPtr = CollisionJNI.btDbvtProxy_leaf_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
-  }
+	return btDbvtNode.internalTemp(CollisionJNI.btDbvtProxy_leaf_get(swigCPtr, this), false);
+}
 
   public void setLinks(SWIGTYPE_p_p_btDbvtProxy value) {
     CollisionJNI.btDbvtProxy_links_set(swigCPtr, this, SWIGTYPE_p_p_btDbvtProxy.getCPtr(value));

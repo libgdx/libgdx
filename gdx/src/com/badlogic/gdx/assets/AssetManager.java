@@ -75,6 +75,8 @@ public class AssetManager implements Disposable {
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
+        
+	final FileHandleResolver resolver;
 
 	Logger log = new Logger("AssetManager", Application.LOG_NONE);
 
@@ -92,6 +94,7 @@ public class AssetManager implements Disposable {
 	 * manually add the loaders you need, including any loaders they might depend on.
 	 * @param defaultLoaders whether to add the default loaders */
 	public AssetManager (FileHandleResolver resolver, boolean defaultLoaders) {
+		this.resolver = resolver;
 		if (defaultLoaders) {
 			setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
 			setLoader(Music.class, new MusicLoader(resolver));
@@ -110,6 +113,13 @@ public class AssetManager implements Disposable {
 			setLoader(Model.class, ".obj", new ObjLoader(resolver));
 		}
 		executor = new AsyncExecutor(1);
+	}
+
+	/** Returns the {@link FileHandleResolver} for which this AssetManager
+	 * was loaded with.
+	 * @return the file handle resolver which this AssetManager uses */
+	public FileHandleResolver getFileHandleResolver () {
+		return resolver;
 	}
 
 	/** @param fileName the asset file name
@@ -388,7 +398,7 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	/** Blocks until the specified aseet is loaded.
+	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
 	public void finishLoadingAsset (String fileName) {
 		log.debug("Waiting for asset to be loaded: " + fileName);

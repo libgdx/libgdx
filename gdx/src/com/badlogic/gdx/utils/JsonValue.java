@@ -32,17 +32,19 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * for (JsonValue entry = map.child; entry != null; entry = entry.next)
  * 	System.out.println(entry.name + " = " + entry.asString());
  * </pre>
+ * 
  * @author Nathan Sweet */
 public class JsonValue implements Iterable<JsonValue> {
 	private ValueType type;
 
+	/** May be null. */
 	private String stringValue;
 	private double doubleValue;
 	private long longValue;
 
 	public String name;
 	/** May be null. */
-	public JsonValue child, next, prev;
+	public JsonValue child, next, prev, parent;
 	public int size;
 
 	public JsonValue (ValueType type) {
@@ -849,6 +851,12 @@ public class JsonValue implements Iterable<JsonValue> {
 		this.name = name;
 	}
 
+	/** Returns the parent for this value.
+	 * @return May be null. */
+	public JsonValue parent () {
+		return parent;
+	}
+
 	/** Returns the first child for this object or array.
 	 * @return May be null. */
 	public JsonValue child () {
@@ -902,11 +910,66 @@ public class JsonValue implements Iterable<JsonValue> {
 		type = ValueType.booleanValue;
 	}
 
+	public String toJson (OutputType outputType) {
+		if (isValue()) return asString();
+		StringBuilder buffer = new StringBuilder(512);
+		json(this, buffer, outputType);
+		return buffer.toString();
+	}
+
+	private void json (JsonValue object, StringBuilder buffer, OutputType outputType) {
+		if (object.isObject()) {
+			if (object.child == null)
+				buffer.append("{}");
+			else {
+				int start = buffer.length();
+				while (true) {
+					buffer.append('{');
+					int i = 0;
+					for (JsonValue child = object.child; child != null; child = child.next) {
+						buffer.append(outputType.quoteName(child.name));
+						buffer.append(':');
+						json(child, buffer, outputType);
+						if (child.next != null) buffer.append(',');
+					}
+					break;
+				}
+				buffer.append('}');
+			}
+		} else if (object.isArray()) {
+			if (object.child == null)
+				buffer.append("[]");
+			else {
+				int start = buffer.length();
+				while (true) {
+					buffer.append('[');
+					for (JsonValue child = object.child; child != null; child = child.next) {
+						json(child, buffer, outputType);
+						if (child.next != null) buffer.append(',');
+					}
+					break;
+				}
+				buffer.append(']');
+			}
+		} else if (object.isString()) {
+			buffer.append(outputType.quoteValue(object.asString()));
+		} else if (object.isDouble()) {
+			double doubleValue = object.asDouble();
+			long longValue = object.asLong();
+			buffer.append(doubleValue == longValue ? longValue : doubleValue);
+		} else if (object.isLong()) {
+			buffer.append(object.asLong());
+		} else if (object.isBoolean()) {
+			buffer.append(object.asBoolean());
+		} else if (object.isNull()) {
+			buffer.append("null");
+		} else
+			throw new SerializationException("Unknown object type: " + object);
+	}
+
 	public String toString () {
-		if (isValue())
-			return name == null ? asString() : name + ": " + asString();
-		else
-			return (name == null ? "" : name + ": ") + prettyPrint(OutputType.minimal, 0);
+		if (isValue()) return name == null ? asString() : name + ": " + asString();
+		return (name == null ? "" : name + ": ") + prettyPrint(OutputType.minimal, 0);
 	}
 
 	public String prettyPrint (OutputType outputType, int singleLineColumns) {
@@ -925,9 +988,9 @@ public class JsonValue implements Iterable<JsonValue> {
 	private void prettyPrint (JsonValue object, StringBuilder buffer, int indent, PrettyPrintSettings settings) {
 		OutputType outputType = settings.outputType;
 		if (object.isObject()) {
-			if (object.child == null) {
+			if (object.child == null)
 				buffer.append("{}");
-			} else {
+			else {
 				boolean newLines = !isFlat(object);
 				int start = buffer.length();
 				outer:
@@ -953,9 +1016,9 @@ public class JsonValue implements Iterable<JsonValue> {
 				buffer.append('}');
 			}
 		} else if (object.isArray()) {
-			if (object.child == null) {
+			if (object.child == null)
 				buffer.append("[]");
-			} else {
+			else {
 				boolean newLines = !isFlat(object);
 				boolean wrap = settings.wrapNumericArrays || !isNumeric(object);
 				int start = buffer.length();
@@ -1048,6 +1111,30 @@ public class JsonValue implements Iterable<JsonValue> {
 		public Iterator<JsonValue> iterator () {
 			return this;
 		}
+	}
+
+	/** Returns a human readable string representing the path from the root of the JSON object graph to this value. */
+	public String trace () {
+		if (parent == null) {
+			if (type == ValueType.array) return "[]";
+			if (type == ValueType.object) return "{}";
+			return "";
+		}
+		String trace;
+		if (parent.type == ValueType.array) {
+			trace = "[]";
+			int i = 0;
+			for (JsonValue child = parent.child; child != null; child = child.next, i++) {
+				if (child == this) {
+					trace = "[" + i + "]";
+					break;
+				}
+			}
+		} else if (name.indexOf('.') != -1)
+			trace = ".\"" + name.replace("\"", "\\\"") + "\"";
+		else
+			trace = '.' + name;
+		return parent.trace() + trace;
 	}
 
 	static public class PrettyPrintSettings {

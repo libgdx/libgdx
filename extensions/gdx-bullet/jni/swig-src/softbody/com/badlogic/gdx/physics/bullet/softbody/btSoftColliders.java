@@ -60,7 +60,7 @@ public class btSoftColliders extends BulletBase {
 		super.delete();
 	}
 
-  static public class ClusterBase extends btDbvt.ICollide {
+  static public class ClusterBase extends ICollide {
   	private long swigCPtr;
   	
   	protected ClusterBase(final String className, long cPtr, boolean cMemoryOwn) {
@@ -285,7 +285,7 @@ public class btSoftColliders extends BulletBase {
   
   }
 
-  static public class CollideSDF_RS extends btDbvt.ICollide {
+  static public class CollideSDF_RS extends ICollide {
   	private long swigCPtr;
   	
   	protected CollideSDF_RS(final String className, long cPtr, boolean cMemoryOwn) {
@@ -379,7 +379,7 @@ public class btSoftColliders extends BulletBase {
   
   }
 
-  static public class CollideVF_SS extends btDbvt.ICollide {
+  static public class CollideVF_SS extends ICollide {
   	private long swigCPtr;
   	
   	protected CollideVF_SS(final String className, long cPtr, boolean cMemoryOwn) {

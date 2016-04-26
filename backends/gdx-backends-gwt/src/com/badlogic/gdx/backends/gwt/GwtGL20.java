@@ -71,7 +71,6 @@ public class GwtGL20 implements GL20 {
 	final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
-		;
 		this.gl = gl;
 		this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
 	}
@@ -414,7 +413,8 @@ public class GwtGL20 implements GL20 {
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
 		// verify request
 		if ((format != WebGLRenderingContext.RGBA) || (type != WebGLRenderingContext.UNSIGNED_BYTE)) {
-			throw new GdxRuntimeException("Only format RGBA and type UNSIGNED_BYTE are currently supported for glReadPixels(...).");
+			throw new GdxRuntimeException(
+				"Only format RGBA and type UNSIGNED_BYTE are currently supported for glReadPixels(...). Create an issue when you need other formats.");
 		}
 		if (!(pixels instanceof ByteBuffer)) {
 			throw new GdxRuntimeException("Inputed pixels buffer needs to be of type ByteBuffer for glReadPixels(...).");
@@ -422,16 +422,10 @@ public class GwtGL20 implements GL20 {
 
 		// create new ArrayBufferView (4 bytes per pixel)
 		int size = 4 * width * height;
-		Uint8Array buffer = Uint8ArrayNative.create(size);
+		Uint8Array buffer = TypedArrays.createUint8Array(((HasArrayBufferView)pixels).getTypedArray().buffer(), 0, size);
 
 		// read bytes to ArrayBufferView
 		gl.readPixels(x, y, width, height, format, type, buffer);
-
-		// copy ArrayBufferView to our pixels array
-		ByteBuffer pixelsByte = (ByteBuffer)pixels;
-		for (int i = 0; i < size; i++) {
-			pixelsByte.put((byte)(buffer.get(i) & 0x000000ff));
-		}
 	}
 
 	@Override
@@ -457,21 +451,25 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
-        if (pixels.limit() > 1) {
-            HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
+		if (pixels == null) {
+			gl.texImage2D(target, level, internalformat, width, height, border, format, type, null);
+		} else {
+			if (pixels.limit() > 1) {
+				HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
 
-            ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-            int remainingBytes = pixels.remaining() * 4;
+				ArrayBufferView webGLArray = arrayHolder.getTypedArray();
+				int remainingBytes = pixels.remaining() * 4;
 
-            int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
 
-            Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+				Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
 
-            gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
-        } else {
-            Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-            gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
-        }
+				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
+			} else {
+				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
+				gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+			}
+		}
 	}
 
 	@Override

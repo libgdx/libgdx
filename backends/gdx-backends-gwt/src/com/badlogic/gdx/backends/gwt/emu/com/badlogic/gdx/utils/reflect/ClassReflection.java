@@ -145,7 +145,7 @@ public final class ClassReflection {
 	/** Returns a {@link Method} that represents the method declared by the supplied class which takes the supplied parameter types. */
 	static public Method getDeclaredMethod (Class c, String name, Class... parameterTypes) throws ReflectionException {
 		try {
-			return new Method(ReflectionCache.getType(c).getMethod(name, parameterTypes));
+			return new Method(ReflectionCache.getType(c).getDeclaredMethod(name, parameterTypes));
 		} catch (SecurityException e) {
 			throw new ReflectionException("Security violation while getting method: " + name + ", for class: " + c.getName(), e);
 		} catch (NoSuchMethodException e) {
@@ -166,9 +166,11 @@ public final class ClassReflection {
 	/** Returns a {@link Field} that represents the specified public member field for the supplied class. */
 	static public Field getField (Class c, String name) throws ReflectionException {
 		try {
-			return new Field(ReflectionCache.getType(c).getField(name));
+			return new Field(ReflectionCache.getType(c).getField(name));	
 		} catch (SecurityException e) {
 			throw new ReflectionException("Security violation while getting field: " + name + ", for class: " + c.getName(), e);
+		} catch (NoSuchFieldException e) {
+			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
 
@@ -185,10 +187,13 @@ public final class ClassReflection {
 	/** Returns a {@link Field} that represents the specified declared field for the supplied class. */
 	static public Field getDeclaredField (Class c, String name) throws ReflectionException {
 		try {
-			return new Field(ReflectionCache.getType(c).getField(name));
+			return new Field(ReflectionCache.getType(c).getDeclaredField(name));	
 		} catch (SecurityException e) {
 			throw new ReflectionException("Security violation while getting field: " + name + ", for class: " + c.getName(), e);
+		} catch (NoSuchFieldException e) {
+			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
+		
 	}
 
 	/** Returns true if the supplied class has an annotation of the given type. */
@@ -274,5 +279,9 @@ public final class ClassReflection {
 		java.lang.annotation.Annotation annotation = ReflectionCache.getType(c).getDeclaredAnnotation(annotationType);
 		if (annotation != null) return new Annotation(annotation);
 		return null;
+	}
+	
+	static public Class[] getInterfaces (Class c) {
+		return ReflectionCache.getType(c).getInterfaces();
 	}
 }

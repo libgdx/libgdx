@@ -65,7 +65,7 @@ public class MeshShaderTest extends GdxTest {
 		angle += Gdx.graphics.getDeltaTime() * 45;
 		matrix.setToRotation(axis, angle);
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
