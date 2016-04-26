@@ -60,7 +60,7 @@ public class IOSInput implements Input {
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
 	// we store the pointer to the UITouch struct here, or 0
-	long[] touchDown = new long[MAX_TOUCHES];
+	UITouch[] touchDown = new UITouch[MAX_TOUCHES];
 	int numTouched = 0;
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
@@ -256,7 +256,7 @@ public class IOSInput implements Input {
 	@Override
 	public boolean isTouched () {
 		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
-			if (touchDown[pointer] != 0) {
+			if (touchDown[pointer] != null) {
 				return true;
 			}
 		}
@@ -270,7 +270,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched (int pointer) {
-		return touchDown[pointer] != 0;
+		return touchDown[pointer] != null;
 	}
 
 	@Override
@@ -562,7 +562,7 @@ public class IOSInput implements Input {
 
 	private int getFreePointer () {
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == 0) return i;
+			if (touchDown[i] == null) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find free pointer id!");
 	}
@@ -570,7 +570,7 @@ public class IOSInput implements Input {
 	private int findPointer (UITouch touch) {
 		long ptr = 0;
 		for (int i = 0; i < touchDown.length; i++) {
-			if (touchDown[i] == ptr) return i;
+			if (touchDown[i] == touch) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
@@ -598,7 +598,7 @@ public class IOSInput implements Input {
 
 				if (phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
-					touchDown[event.pointer] = 0;
+					touchDown[event.pointer] = touch;
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
@@ -616,7 +616,7 @@ public class IOSInput implements Input {
 
 				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0;
+					touchDown[event.pointer] = null;
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
