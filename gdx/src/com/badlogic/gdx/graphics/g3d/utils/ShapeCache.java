@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Matrix4;
@@ -30,27 +31,30 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
-/** Debug3dRenderer allows to see box, camera in 3d space.
+/** A relatively lightweight class which can be used to render basic shapes which don't need a node structure and alike. Can be
+ * used for batching both static and dynamic shapes which share the same {@link Material} and transformation {@link Matrix4}
+ * within the world. Use {@link ModelBatch} to render the `ShapeCache`. Must be disposed when no longer needed to release native
+ * resources.
  * <p>
  * How to use it :
  * </p>
  * 
  * <pre>
- * // Create debugger
- * Debug3dRenderer debugger = new Debug3dRenderer();
- * // Each Frame
- * MeshPartBuilder builder = debugger.begin();
+ * // Create cache
+ * ShapeCache cache = new ShapeCache();
+ * // Build the cache, for dynamic shapes, this would be in the render method.
+ * MeshPartBuilder builder = cache.begin();
  * FrustumShapeBuilder.build(builder, camera);
  * BoxShapeBuilder.build(builder, box);
- * debugger.end()
+ * cache.end()
  * // Render
- * modelBatch.render(debugger);
+ * modelBatch.render(cache);
  * // After using it
- * debugger.dispose();
+ * cache.dispose();
  * </pre>
  * 
  * @author realitix */
-public class Debug3dRenderer implements Disposable, RenderableProvider {
+public class ShapeCache implements Disposable, RenderableProvider {
 
 	/** Builder used to update the mesh */
 	private final MeshBuilder builder;
@@ -62,18 +66,18 @@ public class Debug3dRenderer implements Disposable, RenderableProvider {
 	private final String id = "id";
 	private final Renderable renderable = new Renderable();
 
-	/** Create a Debug3dRenderer with default values */
-	public Debug3dRenderer () {
+	/** Create a ShapeCache with default values */
+	public ShapeCache () {
 		this(5000, 5000, new VertexAttributes(new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color")), GL20.GL_LINES);
 	}
 
-	/** Create a Debug3dRenderer with parameters
+	/** Create a ShapeCache with parameters
 	 * @param maxVertices max vertices in mesh
 	 * @param maxIndices max indices in mesh
 	 * @param attributes vertex attributes
 	 * @param primitiveType */
-	public Debug3dRenderer (int maxVertices, int maxIndices, VertexAttributes attributes, int primitiveType) {
+	public ShapeCache (int maxVertices, int maxIndices, VertexAttributes attributes, int primitiveType) {
 		// Init mesh
 		mesh = new Mesh(false, maxVertices, maxIndices, attributes);
 
@@ -86,12 +90,12 @@ public class Debug3dRenderer implements Disposable, RenderableProvider {
 		renderable.material = new Material();
 	}
 
-	/** Initialize Debug3dRender for mesh generation with GL_LINES primitive type */
+	/** Initialize ShapeCache for mesh generation with GL_LINES primitive type */
 	public MeshPartBuilder begin () {
 		return begin(GL20.GL_LINES);
 	}
 
-	/** Initialize Debug3dRender for mesh generation
+	/** Initialize ShapeCache for mesh generation
 	 * @param primitiveType OpenGL primitive type */
 	public MeshPartBuilder begin (int primitiveType) {
 		if (building) throw new GdxRuntimeException("Call end() after calling begin()");

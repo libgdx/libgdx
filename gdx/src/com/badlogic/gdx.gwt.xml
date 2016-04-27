@@ -200,7 +200,6 @@
 		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
-		<include name="graphics/g3d/utils/Debug3dRenderer.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
@@ -212,6 +211,7 @@
 		<include name="graphics/g3d/utils/RenderableSorter.java"/>
 		<include name="graphics/g3d/utils/RenderContext.java"/>
 		<include name="graphics/g3d/utils/ShaderProvider.java"/>
+		<include name="graphics/g3d/utils/ShapeCache.java"/>
 		<include name="graphics/g3d/utils/TextureBinder.java"/>
 		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
 		<include name="graphics/g3d/utils/TextureProvider.java"/>
