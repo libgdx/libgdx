@@ -17,6 +17,7 @@
 - Fixed getDisplayModes(Monitor monitor) returning wrong data on LWJGL2 backend
 - Fixed Gdx.input.getCurrentEventTime() not being set on LWJGL3, fixes GestureDetector and flick scroll not working
 - Fixed not being able to select non-latin characters in TextFields
+- Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
