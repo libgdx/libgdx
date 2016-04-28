@@ -32,6 +32,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import java.util.ArrayList;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -143,7 +144,7 @@ public interface Net {
 
 		private String httpMethod;
 		private String url;
-		private Map<String, String> headers;
+		private Map<String, List<String>> headers;
 		private int timeOut = 0;
 
 		private String content;
@@ -155,7 +156,7 @@ public interface Net {
 		private boolean includeCredentials = false;
 		
 		public HttpRequest () {
-			this.headers = new HashMap<String, String>();
+			this.headers = new HashMap<String, List<String>>();
 		}
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
@@ -175,8 +176,15 @@ public interface Net {
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
 		public void setHeader (String name, String value) {
-			headers.put(name, value);
+                    List<String> val = new ArrayList();
+                    val.add(value);
+			headers.put(name, val);
 		}
+                
+                public void addHeader(String name, String value){
+                	//Maybe add check if Key exists in the Map....
+                        headers.get(name).add(value);
+                }
 
 		/** Sets the content to be used in the HTTP request.
 		 * @param content A string encoded in the corresponding Content-Encoding set in the headers, with the data to send with the
@@ -255,7 +263,7 @@ public interface Net {
 		}
 
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
-		public Map<String, String> getHeaders () {
+		public Map<String, List<String>> getHeaders () {
 			return headers;
 		}
 
