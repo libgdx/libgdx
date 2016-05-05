@@ -698,7 +698,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_initFreeTypeJni(JNIEnv* env, jclass clazz) {
 
 
-//@line:865
+//@line:871
 
 		FT_Library library = 0;
 		FT_Error error = FT_Init_FreeType(&library);
