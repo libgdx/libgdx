@@ -377,7 +377,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SYMROOT = "/Users/tomwojciechowski/Coding/libgdx/gdx-tests-ios-intel/build/moe/xcodebuild/sym";
+				SYMROOT = ../build/xcode
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -485,7 +485,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				SDKROOT = iphoneos;
-				SYMROOT = "/Users/tomwojciechowski/Coding/libgdx/gdx-tests-ios-intel/build/moe/xcodebuild/sym";
+				SYMROOT = ../build/xcode
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
