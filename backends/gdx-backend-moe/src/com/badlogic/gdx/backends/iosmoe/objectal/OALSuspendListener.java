@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
-import com.intel.inde.moe.natj.general.ann.Generated;
-import com.intel.inde.moe.natj.general.ann.Runtime;
-import com.intel.inde.moe.natj.objc.ObjCRuntime;
-import com.intel.inde.moe.natj.objc.ann.ObjCProtocolName;
-import com.intel.inde.moe.natj.objc.ann.Selector;
+import com.intel.moe.natj.general.ann.Generated;
+import com.intel.moe.natj.general.ann.Runtime;
+import com.intel.moe.natj.objc.ObjCRuntime;
+import com.intel.moe.natj.objc.ann.ObjCProtocolName;
+import com.intel.moe.natj.objc.ann.Selector;
 
 @Generated
 @Runtime(ObjCRuntime.class)

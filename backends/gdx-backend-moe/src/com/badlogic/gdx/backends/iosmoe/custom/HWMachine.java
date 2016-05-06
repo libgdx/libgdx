@@ -17,15 +17,15 @@
 package com.badlogic.gdx.backends.iosmoe.custom;
 
 import com.badlogic.gdx.utils.BufferUtils;
-import com.intel.inde.moe.natj.c.CRuntime;
-import com.intel.inde.moe.natj.c.ann.CFunction;
-import com.intel.inde.moe.natj.general.NatJ;
-import com.intel.inde.moe.natj.general.ann.Runtime;
-import com.intel.inde.moe.natj.general.ann.UncertainArgument;
-import com.intel.inde.moe.natj.general.ptr.BytePtr;
-import com.intel.inde.moe.natj.general.ptr.IntPtr;
-import com.intel.inde.moe.natj.general.ptr.impl.PtrFactory;
-import com.intel.inde.moe.natj.general.ptr.VoidPtr;
+import com.intel.moe.natj.c.CRuntime;
+import com.intel.moe.natj.c.ann.CFunction;
+import com.intel.moe.natj.general.NatJ;
+import com.intel.moe.natj.general.ann.Runtime;
+import com.intel.moe.natj.general.ann.UncertainArgument;
+import com.intel.moe.natj.general.ptr.BytePtr;
+import com.intel.moe.natj.general.ptr.IntPtr;
+import com.intel.moe.natj.general.ptr.impl.PtrFactory;
+import com.intel.moe.natj.general.ptr.VoidPtr;
 
 @Runtime(CRuntime.class)
 public class HWMachine {

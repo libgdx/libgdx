@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.intel.inde.moe.natj.general.NatJ;
-import com.intel.inde.moe.natj.general.Pointer;
-import com.intel.inde.moe.natj.general.ann.ByValue;
-import com.intel.inde.moe.natj.objc.ann.Selector;
+import com.intel.moe.natj.general.NatJ;
+import com.intel.moe.natj.general.Pointer;
+import com.intel.moe.natj.general.ann.ByValue;
+import com.intel.moe.natj.objc.ann.Selector;
 import ios.coregraphics.struct.CGRect;
 import ios.foundation.NSSet;
 import ios.glkit.GLKView;

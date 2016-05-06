@@ -296,10 +296,12 @@ project(":tests:gdx-tests-iosrobovm") {
     }
 }
 
-project(":gdx-tests-ios-intel") {
+project("tests:gdx-tests-ios-intel") {
     dependencies {
         compile project(":tests:gdx-tests")
-        compile project(":backends:gdx-backend-moe")
+        //compile project(":backends:gdx-backend-moe")
+        compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        //natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
     }
 
     eclipse.project {
