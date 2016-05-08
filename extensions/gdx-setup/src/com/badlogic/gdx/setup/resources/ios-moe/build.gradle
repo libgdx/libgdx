@@ -23,7 +23,7 @@ task copyNatives << {
     def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
     if (proguard.exists()) {
         if (!proguard.text.contains("-keep class com.badlogic.**")) {
-            proguard << "-keep class com.badlogic.** { *; }\n"
+            proguard << "\n-keep class com.badlogic.** { *; }\n"
             proguard << "-keep enum com.badlogic.** { *; }\n"
         }
     }

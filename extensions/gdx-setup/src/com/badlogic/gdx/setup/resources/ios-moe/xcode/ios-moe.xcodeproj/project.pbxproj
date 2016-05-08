@@ -75,7 +75,7 @@
 		03ACC9D41CDFA75800656F5D /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		03ACC9D51CDFA75800656F5D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		03ACC9DC1CDFA76400656F5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		03E2841B1CDFA83B005BA4F0 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../%ASSET_PATH%; sourceTree = "<group>"; };
+		03E2841B1CDFA83B005BA4F0 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../../../%ASSET_PATH%; sourceTree = "<group>"; };
 		03E2841F1CDFAB6C005BA4F0 /* Default-375w-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-375w-667h@2x.png"; path = "../../resources/Default-375w-667h@2x.png"; sourceTree = "<group>"; };
 		03E284201CDFAB6C005BA4F0 /* Default-414w-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-414w-736h@3x.png"; path = "../../resources/Default-414w-736h@3x.png"; sourceTree = "<group>"; };
 		03E284211CDFAB6C005BA4F0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../resources/Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 		03E284291CDFAB6C005BA4F0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../resources/Icon@2x.png"; sourceTree = "<group>"; };
 		1ED204BD74E9D5EA07497539 /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
 		24EA85BD4FD711B4AB05E16A /* build.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = build.xcconfig; sourceTree = "<group>"; };
-		36C285E0AB4EC84EF958EE2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
+		36C285E0AB4EC84EF958EE2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		3FF7C331588944C9129B593B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		536B49D6B8966BB83CB06F44 /* application.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; name = application.jar; path = ../build/moe/test/application.jar; sourceTree = SOURCE_ROOT; };
 		53ADB2FAAB1A5F2165A74CF8 /* ios-moe-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-moe-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
