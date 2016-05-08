@@ -26,7 +26,7 @@ public class DependencyBank {
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.9.3-SNAPSHOT";
 	static String roboVMVersion = "1.12.0";
-	static String moeVersion = "1.0";
+	static String moeVersion = "1.1.0.final-1";
 	static String buildToolsVersion = "23.0.1";
 	static String androidAPILevel = "20";
 	static String gwtVersion = "2.6.0";
@@ -43,7 +43,7 @@ public class DependencyBank {
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
 	static String androidPluginImport = "com.android.tools.build:gradle:1.5.0";
 	static String roboVMPluginImport = "org.robovm:robovm-gradle-plugin:" + roboVMVersion;
-	static String moePluginImport = "org.intel.gradle:xRTGradlePlugin:" + moeVersion;
+	static String moePluginImport = "com.intel.gradle:moeGradlePlugin:" + moeVersion;
 	
 	//Extension versions
 	static String box2DLightsVersion = "1.4";
@@ -234,7 +234,7 @@ public class DependencyBank {
 		DESKTOP("desktop", new String[]{"java"}),
 		ANDROID("android", new String[]{"android"}),
 		IOS("ios", new String[]{"java", "robovm"}),
-		IOSMOE("ios-moe", new String[] {"xrt"}),
+		IOSMOE("ios-moe", new String[] {"moe"}),
 		HTML("html", new String[]{"gwt", "war"});
 
 		private final String name;

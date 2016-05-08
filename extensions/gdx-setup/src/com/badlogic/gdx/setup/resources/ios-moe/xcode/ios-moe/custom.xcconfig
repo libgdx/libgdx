@@ -1,1 +1,1 @@
-XRT_CUSTOM_OTHER_LDFLAGS =  -force_load ${SRCROOT}/native/ios/libObjectAL.a -force_load ${SRCROOT}/native/ios/libgdx.a -force_load ${SRCROOT}/native/ios/libgdx-box2d.a
+LIBGDX_NATIVES =  -force_load ${SRCROOT}/native/ios/libObjectAL.a -force_load ${SRCROOT}/native/ios/libgdx.a -force_load ${SRCROOT}/native/ios/libgdx-box2d.a

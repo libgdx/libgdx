@@ -336,10 +336,10 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/build.xcconfig", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.m", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/precopy.txt", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/preregister.txt", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/build.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info-Test.plist", false));
+			project.files.add(new ProjectFile("ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}

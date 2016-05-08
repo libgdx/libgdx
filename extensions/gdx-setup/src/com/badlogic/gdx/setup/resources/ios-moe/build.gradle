@@ -1,8 +1,6 @@
 task copyNatives << {
     file("xcode/native/ios/").mkdirs();
-
-    def LD_FLAGS = "XRT_CUSTOM_OTHER_LDFLAGS = "
-
+    def LD_FLAGS = "LIBGDX_NATIVES = "
     configurations.natives.files.each { jar->
         def outputDir = null
         if (jar.name.endsWith("natives-ios.jar")) outputDir = file("xcode/native/ios")
@@ -14,19 +12,17 @@ task copyNatives << {
                         from libFile.getAbsolutePath()
                         into outputDir
                     }
-
-                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName();
+                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
                 }
             }
         }
     }
+    def outFlags = file("xcode/ios-moe/custom.xcconfig");
+    outFlags.write LD_FLAGS
 
-    def outputFlags = file("xcode/" + project.name + "/custom.xcconfig");
-    outputFlags.write LD_FLAGS
-
-    def proguard = file(System.getenv("INTEL_MULTI_OS_ENGINE_HOME") + "/tools/proguard.cfg")
-    if(proguard.exists()) {
-        if(!proguard.text.contains("-keep class com.badlogic.**")) {
+    def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
+    if (proguard.exists()) {
+        if (!proguard.text.contains("-keep class com.badlogic.**")) {
             proguard << "-keep class com.badlogic.** { *; }\n"
             proguard << "-keep enum com.badlogic.** { *; }\n"
         }
@@ -35,8 +31,19 @@ task copyNatives << {
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-xrt {
-    sdkVersion = "9.2"
+
+moe {
+    mainClassName 'IOSMoeLauncher'
+    xcode {
+        mainTarget 'ios-moe'
+        packageName '%PACKAGE%'
+        deploymentTarget = '9.0'
+        xcodeProjectDirPath 'xcode'
+        generateProject false
+    }
 }
 
-buildApp.dependsOn copyNatives
+moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
+moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
+moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
+moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
