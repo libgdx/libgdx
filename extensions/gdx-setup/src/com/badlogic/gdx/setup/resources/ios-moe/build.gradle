@@ -43,7 +43,6 @@ moe {
     }
 }
 
-moeXcodeInternal.dependsOn copyNatives
 moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
