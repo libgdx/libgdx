@@ -297,7 +297,7 @@ public class LwjglApplication implements Application {
 	
 	@Override
 	public BackendType getBackendType() {
-		return BackendType.LWJGL2;
+		return BackendType.LWJGL;
 	}
 
 	@Override

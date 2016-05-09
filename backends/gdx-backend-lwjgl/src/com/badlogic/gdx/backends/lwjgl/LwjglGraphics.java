@@ -230,7 +230,7 @@ public class LwjglGraphics implements Graphics {
 		String versionString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		String vendorString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VENDOR);
 		String rendererString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(BackendType.LWJGL2, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.LWJGL, versionString, vendorString, rendererString);
 	}
 
 	private static void extractExtensions () {

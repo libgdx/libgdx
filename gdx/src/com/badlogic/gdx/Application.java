@@ -113,7 +113,7 @@ public interface Application {
 	 * 
 	 * @author kerberjg */
 	public enum BackendType {
-		Android, RoboVM, Headless, LWJGL2, LWJGL3, JGLFW, GWT
+		Android, RoboVM, Headless, LWJGL, LWJGL3, JGLFW, GWT
 	}
 
 	public static final int LOG_NONE = 0;

@@ -46,7 +46,7 @@ public class GLVersion {
 				extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
 				break;
 				
-			case LWJGL2:
+			case LWJGL:
 			case LWJGL3:
 			case JGLFW:
 				type = Type.OpenGL;
