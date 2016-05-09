@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLTexture;
@@ -132,7 +132,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
-			if (Gdx.app.getType() == ApplicationType.iOS) {
+			if (Gdx.app.getOS() == SystemType.iOS) {
 				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
 				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
 				defaultFramebufferHandle = intbuf.get(0);

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -51,8 +52,8 @@ public class MipMapGenerator {
 			return;
 		}
 
-		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.WebGL
-			|| Gdx.app.getType() == ApplicationType.iOS) {
+		if (Gdx.app.getBackend() == BackendType.Android || Gdx.app.getBackend() == BackendType.RoboVM
+			|| Gdx.app.getBackend() == BackendType.GWT) {
 			generateMipMapGLES20(target, pixmap);
 		} else {
 			generateMipMapDesktop(target, pixmap, textureWidth, textureHeight);

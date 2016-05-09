@@ -37,13 +37,27 @@ public class GLVersion {
 
 	private final String TAG = "GLVersion";
 
-	public GLVersion (Application.ApplicationType appType, String versionString, String vendorString, String rendererString) {
-		if (appType == Application.ApplicationType.Android) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.iOS) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.Desktop) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.Applet) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.WebGL) this.type = Type.WebGL;
-		else this.type = Type.NONE;
+	public GLVersion (Application.BackendType backendType, String versionString, String vendorString, String rendererString) {
+		switch(backendType) {
+			case Android:
+			case RoboVM:
+				type = Type.GLES;
+				break;
+				
+			case LWJGL2:
+			case LWJGL3:
+			case JGLFW:
+				type = Type.OpenGL;
+				break;
+				
+			case GWT:
+				type = Type.WebGL;
+				break;
+				
+			default:
+				type = Type.NONE;
+				break;
+		}
 
 		if (type == Type.GLES) {
 			//OpenGL<space>ES<space><version number><space><vendor-specific information>.
