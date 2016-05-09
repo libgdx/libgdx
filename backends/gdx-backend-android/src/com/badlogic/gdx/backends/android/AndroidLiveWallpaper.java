@@ -237,7 +237,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	}
 	
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		return SystemType.Android;
 	}
 	

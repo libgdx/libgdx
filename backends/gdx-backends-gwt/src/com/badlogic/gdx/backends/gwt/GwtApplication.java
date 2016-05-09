@@ -403,12 +403,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.GWT;
 	}
 	
 	@Override
-	public SystemType getOS() {
+	public SystemType getSystemType() {
 		String platform = Navigator.getPlatform().toLowerCase();
 		String agent = Navigator.getUserAgent().toLowerCase();
 		

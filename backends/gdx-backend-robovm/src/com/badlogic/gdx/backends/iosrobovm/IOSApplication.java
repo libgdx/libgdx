@@ -371,12 +371,12 @@ public class IOSApplication implements Application {
 	
 
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		return SystemType.iOS;
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.RoboVM;
 	}
 

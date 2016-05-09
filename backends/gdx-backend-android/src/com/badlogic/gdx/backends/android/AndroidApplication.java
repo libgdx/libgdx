@@ -359,12 +359,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 	
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		return SystemType.Android;
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.Android;
 	}
 

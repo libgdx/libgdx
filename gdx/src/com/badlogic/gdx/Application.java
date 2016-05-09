@@ -169,10 +169,10 @@ public interface Application {
 	public ApplicationType getType ();
 	
 	/** @return what OS the application is running on, e.g. Windows or Android*/
-	public SystemType getOS();
+	public SystemType getSystemType();
 	
 	/** @return what backend the application is running on, e.g. LWJGL or RoboVM*/
-	public BackendType getBackend();
+	public BackendType getBackendType();
 
 	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
 	public int getVersion ();

@@ -281,7 +281,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 	
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		return SystemType.Android;
 	}
 	

@@ -296,12 +296,12 @@ public class LwjglApplication implements Application {
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.LWJGL2;
 	}
 
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		//Determines the OS
 		String _os = java.lang.System.getProperty("os.name").toLowerCase();
 		if(_os.indexOf("win") >= 0)

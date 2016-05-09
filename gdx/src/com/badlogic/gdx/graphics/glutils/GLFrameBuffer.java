@@ -132,7 +132,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
-			if (Gdx.app.getOS() == SystemType.iOS) {
+			if (Gdx.app.getSystemType() == SystemType.iOS) {
 				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
 				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
 				defaultFramebufferHandle = intbuf.get(0);

@@ -308,7 +308,7 @@ public class JglfwApplication implements Application {
 	}
 	
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType () {
 		//Determines the OS
 		//Determines the OS
 		String _os = java.lang.System.getProperty("os.name").toLowerCase();
@@ -323,7 +323,7 @@ public class JglfwApplication implements Application {
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.JGLFW;
 	}
 

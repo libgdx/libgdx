@@ -52,8 +52,8 @@ public class MipMapGenerator {
 			return;
 		}
 
-		if (Gdx.app.getBackend() == BackendType.Android || Gdx.app.getBackend() == BackendType.RoboVM
-			|| Gdx.app.getBackend() == BackendType.GWT) {
+		if (Gdx.app.getBackendType() == BackendType.Android || Gdx.app.getBackendType() == BackendType.RoboVM
+			|| Gdx.app.getBackendType() == BackendType.GWT) {
 			generateMipMapGLES20(target, pixmap);
 		} else {
 			generateMipMapDesktop(target, pixmap, textureWidth, textureHeight);
