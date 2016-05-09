@@ -26,6 +26,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.BackendType;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -291,7 +294,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public ApplicationType getType () {
-		return ApplicationType.Android;
+		return ApplicationType.Mobile;
+	}
+	
+	@Override
+	public SystemType getOS () {
+		return SystemType.Android;
+	}
+	
+	@Override
+	public BackendType getBackend() {
+		return BackendType.Android;
 	}
 
 	@Override
