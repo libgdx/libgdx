@@ -20,6 +20,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -513,7 +514,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 			// iOS uses a different framebuffer handle! (not necessarily 0)
 			if (!defaultFramebufferHandleInitialized) {
 				defaultFramebufferHandleInitialized = true;
-				if (Gdx.app.getType() == Application.ApplicationType.iOS) {
+				if (Gdx.app.getSystemType() == SystemType.iOS) {
 					IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder())
 						.asIntBuffer();
 					gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
