@@ -42,38 +42,32 @@ public class GLVersion {
 			case Android:
 			case RoboVM:
 				type = Type.GLES;
+				//OpenGL<space>ES<space><version number><space><vendor-specific information>.
+				extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
 				break;
 				
 			case LWJGL2:
 			case LWJGL3:
 			case JGLFW:
 				type = Type.OpenGL;
+				//<version number><space><vendor-specific information>
+				extractVersion("(\\d(\\.\\d){0,2})", versionString);
 				break;
 				
 			case GWT:
 				type = Type.WebGL;
+				//WebGL<space><version number><space><vendor-specific information>
+				extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
 				break;
 				
 			default:
 				type = Type.NONE;
+				majorVersion = -1;
+				minorVersion = -1;
+				releaseVersion = -1;
+				vendorString = "";
+				rendererString = "";
 				break;
-		}
-
-		if (type == Type.GLES) {
-			//OpenGL<space>ES<space><version number><space><vendor-specific information>.
-			extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
-		} else if (type == Type.WebGL) {
-			//WebGL<space><version number><space><vendor-specific information>
-			extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
-		} else if (type == Type.OpenGL) {
-			//<version number><space><vendor-specific information>
-			extractVersion("(\\d(\\.\\d){0,2})", versionString);
-		} else {
-			majorVersion = -1;
-			minorVersion = -1;
-			releaseVersion = -1;
-			vendorString = "";
-			rendererString = "";
 		}
 
 		this.vendorString = vendorString;
