@@ -35,6 +35,7 @@ import java.util.Comparator;
  * }
  * array.end();
  * </pre>
+ * 
  * @author Nathan Sweet */
 public class SnapshotArray<T> extends Array<T> {
 	private T[] snapshot, recycled;
@@ -172,6 +173,11 @@ public class SnapshotArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		modified();
 		super.truncate(newSize);
+	}
+
+	public T[] setSize (int newSize) {
+		modified();
+		return super.setSize(newSize);
 	}
 
 	/** @see #SnapshotArray(Object[]) */
