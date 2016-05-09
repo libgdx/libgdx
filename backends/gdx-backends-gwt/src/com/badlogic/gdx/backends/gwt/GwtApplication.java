@@ -26,6 +26,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
@@ -399,6 +400,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.WebGL;
+	}
+	
+	@Override
+	public BackendType getBackend() {
+		return BackendType.GWT;
 	}
 	
 	@Override

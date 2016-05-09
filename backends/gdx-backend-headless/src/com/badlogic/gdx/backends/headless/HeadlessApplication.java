@@ -26,6 +26,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.headless.mock.audio.MockAudio;
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
 import com.badlogic.gdx.backends.headless.mock.input.MockInput;
@@ -185,7 +186,7 @@ public class HeadlessApplication implements Application {
 
 	@Override
 	public ApplicationType getType() {
-		return ApplicationType.HeadlessDesktop;
+		return ApplicationType.Desktop;
 	}
 	
 	@Override
@@ -200,6 +201,11 @@ public class HeadlessApplication implements Application {
 			return SystemType.Linux;
 		else
 			return null;
+	}
+	
+	@Override
+	public BackendType getBackend() {
+		return BackendType.Headless;
 	}
 
 	@Override

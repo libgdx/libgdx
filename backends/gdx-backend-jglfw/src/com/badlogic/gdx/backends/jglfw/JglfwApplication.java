@@ -25,6 +25,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -319,6 +320,11 @@ public class JglfwApplication implements Application {
 			return SystemType.Linux;
 		else
 			return null;
+	}
+	
+	@Override
+	public BackendType getBackend() {
+		return BackendType.JGLFW;
 	}
 
 	public int getVersion () {

@@ -31,6 +31,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -292,6 +293,11 @@ public class LwjglApplication implements Application {
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
+	}
+	
+	@Override
+	public BackendType getBackend() {
+		return BackendType.LWJGL2;
 	}
 
 	@Override
