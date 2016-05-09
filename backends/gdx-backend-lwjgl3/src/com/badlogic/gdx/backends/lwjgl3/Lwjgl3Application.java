@@ -428,7 +428,7 @@ public class Lwjgl3Application implements Application {
 		String versionString = GL11.glGetString(GL11.GL_VERSION);
 		String vendorString = GL11.glGetString(GL11.GL_VENDOR);
 		String rendererString = GL11.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.LWJGL3, versionString, vendorString, rendererString);
 	}
 
 	private static boolean supportsFBO () {
