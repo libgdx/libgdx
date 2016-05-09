@@ -286,7 +286,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.Android;
 	}
 

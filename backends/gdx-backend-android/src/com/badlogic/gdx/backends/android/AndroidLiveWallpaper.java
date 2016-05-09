@@ -242,7 +242,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.Android;
 	}
 	

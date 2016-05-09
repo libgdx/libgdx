@@ -298,12 +298,12 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 	
 	@Override
-	public SystemType getOS () {
+	public SystemType getSystemType() {
 		return SystemType.Android;
 	}
 	
 	@Override
-	public BackendType getBackend() {
+	public BackendType getBackendType() {
 		return BackendType.Android;
 	}
 
