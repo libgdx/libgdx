@@ -162,6 +162,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super.truncate(newSize);
 	}
 
+	public T[] setSize (int newSize) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.setSize(newSize);
+	}
+
 	/** @see #DelayedRemovalArray(Object[]) */
 	static public <T> DelayedRemovalArray<T> with (T... array) {
 		return new DelayedRemovalArray(array);

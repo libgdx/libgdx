@@ -195,7 +195,7 @@ public class Table extends WidgetGroup {
 		Cell<T> cell = obtainCell();
 		cell.actor = actor;
 
-		// The row was ended for layout, not be the user, so revert it.
+		// The row was ended for layout, not by the user, so revert it.
 		if (implicitEndRow) {
 			implicitEndRow = false;
 			rows--;
