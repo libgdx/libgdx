@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -35,7 +35,7 @@ public class MockGraphics implements Graphics {
 	int frames = 0;
 	int fps;
 	long lastTime = System.nanoTime();
-	GLVersion glVersion = new GLVersion(Application.ApplicationType.HeadlessDesktop, "", "", "");
+	GLVersion glVersion = new GLVersion(BackendType.Headless, "", "", "");
 	@Override
 	public boolean isGL30Available() {
 		return false;

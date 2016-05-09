@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSObject;
@@ -314,7 +314,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
-			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
+			glVersion = new GLVersion(BackendType.RoboVM, versionString, vendorString, rendererString);
 		}
 		if (appPaused) {
 			return;

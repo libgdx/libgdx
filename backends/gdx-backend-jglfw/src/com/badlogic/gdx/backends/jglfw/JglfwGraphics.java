@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.jglfw;
 import static com.badlogic.jglfw.Glfw.*;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -91,7 +92,7 @@ public class JglfwGraphics implements Graphics {
 		String versionString = GL.glGetString(GL20.GL_VERSION);
 		String vendorString = GL.glGetString(GL20.GL_VENDOR);
 		String rendererString = GL.glGetString(GL20.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.JGLFW, versionString, vendorString, rendererString);
 
 
 		if (glVersion.getMajorVersion() <= 1)

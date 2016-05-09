@@ -37,6 +37,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
@@ -243,7 +244,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		String versionString = gl.glGetString(GL10.GL_VERSION);
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);
 		String rendererString = gl.glGetString(GL10.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.Android, versionString, vendorString, rendererString);
 		if (config.useGL30 && glVersion.getMajorVersion() > 2) {
 			if (gl30 != null) return;
 			gl20 = gl30 = new AndroidGL30();

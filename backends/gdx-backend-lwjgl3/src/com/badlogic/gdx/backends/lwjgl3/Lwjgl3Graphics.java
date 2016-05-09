@@ -18,8 +18,9 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
@@ -88,7 +90,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		String versionString = gl20.glGetString(GL11.GL_VERSION);
 		String vendorString = gl20.glGetString(GL11.GL_VENDOR);
 		String rendererString = gl20.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.LWJGL3, versionString, vendorString, rendererString);
 	}
 
 	public Lwjgl3Window getWindow() {

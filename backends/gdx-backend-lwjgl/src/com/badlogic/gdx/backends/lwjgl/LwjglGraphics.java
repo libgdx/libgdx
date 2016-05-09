@@ -20,8 +20,8 @@ import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
@@ -29,6 +29,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
@@ -229,7 +230,7 @@ public class LwjglGraphics implements Graphics {
 		String versionString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		String vendorString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VENDOR);
 		String rendererString = org.lwjgl.opengl.GL11.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.LWJGL2, versionString, vendorString, rendererString);
 	}
 
 	private static void extractExtensions () {
