@@ -55,12 +55,12 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map, batch);
 	}
 
-	public OrthogonalTiledMapRenderer (TiledMap map, float unitScale) {
-		super(map, unitScale);
+	public OrthogonalTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY) {
+		super(map, unitScaleX, unitScaleY);
 	}
 
-	public OrthogonalTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
-		super(map, unitScale, batch);
+	public OrthogonalTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY, Batch batch) {
+		super(map, unitScaleX, unitScaleY, batch);
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
 
-		final float layerTileWidth = layer.getTileWidth() * unitScale;
-		final float layerTileHeight = layer.getTileHeight() * unitScale;
+		final float layerTileWidth = layer.getTileWidth() * unitScaleX;
+		final float layerTileHeight = layer.getTileHeight() * unitScaleY;
 
 		final int col1 = Math.max(0, (int)(viewBounds.x / layerTileWidth));
 		final int col2 = Math.min(layerWidth, (int)((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
@@ -101,10 +101,10 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x + tile.getOffsetX() * unitScale;
-					float y1 = y + tile.getOffsetY() * unitScale;
-					float x2 = x1 + region.getRegionWidth() * unitScale;
-					float y2 = y1 + region.getRegionHeight() * unitScale;
+					float x1 = x + tile.getOffsetX() * unitScaleX;
+					float y1 = y + tile.getOffsetY() * unitScaleY;
+					float x2 = x1 + region.getRegionWidth() * unitScaleX;
+					float y2 = y1 + region.getRegionHeight() * unitScaleY;
 
 					float u1 = region.getU();
 					float v1 = region.getV2();

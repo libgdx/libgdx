@@ -36,12 +36,12 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map, batch);
 	}
 
-	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale) {
-		super(map, unitScale);
+	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY) {
+		super(map, unitScaleX, unitScaleY);
 	}
 
-	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
-		super(map, unitScale, batch);
+	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY, Batch batch) {
+		super(map, unitScaleX, unitScaleY, batch);
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
 
-		final float layerTileWidth = layer.getTileWidth() * unitScale;
-		final float layerTileHeight = layer.getTileHeight() * unitScale;
+		final float layerTileWidth = layer.getTileWidth() * unitScaleX;
+		final float layerTileHeight = layer.getTileHeight() * unitScaleY;
 
 		final float layerTileWidth50 = layerTileWidth * 0.50f;
 		final float layerTileHeight50 = layerTileHeight * 0.50f;
@@ -78,10 +78,10 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 					final int rotations = cell.getRotation();
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x * layerTileWidth - offsetX + tile.getOffsetX() * unitScale;
-					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScale;
-					float x2 = x1 + region.getRegionWidth() * unitScale;
-					float y2 = y1 + region.getRegionHeight() * unitScale;
+					float x1 = x * layerTileWidth - offsetX + tile.getOffsetX() * unitScaleX;
+					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScaleY;
+					float x2 = x1 + region.getRegionWidth() * unitScaleX;
+					float y2 = y1 + region.getRegionHeight() * unitScaleY;
 
 					float u1 = region.getU();
 					float v1 = region.getV2();

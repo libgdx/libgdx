@@ -69,7 +69,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 		cam = (OrthographicCamera)viewport.getCamera();
 
 		map = atlasTmxMapLoader.load(TMX_LOC, params);
-		mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
+		mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE, UNIT_SCALE);
 	}
 
 	@Override

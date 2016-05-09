@@ -50,13 +50,13 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		init();
 	}
 
-	public IsometricTiledMapRenderer (TiledMap map, float unitScale) {
-		super(map, unitScale);
+	public IsometricTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY) {
+		super(map, unitScaleX, unitScaleY);
 		init();
 	}
 
-	public IsometricTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
-		super(map, unitScale, batch);
+	public IsometricTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY, Batch batch) {
+		super(map, unitScaleX, unitScaleY, batch);
 		init();
 	}
 
@@ -86,8 +86,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		final Color batchColor = batch.getColor();
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
-		float tileWidth = layer.getTileWidth() * unitScale;
-		float tileHeight = layer.getTileHeight() * unitScale;
+		float tileWidth = layer.getTileWidth() * unitScaleX;
+		float tileHeight = layer.getTileHeight() * unitScaleY;
 		float halfTileWidth = tileWidth * 0.5f;
 		float halfTileHeight = tileHeight * 0.5f;
 
@@ -124,10 +124,10 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x + tile.getOffsetX() * unitScale;
-					float y1 = y + tile.getOffsetY() * unitScale;
-					float x2 = x1 + region.getRegionWidth() * unitScale;
-					float y2 = y1 + region.getRegionHeight() * unitScale;
+					float x1 = x + tile.getOffsetX() * unitScaleX;
+					float y1 = y + tile.getOffsetY() * unitScaleY;
+					float x2 = x1 + region.getRegionWidth() * unitScaleX;
+					float y2 = y1 + region.getRegionHeight() * unitScaleY;
 
 					float u1 = region.getU();
 					float v1 = region.getV2();

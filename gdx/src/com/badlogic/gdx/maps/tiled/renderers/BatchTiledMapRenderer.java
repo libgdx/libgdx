@@ -60,7 +60,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	
 	protected TiledMap map;
 
-	protected float unitScale;
+//	protected float unitScale;
+	protected float unitScaleX;
+	protected float unitScaleY;
 
 	protected Batch batch;
 
@@ -79,8 +81,12 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		this.map = map;
 	}
 
-	public float getUnitScale () {
-		return unitScale;
+	public float getUnitScaleX () {
+		return unitScaleX;
+	}
+	
+	public float getUnitScaleY () {
+		return unitScaleY;
 	}
 
 	public Batch getBatch () {
@@ -92,24 +98,26 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	}
 
 	public BatchTiledMapRenderer (TiledMap map) {
-		this(map, 1.0f);
+		this(map, 1.0f, 1.0f);
 	}
 
-	public BatchTiledMapRenderer (TiledMap map, float unitScale) {
+	public BatchTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY) {
 		this.map = map;
-		this.unitScale = unitScale;
+		this.unitScaleX = unitScaleX;
+		this.unitScaleY = unitScaleY;
 		this.viewBounds = new Rectangle();
 		this.batch = new SpriteBatch();
 		this.ownsBatch = true;
 	}
 
 	public BatchTiledMapRenderer (TiledMap map, Batch batch) {
-		this(map, 1.0f, batch);
+		this(map, 1.0f, 1.0f, batch);
 	}
 
-	public BatchTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
+	public BatchTiledMapRenderer (TiledMap map, float unitScaleX, float unitScaleY, Batch batch) {
 		this.map = map;
-		this.unitScale = unitScale;
+		this.unitScaleX = unitScaleX;
+		this.unitScaleY = unitScaleY;
 		this.viewBounds = new Rectangle();
 		this.batch = batch;
 		this.ownsBatch = false;
@@ -194,10 +202,10 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		
 		final float x = layer.getX();
 		final float y = layer.getY();
-		final float x1 = x * unitScale;
-		final float y1 = y * unitScale;
-		final float x2 = x1 + region.getRegionWidth() * unitScale;
-		final float y2 = y1 + region.getRegionHeight() * unitScale;
+		final float x1 = x * unitScaleX;
+		final float y1 = y * unitScaleY;
+		final float x2 = x1 + region.getRegionWidth() * unitScaleX;
+		final float y2 = y1 + region.getRegionHeight() * unitScaleY;
 		
 		imageBounds.set(x1, y1, x2 - x1, y2 - y1);
 		
