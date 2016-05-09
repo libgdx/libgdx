@@ -99,7 +99,7 @@ public interface Application {
 	 * 
 	 * @author mzechner */
 	public enum ApplicationType {
-		Mobile, Desktop, HeadlessDesktop, Applet, WebGL
+		Mobile, Desktop, Applet, WebGL
 	}
 	
 	/** Enumeration of possible OS types
@@ -107,6 +107,13 @@ public interface Application {
 	 * @author kerberjg */
 	public enum SystemType {
 		Windows, Linux, OSX, Android, iOS
+	}
+	
+	/** Enumeration of possible backends
+	 * 
+	 * @author kerberjg */
+	public enum BackendType {
+		Android, RoboVM, Headless, LWJGL2, LWJGL3, JGLFW, GWT
 	}
 
 	public static final int LOG_NONE = 0;
@@ -163,6 +170,9 @@ public interface Application {
 	
 	/** @return what OS the application is running on, e.g. Windows or Android*/
 	public SystemType getOS();
+	
+	/** @return what backend the application is running on, e.g. LWJGL or RoboVM*/
+	public BackendType getBackend();
 
 	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
 	public int getVersion ();
