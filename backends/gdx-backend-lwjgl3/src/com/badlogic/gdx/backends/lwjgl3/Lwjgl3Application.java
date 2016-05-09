@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.File;
 
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -35,6 +36,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALAudio;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
 import com.badlogic.gdx.utils.Array;
@@ -248,6 +250,20 @@ public class Lwjgl3Application implements Application {
 	@Override
 	public ApplicationType getType() {
 		return ApplicationType.Desktop;
+	}
+
+	@Override
+	public SystemType getOS () {
+		//Determines the OS
+		String _os = java.lang.System.getProperty("os.name").toLowerCase();
+		if(_os.indexOf("win") >= 0)
+			return SystemType.Windows;
+		else if(_os.indexOf("mac") >= 0)
+			return SystemType.OSX;
+		else if(_os.indexOf("nix") >= 0 || _os.indexOf("nux") >= 0 || _os.indexOf("aix") > 0)
+			return SystemType.Linux;
+		else
+			return null;
 	}
 
 	@Override

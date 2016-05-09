@@ -355,7 +355,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	public ApplicationType getType () {
-		return ApplicationType.Android;
+		return ApplicationType.Mobile;
+	}
+	
+	@Override
+	public SystemType getOS () {
+		return SystemType.Android;
 	}
 
 	@Override
@@ -523,4 +528,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Handler getHandler () {
 		return this.handler;
 	}
+
+	
 }

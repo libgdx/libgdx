@@ -46,6 +46,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.GL20;
@@ -365,7 +366,13 @@ public class IOSApplication implements Application {
 
 	@Override
 	public ApplicationType getType () {
-		return ApplicationType.iOS;
+		return ApplicationType.Mobile;
+	}
+	
+
+	@Override
+	public SystemType getOS () {
+		return SystemType.iOS;
 	}
 
 	@Override

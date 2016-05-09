@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.headless;
 
+import org.jgdev.jgengine.utils.System.OS;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -26,6 +28,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.backends.headless.mock.audio.MockAudio;
 import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
 import com.badlogic.gdx.backends.headless.mock.input.MockInput;
@@ -186,6 +189,20 @@ public class HeadlessApplication implements Application {
 	@Override
 	public ApplicationType getType() {
 		return ApplicationType.HeadlessDesktop;
+	}
+	
+	@Override
+	public SystemType getOS () {
+		//Determines the OS
+		String _os = java.lang.System.getProperty("os.name").toLowerCase();
+		if(_os.indexOf("win") >= 0)
+			return SystemType.Windows;
+		else if(_os.indexOf("mac") >= 0)
+			return SystemType.OSX;
+		else if(_os.indexOf("nix") >= 0 || _os.indexOf("nux") >= 0 || _os.indexOf("aix") > 0)
+			return SystemType.Linux;
+		else
+			return null;
 	}
 
 	@Override
