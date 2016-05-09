@@ -528,6 +528,4 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Handler getHandler () {
 		return this.handler;
 	}
-
-	
 }
