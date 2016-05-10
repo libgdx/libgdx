@@ -106,7 +106,7 @@ public interface Application {
 	 * 
 	 * @author kerberjg */
 	public enum SystemType {
-		Windows, Linux, OSX, Android, iOS
+		Windows, Linux, OSX, Android, BlackBerry10, iOS
 	}
 	
 	/** Enumeration of possible backends
