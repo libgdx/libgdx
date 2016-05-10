@@ -420,6 +420,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			return SystemType.iOS;
 		if(platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
 			return SystemType.iOS;
+		if(agent.contains("bb10"))
+			return SystemType.BlackBerry10;
 		if(platform.contains("android") || (platform.equals("linux") && agent.contains("android")))
 			return SystemType.Android;
 		if(platform.contains("linux"))
