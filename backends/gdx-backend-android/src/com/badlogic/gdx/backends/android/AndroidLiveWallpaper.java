@@ -238,7 +238,10 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	
 	@Override
 	public SystemType getSystemType () {
-		return SystemType.Android;
+		if(System.getProperty("os.name").contains("qnx"))
+			return SystemType.BlackBerry10;
+		else
+			return SystemType.Android;
 	}
 	
 	@Override
