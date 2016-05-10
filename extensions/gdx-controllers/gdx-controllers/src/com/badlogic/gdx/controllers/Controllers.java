@@ -18,7 +18,6 @@ package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.BackendType;
-import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
@@ -79,7 +78,7 @@ public class Controllers {
 		ApplicationType type = Gdx.app.getType();
 		ControllerManager manager = null;
 
-		if (Gdx.app.getSystemType() == SystemType.Android) {
+		if (Gdx.app.getBackendType() == BackendType.Android) {
 			if (Gdx.app.getVersion() >= 12) {
 				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 			} else {
