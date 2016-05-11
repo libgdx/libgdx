@@ -47,7 +47,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -283,10 +282,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public SystemType getOS () {
-		if(System.getProperty("os.name").contains("qnx"))
-			return SystemType.BlackBerry10;
-		else
-			return SystemType.Android;
+		return SystemType.parseAndroidOS();
 	}
 
 	@Override

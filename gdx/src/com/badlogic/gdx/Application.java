@@ -108,7 +108,7 @@ public interface Application {
 	public enum SystemType {
 		Windows, Linux, OSX, Android, iOS, BlackBerry10;
 
-		public static SystemType parseDesktopOS () {
+		public static SystemType parseDesktopOS() {
 			String os = java.lang.System.getProperty("os.name").toLowerCase();
 			if(os.indexOf("win") >= 0)
 				return Windows;
@@ -118,6 +118,13 @@ public interface Application {
 				return Linux;
 			else
 				return null;
+		}
+		
+		public static SystemType parseAndroidOS() {
+			if(System.getProperty("os.name").contains("qnx"))
+				return SystemType.BlackBerry10;
+			else
+				return SystemType.Android;
 		}
 	}
 
