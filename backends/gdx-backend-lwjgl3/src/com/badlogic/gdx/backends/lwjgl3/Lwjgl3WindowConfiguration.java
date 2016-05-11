@@ -25,6 +25,7 @@ public class Lwjgl3WindowConfiguration {
 	int windowY = -1;
 	int windowWidth = 640;
 	int windowHeight = 480;
+	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	Lwjgl3WindowListener windowListener;
@@ -61,11 +62,22 @@ public class Lwjgl3WindowConfiguration {
 	
 	/**
 	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for booth coordinates for centered.
+	 * primary monitor. Default -1 for both coordinates for centered.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
 		windowY = y;
+	}
+	
+	/**
+	 * Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these 
+	 * limits are ignored. The default for all four parameters is -1, which means unrestricted.
+	 */
+	public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+		windowMinWidth = minWidth;
+		windowMinHeight = minHeight;
+		windowMaxWidth = maxWidth;
+		windowMaxHeight = maxHeight;
 	}
 	
 	/**
