@@ -101,6 +101,13 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
 	}
+	
+	/** Enumeration of possible OS types
+	 * 
+	 * @author kerberjg */
+	public enum SystemType {
+		Windows, Linux, OSX, Android, iOS, BlackBerry10
+	}
 
 	public static final int LOG_NONE = 0;
 	public static final int LOG_DEBUG = 3;
