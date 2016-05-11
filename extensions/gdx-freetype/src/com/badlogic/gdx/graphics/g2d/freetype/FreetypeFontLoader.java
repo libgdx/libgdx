@@ -25,8 +25,8 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 		public String fontFileName;
 		/** the parameters used to generate the font, e.g. size, characters, etc. **/
 		public FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
-        /** the parameters used to generate the generator, e.g. maxTextureSize **/
-        public FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters generatorParameters = new FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters();
+        	/** the parameters used to generate the generator, e.g. maxTextureSize **/
+        	public FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters generatorParameters = new FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters();
     }
 
 	@Override
