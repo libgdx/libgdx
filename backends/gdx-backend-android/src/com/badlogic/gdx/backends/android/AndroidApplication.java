@@ -357,6 +357,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
+	
+	@Override
+	public SystemType getSystemType () {
+		return SystemType.Android;
+	}
 
 	@Override
 	public int getVersion () {

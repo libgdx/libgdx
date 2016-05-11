@@ -367,6 +367,11 @@ public class IOSApplication implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.iOS;
 	}
+	
+	@Override
+	public SystemType getSystemType () {
+		return SystemType.iOS;
+	}
 
 	@Override
 	public int getVersion () {
