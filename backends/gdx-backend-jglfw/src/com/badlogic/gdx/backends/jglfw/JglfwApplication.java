@@ -25,7 +25,6 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Application.SystemType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -308,15 +307,7 @@ public class JglfwApplication implements Application {
 	
 	@Override
 	public SystemType getOS () {
-		String os = java.lang.System.getProperty("os.name").toLowerCase();
-		if(os.indexOf("win") >= 0)
-			return SystemType.Windows;
-		else if(os.indexOf("mac") >= 0)
-			return SystemType.OSX;
-		else if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
-			return SystemType.Linux;
-		else
-			return null;
+		return SystemType.parseDesktopOS();
 	}
 
 	public int getVersion () {
