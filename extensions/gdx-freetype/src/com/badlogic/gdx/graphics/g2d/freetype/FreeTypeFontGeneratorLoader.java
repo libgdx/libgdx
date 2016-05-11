@@ -47,7 +47,7 @@ public class FreeTypeFontGeneratorLoader extends
 		} else {
 			generator = new FreeTypeFontGenerator(file);
 		}
-        generator.setMaxTextureSize(parameter.maxTextureSize);
+        	generator.setMaxTextureSize(parameter.maxTextureSize);
 		return generator;
 	}
 
