@@ -32,6 +32,14 @@ public class Lwjgl3WindowConfiguration {
 	Lwjgl3DisplayMode fullscreenMode;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
+	boolean initialVisible = true;
+	
+	/**
+	 * @param visibility whether the window will be visible on creation. (default true)
+	 */
+	public void setInitialVisible(boolean visibility) {
+		this.initialVisible = visibility;
+	}
 	
 	/**
 	 * Sets the app to use windowed mode.
