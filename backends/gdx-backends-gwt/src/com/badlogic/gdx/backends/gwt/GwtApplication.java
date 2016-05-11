@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.Window.Navigator;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #createApplicationListener()}. Clients can override the default loading screen via
