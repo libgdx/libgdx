@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 
-import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -161,7 +161,7 @@ public class FilesTest extends GdxTest {
 
 	private void testClasspath () throws IOException {
 		// no classpath support on ios
-		if (Gdx.app.getType() == ApplicationType.iOS) return;
+		if (Gdx.app.getBackendType() == BackendType.RoboVM) return;
 		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
@@ -200,7 +200,7 @@ public class FilesTest extends GdxTest {
 		} catch (Exception expected) {
 		}
 		if (handle.list().length != 0) fail("File length shouldn't be 0");
-		if (Gdx.app.getType() != ApplicationType.Android) {
+		if (Gdx.app.getBackendType() != BackendType.Android) {
 			if (!handle.parent().exists()) fail("Parent doesn't exist");
 		}
 		try {
@@ -209,11 +209,11 @@ public class FilesTest extends GdxTest {
 		} catch (Exception ignored) {
 		}
 		FileHandle dir;
-		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS)
+		if (Gdx.app.getBackendType() != BackendType.Android || Gdx.app.getBackendType() == BackendType.RoboVM)
 			dir = Gdx.files.internal("data");
 		else
 			dir = Gdx.files.internal("../gdx-tests-android/assets/data");
-		if (Gdx.app.getType() != ApplicationType.Android) {
+		if (Gdx.app.getBackendType() != BackendType.Android) {
 			if (!dir.exists()) fail();
 		}
 		if (!dir.isDirectory()) fail();
@@ -222,7 +222,7 @@ public class FilesTest extends GdxTest {
 		if (!child.name().equals("badlogic.jpg")) fail();
 		if (!child.nameWithoutExtension().equals("badlogic")) fail();
 		if (!child.extension().equals("jpg")) fail();
-		if (Gdx.app.getType() != ApplicationType.Android) {
+		if (Gdx.app.getBackendType() != BackendType.Android) {
 			if (!child.parent().exists()) fail();
 		}
 		FileHandle copy = Gdx.files.external("badlogic.jpg-copy");

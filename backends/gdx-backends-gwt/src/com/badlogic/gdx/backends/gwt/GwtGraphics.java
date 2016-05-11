@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
@@ -87,7 +87,7 @@ public class GwtGraphics implements Graphics {
 		String versionString = gl.glGetString(GL20.GL_VERSION);
 		String vendorString = gl.glGetString(GL20.GL_VENDOR);
 		String rendererString = gl.glGetString(GL20.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.GWT, versionString, vendorString, rendererString);
 	}
 
 	public WebGLRenderingContext getContext () {

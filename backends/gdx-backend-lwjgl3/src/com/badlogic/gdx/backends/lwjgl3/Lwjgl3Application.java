@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.File;
 
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -251,6 +252,25 @@ public class Lwjgl3Application implements Application {
 	}
 
 	@Override
+	public SystemType getSystemType () {
+		//Determines the OS
+		String _os = java.lang.System.getProperty("os.name").toLowerCase();
+		if(_os.indexOf("win") >= 0)
+			return SystemType.Windows;
+		else if(_os.indexOf("mac") >= 0)
+			return SystemType.OSX;
+		else if(_os.indexOf("nix") >= 0 || _os.indexOf("nux") >= 0 || _os.indexOf("aix") > 0)
+			return SystemType.Linux;
+		else
+			return null;
+	}
+	
+	@Override
+	public BackendType getBackendType() {
+		return BackendType.LWJGL3;
+	}
+
+	@Override
 	public int getVersion() {
 		return 0;
 	}
@@ -418,7 +438,7 @@ public class Lwjgl3Application implements Application {
 		String versionString = GL11.glGetString(GL11.GL_VERSION);
 		String vendorString = GL11.glGetString(GL11.GL_VENDOR);
 		String rendererString = GL11.glGetString(GL11.GL_RENDERER);
-		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		glVersion = new GLVersion(BackendType.LWJGL3, versionString, vendorString, rendererString);
 	}
 
 	private static boolean supportsFBO () {

@@ -185,7 +185,26 @@ public class HeadlessApplication implements Application {
 
 	@Override
 	public ApplicationType getType() {
-		return ApplicationType.HeadlessDesktop;
+		return ApplicationType.Desktop;
+	}
+	
+	@Override
+	public SystemType getSystemType () {
+		//Determines the OS
+		String _os = java.lang.System.getProperty("os.name").toLowerCase();
+		if(_os.indexOf("win") >= 0)
+			return SystemType.Windows;
+		else if(_os.indexOf("mac") >= 0)
+			return SystemType.OSX;
+		else if(_os.indexOf("nix") >= 0 || _os.indexOf("nux") >= 0 || _os.indexOf("aix") > 0)
+			return SystemType.Linux;
+		else
+			return null;
+	}
+	
+	@Override
+	public BackendType getBackendType() {
+		return BackendType.Headless;
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -293,7 +294,26 @@ public class LwjglApplication implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
+	
+	@Override
+	public BackendType getBackendType() {
+		return BackendType.LWJGL;
+	}
 
+	@Override
+	public SystemType getSystemType () {
+		//Determines the OS
+		String _os = java.lang.System.getProperty("os.name").toLowerCase();
+		if(_os.indexOf("win") >= 0)
+			return SystemType.Windows;
+		else if(_os.indexOf("mac") >= 0)
+			return SystemType.OSX;
+		else if(_os.indexOf("nix") >= 0 || _os.indexOf("nux") >= 0 || _os.indexOf("aix") > 0)
+			return SystemType.Linux;
+		else
+			return null;
+	}
+	
 	@Override
 	public int getVersion () {
 		return 0;

@@ -291,7 +291,20 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public ApplicationType getType () {
-		return ApplicationType.Android;
+		return ApplicationType.Mobile;
+	}
+	
+	@Override
+	public SystemType getSystemType () {
+		if(System.getProperty("os.name").contains("qnx"))
+			return SystemType.BlackBerry10;
+		else
+			return SystemType.Android;
+	}
+	
+	@Override
+	public BackendType getBackendType() {
+		return BackendType.Android;
 	}
 
 	@Override

@@ -99,7 +99,21 @@ public interface Application {
 	 * 
 	 * @author mzechner */
 	public enum ApplicationType {
-		Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
+		Mobile, Desktop, Applet, WebGL
+	}
+	
+	/** Enumeration of possible OS types
+	 * 
+	 * @author kerberjg */
+	public enum SystemType {
+		Windows, Linux, OSX, Android, BlackBerry10, iOS
+	}
+	
+	/** Enumeration of possible backends
+	 * 
+	 * @author kerberjg */
+	public enum BackendType {
+		Android, RoboVM, Headless, LWJGL, LWJGL3, JGLFW, GWT
 	}
 
 	public static final int LOG_NONE = 0;
@@ -151,8 +165,14 @@ public interface Application {
 	/** Gets the log level. */
 	public int getLogLevel ();
 
-	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
+	/** @return what {@link ApplicationType} this application has, e.g. Mobile or Desktop */
 	public ApplicationType getType ();
+	
+	/** @return what OS the application is running on, e.g. Windows or Android*/
+	public SystemType getSystemType();
+	
+	/** @return what backend the application is running on, e.g. LWJGL or RoboVM*/
+	public BackendType getBackendType();
 
 	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
 	public int getVersion ();

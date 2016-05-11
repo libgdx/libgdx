@@ -37,29 +37,37 @@ public class GLVersion {
 
 	private final String TAG = "GLVersion";
 
-	public GLVersion (Application.ApplicationType appType, String versionString, String vendorString, String rendererString) {
-		if (appType == Application.ApplicationType.Android) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.iOS) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.Desktop) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.Applet) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.WebGL) this.type = Type.WebGL;
-		else this.type = Type.NONE;
-
-		if (type == Type.GLES) {
-			//OpenGL<space>ES<space><version number><space><vendor-specific information>.
-			extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
-		} else if (type == Type.WebGL) {
-			//WebGL<space><version number><space><vendor-specific information>
-			extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
-		} else if (type == Type.OpenGL) {
-			//<version number><space><vendor-specific information>
-			extractVersion("(\\d(\\.\\d){0,2})", versionString);
-		} else {
-			majorVersion = -1;
-			minorVersion = -1;
-			releaseVersion = -1;
-			vendorString = "";
-			rendererString = "";
+	public GLVersion (Application.BackendType backendType, String versionString, String vendorString, String rendererString) {
+		switch(backendType) {
+			case Android:
+			case RoboVM:
+				type = Type.GLES;
+				//OpenGL<space>ES<space><version number><space><vendor-specific information>.
+				extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
+				break;
+				
+			case LWJGL:
+			case LWJGL3:
+			case JGLFW:
+				type = Type.OpenGL;
+				//<version number><space><vendor-specific information>
+				extractVersion("(\\d(\\.\\d){0,2})", versionString);
+				break;
+				
+			case GWT:
+				type = Type.WebGL;
+				//WebGL<space><version number><space><vendor-specific information>
+				extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
+				break;
+				
+			default:
+				type = Type.NONE;
+				majorVersion = -1;
+				minorVersion = -1;
+				releaseVersion = -1;
+				vendorString = "";
+				rendererString = "";
+				break;
 		}
 
 		this.vendorString = vendorString;

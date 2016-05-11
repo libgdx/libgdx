@@ -26,6 +26,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
@@ -54,6 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.Window.Navigator;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #createApplicationListener()}. Clients can override the default loading screen via
@@ -398,6 +400,34 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.WebGL;
+	}
+	
+	@Override
+	public BackendType getBackendType() {
+		return BackendType.GWT;
+	}
+	
+	@Override
+	public SystemType getSystemType() {
+		String platform = Navigator.getPlatform().toLowerCase();
+		String agent = Navigator.getUserAgent().toLowerCase();
+		
+		if(platform.contains("win"))
+			return SystemType.Windows;
+		if(platform.contains("mac"))
+			return SystemType.OSX;
+		if(platform.contains("iphone") || platform.contains("ipad") || platform.contains("ipod"))
+			return SystemType.iOS;
+		if(platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
+			return SystemType.iOS;
+		if(agent.contains("bb10"))
+			return SystemType.BlackBerry10;
+		if(platform.contains("android") || (platform.equals("linux") && agent.contains("android")))
+			return SystemType.Android;
+		if(platform.contains("linux"))
+			return SystemType.Linux;
+		else
+			return null;
 	}
 
 	@Override

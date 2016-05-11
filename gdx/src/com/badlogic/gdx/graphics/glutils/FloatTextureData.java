@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.FloatBuffer;
 
-import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.BackendType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -59,8 +59,8 @@ public class FloatTextureData implements TextureData {
 
 	@Override
 	public void consumeCustomData (int target) {
-		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS
-			|| Gdx.app.getType() == ApplicationType.WebGL) {
+		if (Gdx.app.getBackendType() == BackendType.Android || Gdx.app.getBackendType() == BackendType.RoboVM
+			|| Gdx.app.getBackendType() == BackendType.GWT) {
 
 			if (!Gdx.graphics.supportsExtension("OES_texture_float"))
 				throw new GdxRuntimeException("Extension OES_texture_float not supported!");
