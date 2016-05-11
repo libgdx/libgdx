@@ -29,6 +29,13 @@ task copyNatives << {
     }
 }
 
+task createBuildDir {
+    def file = new File('build/xcode/ios-moe.xcodeproj')
+    if (!file.exists()) {
+        file.mkdirs();
+    }
+}
+
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 
