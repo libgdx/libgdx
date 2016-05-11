@@ -282,7 +282,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	@Override
-	public SystemType getSystemType () {
+	public SystemType getOS () {
 		if(System.getProperty("os.name").contains("qnx"))
 			return SystemType.BlackBerry10;
 		else

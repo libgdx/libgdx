@@ -296,7 +296,7 @@ public class LwjglApplication implements Application {
 	}
 	
 	@Override
-	public SystemType getSystemType () {
+	public SystemType getOS () {
 		String os = java.lang.System.getProperty("os.name").toLowerCase();
 		if(os.indexOf("win") >= 0)
 			return SystemType.Windows;

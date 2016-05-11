@@ -402,7 +402,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 	
 	@Override
- 	public SystemType getSystemType() {
+ 	public SystemType getOS() {
  		String platform = Navigator.getPlatform().toLowerCase();
  		String agent = Navigator.getUserAgent().toLowerCase();
  		

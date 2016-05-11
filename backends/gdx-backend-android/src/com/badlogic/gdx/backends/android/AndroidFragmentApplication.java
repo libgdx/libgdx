@@ -296,7 +296,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public SystemType getSystemType () {
+	public SystemType getOS () {
 		if(System.getProperty("os.name").contains("qnx"))
 			return SystemType.BlackBerry10;
 		else

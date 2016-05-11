@@ -369,7 +369,7 @@ public class IOSApplication implements Application {
 	}
 	
 	@Override
-	public SystemType getSystemType () {
+	public SystemType getOS () {
 		return SystemType.iOS;
 	}
 
