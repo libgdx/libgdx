@@ -1,7 +1,9 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.7.2-SNAPSHOT"
+    VERSION = "1.9.3-SNAPSHOT"
+    gdxVersion = VERSION
     robovmVersion = "1.9.0"
+    moeVersion = "1.0.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"
@@ -37,6 +39,7 @@ configure(allprojects - project(':tests:gdx-tests-android')) {
     compileJava.options.encoding = 'UTF-8';
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
@@ -115,6 +118,13 @@ project(":backends:gdx-backend-robovm") {
         optional "org.robovm:robovm-rt:$robovmVersion"
         optional "org.robovm:robovm-objc:$robovmVersion"
         optional "org.robovm:robovm-cocoatouch:$robovmVersion"
+    }
+}
+
+project(":backends:gdx-backend-moe") {
+    dependencies {
+        compile project(":gdx")
+        optional fileTree(dir: 'libs', include: ['*.jar'])
     }
 }
 
@@ -279,6 +289,19 @@ project(":tests:gdx-tests-iosrobovm") {
     dependencies {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backend-robovm")
+    }
+
+    eclipse.project {
+        natures 'org.robovm.eclipse.RoboVMNature'
+    }
+}
+
+project("tests:gdx-tests-ios-intel") {
+    dependencies {
+        compile project(":tests:gdx-tests")
+        //compile project(":backends:gdx-backend-moe")
+        compile "com.badlogicgames.gdx:gdx-backend-moe:$gdxVersion"
+        //natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
     }
 
     eclipse.project {

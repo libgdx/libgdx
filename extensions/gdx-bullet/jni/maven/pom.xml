@@ -16,14 +16,6 @@
         <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
     </properties>
     
-    <dependencies>
-        <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>gdx-bullet</artifactId>
-        <version>${project.version}</version>        
-    </dependency>
-    </dependencies>
-    
     <build>
         <sourceDirectory>src</sourceDirectory>
         
