@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
-
+        mavenLocal()
         maven {
             url uri(System.getenv("INTEL_MULTI_OS_ENGINE_HOME") + "/gradle")
         }
