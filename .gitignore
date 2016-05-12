@@ -2,7 +2,10 @@
 *~
 .*.swp
 .DS_STORE
-
+robovm-build/
+project.xcworkspace/
+xcuserdata/
+xcode/native/
 .gradle/
 build/
 bin/
@@ -66,3 +69,9 @@ libgdx-*.zip.MD5
 #directories created by fetch.xml
 /tests/gdx-tests-android/libs
 /tmp/
+
+#gradle wrapper
+/gradle/
+/gradlew
+/gradlew.bat
+/local.properties

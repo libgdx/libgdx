@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url uri(System.getenv("INTEL_MULTI_OS_ENGINE_HOME") + "/gradle")
+        }
+    }
+    dependencies {
+        classpath 'com.intel.gradle:moeGradlePlugin:1.1.0.final-1'
+    }
+}
+
+apply plugin: 'moe'
+
+configurations { natives }
+
+task copyNatives << {
+    file("xcode/native/ios/").mkdirs();
+    def LD_FLAGS = "LIBGDX_NATIVES = "
+    configurations.natives.files.each { jar->
+        def outputDir = null
+        if (jar.name.endsWith("natives-ios.jar")) outputDir = file("xcode/native/ios")
+        if (outputDir != null) {
+            FileCollection fileCollection = zipTree(jar)
+            for (File libFile : fileCollection) {
+                if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
+                    copy {
+                        from libFile.getAbsolutePath()
+                        into outputDir
+                    }
+                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
+                }
+            }
+        }
+    }
+    def outFlags = file("xcode/IOSTests/custom.xcconfig");
+    outFlags.write LD_FLAGS
+
+    def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
+    if (proguard.exists()) {
+        if (!proguard.text.contains("-keep class com.badlogic.**")) {
+            proguard << "-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceSets.main.resources.srcDirs = ["src/main/resources"]
+
+dependencies {
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
+    natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:1.9.2:natives-ios"
+}
+
+moe {
+    mainClassName 'IOSTests'
+    xcode {
+        mainTarget 'IOSTests'
+        packageName 'com.badlogicgames.gdx.tests'
+        deploymentTarget = '9.0'
+        xcodeProjectDirPath 'xcode'
+        generateProject false
+    }
+}
+
+moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
+moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
+moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
+moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
