@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.iosmoe;
 
 import android.util.Log;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.intel.moe.natj.general.Pointer;
 import com.intel.moe.natj.objc.ann.Selector;
+
 import ios.NSObject;
 import ios.coregraphics.struct.CGPoint;
 import ios.coregraphics.struct.CGRect;
@@ -360,6 +362,11 @@ public class IOSApplication implements Application {
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.iOS;
+	}
+
+	@Override
+	public SystemType getOS() {
+		return SystemType.iOS;
 	}
 
 	@Override
