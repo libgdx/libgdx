@@ -48,6 +48,7 @@
     <lwjgl3.version>3.0.0b</lwjgl3.version>
     <jglfw.version>1.1</jglfw.version>
     <robovm.version>1.9.0</robovm.version>
+    <moe.version>1.0.0</moe.version>
   </properties>
 
   <modules>
@@ -61,6 +62,7 @@
     <module>backends/gdx-backend-jglfw</module>
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
+    <module>backends/gdx-backend-moe</module>
     <module>extensions/gdx-tools</module>
     <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>
