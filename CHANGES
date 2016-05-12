@@ -19,6 +19,7 @@
 - Fixed Gdx.input.getCurrentEventTime() not being set on LWJGL3, fixes GestureDetector and flick scroll not working
 - Fixed not being able to select non-latin characters in TextFields
 - Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
+- API Addition: Gdx.app.getOS() now returns a SystemType (Windows, Linux, OSX, Android, BlackBerry10, iOS)
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
