@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics;
 
 import java.nio.FloatBuffer;
 
-import javafx.beans.binding.FloatBinding;
 
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
