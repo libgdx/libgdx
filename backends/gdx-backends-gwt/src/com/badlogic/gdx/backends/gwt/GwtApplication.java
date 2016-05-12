@@ -400,29 +400,29 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public ApplicationType getType () {
 		return ApplicationType.WebGL;
 	}
-	
+
 	@Override
- 	public SystemType getOS() {
- 		String platform = Navigator.getPlatform().toLowerCase();
- 		String agent = Navigator.getUserAgent().toLowerCase();
- 		
- 		if(platform.contains("win"))
- 			return SystemType.Windows;
- 		if(platform.contains("mac"))
- 			return SystemType.OSX;
- 		if(platform.contains("iphone") || platform.contains("ipad") || platform.contains("ipod"))
-  			return SystemType.iOS;
-  		if(platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
-  			return SystemType.iOS;
- 		if(agent.contains("bb10"))
- 			return SystemType.BlackBerry10;
-  		if(platform.contains("android") || (platform.equals("linux") && agent.contains("android")))
-  			return SystemType.Android;
-  		if(platform.contains("linux"))
- 			return SystemType.Linux;
- 		else
- 			return null;
- 	}
+	public SystemType getOS () {
+		String platform = Navigator.getPlatform().toLowerCase();
+		String agent = Navigator.getUserAgent().toLowerCase();
+
+		if (platform.contains("win"))
+			return SystemType.Windows;
+		else if (platform.contains("mac"))
+			return SystemType.OSX;
+		else if (platform.contains("iphone") || platform.contains("ipad") || platform.contains("ipod"))
+			return SystemType.iOS;
+		else if (platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
+			return SystemType.iOS;
+		else if (agent.contains("bb10"))
+			return SystemType.BlackBerry10;
+		else if (platform.contains("android") || (platform.equals("linux") && agent.contains("android")))
+			return SystemType.Android;
+		else if (platform.contains("linux"))
+			return SystemType.Linux;
+		else
+			return null;
+	}
 
 	@Override
 	public int getVersion () {

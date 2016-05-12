@@ -108,20 +108,20 @@ public interface Application {
 	public enum SystemType {
 		Windows, Linux, OSX, Android, iOS, BlackBerry10;
 
-		public static SystemType parseDesktopOS() {
+		public static SystemType parseDesktopOS () {
 			String os = java.lang.System.getProperty("os.name").toLowerCase();
-			if(os.indexOf("win") >= 0)
+			if (os.indexOf("win") >= 0)
 				return Windows;
-			else if(os.indexOf("mac") >= 0)
+			else if (os.indexOf("mac") >= 0)
 				return OSX;
-			else if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
+			else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
 				return Linux;
 			else
 				return null;
 		}
-		
-		public static SystemType parseAndroidOS() {
-			if(System.getProperty("os.name").contains("qnx"))
+
+		public static SystemType parseAndroidOS () {
+			if (System.getProperty("os.name").contains("qnx"))
 				return SystemType.BlackBerry10;
 			else
 				return SystemType.Android;

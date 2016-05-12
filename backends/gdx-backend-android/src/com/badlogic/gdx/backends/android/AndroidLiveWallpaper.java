@@ -232,7 +232,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
-	
+
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseAndroidOS();
