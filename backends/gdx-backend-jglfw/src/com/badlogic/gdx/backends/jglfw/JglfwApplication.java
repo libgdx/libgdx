@@ -304,7 +304,7 @@ public class JglfwApplication implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
-
+	
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseDesktopOS();

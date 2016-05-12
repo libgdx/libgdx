@@ -50,8 +50,7 @@ public class LwjglApplication implements Application {
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
-		LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected String preferencesdir;
 	protected Files.FileType preferencesFileType;
@@ -163,7 +162,7 @@ public class LwjglApplication implements Application {
 				synchronized (lifecycleListeners) {
 					LifecycleListener[] listeners = lifecycleListeners.begin();
 					for (int i = 0, n = lifecycleListeners.size; i < n; ++i)
-						listeners[i].pause();
+						 listeners[i].pause();
 					lifecycleListeners.end();
 				}
 				listener.pause();
@@ -294,7 +293,7 @@ public class LwjglApplication implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
-
+	
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseDesktopOS();

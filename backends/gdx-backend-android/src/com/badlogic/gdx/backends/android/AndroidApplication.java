@@ -73,8 +73,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
-		LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
@@ -358,7 +357,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
-
+	
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseAndroidOS();
@@ -383,6 +382,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Preferences getPreferences (String name) {
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
+
 
 	@Override
 	public Clipboard getClipboard () {

@@ -51,10 +51,10 @@ import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
-/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses {@link AWTGLCanvas}, which
- * allows multiple LwjglAWTCanvas to be used in a single application. All OpenGL calls are done on the EDT. Note that you may need
- * to call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown
- * hooks.
+/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. This uses {@link AWTGLCanvas},
+ * which allows multiple LwjglAWTCanvas to be used in a single application. All OpenGL calls are done on the EDT. Note that you
+ * may need to call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with
+ * shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglAWTCanvas implements Application {
 	static int instanceCount;
@@ -88,7 +88,8 @@ public class LwjglAWTCanvas implements Application {
 		this(listener, config, null);
 	}
 
-	public LwjglAWTCanvas (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglAWTCanvas sharedContextCanvas) {
+	public LwjglAWTCanvas (ApplicationListener listener, LwjglApplicationConfiguration config,
+		LwjglAWTCanvas sharedContextCanvas) {
 		this.listener = listener;
 		if (config == null) config = new LwjglApplicationConfiguration();
 
@@ -212,7 +213,7 @@ public class LwjglAWTCanvas implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
-
+	
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseDesktopOS();

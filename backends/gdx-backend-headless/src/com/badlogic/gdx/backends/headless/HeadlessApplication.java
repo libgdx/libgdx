@@ -35,12 +35,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
-/**
- * a headless implementation of a GDX Application primarily intended to be used
- * in servers
- * 
- * @author Jon Renner
- */
+/** a headless implementation of a GDX Application primarily intended to be used in servers
+ *  @author Jon Renner */
 public class HeadlessApplication implements Application {
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
@@ -60,12 +56,11 @@ public class HeadlessApplication implements Application {
 	public HeadlessApplication(ApplicationListener listener) {
 		this(listener, null);
 	}
-
-	public HeadlessApplication(ApplicationListener listener,
-			HeadlessApplicationConfiguration config) {
+	
+	public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config) {
 		if (config == null)
 			config = new HeadlessApplicationConfiguration();
-
+		
 		HeadlessNativesLoader.load();
 		this.listener = listener;
 		this.files = new HeadlessFiles();
@@ -84,22 +79,21 @@ public class HeadlessApplication implements Application {
 		Gdx.audio = audio;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
-
-		renderInterval = config.renderInterval > 0 ? (long) (config.renderInterval * 1000000000f)
-				: (config.renderInterval < 0 ? -1 : 0);
-
+		
+		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
+		
 		initialize();
 	}
 
-	private void initialize() {
+	private void initialize () {
 		mainLoopThread = new Thread("HeadlessApplication") {
 			@Override
-			public void run() {
+			public void run () {
 				try {
 					HeadlessApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (t instanceof RuntimeException)
-						throw (RuntimeException) t;
+						throw (RuntimeException)t;
 					else
 						throw new GdxRuntimeException(t);
 				}
@@ -108,13 +102,12 @@ public class HeadlessApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	void mainLoop() {
+	void mainLoop () {
 		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		listener.create();
 
-		// unlike LwjglApplication, a headless application will eat up CPU in
-		// this while loop
+		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
 		long t = TimeUtils.nanoTime() + renderInterval;
 		if (renderInterval >= 0f) {
@@ -123,21 +116,18 @@ public class HeadlessApplication implements Application {
 				if (t > n) {
 					try {
 						Thread.sleep((t - n) / 1000000);
-					} catch (InterruptedException e) {
-					}
+					} catch (InterruptedException e) {}
 					t = TimeUtils.nanoTime() + renderInterval;
 				} else
 					t = n + renderInterval;
-
+				
 				executeRunnables();
 				graphics.incrementFrameId();
 				listener.render();
 				graphics.updateTime();
-
-				// If one of the runnables set running to false, for example
-				// after an exit().
-				if (!running)
-					break;
+	
+				// If one of the runnables set running to false, for example after an exit().
+				if (!running) break;
 			}
 		}
 
@@ -151,14 +141,13 @@ public class HeadlessApplication implements Application {
 		listener.dispose();
 	}
 
-	public boolean executeRunnables() {
+	public boolean executeRunnables () {
 		synchronized (runnables) {
 			for (int i = runnables.size - 1; i >= 0; i--)
 				executedRunnables.add(runnables.get(i));
 			runnables.clear();
 		}
-		if (executedRunnables.size == 0)
-			return false;
+		if (executedRunnables.size == 0) return false;
 		for (int i = executedRunnables.size - 1; i >= 0; i--)
 			executedRunnables.removeIndex(i).run();
 		return true;
@@ -200,14 +189,13 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public SystemType getOS() {
+	public SystemType getOS () {
 		String os = java.lang.System.getProperty("os.name").toLowerCase();
-		if (os.indexOf("win") >= 0)
+		if(os.indexOf("win") >= 0)
 			return SystemType.Windows;
-		else if (os.indexOf("mac") >= 0)
+		else if(os.indexOf("mac") >= 0)
 			return SystemType.OSX;
-		else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0
-				|| os.indexOf("aix") > 0)
+		else if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
 			return SystemType.Linux;
 		else
 			return null;
@@ -219,13 +207,12 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public long getJavaHeap() {
-		return Runtime.getRuntime().totalMemory()
-				- Runtime.getRuntime().freeMemory();
+	public long getJavaHeap () {
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
 	@Override
-	public long getNativeHeap() {
+	public long getNativeHeap () {
 		return getJavaHeap();
 	}
 
@@ -236,35 +223,34 @@ public class HeadlessApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new HeadlessPreferences(name,
-					this.preferencesdir);
+			Preferences prefs = new HeadlessPreferences(name, this.preferencesdir);
 			preferences.put(name, prefs);
 			return prefs;
 		}
 	}
 
 	@Override
-	public Clipboard getClipboard() {
+	public Clipboard getClipboard () {
 		// no clipboards for headless apps
 		return null;
 	}
 
 	@Override
-	public void postRunnable(Runnable runnable) {
+	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
 		}
 	}
 
 	@Override
-	public void debug(String tag, String message) {
+	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
 		}
 	}
 
 	@Override
-	public void debug(String tag, String message, Throwable exception) {
+	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);
@@ -272,14 +258,14 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public void log(String tag, String message) {
+	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);
 		}
 	}
 
 	@Override
-	public void log(String tag, String message, Throwable exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);
@@ -287,14 +273,14 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public void error(String tag, String message) {
+	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ": " + message);
 		}
 	}
 
 	@Override
-	public void error(String tag, String message, Throwable exception) {
+	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ": " + message);
 			exception.printStackTrace(System.err);
@@ -302,7 +288,7 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public void setLogLevel(int logLevel) {
+	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
 
@@ -312,24 +298,24 @@ public class HeadlessApplication implements Application {
 	}
 
 	@Override
-	public void exit() {
+	public void exit () {
 		postRunnable(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				running = false;
 			}
 		});
 	}
 
 	@Override
-	public void addLifecycleListener(LifecycleListener listener) {
+	public void addLifecycleListener (LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
-	public void removeLifecycleListener(LifecycleListener listener) {
+	public void removeLifecycleListener (LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
