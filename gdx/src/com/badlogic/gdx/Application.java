@@ -17,6 +17,7 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
  * An <code>Application</code> is the main entry point of your project. It sets up a window and rendering surface and manages the
@@ -106,7 +107,7 @@ public interface Application {
 	 * 
 	 * @author kerberjg */
 	public enum SystemType {
-		Windows, Linux, OSX, Android, iOS, BlackBerry10;
+		Windows, Linux, OSX, Android, iOS, BlackBerry10, FireOS;
 
 		public static SystemType parseDesktopOS () {
 			String os = System.getProperty("os.name").toLowerCase();
@@ -123,8 +124,18 @@ public interface Application {
 		public static SystemType parseAndroidOS () {
 			if (System.getProperty("os.name").contains("qnx"))
 				return SystemType.BlackBerry10;
-			else
-				return SystemType.Android;
+			else {
+				try {
+					Class build = Class.forName("android.os.Build");
+					String manufacturer = (String)build.getField("MANUFACTURER").get(null);
+
+					if (manufacturer.equals("Amazon")) return SystemType.FireOS;
+				} catch (Exception e1) {
+					throw new GdxRuntimeException("Can't query the Android OS type on a non-Android device");
+				}
+			}
+
+			return SystemType.Android;
 		}
 	}
 
