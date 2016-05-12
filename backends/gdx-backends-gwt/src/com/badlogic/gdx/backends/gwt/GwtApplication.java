@@ -57,8 +57,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.Window.Navigator;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
- * {@link #createApplicationListener()}. Clients can override the default loading screen via
- * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
+ * {@link #createApplicationListener()}. Clients can override the default loading screen via {@link #getPreloaderCallback()} and
+ * implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
@@ -83,19 +83,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
-	
-	public String getPreloaderBaseURL()
-	{
+	public String getPreloaderBaseURL () {
 		return GWT.getHostPageBaseURL() + "assets/";
 	}
-	
+
 	@Override
-	public ApplicationListener getApplicationListener() {
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
-	
-	public abstract ApplicationListener createApplicationListener();
-	
+
+	public abstract ApplicationListener createApplicationListener ();
+
 	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
@@ -131,7 +129,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 
 		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
+		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
 
 			@Override
 			public void onready () {
@@ -148,11 +146,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						callback.update(state);
 						if (state.hasEnded()) {
 							getRootPanel().clear();
-							if(loadingListener != null)
-								loadingListener.beforeSetup();
+							if (loadingListener != null) loadingListener.beforeSetup();
 							setupLoop();
-							if(loadingListener != null)
-								loadingListener.afterSetup();
+							if (loadingListener != null) loadingListener.afterSetup();
 						}
 					}
 				});
@@ -162,14 +158,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void ontimeout (String status, String errorType) {
 				error("SoundManager", status + " " + errorType);
 			}
-			
+
 		});
 	}
 
 	void setupLoop () {
 		// setup modules
-		try {			
-			graphics = new GwtGraphics(root, config);			
+		try {
+			graphics = new GwtGraphics(root, config);
 		} catch (Throwable e) {
 			root.clear();
 			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
@@ -213,7 +209,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}, graphics.canvas);
 	}
 
-	void mainLoop() {
+	void mainLoop () {
 		graphics.update();
 		if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
 			GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -231,14 +227,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		listener.render();
 		input.reset();
 	}
-	
+
 	public Panel getRootPanel () {
 		return root;
 	}
 
 	long loadStart = TimeUtils.nanoTime();
 
-	public Preloader createPreloader() {
+	public Preloader createPreloader () {
 		return new Preloader(getPreloaderBaseURL());
 	}
 
@@ -246,7 +242,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		final Panel preloaderPanel = new VerticalPanel();
 		preloaderPanel.setStyleName("gdx-preloader");
 		final Image logo = new Image(GWT.getModuleBaseURL() + "logo.png");
-		logo.setStyleName("logo");		
+		logo.setStyleName("logo");
 		preloaderPanel.add(logo);
 		final Panel meterPanel = new SimplePanel();
 		meterPanel.setStyleName("gdx-meter");
@@ -263,12 +259,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void error (String file) {
 				System.out.println("error: " + file);
 			}
-			
+
 			@Override
 			public void update (PreloaderState state) {
 				meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
-			}			
-			
+			}
+
 		};
 	}
 
@@ -291,9 +287,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Files getFiles () {
 		return Gdx.files;
 	}
-	
+
 	@Override
-	public Net getNet() {
+	public Net getNet () {
 		return Gdx.net;
 	}
 
@@ -368,7 +364,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			System.out.println(getStackTrace(exception));
 		}
 	}
-	
+
 	private String getMessages (Throwable e) {
 		StringBuffer buffer = new StringBuffer();
 		while (e != null) {
@@ -377,7 +373,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 		return buffer.toString();
 	}
-	
+
 	private String getStackTrace (Throwable e) {
 		StringBuffer buffer = new StringBuffer();
 		for (StackTraceElement trace : e.getStackTrace()) {
@@ -392,7 +388,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 
@@ -400,29 +396,24 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public ApplicationType getType () {
 		return ApplicationType.WebGL;
 	}
-	
+
 	@Override
- 	public SystemType getOS() {
- 		String platform = Navigator.getPlatform().toLowerCase();
- 		String agent = Navigator.getUserAgent().toLowerCase();
- 		
- 		if(platform.contains("win"))
- 			return SystemType.Windows;
- 		if(platform.contains("mac"))
- 			return SystemType.OSX;
- 		if(platform.contains("iphone") || platform.contains("ipad") || platform.contains("ipod"))
-  			return SystemType.iOS;
-  		if(platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
-  			return SystemType.iOS;
- 		if(agent.contains("bb10"))
- 			return SystemType.BlackBerry10;
-  		if(platform.contains("android") || (platform.equals("linux") && agent.contains("android")))
-  			return SystemType.Android;
-  		if(platform.contains("linux"))
- 			return SystemType.Linux;
- 		else
- 			return null;
- 	}
+	public SystemType getOS () {
+		String platform = Navigator.getPlatform().toLowerCase();
+		String agent = Navigator.getUserAgent().toLowerCase();
+
+		if (platform.contains("win")) return SystemType.Windows;
+		if (platform.contains("mac")) return SystemType.OSX;
+		if (platform.contains("iphone") || platform.contains("ipad") || platform.contains("ipod")) return SystemType.iOS;
+		if (platform.contains("pike v7") && agent.contains("(iphone;")) // Opera Mini on iOS
+			return SystemType.iOS;
+		if (agent.contains("bb10")) return SystemType.BlackBerry10;
+		if (platform.contains("android") || (platform.equals("linux") && agent.contains("android"))) return SystemType.Android;
+		if (platform.contains("linux"))
+			return SystemType.Linux;
+		else
+			return null;
+	}
 
 	@Override
 	public int getVersion () {
@@ -453,7 +444,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Clipboard getClipboard () {
 		return clipboard;
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		runnables.add(runnable);
@@ -531,8 +522,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public Preloader getPreloader () {
 		return preloader;
 	}
-	
-	public CanvasElement getCanvasElement(){
+
+	public CanvasElement getCanvasElement () {
 		return graphics.canvas;
 	}
 
@@ -546,28 +537,28 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
-	
-	native static public void consoleLog(String message) /*-{
-		console.log( "GWT: " + message );
-	}-*/;
-	
+
+	native static public void consoleLog (String message) /*-{
+																			console.log( "GWT: " + message );
+																			}-*/;
+
 	private native void addEventListeners () /*-{
-		var self = this;
-		$doc.addEventListener('visibilitychange', function (e) {
-			self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
-		});
-	}-*/;
+															var self = this;
+															$doc.addEventListener('visibilitychange', function (e) {
+															self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
+															});
+															}-*/;
 
 	private void onVisibilityChange (boolean visible) {
 		if (visible) {
@@ -582,19 +573,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			listener.pause();
 		}
 	}
-	
-	/**
-	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
-	 */
-	public interface LoadingListener{
-		/**
-		 * Method called before the setup
-		 */
-		public void beforeSetup();
-		
-		/**
-		 * Method called after the setup
-		 */
-		public void afterSetup();
+
+	/** LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()} */
+	public interface LoadingListener {
+		/** Method called before the setup */
+		public void beforeSetup ();
+
+		/** Method called after the setup */
+		public void afterSetup ();
 	}
 }

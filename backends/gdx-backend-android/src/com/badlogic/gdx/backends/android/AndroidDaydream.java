@@ -144,7 +144,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 			public void pause () {
 				audio.pause();
 			}
-			
+
 			@Override
 			public void dispose () {
 				audio.dispose();

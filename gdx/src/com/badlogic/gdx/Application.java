@@ -101,27 +101,27 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
 	}
-	
+
 	/** Enumeration of possible OS types
 	 * 
 	 * @author kerberjg */
 	public enum SystemType {
 		Windows, Linux, OSX, Android, iOS, BlackBerry10;
 
-		public static SystemType parseDesktopOS() {
+		public static SystemType parseDesktopOS () {
 			String os = java.lang.System.getProperty("os.name").toLowerCase();
-			if(os.indexOf("win") >= 0)
+			if (os.indexOf("win") >= 0)
 				return Windows;
-			else if(os.indexOf("mac") >= 0)
+			else if (os.indexOf("mac") >= 0)
 				return OSX;
-			else if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
+			else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0)
 				return Linux;
 			else
 				return null;
 		}
-		
-		public static SystemType parseAndroidOS() {
-			if(System.getProperty("os.name").contains("qnx"))
+
+		public static SystemType parseAndroidOS () {
+			if (System.getProperty("os.name").contains("qnx"))
 				return SystemType.BlackBerry10;
 			else
 				return SystemType.Android;
@@ -179,9 +179,9 @@ public interface Application {
 
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
-	
-	/** @return what OS the application is running on, e.g. Windows or Android*/
-	public SystemType getOS();
+
+	/** @return what OS the application is running on, e.g. Windows or Android */
+	public SystemType getOS ();
 
 	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
 	public int getVersion ();
@@ -205,8 +205,7 @@ public interface Application {
 	public void postRunnable (Runnable runnable);
 
 	/** Schedule an exit from the application. On android, this will cause a call to pause() and dispose() some time in the future,
-	 * it will not immediately finish your application.
-	 * On iOS this should be avoided in production as it breaks Apples guidelines*/
+	 * it will not immediately finish your application. On iOS this should be avoided in production as it breaks Apples guidelines */
 	public void exit ();
 
 	/** Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more

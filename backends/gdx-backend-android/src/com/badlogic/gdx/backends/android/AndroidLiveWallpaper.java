@@ -67,7 +67,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
@@ -232,7 +233,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
-	
+
 	@Override
 	public SystemType getOS () {
 		return SystemType.parseAndroidOS();
