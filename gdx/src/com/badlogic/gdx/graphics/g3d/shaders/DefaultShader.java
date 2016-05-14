@@ -85,6 +85,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform cameraPosition = new Uniform("u_cameraPosition");
 		public final static Uniform cameraDirection = new Uniform("u_cameraDirection");
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
+		public final static Uniform cameraNearFar = new Uniform("u_cameraNearFar");
 
 		public final static Uniform worldTrans = new Uniform("u_worldTrans");
 		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
@@ -155,6 +156,12 @@ public class DefaultShader extends BaseShader {
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.up);
+			}
+		};
+		public final static Setter cameraNearFar = new GlobalSetter() {
+			@Override
+			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, shader.camera.near, shader.camera.far);
 			}
 		};
 		public final static Setter worldTrans = new LocalSetter() {
@@ -410,6 +417,7 @@ public class DefaultShader extends BaseShader {
 	public final int u_cameraPosition;
 	public final int u_cameraDirection;
 	public final int u_cameraUp;
+	public final int u_cameraNearFar;
 	public final int u_time;
 	// Object uniforms
 	public final int u_worldTrans;
@@ -490,7 +498,7 @@ public class DefaultShader extends BaseShader {
 	private Renderable renderable;
 	/** The attributes that this shader supports */
 	protected final long attributesMask;
-	private long vertexMask;
+	private final long vertexMask;
 	protected final Config config;
 	/** Attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
@@ -545,6 +553,7 @@ public class DefaultShader extends BaseShader {
 		u_cameraPosition = register(Inputs.cameraPosition, Setters.cameraPosition);
 		u_cameraDirection = register(Inputs.cameraDirection, Setters.cameraDirection);
 		u_cameraUp = register(Inputs.cameraUp, Setters.cameraUp);
+		u_cameraNearFar = register(Inputs.cameraNearFar, Setters.cameraNearFar);
 		u_time = register(new Uniform("u_time"));
 		// Object uniforms
 		u_worldTrans = register(Inputs.worldTrans, Setters.worldTrans);
@@ -724,7 +733,7 @@ public class DefaultShader extends BaseShader {
 		return (obj == this);
 	}
 
-	private Matrix3 normalMatrix = new Matrix3();
+	private final Matrix3 normalMatrix = new Matrix3();
 	private float time;
 	private boolean lightsSet;
 

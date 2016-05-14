@@ -243,7 +243,12 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				object.getProperties().put("id", id);
 			}
 			object.getProperties().put("x", x);
-			object.getProperties().put("y", (flipY ? y - height : y));
+			
+			if (object instanceof TiledMapTileMapObject) {
+				object.getProperties().put("y", y);
+			} else {
+				object.getProperties().put("y", (flipY ? y - height : y));
+			}
 			object.getProperties().put("width", width);
 			object.getProperties().put("height", height);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);

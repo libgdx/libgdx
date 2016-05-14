@@ -80,6 +80,7 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 			for (int iu = 0; iu <= divisionsU; iu++) {
 				angleU = auo + stepU * iu;
 				u = 1f - us * iu;
+				// Fixme : wrong normal calculation if transform
 				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
 				curr1.normal.set(curr1.position).nor();
 				curr1.uv.set(u, v);

@@ -85,6 +85,10 @@ public class ShapeRendererTest extends GdxTest {
 			renderer.setColor(Color.MAGENTA);
 			renderer.triangle(-0.1f, 0.1f, -0.6f, -0.1f, -0.3f, 0.5f);
 
+			renderer.setColor(Color.GOLD);
+			renderer.ellipse(0.7f, -0.1f, 0.3f, 0.1f, 45f, 40);
+			renderer.ellipse(0.7f, -0.1f, 0.3f, 0.1f, 135f);
+
 			renderer.end();
 		} else {
 			renderer.begin(ShapeType.Line);
@@ -109,6 +113,10 @@ public class ShapeRendererTest extends GdxTest {
 
 			renderer.setColor(Color.CYAN);
 			renderer.curve(0.0f, 0.25f, 0.2f, 0.3f, 0.3f, 0.6f, 0.1f, 0.5f, 30);
+			
+			renderer.setColor(Color.GOLD);
+			renderer.ellipse(0.7f, -0.1f, 0.3f, 0.1f, 45f, 40);
+			renderer.ellipse(0.7f, -0.1f, 0.3f, 0.1f, 135f);
 
 			renderer.end();
 		}

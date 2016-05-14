@@ -102,6 +102,10 @@ public class Pixmap implements Disposable {
 		context.drawImage(img, 0, 0);
 		context.setGlobalCompositeOperation(getComposite());
 	}
+	
+	public Context2d getContext() {
+		return context;
+	}
 
 	private static Composite getComposite () {
 		return Composite.SOURCE_OVER;

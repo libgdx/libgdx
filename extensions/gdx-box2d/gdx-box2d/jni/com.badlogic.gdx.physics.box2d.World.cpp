@@ -719,7 +719,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_World_getVelocityTh
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast(JNIEnv* env, jobject object, jlong addr, jfloat aX, jfloat aY, jfloat bX, jfloat bY) {
 
 
-//@line:1034
+//@line:1044
 
 		b2World *world = (b2World*)addr;
 		CustomRayCastCallback callback( env, object );	

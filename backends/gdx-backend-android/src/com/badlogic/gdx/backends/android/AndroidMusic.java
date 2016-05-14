@@ -57,20 +57,37 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	@Override
 	public boolean isLooping () {
 		if (player == null) return false;
-		return player.isLooping();
+		try {
+			return player.isLooping();
+		} catch (Exception e) {
+			// NOTE: isLooping() can potentially throw an exception and crash the application
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isPlaying () {
 		if (player == null) return false;
-		return player.isPlaying();
+		try {
+			return player.isPlaying();
+		} catch (Exception e) {
+			// NOTE: isPlaying() can potentially throw an exception and crash the application
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
-	public void pause () {
+	public void pause () { 
 		if (player == null) return;
-		if (player.isPlaying()) {			
-			player.pause();
+		try {
+			if (player.isPlaying()) {			
+				player.pause();
+			}
+		} catch (Exception e) {
+			// NOTE: isPlaying() can potentially throw an exception and crash the application
+			e.printStackTrace();
 		}
 		wasPlaying = false;
 	}
@@ -78,7 +95,13 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	@Override
 	public void play () {
 		if (player == null) return;
-		if (player.isPlaying()) return;
+		try {
+			if (player.isPlaying()) return;
+		} catch (Exception e) {
+			// NOTE: isPlaying() can potentially throw an exception and crash the application
+			e.printStackTrace();
+			return;
+		}
 
 		try {
 			if (!isPrepared) {
