@@ -25,6 +25,7 @@ import com.badlogic.gdx.jnigen.parsing.CMethodParser.CMethod;
 import com.badlogic.gdx.jnigen.parsing.CMethodParser.CMethodParserResult;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.Argument;
+import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.ArgumentType;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JavaMethod;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JavaSegment;
 import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JniSection;
@@ -183,6 +184,9 @@ public class NativeCodeGenerator {
 	JavaMethodParser javaMethodParser = new RobustJavaMethodParser();
 	CMethodParser cMethodParser = new JniHeaderCMethodParser();
 	CMethodParserResult cResult;
+	private ArrayList<JavaSegment> javaSegments;
+	private ArrayList<CMethod> cMethods;
+	private boolean logCriticalNativesGeneration;
 
 	/** Generates .h/.cpp files from the Java files found in "src/", with their .class files being in "bin/". The generated files
 	 * will be stored in "jni/". All paths are relative to the applications working directory.
@@ -257,12 +261,12 @@ public class NativeCodeGenerator {
 					}
 					String javaContent = file.readString();
 					if (javaContent.contains(JNI_METHOD_MARKER)) {
-						ArrayList<JavaSegment> javaSegments = javaMethodParser.parse(javaContent);
+						javaSegments = javaMethodParser.parse(javaContent);
 						if (javaSegments.size() == 0) {
 							System.out.println("Skipping '" + file + "', no JNI code found.");
 							continue;
 						}
-						System.out.print("Generating C/C++ for '" + file + "'...");
+						System.out.println("Generating C/C++ for '" + file + "'...");
 						generateHFile(file);
 						generateCppFile(javaSegments, hFile, cppFile);
 						System.out.println("done");
@@ -297,14 +301,41 @@ public class NativeCodeGenerator {
 	protected void emitHeaderInclude (StringBuffer buffer, String fileName) {
 		buffer.append("#include <" + fileName + ">\n");
 	}
+	
+	/** Emits a definition for desktop, so critical natives are only included in natives for desktop platforms */
+	private void emitDesktopDefinition (StringBuffer buffer) {
+		buffer.append("#if (defined(_WIN32) || defined(__linux__) || defined(__unix)) && !defined(__ANDROID__)\n");
+		buffer.append("#define __LIBGDX__DESKTOP__ 1\n");
+		buffer.append("#endif\n");
+		buffer.append("#if defined(__APPLE__)\n");
+		buffer.append("#include \"TargetConditionals.h\"\n");
+		buffer.append("#if TARGET_OS_MAC && !TARGET_OS_IPHONE\n");
+		buffer.append("#define __LIBGDX__DESKTOP__ 1\n");
+		buffer.append("#endif\n");
+		buffer.append("#endif\n");
+	}
 
 	private void generateCppFile (ArrayList<JavaSegment> javaSegments, FileDescriptor hFile, FileDescriptor cppFile)
 		throws Exception {
 		String headerFileContent = hFile.readString();
-		ArrayList<CMethod> cMethods = cMethodParser.parse(headerFileContent).getMethods();
+		
+		cMethods = cMethodParser.parse(headerFileContent).getMethods();
 
 		StringBuffer buffer = new StringBuffer();
 		emitHeaderInclude(buffer, hFile.name());
+		
+		
+		// See https://regex101.com/r/wU4yQ6/2 . See https://regex101.com/r/wU4yQ6/1 for a easier to understand regex, which assumes
+		// '\n' as the line separator. Java 8 has \R, which matches all line feeds but we can not yet use Java 8
+		String regex = "\\/\\*(?:\r\n|\n|\r).*(?:\r\n|\n|\r).*" + JavaMethod.CRITICAL_METHOD_NAME
+			+ "(?:\r\n|\n|\r).*(?:\r\n|\n|\r).*(?:\r\n|\n|\r).*(?:\r\n|\n|\r).*\\)\\;(?:\r\n|\n|\r).*(?:\r\n|\n|\r)";
+
+		// Remove all critical methods from the header file
+		String newHeaderFileContent = headerFileContent.replaceAll(regex, "");
+		hFile.writeString(newHeaderFileContent, false);
+
+		// We know that our regex found and removed critical methods from the header file, when the length changed
+		if (newHeaderFileContent.length() != headerFileContent.length()) emitDesktopDefinition(buffer);
 
 		for (JavaSegment segment : javaSegments) {
 			if (segment instanceof JniSection) {
@@ -379,7 +410,9 @@ public class NativeCodeGenerator {
 
 		// if we have disposable arguments (string, buffer, array) and if there is a return
 		// in the native code (conservative, not syntactically checked), emit a wrapper method.
-		if (javaMethod.hasDisposableArgument() && javaMethod.getNativeCode().contains("return")) {
+		if (javaMethod.hasDisposableArgument() && javaMethod.getNativeCode().contains("return") && !javaMethod.isCritical()) { 
+			// Critical methods are Manual by default, so never emit any wrapper method
+			
 			// if the method is marked as manual, we just emit the signature and let the
 			// user do whatever she wants.
 			if (isManual) {
@@ -416,17 +449,48 @@ public class NativeCodeGenerator {
 				buffer.append("}\n\n");
 			}
 		} else {
-			emitMethodSignature(buffer, javaMethod, cMethod, null);
-			if (!isManual) {
-				buffer.append(jniSetupCode);
+			if (javaMethod.isCritical()) {				
+				emitCriticalMethod(buffer, javaMethod, cMethod);
+				if (logCriticalNativesGeneration) {
+					logCriticalMethodGeneration(javaMethod);
+				}
+			} else {
+				emitMethodSignature(buffer, javaMethod, cMethod, null);
+				if (!isManual) {
+					buffer.append(jniSetupCode);
+				}
+				emitMethodBody(buffer, javaMethod);
+				if (!isManual) {
+					buffer.append(jniCleanupCode);
+				}
+				buffer.append("}\n\n");
 			}
-			emitMethodBody(buffer, javaMethod);
-			if (!isManual) {
-				buffer.append(jniCleanupCode);
-			}
-			buffer.append("}\n\n");
+			
 		}
 
+	}
+
+	private void logCriticalMethodGeneration (JavaMethod javaMethod) {
+		JavaMethod nonCriticalMethod = findNonCriticalMethod(javaMethod);
+		if (nonCriticalMethod == null) {
+			throw new RuntimeException("Couldn't find non-critical JNI method for (critical) JavaMethod: " + javaMethod);
+		}
+		System.out.println("Generated critical version of method: " + nonCriticalMethod.shortToString() + " using this method: "
+			+ javaMethod.shortToString());
+	}
+	
+	/** Enables logging which critical natives have been generated and which java method they have used for generation */
+	public NativeCodeGenerator logCriticalNativesGeneration () {
+		logCriticalNativesGeneration = true;
+		return this;
+	}
+
+	private void emitCriticalMethod (StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod) {
+		buffer.append("#if __LIBGDX__DESKTOP__\n");
+		emitCriticalMethodSignature(buffer, javaMethod, cMethod);
+		emitMethodBody(buffer, javaMethod);
+		buffer.append("}\n");
+		buffer.append("#endif\n");
 	}
 
 	protected void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
@@ -436,6 +500,102 @@ public class NativeCodeGenerator {
 		// FIXME add tabs cleanup
 		buffer.append(javaMethod.getNativeCode());
 		buffer.append("\n");
+	}
+	
+	/** We need the non critical version in some places. To get the non critical version, we search through all java methods, check
+	 * whether the method could be the non critical version and if it matches, we check the arguments, since there could be
+	 * multiple functions with the same name and different arguments. */
+	private JavaMethod findNonCriticalMethod (JavaMethod criticalMethod) {
+		for (JavaSegment segment : javaSegments) {
+			if (segment instanceof JavaMethod) {
+				JavaMethod uncriticalMethod = (JavaMethod)segment;
+				// This could be the non-critical version
+				if ((uncriticalMethod.getName() + JavaMethod.CRITICAL_METHOD_NAME).equals(criticalMethod.getName())) {
+					ArrayList<Argument> args = (ArrayList<Argument>)uncriticalMethod.getArguments().clone();
+					for (int i = 0; i < args.size(); i++) {
+						/*
+						 * Iterate over args; when arg is a primitive array, add a new 'Argument' with 'ArgumentType' : 'Integer' at the
+						 * position, where the primitive array has been found This basically transforms [[FloatArray], [Integer],
+						 * [IntArray]] (This are the arguments of the non critical version, i.e. the args of 'someMethod' ) to
+						 * [[Integer], [FloatArray], [Integer], [Integer], [IntArray]] (This would be the arguments of the critical
+						 * version, i.e. the args of 'javaMethod')
+						 */
+						Argument arg = args.get(i);
+						if (arg.getType().isPrimitiveArray()) {
+							args.add(i, new Argument(ArgumentType.Integer, null));
+							i++;
+						}
+					}
+					if (criticalMethod.getArguments().equals(args)) {
+						return uncriticalMethod;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private void emitCriticalMethodSignature (StringBuffer buffer, JavaMethod criticalJavaMethod, CMethod cMethod) {
+
+		buffer.append(" extern \"C\" ");
+
+		/*
+		 * We have to find the non critical version of this method, because the signature of the critical version has to be the
+		 * same. The critical version has another signature, since there is an additional 'length' argument before every primitive
+		 * array.
+		 */
+		JavaMethod nonCriticalJavaMethod = findNonCriticalMethod(criticalJavaMethod);
+		if (nonCriticalJavaMethod == null) {
+			throw new RuntimeException(
+				"Couldn't find non-critical JNI method for (critical) JavaMethod: " + criticalJavaMethod + " CMethod: " + cMethod);
+		}
+		CMethod nonCriticalCMethod = findCMethod(nonCriticalJavaMethod, cMethods);
+		if (nonCriticalCMethod == null)
+			throw new RuntimeException("Couldn't find C method for JavaMethod: " + nonCriticalJavaMethod);
+		checkCriticality(criticalJavaMethod, nonCriticalJavaMethod);
+
+		// Remove the marker "_JNICritical" which became "_1JNICritical" in the c signature
+		// Replace "JNICALL Java" with "JNICALL JavaCritical" to make the method critical
+		buffer.append(nonCriticalCMethod.getHead().replace("JNICALL Java", "JNICALL JavaCritical").replace("_1JNICritical", ""));
+		buffer.append("(");
+
+		for (int i = 0; i < criticalJavaMethod.getArguments().size(); i++) {
+			Argument javaArg = criticalJavaMethod.getArguments().get(i);
+			ArgumentType javaArgType = javaArg.getType();
+
+			// output the argument type
+			if (javaArgType.isPrimitiveArray()) {
+				buffer.append(javaArgType.getArrayJniType());
+			} else {
+				buffer.append(cMethod.getArgumentTypes()[i + 2]);
+			}
+			buffer.append(" ");
+
+			// output the name of the argument
+			buffer.append(javaArg.getName());
+
+			// comma, if this is not the last argument
+			if (i < criticalJavaMethod.getArguments().size() - 1) buffer.append(", ");
+		}
+
+		// close signature, open method body
+		buffer.append(") {\n");
+	}
+	
+	private void checkCriticality (JavaMethod criticalMethod, JavaMethod unCriticalMethod) {
+		if (!(criticalMethod.isStatic() && unCriticalMethod.isStatic() && !criticalMethod.isSynchronized()
+			&& !unCriticalMethod.isSynchronized())) {
+			throw new RuntimeException("Method can't be critical, because method is either synchronized or non-static.\n "
+				+ "Both methods have to be static and not synchronized.\n Critical method: " + criticalMethod
+				+ "\nUncritical Method: " + unCriticalMethod);
+		}
+		for (Argument arg : unCriticalMethod.getArguments()) {
+			if (arg.getType().isBuffer() || arg.getType().isObject() || arg.getType().isString()) {
+				throw new RuntimeException(
+					"Method can't be critical, because method contains arguments that are neither primitives nor primitive arrays.\n "
+						+ "You can only use primitives and primitive arrays.\n Uncritical Method: " + unCriticalMethod);
+			}
+		}
 	}
 
 	private String emitMethodSignature (StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod, String additionalArguments) {

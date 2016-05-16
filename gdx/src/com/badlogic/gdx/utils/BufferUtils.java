@@ -712,6 +712,10 @@ public final class BufferUtils {
 		transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);  
 	*/
 	
+	private native static void transformV4M4Jni_JNICritical (int dataLength, float[] data, int strideInBytes, int count, int matrixLength, float[] matrix, int offsetInBytes); /*
+		transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);  
+	*/
+	
 	private native static void transformV3M4Jni (Buffer data, int strideInBytes, int count, float[] matrix, int offsetInBytes); /*
 		transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
@@ -720,11 +724,19 @@ public final class BufferUtils {
 		transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 	
+	private native static void transformV3M4Jni_JNICritical (int dataLength, float[] data, int strideInBytes, int count, int matrixLength, float[] matrix, int offsetInBytes); /*
+		transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
+	*/
+	
 	private native static void transformV2M4Jni (Buffer data, int strideInBytes, int count, float[] matrix, int offsetInBytes); /*
 		transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 	
 	private native static void transformV2M4Jni (float[] data, int strideInBytes, int count, float[] matrix, int offsetInBytes); /*
+		transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
+	*/
+	
+	private native static void transformV2M4Jni_JNICritical (int dataLength, float[] data, int strideInBytes, int count, int matrixLength, float[] matrix, int offsetInBytes); /*
 		transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 
@@ -736,11 +748,19 @@ public final class BufferUtils {
 		transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 	
+	private native static void transformV3M3Jni_JNICritical (int dataLength, float[] data, int strideInBytes, int count, int matrixLength, float[] matrix, int offsetInBytes); /*
+		transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
+	*/
+	
 	private native static void transformV2M3Jni (Buffer data, int strideInBytes, int count, float[] matrix, int offsetInBytes); /*
 		transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 	
 	private native static void transformV2M3Jni (float[] data, int strideInBytes, int count, float[] matrix, int offsetInBytes); /*
+		transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
+	*/
+	
+	private native static void transformV2M3Jni_JNICritical (int dataLength, float[] data, int strideInBytes, int count, int matrixLength, float[] matrix, int offsetInBytes); /*
 		transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix, offsetInBytes / 4);
 	*/
 	
@@ -760,6 +780,10 @@ public final class BufferUtils {
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
 	*/
 	
+	private native static long find_JNICritical(int vertexLength, float[] vertex, int vertexOffsetInBytes, int strideInBytes, int verticesLength, float[] vertices, int verticesOffsetInBytes, int numVertices); /*
+	return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices);
+	*/
+	
 	private native static long find(Buffer vertex, int vertexOffsetInBytes, int strideInBytes, Buffer vertices, int verticesOffsetInBytes, int numVertices, float epsilon); /*
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	*/
@@ -775,4 +799,8 @@ public final class BufferUtils {
 	private native static long find(float[] vertex, int vertexOffsetInBytes, int strideInBytes, float[] vertices, int verticesOffsetInBytes, int numVertices, float epsilon); /*
 		return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
 	*/
+	
+	private native static long find_JNICritical(int vertexLength, float[] vertex, int vertexOffsetInBytes, int strideInBytes, int verticesLength, float[] vertices, int verticesOffsetInBytes, int numVertices, float epsilon); /*
+	return find((float *)&vertex[vertexOffsetInBytes / 4], (unsigned int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4], (unsigned int)numVertices, epsilon);
+*/
 }

@@ -1300,8 +1300,12 @@ public class Matrix4 implements Serializable {
 	 *
 	 * @param mata the first matrix.
 	 * @param matb the second matrix. */
-	public static native void mul (float[] mata, float[] matb) /*-{ }-*/; /*
+	public static native void mul (float[] mata, float[] matb);/*
 		matrix4_mul(mata, matb);
+	*/
+	
+	private static native void mul_JNICritical (int mataLength, float[] mata, int matbLength, float[] matb);/*
+	matrix4_mul(mata, matb);
 	*/
 
 	/** Multiplies the vector with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
@@ -1310,7 +1314,11 @@ public class Matrix4 implements Serializable {
 	 * {@link Vector3#mul(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void mulVec (float[] mat, float[] vec) /*-{ }-*/; /*
+	public static native void mulVec (float[] mat, float[] vec);/*
+		matrix4_mulVec(mat, vec);
+	*/
+	
+	private static native void mulVec_JNICritical (int matLength, float[] mat, int vecLength, float[] vec);/*
 		matrix4_mulVec(mat, vec);
 	*/
 
@@ -1325,12 +1333,20 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride);/*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_mulVec(mat, vecPtr);
 			vecPtr += stride;
 		}
+	*/
+	
+	private static native void mulVec_JNICritical (int matLength, float[] mat, int vecsLength, float[] vecs, int offset, int numVecs, int stride);/*
+	float* vecPtr = vecs + offset;
+	for(int i = 0; i < numVecs; i++) {
+		matrix4_mulVec(mat, vecPtr);
+		vecPtr += stride;
+	}
 	*/
 
 	/** Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
@@ -1339,8 +1355,12 @@ public class Matrix4 implements Serializable {
 	 * same as {@link Vector3#prj(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void prj (float[] mat, float[] vec) /*-{ }-*/; /*
+	public static native void prj (float[] mat, float[] vec);/*
 		matrix4_proj(mat, vec);
+	*/
+	
+	private static native void prj_JNICritical (int matLength, float[] mat, int vecLength, float[] vec);/*
+	matrix4_proj(mat, vec);
 	*/
 
 	/** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
@@ -1354,12 +1374,20 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride);/*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_proj(mat, vecPtr);
 			vecPtr += stride;
 		}
+	*/
+	
+	private static native void prj_JNICritical (int matLength, float[] mat, int vecsLength, float[] vecs, int offset, int numVecs, int stride);/*
+	float* vecPtr = vecs + offset;
+	for(int i = 0; i < numVecs; i++) {
+		matrix4_proj(mat, vecPtr);
+		vecPtr += stride;
+	}
 	*/
 
 	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
@@ -1368,8 +1396,12 @@ public class Matrix4 implements Serializable {
 	 * same as {@link Vector3#rot(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void rot (float[] mat, float[] vec) /*-{ }-*/; /*
+	public static native void rot (float[] mat, float[] vec);/*
 		matrix4_rot(mat, vec);
+	*/
+	
+	private static native void rot_JNICritical (int matLength, float[] mat, int vecLength, float[] vec);/*
+	matrix4_rot(mat, vec);
 	*/
 
 	/** Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
@@ -1383,19 +1415,31 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
+	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) ;/*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_rot(mat, vecPtr);
 			vecPtr += stride;
 		}
 	*/
+	
+	private static native void rot_JNICritical (int matLength, float[] mat, int vecsLength, float[] vecs, int offset, int numVecs, int stride) ;/*
+	float* vecPtr = vecs + offset;
+	for(int i = 0; i < numVecs; i++) {
+		matrix4_rot(mat, vecPtr);
+		vecPtr += stride;
+	}
+	*/
 
 	/** Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get from
 	 * {@link Matrix4#val}.
 	 * @param values the matrix values.
 	 * @return false in case the inverse could not be calculated, true otherwise. */
-	public static native boolean inv (float[] values) /*-{ }-*/; /*
+	public static native boolean inv (float[] values);/*
+		return matrix4_inv(values);
+	*/
+	
+	private static native boolean inv_JNICritical (int valuesLength, float[] values);/*
 		return matrix4_inv(values);
 	*/
 
@@ -1403,7 +1447,11 @@ public class Matrix4 implements Serializable {
 	 * from {@link Matrix4#val}.
 	 * @param values the matrix values.
 	 * @return the determinante. */
-	public static native float det (float[] values) /*-{ }-*/; /*
+	public static native float det (float[] values);/*
+		return matrix4_det(values);
+	*/
+	
+	private static native float det_JNICritical (int valuesLength, float[] values);/*
 		return matrix4_det(values);
 	*/
 

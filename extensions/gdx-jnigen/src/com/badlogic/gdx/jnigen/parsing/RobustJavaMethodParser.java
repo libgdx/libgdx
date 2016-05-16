@@ -137,6 +137,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		String className = classStack.peek().getName();
 		String name = method.getName();
 		boolean isStatic = ModifierSet.hasModifier(method.getModifiers(), ModifierSet.STATIC);
+		boolean isSynchronized = ModifierSet.hasModifier(method.getModifiers(), ModifierSet.SYNCHRONIZED);
 		String returnType = method.getType().toString();
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
 
@@ -146,7 +147,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 			}
 		}
 
-		return new JavaMethod(className, name, isStatic, returnType, null, arguments, method.getBeginLine(), method.getEndLine());
+		return new JavaMethod(className, name, isStatic, isSynchronized, returnType, null, arguments, method.getBeginLine(), method.getEndLine());
 	}
 
 	private ArgumentType getArgumentType (Parameter parameter) {

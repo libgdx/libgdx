@@ -118,6 +118,19 @@ public interface JavaMethodParser {
 			if (this == DoubleArray) return "double*";
 			throw new RuntimeException("Unknown Array type " + this);
 		}
+		
+		public String getArrayJniType () {
+			if (!this.isPrimitiveArray()) throw new RuntimeException("ArgumentType " + this + " is not an Array!");
+			if (this == BooleanArray) return "jboolean*";
+			if (this == ByteArray) return "jbyte*";
+			if (this == CharArray) return "jchar*";
+			if (this == ShortArray) return "jshort*";
+			if (this == IntegerArray) return "jint*";
+			if (this == LongArray) return "jlong*";
+			if (this == FloatArray) return "jfloat*";
+			if (this == DoubleArray) return "jdouble*";
+			throw new RuntimeException("Unknown Array type " + this);
+		}
 
 		public String getJniType () {
 			return jniType;
@@ -145,6 +158,19 @@ public interface JavaMethodParser {
 		public String toString () {
 			return "Argument [type=" + type + ", name=" + name + "]";
 		}
+
+		/** This only checks whether, the ArgumentType is the same, the name is ignored! 
+		 * DONT EVER CHANGE!*/
+		@Override
+		public boolean equals (Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			Argument other = (Argument)obj;
+			if (type != other.type) return false;
+			return true;
+		}
+		
 	}
 
 	/** @author mzechner */
@@ -152,24 +178,29 @@ public interface JavaMethodParser {
 		private final String className;
 		private final String name;
 		private final boolean isStatic;
+		private final boolean isSynchronized;
 		private boolean isManual;
+		private boolean isCritical;
 		private final String returnType;
 		private String nativeCode;
 		private final ArrayList<Argument> arguments;
 		private final boolean hasDisposableArgument;
 		private final int startIndex;
 		private final int endIndex;
+		public static final String CRITICAL_METHOD_NAME = "_JNICritical";
 
-		public JavaMethod (String className, String name, boolean isStatic, String returnType, String nativeCode,
+		public JavaMethod (String className, String name, boolean isStatic, boolean isSynchronized, String returnType, String nativeCode,
 			ArrayList<Argument> arguments, int startIndex, int endIndex) {
 			this.className = className;
 			this.name = name;
 			this.isStatic = isStatic;
+			this.isSynchronized = isSynchronized;
 			this.returnType = returnType;
 			this.nativeCode = nativeCode;
 			this.arguments = arguments;
 			this.startIndex = startIndex;
 			this.endIndex = endIndex;
+			this.isCritical = name.endsWith(CRITICAL_METHOD_NAME);
 			for (Argument arg : arguments) {
 				if (arg.type.isPrimitiveArray() || arg.type.isBuffer() || arg.type.isString()) {
 					hasDisposableArgument = true;
@@ -186,6 +217,10 @@ public interface JavaMethodParser {
 		public boolean isStatic () {
 			return isStatic;
 		}
+		
+		public boolean isSynchronized () {
+			return isSynchronized;
+		}
 
 		public void setManual (boolean isManual) {
 			this.isManual = isManual;
@@ -193,6 +228,83 @@ public interface JavaMethodParser {
 
 		public boolean isManual () {
 			return this.isManual;
+		}		
+
+		/** <p>
+		 * Critical natives are alternative native functions in Hotspot JVM since Java7. They are designed to improve performance of
+		 * native methods which only pass a few primitives and some (primitives) arrays (from 10 to 1K elements).
+		 * </p>
+		 * 
+		 * <p>
+		 * The declaration of a critical native is similar to a normal native function, but it starts with <b>JavaCritical_</b>
+		 * instead of <b>Java_</b>, and it hasn't <b>JNIEnv*</b> and <b>jclass</b> arguments. The standard implementation must be
+		 * preserved. Not only for running in other JVMs, but also because Hotspot has a "lazy entry policy" for critical natives.
+		 * The first time calling a critical native will always run the normal native function (starts with "Java_"). After some
+		 * invocations (could be hundreds) the Hotspot will replace the normal function with the critical one (starts with
+		 * "JavaCritical_").
+		 * </p>
+		 * 
+		 * <p>
+		 * Critical natives have some limits:
+		 * </p>
+		 * <ul>
+		 * <li>The method must be <b>static</b> and <b>non-synchronized</b>.</li>
+		 * <li>You can not use JNIEnv* or jclass.</li>
+		 * <li>Arguments must be <b>primitives</b> or <b>primitive arrays</b>, the primitive array will be passed in two parts:
+		 * First one is a <b>jint</b>, which represents the length of the array. Second one is a pointer to the raw array data.</li>
+		 * <li>It will block GC.</li>
+		 * <li>Only available in Hotspot JVM of Java7+.</li>
+		 * </ul>
+		 * 
+		 * For example:<br/>
+		 * <br/>
+		 * 
+		 * If a native method is:<br/>
+		 * <br/>
+		 * 
+		 * {@code public static native void foo(int i, float[] a1, float[] a2); //in somepackage.Someclass} <br/>
+		 * <br/>
+		 * 
+		 * The normal native function is: <br/>
+		 * <br/>
+		 * 
+		 * {@code Java_somepackage_Someclass_foo(JNIEnv*, jclass, jint, jfloatArray, jfloatArray);} <br/>
+		 * <br/>
+		 * 
+		 * The critical native function would be: <br/>
+		 * <br/>
+		 * 
+		 * {@code JavaCritical_somepackage_Someclass_foo(jint, jint, jfloat*, jint, jfloat*);} <br/>
+		 * <br/>
+		 * 
+		 * <b>Critical natives aren't generated by default.</b><br/>
+		 * You must first create a new (java) method, which has the same method name plus {@code_JNICritical} so the normal method
+		 * {@code foo} would become {@code foo_JNICritical}.<br/>
+		 * 
+		 * So our java method for the critical native would be:<br>
+		 * <br>
+		 * Critical method:
+		 * {@code public static native void foo_JNICritical(int i, int a1Length, float[] a1, int a2Length, float[] a2); //in somepackage.Someclass}
+		 * <br/>
+		 * Compared to the normal method some things changed:<br>
+		 * <br>
+		 * Normal method: {@code public static native void foo(int i, float[] a1, float[] a2); //in somepackage.Someclass} <br/>
+		 * <br>
+		 * <ul>
+		 * <li>The name changed to {@code foo_JNICritical}</li>
+		 * <li>The arguments changed, before every primitive array is a new param which contains the length of the primitive array.
+		 * </li>
+		 * </ul>
+		 * 
+		 * <p>
+		 * For more informations, visit <a href="
+		 * http://stackoverflow.com/questions/36298111/is-it-possible-to-use-sun-misc-unsafe-to-call-c-functions-without-jni/36309652#36309652
+		 * ">the original post in Stackoverflow</a>
+		 * </p>
+		 * 
+		 * @return Is this the critical version of another method, i.e. does the method name end with "_JNICritical". */
+		public boolean isCritical () {
+			return this.isCritical;
 		}
 
 		public String getReturnType () {
@@ -231,9 +343,15 @@ public interface JavaMethodParser {
 
 		@Override
 		public String toString () {
-			return "JavaMethod [className=" + className + ", name=" + name + ", isStatic=" + isStatic + ", returnType=" + returnType
-				+ ", nativeCode=" + nativeCode + ", arguments=" + arguments + ", hasDisposableArgument=" + hasDisposableArgument
-				+ ", startIndex=" + startIndex + ", endIndex=" + endIndex + "]";
+			return "JavaMethod [className=" + className + ", name=" + name + ", isStatic=" + isStatic + ", isSynchronized="
+				+ isSynchronized + ", returnType=" + returnType + ", nativeCode=" + nativeCode + ", arguments=" + arguments
+				+ ", hasDisposableArgument=" + hasDisposableArgument + ", startIndex=" + startIndex + ", endIndex=" + endIndex
+				+ ", isManual=" + isManual + ", isCritical=" + isCritical + "]";
+		}
+		
+		public String shortToString () {
+			return "JavaMethod [className=" + className + ", name=" + name + ", returnType=" + returnType + ", arguments="
+				+ arguments + "]";
 		}
 	}
 }
