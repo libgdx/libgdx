@@ -20,19 +20,19 @@
     </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-cocoatouch</artifactId>
           <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-objc</artifactId>
           <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-rt</artifactId>
           <version>${robovm.version}</version>
       </dependency>
