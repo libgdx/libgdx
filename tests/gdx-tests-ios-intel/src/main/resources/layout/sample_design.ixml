@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.sdklib.widgets.iOSViewController xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent" xmlns:xrt="http://schemas.android.com/apk/res/android" xrt:initialViewController="true" android:orientation="vertical" xrt:viewController="com.badlogicgames.gdx-tests-ios-intel.ui.AppViewController">
+
+<com.android.sdklib.widgets.iOSTextView
+                style="@style/XOSLabel"
+                android:textSize="15dp"
+                android:text="Label"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left" android:id="@+id/com.android.sdklib.widgets.iOSTextView" android:layout_weight="1.0" android:layout_marginLeft="10dp" android:layout_marginTop="10dp" xrt:iboutlet="statusText"/><com.android.sdklib.widgets.iOSButton
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textSize="15dp"
+                android:text="Press me!"
+                style="@style/XOSButton"
+              android:id="@+id/com.android.sdklib.widgets.iOSButton" android:layout_weight="1.0" xrt:ibaction="touchUpInside-BtnPressedCancel_helloButton:" xrt:iboutlet="helloButton"/></com.android.sdklib.widgets.iOSViewController>

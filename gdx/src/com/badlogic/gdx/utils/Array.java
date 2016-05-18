@@ -336,6 +336,15 @@ public class Array<T> implements Iterable<T> {
 		return items;
 	}
 
+	/** Sets the array size, leaving any values beyond the current size null.
+	 * @return {@link #items} */
+	public T[] setSize (int newSize) {
+		truncate(newSize);
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
+		return items;
+	}
+
 	/** Creates a new backing array with the specified size containing the current items. */
 	protected T[] resize (int newSize) {
 		T[] items = this.items;

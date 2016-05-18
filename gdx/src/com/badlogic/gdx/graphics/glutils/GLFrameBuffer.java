@@ -273,7 +273,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public void end () {
-		end(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		end(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 	}
 
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.

@@ -12,6 +12,9 @@ import com.badlogic.gdx.utils.Pool;
 public final class ParticleSystem implements RenderableProvider{
 	private static ParticleSystem instance;
 	
+	/**
+	 * @deprecated Please directly use the constructor
+	 */
 	public static ParticleSystem get(){
 		if(instance == null)
 			instance = new ParticleSystem();
@@ -21,7 +24,7 @@ public final class ParticleSystem implements RenderableProvider{
 	private Array<ParticleBatch<?>> batches;
 	private Array<ParticleEffect> effects;
 	
-	private ParticleSystem () {
+	public ParticleSystem () {
 		batches = new Array<ParticleBatch<?>>();
 		effects = new Array<ParticleEffect>();
 	}

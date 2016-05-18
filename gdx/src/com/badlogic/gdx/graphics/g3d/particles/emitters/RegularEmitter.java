@@ -214,6 +214,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		this.emissionMode = emissionMode;
 	}
 	
+	@Override
 	public boolean isComplete () {
 		if (delayTimer < delay) return false;
 		return durationTimer >= duration && controller.particles.size == 0;

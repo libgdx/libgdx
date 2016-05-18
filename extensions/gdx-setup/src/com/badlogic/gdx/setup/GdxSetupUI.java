@@ -186,6 +186,13 @@ public class GdxSetupUI extends JFrame {
 			}
 		}
 
+		if (modules.contains(ProjectType.IOSMOE)) {
+			if (System.getenv("INTEL_MULTI_OS_ENGINE_HOME") == null) {
+				JOptionPane.showMessageDialog(this, "Please install Intel Multi OS engine to use the ios-moe backend.");
+				return;
+			}
+		}
+
 		if (!GdxSetup.isEmptyDirectory(destination)) {
 			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
@@ -512,10 +519,12 @@ public class GdxSetupUI extends JFrame {
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
-				}
-				modules.add(projectType);
+				}				
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
-				checkBox.setSelected(true);
+				if (projectType != ProjectType.IOSMOE) {
+					modules.add(projectType);
+					checkBox.setSelected(true);
+				}
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override

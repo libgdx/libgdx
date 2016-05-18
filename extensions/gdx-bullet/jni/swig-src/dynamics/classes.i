@@ -1,3 +1,4 @@
+SPECIFY_CLASS(CustomActionInterface, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(Dynamics, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(DynamicsConstants, com.badlogic.gdx.physics.bullet.dynamics)
 SPECIFY_CLASS(DynamicsJNI, com.badlogic.gdx.physics.bullet.dynamics)

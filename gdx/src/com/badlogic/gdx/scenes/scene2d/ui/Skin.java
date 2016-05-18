@@ -21,6 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -103,7 +104,11 @@ public class Skin implements Disposable {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			add(region.name, region, TextureRegion.class);
+			String name = region.name;
+			if (region.index != -1) {
+			    name += "_" + region.index;
+			}
+			add(name, region, TextureRegion.class);
 		}
 	}
 
@@ -192,6 +197,21 @@ public class Skin implements Disposable {
 		region = new TextureRegion(texture);
 		add(name, region, TextureRegion.class);
 		return region;
+	}
+
+	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
+	public Array<TextureRegion> getRegions (String regionName) {
+		Array<TextureRegion> regions = null;
+		int i = 0;
+		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
+		if (region != null) {
+			regions = new Array<TextureRegion>();
+			while (region != null) {
+				regions.add(region);
+				region = optional(regionName + "_" + (i++), TextureRegion.class);
+			}
+		}
+		return regions;
 	}
 
 	/** Returns a registered tiled drawable. If no tiled drawable is found but a region exists with the name, a tiled drawable is
@@ -455,15 +475,20 @@ public class Skin implements Disposable {
 				String regionName = fontFile.nameWithoutExtension();
 				try {
 					BitmapFont font;
-					TextureRegion region = skin.optional(regionName, TextureRegion.class);
-					if (region != null)
-						font = new BitmapFont(fontFile, region, flip);
+					Array<TextureRegion> regions = skin.getRegions(regionName);
+					if (regions != null)
+						font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
 					else {
-						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
-						if (imageFile.exists())
-							font = new BitmapFont(fontFile, imageFile, flip);
-						else
-							font = new BitmapFont(fontFile, flip);
+						TextureRegion region = skin.optional(regionName, TextureRegion.class);
+						if (region != null)
+							font = new BitmapFont(fontFile, region, flip);
+						else {
+							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+							if (imageFile.exists())
+								font = new BitmapFont(fontFile, imageFile, flip);
+							else
+								font = new BitmapFont(fontFile, flip);
+						}
 					}
 					font.getData().markupEnabled = markupEnabled;
 					// Scaled size is the desired cap height to scale the font to.

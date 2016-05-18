@@ -138,6 +138,7 @@ public class Image extends Widget {
 		setDrawable(skin.getDrawable(drawableName));
 	}
 
+	/** @param drawable May be null. */
 	public void setDrawable (Drawable drawable) {
 		if (this.drawable == drawable) return;
 		if (drawable != null) {
@@ -147,6 +148,7 @@ public class Image extends Widget {
 		this.drawable = drawable;
 	}
 
+	/** @return May be null. */
 	public Drawable getDrawable () {
 		return drawable;
 	}

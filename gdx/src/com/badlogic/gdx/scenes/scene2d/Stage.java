@@ -219,7 +219,6 @@ public class Stage extends InputAdapter implements Disposable {
 		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
-		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		root.act(delta);
 	}
 

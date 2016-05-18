@@ -110,8 +110,8 @@ public class Window extends Table {
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
-					lastX = x;
-					lastY = y;
+					lastX = x - width;
+					lastY = y - height;
 				}
 				return edge != 0 || isModal;
 			}
@@ -150,20 +150,18 @@ public class Window extends Table {
 					windowY += amountY;
 				}
 				if ((edge & Align.right) != 0) {
-					float amountX = x - lastX;
+					float amountX = x - lastX - width;
 					if (width + amountX < minWidth) amountX = minWidth - width;
 					if (clampPosition && windowX + width + amountX > stage.getWidth()) amountX = stage.getWidth() - windowX - width;
 					width += amountX;
 				}
 				if ((edge & Align.top) != 0) {
-					float amountY = y - lastY;
+					float amountY = y - lastY - height;
 					if (height + amountY < minHeight) amountY = minHeight - height;
 					if (clampPosition && windowY + height + amountY > stage.getHeight())
 						amountY = stage.getHeight() - windowY - height;
 					height += amountY;
 				}
-				lastX = x;
-				lastY = y;
 				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
 			}
 

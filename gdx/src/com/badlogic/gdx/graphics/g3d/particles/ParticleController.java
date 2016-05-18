@@ -129,6 +129,10 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		transform.set(this.transform);
 	}
 	
+	public boolean isComplete() {
+		return emitter.isComplete();
+	}
+	
 	/** Initialize the controller.
 	 *  All the sub systems will be initialized and binded to the controller. 
 	 *  Must be called before any other method. */

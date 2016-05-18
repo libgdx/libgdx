@@ -220,6 +220,7 @@ public class Actor {
 	 * @see InputListener
 	 * @see ClickListener */
 	public boolean addListener (EventListener listener) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		if (!listeners.contains(listener, true)) {
 			listeners.add(listener);
 			return true;
@@ -228,6 +229,7 @@ public class Actor {
 	}
 
 	public boolean removeListener (EventListener listener) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		return listeners.removeValue(listener, true);
 	}
 
@@ -238,11 +240,13 @@ public class Actor {
 	/** Adds a listener that is only notified during the capture phase.
 	 * @see #fire(Event) */
 	public boolean addCaptureListener (EventListener listener) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		if (!captureListeners.contains(listener, true)) captureListeners.add(listener);
 		return true;
 	}
 
 	public boolean removeCaptureListener (EventListener listener) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
 		return captureListeners.removeValue(listener, true);
 	}
 

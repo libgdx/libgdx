@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -32,11 +34,13 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
 	private final Lwjgl3Window window;
 	private final GL20 gl20;
 	private final GL30 gl30;
+	private GLVersion glVersion;
 	private volatile int backBufferWidth;
 	private volatile int backBufferHeight;
 	private volatile int logicalWidth;
@@ -76,7 +80,15 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			this.gl30 = null;
 		}
 		updateFramebufferInfo();
+		initiateGL();
 		GLFW.glfwSetFramebufferSizeCallback(window.getWindowHandle(), resizeCallback);
+	}
+
+	private void initiateGL () {
+		String versionString = gl20.glGetString(GL11.GL_VERSION);
+		String vendorString = gl20.glGetString(GL11.GL_VENDOR);
+		String rendererString = gl20.glGetString(GL11.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
 	}
 
 	public Lwjgl3Window getWindow() {
@@ -185,6 +197,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public GraphicsType getType() {
 		return GraphicsType.LWJGL3;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
 	}
 
 	@Override
@@ -353,6 +370,26 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		GLFW.glfwSetWindowTitle(window.getWindowHandle(), title);
 	}
 
+	/**
+	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
+	 * for the changes to take effect.
+	 */
+	@Override
+	public void setUndecorated(boolean undecorated) {
+		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
+		config.setDecorated(!undecorated);
+	}
+
+	/**
+	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
+	 * for the changes to take effect.
+	 */
+	@Override
+	public void setResizable(boolean resizable) {
+		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
+		config.setResizable(resizable);
+	}
+
 	@Override
 	public void setVSync(boolean vsync) {
 		GLFW.glfwSwapInterval(vsync ? 1 : 0);
@@ -407,7 +444,6 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public void dispose() {
 		this.resizeCallback.release();
-		Lwjgl3Cursor.disposeAll();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {
