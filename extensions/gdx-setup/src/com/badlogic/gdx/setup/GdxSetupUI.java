@@ -519,10 +519,12 @@ public class GdxSetupUI extends JFrame {
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
-				}
-				modules.add(projectType);
+				}				
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
-				checkBox.setSelected(true);
+				if (projectType != ProjectType.IOSMOE) {
+					modules.add(projectType);
+					checkBox.setSelected(true);
+				}
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override

@@ -19,16 +19,14 @@ package com.badlogic.gdx.tests;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
-import com.badlogic.gdx.backends.iosmoe.IOSApplication;
-import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
+import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 
 public class IOSRobovmTests extends IOSApplication.Delegate {
 	
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-		config.useAccelerometer = false;
-		config.useGL30 = true;
 		return new IOSApplication(new BulletTestCollection(), config);
 	}
 
