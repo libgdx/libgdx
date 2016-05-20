@@ -311,6 +311,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
@@ -329,6 +330,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/resources/Default~ipad.png", false));
 			project.files.add(new ProjectFile("ios-moe/resources/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/resources/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios-moe/resources/Icon.png", false));
 			project.files.add(new ProjectFile("ios-moe/resources/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/resources/Icon-72.png", false));
