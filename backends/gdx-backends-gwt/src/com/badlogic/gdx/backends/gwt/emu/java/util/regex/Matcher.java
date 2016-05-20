@@ -43,7 +43,7 @@ public class Matcher {
 	public String group (int group) {
 		return matchResult.getGroup(group);
 	}
-}
+
 
     public static String quoteReplacement(String s) {
         if ((s.indexOf('\\') == -1) && (s.indexOf('$') == -1))
@@ -58,3 +58,4 @@ public class Matcher {
         }
         return sb.toString();
     }
+}
