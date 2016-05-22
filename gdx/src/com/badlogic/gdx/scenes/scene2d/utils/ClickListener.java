@@ -174,6 +174,11 @@ public class ClickListener extends InputListener {
 	public int getTapCount () {
 		return tapCount;
 	}
+	
+	/** Sets the tap count back to zero. */
+	public void resetTapCount () {
+		tapCount = 0;
+	}
 
 	public float getTouchDownX () {
 		return touchDownX;
