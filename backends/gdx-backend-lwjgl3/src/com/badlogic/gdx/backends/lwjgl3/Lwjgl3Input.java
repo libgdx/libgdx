@@ -769,11 +769,11 @@ public class Lwjgl3Input implements Input, Disposable {
 	
 	@Override
 	public void dispose() {
-		keyCallback.release();
-		charCallback.release();
-		scrollCallback.release();
-		cursorPosCallback.release();
-		mouseButtonCallback.release();
+		keyCallback.free();
+		charCallback.free();
+		scrollCallback.free();
+		cursorPosCallback.free();
+		mouseButtonCallback.free();
 	}
 
 	// --------------------------------------------------------------------------

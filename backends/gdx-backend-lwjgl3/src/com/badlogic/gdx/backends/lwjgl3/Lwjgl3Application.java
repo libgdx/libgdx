@@ -65,7 +65,7 @@ public class Lwjgl3Application implements Application {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
-			if (GLFW.glfwInit() != GLFW.GLFW_TRUE) {
+			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
 		}
@@ -161,7 +161,7 @@ public class Lwjgl3Application implements Application {
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
 		}
-		errorCallback.release();
+		errorCallback.free();
 		GLFW.glfwTerminate();
 	}
 
@@ -428,8 +428,8 @@ public class Lwjgl3Application implements Application {
 
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
-		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
-				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
+		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object")
+			|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object");
 	}
 
 }

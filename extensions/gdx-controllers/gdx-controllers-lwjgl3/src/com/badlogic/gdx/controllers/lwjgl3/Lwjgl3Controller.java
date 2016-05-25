@@ -29,7 +29,7 @@ public class Lwjgl3Controller implements Controller {
 	}
 	
 	void pollState() {
-		if(GLFW.glfwJoystickPresent(index) == GLFW.GLFW_FALSE) {
+		if(!GLFW.glfwJoystickPresent(index)) {
 			manager.disconnected(this);
 			return;
 		}
