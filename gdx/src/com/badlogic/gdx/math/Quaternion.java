@@ -841,7 +841,7 @@ public class Quaternion implements Serializable {
 	 * @param axisZ the z component of the normalized axis for which to get the angle
 	 * @return the angle in radians of the rotation around the specified axis */
 	public float getAngleAroundRad (final float axisX, final float axisY, final float axisZ) {
-		final float d = Math.abs(Vector3.dot(this.x, this.y, this.z, axisX, axisY, axisZ));
+		final float d = Vector3.dot(this.x, this.y, this.z, axisX, axisY, axisZ);
 		final float l2 = Quaternion.len2(axisX * d, axisY * d, axisZ * d, this.w);
 		return MathUtils.isZero(l2) ? 0f : (float)(2.0 * Math.acos(MathUtils.clamp(
 			(float)((d < 0 ? -this.w : this.w) / Math.sqrt(l2)), -1f, 1f)));
