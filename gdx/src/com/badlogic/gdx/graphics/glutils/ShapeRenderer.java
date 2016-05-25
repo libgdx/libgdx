@@ -930,6 +930,53 @@ public class ShapeRenderer implements Disposable {
 			}
 		}
 	}
+	
+	/** Calls {@link #ellipse(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	public void ellipse (float x, float y, float width, float height, float rotation) {
+		ellipse(x, y, width, height, rotation, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
+	}
+
+	/** Draws an ellipse using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
+	public void ellipse (float x, float y, float width, float height, float rotation, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
+		check(ShapeType.Line, ShapeType.Filled, segments * 3);
+		float colorBits = color.toFloatBits();
+		float angle = 2 * MathUtils.PI / segments;
+		
+		rotation = MathUtils.PI * rotation / 180f;
+		float sin = MathUtils.sin(rotation);
+		float cos = MathUtils.cos(rotation);
+
+		float cx = x + width / 2, cy = y + height / 2;
+		float x1 = width * 0.5f;
+		float y1 = 0;
+		if (shapeType == ShapeType.Line) {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+			}
+		} else {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+
+				renderer.color(colorBits);
+				renderer.vertex(cx, cy, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+			}
+		}
+	}
 
 	/** Calls {@link #cone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth
 	 * circular base. */

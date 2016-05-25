@@ -95,6 +95,7 @@ public class Lwjgl3Application implements Application {
 		windows.add(window);
 		try {
 			loop();
+			cleanupWindows();
 		} catch(Throwable t) {
 			if (t instanceof RuntimeException)
 				throw (RuntimeException) t;
@@ -148,10 +149,14 @@ public class Lwjgl3Application implements Application {
 		}
 	}
 
-	private void cleanup() {
+	private void cleanupWindows() {
 		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
+		windows.clear();
+	}
+	
+	private void cleanup() {
 		Lwjgl3Cursor.disposeSystemCursors();
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
@@ -315,12 +320,14 @@ public class Lwjgl3Application implements Application {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
 		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
 		appConfig.setWindowPosition(config.windowX, config.windowY);
+		appConfig.setWindowSizeLimits(config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
 		appConfig.setResizable(config.windowResizable);
 		appConfig.setDecorated(config.windowDecorated);
 		appConfig.setWindowListener(config.windowListener);
 		appConfig.setFullscreenMode(config.fullscreenMode);
 		appConfig.setTitle(config.title);
-		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);		
+		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);
+		appConfig.setInitialVisible(config.initialVisible);
 		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 		windows.add(window);
 		return window;
@@ -329,7 +336,7 @@ public class Lwjgl3Application implements Application {
 	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
-		window.setVisible(true);
+		window.setVisible(config.initialVisible);
 		return window;
 	}
 
@@ -372,10 +379,19 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
+		GLFW.glfwSetWindowSizeLimits(windowHandle, 
+			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
+				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
+					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
+						config.windowMaxHeight> -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
+				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
+				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
+				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
+				if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
 				GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - config.windowWidth / 2, vidMode.height() / 2 - config.windowHeight / 2);
+				GLFW.glfwSetWindowPos(windowHandle, vidMode.width() / 2 - windowWidth / 2, vidMode.height() / 2 - windowHeight / 2);
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}

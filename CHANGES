@@ -1,4 +1,6 @@
 [1.9.3]
+- Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
+- Addition of Intel Multi-OS Engine backend for deploying to iOS
 - Updated iOS native build scripts to iOS 9.3 and TVOS 9.2
 - API Addition: GestureDetector#pinchStop() called when no longer pinching
 - API Addition: Gdx.graphics.setUndecorated/setResizable API added to Graphics https://github.com/libgdx/libgdx/pull/3847
@@ -19,11 +21,13 @@
 - Fixed Gdx.input.getCurrentEventTime() not being set on LWJGL3, fixes GestureDetector and flick scroll not working
 - Fixed not being able to select non-latin characters in TextFields
 - Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
+- Add window size limits option to LWJGL3 app and window configurations
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
 - Fixed bug in AndroidGL20.cpp which cast a pointer to a 32-bit int. Crash on 64-bit ARM, but only for a specific code path and address...
 - Fixed multiple controllers registering on same index with LWJGL3, see https://github.com/libgdx/libgdx/issues/3774
+- Fixed the FreeTypeFontGenerator texture bleeding, see https://github.com/libgdx/libgdx/issues/3521
 
 [1.9.1]
 - API Change: Override GwtApplication#createApplicationListener() to create your ApplicationListener

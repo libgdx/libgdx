@@ -57,6 +57,7 @@ public class Lwjgl3ApplicationConfiguration {
 	int windowY = -1;
 	int windowWidth = 640;
 	int windowHeight = 480;
+	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	Lwjgl3WindowListener windowListener;
@@ -65,6 +66,7 @@ public class Lwjgl3ApplicationConfiguration {
 	boolean vSyncEnabled = true;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
+	boolean initialVisible = true;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
@@ -91,6 +93,10 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.windowY = config.windowY;
 		copy.windowWidth = config.windowWidth;
 		copy.windowHeight = config.windowHeight;
+		copy.windowMinWidth = config.windowMinWidth;
+		copy.windowMinHeight = config.windowMinHeight;
+		copy.windowMaxWidth = config.windowMaxWidth;
+		copy.windowMaxHeight = config.windowMaxHeight;
 		copy.windowResizable = config.windowResizable;
 		copy.windowDecorated = config.windowDecorated;
 		copy.windowListener = config.windowListener;
@@ -98,12 +104,19 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.vSyncEnabled = config.vSyncEnabled;
 		copy.title = config.title;
 		copy.initialBackgroundColor = config.initialBackgroundColor;
+		copy.initialVisible = config.initialVisible;
 		copy.preferencesDirectory = config.preferencesDirectory;
 		copy.preferencesFileType = config.preferencesFileType;
 		copy.hdpiMode = config.hdpiMode;
 		return copy;
 	}
 	
+	/**
+	 * @param visibility whether the window will be visible on creation. (default true)
+	 */
+	public void setInitialVisible(boolean visibility) {
+		this.initialVisible = visibility;
+	}
 
 	/**
 	 * Whether to disable audio or not. If set to false, the returned audio
@@ -219,6 +232,17 @@ public class Lwjgl3ApplicationConfiguration {
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
 		windowY = y;
+	}
+	
+	/**
+	 * Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these 
+	 * limits are ignored. The default for all four parameters is -1, which means unrestricted.
+	 */
+	public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+		windowMinWidth = minWidth;
+		windowMinHeight = minHeight;
+		windowMaxWidth = maxWidth;
+		windowMaxHeight = maxHeight;
 	}
 	
 	/**
