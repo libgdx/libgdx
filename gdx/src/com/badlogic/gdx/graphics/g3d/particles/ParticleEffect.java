@@ -86,10 +86,27 @@ public class ParticleEffect implements Disposable, ResourceData.Configurable {
 		return true;
 	}
 
-	/** Sets the given transform matrix on each controller. */
+	/** Sets the given transform matrix on each controller. {@link ParticleController#transform} affects where new particles are
+	 * generated. */
 	public void setTransform (Matrix4 transform) {
 		for (int i = 0, n = controllers.size; i < n; i++)
 			controllers.get(i).setTransform(transform);
+	}
+
+	/** Sets the given world transform matrix on each controller. {@link ParticleController#worldTransform} affects translation,
+	 * rotation and scale of all particles this effect has generated. If the given matrix is null, the world transforms of the
+	 * particle controllers are also set to null. */
+	public void setWorldTransform (Matrix4 worldTransform) {
+		for (int i = 0, n = controllers.size; i < n; i++)
+			controllers.get(i).setWorldTransform(worldTransform);
+	}
+
+	/** If true, the scaling of {@link ParticleEffect#setWorldTransform(Matrix4)} will affect the size of the particles and the
+	 * distance between them. If false, the scaling will only affect the distance between the particles. Scaling of point sprite
+	 * particles is not supported. */
+	public void setWorldTransformScalesParticles (boolean value) {
+		for (int i = 0, n = controllers.size; i < n; i++)
+			controllers.get(i).worldTransformScalesParticles = value;
 	}
 
 	/** Applies the rotation to the current transformation matrix of each controller. */

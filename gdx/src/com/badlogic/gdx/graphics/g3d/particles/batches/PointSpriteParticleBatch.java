@@ -38,6 +38,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteControllerRenderData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -111,6 +112,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 	@Override
 	protected void flush (int[] offsets) {
+		Vector3 pos = TMP_V1;
 		int tp = 0;
 		for (PointSpriteControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
@@ -118,6 +120,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
+			Matrix4 worldTransform = data.controller.worldTransform;
 
 			for (int p = 0; p < data.controller.particles.size; ++p, ++tp) {
 				int offset = offsets[tp] * CPU_VERTEX_SIZE;
@@ -126,9 +129,14 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 				int colorOffset = p * colorChannel.strideSize;
 				int rotationOffset = p * rotationChannel.strideSize;
 
-				vertices[offset + CPU_POSITION_OFFSET] = positionChannel.data[positionOffset + ParticleChannels.XOffset];
-				vertices[offset + CPU_POSITION_OFFSET + 1] = positionChannel.data[positionOffset + ParticleChannels.YOffset];
-				vertices[offset + CPU_POSITION_OFFSET + 2] = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+				pos.x = positionChannel.data[positionOffset + ParticleChannels.XOffset];
+				pos.y = positionChannel.data[positionOffset + ParticleChannels.YOffset];
+				pos.z = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+				if (worldTransform != null) pos.mul(worldTransform);
+
+				vertices[offset + CPU_POSITION_OFFSET] = pos.x;
+				vertices[offset + CPU_POSITION_OFFSET + 1] = pos.y;
+				vertices[offset + CPU_POSITION_OFFSET + 2] = pos.z;
 				vertices[offset + CPU_COLOR_OFFSET] = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				vertices[offset + CPU_COLOR_OFFSET + 1] = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				vertices[offset + CPU_COLOR_OFFSET + 2] = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];

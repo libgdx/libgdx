@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -50,6 +51,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3(), TMP_V4 = new Vector3(),
 		TMP_V5 = new Vector3(), TMP_V6 = new Vector3();
 	protected static final Matrix3 TMP_M3 = new Matrix3();
+	protected static final Matrix4 TMP_M4 = new Matrix4();
 	// Attributes
 	protected static final int sizeAndRotationUsage = 1 << 9, directionUsage = 1 << 10;
 	private static final VertexAttributes GPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3,
@@ -350,6 +352,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	}
 
 	private void fillVerticesGPU (int[] particlesOffset) {
+		Vector3 pos = TMP_V5;
+		Matrix4 worldViewTransform = TMP_M4;
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
@@ -357,6 +361,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
+			Matrix4 worldTransform = data.controller.worldTransform;
+			float worldViewScaleX = 1;
+			float worldViewScaleY = 1;
+			if (worldTransform != null && data.controller.worldTransformScalesParticles) {
+				worldViewTransform.set(camera.view).mul(worldTransform);
+				worldViewScaleX = worldViewTransform.getScaleX();
+				worldViewScaleY = worldViewTransform.getScaleY();
+			}
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -364,30 +376,36 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
 				int rotationOffset = p * rotationChannel.strideSize;
-				float px = positionChannel.data[positionOffset + ParticleChannels.XOffset], py = positionChannel.data[positionOffset
-					+ ParticleChannels.YOffset], pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+				pos.x = positionChannel.data[positionOffset + ParticleChannels.XOffset];
+				pos.y = positionChannel.data[positionOffset + ParticleChannels.YOffset];
+				pos.z = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset + ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset + ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
-				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale, sy = regionChannel.data[regionOffset
-					+ ParticleChannels.HalfHeightOffset]
-					* scale;
+				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale;
+				float sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scale;
 				float r = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
 				float a = colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset + ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset + ParticleChannels.SineOffset];
-
+				if (worldTransform != null) {
+					pos.mul(worldTransform);
+					if (data.controller.worldTransformScalesParticles) {
+						sx *= worldViewScaleX;
+						sy *= worldViewScaleY;
+					}
+				}
 				// bottom left, bottom right, top right, top left
-				putVertex(vertices, baseOffset, px, py, pz, u, v2, -sx, -sy, cosRotation, sinRotation, r, g, b, a);
+				putVertex(vertices, baseOffset, pos.x, pos.y, pos.z, u, v2, -sx, -sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
-				putVertex(vertices, baseOffset, px, py, pz, u2, v2, sx, -sy, cosRotation, sinRotation, r, g, b, a);
+				putVertex(vertices, baseOffset, pos.x, pos.y, pos.z, u2, v2, sx, -sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
-				putVertex(vertices, baseOffset, px, py, pz, u2, v, sx, sy, cosRotation, sinRotation, r, g, b, a);
+				putVertex(vertices, baseOffset, pos.x, pos.y, pos.z, u2, v, sx, sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
-				putVertex(vertices, baseOffset, px, py, pz, u, v, -sx, sy, cosRotation, sinRotation, r, g, b, a);
+				putVertex(vertices, baseOffset, pos.x, pos.y, pos.z, u, v, -sx, sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
 			}
 		}
@@ -466,6 +484,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	 */
 
 	private void fillVerticesToViewPointCPU (int[] particlesOffset) {
+		Vector3 pos = TMP_V5;
+		Matrix4 worldViewTransform = TMP_M4;
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
@@ -473,7 +493,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
-
+			Matrix4 worldTransform = data.controller.worldTransform;
+			float worldViewScaleX = 1;
+			float worldViewScaleY = 1;
+			if (worldTransform != null && data.controller.worldTransformScalesParticles) {
+				worldViewTransform.set(camera.view).mul(worldTransform);
+				worldViewScaleX = worldViewTransform.getScaleX();
+				worldViewScaleY = worldViewTransform.getScaleY();
+			}
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -481,22 +508,29 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
 				int rotationOffset = p * rotationChannel.strideSize;
-				float px = positionChannel.data[positionOffset + ParticleChannels.XOffset], py = positionChannel.data[positionOffset
-					+ ParticleChannels.YOffset], pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+				pos.x = positionChannel.data[positionOffset + ParticleChannels.XOffset];
+				pos.y = positionChannel.data[positionOffset + ParticleChannels.YOffset];
+				pos.z = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset + ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset + ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
-				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale, sy = regionChannel.data[regionOffset
-					+ ParticleChannels.HalfHeightOffset]
-					* scale;
+				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale;
+				float sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scale;
 				float r = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
 				float a = colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset + ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset + ParticleChannels.SineOffset];
-				Vector3 look = TMP_V3.set(camera.position).sub(px, py, pz).nor(), // normal
+				if (worldTransform != null) {
+					pos.mul(worldTransform);
+					if (data.controller.worldTransformScalesParticles) {
+						sx *= worldViewScaleX;
+						sy *= worldViewScaleY;
+					}
+				}
+				Vector3 look = TMP_V3.set(camera.position).sub(pos).nor(), // normal
 				right = TMP_V1.set(camera.up).crs(look).nor(), // tangent
 				up = TMP_V2.set(look).crs(right);
 				right.scl(sx);
@@ -505,38 +539,40 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				if (cosRotation != 1) {
 					TMP_M3.setToRotation(look, cosRotation, sinRotation);
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(px, py, pz), u,
-						v2, r, g, b, a);
+						TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(pos), u, v2, r, g,
+						b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(px, py, pz), u2, v2,
-						r, g, b, a);
+						TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(pos), u2, v2, r, g, b,
+						a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(px, py, pz), u2, v,
-						r, g, b, a);
+						TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(pos), u2, v, r, g, b,
+						a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(px, py, pz), u, v,
-						r, g, b, a);
+						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(pos), u, v, r, g,
+						b, a);
 				} else {
-					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x - TMP_V2.x + px, -TMP_V1.y - TMP_V2.y + py, -TMP_V1.z - TMP_V2.z + pz), u, v2, r, g, b, a);
+					putVertex(vertices, baseOffset, TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).add(pos),
+						u, v2, r, g, b, a);
+					baseOffset += currentVertexSize;
+					putVertex(vertices, baseOffset, TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).add(pos),
+						u2, v2, r, g, b, a);
+					baseOffset += currentVertexSize;
+					putVertex(vertices, baseOffset, TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).add(pos),
+						u2, v, r, g, b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x - TMP_V2.x + px, TMP_V1.y - TMP_V2.y + py, TMP_V1.z - TMP_V2.z + pz), u2, v2, r, g, b, a);
-					baseOffset += currentVertexSize;
-					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x + TMP_V2.x + px, TMP_V1.y + TMP_V2.y + py, TMP_V1.z + TMP_V2.z + pz), u2, v, r, g, b, a);
-					baseOffset += currentVertexSize;
-					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
+						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).add(pos), u, v, r, g, b, a);
 				}
 			}
 		}
 	}
 
 	private void fillVerticesToScreenCPU (int[] particlesOffset) {
+		Vector3 pos = TMP_V5;
+		Matrix4 worldViewTransform = TMP_M4;
 		Vector3 look = TMP_V3.set(camera.direction).scl(-1), // normal
 		right = TMP_V4.set(camera.up).crs(look).nor(), // tangent
 		up = camera.up;
@@ -548,7 +584,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
-
+			Matrix4 worldTransform = data.controller.worldTransform;
+			float worldViewScaleX = 1;
+			float worldViewScaleY = 1;
+			if (worldTransform != null && data.controller.worldTransformScalesParticles) {
+				worldViewTransform.set(camera.view).mul(worldTransform);
+				worldViewScaleX = worldViewTransform.getScaleX();
+				worldViewScaleY = worldViewTransform.getScaleY();
+			}
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -556,53 +599,60 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
 				int rotationOffset = p * rotationChannel.strideSize;
-				float px = positionChannel.data[positionOffset + ParticleChannels.XOffset], py = positionChannel.data[positionOffset
-					+ ParticleChannels.YOffset], pz = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+				pos.x = positionChannel.data[positionOffset + ParticleChannels.XOffset];
+				pos.y = positionChannel.data[positionOffset + ParticleChannels.YOffset];
+				pos.z = positionChannel.data[positionOffset + ParticleChannels.ZOffset];
 				float u = regionChannel.data[regionOffset + ParticleChannels.UOffset];
 				float v = regionChannel.data[regionOffset + ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
-				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale, sy = regionChannel.data[regionOffset
-					+ ParticleChannels.HalfHeightOffset]
-					* scale;
+				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale;
+				float sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scale;
 				float r = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
 				float a = colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset + ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset + ParticleChannels.SineOffset];
+				if (worldTransform != null) {
+					pos.mul(worldTransform);
+					if (data.controller.worldTransformScalesParticles) {
+						sx *= worldViewScaleX;
+						sy *= worldViewScaleY;
+					}
+				}
 				TMP_V1.set(right).scl(sx);
 				TMP_V2.set(up).scl(sy);
 
 				if (cosRotation != 1) {
 					TMP_M3.setToRotation(look, cosRotation, sinRotation);
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(px, py, pz), u,
-						v2, r, g, b, a);
+						TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(pos), u, v2, r, g,
+						b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(px, py, pz), u2, v2,
-						r, g, b, a);
+						TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).mul(TMP_M3).add(pos), u2, v2, r, g, b,
+						a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(px, py, pz), u2, v,
-						r, g, b, a);
+						TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(pos), u2, v, r, g, b,
+						a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(px, py, pz), u, v,
-						r, g, b, a);
+						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).mul(TMP_M3).add(pos), u, v, r, g,
+						b, a);
 				} else {
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x - TMP_V2.x + px, -TMP_V1.y - TMP_V2.y + py, -TMP_V1.z - TMP_V2.z + pz), u, v2, r, g, b, a);
+						TMP_V6.set(-TMP_V1.x - TMP_V2.x, -TMP_V1.y - TMP_V2.y, -TMP_V1.z - TMP_V2.z).add(pos), u, v2, r, g, b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x - TMP_V2.x + px, TMP_V1.y - TMP_V2.y + py, TMP_V1.z - TMP_V2.z + pz), u2, v2, r, g, b, a);
+						TMP_V6.set(TMP_V1.x - TMP_V2.x, TMP_V1.y - TMP_V2.y, TMP_V1.z - TMP_V2.z).add(pos), u2, v2, r, g, b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(TMP_V1.x + TMP_V2.x + px, TMP_V1.y + TMP_V2.y + py, TMP_V1.z + TMP_V2.z + pz), u2, v, r, g, b, a);
+						TMP_V6.set(TMP_V1.x + TMP_V2.x, TMP_V1.y + TMP_V2.y, TMP_V1.z + TMP_V2.z).add(pos), u2, v, r, g, b, a);
 					baseOffset += currentVertexSize;
 					putVertex(vertices, baseOffset,
-						TMP_V6.set(-TMP_V1.x + TMP_V2.x + px, -TMP_V1.y + TMP_V2.y + py, -TMP_V1.z + TMP_V2.z + pz), u, v, r, g, b, a);
+						TMP_V6.set(-TMP_V1.x + TMP_V2.x, -TMP_V1.y + TMP_V2.y, -TMP_V1.z + TMP_V2.z).add(pos), u, v, r, g, b, a);
 				}
 			}
 		}
