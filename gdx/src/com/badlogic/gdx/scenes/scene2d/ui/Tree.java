@@ -290,8 +290,15 @@ public class Tree extends WidgetGroup {
 		return rootNodes;
 	}
 
+	/** @return May be null. */
 	public Node getOverNode () {
 		return overNode;
+	}
+
+	/** @return May be null. */
+	public Object getOverObject () {
+		if (overNode == null) return null;
+		return overNode.getObject();
 	}
 
 	/** @param overNode May be null. */
