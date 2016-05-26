@@ -294,6 +294,7 @@ public class Tree extends WidgetGroup {
 		return overNode;
 	}
 
+	/** @param overNode May be null. */
 	public void setOverNode (Node overNode) {
 		this.overNode = overNode;
 	}
