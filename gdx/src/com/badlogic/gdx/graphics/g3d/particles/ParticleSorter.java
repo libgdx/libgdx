@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Inferno */
 public abstract class ParticleSorter {
 	static final Vector3 TMP_V1 = new Vector3();
+	static final Vector3 TMP_V2 = new Vector3();
 
 	/** Using this class will not apply sorting */
 	public static class None extends ParticleSorter {
@@ -67,13 +68,15 @@ public abstract class ParticleSorter {
 		@Override
 		public <T extends ParticleControllerRenderData> int[] sort (Array<T> renderData) {
 			float[] val = camera.view.val;
-			float cx = val[Matrix4.M20], cy = val[Matrix4.M21], cz = val[Matrix4.M22];
+			Vector3 cam = TMP_V1.set(val[Matrix4.M20], val[Matrix4.M21], val[Matrix4.M22]);
 			int count = 0, i = 0;
 			for (ParticleControllerRenderData data : renderData) {
 				for (int k = 0, c = i + data.controller.particles.size; i < c; ++i, k += data.positionChannel.strideSize) {
-					distances[i] = cx * data.positionChannel.data[k + ParticleChannels.XOffset] + cy
-						* data.positionChannel.data[k + ParticleChannels.YOffset] + cz
-						* data.positionChannel.data[k + ParticleChannels.ZOffset];
+					Vector3 pos = TMP_V2.set(data.positionChannel.data[k + ParticleChannels.XOffset],
+						data.positionChannel.data[k + ParticleChannels.YOffset],
+						data.positionChannel.data[k + ParticleChannels.ZOffset]);
+					if (data.controller.worldTransform != null) pos.mul(data.controller.worldTransform);
+					distances[i] = cam.dot(pos);
 					particleIndices[i] = i;
 				}
 				count += data.controller.particles.size;
