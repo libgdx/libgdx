@@ -107,8 +107,6 @@ public class HeadlessApplication implements Application {
 
 		listener.create();
 
-		boolean wasActive = true;
-
 		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
 		long t = TimeUtils.nanoTime() + renderInterval;

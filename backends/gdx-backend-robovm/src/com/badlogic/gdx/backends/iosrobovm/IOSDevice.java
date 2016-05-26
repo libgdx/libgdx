@@ -57,7 +57,9 @@ public enum IOSDevice {
 	IPAD_MINI_AIR_2_WIFI_CELLULAR("iPad5,4", 264),
 	IPAD_PRO_WIFI("iPad6,7", 264),
 	IPAD_PRO("iPad6,8", 264),
-	
+	IPAD_PRO_97_WIFI("iPad6,3", 264),
+	IPAD_PRO_97("iPad6,4", 264),
+
 	SIMULATOR_32("i386", 264),
 	SIMULATOR_64("x86_64", 264);
 	

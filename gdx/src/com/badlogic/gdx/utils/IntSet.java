@@ -80,7 +80,7 @@ public class IntSet {
 
 	/** Creates a new set identical to the specified set. */
 	public IntSet (IntSet set) {
-		this(set.capacity, set.loadFactor);
+		this((int)Math.floor(set.capacity * set.loadFactor), set.loadFactor);
 		stashSize = set.stashSize;
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;

@@ -44,13 +44,18 @@ public class Lwjgl3Input implements Input, Disposable {
 	private long currentEventTime;	
 	private char lastCharacter;
 	
+	private void updateCurrentEventTime () {
+		currentEventTime = System.nanoTime();
+	}
+	
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
 		@Override
 		public void invoke(long window, int key, int scancode, int action, int mods) {
 			switch (action) {
 			case GLFW.GLFW_PRESS:
 				key = getGdxKeyCode(key);
-				eventQueue.keyDown(key);
+				updateCurrentEventTime();
+				eventQueue.keyDown(key);								
 				pressedKeys++;
 				keyJustPressed = true;
 				justPressedKeys[key] = true;
@@ -62,12 +67,14 @@ public class Lwjgl3Input implements Input, Disposable {
 			case GLFW.GLFW_RELEASE:
 				pressedKeys--;
 				Lwjgl3Input.this.window.getGraphics().requestRendering();
+				updateCurrentEventTime();
 				eventQueue.keyUp(getGdxKeyCode(key));
 				break;
 
 			case GLFW.GLFW_REPEAT:
 				if (lastCharacter != 0) {
 					Lwjgl3Input.this.window.getGraphics().requestRendering();
+					updateCurrentEventTime();
 					eventQueue.keyTyped(lastCharacter);
 				}
 				break;
@@ -81,6 +88,7 @@ public class Lwjgl3Input implements Input, Disposable {
 			if ((codepoint & 0xff00) == 0xf700) return;
 			lastCharacter = (char)codepoint;
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
+			updateCurrentEventTime();
 			eventQueue.keyTyped((char)codepoint);
 		}
 	};
@@ -89,6 +97,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		@Override
 		public void invoke(long window, double scrollX, double scrollY) {
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
+			updateCurrentEventTime();
 			eventQueue.scrolled((int)-Math.signum(scrollY));
 		}
 	};
@@ -98,7 +107,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		private int logicalMouseX;
 
 		@Override
-		public void invoke(long windowHandle, double x, double y) {
+		public void invoke(long windowHandle, double x, double y) {			
 			deltaX = (int)x - logicalMouseX;
 			deltaY = (int)y - logicalMouseY;
 			mouseX = logicalMouseX = (int)x;
@@ -114,6 +123,7 @@ public class Lwjgl3Input implements Input, Disposable {
 			}
 			
 			Lwjgl3Input.this.window.getGraphics().requestRendering();
+			updateCurrentEventTime();
 			if (mousePressed > 0) {								
 				eventQueue.touchDragged(mouseX, mouseY, 0);
 			} else {								
@@ -127,6 +137,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		public void invoke(long window, int button, int action, int mods) {
 			int gdxButton = toGdxButton(button);
 			if (button != -1 && gdxButton == -1) return;
+			updateCurrentEventTime(); 
 
 			if (action == GLFW.GLFW_PRESS) {
 				mousePressed++;
@@ -864,5 +875,5 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public float getGyroscopeZ() {
 		return 0;
-	}
+	}	
 }

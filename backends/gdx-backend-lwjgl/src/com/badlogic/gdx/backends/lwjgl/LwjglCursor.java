@@ -5,16 +5,20 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglCursor implements Cursor {
 	org.lwjgl.input.Cursor lwjglCursor = null;
 
 	public LwjglCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+		if (((LwjglGraphics)Gdx.graphics).canvas != null && SharedLibraryLoader.isMac) {
+			return;
+		}
 		try {
 			if (pixmap == null) {
 				lwjglCursor = null;

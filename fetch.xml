@@ -46,6 +46,7 @@
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
+        <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
 		<!-- core -->		
 		<get src="http://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>

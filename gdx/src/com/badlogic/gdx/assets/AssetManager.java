@@ -398,7 +398,7 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	/** Blocks until the specified aseet is loaded.
+	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
 	public void finishLoadingAsset (String fileName) {
 		log.debug("Waiting for asset to be loaded: " + fileName);

@@ -68,6 +68,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
@@ -129,6 +130,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.clipboard = new AndroidClipboard(this);
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -298,13 +300,8 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
 		return clipboard;
 	}
 

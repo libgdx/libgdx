@@ -68,7 +68,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author Nathan Sweet
  * @author Rob Rendell */
 public class FreeTypeFontGenerator implements Disposable {
-	static public final String DEFAULT_CHARS = "\u0000ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
+	static public final String DEFAULT_CHARS = "\u0000ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$€-%+=#_&~*\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
 	/** A hint to scale the texture as needed, without capping it at any maximum size */
 	static public final int NO_MAXIMUM = -1;
@@ -120,8 +120,31 @@ public class FreeTypeFontGenerator implements Disposable {
 		setPixelSizes(0, 15);
 	}
 
+	private int getLoadingFlags (FreeTypeFontParameter parameter) {
+		int loadingFlags = FreeType.FT_LOAD_DEFAULT;
+		switch (parameter.hinting) {
+		case None:
+			loadingFlags |= FreeType.FT_LOAD_NO_HINTING;
+			break;
+		case Slight:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_LIGHT;
+			break;
+		case Medium:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_NORMAL;
+			break;
+		case Full:
+			loadingFlags |= FreeType.FT_LOAD_FORCE_AUTOHINT | FreeType.FT_LOAD_TARGET_MONO;
+			break;
+		}
+		return loadingFlags;
+	}
+
 	private boolean loadChar (int c) {
-		return face.loadChar(c, FreeType.FT_LOAD_DEFAULT | FreeType.FT_LOAD_FORCE_AUTOHINT);
+		return loadChar(c, FreeType.FT_LOAD_DEFAULT | FreeType.FT_LOAD_FORCE_AUTOHINT);
+	}
+
+	private boolean loadChar (int c, int flags) {
+		return face.loadChar(c, flags);
 	}
 
 	private boolean checkForBitmapFont () {
@@ -274,6 +297,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		char[] characters = parameter.characters.toCharArray();
 		int charactersLength = characters.length;
 		boolean incremental = parameter.incremental;
+		int flags = getLoadingFlags(parameter);
 
 		setPixelSizes(0, parameter.size);
 
@@ -288,7 +312,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
 			for (int c = 32; c < (32 + face.getNumGlyphs()); c++) {
-				if (loadChar(c)) {
+				if (loadChar(c, flags)) {
 					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight;
 				}
@@ -297,7 +321,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.lineHeight += parameter.spaceY;
 
 		// determine space width
-		if (loadChar(' ') || loadChar('l')) {
+		if (loadChar(' ', flags) || loadChar('l', flags)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // Possibly very wrong.
@@ -305,7 +329,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine x-height
 		for (char xChar : data.xChars) {
-			if (!loadChar(xChar)) continue;
+			if (!loadChar(xChar, flags)) continue;
 			data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -313,7 +337,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine cap height
 		for (char capChar : data.capChars) {
-			if (!loadChar(capChar)) continue;
+			if (!loadChar(capChar, flags)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -345,6 +369,12 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 			ownsAtlas = true;
 			packer = new PixmapPacker(size, size, Format.RGBA8888, 1, false, packStrategy);
+			packer.setTransparentColor(parameter.color);
+			packer.getTransparentColor().a = 0;
+			if (parameter.borderWidth > 0) {
+				packer.setTransparentColor(parameter.borderColor);
+				packer.getTransparentColor().a = 0;
+			}
 		}
 
 		if (incremental) data.glyphs = new Array(charactersLength + 32);
@@ -366,7 +396,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// Create glyphs largest height first for best packing.
 		int[] heights = new int[charactersLength];
 		for (int i = 0, n = charactersLength; i < n; i++) {
-			int height = loadChar(characters[i]) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
+			int height = loadChar(characters[i], flags) ? FreeType.toInt(face.getGlyph().getMetrics().getHeight()) : 0;
 			heights[i] = height;
 		}
 		int heightsCount = heights.length;
@@ -452,7 +482,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		boolean missing = face.getCharIndex(c) == 0 && c != 0;
 		if (missing) return null;
 
-		if (!loadChar(c)) return null;
+		if (!loadChar(c, getLoadingFlags(parameter))) return null;
 
 		GlyphSlot slot = face.getGlyph();
 		FreeType.Glyph mainGlyph = slot.getGlyph();
@@ -661,6 +691,18 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 	}
 
+	/** Font smoothing algorithm. */
+	public static enum Hinting {
+		/** Disable hinting. Generated glyphs will look blurry. */
+		None,
+		/** Light hinting with fuzzy edges, but close to the original shape */
+		Slight,
+		/** Default hinting */
+		Medium,
+		/** Strong hinting with crisp edges at the expense of shape fidelity */
+		Full
+	}
+
 	/** Parameter container class that helps configure how {@link FreeTypeBitmapFontData} and {@link BitmapFont} instances are
 	 * generated.
 	 * 
@@ -676,6 +718,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int size = 16;
 		/** If true, font smoothing is disabled. */
 		public boolean mono;
+		/** Strength of hinting when smoothing is enabled */
+		public Hinting hinting = Hinting.Medium;
 		/** Foreground color (required for non-black borders) */
 		public Color color = Color.WHITE;
 		/** Glyph gamma. Values > 1 reduce antialiasing. */

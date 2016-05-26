@@ -41,7 +41,6 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 				}
 				if(!alreadyUsed) {
 					Lwjgl3Controller controller = new Lwjgl3Controller(this, i);
-					controllers.add(controller);
 					connected(controller);
 				}
 			}
