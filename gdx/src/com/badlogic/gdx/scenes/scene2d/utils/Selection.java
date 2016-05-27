@@ -107,6 +107,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setAll (Array<T> items) {
 		boolean added = false;
 		snapshot();
+		lastSelected = null;
 		selected.clear();
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
@@ -115,7 +116,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		if (added && programmaticChangeEvents && fireChangeEvent())
 			revert();
-		else
+		else if (items.size > 0) //
 			lastSelected = items.peek();
 		cleanup();
 	}
