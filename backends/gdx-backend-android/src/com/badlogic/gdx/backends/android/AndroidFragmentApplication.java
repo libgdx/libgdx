@@ -89,12 +89,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public void onDetach () {
 		super.onDetach();
 		this.callbacks = null;
-		Gdx.app = null;
-		Gdx.input = null;
-		Gdx.audio = null;
-		Gdx.files = null;
-		Gdx.graphics = null;
-		Gdx.net = null;
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
