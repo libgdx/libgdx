@@ -303,7 +303,7 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !panning && //
-		// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 20% of the scroll area.
+		// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 10% of the scroll area.
 		((!touchScrollH || (scrollX && maxX / (hScrollBounds.width - hKnobBounds.width) > areaWidth * 0.1f)) //
 			&& (!touchScrollV || (scrollY && maxY / (vScrollBounds.height - vKnobBounds.height) > areaHeight * 0.1f))) //
 		) {

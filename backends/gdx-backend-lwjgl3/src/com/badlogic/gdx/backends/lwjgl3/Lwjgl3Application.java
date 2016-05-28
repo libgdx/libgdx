@@ -95,6 +95,7 @@ public class Lwjgl3Application implements Application {
 		windows.add(window);
 		try {
 			loop();
+			cleanupWindows();
 		} catch(Throwable t) {
 			if (t instanceof RuntimeException)
 				throw (RuntimeException) t;
@@ -148,10 +149,14 @@ public class Lwjgl3Application implements Application {
 		}
 	}
 
-	private void cleanup() {
+	private void cleanupWindows() {
 		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
+		windows.clear();
+	}
+	
+	private void cleanup() {
 		Lwjgl3Cursor.disposeSystemCursors();
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();

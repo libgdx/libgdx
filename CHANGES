@@ -1,4 +1,5 @@
 [1.9.3]
+- Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
 - Addition of Intel Multi-OS Engine backend for deploying to iOS
 - Updated iOS native build scripts to iOS 9.3 and TVOS 9.2
 - API Addition: GestureDetector#pinchStop() called when no longer pinching
