@@ -147,6 +147,21 @@ public class CollectionsTest extends GdxTest {
 			iterationCount++;
 		}
 		assertEquals(iterationCount, keys.length);
+
+		// perform an iteration and remove test for every index
+		for (int i = 0, n = keys.length; i < n; ++i) {
+			anotherMap = copy(map);
+			it = ((Iterable) anotherMap).iterator();
+			iterationCount = 0;
+			while (it.hasNext()) {
+				Object entry = it.next();
+				if (iterationCount == i) {
+					it.remove();
+				}
+				iterationCount++;
+			}
+			assertEquals(iterationCount, keys.length);
+		}
 	}
 
 	private void testArray (Class<?> arrayClass, Object[] values) {
