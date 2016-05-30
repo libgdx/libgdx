@@ -157,7 +157,7 @@ public class LwjglGraphics implements Graphics {
 		if (config.useHDPI) {
 			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
 		}
-		
+
 		setUndecorated(config.undecorated);
 
 		if (canvas != null) {
@@ -441,6 +441,8 @@ public class LwjglGraphics implements Graphics {
 		if (displaySizeUnchanged && !forceDisplayModeChange) {
 			return true;
 		}
+
+		this.forceDisplayModeChange = false;
 
 		try {
 			org.lwjgl.opengl.DisplayMode targetDisplayMode = null;
