@@ -237,7 +237,7 @@ public class Lwjgl3Window implements Disposable {
 		input.windowHandleChanged(windowHandle);
 	}
 	
-	void update(Array<LifecycleListener> lifecycleListeners) {
+	void update() {
 		if(listenerInitialized == false) {
 			initializeListener();
 		}
