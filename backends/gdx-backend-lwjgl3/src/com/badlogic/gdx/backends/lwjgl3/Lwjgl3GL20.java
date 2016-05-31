@@ -373,7 +373,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glGetBooleanv (int pname, Buffer params) {
-		((ByteBuffer)params).put(GL11.glGetBoolean(pname)?(byte)1: (byte)0);
+		GL11.glGetBooleanv(pname, (ByteBuffer)params);
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {

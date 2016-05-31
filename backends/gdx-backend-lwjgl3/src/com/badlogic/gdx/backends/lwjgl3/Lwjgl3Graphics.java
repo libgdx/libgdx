@@ -402,7 +402,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public boolean supportsExtension(String extension) {
-		return GLFW.glfwExtensionSupported(extension) == GLFW.GLFW_TRUE;
+		return GLFW.glfwExtensionSupported(extension);
 	}
 
 	@Override
@@ -443,7 +443,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void dispose() {
-		this.resizeCallback.release();
+		this.resizeCallback.free();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {

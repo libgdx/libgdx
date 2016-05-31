@@ -41,7 +41,7 @@ public class AwtTestLWJGL {
 				Toolkit.getDefaultToolkit();
 				new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 
-				if (glfwInit() != GLFW_TRUE) {
+				if (!glfwInit()) {
 					System.out.println("Couldn't initialize GLFW");
 					System.exit(-1);
 				}
@@ -55,7 +55,7 @@ public class AwtTestLWJGL {
 
 				new Runnable() {
 					public void run () {
-						if (glfwWindowShouldClose(window) == GLFW_TRUE) {
+						if (glfwWindowShouldClose(window)) {
 							glfwDestroyWindow(window);
 							glfwTerminate();
 							return;
