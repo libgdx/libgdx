@@ -4,7 +4,7 @@ Please ensure you have given all the following requested information in your rep
 _Please provide the details of your issue_
 
 #### Reproduction steps/code
-_Please provide the steps to reproduce this issue, or even better, a [SSCCE](http://sscce.org/) that reproduces your issue.
+_Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue.  This saves time on our end, and makes it much more likely that your issue will be fixed.
 You can find barebones templates [here](https://github.com/libgdx/libgdx/wiki/Getting-help)_
 
 #### Version of LibGDX and/or relevant dependencies
