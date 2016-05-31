@@ -15,6 +15,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>null</html>
 		</projects>
 	</extension>
@@ -35,6 +36,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
 			</html>
@@ -57,6 +59,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.2.1</dependency>
 				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.2.1:sources</dependency>
@@ -84,6 +87,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 			</html>
@@ -106,6 +110,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils:sources</dependency>
 				<dependency>net.dermetfan.libgdx-utils:libgdx-utils-box2d:sources</dependency>
@@ -133,7 +138,8 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-			<html>null</html>
+		   <ios-moe>null</ios-moe>
+		   <html>null</html>
 		</projects>
 	</extension>
 	<extension>
@@ -157,7 +163,8 @@
 			<ios>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios</dependency>
 			</ios>
-			<html>null</html>
+		   <ios-moe>null</ios-moe>
+		   <html>null</html>
 		</projects>
 	</extension>
 	<extension>
@@ -177,6 +184,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 			</html>
@@ -199,6 +207,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
@@ -222,6 +231,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
