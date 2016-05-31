@@ -138,8 +138,8 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-		   <ios-moe>null</ios-moe>
-		   <html>null</html>
+			<ios-moe>null</ios-moe>
+			<html>null</html>
 		</projects>
 	</extension>
 	<extension>
@@ -163,8 +163,8 @@
 			<ios>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios</dependency>
 			</ios>
-		   <ios-moe>null</ios-moe>
-		   <html>null</html>
+			<ios-moe>null</ios-moe>
+			<html>null</html>
 		</projects>
 	</extension>
 	<extension>
