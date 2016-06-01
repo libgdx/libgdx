@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.File;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.glfw.GLFW;
@@ -65,7 +66,7 @@ public class Lwjgl3Application implements Application {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
-			if (GLFW.glfwInit() != GLFW.GLFW_TRUE) {
+			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
 		}
@@ -125,7 +126,7 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					window.update(lifecycleListeners);
+					window.update();
 				}				
 				if (window.shouldClose()) {
 					closedWindows.add(window);
@@ -143,13 +144,31 @@ public class Lwjgl3Application implements Application {
 			}
 
 			for (Lwjgl3Window closedWindow : closedWindows) {
-				closedWindow.dispose();				
+				if (windows.size == 1) { // Lifecyclelistener methods have to be called before ApplicationListener methods. The
+													// application will be disposed when _all_ windows have been disposed, which is the case,
+													// when there is only 1 window left, which is in the process of being disposed.
+					Iterator<LifecycleListener> it = lifecycleListeners.iterator();
+					while (it.hasNext()) {
+						LifecycleListener l = it.next();
+						l.pause();
+						l.dispose();
+						it.remove();
+					}
+				}
+				closedWindow.dispose();
+
 				windows.removeValue(closedWindow, false);
 			}
 		}
 	}
 
 	private void cleanupWindows() {
+		synchronized (lifecycleListeners) {
+			for(LifecycleListener lifecycleListener : lifecycleListeners){
+				lifecycleListener.pause();
+				lifecycleListener.dispose();
+			}
+		}
 		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
@@ -161,7 +180,7 @@ public class Lwjgl3Application implements Application {
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
 		}
-		errorCallback.release();
+		errorCallback.free();
 		GLFW.glfwTerminate();
 	}
 
@@ -309,7 +328,7 @@ public class Lwjgl3Application implements Application {
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
-			lifecycleListeners.add(listener);
+			lifecycleListeners.removeValue(listener, true);
 		}
 	}
 	
@@ -428,8 +447,8 @@ public class Lwjgl3Application implements Application {
 
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
-		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
-				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
+		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object")
+			|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object");
 	}
 
 }

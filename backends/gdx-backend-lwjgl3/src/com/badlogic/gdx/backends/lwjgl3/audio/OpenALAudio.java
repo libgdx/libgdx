@@ -34,13 +34,17 @@ import static org.lwjgl.openal.AL10.alSourcePause;
 import static org.lwjgl.openal.AL10.alSourcePlay;
 import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.AL10.alSourcei;
+import static org.lwjgl.openal.ALC10.alcOpenDevice;
+import static org.lwjgl.openal.ALC10.alcCreateContext;
+import static org.lwjgl.openal.ALC10.alcCloseDevice;
+import static org.lwjgl.openal.ALC10.alcDestroyContext;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALContext;
-import org.lwjgl.openal.ALDevice;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -62,14 +66,14 @@ public class OpenALAudio implements Audio {
 	private LongMap<Integer> soundIdToSource;
 	private IntMap<Long> sourceToSoundId;
 	private long nextSoundId = 0;
-	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
-	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
+	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap<>();
+	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap<>();
 	private OpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
 
-	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
-	ALDevice device;
-	ALContext context;
+	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
+	long device;
+	long context;
 	boolean noDevice = false;
 
 	public OpenALAudio () {
@@ -87,14 +91,14 @@ public class OpenALAudio implements Audio {
 		registerSound("mp3", Mp3.Sound.class);
 		registerMusic("mp3", Mp3.Music.class);
 		
-		device = ALDevice.create(null);
-		if(device == null) {
+		device = alcOpenDevice((ByteBuffer)null);
+		if(device == 0L) {
 			noDevice = true;			
 			return;
 		}
-		context = ALContext.create(device);
-		if(context == null) {
-			device.destroy();
+		context = alcCreateContext(device, (IntBuffer)null);
+		if(context == 0L) {
+			alcCloseDevice(device);
 			noDevice = true;
 			return;
 		}
@@ -313,8 +317,8 @@ public class OpenALAudio implements Audio {
 		sourceToSoundId.clear();
 		soundIdToSource.clear();
 
-		context.destroy();
-		device.destroy();			
+		alcDestroyContext(context);
+		alcCloseDevice(device);			
 	}
 
 	public AudioDevice newAudioDevice (int sampleRate, final boolean isMono) {

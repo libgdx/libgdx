@@ -46,12 +46,12 @@ public class Lwjgl3Window implements Disposable {
 	
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
 		@Override
-		public void invoke(long windowHandle, final int focused) {
+		public void invoke(long windowHandle, final boolean focused) {
 			postRunnable(new Runnable() {
 				@Override
 				public void run() {
 					if(windowListener != null) {
-						if(focused == GLFW.GLFW_TRUE) {
+						if(focused) {
 							windowListener.focusGained();
 						} else {
 							windowListener.focusLost();
@@ -64,19 +64,19 @@ public class Lwjgl3Window implements Disposable {
 	
 	private final GLFWWindowIconifyCallback iconifyCallback = new GLFWWindowIconifyCallback() {
 		@Override
-		public void invoke(long windowHandle, final int iconified) {
+		public void invoke(long windowHandle, final boolean iconified) {
 			postRunnable(new Runnable() {
 				@Override
 				public void run() {
 					if(windowListener != null) {
-						if(iconified == GLFW.GLFW_TRUE) {
+						if(iconified) {
 							windowListener.iconified();
 						} else {
 							windowListener.deiconified();
 						}
 					}
-					Lwjgl3Window.this.iconified = iconified == GLFW.GLFW_TRUE? true: false;
-					if(iconified == GLFW.GLFW_TRUE) {
+					Lwjgl3Window.this.iconified = iconified;
+					if(iconified) {
 						listener.pause();
 					} else {
 						listener.resume();
@@ -94,7 +94,7 @@ public class Lwjgl3Window implements Disposable {
 				public void run() {
 					if(windowListener != null) {
 						if(!windowListener.closeRequested()) {
-							GLFW.glfwSetWindowShouldClose(windowHandle, GLFW.GLFW_FALSE);
+							GLFW.glfwSetWindowShouldClose(windowHandle, false);
 						}
 					}
 				}
@@ -105,7 +105,10 @@ public class Lwjgl3Window implements Disposable {
 	private final GLFWDropCallback dropCallback = new GLFWDropCallback() {
 		@Override
 		public void invoke(final long windowHandle, final int count, final long names) {
-			final String[] files = getNames(count, names);
+			final String[] files = new String[count];
+			for (int i = 0; i < count; i++) {
+				files[i] = getName(names, i);
+			}
 			postRunnable(new Runnable() {
 				@Override
 				public void run() {
@@ -199,7 +202,7 @@ public class Lwjgl3Window implements Disposable {
 	 * {@link ApplicationListener}.
 	 */
 	public void closeWindow() {
-		GLFW.glfwSetWindowShouldClose(windowHandle, GLFW.GLFW_TRUE);
+		GLFW.glfwSetWindowShouldClose(windowHandle, true);
 	}
 	
 	/**
@@ -234,7 +237,7 @@ public class Lwjgl3Window implements Disposable {
 		input.windowHandleChanged(windowHandle);
 	}
 	
-	void update(Array<LifecycleListener> lifecycleListeners) {
+	void update() {
 		if(listenerInitialized == false) {
 			initializeListener();
 		}
@@ -256,7 +259,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 	
 	boolean shouldClose() {
-		return GLFW.glfwWindowShouldClose(windowHandle) == GLFW.GLFW_TRUE;
+		return GLFW.glfwWindowShouldClose(windowHandle);
 	}
 
 	Lwjgl3ApplicationConfiguration getConfig() {
@@ -288,10 +291,10 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwSetDropCallback(windowHandle, null);
 		GLFW.glfwDestroyWindow(windowHandle);
 		
-		focusCallback.release();
-		iconifyCallback.release();
-		closeCallback.release();
-		dropCallback.release();
+		focusCallback.free();
+		iconifyCallback.free();
+		closeCallback.free();
+		dropCallback.free();
 	}
 
 	@Override
