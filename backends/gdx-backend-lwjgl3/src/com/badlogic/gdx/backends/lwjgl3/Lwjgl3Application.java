@@ -184,6 +184,14 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwTerminate();
 	}
 
+    public Array<Lwjgl3Window> getWindows() {
+        return windows;
+    }
+
+    public Lwjgl3Window getCurrentWindow() {
+        return currentWindow;
+    }
+
 	@Override
 	public ApplicationListener getApplicationListener() {
 		return currentWindow.getListener();
