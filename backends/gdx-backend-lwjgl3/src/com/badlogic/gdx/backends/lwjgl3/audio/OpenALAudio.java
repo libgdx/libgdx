@@ -38,13 +38,17 @@ import static org.lwjgl.openal.ALC10.alcOpenDevice;
 import static org.lwjgl.openal.ALC10.alcCreateContext;
 import static org.lwjgl.openal.ALC10.alcCloseDevice;
 import static org.lwjgl.openal.ALC10.alcDestroyContext;
+import static org.lwjgl.openal.ALC10.alcMakeContextCurrent;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALCCapabilities;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -96,12 +100,18 @@ public class OpenALAudio implements Audio {
 			noDevice = true;			
 			return;
 		}
+		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 		context = alcCreateContext(device, (IntBuffer)null);
 		if(context == 0L) {
 			alcCloseDevice(device);
 			noDevice = true;
 			return;
 		}
+		if(!alcMakeContextCurrent(context)){
+			noDevice = true;
+			return;
+		}
+		AL.createCapabilities(deviceCaps);
 
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {
