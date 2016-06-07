@@ -30,12 +30,21 @@ public class AwtTestLWJGL {
 						fc.showOpenDialog(null);
 					}
 				});
-			}			
+			}
+		}
+
+		@Override
+		public void close () {
+
+		}
+
+		@Override
+		public void callback (long args) {
+
 		}
 	};
-	
 
-	public static void main (String[] args) throws Exception { 
+	public static void main (String[] args) throws Exception {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
 				Toolkit.getDefaultToolkit();
