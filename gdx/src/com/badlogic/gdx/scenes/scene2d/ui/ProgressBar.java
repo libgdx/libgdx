@@ -30,9 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
-/** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress bar
- * has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out as
- * an empty progress bar and gradually becomes filled in as the task or variable value progresses.
+/** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
+ * bar has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out
+ * as an empty progress bar and gradually becomes filled in as the task or variable value progresses.
  * <p>
  * {@link ChangeEvent} is fired when the progress bar knob is moved. Cancelling the event will move the knob to where it was
  * previously.
@@ -229,7 +229,8 @@ public class ProgressBar extends Widget implements Disableable {
 
 	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
 	 * {@link #clamp(float)} can be overridden to allow values outside of the progress bar's min/max range.
-	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
+	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a
+	 *         listener. */
 	public boolean setValue (float value) {
 		value = clamp(Math.round(value / stepSize) * stepSize);
 		if (!shiftIgnoresSnap || (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)))
@@ -318,7 +319,8 @@ public class ProgressBar extends Widget implements Disableable {
 		this.visualInterpolation = interpolation;
 	}
 
-	/** Will make this progress bar snap to the specified values, if the knob is within the threshold. */
+	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
+	 * @param values May be null. */
 	public void setSnapToValues (float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
