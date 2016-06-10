@@ -1,15 +1,15 @@
 ext {
     GROUPID = "com.badlogicgames.gdx"
-    VERSION = "1.9.3-SNAPSHOT"
+    VERSION = "1.9.4-SNAPSHOT"
     gdxVersion = VERSION
-    robovmVersion = "1.9.0"
+    robovmVersion = "2.1.0"
     moeVersion = "1.0.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
     jglfwVersion = "1.1"
     lwjglVersion = "2.9.2"
-    lwjgl3Version = "3.0.0-20160522.141715-87"
-    lwjgl3PlatformVersion = "3.0.0-20160522.141712-87";
+    lwjgl3Version = "3.0.0"
+    lwjgl3PlatformVersion = "3.0.0";
     jlayerVersion = "1.0.1-gdx"
     jorbisVersion = "0.0.17"
     junitVersion = "4.11"
@@ -24,7 +24,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
-        classpath "org.robovm:robovm-gradle-plugin:1.5.0"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:2.1.0"
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }
@@ -364,6 +364,10 @@ project(":tests:gdx-tests-lwjgl") {
 }
 
 project(":tests:gdx-tests-lwjgl3") {
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
     dependencies {
         compile project(":tests:gdx-tests")
         compile project(":backends:gdx-backend-lwjgl3")

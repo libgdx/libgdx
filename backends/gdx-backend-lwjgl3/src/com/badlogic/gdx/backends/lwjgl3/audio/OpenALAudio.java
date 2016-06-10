@@ -34,16 +34,14 @@ import static org.lwjgl.openal.AL10.alSourcePause;
 import static org.lwjgl.openal.AL10.alSourcePlay;
 import static org.lwjgl.openal.AL10.alSourceStop;
 import static org.lwjgl.openal.AL10.alSourcei;
-import static org.lwjgl.openal.ALC10.alcOpenDevice;
-import static org.lwjgl.openal.ALC10.alcCreateContext;
-import static org.lwjgl.openal.ALC10.alcCloseDevice;
-import static org.lwjgl.openal.ALC10.alcDestroyContext;
+import static org.lwjgl.openal.ALC10.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 
 import com.badlogic.gdx.Audio;
@@ -57,6 +55,8 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALCCapabilities;
 
 /** @author Nathan Sweet */
 public class OpenALAudio implements Audio {
@@ -92,16 +92,22 @@ public class OpenALAudio implements Audio {
 		registerMusic("mp3", Mp3.Music.class);
 		
 		device = alcOpenDevice((ByteBuffer)null);
-		if(device == 0L) {
+		if (device == 0L) {
 			noDevice = true;			
 			return;
 		}
+		ALCCapabilities deviceCapabilities = ALC.createCapabilities(device);
 		context = alcCreateContext(device, (IntBuffer)null);
-		if(context == 0L) {
+		if (context == 0L) {
 			alcCloseDevice(device);
 			noDevice = true;
 			return;
 		}
+		if (!alcMakeContextCurrent(context)) {
+			noDevice = true;
+			return;
+		}
+		AL.createCapabilities(deviceCapabilities);
 
 		allSources = new IntArray(false, simultaneousSources);
 		for (int i = 0; i < simultaneousSources; i++) {

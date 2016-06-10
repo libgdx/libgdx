@@ -45,8 +45,8 @@
     <android.version>4.4</android.version>
     <gwt.version>2.6.1</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
-    <lwjgl3.version>3.0.0-20160522.141715-87</lwjgl3.version>
-    <lwjgl3.platformVersion>3.0.0-20160522.141712-87</lwjgl3.platformVersion>
+    <lwjgl3.version>3.0.0</lwjgl3.version>
+    <lwjgl3.platformVersion>3.0.0</lwjgl3.platformVersion>
     <jglfw.version>1.1</jglfw.version>
     <robovm.version>2.1.0</robovm.version>
     <moe.version>1.0.0</moe.version>
