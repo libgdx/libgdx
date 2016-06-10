@@ -9,10 +9,12 @@ import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
@@ -263,15 +265,42 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 	protected void loadProperties (MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
-			for (Element property : element.getChildrenByName("property")) {
+			for (XmlReader.Element property : element.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
+				String type = property.getAttribute("type", null);
 				String value = property.getAttribute("value", null);
+
 				if (value == null) {
 					value = property.getText();
 				}
-				properties.put(name, value);
+
+				Object typedValue = value;
+				if (type != null) {
+					if (type.equals("bool")) {
+						typedValue = Boolean.parseBoolean(value);
+					} else if (type.equals("color")) {
+						typedValue = parseColor(value);
+					} else if (type.equals("float")) {
+						typedValue = Float.parseFloat(value);
+					} else if (type.equals("file")) {
+						typedValue = Gdx.files.internal(value);
+					} else if (type.equals("int")) {
+						typedValue = Integer.parseInt(value);
+					}
+				}
+
+				properties.put(name, typedValue);
 			}
 		}
+	}
+
+	private static Color parseColor (String hex) {
+		hex = hex.charAt(0) == '#' ? hex.substring(1) : hex;
+		int a = Integer.valueOf(hex.substring(0, 2), 16);
+		int r = Integer.valueOf(hex.substring(2, 4), 16);
+		int g = Integer.valueOf(hex.substring(4, 6), 16);
+		int b = Integer.valueOf(hex.substring(6, 8), 16);
+		return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
 
 	protected Cell createTileLayerCell (boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally) {
