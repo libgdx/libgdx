@@ -911,7 +911,9 @@ public class Json {
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
+					JsonValue child = jsonData.child;
+					if (child != null && child.name.equals("class")) child = child.next;
+					for (; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
 					return (T)result;
 				}
