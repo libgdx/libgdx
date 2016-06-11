@@ -834,6 +834,12 @@ public class FreeType {
 	public static int FT_LOAD_LINEAR_DESIGN                = 0x2000;
 	public static int FT_LOAD_NO_AUTOHINT                  = 0x8000;
 	
+	public static int FT_LOAD_TARGET_NORMAL                = 0x0;
+	public static int FT_LOAD_TARGET_LIGHT                 = 0x10000;
+	public static int FT_LOAD_TARGET_MONO                  = 0x20000;
+	public static int FT_LOAD_TARGET_LCD                   = 0x30000;
+	public static int FT_LOAD_TARGET_LCD_V                 = 0x40000;
+
    public static int FT_RENDER_MODE_NORMAL = 0;
    public static int FT_RENDER_MODE_LIGHT = 1;
    public static int FT_RENDER_MODE_MONO = 2;

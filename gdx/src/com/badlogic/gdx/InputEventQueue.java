@@ -61,32 +61,33 @@ public class InputEventQueue implements InputProcessor {
 			q.addAll(queue);
 			queue.clear();
 		}
+		InputProcessor localProcessor = processor;
 		for (int i = 0, n = q.size; i < n;) {
 			currentEventTime = (long)q.get(i++) << 32 | q.get(i++) & 0xFFFFFFFFL;
 			switch (q.get(i++)) {
 			case KEY_DOWN:
-				processor.keyDown(q.get(i++));
+				localProcessor.keyDown(q.get(i++));
 				break;
 			case KEY_UP:
-				processor.keyUp(q.get(i++));
+				localProcessor.keyUp(q.get(i++));
 				break;
 			case KEY_TYPED:
-				processor.keyTyped((char)q.get(i++));
+				localProcessor.keyTyped((char)q.get(i++));
 				break;
 			case TOUCH_DOWN:
-				processor.touchDown(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
+				localProcessor.touchDown(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
 				break;
 			case TOUCH_UP:
-				processor.touchUp(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
+				localProcessor.touchUp(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
 				break;
 			case TOUCH_DRAGGED:
-				processor.touchDragged(q.get(i++), q.get(i++), q.get(i++));
+				localProcessor.touchDragged(q.get(i++), q.get(i++), q.get(i++));
 				break;
 			case MOUSE_MOVED:
-				processor.mouseMoved(q.get(i++), q.get(i++));
+				localProcessor.mouseMoved(q.get(i++), q.get(i++));
 				break;
 			case SCROLLED:
-				processor.scrolled(q.get(i++));
+				localProcessor.scrolled(q.get(i++));
 				break;
 			}
 		}

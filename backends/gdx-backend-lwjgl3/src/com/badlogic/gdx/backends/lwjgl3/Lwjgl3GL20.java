@@ -56,7 +56,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		floatBuffer.clear();
+		intBuffer.clear();
 		com.badlogic.gdx.utils.BufferUtils.copy(v, count, offset, intBuffer);
 		return intBuffer;
 	}
@@ -276,7 +276,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
 			GL11.glDrawElements(mode, (ShortBuffer)indices);
 		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer()); // FIXME yay...
+			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer());
 		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE)
 			GL11.glDrawElements(mode, (ByteBuffer)indices);
 		else
@@ -373,7 +373,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glGetBooleanv (int pname, Buffer params) {
-		((ByteBuffer)params).put(GL11.glGetBoolean(pname)?(byte)1: (byte)0);
+		GL11.glGetBooleanv(pname, (ByteBuffer)params);
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {

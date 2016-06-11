@@ -1,11 +1,61 @@
-[1.7.3]
+[1.9.3]
+- Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
+- Addition of Intel Multi-OS Engine backend for deploying to iOS
+- Updated iOS native build scripts to iOS 9.3 and TVOS 9.2
+- API Addition: GestureDetector#pinchStop() called when no longer pinching
+- API Addition: Gdx.graphics.setUndecorated/setResizable API added to Graphics https://github.com/libgdx/libgdx/pull/3847
+- API Addition: Gdx.graphics.getGLVersion(), grab the GL version and implementation type. https://github.com/libgdx/libgdx/pull/3788
+- API Change: Lwjgl3WindowListener -> filesDropped(String[] files) adds drag'n drop support for the lwjgl3 backend
+- Added isComplete() to ParticleEffect to make it easier to know when all the emitters are done, behaves the same as in the 2D API.
+- API Change: renamed Lwjgl3WindowListener.windowIsClosing() to closeRequested() to better communicate its intent.
+- Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData. 
+- Added FlushablePool
+- Added ShapeCache see https://github.com/libgdx/libgdx/pull/3953
+- API Change: moved shape builder logic out of MeshBuilder, see: https://github.com/libgdx/libgdx/pull/3996
+- API Change: Table reset now calls clearChildren, not clear.
+- Fixed crashes in AndroidMusic.java when isPlaying is called. Errors are now logged only rather than crashing the app.
+- Added emulation of ScreenUtils for GWT
+- Improved performance of glReadPixels() on GWT. New method is 20-30 times faster
+- Fixed crash on Mac when using LWJGL2, custom cursors and embedding the game in an AWT window
+- Fixed getDisplayModes(Monitor monitor) returning wrong data on LWJGL2 backend
+- Fixed Gdx.input.getCurrentEventTime() not being set on LWJGL3, fixes GestureDetector and flick scroll not working
+- Fixed not being able to select non-latin characters in TextFields
+- Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
+- Add window size limits option to LWJGL3 app and window configurations
+
+[1.9.2]
+- Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
+- Fixed bug in AndroidGL20.cpp which cast a pointer to a 32-bit int. Crash on 64-bit ARM, but only for a specific code path and address...
+- Fixed multiple controllers registering on same index with LWJGL3, see https://github.com/libgdx/libgdx/issues/3774
+- Fixed the FreeTypeFontGenerator texture bleeding, see https://github.com/libgdx/libgdx/issues/3521
+
+[1.9.1]
+- API Change: Override GwtApplication#createApplicationListener() to create your ApplicationListener
+  on GWT, overriding GwtApplication#getApplicationListener() isn't needed anymore, see https://github.com/libgdx/libgdx/issues/3628
+- Fixed ARM64 and x86_64 binaries for Android
+
+[1.9.0]
+- API Change: Lwjgl3ApplicationConfiguration#setBackbufferConfig -> setBackBufferConfig
+- Fixed HexagonalTiledMapRenderer, see https://github.com/libgdx/libgdx/pull/3654
+- Added support for locking the screen orientation in GWT, see https://github.com/libgdx/libgdx/pull/3633
+- Added Gdx-Kiwi and gdx-lml to extensions, see https://github.com/libgdx/libgdx/pull/3597
+- Added Gyroscope support in Input, implemented for Android, see https://github.com/libgdx/libgdx/pull/3594
+- Fixed touch mapping on iOS, see https://github.com/libgdx/libgdx/pull/3590
+- Added orientation to Box2D Transform class, see https://github.com/libgdx/libgdx/pull/3308
+- Added system cursors to GWT, fix 'Ibeam' system cursor not working on LWJGL3.
+- Added experimental AndroidApplicationConfiguration#useGL30 and IOSApplicationConfiguration#useGL30 for testing OpenGL ES 3.0 support on mobile devices, do not use in production.
+- Fix broken kerning for FreeType fonts, see https://github.com/libgdx/libgdx/pull/3756
+- Added ARM64 and x86_64 binaries for Android
+- API Addition: FreeTypeFontParameter has an additional field for tweaking hinting, see https://github.com/libgdx/libgdx/pull/3757
+
+[1.8.0]
 - API Change: Rewrote FreeType shadow rendering (much better).
 - Added spaceX/Y to FreeType fonts.
 - Higher quality FreeType font rendering.
 - Hiero updated to v5, now with FreeType support and other new features!
 - GlyphLayout now allocates much, much less memory when processing long text that wraps.
 - Added LWJGL 3 backend, see https://github.com/libgdx/libgdx/issues/3673 for more info.
-- Added Graphics#getFramebufferWidth and Graphics#getFramebufferHeight for HDPI handling
+- Added Graphics#getBackBufferWidth and Graphics#getBackBufferHeight for HDPI handling
 - API Change: Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
   please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
   using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics 
@@ -40,6 +90,12 @@
   the app's window is shown on. All backends except the LWJGL3 backend will report the
   primary monitor display mode instead of the actual monitor's display mode. Not a problem
   as all other backends run on systems with only a single monitor so far (primary monitor).
+- Added option to include credentials on cross-origin http requests (used only for GWT backend).
+- Added option to specify crossorigin attribute when loading images with AssetDownloader (GWT), see #3216.
+- API Change: removed Sound#setPriority, this was only implemented for the Android backend. However, Android itself never honored priority settings.
+- API Change: cursor API has been cleaned up. To create a custom cursor, call Graphics#newCursor(), to set the custom cursor call Graphics#setCursor(), to set a system cursor call Graphics#setSystemCursor(). The Cursor#setSystemCursor method has been removed as that was not the
+right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. Note that system cursors only fully work on LWJGL3 as the other two backends lack a means to set a specific system cursor. These backends fall back to displaying an arrow cursor when setting any system cursor.
+- API Addition: Added Lwjgl3WindowListener, allows you to hook into per-window iconficiation, focus and close events. Also allows you to prevent closing the window when a close event arrives.
 
 [1.7.2]
 - Added AndroidAudio#newMusic(FileDescriptor) to allow loading music from a file descriptor, see #2970

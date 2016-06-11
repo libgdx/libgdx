@@ -211,6 +211,19 @@
 		</ant>
 	</target>
 
+	<target name="gdx-controllers-lwjgl3" depends="gdx-core,gdx-controllers,gdx-backend-lwjgl3">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl3.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
+			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="jar" value="gdx-controllers-lwjgl3"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<target name="gdx-controllers-android" depends="gdx-core,gdx-backend-android,gdx-controllers">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
@@ -319,7 +332,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-lwjgl3,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

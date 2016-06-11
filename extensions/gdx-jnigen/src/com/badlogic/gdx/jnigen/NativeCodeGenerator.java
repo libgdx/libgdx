@@ -328,8 +328,10 @@ public class NativeCodeGenerator {
 
 	private CMethod findCMethod (JavaMethod javaMethod, ArrayList<CMethod> cMethods) {
 		for (CMethod cMethod : cMethods) {
-			if (cMethod.getHead().endsWith(javaMethod.getClassName() + "_" + javaMethod.getName())
-				|| cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName() + "__")) {
+			String javaMethodName = javaMethod.getName().replace("_", "_1");
+			String javaClassName = javaMethod.getClassName().toString().replace("_", "_1");
+			if (cMethod.getHead().endsWith(javaClassName + "_" + javaMethodName)
+				|| cMethod.getHead().contains(javaClassName + "_" + javaMethodName + "__")) {
 				// FIXME poor man's overloaded method check...
 				// FIXME float test[] won't work, needs to be float[] test.
 				if (cMethod.getArgumentTypes().length - 2 == javaMethod.getArguments().size()) {

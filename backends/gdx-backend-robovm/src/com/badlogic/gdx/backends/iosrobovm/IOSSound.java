@@ -134,11 +134,6 @@ public class IOSSound implements Sound {
 	}
 
 	@Override
-	public void setPriority (long soundId, int priority) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public void pause () {
 		ALSource source;
 		for (int i = 0; i < streamIds.size; i++) {

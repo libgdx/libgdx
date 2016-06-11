@@ -18,12 +18,15 @@ package com.badlogic.gdx.tests.superkoalio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -80,6 +83,9 @@ public class SuperKoalio extends GdxTest {
 
 	private static final float GRAVITY = -2.5f;
 
+	private boolean debug = false;
+	private ShapeRenderer debugRenderer;
+
 	@Override
 	public void create () {
 		// load the koala frames, split them, and assign them to Animations
@@ -108,6 +114,8 @@ public class SuperKoalio extends GdxTest {
 		// create the Koala we want to move around the world
 		koala = new Koala();
 		koala.position.set(20, 20);
+
+		debugRenderer = new ShapeRenderer();
 	}
 
 	@Override
@@ -133,10 +141,17 @@ public class SuperKoalio extends GdxTest {
 
 		// render the koala
 		renderKoala(deltaTime);
+
+		// render debug rectangles
+		if (debug) renderDebug();
 	}
 
 	private void updateKoala (float deltaTime) {
 		if (deltaTime == 0) return;
+
+		if (deltaTime > 0.1f)
+			deltaTime = 0.1f;
+
 		koala.stateTime += deltaTime;
 
 		// check input and apply to velocity & state
@@ -157,6 +172,9 @@ public class SuperKoalio extends GdxTest {
 			if (koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = true;
 		}
+
+		if (Gdx.input.isKeyJustPressed(Keys.B))
+			debug = !debug;
 
 		// apply gravity if we are falling
 		koala.velocity.add(0, GRAVITY);
@@ -238,7 +256,6 @@ public class SuperKoalio extends GdxTest {
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
-
 	}
 
 	private boolean isTouched (float startX, float endX) {
@@ -295,6 +312,27 @@ public class SuperKoalio extends GdxTest {
 			batch.draw(frame, koala.position.x + Koala.WIDTH, koala.position.y, -Koala.WIDTH, Koala.HEIGHT);
 		}
 		batch.end();
+	}
+
+	private void renderDebug () {
+		debugRenderer.setProjectionMatrix(camera.combined);
+		debugRenderer.begin(ShapeType.Line);
+
+		debugRenderer.setColor(Color.RED);
+		debugRenderer.rect(koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
+
+		debugRenderer.setColor(Color.YELLOW);
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("walls");
+		for (int y = 0; y <= layer.getHeight(); y++) {
+			for (int x = 0; x <= layer.getWidth(); x++) {
+				Cell cell = layer.getCell(x, y);
+				if (cell != null) {
+					if (camera.frustum.boundsInFrustum(x + 0.5f, y + 0.5f, 0, 1, 1, 0))
+						debugRenderer.rect(x, y, 1, 1);
+				}
+			}
+		}
+		debugRenderer.end();
 	}
 
 	@Override

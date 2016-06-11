@@ -189,7 +189,6 @@ public class ContactListenerTest extends Box2DTest implements ContactListener {
 			contact.getFixtureA().getBody() :
 			contact.getFixtureB().getBody();
 			Gdx.app.postRunnable(new Runnable() {
-				
 				@Override
 				public void run () {
 					world.destroyBody(toRemove);

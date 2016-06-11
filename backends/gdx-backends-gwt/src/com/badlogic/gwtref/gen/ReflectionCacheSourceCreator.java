@@ -147,7 +147,7 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
-		// gather all types from explicitely requested packages
+		// gather all types from explicitly requested packages
 		try {
 			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
 			for (String s : prop.getValues()) {
