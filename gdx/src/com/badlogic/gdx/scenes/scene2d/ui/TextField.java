@@ -488,9 +488,9 @@ public class TextField extends Widget implements Disableable {
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
 		TextField current = this;
 		while (true) {
+			current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
 			TextField textField = current.findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
 			if (textField == null) { // Try to wrap around.
 				if (up)
