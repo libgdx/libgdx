@@ -217,17 +217,25 @@ public class TextField extends Widget implements Disableable {
 		int glyphCount = glyphPositions.size;
 		float[] glyphPositions = this.glyphPositions.items;
 
-		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
+		// Check if the cursor has gone out the left or right side of the visible area and adjust renderOffset.
 		float distance = glyphPositions[Math.max(0, cursor - 1)] + renderOffset;
 		if (distance <= 0)
 			renderOffset -= distance;
 		else {
 			int index = Math.min(glyphCount - 1, cursor + 1);
 			float minX = glyphPositions[index] - visibleWidth;
-			if (-renderOffset < minX) {
-				renderOffset = -minX;
-			}
+			if (-renderOffset < minX) renderOffset = -minX;
 		}
+
+		// Prevent renderOffset from starting too close to the end, eg after text was deleted.
+		float maxOffset = 0;
+		float width = glyphPositions[glyphCount - 1];
+		for (int i = glyphCount - 2; i >= 0; i--) {
+			float x = glyphPositions[i];
+			if (width - x > visibleWidth) break;
+			maxOffset = x;
+		}
+		if (-renderOffset > maxOffset) renderOffset = -maxOffset;
 
 		// calculate first visible char based on render offset
 		visibleTextStart = 0;
@@ -257,10 +265,9 @@ public class TextField extends Widget implements Disableable {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions[minIndex], -renderOffset);
-			float maxX = Math.min(glyphPositions[maxIndex], visibleWidth - renderOffset);
+			float minX = Math.max(glyphPositions[minIndex] - glyphPositions[visibleTextStart], -textOffset);
+			float maxX = Math.min(glyphPositions[maxIndex] - glyphPositions[visibleTextStart], visibleWidth - textOffset);
 			selectionX = minX;
-			if (renderOffset == 0) selectionX += textOffset;
 			selectionWidth = maxX - minX - style.font.getData().cursorX;
 		}
 	}
@@ -339,7 +346,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
-		selection.draw(batch, x + selectionX + renderOffset + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
+		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
 			textHeight);
 	}
 
@@ -482,18 +489,23 @@ public class TextField extends Widget implements Disableable {
 		Stage stage = getStage();
 		if (stage == null) return;
 		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
-		TextField textField = findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
-		if (textField == null) { // Try to wrap around.
-			if (up)
-				tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
-			else
-				tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-			textField = findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+		TextField current = this;
+		while (true) {
+			TextField textField = current.findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
+			if (textField == null) { // Try to wrap around.
+				if (up)
+					tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
+				else
+					tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+				textField = current.findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+			}
+			if (textField == null) {
+				Gdx.input.setOnscreenKeyboardVisible(false);
+				break;
+			}
+			if (stage.setKeyboardFocus(textField)) break;
+			current = textField;
 		}
-		if (textField != null)
-			stage.setKeyboardFocus(textField);
-		else
-			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
 	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
