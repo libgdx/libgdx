@@ -207,7 +207,7 @@ public class GwtGL20 implements GL20 {
 
 	//
 	//
-	// Public methos. Please keep ordered -----------------------------------------------------------------------------
+	// Public methods. Please keep ordered -----------------------------------------------------------------------------
 	//
 	//
 
@@ -263,8 +263,8 @@ public class GwtGL20 implements GL20 {
 	public void glBlendEquationSeparate (int modeRGB, int modeAlpha) {
 		gl.blendEquationSeparate(modeRGB, modeAlpha);
 	}
-	@Override
 
+	@Override
 	public void glBlendFunc (int sfactor, int dfactor) {
 		gl.blendFunc(sfactor, dfactor);
 	}
