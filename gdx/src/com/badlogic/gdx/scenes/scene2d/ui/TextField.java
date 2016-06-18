@@ -609,6 +609,10 @@ public class TextField extends Widget implements Disableable {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
+	}
+
 	public int getSelectionStart () {
 		return selectionStart;
 	}
