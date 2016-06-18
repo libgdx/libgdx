@@ -117,6 +117,14 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 		return &($self->m_nodes[idx]);
 	}
 	
+	int getLinkCount() {
+		return $self->m_links.size();
+	}
+	
+	btSoftBody::Link *getLink(int idx) {
+		return &($self->m_links[idx]);
+	}
+	
 	/*
 	 * buffer: must be at least vertexCount*vertexSize big
 	 * vertexCount: the amount of vertices to copy (must be equal to or less than getNodeCount())
