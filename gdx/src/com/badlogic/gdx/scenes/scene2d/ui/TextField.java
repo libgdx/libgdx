@@ -156,16 +156,23 @@ public class TextField extends Widget implements Disableable {
 	protected int[] wordUnderCursor (int at) {
 		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
-		for (; index < right; index++) {
-			if (!isWordCharacter(text.charAt(index))) {
-				right = index;
-				break;
-			}
+		if(at>= text.length()){
+			left = text.length();
+			right = 0;
+
 		}
-		for (index = start - 1; index > -1; index--) {
-			if (!isWordCharacter(text.charAt(index))) {
-				left = index + 1;
-				break;
+		else {
+			for (; index < right; index++) {
+				if (!isWordCharacter(text.charAt(index))) {
+					right = index;
+					break;
+				}
+			}
+			for (index = start - 1; index > -1; index--) {
+				if (!isWordCharacter(text.charAt(index))) {
+					left = index + 1;
+					break;
+				}
 			}
 		}
 		return new int[] {left, right};
