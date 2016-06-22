@@ -314,7 +314,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Disables scrolling of the list shown when the select box is open. */
 	public void setScrollingDisabled (boolean y) {
-		selectBoxList.setScrollingDisabled(false, y);
+		selectBoxList.setScrollingDisabled(true, y);
 		invalidateHierarchy();
 	}
 

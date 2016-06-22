@@ -49,10 +49,7 @@ public class ProgressBar extends Widget implements Disableable {
 	final boolean vertical;
 	private float animateDuration, animateTime;
 	private Interpolation animateInterpolation = Interpolation.linear;
-	private float[] snapValues;
-	private float threshold;
 	boolean disabled;
-	boolean shiftIgnoresSnap;
 	private Interpolation visualInterpolation = Interpolation.linear;
 
 	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin) {
@@ -233,8 +230,6 @@ public class ProgressBar extends Widget implements Disableable {
 	 *         listener. */
 	public boolean setValue (float value) {
 		value = clamp(Math.round(value / stepSize) * stepSize);
-		if (!shiftIgnoresSnap || (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)))
-			value = snap(value);
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
@@ -317,22 +312,6 @@ public class ProgressBar extends Widget implements Disableable {
 	/** Sets the interpolation to use for display. */
 	public void setVisualInterpolation (Interpolation interpolation) {
 		this.visualInterpolation = interpolation;
-	}
-
-	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
-	 * @param values May be null. */
-	public void setSnapToValues (float[] values, float threshold) {
-		this.snapValues = values;
-		this.threshold = threshold;
-	}
-
-	/** Returns a snapped value. */
-	private float snap (float value) {
-		if (snapValues == null) return value;
-		for (int i = 0; i < snapValues.length; i++) {
-			if (Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
-		}
-		return value;
 	}
 
 	public void setDisabled (boolean disabled) {
