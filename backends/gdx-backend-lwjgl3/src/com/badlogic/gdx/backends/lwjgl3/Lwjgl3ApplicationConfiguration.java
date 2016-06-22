@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import java.io.PrintStream;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -72,6 +73,9 @@ public class Lwjgl3ApplicationConfiguration {
 	Files.FileType preferencesFileType = FileType.External;
 
 	HdpiMode hdpiMode = HdpiMode.Logical;
+
+	boolean debug = false;
+	PrintStream debugStream = System.err;
 	
 	static Lwjgl3ApplicationConfiguration copy(Lwjgl3ApplicationConfiguration config) {
 		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
@@ -108,6 +112,8 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.preferencesDirectory = config.preferencesDirectory;
 		copy.preferencesFileType = config.preferencesFileType;
 		copy.hdpiMode = config.hdpiMode;
+		copy.debug = config.debug;
+		copy.debugStream = config.debugStream;
 		return copy;
 	}
 	
@@ -307,7 +313,23 @@ public class Lwjgl3ApplicationConfiguration {
 	 */
 	public void setHdpiMode(HdpiMode mode) {
 		this.hdpiMode = mode;
-	}	
+	}
+
+	/**
+	 * Enables use of OpenGL debug message callbacks. If not supported by the core GL driver
+	 * (since GL 4.3), this uses the KHR_debug, ARB_debug_output or AMD_debug_output extension
+	 * if available. By default, debug messages with NOTIFICATION severity are disabled to
+	 * avoid log spam.
+	 *
+	 * You can call with {@link System#err} to output to the "standard" error output stream.
+	 *
+	 * Use {@link Lwjgl3Application#setGLDebugMessageControl(Lwjgl3Application.GLDebugMessageSeverity, boolean)}
+	 * to enable or disable other severity debug levels.
+	 */
+	public void enableGLDebugOutput(boolean enable, PrintStream debugOutputStream) {
+		debug = enable;
+		debugStream = debugOutputStream;
+	}
 
 	/**
 	 * @return the currently active {@link DisplayMode} of the primary monitor
@@ -368,7 +390,7 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 
 	/**
-	 * @return the conntected {@link Monitor}s
+	 * @return the connected {@link Monitor}s
 	 */
 	public static Monitor[] getMonitors() {
 		Lwjgl3Application.initializeGlfw();
@@ -407,5 +429,5 @@ public class Lwjgl3ApplicationConfiguration {
 		 * irrespective of the system defined HDPI scaling.
 		 */
 		Pixels
-	}		
+	}
 }
