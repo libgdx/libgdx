@@ -1,6 +1,7 @@
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
 - Bullet: added btSoftBody#getLinkCount() and btSoftBody#getLink(int), see https://github.com/libgdx/libgdx/issues/4152
+- API Change: Wrapping for scene2d's HorizontalGroup and VerticalGroup.
 
 [1.9.3]
 - API Addition: Actor#positionChanged(float, float), Actor#sizeChanged(float, float), and Actor#rotationChanged(float)
