@@ -40,7 +40,7 @@ public class VerticalGroup extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private FloatArray columnSizes; // column height, column width, ...
 
-	private int align, columnAlign;
+	private int align = Align.top, columnAlign;
 	private boolean reverse, round = true, wrap;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
@@ -137,9 +137,9 @@ public class VerticalGroup extends WidgetGroup {
 		float space = this.space, padLeft = this.padLeft, fill = this.fill;
 		float columnWidth = getWidth() - padLeft - padRight, y = prefHeight - padTop + space;
 
-		if ((align & Align.right) != 0)
+		if ((align & Align.top) != 0)
 			y += getHeight() - prefHeight;
-		else if ((align & Align.left) == 0) // center
+		else if ((align & Align.bottom) == 0) // center
 			y += (getHeight() - prefHeight) / 2;
 
 		align = columnAlign;

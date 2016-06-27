@@ -40,7 +40,7 @@ public class HorizontalGroup extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private FloatArray rowSizes; // row width, row height, ...
 
-	private int align, rowAlign;
+	private int align = Align.left, rowAlign;
 	private boolean reverse, round = true, wrap;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
