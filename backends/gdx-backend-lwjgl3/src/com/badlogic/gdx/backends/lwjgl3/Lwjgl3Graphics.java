@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
@@ -33,6 +34,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
+
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
@@ -72,7 +75,10 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	public Lwjgl3Graphics(Lwjgl3Window window) {
 		this.window = window;
-		if (window.getConfig().useGL30) {
+
+		Lwjgl3ApplicationConfiguration config = window.getConfig();
+
+		if (config.useGL30) {
 			this.gl30 = new Lwjgl3GL30();
 			this.gl20 = this.gl30;
 		} else {
@@ -82,6 +88,37 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		updateFramebufferInfo();
 		initiateGL();
 		GLFW.glfwSetFramebufferSizeCallback(window.getWindowHandle(), resizeCallback);
+
+		if (config.iconPaths.size > 0) {
+
+			GLFWImage.Buffer buffer = GLFWImage.malloc(config.iconPaths.size);
+			// Array with pixmaps to be disposed
+			Pixmap[] pixmaps = new Pixmap[config.iconPaths.size];
+
+			for (int i = 0; i < config.iconPaths.size; i++) {
+				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
+
+				if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
+					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+					rgba.drawPixmap(pixmap, 0, 0);
+					pixmap = rgba;
+				}
+				pixmaps[i] = pixmap;
+
+				GLFWImage icon = GLFWImage.malloc();
+				icon.set(pixmap.getWidth(), pixmap.getHeight(), pixmap.getPixels());
+				buffer.put(icon);
+
+				icon.free();
+			}
+			buffer.position(0);
+			GLFW.glfwSetWindowIcon(window.getWindowHandle(), buffer);
+			buffer.free();
+
+			for (int i = 0; i < pixmaps.length; i++) {
+				pixmaps[i].dispose();
+			}
+		}
 	}
 
 	private void initiateGL () {

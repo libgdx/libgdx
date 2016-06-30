@@ -39,6 +39,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.utils.Array;
 
 public class Lwjgl3ApplicationConfiguration {
 	boolean disableAudio = false;
@@ -115,6 +116,19 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.debug = config.debug;
 		copy.debugStream = config.debugStream;
 		return copy;
+	}
+
+	Array<String> iconPaths = new Array();
+	Array<FileType> iconFileTypes = new Array();
+
+	/**
+	 * Adds a window icon. Those of (or closest to) the sizes desired by the system are selected.
+	 * The icon is rescaled if needed. Typically three icons should be provided: 128x128 (for Mac),
+	 * 32x32 (for Windows and Linux), and 16x16 (for Windows).
+	 */
+	public void addIcon (String path, FileType fileType) {
+		iconPaths.add(path);
+		iconFileTypes.add(fileType);
 	}
 	
 	/**
