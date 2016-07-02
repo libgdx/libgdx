@@ -769,8 +769,7 @@ public class Table extends WidgetGroup {
 		if (cellCount > 0 && !cells.peek().endRow) {
 			endRow();
 			implicitEndRow = true;
-		} else
-			implicitEndRow = false;
+		}
 
 		int columns = this.columns, rows = this.rows;
 		float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
