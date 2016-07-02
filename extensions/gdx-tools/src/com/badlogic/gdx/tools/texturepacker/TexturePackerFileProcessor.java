@@ -152,7 +152,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		while (true) {
 			settings = dirToSettings.get(parent);
 			if (settings != null) break;
-			if (parent.equals(root)) break;
+			if (parent == null || parent.equals(root)) break;
 			parent = parent.getParentFile();
 		}
 		if (settings == null) settings = defaultSettings;
