@@ -171,8 +171,8 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-	protected void drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y) {
-		font.draw(batch, toString(item), x, y);
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y) {
+		return font.draw(batch, toString(item), x, y);
 	}
 
 	public ArraySelection<T> getSelection () {
