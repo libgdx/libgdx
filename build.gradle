@@ -118,9 +118,9 @@ project(":backends:gdx-backend-lwjgl3") {
 project(":backends:gdx-backend-robovm") {
     dependencies {
         compile project(":gdx")
-        optional "org.robovm:robovm-rt:$robovmVersion"
-        optional "org.robovm:robovm-objc:$robovmVersion"
-        optional "org.robovm:robovm-cocoatouch:$robovmVersion"
+        optional "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
+        optional "com.mobidevelop.robovm:robovm-objc:$robovmVersion"
+        optional "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
     }
 }
 
