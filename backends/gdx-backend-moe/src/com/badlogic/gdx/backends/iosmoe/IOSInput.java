@@ -544,15 +544,10 @@ public class IOSInput implements Input {
 				if (event.phase == UITouchPhase.Began) {
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
 					if (numTouched == 1) justTouched = true;
-					break;
-				}
-				if (event.phase == UITouchPhase.Cancelled || event.phase == UITouchPhase.Ended) {
+				} else if (event.phase == UITouchPhase.Cancelled || event.phase == UITouchPhase.Ended) {
 					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
-					break;
-				}
-				if (event.phase == UITouchPhase.Moved || event.phase == UITouchPhase.Stationary) {
+				} else if (event.phase == UITouchPhase.Moved || event.phase == UITouchPhase.Stationary) {
 					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
-					break;
 				}
 			}
 			touchEventPool.freeAll(touchEvents);
