@@ -29,7 +29,7 @@ public class IOSSound implements Sound {
 
 	private ALBuffer soundBuffer;
 	private String soundPath;
-	
+
 	private ALChannelSource channel;
 	private NSArray<ALSource> sourcePool;
 	private IntArray streamIds = new IntArray(8);
@@ -91,7 +91,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void dispose () {
 		stop();
-		soundBuffer.dealloc();
+		OALSimpleAudio.sharedInstance().unloadEffect(soundPath);
 	}
 
 	@Override
@@ -154,8 +154,8 @@ public class IOSSound implements Sound {
 		ALSource source;
 		if ((source = getSoundSource(soundId)) != null) source.setPaused(false);
 	}
-	
-	private ALSource getSoundSource (long soundId) {	
+
+	private ALSource getSoundSource (long soundId) {
 		for (ALSource source : sourcePool) {
 			if (source.sourceId() == soundId) return source;
 		}
