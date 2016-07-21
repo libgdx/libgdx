@@ -181,13 +181,7 @@ public class Group extends Actor implements Cullable {
 	/** Returns the transform for this group's coordinate system. */
 	protected Matrix4 computeTransform () {
 		Affine2 worldTransform = this.worldTransform;
-
-		float originX = this.originX;
-		float originY = this.originY;
-		float rotation = this.rotation;
-		float scaleX = this.scaleX;
-		float scaleY = this.scaleY;
-
+		float originX = this.originX, originY = this.originY;
 		worldTransform.setToTrnRotScl(x + originX, y + originY, rotation, scaleX, scaleY);
 		if (originX != 0 || originY != 0) worldTransform.translate(-originX, -originY);
 
@@ -231,7 +225,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
-	 * actors!
+	 * actors.
 	 * @param cullingArea May be null. */
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;

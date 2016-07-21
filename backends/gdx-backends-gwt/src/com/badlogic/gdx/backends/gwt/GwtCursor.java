@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.dom.client.CanvasElement;
 
 public class GwtCursor implements Cursor {
-	private String cssCursorProperty;
+	String cssCursorProperty;
 
 	public GwtCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		if (pixmap == null) {
@@ -62,13 +62,27 @@ public class GwtCursor implements Cursor {
 		cssCursorProperty += yHotspot;
 		cssCursorProperty += ",auto";
 	}
-
-	@Override
-	public void setSystemCursor () {
-		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", cssCursorProperty);
+	
+	static String getNameForSystemCursor (SystemCursor systemCursor) {
+		if (systemCursor == SystemCursor.Arrow) {
+			return "default";
+		} else if (systemCursor == SystemCursor.Crosshair) {
+			return "crosshair";
+		} else if (systemCursor == SystemCursor.Hand) {
+			return "pointer"; // Don't change to 'hand', 'hand' doesn't work in the newer IEs
+		} else if (systemCursor == SystemCursor.HorizontalResize) {
+			return "ew-resize";
+		} else if (systemCursor == SystemCursor.VerticalResize) {
+			return "ns-resize";
+		} else if (systemCursor == SystemCursor.Ibeam) {
+			return "text";
+		} else {
+			throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
+		}
+		
 	}
 
-	public static void resetCursor () {
-		((GwtApplication)Gdx.app).graphics.canvas.getStyle().setProperty("cursor", "auto");
+	@Override
+	public void dispose () {
 	}
 }

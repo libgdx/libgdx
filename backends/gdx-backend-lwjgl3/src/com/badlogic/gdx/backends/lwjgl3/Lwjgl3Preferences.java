@@ -33,7 +33,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
 public class Lwjgl3Preferences implements Preferences {
-	private final String name;
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
@@ -42,7 +41,6 @@ public class Lwjgl3Preferences implements Preferences {
 	}
 
 	public Lwjgl3Preferences (FileHandle file) {
-		this.name = file.name();
 		this.file = file;
 		if (!file.exists()) return;
 		InputStream in = null;

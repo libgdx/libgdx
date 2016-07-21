@@ -106,9 +106,4 @@ public class MockSound implements Sound {
 	public void setPan(long soundId, float pan, float volume) {
 
 	}
-
-	@Override
-	public void setPriority(long soundId, int priority) {
-
-	}
 }

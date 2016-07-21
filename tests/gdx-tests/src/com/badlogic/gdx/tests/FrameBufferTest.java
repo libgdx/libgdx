@@ -102,7 +102,7 @@ public class FrameBufferTest extends GdxTest {
 		Gdx.gl20.glDisable(GL20.GL_STENCIL_TEST);
 		stencilFrameBuffer.end();
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

@@ -133,7 +133,6 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			running = true;
 			resume = true;
 
-			// by jw: added synchronization, there was nothing before
 			while (resume) {
 				try {
 					synch.wait();
@@ -170,7 +169,6 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
 			if (resume) {
 				resume = false;
-				// by jw: originally was not synchronized
 				synch.notifyAll();
 			}
 

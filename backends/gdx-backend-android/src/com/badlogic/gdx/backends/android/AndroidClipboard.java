@@ -16,31 +16,31 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.content.Context;
-import android.os.Build;
-import android.app.Activity;
-import android.text.ClipboardManager;
 import android.content.ClipData;
 
+import android.content.Context;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class AndroidClipboard implements Clipboard {
-	Context context;
+
+	private android.text.ClipboardManager clipboard;
+	private android.content.ClipboardManager honeycombClipboard;
 
 	public AndroidClipboard (Context context) {
-		this.context = context;
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+			clipboard = (android.text.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+		} else {
+			honeycombClipboard = (android.content.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+		}
 	}
 
 	@Override
 	public String getContents () {
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-			android.text.ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 			if (clipboard.getText() == null) return null;
 			return clipboard.getText().toString();
 		} else {
-			android.content.ClipboardManager clipboard = (android.content.ClipboardManager)context
-				.getSystemService(Context.CLIPBOARD_SERVICE);
-			ClipData clip = clipboard.getPrimaryClip();
+			ClipData clip = honeycombClipboard.getPrimaryClip();
 			if (clip == null) return null;
 			CharSequence text = clip.getItemAt(0).getText();
 			if (text == null) return null;
@@ -50,21 +50,11 @@ public class AndroidClipboard implements Clipboard {
 
 	@Override
 	public void setContents (final String contents) {
-		try {
-			((Activity)context).runOnUiThread(new Runnable() {
-				public void run () {
-					if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-						android.text.ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-						clipboard.setText(contents);
-					} else {
-						android.content.ClipboardManager clipboard = (android.content.ClipboardManager)context
-							.getSystemService(Context.CLIPBOARD_SERVICE);
-						ClipData data = ClipData.newPlainText(contents, contents);
-						clipboard.setPrimaryClip(data);
-					}
-				}
-			});
-		} catch (final Exception ex) {
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+			clipboard.setText(contents);
+		} else {
+			ClipData data = ClipData.newPlainText(contents, contents);
+			honeycombClipboard.setPrimaryClip(data);
 		}
 	}
 }

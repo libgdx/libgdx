@@ -26,10 +26,7 @@ import org.robovm.apple.uikit.UIAlertView;
 import org.robovm.apple.uikit.UIAlertViewDelegate;
 import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
 import org.robovm.apple.uikit.UIAlertViewStyle;
-import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIKeyboardType;
 import org.robovm.apple.uikit.UIReturnKeyType;
 import org.robovm.apple.uikit.UITextAutocapitalizationType;
@@ -53,7 +50,6 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
@@ -246,6 +242,7 @@ public class IOSInput implements Input {
 	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
+	
 
 	@Override
 	public float getAzimuth () {
@@ -562,19 +559,29 @@ public class IOSInput implements Input {
 
 	@Override
 	public int getRotation () {
-		UIInterfaceOrientation orientation = app.graphics.viewController != null ? app.graphics.viewController
-			.getInterfaceOrientation() : UIApplication.getSharedApplication().getStatusBarOrientation();
 		// we measure orientation counter clockwise, just like on Android
-		if (orientation == UIInterfaceOrientation.Portrait) return 0;
-		if (orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
-		if (orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
-		if (orientation == UIInterfaceOrientation.LandscapeRight) return 90;
-		return 0;
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+			return 270;
+		case PortraitUpsideDown:
+			return 180;
+		case LandscapeRight:
+			return 90;
+		case Portrait:
+		default:
+			return 0;
+		}
 	}
 
 	@Override
 	public Orientation getNativeOrientation () {
-		return Orientation.Portrait;
+		switch (app.uiApp.getStatusBarOrientation()) {
+		case LandscapeLeft:
+		case LandscapeRight:
+			return Orientation.Landscape;
+		default:
+			return Orientation.Portrait;
+		}
 	}
 
 	@Override
@@ -590,18 +597,8 @@ public class IOSInput implements Input {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	public void touchDown (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	public void touchUp (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
-		Gdx.graphics.requestRendering();
-	}
-
-	public void touchMoved (long touches, UIEvent event) {
-		toTouchEvents(touches, event);
+	protected void onTouch (long touches) {
+		toTouchEvents(touches);
 		Gdx.graphics.requestRendering();
 	}
 
@@ -658,18 +655,27 @@ public class IOSInput implements Input {
 		public static native @MachineSizedUInt long count (@Pointer long thiz);
 	}
 
-	private void toTouchEvents (long touches, UIEvent uiEvent) {
+	private void toTouchEvents (long touches) {
 		long array = NSSetExtensions.allObjects(touches);
 		int length = (int)NSArrayExtensions.count(array);
 		for (int i = 0; i < length; i++) {
 			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
 			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
-			CGPoint loc = touch.getLocationInView(touch.getView());
+			final int locX, locY;
+			// Get and map the location to our drawing space
+			{
+				CGPoint loc = touch.getLocationInView(touch.getWindow());
+				final CGRect bounds = app.getCachedBounds();
+				locX = (int)(loc.getX() * app.displayScaleFactor - bounds.getMinX());
+				locY = (int)(loc.getY() * app.displayScaleFactor - bounds.getMinY());
+				// app.debug("IOSInput","pos= "+loc+"  bounds= "+bounds+" x= "+locX+" locY= "+locY);
+			}
+
 			synchronized (touchEvents) {
 				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.getX() * app.displayScaleFactor);
-				event.y = (int)(loc.getY() * app.displayScaleFactor);
+				event.x = locX;
+				event.y = locY;
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
@@ -711,4 +717,24 @@ public class IOSInput implements Input {
 		int x, y;
 		int pointer;
 	}
+
+	@Override
+	public float getGyroscopeX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 }

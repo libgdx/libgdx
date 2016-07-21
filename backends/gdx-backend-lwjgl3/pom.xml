@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.7.3-SNAPSHOT</version>
+    <version>1.9.4-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -19,24 +19,30 @@
       <version>${project.version}</version>
     </dependency>
     
+  <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>      
+    </dependency>
+
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.version}</version>
+      <version>${lwjgl3.platformVersion}</version>
       <classifier>natives-windows</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.version}</version>
+      <version>${lwjgl3.platformVersion}</version>
       <classifier>natives-linux</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.version}</version>
+      <version>${lwjgl3.platformVersion}</version>
       <classifier>natives-osx</classifier>
     </dependency>    
 
@@ -51,6 +57,13 @@
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
     </dependency>
+    <dependency>
+      <groupId>com.apple</groupId>
+      <artifactId>AppleJavaExtensions</artifactId>
+      <version>1.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
   <build>
@@ -61,6 +74,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
           <excludes>
             <exclude>com/badlogic/gdx/backends/gwt/emu/java/lang/System.java</exclude>
           </excludes>

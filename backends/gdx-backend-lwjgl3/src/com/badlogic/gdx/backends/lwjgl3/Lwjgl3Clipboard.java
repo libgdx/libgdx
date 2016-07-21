@@ -17,44 +17,22 @@
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.awt.Toolkit;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 
+import org.lwjgl.glfw.GLFW;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 
 /** Clipboard implementation for desktop that uses the system clipboard via the default AWT {@link Toolkit}.
  * @author mzechner */
-public class Lwjgl3Clipboard implements Clipboard, ClipboardOwner {
+public class Lwjgl3Clipboard implements Clipboard {
 	@Override
-	public String getContents () {
-		String result = "";
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable contents = clipboard.getContents(null);
-		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-		if (hasTransferableText) {
-			try {
-				result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-			} catch (UnsupportedFlavorException ex) {
-				// doh...
-			} catch (IOException ex) {
-				// doh...
-			}
-		}
-		return result;
+	public String getContents () {		
+		return GLFW.glfwGetClipboardString(((Lwjgl3Graphics)Gdx.graphics).getWindow().getWindowHandle());
 	}
 
 	@Override
 	public void setContents (String content) {
-		StringSelection stringSelection = new StringSelection(content);
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboard.setContents(stringSelection, this);
-	}
-
-	@Override
-	public void lostOwnership (java.awt.datatransfer.Clipboard arg0, Transferable arg1) {
+		GLFW.glfwSetClipboardString(((Lwjgl3Graphics)Gdx.graphics).getWindow().getWindowHandle(), content);
 	}
 }

@@ -140,15 +140,15 @@ public class LwjglAWTCanvas implements Application {
 			}
 
 			@Override
-			public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-				if (!super.setDisplayMode(width, height, fullscreen)) return false;
-				if (!fullscreen) LwjglAWTCanvas.this.setDisplayMode(width, height);
+			public boolean setWindowedMode (int width, int height) {
+				if (!super.setWindowedMode(width, height)) return false;
+				LwjglAWTCanvas.this.setDisplayMode(width, height);
 				return true;
 			}
 
 			@Override
-			public boolean setDisplayMode (DisplayMode displayMode) {
-				if (!super.setDisplayMode(displayMode)) return false;
+			public boolean setFullscreenMode (DisplayMode displayMode) {
+				if (!super.setFullscreenMode(displayMode)) return false;
 				LwjglAWTCanvas.this.setDisplayMode(displayMode.width, displayMode.height);
 				return true;
 			}

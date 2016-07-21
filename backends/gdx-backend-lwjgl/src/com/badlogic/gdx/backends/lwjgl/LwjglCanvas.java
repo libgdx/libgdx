@@ -108,14 +108,14 @@ public class LwjglCanvas implements Application {
 				LwjglCanvas.this.setTitle(title);
 			}
 
-			public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-				if (!super.setDisplayMode(width, height, fullscreen)) return false;
+			public boolean setWindowedMode (int width, int height, boolean fullscreen) {
+				if (!super.setWindowedMode(width, height)) return false;
 				if (!fullscreen) LwjglCanvas.this.setDisplayMode(width, height);
 				return true;
 			}
 
-			public boolean setDisplayMode (DisplayMode displayMode) {
-				if (!super.setDisplayMode(displayMode)) return false;
+			public boolean setFullscreenMode (DisplayMode displayMode) {
+				if (!super.setFullscreenMode(displayMode)) return false;
 				LwjglCanvas.this.setDisplayMode(displayMode.width, displayMode.height);
 				return true;
 			}

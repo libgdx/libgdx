@@ -1,0 +1,20 @@
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+ext {
+    mainClassName = "com.badlogic.gdx.tests.IOSRobovmTests"
+}
+
+launchIPhoneSimulator.dependsOn build
+launchIPadSimulator.dependsOn build
+launchIOSDevice.dependsOn build
+createIPA.dependsOn build
+
+
+eclipse.project {
+    name =  "iosrobovmtest"
+    natures 'org.robovm.eclipse.RoboVMNature'
+}

@@ -264,7 +264,7 @@ public class JsonReader implements BaseJsonReader {
 					}
 				}
 				p--;
-				while (data[p] == ' ')
+				while (Character.isSpace(data[p]))
 					p--;
 			}
 			action quotedChars {
