@@ -157,6 +157,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		}
 		if (settings == null) settings = defaultSettings;
 
+		if (settings.ignore) return;
+
 		if (settings.combineSubdirectories) {
 			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
 			files = new FileProcessor(this) {

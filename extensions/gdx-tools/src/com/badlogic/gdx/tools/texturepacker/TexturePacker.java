@@ -222,7 +222,8 @@ public class TexturePacker {
 				}
 			}
 
-			if (settings.bleed && !settings.premultiplyAlpha && !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
+			if (settings.bleed && !settings.premultiplyAlpha
+				&& !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
 				canvas = new ColorBleedEffect().processImage(canvas, 2);
 				g = (Graphics2D)canvas.getGraphics();
 			}
@@ -293,8 +294,8 @@ public class TexturePacker {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
-							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
-								+ rect.name);
+							throw new GdxRuntimeException(
+								"A region with the name \"" + rectName + "\" has already been packed: " + rect.name);
 						}
 					}
 				}
@@ -429,8 +430,9 @@ public class TexturePacker {
 		int score1, score2;
 
 		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
-			image = new BufferedImage(source.getColorModel(), source.getRaster().createWritableChild(left, top, newWidth, newHeight,
-				0, 0, null), source.getColorModel().isAlphaPremultiplied(), null);
+			image = new BufferedImage(source.getColorModel(),
+				source.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null),
+				source.getColorModel().isAlphaPremultiplied(), null);
 			offsetX = left;
 			offsetY = top;
 			regionWidth = newWidth;
@@ -547,6 +549,7 @@ public class TexturePacker {
 		public boolean debug;
 		public boolean silent;
 		public boolean combineSubdirectories;
+		public boolean ignore;
 		public boolean flattenPaths;
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
@@ -587,6 +590,7 @@ public class TexturePacker {
 			debug = settings.debug;
 			silent = settings.silent;
 			combineSubdirectories = settings.combineSubdirectories;
+			ignore = settings.ignore;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
 			square = settings.square;
@@ -639,8 +643,8 @@ public class TexturePacker {
 		}
 	}
 
-	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of the
-	 *         input file */
+	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of
+	 *         the input file */
 	static public boolean isModified (String input, String output, String packFileName, Settings settings) {
 		String packFullFileName = output;
 
@@ -714,8 +718,7 @@ public class TexturePacker {
 			File inputFile = new File(input);
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
-		if (settings == null)
-			settings = new Settings();
+		if (settings == null) settings = new Settings();
 
 		process(settings, input, output, packFileName);
 	}
