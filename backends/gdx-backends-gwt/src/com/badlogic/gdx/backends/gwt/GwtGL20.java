@@ -29,6 +29,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int16Array;
@@ -47,20 +49,44 @@ import com.google.gwt.webgl.client.WebGLTexture;
 import com.google.gwt.webgl.client.WebGLUniformLocation;
 
 public class GwtGL20 implements GL20 {
-	final Map<Integer, WebGLProgram> programs = new HashMap<Integer, WebGLProgram>();
-	int nextProgramId = 1;
-	final Map<Integer, WebGLShader> shaders = new HashMap<Integer, WebGLShader>();
-	int nextShaderId = 1;
-	final Map<Integer, WebGLBuffer> buffers = new HashMap<Integer, WebGLBuffer>();
-	int nextBufferId = 1;
-	final Map<Integer, WebGLFramebuffer> frameBuffers = new HashMap<Integer, WebGLFramebuffer>();
-	int nextFrameBufferId = 1;
-	final Map<Integer, WebGLRenderbuffer> renderBuffers = new HashMap<Integer, WebGLRenderbuffer>();
-	int nextRenderBufferId = 1;
-	final Map<Integer, WebGLTexture> textures = new HashMap<Integer, WebGLTexture>();
-	int nextTextureId = 1;
-	final Map<Integer, Map<Integer, WebGLUniformLocation>> uniforms = new HashMap<Integer, Map<Integer, WebGLUniformLocation>>();
-	int nextUniformId = 1;
+
+	static final class IntMap<T extends JavaScriptObject> extends JavaScriptObject {
+
+		protected IntMap() {
+			super();
+		}
+
+		public static native <T extends JavaScriptObject> IntMap<T> create() /*-{
+			return [undefined];
+		}-*/;
+
+		public native T get(int key) /*-{
+			return this[key];
+		}-*/;
+
+		public native void put(int key, T value) /*-{
+			this[key] = value;
+		}-*/;
+
+		public native int add(T value) /*-{
+			this.push(value);
+			return this.length - 1;
+		}-*/;
+
+		public native T remove(int key) /*-{
+			var value = this[key];
+			delete this[key];
+			return value;
+		}-*/;
+	}
+
+	final IntMap<WebGLProgram> programs = IntMap.create();
+	final IntMap<WebGLShader> shaders = IntMap.create();
+	final IntMap<WebGLBuffer> buffers = IntMap.create();
+	final IntMap<WebGLFramebuffer> frameBuffers = IntMap.create();
+	final IntMap<WebGLRenderbuffer> renderBuffers = IntMap.create();
+	final IntMap<WebGLTexture> textures = IntMap.create();
+	final IntMap<IntMap<WebGLUniformLocation>> uniforms = IntMap.create();
 	int currProgram = 0;
 
 	Float32Array floatBuffer = TypedArrays.createFloat32Array(2000 * 20);
@@ -73,54 +99,6 @@ public class GwtGL20 implements GL20 {
 	protected GwtGL20 (WebGLRenderingContext gl) {
 		this.gl = gl;
 		this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
-	}
-
-	private int allocateBufferId (WebGLBuffer buffer) {
-		int id = nextBufferId++;
-		buffers.put(id, buffer);
-		return id;
-	}
-
-	private int allocateFrameBufferId (WebGLFramebuffer frameBuffer) {
-		int id = nextBufferId++;
-		frameBuffers.put(id, frameBuffer);
-		return id;
-	}
-
-	private int allocateProgramId (WebGLProgram program) {
-		int id = nextProgramId++;
-		programs.put(id, program);
-		return id;
-	}
-
-	private int allocateRenderBufferId (WebGLRenderbuffer renderBuffer) {
-		int id = nextRenderBufferId++;
-		renderBuffers.put(id, renderBuffer);
-		return id;
-	}
-
-	private int allocateShaderId (WebGLShader shader) {
-		int id = nextShaderId++;
-		shaders.put(id, shader);
-		return id;
-	}
-
-	private int allocateTextureId (WebGLTexture texture) {
-		int id = nextTextureId++;
-		textures.put(id, texture);
-		return id;
-	}
-
-	private int allocateUniformLocationId (int program, WebGLUniformLocation location) {
-		Map<Integer, WebGLUniformLocation> progUniforms = uniforms.get(program);
-		if (progUniforms == null) {
-			progUniforms = new HashMap<Integer, WebGLUniformLocation>();
-			uniforms.put(program, progUniforms);
-		}
-		// FIXME check if uniform already stored.
-		int id = nextUniformId++;
-		progUniforms.put(id, location);
-		return id;
 	}
 
 	public Float32Array copy (FloatBuffer buffer) {
@@ -157,30 +135,6 @@ public class GwtGL20 implements GL20 {
 			}
 			return intBuffer.subarray(0, buffer.remaining());
 		}
-	}
-	private void deallocateProgramId (int id) {
-		uniforms.remove(id);
-		programs.remove(id);
-	}
-
-	private void deallocateBufferId (int id) {
-		buffers.remove(id);
-	}
-
-	private void deallocateShaderId (int id) {
-		shaders.remove(id);
-	}
-
-	private void deallocateFrameBufferId (int id) {
-		frameBuffers.remove(id);
-	}
-
-	private void deallocateRenderBufferId (int id) {
-		renderBuffers.remove(id);
-	}
-
-	private void deallocateTextureId (int id) {
-		textures.remove(id);
 	}
 
 	private void ensureCapacity (FloatBuffer buffer) {
@@ -357,13 +311,13 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public int glCreateProgram () {
 		WebGLProgram program = gl.createProgram();
-		return allocateProgramId(program);
+		return programs.add(program);
 	}
 
 	@Override
 	public int glCreateShader (int type) {
 		WebGLShader shader = gl.createShader(type);
-		return allocateShaderId(shader);
+		return shaders.add(shader);
 	}
 
 	@Override
@@ -373,8 +327,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDeleteBuffer (int id) {
-		WebGLBuffer buffer = this.buffers.get(id);
-		deallocateBufferId(id);
+		WebGLBuffer buffer = this.buffers.remove(id);
 		gl.deleteBuffer(buffer);
 	}
 
@@ -382,16 +335,14 @@ public class GwtGL20 implements GL20 {
 	public void glDeleteBuffers (int n, IntBuffer buffers) {
 		for (int i = 0; i < n; i++) {
 			int id = buffers.get();
-			WebGLBuffer buffer = this.buffers.get(id);
-			deallocateBufferId(id);
+			WebGLBuffer buffer = this.buffers.remove(id);
 			gl.deleteBuffer(buffer);
 		}
 	}
 
 	@Override
 	public void glDeleteFramebuffer (int id) {
-		WebGLFramebuffer fb = this.frameBuffers.get(id);
-		deallocateFrameBufferId(id);
+		WebGLFramebuffer fb = this.frameBuffers.remove(id);
 		gl.deleteFramebuffer(fb);
 	}
 
@@ -399,8 +350,7 @@ public class GwtGL20 implements GL20 {
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
 		for (int i = 0; i < n; i++) {
 			int id = framebuffers.get();
-			WebGLFramebuffer fb = this.frameBuffers.get(id);
-			deallocateFrameBufferId(id);
+			WebGLFramebuffer fb = this.frameBuffers.remove(id);
 			gl.deleteFramebuffer(fb);
 		}
 	}
@@ -408,14 +358,14 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glDeleteProgram (int program) {
 		WebGLProgram prog = programs.get(program);
-		deallocateProgramId(program);
+		programs.remove(program);
+		uniforms.remove(program);
 		gl.deleteProgram(prog);
 	}
 
 	@Override
 	public void glDeleteRenderbuffer (int id) {
-		WebGLRenderbuffer rb = this.renderBuffers.get(id);
-		deallocateRenderBufferId(id);
+		WebGLRenderbuffer rb = this.renderBuffers.remove(id);
 		gl.deleteRenderbuffer(rb);
 	}
 
@@ -423,23 +373,20 @@ public class GwtGL20 implements GL20 {
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
 		for (int i = 0; i < n; i++) {
 			int id = renderbuffers.get();
-			WebGLRenderbuffer rb = this.renderBuffers.get(id);
-			deallocateRenderBufferId(id);
+			WebGLRenderbuffer rb = this.renderBuffers.remove(id);
 			gl.deleteRenderbuffer(rb);
 		}
 	}
 
 	@Override
 	public void glDeleteShader (int shader) {
-		WebGLShader sh = shaders.get(shader);
-		deallocateShaderId(shader);
+		WebGLShader sh = shaders.remove(shader);
 		gl.deleteShader(sh);
 	}
 
 	@Override
 	public void glDeleteTexture (int id) {
-		WebGLTexture texture = this.textures.get(id);
-		deallocateTextureId(id);
+		WebGLTexture texture = this.textures.remove(id);
 		gl.deleteTexture(texture);
 	}
 
@@ -447,8 +394,7 @@ public class GwtGL20 implements GL20 {
 	public void glDeleteTextures (int n, IntBuffer textures) {
 		for (int i = 0; i < n; i++) {
 			int id = textures.get();
-			WebGLTexture texture = this.textures.get(id);
-			deallocateTextureId(id);
+			WebGLTexture texture = this.textures.remove(id);
 			gl.deleteTexture(texture);
 		}
 	}
@@ -536,14 +482,14 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public int glGenBuffer () {
 		WebGLBuffer buffer = gl.createBuffer();
-		return allocateBufferId(buffer);
+		return buffers.add(buffer);
 	}
 
 	@Override
 	public void glGenBuffers (int n, IntBuffer buffers) {
 		for (int i = 0; i < n; i++) {
 			WebGLBuffer buffer = gl.createBuffer();
-			int id = allocateBufferId(buffer);
+			int id = this.buffers.add(buffer);
 			buffers.put(id);
 		}
 	}
@@ -556,44 +502,46 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public int glGenFramebuffer () {
 		WebGLFramebuffer fb = gl.createFramebuffer();
-		return allocateFrameBufferId(fb);
+		return frameBuffers.add(fb);
 	}
 
 	@Override
 	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
 		for (int i = 0; i < n; i++) {
 			WebGLFramebuffer fb = gl.createFramebuffer();
-			int id = allocateFrameBufferId(fb);
+			int id = this.frameBuffers.add(fb);
 			framebuffers.put(id);
-		}
-	}
-
-	@Override
-	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
-		for (int i = 0; i < n; i++) {
-			WebGLRenderbuffer rb = gl.createRenderbuffer();
-			int id = allocateRenderBufferId(rb);
-			renderbuffers.put(id);
 		}
 	}
 
 	@Override
 	public int glGenRenderbuffer () {
 		WebGLRenderbuffer rb = gl.createRenderbuffer();
-		return allocateRenderBufferId(rb);
+		return renderBuffers.add(rb);
+	}
+
+	@Override
+	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
+		for (int i = 0; i < n; i++) {
+			WebGLRenderbuffer rb = gl.createRenderbuffer();
+			int id = this.renderBuffers.add(rb);
+			renderbuffers.put(id);
+		}
 	}
 
 	@Override
 	public int glGenTexture () {
 		WebGLTexture texture = gl.createTexture();
-		return allocateTextureId(texture);
+		return textures.add(texture);
 	}
 
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
-		WebGLTexture texture = gl.createTexture();
-		int id = allocateTextureId(texture);
-		textures.put(id);
+		for (int i = 0; i < n; i++) {
+			WebGLTexture texture = gl.createTexture();
+			int id = this.textures.add(texture);
+			textures.put(id);
+		}
 	}
 
 
@@ -756,7 +704,14 @@ public class GwtGL20 implements GL20 {
 	public int glGetUniformLocation (int program, String name) {
 		WebGLUniformLocation location = gl.getUniformLocation(programs.get(program), name);
 		if (location == null) return -1;
-		return allocateUniformLocationId(program, location);
+		IntMap<WebGLUniformLocation> progUniforms = uniforms.get(program);
+		if (progUniforms == null) {
+			progUniforms = IntMap.create();
+			uniforms.put(program, progUniforms);
+		}
+		// FIXME check if uniform already stored.
+		int id = progUniforms.add(location);
+		return id;
 	}
 
 	@Override
@@ -947,7 +902,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glTexParameterfv (int target, int pname, FloatBuffer params) {
-		gl.texParameterf(target, pname, params.get());
+          gl.texParameterf(target, pname, params.get());
 	}
 
 	@Override
