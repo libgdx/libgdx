@@ -273,13 +273,13 @@ public class ParticleEditor extends JFrame {
 			splitPane.add(leftSplit, JSplitPane.LEFT);
 			{
 				JPanel spacer = new JPanel(new BorderLayout());
-				leftSplit.add(spacer, JSplitPane.TOP);
+				leftSplit.add(spacer, JSplitPane.BOTTOM);
 				spacer.add(lwjglCanvas.getCanvas());
 				spacer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
 			}
 			{
 				JPanel emittersPanel = new JPanel(new BorderLayout());
-				leftSplit.add(emittersPanel, JSplitPane.BOTTOM);
+				leftSplit.add(emittersPanel, JSplitPane.TOP);
 				emittersPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 6, 6, 0), BorderFactory
 					.createTitledBorder("Effect Emitters")));
 				{
