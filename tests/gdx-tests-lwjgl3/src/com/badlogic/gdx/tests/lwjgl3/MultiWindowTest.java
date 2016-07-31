@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests.lwjgl3;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
@@ -46,6 +47,7 @@ public class MultiWindowTest {
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
+				config.setWindowIcon(FileType.Internal, "data/testdot.png");
 				Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
 				ApplicationListener listener = createChildWindowClass(clazz);
 				Lwjgl3Window window = app.newWindow(listener, config);
