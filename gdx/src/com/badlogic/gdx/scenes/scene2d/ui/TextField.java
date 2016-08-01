@@ -112,6 +112,8 @@ public class TextField extends Widget implements Disableable {
 	boolean cursorOn = true;
 	long lastBlink;
 
+	protected TextField explicitNextField, explicitPreviousField;
+
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
@@ -159,11 +161,10 @@ public class TextField extends Widget implements Disableable {
 	protected int[] wordUnderCursor (int at) {
 		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
-		if(at>= text.length()){
+		if (at >= text.length()) {
 			left = text.length();
 			right = 0;
-		}
-		else {
+		} else {
 			for (; index < right; index++) {
 				if (!isWordCharacter(text.charAt(index))) {
 					right = index;
@@ -489,11 +490,39 @@ public class TextField extends Widget implements Disableable {
 		return minIndex;
 	}
 
-	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
+	/** Sets which TextField will be jumped to when {@link #next(boolean) next(false)} is called or Tab is pressed. If null, a
+	 * search for the next field will be performed instead. The other field must be a member of the same Stage.
+	 * @param setMutual If true, the other field's explicit previous field will be set to this. */
+	public void setExplicitNextTextField (TextField nextTextField, boolean setMutual) {
+		explicitNextField = nextTextField;
+		if (setMutual && nextTextField != null) nextTextField.explicitPreviousField = this;
+	}
+
+	/** Sets which TextField will be jumped to when {@link #next(boolean) next(true)} is called or Shift-Tab is pressed. If null, a
+	 * search for the previous field will be performed instead. The other field must be a member of the same Stage.
+	 * @param setMutual If true, the other field's explicit next field will be set to this. */
+	public void setExplicitPreviousTextField (TextField previousTextField, boolean setMutual) {
+		explicitPreviousField = previousTextField;
+		if (setMutual && previousTextField != null) previousTextField.explicitNextField = this;
+	}
+
+	/** Focuses the next TextField. If explicit next and/or previous fields have been set and they are in the same stage, they will
+	 * be used. Otherwise, a search is performed. If none is found, the keyboard is hidden. Does nothing if the text field is not
+	 * in a stage.
+	 * @param up Jumps to previous explicit field if true, otherwise next explicit field. If explicit fields are not set: If true,
+	 *           the TextField with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
+		if (up) {
+			if (explicitPreviousField != null && explicitPreviousField.getStage() == stage) {
+				stage.setKeyboardFocus(explicitPreviousField);
+				return;
+			}
+		} else if (explicitNextField != null && explicitNextField.getStage() == stage) {
+			stage.setKeyboardFocus(explicitNextField);
+			return;
+		}
 		TextField current = this;
 		while (true) {
 			current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
