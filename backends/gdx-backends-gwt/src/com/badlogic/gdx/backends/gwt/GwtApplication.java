@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #createApplicationListener()}. Clients can override the default loading screen via
@@ -165,13 +166,22 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		});
 	}
 
+	/**
+	 * Override this method to return a custom widget informing the that their browser lacks support of WebGL.
+	 *
+	 * @return Widget to display when WebGL is not supported.
+	 */
+	public Widget getNoWebGLSupportWidget() {
+		return new Label("Sorry, your browser doesn't seem to support WebGL");
+	}
+
 	void setupLoop () {
 		// setup modules
 		try {			
 			graphics = new GwtGraphics(root, config);			
 		} catch (Throwable e) {
 			root.clear();
-			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
+			root.add(getNoWebGLSupportWidget());
 			return;
 		}
 		lastWidth = graphics.getWidth();
