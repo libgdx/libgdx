@@ -307,14 +307,15 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		if (!created) {
 			gl20.glViewport(0, 0, width, height);
-			app.listener.create();
-			app.listener.resize(width, height);
-			created = true;
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
+
+			app.listener.create();
+			app.listener.resize(width, height);
+			created = true;
 		}
 		if (appPaused) {
 			return;

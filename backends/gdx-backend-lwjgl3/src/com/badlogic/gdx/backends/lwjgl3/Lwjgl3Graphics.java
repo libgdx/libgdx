@@ -33,7 +33,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
@@ -64,6 +63,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 				return;
 			}
 			GLFW.glfwMakeContextCurrent(windowHandle);
+			gl20.glViewport(0, 0, width, height);
 			window.getListener().resize(getWidth(), getHeight());
 			window.getListener().render();
 			GLFW.glfwSwapBuffers(windowHandle);
@@ -311,55 +311,40 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public boolean setFullscreenMode(DisplayMode displayMode) {
 		window.getInput().resetPollingStates();
-		boolean result = false;
+		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode) displayMode;
 		if (isFullscreen()) {
-			GLFW.glfwSetWindowSize(window.getWindowHandle(), displayMode.width, displayMode.height);
-			result = true;
+			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
+			if (currentMode.getMonitor() == newMode.getMonitor() && currentMode.refreshRate == newMode.refreshRate) {
+				// same monitor and refresh rate
+				GLFW.glfwSetWindowSize(window.getWindowHandle(), newMode.width, newMode.height);
+			} else {
+				// different monitor and/or refresh rate
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
+						0, 0, newMode.width, newMode.height, newMode.refreshRate);
+			}
 		} else {
-			result = recreateWindow(0, 0, (Lwjgl3DisplayMode) displayMode);
+			// switch from windowed to fullscreen
+			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
+					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
-		return result;
+		return true;
 	}
 
 	@Override
 	public boolean setWindowedMode(int width, int height) {
 		window.getInput().resetPollingStates();
-		boolean result = false;
 		if (!isFullscreen()) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
-			result = true;
 		} else {
-			result = recreateWindow(width, height, null);
+			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
+			int windowPosX = (currentMode.width - width) / 2;
+			int windowPosY = (currentMode.height - height) / 2;
+			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+					windowPosX, windowPosY, width, height, currentMode.refreshRate);
 		}
 		updateFramebufferInfo();
-		return result;
-	}
-
-	private boolean recreateWindow(int width, int height, Lwjgl3DisplayMode displayMode) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		config.setWindowedMode(width, height);
-		config.setFullscreenMode(displayMode);
-		try {
-			long oldHandle = window.getWindowHandle();
-			GLFW.glfwHideWindow(oldHandle);
-			GLFW.glfwSetFramebufferSizeCallback(oldHandle, null);
-
-			long windowHandle = Lwjgl3Application.createGlfwWindow(config, oldHandle);
-			GLFW.glfwDestroyWindow(oldHandle);
-			GLFW.glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
-			window.windowHandleChanged(windowHandle);
-			window.setVisible(true);
-			if(displayMode != null) {
-				window.getListener().resize(displayMode.width, displayMode.height);
-			} else {
-				window.getListener().resize(width, height);
-			}
-			return true;
-		} catch (GdxRuntimeException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return true;
 	}
 
 	@Override
@@ -402,7 +387,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public boolean supportsExtension(String extension) {
-		return GLFW.glfwExtensionSupported(extension) == GLFW.GLFW_TRUE;
+		return GLFW.glfwExtensionSupported(extension);
 	}
 
 	@Override
@@ -443,7 +428,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void dispose() {
-		this.resizeCallback.release();
+		this.resizeCallback.free();
 	}
 
 	public static class Lwjgl3DisplayMode extends DisplayMode {

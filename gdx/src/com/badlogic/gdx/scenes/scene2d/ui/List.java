@@ -92,7 +92,8 @@ public class List<T> extends Widget implements Cullable {
 		invalidateHierarchy();
 	}
 
-	/** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(ListStyle)} is called. */
+	/** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(ListStyle)} is
+	 * called. */
 	public ListStyle getStyle () {
 		return style;
 	}
@@ -158,16 +159,20 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				font.draw(batch, toString(item), x + textOffsetX, y + itemY - textOffsetY);
+				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY);
 				if (selected) {
-					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
-						* parentAlpha);
+					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
+						fontColorUnselected.a * parentAlpha);
 				}
 			} else if (itemY < cullingArea.y) {
 				break;
 			}
 			itemY -= itemHeight;
 		}
+	}
+
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y) {
+		return font.draw(batch, toString(item), x, y);
 	}
 
 	public ArraySelection<T> getSelection () {

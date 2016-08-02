@@ -17,13 +17,22 @@
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.File;
+import java.io.PrintStream;
+import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.AMDDebugOutput;
+import org.lwjgl.opengl.ARBDebugOutput;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.GLUtil;
+import org.lwjgl.opengl.KHRDebug;
+import org.lwjgl.system.Callback;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -59,13 +68,14 @@ public class Lwjgl3Application implements Application {
 	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private static GLFWErrorCallback errorCallback;
 	private static GLVersion glVersion;
+	private static Callback glDebugCallback;
 
 	static void initializeGlfw() {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
-			if (GLFW.glfwInit() != GLFW.GLFW_TRUE) {
+			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
 		}
@@ -125,7 +135,7 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					window.update(lifecycleListeners);
+					window.update();
 				}				
 				if (window.shouldClose()) {
 					closedWindows.add(window);
@@ -143,13 +153,31 @@ public class Lwjgl3Application implements Application {
 			}
 
 			for (Lwjgl3Window closedWindow : closedWindows) {
-				closedWindow.dispose();				
+				if (windows.size == 1) {
+					// Lifecycle listener methods have to be called before ApplicationListener methods. The
+					// application will be disposed when _all_ windows have been disposed, which is the case,
+					// when there is only 1 window left, which is in the process of being disposed.
+					for (int i = lifecycleListeners.size - 1; i >= 0; i--) {
+						LifecycleListener l = lifecycleListeners.get(i);
+						l.pause();
+						l.dispose();
+					}
+					lifecycleListeners.clear();
+				}
+				closedWindow.dispose();
+
 				windows.removeValue(closedWindow, false);
 			}
 		}
 	}
 
 	private void cleanupWindows() {
+		synchronized (lifecycleListeners) {
+			for(LifecycleListener lifecycleListener : lifecycleListeners){
+				lifecycleListener.pause();
+				lifecycleListener.dispose();
+			}
+		}
 		for (Lwjgl3Window window : windows) {
 			window.dispose();
 		}
@@ -161,7 +189,10 @@ public class Lwjgl3Application implements Application {
 		if (audio instanceof OpenALAudio) {
 			((OpenALAudio) audio).dispose();
 		}
-		errorCallback.release();
+		errorCallback.free();
+		if (glDebugCallback != null) {
+			glDebugCallback.free();
+		}
 		GLFW.glfwTerminate();
 	}
 
@@ -309,7 +340,7 @@ public class Lwjgl3Application implements Application {
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
-			lifecycleListeners.add(listener);
+			lifecycleListeners.removeValue(listener, true);
 		}
 	}
 	
@@ -367,6 +398,10 @@ public class Lwjgl3Application implements Application {
 			}
 		}
 
+		if (config.debug) {
+			GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
+		}
+
 		long windowHandle = 0;
 		
 		if(config.fullscreenMode != null) {
@@ -410,6 +445,11 @@ public class Lwjgl3Application implements Application {
 					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
+		if (config.debug) {
+			glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
+			setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
+		}
+
 		for (int i = 0; i < 2; i++) {
 			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
 					config.initialBackgroundColor.a);
@@ -428,8 +468,73 @@ public class Lwjgl3Application implements Application {
 
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
-		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object") == GLFW.GLFW_TRUE
-				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object") == GLFW.GLFW_TRUE;
+		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object")
+			|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object");
+	}
+
+	public enum GLDebugMessageSeverity {
+		HIGH(
+				GL43.GL_DEBUG_SEVERITY_HIGH,
+				KHRDebug.GL_DEBUG_SEVERITY_HIGH,
+				ARBDebugOutput.GL_DEBUG_SEVERITY_HIGH_ARB,
+				AMDDebugOutput.GL_DEBUG_SEVERITY_HIGH_AMD),
+		MEDIUM(
+				GL43.GL_DEBUG_SEVERITY_MEDIUM,
+				KHRDebug.GL_DEBUG_SEVERITY_MEDIUM,
+				ARBDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_ARB,
+				AMDDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_AMD),
+		LOW(
+				GL43.GL_DEBUG_SEVERITY_LOW,
+				KHRDebug.GL_DEBUG_SEVERITY_LOW,
+				ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB,
+				AMDDebugOutput.GL_DEBUG_SEVERITY_LOW_AMD),
+		NOTIFICATION(
+				GL43.GL_DEBUG_SEVERITY_NOTIFICATION,
+				KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION,
+				-1,
+				-1);
+
+		final int gl43, khr, arb, amd;
+
+		GLDebugMessageSeverity(int gl43, int khr, int arb, int amd) {
+			this.gl43 = gl43;
+			this.khr = khr;
+			this.arb = arb;
+			this.amd = amd;
+		}
+	}
+
+	/**
+	 * Enables or disables GL debug messages for the specified severity level. Returns false if the severity
+	 * level could not be set (e.g. the NOTIFICATION level is not supported by the ARB and AMD extensions).
+	 *
+	 * See {@link Lwjgl3ApplicationConfiguration#enableGLDebugOutput(boolean, PrintStream)}
+	 */
+	public static boolean setGLDebugMessageControl (GLDebugMessageSeverity severity, boolean enabled) {
+		GLCapabilities caps = GL.getCapabilities();
+		final int GL_DONT_CARE = 0x1100; // not defined anywhere yet
+
+		if (caps.OpenGL43) {
+			GL43.glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, severity.gl43, (IntBuffer) null, enabled);
+			return true;
+		}
+
+		if (caps.GL_KHR_debug) {
+			KHRDebug.glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, severity.khr, (IntBuffer) null, enabled);
+			return true;
+		}
+
+		if (caps.GL_ARB_debug_output && severity.arb != -1) {
+			ARBDebugOutput.glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, severity.arb, (IntBuffer) null, enabled);
+			return true;
+		}
+
+		if (caps.GL_AMD_debug_output && severity.amd != -1) {
+			AMDDebugOutput.glDebugMessageEnableAMD(GL_DONT_CARE, severity.amd, (IntBuffer) null, enabled);
+			return true;
+		}
+
+		return false;
 	}
 
 }
