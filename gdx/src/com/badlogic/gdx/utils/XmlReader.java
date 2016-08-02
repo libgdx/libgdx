@@ -470,9 +470,9 @@ public class XmlReader {
 
 		/** @throws GdxRuntimeException if the attribute was not found. */
 		public String getAttribute (String name) {
-			if (attributes == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (attributes == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			String value = attributes.get(name);
-			if (value == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			return value;
 		}
 
