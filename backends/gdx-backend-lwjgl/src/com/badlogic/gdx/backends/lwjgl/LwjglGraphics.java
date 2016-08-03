@@ -197,6 +197,7 @@ public class LwjglGraphics implements Graphics {
 					if (pixmap.getFormat() != Format.RGBA8888) {
 						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
 						rgba.drawPixmap(pixmap, 0, 0);
+						pixmap.dispose();
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
