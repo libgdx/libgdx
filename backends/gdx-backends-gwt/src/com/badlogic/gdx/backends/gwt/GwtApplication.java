@@ -197,6 +197,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.net = new GwtNet();
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
+		updateLogLabelSize();
 
 		// tell listener about app creation
 		try {
@@ -306,10 +307,29 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return Gdx.net;
 	}
 
+	private void updateLogLabelSize () {
+		if (log != null) {
+			if (graphics != null) {
+				log.setSize(graphics.getWidth() + "px", "200px");
+			} else {
+				log.setSize("400px", "200px"); // Should not happen at this point, use dummy value
+			}
+		}
+	}
+
 	private void checkLogLabel () {
 		if (log == null) {
 			log = new TextArea();
-			log.setSize(graphics.getWidth() + "px", "200px");
+			
+			// It's possible that log functions are called
+			// before the app is initialized. E.g. SoundManager can call log functions before the app is initialized. 
+			// Since graphics is null, we're getting errors. The log size will be updated later, in case graphics was null
+			if (graphics != null) {
+				log.setSize(graphics.getWidth() + "px", "200px");
+			} else {
+				log.setSize("400px", "200px"); // Dummy value
+			} 
+			
 			log.setReadOnly(true);
 			root.add(log);
 		}
