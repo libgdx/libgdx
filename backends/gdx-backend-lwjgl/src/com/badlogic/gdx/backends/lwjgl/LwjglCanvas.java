@@ -295,11 +295,6 @@ public class LwjglCanvas implements Application {
 			public void run () {
 				if (!running) return;
 				running = false;
-				try {
-					Display.destroy();
-					if (audio != null) audio.dispose();
-				} catch (Throwable ignored) {
-				}
 				Array<LifecycleListener> listeners = lifecycleListeners;
 				synchronized (listeners) {
 					for (LifecycleListener listener : listeners) {
@@ -309,6 +304,11 @@ public class LwjglCanvas implements Application {
 				}
 				listener.pause();
 				listener.dispose();
+				try {
+					Display.destroy();
+					if (audio != null) audio.dispose();
+				} catch (Throwable ignored) {
+				}
 			}
 		});
 	}
