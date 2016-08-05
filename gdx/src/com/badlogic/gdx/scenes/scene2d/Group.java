@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -33,6 +34,15 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author mzechner
  * @author Nathan Sweet */
 public class Group extends Actor implements Cullable {
+
+	/** Determines how to choose the child that has been hit in a group. */
+	public enum HitMode {
+		/** Return the first child in the hierarchy that has been hit. */
+		first,
+		/** Return the child that is nearest to the hit coordinates. */
+		nearest
+	}
+
 	static private final Vector2 tmp = new Vector2();
 
 	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
@@ -41,6 +51,7 @@ public class Group extends Actor implements Cullable {
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
 	private Rectangle cullingArea;
+	private HitMode hitMode = HitMode.first;
 
 	public void act (float delta) {
 		super.act(delta);
@@ -237,17 +248,42 @@ public class Group extends Actor implements Cullable {
 		return cullingArea;
 	}
 
+	public HitMode getHitMode () {
+		return hitMode;
+	}
+
+	/** Determines how to choose the child that has been hit in this group. Default is {@link HitMode#first}. */
+	public void setHitMode (HitMode hitMode) {
+		if (hitMode == null) throw new IllegalArgumentException("hitMode cannot be null.");
+		this.hitMode = hitMode;
+	}
+
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
 		Vector2 point = tmp;
+		float hitActorDst = Float.MAX_VALUE;
+		Actor hitActor = null;
 		Actor[] childrenArray = children.items;
 		for (int i = children.size - 1; i >= 0; i--) {
 			Actor child = childrenArray[i];
 			if (!child.isVisible()) continue;
 			child.parentToLocalCoordinates(point.set(x, y));
 			Actor hit = child.hit(point.x, point.y, touchable);
-			if (hit != null) return hit;
+			if (hit != null) {
+				switch (hitMode) {
+				case first:
+					return hit;
+				case nearest:
+					float dst = point.set(child.getX(Align.center), child.getY(Align.center)).dst(x, y);
+					if (hitActor == null || dst < hitActorDst) {
+						hitActor = hit;
+						hitActorDst = dst;
+					}
+					break;
+				}
+			}
 		}
+		if (hitActor != null) return hitActor;
 		return super.hit(x, y, touchable);
 	}
 
