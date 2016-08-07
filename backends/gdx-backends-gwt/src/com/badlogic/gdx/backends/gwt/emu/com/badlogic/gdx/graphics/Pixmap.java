@@ -21,15 +21,18 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.aria.client.ImgRole;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
+import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
 
@@ -92,18 +95,15 @@ public class Pixmap implements Disposable {
 	static String clearColor = make(255, 255, 255, 1.0f);
 	static Blending blending;
 	CanvasPixelArray pixels;
+	private ImageElement imageElement;
 
 	public Pixmap (FileHandle file) {
-		GwtFileHandle gwtFile = (GwtFileHandle)file;
-		ImageElement img = gwtFile.preloader.images.get(file.path());
-		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
-		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
-		context.setGlobalCompositeOperation(Composite.COPY);
-		context.drawImage(img, 0, 0);
-		context.setGlobalCompositeOperation(getComposite());
+		this(((GwtFileHandle)file).preloader.images.get(file.path()));
+		if (imageElement == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 	}
 	
 	public Context2d getContext() {
+		ensureCanvasExists();
 		return context;
 	}
 
@@ -112,27 +112,30 @@ public class Pixmap implements Disposable {
 	}
 
 	public Pixmap (ImageElement img) {
-		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
-		context.drawImage(img, 0, 0);
+		this(-1, -1, img);
 	}
 
 	public Pixmap (int width, int height, Format format) {
-		create(width, height, format);
+		this(width, height, (ImageElement)null);
+	}
+	
+	private Pixmap(int width, int height, ImageElement imageElement) {
+		this.imageElement = imageElement;
+		this.width = imageElement != null ? imageElement.getWidth() : width;
+		this.height = imageElement != null ? imageElement.getHeight() : height;
+
+		buffer = BufferUtils.newIntBuffer(1);
+		id = nextId++;
+		buffer.put(0, id);
+		pixmaps.put(id, this);
 	}
 
-	private void create (int width, int height, Format format2) {
-		this.width = width;
-		this.height = height;
-		this.format = Format.RGBA8888;
+	private void create () {
 		canvas = Canvas.createIfSupported();
 		canvas.getCanvasElement().setWidth(width);
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
 		context.setGlobalCompositeOperation(getComposite());
-		buffer = BufferUtils.newIntBuffer(1);
-		id = nextId++;
-		buffer.put(0, id);
-		pixmaps.put(id, this);
 	}
 
 	public static String make (int r2, int g2, int b2, float a2) {
@@ -145,6 +148,7 @@ public class Pixmap implements Disposable {
 		Pixmap.blending = blending;
 		Composite composite = getComposite();
 		for (Pixmap pixmap : pixmaps.values()) {
+			pixmap.ensureCanvasExists();
 			pixmap.context.setGlobalCompositeOperation(composite);
 		}
 	}
@@ -194,12 +198,33 @@ public class Pixmap implements Disposable {
 	}
 
 	public CanvasElement getCanvasElement () {
+		ensureCanvasExists();
 		return canvas.getCanvasElement();
+	}
+
+	private void ensureCanvasExists () {
+		if (canvas == null) {
+			create();
+			if (imageElement != null) {
+				context.setGlobalCompositeOperation(Composite.COPY);
+				context.drawImage(imageElement, 0, 0);
+				context.setGlobalCompositeOperation(getComposite());
+			}
+		}
+	}
+
+	public boolean canUseImageElement () {
+		return canvas == null && imageElement != null;
+	}
+
+	public ImageElement getImageElement () {
+		return imageElement;
 	}
 
 	/** Sets the color for the following drawing operations
 	 * @param color the color, encoded as RGBA8888 */
 	public void setColor (int color) {
+		ensureCanvasExists();
 		r = (color >>> 24) & 0xff;
 		g = (color >>> 16) & 0xff;
 		b = (color >>> 8) & 0xff;
@@ -216,6 +241,7 @@ public class Pixmap implements Disposable {
 	 * @param b The blue component.
 	 * @param a The alpha component. */
 	public void setColor (float r, float g, float b, float a) {
+		ensureCanvasExists();
 		this.r = (int)(r * 255);
 		this.g = (int)(g * 255);
 		this.b = (int)(b * 255);
@@ -233,6 +259,7 @@ public class Pixmap implements Disposable {
 
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill () {
+		ensureCanvasExists();
 		context.clearRect(0, 0, getWidth(), getHeight());
 		rectangle(0, 0, getWidth(), getHeight(), DrawType.FILL);
 	}
@@ -354,6 +381,7 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
 	public int getPixel (int x, int y) {
+		ensureCanvasExists();
 		if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
 		int i = x * 4 + y * width * 4;
 		int r = pixels.get(i + 0) & 0xff;
@@ -382,6 +410,7 @@ public class Pixmap implements Disposable {
 	}
 
 	private void circle (int x, int y, int radius, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -402,6 +431,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void line(int x, int y, int x2, int y2, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -424,6 +454,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void rectangle(int x, int y, int width, int height, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -444,6 +475,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void triangle(int x1, int y1, int x2, int y2, int x3, int y3, DrawType drawType) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -470,6 +502,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void image (CanvasElement image, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight) {
+		ensureCanvasExists();
 		if (blending == Blending.None) {
 			context.setFillStyle(clearColor);
 			context.setStrokeStyle(clearColor);
@@ -487,6 +520,7 @@ public class Pixmap implements Disposable {
 	}
 	
 	private void fillOrStrokePath(DrawType drawType) {
+		ensureCanvasExists();
 		switch (drawType) {
 			case FILL:
 				context.fill();

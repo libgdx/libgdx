@@ -63,6 +63,7 @@ import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GLProfilerErrorTest;
+import com.badlogic.gdx.tests.GWTLossyPremultipliedAlphaTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
@@ -758,6 +759,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TimeUtilsTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance() {
+				return new GWTLossyPremultipliedAlphaTest();
 			}
 		}};
 }
