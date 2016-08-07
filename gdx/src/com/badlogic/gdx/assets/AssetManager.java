@@ -75,6 +75,7 @@ public class AssetManager implements Disposable {
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
+	int peakTasks = 0;
         
 	final FileHandleResolver resolver;
 
@@ -318,6 +319,7 @@ public class AssetManager implements Disposable {
 		if (loadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
+			peakTasks = 0;
 		}
 
 		// check if an asset with the same name but a different type has already been added.
@@ -472,6 +474,7 @@ public class AssetManager implements Disposable {
 		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
+		peakTasks++;
 	}
 
 	/** Adds an asset to this AssetManager */
@@ -504,7 +507,10 @@ public class AssetManager implements Disposable {
 		// if the task has been cancelled or has finished loading
 		if (complete) {
 			// increase the number of loaded assets and pop the task from the stack
-			if (tasks.size() == 1) loaded++;
+			if (tasks.size() == 1)  {
+				loaded++;
+				peakTasks = 0;
+			}
 			tasks.pop();
 
 			if (task.cancel) return true;
@@ -605,7 +611,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		return Math.min(1, loaded / (float)toLoad);
+		float fractionalLoaded = (float)loaded;
+		if (peakTasks > 0) {
+			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
+		}
+		return Math.min(1, fractionalLoaded / (float)toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
@@ -660,6 +670,7 @@ public class AssetManager implements Disposable {
 		this.assetDependencies.clear();
 		this.loaded = 0;
 		this.toLoad = 0;
+		this.peakTasks = 0;
 		this.loadQueue.clear();
 		this.tasks.clear();
 	}
