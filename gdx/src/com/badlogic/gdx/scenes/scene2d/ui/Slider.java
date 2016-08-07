@@ -21,6 +21,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -133,14 +134,14 @@ public class Slider extends ProgressBar {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
 			position = y - bg.getBottomHeight() - knobHeight * 0.5f;
-			value = min + (max - min) * visualInterpolationInverse.apply(position / (height - knobHeight));
+			value = min + (max - min) * visualInterpolationInverse.apply(MathUtils.clamp(position / (height - knobHeight), 0, 1));
 			position = Math.max(0, position);
 			position = Math.min(height - knobHeight, position);
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
 			position = x - bg.getLeftWidth() - knobWidth * 0.5f;
-			value = min + (max - min) * visualInterpolationInverse.apply(position / (width - knobWidth));
+			value = min + (max - min) * visualInterpolationInverse.apply(MathUtils.clamp(position / (width - knobWidth), 0, 1));
 			position = Math.max(0, position);
 			position = Math.min(width - knobWidth, position);
 		}
