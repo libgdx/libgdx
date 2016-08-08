@@ -562,8 +562,15 @@ public class TexturePacker {
 
 		public Settings () {
 		}
+	
 
+		/** @see #set(Settings)  */
 		public Settings (Settings settings) {
+			set(settings);
+		}
+
+		/** Copies values from another instance to the current one */
+		public void set(Settings settings) {
 			fast = settings.fast;
 			rotation = settings.rotation;
 			pot = settings.pot;
