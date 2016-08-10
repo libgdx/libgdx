@@ -125,6 +125,9 @@ public class GlyphLayout implements Poolable {
 							start += length + 1;
 							nextColor = colorStack.peek();
 							colorRun = true;
+						} else if (length == -2) {
+							start++; // Skip first of "[[" escape sequence.
+							continue outer;
 						}
 					}
 					break;
@@ -368,7 +371,7 @@ public class GlyphLayout implements Poolable {
 			}
 			return -1;
 		case '[': // "[[" is an escaped left square bracket.
-			return -1;
+			return -2;
 		case ']': // "[]" is a "pop" color tag.
 			if (colorStack.size > 1) colorPool.free(colorStack.pop());
 			return 0;

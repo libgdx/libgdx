@@ -124,11 +124,11 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
+		if (fontScaleX != oldScaleX || fontScaleY != oldScaleY) font.getData().setScale(fontScaleX, fontScaleY);
 
 		computePrefSize();
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleX != oldScaleX || fontScaleY != oldScaleY) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	private void computePrefSize () {
@@ -147,7 +147,7 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
+		if (fontScaleX != oldScaleX || fontScaleY != oldScaleY) font.getData().setScale(fontScaleX, fontScaleY);
 
 		boolean wrap = this.wrap && ellipsis == null;
 		if (wrap) {
@@ -201,7 +201,7 @@ public class Label extends Widget {
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleX != oldScaleX || fontScaleY != oldScaleY) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {

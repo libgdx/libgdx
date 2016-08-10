@@ -46,10 +46,30 @@ public abstract class Interpolation {
 	static public final PowIn pow2In = new PowIn(2);
 	/** Fast, then slow. */
 	static public final PowOut pow2Out = new PowOut(2);
+	static public final Interpolation pow2InInverse = new Interpolation() {
+		public float apply (float a) {
+			return (float)Math.sqrt(a);
+		}
+	};
+	static public final Interpolation pow2OutInverse = new Interpolation() {
+		public float apply (float a) {
+			return 1 - (float)Math.sqrt(-(a - 1));
+		}
+	};
 
 	static public final Pow pow3 = new Pow(3);
 	static public final PowIn pow3In = new PowIn(3);
 	static public final PowOut pow3Out = new PowOut(3);
+	static public final Interpolation pow3InInverse = new Interpolation() {
+		public float apply (float a) {
+			return (float)Math.cbrt(a);
+		}
+	};
+	static public final Interpolation pow3OutInverse = new Interpolation() {
+		public float apply (float a) {
+			return 1 - (float)Math.cbrt(-(a - 1));
+		}
+	};
 
 	static public final Pow pow4 = new Pow(4);
 	static public final PowIn pow4In = new PowIn(4);

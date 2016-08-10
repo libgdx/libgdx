@@ -46,9 +46,9 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		keys = new Array(capacity);
 	}
 
-	public OrderedMap (ObjectMap<? extends K, ? extends V> map) {
+	public OrderedMap (OrderedMap<? extends K, ? extends V> map) {
 		super(map);
-		keys = new Array(capacity);
+		keys = new Array(map.keys);
 	}
 
 	public V put (K key, V value) {
@@ -178,6 +178,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			map.remove(entry.key);
+			nextIndex--;
 		}
 	}
 
