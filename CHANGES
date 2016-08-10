@@ -5,7 +5,6 @@
 - Fix hiero problem with certain unicode characters. See https://github.com/libgdx/libgdx/issues/4202
 
 [1.9.3]
-- API Addition: Actor#positionChanged(float, float), Actor#sizeChanged(float, float), and Actor#rotationChanged(float)
 - Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
 - Addition of Intel Multi-OS Engine backend for deploying to iOS
 - Updated iOS native build scripts to iOS 9.3 and TVOS 9.2
