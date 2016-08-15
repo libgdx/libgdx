@@ -218,7 +218,12 @@ public class OisControllers {
 			listeners.removeValue(listener, true);
 		}
 
-		public String getName () {
+        @Override
+        public Array<ControllerListener> getListeners() {
+            return listeners;
+        }
+
+        public String getName () {
 			return joystick.getName();
 		}
 

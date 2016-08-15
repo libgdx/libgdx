@@ -79,8 +79,13 @@ public class Lwjgl3Controller implements Controller {
 	public void removeListener (ControllerListener listener) {
 		listeners.removeValue(listener, true);
 	}
-	
-	@Override
+
+    @Override
+    public Array<ControllerListener> getListeners() {
+        return listeners;
+    }
+
+    @Override
 	public boolean getButton (int buttonCode) {
 		if(buttonCode < 0 || buttonCode >= buttonState.length) {
 			return false;

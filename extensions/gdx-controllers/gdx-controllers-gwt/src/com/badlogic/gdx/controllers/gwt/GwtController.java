@@ -102,7 +102,8 @@ public class GwtController implements Controller {
 	public void removeListener(ControllerListener listener) {
 		this.listeners.removeValue(listener, true);
 	}
-	
+
+	@Override
 	public Array<ControllerListener> getListeners() {
 		return listeners;
 	}
