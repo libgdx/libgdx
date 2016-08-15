@@ -32,6 +32,12 @@ public class Pools {
 		return pool;
 	}
 
+	/** Simply clearing all {@link Pool}s, stored in a static variable typePools */
+	static public void clear(){
+		for (ObjectMap.Entry<Class, Pool> entry: typePools)
+			entry.value.clear();
+	}
+
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
 	 * is 100. */
 	static public <T> Pool<T> get (Class<T> type) {
