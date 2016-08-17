@@ -406,7 +406,7 @@ public class ModelInstance implements RenderableProvider {
 	/** @param id The ID of the animation to fetch (case sensitive).
 	 * @return The {@link Animation} with the specified id, or null if not available. */
 	public Animation getAnimation (final String id) {
-		return getAnimation(id, true);
+		return getAnimation(id, false);
 	}
 
 	/** @param id The ID of the animation to fetch.
