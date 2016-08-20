@@ -21,14 +21,18 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Window implements Disposable {
 	private long windowHandle;
@@ -218,6 +222,48 @@ public class Lwjgl3Window implements Disposable {
 	 */
 	public void deiconifyWindow() {
 		GLFW.glfwRestoreWindow(windowHandle);
+	}
+	
+	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param icon One or more images. The one closest to the system's desired size will be scaled. Good sizes include 
+	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
+	 * have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not disposed.
+	 */
+	public void setIcon (Pixmap... image){
+		if (SharedLibraryLoader.isMac)
+			return;
+		GLFWImage.Buffer buffer = GLFWImage.malloc(image.length);
+		ObjectSet<Pixmap> tmpPixmaps = null;
+		Pixmap.Blending previousBlending = Pixmap.getBlending();
+		Pixmap.setBlending(Pixmap.Blending.None);
+		for (int i = 0; i < image.length; i++) {
+			Pixmap pixmap = image[i];
+			if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
+				if (tmpPixmaps == null)
+					tmpPixmaps = new ObjectSet<Pixmap>(image.length - i);
+				Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+				rgba.drawPixmap(pixmap, 0, 0);
+				tmpPixmaps.add(rgba);
+				pixmap = rgba;
+			}
+
+			GLFWImage icon = GLFWImage.malloc();
+			icon.set(pixmap.getWidth(), pixmap.getHeight(), pixmap.getPixels());
+			buffer.put(icon);
+
+			icon.free();
+		}
+		Pixmap.setBlending(previousBlending); //just in case, avoid surprises
+		buffer.position(0);
+		GLFW.glfwSetWindowIcon(windowHandle, buffer);
+		buffer.free();
+		if (tmpPixmaps != null) 
+			for (Pixmap pixmap : tmpPixmaps) pixmap.dispose();
+	}
+	
+	public void setTitle (CharSequence title){
+		GLFW.glfwSetWindowTitle(windowHandle, title);
 	}
 
 	Lwjgl3Graphics getGraphics() {

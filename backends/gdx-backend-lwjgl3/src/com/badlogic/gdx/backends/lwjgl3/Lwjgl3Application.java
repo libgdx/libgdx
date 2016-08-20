@@ -19,11 +19,12 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
-
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.AMDDebugOutput;
 import org.lwjgl.opengl.ARBDebugOutput;
@@ -350,6 +351,7 @@ public class Lwjgl3Application implements Application {
 		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
 		appConfig.setWindowPosition(config.windowX, config.windowY);
 		appConfig.setWindowSizeLimits(config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
+		appConfig.setWindowIcon(config.windowIconFileType, config.windowIconPaths);
 		appConfig.setResizable(config.windowResizable);
 		appConfig.setDecorated(config.windowDecorated);
 		appConfig.setWindowListener(config.windowListener);
@@ -412,11 +414,11 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		GLFW.glfwSetWindowSizeLimits(windowHandle, 
-			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
-				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
-					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
-						config.windowMaxHeight> -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
+		GLFW.glfwSetWindowSizeLimits(windowHandle, //avoiding GLFW_DONT_CARE due to GLFW bug (https://github.com/glfw/glfw/pull/805)
+			config.windowMinWidth > -1 ? config.windowMinWidth : 0, 
+				config.windowMinHeight > -1 ? config.windowMinHeight : 0, 
+					config.windowMaxWidth > -1 ? config.windowMaxWidth : 0xffff,
+						config.windowMaxHeight> -1 ? config.windowMaxHeight : 0xffff);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
@@ -428,6 +430,33 @@ public class Lwjgl3Application implements Application {
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
+		}
+		if (config.windowIconPaths != null && !SharedLibraryLoader.isMac){
+			GLFWImage.Buffer buffer = GLFWImage.malloc(config.windowIconPaths.length);
+			Pixmap[] tmpPixmaps = new Pixmap[config.windowIconPaths.length];
+			Pixmap.Blending previousBlending = Pixmap.getBlending();
+			Pixmap.setBlending(Pixmap.Blending.None);
+			for (int i = 0; i < config.windowIconPaths.length; i++) {
+				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.windowIconPaths[i], config.windowIconFileType));
+				if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
+					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+					rgba.drawPixmap(pixmap, 0, 0);
+					pixmap.dispose();
+					pixmap = rgba;
+				}
+				tmpPixmaps[i] = pixmap;
+
+				GLFWImage icon = GLFWImage.malloc();
+				icon.set(pixmap.getWidth(), pixmap.getHeight(), pixmap.getPixels());
+				buffer.put(icon);
+
+				icon.free();
+			}
+			Pixmap.setBlending(previousBlending); //just in case, avoid surprises
+			buffer.position(0);
+			GLFW.glfwSetWindowIcon(windowHandle, buffer);
+			buffer.free();
+			for (Pixmap pixmap : tmpPixmaps) pixmap.dispose();
 		}
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);
