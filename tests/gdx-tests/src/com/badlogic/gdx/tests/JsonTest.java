@@ -2,10 +2,14 @@
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
@@ -67,6 +71,9 @@ public class JsonTest extends GdxTest {
 		test.stringArray.add("moo");
 		roundTrip(test);
 
+		TestMapGraph objectGraph = new TestMapGraph();
+		testObjectGraph(objectGraph, "exoticTypeName");
+
 		test = new Test1();
 		test.map = new ObjectMap();
 		roundTrip(test);
@@ -105,6 +112,29 @@ public class JsonTest extends GdxTest {
 		test(text, object);
 
 		return text;
+	}
+
+	private void testObjectGraph (TestMapGraph object, String typeName) {
+		Json json = new Json();
+		json.setTypeName(typeName);
+		json.setUsePrototypes(false);
+		json.setIgnoreUnknownFields(true);
+		json.setOutputType(OutputType.json);
+		String text = json.prettyPrint(object);
+
+		TestMapGraph object2 = json.fromJson(TestMapGraph.class, text);
+
+		if (object2.map.size() != object.map.size()) {
+			throw new RuntimeException("Too many items in deserialized json map.");
+		}
+
+		if (object2.objectMap.size != object.objectMap.size) {
+			throw new RuntimeException("Too many items in deserialized json object map.");
+		}
+
+		if (object2.arrayMap.size != object.arrayMap.size) {
+			throw new RuntimeException("Too many items in deserialized json map.");
+		}
 	}
 
 	private void test (String text, Object object) {
@@ -241,6 +271,21 @@ public class JsonTest extends GdxTest {
 			if (longField != other.longField) return false;
 			if (shortField != other.shortField) return false;
 			return true;
+		}
+	}
+
+	public static class TestMapGraph {
+		public Map<String, String> map = new HashMap<String, String>();
+		public ObjectMap<String, String> objectMap = new ObjectMap<String, String>();
+		public ArrayMap<String, String> arrayMap = new ArrayMap<String, String>();
+
+		public TestMapGraph () {
+			map.put("a", "b");
+			map.put("c", "d");
+			objectMap.put("a", "b");
+			objectMap.put("c", "d");
+			arrayMap.put("a", "b");
+			arrayMap.put("c", "d");
 		}
 	}
 
