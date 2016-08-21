@@ -3,6 +3,7 @@
 - Bullet: added btSoftBody#getLinkCount() and btSoftBody#getLink(int), see https://github.com/libgdx/libgdx/issues/4152
 - API Change: Wrapping for scene2d's HorizontalGroup and VerticalGroup.
 - Fix hiero problem with certain unicode characters. See https://github.com/libgdx/libgdx/issues/4202
+- Switched to RoboVM fork 2.2.0, fixes incompatibility with Android Gradle plugin and iOS 9.3.4
 
 [1.9.3]
 - Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
