@@ -49,6 +49,9 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -69,6 +72,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidNet net;
 	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
+	protected Writer logWriter;
 	public Handler handler;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
@@ -407,35 +411,94 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.d(tag, message);
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}				
+			} else {
+				Log.d(tag, message, exception);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.i(tag, message);
+			}				
+		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}				
+			} else {
+				Log.i(tag, message, exception);
+			}
+		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message);	
+			}			
+		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ":" + message);
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message, exception);
+			}			
+		}
 	}
 
 	@Override
@@ -448,6 +511,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
@@ -517,4 +585,5 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Handler getHandler () {
 		return this.handler;
 	}
+
 }

@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import java.io.Writer;
+
 import com.badlogic.gdx.utils.Clipboard;
 
 /** <p>
@@ -147,6 +149,10 @@ public interface Application {
 	 * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
 	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
 	public void setLogLevel (int logLevel);
+	
+	/** Sets the {@link Writer} to write the logs to. 
+	 * @param logWriter */
+	public void setLogWriter(Writer logWriter);
 
 	/** Gets the log level. */
 	public int getLogLevel ();
