@@ -48,6 +48,10 @@ public class GwtApplicationConfiguration {
 	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
+	/** whether to use the HTML5 Web Audio API over the SoundManager2 implementation **/
+	public boolean preferWebAudioAPI = false;
+	/** whether to automatically mute/unmute all sound on pause/resume. Only supported in the Web Audio API backend. **/
+	public boolean autoMuteOnPause = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
