@@ -95,7 +95,7 @@ public class Pixmap implements Disposable {
 
 	public Pixmap (FileHandle file) {
 		GwtFileHandle gwtFile = (GwtFileHandle)file;
-		ImageElement img = gwtFile.preloader.images.get(file.path());
+		ImageElement img = gwtFile.preloadedAssetManager.images.get(file.path());
 		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.setGlobalCompositeOperation(Composite.COPY);

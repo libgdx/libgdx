@@ -65,12 +65,11 @@ public class GwtGraphics implements Graphics {
 	GwtApplicationConfiguration config;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
-		Canvas canvasWidget = Canvas.createIfSupported();
-		if (canvasWidget == null) throw new GdxRuntimeException("Canvas not supported");
-		canvas = canvasWidget.getCanvasElement();
-		root.add(canvasWidget);
-		canvas.setWidth(config.width);
-		canvas.setHeight(config.height);
+		this(createCanvas(root,config), config);
+	}
+
+	public GwtGraphics (CanvasElement canvas, GwtApplicationConfiguration config) {
+		this.canvas = canvas;
 		this.config = config;
 
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
@@ -188,6 +187,16 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[] {new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8) {}};
+	}
+
+	private static CanvasElement createCanvas(Panel root,  GwtApplicationConfiguration config) {
+		Canvas canvasWidget = Canvas.createIfSupported();
+		if (canvasWidget == null) throw new GdxRuntimeException("Canvas not supported");
+		CanvasElement canvasElement = canvasWidget.getCanvasElement();
+		root.add(canvasWidget);
+		canvasElement.setWidth(config.width);
+		canvasElement.setHeight(config.height);
+		return canvasElement;
 	}
 
 	private native int getScreenWidthJSNI () /*-{

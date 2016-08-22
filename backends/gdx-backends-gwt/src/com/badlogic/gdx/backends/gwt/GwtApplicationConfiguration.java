@@ -29,9 +29,6 @@ public class GwtApplicationConfiguration {
 	public boolean stencil = false;
 	/** whether to enable antialiasing **/
 	public boolean antialiasing = false;
-	/** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
-	 * DOM **/
-	public Panel rootPanel;
 	/** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
 	 * body element of the DOM **/
 	public String canvasId;

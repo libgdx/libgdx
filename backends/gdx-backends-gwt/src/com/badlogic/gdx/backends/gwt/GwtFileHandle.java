@@ -31,26 +31,26 @@ import java.io.Writer;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.gwt.preloader.Preloader;
+import com.badlogic.gdx.backends.gwt.preloader.PreloadedAssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GwtFileHandle extends FileHandle {
-	public final Preloader preloader;
+	public final PreloadedAssetManager preloadedAssetManager;
 	private final String file;
 	private final FileType type;
 
-	public GwtFileHandle (Preloader preloader, String fileName, FileType type) {
+	public GwtFileHandle (PreloadedAssetManager preloadedAssetManager, String fileName, FileType type) {
 		if (type != FileType.Internal && type != FileType.Classpath)
 			throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
-		this.preloader = preloader;
+		this.preloadedAssetManager = preloadedAssetManager;
 		this.file = fixSlashes(fileName);
 		this.type = type;
 	}
 
 	public GwtFileHandle (String path) {
 		this.type = FileType.Internal;
-		this.preloader = ((GwtApplication)Gdx.app).getPreloader();
+		this.preloadedAssetManager = ((GwtApplication)Gdx.app).getPreloadedAssetManager();
 		this.file = fixSlashes(path);
 	}
 
@@ -99,7 +99,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
-		InputStream in = preloader.read(file);
+		InputStream in = preloadedAssetManager.read(file);
 		if (in == null) throw new GdxRuntimeException(file + " does not exist");
 		return in;
 	}
@@ -147,7 +147,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Reads the entire file into a string using the specified charset.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
-		if (preloader.isText(file)) return preloader.texts.get(file);
+		if (preloadedAssetManager.isText(file)) return preloadedAssetManager.texts.get(file);
 		try {
 			return new String(readBytes(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -289,7 +289,7 @@ public class GwtFileHandle extends FileHandle {
 	 * array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list () {
-		return preloader.list(file);
+		return preloadedAssetManager.list(file);
 	}
 
 	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -297,7 +297,7 @@ public class GwtFileHandle extends FileHandle {
 	 * classpath will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (FileFilter filter) {
-		return preloader.list(file, filter);
+		return preloadedAssetManager.list(file, filter);
 	}
 
 	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
@@ -305,7 +305,7 @@ public class GwtFileHandle extends FileHandle {
 	 * classpath will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (FilenameFilter filter) {
-		return preloader.list(file, filter);
+		return preloadedAssetManager.list(file, filter);
 	}
 
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
@@ -313,21 +313,21 @@ public class GwtFileHandle extends FileHandle {
 	 * will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (String suffix) {
-		return preloader.list(file, suffix);
+		return preloadedAssetManager.list(file, suffix);
 	}
 
 	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
 	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
 	 * classpath will return false. */
 	public boolean isDirectory () {
-		return preloader.isDirectory(file);
+		return preloadedAssetManager.isDirectory(file);
 	}
 
 	/** Returns a handle to the child with the specified name.
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		return new GwtFileHandle(preloader, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name,
+		return new GwtFileHandle(preloadedAssetManager, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name,
 			FileType.Internal);
 	}
 
@@ -335,7 +335,7 @@ public class GwtFileHandle extends FileHandle {
 		int index = file.lastIndexOf("/");
 		String dir = "";
 		if (index > 0) dir = file.substring(0, index);
-		return new GwtFileHandle(preloader, dir, type);
+		return new GwtFileHandle(preloadedAssetManager, dir, type);
 	}
 
 	public FileHandle sibling (String name) {
@@ -350,7 +350,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
 	 * will always return false. */
 	public boolean exists () {
-		return preloader.contains(file);
+		return preloadedAssetManager.contains(file);
 	}
 
 	/** Deletes this file or empty directory and returns success. Will not delete a directory that has children.
@@ -387,7 +387,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
 	 * determined. */
 	public long length () {
-		return preloader.length(file);
+		return preloadedAssetManager.length(file);
 	}
 
 	/** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned

@@ -17,7 +17,7 @@
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.backends.gwt.preloader.Preloader;
+import com.badlogic.gdx.backends.gwt.preloader.PreloadedAssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.storage.client.Storage;
@@ -26,26 +26,26 @@ public class GwtFiles implements Files {
 	
 	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported();
 	
-	final Preloader preloader;
+	final PreloadedAssetManager preloadedAssetManager;
 	
-	public GwtFiles (Preloader preloader) {
-		this.preloader = preloader;
+	public GwtFiles (PreloadedAssetManager preloadedAssetManager) {
+		this.preloadedAssetManager = preloadedAssetManager;
 	}
 
 	@Override
 	public FileHandle getFileHandle (String path, FileType type) {
 		if (type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' not supported in GWT backend");
-		return new GwtFileHandle(preloader, path, type);
+		return new GwtFileHandle(preloadedAssetManager, path, type);
 	}
 
 	@Override
 	public FileHandle classpath (String path) {
-		return new GwtFileHandle(preloader, path, FileType.Classpath);
+		return new GwtFileHandle(preloadedAssetManager, path, FileType.Classpath);
 	}
 
 	@Override
 	public FileHandle internal (String path) {
-		return new GwtFileHandle(preloader, path, FileType.Internal);
+		return new GwtFileHandle(preloadedAssetManager, path, FileType.Internal);
 	}
 
 	@Override

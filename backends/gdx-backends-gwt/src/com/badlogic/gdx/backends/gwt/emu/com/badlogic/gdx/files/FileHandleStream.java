@@ -29,7 +29,7 @@ import com.badlogic.gdx.backends.gwt.GwtFileHandle;
  * @author Nathan Sweet */
 public abstract class FileHandleStream extends GwtFileHandle {
 	public FileHandleStream (String path) {
-		super(((GwtApplication)Gdx.app).getPreloader(), path, FileType.Internal);
+		super(((GwtApplication)Gdx.app).getPreloadedAssetManager(), path, FileType.Internal);
 	}
 
 	public boolean isDirectory () {
