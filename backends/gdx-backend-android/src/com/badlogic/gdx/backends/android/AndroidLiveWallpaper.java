@@ -267,7 +267,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -282,7 +282,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -298,7 +298,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -313,7 +313,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {				
 					e.printStackTrace();
@@ -329,7 +329,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -344,7 +344,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message);
+					logWriter.write(tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {
 					e.printStackTrace();
