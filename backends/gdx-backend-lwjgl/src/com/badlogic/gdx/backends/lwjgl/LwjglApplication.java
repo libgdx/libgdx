@@ -18,6 +18,9 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -47,6 +50,7 @@ public class LwjglApplication implements Application {
 	protected final LwjglNet net;
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
+	protected Writer logWriter;
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -346,45 +350,102 @@ public class LwjglApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);	
+			}	
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}		
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+			}
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}				
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}	
 		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
+			if (logWriter != null) {				
+				try {
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.err.println(tag + ": " + message);
+			}	
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
+			if (logWriter != null) {				
+				try {
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				exception.printStackTrace(new PrintWriter(logWriter));
+			} else {
+				System.err.println(tag + ": " + message);
+				exception.printStackTrace(System.err);
+			}	
 		}
 	}
 
@@ -398,6 +459,11 @@ public class LwjglApplication implements Application {
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	@Override
 	public void exit () {
 		postRunnable(new Runnable() {

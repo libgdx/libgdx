@@ -413,7 +413,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -428,7 +428,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -444,7 +444,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -459,7 +459,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {				
 					e.printStackTrace();
@@ -475,7 +475,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -490,7 +490,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ":" + message + System.lineSeparator());
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {
 					e.printStackTrace();

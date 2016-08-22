@@ -239,7 +239,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -255,7 +255,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_DEBUG) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {					
@@ -273,7 +273,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -289,7 +289,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_INFO) {
 			if (logWriter != null) {
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {				
@@ -307,7 +307,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {				
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -323,7 +323,7 @@ public class HeadlessApplication implements Application {
 		if (logLevel >= LOG_ERROR) {
 			if (logWriter != null) {				
 				try {
-					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
