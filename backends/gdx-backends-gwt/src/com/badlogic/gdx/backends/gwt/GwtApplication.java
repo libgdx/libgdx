@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -74,6 +78,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private int lastWidth;
 	private int lastHeight;
+	protected Writer logWriter;
 	Preloader preloader;
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
@@ -338,63 +343,120 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message);
+				log.setCursorPos(log.getText().length() - 1);
+				System.out.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}	
+			} else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
+				log.setCursorPos(log.getText().length() - 1);
+				System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+				System.out.println(getStackTrace(exception));
+			}			
 		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}	else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
+				log.setCursorPos(log.getText().length() - 1);
+				System.err.println(tag + ": " + message);
+			}
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			System.out.println(getStackTrace(exception));
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
+				log.setCursorPos(log.getText().length() - 1);
+				System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
+				System.out.println(getStackTrace(exception));
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n");
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
+				log.setCursorPos(log.getText().length() - 1);
+				System.out.println(tag + ": " + message + "\n");
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				checkLogLabel();
+				log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
+				log.setCursorPos(log.getText().length() - 1);
+				System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+				System.out.println(getStackTrace(exception));
+			}			
 		}
 	}
 	
@@ -423,6 +485,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}	
+	
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
 	}
 
 	@Override

@@ -33,6 +33,9 @@ import com.badlogic.jglfw.GlfwCallbackAdapter;
 import com.badlogic.jglfw.GlfwCallbacks;
 
 import java.awt.EventQueue;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,7 @@ public class JglfwApplication implements Application {
 	volatile boolean running = true;
 	boolean isPaused;
 	protected String preferencesdir;
+	protected Writer logWriter;	
 
 	private boolean forceExit, runOnEDT;
 	private int foregroundFPS, backgroundFPS, hiddenFPS;
@@ -371,42 +375,104 @@ public class JglfwApplication implements Application {
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}			
 		}
 	}
 
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}	
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}				
 		}
 	}
 
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.err.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
+			if (logWriter != null) {				
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.err.println(tag + ": " + message);
+				exception.printStackTrace(System.err);
+			}			
 		}
 	}
 

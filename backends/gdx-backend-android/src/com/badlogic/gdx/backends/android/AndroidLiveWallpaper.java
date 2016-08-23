@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -64,6 +67,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected AndroidNet net;
 	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
+	protected Writer logWriter;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -261,35 +265,100 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.d(tag, message);
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}				
+			} else {
+				Log.d(tag, message, exception);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.i(tag, message);
+			}				
+		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}				
+			} else {
+				Log.i(tag, message, exception);
+			}
+		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message);	
+			}			
+		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message, exception);
+			}			
+		}
 	}
 
 	@Override
@@ -302,6 +371,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	@Override
 	public void exit () {
 		// no-op

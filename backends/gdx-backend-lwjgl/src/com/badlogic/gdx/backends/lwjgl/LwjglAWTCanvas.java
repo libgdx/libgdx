@@ -27,6 +27,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.PaintEvent;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +62,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class LwjglAWTCanvas implements Application {
 	static int instanceCount;
 
+	protected Writer logWriter;
 	LwjglGraphics graphics;
 	OpenALAudio audio;
 	LwjglFiles files;
@@ -397,45 +401,102 @@ public class LwjglAWTCanvas implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);	
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			if (logWriter != null) {
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}				
+			} else {
+				System.out.println(tag + ": " + message);
+				exception.printStackTrace(System.out);
+			}			
 		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
+			if (logWriter != null) {				
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.err.println(tag + ": " + message);
+			}			
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
+			if (logWriter != null) {				
+				try {
+					logWriter.write(tag + ": " + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				exception.printStackTrace(new PrintWriter(logWriter));
+			} else {
+				System.err.println(tag + ": " + message);
+				exception.printStackTrace(System.err);
+			}			
 		}
 	}
 
@@ -449,6 +510,11 @@ public class LwjglAWTCanvas implements Application {
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	@Override
 	public void exit () {
 		postRunnable(new Runnable() {
