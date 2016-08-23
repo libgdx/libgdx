@@ -414,6 +414,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -429,6 +430,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -445,6 +447,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -460,6 +463,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {				
 					e.printStackTrace();
@@ -476,6 +480,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -491,6 +496,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			if (logWriter != null) {
 				try {
 					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {
 					e.printStackTrace();

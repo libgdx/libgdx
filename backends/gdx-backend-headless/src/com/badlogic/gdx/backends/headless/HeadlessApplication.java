@@ -325,10 +325,10 @@ public class HeadlessApplication implements Application {
 				try {
 					logWriter.write("[error] " + tag + ": " + message + System.lineSeparator());
 					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				exception.printStackTrace(new PrintWriter(logWriter));
 			} else {
 				System.err.println(tag + ": " + message);
 				exception.printStackTrace(System.err);

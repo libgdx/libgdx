@@ -52,6 +52,9 @@ import ios.uikit.enums.UIUserInterfaceIdiom;
 import ios.uikit.protocol.UIApplicationDelegate;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 public class IOSApplication implements Application {
 
@@ -106,6 +109,8 @@ public class IOSApplication implements Application {
 	IOSFiles files;
 	IOSInput input;
 	IOSNet net;
+	Writer logWriter;
+	
 	int logLevel = Application.LOG_DEBUG;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
@@ -316,35 +321,100 @@ public class IOSApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.d(tag, message);
+			}			
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
+			if (logWriter != null) {
+				try {
+					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}				
+			} else {
+				Log.d(tag, message, exception);
+			}			
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.i(tag, message);
+			}				
+		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {				
+					e.printStackTrace();
+				}				
+			} else {
+				Log.i(tag, message, exception);
+			}
+		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message);	
+			}			
+		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) {
+			if (logWriter != null) {
+				try {
+					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
+					exception.printStackTrace(new PrintWriter(logWriter));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.e(tag, message, exception);
+			}	
+		}
 	}
 
 	@Override
@@ -357,6 +427,11 @@ public class IOSApplication implements Application {
 		return logLevel;
 	}
 
+	@Override
+	public void setLogWriter (Writer logWriter) {
+		this.logWriter = logWriter;
+	}
+	
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.iOS;

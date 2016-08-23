@@ -349,6 +349,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -364,6 +365,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[debug] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {					
 					e.printStackTrace();
@@ -380,6 +382,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -395,6 +398,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[info] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {				
 					e.printStackTrace();
@@ -411,6 +415,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -426,6 +431,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			if (logWriter != null) {
 				try {
 					logWriter.write("[error] " + tag + ":" + message + System.lineSeparator());
+					logWriter.flush();
 					exception.printStackTrace(new PrintWriter(logWriter));
 				} catch (IOException e) {
 					e.printStackTrace();
