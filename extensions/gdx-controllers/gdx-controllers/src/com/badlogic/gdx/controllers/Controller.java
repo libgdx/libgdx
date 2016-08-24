@@ -64,7 +64,7 @@ public interface Controller {
 	 * @param listener */
 	public void removeListener (ControllerListener listener);
 
-	/** Returns the array of {@link com.badlogic.gdx.controllers.ControllerListener}s
-	 * attached to the current {@link com.badlogic.gdx.controllers.Controller}*/
-	public Array<ControllerListener> getListeners();
+	 /** Returns the array of {@link ControllerListener}s
+	  * attached to the current {@link Controller}*/
+	 public Array<ControllerListener> getListeners();
 }
