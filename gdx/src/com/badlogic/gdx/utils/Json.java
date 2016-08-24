@@ -909,18 +909,24 @@ public class Json {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
+					
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
+					
 					return (T)result;
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
+					for (JsonValue child = jsonData.child; child != null; child = child.next) {
+						if (child.name.equals(typeName)) {
+							continue;
+						}
 						result.put(child.name, readValue(elementType, null, child));
+					}
 					return (T)result;
 				}
 
