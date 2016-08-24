@@ -32,9 +32,9 @@ import com.badlogic.gdx.backends.gwt.preloader.PreloadedAssetManager;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
-import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.canvas.client.Canvas;
@@ -70,8 +70,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private Preloader preloader;
 
 	private Panel root = null;
-	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
+
+	private long startTime = TimeUtils.millis();
 
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
@@ -94,29 +95,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		GwtApplication.agentInfo = computeAgentInfo();
 		this.listener = createApplicationListener();
 		this.config = getConfig();
-
-		this.log = config.log;
 		this.root = createRootPanel();
 
 		addEventListeners();
-
-		if (config.preferWebAudioAPI && WebAudioAPIManager.isSupported()) {
-			preload();
-		} else {
-			// initialize SoundManager2
-			SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
-
-				@Override
-				public void onready () {
-					preload();
-				}
-
-				@Override
-				public void ontimeout (String status, String errorType) {
-					error("SoundManager", status + " " + errorType);
-				}
-			});
-		}
+		preload();
 	}
 
 	private void preload () {
@@ -176,7 +158,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.net = new GwtNet();
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
-		updateLogLabelSize();
 
 		// tell listener about app creation
 		try {
@@ -271,33 +252,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return graphics;
 	}
 
-	private void updateLogLabelSize () {
-		if (log != null) {
-			if (graphics != null) {
-				log.setSize(graphics.getWidth() + "px", "200px");
-			} else {
-				log.setSize("400px", "200px"); // Should not happen at this point, use dummy value
-			}
-		}
-	}
-
-	private void checkLogLabel () {
-		if (log == null) {
-			log = new TextArea();
-			
-			// It's possible that log functions are called
-			// before the app is initialized. E.g. SoundManager can call log functions before the app is initialized. 
-			// Since graphics is null, we're getting errors. The log size will be updated later, in case graphics was null
-			if (graphics != null) {
-				log.setSize(graphics.getWidth() + "px", "200px");
-			} else {
-				log.setSize("400px", "200px"); // Dummy value
-			} 
-			
-			log.setReadOnly(true);
-			root.add(log);
-		}
-	}
 
 	private Panel createRootPanel() {
 
@@ -325,79 +279,58 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message);
+			consoleLog(tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
+			consoleLog(TimeUtils.timeSinceMillis(startTime) + " - " + tag + ": " + message + "\n" + getMessages(exception));
 		}
 	}
 
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message);
+			consoleLog(TimeUtils.timeSinceMillis(startTime) + " - " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			System.out.println(getStackTrace(exception));
+			consoleLog(TimeUtils.timeSinceMillis(startTime) + " - " + tag + ": " + message + "\n" + getMessages(exception));
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n");
+			consoleLog(TimeUtils.timeSinceMillis(startTime) + " - " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
+			consoleLog(TimeUtils.timeSinceMillis(startTime) + " - " + tag + ": " + message + "\n" + getMessages(exception));
 		}
 	}
 	
 	private String getMessages (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		while (e != null) {
-			buffer.append(e.getMessage() + "\n");
+			buffer.append(e.getMessage()).append("\n");
 			e = e.getCause();
 		}
 		return buffer.toString();
 	}
 	
 	private String getStackTrace (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (StackTraceElement trace : e.getStackTrace()) {
-			buffer.append(trace.toString() + "\n");
+			buffer.append(trace.toString()).append("\n");
 		}
 		return buffer.toString();
 	}
