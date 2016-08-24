@@ -2,7 +2,7 @@ ext {
     GROUPID = "com.badlogicgames.gdx"
     VERSION = "1.9.4-SNAPSHOT"
     gdxVersion = VERSION
-    robovmVersion = "2.2.0-SNAPSHOT"
+    robovmVersion = "2.2.1-SNAPSHOT"
     moeVersion = "1.0.0"
     androidVersion = "4.4"
     gwtVersion = "2.6.0"
@@ -25,7 +25,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:1.2.3"
-        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0-SNAPSHOT"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:2.2.1-SNAPSHOT"
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }

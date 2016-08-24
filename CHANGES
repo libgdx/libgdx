@@ -1,4 +1,5 @@
 [1.9.5]
+- API Addition: ApplicationLogger interface, allowing easier access to custom logging
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
