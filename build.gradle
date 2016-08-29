@@ -14,7 +14,7 @@ ext {
 buildscript {
     repositories { mavenCentral() }
     dependencies {
-        classpath "com.android.tools.build:gradle:1.2.3"
+        classpath "com.android.tools.build:gradle:2.1.0"
         classpath "org.robovm:robovm-gradle-plugin:1.5.0"
     }
 }
@@ -116,14 +116,14 @@ project(":backends:gdx-backends-gwt") {
     }
 }
 
-project(":extensions:gdx-box2d:gdx-box2d") {
+project(":extensions:gdx-box2d-parent:gdx-box2d") {
     dependencies {
         compile project(":gdx")
         optional project(":extensions:gdx-jnigen")
     }
 }
 
-project(":extensions:gdx-box2d:gdx-box2d-gwt") {
+project(":extensions:gdx-box2d-parent:gdx-box2d-gwt") {
     dependencies { compile project(":gdx") }
 
     eclipse {
@@ -152,31 +152,31 @@ project(":extensions:gdx-bullet") {
     }
 }
 
-project(":extensions:gdx-controllers:gdx-controllers") {
+project(":extensions:gdx-controllers-parent:gdx-controllers") {
     dependencies { compile project(":gdx"); }
 }
 
-project(":extensions:gdx-controllers:gdx-controllers-android") {
+project(":extensions:gdx-controllers-parent:gdx-controllers-android") {
     dependencies {
         compile project(":gdx");
-        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers");
         compile project(":backends:gdx-backend-android");
     }
 }
 
-project(":extensions:gdx-controllers:gdx-controllers-desktop") {
+project(":extensions:gdx-controllers-parent:gdx-controllers-desktop") {
     dependencies {
         compile project(":gdx");
-        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers");
         compile project(":backends:gdx-backend-lwjgl");
         optional project(":extensions:gdx-jnigen")
     }
 }
 
-project(":extensions:gdx-controllers:gdx-controllers-gwt") {
+project(":extensions:gdx-controllers-parent:gdx-controllers-gwt") {
     dependencies {
         compile project(":gdx");
-        compile project(":extensions:gdx-controllers:gdx-controllers");
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers");
         compile project(":backends:gdx-backends-gwt");
     }
 
@@ -214,9 +214,9 @@ project(":extensions:gdx-tools") {
 project(":tests:gdx-tests") {
     dependencies {
         compile project(":gdx")
-        compile project(":extensions:gdx-box2d:gdx-box2d")
+        compile project(":extensions:gdx-box2d-parent:gdx-box2d")
         compile project(":extensions:gdx-bullet")
-        compile project(":extensions:gdx-controllers:gdx-controllers")
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers")
         compile project(":extensions:gdx-freetype")
     }
 }
@@ -260,7 +260,7 @@ project(":tests:gdx-tests-jglfw") {
         compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
         compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
         compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
-        compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers-desktop")
         compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
     }
 
@@ -285,7 +285,7 @@ project(":tests:gdx-tests-lwjgl") {
         compile files("../../extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar")
         compile files("../../extensions/gdx-bullet/libs/gdx-bullet-natives.jar")
         compile files("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar")
-        compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
+        compile project(":extensions:gdx-controllers-parent:gdx-controllers-desktop")
         compile files("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
     }
 
