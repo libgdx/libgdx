@@ -2,7 +2,7 @@ package %PACKAGE%;
 
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
-import com.intel.moe.natj.general.Pointer;
+import org.moe.natj.general.Pointer;
 import %PACKAGE%.%MAIN_CLASS%;
 
 import ios.foundation.NSAutoreleasePool;
