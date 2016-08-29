@@ -2,12 +2,10 @@ buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven {
-            url uri(System.getenv("INTEL_MULTI_OS_ENGINE_HOME") + "/gradle")
-        }
+        jcenter()
     }
     dependencies {
-        classpath 'com.intel.gradle:moeGradlePlugin:1.1.0.final-1'
+        classpath 'org.multi-os-engine:moe-gradle:1.1.0'
     }
 }
 
@@ -63,7 +61,6 @@ dependencies {
 }
 
 moe {
-    mainClassName 'IOSTests'
     xcode {
         mainTarget 'IOSTests'
         packageName 'com.badlogicgames.gdx.tests'
