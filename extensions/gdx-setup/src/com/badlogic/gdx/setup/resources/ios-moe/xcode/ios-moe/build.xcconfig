@@ -18,7 +18,7 @@ MOE_PAGEZERO[sdk=appletvos*] =
 MOE_PAGEZERO[sdk=appletvsimulator*] = -pagezero_size 4096
 
 // Set frameworks paths.
-MOE_FRAMEWORK_PATH = ${INTEL_MULTI_OS_ENGINE_HOME}/sdk/${PLATFORM_NAME}
+MOE_FRAMEWORK_PATH = ${MOE_HOME}/sdk/${PLATFORM_NAME}
 
 MOE_CUSTOM_STATIC_FRAMEWORK_PATH = ../build/libs/static/${PLATFORM_NAME}
 MOE_CUSTOM_DYNAMIC_FRAMEWORK_PATH = ../build/libs/dynamic/${PLATFORM_NAME}
