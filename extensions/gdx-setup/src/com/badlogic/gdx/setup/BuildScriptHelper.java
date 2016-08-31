@@ -34,12 +34,7 @@ public class BuildScriptHelper {
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		if (projects.contains(ProjectType.HTML)) {
-			write(wr, DependencyBank.jCenter);
-		}
-		if (projects.contains(ProjectType.IOSMOE)) {
-			write(wr, "maven { url " + DependencyBank.moeLocalUrl + " }");
-		}
+		write(wr, DependencyBank.jCenter);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");

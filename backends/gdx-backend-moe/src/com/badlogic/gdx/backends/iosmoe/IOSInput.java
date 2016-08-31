@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.intel.moe.natj.general.ann.NInt;
+import org.moe.natj.general.ann.NInt;
 import ios.audiotoolbox.c.AudioToolbox;
 import ios.coregraphics.struct.CGPoint;
 import ios.coregraphics.struct.CGRect;

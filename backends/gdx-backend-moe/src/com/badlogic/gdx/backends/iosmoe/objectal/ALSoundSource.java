@@ -17,16 +17,16 @@
 
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
-import com.intel.moe.natj.general.ann.ByValue;
-import com.intel.moe.natj.general.ann.Generated;
-import com.intel.moe.natj.general.ann.Mapped;
-import com.intel.moe.natj.general.ann.MappedReturn;
-import com.intel.moe.natj.general.ann.Runtime;
-import com.intel.moe.natj.objc.ObjCRuntime;
-import com.intel.moe.natj.objc.SEL;
-import com.intel.moe.natj.objc.ann.ObjCProtocolName;
-import com.intel.moe.natj.objc.ann.Selector;
-import com.intel.moe.natj.objc.map.ObjCObjectMapper;
+import org.moe.natj.general.ann.ByValue;
+import org.moe.natj.general.ann.Generated;
+import org.moe.natj.general.ann.Mapped;
+import org.moe.natj.general.ann.MappedReturn;
+import org.moe.natj.general.ann.Runtime;
+import org.moe.natj.objc.ObjCRuntime;
+import org.moe.natj.objc.SEL;
+import org.moe.natj.objc.ann.ObjCProtocolName;
+import org.moe.natj.objc.ann.Selector;
+import org.moe.natj.objc.map.ObjCObjectMapper;
 
 @Generated
 @Runtime(ObjCRuntime.class)

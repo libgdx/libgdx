@@ -40,7 +40,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 
 moe {
-    mainClassName 'IOSMoeLauncher'
     xcode {
         mainTarget 'ios-moe'
         packageName '%PACKAGE%'

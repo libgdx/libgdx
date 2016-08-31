@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import com.intel.moe.natj.general.NatJ;
-import com.intel.moe.natj.general.Pointer;
-import com.intel.moe.natj.objc.ann.Selector;
+import org.moe.natj.general.NatJ;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.objc.ann.Selector;
 import ios.coregraphics.struct.CGRect;
 import ios.glkit.GLKViewController;
 import ios.uikit.enums.UIInterfaceOrientation;
