@@ -35,11 +35,30 @@ public abstract class Interpolation {
 		}
 	};
 
-	static public final Interpolation fade = new Interpolation() {
+	//
+
+	/** Aka "smoothstep". */
+	static public final Interpolation smooth = new Interpolation() {
+		public float apply (float a) {
+			return a * a * (3 - 2 * a);
+		}
+	};
+	static public final Interpolation smooth2 = new Interpolation() {
+		public float apply (float a) {
+			a = a * a * (3 - 2 * a);
+			return a * a * (3 - 2 * a);
+		}
+	};
+
+	/** By Ken Perlin. */
+	static public final Interpolation smoother = new Interpolation() {
 		public float apply (float a) {
 			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
 		}
 	};
+	static public final Interpolation fade = smoother;
+
+	//
 
 	static public final Pow pow2 = new Pow(2);
 	/** Slow, then fast. */
