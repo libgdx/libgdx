@@ -24,7 +24,7 @@
 	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>Intel.MOE.Main.Class</key>
+	<key>MOE.Main.Class</key>
 	<string>%PACKAGE%.IOSMoeLauncher</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<false/>
