@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.multi-os-engine:moe-gradle:1.1.0'
+        classpath 'org.multi-os-engine:moe-gradle:1.1.+'
     }
 }
 
