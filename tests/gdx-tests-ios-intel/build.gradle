@@ -35,12 +35,11 @@ task copyNatives << {
     def outFlags = file("xcode/IOSTests/custom.xcconfig");
     outFlags.write LD_FLAGS
 
-    def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
-    if (proguard.exists()) {
-        if (!proguard.text.contains("-keep class com.badlogic.**")) {
-            proguard << "-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
+    def proguard = file("proguard.append.cfg")
+    if (!proguard.exists()) {
+        proguard = new File("proguard.append.cfg")
+        proguard << "-keep class com.badlogic.** { *; }\n"
+        proguard << "-keep enum com.badlogic.** { *; }\n"
     }
 }
 

@@ -21,12 +21,7 @@ task copyNatives << {
     outFlags.write LD_FLAGS
 
     def proguard = file("proguard.append.cfg")
-    if (proguard.exists()) {
-        if (!proguard.text.contains("-keep class com.badlogic.**")) {
-            proguard << "\n-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
-    } else {
+    if (!proguard.exists()) {
         proguard = new File("proguard.append.cfg")
         proguard << "\n-keep class com.badlogic.** { *; }\n"
         proguard << "-keep enum com.badlogic.** { *; }\n"
