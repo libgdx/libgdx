@@ -75,3 +75,13 @@ libGDX is supported by helpful 3rd parties via code contributions, free licenses
 </table>
 
 Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
+
+## Intro to Software CSE2410 Fall 2016
+
+Ahmed Alnuaimi
+
+Andrew Greco
+
+Jessica Nguy
+
+Francis Savino
