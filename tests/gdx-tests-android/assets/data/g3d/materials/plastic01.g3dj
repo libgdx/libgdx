@@ -1,0 +1,21 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "plastic_01", 
+			"diffuse": [ 0.827451,  0.364706,  0.250980], 
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"textures": [
+				{
+					"id": "plastic_normal_01", 
+					"filename": "plastic_normal_01.png", 
+					"type": "NORMAL"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

@@ -17,16 +17,12 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BlitTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 
 	Texture rgb888;
 	Texture rgba8888;
@@ -44,7 +40,7 @@ public class BlitTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
 		batch.draw(rgb888, 0, 0);

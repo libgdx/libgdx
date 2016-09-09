@@ -17,7 +17,7 @@
 package java.nio;
 
 import com.google.gwt.corp.compatibility.Numbers;
-import com.google.gwt.typedarrays.client.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
 /** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyByteBuffer compose the implementation of direct byte buffers.
  * <p>
@@ -29,8 +29,8 @@ import com.google.gwt.typedarrays.client.ArrayBuffer;
 public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 
 	static DirectReadWriteByteBuffer copy (DirectByteBuffer other, int markOfOther) {
-		DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(other.byteArray.getBuffer(), other.capacity(),
-			other.byteArray.getByteOffset());
+		DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(other.byteArray.buffer(), other.capacity(),
+			other.byteArray.byteOffset());
 		buf.limit = other.limit();
 		buf.position = other.position();
 		buf.mark = markOfOther;
@@ -212,8 +212,8 @@ public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer slice () {
-		DirectReadWriteByteBuffer slice = new DirectReadWriteByteBuffer(byteArray.getBuffer(), remaining(),
-			byteArray.getByteOffset() + position);
+		DirectReadWriteByteBuffer slice = new DirectReadWriteByteBuffer(byteArray.buffer(), remaining(),
+			byteArray.byteOffset() + position);
 		slice.order = order;
 		return slice;
 	}

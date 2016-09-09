@@ -16,13 +16,12 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.Method;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -30,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -40,16 +40,19 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /** A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can
  * be looked up by name and type. Resources can be described in JSON. Skin provides useful conversions, such as allowing access to
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
+ * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
@@ -80,8 +83,8 @@ public class Skin implements Disposable {
 		load(skinFile);
 	}
 
-	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin is
-	 * disposed. */
+	/** Creates a skin containing the texture regions from the specified atlas. The atlas is automatically disposed when the skin
+	 * is disposed. */
 	public Skin (TextureAtlas atlas) {
 		this.atlas = atlas;
 		addRegions(atlas);
@@ -96,12 +99,16 @@ public class Skin implements Disposable {
 		}
 	}
 
-	/** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
+	/** Adds all named texture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
 	public void addRegions (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			add(region.name, region, TextureRegion.class);
+			String name = region.name;
+			if (region.index != -1) {
+			    name += "_" + region.index;
+			}
+			add(name, region, TextureRegion.class);
 		}
 	}
 
@@ -114,16 +121,26 @@ public class Skin implements Disposable {
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) {
-			typeResources = new ObjectMap();
+			typeResources = new ObjectMap(type == TextureRegion.class || type == Drawable.class || type == Sprite.class ? 256 : 64);
 			resources.put(type, typeResources);
 		}
 		typeResources.put(name, resource);
 	}
 
+	public void remove (String name, Class type) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		ObjectMap<String, Object> typeResources = resources.get(type);
+		typeResources.remove(name);
+	}
+
+	/** Returns a resource named "default" for the specified type.
+	 * @throws GdxRuntimeException if the resource was not found. */
 	public <T> T get (Class<T> type) {
 		return get("default", type);
 	}
 
+	/** Returns a named resource of the specified type.
+	 * @throws GdxRuntimeException if the resource was not found. */
 	public <T> T get (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -140,6 +157,8 @@ public class Skin implements Disposable {
 		return (T)resource;
 	}
 
+	/** Returns a named resource of the specified type.
+	 * @return null if not found. */
 	public <T> T optional (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
@@ -176,8 +195,23 @@ public class Skin implements Disposable {
 		Texture texture = optional(name, Texture.class);
 		if (texture == null) throw new GdxRuntimeException("No TextureRegion or Texture registered with name: " + name);
 		region = new TextureRegion(texture);
-		add(name, region, Texture.class);
+		add(name, region, TextureRegion.class);
 		return region;
+	}
+
+	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
+	public Array<TextureRegion> getRegions (String regionName) {
+		Array<TextureRegion> regions = null;
+		int i = 0;
+		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
+		if (region != null) {
+			regions = new Array<TextureRegion>();
+			while (region != null) {
+				regions.add(region);
+				region = optional(regionName + "_" + (i++), TextureRegion.class);
+			}
+		}
+		return regions;
 	}
 
 	/** Returns a registered tiled drawable. If no tiled drawable is found but a region exists with the name, a tiled drawable is
@@ -186,16 +220,8 @@ public class Skin implements Disposable {
 		TiledDrawable tiled = optional(name, TiledDrawable.class);
 		if (tiled != null) return tiled;
 
-		Drawable drawable = optional(name, Drawable.class);
-		if (tiled != null) {
-			if (!(drawable instanceof TiledDrawable)) {
-				throw new GdxRuntimeException("Drawable found but is not a TiledDrawable: " + name + ", "
-					+ drawable.getClass().getName());
-			}
-			return tiled;
-		}
-
 		tiled = new TiledDrawable(getRegion(name));
+		tiled.setName(name);
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
@@ -240,7 +266,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
-			add(name, sprite, NinePatch.class);
+			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
 			throw new GdxRuntimeException("No NinePatch, TextureRegion, or Texture registered with name: " + name);
@@ -251,9 +277,6 @@ public class Skin implements Disposable {
 	 * appropriate drawable is created and stored in the skin. */
 	public Drawable getDrawable (String name) {
 		Drawable drawable = optional(name, Drawable.class);
-		if (drawable != null) return drawable;
-
-		drawable = optional(name, TiledDrawable.class);
 		if (drawable != null) return drawable;
 
 		// Use texture or texture region. If it has splits, use ninepatch. If it has rotation or whitespace stripping, use sprite.
@@ -280,10 +303,12 @@ public class Skin implements Disposable {
 				if (sprite != null)
 					drawable = new SpriteDrawable(sprite);
 				else
-					throw new GdxRuntimeException("No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: "
-						+ name);
+					throw new GdxRuntimeException(
+						"No Drawable, NinePatch, TextureRegion, Texture, or Sprite registered with name: " + name);
 			}
 		}
+
+		if (drawable instanceof BaseDrawable) ((BaseDrawable)drawable).setName(name);
 
 		add(name, drawable, Drawable.class);
 		return drawable;
@@ -315,6 +340,7 @@ public class Skin implements Disposable {
 
 	/** Returns a copy of the specified drawable. */
 	public Drawable newDrawable (Drawable drawable) {
+		if (drawable instanceof TiledDrawable) return new TiledDrawable((TiledDrawable)drawable);
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
@@ -328,33 +354,25 @@ public class Skin implements Disposable {
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
-		if (drawable instanceof TextureRegionDrawable) {
-			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
-			Sprite sprite;
-			if (region instanceof AtlasRegion)
-				sprite = new AtlasSprite((AtlasRegion)region);
+		Drawable newDrawable;
+		if (drawable instanceof TextureRegionDrawable)
+			newDrawable = ((TextureRegionDrawable)drawable).tint(tint);
+		else if (drawable instanceof NinePatchDrawable)
+			newDrawable = ((NinePatchDrawable)drawable).tint(tint);
+		else if (drawable instanceof SpriteDrawable)
+			newDrawable = ((SpriteDrawable)drawable).tint(tint);
+		else
+			throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		if (newDrawable instanceof BaseDrawable) {
+			BaseDrawable named = (BaseDrawable)newDrawable;
+			if (drawable instanceof BaseDrawable)
+				named.setName(((BaseDrawable)drawable).getName() + " (" + tint + ")");
 			else
-				sprite = new Sprite(region);
-			sprite.setColor(tint);
-			return new SpriteDrawable(sprite);
+				named.setName(" (" + tint + ")");
 		}
-		if (drawable instanceof NinePatchDrawable) {
-			NinePatchDrawable patchDrawable = new NinePatchDrawable((NinePatchDrawable)drawable);
-			patchDrawable.setPatch(new NinePatch(patchDrawable.getPatch(), tint));
-			return patchDrawable;
-		}
-		if (drawable instanceof SpriteDrawable) {
-			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
-			Sprite sprite = spriteDrawable.getSprite();
-			if (sprite instanceof AtlasSprite)
-				sprite = new AtlasSprite((AtlasSprite)sprite);
-			else
-				sprite = new Sprite(sprite);
-			sprite.setColor(tint);
-			spriteDrawable.setSprite(sprite);
-			return spriteDrawable;
-		}
-		throw new GdxRuntimeException("Unable to copy, unknown drawable type: " + drawable.getClass());
+
+		return newDrawable;
 	}
 
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
@@ -385,7 +403,7 @@ public class Skin implements Disposable {
 		}
 	}
 
-	/** Returns the {@link TextureAtlas} that resources in this skin reference, or null. */
+	/** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
 	public TextureAtlas getAtlas () {
 		return atlas;
 	}
@@ -403,9 +421,10 @@ public class Skin implements Disposable {
 		final Skin skin = this;
 
 		final Json json = new Json() {
-			public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
+			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData instanceof String && !CharSequence.class.isAssignableFrom(type)) return get((String)jsonData, type);
+				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+					return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};
@@ -413,38 +432,40 @@ public class Skin implements Disposable {
 		json.setUsePrototypes(false);
 
 		json.setSerializer(Skin.class, new ReadOnlySerializer<Skin>() {
-			public Skin read (Json json, Object jsonData, Class ignored) {
-				ObjectMap<String, ObjectMap> typeToValueMap = (ObjectMap)jsonData;
-				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries()) {
-					String className = typeEntry.key;
-					ObjectMap<String, ObjectMap> valueMap = (ObjectMap)typeEntry.value;
+			public Skin read (Json json, JsonValue typeToValueMap, Class ignored) {
+				for (JsonValue valueMap = typeToValueMap.child; valueMap != null; valueMap = valueMap.next) {
 					try {
-						readNamedObjects(json, Class.forName(className), valueMap);
-					} catch (ClassNotFoundException ex) {
+						readNamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap);
+					} catch (ReflectionException ex) {
 						throw new SerializationException(ex);
 					}
 				}
 				return skin;
 			}
 
-			private void readNamedObjects (Json json, Class type, ObjectMap<String, ObjectMap> valueMap) {
+			private void readNamedObjects (Json json, Class type, JsonValue valueMap) {
 				Class addType = type == TintedDrawable.class ? Drawable.class : type;
-				for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
-					String name = valueEntry.key;
-					Object object = json.readValue(type, valueEntry.value);
+				for (JsonValue valueEntry = valueMap.child; valueEntry != null; valueEntry = valueEntry.next) {
+					Object object = json.readValue(type, valueEntry);
 					if (object == null) continue;
 					try {
-						add(name, object, addType);
+						add(valueEntry.name, object, addType);
+						if (addType != Drawable.class && ClassReflection.isAssignableFrom(Drawable.class, addType))
+							add(valueEntry.name, object, Drawable.class);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
+						throw new SerializationException(
+							"Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name, ex);
 					}
 				}
 			}
 		});
 
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
-			public BitmapFont read (Json json, Object jsonData, Class type) {
+			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
+				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
+				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
+				Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
@@ -453,16 +474,26 @@ public class Skin implements Disposable {
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				String regionName = fontFile.nameWithoutExtension();
 				try {
-					TextureRegion region = skin.optional(regionName, TextureRegion.class);
-					if (region != null)
-						return new BitmapFont(fontFile, region, false);
+					BitmapFont font;
+					Array<TextureRegion> regions = skin.getRegions(regionName);
+					if (regions != null)
+						font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
 					else {
-						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
-						if (imageFile.exists())
-							return new BitmapFont(fontFile, imageFile, false);
-						else
-							return new BitmapFont(fontFile, false);
+						TextureRegion region = skin.optional(regionName, TextureRegion.class);
+						if (region != null)
+							font = new BitmapFont(fontFile, region, flip);
+						else {
+							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+							if (imageFile.exists())
+								font = new BitmapFont(fontFile, imageFile, flip);
+							else
+								font = new BitmapFont(fontFile, flip);
+						}
 					}
+					font.getData().markupEnabled = markupEnabled;
+					// Scaled size is the desired cap height to scale the font to.
+					if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
+					return font;
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
 				}
@@ -470,9 +501,10 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
-			public Color read (Json json, Object jsonData, Class type) {
-				if (jsonData instanceof String) return get((String)jsonData, Color.class);
-				ObjectMap map = (ObjectMap)jsonData;
+			public Color read (Json json, JsonValue jsonData, Class type) {
+				if (jsonData.isString()) return get(jsonData.asString(), Color.class);
+				String hex = json.readValue("hex", String.class, (String)null, jsonData);
+				if (hex != null) return Color.valueOf(hex);
 				float r = json.readValue("r", float.class, 0f, jsonData);
 				float g = json.readValue("g", float.class, 0f, jsonData);
 				float b = json.readValue("b", float.class, 0f, jsonData);
@@ -482,10 +514,15 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(TintedDrawable.class, new ReadOnlySerializer() {
-			public Object read (Json json, Object jsonData, Class type) {
+			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
-				return newDrawable(name, color);
+				Drawable drawable = newDrawable(name, color);
+				if (drawable instanceof BaseDrawable) {
+					BaseDrawable named = (BaseDrawable)drawable;
+					named.setName(jsonData.name + " (" + name + ", " + color + ")");
+				}
+				return drawable;
 			}
 		});
 
@@ -493,7 +530,7 @@ public class Skin implements Disposable {
 	}
 
 	static private Method findMethod (Class type, String name) {
-		Method[] methods = type.getMethods();
+		Method[] methods = ClassReflection.getMethods(type);
 		for (int i = 0, n = methods.length; i < n; i++) {
 			Method method = methods[i];
 			if (method.getName().equals(name)) return method;

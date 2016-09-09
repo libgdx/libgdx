@@ -17,13 +17,19 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
-/** A simple GLSurfaceView sub-class that demonstrate how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
+/** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
  * <p/>
  * - The class must use a custom context factory to enable 2.0 rendering. See ContextFactory class definition below.
@@ -39,11 +45,17 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	private static final boolean DEBUG = false;
 
 	final ResolutionStrategy resolutionStrategy;
+	static int targetGLESVersion;
 
-	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy) {
+	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
+		GLSurfaceView20.targetGLESVersion = targetGLESVersion;
 		this.resolutionStrategy = resolutionStrategy;
 		init(false, 16, 0);
+	}
+
+	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy) {
+		this(context, resolutionStrategy, 2);
 	}
 
 	public GLSurfaceView20 (Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy) {
@@ -57,6 +69,43 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
 		ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
 		setMeasuredDimension(measures.width, measures.height);
+	}
+
+	@Override
+	public InputConnection onCreateInputConnection (EditorInfo outAttrs) {
+
+		// add this line, the IME can show the selectable words when use chinese input method editor.
+		if (outAttrs != null) {
+			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+		}
+
+		BaseInputConnection connection = new BaseInputConnection(this, false) {
+			@Override
+			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
+				int sdkVersion = android.os.Build.VERSION.SDK_INT;
+				if (sdkVersion >= 16) {
+					/*
+					 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1, afterLength = 0. So,
+					 * we'll just simulate what it used to do.
+					 */
+					if (beforeLength == 1 && afterLength == 0) {
+						sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
+						return true;
+					}
+				}
+				return super.deleteSurroundingText(beforeLength, afterLength);
+			}
+
+			@TargetApi(16)
+			private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
+				final long eventTime = SystemClock.uptimeMillis();
+				super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
+					KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+				super.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime, KeyEvent.ACTION_UP, code, 0, 0,
+					KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+			}
+		};
+		return connection;
 	}
 
 	private void init (boolean translucent, int depth, int stencil) {
@@ -89,11 +138,18 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
-			Log.w(TAG, "creating OpenGL ES 2.0 context");
-			checkEglError("Before eglCreateContext", egl);
-			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
+			Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
+			checkEglError("Before eglCreateContext "+targetGLESVersion, egl);
+			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-			checkEglError("After eglCreateContext", egl);
+			boolean success = checkEglError("After eglCreateContext "+targetGLESVersion, egl);
+
+			if ((!success || context == null) && GLSurfaceView20.targetGLESVersion > 2) {
+				Log.w(TAG, "Falling back to GLES 2");
+				GLSurfaceView20.targetGLESVersion = 2;
+				return createContext(egl, display, eglConfig);
+			}
+			Log.w(TAG, "Returning a GLES "+targetGLESVersion+" context");
 			return context;
 		}
 
@@ -102,11 +158,14 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		}
 	}
 
-	static void checkEglError (String prompt, EGL10 egl) {
+	static boolean checkEglError (String prompt, EGL10 egl) {
 		int error;
+		boolean result = true;
 		while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS) {
+			result = false;
 			Log.e(TAG, String.format("%s: EGL error: 0x%x", prompt, error));
 		}
+		return result;
 	}
 
 	private static class ConfigChooser implements GLSurfaceView.EGLConfigChooser {

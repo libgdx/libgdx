@@ -62,10 +62,4 @@ public class AudioDeviceTest extends GdxTest {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" orientation="orthogonal" tileheight="16" tilewidth="16" version="1.0" width="20"><properties><property name="atlas" value="tileset/packed.atlas"/></properties>
+ <tileset firstgid="1" name="ts1" tileheight="16" tilewidth="16">
+  <image height="256" source="tilesets/tileset1.png" width="256"/>
+ </tileset>
+ <tileset firstgid="257" name="ts2" tileheight="32" tilewidth="32">
+  <image height="512" source="tilesets/tileset2.png" width="512"/>
+ </tileset>
+ <layer height="10" name="Tile Layer 1" width="20">
+  <data compression="zlib" encoding="base64">
+   eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
+  </data>
+ </layer>
+ <layer height="10" name="Tile Layer 2" width="20">
+  <data compression="zlib" encoding="base64">
+   eJzlzjkOggAQBVBqFLF2r13Q2r12wxvoDfQI3ACP7CuJ0ZDQEX/ymsnM5AfBfyWkQZOIFjHtiv86dOnRZ8CQUcld9mM+ZsKUGQlzFhX7LVmxZsOWHXtu3Au7+RefOXDkxJkLKVcePEv6vArqkDdo6gzB
+  </data>
+ </layer>
+</map>

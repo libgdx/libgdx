@@ -49,6 +49,12 @@ public class Stack extends WidgetGroup {
 		setTouchable(Touchable.childrenOnly);
 	}
 
+	public Stack (Actor... actors) {
+		this();
+		for (Actor actor : actors)
+			addActor(actor);
+	}
+
 	public void invalidate () {
 		super.invalidate();
 		sizeInvalid = true;
@@ -97,19 +103,8 @@ public class Stack extends WidgetGroup {
 		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
-			child.setX(0);
-			child.setY(0);
-			if (child.getWidth() != width || child.getHeight() != height) {
-				child.setWidth(width);
-				child.setHeight(height);
-				if (child instanceof Layout) {
-					Layout layout = (Layout)child;
-					layout.invalidate();
-					layout.validate();
-				}
-			} else {
-				if (child instanceof Layout) ((Layout)child).validate();
-			}
+			child.setBounds(0, 0, width, height);
+			if (child instanceof Layout) ((Layout)child).validate();
 		}
 	}
 

@@ -12,9 +12,10 @@
  */
 #include "gdx2d.h"
 #include <stdlib.h>
-#define STBI_HEADER_FILE_ONLY
+#define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_FAILURE_STRINGS
-#include "stb_image.c"
+#include "stb_image.h"
+#include "jpgd_c.h"
 
 static uint32_t gdx2d_blend = GDX2D_BLEND_NONE;
 static uint32_t gdx2d_scale = GDX2D_SCALE_NEAREST;
@@ -219,16 +220,18 @@ static inline get_pixel_func get_pixel_func_ptr(uint32_t format) {
 	}
 }
 
-gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, uint32_t req_format) {
+gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
-	// TODO fix this! Add conversion to requested format
-	if(req_format > GDX2D_FORMAT_RGBA8888) 
-		req_format = GDX2D_FORMAT_RGBA8888;
-	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, req_format);
-	if(pixels == NULL)
+    
+	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
+	if (pixels == NULL) {
+		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
+	}
+	if (pixels == NULL)
 		return NULL;
 
 	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+	if (!pixmap) return 0;
 	pixmap->width = (uint32_t)width;
 	pixmap->height = (uint32_t)height;
 	pixmap->format = (uint32_t)format;
@@ -255,10 +258,15 @@ uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
 
 gdx2d_pixmap* gdx2d_new(uint32_t width, uint32_t height, uint32_t format) {
 	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+	if (!pixmap) return 0;
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
 	pixmap->pixels = (unsigned char*)malloc(width * height * gdx2d_bytes_per_pixel(format));
+	if (!pixmap->pixels) {
+		free((void*)pixmap);
+		return 0;
+	}
 	return pixmap;
 }
 void gdx2d_free(const gdx2d_pixmap* pixmap) {
@@ -272,6 +280,12 @@ void gdx2d_set_blend (uint32_t blend) {
 
 void gdx2d_set_scale (uint32_t scale) {
 	gdx2d_scale = scale;
+}
+
+const char *gdx2d_get_failure_reason(void) {
+	if (stbi_failure_reason())
+		return stbi_failure_reason();
+    return jpgd_failure_reason();
 }
 
 static inline void clear_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {
@@ -641,6 +655,113 @@ void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint3
 		hline(pixmap, x0 - py, x0 + py, y0 + px, col);
 		hline(pixmap, x0 - py, x0 + py, y0 - px, col);
 	}
+}
+
+#define max(a, b) (a < b?b:a)
+
+#define EDGE_ASSIGN(edge,_x1,_y1,_x2,_y2) \
+  { if (_y2 > _y1) { edge.y1 = _y1; edge.y2 = _y2; edge.x1 = _x1; edge.x2 = _x2; } \
+    else { edge.y2 = _y1; edge.y1 = _y2; edge.x2 = _x1; edge.x1 = _x2; } }
+
+void gdx2d_fill_triangle(const gdx2d_pixmap* pixmap, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t col) {
+
+	// this structure is used to sort edges according to y-component.
+	struct edge {
+		int32_t x1;
+		int32_t y1;
+		int32_t x2;
+		int32_t y2;
+	};
+	struct edge edges[3], edge_tmp;
+	float slope0, slope1, slope2;
+	int32_t edge0_len, edge1_len, edge2_len, edge_len_tmp;
+	int32_t y, bound_y1, bound_y2, calc_x1, calc_x2;
+
+	// do nothing when points are colinear -- we draw the fill not the line.
+	if ((x2 - x1) * (y3 - y1) == (x3 - x1) * (y2 - y1)) {
+		return;
+	}
+
+	// asign input vertices into internally-sorted edge structures.
+	EDGE_ASSIGN(edges[0], x1, y1, x2, y2);
+	EDGE_ASSIGN(edges[1], x1, y1, x3, y3);
+	EDGE_ASSIGN(edges[2], x2, y2, x3, y3);
+
+	// order edges according to descending length.
+	edge0_len = edges[0].y2 - edges[0].y1;
+	edge1_len = edges[1].y2 - edges[1].y1;
+	edge2_len = edges[2].y2 - edges[2].y1;
+
+	if (edge1_len >= edge0_len && edge1_len >= edge2_len) {
+		// swap edge0 and edge1 with respective lengths.
+		edge_tmp = edges[0];
+		edges[0] = edges[1];
+		edges[1] = edge_tmp;
+		edge_len_tmp = edge0_len;
+		edge0_len = edge1_len;
+		edge1_len = edge_len_tmp;
+	} else if (edge2_len >= edge0_len && edge2_len >= edge1_len) {
+		// swap edge0 and edge2 with respective lengths.
+		edge_tmp = edges[0];
+		edges[0] = edges[2];
+		edges[2] = edge_tmp;
+		edge_len_tmp = edge0_len;
+		edge0_len = edge2_len;
+		edge2_len = edge_len_tmp;
+	}
+
+	if (edge2_len > edge1_len) {
+		// swap edge1 and edge2 - edge len no longer necessary.
+		edge_tmp = edges[1];
+		edges[1] = edges[2];
+		edges[2] = edge_tmp;
+	}
+
+	// y-component of the two longest y-component edges is provably > 0.
+
+	slope0 = ((float) (edges[0].x1 - edges[0].x2)) /
+		((float) (edges[0].y2 - edges[0].y1));
+	slope1 = ((float) (edges[1].x1 - edges[1].x2)) /
+		((float) (edges[1].y2 - edges[1].y1));
+
+	// avoid iterating on y values out of bounds.
+	bound_y1 = max(edges[1].y1, 0);
+	bound_y2 = min(edges[1].y2, pixmap->height-1);
+
+	for ( y=bound_y1; y <= bound_y2; y++ ) {
+
+		// calculate the x values for this y value.
+		calc_x1 = (int32_t) ((float) edges[0].x2 +
+			slope0 * (float) (edges[0].y2 - y) + 0.5);
+		calc_x2 = (int32_t) ((float) edges[1].x2 +
+			slope1 * (float) (edges[1].y2 - y) + 0.5);
+
+		// do not duplicate hline() swap and boundary checking.
+		hline(pixmap, calc_x1, calc_x2, y, col);
+	}
+
+	// if there are still values of y which remain, keep calculating.
+
+	if (edges[2].y2 - edges[2].y1 > 0) {
+
+		slope2 = ((float) (edges[2].x1 - edges[2].x2)) /
+			((float) (edges[2].y2 - edges[2].y1));
+
+		bound_y1 = max(edges[2].y1, 0);
+		bound_y2 = min(edges[2].y2, pixmap->height-1);
+
+		for ( y=bound_y1; y <= bound_y2; y++ ) {
+
+			calc_x1 = (int32_t) ((float) edges[0].x2 +
+				slope0 * (float) (edges[0].y2 - y) + 0.5);
+			calc_x2 = (int32_t) ((float) edges[2].x2 +
+				slope2 * (float) (edges[2].y2 - y) + 0.5);
+
+			hline(pixmap, calc_x1, calc_x2, y, col);
+		}
+	}
+
+	return;
 }
 
 static inline void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 

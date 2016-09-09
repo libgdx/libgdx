@@ -16,7 +16,7 @@
 
 package java.nio;
 
-import com.google.gwt.typedarrays.client.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
 public interface HasArrayBufferView {
 

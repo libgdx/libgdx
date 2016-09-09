@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,12 +25,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class PixmapTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	Pixmap pixmap;
 	Texture texture;
 	SpriteBatch batch;
@@ -73,7 +67,7 @@ public class PixmapTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClearColor(0.6f, 0.6f, 0.6f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(region, 0, 0);
 		batch.end();

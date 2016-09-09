@@ -32,10 +32,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputAdapter;
 
 public abstract class GdxTest extends InputAdapter implements ApplicationListener {
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	public void create () {
 	}
 

@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -39,15 +39,15 @@ public class FilterPerformanceTest extends GdxTest {
 	BitmapFont font;
 	int mode = 0;
 	String modeString = "";
-	int[] filters = {GL10.GL_NEAREST, GL10.GL_LINEAR, GL10.GL_NEAREST_MIPMAP_NEAREST, GL10.GL_LINEAR_MIPMAP_NEAREST,
-		GL10.GL_LINEAR_MIPMAP_LINEAR};
+	int[] filters = {GL20.GL_NEAREST, GL20.GL_LINEAR, GL20.GL_NEAREST_MIPMAP_NEAREST, GL20.GL_LINEAR_MIPMAP_NEAREST,
+		GL20.GL_LINEAR_MIPMAP_LINEAR};
 	String[] filterNames = {"nearest", "linear", "nearest mipmap nearest", "linear mipmap nearest", "linear mipmap linear"};
 
 	void setTextureFilter (int filter) {
 		atlas.findRegion("map").getTexture().bind();
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
+		Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
 		texture.bind();
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
+		Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
 	}
 
 	void setModeString () {
@@ -89,7 +89,7 @@ public class FilterPerformanceTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(sceneMatrix);
 		batch.begin();
@@ -109,9 +109,5 @@ public class FilterPerformanceTest extends GdxTest {
 		else
 			sprite.draw(batch);
 		batch.enableBlending();
-	}
-
-	public boolean needsGL20 () {
-		return false;
 	}
 }

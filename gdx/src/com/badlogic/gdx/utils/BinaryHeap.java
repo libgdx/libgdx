@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 /** @author Nathan Sweet */
 public class BinaryHeap<T extends BinaryHeap.Node> {
-	public int size = 0;
+	public int size;
 
 	private Node[] nodes;
 	private final boolean isMaxHeap;
@@ -46,13 +46,38 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return node;
 	}
 
+	public T add (T node, float value) {
+		node.value = value;
+		return add(node);
+	}
+
+	public T peek () {
+		if (size == 0) throw new IllegalStateException("The heap is empty.");
+		return (T)nodes[0];
+	}
+
 	public T pop () {
+		return remove(0);
+	}
+
+	public T remove (T node) {
+		return remove(node.index);
+	}
+
+	private T remove (int index) {
 		Node[] nodes = this.nodes;
-		Node popped = nodes[0];
-		nodes[0] = nodes[--size];
+		Node removed = nodes[index];
+		nodes[index] = nodes[--size];
 		nodes[size] = null;
-		if (size > 0) down(0);
-		return (T)popped;
+		if (size > 0 && index < size) down(index);
+		return (T)removed;
+	}
+
+	public void clear () {
+		Node[] nodes = this.nodes;
+		for (int i = 0, n = size; i < n; i++)
+			nodes[i] = null;
+		size = 0;
 	}
 
 	public void setValue (T node, float value) {
@@ -127,15 +152,32 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		node.index = index;
 	}
 
+	@Override
+	public boolean equals (Object obj) {
+		if (!(obj instanceof BinaryHeap)) return false;
+		BinaryHeap other = (BinaryHeap)obj;
+		if (other.size != size) return false;
+		for (int i = 0, n = size; i < n; i++)
+			if (other.nodes[i].value != nodes[i].value) return false;
+		return true;
+	}
+
+	public int hashCode () {
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + Float.floatToIntBits(nodes[i].value);
+		return h;
+	}
+
 	public String toString () {
 		if (size == 0) return "[]";
-		Object[] nodes = this.nodes;
+		Node[] nodes = this.nodes;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
-		buffer.append(nodes[0]);
+		buffer.append(nodes[0].value);
 		for (int i = 1; i < size; i++) {
 			buffer.append(", ");
-			buffer.append(nodes[i]);
+			buffer.append(nodes[i].value);
 		}
 		buffer.append(']');
 		return buffer.toString();
@@ -152,6 +194,10 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 
 		public float getValue () {
 			return value;
+		}
+
+		public String toString () {
+			return Float.toString(value);
 		}
 	}
 }

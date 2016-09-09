@@ -22,7 +22,7 @@ public class MoveByAction extends RelativeTemporalAction {
 	private float amountX, amountY;
 
 	protected void updateRelative (float percentDelta) {
-		actor.translate(amountX * percentDelta, amountY * percentDelta);
+		target.moveBy(amountX * percentDelta, amountY * percentDelta);
 	}
 
 	public void setAmount (float x, float y) {

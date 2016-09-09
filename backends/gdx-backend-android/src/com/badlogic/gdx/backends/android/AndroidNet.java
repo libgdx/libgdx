@@ -16,55 +16,80 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpResult;
-import com.badlogic.gdx.Net.Protocol;
+import com.badlogic.gdx.net.NetJavaImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** Android implementation of the {@link Net} API.
+ * @author acoppes */
 public class AndroidNet implements Net {
-	
-	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
-	//            If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
-	
-	public AndroidNet(AndroidApplication activity) {
-		app = activity;
-	}
-	
-	@Override
-	public HttpResult httpGet (String url, String... parameters) {
-		throw new UnsupportedOperationException("Not implemented");
+
+	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
+	// If you make changes here, make changes in the other backend as well.
+	final AndroidApplicationBase app;
+	NetJavaImpl netJavaImpl;
+
+	public AndroidNet (AndroidApplicationBase app) {
+		this.app = app;
+		netJavaImpl = new NetJavaImpl();
 	}
 
 	@Override
-	public HttpResult httpPost (String url, String contentType, byte[] content) {
-		throw new UnsupportedOperationException("Not implemented");
+	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
+		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
+	}
+
+	@Override
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		netJavaImpl.cancelHttpRequest(httpRequest);
+	}
+	
+	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
 	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new AndroidServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new AndroidSocket(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
+	public boolean openURI (String URI) {
+		boolean result = false;
 		final Uri uri = Uri.parse(URI);
-		app.runOnUiThread(new Runnable(){
-			@Override
-			public void run () {
-				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-			}
-		});
+		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+		PackageManager pm = app.getContext().getPackageManager();
+		if (pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+			app.runOnUiThread(new Runnable() {
+				@Override
+				public void run () {
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					// LiveWallpaper and Daydream applications need this flag
+					if (!(app.getContext() instanceof Activity))
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					app.startActivity(intent);
+				}
+			});
+			result = true;
+		}
+		return result;
 	}
+
 }

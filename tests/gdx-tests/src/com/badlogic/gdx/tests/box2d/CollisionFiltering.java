@@ -90,9 +90,9 @@ public class CollisionFiltering extends Box2DTest {
 		Body body1 = world.createBody(triangleBodyDef);
 		body1.createFixture(triangleShapeDef);
 
-		vertices[0].mul(2);
-		vertices[1].mul(2);
-		vertices[2].mul(2);
+		vertices[0].scl(2);
+		vertices[1].scl(2);
+		vertices[2].scl(2);
 
 		polygon.set(vertices);
 		triangleShapeDef.filter.groupIndex = k_largeGroup;

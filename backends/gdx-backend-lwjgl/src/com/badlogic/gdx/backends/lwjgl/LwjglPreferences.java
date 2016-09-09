@@ -30,14 +30,15 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class LwjglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
-	public LwjglPreferences (String name) {
-		this(new LwjglFileHandle(new File(".prefs/" + name), FileType.External));
+	public LwjglPreferences (String name, String directory) {
+		this(new LwjglFileHandle(new File(directory, name), FileType.External));
 	}
 
 	public LwjglPreferences (FileHandle file) {
@@ -51,40 +52,42 @@ public class LwjglPreferences implements Preferences {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
-			if (in != null) try {
-				in.close();
-			} catch (Exception e) {
-			}
+			StreamUtils.closeQuietly(in);
 		}
 	}
 
 	@Override
-	public void putBoolean (String key, boolean val) {
+	public Preferences putBoolean (String key, boolean val) {
 		properties.put(key, Boolean.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putInteger (String key, int val) {
+	public Preferences putInteger (String key, int val) {
 		properties.put(key, Integer.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putLong (String key, long val) {
+	public Preferences putLong (String key, long val) {
 		properties.put(key, Long.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putFloat (String key, float val) {
+	public Preferences putFloat (String key, float val) {
 		properties.put(key, Float.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putString (String key, String val) {
+	public Preferences putString (String key, String val) {
 		properties.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void put (Map<String, ?> vals) {
+	public Preferences put (Map<String, ?> vals) {
 		for (Entry<String, ?> val : vals.entrySet()) {
 			if (val.getValue() instanceof Boolean) putBoolean(val.getKey(), (Boolean)val.getValue());
 			if (val.getValue() instanceof Integer) putInteger(val.getKey(), (Integer)val.getValue());
@@ -92,6 +95,7 @@ public class LwjglPreferences implements Preferences {
 			if (val.getValue() instanceof String) putString(val.getKey(), (String)val.getValue());
 			if (val.getValue() instanceof Float) putFloat(val.getKey(), (Float)val.getValue());
 		}
+		return this;
 	}
 
 	@Override
@@ -178,10 +182,7 @@ public class LwjglPreferences implements Preferences {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing preferences: " + file, ex);
 		} finally {
-			if (out != null) try {
-				out.close();
-			} catch (Exception e) {
-			}
+			StreamUtils.closeQuietly(out);
 		}
 	}
 

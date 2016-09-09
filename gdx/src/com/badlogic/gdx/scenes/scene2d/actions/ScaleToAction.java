@@ -23,12 +23,12 @@ public class ScaleToAction extends TemporalAction {
 	private float endX, endY;
 
 	protected void begin () {
-		startX = actor.getScaleX();
-		startY = actor.getScaleY();
+		startX = target.getScaleX();
+		startY = target.getScaleY();
 	}
 
 	protected void update (float percent) {
-		actor.setScale(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
+		target.setScale(startX + (endX - startX) * percent, startY + (endY - startY) * percent);
 	}
 
 	public void setScale (float x, float y) {

@@ -5,31 +5,20 @@ DIFFERENCES TO MAIN APIs/UNSUSPECTED BEHAVIOUR
 - getters are not implemented, some are not supported by WebGL
 - uniform location id allocation returns multiple ids if one queries for one uniform multiple times. Not an issue as long
   as you don't start comparing those ids to each other.
-- glReadPixels does not work.
 
 [GwtInput]
 - mapping of a couple of (minor) keys is bad, see FIXMEs
-- getTextInput and getPlaceholderTextInput need to be implemented
-
-[GwtSound]
-- GwtSound#play()/loop() return 0, you can not modify the properties of a sound id returned by those methods, 
-e.g. via Sound#setLooping() or Sound#setPanning().
 
 [GwtFileHandle]
-- only internal files are supported.
-- FileHandle#list will not work.
-- Checking FileHandles of directories for their existance will not work, you can however create children etc.
+- only internal and defined classpath files are supported.
 - if you try to access an audio file or an image file via FileHandle#read() and other such methods,
 you won't get anything sensible.
 - binary files specified in the assets.txt file can be opened but are slow to read, avoid if possible.
 
-DIFFERENCES IN EMULATION
-[Box2D emu]
-- GearJoint, WheelJoint and RopeJoint are not implemented.
-- minor things that could be optimized, e.g. caching of query/contact listeners.
-- PrismaticJoint#getJointTranslation always returns 0, not implemented in JBox2D
-- Contact always reports 2 manifold points, JBox2D doesn't specify the amount of manifold points.
+[Reflection]
+- Reflection is available for defined classes. Please see http://code.google.com/p/libgdx/wiki/Reflection 
 
+DIFFERENCES IN EMULATION
 [BufferUtils emu]
 - BufferUtils#newLongBuffer() works but will not return a direct buffer. Since we don't pass long
   buffers to OpenGL ES we should be fine.
@@ -46,20 +35,11 @@ feasible due to the use of Canvas.
   MacOSX due to the use of ImageIO which modifies colors while decoding PNGs...
 - everything else should work as intended, some things might deviate from the usual behaviour a bit.
 
-[AssetManager]
-- tilemap related loaders are not available, since tilemaps are not available.
-
 [NumberUtils emu]
 - double to long, long to double methods return 0.
 
 [InputStreamReader emu]
 - assumes encoding is UTF-8, always.
-
-[Json emu]
-- deserializing your own classes is not supported unless i create a way to specify classes/packages
-for which reflection information should be generated on top of the reflected libgdx classes. This
-is a bad idea as the reflection info bloats the resulting javascript files.
-- there might be some issues i didn't detect yet, this part of the emulation is rather hackish.
 
 [System emu]
 - ripped from GWT with additions by jgw.
@@ -69,19 +49,15 @@ is a bad idea as the reflection info bloats the resulting javascript files.
 [Unsupported Classes]
 GdxBuild.java
 GdxNativesLoader.java
-GwtModuleGenerator.java
 SharedLibraryLoader.java
 Gdx2DPixmap.java
 PixmapIO.java
 ETC1.java
 ETC1TextureData.java
+KTXTextureData.java
 ScreenUtils.java
 RemoteInput.java
 RemoteSender.java
-TiledLoader.java
-TileMapRendererLoader.java
 AtomicQueue.java
 LittleEndianInputStream.java
 PauseableThread.java
-DesktopClipboard.java
-AndroidClipboard.java

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="com.badlogic.gdx.tests.android.LivewallpaperSettings"
+    android:thumbnail="@drawable/icon"/>

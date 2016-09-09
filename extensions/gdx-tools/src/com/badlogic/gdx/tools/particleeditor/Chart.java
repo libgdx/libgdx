@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-class Chart extends JPanel {
+public class Chart extends JPanel {
 	static private final int POINT_SIZE = 6;
 	static private final int POINT_SIZE_EXPANDED = 10;
 
@@ -43,6 +43,10 @@ class Chart extends JPanel {
 	int movingIndex = -1;
 	boolean isExpanded;
 	String title;
+	
+	boolean moveAll = false;
+	boolean moveAllProportionally = false;
+	int moveAllPrevY;
 
 	public Chart (String title) {
 		this.title = title;
@@ -52,15 +56,21 @@ class Chart extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed (MouseEvent event) {
 				movingIndex = overIndex;
+				moveAll = event.isControlDown();
+				if (moveAll) {
+					moveAllProportionally = event.isShiftDown();
+					moveAllPrevY = event.getY();
+				}
 			}
 
 			public void mouseReleased (MouseEvent event) {
 				movingIndex = -1;
+				moveAll = false;
 			}
 
 			public void mouseClicked (MouseEvent event) {
 				if (event.getClickCount() == 2) {
-					if (overIndex <= 0) return;
+					if (overIndex <= 0 || overIndex >= points.size()) return;
 					points.remove(overIndex);
 					pointsChanged();
 					repaint();
@@ -96,13 +106,22 @@ class Chart extends JPanel {
 		});
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged (MouseEvent event) {
-				if (movingIndex == -1) return;
-				float nextX = movingIndex == points.size() - 1 ? maxX : points.get(movingIndex + 1).x - 0.001f;
-				if (movingIndex == 0) nextX = 0;
-				float prevX = movingIndex == 0 ? 0 : points.get(movingIndex - 1).x + 0.001f;
-				Point point = points.get(movingIndex);
-				point.x = Math.min(nextX, Math.max(prevX, (event.getX() - chartX) / (float)chartWidth * maxX));
-				point.y = Math.min(maxY, Math.max(0, chartHeight - (event.getY() - chartY)) / (float)chartHeight * maxY);
+				if (movingIndex == -1 || movingIndex >= points.size()) return;
+				if (moveAll){
+					int newY = event.getY();
+					float deltaY = (moveAllPrevY - newY) / (float)chartHeight * maxY;
+					for (Point point : points){
+						point.y = Math.min(maxY, Math.max(0, point.y + (moveAllProportionally ? deltaY * point.y : deltaY)));
+					}
+					moveAllPrevY = newY;
+				} else {
+					float nextX = movingIndex == points.size() - 1 ? maxX : points.get(movingIndex + 1).x - 0.001f;
+					if (movingIndex == 0) nextX = 0;
+					float prevX = movingIndex == 0 ? 0 : points.get(movingIndex - 1).x + 0.001f;
+					Point point = points.get(movingIndex);
+					point.x = Math.min(nextX, Math.max(prevX, (event.getX() - chartX) / (float)chartWidth * maxX));
+					point.y = Math.min(maxY, Math.max(0, chartHeight - (event.getY() - chartY)) / (float)chartHeight * maxY);
+				}
 				pointsChanged();
 				repaint();
 			}
@@ -338,5 +357,9 @@ class Chart extends JPanel {
 
 	public void setExpanded (boolean isExpanded) {
 		this.isExpanded = isExpanded;
+	}
+	
+	public void setTitle(String title){
+		this.title = title;
 	}
 }

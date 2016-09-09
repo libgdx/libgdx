@@ -10,10 +10,12 @@
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="%jniPlatform%"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
-	<property name="compilerPrefix" value="%compilerPrefix%"/>	
+	<property name="compilerPrefix" value="%compilerPrefix%"/>
+	<!--  the compilerSuffix for the C & C++ compilers -->	
+	<property name="compilerSuffix" value="" />	
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="${compilerPrefix}gcc"/>	
+	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
 	<property name="gcc-opts" value="%cFlags%"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
@@ -22,7 +24,7 @@
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="${compilerPrefix}g++"/>
+	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="g++-opts" value="%cppFlags%"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
@@ -31,8 +33,9 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="${compilerPrefix}g++"/>
+	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="%linkerFlags%"/>
+	<property name="libraries" value="%libraries%"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -90,9 +93,10 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="g++-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
-			</chainedmapper>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
 			<arg line="${gcc-opts}"/>
@@ -104,25 +108,29 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="gcc-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.c" to="*.o"/>
-			</chainedmapper>
+				<mapper type="glob" from="*.m" to="*.o"/>
+			</compositemapper>
 		</apply>
 	</target>	
 
 	<!-- links the shared library based on the previously compiled object files -->	
 	<target name="link" depends="compile" if="has-compiler">
-		<mkdir dir="${libsDir}"/>
-		<apply failonerror="true" executable="${linker}" parallel="true" dir="${buildDir}">
-			<arg line="${linker-opts}"/>
-			<arg value="-o"/>
-			<arg path="${libsDir}/${libName}"/>		
-			<fileset dir="${buildDir}">
-				<patternset>
-					<include name="**/*.o"/>
-				</patternset>
-			</fileset>
-		</apply>
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg value="-o" />
+			<arg path="${libsDir}/${libName}" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
 	</target>	
 	
 	<target name="postcompile" depends="link">

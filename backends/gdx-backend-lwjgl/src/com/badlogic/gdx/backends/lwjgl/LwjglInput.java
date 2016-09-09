@@ -20,10 +20,10 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -37,18 +37,26 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntSet;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 
-/** An implementation of the {@link Input} interface hooking a Jogl panel for input.
+/** An implementation of the {@link Input} interface hooking a LWJGL panel for input.
  * 
  * @author mzechner */
-final class LwjglInput implements Input {
+final public class LwjglInput implements Input {
 	static public float keyRepeatInitialTime = 0.4f;
 	static public float keyRepeatTime = 0.1f;
 
@@ -58,12 +66,16 @@ final class LwjglInput implements Input {
 	int mouseX, mouseY;
 	int deltaX, deltaY;
 	int pressedKeys = 0;
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	boolean justTouched = false;
-	Set<Integer> pressedButtons = new HashSet<Integer>();
+	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
+	float deltaTime;
+	long lastTime;
 
 	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
@@ -93,30 +105,20 @@ final class LwjglInput implements Input {
 	public float getAccelerometerZ () {
 		return 0;
 	}
-
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run () {
-				final String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null)
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.input(output);
-						}
-					});
-				else
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
-							listener.canceled();
-						}
-					});
-			}
-		});
+	
+	public float getGyroscopeX () {
+		return 0;
 	}
 
-	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+	public float getGyroscopeY () {
+		return 0;
+	}
+
+	public float getGyroscopeZ () {
+		return 0;
+	}
+
+	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
@@ -132,10 +134,11 @@ final class LwjglInput implements Input {
 				panel.add(textPanel);
 
 				final JTextField textField = new JTextField(20);
+				textField.setText(text);
 				textField.setAlignmentX(0.0f);
 				textPanel.add(textField);
 
-				final JLabel placeholderLabel = new JLabel(placeholder);
+				final JLabel placeholderLabel = new JLabel(hint);
 				placeholderLabel.setForeground(Color.GRAY);
 				placeholderLabel.setAlignmentX(0.0f);
 				textPanel.add(placeholderLabel, 0);
@@ -206,22 +209,39 @@ final class LwjglInput implements Input {
 	}
 
 	public int getX () {
-		return Mouse.getX();
+		return (int)(Mouse.getX() * Display.getPixelScaleFactor());
 	}
 
 	public int getY () {
-		return Gdx.graphics.getHeight() - 1 - Mouse.getY();
+		return Gdx.graphics.getHeight() - 1 - (int)(Mouse.getY() * Display.getPixelScaleFactor());
 	}
 
 	public boolean isAccelerometerAvailable () {
 		return false;
 	}
+	
+	public boolean isGyroscopeAvailable () {
+		return false;
+	}
 
 	public boolean isKeyPressed (int key) {
+		if (!Keyboard.isCreated()) return false;
+
 		if (key == Input.Keys.ANY_KEY)
 			return pressedKeys > 0;
 		else
 			return Keyboard.isKeyDown(getLwjglKeyCode(key));
+	}
+
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	public boolean isTouched () {
@@ -262,6 +282,21 @@ final class LwjglInput implements Input {
 	@Override
 	public void setCatchBackKey (boolean catchBack) {
 
+	}
+
+	@Override
+	public boolean isCatchBackKey () {
+		return false;
+	}	
+
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
+		
+	}
+	
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
 	}
 
 	void processEvents () {
@@ -513,25 +548,25 @@ final class LwjglInput implements Input {
 		case Keyboard.KEY_COLON:
 			return Input.Keys.COLON;
 		case Keyboard.KEY_NUMPAD0:
-			return Input.Keys.NUM_0;
+			return Input.Keys.NUMPAD_0;
 		case Keyboard.KEY_NUMPAD1:
-			return Input.Keys.NUM_1;
+			return Input.Keys.NUMPAD_1;
 		case Keyboard.KEY_NUMPAD2:
-			return Input.Keys.NUM_2;
+			return Input.Keys.NUMPAD_2;
 		case Keyboard.KEY_NUMPAD3:
-			return Input.Keys.NUM_3;
+			return Input.Keys.NUMPAD_3;
 		case Keyboard.KEY_NUMPAD4:
-			return Input.Keys.NUM_4;
+			return Input.Keys.NUMPAD_4;
 		case Keyboard.KEY_NUMPAD5:
-			return Input.Keys.NUM_5;
+			return Input.Keys.NUMPAD_5;
 		case Keyboard.KEY_NUMPAD6:
-			return Input.Keys.NUM_6;
+			return Input.Keys.NUMPAD_6;
 		case Keyboard.KEY_NUMPAD7:
-			return Input.Keys.NUM_7;
+			return Input.Keys.NUMPAD_7;
 		case Keyboard.KEY_NUMPAD8:
-			return Input.Keys.NUM_8;
+			return Input.Keys.NUMPAD_8;
 		case Keyboard.KEY_NUMPAD9:
-			return Input.Keys.NUM_9;
+			return Input.Keys.NUMPAD_9;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -539,6 +574,8 @@ final class LwjglInput implements Input {
 
 	public static int getLwjglKeyCode (int gdxKeyCode) {
 		switch (gdxKeyCode) {
+		case Input.Keys.APOSTROPHE:
+			return Keyboard.KEY_APOSTROPHE;
 		case Input.Keys.LEFT_BRACKET:
 			return Keyboard.KEY_LBRACKET;
 		case Input.Keys.RIGHT_BRACKET:
@@ -649,6 +686,14 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_RETURN;
 		case Input.Keys.HOME:
 			return Keyboard.KEY_HOME;
+		case Input.Keys.END:
+			return Keyboard.KEY_END;
+		case Input.Keys.PAGE_DOWN:
+			return Keyboard.KEY_NEXT;
+		case Input.Keys.PAGE_UP:
+			return Keyboard.KEY_PRIOR;
+		case Input.Keys.INSERT:
+			return Keyboard.KEY_INSERT;
 		case Input.Keys.MINUS:
 			return Keyboard.KEY_MINUS;
 		case Input.Keys.PERIOD:
@@ -701,12 +746,33 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_F12;
 		case Input.Keys.COLON:
 			return Keyboard.KEY_COLON;
+		case Input.Keys.NUMPAD_0:
+			return Keyboard.KEY_NUMPAD0;
+		case Input.Keys.NUMPAD_1:
+			return Keyboard.KEY_NUMPAD1;
+		case Input.Keys.NUMPAD_2:
+			return Keyboard.KEY_NUMPAD2;
+		case Input.Keys.NUMPAD_3:
+			return Keyboard.KEY_NUMPAD3;
+		case Input.Keys.NUMPAD_4:
+			return Keyboard.KEY_NUMPAD4;
+		case Input.Keys.NUMPAD_5:
+			return Keyboard.KEY_NUMPAD5;
+		case Input.Keys.NUMPAD_6:
+			return Keyboard.KEY_NUMPAD6;
+		case Input.Keys.NUMPAD_7:
+			return Keyboard.KEY_NUMPAD7;
+		case Input.Keys.NUMPAD_8:
+			return Keyboard.KEY_NUMPAD8;
+		case Input.Keys.NUMPAD_9:
+			return Keyboard.KEY_NUMPAD9;
 		default:
 			return Keyboard.KEY_NONE;
 		}
 	}
 
 	public void update () {
+		updateTime();
 		updateMouse();
 		updateKeyboard();
 	}
@@ -715,8 +781,15 @@ final class LwjglInput implements Input {
 		if (button == 0) return Buttons.LEFT;
 		if (button == 1) return Buttons.RIGHT;
 		if (button == 2) return Buttons.MIDDLE;
-		return Buttons.LEFT;
+		if (button == 3) return Buttons.BACK;
+		if (button == 4) return Buttons.FORWARD;
+		return -1;
+	}
 
+	void updateTime () {
+		long thisTime = System.nanoTime();
+		deltaTime = (thisTime - lastTime) / 1000000000.0f;
+		lastTime = thisTime;
 	}
 
 	void updateMouse () {
@@ -725,14 +798,16 @@ final class LwjglInput implements Input {
 			int events = 0;
 			while (Mouse.next()) {
 				events++;
-				int x = Mouse.getEventX();
-				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
+				int x = (int)(Mouse.getEventX() * Display.getPixelScaleFactor());
+				int y = Gdx.graphics.getHeight() - (int)(Mouse.getEventY() * Display.getPixelScaleFactor()) - 1;
 				int button = Mouse.getEventButton();
+				int gdxButton = toGdxButton(button);
+				if (button != -1 && gdxButton == -1) continue; // Ignore unknown button.
 
 				TouchEvent event = usedTouchEvents.obtain();
 				event.x = x;
 				event.y = y;
-				event.button = toGdxButton(button);
+				event.button = gdxButton;
 				event.pointer = 0;
 				event.timeStamp = Mouse.getEventNanoseconds();
 
@@ -741,7 +816,7 @@ final class LwjglInput implements Input {
 					if (Mouse.getEventDWheel() != 0) {
 						event.type = TouchEvent.TOUCH_SCROLLED;
 						event.scrollAmount = (int)-Math.signum(Mouse.getEventDWheel());
-					} else if (pressedButtons.size() > 0) {
+					} else if (pressedButtons.size > 0) {
 						event.type = TouchEvent.TOUCH_DRAGGED;
 					} else {
 						event.type = TouchEvent.TOUCH_MOVED;
@@ -761,8 +836,8 @@ final class LwjglInput implements Input {
 				touchEvents.add(event);
 				mouseX = event.x;
 				mouseY = event.y;
-				deltaX = Mouse.getEventDX();
-				deltaY = Mouse.getEventDY();
+				deltaX = (int)(Mouse.getEventDX() * Display.getPixelScaleFactor());
+				deltaY = (int)(Mouse.getEventDY() * Display.getPixelScaleFactor());
 			}
 
 			if (events == 0) {
@@ -775,8 +850,14 @@ final class LwjglInput implements Input {
 	}
 
 	void updateKeyboard () {
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 		if (lastKeyCharPressed != 0) {
-			keyRepeatTimer -= Gdx.graphics.getDeltaTime();
+			keyRepeatTimer -= deltaTime;
 			if (keyRepeatTimer < 0) {
 				keyRepeatTimer = keyRepeatTime;
 
@@ -792,37 +873,42 @@ final class LwjglInput implements Input {
 
 		if (Keyboard.isCreated()) {
 			while (Keyboard.next()) {
-				if (Keyboard.getEventKeyState()) {
-					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
-					char keyChar = Keyboard.getEventCharacter();
+				int keyCode = getGdxKeyCode(Keyboard.getEventKey());
+				char keyChar = Keyboard.getEventCharacter();
+				if (Keyboard.getEventKeyState() || (keyCode == 0 && keyChar != 0 && Character.isDefined(keyChar))) {
 					long timeStamp = Keyboard.getEventNanoseconds();
 
 					switch (keyCode) {
+					case Keys.DEL:
+						keyChar = 8;
+						break;
 					case Keys.FORWARD_DEL:
 						keyChar = 127;
 						break;
 					}
 
-					KeyEvent event = usedKeyEvents.obtain();
-					event.keyCode = keyCode;
-					event.keyChar = 0;
-					event.type = KeyEvent.KEY_DOWN;
-					event.timeStamp = timeStamp;
-					keyEvents.add(event);
+					if (keyCode != 0) {
+						KeyEvent event = usedKeyEvents.obtain();
+						event.keyCode = keyCode;
+						event.keyChar = 0;
+						event.type = KeyEvent.KEY_DOWN;
+						event.timeStamp = timeStamp;
+						keyEvents.add(event);
 
-					event = usedKeyEvents.obtain();
+						pressedKeys++;
+						keyJustPressed = true;
+						justPressedKeys[keyCode] = true;
+						lastKeyCharPressed = keyChar;
+						keyRepeatTimer = keyRepeatInitialTime;
+					}
+
+					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
 					event.timeStamp = timeStamp;
 					keyEvents.add(event);
-
-					pressedKeys++;
-					lastKeyCharPressed = keyChar;
-					keyRepeatTimer = keyRepeatInitialTime;
 				} else {
-					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
-
 					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
@@ -865,6 +951,10 @@ final class LwjglInput implements Input {
 			return 1;
 		case Buttons.MIDDLE:
 			return 2;
+		case Buttons.BACK:
+			return 3;
+		case Buttons.FORWARD:
+			return 4;
 		}
 		return 0;
 	}
@@ -951,11 +1041,7 @@ final class LwjglInput implements Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-		Mouse.setCursorPosition(x, y - 1);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
+		Mouse.setCursorPosition(x, Gdx.graphics.getHeight() - 1 - y);
 	}
 
 	@Override
@@ -995,4 +1081,5 @@ final class LwjglInput implements Input {
 		int button;
 		int pointer;
 	}
+
 }

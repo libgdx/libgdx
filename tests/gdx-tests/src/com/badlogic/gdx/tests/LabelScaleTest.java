@@ -17,18 +17,13 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LabelScaleTest extends GdxTest {
@@ -41,7 +36,7 @@ public class LabelScaleTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		Table table = new Table();
@@ -50,13 +45,15 @@ public class LabelScaleTest extends GdxTest {
 
 		Label label1 = new Label("This text is scaled 2x.", skin);
 		label1.setFontScale(2);
-		Label label2 = new Label("This text is scaled 1x,3x.", skin);
-		label2.setFontScale(1, 3);
+		Label label2 = new Label(
+			"This text is scaled. This text is scaled. This text is scaled. This text is scaled. This text is scaled. ", skin);
+		label2.setWrap(true);
+		label2.setFontScale(0.75f, 0.75f);
 
 		table.debug();
 		table.add(label1);
 		table.row();
-		table.add(label2);
+		table.add(label2).fill();
 		table.pack();
 	}
 
@@ -69,20 +66,14 @@ public class LabelScaleTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
+		stage.getViewport().update(width, height, true);
 	}
 }

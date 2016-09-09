@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,12 +26,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SimpleAnimationTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	private Animation currentWalk;
 	private float currentFrameTime;
 	private Vector2 position;
@@ -70,7 +64,7 @@ public class SimpleAnimationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		currentFrameTime += Gdx.graphics.getDeltaTime();
 
 		spriteBatch.begin();

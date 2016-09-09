@@ -1,0 +1,22 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "metal_01", 
+			"diffuse": [ 1.000000,  1.000000,  1.000000], 
+			"reflection": [ 0.100000,  0.100000,  0.100000], 
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"textures": [
+				{
+					"id": "metal_diffuse_01", 
+					"filename": "metal_diffuse_01.png", 
+					"type": "DIFFUSE"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

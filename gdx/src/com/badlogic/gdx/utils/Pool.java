@@ -17,9 +17,13 @@
 package com.badlogic.gdx.utils;
 
 /** A pool of objects that can be reused to avoid allocation.
+ * @see Pools
  * @author Nathan Sweet */
 abstract public class Pool<T> {
+	/** The maximum number of objects that will be pooled. */
 	public final int max;
+	/** The highest number of free objects. Can be reset any time. */
+	public int peak;
 
 	private final Array<T> freeObjects;
 
@@ -48,26 +52,45 @@ abstract public class Pool<T> {
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
-	 * {@link #max} free objects, the specified object is ignored. */
+	 * {@link #max} free objects, the specified object is reset but not added to the pool. */
 	public void free (T object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
-		if (freeObjects.size < max) freeObjects.add(object);
+		if (freeObjects.size < max) {
+			freeObjects.add(object);
+			peak = Math.max(peak, freeObjects.size);
+		}
+		reset(object);
+	}
+
+	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
+	 * {@link Poolable#reset()} if the object is {@link Poolable}. */
+	protected void reset (T object) {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
-	/** Puts the specified objects in the pool.
+	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * @see #free(Object) */
-	public void free (Array<T> objects) {
-		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++) {
+	public void freeAll (Array<T> objects) {
+		if (objects == null) throw new IllegalArgumentException("object cannot be null.");
+		Array<T> freeObjects = this.freeObjects;
+		int max = this.max;
+		for (int i = 0; i < objects.size; i++) {
 			T object = objects.get(i);
-			freeObjects.add(object);
-			if (object instanceof Poolable) ((Poolable)object).reset();
+			if (object == null) continue;
+			if (freeObjects.size < max) freeObjects.add(object);
+			reset(object);
 		}
+		peak = Math.max(peak, freeObjects.size);
 	}
 
 	/** Removes all free objects from this pool. */
 	public void clear () {
 		freeObjects.clear();
+	}
+
+	/** The number of objects available to be obtained. */
+	public int getFree () {
+		return freeObjects.size;
 	}
 
 	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link #free(Object)}. */

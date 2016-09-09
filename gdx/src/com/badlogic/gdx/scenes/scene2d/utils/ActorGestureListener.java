@@ -24,10 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
-/** Detects tap, long press, fling, pan, zoom, and pinch gestures on an actor.
+/** Detects tap, long press, fling, pan, zoom, and pinch gestures on an actor. If there is only a need to detect tap, use
+ * {@link ClickListener}.
  * @see GestureDetector
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
+	static final Vector2 tmpCoords = new Vector2(), tmpCoords2 = new Vector2();
+
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
@@ -44,24 +47,28 @@ public class ActorGestureListener implements EventListener {
 			private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
 
 			public boolean tap (float stageX, float stageY, int count, int button) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count, button);
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
 				return true;
 			}
 
 			public boolean longPress (float stageX, float stageY) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				return ActorGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
 			}
 
 			public boolean fling (float velocityX, float velocityY, int button) {
-				ActorGestureListener.this.fling(event, velocityX, velocityY, button);
+				stageToLocalAmount(tmpCoords.set(velocityX, velocityY));
+				ActorGestureListener.this.fling(event, tmpCoords.x, tmpCoords.y, button);
 				return true;
 			}
 
 			public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
+				stageToLocalAmount(tmpCoords.set(deltaX, deltaY));
+				deltaX = tmpCoords.x;
+				deltaY = tmpCoords.y;
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
 				return true;
 			}
 
@@ -79,6 +86,11 @@ public class ActorGestureListener implements EventListener {
 				ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
 				return true;
 			}
+
+			private void stageToLocalAmount (Vector2 amount) {
+				actor.stageToLocalCoordinates(amount);
+				amount.sub(actor.stageToLocalCoordinates(tmpCoords2.set(0, 0)));
+			}
 		});
 	}
 
@@ -91,15 +103,16 @@ public class ActorGestureListener implements EventListener {
 			actor = event.getListenerActor();
 			touchDownTarget = event.getTarget();
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-			touchDown(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
+			if (event.isTouchFocusCancel()) return false;
 			this.event = event;
 			actor = event.getListenerActor();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-			touchUp(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
 			this.event = event;

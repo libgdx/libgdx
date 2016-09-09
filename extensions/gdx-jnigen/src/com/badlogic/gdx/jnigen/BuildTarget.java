@@ -21,7 +21,7 @@ package com.badlogic.gdx.jnigen;
 public class BuildTarget {
 	/** The target operating system of a build target. */
 	public enum TargetOs {
-		Windows, Linux, MacOsX, Android
+		Windows, Linux, MacOsX, Android, IOS
 	}
 
 	/** the target operating system **/
@@ -54,6 +54,13 @@ public class BuildTarget {
 	public String preCompileTask;
 	/** Ant Xml executed in a target after compilation **/
 	public String postCompileTask;
+	/** the libraries to be linked to the output, specify via e.g. -ldinput -ldxguid etc. **/
+	public String libraries;
+	/** The name used for folders for this specific target. Defaults to "${target}(64)" **/
+	public String osFileName;
+	/** The name used for the library file. This is a full file name, including file extension. Default is platform specific.
+	 *  E.g. "lib{sharedLibName}64.so" **/
+	public String libName; 
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,
@@ -81,6 +88,7 @@ public class BuildTarget {
 		this.cFlags = cFlags;
 		this.cppFlags = cppFlags;
 		this.linkerFlags = linkerFlags;
+		this.libraries = "";
 	}
 
 	/** Creates a new default BuildTarget for the given OS, using common default values. */
@@ -89,7 +97,8 @@ public class BuildTarget {
 			// Windows 32-Bit
 			return new BuildTarget(TargetOs.Windows, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "i686-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
-				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", "-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++");
+				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", 
+				"-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++");
 		}
 
 		if (type == TargetOs.Windows && is64Bit) {
@@ -97,7 +106,7 @@ public class BuildTarget {
 			return new BuildTarget(TargetOs.Windows, true, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "x86_64-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
 				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64",
-				"-Wl,--kill-at -shared -static-libgcc -static-libstdc++ -m64");
+				"-Wl,--kill-at -shared -static -static-libgcc -static-libstdc++ -m64");
 		}
 
 		if (type == TargetOs.Linux && !is64Bit) {
@@ -111,16 +120,26 @@ public class BuildTarget {
 			// Linux 64-Bit
 			return new BuildTarget(TargetOs.Linux, true, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
 				new String[0], new String[0], "", "-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC",
-				"-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC", "-shared -m64");
+				"-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC", "-shared -m64 -Wl,-wrap,memcpy");
 		}
 
-		if (type == TargetOs.MacOsX) {
+		if (type == TargetOs.MacOsX && !is64Bit) {
 			// Mac OS X x86 & x86_64
 			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, false, new String[] {"**/*.c"}, new String[0],
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
-				"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
-				"-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5");
+				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-shared -arch i386 -mmacosx-version-min=10.5");
+			return mac;
+		}
+		
+		if (type == TargetOs.MacOsX && is64Bit) {
+			// Mac OS X x86 & x86_64
+			BuildTarget mac = new BuildTarget(TargetOs.MacOsX, true, new String[] {"**/*.c"}, new String[0],
+				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
+				"-shared -arch x86_64 -mmacosx-version-min=10.5");
 			return mac;
 		}
 
@@ -129,6 +148,16 @@ public class BuildTarget {
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "", "-O2 -Wall -D__ANDROID__", "-O2 -Wall -D__ANDROID__",
 				"-lm");
 			return android;
+		}
+		
+		if(type == TargetOs.IOS) {
+			// iOS, 386 simulator and armv7a, compiled to fat static lib
+			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0],
+				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
+				"-c -Wall -O2",
+				"-c -Wall -O2",
+				"rcs");
+			return ios;
 		}
 
 		throw new RuntimeException("Unknown target type");

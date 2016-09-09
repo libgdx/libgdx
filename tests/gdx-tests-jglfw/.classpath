@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="tests-assets"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-jglfw"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-bullet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-freetype"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

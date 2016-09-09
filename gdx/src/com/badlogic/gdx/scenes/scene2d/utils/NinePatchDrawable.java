@@ -16,8 +16,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Drawable for a {@link NinePatch}.
  * <p>
@@ -31,7 +32,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class NinePatchDrawable extends BaseDrawable {
 	private NinePatch patch;
 
-	/** Creates an unitialized NinePatchDrawable. The ninepatch must be set before use. */
+	/** Creates an uninitialized NinePatchDrawable. The ninepatch must be {@link #setPatch(NinePatch) set} before use. */
 	public NinePatchDrawable () {
 	}
 
@@ -44,7 +45,7 @@ public class NinePatchDrawable extends BaseDrawable {
 		setPatch(drawable.patch);
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		patch.draw(batch, x, y, width, height);
 	}
 
@@ -60,5 +61,12 @@ public class NinePatchDrawable extends BaseDrawable {
 
 	public NinePatch getPatch () {
 		return patch;
+	}
+
+	/** Creates a new drawable that renders the same as this drawable tinted the specified color. */
+	public NinePatchDrawable tint (Color tint) {
+		NinePatchDrawable drawable = new NinePatchDrawable(this);
+		drawable.setPatch(new NinePatch(drawable.getPatch(), tint));
+		return drawable;
 	}
 }

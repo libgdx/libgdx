@@ -25,7 +25,7 @@ public class VisibleAction extends Action {
 	private boolean visible;
 
 	public boolean act (float delta) {
-		actor.setVisible(visible);
+		target.setVisible(visible);
 		return true;
 	}
 

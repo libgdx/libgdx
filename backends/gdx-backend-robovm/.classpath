@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_CONTAINER"/>
+	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_COCOA_TOUCH_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libs/robovm-cocoatouch.jar"/>
+	<classpathentry kind="lib" path="libs/robovm-objc.jar"/>
+	<classpathentry kind="lib" path="libs/robovm-rt.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+	<classpathentry kind="lib" path="libs/robovm-cacerts-full.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

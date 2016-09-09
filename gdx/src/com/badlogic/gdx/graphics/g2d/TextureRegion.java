@@ -87,12 +87,24 @@ public class TextureRegion {
 	}
 
 	public void setRegion (float u, float v, float u2, float v2) {
+		int texWidth = texture.getWidth(), texHeight = texture.getHeight();
+		regionWidth = Math.round(Math.abs(u2 - u) * texWidth);
+		regionHeight = Math.round(Math.abs(v2 - v) * texHeight);
+
+		// For a 1x1 region, adjust UVs toward pixel center to avoid filtering artifacts on AMD GPUs when drawing very stretched.
+		if (regionWidth == 1 && regionHeight == 1) {
+			float adjustX = 0.25f / texWidth;
+			u += adjustX;
+			u2 -= adjustX;
+			float adjustY = 0.25f / texHeight;
+			v += adjustY;
+			v2 -= adjustY;
+		}
+
 		this.u = u;
 		this.v = v;
 		this.u2 = u2;
 		this.v2 = v2;
-		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
-		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
 
 	/** Sets the texture and coordinates to the specified region. */
@@ -173,7 +185,11 @@ public class TextureRegion {
 	}
 
 	public void setRegionWidth (int width) {
-		setU2(u + width / (float)texture.getWidth());
+		if (isFlipX()) {
+			setU(u2 + width / (float)texture.getWidth());
+		} else {
+			setU2(u + width / (float)texture.getWidth());
+		}
 	}
 
 	/** Returns the region's height. */
@@ -182,7 +198,11 @@ public class TextureRegion {
 	}
 
 	public void setRegionHeight (int height) {
-		setV2(v + height / (float)texture.getHeight());
+		if (isFlipY()) {
+			setV(v2 + height / (float)texture.getHeight());			
+		} else {
+			setV2(v + height / (float)texture.getHeight());
+		}
 	}
 
 	public void flip (boolean x, boolean y) {
@@ -223,9 +243,10 @@ public class TextureRegion {
 		}
 	}
 
-	/** Helper function to create tiles out of this TextureRegion starting from the top left corner going to the left and ending at
+	/** Helper function to create tiles out of this TextureRegion starting from the top left corner going to the right and ending at
 	 * the bottom right corner. Only complete tiles will be returned so if the region's width or height are not a multiple of the
-	 * tile width and height not all of the region will be used.
+	 * tile width and height not all of the region will be used. This will not work on texture regions returned form a TextureAtlas
+	 * that either have whitespace removed or where flipped before the region is split.
 	 * 
 	 * @param tileWidth a tile's width in pixels
 	 * @param tileHeight a tile's height in pixels
@@ -251,7 +272,7 @@ public class TextureRegion {
 		return tiles;
 	}
 
-	/** Helper function to create tiles out of the given {@link Texture} starting from the top left corner going to the left and
+	/** Helper function to create tiles out of the given {@link Texture} starting from the top left corner going to the right and
 	 * ending at the bottom right corner. Only complete tiles will be returned so if the texture's width or height are not a
 	 * multiple of the tile width and height not all of the texture will be used.
 	 * 

@@ -37,11 +37,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 	protected int mDepthSize;
 	protected int mStencilSize;
 	protected int mNumSamples;
-	protected boolean mUseGL20;
 	protected final int[] mConfigAttribs;
 	private int[] mValue = new int[1];
 
-	public GdxEglConfigChooser (int r, int g, int b, int a, int depth, int stencil, int numSamples, boolean useGL20) {
+	public GdxEglConfigChooser (int r, int g, int b, int a, int depth, int stencil, int numSamples) {
 		mRedSize = r;
 		mGreenSize = g;
 		mBlueSize = b;
@@ -49,14 +48,9 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 		mDepthSize = depth;
 		mStencilSize = stencil;
 		mNumSamples = numSamples;
-		mUseGL20 = useGL20;
 
-		if (useGL20) {
-			mConfigAttribs = new int[] {EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4,
-				EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, EGL10.EGL_NONE};
-		} else {
-			mConfigAttribs = new int[] {EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_NONE};
-		}
+		mConfigAttribs = new int[] {EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4,
+			EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, EGL10.EGL_NONE};
 	}
 
 	public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
@@ -88,6 +82,7 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 	public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display, EGLConfig[] configs) {
 		EGLConfig best = null;
 		EGLConfig bestAA = null;
+		EGLConfig safe = null; // default back to 565 when no exact match found
 
 		for (EGLConfig config : configs) {
 			int d = findConfigAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
@@ -102,6 +97,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 			int b = findConfigAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
 			int a = findConfigAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
 
+			// Match RGB565 as a fallback
+			if (safe == null && r == 5 && g == 6 && b == 5 && a == 0) {
+				safe = config;
+			}
 			// if we have a match, we chose this as our non AA fallback if that one
 			// isn't set already.
 			if (best == null && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
@@ -141,8 +140,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
 		if (bestAA != null)
 			return bestAA;
-		else
+		else if (best != null)
 			return best;
+		else
+			return safe;
 	}
 
 	private int findConfigAttrib (EGL10 egl, EGLDisplay display, EGLConfig config, int attribute, int defaultValue) {

@@ -56,7 +56,7 @@ public class DataOutputStream extends OutputStream implements DataOutput {
 	}
 
 	public void writeDouble (double v) throws IOException {
-		throw new RuntimeException("writeDouble");
+		writeLong(Double.doubleToLongBits(v));
 	}
 
 	public void writeFloat (float v) throws IOException {

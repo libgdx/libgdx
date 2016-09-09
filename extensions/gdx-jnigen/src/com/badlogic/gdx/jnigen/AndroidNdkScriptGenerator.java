@@ -54,16 +54,6 @@ public class AndroidNdkScriptGenerator {
 
 		gatherSourceFiles(config.jniDir, includes, excludes, files);
 
-		// create androidManifest.xml if it doesn't exist.
-		FileDescriptor manifest = config.jniDir.parent();
-		if (manifest.path().equals("/") || manifest.path().equals("\\"))
-			manifest = new FileDescriptor("AndroidManifest.xml");
-		else
-			manifest = config.jniDir.parent().child("AndroidManifest.xml");
-		if (!manifest.exists()) {
-			manifest.writeString("", false);
-		}
-
 		// create Application.mk file
 		FileDescriptor application = config.jniDir.child("Application.mk");
 		application.writeString(new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Application.mk.template",
@@ -96,7 +86,6 @@ public class AndroidNdkScriptGenerator {
 		template = template.replace("%linkerFlags%", target.linkerFlags);
 		template = template.replace("%srcFiles%", srcFiles);
 
-		System.out.println(template);
 		config.jniDir.child("Android.mk").writeString(template, false);
 	}
 

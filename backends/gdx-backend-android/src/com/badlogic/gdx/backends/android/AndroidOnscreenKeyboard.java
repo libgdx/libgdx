@@ -65,7 +65,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 	Dialog createDialog () {
 		textView = createView(context);
 		textView.setOnKeyListener(this);
-		FrameLayout.LayoutParams textBoxLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,
+		FrameLayout.LayoutParams textBoxLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
 			FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
 		textView.setLayoutParams(textBoxLayoutParams);
 		textView.setFocusable(true);
@@ -73,7 +73,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 		textView.setImeOptions(textView.getImeOptions() | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
 		final FrameLayout layout = new FrameLayout(context);
-		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, 0);
+		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
 		layout.setLayoutParams(layoutParams);
 		layout.addView(textView);
 		layout.setOnTouchListener(this);

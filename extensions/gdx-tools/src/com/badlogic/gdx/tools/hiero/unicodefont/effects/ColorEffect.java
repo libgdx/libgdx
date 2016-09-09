@@ -40,7 +40,10 @@ public class ColorEffect implements ConfigurableEffect {
 
 	public void draw (BufferedImage image, Graphics2D g, UnicodeFont unicodeFont, Glyph glyph) {
 		g.setColor(color);
-		g.fill(glyph.getShape());
+		try {
+			g.fill(glyph.getShape()); // Java2D fails on some glyph shapes?!
+		} catch (Throwable ignored) {
+		}
 	}
 
 	public Color getColor () {

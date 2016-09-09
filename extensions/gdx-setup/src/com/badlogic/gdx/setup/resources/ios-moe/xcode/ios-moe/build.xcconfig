@@ -1,0 +1,31 @@
+#include "custom.xcconfig"
+
+// Gradle project base and build directories
+MOE_PROJECT_DIR = ${SRCROOT}/..
+MOE_PROJECT_BUILD_DIR = ${MOE_PROJECT_DIR}/build
+
+// Create sections from the art and oat files.
+MOE_SECT_OAT = -sectcreate __OATDATA __oatdata "${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.oat"
+MOE_SECT_ART = -sectcreate __ARTDATA __artdata "${MOE_PROJECT_BUILD_DIR}/moe/main/xcode/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${arch}.art"
+
+// Set the maximum and initial virtual memory protection for the segments.
+MOE_SEGPROT[sdk=iphoneos*] = -segprot __OATDATA rx rx -segprot __ARTDATA rw rw
+MOE_SEGPROT[sdk=iphonesimulator*] = -segprot __OATDATA rwx rx -segprot __ARTDATA rwx rw
+
+// Set the __PAGEZERO segment size.
+MOE_PAGEZERO[sdk=iphoneos*] =
+MOE_PAGEZERO[sdk=iphonesimulator*] = -pagezero_size 4096
+
+// Set frameworks paths.
+MOE_FRAMEWORK_PATH = ${MOE_PROJECT_BUILD_DIR}/moe/sdk/sdk/${PLATFORM_NAME}
+
+MOE_CUSTOM_STATIC_FRAMEWORK_PATH = ${MOE_PROJECT_BUILD_DIR}/libs/static/${PLATFORM_NAME}
+MOE_CUSTOM_DYNAMIC_FRAMEWORK_PATH = ${MOE_PROJECT_BUILD_DIR}/libs/dynamic/${PLATFORM_NAME}
+
+// Collect all MOE linker flags.
+MOE_CUSTOM_OTHER_LDFLAGS = ${LIBGDX_NATIVES} -framework Foundation -framework UIKit  -L${MOE_PROJECT_BUILD_DIR}/libs/static -L${MOE_PROJECT_BUILD_DIR}/libs/static/${PLATFORM_NAME} -F${MOE_PROJECT_BUILD_DIR}/libs/static -F${MOE_PROJECT_BUILD_DIR}/libs/static/${PLATFORM_NAME} -F${MOE_PROJECT_BUILD_DIR}/libs/dynamic -F${MOE_PROJECT_BUILD_DIR}/libs/dynamic/${PLATFORM_NAME}
+
+MOE_OTHER_LDFLAGS = ${MOE_SECT_OAT} ${MOE_SECT_ART} ${MOE_SEGPROT} ${MOE_PAGEZERO} ${MOE_CUSTOM_OTHER_LDFLAGS} -lstdc++
+
+// Disable BitCode.
+ENABLE_BITCODE = NO

@@ -16,7 +16,7 @@
 
 package java.io;
 
-public abstract class InputStream {
+public abstract class InputStream implements Closeable {
 	public abstract int read () throws IOException;
 
 	public int read (byte[] buf, int start, int len) throws IOException {

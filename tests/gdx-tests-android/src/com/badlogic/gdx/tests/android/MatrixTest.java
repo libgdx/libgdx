@@ -28,11 +28,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MatrixTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	BitmapFont font;
 	SpriteBatch batch;
 	String results = "no results";
@@ -80,7 +75,7 @@ public class MatrixTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.drawMultiLine(batch, results, 20, 300);
+		font.draw(batch, results, 20, 300);
 		batch.end();
 	}
 }

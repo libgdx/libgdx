@@ -16,227 +16,206 @@
 
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-/** Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this type of spline see
- * http://www.mvps.org/directx/articles/catmull/.
- * 
- * @author badlogicgames@gmail.com */
-public class CatmullRomSpline implements Serializable {
-	private static final long serialVersionUID = -3290464799289771451L;
-	private List<Vector3> controlPoints = new ArrayList<Vector3>();
-	Vector3 T1 = new Vector3();
-	Vector3 T2 = new Vector3();
-
-	/** Adds a new control point
-	 * 
-	 * @param point the point */
-	public void add (Vector3 point) {
-		controlPoints.add(point);
+/** @author Xoppa */
+public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
+	/** Calculates the catmullrom value for the given position (t).
+	 * @param out The Vector to set to the result.
+	 * @param t The position (0<=t<=1) on the spline
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T calculate (final T out, final float t, final T[] points, final boolean continuous,
+		final T tmp) {
+		final int n = continuous ? points.length : points.length - 3;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= i;
+		return calculate(out, i, u, points, continuous, tmp);
 	}
 
-	/** @return all control points */
-	public List<Vector3> getControlPoints () {
-		return controlPoints;
+	/** Calculates the catmullrom value for the given span (i) at the given position (u).
+	 * @param out The Vector to set to the result.
+	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
+	 * @param u The position (0<=u<=1) on the span
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T calculate (final T out, final int i, final float u, final T[] points,
+		final boolean continuous, final T tmp) {
+		final int n = points.length;
+		final float u2 = u * u;
+		final float u3 = u2 * u;
+		out.set(points[i]).scl(1.5f * u3 - 2.5f * u2 + 1.0f);
+		if (continuous || i > 0) out.add(tmp.set(points[(n + i - 1) % n]).scl(-0.5f * u3 + u2 - 0.5f * u));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1) % n]).scl(-1.5f * u3 + 2f * u2 + 0.5f * u));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2) % n]).scl(0.5f * u3 - 0.5f * u2));
+		return out;
 	}
 
-	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
-	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
-	 * 
-	 * @param numPoints number of points returned for a segment
-	 * @return the path */
-	public List<Vector3> getPath (int numPoints) {
-		ArrayList<Vector3> points = new ArrayList<Vector3>();
+	/** Calculates the derivative of the catmullrom spline for the given position (t).
+	 * @param out The Vector to set to the result.
+	 * @param t The position (0<=t<=1) on the spline
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T derivative (final T out, final float t, final T[] points, final boolean continuous,
+		final T tmp) {
+		final int n = continuous ? points.length : points.length - 3;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= i;
+		return derivative(out, i, u, points, continuous, tmp);
+	}
 
-		if (controlPoints.size() < 4) return points;
+	/** Calculates the derivative of the catmullrom spline for the given span (i) at the given position (u).
+	 * @param out The Vector to set to the result.
+	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
+	 * @param u The position (0<=u<=1) on the span
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T derivative (final T out, final int i, final float u, final T[] points,
+		final boolean continuous, final T tmp) {
+		/*
+		 * catmull'(u) = 0.5 *((-p0 + p2) + 2 * (2*p0 - 5*p1 + 4*p2 - p3) * u + 3 * (-p0 + 3*p1 - 3*p2 + p3) * u * u)
+		 */
+		final int n = points.length;
+		final float u2 = u * u;
+		// final float u3 = u2 * u;
+		out.set(points[i]).scl(-u * 5 + u2 * 4.5f);
+		if (continuous || i > 0) out.add(tmp.set(points[(n + i - 1) % n]).scl(-0.5f + u * 2 - u2 * 1.5f));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1) % n]).scl(0.5f + u * 4 - u2 * 4.5f));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2) % n]).scl(-u + u2 * 1.5f));
+		return out;
+	}
 
-		Vector3 T1 = new Vector3();
-		Vector3 T2 = new Vector3();
+	public T[] controlPoints;
+	public boolean continuous;
+	public int spanCount;
+	private T tmp;
+	private T tmp2;
+	private T tmp3;
 
-		for (int i = 1; i <= controlPoints.size() - 3; i++) {
-			points.add(controlPoints.get(i));
-			float increment = 1.0f / (numPoints + 1);
-			float t = increment;
+	public CatmullRomSpline () {
+	}
 
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
+	public CatmullRomSpline (final T[] controlPoints, final boolean continuous) {
+		set(controlPoints, continuous);
+	}
 
-			for (int j = 0; j < numPoints; j++) {
-				float h1 = 2 * t * t * t - 3 * t * t + 1; // calculate basis
-				// function 1
-				float h2 = -2 * t * t * t + 3 * t * t; // calculate basis
-				// function 2
-				float h3 = t * t * t - 2 * t * t + t; // calculate basis
-				// function 3
-				float h4 = t * t * t - t * t; // calculate basis function 4
+	public CatmullRomSpline set (final T[] controlPoints, final boolean continuous) {
+		if (tmp == null) tmp = controlPoints[0].cpy();
+		if (tmp2 == null) tmp2 = controlPoints[0].cpy();
+		if (tmp3 == null) tmp3 = controlPoints[0].cpy();
+		this.controlPoints = controlPoints;
+		this.continuous = continuous;
+		this.spanCount = continuous ? controlPoints.length : controlPoints.length - 3;
+		return this;
+	}
 
-				Vector3 point = new Vector3(controlPoints.get(i)).mul(h1);
-				point.add(controlPoints.get(i + 1).tmp().mul(h2));
-				point.add(T1.tmp().mul(h3));
-				point.add(T2.tmp().mul(h4));
-				points.add(point);
-				t += increment;
+	@Override
+	public T valueAt (T out, float t) {
+		final int n = spanCount;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= i;
+		return valueAt(out, i, u);
+	}
+
+	/** @return The value of the spline at position u of the specified span */
+	public T valueAt (final T out, final int span, final float u) {
+		return calculate(out, continuous ? span : (span + 1), u, controlPoints, continuous, tmp);
+	}
+
+	@Override
+	public T derivativeAt (T out, float t) {
+		final int n = spanCount;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= i;
+		return derivativeAt(out, i, u);
+	}
+
+	/** @return The derivative of the spline at position u of the specified span */
+	public T derivativeAt (final T out, final int span, final float u) {
+		return derivative(out, continuous ? span : (span + 1), u, controlPoints, continuous, tmp);
+	}
+
+	/** @return The span closest to the specified value */
+	public int nearest (final T in) {
+		return nearest(in, 0, spanCount);
+	}
+
+	/** @return The span closest to the specified value, restricting to the specified spans. */
+	public int nearest (final T in, int start, final int count) {
+		while (start < 0)
+			start += spanCount;
+		int result = start % spanCount;
+		float dst = in.dst2(controlPoints[result]);
+		for (int i = 1; i < count; i++) {
+			final int idx = (start + i) % spanCount;
+			final float d = in.dst2(controlPoints[idx]);
+			if (d < dst) {
+				dst = d;
+				result = idx;
 			}
 		}
-
-		if (controlPoints.size() >= 4) points.add(controlPoints.get(controlPoints.size() - 2));
-
-		return points;
+		return result;
 	}
 
-	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
-	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
-	 * 
-	 * @param points the array of Vector3 instances to store the path in
-	 * @param numPoints number of points returned for a segment */
-	public void getPath (Vector3[] points, int numPoints) {
-		int idx = 0;
-		if (controlPoints.size() < 4) return;
+	@Override
+	public float approximate (T v) {
+		return approximate(v, nearest(v));
+	}
 
-		for (int i = 1; i <= controlPoints.size() - 3; i++) {
-			points[idx++].set(controlPoints.get(i));
-			float increment = 1.0f / (numPoints + 1);
-			float t = increment;
+	public float approximate (final T in, int start, final int count) {
+		return approximate(in, nearest(in, start, count));
+	}
 
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
-
-			for (int j = 0; j < numPoints; j++) {
-				float h1 = 2 * t * t * t - 3 * t * t + 1; // calculate basis
-				// function 1
-				float h2 = -2 * t * t * t + 3 * t * t; // calculate basis
-				// function 2
-				float h3 = t * t * t - 2 * t * t + t; // calculate basis
-				// function 3
-				float h4 = t * t * t - t * t; // calculate basis function 4
-
-				Vector3 point = points[idx++].set(controlPoints.get(i)).mul(h1);
-				point.add(controlPoints.get(i + 1).tmp().mul(h2));
-				point.add(T1.tmp().mul(h3));
-				point.add(T2.tmp().mul(h4));
-				t += increment;
-			}
+	public float approximate (final T in, final int near) {
+		int n = near;
+		final T nearest = controlPoints[n];
+		final T previous = controlPoints[n > 0 ? n - 1 : spanCount - 1];
+		final T next = controlPoints[(n + 1) % spanCount];
+		final float dstPrev2 = in.dst2(previous);
+		final float dstNext2 = in.dst2(next);
+		T P1, P2, P3;
+		if (dstNext2 < dstPrev2) {
+			P1 = nearest;
+			P2 = next;
+			P3 = in;
+		} else {
+			P1 = previous;
+			P2 = nearest;
+			P3 = in;
+			n = n > 0 ? n - 1 : spanCount - 1;
 		}
-
-		points[idx].set(controlPoints.get(controlPoints.size() - 2));
+		float L1Sqr = P1.dst2(P2);
+		float L2Sqr = P3.dst2(P2);
+		float L3Sqr = P3.dst2(P1);
+		float L1 = (float)Math.sqrt(L1Sqr);
+		float s = (L2Sqr + L1Sqr - L3Sqr) / (2f * L1);
+		float u = MathUtils.clamp((L1 - s) / L1, 0f, 1f);
+		return (n + u) / spanCount;
 	}
 
-	/** Returns all tangents for the points in a path. Same semantics as getPath.
-	 * 
-	 * @param numPoints number of points returned for a segment
-	 * @return the tangents of the points in the path */
-	public List<Vector3> getTangents (int numPoints) {
-		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
-
-		if (controlPoints.size() < 4) return tangents;
-
-		Vector3 T1 = new Vector3();
-		Vector3 T2 = new Vector3();
-
-		for (int i = 1; i <= controlPoints.size() - 3; i++) {
-			float increment = 1.0f / (numPoints + 1);
-			float t = increment;
-
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
-
-			tangents.add(new Vector3(T1).nor());
-
-			for (int j = 0; j < numPoints; j++) {
-				float h1 = 6 * t * t - 6 * t; // calculate basis function 1
-				float h2 = -6 * t * t + 6 * t; // calculate basis function 2
-				float h3 = 3 * t * t - 4 * t + 1; // calculate basis function 3
-				float h4 = 3 * t * t - 2 * t; // calculate basis function 4
-
-				Vector3 point = new Vector3(controlPoints.get(i)).mul(h1);
-				point.add(controlPoints.get(i + 1).tmp().mul(h2));
-				point.add(T1.tmp().mul(h3));
-				point.add(T2.tmp().mul(h4));
-				tangents.add(point.nor());
-				t += increment;
-			}
-		}
-
-		if (controlPoints.size() >= 4)
-			tangents.add(T1.set(controlPoints.get(controlPoints.size() - 1)).sub(controlPoints.get(controlPoints.size() - 3))
-				.mul(0.5f).cpy().nor());
-
-		return tangents;
+	@Override
+	public float locate (T v) {
+		return approximate(v);
 	}
 
-	/** Returns all tangent's normals in 2D space for the points in a path. The controlpoints have to lie in the x/y plane for this
-	 * to work. Same semantics as getPath.
-	 * 
-	 * @param numPoints number of points returned for a segment
-	 * @return the tangents of the points in the path */
-	public List<Vector3> getTangentNormals2D (int numPoints) {
-		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
-
-		if (controlPoints.size() < 4) return tangents;
-
-		Vector3 T1 = new Vector3();
-		Vector3 T2 = new Vector3();
-
-		for (int i = 1; i <= controlPoints.size() - 3; i++) {
-			float increment = 1.0f / (numPoints + 1);
-			float t = increment;
-
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
-
-			Vector3 normal = new Vector3(T1).nor();
-			float x = normal.x;
-			normal.x = normal.y;
-			normal.y = -x;
-			tangents.add(normal);
-
-			for (int j = 0; j < numPoints; j++) {
-				float h1 = 6 * t * t - 6 * t; // calculate basis function 1
-				float h2 = -6 * t * t + 6 * t; // calculate basis function 2
-				float h3 = 3 * t * t - 4 * t + 1; // calculate basis function 3
-				float h4 = 3 * t * t - 2 * t; // calculate basis function 4
-
-				Vector3 point = new Vector3(controlPoints.get(i)).mul(h1);
-				point.add(controlPoints.get(i + 1).tmp().mul(h2));
-				point.add(T1.tmp().mul(h3));
-				point.add(T2.tmp().mul(h4));
-				point.nor();
-				x = point.x;
-				point.x = point.y;
-				point.y = -x;
-				tangents.add(point);
-				t += increment;
-			}
-		}
-
-		return tangents;
-	}
-
-	/** Returns the tangent's normals using the tangent and provided up vector doing a cross product.
-	 * 
-	 * @param numPoints number of points per segment
-	 * @param up up vector
-	 * @return a list of tangent normals */
-	public List<Vector3> getTangentNormals (int numPoints, Vector3 up) {
-		List<Vector3> tangents = getTangents(numPoints);
-		ArrayList<Vector3> normals = new ArrayList<Vector3>();
-
-		for (Vector3 tangent : tangents)
-			normals.add(new Vector3(tangent).crs(up).nor());
-
-		return normals;
-	}
-
-	public List<Vector3> getTangentNormals (int numPoints, List<Vector3> up) {
-		List<Vector3> tangents = getTangents(numPoints);
-		ArrayList<Vector3> normals = new ArrayList<Vector3>();
-
-		int i = 0;
-		for (Vector3 tangent : tangents)
-			normals.add(new Vector3(tangent).crs(up.get(i++)).nor());
-
-		return normals;
+	@Override
+	public float approxLength (int samples) {
+		float tempLength = 0;
+	   for(int i = 0; i < samples; ++i) {
+	       tmp2.set(tmp3);
+	       valueAt(tmp3, (i)/((float)samples-1));
+	       if(i>0) tempLength += tmp2.dst(tmp3);
+	   }
+	   return tempLength;
 	}
 }

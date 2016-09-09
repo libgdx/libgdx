@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.android.surfaceview;
 
-/** Will manipulate the GLSurfaceView. Gravity is always center. The width and height of the View will be determinded by the
+/** Will manipulate the GLSurfaceView. Gravity is always center. The width and height of the View will be determined by the
  * classes implementing {@link ResolutionStrategy}.
  * 
  * @author christoph widulle */

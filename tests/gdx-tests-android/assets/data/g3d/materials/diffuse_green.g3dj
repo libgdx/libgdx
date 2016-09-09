@@ -1,0 +1,14 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "Material", 
+			"diffuse": [ 0, 1, 0],
+			"reflection": [1.0, 0.0, 0.0] 
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -32,19 +32,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MipMapTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 	PerspectiveCamera camera;
 	PerspectiveCamController controller;
 	Mesh mesh;
@@ -55,8 +50,8 @@ public class MipMapTest extends GdxTest {
 	Stage ui;
 	Skin skin;
 	InputMultiplexer multiplexer;
-	SelectBox minFilter;
-	SelectBox magFilter;
+	SelectBox<String> minFilter;
+	SelectBox<String> magFilter;
 	CheckBox hwMipMap;
 
 	@Override
@@ -91,7 +86,7 @@ public class MipMapTest extends GdxTest {
 
 	private void createUI () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		ui = new Stage();
 
 		String[] filters = new String[TextureFilter.values().length];
 		int idx = 0;
@@ -99,8 +94,10 @@ public class MipMapTest extends GdxTest {
 			filters[idx++] = filter.toString();
 		}
 		hwMipMap = new CheckBox("Hardware Mips", skin);
-		minFilter = new SelectBox(filters, skin);
-		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.get(SelectBoxStyle.class));
+		minFilter = new SelectBox(skin);
+		minFilter.setItems(filters);
+		magFilter = new SelectBox(skin.get(SelectBoxStyle.class));
+		magFilter.setItems("Nearest", "Linear");
 
 		Table table = new Table();
 		table.setSize(ui.getWidth(), 30);
@@ -116,21 +113,22 @@ public class MipMapTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
 		camera.update();
 
 		currTexture = hwMipMap.isChecked() ? textureHW : textureSW;
 		currTexture.bind();
-		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelection()), TextureFilter.valueOf(magFilter.getSelection()));
+		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelected()), TextureFilter.valueOf(magFilter.getSelected()));
 
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", camera.combined);
 		shader.setUniformi("s_texture", 0);
-		mesh.render(shader, GL10.GL_TRIANGLE_FAN);
+		mesh.render(shader, GL20.GL_TRIANGLE_FAN);
 		shader.end();
 
+		ui.act();
 		ui.draw();
 	}
 

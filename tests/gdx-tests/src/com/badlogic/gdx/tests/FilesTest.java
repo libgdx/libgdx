@@ -21,15 +21,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class FilesTest extends GdxTest {
 	String message = "";
@@ -48,10 +50,7 @@ public class FilesTest extends GdxTest {
 
 			try {
 				InputStream in = Gdx.files.internal("data/cube.obj").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open internal success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open internal data/cube.obj\n" + e.getMessage() + "\n";
@@ -67,20 +66,12 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't write externalstorage/test.txt\n";
 			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(out);
 			}
 
 			try {
 				InputStream in = Gdx.files.external("test.txt").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open external success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open internal externalstorage/test.txt\n" + e.getMessage() + "\n";
@@ -98,12 +89,7 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't read externalstorage/test.txt\n";
 			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(in);
 			}
 
 			if (!Gdx.files.external("test.txt").delete()) message += "Couldn't delete externalstorage/test.txt";
@@ -124,20 +110,12 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't write localstorage/test.txt\n";
 			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(out);
 			}
 
 			try {
 				InputStream in = Gdx.files.local("test.txt").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open local success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open localstorage/test.txt\n" + e.getMessage() + "\n";
@@ -155,12 +133,17 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't read localstorage/test.txt\n";
 			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(in);
+			}
+
+			try {
+				byte[] testBytes = Gdx.files.local("test.txt").readBytes();
+				if (Arrays.equals("test".getBytes(), testBytes))
+					message += "Read into byte array success\n";
+				else
+					fail();
+			} catch (Throwable e) {
+				message += "Couldn't read localstorage/test.txt\n" + e.getMessage() + "\n";
 			}
 
 			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";
@@ -178,7 +161,7 @@ public class FilesTest extends GdxTest {
 
 	private void testClasspath () throws IOException {
 		// no classpath support on ios
-		if(Gdx.app.getType() == ApplicationType.iOS) return;
+		if (Gdx.app.getType() == ApplicationType.iOS) return;
 		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
@@ -467,16 +450,16 @@ public class FilesTest extends GdxTest {
 	private void fail () {
 		throw new RuntimeException();
 	}
-	
-	private void fail(String msg) {
+
+	private void fail (String msg) {
 		throw new RuntimeException(msg);
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
 	}
 
@@ -485,10 +468,4 @@ public class FilesTest extends GdxTest {
 		batch.dispose();
 		font.dispose();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 }

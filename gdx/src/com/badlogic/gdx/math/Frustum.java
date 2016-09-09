@@ -16,11 +16,14 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+/** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen.
+ * @see Camera#frustum */
 public class Frustum {
 	protected static final Vector3[] clipSpacePlanePoints = {new Vector3(-1, -1, -1), new Vector3(1, -1, -1),
 		new Vector3(1, 1, -1), new Vector3(-1, 1, -1), // near clip
@@ -35,8 +38,10 @@ public class Frustum {
 			clipSpacePlanePointsArray[j++] = v.z;
 		}
 	}
+	
+	private final static Vector3 tmpV = new Vector3();
 
-	/** the six clipping planes, near, far, left, right, top, bottm **/
+	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];
 
 	/** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
@@ -71,10 +76,10 @@ public class Frustum {
 		planes[5].set(planePoints[4], planePoints[0], planePoints[1]);
 	}
 
-	/** Returns wheter the point is in the frustum.
+	/** Returns whether the point is in the frustum.
 	 * 
 	 * @param point The point
-	 * @return Wheter the point is in the frustum. */
+	 * @return Whether the point is in the frustum. */
 	public boolean pointInFrustum (Vector3 point) {
 		for (int i = 0; i < planes.length; i++) {
 			PlaneSide result = planes[i].testPoint(point);
@@ -83,11 +88,25 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum.
+	/** Returns whether the point is in the frustum.
+	 * 
+	 * @param x The X coordinate of the point
+	 * @param y The Y coordinate of the point
+	 * @param z The Z coordinate of the point
+	 * @return Whether the point is in the frustum. */
+	public boolean pointInFrustum (float x, float y, float z) {
+		for (int i = 0; i < planes.length; i++) {
+			PlaneSide result = planes[i].testPoint(x, y, z);
+			if (result == PlaneSide.Back) return false;
+		}
+		return true;
+	}
+
+	/** Returns whether the given sphere is in the frustum.
 	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
+	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustum (Vector3 center, float radius) {
 		for (int i = 0; i < 6; i++)
 			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
@@ -95,11 +114,24 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum not checking wheter it is behind the near and far clipping plane.
+	/** Returns whether the given sphere is in the frustum.
+	 * 
+	 * @param x The X coordinate of the center of the sphere
+	 * @param y The Y coordinate of the center of the sphere
+	 * @param z The Z coordinate of the center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Whether the sphere is in the frustum */
+	public boolean sphereInFrustum (float x, float y, float z, float radius) {
+		for (int i = 0; i < 6; i++)
+			if ((planes[i].normal.x * x + planes[i].normal.y * y + planes[i].normal.z * z) < (-radius - planes[i].d)) return false;
+		return true;
+	}
+
+	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
 	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
+	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
 		for (int i = 2; i < 6; i++)
 			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
@@ -107,21 +139,58 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given {@link BoundingBox} is in the frustum.
+	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
+	 * 
+	 * @param x The X coordinate of the center of the sphere
+	 * @param y The Y coordinate of the center of the sphere
+	 * @param z The Z coordinate of the center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Whether the sphere is in the frustum */
+	public boolean sphereInFrustumWithoutNearFar (float x, float y, float z, float radius) {
+		for (int i = 2; i < 6; i++)
+			if ((planes[i].normal.x * x + planes[i].normal.y * y + planes[i].normal.z * z) < (-radius - planes[i].d)) return false;
+		return true;
+	}
+
+	/** Returns whether the given {@link BoundingBox} is in the frustum.
 	 * 
 	 * @param bounds The bounding box
-	 * @return Wheter the bounding box is in the frustum */
+	 * @return Whether the bounding box is in the frustum */
 	public boolean boundsInFrustum (BoundingBox bounds) {
-		Vector3[] corners = bounds.getCorners();
-		int len = corners.length;
-
 		for (int i = 0, len2 = planes.length; i < len2; i++) {
-			int out = 0;
+			if (planes[i].testPoint(bounds.getCorner000(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner001(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner010(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner011(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner100(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner101(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner110(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(bounds.getCorner111(tmpV)) != PlaneSide.Back) continue;
+			return false;
+		}
 
-			for (int j = 0; j < len; j++)
-				if (planes[i].testPoint(corners[j]) == PlaneSide.Back) out++;
+		return true;
+	}
 
-			if (out == 8) return false;
+	/** Returns whether the given bounding box is in the frustum.
+	 * @return Whether the bounding box is in the frustum */
+	public boolean boundsInFrustum (Vector3 center, Vector3 dimensions) {
+		return boundsInFrustum(center.x, center.y, center.z, dimensions.x / 2, dimensions.y / 2, dimensions.z / 2);
+	}
+
+	/** Returns whether the given bounding box is in the frustum.
+	 * @return Whether the bounding box is in the frustum */
+	public boolean boundsInFrustum (float x, float y, float z, float halfWidth, float halfHeight, float halfDepth) {
+		for (int i = 0, len2 = planes.length; i < len2; i++) {
+			if (planes[i].testPoint(x + halfWidth, y + halfHeight, z + halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x + halfWidth, y + halfHeight, z - halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x + halfWidth, y - halfHeight, z + halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x + halfWidth, y - halfHeight, z - halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x - halfWidth, y + halfHeight, z + halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x - halfWidth, y + halfHeight, z - halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x - halfWidth, y - halfHeight, z + halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x - halfWidth, y - halfHeight, z - halfDepth) != PlaneSide.Back) continue;
+			return false;
 		}
 
 		return true;

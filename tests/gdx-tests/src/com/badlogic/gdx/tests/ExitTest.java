@@ -22,11 +22,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class ExitTest extends GdxTest {
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
 	public void render () {
 		if (Gdx.input.justTouched()) Gdx.app.exit();
 	}

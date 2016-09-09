@@ -123,7 +123,7 @@ class ScaledNumericPanel extends EditorPanel {
 				GridBagConstraints expandButtonConstraints = layout.getConstraints(expandButton);
 				if (expanded) {
 					chart.setPreferredSize(new Dimension(150, 200));
-					expandButton.setText("�");
+					expandButton.setText("-");
 					chartConstraints.weightx = 1;
 					expandButtonConstraints.weightx = 0;
 				} else {

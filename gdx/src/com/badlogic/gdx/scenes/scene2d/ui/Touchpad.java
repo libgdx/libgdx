@@ -1,8 +1,23 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,6 +38,7 @@ import com.badlogic.gdx.utils.Pools;
 public class Touchpad extends Widget {
 	private TouchpadStyle style;
 	boolean touched;
+	boolean resetOnTouchUp = true;
 	private float deadzoneRadius;
 	private final Circle knobBounds = new Circle(0, 0, 0);
 	private final Circle touchBounds = new Circle(0, 0, 0);
@@ -48,8 +64,7 @@ public class Touchpad extends Widget {
 		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
 
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
 			@Override
@@ -68,7 +83,7 @@ public class Touchpad extends Widget {
 			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
-				calculatePositionAndValue(x, y, true);
+				calculatePositionAndValue(x, y, resetOnTouchUp);
 			}
 		});
 	}
@@ -86,11 +101,11 @@ public class Touchpad extends Widget {
 			if (!deadzoneBounds.contains(x, y)) {
 				knobPercent.set((x - centerX) / knobBounds.radius, (y - centerY) / knobBounds.radius);
 				float length = knobPercent.len();
-				if (length > 1) knobPercent.mul(1 / length);
+				if (length > 1) knobPercent.scl(1 / length);
 				if (knobBounds.contains(x, y)) {
 					knobPosition.set(x, y);
 				} else {
-					knobPosition.set(knobPercent).nor().mul(knobBounds.radius).add(knobBounds.x, knobBounds.y);
+					knobPosition.set(knobPercent).nor().scl(knobBounds.radius).add(knobBounds.x, knobBounds.y);
 				}
 			}
 		}
@@ -137,7 +152,7 @@ public class Touchpad extends Widget {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color c = getColor();
@@ -171,6 +186,15 @@ public class Touchpad extends Widget {
 
 	public boolean isTouched () {
 		return touched;
+	}
+
+	public boolean getResetOnTouchUp () {
+		return resetOnTouchUp;
+	}
+
+	/** @param reset Whether to reset the knob to the center on touch up. */
+	public void setResetOnTouchUp (boolean reset) {
+		this.resetOnTouchUp = reset;
 	}
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */

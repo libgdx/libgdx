@@ -22,12 +22,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class PreferencesTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	public void create () {
 		Preferences prefs = Gdx.app.getPreferences(".test");
 		if (prefs.contains("bool")) {

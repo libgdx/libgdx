@@ -16,12 +16,10 @@
 
 package com.badlogic.gdx.tests;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,7 +35,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 		spriteBatch.draw(texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
@@ -51,26 +49,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 		spriteBatch.draw(texture, 160, 58, 0, 0, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), false,
 			false);
 
-		// spriteBatch.drawText(font, "Test", 208, 10, Color.WHITE);
 		spriteBatch.end();
-		Gdx.graphics.getGL10().glFlush();
-
-		// if( false )
-		// {
-		// Gdx.graphics.getGL10().glReadPixels( 16, 10, 1, 1, GL10.GL_RGBA,
-		// GL10.GL_UNSIGNED_BYTE, pixelBuffer );
-		// if( pixelBuffer.get(0) != 0xff00ff00 )
-		// throw new GdxRuntimeException( "not pixel perfect!" );
-		// Gdx.graphics.getGL10().glReadPixels( 47, 10, 1, 1, GL10.GL_RGBA,
-		// GL10.GL_UNSIGNED_BYTE, pixelBuffer );
-		// if( pixelBuffer.get(0) != 0xffff0000 )
-		// throw new GdxRuntimeException( "not pixel perfect!" );
-		// Gdx.graphics.getGL10().glReadPixels( 16, 41, 1, 1, GL10.GL_RGBA,
-		// GL10.GL_UNSIGNED_BYTE, pixelBuffer );
-		// if( pixelBuffer.get(0) != 0xff0000ff )
-		// throw new GdxRuntimeException( "not pixel perfect!" );
-		// }
-
 		angle += 20 * Gdx.graphics.getDeltaTime();
 		scale += vScale * Gdx.graphics.getDeltaTime();
 		if (scale > 2) {
@@ -88,15 +67,5 @@ public class SpriteBatchRotationTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 		texture = new Texture(Gdx.files.internal("data/test.png"));
-		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
-		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
-		buffer.order(ByteOrder.nativeOrder());
-		pixelBuffer = buffer.asIntBuffer();
-
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

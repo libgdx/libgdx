@@ -72,14 +72,14 @@ public class TextInputDialogBox extends DialogBox {
 		setWidget(vPanel);
 	}
 
-	private void onPositive () {
+	protected void onPositive () {
 		if (listener != null) {
 			listener.onPositive(textBox.getText());
 		}
 		this.hide();
 	}
 
-	private void onNegative () {
+	protected void onNegative () {
 		if (listener != null) {
 			listener.onNegative();
 		}

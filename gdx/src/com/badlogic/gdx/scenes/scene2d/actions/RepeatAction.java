@@ -24,12 +24,13 @@ public class RepeatAction extends DelegateAction {
 	private int repeatCount, executedCount;
 	private boolean finished;
 
-	public boolean act (float delta) {
+	protected boolean delegate (float delta) {
 		if (executedCount == repeatCount) return true;
 		if (action.act(delta)) {
+			if (finished) return true;
 			if (repeatCount > 0) executedCount++;
 			if (executedCount == repeatCount) return true;
-			action.restart();
+			if (action != null) action.restart();
 		}
 		return false;
 	}
