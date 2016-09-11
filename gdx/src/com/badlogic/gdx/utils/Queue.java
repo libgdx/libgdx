@@ -238,7 +238,9 @@ public class Queue<T> implements Iterable<T> {
 			value = (T)values[index];
 			System.arraycopy(values, head, values, head + 1, index - head);
 			values[head] = null;
-			this.head++;
+			if (++this.head == values.length) {
+				this.head = 0;
+			}
 		}
 		size--;
 		return value;

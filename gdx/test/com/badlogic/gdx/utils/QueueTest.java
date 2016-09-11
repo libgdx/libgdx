@@ -240,6 +240,29 @@ public class QueueTest {
 	}
 
 	@Test
+	public void iteratorRemoveEdgeCaseTest() {//See #4300
+		Queue<Integer> queue = new Queue<Integer>();
+
+		//Simulate normal usage
+		for(int i = 0; i < 100; i++) {
+			queue.addLast(i);
+			if(i > 50)
+				queue.removeFirst();
+		}
+
+		Iterator<Integer> it = queue.iterator();
+		while(it.hasNext()) {
+			it.next();
+			it.remove();
+		}
+
+		queue.addLast(1337);
+
+		Integer i = queue.first();
+		assertEquals(1337, (int)i);
+	}
+
+	@Test
 	public void toStringTest () {
 		Queue<Integer> q = new Queue<Integer>(1);
 		assertTrue(q.toString().equals("[]"));
@@ -252,7 +275,7 @@ public class QueueTest {
 	}
 
 	@Test
-	public void hashEqualsText () {
+	public void hashEqualsTest () {
 		Queue<Integer> q1 = new Queue<Integer>();
 		Queue<Integer> q2 = new Queue<Integer>();
 
