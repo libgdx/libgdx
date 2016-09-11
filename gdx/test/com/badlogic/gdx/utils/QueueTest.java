@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class QueueTest {
@@ -312,7 +313,8 @@ public class QueueTest {
 	}
 
 	private void assertValues (Queue<Integer> q, Integer... values) {
-		for (int i = 0, n = values.length; i < n; i++)
-			if (values[i] != q.get(i)) fail(q + " != " + new Array(values));
+		for (int i = 0, n = values.length; i < n; i++) {
+			Assert.assertEquals(values[i], q.get(i));
+		}
 	}
 }
