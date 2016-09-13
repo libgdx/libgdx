@@ -512,11 +512,25 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		console.log( "GWT: " + message );
 	}-*/;
 	
-	private native void addEventListeners () /*-{
+	private native void addEventListeners() /*-{
 		var self = this;
-		$doc.addEventListener('visibilitychange', function (e) {
-			self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
-		});
+
+		var eventName = null;
+		if ("hidden" in $doc) {
+			eventName = "visibilitychange"
+		} else if ("webkitHidden" in $doc) {
+			eventName = "webkitvisibilitychange"
+		} else if ("mozHidden" in $doc) {
+			eventName = "mozvisibilitychange"
+		} else if ("msHidden" in $doc) {
+			eventName = "msvisibilitychange"
+		}
+
+		if (eventName !== null) {
+			$doc.addEventListener(eventName, function(e) {
+				self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
+			});
+		}
 	}-*/;
 
 	private void onVisibilityChange (boolean visible) {

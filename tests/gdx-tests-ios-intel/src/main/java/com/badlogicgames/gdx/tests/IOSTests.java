@@ -19,7 +19,7 @@ package com.badlogicgames.gdx.tests;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.tests.*;
-import com.intel.moe.natj.general.Pointer;
+import org.moe.natj.general.Pointer;
 
 import ios.uikit.c.UIKit;
 
