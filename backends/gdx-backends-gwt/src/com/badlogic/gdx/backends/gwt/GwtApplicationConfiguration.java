@@ -36,8 +36,6 @@ public class GwtApplicationConfiguration {
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
-	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
-	public boolean preferFlash = true;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
@@ -48,8 +46,6 @@ public class GwtApplicationConfiguration {
 	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
-	/** whether to use the HTML5 Web Audio API over the SoundManager2 implementation **/
-	public boolean preferWebAudioAPI = false;
 	/** whether to automatically mute/unmute all sound on pause/resume. Only supported in the Web Audio API backend. **/
 	public boolean autoMuteOnPause = false;
 

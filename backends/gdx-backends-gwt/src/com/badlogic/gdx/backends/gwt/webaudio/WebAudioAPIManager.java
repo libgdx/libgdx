@@ -36,23 +36,20 @@ import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
 
 public class WebAudioAPIManager implements LifecycleListener {
 	private final JavaScriptObject audioContext;
-	private final GwtApplicationConfiguration config;
 	private final JavaScriptObject globalVolumeNode;
-	private final AssetDownloader assetDownloader;
 	private final AudioControlGraphPool audioControlGraphPool;
 
 	public WebAudioAPIManager (GwtApplicationConfiguration config) {
-		this.config = config;
-		this.assetDownloader = new AssetDownloader();
-		this.audioContext = createAudioContextJSNI();
-		this.globalVolumeNode = createGlobalVolumeNodeJSNI();
-		this.audioControlGraphPool = new AudioControlGraphPool(audioContext, globalVolumeNode);
+		if (isSupported()) {
+			this.audioContext = createAudioContextJSNI();
+			this.globalVolumeNode = createGlobalVolumeNodeJSNI();
+			this.audioControlGraphPool = new AudioControlGraphPool(audioContext, globalVolumeNode);
 
-		if (config.autoMuteOnPause) {
-			Gdx.app.addLifecycleListener(this);
-		}
+			if (config.autoMuteOnPause) {
+				Gdx.app.addLifecycleListener(this);
+			}
 
-		CanvasElement canvasElement = ((GwtApplication)Gdx.app).getCanvasElement();
+			CanvasElement canvasElement = ((GwtApplication) Gdx.app).getCanvasElement();
 
 		/*
 		 * The Web Audio API is blocked on many mobile platforms until the developer triggers the first sound playback using the
@@ -62,7 +59,12 @@ public class WebAudioAPIManager implements LifecycleListener {
 		 * not necessary the effect should not be noticeable (i.e. we play silence). As soon as the attempt to unlock has been
 		 * performed, we remove all the event listeners.
 		 */
-		hookUpSoundUnlockers(canvasElement);
+			hookUpSoundUnlockers(canvasElement);
+		} else {
+			this.audioContext = null;
+			this.globalVolumeNode = null;
+			this.audioControlGraphPool = null;
+		}
 	}
 
 	public native void hookUpSoundUnlockers (JavaScriptObject canvas) /*-{
@@ -178,9 +180,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 		Audio audio = Audio.createIfSupported();
 		audio.setSrc(url);
 
-		WebAudioAPIMusic music = new WebAudioAPIMusic(audioContext, audio, audioControlGraphPool);
-
-		return music;
+		return new WebAudioAPIMusic(audioContext, audio, audioControlGraphPool);
 	}
 
 	public static native void decodeAudioData (JavaScriptObject audioContextIn, ArrayBuffer audioData,
