@@ -174,9 +174,9 @@ public class VerticalGroup extends WidgetGroup {
 			}
 
 			float x = padLeft;
-			if ((align & Align.top) != 0)
+			if ((align & Align.right) != 0)
 				x += columnWidth - width;
-			else if ((align & Align.bottom) == 0) // center
+			else if ((align & Align.left) == 0) // center
 				x += (columnWidth - width) / 2;
 
 			y -= height + space;
