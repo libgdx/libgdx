@@ -38,8 +38,6 @@ public class IOSTests extends IOSApplication.Delegate {
 	}
 
 	public static void main(String[] argv) {
-		//NSAutoreleasePool pool = NSAutoreleasePool.alloc();
 		UIKit.UIApplicationMain(0, null, null, IOSTests.class.getName());
-		//pool.dealloc();
 	}
 }
