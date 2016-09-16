@@ -20,12 +20,12 @@ import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
 import org.moe.natj.objc.ann.Selector;
-import ios.coregraphics.struct.CGRect;
-import ios.foundation.NSSet;
-import ios.glkit.GLKView;
-import ios.opengles.EAGLContext;
-import ios.uikit.UIEvent;
-import ios.uikit.UITouch;
+import apple.coregraphics.struct.CGRect;
+import apple.foundation.NSSet;
+import apple.glkit.GLKView;
+import apple.opengles.EAGLContext;
+import apple.uikit.UIEvent;
+import apple.uikit.UITouch;
 
 public class IOSGLKView extends GLKView {
 

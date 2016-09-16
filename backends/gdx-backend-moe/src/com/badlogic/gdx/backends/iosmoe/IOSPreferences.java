@@ -18,10 +18,10 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import ios.NSObject;
-import ios.foundation.NSMutableDictionary;
-import ios.foundation.NSNumber;
-import ios.foundation.NSString;
+import apple.NSObject;
+import apple.foundation.NSMutableDictionary;
+import apple.foundation.NSNumber;
+import apple.foundation.NSString;
 import org.moe.natj.objc.ObjCRuntime;
 
 import java.io.File;

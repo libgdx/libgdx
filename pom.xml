@@ -49,7 +49,7 @@
     <lwjgl3.platformVersion>3.0.0</lwjgl3.platformVersion>
     <jglfw.version>1.1</jglfw.version>
     <robovm.version>2.2.0</robovm.version>
-    <moe.version>1.1.2</moe.version>
+    <moe.version>1.2.0</moe.version>
   </properties>
 
   <modules>

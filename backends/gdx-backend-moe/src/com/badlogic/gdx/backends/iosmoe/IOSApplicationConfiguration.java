@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import ios.glkit.enums.GLKViewDrawableColorFormat;
-import ios.glkit.enums.GLKViewDrawableDepthFormat;
-import ios.glkit.enums.GLKViewDrawableMultisample;
-import ios.glkit.enums.GLKViewDrawableStencilFormat;
+import apple.glkit.enums.GLKViewDrawableColorFormat;
+import apple.glkit.enums.GLKViewDrawableDepthFormat;
+import apple.glkit.enums.GLKViewDrawableMultisample;
+import apple.glkit.enums.GLKViewDrawableStencilFormat;
 
 public class IOSApplicationConfiguration {
 	/** whether to enable screen dimming. */
