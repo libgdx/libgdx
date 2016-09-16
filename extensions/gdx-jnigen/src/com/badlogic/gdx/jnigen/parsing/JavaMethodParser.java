@@ -122,13 +122,13 @@ public interface JavaMethodParser {
 		public String getArrayJNIType () {
                     if (!this.isPrimitiveArray()) throw new RuntimeException("ArgumentType " + this + " is not an Array!");
                     if (this == BooleanArray) return "jboolean*";
-                    if (this == ByteArray) return "jbyte*";
-                    if (this == CharArray) return "jchar";
-                    if (this == ShortArray) return "jshort*";
+                    if (this == ByteArray)    return "jbyte*";
+                    if (this == CharArray)    return "jchar*";
+                    if (this == ShortArray)   return "jshort*";
                     if (this == IntegerArray) return "jint*";
-                    if (this == LongArray) return "jlong*";
-                    if (this == FloatArray) return "jfloat*";
-                    if (this == DoubleArray) return "jdouble*";
+                    if (this == LongArray)    return "jlong*";
+                    if (this == FloatArray)   return "jfloat*";
+                    if (this == DoubleArray)  return "jdouble*";
                     throw new RuntimeException("Unknown Array type " + this);
             }
 		

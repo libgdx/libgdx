@@ -176,6 +176,7 @@ public class NativeCodeGenerator {
 	private static final String JNI_WRAPPER_PREFIX = "wrapped_";
         
 	boolean usePrimitiveArrayCritical = true;
+        private boolean supportNullString = false;
  
 	FileDescriptor sourceDir;
 	String classpath;
@@ -187,7 +188,7 @@ public class NativeCodeGenerator {
 	CMethodParser cMethodParser = new JniHeaderCMethodParser();
 	CMethodParserResult cResult;
 
-	/**
+    /**
      * @return the usePrimitiveArrayCritical on JNI primitive array handling 
      */
     public boolean isUsePrimitiveArrayCritical() {
@@ -195,10 +196,31 @@ public class NativeCodeGenerator {
     }
 
     /**
+     * Set false to use GetXXXArrayElements instead of default GetXXXPrimitiveArrayCritical
+     * to handle primitive arrays. 
+     * Set true (default) to use JNI's PrimitiveArrayCritical.
+     * Must be set before you call {@link #generate(String, String, String)}
+     * 
      * @param usePrimitiveArrayCritical the usePrimitiveArrayCritical to set
      */
     public void setUsePrimitiveArrayCritical(boolean usePrimitiveArrayCritical) {
         this.usePrimitiveArrayCritical = usePrimitiveArrayCritical;
+    }
+
+    /**
+     * @return the supportNullString
+     */
+    public boolean isSupportNullString() {
+        return supportNullString;
+    }
+
+    /**
+     * Set true to allow native methods support null String parameter.
+     * Default is false.
+     * @param supportNullString - set true to support null String
+     */
+    public void setSupportNullString(boolean supportNullString) {
+        this.supportNullString = supportNullString;
     }
 
 	/** Generates .h/.cpp files from the Java files found in "src/", with their .class files being in "bin/". The generated files
@@ -554,8 +576,11 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isString()) {
 				String type = "char*";
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
-				             + " ? env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");
+                                if(this.isSupportNullString()){
+                                   buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName() + " ? env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");                                   
+                                }else{
+				   buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
+                                }
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
