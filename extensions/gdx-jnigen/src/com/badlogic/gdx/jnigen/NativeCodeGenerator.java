@@ -174,6 +174,9 @@ public class NativeCodeGenerator {
 	private static final String JNI_ARG_PREFIX = "obj_";
 	private static final String JNI_RETURN_VALUE = "JNI_returnValue";
 	private static final String JNI_WRAPPER_PREFIX = "wrapped_";
+        
+	boolean usePrimitiveArrayCritical = true;
+ 
 	FileDescriptor sourceDir;
 	String classpath;
 	FileDescriptor jniDir;
@@ -183,6 +186,20 @@ public class NativeCodeGenerator {
 	JavaMethodParser javaMethodParser = new RobustJavaMethodParser();
 	CMethodParser cMethodParser = new JniHeaderCMethodParser();
 	CMethodParserResult cResult;
+
+	/**
+     * @return the usePrimitiveArrayCritical on JNI primitive array handling 
+     */
+    public boolean isUsePrimitiveArrayCritical() {
+        return usePrimitiveArrayCritical;
+    }
+
+    /**
+     * @param usePrimitiveArrayCritical the usePrimitiveArrayCritical to set
+     */
+    public void setUsePrimitiveArrayCritical(boolean usePrimitiveArrayCritical) {
+        this.usePrimitiveArrayCritical = usePrimitiveArrayCritical;
+    }
 
 	/** Generates .h/.cpp files from the Java files found in "src/", with their .class files being in "bin/". The generated files
 	 * will be stored in "jni/". All paths are relative to the applications working directory.
@@ -522,8 +539,8 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isBuffer()) {
 				String type = arg.getType().getBufferCType();
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
-					+ "?env->GetDirectBufferAddress(" + JNI_ARG_PREFIX + arg.getName() + "):0);\n");
+				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX
+					+ arg.getName() + "?env->GetDirectBufferAddress(" + JNI_ARG_PREFIX	+ arg.getName() + ") : NULL);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
@@ -537,8 +554,8 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isString()) {
 				String type = "char*";
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetStringUTFChars(" + JNI_ARG_PREFIX
-					+ arg.getName() + ", 0);\n");
+				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
+				             + " ? env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
@@ -552,9 +569,22 @@ public class NativeCodeGenerator {
 		// will explode into our face if we call another JNI method after that.
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isPrimitiveArray()) {
+			    if(usePrimitiveArrayCritical){
 				String type = arg.getType().getArrayCType();
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetPrimitiveArrayCritical(" + JNI_ARG_PREFIX
-					+ arg.getName() + ", 0);\n");
+				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
+				            + " ? env->GetPrimitiveArrayCritical(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");
+				additionalArgs.append(", ");
+				additionalArgs.append(type);
+				additionalArgs.append(" ");
+				additionalArgs.append(arg.getName());
+				wrapperArgs.append(", ");
+				wrapperArgs.append(arg.getName());
+			    }else{
+			        // no Critical
+				String type = arg.getType().getArrayCType();
+			        String getPrimitiveTypeArrayElements = arg.getType().getPrimitiveTypeArrayElements(); 
+                                buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName()
+                                             +" ? env->" + getPrimitiveTypeArrayElements +"(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
@@ -562,6 +592,7 @@ public class NativeCodeGenerator {
 				wrapperArgs.append(", ");
 				wrapperArgs.append(arg.getName());
 			}
+		}
 		}
 
 		// new line for separation
@@ -572,15 +603,28 @@ public class NativeCodeGenerator {
 		// emit cleanup code for arrays, must come first
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isPrimitiveArray()) {
-				buffer.append("\tenv->ReleasePrimitiveArrayCritical(" + JNI_ARG_PREFIX + arg.getName() + ", " + arg.getName()
-					+ ", 0);\n");
+			    if(usePrimitiveArrayCritical){
+				buffer.append("\tif("+ JNI_ARG_PREFIX + arg.getName() +" != NULL){\n"
+				            + "\t\t env->ReleasePrimitiveArrayCritical(" + JNI_ARG_PREFIX + arg.getName() + ", " + arg.getName()+ ", 0);\n"
+				            + "\t}\n");
+			    }else{
+			        String releasePrimitiveType = arg.getType().getReleasePrimitiveTypeArrayElements();
+			        String arrayJNItype = arg.getType().getArrayJNIType();
+	                        buffer.append("\tif("+ JNI_ARG_PREFIX + arg.getName() +" != NULL){\n"
+	                                            + "\t\t env->"+releasePrimitiveType+"(" + JNI_ARG_PREFIX + arg.getName()
+	                                                                                + ", ("+arrayJNItype +")" + arg.getName()+ ", 0);\n"
+	                                            + "\t}\n");  
+			        
+			    }
 			}
 		}
 
 		// emit cleanup code for strings
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isString()) {
-				buffer.append("\tenv->ReleaseStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", " + arg.getName() + ");\n");
+				buffer.append("\t if("+ JNI_ARG_PREFIX + arg.getName() +" != NULL){\n"
+				            + "\t\t env->ReleaseStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", " + arg.getName() + ");\n"
+				            + "\t }\n");
 			}
 		}
 
