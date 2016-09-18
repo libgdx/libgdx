@@ -72,10 +72,13 @@ public class MyJniClass2 {
 public static void main(String[] args) throws Exception {
 		// generate C/C++ code
 		NativeCodeGenerator jnigen = new NativeCodeGenerator();
-                jnigen.setUsePrimitiveArrayCritical(false);
-                jnigen.setSupportNullString(true);
-                jnigen.generate("src", "bin", "jni", new String[] { "**/MyJniClass2.java" }, null);
-		
+                // Set enableNewfeatures as true to apply fixes to LibGdx #4307
+                boolean enableNewFeatures = false;
+                if(enableNewFeatures){
+                    jnigen.setUsePrimitiveArrayCritical(false);
+                    jnigen.setSupportNullString(true);
+                }
+                jnigen.generate("src", "bin", "jni", new String[] { "**/MyJniClass2.java" }, null);		
                 
 		// generate build scripts, for win32 only
 		BuildConfig buildConfig = new BuildConfig("test2");
