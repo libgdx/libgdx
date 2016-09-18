@@ -576,11 +576,11 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isString()) {
 				String type = "char*";
-                                if(this.isSupportNullString()){
-                                   buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName() + " ? env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");                                   
-                                }else{
+                if(this.isSupportNullString()){
+                   buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX + arg.getName() + " ? env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0) : NULL);\n");                                   
+                }else{
 				   buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
-                                }
+                }
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
