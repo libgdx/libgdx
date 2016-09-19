@@ -76,10 +76,10 @@ public abstract class ParticleSorter {
 						* data.positionChannel.data[k + ParticleChannels.ZOffset];
 					particleIndices[i] = i;
 				}
+				// Sort the particles of each controller separately so they can be rendered with individual meshes
+				qsort(count, count + data.controller.particles.size - 1);
 				count += data.controller.particles.size;
 			}
-
-			qsort(0, count - 1);
 
 			for (i = 0; i < count; ++i) {
 				particleOffsets[particleIndices[i]] = i;
