@@ -4,7 +4,7 @@ repositories {
 }
 
 android {
-	buildToolsVersion "20.0.0"
+	buildToolsVersion "23.0.3"
 	compileSdkVersion 20
 	sourceSets {
 		main {

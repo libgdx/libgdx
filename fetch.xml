@@ -40,12 +40,12 @@
         <mkdir dir="extensions/gdx-freetype/libs/arm64-v8a"/>
         <mkdir dir="extensions/gdx-freetype/libs/x86"/>
         <mkdir dir="extensions/gdx-freetype/libs/x86_64"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/armeabi"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/armeabi-v7a"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
-        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/ios32"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/armeabi"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/armeabi-v7a"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/arm64-v8a"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/x86"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d-common/libs/x86_64"/>
         <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
 		<!-- core -->		
@@ -71,19 +71,19 @@
         <antcall target="fetch-robovm"/>
 		
 		<!-- box2d natives -->		
-		<get src="${domain}/extensions/gdx-box2d/gdx-box2d-natives.jar" dest="extensions/gdx-box2d/gdx-box2d/libs"/>
+		<get src="${domain}/extensions/gdx-box2d/gdx-box2d-natives.jar" dest="extensions/gdx-box2d/gdx-box2d-common/libs"/>
 		<get src="${domain}/extensions/gdx-box2d/armeabi/libgdx-box2d.so" dest="tmp/armeabi"/>
-        <get src="${domain}/extensions/gdx-box2d/armeabi/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/armeabi"/>
+        <get src="${domain}/extensions/gdx-box2d/armeabi/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d-common/libs/armeabi"/>
 		<get src="${domain}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so" dest="tmp/armeabi-v7a"/>
-		<get src="${domain}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/armeabi-v7a"/>
+		<get src="${domain}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d-common/libs/armeabi-v7a"/>
 		<get src="${domain}/extensions/gdx-box2d/arm64-v8a/libgdx-box2d.so" dest="tmp/arm64-v8a"/>
-		<get src="${domain}/extensions/gdx-box2d/arm64-v8a/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
+		<get src="${domain}/extensions/gdx-box2d/arm64-v8a/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d-common/libs/arm64-v8a"/>
         <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="tmp/x86"/>
-        <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
+        <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d-common/libs/x86"/>
         <get src="${domain}/extensions/gdx-box2d/x86_64/libgdx-box2d.so" dest="tmp/x86_64"/>
-        <get src="${domain}/extensions/gdx-box2d/x86_64/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
-        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a" dest="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
-        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a.tvos" dest="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-box2d/x86_64/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d-common/libs/x86_64"/>
+        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a" dest="extensions/gdx-box2d/gdx-box2d-common/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a.tvos" dest="extensions/gdx-box2d/gdx-box2d-common/libs/ios32"/>
 		
 		<!-- bullet natives -->		
 		<get src="${domain}/extensions/gdx-bullet/gdx-bullet-natives.jar" dest="extensions/gdx-bullet/libs"/>

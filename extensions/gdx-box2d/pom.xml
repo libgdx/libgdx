@@ -13,8 +13,8 @@
   <name>libGDX Box2D Parent</name>
 
   <modules>
-    <module>gdx-box2d</module>
-    <module>gdx-box2d/jni/maven</module>
+    <module>gdx-box2d-common</module>
+    <module>gdx-box2d-common/jni/maven</module>
     <module>gdx-box2d-gwt</module>
   </modules>
 </project>

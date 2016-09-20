@@ -13,7 +13,7 @@
   <name>libGDX Controllers Parent</name>
 
   <modules>
-    <module>gdx-controllers</module>
+    <module>gdx-controllers-common</module>
     <module>gdx-controllers-desktop</module>
     <module>gdx-controllers-desktop/jni/maven</module>
     <module>gdx-controllers-lwjgl3</module>
