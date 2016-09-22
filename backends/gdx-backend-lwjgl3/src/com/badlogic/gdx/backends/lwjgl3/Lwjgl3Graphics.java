@@ -340,7 +340,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
 			int windowPosX = (currentMode.width - width) / 2;
 			int windowPosY = (currentMode.height - height) / 2;
-			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
+			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), currentMode.getMonitor(),
 					windowPosX, windowPosY, width, height, currentMode.refreshRate);
 		}
 		updateFramebufferInfo();
