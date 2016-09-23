@@ -70,9 +70,9 @@ public class VehicleTest extends BaseBulletTest {
 			FloatAttribute.createShininess(128));
 		Texture checkboard = new Texture(Gdx.files.internal("data/g3d/checkboard.png"));
 		final Model largeGroundModel = modelBuilder.createBox(
-			1000f,
+			200f,
 			2f,
-			1000f,
+			200f,
 			new Material(TextureAttribute.createDiffuse(checkboard), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
 				.createShininess(16f)), Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		largeGroundModel.manageDisposable(checkboard);
@@ -86,7 +86,8 @@ public class VehicleTest extends BaseBulletTest {
 		world.addConstructor("chassis", new BulletConstructor(chassisModel, 5f, new btBoxShape(chassisHalfExtents)));
 		world.addConstructor("wheel", new BulletConstructor(wheelModel, 0, null));
 
-		world.add("largeground", 0, -1f, 0f);
+		for (int i = 0; i < 1000; i += 200)
+			world.add("largeground", 0f, -1f, i);
 
 		chassis = world.add("chassis", 0, 3f, 0);
 		wheels[0] = world.add("wheel", 0, 0, 0);
