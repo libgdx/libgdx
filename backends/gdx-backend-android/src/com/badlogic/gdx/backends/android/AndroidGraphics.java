@@ -25,6 +25,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
+import java.util.concurrent.Semaphore;
+
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -338,6 +340,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	Object synch = new Object();
+    Semaphore synchSem = new Semaphore(0);
 
 	void resume () {
 		synchronized (synch) {
@@ -353,13 +356,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			pause = true;
 			while (pause) {
 				try {
-					// TODO: fix deadlock race condition with quick resume/pause.
-					// Temporary workaround:
-					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
-					// deadlock and killing process. This can easily be triggered by opening the
-					// Recent Apps list and then double-tapping the Recent Apps button with
-					// ~500ms between taps.
-					synch.wait(4000);
+                    synchSem.acquire();
 					if (pause) {
 						// pause will never go false if onDrawFrame is never called by the GLThread
 						// when entering this method, we MUST enforce continuous rendering
@@ -380,7 +377,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 			while (destroy) {
 				try {
-					synch.wait();
+                    synchSem.acquire();
 				} catch (InterruptedException ex) {
 					Gdx.app.log(LOG_TAG, "waiting for destroy synchronization failed!");
 				}
@@ -418,12 +415,12 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 			if (pause) {
 				pause = false;
-				synch.notifyAll();
+                synchSem.release();
 			}
 
 			if (destroy) {
 				destroy = false;
-				synch.notifyAll();
+                synchSem.release();
 			}
 		}
 
