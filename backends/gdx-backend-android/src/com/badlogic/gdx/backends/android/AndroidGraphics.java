@@ -340,7 +340,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	Object synch = new Object();
-    Semaphore synchSem = new Semaphore(0);
+	Semaphore synchSem = new Semaphore(0);
 
 	void resume () {
 		synchronized (synch) {
@@ -377,7 +377,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 			while (destroy) {
 				try {
-                    synchSem.acquire();
+					synchSem.acquire();
 				} catch (InterruptedException ex) {
 					Gdx.app.log(LOG_TAG, "waiting for destroy synchronization failed!");
 				}
@@ -415,12 +415,12 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 			if (pause) {
 				pause = false;
-                synchSem.release();
+				synchSem.release();
 			}
 
 			if (destroy) {
 				destroy = false;
-                synchSem.release();
+				synchSem.release();
 			}
 		}
 

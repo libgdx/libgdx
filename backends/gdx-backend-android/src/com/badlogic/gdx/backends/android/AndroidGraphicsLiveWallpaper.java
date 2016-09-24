@@ -135,7 +135,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
 			while (resume) {
 				try {
-                    synchSem.acquire();
+					synchSem.acquire();
 				} catch (InterruptedException ignored) {
 					Gdx.app.log("AndroidGraphics", "waiting for resume synchronization failed!");
 				}
@@ -169,17 +169,17 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
 			if (resume) {
 				resume = false;
-                synchSem.release();
+				synchSem.release();
 			}
 
 			if (pause) {
 				pause = false;
-                synchSem.release();
+				synchSem.release();
 			}
 
 			if (destroy) {
 				destroy = false;
-                synchSem.release();
+				synchSem.release();
 			}
 		}
 
