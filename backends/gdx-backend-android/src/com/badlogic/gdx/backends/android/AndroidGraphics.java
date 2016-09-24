@@ -356,7 +356,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			pause = true;
 			while (pause) {
 				try {
-                    synchSem.acquire();
+					synchSem.acquire();
 					if (pause) {
 						// pause will never go false if onDrawFrame is never called by the GLThread
 						// when entering this method, we MUST enforce continuous rendering
