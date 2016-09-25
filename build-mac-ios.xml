@@ -34,15 +34,15 @@
 	</target>
     
     <target name="box2d" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-box2d/gdx-box2d-common/jni">
+		<ant antfile="build-macosx32.xml" dir="extensions/gdx-box2d-multi/gdx-box2d/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
-        <ant antfile="build-macosx64.xml" dir="extensions/gdx-box2d/gdx-box2d-common/jni">
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-box2d-multi/gdx-box2d/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
-		<ant antfile="build-ios32.xml" dir="extensions/gdx-box2d/gdx-box2d-common/jni"/>
+		<ant antfile="build-ios32.xml" dir="extensions/gdx-box2d-multi/gdx-box2d/jni"/>
 	</target>
 	
 	<target name="bullet" depends="core">
@@ -58,11 +58,11 @@
 	</target>
 	
 	<target name="controllers" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
+		<ant antfile="build-macosx32.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-desktop/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
-        <ant antfile="build-macosx64.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-desktop/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>

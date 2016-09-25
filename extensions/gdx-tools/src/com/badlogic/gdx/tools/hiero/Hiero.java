@@ -354,6 +354,12 @@ public class Hiero extends JFrame {
 		settings.setGlyphPageWidth(((Number)glyphPageWidthCombo.getSelectedItem()).intValue());
 		settings.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		settings.setGlyphText(sampleTextPane.getText());
+		if (nativeRadio.isSelected())
+			settings.setRenderType(RenderType.Native.ordinal());
+		else if (freeTypeRadio.isSelected())
+			settings.setRenderType(RenderType.FreeType.ordinal());
+		else
+			settings.setRenderType(RenderType.Java.ordinal());
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
 			EffectPanel panel = (EffectPanel)iter.next();
 			settings.getEffects().add(panel.getEffect());
@@ -381,6 +387,12 @@ public class Hiero extends JFrame {
 		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
 		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
 		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		if (settings.getRenderType() == RenderType.Native.ordinal())
+			nativeRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.FreeType.ordinal())
+			freeTypeRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.Java.ordinal()) 
+			javaRadio.setSelected(true);
 		String gt = settings.getGlyphText();
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
