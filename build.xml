@@ -174,7 +174,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d-multi/gdx-box2d">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d"/>
@@ -190,7 +190,7 @@
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-gwt">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d-multi/gdx-box2d-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d-gwt"/>
@@ -203,7 +203,7 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers-multi/gdx-controllers">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers"/>
@@ -217,7 +217,7 @@
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-desktop">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-desktop"/>
@@ -231,7 +231,7 @@
 			<pathelement location="${distDir}/gdx-backend-lwjgl3.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-lwjgl3">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
 			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-controllers-lwjgl3"/>
@@ -246,7 +246,7 @@
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-android"/>
@@ -262,7 +262,7 @@
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
 			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
 		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers-multi/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
 			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-gwt"/>
@@ -346,7 +346,7 @@
 			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java"/>
             <fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplicationConfiguration.java"/>
-			<fileset dir="extensions" includes="gdx-box2d/gdx-box2d/src/com/badlogic/gdx/physics/box2d/**"/>
+			<fileset dir="extensions" includes="gdx-box2d-multi/gdx-box2d/src/com/badlogic/gdx/physics/box2d/**"/>
 		</javadoc>
 	</target>
 
