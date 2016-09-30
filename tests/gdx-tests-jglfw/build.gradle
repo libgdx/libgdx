@@ -14,28 +14,20 @@
  * limitations under the License.
  ******************************************************************************/
 
-buildscript {
-    dependencies {
-        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:${versions.robovm}"
-    }
+ext {
+    mainTestClass = "com.badlogic.gdx.jglfw.tests.JglfwTestStarter"
 }
-
-apply plugin: "robovm"
-
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
 
 dependencies {
     compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-robovm")
-    compile testnatives.ios
+    compile project(":backends:gdx-backend-jglfw")
+    compile testnatives.desktop
 }
 
-ext {
-    mainClassName = "com.badlogic.gdx.tests.IOSRobovmTests"
+task launchTests (dependsOn: classes, type: JavaExec) {
+    main = mainTestClass
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = new File("../gdx-tests-android/assets")
+    ignoreExitValue = true
 }
-
-launchIPhoneSimulator.dependsOn build
-launchIPadSimulator.dependsOn build
-launchIOSDevice.dependsOn build
-createIPA.dependsOn build

@@ -14,28 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-buildscript {
-    dependencies {
-        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:${versions.robovm}"
-    }
-}
-
-apply plugin: "robovm"
-
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
-
 dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-robovm")
-    compile testnatives.ios
+    compile libraries.jnigen
 }
-
-ext {
-    mainClassName = "com.badlogic.gdx.tests.IOSRobovmTests"
-}
-
-launchIPhoneSimulator.dependsOn build
-launchIPadSimulator.dependsOn build
-launchIOSDevice.dependsOn build
-createIPA.dependsOn build

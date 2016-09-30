@@ -37,6 +37,7 @@ ipch/
 /dist
 
 *.a
+*.a.tvos
 *.dll
 *.dll.mdb
 *.userprefs
@@ -71,7 +72,4 @@ libgdx-*.zip.MD5
 /tmp/
 
 #gradle wrapper
-/gradle/
-/gradlew
-/gradlew.bat
 /local.properties
