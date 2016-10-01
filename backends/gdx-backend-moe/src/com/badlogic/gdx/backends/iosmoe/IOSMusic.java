@@ -19,8 +19,8 @@ package com.badlogic.gdx.backends.iosmoe;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.iosmoe.objectal.OALAudioTrack;
-import ios.avfoundation.AVAudioPlayer;
-import ios.avfoundation.protocol.AVAudioPlayerDelegate;
+import apple.avfoundation.AVAudioPlayer;
+import apple.avfoundation.protocol.AVAudioPlayerDelegate;
 
 public class IOSMusic implements Music {
 

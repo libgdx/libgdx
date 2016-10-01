@@ -21,7 +21,7 @@ import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.tests.*;
 import org.moe.natj.general.Pointer;
 
-import ios.uikit.c.UIKit;
+import apple.uikit.c.UIKit;
 
 public class IOSTests extends IOSApplication.Delegate {
 
