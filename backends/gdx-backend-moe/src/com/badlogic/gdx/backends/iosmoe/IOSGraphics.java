@@ -33,20 +33,20 @@ import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
 import org.moe.natj.objc.ann.Selector;
-import ios.NSObject;
-import ios.coregraphics.struct.CGPoint;
-import ios.coregraphics.struct.CGRect;
-import ios.coregraphics.struct.CGSize;
-import ios.glkit.GLKView;
-import ios.glkit.GLKViewController;
-import ios.glkit.enums.GLKViewDrawableColorFormat;
-import ios.glkit.enums.GLKViewDrawableDepthFormat;
-import ios.glkit.enums.GLKViewDrawableMultisample;
-import ios.glkit.enums.GLKViewDrawableStencilFormat;
-import ios.glkit.protocol.GLKViewControllerDelegate;
-import ios.glkit.protocol.GLKViewDelegate;
-import ios.opengles.EAGLContext;
-import ios.opengles.enums.EAGLRenderingAPI;
+import apple.NSObject;
+import apple.coregraphics.struct.CGPoint;
+import apple.coregraphics.struct.CGRect;
+import apple.coregraphics.struct.CGSize;
+import apple.glkit.GLKView;
+import apple.glkit.GLKViewController;
+import apple.glkit.enums.GLKViewDrawableColorFormat;
+import apple.glkit.enums.GLKViewDrawableDepthFormat;
+import apple.glkit.enums.GLKViewDrawableMultisample;
+import apple.glkit.enums.GLKViewDrawableStencilFormat;
+import apple.glkit.protocol.GLKViewControllerDelegate;
+import apple.glkit.protocol.GLKViewDelegate;
+import apple.opengles.EAGLContext;
+import apple.opengles.enums.EAGLRenderingAPI;
 
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 

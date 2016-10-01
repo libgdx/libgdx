@@ -19,9 +19,9 @@ package com.badlogic.gdx.backends.iosmoe;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.objc.ann.Selector;
-import ios.coregraphics.struct.CGRect;
-import ios.glkit.GLKViewController;
-import ios.uikit.enums.UIInterfaceOrientation;
+import apple.coregraphics.struct.CGRect;
+import apple.glkit.GLKViewController;
+import apple.uikit.enums.UIInterfaceOrientation;
 
 
 class IOSUIViewController extends GLKViewController {
