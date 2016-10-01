@@ -48,5 +48,8 @@ android {
 			jniLibs.srcDirs = ['libs']
 		}		
 	}
+	lintOptions {
+		disable "ResourceType"
+	}
 }
 
