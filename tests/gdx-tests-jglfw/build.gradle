@@ -24,10 +24,14 @@ dependencies {
     compile testnatives.desktop
 }
 
-task launchTests (dependsOn: classes, type: JavaExec) {
+task launchTestsJglfw (dependsOn: classes, type: JavaExec) {
     main = mainTestClass
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = new File("../gdx-tests-android/assets")
     ignoreExitValue = true
+}
+configure (launchTestsJglfw) {
+    group "LibGDX"
+    description = "Run the Jglfw tests"
 }
