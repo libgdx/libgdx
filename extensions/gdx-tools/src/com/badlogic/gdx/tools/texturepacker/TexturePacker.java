@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Arrays;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -605,8 +606,8 @@ public class TexturePacker {
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
 			grid = settings.grid;
-			scale = settings.scale;
-			scaleSuffix = settings.scaleSuffix;
+			scale = Arrays.copyOf(settings.scale, settings.scale.length);
+			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
 			atlasExtension = settings.atlasExtension;
 		}
 
