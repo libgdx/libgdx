@@ -53,9 +53,10 @@ moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
 
-eclipse { 
-    // Set MOE nature 
-    project { 
-        natures 'org.multi-os-engine.project' 
-    } 
+// Setup Eclipse
+eclipse {
+    // Set MOE nature
+    project {
+        natures 'org.multi-os-engine.project'
+    }
 }
