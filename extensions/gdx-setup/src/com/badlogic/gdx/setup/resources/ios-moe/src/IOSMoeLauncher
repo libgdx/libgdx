@@ -5,7 +5,6 @@ import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import org.moe.natj.general.Pointer;
 import %PACKAGE%.%MAIN_CLASS%;
 
-import apple.foundation.NSAutoreleasePool;
 import apple.uikit.c.UIKit;
 
 public class IOSMoeLauncher extends IOSApplication.Delegate {
