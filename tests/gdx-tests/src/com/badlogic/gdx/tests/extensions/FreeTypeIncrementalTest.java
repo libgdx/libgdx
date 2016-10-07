@@ -16,12 +16,8 @@
 
 package com.badlogic.gdx.tests.extensions;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandleStream;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,7 +46,8 @@ public class FreeTypeIncrementalTest extends GdxTest {
 
 		FreeTypeFontGenerator.setMaxTextureSize(128);
 
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf"));
+//		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf"));
+		generator = new FreeTypeFontGenerator(new FileHandle("/system/fonts/DroidSansFallback.ttf"));
 
 		FreeTypeFontParameter param = new FreeTypeFontParameter();
 		param.incremental = true;

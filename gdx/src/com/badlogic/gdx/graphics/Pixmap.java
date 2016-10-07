@@ -143,6 +143,15 @@ public class Pixmap implements Disposable {
 	public Pixmap (FileHandle file) {
 		try {
 			byte[] bytes = file.readBytes();
+//			//the following line for encrypt picture
+//			for (int i = 0; i < 128; i++) {
+//				if (i % 2 == 1) {
+//					byte temp = bytes[i - 1];
+//					bytes[i - 1] = bytes[i];
+//					bytes[i] = temp;
+//				}
+//			}
+//         //
 			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
