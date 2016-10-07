@@ -171,6 +171,16 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
+	/** Returns if this array contains all values.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return true if array contains all values, false if it doesn't */
+	public boolean containsAll (Array<T> values, boolean identity) {
+		for (T value : values) {
+			if (!contains(value, identity)) return false;
+		}
+		return true;
+	}
+
 	/** Returns the index of first occurrence of value in the array, or -1 if no such value exists.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
