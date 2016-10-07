@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.9.3-SNAPSHOT</version>
+  <version>1.9.5-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
   <description>Android/Desktop/iOS/HTML5 game development framework.</description>
@@ -45,9 +45,11 @@
     <android.version>4.4</android.version>
     <gwt.version>2.6.1</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
-    <lwjgl3.version>3.0.0b</lwjgl3.version>
+    <lwjgl3.version>3.0.0</lwjgl3.version>
+    <lwjgl3.platformVersion>3.0.0</lwjgl3.platformVersion>
     <jglfw.version>1.1</jglfw.version>
-    <robovm.version>1.9.0</robovm.version>
+    <robovm.version>2.2.0</robovm.version>
+    <moe.version>1.2.0</moe.version>
   </properties>
 
   <modules>
@@ -61,6 +63,7 @@
     <module>backends/gdx-backend-jglfw</module>
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
+    <module>backends/gdx-backend-moe</module>
     <module>extensions/gdx-tools</module>
     <module>extensions/gdx-box2d</module>
     <module>extensions/gdx-bullet</module>

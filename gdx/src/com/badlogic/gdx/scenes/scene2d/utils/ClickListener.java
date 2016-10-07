@@ -175,6 +175,10 @@ public class ClickListener extends InputListener {
 		return tapCount;
 	}
 
+	public void setTapCount (int tapCount) {
+		this.tapCount = tapCount;
+	}
+
 	public float getTouchDownX () {
 		return touchDownX;
 	}

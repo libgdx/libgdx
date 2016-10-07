@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -68,6 +69,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
@@ -75,6 +77,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
 	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
@@ -120,6 +123,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	}
 
 	private void init (ApplicationListener listener, AndroidApplicationConfiguration config, boolean isForView) {
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
@@ -129,6 +133,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.clipboard = new AndroidClipboard(this);
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -298,13 +303,8 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
 		return clipboard;
 	}
 
@@ -336,36 +336,32 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -376,6 +372,16 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

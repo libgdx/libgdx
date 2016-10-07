@@ -196,7 +196,7 @@ public class BMFontUtil {
 	}
 
 	void writeGlyph (PrintStream out, int pageWidth, int pageHeight, int pageIndex, Glyph glyph) {
-		out.println("char id=" + String.format("%-6s", glyph.getCodePoint()) //
+		out.println("char id=" + String.format("%-7s ", glyph.getCodePoint()) //
 			+ "x=" + String.format("%-5s", (int)(glyph.getU() * pageWidth)) //
 			+ "y=" + String.format("%-5s", (int)(glyph.getV() * pageHeight)) //
 			+ "width=" + String.format("%-5s", glyph.getWidth()) //

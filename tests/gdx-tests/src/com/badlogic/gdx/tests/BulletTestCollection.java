@@ -40,7 +40,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(),
 		new FrustumCullingTest(), new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(),
 		new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new CharacterTest(), new ImportTest(),
-		new TriangleRaycastTest()};
+		new TriangleRaycastTest(), new OcclusionCullingTest(), new PairCacheTest()};
 
 	protected int testIndex = 0;
 
@@ -205,5 +205,9 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	@Override
 	public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
 		return tests[testIndex].pinch(initialFirstPointer, initialSecondPointer, firstPointer, secondPointer);
+	}
+
+	@Override
+	public void pinchStop () {
 	}
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="intel_logo.png" highlightedImage="Intel_logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="cXf-3N-st0">
+                    <rect key="frame" x="86" y="83" width="309" height="314"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="157" id="Umo-0r-g0n"/>
+                        <constraint firstAttribute="width" constant="155" id="fae-v6-lTY"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.23529411764705882" blue="0.44313725490196076" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="centerY" secondItem="cXf-3N-st0" secondAttribute="centerY" id="GjL-As-Mev"/>
+                <constraint firstAttribute="centerX" secondItem="cXf-3N-st0" secondAttribute="centerX" id="Xrk-r2-SGt"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="548" y="455"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Intel_logo.png" width="16" height="16"/>
+        <image name="intel_logo.png" width="310" height="314"/>
+    </resources>
+</document>

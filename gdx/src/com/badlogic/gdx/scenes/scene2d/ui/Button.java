@@ -156,7 +156,8 @@ public class Button extends Table implements Disableable {
 		this.isDisabled = isDisabled;
 	}
 
-	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}, event will be fired only when user clicked the button */
+	/** If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire {@link ChangeEvent}, event will be fired only
+	 * when user clicked the button */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
@@ -195,8 +196,10 @@ public class Button extends Table implements Disableable {
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
-		boolean isPressed = isPressed();
 		boolean isDisabled = isDisabled();
+		boolean isPressed = isPressed();
+		boolean isChecked = isChecked();
+		boolean isOver = isOver();
 
 		Drawable background = null;
 		if (isDisabled && style.disabled != null)
@@ -204,8 +207,8 @@ public class Button extends Table implements Disableable {
 		else if (isPressed && style.down != null)
 			background = style.down;
 		else if (isChecked && style.checked != null)
-			background = (style.checkedOver != null && isOver()) ? style.checkedOver : style.checked;
-		else if (isOver() && style.over != null)
+			background = (style.checkedOver != null && isOver) ? style.checkedOver : style.checked;
+		else if (isOver && style.over != null)
 			background = style.over;
 		else if (style.up != null) //
 			background = style.up;
@@ -289,7 +292,7 @@ public class Button extends Table implements Disableable {
 			this.unpressedOffsetY = style.unpressedOffsetY;
 			this.checkedOffsetX = style.checkedOffsetX;
 			this.checkedOffsetY = style.checkedOffsetY;
-			
+
 		}
 	}
 }

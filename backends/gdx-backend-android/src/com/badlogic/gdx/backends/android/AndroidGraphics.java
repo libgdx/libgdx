@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowManager.LayoutParams;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -59,7 +60,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /** An implementation of {@link Graphics} for Android.
- * 
+ *
  * @author mzechner */
 public class AndroidGraphics implements Graphics, Renderer {
 
@@ -222,7 +223,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public int getWidth () {
 		return width;
 	}
-	
+
 	@Override
 	public int getBackBufferWidth () {
 		return width;
@@ -236,7 +237,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
 	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
 	 * Motorola CLIQ and the Samsung Behold II.
-	 * 
+	 *
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
 		String versionString = gl.glGetString(GL10.GL_VERSION);
@@ -581,7 +582,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public boolean setFullscreenMode (DisplayMode displayMode) {
 		return false;
 	}
-	
+
 	@Override
 	public Monitor getPrimaryMonitor () {
 		return new AndroidMonitor(0, 0, "Primary Monitor");
@@ -619,6 +620,17 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setTitle (String title) {
+
+	}
+
+	@Override
+	public void setUndecorated (boolean undecorated) {
+		final int mask = (undecorated) ? 1 : 0;
+		app.getApplicationWindow().setFlags(LayoutParams.FLAG_FULLSCREEN, mask);
+	}
+
+	@Override
+	public void setResizable (boolean resizable) {
 
 	}
 
@@ -683,7 +695,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	public GL30 getGL30 () {
 		return gl30;
 	}
-	
+
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return null;
@@ -692,17 +704,17 @@ public class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void setCursor (Cursor cursor) {
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	private class AndroidDisplayMode extends DisplayMode {
 		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
 	}
-	
+
 	private class AndroidMonitor extends Monitor {
 		public AndroidMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);

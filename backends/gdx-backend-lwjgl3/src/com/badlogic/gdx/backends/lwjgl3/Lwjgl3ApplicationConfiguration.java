@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import java.io.PrintStream;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -57,6 +58,7 @@ public class Lwjgl3ApplicationConfiguration {
 	int windowY = -1;
 	int windowWidth = 640;
 	int windowHeight = 480;
+	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
 	Lwjgl3WindowListener windowListener;
@@ -65,11 +67,15 @@ public class Lwjgl3ApplicationConfiguration {
 	boolean vSyncEnabled = true;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
+	boolean initialVisible = true;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
 
 	HdpiMode hdpiMode = HdpiMode.Logical;
+
+	boolean debug = false;
+	PrintStream debugStream = System.err;
 	
 	static Lwjgl3ApplicationConfiguration copy(Lwjgl3ApplicationConfiguration config) {
 		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
@@ -91,6 +97,10 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.windowY = config.windowY;
 		copy.windowWidth = config.windowWidth;
 		copy.windowHeight = config.windowHeight;
+		copy.windowMinWidth = config.windowMinWidth;
+		copy.windowMinHeight = config.windowMinHeight;
+		copy.windowMaxWidth = config.windowMaxWidth;
+		copy.windowMaxHeight = config.windowMaxHeight;
 		copy.windowResizable = config.windowResizable;
 		copy.windowDecorated = config.windowDecorated;
 		copy.windowListener = config.windowListener;
@@ -98,12 +108,21 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.vSyncEnabled = config.vSyncEnabled;
 		copy.title = config.title;
 		copy.initialBackgroundColor = config.initialBackgroundColor;
+		copy.initialVisible = config.initialVisible;
 		copy.preferencesDirectory = config.preferencesDirectory;
 		copy.preferencesFileType = config.preferencesFileType;
 		copy.hdpiMode = config.hdpiMode;
+		copy.debug = config.debug;
+		copy.debugStream = config.debugStream;
 		return copy;
 	}
 	
+	/**
+	 * @param visibility whether the window will be visible on creation. (default true)
+	 */
+	public void setInitialVisible(boolean visibility) {
+		this.initialVisible = visibility;
+	}
 
 	/**
 	 * Whether to disable audio or not. If set to false, the returned audio
@@ -222,6 +241,17 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 	
 	/**
+	 * Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these 
+	 * limits are ignored. The default for all four parameters is -1, which means unrestricted.
+	 */
+	public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+		windowMinWidth = minWidth;
+		windowMinHeight = minHeight;
+		windowMaxWidth = maxWidth;
+		windowMaxHeight = maxHeight;
+	}
+	
+	/**
 	 * Sets the {@link Lwjgl3WindowListener} which will be informed about
 	 * iconficiation, focus loss and window close events.
 	 */
@@ -283,7 +313,23 @@ public class Lwjgl3ApplicationConfiguration {
 	 */
 	public void setHdpiMode(HdpiMode mode) {
 		this.hdpiMode = mode;
-	}	
+	}
+
+	/**
+	 * Enables use of OpenGL debug message callbacks. If not supported by the core GL driver
+	 * (since GL 4.3), this uses the KHR_debug, ARB_debug_output or AMD_debug_output extension
+	 * if available. By default, debug messages with NOTIFICATION severity are disabled to
+	 * avoid log spam.
+	 *
+	 * You can call with {@link System#err} to output to the "standard" error output stream.
+	 *
+	 * Use {@link Lwjgl3Application#setGLDebugMessageControl(Lwjgl3Application.GLDebugMessageSeverity, boolean)}
+	 * to enable or disable other severity debug levels.
+	 */
+	public void enableGLDebugOutput(boolean enable, PrintStream debugOutputStream) {
+		debug = enable;
+		debugStream = debugOutputStream;
+	}
 
 	/**
 	 * @return the currently active {@link DisplayMode} of the primary monitor
@@ -344,7 +390,7 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 
 	/**
-	 * @return the conntected {@link Monitor}s
+	 * @return the connected {@link Monitor}s
 	 */
 	public static Monitor[] getMonitors() {
 		Lwjgl3Application.initializeGlfw();
@@ -383,5 +429,5 @@ public class Lwjgl3ApplicationConfiguration {
 		 * irrespective of the system defined HDPI scaling.
 		 */
 		Pixels
-	}		
+	}
 }

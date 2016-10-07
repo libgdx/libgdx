@@ -224,6 +224,7 @@ public class ExternalExtensionsDialog extends JDialog implements TableModelListe
 				addToDependencyMapFromXML(dependencies, eElement, "desktop");
 				addToDependencyMapFromXML(dependencies, eElement, "android");
 				addToDependencyMapFromXML(dependencies, eElement, "ios");
+				addToDependencyMapFromXML(dependencies, eElement, "ios-moe");
 				addToDependencyMapFromXML(dependencies, eElement, "html");
 
 				URI uri = null;

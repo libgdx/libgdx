@@ -106,19 +106,19 @@ public class FileProcessor {
 
 	/** @param outputRoot May be null.
 	 * @see #process(File, File) */
-	public ArrayList<Entry> process (String inputFile, String outputRoot) throws Exception {
-		return process(new File(inputFile), outputRoot == null ? null : new File(outputRoot));
+	public ArrayList<Entry> process (String inputFileOrDir, String outputRoot) throws Exception {
+		return process(new File(inputFileOrDir), outputRoot == null ? null : new File(outputRoot));
 	}
 
 	/** Processes the specified input file or directory.
 	 * @param outputRoot May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
-	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
-		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
-		if (inputFile.isFile())
-			return process(new File[] {inputFile}, outputRoot);
+	public ArrayList<Entry> process (File inputFileOrDir, File outputRoot) throws Exception {
+		if (!inputFileOrDir.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFileOrDir.getAbsolutePath());
+		if (inputFileOrDir.isFile())
+			return process(new File[] {inputFileOrDir}, outputRoot);
 		else
-			return process(inputFile.listFiles(), outputRoot);
+			return process(inputFileOrDir.listFiles(), outputRoot);
 	}
 
 	/** Processes the specified input files.

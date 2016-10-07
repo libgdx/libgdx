@@ -16,8 +16,12 @@
 
 package com.badlogic.gdx.tests.extensions;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.files.FileHandleStream;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -90,8 +94,10 @@ public class FreeTypeIncrementalTest extends GdxTest {
 		}
 		font.draw(batch, "LYA", 10, 300); // Shows kerning.
 		font.draw(batch, "hello world", 100, 300);
-		font.draw(batch, "动画能给游戏带来生机和灵气。我们相信创作一段美妙的动画，不仅需要强大的软件工具，更需要一套牛 B 的工作流程。"
-			+ "Spine专注于此，为您创建惊艳的骨骼动画，并将其整合到游戏当中，提供了一套高效的工作流程。", 10, 250, //
+		font.draw(batch,
+			"动画能给游戏带来生机和灵气。我们相信创作一段美妙的动画，不仅需要强大的软件工具，更需要一套牛 B 的工作流程。" //
+				+ "Spine专注于此，为您创建惊艳的骨骼动画，并将其整合到游戏当中，提供了一套高效的工作流程。",
+			10, 250, //
 			Gdx.graphics.getWidth() - 20, Align.left, true);
 		batch.end();
 	}

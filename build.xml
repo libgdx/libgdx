@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.5.7-SNAPSHOT"/>
+	<property name="version" value="1.9.5-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -21,6 +21,7 @@
 	<target name="gdx-jnigen">
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
 			<property name="distDir" value="${distDir}/extensions/gdx-jnigen"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-jnigen"/>
 			<!-- we shouldn't build any natives -->
 			<property name="build-natives" value="false"/>
@@ -49,6 +50,7 @@
 			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
 		</fileset>
 		<ant antfile="../build-template.xml" dir="gdx">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx"/>
 			<reference refid="classpath"/>
 			<reference refid="resourcefiles"/>
@@ -61,6 +63,7 @@
                 <pathelement location="${distDir}/gdx.jar"/>                    
         </path>
         <ant antfile="../../build-template.xml" dir="backends/gdx-backend-headless">
+			    <property name="javacTarget" value="1.6"/>
                 <property name="jar" value="gdx-backend-headless"/>
                 <reference refid="classpath"/>
                 <reference refid="jarfiles"/>
@@ -74,6 +77,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-lwjgl"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -85,6 +89,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
+			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-backend-lwjgl3"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -99,6 +104,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jglfw">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-jglfw"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -110,6 +116,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-android">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-android"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -121,6 +128,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backends-gwt">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -135,6 +143,7 @@
             <target name="fetch-robovm"/>
         </ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-robovm"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -152,6 +161,7 @@
 		<fileset id="resourcefiles" dir="extensions/gdx-tools/assets"/>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-tools">
 			<property name="distDir" value="${distDir}/extensions/gdx-tools"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-tools"/>
 			<reference refid="classpath"/>
 			<reference refid="resourcefiles"/>
@@ -166,6 +176,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -181,6 +192,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -193,6 +205,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -206,6 +219,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-desktop"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -219,6 +233,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-controllers-lwjgl3"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -233,6 +248,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-android"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -248,6 +264,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -261,6 +278,7 @@
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-freetype">
 			<property name="distDir" value="${distDir}/extensions/gdx-freetype"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-freetype"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -278,6 +296,7 @@
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
 			<reference refid="src"/>

@@ -350,6 +350,15 @@ public class TextArea extends TextField {
 		return linesShowing;
 	}
 
+	public float getCursorX () {
+		return textOffset + fontOffset + style.font.getData().cursorX;
+	}
+
+	public float getCursorY () {
+		BitmapFont font = style.font;
+		return -(-font.getDescent() / 2 - (cursorLine - firstLineShowing + 1) * font.getLineHeight());
+	}
+
 	/** Input listener for the text area **/
 	public class TextAreaListener extends TextFieldClickListener {
 

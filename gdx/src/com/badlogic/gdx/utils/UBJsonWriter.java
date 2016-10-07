@@ -244,7 +244,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter value (long[] values) throws IOException {
 		array();
 		out.writeByte('$');
-		out.writeByte('I');
+		out.writeByte('L');
 		out.writeByte('#');
 		value(values.length);
 		for (int i = 0, n = values.length; i < n; i++) {
@@ -277,7 +277,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter value (double[] values) throws IOException {
 		array();
 		out.writeByte('$');
-		out.writeByte('d');
+		out.writeByte('D');
 		out.writeByte('#');
 		value(values.length);
 		for (int i = 0, n = values.length; i < n; i++) {
@@ -304,7 +304,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter value (char[] values) throws IOException {
 		array();
 		out.writeByte('$');
-		out.writeByte('I');
+		out.writeByte('C');
 		out.writeByte('#');
 		value(values.length);
 		for (int i = 0, n = values.length; i < n; i++) {

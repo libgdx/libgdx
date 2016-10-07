@@ -190,15 +190,13 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
-		prefWidth = Math.max(
-			prefWidth,
-			maxItemWidth
-				+ (scrollStyle.background == null ? 0 : scrollStyle.background.getLeftWidth()
-					+ scrollStyle.background.getRightWidth())
-				+ listStyle.selection.getLeftWidth()
-				+ listStyle.selection.getRightWidth()
-				+ Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
-					style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0));
+		float listWidth = maxItemWidth + listStyle.selection.getLeftWidth() + listStyle.selection.getRightWidth();
+		if (scrollStyle.background != null)
+			listWidth += scrollStyle.background.getLeftWidth() + scrollStyle.background.getRightWidth();
+		if (selectBoxList == null || !selectBoxList.disableY)
+			listWidth += Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
+				style.scrollStyle.vScrollKnob != null ? style.scrollStyle.vScrollKnob.getMinWidth() : 0);
+		prefWidth = Math.max(prefWidth, listWidth);
 	}
 
 	@Override
@@ -314,6 +312,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return selectBoxList.list;
 	}
 
+	/** Disables scrolling of the list shown when the select box is open. */
+	public void setScrollingDisabled (boolean y) {
+		selectBoxList.setScrollingDisabled(true, y);
+		invalidateHierarchy();
+	}
+
 	/** Returns the scroll pane containing the list that is shown when the select box is open. */
 	public ScrollPane getScrollPane () {
 		return selectBoxList;
@@ -402,8 +406,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			float itemHeight = list.getItemHeight();
 			float height = itemHeight * (maxListCount <= 0 ? selectBox.items.size : Math.min(maxListCount, selectBox.items.size));
 			Drawable scrollPaneBackground = getStyle().background;
-			if (scrollPaneBackground != null)
-				height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
+			if (scrollPaneBackground != null) height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
 			Drawable listBackground = list.getStyle().background;
 			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
@@ -426,11 +429,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setHeight(height);
 			validate();
 			float width = Math.max(getPrefWidth(), selectBox.getWidth());
-			if (getPrefHeight() > height) width += getScrollBarWidth();
-			if (scrollPaneBackground != null) {
-				// Assume left and right padding are the same, so right padding can include a shadow.
-				width += Math.max(0, scrollPaneBackground.getRightWidth() - scrollPaneBackground.getLeftWidth());
-			}
+			if (getPrefHeight() > height && !disableY) width += getScrollBarWidth();
 			setWidth(width);
 
 			validate();

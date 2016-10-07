@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.Glfw;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
@@ -200,7 +201,7 @@ public class JglfwGraphics implements Graphics {
 	public int getHeight () {
 		return height;
 	}
-	
+
 	@Override
 	public int getBackBufferWidth () {
 		return width;
@@ -271,7 +272,7 @@ public class JglfwGraphics implements Graphics {
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
-	
+
 	@Override
 	public Monitor getPrimaryMonitor () {
 		return new JglfwMonitor(0, 0, "Primary Monitor");
@@ -344,6 +345,22 @@ public class JglfwGraphics implements Graphics {
 		if (title == null) title = "";
 		glfwSetWindowTitle(window, title);
 		this.title = title;
+	}
+
+	/**
+	 * Note: GLFW requires that the window be recreated for this change to take effect.
+	 */
+	@Override
+	public void setUndecorated (boolean undecorated) {
+		this.undecorated = undecorated;
+	}
+
+	/**
+	 * Note: GLFW requires that the window be recreated for this change to take effect.
+	 */
+	@Override
+	public void setResizable (boolean resizable) {
+		this.resizable = resizable;
 	}
 
 	public void setVSync (boolean vsync) {
@@ -444,7 +461,7 @@ public class JglfwGraphics implements Graphics {
 	public GL30 getGL30 () {
 		return null;
 	}
-	
+
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
 		return null;
@@ -453,17 +470,17 @@ public class JglfwGraphics implements Graphics {
 	@Override
 	public void setCursor (Cursor cursor) {
 	}
-	
+
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
-	
+
 	static class JglfwDisplayMode extends DisplayMode {
 		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
 	}
-	
+
 	static class JglfwMonitor extends Monitor {
 		public JglfwMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
