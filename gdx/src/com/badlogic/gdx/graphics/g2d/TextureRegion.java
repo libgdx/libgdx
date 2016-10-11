@@ -284,4 +284,29 @@ public class TextureRegion {
 		TextureRegion region = new TextureRegion(texture);
 		return region.split(tileWidth, tileHeight);
 	}
+	
+	/** Helper function to create tiles out of this TextureRegion starting from the top left corner going to the right and ending at
+    * the bottom right corner. This function split the TextureRegion into rows and cols parameters.
+    *
+    * @param rows a number of rows that the TextureRegion will be splited
+    * @param cols a number of cols that the TextureRegion will be splited
+    * @return a 2D array of TextureRegions indexed by [row][column]. */
+   public TextureRegion[][] splitFrames(int rows, int cols) {
+       int tiledWidth = regionWidth / cols;
+       int tiledHeight = regionHeight / rows;
+
+       return split(tiledWidth, tiledHeight);
+   }   
+
+   /** Helper function to create tiles out of the given {@link Texture} starting from the top left corner going to the right and
+    * ending at the bottom right corner. This function split the TextureRegion into rows and cols parameters.
+    *
+    * @param texture the Texture
+    * @param rows a number of rows that the TextureRegion will be splited
+    * @param cols a number of cols that the TextureRegion will be splited
+    * @return a 2D array of TextureRegions indexed by [row][column]. */
+   public static TextureRegion[][] splitFrames(Texture texture, int rows, int cols) {
+       TextureRegion region = new TextureRegion(texture);
+       return region.splitFrames(rows, cols);
+   }  
 }
