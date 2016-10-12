@@ -352,87 +352,69 @@ public final class MathUtils {
 		return log(2, value);
 	}
 	
-	/** @return the average of all the values passed in */
+/** @return the average of all the values passed in */
 	static public byte average(byte... values) {
-		// Value to return
-		byte ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (byte currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return (byte) (ret / values.length);
+		return (byte) ((ret / values.length) + .5D);
 	}
 
 	/** @return the average of all the values passed in */
 	static public short average(short... values) {
-		// Value to return
-		short ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (short currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return (short) (ret / values.length);
+		return (short) ((ret / values.length) + .5D);
 	}
 
 	/** @return the average of all the values passed in */
 	static public int average(int... values) {
-		// Value to return
-		int ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (int currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return ret / values.length;
+		return (int) ((ret / values.length) + .5D);
 	}
 
 	/** @return the average of all the values passed in */
 	static public long average(long... values) {
-		// Value to return
-		long ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (long currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return ret / values.length;
+		return (long) ((ret / values.length) + .5D);
 	}
 
 	/** @return the average of all the values passed in */
 	static public float average(float... values) {
-		// Value to return
-		float ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (float currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return ret / values.length;
+		return (float) (ret / values.length);
 	}
 
 	/** @return the average of all the values passed in */
 	static public double average(double... values) {
-		// Value to return
-		double ret = 0;
+		double ret = 0D;
 
-		// Add up all the passed in values
 		for (double currVal : values) {
 			ret += currVal;
 		}
 
-		// Return the sum of the values divided by the amount of values passed in, i.e. the average
-		return ret / values.length;
+		return (ret / values.length);
 	}
 }
