@@ -353,7 +353,7 @@ public final class MathUtils {
 	}
 	
 	/** @return the average of all the values passed in */
-	public static byte average(byte... values) {
+	static public byte average(byte... values) {
 		// Value to return
 		byte ret = 0;
 
@@ -367,7 +367,7 @@ public final class MathUtils {
 	}
 
 	/** @return the average of all the values passed in */
-	public static short average(short... values) {
+	static public short average(short... values) {
 		// Value to return
 		short ret = 0;
 
@@ -381,7 +381,7 @@ public final class MathUtils {
 	}
 
 	/** @return the average of all the values passed in */
-	public static int average(int... values) {
+	static public int average(int... values) {
 		// Value to return
 		int ret = 0;
 
@@ -395,7 +395,7 @@ public final class MathUtils {
 	}
 
 	/** @return the average of all the values passed in */
-	public static long average(long... values) {
+	static public long average(long... values) {
 		// Value to return
 		long ret = 0;
 
@@ -409,7 +409,7 @@ public final class MathUtils {
 	}
 
 	/** @return the average of all the values passed in */
-	public static float average(float... values) {
+	static public float average(float... values) {
 		// Value to return
 		float ret = 0;
 
@@ -423,7 +423,7 @@ public final class MathUtils {
 	}
 
 	/** @return the average of all the values passed in */
-	public static double average(double... values) {
+	static public double average(double... values) {
 		// Value to return
 		double ret = 0;
 
