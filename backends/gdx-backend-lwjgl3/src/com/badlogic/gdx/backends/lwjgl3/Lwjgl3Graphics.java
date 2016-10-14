@@ -51,6 +51,9 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private long frameCounterStart = 0;
 	private int frames;
 	private int fps;
+	private int windowPosXBeforeFullscreen;
+	private int windowPosYBeforeFullscreen;
+	private DisplayMode displayModeBeforeFullscreen = null;
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
@@ -323,12 +326,21 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 						0, 0, newMode.width, newMode.height, newMode.refreshRate);
 			}
 		} else {
+			// store window position so we can restore it when switching from fullscreen to windowed later
+			storeCurrentWindowPositionAndDisplayMode();
+			
 			// switch from windowed to fullscreen
 			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(),
 					0, 0, newMode.width, newMode.height, newMode.refreshRate);
 		}
 		updateFramebufferInfo();
 		return true;
+	}
+	
+	private void storeCurrentWindowPositionAndDisplayMode() {
+		windowPosXBeforeFullscreen = window.getPositionX();
+		windowPosYBeforeFullscreen = window.getPositionY();
+		displayModeBeforeFullscreen = getDisplayMode();
 	}
 
 	@Override
@@ -337,11 +349,13 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		if (!isFullscreen()) {
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 		} else {
-			Lwjgl3DisplayMode currentMode = (Lwjgl3DisplayMode) getDisplayMode();
-			int windowPosX = (currentMode.width - width) / 2;
-			int windowPosY = (currentMode.height - height) / 2;
+			if (displayModeBeforeFullscreen == null) {
+				storeCurrentWindowPositionAndDisplayMode();
+			}
+				
 			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					windowPosX, windowPosY, width, height, currentMode.refreshRate);
+					windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width, height,
+					displayModeBeforeFullscreen.refreshRate);
 		}
 		updateFramebufferInfo();
 		return true;

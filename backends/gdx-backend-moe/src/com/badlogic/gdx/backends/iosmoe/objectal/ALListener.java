@@ -27,7 +27,7 @@ import org.moe.natj.objc.ObjCRuntime;
 import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
-import ios.NSObject;
+import apple.NSObject;
 
 @Generated
 @Runtime(ObjCRuntime.class)

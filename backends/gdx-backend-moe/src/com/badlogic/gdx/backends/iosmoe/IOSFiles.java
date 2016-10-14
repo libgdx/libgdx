@@ -18,7 +18,7 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import ios.foundation.NSBundle;
+import apple.foundation.NSBundle;
 
 public class IOSFiles implements Files {
 	// TODO: Use NSSearchPathForDirectoriesInDomains instead?

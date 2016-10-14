@@ -1,5 +1,6 @@
 [1.9.5]
 - API Addition: ApplicationLogger interface, allowing easier access to custom logging
+- DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
