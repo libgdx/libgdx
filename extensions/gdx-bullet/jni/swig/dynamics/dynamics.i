@@ -203,3 +203,8 @@ import com.badlogic.gdx.math.Matrix4;
 %include "BulletDynamics/Vehicle/btWheelInfo.h"
 
 %include "./btRaycastVehicle.i"
+
+%{
+#include <gdx/dynamics/FilterableVehicleRaycaster.h>
+%}
+%include "gdx/dynamics/FilterableVehicleRaycaster.h"
