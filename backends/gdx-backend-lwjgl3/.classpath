@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/gdx/libs/gdx-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry exported="true" kind="lib" path="libs/AppleJavaExtensions-1.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

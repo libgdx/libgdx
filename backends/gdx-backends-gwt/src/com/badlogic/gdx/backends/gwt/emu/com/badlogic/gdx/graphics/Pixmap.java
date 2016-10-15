@@ -102,6 +102,10 @@ public class Pixmap implements Disposable {
 		context.drawImage(img, 0, 0);
 		context.setGlobalCompositeOperation(getComposite());
 	}
+	
+	public Context2d getContext() {
+		return context;
+	}
 
 	private static Composite getComposite () {
 		return Composite.SOURCE_OVER;
@@ -416,6 +420,7 @@ public class Pixmap implements Disposable {
 		context.lineTo(x2, y2);
 		fillOrStrokePath(drawType);
 		context.closePath();
+		pixels = null;
 	}
 	
 	private void rectangle(int x, int y, int width, int height, DrawType drawType) {

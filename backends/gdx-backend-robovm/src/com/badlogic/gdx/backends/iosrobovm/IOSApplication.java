@@ -18,7 +18,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 
-import org.robovm.apple.coregraphics.CGSize;
+import com.badlogic.gdx.ApplicationLogger;
+import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
@@ -98,9 +99,12 @@ public class IOSApplication implements Application {
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
+
+	private CGRect lastScreenBounds = null;
 
 	Array<Runnable> runnables = new Array<Runnable>();
 	Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -112,6 +116,7 @@ public class IOSApplication implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -145,14 +150,11 @@ public class IOSApplication implements Application {
 			}
 		}
 
-		GL20 gl20 = new IOSGLES20();
-
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
-
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), scale, this, config, input, gl20);
+		this.graphics = new IOSGraphics(scale, this, config, input, config.useGL30);
+		Gdx.gl = Gdx.gl20 = graphics.gl20;
+		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
@@ -190,57 +192,55 @@ public class IOSApplication implements Application {
 		return uiWindow;
 	}
 
-	/** Returns our real display dimension based on screen orientation.
+	/** GL View spans whole screen, that is, even under the status bar. iOS can also rotate the screen, which is not handled
+	 * consistently over iOS versions. This method returns, in pixels, rectangle in which libGDX draws.
 	 *
-	 * @param viewController The view controller.
-	 * @return Or real display dimension. */
-	CGSize getBounds (UIViewController viewController) {
-		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().getSize();
+	 * @return dimensions of space we draw to, adjusted for device orientation */
+	protected CGRect getBounds () {
+		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
+		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
 
-		// determine orientation and resulting width + height
-		UIInterfaceOrientation orientation;
-		if (viewController != null) {
-			orientation = viewController.getInterfaceOrientation();
-		} else if (config.orientationLandscape == config.orientationPortrait) {
-			/*
-			 * if the app has orientation in any side then we can only check status bar orientation
-			 */
-			orientation = uiApp.getStatusBarOrientation();
-		} else if (config.orientationLandscape) {// is landscape true and portrait false
-			orientation = UIInterfaceOrientation.LandscapeRight;
-		} else {// is portrait true and landscape false
-			orientation = UIInterfaceOrientation.Portrait;
-		}
-		int width;
-		int height;
-		switch (orientation) {
+		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
+
+		double screenWidth = screenBounds.getWidth();
+		double screenHeight = screenBounds.getHeight();
+
+		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
+		switch (statusBarOrientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.getWidth();
-			width = (int)bounds.getHeight();
-			if (width < height) {
-				width = (int)bounds.getWidth();
-				height = (int)bounds.getHeight();
+			if (screenHeight > screenWidth) {
+				debug("IOSApplication", "Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
+				double tmp = screenHeight;
+				// noinspection SuspiciousNameCombination
+				screenHeight = screenWidth;
+				screenWidth = tmp;
 			}
-			break;
-		default:
-			// assume portrait
-			width = (int)bounds.getWidth();
-			height = (int)bounds.getHeight();
 		}
 
-		Gdx.app.debug("IOSApplication", "Unscaled View: " + orientation.toString() + " " + width + "x" + height);
-
 		// update width/height depending on display scaling selected
-		width *= displayScaleFactor;
-		height *= displayScaleFactor;
+		screenWidth *= displayScaleFactor;
+		screenHeight *= displayScaleFactor;
 
-		// log screen dimensions
-		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
+		if (statusBarHeight != 0.0) {
+			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
+			statusBarHeight *= displayScaleFactor;
+			screenHeight -= statusBarHeight;
+		} else {
+			debug("IOSApplication", "Status bar is not visible");
+		}
 
-		// return resulting view size (based on orientation)
-		return new CGSize(width, height);
+		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
+
+		return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
+	}
+
+	protected CGRect getCachedBounds () {
+		if (lastScreenBounds == null)
+			return getBounds();
+		else
+			return lastScreenBounds;
 	}
 
 	final void didBecomeActive (UIApplication uiApp) {
@@ -312,48 +312,33 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void log (String tag, String message, Throwable exception) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
+	}
+
+	@Override
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
+	}
+
+	@Override
+	public void log (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
+	}
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
+	}
+
+	@Override
+	public void error (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -364,6 +349,16 @@ public class IOSApplication implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

@@ -50,6 +50,7 @@ public final class MathUtils {
 
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
+
 		static {
 			for (int i = 0; i < SIN_COUNT; i++)
 				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
@@ -91,7 +92,7 @@ public final class MathUtils {
 		final float atan, z = y / x;
 		if (Math.abs(z) < 1f) {
 			atan = z / (1f + 0.28f * z * z);
-			if (x < 0f) return y < 0f ? atan - PI : atan + PI;
+			if (x < 0f) return atan + (y < 0f ? -PI : PI);
 			return atan;
 		}
 		atan = PI / 2 - z / (z * z + 0.28f);
@@ -247,7 +248,7 @@ public final class MathUtils {
 	static public float lerp (float fromValue, float toValue, float progress) {
 		return fromValue + (toValue - fromValue) * progress;
 	}
-	
+
 	/** Linearly interpolates between two angles in radians. Takes into account that angles wrap at two pi and always takes the
 	 * direction with the smallest delta angle.
 	 * 
@@ -295,7 +296,7 @@ public final class MathUtils {
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
 	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
 	static public int ceil (float value) {
-		return (int)(value + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
+		return BIG_ENOUGH_INT - (int)(BIG_ENOUGH_FLOOR - value);
 	}
 
 	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that

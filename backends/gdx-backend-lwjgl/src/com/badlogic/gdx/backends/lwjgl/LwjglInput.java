@@ -105,6 +105,18 @@ final public class LwjglInput implements Input {
 	public float getAccelerometerZ () {
 		return 0;
 	}
+	
+	public float getGyroscopeX () {
+		return 0;
+	}
+
+	public float getGyroscopeY () {
+		return 0;
+	}
+
+	public float getGyroscopeZ () {
+		return 0;
+	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text, final String hint) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -205,6 +217,10 @@ final public class LwjglInput implements Input {
 	}
 
 	public boolean isAccelerometerAvailable () {
+		return false;
+	}
+	
+	public boolean isGyroscopeAvailable () {
 		return false;
 	}
 
@@ -857,9 +873,9 @@ final public class LwjglInput implements Input {
 
 		if (Keyboard.isCreated()) {
 			while (Keyboard.next()) {
-				if (Keyboard.getEventKeyState()) {
-					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
-					char keyChar = Keyboard.getEventCharacter();
+				int keyCode = getGdxKeyCode(Keyboard.getEventKey());
+				char keyChar = Keyboard.getEventCharacter();
+				if (Keyboard.getEventKeyState() || (keyCode == 0 && keyChar != 0 && Character.isDefined(keyChar))) {
 					long timeStamp = Keyboard.getEventNanoseconds();
 
 					switch (keyCode) {
@@ -871,28 +887,28 @@ final public class LwjglInput implements Input {
 						break;
 					}
 
-					KeyEvent event = usedKeyEvents.obtain();
-					event.keyCode = keyCode;
-					event.keyChar = 0;
-					event.type = KeyEvent.KEY_DOWN;
-					event.timeStamp = timeStamp;
-					keyEvents.add(event);
+					if (keyCode != 0) {
+						KeyEvent event = usedKeyEvents.obtain();
+						event.keyCode = keyCode;
+						event.keyChar = 0;
+						event.type = KeyEvent.KEY_DOWN;
+						event.timeStamp = timeStamp;
+						keyEvents.add(event);
 
-					event = usedKeyEvents.obtain();
+						pressedKeys++;
+						keyJustPressed = true;
+						justPressedKeys[keyCode] = true;
+						lastKeyCharPressed = keyChar;
+						keyRepeatTimer = keyRepeatInitialTime;
+					}
+
+					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
 					event.timeStamp = timeStamp;
 					keyEvents.add(event);
-
-					pressedKeys++;
-					keyJustPressed = true;
-					justPressedKeys[keyCode] = true;
-					lastKeyCharPressed = keyChar;
-					keyRepeatTimer = keyRepeatInitialTime;
 				} else {
-					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
-
 					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
@@ -1065,4 +1081,5 @@ final public class LwjglInput implements Input {
 		int button;
 		int pointer;
 	}
+
 }

@@ -17,11 +17,9 @@
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -198,6 +196,7 @@ public class GestureDetector extends InputAdapter {
 		if (pinching) {
 			// handle pinch end
 			pinching = false;
+			listener.pinchStop();
 			panning = true;
 			// we are in pan mode again, reset velocity tracker
 			if (pointer == 0) {
@@ -321,6 +320,9 @@ public class GestureDetector extends InputAdapter {
 		 * @param pointer1
 		 * @param pointer2 */
 		public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2);
+
+		/** Called when no longer pinching. */
+		public void pinchStop ();
 	}
 
 	/** Derrive from this if you only want to implement a subset of {@link GestureListener}.
@@ -364,6 +366,10 @@ public class GestureDetector extends InputAdapter {
 		@Override
 		public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 			return false;
+		}
+
+		@Override
+		public void pinchStop () {
 		}
 	}
 

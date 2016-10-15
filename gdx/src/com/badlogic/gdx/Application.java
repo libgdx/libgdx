@@ -151,6 +151,12 @@ public interface Application {
 	/** Gets the log level. */
 	public int getLogLevel ();
 
+	/** Sets the current Application logger. Calls to {@link #log(String, String)} are delegated to this {@link ApplicationLogger} */
+	public void setApplicationLogger (ApplicationLogger applicationLogger);
+
+	/** @return the current {@link ApplicationLogger} */
+	public ApplicationLogger getApplicationLogger ();
+
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 

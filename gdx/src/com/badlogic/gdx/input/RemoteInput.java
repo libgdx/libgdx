@@ -172,6 +172,7 @@ public class RemoteInput implements Runnable, Input {
 	public static int DEFAULT_PORT = 8190;
 	private ServerSocket serverSocket;
 	private float[] accel = new float[3];
+	private float[] gyrate = new float[3];
 	private float[] compass = new float[3];
 	private boolean multiTouch = false;
 	private float remoteWidth = 0;
@@ -256,6 +257,11 @@ public class RemoteInput implements Runnable, Input {
 					case RemoteSender.SIZE:
 						remoteWidth = in.readFloat();
 						remoteHeight = in.readFloat();
+						break;	
+					case RemoteSender.GYRO:
+						gyrate[0] = in.readFloat();
+						gyrate[1] = in.readFloat();
+						gyrate[2] = in.readFloat();
 						break;
 					case RemoteSender.KEY_DOWN:
 						keyEvent = new KeyEvent();
@@ -320,6 +326,21 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public float getAccelerometerZ () {
 		return accel[2];
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		return gyrate[0];
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		return gyrate[1];
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		return gyrate[2];
 	}
 
 	@Override

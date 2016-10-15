@@ -175,6 +175,7 @@ public class FacedCubemapData implements CubemapData {
 				Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 				Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(),
 					pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+				if (disposePixmap) pixmap.dispose();
 			}
 		}
 	}

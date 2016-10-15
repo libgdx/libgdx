@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.setup;
 
 
@@ -15,11 +31,10 @@ public class BuildScriptHelper {
 		write(wr, "buildscript {");
 		//repos
 		write(wr, "repositories {");
+		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		if (projects.contains(ProjectType.HTML)) {
-			write(wr, DependencyBank.jCenter);
-		}
+		write(wr, DependencyBank.jCenter);
 		write(wr, "}");
 		//dependencies
 		write(wr, "dependencies {");
@@ -31,6 +46,9 @@ public class BuildScriptHelper {
 		}
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
+		}
+		if (projects.contains(ProjectType.IOSMOE)) {
+			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
 		}
 		write(wr, "}");
 		write(wr, "}");
@@ -53,6 +71,7 @@ public class BuildScriptHelper {
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
+		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
@@ -82,7 +101,7 @@ public class BuildScriptHelper {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
+				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
 					write(wr, "compile \"" + moduleDependency + "\"");
@@ -93,7 +112,7 @@ public class BuildScriptHelper {
 	}
 
 	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.ANDROID)) {
+		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
 			write(wr, "configurations { natives }");
 		}
 	}

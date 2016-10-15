@@ -138,6 +138,7 @@ public class Image extends Widget {
 		setDrawable(skin.getDrawable(drawableName));
 	}
 
+	/** @param drawable May be null. */
 	public void setDrawable (Drawable drawable) {
 		if (this.drawable == drawable) return;
 		if (drawable != null) {
@@ -147,6 +148,7 @@ public class Image extends Widget {
 		this.drawable = drawable;
 	}
 
+	/** @return May be null. */
 	public Drawable getDrawable () {
 		return drawable;
 	}
@@ -154,10 +156,12 @@ public class Image extends Widget {
 	public void setScaling (Scaling scaling) {
 		if (scaling == null) throw new IllegalArgumentException("scaling cannot be null.");
 		this.scaling = scaling;
+		invalidate();
 	}
 
 	public void setAlign (int align) {
 		this.align = align;
+		invalidate();
 	}
 
 	public float getMinWidth () {

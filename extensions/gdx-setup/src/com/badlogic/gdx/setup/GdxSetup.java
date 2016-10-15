@@ -63,7 +63,7 @@ public class GdxSetup {
 		int[] targetToolVersion = convertTools(DependencyBank.buildToolsVersion);
 		if (compareVersions(targetToolVersion, localToolVersion)) {
 			int value = JOptionPane.showConfirmDialog(null,
-				"You have a more recent version of android build tools than the recommended.\nDo you want to use this version?",
+				"You have a more recent version of android build tools than the recommended.\nDo you want to use your more recent version?",
 				"Warning!", JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
 				JOptionPane.showMessageDialog(null, "Using build tools: " + DependencyBank.buildToolsVersion);
@@ -81,7 +81,7 @@ public class GdxSetup {
 		int newestLocalApi = getLatestApi(apis);
 		if (newestLocalApi > Integer.valueOf(DependencyBank.androidAPILevel)) {
 			int value = JOptionPane.showConfirmDialog(null,
-				"You have a more recent Android API than the recommended.\nDo you want to use this version?", "Warning!",
+				"You have a more recent Android API than the recommended.\nDo you want to use your more recent version?", "Warning!",
 				JOptionPane.YES_NO_OPTION);
 			if (value != 0) {
 				JOptionPane.showMessageDialog(null, "Using API level: " + DependencyBank.androidAPILevel);
@@ -278,6 +278,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-xxxhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
@@ -311,6 +312,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
@@ -319,6 +321,30 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
+		}
+
+		if(builder.modules.contains(ProjectType.IOSMOE)) {			
+			project.files.add(new ProjectFile("ios-moe/resources/Default.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-1024w-1366h@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon-72.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/build.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/build.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info-Test.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
+			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -477,12 +503,14 @@ public class GdxSetup {
 
 	private static void printHelp () {
 		System.out
-			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation>");
+			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> [--excludeModules <modules>] [--extensions <extensions>]");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
-		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified");
+		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified. Ignored if android module is excluded");
+		System.out.println("excludeModules ... the modules to exclude on the project generation separated by ';'. Optional");
+		System.out.println("extensions ... the extensions to include in the project separated by ';'. Optional");
 	}
 
 	private static Map<String, String> parseArgs (String[] args) {
@@ -499,6 +527,44 @@ public class GdxSetup {
 		}
 		return params;
 	}
+
+	 private static List<String> parseExcludedModules (String excludedModules) {
+		  List<String> excludedModulesList = new ArrayList<String>();
+
+		  while (excludedModules.contains(";")) {
+				excludedModulesList.add(excludedModules.substring(0, excludedModules.indexOf(";")).toLowerCase());
+				excludedModules = excludedModules.substring(excludedModules.indexOf(";") + 1);
+		  }
+		  excludedModulesList.add(excludedModules.toLowerCase());
+
+		  return excludedModulesList;
+	 }
+
+	 private static List<Dependency> parseDependencies (String dependencies, DependencyBank bank) {
+		  List<String> dependencyNames = new ArrayList<String>();
+		  while (dependencies.contains(";")) {
+				dependencyNames.add(dependencies.substring(0, dependencies.indexOf(";")).toLowerCase());
+				dependencies = dependencies.substring(dependencies.indexOf(";") + 1);
+		  }
+		  dependencyNames.add(dependencies.toLowerCase());
+
+		  Map<String, Dependency> dependencyMap = new HashMap<String, Dependency>();
+		  for (ProjectDependency pd : ProjectDependency.values()) {
+				dependencyMap.put(pd.name().toLowerCase(), bank.getDependency(pd));
+		  }
+
+		  List<Dependency> dependencyList = new ArrayList<Dependency>();
+		  dependencyList.add(bank.getDependency(ProjectDependency.GDX));
+		  for (String name : dependencyNames) {
+				if (dependencyMap.containsKey(name)) {
+					 System.out.println("Extension " + name + " found");
+					 dependencyList.add(dependencyMap.get(name));
+				} else
+					 System.out.println("Extension " + name + " not found");
+		  }
+
+		  return dependencyList;
+	 }
 
 	private String parseGwtInherits (ProjectBuilder builder) {
 		String parsed = "";
@@ -535,32 +601,58 @@ public class GdxSetup {
 
 	public static void main (String[] args) throws IOException {
 		Map<String, String> params = parseArgs(args);
+		List<String> excludedModules = null;
+		if (params.containsKey("excludeModules"))
+			excludedModules = parseExcludedModules(params.get("excludeModules"));
+
 		if (!params.containsKey("dir") ||
 			!params.containsKey("name") ||
 			!params.containsKey("package") ||
 			!params.containsKey("mainClass") ||
-			((!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null))) {
+			(!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null &&
+				(excludedModules == null || !excludedModules.contains("android")))) {
 			new GdxSetupUI();
 			printHelp();
 		} else {
 			String sdkLocation = "";
-			if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
-				sdkLocation = System.getenv("ANDROID_HOME");
-			} else {
-				sdkLocation = params.get("sdkLocation");
-			}
+			 if (excludedModules == null || !excludedModules.contains("android")) {
+				  if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
+						sdkLocation = System.getenv("ANDROID_HOME");
+				  } else {
+						sdkLocation = params.get("sdkLocation");
+				  }
+			 }
 
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();
+
 			projects.add(ProjectType.CORE);
-			projects.add(ProjectType.DESKTOP);
-			projects.add(ProjectType.ANDROID);
-			projects.add(ProjectType.IOS);
-			projects.add(ProjectType.HTML);
+			 if (excludedModules == null) {
+				  projects.add(ProjectType.DESKTOP);
+				  projects.add(ProjectType.ANDROID);
+				  projects.add(ProjectType.IOS);
+				  projects.add(ProjectType.IOSMOE);
+				  projects.add(ProjectType.HTML);
+			 } else {
+				  if (!excludedModules.contains("desktop"))
+						projects.add(ProjectType.DESKTOP);
+				  if (!excludedModules.contains("android"))
+						projects.add(ProjectType.ANDROID);
+				  if (!excludedModules.contains("ios"))
+						projects.add(ProjectType.IOS);
+				  if (!excludedModules.contains("iosmoe"))
+					  	projects.add(ProjectType.IOSMOE);
+				  if (!excludedModules.contains("html"))
+						projects.add(ProjectType.HTML);
+			 }
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
-			dependencies.add(bank.getDependency(ProjectDependency.GDX));
+			if (params.containsKey("extensions")) {
+				 dependencies.addAll(parseDependencies(params.get("extensions"), bank));
+			} else {
+				 dependencies.add(bank.getDependency(ProjectDependency.GDX));
+			}
 
 			builder.buildProject(projects, dependencies);
 			builder.build();

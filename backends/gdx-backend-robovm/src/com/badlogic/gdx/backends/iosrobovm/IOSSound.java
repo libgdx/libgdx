@@ -97,7 +97,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void dispose () {
 		stop();
-		soundBuffer.dispose();
+		OALSimpleAudio.sharedInstance().unloadEffect(soundPath);
 	}
 
 	@Override
@@ -131,11 +131,6 @@ public class IOSSound implements Sound {
 			source.setPan(pan);
 			source.setVolume(volume);
 		}
-	}
-
-	@Override
-	public void setPriority (long soundId, int priority) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

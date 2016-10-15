@@ -52,6 +52,7 @@ public class Json {
 	private OutputType outputType;
 	private boolean quoteLongValues;
 	private boolean ignoreUnknownFields;
+	private boolean ignoreDeprecated;
 	private boolean enumNames = true;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
@@ -73,6 +74,11 @@ public class Json {
 	 * false. */
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
+	}
+
+	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
+	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
+		this.ignoreDeprecated = ignoreDeprecated;
 	}
 
 	/** @see JsonWriter#setOutputType(OutputType) */
@@ -173,6 +179,8 @@ public class Json {
 					continue;
 				}
 			}
+
+			if (ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
@@ -779,14 +787,15 @@ public class Json {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
-			FieldMetadata metadata = fields.get(child.name());
+			FieldMetadata metadata = fields.get(child.name);
 			if (metadata == null) {
+				if (child.name.equals(typeName)) continue;
 				if (ignoreUnknownFields) {
-					if (debug) System.out.println("Ignoring unknown field: " + child.name() + " (" + type.getName() + ")");
+					if (debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
 					continue;
 				} else {
 					SerializationException ex = new SerializationException(
-						"Field not found: " + child.name() + " (" + type.getName() + ")");
+						"Field not found: " + child.name + " (" + type.getName() + ")");
 					ex.addTrace(child.trace());
 					throw ex;
 				}
@@ -860,7 +869,6 @@ public class Json {
 		if (jsonData.isObject()) {
 			String className = typeName == null ? null : jsonData.getString(typeName, null);
 			if (className != null) {
-				jsonData.remove(typeName);
 				type = getClass(className);
 				if (type == null) {
 					try {
@@ -900,19 +908,25 @@ public class Json {
 				if (object instanceof ObjectMap) {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
+						result.put(child.name, readValue(elementType, null, child));
+					
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
+						result.put(child.name, readValue(elementType, null, child));
+					
 					return (T)result;
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
-						result.put(child.name(), readValue(elementType, null, child));
+					for (JsonValue child = jsonData.child; child != null; child = child.next) {
+						if (child.name.equals(typeName)) {
+							continue;
+						}
+						result.put(child.name, readValue(elementType, null, child));
+					}
 					return (T)result;
 				}
 

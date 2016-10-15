@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/** A resizable, ordered or unordered char array. Avoids the boxing that occurs with ArrayList<Character>. If unordered, this class
- * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
+/** A resizable, ordered or unordered char array. Avoids the boxing that occurs with ArrayList<Character>. If unordered, this
+ * class avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class CharArray {
 	public char[] items;
@@ -242,8 +242,8 @@ public class CharArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public char[] shrink () {
 		if (items.length != size) resize(size);
@@ -256,6 +256,14 @@ public class CharArray {
 	public char[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined.
+	 * @return {@link #items} */
+	public char[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 

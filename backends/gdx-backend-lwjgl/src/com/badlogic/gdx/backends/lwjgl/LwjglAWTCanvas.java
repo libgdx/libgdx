@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import com.badlogic.gdx.ApplicationLogger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
@@ -73,6 +74,7 @@ public class LwjglAWTCanvas implements Application {
 	int lastWidth;
 	int lastHeight;
 	int logLevel = LOG_INFO;
+	ApplicationLogger applicationLogger;
 	final String logTag = "LwjglAWTCanvas";
 	Cursor cursor;
 
@@ -94,6 +96,7 @@ public class LwjglAWTCanvas implements Application {
 		if (config == null) config = new LwjglApplicationConfiguration();
 
 		LwjglNativesLoader.load();
+		setApplicationLogger(new LwjglApplicationLogger());
 		instanceCount++;
 
 		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ? sharedContextCanvas.canvas : null;
@@ -140,15 +143,15 @@ public class LwjglAWTCanvas implements Application {
 			}
 
 			@Override
-			public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-				if (!super.setDisplayMode(width, height, fullscreen)) return false;
-				if (!fullscreen) LwjglAWTCanvas.this.setDisplayMode(width, height);
+			public boolean setWindowedMode (int width, int height) {
+				if (!super.setWindowedMode(width, height)) return false;
+				LwjglAWTCanvas.this.setDisplayMode(width, height);
 				return true;
 			}
 
 			@Override
-			public boolean setDisplayMode (DisplayMode displayMode) {
-				if (!super.setDisplayMode(displayMode)) return false;
+			public boolean setFullscreenMode (DisplayMode displayMode) {
+				if (!super.setFullscreenMode(displayMode)) return false;
 				LwjglAWTCanvas.this.setDisplayMode(displayMode.width, displayMode.height);
 				return true;
 			}
@@ -396,47 +399,32 @@ public class LwjglAWTCanvas implements Application {
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -447,6 +435,16 @@ public class LwjglAWTCanvas implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

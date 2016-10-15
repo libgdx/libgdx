@@ -125,6 +125,9 @@ public class GlyphLayout implements Poolable {
 							start += length + 1;
 							nextColor = colorStack.peek();
 							colorRun = true;
+						} else if (length == -2) {
+							start++; // Skip first of "[[" escape sequence.
+							continue outer;
 						}
 					}
 					break;
@@ -166,8 +169,13 @@ public class GlyphLayout implements Poolable {
 									|| wrapIndex >= run.glyphs.size) { // Wrap at least the glyph that didn't fit.
 									wrapIndex = i - 1;
 								}
-								GlyphRun next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
-								runs.add(next);
+								GlyphRun next;
+								if (wrapIndex == 0)
+									next = run; // No wrap index, move entire run to next line.
+								else {
+									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
+									runs.add(next);
+								}
 
 								// Start the loop over with the new run on the next line.
 								width = Math.max(width, run.x + run.width);
@@ -363,7 +371,7 @@ public class GlyphLayout implements Poolable {
 			}
 			return -1;
 		case '[': // "[[" is an escaped left square bracket.
-			return -1;
+			return -2;
 		case ']': // "[]" is a "pop" color tag.
 			if (colorStack.size > 1) colorPool.free(colorStack.pop());
 			return 0;

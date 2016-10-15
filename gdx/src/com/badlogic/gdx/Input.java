@@ -558,18 +558,24 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope
 	}
 
-	/** @return The value of the accelerometer on its x-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the x axis. (rad/s) */
 	public float getAccelerometerX ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the y axis. (rad/s) */
 	public float getAccelerometerY ();
 
-	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
+	/** @return The rate of rotation around the z axis. (rad/s) */
 	public float getAccelerometerZ ();
 
+	public float getGyroscopeX ();
+
+	public float getGyroscopeY ();
+
+	public float getGyroscopeZ ();
+	
 	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
 	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();

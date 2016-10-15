@@ -169,13 +169,15 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		if (modules.contains(ProjectType.ANDROID)) {
-			if (!GdxSetup.isSdkUpToDate(sdkLocation)) { 
+			if (!GdxSetup.isSdkUpToDate(sdkLocation)) {
+				File sdkLocationFile = new File(sdkLocation);
 				try {  //give them a poke in the right direction
 					if (System.getProperty("os.name").contains("Windows")) {
 						String replaced = sdkLocation.replace("\\", "\\\\");
 						Runtime.getRuntime().exec("\"" + replaced + "\\SDK Manager.exe\"");
 					} else {
-						Runtime.getRuntime().exec("\"" + sdkLocation + "tools/android sdk\"");
+						File sdkManager = new File(sdkLocation, "tools/android");
+						Runtime.getRuntime().exec(new String[] {sdkManager.getAbsolutePath(), "sdk"});
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -510,10 +512,12 @@ public class GdxSetupUI extends JFrame {
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
-				}
-				modules.add(projectType);
+				}				
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
-				checkBox.setSelected(true);
+				if (projectType != ProjectType.IOSMOE) {
+					modules.add(projectType);
+					checkBox.setSelected(true);
+				}
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override
