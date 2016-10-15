@@ -1981,6 +1981,9 @@ SWIGINTERN btRigidBody *new_btRigidBody__SWIG_1(bool dummy,btScalar mass,btMotio
 #include <BulletDynamics/Vehicle/btRaycastVehicle.h>
 
 
+#include <gdx/dynamics/FilterableVehicleRaycaster.h>
+
+
 
 /* ---------------------------------------------------
  * C++ director class methods
@@ -31414,6 +31417,57 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1FilterableVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  FilterableVehicleRaycaster *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  result = (FilterableVehicleRaycaster *)new FilterableVehicleRaycaster(arg1);
+  *(FilterableVehicleRaycaster **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_FilterableVehicleRaycaster_1setCollisionFilterMask(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jshort jarg2) {
+  FilterableVehicleRaycaster *arg1 = (FilterableVehicleRaycaster *) 0 ;
+  short arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FilterableVehicleRaycaster **)&jarg1; 
+  arg2 = (short)jarg2; 
+  (arg1)->setCollisionFilterMask(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_FilterableVehicleRaycaster_1setCollisionFilterGroup(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jshort jarg2) {
+  FilterableVehicleRaycaster *arg1 = (FilterableVehicleRaycaster *) 0 ;
+  short arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(FilterableVehicleRaycaster **)&jarg1; 
+  arg2 = (short)jarg2; 
+  (arg1)->setCollisionFilterGroup(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1FilterableVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  FilterableVehicleRaycaster *arg1 = (FilterableVehicleRaycaster *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(FilterableVehicleRaycaster **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
@@ -31603,6 +31657,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     (void)jenv;
     (void)jcls;
     *(btVehicleRaycaster **)&baseptr = *(btDefaultVehicleRaycaster **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_FilterableVehicleRaycaster_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btDefaultVehicleRaycaster **)&baseptr = *(FilterableVehicleRaycaster **)&jarg1;
     return baseptr;
 }
 

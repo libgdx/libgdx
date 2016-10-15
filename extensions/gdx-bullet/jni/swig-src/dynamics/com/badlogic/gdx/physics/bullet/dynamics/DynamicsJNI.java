@@ -1913,6 +1913,10 @@ public class DynamicsJNI {
   public final static native int btRaycastVehicle_getUserConstraintId(long jarg1, btRaycastVehicle jarg1_);
   public final static native long new_btDefaultVehicleRaycaster(long jarg1, btDynamicsWorld jarg1_);
   public final static native void delete_btDefaultVehicleRaycaster(long jarg1);
+  public final static native long new_FilterableVehicleRaycaster(long jarg1, btDynamicsWorld jarg1_);
+  public final static native void FilterableVehicleRaycaster_setCollisionFilterMask(long jarg1, FilterableVehicleRaycaster jarg1_, short jarg2);
+  public final static native void FilterableVehicleRaycaster_setCollisionFilterGroup(long jarg1, FilterableVehicleRaycaster jarg1_, short jarg2);
+  public final static native void delete_FilterableVehicleRaycaster(long jarg1);
   public final static native long btRigidBody_SWIGUpcast(long jarg1);
   public final static native long btTypedConstraint_SWIGUpcast(long jarg1);
   public final static native long btDynamicsWorld_SWIGUpcast(long jarg1);
@@ -1937,6 +1941,7 @@ public class DynamicsJNI {
   public final static native long btFixedConstraint_SWIGUpcast(long jarg1);
   public final static native long btRaycastVehicle_SWIGUpcast(long jarg1);
   public final static native long btDefaultVehicleRaycaster_SWIGUpcast(long jarg1);
+  public final static native long FilterableVehicleRaycaster_SWIGUpcast(long jarg1);
 
   public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback jself, long dynamicsWorld, float timeStep) {
     jself.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
