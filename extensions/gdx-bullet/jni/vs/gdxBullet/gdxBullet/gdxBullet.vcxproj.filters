@@ -576,5 +576,8 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp">
       <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\FilterableVehicleRaycaster.cpp">
+      <Filter>Source Files\custom\gdx\dynamics</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
