@@ -153,16 +153,54 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// We also create a simple ChainShape we put above our
 		// ground polygon for extra funkyness.
 		ChainShape chainShape = new ChainShape();
+			//isLooped = false
 		chainShape.createLoop(new Vector2[] {new Vector2(-10, 10), new Vector2(-10, 5), new Vector2(10, 5), new Vector2(10, 11),});
 		BodyDef chainBodyDef = new BodyDef();
 		chainBodyDef.type = BodyType.StaticBody;
+			//isLooped = true
 		Body chainBody = world.createBody(chainBodyDef);
 		chainBody.createFixture(chainShape, 0);
 		chainShape.dispose();
 
 		createBoxes();
 
-		// You can savely ignore the rest of this method :)
+		// Code inserted from the Issue; other lines are me messing around
+		World world = new World(new Vector2(), true);
+	  	ChainShape chainShape1 = new ChainShape();
+	   	chainShape1.createLoop(new float[] {-10, -10, 10, -10, 10, 10, -10, 10});
+	   	 //chainShape1.createLoop(new Vector2[] {new Vector2(-10, -10), new Vector2(10, -10), new Vector2 (10, 10), new Vector2(-10, 10)});
+	    	if (chainShape1.isLooped()) {
+	        	System.out.println("New shape looks good");
+	    	} else {
+		        System.out.println("New shape looks broken");
+		}
+		BodyDef chainBodyDef1 = new BodyDef();
+		chainBodyDef1.type = BodyDef.BodyType.StaticBody;
+		Body body = world.createBody(chainBodyDef1);
+		    
+		body.createFixture(chainShape1, 0);	// Code inserted in
+	    
+	    	Fixture fixture = body.createFixture(chainShape1, 0);
+	    	ChainShape shape1 = (ChainShape)fixture.getShape();
+	    	if (shape1.isLooped()) {
+			System.out.println("Fixture shape looks good");
+	    	} else {
+	        	System.out.println("Fixture shape looks broken");
+	    	}
+	    	chainShape1.dispose();
+	    	world.dispose();
+	    // End of inserted code
+	    /*
+	     * Problem seems to be in the getShape, as isLooped for chainBodyShape1 is true.
+	     * Loop does not print out in test though
+	     * I assumed it is because the createloop uses a float[] instead of vector2[]
+	     * Casting might also be a problem
+	     * LINE 188 IS THE ISSUE?
+	     * Check 41 in ChainShape.java
+	     * 
+	     */
+		
+		// You can safely ignore the rest of this method :)
 		world.setContactListener(new ContactListener() {
 			@Override
 			public void beginContact (Contact contact) {
