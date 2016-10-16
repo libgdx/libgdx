@@ -244,7 +244,7 @@ void btCompoundCollisionAlgorithm::processCollision (const btCollisionObjectWrap
 	///so we should add a 'refreshManifolds' in the btCollisionAlgorithm
 	{
 		int i;
-		btManifoldArray manifoldArray;
+		manifoldArray.resize(0);
 		for (i=0;i<m_childCollisionAlgorithms.size();i++)
 		{
 			if (m_childCollisionAlgorithms[i])
@@ -274,7 +274,7 @@ void btCompoundCollisionAlgorithm::processCollision (const btCollisionObjectWrap
 
 		const ATTRIBUTE_ALIGNED16(btDbvtVolume)	bounds=btDbvtVolume::FromMM(localAabbMin,localAabbMax);
 		//process all children, that overlap with  the given AABB bounds
-		tree->collideTV(tree->m_root,bounds,callback);
+		tree->collideTVNoStackAlloc(tree->m_root,bounds,stack2,callback);
 
 	} else
 	{
@@ -291,7 +291,7 @@ void btCompoundCollisionAlgorithm::processCollision (const btCollisionObjectWrap
 				//iterate over all children, perform an AABB check inside ProcessChildShape
 		int numChildren = m_childCollisionAlgorithms.size();
 		int i;
-		btManifoldArray	manifoldArray;
+		manifoldArray.resize(0);
         const btCollisionShape* childShape = 0;
         btTransform	orgTrans;
         

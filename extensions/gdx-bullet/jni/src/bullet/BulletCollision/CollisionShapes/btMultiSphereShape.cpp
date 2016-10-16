@@ -75,7 +75,7 @@ btMultiSphereShape::btMultiSphereShape (const btVector3* positions,const btScala
 		int inner_count = MIN( numSpheres - k, 128 );
         for( long i = 0; i < inner_count; i++ )
         {
-            temp[i] = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
+            temp[i] = (*pos)*m_localScaling +vec*m_localScaling*(*rad) - vec * getMargin();
             pos++;
             rad++;
         }
@@ -113,7 +113,7 @@ btMultiSphereShape::btMultiSphereShape (const btVector3* positions,const btScala
             int inner_count = MIN( numSpheres - k, 128 );
             for( long i = 0; i < inner_count; i++ )
             {
-                temp[i] = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
+                temp[i] = (*pos)*m_localScaling +vec*m_localScaling*(*rad) - vec * getMargin();
                 pos++;
                 rad++;
             }

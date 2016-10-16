@@ -79,8 +79,6 @@ struct btWheelInfo
 	
 	void*		m_clientInfo;//can be used to store pointer to sync transforms...
 
-	btWheelInfo() {}
-
 	btWheelInfo(btWheelInfoConstructionInfo& ci)
 
 	{

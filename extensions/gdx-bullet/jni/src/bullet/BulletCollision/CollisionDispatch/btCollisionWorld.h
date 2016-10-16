@@ -27,7 +27,7 @@ subject to the following restrictions:
  * @section install_sec Installation
  *
  * @subsection step1 Step 1: Download
- * You can download the Bullet Physics Library from the Google Code repository: http://code.google.com/p/bullet/downloads/list
+ * You can download the Bullet Physics Library from the github repository: https://github.com/bulletphysics/bullet3/releases 
  *
  * @subsection step2 Step 2: Building
  * Bullet has multiple build systems, including premake, cmake and autotools. Premake and cmake support all platforms.

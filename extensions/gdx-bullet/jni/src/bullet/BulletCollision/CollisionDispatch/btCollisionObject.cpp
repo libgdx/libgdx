@@ -33,8 +33,12 @@ btCollisionObject::btCollisionObject()
 		m_friction(btScalar(0.5)),
 		m_restitution(btScalar(0.)),
 		m_rollingFriction(0.0f),
+        m_spinningFriction(0.f),
+		m_contactDamping(.1),
+		m_contactStiffness(1e4),
 		m_internalType(CO_COLLISION_OBJECT),
 		m_userObjectPointer(0),
+		m_userIndex2(-1),
 		m_userIndex(-1),
 		m_hitFraction(btScalar(1.)),
 		m_ccdSweptSphereRadius(btScalar(0.)),
@@ -91,6 +95,8 @@ const char* btCollisionObject::serialize(void* dataBuffer, btSerializer* seriali
 	dataOut->m_deactivationTime = m_deactivationTime;
 	dataOut->m_friction = m_friction;
 	dataOut->m_rollingFriction = m_rollingFriction;
+	dataOut->m_contactDamping = m_contactDamping;
+	dataOut->m_contactStiffness = m_contactStiffness;
 	dataOut->m_restitution = m_restitution;
 	dataOut->m_internalType = m_internalType;
 	

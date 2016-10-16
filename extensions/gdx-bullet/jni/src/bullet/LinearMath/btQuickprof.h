@@ -15,18 +15,7 @@
 #ifndef BT_QUICK_PROF_H
 #define BT_QUICK_PROF_H
 
-//To disable built-in profiling, please comment out next line
-//#define BT_NO_PROFILE 1
-#ifndef BT_NO_PROFILE
-#include <stdio.h>//@todo remove this, backwards compatibility
 #include "btScalar.h"
-#include "btAlignedAllocator.h"
-#include <new>
-
-
-
-
-
 #define USE_BT_CLOCK 1
 
 #ifdef USE_BT_CLOCK
@@ -62,6 +51,20 @@ private:
 };
 
 #endif //USE_BT_CLOCK
+
+
+//To disable built-in profiling, please comment out next line
+#define BT_NO_PROFILE 1
+#ifndef BT_NO_PROFILE
+#include <stdio.h>//@todo remove this, backwards compatibility
+
+#include "btAlignedAllocator.h"
+#include <new>
+
+
+
+
+
 
 
 

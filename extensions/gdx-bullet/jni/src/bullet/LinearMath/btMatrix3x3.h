@@ -1047,7 +1047,8 @@ btMatrix3x3::inverse() const
 {
 	btVector3 co(cofac(1, 1, 2, 2), cofac(1, 2, 2, 0), cofac(1, 0, 2, 1));
 	btScalar det = (*this)[0].dot(co);
-	btFullAssert(det != btScalar(0.0));
+	//btFullAssert(det != btScalar(0.0));
+	btAssert(det != btScalar(0.0));
 	btScalar s = btScalar(1.0) / det;
 	return btMatrix3x3(co.x() * s, cofac(0, 2, 2, 1) * s, cofac(0, 1, 1, 2) * s,
 		co.y() * s, cofac(0, 0, 2, 2) * s, cofac(0, 2, 1, 0) * s,
@@ -1329,7 +1330,9 @@ SIMD_FORCE_INLINE bool operator==(const btMatrix3x3& m1, const btMatrix3x3& m2)
     c0 = _mm_and_ps(c0, c1);
     c0 = _mm_and_ps(c0, c2);
 
-    return (0x7 == _mm_movemask_ps((__m128)c0));
+	int m = _mm_movemask_ps((__m128)c0);
+	return (0x7 == (m & 0x7));
+	
 #else 
 	return 
     (   m1[0][0] == m2[0][0] && m1[1][0] == m2[1][0] && m1[2][0] == m2[2][0] &&

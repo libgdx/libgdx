@@ -28,18 +28,10 @@ struct btCollisionResult;
 ///maximum contact breaking and merging threshold
 extern btScalar gContactBreakingThreshold;
 
-#ifndef SWIG
-class btPersistentManifold;
-
 typedef bool (*ContactDestroyedCallback)(void* userPersistentData);
 typedef bool (*ContactProcessedCallback)(btManifoldPoint& cp,void* body0,void* body1);
-typedef void(*ContactStartedCallback)(btPersistentManifold* const &manifold);
-typedef void(*ContactEndedCallback)(btPersistentManifold* const &manifold);
 extern ContactDestroyedCallback	gContactDestroyedCallback;
 extern ContactProcessedCallback gContactProcessedCallback;
-extern ContactStartedCallback gContactStartedCallback;
-extern ContactEndedCallback gContactEndedCallback;
-#endif //SWIG
 
 //the enum starts at 1024 to avoid type conflicts with btTypedConstraint
 enum btContactManifoldTypes
@@ -171,7 +163,7 @@ public:
 			//get rid of duplicated userPersistentData pointer
 			m_pointCache[lastUsedIndex].m_userPersistentData = 0;
 			m_pointCache[lastUsedIndex].m_appliedImpulse = 0.f;
-			m_pointCache[lastUsedIndex].m_lateralFrictionInitialized = false;
+			m_pointCache[lastUsedIndex].m_contactPointFlags = 0;
 			m_pointCache[lastUsedIndex].m_appliedImpulseLateral1 = 0.f;
 			m_pointCache[lastUsedIndex].m_appliedImpulseLateral2 = 0.f;
 			m_pointCache[lastUsedIndex].m_lifeTime = 0;
@@ -179,11 +171,6 @@ public:
 
 		btAssert(m_pointCache[lastUsedIndex].m_userPersistentData==0);
 		m_cachedPoints--;
-
-		if (gContactEndedCallback && m_cachedPoints == 0)
-		{
-			gContactEndedCallback(this);
-		}
 	}
 	void replaceContactPoint(const btManifoldPoint& newPoint,int insertIndex)
 	{
@@ -203,16 +190,11 @@ public:
 		void* cache = m_pointCache[insertIndex].m_userPersistentData;
 		
 		m_pointCache[insertIndex] = newPoint;
-
 		m_pointCache[insertIndex].m_userPersistentData = cache;
 		m_pointCache[insertIndex].m_appliedImpulse = appliedImpulse;
 		m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
 		m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
 		
-		m_pointCache[insertIndex].m_appliedImpulse =  appliedImpulse;
-		m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
-		m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
-
 
 		m_pointCache[insertIndex].m_lifeTime = lifeTime;
 #else
@@ -237,11 +219,6 @@ public:
 		for (i=0;i<m_cachedPoints;i++)
 		{
 			clearUserCache(m_pointCache[i]);
-		}
-
-		if (gContactEndedCallback && m_cachedPoints)
-		{
-			gContactEndedCallback(this);
 		}
 		m_cachedPoints = 0;
 	}

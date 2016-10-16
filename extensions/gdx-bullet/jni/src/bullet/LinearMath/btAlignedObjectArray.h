@@ -39,6 +39,12 @@ subject to the following restrictions:
 #include <new> //for placement new
 #endif //BT_USE_PLACEMENT_NEW
 
+// The register keyword is deprecated in C++11 so don't use it.
+#if __cplusplus > 199711L
+#define BT_REGISTER
+#else
+#define BT_REGISTER register
+#endif
 
 ///The btAlignedObjectArray template class uses a subset of the stl::vector interface for its methods
 ///It is developed to replace stl::vector to avoid portability issues, including STL alignment issues to add SIMD/SSE data
@@ -211,7 +217,7 @@ protected:
 	
 		SIMD_FORCE_INLINE	void	resize(int newsize, const T& fillData=T())
 		{
-			const register int curSize = size();
+			const BT_REGISTER int curSize = size();
 
 			if (newsize < curSize)
 			{
@@ -238,7 +244,7 @@ protected:
 		}
 		SIMD_FORCE_INLINE	T&  expandNonInitializing( )
 		{	
-			const register int sz = size();
+			const BT_REGISTER int sz = size();
 			if( sz == capacity() )
 			{
 				reserve( allocSize(size()) );
@@ -251,7 +257,7 @@ protected:
 
 		SIMD_FORCE_INLINE	T&  expand( const T& fillValue=T())
 		{	
-			const register int sz = size();
+			const BT_REGISTER int sz = size();
 			if( sz == capacity() )
 			{
 				reserve( allocSize(size()) );
@@ -267,7 +273,7 @@ protected:
 
 		SIMD_FORCE_INLINE	void push_back(const T& _Val)
 		{	
-			const register int sz = size();
+			const BT_REGISTER int sz = size();
 			if( sz == capacity() )
 			{
 				reserve( allocSize(size()) );
