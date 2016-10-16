@@ -138,9 +138,11 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />

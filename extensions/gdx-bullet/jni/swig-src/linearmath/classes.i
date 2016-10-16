@@ -23,6 +23,7 @@ SPECIFY_CLASS(SWIGTYPE_p_f_size_t_int__p_void, com.badlogic.gdx.physics.bullet.l
 SPECIFY_CLASS(SWIGTYPE_p_float, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btAngleCompareFunc, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btBlock, com.badlogic.gdx.physics.bullet.linearmath)
+SPECIFY_CLASS(btClock, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btConvexHullComputer, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btConvexSeparatingDistanceUtil, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btDefaultMotionState, com.badlogic.gdx.physics.bullet.linearmath)
