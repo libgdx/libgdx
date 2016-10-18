@@ -102,8 +102,6 @@ public class CharacterTest extends BaseBulletTest {
 				}
 			}
 		}
-
-		toggleDebugMode();
 	}
 	
 	@Override
@@ -132,7 +130,6 @@ public class CharacterTest extends BaseBulletTest {
 		super.update();
 		// And fetch the new transformation of the character (this will make the model be rendered correctly)
 		ghostObject.getWorldTransform(characterTransform);
-		Gdx.app.log("Test", characterTransform.toString());
 	}
 	
 	@Override
