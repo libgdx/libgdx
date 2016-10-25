@@ -186,7 +186,9 @@ public class BaseAnimationController {
 		else if(index == n) {
 		    index = n-1;
 		}
-		else {
+
+		// sanity check
+		if(index < 0 || index > n) {
 		    index = 0;
 		}
 
