@@ -159,7 +159,6 @@ public class BaseAnimationController {
 	private final static Transform tmpT = new Transform();
 
 	private final static <T> int getFirstKeyframeIndexAtTime (final Array<NodeKeyframe<T>> arr, final float time) {
-		
 		final int n = arr.size - 1;
 
 		// binary search
@@ -168,31 +167,26 @@ public class BaseAnimationController {
 		float pct = time / arr.get(n).keytime;
 		int index = (int)(pct * n); // best guess initial index to start from
 
-		if(index >= 0 && index <= n-1)
-		{
-		    while(time < arr.get(index).keytime || time > arr.get(index + 1).keytime)
-		    {
-			if(time < arr.get(index).keytime)
-			{
+		if(index >= 0 && index <= n-1) {
+		    while(time < arr.get(index).keytime || time > arr.get(index + 1).keytime) {
+			if(time < arr.get(index).keytime) {
 			    maxIndex = index - 1;
 			}
-			else if(time > arr.get(index).keytime)
-			{
+			else if(time > arr.get(index).keytime) {
 			    minIndex = index + 1;
 			}
 
 			index = (int) ((minIndex + maxIndex) / 2.0f);
 
-			if(index < 0 || index > n-1)
+			if(index < 0 || index > n-1) {
 			    break;
+			}
 		    }
 		}
-		else if(index == n)
-		{
+		else if(index == n) {
 		    index = n-1;
 		}
-		else
-		{
+		else {
 		    index = 0;
 		}
 
