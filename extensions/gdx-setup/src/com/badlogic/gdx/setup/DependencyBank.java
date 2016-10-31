@@ -29,7 +29,7 @@ public class DependencyBank {
 	static String moeVersion = "1.2.3";
 	static String buildToolsVersion = "23.0.1";
 	static String androidAPILevel = "20";
-	static String gwtVersion = "2.6.0";
+	static String gwtVersion = "2.8.0";
 
 	//Repositories
 	static String mavenLocal = "mavenLocal()";
