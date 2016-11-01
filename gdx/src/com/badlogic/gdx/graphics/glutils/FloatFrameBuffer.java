@@ -18,6 +18,9 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -27,30 +30,36 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class FloatFrameBuffer extends FrameBuffer {
 
 	/** Creates a new FrameBuffer with a float backing texture, having the given dimensions and potentially a depth buffer attached.
-	 * 
+	 *
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
 	public FloatFrameBuffer (int width, int height, boolean hasDepth) {
-		super(null, width, height, hasDepth);
+		super(width, height);
+
+		Builder builder = new FrameBuffer.Builder(width, height);
+
+		boolean isES = Gdx.app.getType() == ApplicationType.Android
+				|| Gdx.app.getType() == ApplicationType.iOS
+				|| Gdx.app.getType() == ApplicationType.WebGL;
+
+		int format = isES ? GL20.GL_RGBA : GL30.GL_RGBA32F;
+		int baseFormat = GL20.GL_RGBA;
+		int type = GL20.GL_FLOAT;
+
+		if (isES) {
+			builder.addColorTexture(format, baseFormat, type, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge);
+		} else {
+			builder.addColorTexture(format, baseFormat, type, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge);
+		}
+
+		if (hasDepth) {
+			builder.addDepthRenderbuffer(GL30.GL_DEPTH_COMPONENT24, GL30.GL_UNSIGNED_INT);
+		}
+
+		this.attachments = builder.buildAttachments();
+		build();
 	}
 
-	@Override
-	protected Texture createColorTexture () {
-		FloatTextureData data = new FloatTextureData(width, height);
-		Texture result = new Texture(data);
-		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)
-			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		else
-			// no filtering for float textures in OpenGL ES
-			result.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		return result;
-	}
-	
-	@Override
-	protected void disposeColorTexture (Texture colorTexture) {
-		colorTexture.dispose();
-	}
 }

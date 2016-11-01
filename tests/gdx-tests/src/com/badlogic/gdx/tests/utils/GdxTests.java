@@ -55,6 +55,7 @@ import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
+import com.badlogic.gdx.tests.g3d.FrameBufferPlusTest;
 import com.badlogic.gdx.tests.g3d.HeightMapTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
@@ -131,6 +132,7 @@ public class GdxTests {
 		FloatTextureTest.class,
 		FogTest.class,
 		FrameBufferCubemapTest.class,
+		FrameBufferPlusTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
