@@ -92,7 +92,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
-			count += attribute.getNumBytes();
+			count += attribute.getSizeInBytes();
 		}
 
 		return count;

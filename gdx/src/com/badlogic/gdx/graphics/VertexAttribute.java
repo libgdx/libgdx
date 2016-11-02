@@ -94,6 +94,12 @@ public final class VertexAttribute {
 		this.unit = unit;
 		this.usageIndex = Integer.numberOfTrailingZeros(usage);
 	}
+	
+	/** @return A copy of this VertexAttribute with the same parameters. The {@link #offset} is not copied and must
+	 * be recalculated, as is typically done by the {@linkplain VertexAttributes} that owns the VertexAttribute. */
+	public VertexAttribute copy (){
+		return new VertexAttribute(usage, numComponents, type, normalized, alias, unit);
+	}
 
 	public static VertexAttribute Position () {
 		return new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
@@ -148,7 +154,7 @@ public final class VertexAttribute {
 	}
 	
 	/** @return How many bytes this attribute uses. */
-	public int getNumBytes () {
+	public int getSizeInBytes () {
 		switch (type) {
 		case GL20.GL_FLOAT:
 		case GL20.GL_FIXED:
