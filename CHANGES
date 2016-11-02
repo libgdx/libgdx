@@ -1,11 +1,10 @@
 [LATEST]
+- VertexAttribute expert constructors exposed. Short types can now be used for attributes.
 
 [1.9.5]
 - Fix NPE swallowing "video driver unsupported" error on LWJGL 2 backend.
 - Allow window icons to be set in Lwjgl3ApplicationConfiguration or Lwjgl3WindowConfiguration.
 - Allow window icon and title to be changed in Lwjgl3Window
-[1.9.5]
-- VertexAttribute expert constructors exposed.
 - API Addition: ApplicationLogger interface, allowing easier access to custom logging
 - DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
 - Bullet: added FilterableVehicleRaycaster, see https://github.com/libgdx/libgdx/pull/4361
