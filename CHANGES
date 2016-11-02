@@ -4,6 +4,7 @@
 - Bullet: added FilterableVehicleRaycaster, see https://github.com/libgdx/libgdx/pull/4361
 - Bullet: updated to 2.85, see: http://bulletphysics.org/wordpress/?p=456
 - Updated iOS native build scripts to iOS 10.0 and TVOS 10.0
+- API Addition: BitmapFont#blankLineScale.
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
