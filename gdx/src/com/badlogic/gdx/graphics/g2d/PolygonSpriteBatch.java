@@ -1202,8 +1202,6 @@ public class PolygonSpriteBatch implements Batch {
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, vertexIndex);
 		mesh.setIndices(triangles, 0, triangleIndex);
-		if (triangleIndex > 1000) System.out.println(
-			vertexIndex / 5 + "/" + vertices.length / 5 + " verts, " + triangleIndex / 3 + "/" + triangles.length / 3 + " tris");
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
