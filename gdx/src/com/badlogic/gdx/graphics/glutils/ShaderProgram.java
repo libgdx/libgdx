@@ -79,6 +79,8 @@ public class ShaderProgram implements Disposable {
 	public static final String TANGENT_ATTRIBUTE = "a_tangent";
 	/** default name for binormal attribute **/
 	public static final String BINORMAL_ATTRIBUTE = "a_binormal";
+	/** default name for boneweight attribute **/
+	public static final String BONEWEIGHT_ATTRIBUTE = "a_boneWeight";
 
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;
