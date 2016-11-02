@@ -184,7 +184,8 @@ public class List<T> extends Widget implements Cullable {
 		return selection.first();
 	}
 
-	/** Sets the selection to only the passed item, if it is a possible choice. */
+	/** Sets the selection to only the passed item, if it is a possible choice.
+	 * @param item May be null. */
 	public void setSelected (T item) {
 		if (items.contains(item, false))
 			selection.set(item);
