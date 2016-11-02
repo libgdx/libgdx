@@ -168,6 +168,22 @@ public class btCollisionObjectFloatData extends BulletBase {
     return CollisionJNI.btCollisionObjectFloatData_rollingFriction_get(swigCPtr, this);
   }
 
+  public void setContactDamping(float value) {
+    CollisionJNI.btCollisionObjectFloatData_contactDamping_set(swigCPtr, this, value);
+  }
+
+  public float getContactDamping() {
+    return CollisionJNI.btCollisionObjectFloatData_contactDamping_get(swigCPtr, this);
+  }
+
+  public void setContactStiffness(float value) {
+    CollisionJNI.btCollisionObjectFloatData_contactStiffness_set(swigCPtr, this, value);
+  }
+
+  public float getContactStiffness() {
+    return CollisionJNI.btCollisionObjectFloatData_contactStiffness_get(swigCPtr, this);
+  }
+
   public void setRestitution(float value) {
     CollisionJNI.btCollisionObjectFloatData_restitution_set(swigCPtr, this, value);
   }

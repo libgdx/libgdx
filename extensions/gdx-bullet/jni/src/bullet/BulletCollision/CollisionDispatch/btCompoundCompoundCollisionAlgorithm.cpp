@@ -15,6 +15,7 @@ subject to the following restrictions:
 */
 
 #include "btCompoundCompoundCollisionAlgorithm.h"
+#include "LinearMath/btQuickprof.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionShapes/btCompoundShape.h"
 #include "BulletCollision/BroadphaseCollision/btDbvt.h"
@@ -124,6 +125,7 @@ struct	btCompoundCompoundLeafCallback : btDbvt::ICollide
 	
 	void		Process(const btDbvtNode* leaf0,const btDbvtNode* leaf1)
 	{
+		BT_PROFILE("btCompoundCompoundLeafCallback::Process");
 		m_numOverlapPairs++;
 
 

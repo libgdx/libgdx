@@ -19,6 +19,10 @@ public enum IOSDevice {
 	IPHONE_6("iPhone7,2", 326),
 	IPHONE_6S("iPhone8,1", 326),
 	IPHONE_6S_PLUS("iPhone8,2", 401),
+	IPHONE_7_CDMA_GSM("iPhone9,1", 326),
+	IPHONE_7_PLUS_CDMA_GSM("iPhone9,2", 401),
+	IPHONE_7("iPhone9,3", 326),
+	IPHONE_7_PLUS("iPhone9,4", 401),
 	
 	IPOD_TOUCH_1G("iPod1,1", 163),
 	IPOD_TOUCH_2G("iPod2,1", 163),

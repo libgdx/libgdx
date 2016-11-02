@@ -214,7 +214,7 @@ void btConeTwistConstraint::getInfo2NonVirtual (btConstraintInfo2* info,const bt
 			}
 			// m_swingCorrection is always positive or 0
 			info->m_lowerLimit[srow] = 0;
-			info->m_upperLimit[srow] = SIMD_INFINITY;
+			info->m_upperLimit[srow] = (m_bMotorEnabled && m_maxMotorImpulse >= 0.0f) ? m_maxMotorImpulse : SIMD_INFINITY;
 			srow += info->rowskip;
 		}
 	}

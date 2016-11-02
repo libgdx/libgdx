@@ -127,7 +127,7 @@ public:
 	
 	
   /**@brief Set from an array 
-   * @param m A pointer to a 15 element array (12 rotation(row major padded on the right by 1), and 3 translation */
+   * @param m A pointer to a 16 element array (12 rotation(row major padded on the right by 1), and 3 translation */
 	void setFromOpenGLMatrix(const btScalar *m)
 	{
 		m_basis.setFromOpenGLSubMatrix(m);
@@ -135,7 +135,7 @@ public:
 	}
 
   /**@brief Fill an array representation
-   * @param m A pointer to a 15 element array (12 rotation(row major padded on the right by 1), and 3 translation */
+   * @param m A pointer to a 16 element array (12 rotation(row major padded on the right by 1), and 3 translation */
 	void getOpenGLMatrix(btScalar *m) const 
 	{
 		m_basis.getOpenGLSubMatrix(m);

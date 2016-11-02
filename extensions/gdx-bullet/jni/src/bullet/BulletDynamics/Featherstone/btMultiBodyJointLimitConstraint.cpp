@@ -38,7 +38,7 @@ void btMultiBodyJointLimitConstraint::finalizeMultiDof()
 
 	allocateJacobiansMultiDof();
 
-	unsigned int offset = 6 + (m_bodyA->isMultiDof() ? m_bodyA->getLink(m_linkA).m_dofOffset : m_linkA);
+	unsigned int offset = 6 + m_bodyA->getLink(m_linkA).m_dofOffset;
 
 	// row 0: the lower bound
 	jacobianA(0)[offset] = 1;
@@ -122,9 +122,8 @@ void btMultiBodyJointLimitConstraint::createConstraintRows(btMultiBodyConstraint
 		const btScalar posError = 0;						//why assume it's zero?
 		const btVector3 dummy(0, 0, 0);
 
-		btScalar rel_vel = fillMultiBodyConstraint(constraintRow,data,jacobianA(row),jacobianB(row),dummy,dummy,dummy,posError,infoGlobal,0,m_maxAppliedImpulse);
+		btScalar rel_vel = fillMultiBodyConstraint(constraintRow,data,jacobianA(row),jacobianB(row),dummy,dummy,dummy,dummy,posError,infoGlobal,0,m_maxAppliedImpulse);
 
-		if (m_bodyA->isMultiDof())
 		{
 			//expect either prismatic or revolute joint type for now
 			btAssert((m_bodyA->getLink(m_linkA).m_jointType == btMultibodyLink::eRevolute)||(m_bodyA->getLink(m_linkA).m_jointType == btMultibodyLink::ePrismatic));

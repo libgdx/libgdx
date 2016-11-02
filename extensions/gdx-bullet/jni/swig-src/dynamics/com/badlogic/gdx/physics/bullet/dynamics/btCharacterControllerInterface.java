@@ -87,8 +87,12 @@ public class btCharacterControllerInterface extends btActionInterface {
     return DynamicsJNI.btCharacterControllerInterface_canJump(swigCPtr, this);
   }
 
+  public void jump(Vector3 dir) {
+    DynamicsJNI.btCharacterControllerInterface_jump__SWIG_0(swigCPtr, this, dir);
+  }
+
   public void jump() {
-    DynamicsJNI.btCharacterControllerInterface_jump(swigCPtr, this);
+    DynamicsJNI.btCharacterControllerInterface_jump__SWIG_1(swigCPtr, this);
   }
 
   public boolean onGround() {

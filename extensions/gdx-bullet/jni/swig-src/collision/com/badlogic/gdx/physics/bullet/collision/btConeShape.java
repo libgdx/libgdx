@@ -70,6 +70,14 @@ public class btConeShape extends btConvexInternalShape {
     return CollisionJNI.btConeShape_getHeight(swigCPtr, this);
   }
 
+  public void setRadius(float radius) {
+    CollisionJNI.btConeShape_setRadius(swigCPtr, this, radius);
+  }
+
+  public void setHeight(float height) {
+    CollisionJNI.btConeShape_setHeight(swigCPtr, this, height);
+  }
+
   public void setConeUpIndex(int upIndex) {
     CollisionJNI.btConeShape_setConeUpIndex(swigCPtr, this, upIndex);
   }

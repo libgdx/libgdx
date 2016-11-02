@@ -77,7 +77,7 @@ struct btContactSolverInfo : public btContactSolverInfoData
 		m_maxErrorReduction = btScalar(20.);
 		m_numIterations = 10;
 		m_erp = btScalar(0.2);
-		m_erp2 = btScalar(0.8);
+		m_erp2 = btScalar(0.2);
 		m_globalCfm = btScalar(0.);
 		m_sor = btScalar(1.);
 		m_splitImpulse = true;

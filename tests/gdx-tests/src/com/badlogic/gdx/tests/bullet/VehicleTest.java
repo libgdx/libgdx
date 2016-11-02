@@ -53,6 +53,10 @@ public class VehicleTest extends BaseBulletTest {
 	boolean leftPressed;
 	boolean rightPressed;
 	Vector3 tmpV = new Vector3();
+	
+	protected btVehicleRaycaster getRaycaster() {
+		return new btDefaultVehicleRaycaster((btDynamicsWorld)world.collisionWorld);
+	}
 
 	@Override
 	public void create () {
@@ -96,7 +100,7 @@ public class VehicleTest extends BaseBulletTest {
 		wheels[3] = world.add("wheel", 0, 0, 0);
 
 		// Create the vehicle
-		raycaster = new btDefaultVehicleRaycaster((btDynamicsWorld)world.collisionWorld);
+		raycaster = getRaycaster();
 		tuning = new btVehicleTuning();
 		vehicle = new btRaycastVehicle(tuning, (btRigidBody)chassis.body, raycaster);
 		chassis.body.setActivationState(Collision.DISABLE_DEACTIVATION);
