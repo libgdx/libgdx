@@ -685,7 +685,7 @@ public class Actor {
 		Array<Actor> children = parent.children;
 		if (children.size == 1) return;
 		index = Math.min(index, children.size - 1);
-		if (index == children.indexOf(this, true)) return;
+		if (children.get(index) == this) return;
 		if (!children.removeValue(this, true)) return;
 		children.insert(index, this);
 	}
