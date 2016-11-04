@@ -1,5 +1,5 @@
 [1.9.5]
-- Allow window icons to be set in Lwjgl3ApplicationConfiguration or LwjglWindowConfiguration.
+- Allow window icons to be set in Lwjgl3ApplicationConfiguration or Lwjgl3WindowConfiguration.
 - Allow window icon and title to be changed in Lwjgl3Window
 - API Addition: ApplicationLogger interface, allowing easier access to custom logging
 - DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
