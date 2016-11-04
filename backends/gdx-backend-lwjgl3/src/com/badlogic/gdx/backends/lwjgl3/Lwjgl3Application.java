@@ -20,11 +20,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 import com.badlogic.gdx.ApplicationLogger;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.AMDDebugOutput;
 import org.lwjgl.opengl.ARBDebugOutput;
@@ -431,32 +429,8 @@ public class Lwjgl3Application implements Application {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
 		}
-		if (config.windowIconPaths != null && !SharedLibraryLoader.isMac){
-			GLFWImage.Buffer buffer = GLFWImage.malloc(config.windowIconPaths.length);
-			Pixmap[] tmpPixmaps = new Pixmap[config.windowIconPaths.length];
-			Pixmap.Blending previousBlending = Pixmap.getBlending();
-			Pixmap.setBlending(Pixmap.Blending.None);
-			for (int i = 0; i < config.windowIconPaths.length; i++) {
-				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.windowIconPaths[i], config.windowIconFileType));
-				if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
-					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
-					rgba.drawPixmap(pixmap, 0, 0);
-					pixmap.dispose();
-					pixmap = rgba;
-				}
-				tmpPixmaps[i] = pixmap;
-
-				GLFWImage icon = GLFWImage.malloc();
-				icon.set(pixmap.getWidth(), pixmap.getHeight(), pixmap.getPixels());
-				buffer.put(icon);
-
-				icon.free();
-			}
-			Pixmap.setBlending(previousBlending); //just in case, avoid surprises
-			buffer.position(0);
-			GLFW.glfwSetWindowIcon(windowHandle, buffer);
-			buffer.free();
-			for (Pixmap pixmap : tmpPixmaps) pixmap.dispose();
+		if (config.windowIconPaths != null) {
+			Lwjgl3Window.setIcon(windowHandle, config.windowIconPaths, config.windowIconFileType);
 		}
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);

@@ -28,10 +28,10 @@ import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Window implements Disposable {
@@ -230,21 +230,43 @@ public class Lwjgl3Window implements Disposable {
 	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
 	 * have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not disposed.
 	 */
-	public void setIcon (Pixmap... image){
+	public void setIcon (Pixmap... image) {
+		setIcon(windowHandle, image);
+	}
+
+	static void setIcon(long windowHandle, String[] imagePaths, Files.FileType imageFileType) {
 		if (SharedLibraryLoader.isMac)
 			return;
-		GLFWImage.Buffer buffer = GLFWImage.malloc(image.length);
-		ObjectSet<Pixmap> tmpPixmaps = null;
+
+		Pixmap[] pixmaps = new Pixmap[imagePaths.length];
+		for (int i = 0; i < imagePaths.length; i++) {
+			pixmaps[i] = new Pixmap(Gdx.files.getFileHandle(imagePaths[i], imageFileType));
+		}
+
+		setIcon(windowHandle, pixmaps);
+
+		for (Pixmap pixmap : pixmaps) {
+			pixmap.dispose();
+		}
+	}
+
+	static void setIcon(long windowHandle, Pixmap[] images) {
+		if (SharedLibraryLoader.isMac)
+			return;
+
 		Pixmap.Blending previousBlending = Pixmap.getBlending();
 		Pixmap.setBlending(Pixmap.Blending.None);
-		for (int i = 0; i < image.length; i++) {
-			Pixmap pixmap = image[i];
+
+		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
+		Pixmap[] tmpPixmaps = new Pixmap[images.length];
+
+		for (int i = 0; i < images.length; i++) {
+			Pixmap pixmap = images[i];
+
 			if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
-				if (tmpPixmaps == null)
-					tmpPixmaps = new ObjectSet<Pixmap>(image.length - i);
 				Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
 				rgba.drawPixmap(pixmap, 0, 0);
-				tmpPixmaps.add(rgba);
+				tmpPixmaps[i] = rgba;
 				pixmap = rgba;
 			}
 
@@ -254,14 +276,20 @@ public class Lwjgl3Window implements Disposable {
 
 			icon.free();
 		}
-		Pixmap.setBlending(previousBlending); //just in case, avoid surprises
+
 		buffer.position(0);
 		GLFW.glfwSetWindowIcon(windowHandle, buffer);
+
 		buffer.free();
-		if (tmpPixmaps != null) 
-			for (Pixmap pixmap : tmpPixmaps) pixmap.dispose();
+		for (Pixmap pixmap : tmpPixmaps) {
+			if (pixmap != null) {
+				pixmap.dispose();
+			}
+		}
+
+		Pixmap.setBlending(previousBlending);
 	}
-	
+
 	public void setTitle (CharSequence title){
 		GLFW.glfwSetWindowTitle(windowHandle, title);
 	}
