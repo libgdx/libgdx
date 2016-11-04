@@ -69,4 +69,11 @@ public interface Lwjgl3WindowListener {
 	 */
 	void filesDropped(String[] files);
 
+	/**
+	 * Called when the window content is damaged and needs to be refreshed.
+	 * If non-continuous rendering is used, applications should call
+	 * {@link Lwjgl3Graphics#requestRendering()} to force a render update.
+	 */
+	void refreshRequested();
+
 }

@@ -209,7 +209,10 @@ public class Lwjgl3DebugStarter {
 			@Override
 			public void filesDropped (String[] files) {				
 			}
-			
+
+			@Override
+			public void refreshRequested() {
+			}
 		});
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);

@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowIconifyCallback;
+import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -47,6 +48,7 @@ public class Lwjgl3Window implements Disposable {
 	private final IntBuffer tmpBuffer;
 	private final IntBuffer tmpBuffer2;
 	private boolean iconified = false;
+	private boolean requestRendering = false;
 	
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
 		@Override
@@ -124,6 +126,20 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 
+	private final GLFWWindowRefreshCallback refreshCallback = new GLFWWindowRefreshCallback() {
+		@Override
+		public void invoke(long windowHandle) {
+			postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					if (windowListener != null) {
+						windowListener.refreshRequested();
+					}
+				}
+			});
+		}
+	};
+
 	Lwjgl3Window(long windowHandle, ApplicationListener listener,
 			Lwjgl3ApplicationConfiguration config) {
 		this.windowHandle = windowHandle;
@@ -139,6 +155,7 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback);
 		GLFW.glfwSetDropCallback(windowHandle, dropCallback);
+		GLFW.glfwSetWindowRefreshCallback(windowHandle, refreshCallback);
 	}
 
 	/** @return the {@link ApplicationListener} associated with this window **/	 
@@ -324,9 +341,9 @@ public class Lwjgl3Window implements Disposable {
 		this.windowHandle = windowHandle;
 		input.windowHandleChanged(windowHandle);
 	}
-	
-	void update() {
-		if(listenerInitialized == false) {
+
+	boolean update() {
+		if(!listenerInitialized) {
 			initializeListener();
 		}
 		synchronized(runnables) {		
@@ -335,17 +352,36 @@ public class Lwjgl3Window implements Disposable {
 		}
 		for(Runnable runnable: executedRunnables) {
 			runnable.run();
-		}		
+		}
+		boolean shouldRender = executedRunnables.size > 0 || graphics.isContinuousRendering();
 		executedRunnables.clear();
+
+		if (!iconified)
+			input.update();
 		
-		if(!iconified) {
-			graphics.update();		
+		synchronized (this) {
+			shouldRender |= requestRendering && !iconified;
+			requestRendering = false;
+		}
+		
+		if (shouldRender) {
+			graphics.update();
 			listener.render();
 			GLFW.glfwSwapBuffers(windowHandle);
-			input.update();		
+		}
+
+		if (!iconified)
+			input.prepareNext();
+
+		return shouldRender;
+	}
+
+	void requestRendering() {
+		synchronized (this) {
+			this.requestRendering = true;
 		}
 	}
-	
+
 	boolean shouldClose() {
 		return GLFW.glfwWindowShouldClose(windowHandle);
 	}
@@ -393,6 +429,7 @@ public class Lwjgl3Window implements Disposable {
 		iconifyCallback.free();
 		closeCallback.free();
 		dropCallback.free();
+		refreshCallback.free();
 	}
 
 	@Override

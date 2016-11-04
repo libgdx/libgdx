@@ -175,6 +175,7 @@ public class GdxTests {
 		MusicTest.class,
 		NetAPITest.class,
 		NinePatchTest.class,
+		NoncontinuousRenderingTest.class,
 		OnscreenKeyboardTest.class,
 		PathTest.class,
 		ParallaxTest.class,

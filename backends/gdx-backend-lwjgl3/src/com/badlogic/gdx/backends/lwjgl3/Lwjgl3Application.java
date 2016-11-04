@@ -127,20 +127,23 @@ public class Lwjgl3Application implements Application {
 				((OpenALAudio) audio).update();
 			}
 
+			boolean haveWindowsRendered = false;
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
 				window.makeCurrent();
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					window.update();
-				}				
+					haveWindowsRendered |= window.update();
+				}
 				if (window.shouldClose()) {
 					closedWindows.add(window);
-				}				
+				}
 			}
 			GLFW.glfwPollEvents();
 
+			boolean shouldRequestRendering;
 			synchronized (runnables) {
+				shouldRequestRendering = runnables.size > 0;
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
@@ -148,7 +151,15 @@ public class Lwjgl3Application implements Application {
 			for (Runnable runnable : executedRunnables) {
 				runnable.run();
 			}
-
+			if (shouldRequestRendering){
+				// Must follow Runnables execution so changes done by Runnables are reflected
+				// in the following render.
+				for (Lwjgl3Window window : windows) {
+					if (!window.getGraphics().isContinuousRendering())
+						window.requestRendering();
+				}
+			}
+			
 			for (Lwjgl3Window closedWindow : closedWindows) {
 				if (windows.size == 1) {
 					// Lifecycle listener methods have to be called before ApplicationListener methods. The
@@ -164,6 +175,16 @@ public class Lwjgl3Application implements Application {
 				closedWindow.dispose();
 
 				windows.removeValue(closedWindow, false);
+			}
+
+			if (!haveWindowsRendered) {
+				// Sleep a few milliseconds in case no rendering was requested
+				// with continuous rendering disabled.
+				try {
+					Thread.sleep(1000 / config.idleFPS);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 		}
 	}

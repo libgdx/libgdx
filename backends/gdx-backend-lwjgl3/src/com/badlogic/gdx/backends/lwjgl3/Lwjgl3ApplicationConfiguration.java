@@ -53,6 +53,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int samples = 0;
 
 	boolean vSyncEnabled = true;
+	int idleFPS = 60;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
@@ -185,6 +186,12 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 */
 	public void useVsync(boolean vsync) {
 		this.vSyncEnabled = vsync;
+	}
+	
+	/**Sets the polling rate during idle time in non-continuous rendering mode. Must be positive. 
+	 * Default is 60. */
+	public void setIdleFPS (int fps) {
+		this.idleFPS = fps;
 	}
 
 	/**

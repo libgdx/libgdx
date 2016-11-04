@@ -83,6 +83,7 @@ import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MusicTest;
+import com.badlogic.gdx.tests.NoncontinuousRenderingTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -643,6 +644,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new MusicTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new NoncontinuousRenderingTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.tests.BulletTestCollection;
+import com.badlogic.gdx.tests.NoncontinuousRenderingTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
@@ -28,8 +28,9 @@ public class MultiWindowTest {
 	static SpriteBatch sharedSpriteBatch;
 	
 	public static class MainWindow extends ApplicationAdapter {
-		Class[] childWindowClasses = { ShaderCollectionTest.class, BulletTestCollection.class, UITest.class, Basic3DSceneTest.class };
-		private Lwjgl3Window latestWindow;
+		Class[] childWindowClasses = { NoncontinuousRenderingTest.class, ShaderCollectionTest.class, Basic3DSceneTest.class, UITest.class };
+		Lwjgl3Window latestWindow;
+		int index;
 		
 		@Override
 		public void create () {
@@ -52,8 +53,7 @@ public class MultiWindowTest {
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
-				config.setWindowIcon(FileType.Internal, "data/testdot.png");
-				Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
+				Class clazz = childWindowClasses[index++ % childWindowClasses.length];
 				ApplicationListener listener = createChildWindowClass(clazz);
 				latestWindow = app.newWindow(listener, config);
 			}
