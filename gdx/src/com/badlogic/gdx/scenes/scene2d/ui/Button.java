@@ -293,7 +293,6 @@ public class Button extends Table implements Disableable {
 			this.unpressedOffsetY = style.unpressedOffsetY;
 			this.checkedOffsetX = style.checkedOffsetX;
 			this.checkedOffsetY = style.checkedOffsetY;
-
 		}
 	}
 }

@@ -325,6 +325,17 @@ public class Actor {
 		}
 	}
 
+	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type. */
+	public <T extends Actor> T firstAscendant (Class<T> type) {
+		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
+		Actor actor = this;
+		do {
+			if (type.isInstance(actor)) return (T)actor;
+			actor = actor.getParent();
+		} while (actor != null);
+		return null;
+	}
+
 	/** Returns true if the actor's parent is not null. */
 	public boolean hasParent () {
 		return parent != null;
