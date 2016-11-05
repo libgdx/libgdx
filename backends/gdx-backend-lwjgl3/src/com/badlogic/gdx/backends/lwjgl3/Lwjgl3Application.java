@@ -412,11 +412,11 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		GLFW.glfwSetWindowSizeLimits(windowHandle, // avoiding GLFW_DONT_CARE due to GLFW bug (https://github.com/glfw/glfw/pull/805)
-			config.windowMinWidth > -1 ? config.windowMinWidth : 0, 
-				config.windowMinHeight > -1 ? config.windowMinHeight : 0, 
-					config.windowMaxWidth > -1 ? config.windowMaxWidth : 0xffff,
-						config.windowMaxHeight > -1 ? config.windowMaxHeight : 0xffff);
+		GLFW.glfwSetWindowSizeLimits(windowHandle,
+			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
+				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
+					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
+						config.windowMaxHeight > -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
