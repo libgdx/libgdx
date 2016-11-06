@@ -31,10 +31,21 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniG
 
 }
 
-JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetFrequency(JNIEnv* env, jobject object, jlong addr) {
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetReferenceAngle(JNIEnv* env, jobject object, jlong addr) {
 
 
 //@line:67
+
+		b2WeldJoint* joint = (b2WeldJoint*)addr;
+		return joint->GetReferenceAngle();
+	
+
+}
+
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetFrequency(JNIEnv* env, jobject object, jlong addr) {
+
+
+//@line:76
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetFrequency();
@@ -45,7 +56,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jn
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetFrequency(JNIEnv* env, jobject object, jlong addr, jfloat hz) {
 
 
-//@line:76
+//@line:85
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		joint->SetFrequency(hz);
@@ -56,7 +67,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniS
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetDampingRatio(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:85
+//@line:94
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetDampingRatio();
@@ -67,7 +78,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jn
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetDampingRatio(JNIEnv* env, jobject object, jlong addr, jfloat ratio) {
 
 
-//@line:94
+//@line:103
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		joint->SetDampingRatio(ratio);
