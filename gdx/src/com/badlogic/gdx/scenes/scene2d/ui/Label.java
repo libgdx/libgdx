@@ -231,9 +231,7 @@ public class Label extends Widget {
 	public float getPrefHeight () {
 		if (prefSizeInvalid) scaleAndComputePrefSize();
 		float descentScaleCorrection = 1;
-		if (fontScaleChanged) {
-			descentScaleCorrection = fontScaleY / style.font.getScaleY();
-		}
+		if (fontScaleChanged) descentScaleCorrection = fontScaleY / style.font.getScaleY();
 		float height = prefSize.y - style.font.getDescent() * descentScaleCorrection * 2;
 		Drawable background = style.background;
 		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
