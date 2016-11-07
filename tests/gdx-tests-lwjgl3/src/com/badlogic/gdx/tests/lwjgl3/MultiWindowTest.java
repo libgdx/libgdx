@@ -46,31 +46,31 @@ public class MultiWindowTest {
 			sharedSpriteBatch.draw(sharedTexture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - 1);
 			sharedSpriteBatch.end();
 			
-			if(Gdx.input.justTouched()) {
-				if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) && latestWindow != null){
-					latestWindow.setTitle("Retitled window");
-					int size = 48;
-					Pixmap.setBlending(Blending.None);
-					Pixmap icon = new Pixmap(size, size, Pixmap.Format.RGBA8888);
-					icon.setColor(Color.BLUE);
-					icon.fill();
-					icon.setColor(Color.CLEAR);
-					for (int i = 0; i < size; i += 3)
-						for (int j = 0; j < size; j += 3)
-							icon.drawPixel(i, j);
-					latestWindow.setIcon(icon);
-					icon.dispose();
-				} else {
-					Lwjgl3Application app = (Lwjgl3Application)Gdx.app;
-					Lwjgl3WindowConfiguration config = new Lwjgl3WindowConfiguration();
-					DisplayMode mode = Gdx.graphics.getDisplayMode();
-					config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
-					config.setTitle("Child window");
-					config.setWindowIcon(FileType.Internal, "data/testdot.png");
-					Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
-					ApplicationListener listener = createChildWindowClass(clazz);
-					latestWindow = app.newWindow(listener, config);
-				}
+			if(Gdx.input.justTouched()) {				
+				Lwjgl3Application app = (Lwjgl3Application)Gdx.app;
+				Lwjgl3WindowConfiguration config = new Lwjgl3WindowConfiguration();
+				DisplayMode mode = Gdx.graphics.getDisplayMode();
+				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
+				config.setTitle("Child window");
+				config.setWindowIcon(FileType.Internal, "data/testdot.png");
+				Class clazz = childWindowClasses[MathUtils.random(0, childWindowClasses.length - 1)];
+				ApplicationListener listener = createChildWindowClass(clazz);
+				latestWindow = app.newWindow(listener, config);
+			}
+
+			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && latestWindow != null){
+				latestWindow.setTitle("Retitled window");
+				int size = 48;
+				Pixmap.setBlending(Blending.None);
+				Pixmap icon = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+				icon.setColor(Color.BLUE);
+				icon.fill();
+				icon.setColor(Color.CLEAR);
+				for (int i = 0; i < size; i += 3)
+					for (int j = 0; j < size; j += 3)
+						icon.drawPixel(i, j);
+				latestWindow.setIcon(icon);
+				icon.dispose();
 			}
 		}
 
