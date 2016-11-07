@@ -29,15 +29,24 @@
 package com.badlogic.gdx.tests.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.bullet.BaseBulletTest;
+import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
@@ -80,195 +89,14 @@ import com.badlogic.gdx.utils.StreamUtils;
  * 
  * @author badlogicgames@gmail.com */
 public class GdxTests {
-	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
-		// @off
-		IssueTest.class,
-		AccelerometerTest.class,
-		ActionSequenceTest.class,
-		ActionTest.class,
-		Affine2Test.class,
-		AlphaTest.class,
-		Animation3DTest.class,
-		AnimationTest.class,
-		AnnotationTest.class,
-		AssetManagerTest.class,
-		AtlasIssueTest.class,
-		AudioDeviceTest.class,
-		AudioRecorderTest.class,
-		Basic3DSceneTest.class,
-		Basic3DTest.class,
-		Benchmark3DTest.class,
-		BitmapFontAlignmentTest.class,
-		BitmapFontDistanceFieldTest.class,
-		BitmapFontFlipTest.class,
-		BitmapFontMetricsTest.class,
-		BitmapFontTest.class,
-		BitmapFontAtlasRegionTest.class,
-		BlitTest.class,
-		Box2DTest.class,
-		Box2DTestCollection.class,
-		Bresenham2Test.class,
-		BufferUtilsTest.class,
-		BulletTestCollection.class,
-		CollectionsTest.class,
-		ColorTest.class,
-		ContainerTest.class,
-		CpuSpriteBatchTest.class,
-		CullTest.class,
-		CursorTest.class,
-		DelaunayTriangulatorTest.class,
-		DeltaTimeTest.class,
-		DirtyRenderingTest.class,
-		DragAndDropTest.class,
-		ETC1Test.class,
-//		EarClippingTriangulatorTest.class,
-		EdgeDetectionTest.class,
-		DisplayModeTest.class,
-		ExitTest.class,
-		ExternalMusicTest.class,
-		FilesTest.class,
-		FilterPerformanceTest.class,
-		FloatTextureTest.class,
-		FogTest.class,
-		FrameBufferCubemapTest.class,
-		FrameBufferTest.class,
-		FramebufferToTextureTest.class,
-		FullscreenTest.class,
-		ControllersTest.class,
-		Gdx2DTest.class,
-		GestureDetectorTest.class,
-		GLES30Test.class,
-		GLProfilerErrorTest.class,
-		GroupCullingTest.class,
-		GroupFadeTest.class,
-		GroupTest.class,
-		HeightMapTest.class,
-		HelloTriangle.class,
-		HexagonalTiledMapTest.class,
-		I18NMessageTest.class,
-		I18NSimpleMessageTest.class,
-		ImageScaleTest.class,
-		ImageTest.class,
-		ImmediateModeRendererTest.class,
-		IndexBufferObjectShaderTest.class,
-		InputTest.class,
-		IntegerBitmapFontTest.class,
-		InterpolationTest.class,
-		InverseKinematicsTest.class,
-		IsometricTileTest.class,
-		KinematicBodyTest.class,
-		KTXTest.class,
-		LabelScaleTest.class,
-		LabelTest.class,
-		LifeCycleTest.class,
-		LightsTest.class,
-		MaterialTest.class,
-		MatrixJNITest.class,
-		MeshBuilderTest.class,
-		MeshShaderTest.class,
-		MipMapTest.class,
-		ModelTest.class,
-		ModelCacheTest.class,
-		MoveSpriteExample.class,
-		MultipleRenderTargetTest.class,
-		MultitouchTest.class,
-		MusicTest.class,
-		NetAPITest.class,
-		NinePatchTest.class,
-		OnscreenKeyboardTest.class,
-		PathTest.class,
-		ParallaxTest.class,
-		ParticleControllerTest.class,
-		ParticleEmitterTest.class,
-		ParticleEmittersTest.class,
-		PixelsPerInchTest.class,
-		PixmapBlendingTest.class,
-		PixmapPackerTest.class,
-		PixmapTest.class,
-		PolygonRegionTest.class,
-		PolygonSpriteTest.class,
-		PreferencesTest.class,
-		ProjectTest.class,
-		ProjectiveTextureTest.class,
-		ReflectionTest.class,
-		RotationTest.class,
-		RunnablePostTest.class,
-		StageDebugTest.class,
-		Scene2dTest.class,
-		ScrollPane2Test.class,
-		ScrollPaneScrollBarsTest.class,
-		ScrollPaneTest.class,
-		SelectTest.class,
-		ShaderCollectionTest.class,
-		ShaderMultitextureTest.class,
-		ShaderTest.class,
-		ShadowMappingTest.class,
-		ShapeRendererTest.class,
-		SimpleAnimationTest.class,
-		SimpleDecalTest.class,
-		SimpleStageCullingTest.class,
-		SimpleVertexShader.class,
-		SkeletonTest.class,
-		SoftKeyboardTest.class,
-		SortedSpriteTest.class,
-		SoundTest.class,
-		SpriteBatchRotationTest.class,
-		SpriteBatchShaderTest.class,
-		SpriteBatchTest.class,
-		SpriteCacheOffsetTest.class,
-		SpriteCacheTest.class,
-		StagePerformanceTest.class,
-		StageTest.class,
-		SuperKoalio.class,
-		TableLayoutTest.class,
-		TableTest.class,
-		TextAreaTest.class,
-		TextButtonTest.class,
-		TextInputDialogTest.class,
-		TextureAtlasTest.class,
-		TextureArrayTest.class,
-		TextureDataTest.class,
-		TextureDownloadTest.class,
-		TextureFormatTest.class,
-		TextureRegion3DTest.class,
-		TideMapAssetManagerTest.class,
-		TideMapDirectLoaderTest.class,
-		TileTest.class,
-		TiledMapAssetManagerTest.class,
-		TiledMapAtlasAssetManagerTest.class,
-		TiledMapDirectLoaderTest.class,
-		TiledMapModifiedExternalTilesetTest.class,
-		TiledMapObjectLoadingTest.class,
-		TiledMapBench.class,
-		TimerTest.class,
-		TimeUtilsTest.class,
-		TouchpadTest.class,
-		TreeTest.class,
-		UISimpleTest.class,
-		UITest.class,
-		VBOWithVAOPerformanceTest.class,
-		Vector2dTest.class,
-		VertexBufferObjectShaderTest.class,
-		VibratorTest.class,
-		ViewportTest1.class,
-		ViewportTest2.class,
-		ViewportTest3.class,
-		YDownTest.class,
-		FreeTypeFontLoaderTest.class,
-		FreeTypeDisposeTest.class,
-		FreeTypeMetricsTest.class,
-		FreeTypeIncrementalTest.class,
-		FreeTypePackTest.class,
-		FreeTypeAtlasTest.class,
-		FreeTypeTest.class,
-		InternationalFontsTest.class,
-		PngTest.class,
-		JsonTest.class
-		// @on
-
-		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
-		// VorbisTest.class
-		));
+	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>();
+	static{
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		File file = new File(s).getParentFile();
+		
+		findAllTestFiles(file);
+	}
 
 	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();
 	static final ObjectMap<String, String> originalToObfuscated = new ObjectMap();
@@ -304,6 +132,87 @@ public class GdxTests {
 			names.add(obfuscatedToOriginal.get(clazz.getSimpleName(), clazz.getSimpleName()));
 		Collections.sort(names);
 		return names;
+	}
+
+	private static void findAllTestFiles (File root) {
+		File[] files = root.listFiles();
+		for (File file : files) {
+			if(file.isDirectory()){
+				findAllTestFiles(file);
+			}
+			else{
+				Class<? extends GdxTest> testClass = extractClass(file);
+				if(testClass != null){
+					tests.add(testClass);
+				}
+			}
+		}
+		Collections.sort(tests, new Comparator<Class<? extends GdxTest>>() {
+
+			@Override
+			public int compare (Class<? extends GdxTest> o1, Class<? extends GdxTest> o2) {
+				// Comparing full package name for better sorting
+				return o1.getName().compareTo(o2.getName());
+			}
+			
+		});
+		
+	}
+
+	private static Class<? extends GdxTest> extractClass (File file) {
+		if(!file.exists()){
+			return null;
+		}
+		String path = file.getAbsolutePath();
+		if(path.length() < ".java".length()){
+			return null;
+		}
+		if(!path.endsWith(".java")){
+			return null;
+		}
+		
+		String classPackage = extractPackage(file);
+		String className = file.getName();
+		className = className.substring(0, className.length() - ".java".length());		
+		
+		if(classPackage == null){
+			return null;
+		}
+		Class<?> fileClass;
+		try {
+			fileClass = Class.forName(classPackage + "." + className);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+		
+		if(GdxTest.class.isAssignableFrom(fileClass)){
+			return (Class<? extends GdxTest>)fileClass;
+		}
+		
+		return null;
+	}
+
+	private static String extractPackage (File file) {
+		String classPackage = null;
+		try {
+			List<String> lines = Files.readAllLines(file.toPath());
+			for (String line : lines) {
+				String packageKey = "package ";
+				if(line.contains(packageKey)){
+					int packageIndex = line.indexOf(packageKey);
+					line = line.substring(packageIndex + packageKey.length());
+					int endOfLine = line.indexOf(";");
+					if(endOfLine != -1){
+						classPackage = line.substring(0, endOfLine);						
+					}
+					break;
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return classPackage;
 	}
 
 	private static Class<? extends GdxTest> forName (String name) {
