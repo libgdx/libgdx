@@ -129,13 +129,7 @@ public class Lwjgl3Application implements Application {
 
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
-				Gdx.graphics = window.getGraphics();
-				Gdx.gl30 = window.getGraphics().getGL30();
-				Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : window.getGraphics().getGL20();
-				Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
-				Gdx.input = window.getInput();
-
-				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
+				window.makeCurrent();
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
 					window.update();

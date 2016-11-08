@@ -26,7 +26,7 @@ import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -277,7 +277,17 @@ public class Lwjgl3Window implements Disposable {
 			listenerInitialized = true;		
 		}
 	}
-	
+
+	void makeCurrent() {
+		Gdx.graphics = graphics;
+		Gdx.gl30 = graphics.getGL30();
+		Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : graphics.getGL20();
+		Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
+		Gdx.input = input;
+
+		GLFW.glfwMakeContextCurrent(windowHandle);
+	}
+
 	@Override
 	public void dispose() {
 		listener.pause();
