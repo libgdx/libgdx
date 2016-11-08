@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.graphics.Color;
@@ -28,6 +29,8 @@ public class Lwjgl3WindowConfiguration {
 	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
+	FileType windowIconFileType;
+	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
 	String title = "";
@@ -86,6 +89,26 @@ public class Lwjgl3WindowConfiguration {
 		windowMinHeight = minHeight;
 		windowMaxWidth = maxWidth;
 		windowMaxHeight = maxHeight;
+	}
+	
+	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param filePaths One or more {@linkplain FileType#Internal internal} image paths. Must be JPEG, PNG, or BMP format.
+	 * The one closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48.
+	 */
+	public void setWindowIcon (String... filePaths) {
+		setWindowIcon(FileType.Internal, filePaths);
+	}
+	
+	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param fileType The type of file handle the paths are relative to.
+	 * @param filePaths One or more image paths, relative to the given {@linkplain FileType}. Must be JPEG, PNG, or BMP format. 
+	 * The one closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48.
+	 */
+	public void setWindowIcon (FileType fileType, String... filePaths) {
+		windowIconFileType = fileType;
+		windowIconPaths = filePaths;
 	}
 	
 	/**

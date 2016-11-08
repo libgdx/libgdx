@@ -344,6 +344,7 @@ public class Lwjgl3Application implements Application {
 		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
 		appConfig.setWindowPosition(config.windowX, config.windowY);
 		appConfig.setWindowSizeLimits(config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
+		appConfig.setWindowIcon(config.windowIconFileType, config.windowIconPaths);
 		appConfig.setResizable(config.windowResizable);
 		appConfig.setDecorated(config.windowDecorated);
 		appConfig.setWindowListener(config.windowListener);
@@ -406,11 +407,11 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		GLFW.glfwSetWindowSizeLimits(windowHandle, 
+		GLFW.glfwSetWindowSizeLimits(windowHandle,
 			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
 				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
 					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
-						config.windowMaxHeight> -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
+						config.windowMaxHeight > -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
@@ -422,6 +423,9 @@ public class Lwjgl3Application implements Application {
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
+		}
+		if (config.windowIconPaths != null) {
+			Lwjgl3Window.setIcon(windowHandle, config.windowIconPaths, config.windowIconFileType);
 		}
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);

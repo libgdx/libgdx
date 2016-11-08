@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.PrintStream;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
@@ -61,6 +62,8 @@ public class Lwjgl3ApplicationConfiguration {
 	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
+	FileType windowIconFileType;
+	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
 
@@ -103,6 +106,9 @@ public class Lwjgl3ApplicationConfiguration {
 		copy.windowMaxHeight = config.windowMaxHeight;
 		copy.windowResizable = config.windowResizable;
 		copy.windowDecorated = config.windowDecorated;
+		copy.windowIconFileType = config.windowIconFileType;
+		if (config.windowIconPaths != null) 
+			copy.windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
 		copy.windowListener = config.windowListener;
 		copy.fullscreenMode = config.fullscreenMode;
 		copy.vSyncEnabled = config.vSyncEnabled;
@@ -252,8 +258,19 @@ public class Lwjgl3ApplicationConfiguration {
 	}
 	
 	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param icon One or more image paths, relative to the given FileType. Must be JPEG, PNG, or BMP format. The one 
+	 * closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48. The provided
+	 * file paths must point to valid images for as long new windows might be created.
+	 */
+	public void setWindowIcon (FileType fileType, String... filePaths){
+		windowIconFileType = fileType;
+		windowIconPaths = filePaths;
+	}
+	
+	/**
 	 * Sets the {@link Lwjgl3WindowListener} which will be informed about
-	 * iconficiation, focus loss and window close events.
+	 * iconification, focus loss and window close events.
 	 */
 	public void setWindowListener(Lwjgl3WindowListener windowListener) {
 		this.windowListener = windowListener;
