@@ -346,17 +346,7 @@ public class Lwjgl3Application implements Application {
 	 */
 	public Lwjgl3Window newWindow(ApplicationListener listener, Lwjgl3WindowConfiguration config) {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
-		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
-		appConfig.setWindowPosition(config.windowX, config.windowY);
-		appConfig.setWindowSizeLimits(config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
-		appConfig.setWindowIcon(config.windowIconFileType, config.windowIconPaths);
-		appConfig.setResizable(config.windowResizable);
-		appConfig.setDecorated(config.windowDecorated);
-		appConfig.setWindowListener(config.windowListener);
-		appConfig.setFullscreenMode(config.fullscreenMode);
-		appConfig.setTitle(config.title);
-		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);
-		appConfig.setInitialVisible(config.initialVisible);
+		appConfig.setWindowConfiguration(config);
 		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 		windows.add(window);
 		return window;
@@ -412,11 +402,7 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		GLFW.glfwSetWindowSizeLimits(windowHandle,
-			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
-				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
-					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
-						config.windowMaxHeight > -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
+		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxWidth);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
