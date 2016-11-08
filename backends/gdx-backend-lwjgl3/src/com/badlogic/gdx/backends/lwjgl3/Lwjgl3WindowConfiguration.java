@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
@@ -38,27 +36,6 @@ public class Lwjgl3WindowConfiguration {
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
 	boolean initialVisible = true;
-	
-	void setWindowConfiguration (Lwjgl3WindowConfiguration config){
-		windowX = config.windowX;
-		windowY = config.windowY;
-		windowWidth = config.windowWidth;
-		windowHeight = config.windowHeight;
-		windowMinWidth = config.windowMinWidth;
-		windowMinHeight = config.windowMinHeight;
-		windowMaxWidth = config.windowMaxWidth;
-		windowMaxHeight = config.windowMaxHeight;
-		windowResizable = config.windowResizable;
-		windowDecorated = config.windowDecorated;
-		windowIconFileType = config.windowIconFileType;
-		if (config.windowIconPaths != null) 
-			windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
-		windowListener = config.windowListener;
-		fullscreenMode = config.fullscreenMode;
-		title = config.title;
-		initialBackgroundColor = config.initialBackgroundColor;
-		initialVisible = config.initialVisible;
-	}
 	
 	/**
 	 * @param visibility whether the window will be visible on creation. (default true)

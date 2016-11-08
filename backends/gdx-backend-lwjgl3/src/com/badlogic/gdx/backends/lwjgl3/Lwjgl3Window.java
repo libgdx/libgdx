@@ -294,20 +294,6 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwSetWindowTitle(windowHandle, title);
 	}
 
-	/** Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these limits are
-	 * ignored. Use -1 to indicate an unrestricted dimension. */
-	public void setSizeLimits (int minWidth, int minHeight, int maxWidth, int maxHeight) {
-		setSizeLimits(windowHandle, minWidth, minHeight, maxWidth, maxHeight);
-	}
-	
-	static void setSizeLimits (long windowHandle, int minWidth, int minHeight, int maxWidth, int maxHeight) {
-		GLFW.glfwSetWindowSizeLimits(windowHandle, 
-			minWidth > -1 ? minWidth: GLFW.GLFW_DONT_CARE, 
-			minHeight > -1 ? minHeight : GLFW.GLFW_DONT_CARE, 
-				maxWidth > -1 ? maxWidth : GLFW.GLFW_DONT_CARE,
-					maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
-	}
-
 	Lwjgl3Graphics getGraphics() {
 		return graphics;
 	}
