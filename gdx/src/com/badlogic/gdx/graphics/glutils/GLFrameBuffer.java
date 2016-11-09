@@ -126,6 +126,12 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** Override this method in a derived class to dispose the backing texture as you like. */
 	protected abstract void disposeColorTexture (T colorTexture);
 
+	protected void bindFrameBufferColorTexture () {
+		GL20 gl = Gdx.gl20;
+		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+				colorTexture.getTextureObjectHandle(), 0);
+	}
+
 	private void build () {
 		GL20 gl = Gdx.gl20;
 
@@ -153,7 +159,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			stencilbufferHandle = gl.glGenRenderbuffer();
 		}
 
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
+		gl.glBindTexture(colorTexture.glTarget, colorTexture.getTextureObjectHandle());
 
 		if (hasDepth) {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
@@ -167,8 +173,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		}
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
-		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
-			colorTexture.getTextureObjectHandle(), 0);
+
+		bindFrameBufferColorTexture();
+
 		if (hasDepth) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
 		}
@@ -178,7 +185,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		}
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		gl.glBindTexture(colorTexture.glTarget, 0);
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
