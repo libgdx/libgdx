@@ -14,6 +14,10 @@ public class Lwjgl3WindowAdapter implements Lwjgl3WindowListener {
 	@Override
 	public void deiconified() {
 	}
+	
+	@Override
+	public void maximized(boolean isMaximized) {
+	}
 
 	@Override
 	public void focusLost() {
