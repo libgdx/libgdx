@@ -104,7 +104,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	}
 
 	@Override
-	protected void bindFrameBufferColorTexture () {
+	protected void attachFrameBufferColorTexture() {
 		GL20 gl = Gdx.gl20;
 		int glHandle = colorTexture.getTextureObjectHandle();
 		Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();

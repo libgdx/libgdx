@@ -126,11 +126,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** Override this method in a derived class to dispose the backing texture as you like. */
 	protected abstract void disposeColorTexture (T colorTexture);
 
-	protected void bindFrameBufferColorTexture () {
-		GL20 gl = Gdx.gl20;
-		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
-				colorTexture.getTextureObjectHandle(), 0);
-	}
+	/** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
+	protected abstract void attachFrameBufferColorTexture ();
 
 	private void build () {
 		GL20 gl = Gdx.gl20;
@@ -174,7 +171,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 
-		bindFrameBufferColorTexture();
+		attachFrameBufferColorTexture();
 
 		if (hasDepth) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);

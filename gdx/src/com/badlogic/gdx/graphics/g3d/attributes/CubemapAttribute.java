@@ -46,7 +46,7 @@ public class CubemapAttribute extends Attribute {
 
 	public CubemapAttribute (final long type, final Cubemap texture) {
 		this(type);
-		textureDescription.set(texture, texture.getMinFilter(), texture.getMagFilter(), texture.getUWrap(), texture.getVWrap());
+		textureDescription.texture = texture;
 	}
 
 	public CubemapAttribute (final CubemapAttribute copyFrom) {
