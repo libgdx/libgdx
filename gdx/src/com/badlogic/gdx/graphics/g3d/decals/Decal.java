@@ -581,7 +581,16 @@ public class Decal {
 	 * @param position
 	 * @param up */
 	public void lookAt (Vector3 position, Vector3 up) {
-		dir.set(position).sub(this.position).nor();
+		lookAt(position.x, position.y, position.z, up);
+	}
+	
+	/** Sets the rotation of the Decal to face the given point. Useful for billboarding.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param up */
+	public void lookAt (float x, float y, float z, Vector3 up) {
+		dir.set(x, y, z).sub(this.position).nor();
 		setRotation(dir, up);
 	}
 
