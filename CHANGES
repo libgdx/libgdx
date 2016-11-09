@@ -5,7 +5,7 @@
 - DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
 - Bullet: added FilterableVehicleRaycaster, see https://github.com/libgdx/libgdx/pull/4361
 - Bullet: updated to 2.85, see: http://bulletphysics.org/wordpress/?p=456
-- Updated iOS native build scripts to iOS 10.1 and TVOS 10.1
+- Updated iOS native build scripts to iOS 10.1 and TVOS 10.0
 - API Addition: BitmapFont#blankLineScale.
 - Updated LWJGL3 backend to LWJGL 3.1.0, see https://blog.lwjgl.org/lwjgl-3-1-0-released/
 - LWJGL3 backend now supports non-continuous rendering, see https://github.com/libgdx/libgdx/pull/3772
