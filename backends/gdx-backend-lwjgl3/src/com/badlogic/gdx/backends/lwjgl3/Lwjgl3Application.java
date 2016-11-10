@@ -127,26 +127,23 @@ public class Lwjgl3Application implements Application {
 				((OpenALAudio) audio).update();
 			}
 
+			boolean haveWindowsRendered = false;
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
-				Gdx.graphics = window.getGraphics();
-				Gdx.gl30 = window.getGraphics().getGL30();
-				Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : window.getGraphics().getGL20();
-				Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
-				Gdx.input = window.getInput();
-
-				GLFW.glfwMakeContextCurrent(window.getWindowHandle());
+				window.makeCurrent();
 				currentWindow = window;
 				synchronized (lifecycleListeners) {
-					window.update();
-				}				
+					haveWindowsRendered |= window.update();
+				}
 				if (window.shouldClose()) {
 					closedWindows.add(window);
-				}				
+				}
 			}
 			GLFW.glfwPollEvents();
 
+			boolean shouldRequestRendering;
 			synchronized (runnables) {
+				shouldRequestRendering = runnables.size > 0;
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
@@ -154,7 +151,15 @@ public class Lwjgl3Application implements Application {
 			for (Runnable runnable : executedRunnables) {
 				runnable.run();
 			}
-
+			if (shouldRequestRendering){
+				// Must follow Runnables execution so changes done by Runnables are reflected
+				// in the following render.
+				for (Lwjgl3Window window : windows) {
+					if (!window.getGraphics().isContinuousRendering())
+						window.requestRendering();
+				}
+			}
+			
 			for (Lwjgl3Window closedWindow : closedWindows) {
 				if (windows.size == 1) {
 					// Lifecycle listener methods have to be called before ApplicationListener methods. The
@@ -170,6 +175,16 @@ public class Lwjgl3Application implements Application {
 				closedWindow.dispose();
 
 				windows.removeValue(closedWindow, false);
+			}
+
+			if (!haveWindowsRendered) {
+				// Sleep a few milliseconds in case no rendering was requested
+				// with continuous rendering disabled.
+				try {
+					Thread.sleep(1000 / config.idleFPS);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 		}
 	}
@@ -347,16 +362,7 @@ public class Lwjgl3Application implements Application {
 	 */
 	public Lwjgl3Window newWindow(ApplicationListener listener, Lwjgl3WindowConfiguration config) {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
-		appConfig.setWindowedMode(config.windowWidth, config.windowHeight);
-		appConfig.setWindowPosition(config.windowX, config.windowY);
-		appConfig.setWindowSizeLimits(config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
-		appConfig.setResizable(config.windowResizable);
-		appConfig.setDecorated(config.windowDecorated);
-		appConfig.setWindowListener(config.windowListener);
-		appConfig.setFullscreenMode(config.fullscreenMode);
-		appConfig.setTitle(config.title);
-		appConfig.setInitialBackgroundColor(config.initialBackgroundColor);
-		appConfig.setInitialVisible(config.initialVisible);
+		appConfig.setWindowConfiguration(config);
 		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 		windows.add(window);
 		return window;
@@ -412,11 +418,7 @@ public class Lwjgl3Application implements Application {
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
-		GLFW.glfwSetWindowSizeLimits(windowHandle, 
-			config.windowMinWidth > -1 ? config.windowMinWidth : GLFW.GLFW_DONT_CARE, 
-				config.windowMinHeight > -1 ? config.windowMinHeight : GLFW.GLFW_DONT_CARE, 
-					config.windowMaxWidth > -1 ? config.windowMaxWidth : GLFW.GLFW_DONT_CARE,
-						config.windowMaxHeight> -1 ? config.windowMaxHeight : GLFW.GLFW_DONT_CARE);
+		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
@@ -428,6 +430,9 @@ public class Lwjgl3Application implements Application {
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
+		}
+		if (config.windowIconPaths != null) {
+			Lwjgl3Window.setIcon(windowHandle, config.windowIconPaths, config.windowIconFileType);
 		}
 		GLFW.glfwMakeContextCurrent(windowHandle);
 		GLFW.glfwSwapInterval(config.vSyncEnabled ? 1 : 0);

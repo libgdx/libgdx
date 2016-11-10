@@ -78,13 +78,12 @@ public class btShapeHull extends BulletBase {
     return CollisionJNI.btShapeHull_numIndices(swigCPtr, this);
   }
 
-  public btVector3 getVertexPointer() {
-    long cPtr = CollisionJNI.btShapeHull_getVertexPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
-
-  public java.nio.LongBuffer getIndexPointer() {
-    return CollisionJNI.btShapeHull_getIndexPointer(swigCPtr, this);
+  public Vector3 getVertex(int idx) {
+	return CollisionJNI.btShapeHull_getVertex(swigCPtr, this, idx);
 }
+
+  public int getIndex(int idx) {
+    return CollisionJNI.btShapeHull_getIndex(swigCPtr, this, idx);
+  }
 
 }

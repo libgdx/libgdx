@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
  * corresponds to the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The
@@ -330,7 +331,7 @@ public class Actor {
 		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor actor = this;
 		do {
-			if (type.isInstance(actor)) return (T)actor;
+			if (ClassReflection.isInstance(type, actor)) return (T)actor;
 			actor = actor.getParent();
 		} while (actor != null);
 		return null;

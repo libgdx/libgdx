@@ -1,11 +1,15 @@
 [1.9.5]
+- Allow window icons to be set in Lwjgl3ApplicationConfiguration or Lwjgl3WindowConfiguration.
+- Allow window icon and title to be changed in Lwjgl3Window
 - API Addition: ApplicationLogger interface, allowing easier access to custom logging
 - DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
 - Bullet: added FilterableVehicleRaycaster, see https://github.com/libgdx/libgdx/pull/4361
 - Bullet: updated to 2.85, see: http://bulletphysics.org/wordpress/?p=456
-- Updated iOS native build scripts to iOS 10.0 and TVOS 10.0
+- Updated iOS native build scripts to iOS 10.1 and TVOS 10.0
 - API Addition: BitmapFont#blankLineScale.
 - Updated LWJGL3 backend to LWJGL 3.1.0, see https://blog.lwjgl.org/lwjgl-3-1-0-released/
+- LWJGL3 backend now supports non-continuous rendering, see https://github.com/libgdx/libgdx/pull/3772
+- API Change: Lwjgl3WindowListener.refreshRequested() is called when the windowing system (GLFW) reports contents of a window are dirty and need to be redrawn.
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
