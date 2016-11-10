@@ -18,24 +18,23 @@ package com.badlogic.gdx.backends.jglfw;
 
 import static com.badlogic.jglfw.Glfw.*;
 
+import java.awt.Toolkit;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.jglfw.Glfw;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
-
-import java.awt.Toolkit;
 
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
@@ -53,7 +52,7 @@ public class JglfwGraphics implements Graphics {
 	private boolean resizable, undecorated;
 	private BufferFormat bufferFormat;
 	private boolean vSync;
-	private int x, y, width, height;
+	int x, y, width, height;
 	private boolean visible;
 	private Color initialBackgroundColor;
 	private volatile boolean isContinuous = true, renderRequested;
@@ -146,7 +145,9 @@ public class JglfwGraphics implements Graphics {
 
 		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
 
-		glfwMakeContextCurrent(newWindow);
+		glfwSetWindowSize(window, width, height);
+
+		glfwMakeContextCurrent(window);
 		setVSync(vSync);
 		if (visible) glfwShowWindow(window);
 
