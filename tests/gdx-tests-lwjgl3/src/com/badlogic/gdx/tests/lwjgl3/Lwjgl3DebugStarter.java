@@ -110,25 +110,24 @@ public class Lwjgl3DebugStarter {
 						if(character == 'c') {
 							Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
 						}
+						Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 						if(character == 'v') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.setVisible(false);
 						}
 						if(character == 's') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.setVisible(true);
 						}
 						if(character == 'q') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.closeWindow();
 						}
 						if(character == 'i') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.iconifyWindow();
 						}
+						if(character == 'm') {
+							window.maximizeWindow();
+						}
 						if(character == 'r') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
-							window.deiconifyWindow();
+							window.restoreWindow();
 						}
 						if(character == 'u') {
 							Gdx.net.openURI("https://google.com");
@@ -188,6 +187,11 @@ public class Lwjgl3DebugStarter {
 			@Override
 			public void deiconified () {
 				Gdx.app.log("Window", "deiconified");				
+			}
+			
+			@Override
+			public void maximized (boolean isMaximized) {
+				Gdx.app.log("Window", "maximized: " + (isMaximized ? "true" : "false"));
 			}
 
 			@Override

@@ -31,6 +31,7 @@ public class Lwjgl3WindowConfiguration {
 	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
+	boolean windowMaximized = false;
 	FileType windowIconFileType;
 	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
@@ -50,6 +51,7 @@ public class Lwjgl3WindowConfiguration {
 		windowMaxHeight = config.windowMaxHeight;
 		windowResizable = config.windowResizable;
 		windowDecorated = config.windowDecorated;
+		windowMaximized = config.windowMaximized;
 		windowIconFileType = config.windowIconFileType;
 		if (config.windowIconPaths != null) 
 			windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
@@ -81,7 +83,7 @@ public class Lwjgl3WindowConfiguration {
 	}
 	
 	/** 
-	 * @param resizable whether the windowed mode window is resizable
+	 * @param resizable whether the windowed mode window is resizable (default true)
 	 */
 	public void setResizable(boolean resizable) {
 		this.windowResizable = resizable;
@@ -92,6 +94,13 @@ public class Lwjgl3WindowConfiguration {
 	 */
 	public void setDecorated(boolean decorated) {
 		this.windowDecorated = decorated;
+	}
+	
+	/**
+	 * @param maximized whether the window starts maximized. Ignored if the window is full screen. (default false)
+	 */
+	public void setMaximized(boolean maximized) {
+		this.windowMaximized = maximized;
 	}
 	
 	/**

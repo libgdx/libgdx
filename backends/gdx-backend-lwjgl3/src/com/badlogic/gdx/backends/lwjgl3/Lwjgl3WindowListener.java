@@ -44,6 +44,13 @@ public interface Lwjgl3WindowListener {
 	void deiconified();
 	
 	/**
+	 * Called when the window is maximized, or restored from the maximized state.
+	 *
+	 * @param isMaximized true if window is maximized, false if it leaves the maximized state
+	 */
+	void maximized(boolean isMaximized);
+
+	/**
 	 * Called when the window lost focus to another window. The
 	 * window's {@link ApplicationListener} will continue to be
 	 * called.

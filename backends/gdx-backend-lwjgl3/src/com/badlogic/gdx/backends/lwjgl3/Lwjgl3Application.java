@@ -379,6 +379,7 @@ public class Lwjgl3Application implements Application {
 		GLFW.glfwDefaultWindowHints();
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, config.windowResizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+		GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, config.windowMaximized ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		
 		if(sharedContextWindow == 0) {
 			GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, config.r);
@@ -419,7 +420,7 @@ public class Lwjgl3Application implements Application {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth, config.windowMaxHeight);
-		if (config.fullscreenMode == null) {
+		if (config.fullscreenMode == null && !config.windowMaximized) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
 				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
