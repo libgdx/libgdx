@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWWindowCloseCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowIconifyCallback;
+import org.lwjgl.glfw.GLFWWindowMaximizeCallback;
 import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -92,6 +93,25 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 	
+	private final GLFWWindowMaximizeCallback maximizeCallback = new GLFWWindowMaximizeCallback() {
+		@Override
+		public void invoke (long windowHandle, final boolean maximized) {
+			postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					if(windowListener != null) {
+						if(maximized) {
+							windowListener.maximized();
+						} else {
+							windowListener.demaximized();
+						}
+					}
+				}
+			});
+		}
+		
+	};
+	
 	private final GLFWWindowCloseCallback closeCallback = new GLFWWindowCloseCallback() {
 		@Override
 		public void invoke(final long windowHandle) {
@@ -153,6 +173,7 @@ public class Lwjgl3Window implements Disposable {
 		
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
+		GLFW.glfwSetWindowMaximizeCallback(windowHandle, maximizeCallback);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback);
 		GLFW.glfwSetDropCallback(windowHandle, dropCallback);
 		GLFW.glfwSetWindowRefreshCallback(windowHandle, refreshCallback);
@@ -227,18 +248,25 @@ public class Lwjgl3Window implements Disposable {
 	}
 	
 	/**
-	 * Minimizes (iconfies) the window. Iconified windows do not call
-	 * their {@link ApplicationListener} until the window is deiconified.
+	 * Minimizes (iconifies) the window. Iconified windows do not call
+	 * their {@link ApplicationListener} until the window is restored.
 	 */
 	public void iconifyWindow() {
 		GLFW.glfwIconifyWindow(windowHandle);
 	}
 	
 	/**
-	 * De-minimizes the window.
+	 * De-minimizes (de-iconifies) and de-maximizes the window.
 	 */
-	public void deiconifyWindow() {
+	public void restoreWindow() {
 		GLFW.glfwRestoreWindow(windowHandle);
+	}
+	
+	/**
+	 * Maximizes the window.
+	 */
+	public void maximizeWindow() {
+		GLFW.glfwMaximizeWindow(windowHandle);
 	}
 	
 	/**
