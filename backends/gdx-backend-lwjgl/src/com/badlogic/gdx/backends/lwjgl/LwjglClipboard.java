@@ -38,10 +38,7 @@ public class LwjglClipboard implements Clipboard, ClipboardOwner {
 		if (hasTransferableText) {
 			try {
 				result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-			} catch (UnsupportedFlavorException ex) {
-				// doh...
-			} catch (IOException ex) {
-				// doh...
+			} catch (Exception ex) {
 			}
 		}
 		return result;
