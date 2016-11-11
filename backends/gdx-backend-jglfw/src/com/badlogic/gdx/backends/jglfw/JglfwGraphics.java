@@ -126,7 +126,7 @@ public class JglfwGraphics implements Graphics {
 		boolean mouseCaptured = window != 0 && glfwGetInputMode(window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
 
 		long oldWindow = window;
-		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
+		long newWindow = glfwCreateWindow(width + (fullscreen ? 0 : -1), height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
 		window = newWindow;
