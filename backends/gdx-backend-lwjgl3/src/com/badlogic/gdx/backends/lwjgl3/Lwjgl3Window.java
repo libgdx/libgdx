@@ -76,11 +76,7 @@ public class Lwjgl3Window implements Disposable {
 				@Override
 				public void run() {
 					if(windowListener != null) {
-						if(iconified) {
-							windowListener.iconified();
-						} else {
-							windowListener.deiconified();
-						}
+						windowListener.iconified(iconified);
 					}
 					Lwjgl3Window.this.iconified = iconified;
 					if(iconified) {

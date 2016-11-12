@@ -20,28 +20,23 @@ package com.badlogic.gdx.backends.lwjgl3;
 import com.badlogic.gdx.ApplicationListener;
 
 /**
- * Receives notifications of various window events, such as iconficiation,
+ * Receives notifications of various window events, such as iconification,
  * focus loss and gain, and window close events. Can be set per window
  * via {@link Lwjgl3ApplicationConfiguration} and {@link Lwjgl3WindowConfiguration}.
  * Close events can be canceled by returning false.
  * 
  * @author badlogic
- *
  */
 public interface Lwjgl3WindowListener {
 	/**
-	 * Called when the window is iconified, i.e. its minimize button
-	 * was clicked. The window's {@link ApplicationListener} will
-	 * be paused
+	 * Called when the window is iconified (i.e. its minimize button
+	 * was clicked), or when restored from the iconified state. When a window becomes
+	 * iconified, its {@link ApplicationListener} will be paused, and when restored
+	 * it will be resumed.
+	 * 
+	 * @param isIconified True if window is iconified, false if it leaves the iconified state
 	 */
-	void iconified();
-	
-	/**
-	 * Called when the window is deiconified, i.e. its task bar
-	 * icon was clicked. The window's {@link ApplicationListener}
-	 * will be resumed.
-	 */
-	void deiconified();
+	void iconified(boolean isIconified);
 	
 	/**
 	 * Called when the window is maximized, or restored from the maximized state.
