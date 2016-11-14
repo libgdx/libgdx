@@ -80,6 +80,7 @@ class IOSUIViewController extends GLKViewController {
 		return true;
 	}
 
+	@Override
 	public boolean shouldAutorotateToInterfaceOrientation (long orientation) {
 		// we return "true" if we support the orientation
 		if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight)
@@ -100,5 +101,10 @@ class IOSUIViewController extends GLKViewController {
 		if (app.graphics.created) {
 			app.listener.resize(graphics.width, graphics.height);
 		}
+	}
+
+	@Override
+	public boolean prefersStatusBarHidden() {
+		return !app.config.statusBarVisible;
 	}
 }
