@@ -677,19 +677,23 @@ public class TexturePacker {
 		return inputFile.lastModified() > outputFile.lastModified();
 	}
 
-	static public void processIfModified (String input, String output, String packFileName) {
+	static public boolean processIfModified (String input, String output, String packFileName) {
 		// Default settings (Needed to access the default atlas extension string)
 		Settings settings = new Settings();
 
 		if (isModified(input, output, packFileName, settings)) {
 			process(settings, input, output, packFileName);
+			return true;
 		}
+		return false;
 	}
 
-	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
+	static public boolean processIfModified (Settings settings, String input, String output, String packFileName) {
 		if (isModified(input, output, packFileName, settings)) {
 			process(settings, input, output, packFileName);
+			return true;
 		}
+		return false;
 	}
 
 	static public interface Packer {
