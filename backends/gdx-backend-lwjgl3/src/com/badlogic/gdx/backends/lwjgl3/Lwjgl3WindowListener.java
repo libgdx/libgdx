@@ -78,8 +78,7 @@ public interface Lwjgl3WindowListener {
 
 	/**
 	 * Called when the window content is damaged and needs to be refreshed.
-	 * If non-continuous rendering is used, applications should call
-	 * {@link Lwjgl3Graphics#requestRendering()} to force a render update.
+	 * When this occurs, {@link Lwjgl3Graphics#requestRendering()} is automatically called.
 	 */
 	void refreshRequested();
 
