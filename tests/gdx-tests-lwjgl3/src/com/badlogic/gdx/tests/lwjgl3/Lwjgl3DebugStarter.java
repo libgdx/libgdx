@@ -180,13 +180,8 @@ public class Lwjgl3DebugStarter {
 		config.setWindowListener(new Lwjgl3WindowListener() {
 
 			@Override
-			public void iconified () {
-				Gdx.app.log("Window", "iconified");
-			}
-
-			@Override
-			public void deiconified () {
-				Gdx.app.log("Window", "deiconified");				
+			public void iconified (boolean isIconified) {
+				Gdx.app.log("Window", "iconified: "+ (isIconified ? "true" : "false"));
 			}
 			
 			@Override
@@ -211,11 +206,15 @@ public class Lwjgl3DebugStarter {
 			}
 
 			@Override
-			public void filesDropped (String[] files) {				
+			public void filesDropped (String[] files) {	
+				for (String file : files){
+					Gdx.app.log("Window", "File dropped: " + file);
+				}
 			}
 
 			@Override
 			public void refreshRequested() {
+				Gdx.app.log("Window", "refreshRequested");
 			}
 		});
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
