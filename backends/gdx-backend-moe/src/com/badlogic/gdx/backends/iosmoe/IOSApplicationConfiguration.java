@@ -99,5 +99,5 @@ public class IOSApplicationConfiguration {
 	@Deprecated public boolean useGL30 = false;
 
 	/** whether the status bar should be visible or not **/
-	public boolean statusBarVisible = true;
+	public boolean statusBarVisible = false;
 }
