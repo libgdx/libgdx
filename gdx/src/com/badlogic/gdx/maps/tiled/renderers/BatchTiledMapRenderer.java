@@ -138,7 +138,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
-				} if (layer instanceof TiledMapImageLayer) {
+				} else if (layer instanceof TiledMapImageLayer) {
 					renderImageLayer((TiledMapImageLayer)layer);
 				} else {
 					renderObjects(layer);
