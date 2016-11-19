@@ -32,10 +32,10 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * actors added earlier. Touch events that hit more than one actor are distributed to topmost actors first.
  * @author mzechner
  * @author Nathan Sweet */
-public class Group extends Actor implements Cullable {
+public class Group<T extends Actor> extends Actor implements Cullable {
 	static private final Vector2 tmp = new Vector2();
 
-	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
+	final SnapshotArray<T> children = new SnapshotArray<T>(true, 4);
 	private final Affine2 worldTransform = new Affine2();
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
@@ -44,7 +44,7 @@ public class Group extends Actor implements Cullable {
 
 	public void act (float delta) {
 		super.act(delta);
-		Actor[] actors = children.begin();
+		T[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++)
 			actors[i].act(delta);
 		children.end();
@@ -64,8 +64,8 @@ public class Group extends Actor implements Cullable {
 	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (Batch batch, float parentAlpha) {
 		parentAlpha *= this.color.a;
-		SnapshotArray<Actor> children = this.children;
-		Actor[] actors = children.begin();
+		SnapshotArray<T> children = this.children;
+		T[] actors = children.begin();
 		Rectangle cullingArea = this.cullingArea;
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.
@@ -75,7 +75,7 @@ public class Group extends Actor implements Cullable {
 			float cullTop = cullBottom + cullingArea.height;
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = actors[i];
+					T child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
 					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
@@ -87,7 +87,7 @@ public class Group extends Actor implements Cullable {
 				x = 0;
 				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = actors[i];
+					T child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
 					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom) {
@@ -105,7 +105,7 @@ public class Group extends Actor implements Cullable {
 			// No culling, draw all children.
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = actors[i];
+					T child = actors[i];
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
 				}
@@ -115,7 +115,7 @@ public class Group extends Actor implements Cullable {
 				x = 0;
 				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = actors[i];
+					T child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
 					child.x = cx + offsetX;
@@ -145,12 +145,12 @@ public class Group extends Actor implements Cullable {
 	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
 	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawDebugChildren (ShapeRenderer shapes) {
-		SnapshotArray<Actor> children = this.children;
-		Actor[] actors = children.begin();
+		SnapshotArray<T> children = this.children;
+		T[] actors = children.begin();
 		// No culling, draw all children.
 		if (transform) {
 			for (int i = 0, n = children.size; i < n; i++) {
-				Actor child = actors[i];
+				T child = actors[i];
 				if (!child.isVisible()) continue;
 				if (!child.getDebug() && !(child instanceof Group)) continue;
 				child.drawDebug(shapes);
@@ -162,7 +162,7 @@ public class Group extends Actor implements Cullable {
 			x = 0;
 			y = 0;
 			for (int i = 0, n = children.size; i < n; i++) {
-				Actor child = actors[i];
+				T child = actors[i];
 				if (!child.isVisible()) continue;
 				if (!child.getDebug() && !(child instanceof Group)) continue;
 				float cx = child.x, cy = child.y;
@@ -240,9 +240,9 @@ public class Group extends Actor implements Cullable {
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
 		Vector2 point = tmp;
-		Actor[] childrenArray = children.items;
+		T[] childrenArray = children.items;
 		for (int i = children.size - 1; i >= 0; i--) {
-			Actor child = childrenArray[i];
+			T child = childrenArray[i];
 			if (!child.isVisible()) continue;
 			child.parentToLocalCoordinates(point.set(x, y));
 			Actor hit = child.hit(point.x, point.y, touchable);
@@ -256,7 +256,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
-	public void addActor (Actor actor) {
+	public void addActor (T actor) {
 		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		children.add(actor);
 		actor.setParent(this);
@@ -266,7 +266,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
 	 * @param index May be greater than the number of children. */
-	public void addActorAt (int index, Actor actor) {
+	public void addActorAt (int index, T actor) {
 		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		if (index >= children.size)
 			children.add(actor);
@@ -279,7 +279,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Adds an actor as a child of this group, immediately before another child actor. The actor is first removed from its parent
 	 * group, if any. */
-	public void addActorBefore (Actor actorBefore, Actor actor) {
+	public void addActorBefore (T actorBefore, T actor) {
 		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorBefore, true);
 		children.insert(index, actor);
@@ -290,7 +290,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Adds an actor as a child of this group, immediately after another child actor. The actor is first removed from its parent
 	 * group, if any. */
-	public void addActorAfter (Actor actorAfter, Actor actor) {
+	public void addActorAfter (T actorAfter, T actor) {
 		if (actor.parent != null) actor.parent.removeActor(actor, false);
 		int index = children.indexOf(actorAfter, true);
 		if (index == children.size)
@@ -303,7 +303,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Calls {@link #removeActor(Actor, boolean)} with true. */
-	public boolean removeActor (Actor actor) {
+	public boolean removeActor (T actor) {
 		return removeActor(actor, true);
 	}
 
@@ -312,7 +312,7 @@ public class Group extends Actor implements Cullable {
 	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically.
 	 * @param unfocus If true, {@link Stage#unfocus(Actor)} is called.
 	 * @return true if the actor was removed from this group. */
-	public boolean removeActor (Actor actor, boolean unfocus) {
+	public boolean removeActor (T actor, boolean unfocus) {
 		if (!children.removeValue(actor, true)) return false;
 		if (unfocus) {
 			Stage stage = getStage();
@@ -326,9 +326,9 @@ public class Group extends Actor implements Cullable {
 
 	/** Removes all actors from this group. */
 	public void clearChildren () {
-		Actor[] actors = children.begin();
+		T[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = actors[i];
+			T child = actors[i];
 			child.setStage(null);
 			child.setParent(null);
 		}
@@ -345,15 +345,15 @@ public class Group extends Actor implements Cullable {
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the
 	 * group. */
-	public <T extends Actor> T findActor (String name) {
-		Array<Actor> children = this.children;
+	public <S extends Actor> Actor findActor (String name) {
+		Array<T> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)
-			if (name.equals(children.get(i).getName())) return (T)children.get(i);
+			if (name.equals(children.get(i).getName())) return (S)children.get(i);
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Group) {
 				Actor actor = ((Group)child).findActor(name);
-				if (actor != null) return (T)actor;
+				if (actor != null) return (S)actor;
 			}
 		}
 		return null;
@@ -361,7 +361,7 @@ public class Group extends Actor implements Cullable {
 
 	protected void setStage (Stage stage) {
 		super.setStage(stage);
-		Actor[] childrenArray = children.items;
+		T[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
 			childrenArray[i].setStage(stage); // StackOverflowError here means the group is its own ancestor.
 	}
@@ -376,7 +376,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Swaps two actors. Returns false if the swap did not occur because the actors are not children of this group. */
-	public boolean swapActor (Actor first, Actor second) {
+	public boolean swapActor (T first, T second) {
 		int firstIndex = children.indexOf(first, true);
 		int secondIndex = children.indexOf(second, true);
 		if (firstIndex == -1 || secondIndex == -1) return false;
@@ -385,7 +385,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Returns an ordered list of child actors in this group. */
-	public SnapshotArray<Actor> getChildren () {
+	public SnapshotArray<T> getChildren () {
 		return children;
 	}
 
@@ -450,11 +450,11 @@ public class Group extends Actor implements Cullable {
 		buffer.append(super.toString());
 		buffer.append('\n');
 
-		Actor[] actors = children.begin();
+		T[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
 			for (int ii = 0; ii < indent; ii++)
 				buffer.append("|  ");
-			Actor actor = actors[i];
+			T actor = actors[i];
 			if (actor instanceof Group)
 				((Group)actor).toString(buffer, indent + 1);
 			else {
