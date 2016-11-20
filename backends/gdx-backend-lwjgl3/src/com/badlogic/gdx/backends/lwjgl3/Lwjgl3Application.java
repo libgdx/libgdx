@@ -372,6 +372,14 @@ public class Lwjgl3Application implements Application {
 		long windowHandle = createGlfwWindow(config, sharedContext);
 		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
 		window.setVisible(config.initialVisible);
+
+		for (int i = 0; i < 2; i++) {
+			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
+					config.initialBackgroundColor.a);
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			GLFW.glfwSwapBuffers(windowHandle);
+		}
+
 		return window;
 	}
 
@@ -454,12 +462,6 @@ public class Lwjgl3Application implements Application {
 			setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
 		}
 
-		for (int i = 0; i < 2; i++) {
-			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
-					config.initialBackgroundColor.a);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			GLFW.glfwSwapBuffers(windowHandle);
-		}
 		return windowHandle;
 	}
 
