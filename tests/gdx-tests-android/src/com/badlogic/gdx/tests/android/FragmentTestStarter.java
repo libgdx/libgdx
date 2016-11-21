@@ -40,27 +40,27 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		layout.setOrientation(LinearLayout.HORIZONTAL);
 		
 		list = new FrameLayout(this);
-		list.setId(1);
+		list.setId(R.id.framelayout);
 		list.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		layout.addView(list);
 		
 		list.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
 
 		view = new FrameLayout(this);
-		view.setId(2);
+		view.setId(R.id.viewlayout);
 		view.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 2));
 		layout.addView(view);
 
 		setContentView(layout);
 
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction().add(1, new TestListFragment()).commit();
+			getSupportFragmentManager().beginTransaction().add(R.id.framelayout, new TestListFragment()).commit();
 		}
 	}
 	
 	public void onTestSelected (String testName) {
 		if(view != null) {
-			getSupportFragmentManager().beginTransaction().replace(2, TestViewFragment.newInstance(testName)).commit();
+			getSupportFragmentManager().beginTransaction().replace(R.id.viewlayout, TestViewFragment.newInstance(testName)).commit();
 		} else {
 			startActivity(new Intent(this, GdxTestActivity.class).putExtra("test", testName));
 		}

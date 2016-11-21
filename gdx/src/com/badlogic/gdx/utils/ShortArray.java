@@ -249,8 +249,8 @@ public class ShortArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public short[] shrink () {
 		if (items.length != size) resize(size);
@@ -263,6 +263,14 @@ public class ShortArray {
 	public short[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined. 
+	 * @return {@link #items} */
+	public short[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 

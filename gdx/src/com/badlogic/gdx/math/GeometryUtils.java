@@ -32,6 +32,7 @@ public final class GeometryUtils {
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
 	 * </pre>
+	 * 
 	 * @return barycentricOut */
 	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
 		Vector2 v0 = tmp1.set(b).sub(a);
@@ -122,6 +123,45 @@ public final class GeometryUtils {
 		return circumcenter;
 	}
 
+	static public float triangleCircumradius (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float m1, m2, mx1, mx2, my1, my2, x, y;
+		if (Math.abs(y2 - y1) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx2 = (x2 + x3) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (x2 + x1) / 2;
+			y = m2 * (x - mx2) + my2;
+		} else if (Math.abs(y3 - y2) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m1 = -(x2 - x1) / (y2 - y1);
+			mx1 = (x1 + x2) / 2;
+			my1 = (y1 + y2) / 2;
+			x = (x3 + x2) / 2;
+			y = m1 * (x - mx1) + my1;
+		} else {
+			m1 = -(x2 - x1) / (y2 - y1);
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx1 = (x1 + x2) / 2;
+			mx2 = (x2 + x3) / 2;
+			my1 = (y1 + y2) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+			y = m1 * (x - mx1) + my1;
+		}
+		float dx = x1 - x, dy = y1 - y;
+		return (float)Math.sqrt(dx * dx + dy * dy);
+	}
+
+	/** Ratio of circumradius to shortest edge as a measure of triangle quality.
+	 * <p>
+	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
+	 * Generation, Formulation, and Partition. */
+	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
+		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
+		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
+		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
+	}
+
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
 		return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
 	}
@@ -182,11 +222,9 @@ public final class GeometryUtils {
 			int x1 = i;
 			int y1 = i + 1;
 			int x2 = (i + 2) % n;
-			if(x2 < offset)
-				x2 += offset;
+			if (x2 < offset) x2 += offset;
 			int y2 = (i + 3) % n;
-			if(y2 < offset)
-				y2 += offset;
+			if (y2 < offset) y2 += offset;
 			area += polygon[x1] * polygon[y2];
 			area -= polygon[x2] * polygon[y1];
 		}

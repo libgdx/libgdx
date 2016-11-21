@@ -47,8 +47,19 @@ public class OrderedSet<T> extends ObjectSet<T> {
 	}
 
 	public boolean add (T key) {
-		if (!contains(key)) items.add(key);
-		return super.add(key);
+		if (!super.add(key)) return false;
+		items.add(key);
+		return true;
+	}
+
+	public boolean add (T key, int index) {
+		if (!super.add(key)) {
+			items.removeValue(key, true);
+			items.insert(index, key);
+			return false;
+		}
+		items.insert(index, key);
+		return true;
 	}
 
 	public boolean remove (T key) {

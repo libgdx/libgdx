@@ -1,14 +1,6 @@
 
 package com.badlogic.gdx.maps.tiled;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.StringTokenizer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
-
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -32,6 +24,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>> extends AsynchronousAssetLoader<TiledMap, P> {
 
@@ -266,11 +266,28 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			for (Element property : element.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
 				String value = property.getAttribute("value", null);
+				String type = property.getAttribute("type", null);
 				if (value == null) {
 					value = property.getText();
 				}
-				properties.put(name, value);
+				Object castValue = castProperty(name, value, type);
+				properties.put(name, castValue);
 			}
+		}
+	}
+
+	private Object castProperty (String name, String value, String type) {
+		if (type == null) {
+			return value;
+		} else if (type.equals("int")) {
+			return Integer.valueOf(value);
+		} else if (type.equals("float")) {
+			return Float.valueOf(value);
+		} else if (type.equals("bool")) {
+			return Boolean.valueOf(value);
+		} else {
+			throw new GdxRuntimeException("Wrong type given for property " + name + ", given : " + type
+				+ ", supported : string, bool, int, float");
 		}
 	}
 

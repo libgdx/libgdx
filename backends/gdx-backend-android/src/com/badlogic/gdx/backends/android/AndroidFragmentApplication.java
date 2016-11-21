@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -67,6 +68,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 
 	protected Callbacks callbacks;
 
@@ -89,12 +91,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public void onDetach () {
 		super.onDetach();
 		this.callbacks = null;
-		Gdx.app = null;
-		Gdx.input = null;
-		Gdx.audio = null;
-		Gdx.files = null;
-		Gdx.graphics = null;
-		Gdx.net = null;
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -158,6 +154,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
@@ -387,6 +384,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

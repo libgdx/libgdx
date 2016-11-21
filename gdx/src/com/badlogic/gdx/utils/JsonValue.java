@@ -863,6 +863,29 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Sets the name of the specified value and adds it after the last child. */
+	public void addChild (String name, JsonValue value) {
+		value.name = name;
+		addChild(value);
+	}
+
+	/** Adds the specified value after the last child. */
+	public void addChild (JsonValue value) {
+		value.parent = this;
+		JsonValue current = child;
+		if (current == null)
+			child = value;
+		else {
+			while (true) {
+				if (current.next == null) {
+					current.next = value;
+					return;
+				}
+				current = current.next;
+			}
+		}
+	}
+
 	/** Returns the next sibling of this value.
 	 * @return May be null. */
 	public JsonValue next () {

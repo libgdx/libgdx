@@ -232,10 +232,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-%}
-%include "BulletCollision/CollisionShapes/btShapeHull.h"
+%include "./btShapeHull.i"
 
 %include "./btConvexHullShape.i"
 

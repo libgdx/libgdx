@@ -15,7 +15,7 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 	
 	public Lwjgl3ControllerManager() {
 		for(int i = GLFW.GLFW_JOYSTICK_1; i < GLFW.GLFW_JOYSTICK_LAST; i++) {
-			if(GLFW.glfwJoystickPresent(i) == GLFW.GLFW_TRUE) {
+			if(GLFW.glfwJoystickPresent(i)) {
 				controllers.add(new Lwjgl3Controller(this, i));
 			}
 		}
@@ -31,7 +31,7 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 	
 	void pollState() {
 		for(int i = GLFW.GLFW_JOYSTICK_1; i < GLFW.GLFW_JOYSTICK_LAST; i++) {
-			if(GLFW.glfwJoystickPresent(i) == GLFW.GLFW_TRUE) {
+			if(GLFW.glfwJoystickPresent(i)) {
 				boolean alreadyUsed = false;
 				for(int j = 0; j < controllers.size; j++) {
 					if(((Lwjgl3Controller)controllers.get(j)).index == i) {

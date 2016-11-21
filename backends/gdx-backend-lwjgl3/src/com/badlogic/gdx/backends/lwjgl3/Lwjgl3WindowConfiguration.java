@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import java.util.Arrays;
+
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3DisplayMode;
 import com.badlogic.gdx.graphics.Color;
@@ -25,12 +28,46 @@ public class Lwjgl3WindowConfiguration {
 	int windowY = -1;
 	int windowWidth = 640;
 	int windowHeight = 480;
+	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
 	boolean windowResizable = true;
 	boolean windowDecorated = true;
+	boolean windowMaximized = false;
+	FileType windowIconFileType;
+	String[] windowIconPaths;
 	Lwjgl3WindowListener windowListener;
 	Lwjgl3DisplayMode fullscreenMode;
 	String title = "";
 	Color initialBackgroundColor = Color.BLACK;
+	boolean initialVisible = true;
+	
+	void setWindowConfiguration (Lwjgl3WindowConfiguration config){
+		windowX = config.windowX;
+		windowY = config.windowY;
+		windowWidth = config.windowWidth;
+		windowHeight = config.windowHeight;
+		windowMinWidth = config.windowMinWidth;
+		windowMinHeight = config.windowMinHeight;
+		windowMaxWidth = config.windowMaxWidth;
+		windowMaxHeight = config.windowMaxHeight;
+		windowResizable = config.windowResizable;
+		windowDecorated = config.windowDecorated;
+		windowMaximized = config.windowMaximized;
+		windowIconFileType = config.windowIconFileType;
+		if (config.windowIconPaths != null) 
+			windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
+		windowListener = config.windowListener;
+		fullscreenMode = config.fullscreenMode;
+		title = config.title;
+		initialBackgroundColor = config.initialBackgroundColor;
+		initialVisible = config.initialVisible;
+	}
+	
+	/**
+	 * @param visibility whether the window will be visible on creation. (default true)
+	 */
+	public void setInitialVisible(boolean visibility) {
+		this.initialVisible = visibility;
+	}
 	
 	/**
 	 * Sets the app to use windowed mode.
@@ -46,7 +83,7 @@ public class Lwjgl3WindowConfiguration {
 	}
 	
 	/** 
-	 * @param resizable whether the windowed mode window is resizable
+	 * @param resizable whether the windowed mode window is resizable (default true)
 	 */
 	public void setResizable(boolean resizable) {
 		this.windowResizable = resizable;
@@ -60,12 +97,50 @@ public class Lwjgl3WindowConfiguration {
 	}
 	
 	/**
+	 * @param maximized whether the window starts maximized. Ignored if the window is full screen. (default false)
+	 */
+	public void setMaximized(boolean maximized) {
+		this.windowMaximized = maximized;
+	}
+	
+	/**
 	 * Sets the position of the window in windowed mode on the
-	 * primary monitor. Default -1 for booth coordinates for centered.
+	 * primary monitor. Default -1 for both coordinates for centered.
 	 */
 	public void setWindowPosition(int x, int y) {
 		windowX = x;
 		windowY = y;
+	}
+	
+	/**
+	 * Sets minimum and maximum size limits for the window. If the window is full screen or not resizable, these 
+	 * limits are ignored. The default for all four parameters is -1, which means unrestricted.
+	 */
+	public void setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+		windowMinWidth = minWidth;
+		windowMinHeight = minHeight;
+		windowMaxWidth = maxWidth;
+		windowMaxHeight = maxHeight;
+	}
+	
+	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param filePaths One or more {@linkplain FileType#Internal internal} image paths. Must be JPEG, PNG, or BMP format.
+	 * The one closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48.
+	 */
+	public void setWindowIcon (String... filePaths) {
+		setWindowIcon(FileType.Internal, filePaths);
+	}
+	
+	/**
+	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
+	 * @param fileType The type of file handle the paths are relative to.
+	 * @param filePaths One or more image paths, relative to the given {@linkplain FileType}. Must be JPEG, PNG, or BMP format. 
+	 * The one closest to the system's desired size will be scaled. Good sizes include 16x16, 32x32 and 48x48.
+	 */
+	public void setWindowIcon (FileType fileType, String... filePaths) {
+		windowIconFileType = fileType;
+		windowIconPaths = filePaths;
 	}
 	
 	/**

@@ -54,7 +54,6 @@ public class ModelTest extends BaseG3dHudTest {
 	}
 
 	private final Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
-	private final Quaternion tmpQ = new Quaternion();
 	private final BoundingBox bounds = new BoundingBox();
 
 	@Override

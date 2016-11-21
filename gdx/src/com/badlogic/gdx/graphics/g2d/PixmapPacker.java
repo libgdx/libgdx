@@ -101,6 +101,7 @@ public class PixmapPacker implements Disposable {
 	Format pageFormat;
 	int padding;
 	boolean duplicateBorder;
+	Color transparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
 
@@ -346,8 +347,12 @@ public class PixmapPacker implements Disposable {
 		final Array<String> addedRects = new Array();
 		boolean dirty;
 
+		/** Creates a new page filled with the color provided by the {@link PixmapPacker#getTransparentColor()} */
 		public Page (PixmapPacker packer) {
 			image = new Pixmap(packer.pageWidth, packer.pageHeight, packer.pageFormat);
+			final Color transparentColor = packer.getTransparentColor();
+			this.image.setColor(transparentColor);
+			this.image.fill();
 		}
 
 		public Pixmap getPixmap () {
@@ -573,6 +578,7 @@ public class PixmapPacker implements Disposable {
 
 			public SkylinePage (PixmapPacker packer) {
 				super(packer);
+
 			}
 
 			static class Row {
@@ -580,4 +586,17 @@ public class PixmapPacker implements Disposable {
 			}
 		}
 	}
+
+	/** @see PixmapPacker#setTransparentColor(Color color) */
+	public Color getTransparentColor () {
+		return this.transparentColor;
+	}
+
+	/** Sets the default <code>color</code> of the whole {@link PixmapPacker.Page} when a new one created. Helps to avoid texture
+	 * bleeding or to highlight the page for debugging.
+	 * @see Page#Page(PixmapPacker packer) */
+	public void setTransparentColor (Color color) {
+		this.transparentColor.set(color);
+	}
+
 }

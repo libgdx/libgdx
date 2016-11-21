@@ -55,9 +55,8 @@ public:
 		return getUnscaledPoints();
 	}
 
-	
-
-
+    void optimizeConvexHull();
+    
 	SIMD_FORCE_INLINE	btVector3 getScaledPoint(int i) const
 	{
 		return m_unscaledPoints[i] * m_localScaling;

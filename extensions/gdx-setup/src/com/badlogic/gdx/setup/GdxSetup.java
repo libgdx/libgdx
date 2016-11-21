@@ -278,6 +278,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-xxxhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
@@ -311,6 +312,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
@@ -319,6 +321,30 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
+		}
+
+		if(builder.modules.contains(ProjectType.IOSMOE)) {			
+			project.files.add(new ProjectFile("ios-moe/resources/Default.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Default-1024w-1366h@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon-72.png", false));
+			project.files.add(new ProjectFile("ios-moe/resources/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/build.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/build.xcconfig", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info-Test.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
+			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -606,6 +632,7 @@ public class GdxSetup {
 				  projects.add(ProjectType.DESKTOP);
 				  projects.add(ProjectType.ANDROID);
 				  projects.add(ProjectType.IOS);
+				  projects.add(ProjectType.IOSMOE);
 				  projects.add(ProjectType.HTML);
 			 } else {
 				  if (!excludedModules.contains("desktop"))
@@ -614,6 +641,8 @@ public class GdxSetup {
 						projects.add(ProjectType.ANDROID);
 				  if (!excludedModules.contains("ios"))
 						projects.add(ProjectType.IOS);
+				  if (!excludedModules.contains("iosmoe"))
+					  	projects.add(ProjectType.IOSMOE);
 				  if (!excludedModules.contains("html"))
 						projects.add(ProjectType.HTML);
 			 }
