@@ -71,7 +71,7 @@ public class OpenALAudio implements Audio {
 	private OpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
 
-	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
+	protected final Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic.class);
 	long device;
 	long context;
 	boolean noDevice = false;
@@ -256,8 +256,12 @@ public class OpenALAudio implements Audio {
 
 	public void update () {
 		if (noDevice) return;
-		for (int i = 0; i < music.size; i++)
-			music.items[i].update();
+		
+		synchronized (music) {
+            for (int i = 0; i < music.size; i++) {
+                music.items[i].update();
+            }
+        }
 	}
 
 	public long getSoundId (int sourceId) {

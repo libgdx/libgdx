@@ -69,7 +69,9 @@ public abstract class OpenALMusic implements Music {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
 
-			audio.music.add(this);
+			synchronized (audio.music) {
+                audio.music.add(this);
+            }
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
@@ -103,7 +105,11 @@ public abstract class OpenALMusic implements Music {
 	public void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		audio.music.removeValue(this, true);
+		
+		synchronized (audio.music) {
+            audio.music.removeValue(this, true);
+        }
+		
 		reset();
 		audio.freeSource(sourceID);
 		sourceID = -1;

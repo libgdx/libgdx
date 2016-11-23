@@ -121,13 +121,26 @@ public class Lwjgl3Application implements Application {
 
 	private void loop() {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
-		while (running && windows.size > 0) {
-			// FIXME put it on a separate thread
-			if (audio instanceof OpenALAudio) {
-				((OpenALAudio) audio).update();
-			}
+		
+		// Audio update thread
+        if (audio instanceof OpenALAudio) {
+            // Avoid casting inside the loop
+            final OpenALAudio openALAudio = (OpenALAudio) audio;
 
+            // Start audio thread
+            new Thread(() -> {
+                while (running && windows.size > 0) {
+                    openALAudio.update();
+                }
+
+                // Dispose
+                openALAudio.dispose();
+            }).start();
+        }
+		
+		while (running && windows.size > 0) {
 			boolean haveWindowsRendered = false;
+			
 			closedWindows.clear();
 			for (Lwjgl3Window window : windows) {
 				window.makeCurrent();
@@ -204,13 +217,12 @@ public class Lwjgl3Application implements Application {
 	
 	private void cleanup() {
 		Lwjgl3Cursor.disposeSystemCursors();
-		if (audio instanceof OpenALAudio) {
-			((OpenALAudio) audio).dispose();
-		}
+				
 		errorCallback.free();
 		if (glDebugCallback != null) {
 			glDebugCallback.free();
 		}
+		
 		GLFW.glfwTerminate();
 	}
 
