@@ -257,7 +257,7 @@ public class OpenALAudio implements Audio {
 	public void update () {
 		if (noDevice) return;
 		
-		synchronized (music) {
+		synchronized (this) {
             for (int i = 0; i < music.size; i++) {
                 music.items[i].update();
             }

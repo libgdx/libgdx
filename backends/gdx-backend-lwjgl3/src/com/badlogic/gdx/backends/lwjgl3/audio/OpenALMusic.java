@@ -37,7 +37,7 @@ public abstract class OpenALMusic implements Music {
 	static private final byte[] tempBytes = new byte[bufferSize];
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 
-	private final OpenALAudio audio;
+	protected final OpenALAudio audio;
 	private IntBuffer buffers;
 	private int sourceID = -1;
 	private int format, sampleRate;
@@ -58,47 +58,51 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	protected void setup (int channels, int sampleRate) {
-		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
-		this.sampleRate = sampleRate;
-		secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
+		synchronized (audio) {
+			this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+			this.sampleRate = sampleRate;
+			secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
+		}
 	}
 
 	public void play () {
 		if (audio.noDevice) return;
-		if (sourceID == -1) {
-			sourceID = audio.obtainSource(true);
-			if (sourceID == -1) return;
-
-			synchronized (audio.music) {
-                audio.music.add(this);
-            }
-
-			if (buffers == null) {
-				buffers = BufferUtils.createIntBuffer(bufferCount);
-				alGenBuffers(buffers);
-				int errorCode = alGetError();
-				if (errorCode != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
+		
+		synchronized (audio) {
+			if (sourceID == -1) {
+				sourceID = audio.obtainSource(true);
+				if (sourceID == -1) return;
+	
+				audio.music.add(this);        
+	
+				if (buffers == null) {
+					buffers = BufferUtils.createIntBuffer(bufferCount);
+					alGenBuffers(buffers);
+					int errorCode = alGetError();
+					if (errorCode != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
+				}
+				alSourcei(sourceID, AL_LOOPING, AL_FALSE);
+				setPan(pan, volume);
+	
+				boolean filled = false; // Check if there's anything to actually play.
+				for (int i = 0; i < bufferCount; i++) {
+					int bufferID = buffers.get(i);
+					if (!fill(bufferID)) break;
+					filled = true;
+					alSourceQueueBuffers(sourceID, bufferID);
+				}
+				if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
+	
+				if (alGetError() != AL_NO_ERROR) {
+					stop();
+					return;
+				}			
 			}
-			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
-			setPan(pan, volume);
-
-			boolean filled = false; // Check if there's anything to actually play.
-			for (int i = 0; i < bufferCount; i++) {
-				int bufferID = buffers.get(i);
-				if (!fill(bufferID)) break;
-				filled = true;
-				alSourceQueueBuffers(sourceID, bufferID);
+			
+			if (!isPlaying) {
+				alSourcePlay(sourceID);
+				isPlaying = true;
 			}
-			if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
-
-			if (alGetError() != AL_NO_ERROR) {
-				stop();
-				return;
-			}
-		}
-		if (!isPlaying) {
-			alSourcePlay(sourceID);
-			isPlaying = true;
 		}
 	}
 
@@ -106,95 +110,117 @@ public abstract class OpenALMusic implements Music {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 		
-		synchronized (audio.music) {
+		synchronized (audio) {
             audio.music.removeValue(this, true);
-        }
-		
-		reset();
-		audio.freeSource(sourceID);
-		sourceID = -1;
-		renderedSeconds = 0;
-		isPlaying = false;
+        		
+			reset();
+			audio.freeSource(sourceID);
+			sourceID = -1;
+			renderedSeconds = 0;
+			isPlaying = false;
+		}
 	}
 
 	public void pause () {
 		if (audio.noDevice) return;
-		if (sourceID != -1) alSourcePause(sourceID);
-		isPlaying = false;
+		
+		synchronized (audio) {
+			if (sourceID != -1) alSourcePause(sourceID);
+			isPlaying = false;
+		}
 	}
 
 	public boolean isPlaying () {
 		if (audio.noDevice) return false;
 		if (sourceID == -1) return false;
-		return isPlaying;
+		
+		synchronized (audio) {
+			return isPlaying;
+		}
 	}
 
 	public void setLooping (boolean isLooping) {
-		this.isLooping = isLooping;
+		synchronized (audio) {
+			this.isLooping = isLooping;
+		}
 	}
 
 	public boolean isLooping () {
-		return isLooping;
+		synchronized (audio) {
+			return isLooping;
+		}
 	}
 
 	public void setVolume (float volume) {
-		this.volume = volume;
-		if (audio.noDevice) return;
-		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
+		synchronized (audio) {
+			this.volume = volume;
+			if (audio.noDevice) return;
+			if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
+		}
 	}
 
 	public float getVolume () {
-		return this.volume;
+		synchronized (audio) {
+			return this.volume;
+		}
 	}
 
 	public void setPan (float pan, float volume) {
-		this.volume = volume;
-		this.pan = pan;
-		if (audio.noDevice) return;
-		if (sourceID == -1) return;
-		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
-			MathUtils.sin((pan + 1) * MathUtils.PI / 2));
-		alSourcef(sourceID, AL_GAIN, volume);
+		synchronized (audio) {
+			this.volume = volume;
+			this.pan = pan;
+			if (audio.noDevice) return;
+			if (sourceID == -1) return;
+			alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
+				MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+			alSourcef(sourceID, AL_GAIN, volume);
+		}
 	}
 
 	public void setPosition (float position) {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		boolean wasPlaying = isPlaying;
-		isPlaying = false;
-		alSourceStop(sourceID);
-		alSourceUnqueueBuffers(sourceID, buffers);
-		renderedSeconds += (secondsPerBuffer * bufferCount);
-		if (position <= renderedSeconds) {
-			reset();
-			renderedSeconds = 0;
-		}
-		while (renderedSeconds < (position - secondsPerBuffer)) {
-			if (read(tempBytes) <= 0) break;
-			renderedSeconds += secondsPerBuffer;
-		}
-		boolean filled = false;
-		for (int i = 0; i < bufferCount; i++) {
-			int bufferID = buffers.get(i);
-			if (!fill(bufferID)) break;
-			filled = true;
-			alSourceQueueBuffers(sourceID, bufferID);
-		}
-		if (!filled) {
-			stop();
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
-		}
-		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
-		if (wasPlaying) {
-			alSourcePlay(sourceID);
-			isPlaying = true;
+		
+		synchronized (audio) {
+			boolean wasPlaying = isPlaying;
+			isPlaying = false;
+			alSourceStop(sourceID);
+			alSourceUnqueueBuffers(sourceID, buffers);
+			renderedSeconds += (secondsPerBuffer * bufferCount);
+			if (position <= renderedSeconds) {
+				reset();
+				renderedSeconds = 0;
+			}
+			while (renderedSeconds < (position - secondsPerBuffer)) {
+				if (read(tempBytes) <= 0) break;
+				renderedSeconds += secondsPerBuffer;
+			}
+			boolean filled = false;
+			for (int i = 0; i < bufferCount; i++) {
+				int bufferID = buffers.get(i);
+				if (!fill(bufferID)) break;
+				filled = true;
+				alSourceQueueBuffers(sourceID, bufferID);
+			}
+			if (!filled) {
+				stop();
+				if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+			}
+			alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
+			if (wasPlaying) {
+				alSourcePlay(sourceID);
+				isPlaying = true;
+			}
 		}
 	}
 
 	public float getPosition () {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
-		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+		
+		synchronized (audio) {
+			return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+		}
 	}
 
 	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
@@ -221,25 +247,27 @@ public abstract class OpenALMusic implements Music {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
 
-		boolean end = false;
-		int buffers = alGetSourcei(sourceID, AL_BUFFERS_PROCESSED);
-		while (buffers-- > 0) {
-			int bufferID = alSourceUnqueueBuffers(sourceID);
-			if (bufferID == AL_INVALID_VALUE) break;
-			renderedSeconds += secondsPerBuffer;
-			if (end) continue;
-			if (fill(bufferID))
-				alSourceQueueBuffers(sourceID, bufferID);
-			else
-				end = true;
+		synchronized (audio) {
+			boolean end = false;
+			int buffers = alGetSourcei(sourceID, AL_BUFFERS_PROCESSED);
+			while (buffers-- > 0) {
+				int bufferID = alSourceUnqueueBuffers(sourceID);
+				if (bufferID == AL_INVALID_VALUE) break;
+				renderedSeconds += secondsPerBuffer;
+				if (end) continue;
+				if (fill(bufferID))
+					alSourceQueueBuffers(sourceID, bufferID);
+				else
+					end = true;
+			}
+			if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
+				stop();
+				if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+			}
+	
+			// A buffer underflow will cause the source to stop.
+			if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
 		}
-		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
-			stop();
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
-		}
-
-		// A buffer underflow will cause the source to stop.
-		if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
 	}
 
 	private boolean fill (int bufferID) {
