@@ -166,90 +166,108 @@ public class OpenALAudio implements Audio {
 
 	int obtainSource (boolean isMusic) {
 		if (noDevice) return 0;
-		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceId = idleSources.get(i);
-			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
-			if (state != AL_PLAYING && state != AL_PAUSED) {
-				if (isMusic) {
-					idleSources.removeIndex(i);
-				} else {
-					if (sourceToSoundId.containsKey(sourceId)) {
-						long soundId = sourceToSoundId.get(sourceId);
-						sourceToSoundId.remove(sourceId);
-						soundIdToSource.remove(soundId);
+		
+		synchronized (this) {
+			for (int i = 0, n = idleSources.size; i < n; i++) {
+				int sourceId = idleSources.get(i);
+				int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
+				if (state != AL_PLAYING && state != AL_PAUSED) {
+					if (isMusic) {
+						idleSources.removeIndex(i);
+					} else {
+						if (sourceToSoundId.containsKey(sourceId)) {
+							long soundId = sourceToSoundId.get(sourceId);
+							sourceToSoundId.remove(sourceId);
+							soundIdToSource.remove(soundId);
+						}
+	
+						long soundId = nextSoundId++;
+						sourceToSoundId.put(sourceId, soundId);
+						soundIdToSource.put(soundId, sourceId);
 					}
-
-					long soundId = nextSoundId++;
-					sourceToSoundId.put(sourceId, soundId);
-					soundIdToSource.put(soundId, sourceId);
+					alSourceStop(sourceId);
+					alSourcei(sourceId, AL_BUFFER, 0);
+					AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
+					AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
+					AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 1f);
+					return sourceId;
 				}
-				alSourceStop(sourceId);
-				alSourcei(sourceId, AL_BUFFER, 0);
-				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
-				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
-				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 1f);
-				return sourceId;
 			}
+			return -1;
 		}
-		return -1;
 	}
 
 	void freeSource (int sourceID) {
 		if (noDevice) return;
-		alSourceStop(sourceID);
-		alSourcei(sourceID, AL_BUFFER, 0);
-		if (sourceToSoundId.containsKey(sourceID)) {
-			long soundId = sourceToSoundId.remove(sourceID);
-			soundIdToSource.remove(soundId);
+		
+		synchronized (this) {
+			alSourceStop(sourceID);
+			alSourcei(sourceID, AL_BUFFER, 0);
+			if (sourceToSoundId.containsKey(sourceID)) {
+				long soundId = sourceToSoundId.remove(sourceID);
+				soundIdToSource.remove(soundId);
+			}
+			idleSources.add(sourceID);
 		}
-		idleSources.add(sourceID);
 	}
 
 	void freeBuffer (int bufferID) {
 		if (noDevice) return;
-		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (sourceToSoundId.containsKey(sourceID)) {
-					long soundId = sourceToSoundId.remove(sourceID);
-					soundIdToSource.remove(soundId);
+		
+		synchronized (this) {
+			for (int i = 0, n = idleSources.size; i < n; i++) {
+				int sourceID = idleSources.get(i);
+				if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+					if (sourceToSoundId.containsKey(sourceID)) {
+						long soundId = sourceToSoundId.remove(sourceID);
+						soundIdToSource.remove(soundId);
+					}
+					alSourceStop(sourceID);
+					alSourcei(sourceID, AL_BUFFER, 0);
 				}
-				alSourceStop(sourceID);
-				alSourcei(sourceID, AL_BUFFER, 0);
 			}
 		}
 	}
 
 	void stopSourcesWithBuffer (int bufferID) {
 		if (noDevice) return;
-		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (sourceToSoundId.containsKey(sourceID)) {
-					long soundId = sourceToSoundId.remove(sourceID);
-					soundIdToSource.remove(soundId);
+		
+		synchronized (this) {
+			for (int i = 0, n = idleSources.size; i < n; i++) {
+				int sourceID = idleSources.get(i);
+				if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+					if (sourceToSoundId.containsKey(sourceID)) {
+						long soundId = sourceToSoundId.remove(sourceID);
+						soundIdToSource.remove(soundId);
+					}
+					alSourceStop(sourceID);
 				}
-				alSourceStop(sourceID);
 			}
 		}
 	}
 	
 	void pauseSourcesWithBuffer (int bufferID) {
 		if (noDevice) return;
-		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID)
-				alSourcePause(sourceID);
+		
+		synchronized (this) {
+			for (int i = 0, n = idleSources.size; i < n; i++) {
+				int sourceID = idleSources.get(i);
+				if (alGetSourcei(sourceID, AL_BUFFER) == bufferID)
+					alSourcePause(sourceID);
+			}
 		}
 	}
 	
 	void resumeSourcesWithBuffer (int bufferID) {
 		if (noDevice) return;
-		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED)
-					alSourcePlay(sourceID);
+		
+		synchronized (this) {
+			for (int i = 0, n = idleSources.size; i < n; i++) {
+				int sourceID = idleSources.get(i);
+				if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+					if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED)
+						alSourcePlay(sourceID);
+				}
 			}
 		}
 	}
@@ -264,49 +282,49 @@ public class OpenALAudio implements Audio {
         }
 	}
 
-	public long getSoundId (int sourceId) {
+	public synchronized long getSoundId (int sourceId) {
 		if (!sourceToSoundId.containsKey(sourceId)) return -1;
 		return sourceToSoundId.get(sourceId);
 	}
 
-	public void stopSound (long soundId) {
+	public synchronized void stopSound (long soundId) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourceStop(sourceId);
 	}
 	
-	public void pauseSound (long soundId) {
+	public synchronized void pauseSound (long soundId) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourcePause(sourceId);
 	}
 	
-	public void resumeSound (long soundId) {
+	public synchronized void resumeSound (long soundId) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		if (alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED)
 			alSourcePlay(sourceId);
 	}
 
-	public void setSoundGain (long soundId, float volume) {
+	public synchronized void setSoundGain (long soundId, float volume) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 	}
 
-	public void setSoundLooping (long soundId, boolean looping) {
+	public synchronized void setSoundLooping (long soundId, boolean looping) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourcei(sourceId, AL10.AL_LOOPING, looping ? AL10.AL_TRUE : AL10.AL_FALSE);
 	}
 
-	public void setSoundPitch (long soundId, float pitch) {
+	public synchronized void setSoundPitch (long soundId, float pitch) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
 	}
 
-	public void setSoundPan (long soundId, float pan, float volume) {
+	public synchronized void setSoundPan (long soundId, float pan, float volume) {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 
@@ -317,18 +335,21 @@ public class OpenALAudio implements Audio {
 
 	public void dispose () {
 		if (noDevice) return;
-		for (int i = 0, n = allSources.size; i < n; i++) {
-			int sourceID = allSources.get(i);
-			int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
-			if (state != AL_STOPPED) alSourceStop(sourceID);
-			alDeleteSources(sourceID);
+		
+		synchronized (this) {
+			for (int i = 0, n = allSources.size; i < n; i++) {
+				int sourceID = allSources.get(i);
+				int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
+				if (state != AL_STOPPED) alSourceStop(sourceID);
+				alDeleteSources(sourceID);
+			}
+	
+			sourceToSoundId.clear();
+			soundIdToSource.clear();
+	
+			alcDestroyContext(context);
+			alcCloseDevice(device);
 		}
-
-		sourceToSoundId.clear();
-		soundIdToSource.clear();
-
-		alcDestroyContext(context);
-		alcCloseDevice(device);			
 	}
 
 	public AudioDevice newAudioDevice (int sampleRate, final boolean isMono) {
@@ -377,7 +398,7 @@ public class OpenALAudio implements Audio {
 
 	/** Retains a list of the most recently played sounds and stops the sound played least recently if necessary for a new sound to
 	 * play */
-	protected void retain (OpenALSound sound, boolean stop) {
+	protected synchronized void retain (OpenALSound sound, boolean stop) {
 		// Move the pointer ahead and wrap
 		mostRecetSound++;
 		mostRecetSound %= recentSounds.length;
@@ -391,7 +412,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	/** Removes the disposed sound from the least recently played list */
-	public void forget (OpenALSound sound) {
+	public synchronized void forget (OpenALSound sound) {
 		for (int i = 0; i < recentSounds.length; i++) {
 			if (recentSounds[i] == sound) recentSounds[i] = null;
 		}
