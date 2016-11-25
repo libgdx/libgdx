@@ -355,6 +355,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 1) return 1;
 			a += widths[0] / 2;
 			float width = 0, height = 0;
 			for (int i = 0, n = widths.length; i < n; i++) {
