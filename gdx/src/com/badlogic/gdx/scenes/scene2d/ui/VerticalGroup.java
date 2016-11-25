@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A group that lays out its children side by side vertically, with optional wrapping. This can be easier than using
+/** A group that lays out its children top to bottom vertically, with optional wrapping. This can be easier than using
  * {@link Table} when actors need to be inserted into or removed from the middle of the group.
  * <p>
  * The preferred width is the largest preferred width of any child. The preferred height is the sum of the children's preferred
@@ -127,6 +127,8 @@ public class VerticalGroup extends WidgetGroup {
 	}
 
 	public void layout () {
+		if (sizeInvalid) computeSize();
+
 		if (wrap) {
 			layoutWrapped();
 			return;
@@ -135,12 +137,20 @@ public class VerticalGroup extends WidgetGroup {
 		boolean round = this.round;
 		int align = this.align;
 		float space = this.space, padLeft = this.padLeft, fill = this.fill;
-		float columnWidth = getWidth() - padLeft - padRight, y = prefHeight - padTop + space;
+		float columnWidth = prefWidth - padLeft - padRight, y = prefHeight - padTop + space;
 
 		if ((align & Align.top) != 0)
 			y += getHeight() - prefHeight;
 		else if ((align & Align.bottom) == 0) // center
 			y += (getHeight() - prefHeight) / 2;
+
+		float startX;
+		if ((align & Align.left) != 0)
+			startX = padLeft;
+		else if ((align & Align.right) != 0)
+			startX = getWidth() - padRight - columnWidth;
+		else
+			startX = padLeft + (getWidth() - padLeft - padRight - columnWidth) / 2;
 
 		align = columnAlign;
 
@@ -173,10 +183,10 @@ public class VerticalGroup extends WidgetGroup {
 				if (maxWidth > 0 && width > maxWidth) width = maxWidth;
 			}
 
-			float x = padLeft;
-			if ((align & Align.top) != 0)
+			float x = startX;
+			if ((align & Align.right) != 0)
 				x += columnWidth - width;
-			else if ((align & Align.bottom) == 0) // center
+			else if ((align & Align.left) == 0) // center
 				x += (columnWidth - width) / 2;
 
 			y -= height + space;
@@ -462,8 +472,8 @@ public class VerticalGroup extends WidgetGroup {
 		return wrap;
 	}
 
-	/** Sets the alignment of widgets within each column of the vertical group. Set to {@link Align#center}, {@link Align#top},
-	 * {@link Align#bottom}, {@link Align#left}, {@link Align#right}, or any combination of those. */
+	/** Sets the alignment of widgets within each column of the vertical group. Set to {@link Align#center}, {@link Align#left}, or
+	 * {@link Align#right}. */
 	public VerticalGroup columnAlign (int columnAlign) {
 		this.columnAlign = columnAlign;
 		return this;
@@ -475,24 +485,10 @@ public class VerticalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of widgets within each column. */
-	public VerticalGroup columnTop () {
-		columnAlign |= Align.top;
-		columnAlign &= ~Align.bottom;
-		return this;
-	}
-
 	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of widgets within each column. */
 	public VerticalGroup columnLeft () {
 		columnAlign |= Align.left;
 		columnAlign &= ~Align.right;
-		return this;
-	}
-
-	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of widgets within each column. */
-	public VerticalGroup columnBottom () {
-		columnAlign |= Align.bottom;
-		columnAlign &= ~Align.top;
 		return this;
 	}
 

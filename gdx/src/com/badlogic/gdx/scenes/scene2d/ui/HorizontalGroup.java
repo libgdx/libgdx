@@ -127,6 +127,8 @@ public class HorizontalGroup extends WidgetGroup {
 	}
 
 	public void layout () {
+		if (sizeInvalid) computeSize();
+
 		if (wrap) {
 			layoutWrapped();
 			return;
@@ -135,14 +137,22 @@ public class HorizontalGroup extends WidgetGroup {
 		boolean round = this.round;
 		int align = this.align;
 		float space = this.space, padBottom = this.padBottom, fill = this.fill;
-		float rowHeight = getHeight() - padTop - padBottom, x = padLeft;
+		float rowHeight = prefHeight - padTop - padBottom, x = padLeft;
 
 		if ((align & Align.right) != 0)
 			x += getWidth() - prefWidth;
 		else if ((align & Align.left) == 0) // center
 			x += (getWidth() - prefWidth) / 2;
 
-		align = this.rowAlign;
+		float startY;
+		if ((align & Align.bottom) != 0)
+			startY = padBottom;
+		else if ((align & Align.top) != 0)
+			startY = getHeight() - padTop - rowHeight;
+		else
+			startY = padBottom + (getHeight() - padBottom - padTop - rowHeight) / 2;
+
+		align = rowAlign;
 
 		SnapshotArray<Actor> children = getChildren();
 		int i = 0, n = children.size, incr = 1;
@@ -173,7 +183,7 @@ public class HorizontalGroup extends WidgetGroup {
 				if (maxHeight > 0 && height > maxHeight) height = maxHeight;
 			}
 
-			float y = padBottom;
+			float y = startY;
 			if ((align & Align.top) != 0)
 				y += rowHeight - height;
 			else if ((align & Align.bottom) == 0) // center
@@ -459,8 +469,8 @@ public class HorizontalGroup extends WidgetGroup {
 		return wrap;
 	}
 
-	/** Sets the alignment of widgets within each row when {@link #wrap()} is used. Set to {@link Align#center}, {@link Align#top},
-	 * or {@link Align#bottom}. */
+	/** Sets the alignment of widgets within each row of the horizontal group. Set to {@link Align#center}, {@link Align#top}, or
+	 * {@link Align#bottom}. */
 	public HorizontalGroup rowAlign (int row) {
 		this.rowAlign = row;
 		return this;
@@ -479,24 +489,10 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of widgets within each row. */
-	public HorizontalGroup rowLeft () {
-		rowAlign |= Align.left;
-		rowAlign &= ~Align.right;
-		return this;
-	}
-
 	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of widgets within each row. */
 	public HorizontalGroup rowBottom () {
 		rowAlign |= Align.bottom;
 		rowAlign &= ~Align.top;
-		return this;
-	}
-
-	/** Adds {@link Align#right} and clears {@link Align#left} for the alignment of widgets within each row. */
-	public HorizontalGroup rowRight () {
-		rowAlign |= Align.right;
-		rowAlign &= ~Align.left;
 		return this;
 	}
 
