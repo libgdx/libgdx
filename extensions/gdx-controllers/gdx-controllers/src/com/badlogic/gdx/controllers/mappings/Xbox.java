@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * See <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/360_controller.svg/450px-360_controller.svg.png">this
  * image</a> which describes each button and axes.
  * 
- * All codes are for buttons expect the L_STICK_XXX, R_STICK_XXX, L_BUMPER and R_BUMPER codes, which are axes.
+ * All codes are for buttons expect the L_STICK_XXX, R_STICK_XXX, L_TRIGGER and R_TRIGGER codes, which are axes.
  * 
  * @author badlogic */
 public class Xbox {
@@ -42,6 +42,8 @@ public class Xbox {
 	public static final int DPAD_DOWN;
 	public static final int DPAD_LEFT;
 	public static final int DPAD_RIGHT;
+	public static final int L_STICK;
+	public static final int R_STICK;
 
 	// Axes
 	/** left trigger, -1 if not pressed, 1 if pressed **/
@@ -76,28 +78,32 @@ public class Xbox {
 			R_TRIGGER = -1;
 			L_STICK_VERTICAL_AXIS = -1;
 			L_STICK_HORIZONTAL_AXIS = -1;
+			L_STICK = -1;
 			R_STICK_VERTICAL_AXIS = -1;
 			R_STICK_HORIZONTAL_AXIS = -1;
+			R_STICK = -1;
 		} else if (SharedLibraryLoader.isLinux) {
-			A = -1;
-			B = -1;
-			X = -1;
-			Y = -1;
-			GUIDE = -1;
-			L_BUMPER = -1;
-			R_BUMPER = -1;
-			BACK = -1;
-			START = -1;
+			A = 0;
+			B = 1;
+			X = 2;
+			Y = 3;
+			GUIDE = 8;
+			L_BUMPER = 4;
+			R_BUMPER = 5;
+			BACK = 6;
+			START = 7;
 			DPAD_UP = -1;
 			DPAD_DOWN = -1;
 			DPAD_LEFT = -1;
 			DPAD_RIGHT = -1;
-			L_TRIGGER = -1;
-			R_TRIGGER = -1;
-			L_STICK_VERTICAL_AXIS = -1;
-			L_STICK_HORIZONTAL_AXIS = -1;
-			R_STICK_VERTICAL_AXIS = -1;
-			R_STICK_HORIZONTAL_AXIS = -1;
+			L_TRIGGER = 2;
+			R_TRIGGER = 5;
+			L_STICK_VERTICAL_AXIS = 1;
+			L_STICK_HORIZONTAL_AXIS = 0;
+			L_STICK = 9;
+			R_STICK_VERTICAL_AXIS = 4;
+			R_STICK_HORIZONTAL_AXIS = 3;
+			R_STICK = 10;
 		} else if (SharedLibraryLoader.isMac) {
 			A = 11;
 			B = 12;
@@ -116,8 +122,10 @@ public class Xbox {
 			R_TRIGGER = 1;
 			L_STICK_VERTICAL_AXIS = 3;
 			L_STICK_HORIZONTAL_AXIS = 2;
+			L_STICK = -1;
 			R_STICK_VERTICAL_AXIS = 5;
 			R_STICK_HORIZONTAL_AXIS = 4;
+			R_STICK = -1;
 		} else {
 			A = -1;
 			B = -1;
@@ -136,8 +144,10 @@ public class Xbox {
 			DPAD_RIGHT = -1;
 			L_STICK_VERTICAL_AXIS = -1;
 			L_STICK_HORIZONTAL_AXIS = -1;
+			L_STICK = -1;
 			R_STICK_VERTICAL_AXIS = -1;
 			R_STICK_HORIZONTAL_AXIS = -1;
+			R_STICK = -1;
 		}
 	}
 	
