@@ -41,7 +41,7 @@ public class VerticalGroup extends WidgetGroup {
 	private FloatArray columnSizes; // column height, column width, ...
 
 	private int align = Align.top, columnAlign;
-	private boolean reverse, round = true, wrap;
+	private boolean reverse, round = true, wrap, expand;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public VerticalGroup () {
@@ -137,7 +137,7 @@ public class VerticalGroup extends WidgetGroup {
 		boolean round = this.round;
 		int align = this.align;
 		float space = this.space, padLeft = this.padLeft, fill = this.fill;
-		float columnWidth = prefWidth - padLeft - padRight, y = prefHeight - padTop + space;
+		float columnWidth = (expand ? getWidth() : prefWidth) - padLeft - padRight, y = prefHeight - padTop + space;
 
 		if ((align & Align.top) != 0)
 			y += getHeight() - prefHeight;
@@ -449,6 +449,28 @@ public class VerticalGroup extends WidgetGroup {
 
 	public float getFill () {
 		return fill;
+	}
+
+	public VerticalGroup expand () {
+		expand = true;
+		return this;
+	}
+
+	/** When true and wrap is false, the columns will take up the entire vertical group width. */
+	public VerticalGroup expand (boolean expand) {
+		this.expand = expand;
+		return this;
+	}
+
+	public boolean getExpand () {
+		return expand;
+	}
+
+	/** Sets fill to 1 and expand to true. */
+	public VerticalGroup grow () {
+		expand = true;
+		fill = 1;
+		return this;
 	}
 
 	/** If false, the widgets are arranged in a single column and the preferred height is the widget heights plus spacing. If true,

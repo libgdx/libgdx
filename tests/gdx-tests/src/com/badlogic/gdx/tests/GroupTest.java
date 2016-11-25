@@ -83,7 +83,7 @@ public class GroupTest extends GdxTest {
 			horiz.addActor(new Label(i + ",", style));
 			if (i == 7) horiz.addActor(new Container(new Image(texture)).size(10));
 		}
-		horiz.addActor(new Container(new Image(texture)).size(30));
+		horiz.addActor(new Container(new Image(texture)).fill().prefSize(30));
 		horiz.debug();
 		horiz.setPosition(10, 10);
 		horiz.pack();
@@ -122,8 +122,18 @@ public class GroupTest extends GdxTest {
 	}
 
 	public void render () {
+
+		horiz.setVisible(true);
 		horiz.setWidth(Gdx.input.getX() - horiz.getX());
 		// horiz.setWidth(200);
+		horiz.setHeight(100);
+		horiz.fill();
+		horiz.expand();
+		horiz.invalidate();
+		
+		horizWrap.setVisible(true);
+		horizWrap.fill();
+		horizWrap.expand();
 		horizWrap.setWidth(Gdx.input.getX() - horizWrap.getX());
 		// horizWrap.setHeight(horizWrap.getPrefHeight());
 		horizWrap.setHeight(200);
@@ -133,6 +143,7 @@ public class GroupTest extends GdxTest {
 		vertWrap.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vertWrap.getY());
 // vertWrap.setWidth(vertWrap.getPrefWidth());
 		vertWrap.setWidth(200);
+		
 
 		// Vary the transforms to exercise the different code paths.
 		group2.setBounds(150, 150, 150, 150);

@@ -41,7 +41,7 @@ public class HorizontalGroup extends WidgetGroup {
 	private FloatArray rowSizes; // row width, row height, ...
 
 	private int align = Align.left, rowAlign;
-	private boolean reverse, round = true, wrap;
+	private boolean reverse, round = true, wrap, expand;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public HorizontalGroup () {
@@ -137,7 +137,7 @@ public class HorizontalGroup extends WidgetGroup {
 		boolean round = this.round;
 		int align = this.align;
 		float space = this.space, padBottom = this.padBottom, fill = this.fill;
-		float rowHeight = prefHeight - padTop - padBottom, x = padLeft;
+		float rowHeight = (expand ? getHeight() : prefHeight) - padTop - padBottom, x = padLeft;
 
 		if ((align & Align.right) != 0)
 			x += getWidth() - prefWidth;
@@ -446,6 +446,28 @@ public class HorizontalGroup extends WidgetGroup {
 
 	public float getFill () {
 		return fill;
+	}
+
+	public HorizontalGroup expand () {
+		expand = true;
+		return this;
+	}
+
+	/** When true and wrap is false, the rows will take up the entire horizontal group height. */
+	public HorizontalGroup expand (boolean expand) {
+		this.expand = expand;
+		return this;
+	}
+
+	public boolean getExpand () {
+		return expand;
+	}
+
+	/** Sets fill to 1 and expand to true. */
+	public HorizontalGroup grow () {
+		expand = true;
+		fill = 1;
+		return this;
 	}
 
 	/** If false, the widgets are arranged in a single row and the preferred width is the widget widths plus spacing. If true, the
