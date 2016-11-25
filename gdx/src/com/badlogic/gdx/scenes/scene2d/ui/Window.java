@@ -92,21 +92,21 @@ public class Window extends Table {
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
-					int border = resizeBorder;
+					float border = resizeBorder / 2f;
 					float width = getWidth(), height = getHeight();
+					float padTop = getPadTop(), padLeft = getPadLeft(), padBottom = getPadBottom(), padRight = getPadRight();
+					float left = padLeft, right = width - padRight, bottom = padBottom;
 					edge = 0;
-					if (isResizable && x >= 0 && x < width && y >= 0 && y < height) {
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
+					if (isResizable && x >= left - border && x <= right + border && y >= bottom - border) {
+						if (x < left + border) edge |= Align.left;
+						if (x > right - border) edge |= Align.right;
+						if (y < bottom + border) edge |= Align.bottom;
 						if (edge != 0) border += 25;
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
+						if (x < left + border) edge |= Align.left;
+						if (x > right - border) edge |= Align.right;
+						if (y < bottom + border) edge |= Align.bottom;
 					}
-					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
+					if (isMovable && edge == 0 && y <= height && y >= height - padTop && x >= left && x <= right) edge = MOVE;
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
@@ -236,8 +236,8 @@ public class Window extends Table {
 		if (style.stageBackground != null) {
 			stageToLocalCoordinates(tmpPosition.set(0, 0));
 			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY()
-				+ tmpSize.y);
+			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+				getY() + tmpSize.y);
 		}
 
 		super.draw(batch, parentAlpha);
