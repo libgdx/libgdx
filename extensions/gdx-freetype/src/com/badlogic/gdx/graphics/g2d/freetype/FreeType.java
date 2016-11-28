@@ -622,7 +622,7 @@ public class FreeType {
 
 		private static native ByteBuffer getBuffer(long bitmap); /*
 			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
-			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch) * bmp->width);
+			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
 		*/
 
 		// @on
