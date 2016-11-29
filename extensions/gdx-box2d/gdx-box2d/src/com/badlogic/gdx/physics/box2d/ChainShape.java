@@ -23,7 +23,7 @@ public class ChainShape extends Shape {
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */
-	boolean isLooped = false;
+	static boolean isLooped = false;
 	
 	public ChainShape () {
 		addr = newChainShape();
@@ -157,6 +157,10 @@ public class ChainShape extends Shape {
 	
 	public boolean isLooped() {
 		return isLooped;
+	}
+	
+	public static void setLooped() {
+		isLooped = true;
 	}
 
 // /// Implement b2Shape. Vertices are cloned using b2Alloc.
