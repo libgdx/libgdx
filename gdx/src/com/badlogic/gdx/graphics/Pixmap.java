@@ -157,8 +157,9 @@ public class Pixmap implements Disposable {
 
 	/** Sets the color for the following drawing operations
 	 * @param color the color, encoded as RGBA8888 */
-	public void setColor (int color) {
+	public Pixmap setColor (int color) {
 		this.color = color;
+		return this;
 	}
 
 	/** Sets the color for the following drawing operations.
@@ -167,19 +168,22 @@ public class Pixmap implements Disposable {
 	 * @param g The green component.
 	 * @param b The blue component.
 	 * @param a The alpha component. */
-	public void setColor (float r, float g, float b, float a) {
+	public Pixmap setColor (float r, float g, float b, float a) {
 		color = Color.rgba8888(r, g, b, a);
+		return this;
 	}
 
 	/** Sets the color for the following drawing operations.
 	 * @param color The color. */
-	public void setColor (Color color) {
+	public Pixmap setColor (Color color) {
 		this.color = Color.rgba8888(color.r, color.g, color.b, color.a);
+		return this;
 	}
 
 	/** Fills the complete bitmap with the currently set color. */
-	public void fill () {
+	public Pixmap fill () {
 		pixmap.clear(color);
+		return this;
 	}
 
 // /**
@@ -195,8 +199,9 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate of the first point
 	 * @param x2 The x-coordinate of the first point
 	 * @param y2 The y-coordinate of the first point */
-	public void drawLine (int x, int y, int x2, int y2) {
+	public Pixmap drawLine (int x, int y, int x2, int y2) {
 		pixmap.drawLine(x, y, x2, y2, color);
+		return this;
 	}
 
 	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
@@ -206,8 +211,9 @@ public class Pixmap implements Disposable {
 	 * @param y The y coordinate
 	 * @param width The width in pixels
 	 * @param height The height in pixels */
-	public void drawRectangle (int x, int y, int width, int height) {
+	public Pixmap drawRectangle (int x, int y, int width, int height) {
 		pixmap.drawRect(x, y, width, height, color);
+		return this;
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
@@ -215,8 +221,9 @@ public class Pixmap implements Disposable {
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner) */
-	public void drawPixmap (Pixmap pixmap, int x, int y) {
-		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+	public Pixmap drawPixmap (Pixmap pixmap, int x, int y) {
+		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight())
+		return this;
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
@@ -228,8 +235,9 @@ public class Pixmap implements Disposable {
 	 * @param srcy The source y-coordinate (top left corner);
 	 * @param srcWidth The width of the area form the other Pixmap in pixels
 	 * @param srcHeight The height of the area form the other Pixmap in pixles */
-	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
+	public Pixmap drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
+		return this;
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
@@ -245,9 +253,10 @@ public class Pixmap implements Disposable {
 	 * @param dsty The target y-coordinate (top left corner)
 	 * @param dstWidth The target width
 	 * @param dstHeight the target height */
-	public void drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
+	public Pixmap drawPixmap (Pixmap pixmap, int srcx, int srcy, int srcWidth, int srcHeight, int dstx, int dsty, int dstWidth,
 		int dstHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
+		return this;
 	}
 
 	/** Fills a rectangle starting at x, y extending by width to the right and by height downwards (y-axis points downwards) using
@@ -257,8 +266,9 @@ public class Pixmap implements Disposable {
 	 * @param y The y coordinate
 	 * @param width The width in pixels
 	 * @param height The height in pixels */
-	public void fillRectangle (int x, int y, int width, int height) {
+	public Pixmap fillRectangle (int x, int y, int width, int height) {
 		pixmap.fillRect(x, y, width, height, color);
+		return this;
 	}
 
 	/** Draws a circle outline with the center at x,y and a radius using the current color and stroke width.
@@ -266,8 +276,9 @@ public class Pixmap implements Disposable {
 	 * @param x The x-coordinate of the center
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
-	public void drawCircle (int x, int y, int radius) {
+	public Pixmap drawCircle (int x, int y, int radius) {
 		pixmap.drawCircle(x, y, radius, color);
+		return this;
 	}
 
 	/** Fills a circle with the center at x,y and a radius using the current color.
@@ -275,8 +286,9 @@ public class Pixmap implements Disposable {
 	 * @param x The x-coordinate of the center
 	 * @param y The y-coordinate of the center
 	 * @param radius The radius in pixels */
-	public void fillCircle (int x, int y, int radius) {
+	public Pixmap fillCircle (int x, int y, int radius) {
 		pixmap.fillCircle(x, y, radius, color);
+		return this;
 	}
 
 	/** Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current color.
@@ -287,8 +299,9 @@ public class Pixmap implements Disposable {
 	 * @param y2 The y-coordinate of vertex 2
 	 * @param x3 The x-coordinate of vertex 3
 	 * @param y3 The y-coordinate of vertex 3 */
-	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
+	public Pixmap fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
 		pixmap.fillTriangle(x1, y1, x2, y2, x3, y3, color);
+		return this;
 	}
 
 	/** Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the RGB components will be one.
@@ -321,8 +334,9 @@ public class Pixmap implements Disposable {
 	 * 
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate */
-	public void drawPixel (int x, int y) {
+	public Pixmap drawPixel (int x, int y) {
 		pixmap.setPixel(x, y, color);
+		return this;
 	}
 
 	/** Draws a pixel at the given location with the given color.
@@ -330,8 +344,9 @@ public class Pixmap implements Disposable {
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate
 	 * @param color the color in RGBA8888 format. */
-	public void drawPixel (int x, int y, int color) {
+	public Pixmap drawPixel (int x, int y, int color) {
 		pixmap.setPixel(x, y, color);
+		return this;
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
