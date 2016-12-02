@@ -199,13 +199,13 @@ public class Rectangle implements Serializable, Shape2D {
 	 * @return whether the circle is contained in the rectangle */
 	public boolean contains (Circle circle) {
 		float xmin = circle.x - circle.radius;
-		float xmax = xmin + 2f * circle.radius;
+		float xmax = circle.x + circle.radius;
 
 		float ymin = circle.y - circle.radius;
-		float ymax = ymin + 2f * circle.radius;
+		float ymax = circle.y + circle.radius;
 		
-		return ((xmin > x && xmin < x + width) && (xmax > x && xmax < x + width))
-			&& ((ymin > y && ymin < y + height) && (ymax > y && ymax < y + height));
+		return (xmin >= x && xmin <= x + width) && (xmax >= x && xmax <= x + width)
+			&& (ymin >= y && ymin <= y + height) && (ymax >= y && ymax <= y + height);
 	}
 
 	/** @param rectangle the other {@link Rectangle}.
