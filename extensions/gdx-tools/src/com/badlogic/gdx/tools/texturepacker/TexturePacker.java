@@ -22,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -562,15 +561,14 @@ public class TexturePacker {
 
 		public Settings () {
 		}
-	
 
-		/** @see #set(Settings)  */
+		/** @see #set(Settings) */
 		public Settings (Settings settings) {
 			set(settings);
 		}
 
 		/** Copies values from another instance to the current one */
-		public void set(Settings settings) {
+		public void set (Settings settings) {
 			fast = settings.fast;
 			rotation = settings.rotation;
 			pot = settings.pot;
@@ -674,7 +672,17 @@ public class TexturePacker {
 			throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		}
 
-		return inputFile.lastModified() > outputFile.lastModified();
+		return isModified(inputFile, outputFile.lastModified());
+	}
+
+	static private boolean isModified (File file, long lastModified) {
+		if (file.lastModified() > lastModified) return true;
+		File[] children = file.listFiles();
+		if (children != null) {
+			for (File child : children)
+				if (isModified(child, lastModified)) return true;
+		}
+		return false;
 	}
 
 	static public boolean processIfModified (String input, String output, String packFileName) {
