@@ -302,24 +302,24 @@ public class NinePatch {
 
 		final float[] vertices = this.vertices;
 
-		idx += 2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx] = v;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx] = v2;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx] = v2;
-		idx += 3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		return idx - 4 * 5;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
+
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
+
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		idx += 20;
+
+		return idx - 20;
 	}
 
 	/** Set the coordinates and color of a ninth of the patch. */
@@ -344,12 +344,12 @@ public class NinePatch {
 		vertices[idx + 17] = color;
 	}
 
-	private void prepareVertices (Color batchColor, float x, float y, float width, float height) {
+	private void prepareVertices (Batch batch, float x, float y, float width, float height) {
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
 		final float topRowY = y + height - topHeight;
-		final float c = tmpDrawColor.set(color).mul(batchColor).toFloatBits();
+		final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
 
 		if (bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
 		if (bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
@@ -363,15 +363,16 @@ public class NinePatch {
 	}
 
 	public void draw (Batch batch, float x, float y, float width, float height) {
-		prepareVertices(batch.getColor(), x, y, width, height);
+		prepareVertices(batch, x, y, width, height);
 		batch.draw(texture, vertices, 0, idx);
 	}
 
 	public void draw (Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation) {
-		prepareVertices(batch.getColor(), x, y, width, height);
+		prepareVertices(batch, x, y, width, height);
 		float worldOriginX = x + originX, worldOriginY = y + originY;
 		int n = this.idx;
+		float[] vertices = this.vertices;
 		if (rotation != 0) {
 			for (int i = 0; i < n; i += 5) {
 				float vx = (vertices[i] - worldOriginX) * scaleX, vy = (vertices[i + 1] - worldOriginY) * scaleY;
