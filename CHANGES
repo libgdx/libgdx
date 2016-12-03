@@ -18,6 +18,7 @@
 - Lwjgl3Window now has a maximize() method, and windows can be started maximized using the window or app configuration's setMaximized() method.
 - NinePatch can now be drawn rotated or scaled.
 - NinepatchDrawable is now a TransformDrawable.
+- API Change: g2d.Animation is now generic so it can support Drawables, PolygonRegions, NinePatches, etc. To fix existing code, specify the TextureRegion type in animation declarations (and instantiations in Java 6), i.e. Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(...);
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
