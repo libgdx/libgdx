@@ -245,4 +245,32 @@
 			</html>
 		</projects>
 	</extension>
+	<extension>
+		<name>KTX</name>
+		<description>A set of Kotlin utilities for LibGDX applications.</description>
+		<package>ktx</package>
+		<version>1.9.4-b2</version>
+		<compatibility>1.9.4</compatibility>
+		<website>https://github.com/czyzby/ktx</website>
+		<gwtInherits></gwtInherits>
+		<projects>
+			<core>
+				<dependency>com.github.czyzby:ktx-actors</dependency>
+				<dependency>com.github.czyzby:ktx-app</dependency>
+				<dependency>com.github.czyzby:ktx-assets</dependency>
+				<dependency>com.github.czyzby:ktx-collections</dependency>
+				<dependency>com.github.czyzby:ktx-i18n</dependency>
+				<dependency>com.github.czyzby:ktx-inject</dependency>
+				<dependency>com.github.czyzby:ktx-log</dependency>
+				<dependency>com.github.czyzby:ktx-math</dependency>
+				<dependency>com.github.czyzby:ktx-scene2d</dependency>
+				<dependency>com.github.czyzby:ktx-style</dependency>
+			</core>
+			<desktop></desktop>
+			<android></android>
+			<ios></ios>
+			<ios-moe></ios-moe>
+			<html>null</html>
+		</projects>
+	</extension>
 </extensions>
