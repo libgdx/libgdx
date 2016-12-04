@@ -491,9 +491,9 @@ public class BitmapFont implements Disposable {
 				String[] padding = line.substring(0, line.indexOf(' ')).split(",", 4);
 				if (padding.length != 4) throw new GdxRuntimeException("Invalid padding.");
 				padTop = Integer.parseInt(padding[0]);
-				padLeft = Integer.parseInt(padding[1]);
+				padRight = Integer.parseInt(padding[1]);
 				padBottom = Integer.parseInt(padding[2]);
-				padRight = Integer.parseInt(padding[3]);
+				padLeft = Integer.parseInt(padding[3]);
 				float padY = padTop + padBottom;
 
 				line = reader.readLine();
