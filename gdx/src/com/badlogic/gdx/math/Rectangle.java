@@ -198,14 +198,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** @param circle the circle
 	 * @return whether the circle is contained in the rectangle */
 	public boolean contains (Circle circle) {
-		float xmin = circle.x - circle.radius;
-		float xmax = circle.x + circle.radius;
-
-		float ymin = circle.y - circle.radius;
-		float ymax = circle.y + circle.radius;
-		
-		return (xmin >= x && xmin <= x + width) && (xmax >= x && xmax <= x + width)
-			&& (ymin >= y && ymin <= y + height) && (ymax >= y && ymax <= y + height);
+		return (circle.x - circle.radius >= x) && (circle.x + circle.radius <= x + width)
+			&& (circle.y - circle.radius >= y) && (circle.y + circle.radius <= y + height);
 	}
 
 	/** @param rectangle the other {@link Rectangle}.
