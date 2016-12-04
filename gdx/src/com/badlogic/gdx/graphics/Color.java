@@ -479,6 +479,16 @@ public class Color {
 		color.b = ((value & 0x000000ff)) / 255f;
 	}
 
+	/** Sets the Color components using the specified float value in the format ABGB8888.
+	 * @param color The Color to be modified. */
+	public static void abgr8888ToColor (Color color, float value) {
+		int c = NumberUtils.floatToIntColor(value);
+		color.a = ((c & 0xff000000) >>> 24) / 255f;
+		color.b = ((c & 0x00ff0000) >>> 16) / 255f;
+		color.g = ((c & 0x0000ff00) >>> 8) / 255f;
+		color.r = ((c & 0x000000ff)) / 255f;
+	}
+
 	/** @return a copy of this color */
 	public Color cpy () {
 		return new Color(this);

@@ -342,9 +342,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			endRow();
+			if (!implicitEndRow) endRow();
 			invalidate();
 		}
+		implicitEndRow = false;
 		if (rowDefaults != null) cellPool.free(rowDefaults);
 		rowDefaults = obtainCell();
 		rowDefaults.clear();
@@ -769,8 +770,7 @@ public class Table extends WidgetGroup {
 		if (cellCount > 0 && !cells.peek().endRow) {
 			endRow();
 			implicitEndRow = true;
-		} else
-			implicitEndRow = false;
+		}
 
 		int columns = this.columns, rows = this.rows;
 		float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);

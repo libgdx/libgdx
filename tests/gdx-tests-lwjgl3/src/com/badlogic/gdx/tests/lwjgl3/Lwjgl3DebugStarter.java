@@ -110,25 +110,24 @@ public class Lwjgl3DebugStarter {
 						if(character == 'c') {
 							Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
 						}
+						Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 						if(character == 'v') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.setVisible(false);
 						}
 						if(character == 's') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.setVisible(true);
 						}
 						if(character == 'q') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.closeWindow();
 						}
 						if(character == 'i') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
 							window.iconifyWindow();
 						}
+						if(character == 'm') {
+							window.maximizeWindow();
+						}
 						if(character == 'r') {
-							Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
-							window.deiconifyWindow();
+							window.restoreWindow();
 						}
 						if(character == 'u') {
 							Gdx.net.openURI("https://google.com");
@@ -181,13 +180,13 @@ public class Lwjgl3DebugStarter {
 		config.setWindowListener(new Lwjgl3WindowListener() {
 
 			@Override
-			public void iconified () {
-				Gdx.app.log("Window", "iconified");
+			public void iconified (boolean isIconified) {
+				Gdx.app.log("Window", "iconified: "+ (isIconified ? "true" : "false"));
 			}
-
+			
 			@Override
-			public void deiconified () {
-				Gdx.app.log("Window", "deiconified");				
+			public void maximized (boolean isMaximized) {
+				Gdx.app.log("Window", "maximized: " + (isMaximized ? "true" : "false"));
 			}
 
 			@Override
@@ -207,9 +206,16 @@ public class Lwjgl3DebugStarter {
 			}
 
 			@Override
-			public void filesDropped (String[] files) {				
+			public void filesDropped (String[] files) {	
+				for (String file : files){
+					Gdx.app.log("Window", "File dropped: " + file);
+				}
 			}
-			
+
+			@Override
+			public void refreshRequested() {
+				Gdx.app.log("Window", "refreshRequested");
+			}
 		});
 		for(DisplayMode mode: Lwjgl3ApplicationConfiguration.getDisplayModes()) {
 			System.out.println(mode.width + "x" + mode.height);

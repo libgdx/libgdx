@@ -267,8 +267,18 @@ public:
 
 	/**@brief Return the norm (length) of the vector */
 	SIMD_FORCE_INLINE btScalar norm() const
-	{
+	{		
 		return length();
+	}
+
+	/**@brief Return the norm (length) of the vector */
+	SIMD_FORCE_INLINE btScalar safeNorm() const
+	{
+		btScalar d = length2();
+		//workaround for some clang/gcc issue of sqrtf(tiny number) = -INF
+		if (d>SIMD_EPSILON)
+			return btSqrt(d);
+		return btScalar(0);
 	}
 
   /**@brief Return the distance squared between the ends of this and another vector

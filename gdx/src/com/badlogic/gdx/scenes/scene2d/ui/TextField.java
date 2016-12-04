@@ -141,6 +141,8 @@ public class TextField extends Widget implements Disableable {
 
 	protected int letterUnderCursor (float x) {
 		x -= textOffset + fontOffset - style.font.getData().cursorX - glyphPositions.get(visibleTextStart);
+		Drawable background = getBackgroundDrawable();
+		if (background != null) x -= style.background.getLeftWidth();
 		int n = this.glyphPositions.size;
 		float[] glyphPositions = this.glyphPositions.items;
 		for (int i = 1; i < n; i++) {
@@ -159,16 +161,21 @@ public class TextField extends Widget implements Disableable {
 	protected int[] wordUnderCursor (int at) {
 		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
-		for (; index < right; index++) {
-			if (!isWordCharacter(text.charAt(index))) {
-				right = index;
-				break;
+		if (at >= text.length()) {
+			left = text.length();
+			right = 0;
+		} else {
+			for (; index < right; index++) {
+				if (!isWordCharacter(text.charAt(index))) {
+					right = index;
+					break;
+				}
 			}
-		}
-		for (index = start - 1; index > -1; index--) {
-			if (!isWordCharacter(text.charAt(index))) {
-				left = index + 1;
-				break;
+			for (index = start - 1; index > -1; index--) {
+				if (!isWordCharacter(text.charAt(index))) {
+					left = index + 1;
+					break;
+				}
 			}
 		}
 		return new int[] {left, right};
@@ -212,22 +219,31 @@ public class TextField extends Widget implements Disableable {
 
 	protected void calculateOffsets () {
 		float visibleWidth = getWidth();
-		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
+		Drawable background = getBackgroundDrawable();
+		if (background != null) visibleWidth -= background.getLeftWidth() + background.getRightWidth();
 
 		int glyphCount = glyphPositions.size;
 		float[] glyphPositions = this.glyphPositions.items;
 
-		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
+		// Check if the cursor has gone out the left or right side of the visible area and adjust renderOffset.
 		float distance = glyphPositions[Math.max(0, cursor - 1)] + renderOffset;
 		if (distance <= 0)
 			renderOffset -= distance;
 		else {
 			int index = Math.min(glyphCount - 1, cursor + 1);
 			float minX = glyphPositions[index] - visibleWidth;
-			if (-renderOffset < minX) {
-				renderOffset = -minX;
-			}
+			if (-renderOffset < minX) renderOffset = -minX;
 		}
+
+		// Prevent renderOffset from starting too close to the end, eg after text was deleted.
+		float maxOffset = 0;
+		float width = glyphPositions[glyphCount - 1];
+		for (int i = glyphCount - 2; i >= 0; i--) {
+			float x = glyphPositions[i];
+			if (width - x > visibleWidth) break;
+			maxOffset = x;
+		}
+		if (-renderOffset > maxOffset) renderOffset = -maxOffset;
 
 		// calculate first visible char based on render offset
 		visibleTextStart = 0;
@@ -241,7 +257,7 @@ public class TextField extends Widget implements Disableable {
 		}
 
 		// calculate last visible char based on visible width and render offset
-		int length = displayText.length();
+		int length = Math.min(displayText.length(), glyphPositions.length - 1);
 		visibleTextEnd = Math.min(length, cursor + 1);
 		for (; visibleTextEnd <= length; visibleTextEnd++)
 			if (glyphPositions[visibleTextEnd] > startX + visibleWidth) break;
@@ -257,12 +273,18 @@ public class TextField extends Widget implements Disableable {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions[minIndex], -renderOffset);
-			float maxX = Math.min(glyphPositions[maxIndex], visibleWidth - renderOffset);
+			float minX = Math.max(glyphPositions[minIndex] - glyphPositions[visibleTextStart], -textOffset);
+			float maxX = Math.min(glyphPositions[maxIndex] - glyphPositions[visibleTextStart], visibleWidth - textOffset);
 			selectionX = minX;
-			if (renderOffset == 0) selectionX += textOffset;
 			selectionWidth = maxX - minX - style.font.getData().cursorX;
 		}
+	}
+
+	private Drawable getBackgroundDrawable () {
+		Stage stage = getStage();
+		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		return (disabled && style.disabledBackground != null) ? style.disabledBackground
+			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
 	@Override
@@ -276,8 +298,7 @@ public class TextField extends Widget implements Disableable {
 			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
-		final Drawable background = (disabled && style.disabledBackground != null) ? style.disabledBackground
-			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
+		final Drawable background = getBackgroundDrawable();
 
 		Color color = getColor();
 		float x = getX();
@@ -339,7 +360,7 @@ public class TextField extends Widget implements Disableable {
 
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
-		selection.draw(batch, x + selectionX + renderOffset + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
+		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
 			textHeight);
 	}
 
@@ -481,19 +502,24 @@ public class TextField extends Widget implements Disableable {
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
-		TextField textField = findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
-		if (textField == null) { // Try to wrap around.
-			if (up)
-				tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
-			else
-				tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-			textField = findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+		TextField current = this;
+		while (true) {
+			current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
+			TextField textField = current.findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
+			if (textField == null) { // Try to wrap around.
+				if (up)
+					tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
+				else
+					tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+				textField = current.findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+			}
+			if (textField == null) {
+				Gdx.input.setOnscreenKeyboardVisible(false);
+				break;
+			}
+			if (stage.setKeyboardFocus(textField)) break;
+			current = textField;
 		}
-		if (textField != null)
-			stage.setKeyboardFocus(textField);
-		else
-			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
 	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
@@ -597,6 +623,10 @@ public class TextField extends Widget implements Disableable {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
+	}
+
 	public int getSelectionStart () {
 		return selectionStart;
 	}
@@ -663,12 +693,22 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public float getPrefHeight () {
-		float prefHeight = textHeight;
+		float topAndBottom = 0, minHeight = 0;
 		if (style.background != null) {
-			prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
-				style.background.getMinHeight());
+			topAndBottom = Math.max(topAndBottom, style.background.getBottomHeight() + style.background.getTopHeight());
+			minHeight = Math.max(minHeight, style.background.getMinHeight());
 		}
-		return prefHeight;
+		if (style.focusedBackground != null) {
+			topAndBottom = Math.max(topAndBottom,
+				style.focusedBackground.getBottomHeight() + style.focusedBackground.getTopHeight());
+			minHeight = Math.max(minHeight, style.focusedBackground.getMinHeight());
+		}
+		if (style.disabledBackground != null) {
+			topAndBottom = Math.max(topAndBottom,
+				style.disabledBackground.getBottomHeight() + style.disabledBackground.getTopHeight());
+			minHeight = Math.max(minHeight, style.disabledBackground.getMinHeight());
+		}
+		return Math.max(topAndBottom + textHeight, minHeight);
 	}
 
 	/** Sets text horizontal alignment (left, center or right).

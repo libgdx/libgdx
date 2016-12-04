@@ -132,8 +132,12 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 
 	const char* m_linkName;//m_linkName memory needs to be managed by the developer/user!
 	const char* m_jointName;//m_jointName memory needs to be managed by the developer/user!
+    const void* m_userPtr;//m_userPtr ptr needs to be managed by the developer/user!
+    
+	btScalar m_jointDamping; //todo: implement this internally. It is unused for now, it is set by a URDF loader. User can apply manual damping.
+	btScalar m_jointFriction; //todo: implement this internally. It is unused for now, it is set by a URDF loader. User can apply manual friction using a velocity motor.
 
-    // ctor: set some sensible defaults
+	// ctor: set some sensible defaults
 	btMultibodyLink()
 		: 	m_mass(1),
 			m_parent(-1),
@@ -146,7 +150,10 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 			m_jointType(btMultibodyLink::eInvalid),
 			m_jointFeedback(0),
 			m_linkName(0),
-			m_jointName(0)
+			m_jointName(0),
+            m_userPtr(0),
+			m_jointDamping(0),
+			m_jointFriction(0)
 	{
 		
 		m_inertiaLocal.setValue(1, 1, 1);
@@ -165,20 +172,6 @@ btVector3 m_appliedConstraintForce;    // In WORLD frame
 	}
 
     // routine to update m_cachedRotParentToThis and m_cachedRVector
-    void updateCache()
-	{
-		//multidof
-		if (m_jointType == eRevolute) 
-		{
-			m_cachedRotParentToThis = btQuaternion(getAxisTop(0),-m_jointPos[0]) * m_zeroRotParentToThis;
-			m_cachedRVector = m_dVector + quatRotate(m_cachedRotParentToThis,m_eVector);
-		} else 
-		{
-			// m_cachedRotParentToThis never changes, so no need to update
-			m_cachedRVector = m_eVector + m_jointPos[0] * getAxisBottom(0);
-		}
-	}
-
 	void updateCacheMultiDof(btScalar *pq = 0)
 	{
 		btScalar *pJointPos = (pq ? pq : &m_jointPos[0]);

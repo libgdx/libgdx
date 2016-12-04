@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
  * corresponds to the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The
@@ -323,6 +324,17 @@ public class Actor {
 			if (actor == this) return true;
 			actor = actor.parent;
 		}
+	}
+
+	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type. */
+	public <T extends Actor> T firstAscendant (Class<T> type) {
+		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
+		Actor actor = this;
+		do {
+			if (ClassReflection.isInstance(type, actor)) return (T)actor;
+			actor = actor.getParent();
+		} while (actor != null);
+		return null;
 	}
 
 	/** Returns true if the actor's parent is not null. */
@@ -685,7 +697,7 @@ public class Actor {
 		Array<Actor> children = parent.children;
 		if (children.size == 1) return;
 		index = Math.min(index, children.size - 1);
-		if (index == children.indexOf(this, true)) return;
+		if (children.get(index) == this) return;
 		if (!children.removeValue(this, true)) return;
 		children.insert(index, this);
 	}

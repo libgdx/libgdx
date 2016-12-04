@@ -2,7 +2,10 @@
 *~
 .*.swp
 .DS_STORE
-
+robovm-build/
+project.xcworkspace/
+xcuserdata/
+xcode/native/
 .gradle/
 build/
 bin/
@@ -34,6 +37,7 @@ ipch/
 /dist
 
 *.a
+*.a.tvos
 *.dll
 *.dll.mdb
 *.userprefs
@@ -60,9 +64,15 @@ libgdx-*.zip.MD5
 /extensions/gdx-image/libs/
 /extensions/gdx-setup/gdx-setup.jar
 
+#the LWJGL3 libs are pulled via fetch.xml
+/backends/gdx-backend-lwjgl3/libs/lwjgl*.jar
+
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war
 
 #directories created by fetch.xml
 /tests/gdx-tests-android/libs
 /tmp/
+
+#gradle wrapper
+/local.properties

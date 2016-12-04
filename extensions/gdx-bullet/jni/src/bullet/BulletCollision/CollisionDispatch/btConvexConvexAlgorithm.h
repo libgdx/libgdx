@@ -24,6 +24,7 @@ subject to the following restrictions:
 #include "btCollisionCreateFunc.h"
 #include "btCollisionDispatcher.h"
 #include "LinearMath/btTransformUtil.h" //for btConvexSeparatingDistanceUtil
+#include "BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
 
 class btConvexPenetrationDepthSolver;
 
@@ -45,6 +46,8 @@ class btConvexConvexAlgorithm : public btActivatingCollisionAlgorithm
 	btSimplexSolverInterface*		m_simplexSolver;
 	btConvexPenetrationDepthSolver* m_pdSolver;
 
+	btVertexArray worldVertsB1;
+	btVertexArray worldVertsB2;
 	
 	bool	m_ownManifold;
 	btPersistentManifold*	m_manifoldPtr;

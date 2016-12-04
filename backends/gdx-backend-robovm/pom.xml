@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -20,19 +20,19 @@
     </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-cocoatouch</artifactId>
           <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-objc</artifactId>
           <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
-          <groupId>org.robovm</groupId>
+          <groupId>com.mobidevelop.robovm</groupId>
           <artifactId>robovm-rt</artifactId>
           <version>${robovm.version}</version>
       </dependency>

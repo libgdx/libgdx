@@ -156,10 +156,12 @@ public class Image extends Widget {
 	public void setScaling (Scaling scaling) {
 		if (scaling == null) throw new IllegalArgumentException("scaling cannot be null.");
 		this.scaling = scaling;
+		invalidate();
 	}
 
 	public void setAlign (int align) {
 		this.align = align;
+		invalidate();
 	}
 
 	public float getMinWidth () {

@@ -887,15 +887,8 @@ final public class LwjglInput implements Input {
 						break;
 					}
 
-					KeyEvent event = usedKeyEvents.obtain();
-					event.keyCode = 0;
-					event.keyChar = keyChar;
-					event.type = KeyEvent.KEY_TYPED;
-					event.timeStamp = timeStamp;
-					keyEvents.add(event);
-
 					if (keyCode != 0) {
-						event = usedKeyEvents.obtain();
+						KeyEvent event = usedKeyEvents.obtain();
 						event.keyCode = keyCode;
 						event.keyChar = 0;
 						event.type = KeyEvent.KEY_DOWN;
@@ -908,6 +901,13 @@ final public class LwjglInput implements Input {
 						lastKeyCharPressed = keyChar;
 						keyRepeatTimer = keyRepeatInitialTime;
 					}
+
+					KeyEvent event = usedKeyEvents.obtain();
+					event.keyCode = 0;
+					event.keyChar = keyChar;
+					event.type = KeyEvent.KEY_TYPED;
+					event.timeStamp = timeStamp;
+					keyEvents.add(event);
 				} else {
 					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;

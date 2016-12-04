@@ -63,6 +63,7 @@ import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GLProfilerErrorTest;
+import com.badlogic.gdx.tests.GWTLossyPremultipliedAlphaTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
@@ -82,6 +83,7 @@ import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MusicTest;
+import com.badlogic.gdx.tests.NoncontinuousRenderingTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -643,6 +645,7 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new MusicTest();
 			}
+//		}, new Instancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to the use of Thread
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new ParallaxTest();
@@ -758,6 +761,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TimeUtilsTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance() {
+				return new GWTLossyPremultipliedAlphaTest();
 			}
 		}};
 }

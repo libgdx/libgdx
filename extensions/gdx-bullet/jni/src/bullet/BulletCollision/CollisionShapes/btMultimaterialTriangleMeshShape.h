@@ -25,7 +25,6 @@ subject to the following restrictions:
 ATTRIBUTE_ALIGNED16(class) btMultimaterialTriangleMeshShape : public btBvhTriangleMeshShape
 {
     btAlignedObjectArray <btMaterial*> m_materialList;
-    int ** m_triangleMaterials;
 
 public:
 

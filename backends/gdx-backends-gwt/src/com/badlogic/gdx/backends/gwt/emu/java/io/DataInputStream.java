@@ -18,11 +18,12 @@ package java.io;
 
 import com.google.gwt.corp.compatibility.Numbers;
 
-public class DataInputStream extends InputStream implements DataInput {
+public class DataInputStream extends FilterInputStream implements DataInput {
 
 	private final InputStream is;
 
 	public DataInputStream (final InputStream is) {
+		super(is);
 		this.is = is;
 	}
 
@@ -144,11 +145,6 @@ public class DataInputStream extends InputStream implements DataInput {
 	public int skipBytes (int n) throws IOException {
 		// note: This is actually a valid implementation of this method, rendering it quite useless...
 		return 0;
-	}
-
-	@Override
-	public int available () {
-		return is.available();
 	}
 	
 	@Override

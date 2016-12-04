@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>1.9.3-SNAPSHOT</version>
+        <version>1.9.5-SNAPSHOT</version>
         <relativePath>../../../../</relativePath>
     </parent>
     
@@ -15,14 +15,6 @@
     <properties>
         <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
     </properties>
-    
-    <dependencies>
-        <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>gdx-bullet</artifactId>
-        <version>${project.version}</version>        
-    </dependency>
-    </dependencies>
     
     <build>
         <sourceDirectory>src</sourceDirectory>

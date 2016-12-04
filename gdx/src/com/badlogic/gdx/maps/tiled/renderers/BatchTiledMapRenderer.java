@@ -120,7 +120,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		batch.setProjectionMatrix(camera.combined);
 		float width = camera.viewportWidth * camera.zoom;
 		float height = camera.viewportHeight * camera.zoom;
-		viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
+		float w = width * Math.abs(camera.up.y) + height * Math.abs(camera.up.x);
+		float h = height * Math.abs(camera.up.y) + width * Math.abs(camera.up.x);
+		viewBounds.set(camera.position.x - w / 2, camera.position.y - h / 2, w, h);
 	}
 
 	@Override
@@ -136,7 +138,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
-				} if (layer instanceof TiledMapImageLayer) {
+				} else if (layer instanceof TiledMapImageLayer) {
 					renderImageLayer((TiledMapImageLayer)layer);
 				} else {
 					renderObjects(layer);

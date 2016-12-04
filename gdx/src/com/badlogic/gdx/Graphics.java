@@ -50,7 +50,7 @@ public interface Graphics {
 	 *
 	 * @author mzechner */
 	public enum GraphicsType {
-		AndroidGL, LWJGL, Angle, WebGL, iOSGL, JGLFW, Mock, LWJGL3
+		AndroidGL, LWJGL, WebGL, iOSGL, JGLFW, Mock, LWJGL3
 	}
 
 	/** Describe a fullscreen display mode
@@ -275,7 +275,9 @@ public interface Graphics {
 	 * <ul>
 	 * <li>A call to {@link #requestRendering()}</li>
 	 * <li>Input events from the touch screen/mouse or keyboard</li>
-	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}</li>
+	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case
+	 * of a multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, 
+	 * post a runnable to the window instead. </li>
 	 * </ul>
 	 *
 	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. This method can be called from any
