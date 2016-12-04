@@ -91,8 +91,16 @@ public class btConeTwistConstraint extends btTypedConstraint {
     DynamicsJNI.btConeTwistConstraint_setAngularOnly(swigCPtr, this, angularOnly);
   }
 
+  public boolean getAngularOnly() {
+    return DynamicsJNI.btConeTwistConstraint_getAngularOnly(swigCPtr, this);
+  }
+
   public void setLimit(int limitIndex, float limitValue) {
     DynamicsJNI.btConeTwistConstraint_setLimit__SWIG_0(swigCPtr, this, limitIndex, limitValue);
+  }
+
+  public float getLimit(int limitIndex) {
+    return DynamicsJNI.btConeTwistConstraint_getLimit(swigCPtr, this, limitIndex);
   }
 
   public void setLimit(float _swingSpan1, float _swingSpan2, float _twistSpan, float _softness, float _biasFactor, float _relaxationFactor) {
@@ -151,6 +159,18 @@ public class btConeTwistConstraint extends btTypedConstraint {
     return DynamicsJNI.btConeTwistConstraint_getTwistSpan(swigCPtr, this);
   }
 
+  public float getLimitSoftness() {
+    return DynamicsJNI.btConeTwistConstraint_getLimitSoftness(swigCPtr, this);
+  }
+
+  public float getBiasFactor() {
+    return DynamicsJNI.btConeTwistConstraint_getBiasFactor(swigCPtr, this);
+  }
+
+  public float getRelaxationFactor() {
+    return DynamicsJNI.btConeTwistConstraint_getRelaxationFactor(swigCPtr, this);
+  }
+
   public float getTwistAngle() {
     return DynamicsJNI.btConeTwistConstraint_getTwistAngle(swigCPtr, this);
   }
@@ -159,12 +179,28 @@ public class btConeTwistConstraint extends btTypedConstraint {
     return DynamicsJNI.btConeTwistConstraint_isPastSwingLimit(swigCPtr, this);
   }
 
+  public float getDamping() {
+    return DynamicsJNI.btConeTwistConstraint_getDamping(swigCPtr, this);
+  }
+
   public void setDamping(float damping) {
     DynamicsJNI.btConeTwistConstraint_setDamping(swigCPtr, this, damping);
   }
 
   public void enableMotor(boolean b) {
     DynamicsJNI.btConeTwistConstraint_enableMotor(swigCPtr, this, b);
+  }
+
+  public boolean isMotorEnabled() {
+    return DynamicsJNI.btConeTwistConstraint_isMotorEnabled(swigCPtr, this);
+  }
+
+  public float getMaxMotorImpulse() {
+    return DynamicsJNI.btConeTwistConstraint_getMaxMotorImpulse(swigCPtr, this);
+  }
+
+  public boolean isMaxMotorImpulseNormalized() {
+    return DynamicsJNI.btConeTwistConstraint_isMaxMotorImpulseNormalized(swigCPtr, this);
   }
 
   public void setMaxMotorImpulse(float maxMotorImpulse) {
@@ -186,6 +222,10 @@ public class btConeTwistConstraint extends btTypedConstraint {
   public void setMotorTarget(Quaternion q) {
     DynamicsJNI.btConeTwistConstraint_setMotorTarget(swigCPtr, this, q);
   }
+
+  public Quaternion getMotorTarget() {
+	return DynamicsJNI.btConeTwistConstraint_getMotorTarget(swigCPtr, this);
+}
 
   public void setMotorTargetInConstraintSpace(Quaternion q) {
     DynamicsJNI.btConeTwistConstraint_setMotorTargetInConstraintSpace(swigCPtr, this, q);
@@ -221,6 +261,10 @@ public class btConeTwistConstraint extends btTypedConstraint {
 
   public float getParam(int num) {
     return DynamicsJNI.btConeTwistConstraint_getParam__SWIG_1(swigCPtr, this, num);
+  }
+
+  public int getFlags() {
+    return DynamicsJNI.btConeTwistConstraint_getFlags(swigCPtr, this);
   }
 
 }

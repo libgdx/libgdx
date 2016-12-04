@@ -66,15 +66,19 @@ protected:
     btAlignedObjectArray<btScalar> m_data;
 
 	void	applyDeltaVee(btMultiBodyJacobianData& data, btScalar* delta_vee, btScalar impulse, int velocityIndex, int ndof);
-
+    
 	btScalar fillMultiBodyConstraint(btMultiBodySolverConstraint& solverConstraint,
 																btMultiBodyJacobianData& data,
-																btScalar* jacOrgA, btScalar* jacOrgB,
-																const btVector3& contactNormalOnB,
+                                     btScalar* jacOrgA, btScalar* jacOrgB,
+                                     const btVector3& constraintNormalAng,
+                                     
+																const btVector3& constraintNormalLin,
 																const btVector3& posAworld, const btVector3& posBworld,
 																btScalar posError,
 																const btContactSolverInfo& infoGlobal,
-																btScalar lowerLimit, btScalar upperLimit,
+                                     btScalar lowerLimit, btScalar upperLimit,
+                                     bool angConstraint = false,
+                                     
 																btScalar relaxation = 1.f,
 																bool isFriction = false, btScalar desiredVelocity=0, btScalar cfmSlip=0);
 
@@ -114,6 +118,7 @@ public:
 		btAssert(dof>=0);
 		btAssert(dof < getNumRows());
 		m_data[dof] = appliedImpulse;
+        
 	}
 	
 	btScalar	getAppliedImpulse(int dof)

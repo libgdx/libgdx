@@ -116,6 +116,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 	public void setStyle (SelectBoxStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+		if (selectBoxList != null) {
+			selectBoxList.setStyle(style.scrollStyle);
+			selectBoxList.list.setStyle(style.listStyle);
+		}
 		invalidateHierarchy();
 	}
 

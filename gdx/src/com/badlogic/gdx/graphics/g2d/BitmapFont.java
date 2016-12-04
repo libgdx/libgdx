@@ -442,7 +442,11 @@ public class BitmapFont implements Disposable {
 		public float ascent;
 		/** The distance from the bottom of the glyph that extends the lowest to the baseline. This number is negative. */
 		public float descent;
+		/** The distance to move down when \n is encountered. */
 		public float down;
+		/** Multiplier for the line height of blank lines. down * blankLineHeight is used as the distance to move down for a blank
+		 * line. */
+		public float blankLineScale = 1;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
 		/** The amount to add to the glyph X position when drawing a cursor between glyphs. This field is not set by the BMFont

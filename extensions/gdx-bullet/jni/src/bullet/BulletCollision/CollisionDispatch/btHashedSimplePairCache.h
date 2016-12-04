@@ -55,9 +55,7 @@ extern int gFindSimplePairs;
 class btHashedSimplePairCache
 {
 	btSimplePairArray	m_overlappingPairArray;
-	
-	bool		m_blockedForChanges;
-	
+		
 
 protected:
 	

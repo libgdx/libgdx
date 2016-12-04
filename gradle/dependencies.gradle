@@ -21,13 +21,13 @@ ext {
 }
 
 versions.robovm = "2.2.1-SNAPSHOT"
-versions.moe = "1.2.0"
-versions.moePlugin = "1.2.0"
+versions.moe = "1.2.3"
+versions.moePlugin = "1.2.3"
 versions.gwt = "2.6.0"
 versions.gwtPlugin = "0.6"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.2"
-versions.lwjgl3 = "3.0.0"
+versions.lwjgl3 = "3.1.0"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.11"
@@ -47,9 +47,26 @@ libraries.lwjgl = [
 
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-platform:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-platform:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-platform:${versions.lwjgl3}:natives-osx",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "com.apple:AppleJavaExtensions:${versions.appleExtension}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"

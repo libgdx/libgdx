@@ -185,7 +185,12 @@ public class Lwjgl3Input implements Input, Disposable {
 		GLFW.glfwSetMouseButtonCallback(window.getWindowHandle(), mouseButtonCallback);
 	}	
 	
-	public void update() {		
+	void update() {
+		eventQueue.setProcessor(inputProcessor);
+		eventQueue.drain();
+	}
+	
+	void prepareNext (){
 		justTouched = false;
 		
 		if (keyJustPressed) {
@@ -193,12 +198,10 @@ public class Lwjgl3Input implements Input, Disposable {
 			for (int i = 0; i < justPressedKeys.length; i++) {
 				justPressedKeys[i] = false;
 			}
-		}		
-		eventQueue.setProcessor(inputProcessor);
-		eventQueue.drain();
+		}	
 		deltaX = 0;
 		deltaY = 0;
-	}	
+	}
 
 	@Override
 	public int getX() {

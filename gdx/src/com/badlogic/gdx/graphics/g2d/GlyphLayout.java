@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 
-/** Stores runs of glyphs for a piece of text. The text may contain newlines and color markup tags.
+/** Stores {@link GlyphRun runs} of glyphs for a piece of text. The text may contain newlines and color markup tags.
  * @author Nathan Sweet
  * @author davebaol
  * @author Alexander Dorokhov */
@@ -93,7 +93,7 @@ public class GlyphLayout implements Poolable {
 		runs.clear();
 
 		float x = 0, y = 0, width = 0;
-		int lines = 0;
+		int lines = 0, blankLines = 0;
 
 		Array<Color> colorStack = this.colorStack;
 		Color nextColor = color;
@@ -135,7 +135,7 @@ public class GlyphLayout implements Poolable {
 			}
 
 			if (runEnd != -1) {
-				if (runEnd != runStart) { // Can happen (eg) when a color tag is at text start.
+				if (runEnd != runStart) { // Can happen (eg) when a color tag is at text start or a line is "\n".
 					// Store the run that has ended.
 					GlyphRun run = glyphRunPool.obtain();
 					run.color.set(color);
@@ -198,8 +198,13 @@ public class GlyphLayout implements Poolable {
 					// Next run will be on the next line.
 					width = Math.max(width, x);
 					x = 0;
-					y += fontData.down;
-					lines++;
+					float down = fontData.down;
+					if (runEnd == runStart) { // Blank line.
+						down *= fontData.blankLineScale;
+						blankLines++;
+					} else
+						lines++;
+					y += down;
 				}
 
 				runStart = start;
@@ -236,7 +241,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		this.width = width;
-		this.height = fontData.capHeight + lines * fontData.lineHeight;
+		this.height = fontData.capHeight + lines * fontData.lineHeight + blankLines * fontData.lineHeight * fontData.blankLineScale;
 	}
 
 	private void truncate (BitmapFontData fontData, GlyphRun run, float targetWidth, String truncate, int widthIndex,
@@ -414,7 +419,7 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
-	/** Stores glyphs and positions for a piece of text.
+	/** Stores glyphs and positions for a piece of text which is a single color and does not span multiple lines.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
 		public Array<Glyph> glyphs = new Array();

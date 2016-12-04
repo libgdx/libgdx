@@ -101,6 +101,7 @@ public class LinearMathJNI {
   public final static native float btVector3_length2(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_length(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_norm(long jarg1, btVector3 jarg1_);
+  public final static native float btVector3_safeNorm(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_distance2(long jarg1, btVector3 jarg1_, Vector3 jarg2);
   public final static native float btVector3_distance(long jarg1, btVector3 jarg1_, Vector3 jarg2);
   public final static native Vector3 btVector3_safeNormalize(long jarg1, btVector3 jarg1_);
@@ -428,6 +429,13 @@ public class LinearMathJNI {
   public final static native void btPoolAllocator_freeMemory(long jarg1, btPoolAllocator jarg1_, long jarg2);
   public final static native int btPoolAllocator_getElementSize(long jarg1, btPoolAllocator jarg1_);
   public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddress__SWIG_0(long jarg1, btPoolAllocator jarg1_);
+  public final static native long new_btClock__SWIG_0();
+  public final static native long new_btClock__SWIG_1(long jarg1, btClock jarg1_);
+  public final static native void delete_btClock(long jarg1);
+  public final static native void btClock_reset(long jarg1, btClock jarg1_);
+  public final static native long btClock_getTimeMilliseconds(long jarg1, btClock jarg1_);
+  public final static native long btClock_getTimeMicroseconds(long jarg1, btClock jarg1_);
+  public final static native float btClock_getTimeSeconds(long jarg1, btClock jarg1_);
   public final static native int btConvexHullComputer_Edge_getSourceVertex(long jarg1, btConvexHullComputer.Edge jarg1_);
   public final static native int btConvexHullComputer_Edge_getTargetVertex(long jarg1, btConvexHullComputer.Edge jarg1_);
   public final static native long btConvexHullComputer_Edge_getNextEdgeOfVertex(long jarg1, btConvexHullComputer.Edge jarg1_);

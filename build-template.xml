@@ -54,7 +54,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			<classpath>
 				<path refid="classpath"/>
 				<fileset file="${libs}/*.jar">
-					<exclude name="*-natives.jar"/>
+					<exclude name="*-natives*.jar"/>
 				</fileset>
 			</classpath>
 			<exclude name="**/gwt/emu/java/lang/System.java"/>
@@ -146,7 +146,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			<fileset refid="resourcefiles"/>
 			<!-- merge dependencies found in libs/ folder, exclude native, debug and android/gwt jars -->
 			<zipgroupfileset file="${libs}/*.jar">
-				<exclude name="*-natives.jar"/>
+				<exclude name="*-natives*.jar"/>
 				<exclude name="*-debug.jar"/>
 				<exclude name="android-*.jar"/>
 				<exclude name="support-*.jar"/>

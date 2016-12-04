@@ -100,7 +100,7 @@ public class SpriteCache implements Disposable {
 
 	/** Creates a cache with the specified size, using a default shader if OpenGL ES 2.0 is being used.
 	 * @param size The maximum number of images this cache can hold. The memory required to hold the images is allocated up front.
-	 *           Max of 5460 if indices are used.
+	 *           Max of 8191 if indices are used.
 	 * @param useIndices If true, indexed geometry will be used. */
 	public SpriteCache (int size, boolean useIndices) {
 		this(size, createDefaultShader(), useIndices);
@@ -108,12 +108,12 @@ public class SpriteCache implements Disposable {
 
 	/** Creates a cache with the specified size and OpenGL ES 2.0 shader.
 	 * @param size The maximum number of images this cache can hold. The memory required to hold the images is allocated up front.
-	 *           Max of 5460 if indices are used.
+	 *           Max of 8191 if indices are used.
 	 * @param useIndices If true, indexed geometry will be used. */
 	public SpriteCache (int size, ShaderProgram shader, boolean useIndices) {
 		this.shader = shader;
 
-		if (useIndices && size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
+		if (useIndices && size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
 		mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),

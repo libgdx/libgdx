@@ -97,4 +97,10 @@ public class IOSApplicationConfiguration {
 	 *  When GL ES 3 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
 	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
 	@Deprecated public boolean useGL30 = false;
+
+	/** whether the status bar should be visible or not **/
+	public boolean statusBarVisible = false;
+	
+	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
+	public boolean overrideRingerSwitch = false;
 }

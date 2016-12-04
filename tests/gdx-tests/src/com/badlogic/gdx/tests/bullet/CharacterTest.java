@@ -74,6 +74,7 @@ public class CharacterTest extends BaseBulletTest {
 		world.addConstructor("capsule", new BulletConstructor(capsule, null));
 		character = world.add("capsule", 5f, 3f, 5f);
 		characterTransform = character.transform; // Set by reference
+		characterTransform.rotate(Vector3.X, 90);
 		
 		// Create the physics representation of the character
 		ghostObject = new btPairCachingGhostObject();
@@ -81,7 +82,7 @@ public class CharacterTest extends BaseBulletTest {
 		ghostShape = new btCapsuleShape(2f, 2f);
 		ghostObject.setCollisionShape(ghostShape);
 		ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
-		characterController = new btKinematicCharacterController(ghostObject, ghostShape, .35f);
+		characterController = new btKinematicCharacterController(ghostObject, ghostShape, .35f, Vector3.Y);
 		
 		// And add it to the physics world
 		world.collisionWorld.addCollisionObject(ghostObject, 

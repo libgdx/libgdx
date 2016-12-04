@@ -418,22 +418,21 @@ public:
 			return btAcos(dot(q) / s) * btScalar(2.0);
 	}
 
-  /**@brief Return the angle of rotation represented by this quaternion */
+	/**@brief Return the angle [0, 2Pi] of rotation represented by this quaternion */
 	btScalar getAngle() const 
 	{
 		btScalar s = btScalar(2.) * btAcos(m_floats[3]);
 		return s;
 	}
 
-	/**@brief Return the angle of rotation represented by this quaternion along the shortest path*/
+	/**@brief Return the angle [0, Pi] of rotation represented by this quaternion along the shortest path */
 	btScalar getAngleShortestPath() const 
 	{
 		btScalar s;
-		if (dot(*this) < 0)
+		if (m_floats[3] >= 0)
 			s = btScalar(2.) * btAcos(m_floats[3]);
 		else
 			s = btScalar(2.) * btAcos(-m_floats[3]);
-
 		return s;
 	}
 
@@ -533,25 +532,29 @@ public:
    * Slerp interpolates assuming constant velocity.  */
 	btQuaternion slerp(const btQuaternion& q, const btScalar& t) const
 	{
-	  btScalar magnitude = btSqrt(length2() * q.length2()); 
-	  btAssert(magnitude > btScalar(0));
 
-    btScalar product = dot(q) / magnitude;
-    if (btFabs(product) < btScalar(1))
+		const btScalar magnitude = btSqrt(length2() * q.length2());
+		btAssert(magnitude > btScalar(0));
+		
+		const btScalar product = dot(q) / magnitude;
+		const btScalar absproduct = btFabs(product);
+		
+		if(absproduct < btScalar(1.0 - SIMD_EPSILON))
 		{
-      // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
-      const btScalar sign = (product < 0) ? btScalar(-1) : btScalar(1);
-
-      const btScalar theta = btAcos(sign * product);
-      const btScalar s1 = btSin(sign * t * theta);   
-      const btScalar d = btScalar(1.0) / btSin(theta);
-      const btScalar s0 = btSin((btScalar(1.0) - t) * theta);
-
-      return btQuaternion(
-          (m_floats[0] * s0 + q.x() * s1) * d,
-          (m_floats[1] * s0 + q.y() * s1) * d,
-          (m_floats[2] * s0 + q.z() * s1) * d,
-          (m_floats[3] * s0 + q.m_floats[3] * s1) * d);
+			// Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+			const btScalar theta = btAcos(absproduct);
+			const btScalar d = btSin(theta);
+			btAssert(d > btScalar(0));
+			
+			const btScalar sign = (product < 0) ? btScalar(-1) : btScalar(1);
+			const btScalar s0 = btSin((btScalar(1.0) - t) * theta) / d;
+			const btScalar s1 = btSin(sign * t * theta) / d;
+			
+			return btQuaternion(
+				(m_floats[0] * s0 + q.x() * s1),
+				(m_floats[1] * s0 + q.y() * s1),
+				(m_floats[2] * s0 + q.z() * s1),
+				(m_floats[3] * s0 + q.w() * s1));
 		}
 		else
 		{
