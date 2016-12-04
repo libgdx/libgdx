@@ -19,6 +19,10 @@ package com.badlogic.gdx.backends.jglfw;
 import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 import static com.badlogic.jglfw.Glfw.*;
 
+import java.awt.EventQueue;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
@@ -32,10 +36,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 import com.badlogic.jglfw.GlfwCallbacks;
-
-import java.awt.EventQueue;
-import java.util.HashMap;
-import java.util.Map;
 
 /** An OpenGL surface fullscreen or in a lightweight window using GLFW.
  * @author mzechner
@@ -207,6 +207,12 @@ public class JglfwApplication implements Application {
 		if (!running) return;
 
 		boolean shouldRender = false;
+
+		int width = glfwGetWindowWidth(graphics.window), height = glfwGetWindowHeight(graphics.window);
+		if (width != graphics.width || height != graphics.height) {
+			graphics.sizeChanged(width, height); // Seems OS X Sierra doesn't notify of some window size changes.
+			shouldRender = true;
+		}
 
 		if (executeRunnables()) shouldRender = true;
 

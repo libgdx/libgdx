@@ -151,7 +151,7 @@
 
 	<!-- build the extensions -->
 	<!-- gdx tools -->
-	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl,gdx-backend-headless,gdx-freetype">
+	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-headless,gdx-freetype">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>

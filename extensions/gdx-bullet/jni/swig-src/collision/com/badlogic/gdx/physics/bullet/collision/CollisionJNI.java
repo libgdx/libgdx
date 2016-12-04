@@ -958,8 +958,8 @@ public class CollisionJNI {
   public final static native int btShapeHull_numTriangles(long jarg1, btShapeHull jarg1_);
   public final static native int btShapeHull_numVertices(long jarg1, btShapeHull jarg1_);
   public final static native int btShapeHull_numIndices(long jarg1, btShapeHull jarg1_);
-  public final static native long btShapeHull_getVertexPointer(long jarg1, btShapeHull jarg1_);
-  public final static native java.nio.LongBuffer btShapeHull_getIndexPointer(long jarg1, btShapeHull jarg1_);
+  public final static native Vector3 btShapeHull_getVertex(long jarg1, btShapeHull jarg1_, int jarg2);
+  public final static native int btShapeHull_getIndex(long jarg1, btShapeHull jarg1_, int jarg2);
   public final static native long new_btConvexHullShape__SWIG_0(java.nio.FloatBuffer jarg1, int jarg2, int jarg3);
   public final static native long new_btConvexHullShape__SWIG_1(java.nio.FloatBuffer jarg1, int jarg2);
   public final static native long new_btConvexHullShape__SWIG_2(java.nio.FloatBuffer jarg1);

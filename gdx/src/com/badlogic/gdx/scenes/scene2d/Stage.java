@@ -69,7 +69,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
-	private final Group root;
+	private Group root;
 	private final Vector2 tempCoords = new Vector2();
 	private final Actor[] pointerOverActors = new Actor[20];
 	private final boolean[] pointerTouched = new boolean[20];
@@ -702,6 +702,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Returns the root group which holds all actors in the stage. */
 	public Group getRoot () {
 		return root;
+	}
+
+	/** Replaces the root group. Usually this is not necessary but a subclass may be desired in some cases, eg being notified of
+	 * {@link Group#childrenChanged()}. */
+	public void setRoot (Group root) {
+		this.root = root;
 	}
 
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors

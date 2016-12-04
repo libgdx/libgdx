@@ -274,6 +274,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 0) return 0;
 			a = 1 - a;
 			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale);
 		}
@@ -355,6 +356,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 1) return 1;
 			a += widths[0] / 2;
 			float width = 0, height = 0;
 			for (int i = 0, n = widths.length; i < n; i++) {

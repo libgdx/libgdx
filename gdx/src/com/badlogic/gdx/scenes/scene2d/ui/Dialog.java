@@ -78,7 +78,7 @@ public class Dialog extends Window {
 		defaults().space(6);
 		add(contentTable = new Table(skin)).expand().fill();
 		row();
-		add(buttonTable = new Table(skin));
+		add(buttonTable = new Table(skin)).fillX();
 
 		contentTable.defaults().space(6);
 		buttonTable.defaults().space(6);

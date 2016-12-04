@@ -255,19 +255,27 @@ public class Group extends Actor implements Cullable {
 	protected void childrenChanged () {
 	}
 
-	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
+	/** Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this
+	 * group, no changes are made. */
 	public void addActor (Actor actor) {
-		if (actor.parent != null) actor.parent.removeActor(actor, false);
+		if (actor.parent != null) {
+			if (actor.parent == this) return;
+			actor.parent.removeActor(actor, false);
+		}
 		children.add(actor);
 		actor.setParent(this);
 		actor.setStage(getStage());
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
+	/** Adds an actor as a child of this group at a specific index, removing it from its previous parent. If the actor is already a
+	 * child of this group, no changes are made.
 	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
-		if (actor.parent != null) actor.parent.removeActor(actor, false);
+		if (actor.parent != null) {
+			if (actor.parent == this) return;
+			actor.parent.removeActor(actor, false);
+		}
 		if (index >= children.size)
 			children.add(actor);
 		else
@@ -277,10 +285,13 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, immediately before another child actor. The actor is first removed from its parent
-	 * group, if any. */
+	/** Adds an actor as a child of this group immediately before another child actor, removing it from its previous parent. If the
+	 * actor is already a child of this group, no changes are made. */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		if (actor.parent != null) actor.parent.removeActor(actor, false);
+		if (actor.parent != null) {
+			if (actor.parent == this) return;
+			actor.parent.removeActor(actor, false);
+		}
 		int index = children.indexOf(actorBefore, true);
 		children.insert(index, actor);
 		actor.setParent(this);
@@ -288,10 +299,13 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, immediately after another child actor. The actor is first removed from its parent
-	 * group, if any. */
+	/** Adds an actor as a child of this group immediately after another child actor, removing it from its previous parent. If the
+	 * actor is already a child of this group, no changes are made. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		if (actor.parent != null) actor.parent.removeActor(actor, false);
+		if (actor.parent != null) {
+			if (actor.parent == this) return;
+			actor.parent.removeActor(actor, false);
+		}
 		int index = children.indexOf(actorAfter, true);
 		if (index == children.size)
 			children.add(actor);

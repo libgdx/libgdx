@@ -1799,6 +1799,12 @@ SWIGINTERN void btIndexedMesh_setIndices(btIndexedMesh *self,short *indices,int 
 
 #include <BulletCollision/CollisionShapes/btShapeHull.h>
 
+SWIGINTERN btVector3 const &btShapeHull_getVertex(btShapeHull *self,int idx){
+        return (self->getVertexPointer()[idx]);
+    }
+SWIGINTERN int btShapeHull_getIndex(btShapeHull *self,int idx){
+        return self->getIndexPointer()[idx];
+    }
 
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 
@@ -21349,32 +21355,37 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btShapeHull_1getVertexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btShapeHull_1getVertex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jobject jresult = 0 ;
   btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int arg2 ;
   btVector3 *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btShapeHull **)&jarg1; 
-  result = (btVector3 *)((btShapeHull const *)arg1)->getVertexPointer();
-  *(btVector3 **)&jresult = result; 
+  arg2 = (int)jarg2; 
+  result = (btVector3 *) &btShapeHull_getVertex(arg1,arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
   return jresult;
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btShapeHull_1getIndexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jobject jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btShapeHull_1getIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jint jresult = 0 ;
   btShapeHull *arg1 = (btShapeHull *) 0 ;
-  unsigned int *result = 0 ;
+  int arg2 ;
+  int result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btShapeHull **)&jarg1; 
-  result = (unsigned int *)((btShapeHull const *)arg1)->getIndexPointer();
-  *(unsigned int **)&jresult = result; 
+  arg2 = (int)jarg2; 
+  result = (int)btShapeHull_getIndex(arg1,arg2);
+  jresult = (jint)result; 
   return jresult;
 }
 

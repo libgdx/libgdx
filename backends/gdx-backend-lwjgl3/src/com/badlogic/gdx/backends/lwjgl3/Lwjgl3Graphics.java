@@ -44,6 +44,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private volatile int backBufferHeight;
 	private volatile int logicalWidth;
 	private volatile int logicalHeight;
+	private volatile boolean isContinuous = true;
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
@@ -65,7 +66,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 			if (!window.isListenerInitialized()) {
 				return;
 			}
-			GLFW.glfwMakeContextCurrent(windowHandle);
+			window.makeCurrent();
 			gl20.glViewport(0, 0, width, height);
 			window.getListener().resize(getWidth(), getHeight());
 			window.getListener().render();
@@ -406,18 +407,17 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	@Override
 	public void setContinuousRendering(boolean isContinuous) {
-		// FIXME implement non-continuous rendering
+		this.isContinuous = isContinuous;
 	}
 
 	@Override
 	public boolean isContinuousRendering() {
-		// FIXME implement non-continuous rendering
-		return true;
+		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering() {
-		// FIXME implement non-continuous rendering
+		window.requestRendering();
 	}
 
 	@Override
