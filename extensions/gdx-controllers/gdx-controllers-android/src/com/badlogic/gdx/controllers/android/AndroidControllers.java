@@ -277,4 +277,9 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 		listeners.clear();
 		
 	}
+
+	@Override
+	public Array<ControllerListener> getListeners () {
+		return listeners;
+	}
 }

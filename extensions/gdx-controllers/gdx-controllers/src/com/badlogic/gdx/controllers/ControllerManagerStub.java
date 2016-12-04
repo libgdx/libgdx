@@ -39,4 +39,8 @@ public class ControllerManagerStub implements ControllerManager {
 	@Override
 	public void clearListeners () {
 	}
+	
+	public Array<ControllerListener> getListeners() {
+		return new Array<ControllerListener>();
+	}
 }

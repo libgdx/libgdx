@@ -266,7 +266,7 @@ public class ShapeRenderer implements Disposable {
 	 * between the start and end points. */
 	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
 		if (shapeType == ShapeType.Filled) {
-			rectLine(x, y, x2, y2, defaultRectLineWidth);
+			rectLine(x, y, x2, y2, defaultRectLineWidth, c1, c2);
 			return;
 		}
 		check(ShapeType.Line, null, 2);
@@ -596,6 +596,52 @@ public class ShapeRenderer implements Disposable {
 			renderer.color(colorBits);
 			renderer.vertex(x2 + tx, y2 + ty, 0);
 			renderer.color(colorBits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		}
+	}
+	
+	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
+	public void rectLine (float x1, float y1, float x2, float y2, float width, Color c1, Color c2) {
+		check(ShapeType.Line, ShapeType.Filled, 8);
+		float col1Bits = c1.toFloatBits();
+		float col2Bits = c2.toFloatBits();
+		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
+		width *= 0.5f;
+		float tx = t.x * width;
+		float ty = t.y * width;
+		if (shapeType == ShapeType.Line) {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		} else {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 		}
 	}

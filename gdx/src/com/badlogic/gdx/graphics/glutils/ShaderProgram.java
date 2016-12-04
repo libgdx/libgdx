@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** <p>
- * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program useable with OpenGL ES 2.0.
+ * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program.
  * </p>
  * 
  * <p>

@@ -296,9 +296,9 @@ public interface Graphics {
 	public boolean isFullscreen ();
 
 	/** Create a new cursor represented by the {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format,
-	 * width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit
-	 * (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the system cursor by calling
-	 * {@link #setCursor(Cursor)} .
+	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a safe bet),
+	 * and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the 
+	 * system cursor by calling {@link #setCursor(Cursor)} .
 	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
