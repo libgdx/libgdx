@@ -89,7 +89,9 @@ public class Lwjgl3TestStarter {
 						prefs.flush();
 						if (testButton != lastClickedTestButton) {
 							testButton.setColor(Color.CYAN);
-							lastClickedTestButton.setColor(Color.WHITE);
+							if (lastClickedTestButton != null) {
+								lastClickedTestButton.setColor(Color.WHITE);
+							}
 							lastClickedTestButton = testButton;
 						}
 					}

@@ -41,6 +41,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 	private static final Map<String, ArgumentType> arrayTypes;
 	private static final Map<String, ArgumentType> bufferTypes;
 	private static final Map<String, ArgumentType> otherTypes;
+	public static String CustomIgnoreTag = "";
 
 	static {
 		plainOldDataTypes = new HashMap<String, ArgumentType>();
@@ -207,6 +208,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 			JniSection section = iter.next();
 			if (section.getNativeCode().startsWith("JNI")) iter.remove();
 			if (section.getNativeCode().startsWith("-{")) iter.remove();
+			if (!CustomIgnoreTag.isEmpty() && section.getNativeCode().startsWith(CustomIgnoreTag)) iter.remove();
 		}
 		return sections;
 	}

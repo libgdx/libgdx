@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -135,6 +136,31 @@ public class CollectionsTest extends GdxTest {
 			assertNotEquals(map, anotherMap);
 			invoke("put", anotherMap, keys[(i + 1) % keys.length], values[i]);
 			assertNotEquals(map, anotherMap);
+		}
+
+		// perform an iteration test
+		Object anotherMap = copy(map);
+		Iterator it = ((Iterable) anotherMap).iterator();
+		int iterationCount = 0;
+		while (it.hasNext()) {
+			Object entry = it.next();
+			iterationCount++;
+		}
+		assertEquals(iterationCount, keys.length);
+
+		// perform an iteration and remove test for every index
+		for (int i = 0, n = keys.length; i < n; ++i) {
+			anotherMap = copy(map);
+			it = ((Iterable) anotherMap).iterator();
+			iterationCount = 0;
+			while (it.hasNext()) {
+				Object entry = it.next();
+				if (iterationCount == i) {
+					it.remove();
+				}
+				iterationCount++;
+			}
+			assertEquals(iterationCount, keys.length);
 		}
 	}
 

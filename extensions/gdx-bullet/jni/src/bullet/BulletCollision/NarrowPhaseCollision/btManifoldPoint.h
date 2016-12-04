@@ -35,7 +35,13 @@ typedef sce::PhysicsEffects::PfxConstraintRow btConstraintRow;
 	typedef btConstraintRow PfxConstraintRow;
 #endif //PFX_USE_FREE_VECTORMATH
 
-
+enum btContactPointFlags
+{
+	BT_CONTACT_FLAG_LATERAL_FRICTION_INITIALIZED=1,
+	BT_CONTACT_FLAG_HAS_CONTACT_CFM=2,
+	BT_CONTACT_FLAG_HAS_CONTACT_ERP=4,
+    BT_CONTACT_FLAG_CONTACT_STIFFNESS_DAMPING = 8,
+};
 
 /// ManifoldContactPoint collects and maintains persistent contactpoints.
 /// used to improve stability and performance of rigidbody dynamics response.
@@ -44,14 +50,15 @@ class btManifoldPoint
 		public:
 			btManifoldPoint()
 				:m_userPersistentData(0),
-				m_lateralFrictionInitialized(false),
-                m_appliedImpulse(0.f),
+				m_contactPointFlags(0),
+				m_appliedImpulse(0.f),
                 m_appliedImpulseLateral1(0.f),
 				m_appliedImpulseLateral2(0.f),
 				m_contactMotion1(0.f),
 				m_contactMotion2(0.f),
-				m_contactCFM1(0.f),
-				m_contactCFM2(0.f),
+				m_contactCFM(0.f),
+				m_contactERP(0.f),
+				m_frictionCFM(0.f),
 				m_lifeTime(0)
 			{
 			}
@@ -65,16 +72,18 @@ class btManifoldPoint
 					m_distance1( distance ),
 					m_combinedFriction(btScalar(0.)),
 					m_combinedRollingFriction(btScalar(0.)),
-					m_combinedRestitution(btScalar(0.)),
+                    m_combinedSpinningFriction(btScalar(0.)),
+                    m_combinedRestitution(btScalar(0.)),
 					m_userPersistentData(0),
-					m_lateralFrictionInitialized(false),
-                    m_appliedImpulse(0.f),
+					m_contactPointFlags(0),
+					m_appliedImpulse(0.f),
                     m_appliedImpulseLateral1(0.f),
 					m_appliedImpulseLateral2(0.f),
 					m_contactMotion1(0.f),
 					m_contactMotion2(0.f),
-					m_contactCFM1(0.f),
-					m_contactCFM2(0.f),
+					m_contactCFM(0.f),
+					m_contactERP(0.f),
+					m_frictionCFM(0.f),
 					m_lifeTime(0)
 			{
 				
@@ -91,8 +100,9 @@ class btManifoldPoint
 		
 			btScalar	m_distance1;
 			btScalar	m_combinedFriction;
-			btScalar	m_combinedRollingFriction;
-			btScalar	m_combinedRestitution;
+			btScalar	m_combinedRollingFriction;//torsional friction orthogonal to contact normal, useful to make spheres stop rolling forever
+            btScalar	m_combinedSpinningFriction;//torsional friction around contact normal, useful for grasping objects
+            btScalar	m_combinedRestitution;
 
 			//BP mod, store contact triangles.
 			int			m_partId0;
@@ -101,15 +111,28 @@ class btManifoldPoint
 			int			m_index1;
 				
 			mutable void*	m_userPersistentData;
-			bool			m_lateralFrictionInitialized;
-
+			//bool			m_lateralFrictionInitialized;
+			int				m_contactPointFlags;
+			
 			btScalar		m_appliedImpulse;
 			btScalar		m_appliedImpulseLateral1;
 			btScalar		m_appliedImpulseLateral2;
 			btScalar		m_contactMotion1;
 			btScalar		m_contactMotion2;
-			btScalar		m_contactCFM1;
-			btScalar		m_contactCFM2;
+			
+			union
+			{
+                btScalar		m_contactCFM;
+                btScalar        m_combinedContactStiffness1;
+			};
+			
+			union
+			{
+                btScalar		m_contactERP;
+                btScalar        m_combinedContactDamping1;
+			};
+
+			btScalar		m_frictionCFM;
 
 			int				m_lifeTime;//lifetime of the contactpoint in frames
 			

@@ -16,21 +16,21 @@
 
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
-import com.intel.moe.natj.general.NatJ;
-import com.intel.moe.natj.general.Pointer;
-import com.intel.moe.natj.general.ann.Generated;
-import com.intel.moe.natj.general.ann.MappedReturn;
-import com.intel.moe.natj.general.ann.NUInt;
-import com.intel.moe.natj.general.ann.Owned;
-import com.intel.moe.natj.general.ann.Runtime;
-import com.intel.moe.natj.objc.ObjCRuntime;
-import com.intel.moe.natj.objc.ann.ObjCBlock;
-import com.intel.moe.natj.objc.ann.ObjCClassBinding;
-import com.intel.moe.natj.objc.ann.Selector;
-import com.intel.moe.natj.objc.map.ObjCObjectMapper;
-import ios.NSObject;
-import ios.foundation.NSArray;
-import ios.foundation.NSURL;
+import org.moe.natj.general.NatJ;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.general.ann.Generated;
+import org.moe.natj.general.ann.MappedReturn;
+import org.moe.natj.general.ann.NUInt;
+import org.moe.natj.general.ann.Owned;
+import org.moe.natj.general.ann.Runtime;
+import org.moe.natj.objc.ObjCRuntime;
+import org.moe.natj.objc.ann.ObjCBlock;
+import org.moe.natj.objc.ann.ObjCClassBinding;
+import org.moe.natj.objc.ann.Selector;
+import org.moe.natj.objc.map.ObjCObjectMapper;
+import apple.NSObject;
+import apple.foundation.NSArray;
+import apple.foundation.NSURL;
 
 @Generated
 @Runtime(ObjCRuntime.class)

@@ -147,6 +147,10 @@ public class btHingeConstraint extends btTypedConstraint {
     DynamicsJNI.btHingeConstraint_setMaxMotorImpulse(swigCPtr, this, maxMotorImpulse);
   }
 
+  public void setMotorTargetVelocity(float motorTargetVelocity) {
+    DynamicsJNI.btHingeConstraint_setMotorTargetVelocity(swigCPtr, this, motorTargetVelocity);
+  }
+
   public void setMotorTarget(Quaternion qAinB, float dt) {
     DynamicsJNI.btHingeConstraint_setMotorTarget__SWIG_0(swigCPtr, this, qAinB, dt);
   }
@@ -169,6 +173,18 @@ public class btHingeConstraint extends btTypedConstraint {
 
   public void setLimit(float low, float high) {
     DynamicsJNI.btHingeConstraint_setLimit__SWIG_3(swigCPtr, this, low, high);
+  }
+
+  public float getLimitSoftness() {
+    return DynamicsJNI.btHingeConstraint_getLimitSoftness(swigCPtr, this);
+  }
+
+  public float getLimitBiasFactor() {
+    return DynamicsJNI.btHingeConstraint_getLimitBiasFactor(swigCPtr, this);
+  }
+
+  public float getLimitRelaxationFactor() {
+    return DynamicsJNI.btHingeConstraint_getLimitRelaxationFactor(swigCPtr, this);
   }
 
   public void setAxis(Vector3 axisInA) {
@@ -239,6 +255,14 @@ public class btHingeConstraint extends btTypedConstraint {
     DynamicsJNI.btHingeConstraint_setUseFrameOffset(swigCPtr, this, frameOffsetOnOff);
   }
 
+  public boolean getUseReferenceFrameA() {
+    return DynamicsJNI.btHingeConstraint_getUseReferenceFrameA(swigCPtr, this);
+  }
+
+  public void setUseReferenceFrameA(boolean useReferenceFrameA) {
+    DynamicsJNI.btHingeConstraint_setUseReferenceFrameA(swigCPtr, this, useReferenceFrameA);
+  }
+
   public void setParam(int num, float value, int axis) {
     DynamicsJNI.btHingeConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
   }
@@ -253,6 +277,10 @@ public class btHingeConstraint extends btTypedConstraint {
 
   public float getParam(int num) {
     return DynamicsJNI.btHingeConstraint_getParam__SWIG_1(swigCPtr, this, num);
+  }
+
+  public int getFlags() {
+    return DynamicsJNI.btHingeConstraint_getFlags(swigCPtr, this);
   }
 
 }

@@ -197,6 +197,7 @@ public class LwjglGraphics implements Graphics {
 					if (pixmap.getFormat() != Format.RGBA8888) {
 						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
 						rgba.drawPixmap(pixmap, 0, 0);
+						pixmap.dispose();
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
@@ -318,7 +319,7 @@ public class LwjglGraphics implements Graphics {
 						createDisplayPixelFormat(useGL30, gles30ContextMajor, gles30ContextMinor);
 						return;
 					}
-					throw new GdxRuntimeException("OpenGL is not supported by the video driver: " + glVersion.getDebugVersionString(), ex3);
+					throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
 				}
 				if (getDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);

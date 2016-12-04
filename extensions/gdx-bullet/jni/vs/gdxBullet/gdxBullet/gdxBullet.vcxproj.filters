@@ -576,5 +576,14 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp">
       <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\FilterableVehicleRaycaster.cpp">
+      <Filter>Source Files\custom\gdx\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

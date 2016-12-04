@@ -19,9 +19,9 @@ package com.badlogicgames.gdx.tests;
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
 import com.badlogic.gdx.tests.*;
-import com.intel.moe.natj.general.Pointer;
+import org.moe.natj.general.Pointer;
 
-import ios.uikit.c.UIKit;
+import apple.uikit.c.UIKit;
 
 public class IOSTests extends IOSApplication.Delegate {
 
@@ -38,8 +38,6 @@ public class IOSTests extends IOSApplication.Delegate {
 	}
 
 	public static void main(String[] argv) {
-		//NSAutoreleasePool pool = NSAutoreleasePool.alloc();
 		UIKit.UIApplicationMain(0, null, null, IOSTests.class.getName());
-		//pool.dealloc();
 	}
 }

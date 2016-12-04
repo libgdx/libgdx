@@ -106,13 +106,12 @@ public class CheckBox extends TextButton {
 		}
 
 		public CheckBoxStyle (CheckBoxStyle style) {
+			super(style);
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;
 			this.checkboxOver = style.checkboxOver;
 			this.checkboxOffDisabled = style.checkboxOffDisabled;
 			this.checkboxOnDisabled = style.checkboxOnDisabled;
-			this.font = style.font;
-			this.fontColor = new Color(style.fontColor);
 		}
 	}
 }

@@ -302,6 +302,26 @@ public class btCollisionObject extends BulletBase implements
     return CollisionJNI.btCollisionObject_getRollingFriction(swigCPtr, this);
   }
 
+  public void setSpinningFriction(float frict) {
+    CollisionJNI.btCollisionObject_setSpinningFriction(swigCPtr, this, frict);
+  }
+
+  public float getSpinningFriction() {
+    return CollisionJNI.btCollisionObject_getSpinningFriction(swigCPtr, this);
+  }
+
+  public void setContactStiffnessAndDamping(float stiffness, float damping) {
+    CollisionJNI.btCollisionObject_setContactStiffnessAndDamping(swigCPtr, this, stiffness, damping);
+  }
+
+  public float getContactStiffness() {
+    return CollisionJNI.btCollisionObject_getContactStiffness(swigCPtr, this);
+  }
+
+  public float getContactDamping() {
+    return CollisionJNI.btCollisionObject_getContactDamping(swigCPtr, this);
+  }
+
   public int getInternalType() {
     return CollisionJNI.btCollisionObject_getInternalType(swigCPtr, this);
   }
@@ -406,12 +426,20 @@ public class btCollisionObject extends BulletBase implements
     return CollisionJNI.btCollisionObject_getUserIndex(swigCPtr, this);
   }
 
+  public int getUserIndex2() {
+    return CollisionJNI.btCollisionObject_getUserIndex2(swigCPtr, this);
+  }
+
   public void setUserPointer(long userPointer) {
     CollisionJNI.btCollisionObject_setUserPointer(swigCPtr, this, userPointer);
   }
 
   public void setUserIndex(int index) {
     CollisionJNI.btCollisionObject_setUserIndex(swigCPtr, this, index);
+  }
+
+  public void setUserIndex2(int index) {
+    CollisionJNI.btCollisionObject_setUserIndex2(swigCPtr, this, index);
   }
 
   public int getUpdateRevisionInternal() {
@@ -471,6 +499,7 @@ public class btCollisionObject extends BulletBase implements
     public final static int CF_CHARACTER_OBJECT = 16;
     public final static int CF_DISABLE_VISUALIZE_OBJECT = 32;
     public final static int CF_DISABLE_SPU_COLLISION_PROCESSING = 64;
+    public final static int CF_HAS_CONTACT_STIFFNESS_DAMPING = 128;
   }
 
   public final static class CollisionObjectTypes {

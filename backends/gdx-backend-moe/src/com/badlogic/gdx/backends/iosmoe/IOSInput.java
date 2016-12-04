@@ -23,32 +23,32 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.intel.moe.natj.general.ann.NInt;
-import ios.audiotoolbox.c.AudioToolbox;
-import ios.coregraphics.struct.CGPoint;
-import ios.coregraphics.struct.CGRect;
-import ios.coregraphics.struct.CGSize;
-import ios.coremotion.CMAccelerometerData;
-import ios.coremotion.CMMagnetometerData;
-import ios.coremotion.CMMotionManager;
-import ios.foundation.NSError;
-import ios.foundation.NSOperationQueue;
-import ios.foundation.NSSet;
-import ios.foundation.struct.NSRange;
-import ios.uikit.UIAlertView;
-import ios.uikit.UIDevice;
-import ios.uikit.UITextField;
-import ios.uikit.UITouch;
-import ios.uikit.enums.UIAlertViewStyle;
-import ios.uikit.enums.UIDeviceOrientation;
-import ios.uikit.enums.UIKeyboardType;
-import ios.uikit.enums.UIReturnKeyType;
-import ios.uikit.enums.UITextAutocapitalizationType;
-import ios.uikit.enums.UITextAutocorrectionType;
-import ios.uikit.enums.UITextSpellCheckingType;
-import ios.uikit.enums.UITouchPhase;
-import ios.uikit.protocol.UIAlertViewDelegate;
-import ios.uikit.protocol.UITextFieldDelegate;
+import org.moe.natj.general.ann.NInt;
+import apple.audiotoolbox.c.AudioToolbox;
+import apple.coregraphics.struct.CGPoint;
+import apple.coregraphics.struct.CGRect;
+import apple.coregraphics.struct.CGSize;
+import apple.coremotion.CMAccelerometerData;
+import apple.coremotion.CMMagnetometerData;
+import apple.coremotion.CMMotionManager;
+import apple.foundation.NSError;
+import apple.foundation.NSOperationQueue;
+import apple.foundation.NSSet;
+import apple.foundation.struct.NSRange;
+import apple.uikit.UIAlertView;
+import apple.uikit.UIDevice;
+import apple.uikit.UITextField;
+import apple.uikit.UITouch;
+import apple.uikit.enums.UIAlertViewStyle;
+import apple.uikit.enums.UIDeviceOrientation;
+import apple.uikit.enums.UIKeyboardType;
+import apple.uikit.enums.UIReturnKeyType;
+import apple.uikit.enums.UITextAutocapitalizationType;
+import apple.uikit.enums.UITextAutocorrectionType;
+import apple.uikit.enums.UITextSpellCheckingType;
+import apple.uikit.enums.UITouchPhase;
+import apple.uikit.protocol.UIAlertViewDelegate;
+import apple.uikit.protocol.UITextFieldDelegate;
 
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
@@ -544,15 +544,10 @@ public class IOSInput implements Input {
 				if (event.phase == UITouchPhase.Began) {
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
 					if (numTouched == 1) justTouched = true;
-					break;
-				}
-				if (event.phase == UITouchPhase.Cancelled || event.phase == UITouchPhase.Ended) {
+				} else if (event.phase == UITouchPhase.Cancelled || event.phase == UITouchPhase.Ended) {
 					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
-					break;
-				}
-				if (event.phase == UITouchPhase.Moved || event.phase == UITouchPhase.Stationary) {
+				} else if (event.phase == UITouchPhase.Moved || event.phase == UITouchPhase.Stationary) {
 					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
-					break;
 				}
 			}
 			touchEventPool.freeAll(touchEvents);

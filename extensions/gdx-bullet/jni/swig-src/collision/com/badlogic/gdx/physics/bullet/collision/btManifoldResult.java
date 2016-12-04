@@ -111,4 +111,20 @@ public class btManifoldResult extends btDiscreteCollisionDetectorInterface.Resul
     return CollisionJNI.btManifoldResult_calculateCombinedFriction(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
   }
 
+  public static float calculateCombinedRollingFriction(btCollisionObject body0, btCollisionObject body1) {
+    return CollisionJNI.btManifoldResult_calculateCombinedRollingFriction(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
+  }
+
+  public static float calculateCombinedSpinningFriction(btCollisionObject body0, btCollisionObject body1) {
+    return CollisionJNI.btManifoldResult_calculateCombinedSpinningFriction(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
+  }
+
+  public static float calculateCombinedContactDamping(btCollisionObject body0, btCollisionObject body1) {
+    return CollisionJNI.btManifoldResult_calculateCombinedContactDamping(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
+  }
+
+  public static float calculateCombinedContactStiffness(btCollisionObject body0, btCollisionObject body1) {
+    return CollisionJNI.btManifoldResult_calculateCombinedContactStiffness(btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);
+  }
+
 }

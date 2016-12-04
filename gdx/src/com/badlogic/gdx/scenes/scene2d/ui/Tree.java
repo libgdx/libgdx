@@ -471,8 +471,9 @@ public class Tree extends WidgetGroup {
 		protected void removeFromTree (Tree tree) {
 			tree.removeActor(actor);
 			if (!expanded) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).removeFromTree(tree);
+			Object[] children = this.children.items;
+			for (int i = 0, n = this.children.size; i < n; i++)
+				((Node)children[i]).removeFromTree(tree);
 		}
 
 		public void add (Node node) {

@@ -399,4 +399,8 @@ public class btSliderConstraint extends btTypedConstraint {
     return DynamicsJNI.btSliderConstraint_getParam__SWIG_1(swigCPtr, this, num);
   }
 
+  public int getFlags() {
+    return DynamicsJNI.btSliderConstraint_getFlags(swigCPtr, this);
+  }
+
 }

@@ -26,6 +26,7 @@ import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -75,6 +77,7 @@ public class AssetManager implements Disposable {
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
+	int peakTasks = 0;
         
 	final FileHandleResolver resolver;
 
@@ -111,6 +114,7 @@ public class AssetManager implements Disposable {
 			setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 			setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 			setLoader(Model.class, ".obj", new ObjLoader(resolver));
+			setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
 		}
 		executor = new AsyncExecutor(1);
 	}
@@ -318,6 +322,7 @@ public class AssetManager implements Disposable {
 		if (loadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
+			peakTasks = 0;
 		}
 
 		// check if an asset with the same name but a different type has already been added.
@@ -472,6 +477,7 @@ public class AssetManager implements Disposable {
 		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
+		peakTasks++;
 	}
 
 	/** Adds an asset to this AssetManager */
@@ -504,7 +510,10 @@ public class AssetManager implements Disposable {
 		// if the task has been cancelled or has finished loading
 		if (complete) {
 			// increase the number of loaded assets and pop the task from the stack
-			if (tasks.size() == 1) loaded++;
+			if (tasks.size() == 1)  {
+				loaded++;
+				peakTasks = 0;
+			}
 			tasks.pop();
 
 			if (task.cancel) return true;
@@ -605,7 +614,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		return Math.min(1, loaded / (float)toLoad);
+		float fractionalLoaded = (float)loaded;
+		if (peakTasks > 0) {
+			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
+		}
+		return Math.min(1, fractionalLoaded / (float)toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
@@ -660,6 +673,7 @@ public class AssetManager implements Disposable {
 		this.assetDependencies.clear();
 		this.loaded = 0;
 		this.toLoad = 0;
+		this.peakTasks = 0;
 		this.loadQueue.clear();
 		this.tasks.clear();
 	}

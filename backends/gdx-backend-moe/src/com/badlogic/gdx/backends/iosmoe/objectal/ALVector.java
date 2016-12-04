@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
-import com.intel.moe.natj.c.StructObject;
-import com.intel.moe.natj.c.ann.Structure;
-import com.intel.moe.natj.c.ann.StructureField;
-import com.intel.moe.natj.general.NatJ;
-import com.intel.moe.natj.general.Pointer;
-import com.intel.moe.natj.general.ann.Generated;
+import org.moe.natj.c.StructObject;
+import org.moe.natj.c.ann.Structure;
+import org.moe.natj.c.ann.StructureField;
+import org.moe.natj.general.NatJ;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.general.ann.Generated;
 
 @Generated
 @Structure()
