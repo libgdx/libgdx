@@ -49,7 +49,7 @@ public class AndroidApplicationConfiguration {
 	 * pre Android 2.0 devices. default: 0 **/
 	public int touchSleepTime = 0;
 
-	/** whether to keep the screen on and at full brightness or not while running the application. default: false */
+	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
 
 	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
