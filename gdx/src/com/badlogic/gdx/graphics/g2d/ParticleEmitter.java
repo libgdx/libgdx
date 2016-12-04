@@ -179,6 +179,7 @@ public class ParticleEmitter {
 	}
 
 	public void update (float delta) {
+		delta = Math.abs(delta);
 		accumulator += delta * 1000;
 		if (accumulator < 1) return;
 		int deltaMillis = (int)accumulator;
