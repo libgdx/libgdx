@@ -174,7 +174,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns if this array contains all values.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if array contains all values, false if it doesn't */
-	public boolean containsAll (Array<T> values, boolean identity) {
+	public boolean containsAll (Iterable<T> values, boolean identity) {
 		for (T value : values) {
 			if (!contains(value, identity)) return false;
 		}
