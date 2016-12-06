@@ -39,7 +39,7 @@ public class RenderContext {
 		this.textureBinder = textures;
 	}
 
-	/** Sets up the render context, must be matched with a call to {@link #end()}. Assumes that the OpenGL states are in their
+	/** Sets up the render context, must be matched with a call to {@link #end()}. Resets the OpenGL states to their
 	 * defaults. */
 	public void begin () {
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
