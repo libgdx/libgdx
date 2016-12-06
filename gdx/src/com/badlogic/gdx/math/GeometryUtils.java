@@ -103,8 +103,8 @@ public final class GeometryUtils {
 		float d21 = Vector3.dot(v2X, v2Y, v2Z, v1X, v1Y, v1Z);
 			    
 		float invDenom = 1f / (d00 * d11 - d01 * d01);
-		barycentricOut.x = (d11 * d20 - d01 * d21) / invDenom;
-		barycentricOut.y = (d00 * d21 - d01 * d20) / invDenom;
+		barycentricOut.x = (d11 * d20 - d01 * d21) * invDenom;
+		barycentricOut.y = (d00 * d21 - d01 * d20) *  invDenom;
 		barycentricOut.z = 1.0f - barycentricOut.x - barycentricOut.y;
 		return barycentricOut;
 	}
@@ -134,8 +134,8 @@ public final class GeometryUtils {
 		float d20 = Vector3.dot(v2X, v2Y, v2Z, cache.v0X, cache.v0Y, cache.v0Z);
 		float d21 = Vector3.dot(v2X, v2Y, v2Z, cache.v1X, cache.v1Y, cache.v1Z);
 		
-		barycentricOut.x = (cache.d11 * d20 - cache.d01 * d21) / cache.invDenom;
-		barycentricOut.y = (cache.d00 * d21 - cache.d01 * d20) / cache.invDenom;
+		barycentricOut.x = (cache.d11 * d20 - cache.d01 * d21) * cache.invDenom;
+		barycentricOut.y = (cache.d00 * d21 - cache.d01 * d20) * cache.invDenom;
 		barycentricOut.z = 1.0f - barycentricOut.x - barycentricOut.y;
 		return barycentricOut;
 	}
@@ -158,9 +158,9 @@ public final class GeometryUtils {
 		tmp1.set(b).sub(a);
 		tmp2.set(c).sub(a);
 		tmp3.set(p).sub(a);
-		float denom = 1f / (tmp1.x * tmp2.y - tmp2.x * tmp1.y);	
-		barycentricOut.x = (tmp3.x * tmp2.y - tmp2.x * tmp3.y) * denom;
-		barycentricOut.y = (tmp1.x * tmp3.y - tmp3.x * tmp1.y) * denom;
+		float invDenom = 1f / (tmp1.x * tmp2.y - tmp2.x * tmp1.y);	
+		barycentricOut.x = (tmp3.x * tmp2.y - tmp2.x * tmp3.y) * invDenom;
+		barycentricOut.y = (tmp1.x * tmp3.y - tmp3.x * tmp1.y) * invDenom;
 		return barycentricOut;
 	}
 
