@@ -16,11 +16,131 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
+
 /** @author Nathan Sweet */
 public final class GeometryUtils {
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
+	static private final Vector3 vec = new Vector3();
+	
+	/** caches the values for a triangle for faster barycentric calculations  */
+	public static class BaryCache implements Poolable{		
+		float v0X, v0Y, v0Z;
+		float v1X, v1Y, v1Z;
+		float d00, d01, d11;
+		float x1, y1,z1;
+		float invDenom;
+		public BaryCache set(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3){
+			v0X = x2-x1;
+			v0Y = y2-y1;
+			v0Z = z2-z1;					
+			v1X = x3-x1;
+			v1Y = y3-y1;
+			v1Z = z3-z1;
+			d00 = Vector3.dot(v0X, v0Y, v0Z, v0X, v0Y, v0Z);
+			d01 = Vector3.dot(v0X, v0Y, v0Z, v1X, v1Y, v1Z);
+			d11 = Vector3.dot(v1X, v1Y, v1Z, v1X, v1Y, v1Z);			
+			invDenom = 1f / (d00 * d11 - d01 * d01);			
+			return this;
+		}
+		@Override
+		public void reset () {
+			v0X = 0;
+			v0Y = 0;
+			v0Z = 0;			
+			v1X = 0;
+			v1Y = 0;
+			v1Z = 0;			
+			d00 = 0;
+			d01 = 0;
+			d11 = 0;			
+			x1 = 0;		
+			y1 = 0;
+			z1 = 0;			
+			invDenom = 0;
+		}
+	}
+	
+	static public boolean barycoordInsideTriangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x, float y, float z){
+		Vector3 vec = toBarycoord(x1, y1, z1, x2, y2, z2, x3, y3, z3, x, y, z, GeometryUtils.vec);
+		return vec.x >= 0 && vec.y >= 0 && vec.z >= 0;
+	}
+	
+	static public boolean barycoordInsideTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p){
+		return barycoordInsideTriangle(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, p3.x, p3.y, p3.z, p.x, p.y, p.z);
+	}
+	
+	/**
+	 * Calculates the barycentric coordinates of a 3d triangle as described in Realtime Collision Detection by Christen Ericson on pages 46-48 (http://realtimecollisiondetection.net/)
+	 * @param p the point to be checked
+	 * @return barycentricOut
+	 */
+	static public Vector3 toBarycoord(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p, Vector3 barycentricOut){
+		return toBarycoord(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, p3.x, p3.y, p3.z, p.x, p.y, p.z, barycentricOut);
+	}
 
-	/** Computes the barycentric coordinates v,w for the specified point in the triangle.
+	/**
+	 * Calculates the barycentric coordinates of a 3d triangle as described in Realtime Collision Detection by Christen Ericson on pages 46-48 (http://realtimecollisiondetection.net/)
+	 * @return barycentricOut
+	 */
+	static public Vector3 toBarycoord(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x, float y, float z, Vector3 barycentricOut){
+		float v0X = x2-x1;
+		float v0Y = y2-y1;
+		float v0Z = z2-z1;
+				
+		float v1X = x3-x1;
+		float v1Y = y3-y1;
+		float v1Z = z3-z1;
+				
+		float v2X = x-x1;
+		float v2Y = y-y1;
+		float v2Z = z-z1;
+				
+		float d00 = Vector3.dot(v0X, v0Y, v0Z, v0X, v0Y, v0Z);
+		float d01 = Vector3.dot(v0X, v0Y, v0Z, v1X, v1Y, v1Z);
+		float d11 = Vector3.dot(v1X, v1Y, v1Z, v1X, v1Y, v1Z);
+		float d20 = Vector3.dot(v2X, v2Y, v2Z, v0X, v0Y, v0Z);
+		float d21 = Vector3.dot(v2X, v2Y, v2Z, v1X, v1Y, v1Z);
+			    
+		float invDenom = 1f / (d00 * d11 - d01 * d01);
+		barycentricOut.x = (d11 * d20 - d01 * d21) / invDenom;
+		barycentricOut.y = (d00 * d21 - d01 * d20) / invDenom;
+		barycentricOut.z = 1.0f - barycentricOut.x - barycentricOut.y;
+		return barycentricOut;
+	}
+	
+	static public boolean barycoordInsideTriangle(BaryCache cache, float x, float y, float z){
+		Vector3 vec = toBarycoord(cache, x, y, z, GeometryUtils.vec);
+		return vec.x >= 0 && vec.y >= 0 && vec.z >= 0;
+	}
+	
+	static public boolean barycoordInsideTriangle(BaryCache cache, Vector3 p){
+		return barycoordInsideTriangle(cache, p.x, p.y, p.z);
+	}
+	
+	/**
+	 * Use a {@link BaryCache} for calculations with increased speed.
+	 * @param cache 
+	 * @param x coordinate to be checked
+	 * @param y coordinate to be checked
+	 * @param z coordinate to be checked
+	 * @return barycentricOut
+	 */
+	static public Vector3 toBarycoord(BaryCache cache, float x, float y, float z, Vector3 barycentricOut){
+		float v2X = x-cache.x1;
+		float v2Y = y-cache.y1;
+		float v2Z = z-cache.z1;
+		
+		float d20 = Vector3.dot(v2X, v2Y, v2Z, cache.v0X, cache.v0Y, cache.v0Z);
+		float d21 = Vector3.dot(v2X, v2Y, v2Z, cache.v1X, cache.v1Y, cache.v1Z);
+		
+		barycentricOut.x = (cache.d11 * d20 - cache.d01 * d21) / cache.invDenom;
+		barycentricOut.y = (cache.d00 * d21 - cache.d01 * d20) / cache.invDenom;
+		barycentricOut.z = 1.0f - barycentricOut.x - barycentricOut.y;
+		return barycentricOut;
+	}
+
+	/** Computes the barycentric coordinates v,w for the specified point in the 2d triangle.
 	 * <p>
 	 * If barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1 then the point is inside the triangle.
 	 * <p>
@@ -35,21 +155,16 @@ public final class GeometryUtils {
 	 * 
 	 * @return barycentricOut */
 	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
-		Vector2 v0 = tmp1.set(b).sub(a);
-		Vector2 v1 = tmp2.set(c).sub(a);
-		Vector2 v2 = tmp3.set(p).sub(a);
-		float d00 = v0.dot(v0);
-		float d01 = v0.dot(v1);
-		float d11 = v1.dot(v1);
-		float d20 = v2.dot(v0);
-		float d21 = v2.dot(v1);
-		float denom = d00 * d11 - d01 * d01;
-		barycentricOut.x = (d11 * d20 - d01 * d21) / denom;
-		barycentricOut.y = (d00 * d21 - d01 * d20) / denom;
+		tmp1.set(b).sub(a);
+		tmp2.set(c).sub(a);
+		tmp3.set(p).sub(a);
+		float denom = 1f / (tmp1.x * tmp2.y - tmp2.x * tmp1.y);	
+		barycentricOut.x = (tmp3.x * tmp2.y - tmp2.x * tmp3.y) * denom;
+		barycentricOut.y = (tmp1.x * tmp3.y - tmp3.x * tmp1.y) * denom;
 		return barycentricOut;
 	}
 
-	/** Returns true if the barycentric coordinates are inside the triangle. */
+	/** Returns true if the barycentric coordinates are inside the 2d triangle. */
 	static public boolean barycoordInsideTriangle (Vector2 barycentric) {
 		return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
 	}
