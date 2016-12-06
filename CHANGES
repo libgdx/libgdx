@@ -18,7 +18,11 @@
 - Lwjgl3Window now has a maximize() method, and windows can be started maximized using the window or app configuration's setMaximized() method.
 - NinePatch can now be drawn rotated or scaled.
 - NinepatchDrawable is now a TransformDrawable.
+- API Change: Group add* methods no longer remove and re-add the actor if it is already in the group, instead they do nothing.
 - API Change: g2d.Animation is now generic so it can support Drawables, PolygonRegions, NinePatches, etc. To fix existing code, specify the TextureRegion type in animation declarations (and instantiations in Java 6), i.e. Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(...);
+- TiledDrawable throws unsupported operation if trying to draw rotated/scaled. #4005
+- API Change: DragAndDrop now puts default position of drag actor at pointer location. The original default offset from the pointer was (14, -20).
+- Added ShaderProgramLoader for AssetManager.
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
