@@ -39,15 +39,7 @@ public class RenderContext {
 		this.textureBinder = textures;
 	}
 
-	/** Sets up the render context, must be matched with a call to {@link #end()}. Resets the following OpenGL states to their
-	 * defaults:
-	 * <ul>
-	 * <li>Depth buffer writing (depth mask) is enabled.
-	 * <li>Depth testing is disabled.
-	 * <li>Face culling is disabled.
-	 * <li>Blending is disabled.
-	 * </ul>
-	 */
+	/** Sets up the render context, must be matched with a call to {@link #end()}. */
 	public void begin () {
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		depthFunc = 0;
