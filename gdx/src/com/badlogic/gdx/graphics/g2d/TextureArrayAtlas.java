@@ -26,7 +26,7 @@ public class TextureArrayAtlas implements Disposable {
     static final String[] tuple = new String[4];
 
     private TextureArray textureArray;
-    private final Array<ArrayAtlasRegion> regions = new Array<>();
+    private final Array<ArrayAtlasRegion> regions = new Array<ArrayAtlasRegion>();
 
     public static class TextureArrayAtlasData {
         public static class Page {
@@ -73,8 +73,8 @@ public class TextureArrayAtlas implements Disposable {
             public int[] pads;
         }
 
-        final Array<TextureArrayAtlas.TextureArrayAtlasData.Page> pages = new Array<>();
-        final Array<TextureArrayAtlas.TextureArrayAtlasData.Region> regions = new Array<>();
+        final Array<TextureArrayAtlas.TextureArrayAtlasData.Page> pages = new Array<TextureArrayAtlas.TextureArrayAtlasData.Page>();
+        final Array<TextureArrayAtlas.TextureArrayAtlasData.Region> regions = new Array<TextureArrayAtlas.TextureArrayAtlasData.Region>();
 
         public TextureArrayAtlasData(final FileHandle packFile, final FileHandle imagesDir, final boolean flip) {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read(), StandardCharsets.UTF_8), 64);
@@ -303,7 +303,7 @@ public class TextureArrayAtlas implements Disposable {
      * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times.
      */
     public Array<TextureArrayAtlas.ArrayAtlasRegion> findRegions(final String name) {
-        final Array<TextureArrayAtlas.ArrayAtlasRegion> matched = new Array<>();
+        final Array<TextureArrayAtlas.ArrayAtlasRegion> matched = new Array<TextureArrayAtlas.ArrayAtlasRegion>();
         for (int i = 0, n = regions.size; i < n; i++) {
             final TextureArrayAtlas.ArrayAtlasRegion region = regions.get(i);
             if (region.name.equals(name)) matched.add(new TextureArrayAtlas.ArrayAtlasRegion(region));
