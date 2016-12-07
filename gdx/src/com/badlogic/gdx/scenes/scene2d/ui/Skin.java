@@ -435,7 +435,9 @@ public class Skin implements Disposable {
 			public Skin read (Json json, JsonValue typeToValueMap, Class ignored) {
 				for (JsonValue valueMap = typeToValueMap.child; valueMap != null; valueMap = valueMap.next) {
 					try {
-						readNamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap);
+						Class type = json.getClass(valueMap.name());
+						if (type == null) type = ClassReflection.forName(valueMap.name());
+						readNamedObjects(json, type, valueMap);
 					} catch (ReflectionException ex) {
 						throw new SerializationException(ex);
 					}
@@ -525,9 +527,24 @@ public class Skin implements Disposable {
 				return drawable;
 			}
 		});
+		
+		for (Class cls : AUTO_TAGGED_STYLES){
+			json.addClassTag(cls.getSimpleName(), cls);
+		}
 
 		return json;
 	}
+	
+	private static final Class[] AUTO_TAGGED_STYLES = {
+		BitmapFont.class, Color.class, TintedDrawable.class,
+		NinePatchDrawable.class, SpriteDrawable.class, TextureRegionDrawable.class, TiledDrawable.class,
+		Button.ButtonStyle.class, CheckBox.CheckBoxStyle.class, ImageButton.ImageButtonStyle.class, 
+		ImageTextButton.ImageTextButtonStyle.class, Label.LabelStyle.class, List.ListStyle.class, 
+		ProgressBar.ProgressBarStyle.class, ScrollPane.ScrollPaneStyle.class, SelectBox.SelectBoxStyle.class,
+		Slider.SliderStyle.class, SplitPane.SplitPaneStyle.class, TextButton.TextButtonStyle.class, 
+		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class,
+		Tree.TreeStyle.class, Window.WindowStyle.class
+	};
 
 	static private Method findMethod (Class type, String name) {
 		Method[] methods = ClassReflection.getMethods(type);
