@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -75,6 +76,10 @@ public class Json {
 	 * false. */
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
+	}
+
+	public boolean isIgnoreUnknownFields () {
+		return ignoreUnknownFields;
 	}
 
 	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
@@ -126,6 +131,10 @@ public class Json {
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
 	}
+	
+	public String getTypeName () {
+		return typeName;
+	}
 
 	/** Sets the serializer to use when the type being deserialized is not known (null).
 	 * @param defaultSerializer May be null. */
@@ -157,7 +166,7 @@ public class Json {
 		metadata.elementType = elementType;
 	}
 
-	private OrderedMap<String, FieldMetadata> getFields (Class type) {
+	protected final OrderedMap<String, FieldMetadata> getFields (Class type) {
 		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields != null) return fields;
 
@@ -799,7 +808,7 @@ public class Json {
 			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
 				if (child.name.equals(typeName)) continue;
-				if (ignoreUnknownFields) {
+				if (ignoreUnknownFields || isNonexistantFieldKnown(type, child.name)) {
 					if (debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
 					continue;
 				} else {
@@ -824,6 +833,16 @@ public class Json {
 				throw ex;
 			}
 		}
+	}
+
+	/** Override to allow subclasses to use fake field names for other purposes in {@link #readFields(Object, JsonValue)} without
+	 * triggering an exception for unknown fields.
+	 * @param type The object type being read.
+	 * @param fieldName A field name encountered in the Json map for which there is no actual field.
+	 * @return Whether the field name should be treated as known, i.e., not throw an exception when encountered in
+	 *         {@code readFields()}. */
+	protected boolean isNonexistantFieldKnown (Class type, String fieldName) {
+		return false;
 	}
 
 	/** @param type May be null if the type is unknown.
@@ -1103,8 +1122,8 @@ public class Json {
 		return new JsonReader().parse(json).prettyPrint(settings);
 	}
 
-	static private class FieldMetadata {
-		Field field;
+	static protected class FieldMetadata {
+		public final Field field;
 		Class elementType;
 
 		public FieldMetadata (Field field) {
