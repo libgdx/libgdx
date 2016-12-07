@@ -65,7 +65,7 @@ public interface JavaMethodParser {
 			"jdouble"), Buffer("jobject"), ByteBuffer("jobject"), CharBuffer("jobject"), ShortBuffer("jobject"), IntBuffer("jobject"), LongBuffer(
 			"jobject"), FloatBuffer("jobject"), DoubleBuffer("jobject"), BooleanArray("jbooleanArray"), ByteArray("jbyteArray"), CharArray(
 			"jcharArray"), ShortArray("jshortArray"), IntegerArray("jintArray"), LongArray("jlongArray"), FloatArray("jfloatArray"), DoubleArray(
-			"jdoubleArray"), String("jstring"), Object("jobject"), ObjectArray("jobjectArray");
+			"jdoubleArray"), String("jstring"), Class("jclass"), Throwable("jthrowable"), Object("jobject"), ObjectArray("jobjectArray");
 
 		private final String jniType;
 
