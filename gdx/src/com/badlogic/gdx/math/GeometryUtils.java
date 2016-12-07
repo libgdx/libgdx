@@ -24,12 +24,20 @@ public final class GeometryUtils {
 	static private final Vector3 vec = new Vector3();
 	
 	/** caches the values for a triangle for faster barycentric calculations  */
-	public static class BaryCache implements Poolable{		
+	public static class BaryCache{		
 		float v0X, v0Y, v0Z;
 		float v1X, v1Y, v1Z;
 		float d00, d01, d11;
 		float x1, y1,z1;
 		float invDenom;
+		public BaryCache(){		
+		}
+		public BaryCache(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3){
+			set(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+		}
+		public BaryCache(BaryCache cache){
+			set(cache);
+		}
 		public BaryCache set(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3){
 			v0X = x2-x1;
 			v0Y = y2-y1;
@@ -40,24 +48,21 @@ public final class GeometryUtils {
 			d00 = Vector3.dot(v0X, v0Y, v0Z, v0X, v0Y, v0Z);
 			d01 = Vector3.dot(v0X, v0Y, v0Z, v1X, v1Y, v1Z);
 			d11 = Vector3.dot(v1X, v1Y, v1Z, v1X, v1Y, v1Z);			
-			invDenom = 1f / (d00 * d11 - d01 * d01);			
+			invDenom = 1f / (d00 * d11 - d01 * d01);	
 			return this;
 		}
-		@Override
-		public void reset () {
-			v0X = 0;
-			v0Y = 0;
-			v0Z = 0;			
-			v1X = 0;
-			v1Y = 0;
-			v1Z = 0;			
-			d00 = 0;
-			d01 = 0;
-			d11 = 0;			
-			x1 = 0;		
-			y1 = 0;
-			z1 = 0;			
-			invDenom = 0;
+		public BaryCache set(BaryCache cache){
+			v0X = cache.v0X;
+			v0Y = cache.v0Y;
+			v0Z = cache.v0Z;				
+			v1X = cache.v1X;
+			v1Y = cache.v1Y;
+			v1Z = cache.v1Z;
+			d00 = cache.d00;
+			d01 = cache.d01;
+			d11 = cache.d11;			
+			invDenom = cache.invDenom;
+			return this;
 		}
 	}
 	
