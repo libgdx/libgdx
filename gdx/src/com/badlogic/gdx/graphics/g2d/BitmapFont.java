@@ -526,7 +526,7 @@ public class BitmapFont implements Disposable {
 					if (line == null) throw new GdxRuntimeException("Missing additional page definitions.");
 
 					// Expect ID to mean "index".
-					String id = line.substring(line.indexOf("id="), line.indexOf("id=")+4);
+					String id = line.substring(line.indexOf("id="), line.indexOf(" ", line.indexOf("id=")));
 					try {
 						int pageID = Integer.parseInt(id.substring(3));
 						if (pageID != p)
