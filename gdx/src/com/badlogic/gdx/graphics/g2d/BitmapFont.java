@@ -25,8 +25,6 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -526,27 +524,22 @@ public class BitmapFont implements Disposable {
 					// Read each "page" info line.
 					line = reader.readLine();
 					if (line == null) throw new GdxRuntimeException("Missing additional page definitions.");
-
 					// Expect ID to mean "index".
-					Matcher matcher = Pattern.compile(".*id=(\\d+)").matcher(line);
-					if (matcher.matches()) {
-						String id = matcher.group(1);
+					if(line.contains("id=")){
+						String id = line.substring(line.indexOf("id="), line.indexOf(" ", line.indexOf("id=")));
 						try {
 							int pageID = Integer.parseInt(id.substring(3));
-							if (pageID != p) throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + id.substring(3));
+							if (pageID != p)
+                        					throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + id.substring(3));
 						} catch (NumberFormatException ex) {
 							throw new GdxRuntimeException("Invalid page id: " + id.substring(3), ex);
 						}
 					}
-
-					matcher = Pattern.compile(".*file=\"?([^\"]*+)\"?").matcher(line);
-					if (!matcher.matches()) throw new GdxRuntimeException("Missing: file");
-					String fileName = matcher.group(1);
-
+					if(!line.contains("file=")) throw new GdxRuntimeException("Missing: file");
+					String fileName = line.substring(line.indexOf("file=")+5);
 					imagePaths[p] = fontFile.parent().child(fileName).path().replaceAll("\\\\", "/");
 				}
 				descent = 0;
-
 				while (true) {
 					line = reader.readLine();
 					if (line == null) break; // EOF
