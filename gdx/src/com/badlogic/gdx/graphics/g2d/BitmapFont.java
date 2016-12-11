@@ -528,18 +528,18 @@ public class BitmapFont implements Disposable {
 					if (line == null) throw new GdxRuntimeException("Missing additional page definitions.");
 
 					// Expect ID to mean "index".
-					Matcher matcher = Pattern.compile(".*id=(\\d+)").matcher(line);
+					Matcher matcher = Pattern.compile(".*id=(\\d+).*").matcher(line);
 					if (matcher.matches()) {
 						String id = matcher.group(1);
 						try {
-							int pageID = Integer.parseInt(id.substring(3));
-							if (pageID != p) throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + id.substring(3));
+							int pageID = Integer.parseInt(id);
+							if (pageID != p) throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + id);
 						} catch (NumberFormatException ex) {
-							throw new GdxRuntimeException("Invalid page id: " + id.substring(3), ex);
+							throw new GdxRuntimeException("Invalid page id: " + id, ex);
 						}
 					}
 
-					matcher = Pattern.compile(".*file=\"?([^\"]*+)\"?").matcher(line);
+					matcher = Pattern.compile(".*file=\"?([^\"]+)\"?.*").matcher(line);
 					if (!matcher.matches()) throw new GdxRuntimeException("Missing: file");
 					String fileName = matcher.group(1);
 
