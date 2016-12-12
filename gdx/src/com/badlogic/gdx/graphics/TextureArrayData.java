@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.FileTextureArrayData;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Used by a {@link TextureArray} to load the pixel data. The TextureArray will request the TextureArrayData to prepare itself through
  * {@link #prepare()} and upload its data using {@link #consumeTextureArrayData()}. These are the first methods to be called by TextureArray.
@@ -28,43 +30,27 @@ import com.badlogic.gdx.graphics.glutils.FileTextureArrayData;
  *
  * Look at {@link FileTextureArrayData} for example implementation of this interface.
  * @author Tomski */
-public interface TextureArrayData {
-
-	/** @return whether the TextureArrayData is prepared or not. */
-	public boolean isPrepared ();
-
-	/** Prepares the TextureArrayData for a call to {@link #consumeTextureArrayData()}. This method can be called from a non OpenGL thread and
-	 * should thus not interact with OpenGL. */
-	public void prepare ();
+public interface TextureArrayData extends TextureData {
 
 	/** Uploads the pixel data of the TextureArray layers of the TextureArray to the OpenGL ES texture. The caller must bind an OpenGL ES texture. A
-	 * call to {@link #prepare()} must preceed a call to this method. Any internal data structures created in {@link #prepare()}
+	 * call to {@link #prepare()} must precede a call to this method. Any internal data structures created in {@link #prepare()}
 	 * should be disposed of here. */
 	public void consumeTextureArrayData ();
 
-	/** @return the width of this TextureArray */
-	public int getWidth ();
-
-	/** @return the height of this TextureArray */
-	public int getHeight ();
-
 	/** @return the layer count of this TextureArray */
 	public int getDepth ();
-
-	/** @return whether this implementation can cope with a EGL context loss. */
-	public boolean isManaged ();
-
-	/** @return the internal format of this TextureArray */
-	public int getInternalFormat ();
-
-	/** @return the GL type of this TextureArray*/
-	public int getGLType ();
+	
+	/** @return The files used to load the TextureArray, or null if this TextureArray is not managed. */
+	public String[] getFiles ();
 
 	/** Provides static method to instantiate the right implementation.
 	 * @author Tomski */
 	public static class Factory {
 
 		public static TextureArrayData loadFromFiles (Pixmap.Format format, boolean useMipMaps, FileHandle... files) {
+			if (Gdx.gl30 == null) {
+				throw new GdxRuntimeException("TextureArray requires a device running with GLES 3.0 compatibilty");
+			}
 			return new FileTextureArrayData(format, useMipMaps, files);
 		}
 

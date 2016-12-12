@@ -49,7 +49,7 @@ import java.util.Set;
 public class TextureAtlas implements Disposable {
 	static final String[] tuple = new String[4];
 
-	private final ObjectSet<Texture> textures = new ObjectSet(4);
+	protected final ObjectSet<Texture> textures = new ObjectSet(4);
 	private final Array<AtlasRegion> regions = new Array();
 
 	public static class TextureAtlasData {
@@ -200,7 +200,7 @@ public class TextureAtlas implements Disposable {
 			return regions;
 		}
 	}
-
+	
 	/** Creates an empty atlas to which regions can be added. */
 	public TextureAtlas () {
 	}
@@ -235,8 +235,20 @@ public class TextureAtlas implements Disposable {
 	public TextureAtlas (TextureAtlasData data) {
 		if (data != null) load(data);
 	}
+	
+	protected void load (TextureAtlasData data) {
+		ObjectMap<Page, Texture> pageToTexture = readPageTextures(data);
 
-	private void load (TextureAtlasData data) {
+		for (Region region : data.regions) {
+			AtlasRegion atlasRegion = generateAtlasRegionFromData(region, pageToTexture.get(region.page));
+			regions.add(atlasRegion);
+		}
+	}
+
+	/** Loads textures from the pages of the TextureAtlasData if they haven't been loaded yet, and adds all page textures to the
+	 * {@link #textures} set.
+	 * @return A mapping of the pages to their corresponding textures. */
+	protected ObjectMap<Page, Texture> readPageTextures (TextureAtlasData data) {
 		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
 		for (Page page : data.pages) {
 			Texture texture = null;
@@ -252,26 +264,27 @@ public class TextureAtlas implements Disposable {
 			textures.add(texture);
 			pageToTexture.put(page, texture);
 		}
-
-		for (Region region : data.regions) {
-			int width = region.width;
-			int height = region.height;
-			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top,
-				region.rotate ? height : width, region.rotate ? width : height);
-			atlasRegion.index = region.index;
-			atlasRegion.name = region.name;
-			atlasRegion.offsetX = region.offsetX;
-			atlasRegion.offsetY = region.offsetY;
-			atlasRegion.originalHeight = region.originalHeight;
-			atlasRegion.originalWidth = region.originalWidth;
-			atlasRegion.rotate = region.rotate;
-			atlasRegion.splits = region.splits;
-			atlasRegion.pads = region.pads;
-			if (region.flip) atlasRegion.flip(false, true);
-			regions.add(atlasRegion);
-		}
+		return pageToTexture;
 	}
-
+	
+	protected AtlasRegion generateAtlasRegionFromData (Region region, Texture texture){
+		int width = region.width;
+		int height = region.height;
+		AtlasRegion atlasRegion = new AtlasRegion(texture, region.left, region.top,
+			region.rotate ? height : width, region.rotate ? width : height);
+		atlasRegion.index = region.index;
+		atlasRegion.name = region.name;
+		atlasRegion.offsetX = region.offsetX;
+		atlasRegion.offsetY = region.offsetY;
+		atlasRegion.originalHeight = region.originalHeight;
+		atlasRegion.originalWidth = region.originalWidth;
+		atlasRegion.rotate = region.rotate;
+		atlasRegion.splits = region.splits;
+		atlasRegion.pads = region.pads;
+		if (region.flip) atlasRegion.flip(false, true);
+		return atlasRegion;
+	}
+	
 	/** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
 	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
 		textures.add(texture);
@@ -283,7 +296,7 @@ public class TextureAtlas implements Disposable {
 		regions.add(region);
 		return region;
 	}
-
+	
 	/** Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed. */
 	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
 		return addRegion(name, textureRegion.texture, textureRegion.getRegionX(), textureRegion.getRegionY(),
@@ -405,7 +418,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/** @return the textures of the pages, unordered */
 	public ObjectSet<Texture> getTextures () {
 		return textures;
@@ -516,7 +529,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		@Override
-		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
+		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
 			if (x) offsetX = originalWidth - offsetX - getRotatedPackedWidth();
@@ -538,6 +551,7 @@ public class TextureAtlas implements Disposable {
 		public String toString () {
 			return name;
 		}
+
 	}
 
 	/** A sprite that, if whitespace was stripped from the region when it was packed, is automatically positioned as if whitespace

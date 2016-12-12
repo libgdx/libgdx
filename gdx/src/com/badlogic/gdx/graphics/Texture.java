@@ -237,7 +237,7 @@ public class Texture extends GLTexture {
 				} else {
 					// get the ref count of the texture, then set it to 0 so we
 					// can actually remove it from the assetmanager. Also set the
-					// handle to zero, otherwise we might accidentially dispose
+					// handle to zero, otherwise we might accidentally dispose
 					// already reloaded textures.
 					final int refCount = assetManager.getReferenceCount(fileName);
 					assetManager.setReferenceCount(fileName, 0);
@@ -245,7 +245,7 @@ public class Texture extends GLTexture {
 
 					// create the parameters, passing the reference to the texture as
 					// well as a callback that sets the ref count.
-					TextureParameter params = new TextureParameter();
+					TextureParameter params = texture.getParametersForAssetManagerReload();
 					params.textureData = texture.getTextureData();
 					params.minFilter = texture.getMinFilter();
 					params.magFilter = texture.getMagFilter();
@@ -263,12 +263,19 @@ public class Texture extends GLTexture {
 					// unload the texture, create a new gl handle then reload it.
 					assetManager.unload(fileName);
 					texture.glHandle = Gdx.gl.glGenTexture();
-					assetManager.load(fileName, Texture.class, params);
+					assetManager.load(fileName, texture.getClass(), params);
 				}
 			}
 			managedTextureArray.clear();
 			managedTextureArray.addAll(textures);
 		}
+	}
+	
+	/** Instantiates parameters for reloading this texture via an AssetManager that originally loaded it. Used for managed textures. 
+	 * Texture subclass loaders must utilize a TextureParameter subclass and prepare any custom data beyond what TextureParameter already
+	 * handles. */
+	protected TextureParameter getParametersForAssetManagerReload(){
+		return new TextureParameter();
 	}
 
 	/** Sets the {@link AssetManager}. When the context is lost, textures managed by the asset manager are reloaded by the manager

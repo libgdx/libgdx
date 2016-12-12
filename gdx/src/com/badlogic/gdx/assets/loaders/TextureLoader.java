@@ -38,7 +38,7 @@ import com.badlogic.gdx.utils.Array;
  * {@link AssetManager#load(String, Class, AssetLoaderParameters)} allows one to specify parameters as can be passed to the
  * various Texture constructors, e.g. filtering, whether to generate mipmaps and so on.
  * @author mzechner */
-public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter> {
+public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter<Texture>> {
 	static public class TextureLoaderInfo {
 		String filename;
 		TextureData data;
@@ -95,7 +95,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		return null;
 	}
 
-	static public class TextureParameter extends AssetLoaderParameters<Texture> {
+	static public class TextureParameter<T extends Texture> extends AssetLoaderParameters<T> {
 		/** the format of the final Texture. Uses the source images format if null **/
 		public Format format = null;
 		/** whether to generate mipmaps **/

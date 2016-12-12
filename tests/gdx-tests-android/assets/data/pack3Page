@@ -1,0 +1,102 @@
+
+pack1.png
+size: 512, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+particle-star
+  rotate: false
+  xy: 42, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+badlogicsmall
+  rotate: false
+  xy: 42, 65
+  size: 32, 32
+  orig: 256, 256
+  offset: 32, 32
+  index: 0
+badlogicsmall-rotated
+  rotate: true
+  xy: 42, 98
+  size: 32, 32
+  orig: 256, 256
+  offset: 32, 32
+  index: 0
+
+planet_earth.png
+size: 512, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+north-america
+  rotate: false
+  xy: 14, 21
+  size: 160, 96
+  orig: 160, 96
+  offset: 0, 0
+  index: 0
+south-america
+  rotate: false
+  xy: 136, 106
+  size: 76, 104
+  orig: 76, 104
+  offset: 0, 0
+  index: 0
+europe
+  rotate: false
+  xy: 237, 27
+  size: 94, 49
+  orig: 94, 49
+  offset: 0, 0
+  index: 0
+oceania
+  rotate: false
+  xy: 415, 141
+  size: 91, 56
+  orig: 91, 56
+  offset: 0, 0
+  index: 0
+asia
+  rotate: false
+  xy: 307, 28
+  size: 163, 85
+  orig: 163, 85
+  offset: 0, 0
+  index: 0
+africa
+  rotate: false
+  xy: 230, 75
+  size: 101, 109
+  orig: 101, 109
+  offset: 0, 0
+  index: 0
+  
+tiles.png
+size: 512, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+cactus
+  rotate: false
+  xy: 199, 100
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+rock
+  rotate: false
+  xy: 232, 100
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+sign
+  rotate: false
+  xy: 166, 166
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
