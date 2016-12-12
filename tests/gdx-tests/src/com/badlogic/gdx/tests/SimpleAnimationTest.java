@@ -26,16 +26,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SimpleAnimationTest extends GdxTest {
-	private Animation currentWalk;
+	private Animation<TextureRegion> currentWalk;
 	private float currentFrameTime;
 	private Vector2 position;
 
 	private Texture texture;
 
-	private Animation downWalk;
-	private Animation leftWalk;
-	private Animation rightWalk;
-	private Animation upWalk;
+	private Animation<TextureRegion> downWalk;
+	private Animation<TextureRegion> leftWalk;
+	private Animation<TextureRegion> rightWalk;
+	private Animation<TextureRegion> upWalk;
 
 	private SpriteBatch spriteBatch;
 
@@ -50,10 +50,10 @@ public class SimpleAnimationTest extends GdxTest {
 		TextureRegion[] leftWalkReg = regions[1];
 		TextureRegion[] rightWalkReg = regions[2];
 		TextureRegion[] upWalkReg = regions[3];
-		downWalk = new Animation(ANIMATION_SPEED, downWalkReg);
-		leftWalk = new Animation(ANIMATION_SPEED, leftWalkReg);
-		rightWalk = new Animation(ANIMATION_SPEED, rightWalkReg);
-		upWalk = new Animation(ANIMATION_SPEED, upWalkReg);
+		downWalk = new Animation<TextureRegion>(ANIMATION_SPEED, downWalkReg);
+		leftWalk = new Animation<TextureRegion>(ANIMATION_SPEED, leftWalkReg);
+		rightWalk = new Animation<TextureRegion>(ANIMATION_SPEED, rightWalkReg);
+		upWalk = new Animation<TextureRegion>(ANIMATION_SPEED, upWalkReg);
 
 		currentWalk = leftWalk;
 		currentFrameTime = 0.0f;

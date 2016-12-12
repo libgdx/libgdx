@@ -890,7 +890,13 @@ public class GwtGL20 implements GL20 {
 				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
 			} else {
 				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-				gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+				// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+				if (pixmap.canUseImageElement()) {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement());
+				}
+				else {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+				}
 			}
 		}
 	}

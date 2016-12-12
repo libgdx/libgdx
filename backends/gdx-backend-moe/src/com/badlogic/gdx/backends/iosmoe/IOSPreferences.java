@@ -18,11 +18,11 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import ios.NSObject;
-import ios.foundation.NSAutoreleasePool;
-import ios.foundation.NSMutableDictionary;
-import ios.foundation.NSNumber;
-import ios.foundation.NSString;
+import apple.NSObject;
+import apple.foundation.NSMutableDictionary;
+import apple.foundation.NSNumber;
+import apple.foundation.NSString;
+import org.moe.natj.objc.ObjCRuntime;
 
 import java.io.File;
 import java.util.HashMap;
@@ -185,10 +185,13 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		NSAutoreleasePool pool = NSAutoreleasePool.alloc().init();
-		if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
-			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
-		}
-		pool.drain();
+		ObjCRuntime.autoreleasepool(new Runnable() {
+			@Override
+			public void run() {
+				if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
+					Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
+				}
+			}
+		});
 	}
 }

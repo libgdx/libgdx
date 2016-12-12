@@ -129,9 +129,11 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyFixedConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointLimitConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointMotor.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyPoint2Point.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodySliderConstraint.cpp\
 	src/bullet/BulletDynamics/MLCPSolvers/btDantzigLCP.cpp\
 	src/bullet/BulletDynamics/MLCPSolvers/btLemkeAlgorithm.cpp\
 	src/bullet/BulletDynamics/MLCPSolvers/btMLCPSolver.cpp\
@@ -159,6 +161,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/custom/gdx/collision/ContactListener.cpp\
 	src/custom/gdx/collision/GdxCollisionObjectBridge.cpp\
 	src/custom/gdx/common/jniHelpers.cpp\
+	src/custom/gdx/dynamics/FilterableVehicleRaycaster.cpp\
 	src/custom/gdx/dynamics/InternalTickCallback.cpp\
 	src/custom/gdx/linearmath/mathtypes.cpp\
 	src/extras/Serialize/BulletFileLoader/bChunk.cpp\

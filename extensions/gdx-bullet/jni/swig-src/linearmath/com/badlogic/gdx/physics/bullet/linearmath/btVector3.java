@@ -89,6 +89,10 @@ public class btVector3 extends BulletBase {
     return LinearMathJNI.btVector3_norm(swigCPtr, this);
   }
 
+  public float safeNorm() {
+    return LinearMathJNI.btVector3_safeNorm(swigCPtr, this);
+  }
+
   public float distance2(Vector3 v) {
     return LinearMathJNI.btVector3_distance2(swigCPtr, this, v);
   }

@@ -4,13 +4,21 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.5-SNAPSHOT</version>
+    <version>1.9.6-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>gdx-backend-moe</artifactId>
   <packaging>jar</packaging>
   <name>libGDX iOS Multi-OS Engine Backend</name>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter</name>
+            <url>https://dl.bintray.com/multi-os-engine/maven</url>
+        </repository>
+    </repositories>
 
   <dependencies>
     <dependency>
@@ -24,7 +32,7 @@
       <artifactId>moe-core</artifactId>
       <version>${moe.version}</version>
       <scope>system</scope>
-      <systemPath>${basedir}/libs/intel-moe-core.jar</systemPath>
+      <systemPath>${basedir}/libs/moe-core.jar</systemPath>
       <optional>true</optional>
     </dependency>
 
@@ -33,7 +41,7 @@
       <artifactId>moe-ios</artifactId>
       <version>${moe.version}</version>
       <scope>system</scope>
-      <systemPath>${basedir}/libs/intel-moe-ios.jar</systemPath>
+      <systemPath>${basedir}/libs/moe-ios.jar</systemPath>
       <optional>true</optional>
     </dependency>
   </dependencies>

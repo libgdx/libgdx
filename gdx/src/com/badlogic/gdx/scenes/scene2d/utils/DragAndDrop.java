@@ -40,7 +40,7 @@ public class DragAndDrop {
 	ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
 	private float tapSquareSize = 8;
 	private int button;
-	float dragActorX = 14, dragActorY = -20;
+	float dragActorX = 0, dragActorY = 0;
 	float touchOffsetX, touchOffsetY;
 	long dragStartTime;
 	int dragTime = 250;
@@ -112,8 +112,8 @@ public class DragAndDrop {
 					dragActor = actor;
 					stage.addActor(actor);
 				}
-				float actorX = event.getStageX() + dragActorX;
-				float actorY = event.getStageY() + dragActorY - actor.getHeight();
+				float actorX = event.getStageX() - actor.getWidth() + dragActorX;
+				float actorY = event.getStageY() + dragActorY;
 				if (keepWithinStage) {
 					if (actorX < 0) actorX = 0;
 					if (actorY < 0) actorY = 0;

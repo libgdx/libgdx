@@ -4428,6 +4428,21 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
 }
 
 
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3_1safeNorm(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVector3 *arg1 = (btVector3 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVector3 **)&jarg1; 
+  result = (btScalar)((btVector3 const *)arg1)->safeNorm();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3_1distance2(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jfloat jresult = 0 ;
   btVector3 *arg1 = (btVector3 *) 0 ;
@@ -10536,6 +10551,103 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linea
   arg1 = *(btPoolAllocator **)&jarg1; 
   result = (unsigned char *)(arg1)->getPoolAddress();
   *(unsigned char **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btClock_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btClock *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btClock *)new btClock();
+  *(btClock **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btClock_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btClock *arg1 = 0 ;
+  btClock *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btClock **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btClock const & reference is null");
+    return 0;
+  } 
+  result = (btClock *)new btClock((btClock const &)*arg1);
+  *(btClock **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_delete_1btClock(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btClock *arg1 = (btClock *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btClock **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btClock_1reset(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btClock *arg1 = (btClock *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btClock **)&jarg1; 
+  (arg1)->reset();
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btClock_1getTimeMilliseconds(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btClock *arg1 = (btClock *) 0 ;
+  unsigned long result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btClock **)&jarg1; 
+  result = (unsigned long)(arg1)->getTimeMilliseconds();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btClock_1getTimeMicroseconds(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btClock *arg1 = (btClock *) 0 ;
+  unsigned long result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btClock **)&jarg1; 
+  result = (unsigned long)(arg1)->getTimeMicroseconds();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btClock_1getTimeSeconds(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btClock *arg1 = (btClock *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btClock **)&jarg1; 
+  result = (btScalar)(arg1)->getTimeSeconds();
+  jresult = (jfloat)result; 
   return jresult;
 }
 

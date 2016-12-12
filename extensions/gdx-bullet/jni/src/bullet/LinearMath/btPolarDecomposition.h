@@ -14,8 +14,7 @@
 class btPolarDecomposition
 {
   public:
-    static const btScalar DEFAULT_TOLERANCE;
-    static const unsigned int DEFAULT_MAX_ITERATIONS;
+   
 
     /**
      * Creates an instance with optional parameters.
@@ -25,8 +24,8 @@ class btPolarDecomposition
      * @param maxIterations - the maximum number of iterations used to achieve
      *                        convergence
      */
-    btPolarDecomposition(btScalar tolerance = DEFAULT_TOLERANCE, 
-      unsigned int maxIterations = DEFAULT_MAX_ITERATIONS);
+    btPolarDecomposition(btScalar tolerance = btScalar(0.0001),
+      unsigned int maxIterations = 16);
 
     /**
      * Decomposes a matrix into orthogonal and symmetric, positive-definite

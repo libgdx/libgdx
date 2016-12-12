@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
@@ -41,7 +43,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
 	private ListStyle style;
-	private final Array<T> items = new Array();
+	final Array<T> items = new Array();
 	final ArraySelection<T> selection = new ArraySelection(items);
 	private Rectangle cullingArea;
 	private float prefWidth, prefHeight;
@@ -64,9 +66,19 @@ public class List<T> extends Widget implements Cullable {
 		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
+			public boolean keyDown (InputEvent event, int keycode) {
+				if (keycode == Keys.A && UIUtils.ctrl() && selection.getMultiple()) {
+					selection.clear();
+					selection.addAll(items);
+					return true;
+				}
+				return false;
+			}
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				if (selection.isDisabled()) return false;
+				if (selection.getMultiple()) getStage().setKeyboardFocus(List.this);
 				List.this.touchDown(y);
 				return true;
 			}
@@ -184,7 +196,8 @@ public class List<T> extends Widget implements Cullable {
 		return selection.first();
 	}
 
-	/** Sets the selection to only the passed item, if it is a possible choice. */
+	/** Sets the selection to only the passed item, if it is a possible choice.
+	 * @param item May be null. */
 	public void setSelected (T item) {
 		if (items.contains(item, false))
 			selection.set(item);

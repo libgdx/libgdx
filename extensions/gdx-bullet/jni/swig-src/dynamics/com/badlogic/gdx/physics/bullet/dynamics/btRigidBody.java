@@ -305,6 +305,14 @@ public class btRigidBody extends btCollisionObject {
       return DynamicsJNI.btRigidBody_btRigidBodyConstructionInfo_rollingFriction_get(swigCPtr, this);
     }
   
+    public void setSpinningFriction(float value) {
+      DynamicsJNI.btRigidBody_btRigidBodyConstructionInfo_spinningFriction_set(swigCPtr, this, value);
+    }
+  
+    public float getSpinningFriction() {
+      return DynamicsJNI.btRigidBody_btRigidBodyConstructionInfo_spinningFriction_get(swigCPtr, this);
+    }
+  
     public void setRestitution(float value) {
       DynamicsJNI.btRigidBody_btRigidBodyConstructionInfo_restitution_set(swigCPtr, this, value);
     }

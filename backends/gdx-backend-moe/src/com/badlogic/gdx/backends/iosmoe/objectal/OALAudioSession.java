@@ -16,21 +16,21 @@
 
 package com.badlogic.gdx.backends.iosmoe.objectal;
 
-import com.intel.moe.natj.general.NatJ;
-import com.intel.moe.natj.general.Pointer;
-import com.intel.moe.natj.general.ann.Generated;
-import com.intel.moe.natj.general.ann.Mapped;
-import com.intel.moe.natj.general.ann.MappedReturn;
-import com.intel.moe.natj.general.ann.NUInt;
-import com.intel.moe.natj.general.ann.Owned;
-import com.intel.moe.natj.general.ann.Runtime;
-import com.intel.moe.natj.objc.ObjCRuntime;
-import com.intel.moe.natj.objc.ann.IsOptional;
-import com.intel.moe.natj.objc.ann.ObjCClassBinding;
-import com.intel.moe.natj.objc.ann.Selector;
-import com.intel.moe.natj.objc.map.ObjCObjectMapper;
-import ios.NSObject;
-import ios.avfoundation.protocol.AVAudioSessionDelegate;
+import org.moe.natj.general.NatJ;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.general.ann.Generated;
+import org.moe.natj.general.ann.Mapped;
+import org.moe.natj.general.ann.MappedReturn;
+import org.moe.natj.general.ann.NUInt;
+import org.moe.natj.general.ann.Owned;
+import org.moe.natj.general.ann.Runtime;
+import org.moe.natj.objc.ObjCRuntime;
+import org.moe.natj.objc.ann.IsOptional;
+import org.moe.natj.objc.ann.ObjCClassBinding;
+import org.moe.natj.objc.ann.Selector;
+import org.moe.natj.objc.map.ObjCObjectMapper;
+import apple.NSObject;
+import apple.avfoundation.protocol.AVAudioSessionDelegate;
 
 @Generated
 @Runtime(ObjCRuntime.class)

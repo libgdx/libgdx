@@ -20,7 +20,7 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string></string>
-	<key>Intel.MOE.Main.Class</key>
+	<key>MOE.Main.Class</key>
 	<string>com.badlogicgames.gdx.tests.IOSTests</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

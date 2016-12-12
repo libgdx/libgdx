@@ -102,4 +102,9 @@ public class Lwjgl3ControllerManager implements ControllerManager {
 			}
 		}
 	}
+	
+	@Override
+	public Array<ControllerListener> getListeners () {
+		return listeners;
+	}
 }

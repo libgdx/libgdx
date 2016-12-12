@@ -16,11 +16,16 @@
 
 package com.badlogic.gdx.setup;
 
-import static java.awt.GridBagConstraints.*;
-
-import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
-import com.badlogic.gdx.setup.DependencyBank.ProjectType;
-import com.badlogic.gdx.setup.Executor.CharCallback;
+import static java.awt.GridBagConstraints.BOTH;
+import static java.awt.GridBagConstraints.CENTER;
+import static java.awt.GridBagConstraints.EAST;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
+import static java.awt.GridBagConstraints.NORTH;
+import static java.awt.GridBagConstraints.NORTHEAST;
+import static java.awt.GridBagConstraints.NORTHWEST;
+import static java.awt.GridBagConstraints.VERTICAL;
+import static java.awt.GridBagConstraints.WEST;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -60,7 +65,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -72,15 +76,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.basic.BasicArrowButton;
-import javax.swing.plaf.basic.BasicComboBoxUI;
+
+import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
+import com.badlogic.gdx.setup.DependencyBank.ProjectType;
+import com.badlogic.gdx.setup.Executor.CharCallback;
 
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
@@ -92,6 +96,7 @@ public class GdxSetupUI extends JFrame {
 
 	UI ui = new UI();
 	static Point point = new Point();
+	static SetupPreferences prefs = new SetupPreferences();
 
 	public GdxSetupUI () {
 		setTitle("LibGDX Project Generator");
@@ -182,13 +187,6 @@ public class GdxSetupUI extends JFrame {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				return;
-			}
-		}
-
-		if (modules.contains(ProjectType.IOSMOE)) {
-			if (System.getenv("INTEL_MULTI_OS_ENGINE_HOME") == null) {
-				JOptionPane.showMessageDialog(this, "Please install Intel Multi OS engine to use the ios-moe backend.");
 				return;
 			}
 		}
@@ -511,6 +509,9 @@ public class GdxSetupUI extends JFrame {
 			if (System.getenv("ANDROID_HOME") != null) {
 				sdkLocationText.setText(System.getenv("ANDROID_HOME"));
 			}
+			if (prefs.getString("ANDROID_HOME", null) != null) {
+				sdkLocationText.setText(prefs.getString("ANDROID_HOME"));
+			}
 			add(sdkLocationLabel, new GridBagConstraints(0, 4, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
 			add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
@@ -641,6 +642,8 @@ public class GdxSetupUI extends JFrame {
 					File path = getDirectory();
 					if (path != null) {
 						sdkLocationText.setText(path.getAbsolutePath());
+						prefs.putString("ANDROID_HOME", path.getAbsolutePath());
+						prefs.flush();
 					}
 				}
 			});

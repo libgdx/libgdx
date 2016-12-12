@@ -107,6 +107,10 @@ public class btConvexHullShape extends btPolyhedralConvexAabbCachingShape {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
+  public void optimizeConvexHull() {
+    CollisionJNI.btConvexHullShape_optimizeConvexHull(swigCPtr, this);
+  }
+
   public Vector3 getScaledPoint(int i) {
 	return CollisionJNI.btConvexHullShape_getScaledPoint(swigCPtr, this, i);
 }

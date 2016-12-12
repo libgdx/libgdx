@@ -31,10 +31,12 @@ public class ImageButton extends Button {
 
 	public ImageButton (Skin skin) {
 		this(skin.get(ImageButtonStyle.class));
+		setSkin(skin);
 	}
 
 	public ImageButton (Skin skin, String styleName) {
 		this(skin.get(styleName, ImageButtonStyle.class));
+		setSkin(skin);
 	}
 
 	public ImageButton (ImageButtonStyle style) {

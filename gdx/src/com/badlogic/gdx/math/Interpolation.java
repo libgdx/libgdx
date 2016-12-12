@@ -35,11 +35,30 @@ public abstract class Interpolation {
 		}
 	};
 
-	static public final Interpolation fade = new Interpolation() {
+	//
+
+	/** Aka "smoothstep". */
+	static public final Interpolation smooth = new Interpolation() {
+		public float apply (float a) {
+			return a * a * (3 - 2 * a);
+		}
+	};
+	static public final Interpolation smooth2 = new Interpolation() {
+		public float apply (float a) {
+			a = a * a * (3 - 2 * a);
+			return a * a * (3 - 2 * a);
+		}
+	};
+
+	/** By Ken Perlin. */
+	static public final Interpolation smoother = new Interpolation() {
 		public float apply (float a) {
 			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
 		}
 	};
+	static public final Interpolation fade = smoother;
+
+	//
 
 	static public final Pow pow2 = new Pow(2);
 	/** Slow, then fast. */
@@ -255,6 +274,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 0) return 0;
 			a = 1 - a;
 			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * bounces) * scale);
 		}
@@ -336,6 +356,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
+			if (a == 1) return 1;
 			a += widths[0] / 2;
 			float width = 0, height = 0;
 			for (int i = 0, n = widths.length; i < n; i++) {

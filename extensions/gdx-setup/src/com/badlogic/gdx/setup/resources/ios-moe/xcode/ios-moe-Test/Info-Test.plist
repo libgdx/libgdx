@@ -24,7 +24,7 @@
 	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>Intel.MOE.Main.Class</key>
+	<key>MOE.Main.Class</key>
 	<string>com.intel.moe.mdt.junit.MoeRemoteTestRunner</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<false/>

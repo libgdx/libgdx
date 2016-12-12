@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>1.9.5-SNAPSHOT</version>
+    <version>1.9.6-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -19,7 +19,7 @@
       <version>${project.version}</version>
     </dependency>
     
-  <dependency>
+    <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl</artifactId>
       <version>${lwjgl3.version}</version>      
@@ -27,24 +27,111 @@
 
     <dependency>
       <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.platformVersion}</version>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>
       <classifier>natives-windows</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.platformVersion}</version>
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>
       <classifier>natives-linux</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl-platform</artifactId>
-      <version>${lwjgl3.platformVersion}</version>
-      <classifier>natives-osx</classifier>
-    </dependency>    
+      <artifactId>lwjgl</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-windows</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-linux</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-glfw</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-windows</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-linux</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-jemalloc</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-opengl</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-windows</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-linux</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+      <version>${lwjgl3.version}</version>
+      <classifier>natives-macos</classifier>
+    </dependency>
 
     <dependency>
       <groupId>com.badlogicgames.jlayer</groupId>

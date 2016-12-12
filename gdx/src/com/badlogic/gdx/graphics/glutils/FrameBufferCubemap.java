@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
@@ -102,6 +101,17 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	@Override
 	protected void disposeColorTexture (Cubemap colorTexture) {
 		colorTexture.dispose();
+	}
+
+	@Override
+	protected void attachFrameBufferColorTexture() {
+		GL20 gl = Gdx.gl20;
+		int glHandle = colorTexture.getTextureObjectHandle();
+		Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
+		for (Cubemap.CubemapSide side : sides) {
+			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
+					glHandle, 0);
+		}
 	}
 
 	/** Makes the frame buffer current so everything gets drawn to it, must be followed by call to either {@link #nextSide()} or

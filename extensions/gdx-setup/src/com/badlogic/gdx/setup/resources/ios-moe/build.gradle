@@ -20,12 +20,11 @@ task copyNatives << {
     def outFlags = file("xcode/ios-moe/custom.xcconfig");
     outFlags.write LD_FLAGS
 
-    def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
-    if (proguard.exists()) {
-        if (!proguard.text.contains("-keep class com.badlogic.**")) {
-            proguard << "\n-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
+    def proguard = file("proguard.append.cfg")
+    if (!proguard.exists()) {
+        proguard = new File("proguard.append.cfg")
+        proguard << "\n-keep class com.badlogic.** { *; }\n"
+        proguard << "-keep enum com.badlogic.** { *; }\n"
     }
 }
 
@@ -40,7 +39,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 
 moe {
-    mainClassName 'IOSMoeLauncher'
     xcode {
         mainTarget 'ios-moe'
         packageName '%PACKAGE%'
@@ -54,3 +52,11 @@ moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+// Setup Eclipse
+eclipse {
+    // Set MOE nature
+    project {
+        natures 'org.multi-os-engine.project'
+    }
+}

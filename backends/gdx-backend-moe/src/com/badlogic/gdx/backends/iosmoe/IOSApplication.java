@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.iosmoe;
 import android.util.Log;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -31,25 +32,25 @@ import com.badlogic.gdx.backends.iosmoe.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosmoe.objectal.OALSimpleAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import com.intel.moe.natj.general.Pointer;
-import com.intel.moe.natj.objc.ann.Selector;
-import ios.NSObject;
-import ios.coregraphics.struct.CGPoint;
-import ios.coregraphics.struct.CGRect;
-import ios.coregraphics.struct.CGSize;
-import ios.foundation.NSDictionary;
-import ios.foundation.NSMutableDictionary;
-import ios.foundation.NSString;
-import ios.foundation.NSThread;
-import ios.uikit.UIApplication;
-import ios.uikit.UIDevice;
-import ios.uikit.UIPasteboard;
-import ios.uikit.UIScreen;
-import ios.uikit.UIViewController;
-import ios.uikit.UIWindow;
-import ios.uikit.enums.UIInterfaceOrientation;
-import ios.uikit.enums.UIUserInterfaceIdiom;
-import ios.uikit.protocol.UIApplicationDelegate;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.objc.ann.Selector;
+import apple.NSObject;
+import apple.coregraphics.struct.CGPoint;
+import apple.coregraphics.struct.CGRect;
+import apple.coregraphics.struct.CGSize;
+import apple.foundation.NSDictionary;
+import apple.foundation.NSMutableDictionary;
+import apple.foundation.NSString;
+import apple.foundation.NSThread;
+import apple.uikit.UIApplication;
+import apple.uikit.UIDevice;
+import apple.uikit.UIPasteboard;
+import apple.uikit.UIScreen;
+import apple.uikit.UIViewController;
+import apple.uikit.UIWindow;
+import apple.uikit.enums.UIInterfaceOrientation;
+import apple.uikit.enums.UIUserInterfaceIdiom;
+import apple.uikit.protocol.UIApplicationDelegate;
 
 import java.io.File;
 
@@ -107,6 +108,7 @@ public class IOSApplication implements Application {
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
@@ -123,6 +125,7 @@ public class IOSApplication implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> launchOptions) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -315,36 +318,32 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -355,6 +354,16 @@ public class IOSApplication implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

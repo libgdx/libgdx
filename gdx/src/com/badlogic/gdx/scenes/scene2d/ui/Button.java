@@ -63,6 +63,7 @@ public class Button extends Table implements Disableable {
 
 	public Button (Actor child, Skin skin, String styleName) {
 		this(child, skin.get(styleName, ButtonStyle.class));
+		setSkin(skin);
 	}
 
 	public Button (Actor child, ButtonStyle style) {
@@ -292,7 +293,6 @@ public class Button extends Table implements Disableable {
 			this.unpressedOffsetY = style.unpressedOffsetY;
 			this.checkedOffsetX = style.checkedOffsetX;
 			this.checkedOffsetY = style.checkedOffsetY;
-
 		}
 	}
 }

@@ -269,4 +269,32 @@ public class btGeneric6DofSpring2Constraint extends btTypedConstraint {
     return DynamicsJNI.btGeneric6DofSpring2Constraint_getParam__SWIG_1(swigCPtr, this, num);
   }
 
+  public static float btGetMatrixElem(Matrix3 mat, int index) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_btGetMatrixElem(mat, index);
+  }
+
+  public static boolean matrixToEulerXYZ(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerXYZ(mat, xyz);
+  }
+
+  public static boolean matrixToEulerXZY(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerXZY(mat, xyz);
+  }
+
+  public static boolean matrixToEulerYXZ(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerYXZ(mat, xyz);
+  }
+
+  public static boolean matrixToEulerYZX(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerYZX(mat, xyz);
+  }
+
+  public static boolean matrixToEulerZXY(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerZXY(mat, xyz);
+  }
+
+  public static boolean matrixToEulerZYX(Matrix3 mat, Vector3 xyz) {
+    return DynamicsJNI.btGeneric6DofSpring2Constraint_matrixToEulerZYX(mat, xyz);
+  }
+
 }

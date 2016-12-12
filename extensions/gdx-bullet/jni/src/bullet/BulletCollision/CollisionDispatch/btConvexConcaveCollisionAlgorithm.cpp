@@ -15,6 +15,7 @@ subject to the following restrictions:
 
 
 #include "btConvexConcaveCollisionAlgorithm.h"
+#include "LinearMath/btQuickprof.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
@@ -79,6 +80,7 @@ void	btConvexTriangleCallback::clearCache()
 void btConvexTriangleCallback::processTriangle(btVector3* triangle,int
 partId, int triangleIndex)
 {
+	BT_PROFILE("btConvexTriangleCallback::processTriangle");
 
 	if (!TestTriangleAgainstAabb2(triangle, m_aabbMin, m_aabbMax))
 	{
@@ -184,7 +186,7 @@ void btConvexConcaveCollisionAlgorithm::clearCache()
 
 void btConvexConcaveCollisionAlgorithm::processCollision (const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut)
 {
-	
+	BT_PROFILE("btConvexConcaveCollisionAlgorithm::processCollision");
 	
 	const btCollisionObjectWrapper* convexBodyWrap = m_isSwapped ? body1Wrap : body0Wrap;
 	const btCollisionObjectWrapper* triBodyWrap = m_isSwapped ? body0Wrap : body1Wrap;
@@ -265,6 +267,7 @@ btScalar btConvexConcaveCollisionAlgorithm::calculateTimeOfImpact(btCollisionObj
 		
 		virtual void processTriangle(btVector3* triangle, int partId, int triangleIndex)
 		{
+			BT_PROFILE("processTriangle");
 			(void)partId;
 			(void)triangleIndex;
 			//do a swept sphere for now
