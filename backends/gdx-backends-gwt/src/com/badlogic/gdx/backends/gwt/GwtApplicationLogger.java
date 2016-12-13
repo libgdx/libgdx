@@ -83,21 +83,6 @@ public class GwtApplicationLogger implements ApplicationLogger {
 	}
 
 	private void checkLogLabel () {
-		if (log == null) {
-			((GwtApplication)Gdx.app).log = log = new TextArea();
-
-			// It's possible that log functions are called
-			// before the app is initialized. E.g. SoundManager can call log functions before the app is initialized.
-			// Since graphics is null, we're getting errors. The log size will be updated later, in case graphics was null
-			if (Gdx.graphics != null) {
-				log.setSize(Gdx.graphics.getWidth() + "px", "200px");
-			} else {
-				log.setSize("400px", "200px"); // Dummy value
-			}
-
-			log.setReadOnly(true);
-			((GwtApplication)Gdx.app).getRootPanel().add(log);
-		}
 	}
 
 	private String getMessages (Throwable e) {
