@@ -528,8 +528,8 @@ public class BitmapFont implements Disposable {
 					if (line == null) throw new GdxRuntimeException("Missing additional page definitions.");
 
 					// Expect ID to mean "index".
-					Matcher matcher = Pattern.compile(".*id=(\\d+).*").matcher(line);
-					if (matcher.matches()) {
+					Matcher matcher = Pattern.compile(".*id=(\\d+)").matcher(line);
+					if (matcher.find()) {
 						String id = matcher.group(1);
 						try {
 							int pageID = Integer.parseInt(id);
@@ -539,8 +539,8 @@ public class BitmapFont implements Disposable {
 						}
 					}
 
-					matcher = Pattern.compile(".*file=\"?([^\"]+)\"?.*").matcher(line);
-					if (!matcher.matches()) throw new GdxRuntimeException("Missing: file");
+					matcher = Pattern.compile(".*file=\"?([^\"]+)\"?").matcher(line);
+					if (!matcher.find()) throw new GdxRuntimeException("Missing: file");
 					String fileName = matcher.group(1);
 
 					imagePaths[p] = fontFile.parent().child(fileName).path().replaceAll("\\\\", "/");
