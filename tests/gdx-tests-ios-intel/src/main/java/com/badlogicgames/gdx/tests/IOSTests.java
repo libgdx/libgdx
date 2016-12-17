@@ -40,4 +40,11 @@ public class IOSTests extends IOSApplication.Delegate {
 	public static void main(String[] argv) {
 		UIKit.UIApplicationMain(0, null, null, IOSTests.class.getName());
 	}
+
+	@Override
+    public boolean applicationDidFinishLaunchingWithOptions(UIApplication application, NSDictionary<?, ?> launchOptions) {
+        UIApplication.sharedApplication().delegate().window();
+        return super.applicationDidFinishLaunchingWithOptions(application, launchOptions);;
+    }
+
 }
