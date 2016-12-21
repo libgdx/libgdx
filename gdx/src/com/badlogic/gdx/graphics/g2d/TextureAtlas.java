@@ -305,8 +305,7 @@ public class TextureAtlas implements Disposable {
 	}
 
 	/** Returns true if a region is found with the specified name. This method uses string comparison to find the region, so the result
-	 * should be cached rather than calling this method multiple times.
-	 * @return The region, or null. */
+	 * should be cached rather than calling this method multiple times. */
 	public boolean hasRegion (String name) {
 		for (int i = 0, n = regions.size; i < n; i++)
 			if (regions.get(i).name.equals(name)) return true;
@@ -327,8 +326,7 @@ public class TextureAtlas implements Disposable {
 	}
 
 	/** Returns true if a region found with the specified name and index. This method uses string comparison to find the region, so
-	 * the result should be cached rather than calling this method multiple times.
-	 * @return The region, or null. */
+	 * the result should be cached rather than calling this method multiple times. */
 	public boolean hasRegion (String name, int index) {
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
