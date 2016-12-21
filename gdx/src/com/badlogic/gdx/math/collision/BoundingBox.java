@@ -207,10 +207,10 @@ public class BoundingBox implements Serializable {
 		return this.set(min.set(0, 0, 0), max.set(0, 0, 0));
 	}
 
-	/** Returns whether this bounding box is valid. This means that {@link #max} is greater than {@link #min}.
+	/** Returns whether this bounding box is valid. This means that {@link #max} is greater than or equal to {@link #min}.
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
-		return min.x < max.x && min.y < max.y && min.z < max.z;
+		return min.x <= max.x && min.y <= max.y && min.z <= max.z;
 	}
 
 	/** Extends this bounding box by the given bounding box.

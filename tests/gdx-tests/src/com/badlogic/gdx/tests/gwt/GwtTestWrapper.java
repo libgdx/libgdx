@@ -645,10 +645,7 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new MusicTest();
 			}
-		}, new Instancer() {
-			public GdxTest instance () {
-				return new NoncontinuousRenderingTest();
-			}
+//		}, new Instancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to the use of Thread
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new ParallaxTest();

@@ -224,7 +224,7 @@ public class GdxTests {
 		TableLayoutTest.class,
 		TableTest.class,
 		TextAreaTest.class,
-		TextAreaTest2.class,
+		TextAreaTest2.class,		
 		TextButtonTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,

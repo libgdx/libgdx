@@ -119,7 +119,7 @@ public interface Sound extends Disposable {
 	public void setVolume (long soundId, float volume);
 
 	/** Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
-	 * If the sound is no longer playing, this has no effect.
+	 * If the sound is no longer playing, this has no effect. Note that panning only works for mono sounds, not for stereo sounds!
 	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
