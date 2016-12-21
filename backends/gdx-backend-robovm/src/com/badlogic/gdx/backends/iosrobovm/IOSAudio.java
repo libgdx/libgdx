@@ -33,7 +33,7 @@ public class IOSAudio implements Audio {
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {
 			audio.setAllowIpod(config.allowIpod);
-			audio.setHonorSilentSwitch(true);
+			audio.setHonorSilentSwitch(!config.overrideRingerSwitch);
 		} else
 			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be availabe");
 	}
