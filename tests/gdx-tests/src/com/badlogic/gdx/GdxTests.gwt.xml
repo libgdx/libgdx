@@ -19,6 +19,7 @@
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/JsonReaderTest.java"/> <!-- uses ArrayList -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
+        <exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->
