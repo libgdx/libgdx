@@ -1,4 +1,5 @@
 [LATEST]
+- VertexAttribute expert constructors exposed. Short types can now be used for attributes.
 
 [1.9.5]
 - Fix NPE swallowing "video driver unsupported" error on LWJGL 2 backend.
