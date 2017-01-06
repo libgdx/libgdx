@@ -42,4 +42,5 @@
 		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0 -->
 	</source>
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
+	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.ReflectionCorrectnessTest" />
 </module>
