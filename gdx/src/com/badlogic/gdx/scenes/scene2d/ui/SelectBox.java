@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -66,6 +67,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	private ClickListener clickListener;
 	boolean disabled;
 	private GlyphLayout layout = new GlyphLayout();
+	private int alignment = Align.left;
 
 	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
@@ -242,9 +244,18 @@ public class SelectBox<T> extends Widget implements Disableable {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			layout.setText(font, string, 0, string.length(), font.getColor(), width, Align.left, false, "...");
+			layout.setText(font, string, 0, string.length(), font.getColor(), width, alignment, false, "...");
 			font.draw(batch, layout, x, y);
 		}
+	}
+
+	/**
+	 * Sets the alignment of all selectBox text
+	 * @param alignment The alignment. Use Align constants.
+	 */
+	public void setAlignment(int alignment){
+		this.alignment = alignment; 
+		this.getList().setAlignment(alignment);
 	}
 
 	/** Get the set of selected items, useful when multiple items are selected
