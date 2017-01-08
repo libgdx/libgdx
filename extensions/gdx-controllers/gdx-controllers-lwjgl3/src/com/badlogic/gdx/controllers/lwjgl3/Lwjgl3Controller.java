@@ -22,14 +22,14 @@ public class Lwjgl3Controller implements Controller {
 	
 	public Lwjgl3Controller(Lwjgl3ControllerManager manager, int index) {
 		this.manager = manager;
-		this.index = 0;
+		this.index = index;
 		this.axisState = new float[GLFW.glfwGetJoystickAxes(index).limit()];	
 		this.buttonState = new boolean[GLFW.glfwGetJoystickButtons(index).limit()];
 		this.name = GLFW.glfwGetJoystickName(index);
 	}
 	
 	void pollState() {
-		if(GLFW.glfwJoystickPresent(index) == GLFW.GLFW_FALSE) {
+		if(!GLFW.glfwJoystickPresent(index)) {
 			manager.disconnected(this);
 			return;
 		}

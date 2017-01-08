@@ -63,6 +63,26 @@ public:
 	void setEquilibriumPoint(int index);  // set the current constraint position/orientation as an equilibrium point for given DOF
 	void setEquilibriumPoint(int index, btScalar val);
 
+	bool isSpringEnabled(int index) const
+	{
+	    return m_springEnabled[index];
+	}
+
+	btScalar getStiffness(int index) const
+	{
+	    return m_springStiffness[index];
+	}
+
+	btScalar getDamping(int index) const
+	{
+	    return m_springDamping[index];
+	}
+
+	btScalar getEquilibriumPoint(int index) const
+	{
+	    return m_equilibriumPoint[index];
+	}
+
 	virtual void setAxis( const btVector3& axis1, const btVector3& axis2);
 
 	virtual void getInfo2 (btConstraintInfo2* info);

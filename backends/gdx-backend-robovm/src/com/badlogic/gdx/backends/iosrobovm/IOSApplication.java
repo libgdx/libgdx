@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 
+import com.badlogic.gdx.ApplicationLogger;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
@@ -98,6 +99,7 @@ public class IOSApplication implements Application {
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
@@ -114,6 +116,7 @@ public class IOSApplication implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -309,48 +312,33 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void log (String tag, String message, Throwable exception) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("%@", new NSString("[info] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-		}
-	}
-
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("%@", new NSString("[error] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("%@", new NSString("[debug] " + tag + ": " + message));
-			exception.printStackTrace();
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
+	}
+
+	@Override
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
+	}
+
+	@Override
+	public void log (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
+	}
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
+	}
+
+	@Override
+	public void error (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -361,6 +349,16 @@ public class IOSApplication implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

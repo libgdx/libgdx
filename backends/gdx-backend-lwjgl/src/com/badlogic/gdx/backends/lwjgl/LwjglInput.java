@@ -873,9 +873,9 @@ final public class LwjglInput implements Input {
 
 		if (Keyboard.isCreated()) {
 			while (Keyboard.next()) {
-				if (Keyboard.getEventKeyState()) {
-					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
-					char keyChar = Keyboard.getEventCharacter();
+				int keyCode = getGdxKeyCode(Keyboard.getEventKey());
+				char keyChar = Keyboard.getEventCharacter();
+				if (Keyboard.getEventKeyState() || (keyCode == 0 && keyChar != 0 && Character.isDefined(keyChar))) {
 					long timeStamp = Keyboard.getEventNanoseconds();
 
 					switch (keyCode) {
@@ -887,28 +887,28 @@ final public class LwjglInput implements Input {
 						break;
 					}
 
-					KeyEvent event = usedKeyEvents.obtain();
-					event.keyCode = keyCode;
-					event.keyChar = 0;
-					event.type = KeyEvent.KEY_DOWN;
-					event.timeStamp = timeStamp;
-					keyEvents.add(event);
+					if (keyCode != 0) {
+						KeyEvent event = usedKeyEvents.obtain();
+						event.keyCode = keyCode;
+						event.keyChar = 0;
+						event.type = KeyEvent.KEY_DOWN;
+						event.timeStamp = timeStamp;
+						keyEvents.add(event);
 
-					event = usedKeyEvents.obtain();
+						pressedKeys++;
+						keyJustPressed = true;
+						justPressedKeys[keyCode] = true;
+						lastKeyCharPressed = keyChar;
+						keyRepeatTimer = keyRepeatInitialTime;
+					}
+
+					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
 					event.timeStamp = timeStamp;
 					keyEvents.add(event);
-
-					pressedKeys++;
-					keyJustPressed = true;
-					justPressedKeys[keyCode] = true;
-					lastKeyCharPressed = keyChar;
-					keyRepeatTimer = keyRepeatInitialTime;
 				} else {
-					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
-
 					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;

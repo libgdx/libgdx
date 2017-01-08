@@ -294,7 +294,10 @@ bool btVoronoiSimplexSolver::inSimplex(const btVector3& w)
 #else
 		if (m_simplexVectorW[i] == w)
 #endif
+		{
 			found = true;
+			break;
+		}
 	}
 
 	//check in case lastW is already removed

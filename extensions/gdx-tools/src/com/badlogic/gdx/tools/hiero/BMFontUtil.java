@@ -69,8 +69,8 @@ public class BMFontUtil {
 		int pageHeight = unicodeFont.getGlyphPageHeight();
 		out.println("info face=\"" + font.getFontName() + "\" size=" + font.getSize() + " bold=" + (font.isBold() ? 1 : 0)
 			+ " italic=" + (font.isItalic() ? 1 : 0) + " charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding="
-			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingLeft() + "," + unicodeFont.getPaddingBottom() + ","
-			+ unicodeFont.getPaddingRight() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
+			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingRight() + "," + unicodeFont.getPaddingBottom() + ","
+			+ unicodeFont.getPaddingLeft() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
 			+ unicodeFont.getPaddingAdvanceY());
 		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW=" + pageWidth
 			+ " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
@@ -196,7 +196,7 @@ public class BMFontUtil {
 	}
 
 	void writeGlyph (PrintStream out, int pageWidth, int pageHeight, int pageIndex, Glyph glyph) {
-		out.println("char id=" + String.format("%-6s", glyph.getCodePoint()) //
+		out.println("char id=" + String.format("%-7s ", glyph.getCodePoint()) //
 			+ "x=" + String.format("%-5s", (int)(glyph.getU() * pageWidth)) //
 			+ "y=" + String.format("%-5s", (int)(glyph.getV() * pageHeight)) //
 			+ "width=" + String.format("%-5s", glyph.getWidth()) //

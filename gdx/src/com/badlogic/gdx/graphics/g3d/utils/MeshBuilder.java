@@ -24,6 +24,14 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ArrowShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.CapsuleShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ConeShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.CylinderShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.EllipseShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.PatchShapeBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.SphereShapeBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
@@ -52,21 +60,6 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
 	private final VertexInfo vertTmp4 = new VertexInfo();
-	private final VertexInfo vertTmp5 = new VertexInfo();
-	private final VertexInfo vertTmp6 = new VertexInfo();
-	private final VertexInfo vertTmp7 = new VertexInfo();
-	private final VertexInfo vertTmp8 = new VertexInfo();
-
-	private final Matrix4 matTmp1 = new Matrix4();
-
-	private final Vector3 tempV1 = new Vector3();
-	private final Vector3 tempV2 = new Vector3();
-	private final Vector3 tempV3 = new Vector3();
-	private final Vector3 tempV4 = new Vector3();
-	private final Vector3 tempV5 = new Vector3();
-	private final Vector3 tempV6 = new Vector3();
-	private final Vector3 tempV7 = new Vector3();
-	private final Vector3 tempV8 = new Vector3();
 
 	private final Color tempC1 = new Color();
 
@@ -343,48 +336,9 @@ public class MeshBuilder implements MeshPartBuilder {
 		return part;
 	}
 
-	private final static Pool<Vector3> vectorPool = new Pool<Vector3>() {
-		@Override
-		protected Vector3 newObject () {
-			return new Vector3();
-		}
-	};
-
-	private final static Array<Vector3> vectorArray = new Array<Vector3>();
-	private final static Pool<Matrix4> matrices4Pool = new Pool<Matrix4>() {
-		@Override
-		protected Matrix4 newObject () {
-			return new Matrix4();
-		}
-	};
-
-	private final static Array<Matrix4> matrices4Array = new Array<Matrix4>();
-
-	private Vector3 tmp (float x, float y, float z) {
-		final Vector3 result = vectorPool.obtain().set(x, y, z);
-		vectorArray.add(result);
-		return result;
-	}
-
-	private Vector3 tmp (Vector3 copyFrom) {
-		return tmp(copyFrom.x, copyFrom.y, copyFrom.z);
-	}
-
-	private Matrix4 tmp () {
-		final Matrix4 result = matrices4Pool.obtain().idt();
-		matrices4Array.add(result);
-		return result;
-	}
-
-	private Matrix4 tmp (Matrix4 copyFrom) {
-		return tmp().set(copyFrom);
-	}
-
-	private void cleanup () {
-		vectorPool.freeAll(vectorArray);
-		vectorArray.clear();
-		matrices4Pool.freeAll(matrices4Array);
-		matrices4Array.clear();
+	@Override
+	public int getPrimitiveType () {
+		return primitiveType;
 	}
 
 	@Override
@@ -442,32 +396,23 @@ public class MeshBuilder implements MeshPartBuilder {
 		vertexTransformationEnabled = enabled;
 	}
 
-	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
-	 * adding many vertices to avoid multiple backing array resizes.
-	 * @param numVertices The number of vertices you are about to add */
+	@Override
 	public void ensureVertices (int numVertices) {
 		vertices.ensureCapacity(stride * numVertices);
 	}
 
-	/** Increases the size of the backing indices array to accommodate the specified number of additional indices. Useful before
-	 * adding many indices to avoid multiple backing array resizes.
-	 * @param numIndices The number of indices you are about to add */
+	@Override
 	public void ensureIndices (int numIndices) {
 		indices.ensureCapacity(numIndices);
 	}
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * indices. Useful before adding many vertices and indices to avoid multiple backing array resizes.
-	 * @param numVertices The number of vertices you are about to add
-	 * @param numIndices The number of indices you are about to add */
+	@Override
 	public void ensureCapacity (int numVertices, int numIndices) {
 		ensureVertices(numVertices);
 		ensureIndices(numIndices);
 	}
 
-	/** Increases the size of the backing indices array to accommodate the specified number of additional triangles. Useful before
-	 * adding many triangles to avoid multiple backing array resizes.
-	 * @param numTriangles The number of triangles you are about to add */
+	@Override
 	public void ensureTriangleIndices (int numTriangles) {
 		if (primitiveType == GL20.GL_LINES)
 			ensureIndices(6 * numTriangles);
@@ -477,26 +422,21 @@ public class MeshBuilder implements MeshPartBuilder {
 			throw new GdxRuntimeException("Incorrect primtive type");
 	}
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * triangles. Useful before adding many triangles to avoid multiple backing array resizes.
-	 * @param numVertices The number of vertices you are about to add
-	 * @param numTriangles The number of triangles you are about to add */
+	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureTriangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureTriangles (int numVertices, int numTriangles) {
 		ensureVertices(numVertices);
 		ensureTriangleIndices(numTriangles);
 	}
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * triangles. Useful before adding many triangles to avoid multiple backing array resizes. Assumes each triangles adds 3
-	 * vertices.
-	 * @param numTriangles The number of triangles you are about to add */
+	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureTriangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureTriangles (int numTriangles) {
-		ensureTriangles(3 * numTriangles, numTriangles);
+		ensureVertices(3 * numTriangles);
+		ensureTriangleIndices(numTriangles);
 	}
 
-	/** Increases the size of the backing indices array to accommodate the specified number of additional rectangles. Useful before
-	 * adding many rectangles to avoid multiple backing array resizes.
-	 * @param numRectangles The number of rectangles you are about to add */
+	@Override
 	public void ensureRectangleIndices (int numRectangles) {
 		if (primitiveType == GL20.GL_POINTS)
 			ensureIndices(4 * numRectangles);
@@ -507,21 +447,17 @@ public class MeshBuilder implements MeshPartBuilder {
 			ensureIndices(6 * numRectangles);
 	}
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * rectangles. Useful before adding many rectangles to avoid multiple backing array resizes.
-	 * @param numVertices The number of vertices you are about to add
-	 * @param numRectangles The number of rectangles you are about to add */
+	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureRectangleIndices(int)} instead. */
+	@Deprecated
 	public void ensureRectangles (int numVertices, int numRectangles) {
 		ensureVertices(numVertices);
 		ensureRectangleIndices(numRectangles);
 	}
 
-	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional vertices and
-	 * rectangles. Useful before adding many rectangles to avoid multiple backing array resizes. Assumes each rectangles adds 4
-	 * vertices
-	 * @param numRectangles The number of rectangles you are about to add */
+	/** @deprecated use {@link #ensureVertices(int)} followed by {@link #ensureRectangleIndices(int)} instead. */
 	public void ensureRectangles (int numRectangles) {
-		ensureRectangles(4 * numRectangles, numRectangles);
+		ensureVertices(4 * numRectangles);
+		ensureRectangleIndices(numRectangles);
 	}
 
 	private short lastIndex = -1;
@@ -572,10 +508,10 @@ public class MeshBuilder implements MeshPartBuilder {
 			if (biNorOffset >= 0) transformNormal(vertices.items, o + biNorOffset, 3, normalTransform);
 			if (tangentOffset >= 0) transformNormal(vertices.items, o + tangentOffset, 3, normalTransform);
 		}
-		
-		final float x = vertices.items[o+posOffset];
-		final float y = (posSize > 1) ? vertices.items[o+posOffset+1] : 0f;
-		final float z = (posSize > 2) ? vertices.items[o+posOffset+2] : 0f;
+
+		final float x = vertices.items[o + posOffset];
+		final float y = (posSize > 1) ? vertices.items[o + posOffset + 1] : 0f;
+		final float z = (posSize > 2) ? vertices.items[o + posOffset + 2] : 0f;
 		bounds.ext(x, y, z);
 
 		if (hasColor) {
@@ -788,514 +724,6 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
-		int divisionsV) {
-		if (divisionsU < 1 || divisionsV < 1) {
-			throw new GdxRuntimeException("divisionsU and divisionV must be > 0, u,v: " + divisionsU + ", " + divisionsV);
-		}
-		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
-		for (int u = 0; u <= divisionsU; u++) {
-			final float alphaU = (float)u / (float)divisionsU;
-			vertTmp5.set(corner00).lerp(corner10, alphaU);
-			vertTmp6.set(corner01).lerp(corner11, alphaU);
-			for (int v = 0; v <= divisionsV; v++) {
-				final short idx = vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float)v / (float)divisionsV));
-				if (u > 0 && v > 0) rect((short)(idx - divisionsV - 2), (short)(idx - 1), idx, (short)(idx - divisionsV - 1));
-			}
-		}
-	}
-
-	@Override
-	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
-		int divisionsV) {
-		patch(vertTmp1.set(corner00, normal, null, null).setUV(0f, 1f), vertTmp2.set(corner10, normal, null, null).setUV(1f, 1f),
-			vertTmp3.set(corner11, normal, null, null).setUV(1f, 0f), vertTmp4.set(corner01, normal, null, null).setUV(0f, 0f),
-			divisionsU, divisionsV);
-	}
-
-	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
-		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
-		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(0f, 1f),
-			vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(1f, 1f),
-			vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(1f, 0f),
-			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(0f, 0f), divisionsU, divisionsV);
-	}
-
-	@Override
-	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
-		VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
-		ensureVertices(8);
-		final short i000 = vertex(corner000);
-		final short i100 = vertex(corner100);
-		final short i110 = vertex(corner110);
-		final short i010 = vertex(corner010);
-		final short i001 = vertex(corner001);
-		final short i101 = vertex(corner101);
-		final short i111 = vertex(corner111);
-		final short i011 = vertex(corner011);
-
-		if (primitiveType == GL20.GL_LINES) {
-			ensureIndices(24);
-			rect(i000, i100, i110, i010);
-			rect(i101, i001, i011, i111);
-			index(i000, i001, i010, i011, i110, i111, i100, i101);
-		} else if (primitiveType == GL20.GL_POINTS) {
-			ensureRectangleIndices(2);
-			rect(i000, i100, i110, i010);
-			rect(i101, i001, i011, i111);
-		} else { // GL20.GL_TRIANGLES
-			ensureRectangleIndices(6);
-			rect(i000, i100, i110, i010);
-			rect(i101, i001, i011, i111);
-			rect(i000, i010, i011, i001);
-			rect(i101, i111, i110, i100);
-			rect(i101, i100, i000, i001);
-			rect(i110, i111, i011, i010);
-		}
-	}
-
-	@Override
-	public void box (Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110, Vector3 corner001,
-		Vector3 corner011, Vector3 corner101, Vector3 corner111) {
-		if (norOffset < 0 && uvOffset < 0) {
-			box(vertTmp1.set(corner000, null, null, null), vertTmp2.set(corner010, null, null, null),
-				vertTmp3.set(corner100, null, null, null), vertTmp4.set(corner110, null, null, null),
-				vertTmp5.set(corner001, null, null, null), vertTmp6.set(corner011, null, null, null),
-				vertTmp7.set(corner101, null, null, null), vertTmp8.set(corner111, null, null, null));
-		} else {
-			ensureRectangles(6);
-			Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
-			rect(corner000, corner010, corner110, corner100, nor);
-			rect(corner011, corner001, corner101, corner111, nor.scl(-1));
-			nor = tempV1.set(corner000).lerp(corner101, 0.5f).sub(tempV2.set(corner010).lerp(corner111, 0.5f)).nor();
-			rect(corner001, corner000, corner100, corner101, nor);
-			rect(corner010, corner011, corner111, corner110, nor.scl(-1));
-			nor = tempV1.set(corner000).lerp(corner011, 0.5f).sub(tempV2.set(corner100).lerp(corner111, 0.5f)).nor();
-			rect(corner001, corner011, corner010, corner000, nor);
-			rect(corner100, corner110, corner111, corner101, nor.scl(-1));
-		}
-	}
-
-	@Override
-	public void box (Matrix4 transform) {
-		box(tmp(-0.5f, -0.5f, -0.5f).mul(transform), tmp(-0.5f, 0.5f, -0.5f).mul(transform),
-			tmp(0.5f, -0.5f, -0.5f).mul(transform), tmp(0.5f, 0.5f, -0.5f).mul(transform), tmp(-0.5f, -0.5f, 0.5f).mul(transform),
-			tmp(-0.5f, 0.5f, 0.5f).mul(transform), tmp(0.5f, -0.5f, 0.5f).mul(transform), tmp(0.5f, 0.5f, 0.5f).mul(transform));
-		cleanup();
-	}
-
-	@Override
-	public void box (float width, float height, float depth) {
-		box(matTmp1.setToScaling(width, height, depth));
-	}
-
-	@Override
-	public void box (float x, float y, float z, float width, float height, float depth) {
-		box(matTmp1.setToScaling(width, height, depth).trn(x, y, z));
-	}
-
-	@Override
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ) {
-		circle(radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, 0f, 360f);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal) {
-		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
-		final Vector3 binormal) {
-		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z,
-			binormal.x, binormal.y, binormal.z);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ) {
-		circle(radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX,
-			binormalY, binormalZ, 0f, 360f);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float angleFrom, float angleTo) {
-		ellipse(radius * 2f, radius * 2f, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom, angleTo);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo) {
-		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, angleFrom, angleTo);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
-		final Vector3 binormal, float angleFrom, float angleTo) {
-		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z,
-			binormal.x, binormal.y, binormal.z, angleFrom, angleTo);
-	}
-
-	@Override
-	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
-		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
-		float angleFrom, float angleTo) {
-		ellipse(radius * 2, radius * 2, 0, 0, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY,
-			tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ) {
-		ellipse(width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, 0f, 360f);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal) {
-		ellipse(width, height, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
-		final Vector3 tangent, final Vector3 binormal) {
-		ellipse(width, height, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y,
-			tangent.z, binormal.x, binormal.y, binormal.z);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
-		float binormalZ) {
-		ellipse(width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ,
-			binormalX, binormalY, binormalZ, 0f, 360f);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float angleFrom, float angleTo) {
-		ellipse(width, height, 0f, 0f, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom,
-		float angleTo) {
-		ellipse(width, height, 0f, 0f, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
-		final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo) {
-		ellipse(width, height, 0f, 0f, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y,
-			tangent.z, binormal.x, binormal.y, binormal.z, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
-		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
-		float binormalZ, float angleFrom, float angleTo) {
-		ellipse(width, height, 0f, 0f, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY,
-			tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
-		Vector3 normal) {
-		ellipse(width, height, innerWidth, innerHeight, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, 0f,
-			360f);
-	}
-
-	@Override
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ) {
-		ellipse(width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, 0f, 360f);
-	}
-
-	@Override
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo) {
-		tempV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
-		tempV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
-		if (tempV2.len2() > tempV1.len2()) tempV1.set(tempV2);
-		tempV2.set(tempV1.nor()).crs(normalX, normalY, normalZ).nor();
-		ellipse(width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x,
-			tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, angleFrom, angleTo);
-	}
-
-	@Override
-	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
-		float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ,
-		float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo) {
-		if (innerWidth <= 0 || innerHeight <= 0) {
-			ensureTriangles(divisions + 2, divisions);
-		} else if (innerWidth == width && innerHeight == height) {
-			ensureVertices(divisions + 1);
-			ensureIndices(divisions + 1);
-			if (primitiveType != GL20.GL_LINES)
-				throw new GdxRuntimeException(
-					"Incorrect primitive type : expect GL_LINES because innerWidth == width && innerHeight == height");
-		} else {
-			ensureRectangles((divisions + 1) * 2, divisions + 1);
-		}
-
-		final float ao = MathUtils.degreesToRadians * angleFrom;
-		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
-		final Vector3 sxEx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
-		final Vector3 syEx = tempV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
-		final Vector3 sxIn = tempV3.set(tangentX, tangentY, tangentZ).scl(innerWidth * 0.5f);
-		final Vector3 syIn = tempV4.set(binormalX, binormalY, binormalZ).scl(innerHeight * 0.5f);
-		VertexInfo currIn = vertTmp3.set(null, null, null, null);
-		currIn.hasUV = currIn.hasPosition = currIn.hasNormal = true;
-		currIn.uv.set(.5f, .5f);
-		currIn.position.set(centerX, centerY, centerZ);
-		currIn.normal.set(normalX, normalY, normalZ);
-		VertexInfo currEx = vertTmp4.set(null, null, null, null);
-		currEx.hasUV = currEx.hasPosition = currEx.hasNormal = true;
-		currEx.uv.set(.5f, .5f);
-		currEx.position.set(centerX, centerY, centerZ);
-		currEx.normal.set(normalX, normalY, normalZ);
-		final short center = vertex(currEx);
-		float angle = 0f;
-		final float us = 0.5f * (innerWidth / width);
-		final float vs = 0.5f * (innerHeight / height);
-		short i1, i2 = 0, i3 = 0, i4 = 0;
-		for (int i = 0; i <= divisions; i++) {
-			angle = ao + step * i;
-			final float x = MathUtils.cos(angle);
-			final float y = MathUtils.sin(angle);
-			currEx.position.set(centerX, centerY, centerZ).add(sxEx.x * x + syEx.x * y, sxEx.y * x + syEx.y * y,
-				sxEx.z * x + syEx.z * y);
-			currEx.uv.set(.5f + .5f * x, .5f + .5f * y);
-			i1 = vertex(currEx);
-
-			if (innerWidth <= 0f || innerHeight <= 0f) {
-				if (i != 0) triangle(i1, i2, center);
-				i2 = i1;
-			} else if (innerWidth == width && innerHeight == height) {
-				if (i != 0) line(i1, i2);
-				i2 = i1;
-			} else {
-				currIn.position.set(centerX, centerY, centerZ).add(sxIn.x * x + syIn.x * y, sxIn.y * x + syIn.y * y,
-					sxIn.z * x + syIn.z * y);
-				currIn.uv.set(.5f + us * x, .5f + vs * y);
-				i2 = i1;
-				i1 = vertex(currIn);
-
-				if (i != 0) rect(i1, i2, i4, i3);
-				i4 = i2;
-				i3 = i1;
-			}
-		}
-	}
-
-	@Override
-	public void cylinder (float width, float height, float depth, int divisions) {
-		cylinder(width, height, depth, divisions, 0, 360);
-	}
-
-	@Override
-	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
-		cylinder(width, height, depth, divisions, angleFrom, angleTo, true);
-	}
-
-	/** Add a cylinder */
-	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close) {
-		// FIXME create better cylinder method (- axis on which to create the cylinder (matrix?))
-		final float hw = width * 0.5f;
-		final float hh = height * 0.5f;
-		final float hd = depth * 0.5f;
-		final float ao = MathUtils.degreesToRadians * angleFrom;
-		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
-		final float us = 1f / divisions;
-		float u = 0f;
-		float angle = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
-		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
-		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
-		short i1, i2, i3 = 0, i4 = 0;
-
-		ensureRectangles(2 * (divisions + 1), divisions);
-		for (int i = 0; i <= divisions; i++) {
-			angle = ao + step * i;
-			u = 1f - us * i;
-			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
-			curr1.normal.set(curr1.position).nor();
-			curr1.position.y = -hh;
-			curr1.uv.set(u, 1);
-			curr2.position.set(curr1.position);
-			curr2.normal.set(curr1.normal);
-			curr2.position.y = hh;
-			curr2.uv.set(u, 0);
-			i2 = vertex(curr1);
-			i1 = vertex(curr2);
-			if (i != 0) rect(i3, i1, i2, i4); // FIXME don't duplicate lines and points
-			i4 = i2;
-			i3 = i1;
-		}
-		if (close) {
-			ellipse(width, depth, 0, 0, divisions, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, angleFrom, angleTo);
-			ellipse(width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, 180f - angleTo, 180f - angleFrom);
-		}
-	}
-
-	@Override
-	public void cone (float width, float height, float depth, int divisions) {
-		cone(width, height, depth, divisions, 0, 360);
-	}
-
-	@Override
-	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
-		// FIXME create better cylinder method (- axis on which to create the cone (matrix?))
-		ensureTriangles(divisions + 2, divisions);
-
-		final float hw = width * 0.5f;
-		final float hh = height * 0.5f;
-		final float hd = depth * 0.5f;
-		final float ao = MathUtils.degreesToRadians * angleFrom;
-		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
-		final float us = 1f / divisions;
-		float u = 0f;
-		float angle = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
-		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0, hh, 0).setNor(0, 1, 0).setUV(0.5f, 0);
-		final short base = vertex(curr2);
-		short i1, i2 = 0;
-		for (int i = 0; i <= divisions; i++) {
-			angle = ao + step * i;
-			u = 1f - us * i;
-			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
-			curr1.normal.set(curr1.position).nor();
-			curr1.position.y = -hh;
-			curr1.uv.set(u, 1);
-			i1 = vertex(curr1);
-			if (i != 0) triangle(base, i1, i2); // FIXME don't duplicate lines and points
-			i2 = i1;
-		}
-		ellipse(width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, 180f - angleTo, 180f - angleFrom);
-	}
-
-	@Override
-	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV) {
-		sphere(width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
-	}
-
-	@Override
-	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV) {
-		sphere(transform, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
-	}
-
-	@Override
-	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo,
-		float angleVFrom, float angleVTo) {
-		sphere(matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
-	}
-
-	@Override
-	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
-		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
-		// FIXME create better sphere method (- only one vertex for each pole, - position)
-		final float hw = width * 0.5f;
-		final float hh = height * 0.5f;
-		final float hd = depth * 0.5f;
-		final float auo = MathUtils.degreesToRadians * angleUFrom;
-		final float stepU = (MathUtils.degreesToRadians * (angleUTo - angleUFrom)) / divisionsU;
-		final float avo = MathUtils.degreesToRadians * angleVFrom;
-		final float stepV = (MathUtils.degreesToRadians * (angleVTo - angleVFrom)) / divisionsV;
-		final float us = 1f / divisionsU;
-		final float vs = 1f / divisionsV;
-		float u = 0f;
-		float v = 0f;
-		float angleU = 0f;
-		float angleV = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
-		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-
-		final int s = divisionsU + 3;
-		tmpIndices.clear();
-		tmpIndices.ensureCapacity(divisionsU * 2);
-		tmpIndices.size = s;
-		int tempOffset = 0;
-
-		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
-		for (int iv = 0; iv <= divisionsV; iv++) {
-			angleV = avo + stepV * iv;
-			v = vs * iv;
-			final float t = MathUtils.sin(angleV);
-			final float h = MathUtils.cos(angleV) * hh;
-			for (int iu = 0; iu <= divisionsU; iu++) {
-				angleU = auo + stepU * iu;
-				u = 1f - us * iu;
-				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
-				curr1.normal.set(curr1.position).nor();
-				curr1.uv.set(u, v);
-				tmpIndices.set(tempOffset, vertex(curr1));
-				final int o = tempOffset + s;
-				if ((iv > 0) && (iu > 0)) // FIXME don't duplicate lines and points
-					rect(tmpIndices.get(tempOffset), tmpIndices.get((o - 1) % s), tmpIndices.get((o - (divisionsU + 2)) % s),
-						tmpIndices.get((o - (divisionsU + 1)) % s));
-				tempOffset = (tempOffset + 1) % tmpIndices.size;
-			}
-		}
-	}
-
-	@Override
-	public void capsule (float radius, float height, int divisions) {
-		if (height < 2f * radius) throw new GdxRuntimeException("Height must be at least twice the radius");
-		final float d = 2f * radius;
-		cylinder(d, height - d, d, divisions, 0, 360, false);
-		sphere(matTmp1.setToTranslation(0, .5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
-		sphere(matTmp1.setToTranslation(0, -.5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
-	}
-
-	@Override
-	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
-		int divisions) {
-		Vector3 begin = tmp(x1, y1, z1), end = tmp(x2, y2, z2);
-		float length = begin.dst(end);
-		float coneHeight = length * capLength;
-		float coneDiameter = 2 * (float)(coneHeight * Math.sqrt(1f / 3));
-		float stemLength = length - coneHeight;
-		float stemDiameter = coneDiameter * stemThickness;
-
-		Vector3 up = tmp(end).sub(begin).nor();
-		Vector3 forward = tmp(up).crs(Vector3.Z);
-		if (forward.isZero()) forward.set(Vector3.X);
-		forward.crs(up).nor();
-		Vector3 left = tmp(up).crs(forward).nor();
-		Vector3 direction = tmp(end).sub(begin).nor();
-
-		// Matrices
-		Matrix4 userTransform = getVertexTransform(tmp());
-		Matrix4 transform = tmp();
-		float[] val = transform.val;
-		val[Matrix4.M00] = left.x;
-		val[Matrix4.M01] = up.x;
-		val[Matrix4.M02] = forward.x;
-		val[Matrix4.M10] = left.y;
-		val[Matrix4.M11] = up.y;
-		val[Matrix4.M12] = forward.y;
-		val[Matrix4.M20] = left.z;
-		val[Matrix4.M21] = up.z;
-		val[Matrix4.M22] = forward.z;
-		Matrix4 temp = tmp();
-
-		// Stem
-		transform.setTranslation(tmp(direction).scl(stemLength / 2).add(x1, y1, z1));
-		setVertexTransform(temp.set(transform).mul(userTransform));
-		cylinder(stemDiameter, stemLength, stemDiameter, divisions);
-
-		// Cap
-		transform.setTranslation(tmp(direction).scl(stemLength).add(x1, y1, z1));
-		setVertexTransform(temp.set(transform).mul(userTransform));
-		cone(coneDiameter, coneHeight, coneDiameter, divisions);
-
-		setVertexTransform(userTransform);
-		cleanup();
-	}
-
-	@Override
 	public void addMesh (Mesh mesh) {
 		addMesh(mesh, 0, mesh.getNumIndices());
 	}
@@ -1340,7 +768,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final int numVertices = vertices.length / stride;
 		ensureVertices(numVertices < numIndices ? numVertices : numIndices);
 		for (int i = 0; i < numIndices; i++) {
-			final int sidx = indices[i];
+			final int sidx = indices[indexOffset + i];
 			int didx = indicesMap.get(sidx, -1);
 			if (didx < 0) {
 				addVertex(vertices, sidx * stride);
@@ -1349,18 +777,295 @@ public class MeshBuilder implements MeshPartBuilder {
 			index((short)didx);
 		}
 	}
-	
+
 	@Override
 	public void addMesh (float[] vertices, short[] indices) {
 		final short offset = (short)(lastIndex + 1);
-		
+
 		final int numVertices = vertices.length / stride;
 		ensureVertices(numVertices);
 		for (int v = 0; v < vertices.length; v += stride)
 			addVertex(vertices, v);
-		
+
 		ensureIndices(indices.length);
 		for (int i = 0; i < indices.length; ++i)
 			index((short)(indices[i] + offset));
+	}
+
+	
+	// TODO: The following methods are deprecated and will be removed in a future release
+	
+	@Override
+	@Deprecated
+	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
+		int divisionsV) {
+		PatchShapeBuilder.build(this, corner00, corner10, corner11, corner01, divisionsU, divisionsV);
+	}
+
+	@Override
+	@Deprecated
+	public void patch (Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU,
+		int divisionsV) {
+		PatchShapeBuilder.build(this, corner00, corner10, corner11, corner01, normal, divisionsU, divisionsV);
+	}
+
+	@Override
+	@Deprecated
+	public void patch (float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11,
+		float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
+		PatchShapeBuilder.build(this, x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, divisionsU, divisionsV);
+	}
+	
+	@Override
+	@Deprecated
+	public void box (VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110, VertexInfo corner001,
+		VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
+		BoxShapeBuilder.build(this, corner000, corner010, corner100, corner110, corner001, corner011, corner101, corner111);
+	}
+
+	@Override
+	@Deprecated
+	public void box (Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110, Vector3 corner001,
+		Vector3 corner011, Vector3 corner101, Vector3 corner111) {
+		BoxShapeBuilder.build(this, corner000, corner010, corner100, corner110, corner001, corner011, corner101, corner111);
+	}
+
+	@Override
+	@Deprecated
+	public void box (Matrix4 transform) {
+		BoxShapeBuilder.build(this, transform);
+	}
+
+	@Override
+	@Deprecated
+	public void box (float width, float height, float depth) {
+		BoxShapeBuilder.build(this, width, height, depth);
+	}
+
+	@Override
+	@Deprecated
+	public void box (float x, float y, float z, float width, float height, float depth) {
+		BoxShapeBuilder.build(this, x, y, z, width, height, depth);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ) {
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal) {
+		EllipseShapeBuilder.build(this, radius, divisions, center, normal);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
+		final Vector3 binormal) {
+		EllipseShapeBuilder.build(this, radius, divisions, center, normal, tangent, binormal);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ) {
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
+			tangentY, tangentZ, binormalX, binormalY, binormalZ);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float angleFrom, float angleTo) {
+		EllipseShapeBuilder
+			.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, radius, divisions, center, normal, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent,
+		final Vector3 binormal, float angleFrom, float angleTo) {
+		circle(radius, divisions, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z,
+			binormal.x, binormal.y, binormal.z, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void circle (float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY,
+		float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ,
+		float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, radius, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
+			tangentY, tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ) {
+		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal) {
+		EllipseShapeBuilder.build(this, width, height, divisions, center, normal);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
+		final Vector3 tangent, final Vector3 binormal) {
+		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, tangent, binormal);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
+		float binormalZ) {
+		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
+			tangentY, tangentZ, binormalX, binormalY, binormalZ);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, angleFrom,
+			angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom,
+		float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, final Vector3 center, final Vector3 normal,
+		final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, divisions, center, normal, tangent, binormal, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX,
+		float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY,
+		float binormalZ, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX,
+			tangentY, tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center,
+		Vector3 normal) {
+		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, center, normal);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ) {
+		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX,
+			normalY, normalZ);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX,
+			normalY, normalZ, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void ellipse (float width, float height, float innerWidth, float innerHeight, int divisions, float centerX,
+		float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ,
+		float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo) {
+		EllipseShapeBuilder.build(this, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX,
+			normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions) {
+		CylinderShapeBuilder.build(this, width, height, depth, divisions);
+	}
+
+	@Override
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
+		CylinderShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo);
+	}
+
+	@Override
+	@Deprecated
+	public void cylinder (float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close) {
+		CylinderShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo, close);
+	}
+
+	@Override
+	@Deprecated
+	public void cone (float width, float height, float depth, int divisions) {
+		cone(width, height, depth, divisions, 0, 360);
+	}
+
+	@Override
+	@Deprecated
+	public void cone (float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
+		ConeShapeBuilder.build(this, width, height, depth, divisions, angleFrom, angleTo);
+	}
+	
+	@Override
+	@Deprecated
+	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV) {
+		SphereShapeBuilder.build(this, width, height, depth, divisionsU, divisionsV);
+	}
+
+	@Override
+	@Deprecated
+	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV) {
+		SphereShapeBuilder.build(this, transform, width, height, depth, divisionsU, divisionsV);
+	}
+
+	@Override
+	@Deprecated
+	public void sphere (float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo,
+		float angleVFrom, float angleVTo) {
+		SphereShapeBuilder.build(this, width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
+	}
+
+	@Override
+	@Deprecated
+	public void sphere (final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV,
+		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
+		SphereShapeBuilder.build(this, transform, width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom,
+			angleVTo);
+	}
+
+	@Override
+	@Deprecated
+	public void capsule (float radius, float height, int divisions) {
+		CapsuleShapeBuilder.build(this, radius, height, divisions);
+	}
+	
+	@Override
+	@Deprecated
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions) {
+		ArrowShapeBuilder.build(this, x1, y1, z1, x2, y2, z2, capLength, stemThickness, divisions);
 	}
 }

@@ -16,16 +16,17 @@
 
 package com.badlogic.gdx.tests.gwt;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -60,7 +61,9 @@ import com.badlogic.gdx.tests.DecalTest;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
+import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GLProfilerErrorTest;
+import com.badlogic.gdx.tests.GWTLossyPremultipliedAlphaTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
@@ -80,6 +83,7 @@ import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MusicTest;
+import com.badlogic.gdx.tests.NoncontinuousRenderingTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -104,6 +108,7 @@ import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -132,6 +137,12 @@ public class GwtTestWrapper extends GdxTest {
 		ScrollPane scroll = new ScrollPane(table);
 		container.add(scroll).expand().fill();
 		table.pad(10).defaults().expandX().space(4);
+		Arrays.sort(tests, new Comparator<Instancer>() {
+			@Override
+			public int compare (Instancer o1, Instancer o2) {
+				return o1.instance().getClass().getName().compareTo(o2.instance().getClass().getName());
+			}
+		});
 		for (final Instancer instancer : tests) {
 			table.row();
 			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
@@ -456,6 +467,10 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
+			return new AlphaTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
 			return new AnimationTest();
 		}
 	}, new Instancer() {
@@ -524,6 +539,10 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
+			return new DisplayModeTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
 			return new LabelScaleTest();
 		}
 	}, new Instancer() {
@@ -539,6 +558,10 @@ public class GwtTestWrapper extends GdxTest {
 		new Instancer() {
 			public GdxTest instance () {
 				return new FrameBufferTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new FramebufferToTextureTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
@@ -622,6 +645,7 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new MusicTest();
 			}
+//		}, new Instancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to the use of Thread
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new ParallaxTest();
@@ -737,6 +761,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TimeUtilsTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance() {
+				return new GWTLossyPremultipliedAlphaTest();
 			}
 		}};
 }

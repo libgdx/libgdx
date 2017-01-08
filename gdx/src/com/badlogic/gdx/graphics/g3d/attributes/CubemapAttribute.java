@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class CubemapAttribute extends Attribute {
-	public final static String EnvironmentMapAlias = "environmentMapTexture";
+	public final static String EnvironmentMapAlias = "environmentCubemap";
 	public final static long EnvironmentMap = register(EnvironmentMapAlias);
 
 	protected static long Mask = EnvironmentMap;

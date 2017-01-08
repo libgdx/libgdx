@@ -266,7 +266,7 @@ public class ShapeRenderer implements Disposable {
 	 * between the start and end points. */
 	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
 		if (shapeType == ShapeType.Filled) {
-			rectLine(x, y, x2, y2, defaultRectLineWidth);
+			rectLine(x, y, x2, y2, defaultRectLineWidth, c1, c2);
 			return;
 		}
 		check(ShapeType.Line, null, 2);
@@ -599,6 +599,52 @@ public class ShapeRenderer implements Disposable {
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 		}
 	}
+	
+	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
+	public void rectLine (float x1, float y1, float x2, float y2, float width, Color c1, Color c2) {
+		check(ShapeType.Line, ShapeType.Filled, 8);
+		float col1Bits = c1.toFloatBits();
+		float col2Bits = c2.toFloatBits();
+		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
+		width *= 0.5f;
+		float tx = t.x * width;
+		float ty = t.y * width;
+		if (shapeType == ShapeType.Line) {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		} else {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		}
+	}
 
 	/** @see #rectLine(float, float, float, float, float) */
 	public void rectLine (Vector2 p1, Vector2 p2, float width) {
@@ -927,6 +973,53 @@ public class ShapeRenderer implements Disposable {
 				renderer.color(colorBits);
 				renderer.vertex(cx + (width * 0.5f * MathUtils.cos((i + 1) * angle)),
 					cy + (height * 0.5f * MathUtils.sin((i + 1) * angle)), 0);
+			}
+		}
+	}
+	
+	/** Calls {@link #ellipse(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	public void ellipse (float x, float y, float width, float height, float rotation) {
+		ellipse(x, y, width, height, rotation, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
+	}
+
+	/** Draws an ellipse using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
+	public void ellipse (float x, float y, float width, float height, float rotation, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
+		check(ShapeType.Line, ShapeType.Filled, segments * 3);
+		float colorBits = color.toFloatBits();
+		float angle = 2 * MathUtils.PI / segments;
+		
+		rotation = MathUtils.PI * rotation / 180f;
+		float sin = MathUtils.sin(rotation);
+		float cos = MathUtils.cos(rotation);
+
+		float cx = x + width / 2, cy = y + height / 2;
+		float x1 = width * 0.5f;
+		float y1 = 0;
+		if (shapeType == ShapeType.Line) {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+			}
+		} else {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+
+				renderer.color(colorBits);
+				renderer.vertex(cx, cy, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
 			}
 		}
 	}

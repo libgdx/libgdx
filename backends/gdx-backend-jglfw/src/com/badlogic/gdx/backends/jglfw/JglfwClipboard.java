@@ -28,20 +28,23 @@ import java.awt.datatransfer.Transferable;
  * @author mzechner */
 public class JglfwClipboard implements Clipboard, ClipboardOwner {
 	public String getContents () {
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable contents = clipboard.getContents(null);
-		if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-			try {
+		try {
+			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Transferable contents = clipboard.getContents(null);
+			if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 				return (String)contents.getTransferData(DataFlavor.stringFlavor);
-			} catch (Exception ignored) {
 			}
+		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
 		}
 		return "";
 	}
 
 	public void setContents (String content) {
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboard.setContents(new StringSelection(content), this);
+		try {
+			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(new StringSelection(content), this);
+		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
+		}
 	}
 
 	public void lostOwnership (java.awt.datatransfer.Clipboard clipboard, Transferable transferable) {

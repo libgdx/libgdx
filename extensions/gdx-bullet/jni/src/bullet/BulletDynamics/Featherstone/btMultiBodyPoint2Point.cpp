@@ -159,7 +159,7 @@ int numDim = BTMBP2PCONSTRAINT_DIM;
 #ifndef BTMBP2PCONSTRAINT_BLOCK_ANGULAR_MOTION_TEST
 
 
-		fillMultiBodyConstraint(constraintRow, data, 0, 0,
+		fillMultiBodyConstraint(constraintRow, data, 0, 0, btVector3(0,0,0),
 															contactNormalOnB, pivotAworld, pivotBworld,						//sucks but let it be this way "for the time being"
 															posError,
 															infoGlobal,

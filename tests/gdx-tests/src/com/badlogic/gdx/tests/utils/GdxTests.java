@@ -38,13 +38,14 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeAtlasTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeDisposeTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeFontLoaderTest;
-import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
@@ -66,6 +67,7 @@ import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
@@ -121,6 +123,7 @@ public class GdxTests {
 		ETC1Test.class,
 //		EarClippingTriangulatorTest.class,
 		EdgeDetectionTest.class,
+		DisplayModeTest.class,
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
@@ -172,6 +175,7 @@ public class GdxTests {
 		MusicTest.class,
 		NetAPITest.class,
 		NinePatchTest.class,
+		NoncontinuousRenderingTest.class,
 		OnscreenKeyboardTest.class,
 		PathTest.class,
 		ParallaxTest.class,
@@ -220,9 +224,11 @@ public class GdxTests {
 		TableLayoutTest.class,
 		TableTest.class,
 		TextAreaTest.class,
+		TextAreaTest2.class,		
 		TextButtonTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
+		TextureArrayTest.class,
 		TextureDataTest.class,
 		TextureDownloadTest.class,
 		TextureFormatTest.class,
@@ -242,6 +248,7 @@ public class GdxTests {
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
+		VBOWithVAOPerformanceTest.class,
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,
 		VibratorTest.class,

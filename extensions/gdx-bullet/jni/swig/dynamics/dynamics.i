@@ -52,6 +52,9 @@ import com.badlogic.gdx.math.Matrix4;
 %}
 
 %feature("director") InternalTickCallback;
+%feature("director") CustomActionInterface;
+%ignore CustomActionInterface::updateAction(btCollisionWorld*, btScalar);
+%ignore CustomActionInterface::debugDraw(btIDebugDraw*);
 
 %include "./btRigidBody.i"
 
@@ -76,6 +79,11 @@ import com.badlogic.gdx.math.Matrix4;
 #include <BulletDynamics/Dynamics/btActionInterface.h>
 %}
 %include "BulletDynamics/Dynamics/btActionInterface.h"
+
+%{
+#include <gdx/dynamics/CustomActionInterface.h>
+%}
+%include "gdx/dynamics/CustomActionInterface.h"
 
 %{
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
@@ -195,3 +203,8 @@ import com.badlogic.gdx.math.Matrix4;
 %include "BulletDynamics/Vehicle/btWheelInfo.h"
 
 %include "./btRaycastVehicle.i"
+
+%{
+#include <gdx/dynamics/FilterableVehicleRaycaster.h>
+%}
+%include "gdx/dynamics/FilterableVehicleRaycaster.h"

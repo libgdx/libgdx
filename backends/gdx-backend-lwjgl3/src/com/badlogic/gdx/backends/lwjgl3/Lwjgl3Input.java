@@ -41,16 +41,15 @@ public class Lwjgl3Input implements Input, Disposable {
 	private int pressedKeys;
 	private boolean keyJustPressed;
 	private boolean[] justPressedKeys = new boolean[256];
-	private long currentEventTime;	
 	private char lastCharacter;
-	
+		
 	private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {		
 		@Override
 		public void invoke(long window, int key, int scancode, int action, int mods) {
 			switch (action) {
 			case GLFW.GLFW_PRESS:
 				key = getGdxKeyCode(key);
-				eventQueue.keyDown(key);
+				eventQueue.keyDown(key);								
 				pressedKeys++;
 				keyJustPressed = true;
 				justPressedKeys[key] = true;
@@ -98,7 +97,7 @@ public class Lwjgl3Input implements Input, Disposable {
 		private int logicalMouseX;
 
 		@Override
-		public void invoke(long windowHandle, double x, double y) {
+		public void invoke(long windowHandle, double x, double y) {			
 			deltaX = (int)x - logicalMouseX;
 			deltaY = (int)y - logicalMouseY;
 			mouseX = logicalMouseX = (int)x;
@@ -174,7 +173,12 @@ public class Lwjgl3Input implements Input, Disposable {
 		GLFW.glfwSetMouseButtonCallback(window.getWindowHandle(), mouseButtonCallback);
 	}	
 	
-	public void update() {		
+	void update() {
+		eventQueue.setProcessor(inputProcessor);
+		eventQueue.drain();
+	}
+	
+	void prepareNext (){
 		justTouched = false;
 		
 		if (keyJustPressed) {
@@ -182,12 +186,10 @@ public class Lwjgl3Input implements Input, Disposable {
 			for (int i = 0; i < justPressedKeys.length; i++) {
 				justPressedKeys[i] = false;
 			}
-		}		
-		eventQueue.setProcessor(inputProcessor);
-		eventQueue.drain();
+		}	
 		deltaX = 0;
 		deltaY = 0;
-	}	
+	}
 
 	@Override
 	public int getX() {
@@ -282,7 +284,8 @@ public class Lwjgl3Input implements Input, Disposable {
 
 	@Override
 	public long getCurrentEventTime() {
-		return currentEventTime;
+		// queue sets its event time for each event dequeued/processed
+		return eventQueue.getCurrentEventTime();
 	}	
 
 	@Override
@@ -758,11 +761,11 @@ public class Lwjgl3Input implements Input, Disposable {
 	
 	@Override
 	public void dispose() {
-		keyCallback.release();
-		charCallback.release();
-		scrollCallback.release();
-		cursorPosCallback.release();
-		mouseButtonCallback.release();
+		keyCallback.free();
+		charCallback.free();
+		scrollCallback.free();
+		cursorPosCallback.free();
+		mouseButtonCallback.free();
 	}
 
 	// --------------------------------------------------------------------------
@@ -864,5 +867,5 @@ public class Lwjgl3Input implements Input, Disposable {
 	@Override
 	public float getGyroscopeZ() {
 		return 0;
-	}
+	}	
 }

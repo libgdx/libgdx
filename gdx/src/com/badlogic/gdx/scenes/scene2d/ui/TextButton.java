@@ -87,7 +87,7 @@ public class TextButton extends Button {
 		return label;
 	}
 
-	public Cell getLabelCell () {
+	public Cell<Label> getLabelCell () {
 		return getCell(label);
 	}
 

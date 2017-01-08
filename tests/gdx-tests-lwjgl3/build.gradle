@@ -1,0 +1,46 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+ext {
+    mainTestClass = "com.badlogic.gdx.tests.lwjgl3.Lwjgl3TestStarter"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile project(":tests:gdx-tests")
+    compile project(":backends:gdx-backend-lwjgl3")
+    compile project(":extensions:gdx-controllers:gdx-controllers-lwjgl3")
+    compile testnatives.desktop
+}
+
+task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
+    main = mainTestClass
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = new File("../gdx-tests-android/assets")
+    ignoreExitValue = true
+    
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        // Required to run lwjgl java apps on Mac OSX
+        jvmArgs = ["-XstartOnFirstThread"]
+    }
+}
+configure (launchTestsLwjgl3) {
+    group "LibGDX"
+    description = "Run the Lwjgl3 tests"
+}

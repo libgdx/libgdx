@@ -97,7 +97,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void dispose () {
 		stop();
-		soundBuffer.dispose();
+		OALSimpleAudio.sharedInstance().unloadEffect(soundPath);
 	}
 
 	@Override

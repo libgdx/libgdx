@@ -4,6 +4,6 @@
 %GWT_INHERITS%
 	<inherits name='%MAIN_CLASS%' />
 	<entry-point class='%PACKAGE%.client.HtmlLauncher' />
-	
+	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../%ASSET_PATH%" />
 </module>

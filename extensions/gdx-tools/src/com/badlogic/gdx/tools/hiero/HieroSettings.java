@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -35,6 +36,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Holds the settings needed to configure a UnicodeFont.
  * @author Nathan Sweet */
 public class HieroSettings {
+	private static final String RENDER_TYPE = "render_type";
 	private String fontName = "Arial";
 	private int fontSize = 12;
 	private boolean bold, italic, mono;
@@ -46,6 +48,7 @@ public class HieroSettings {
 	private boolean nativeRendering;
 	private boolean font2Active = false;
 	private String font2File = "";
+	private int renderType = RenderType.FreeType.ordinal();
 
 	public HieroSettings () {
 	}
@@ -100,6 +103,8 @@ public class HieroSettings {
 					nativeRendering = Boolean.parseBoolean(value);
 				} else if (name.equals("glyph.text")) {
 					glyphText = value;
+				} else if (name.equals(RENDER_TYPE)) {
+					renderType = Integer.parseInt(value);
 				} else if (name.equals("effect.class")) {
 					try {
 						effects.add(Class.forName(value).newInstance());
@@ -334,6 +339,8 @@ public class HieroSettings {
 		out.println("glyph.page.height=" + glyphPageHeight);
 		out.println("glyph.text=" + glyphText);
 		out.println();
+		out.println(RENDER_TYPE + "=" + renderType);
+		out.println();
 		for (Iterator iter = effects.iterator(); iter.hasNext();) {
 			ConfigurableEffect effect = (ConfigurableEffect)iter.next();
 			out.println("effect.class=" + effect.getClass().getName());
@@ -344,5 +351,13 @@ public class HieroSettings {
 			out.println();
 		}
 		out.close();
+	}
+
+	public void setRenderType (int renderType) {
+		this.renderType = renderType;
+	}
+
+	public int getRenderType () {
+		return renderType;
 	}
 }

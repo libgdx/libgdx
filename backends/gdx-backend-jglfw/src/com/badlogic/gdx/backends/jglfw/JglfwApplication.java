@@ -19,8 +19,13 @@ package com.badlogic.gdx.backends.jglfw;
 import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 import static com.badlogic.jglfw.Glfw.*;
 
+import java.awt.EventQueue;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
@@ -31,10 +36,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 import com.badlogic.jglfw.GlfwCallbacks;
-
-import java.awt.EventQueue;
-import java.util.HashMap;
-import java.util.Map;
 
 /** An OpenGL surface fullscreen or in a lightweight window using GLFW.
  * @author mzechner
@@ -52,6 +53,7 @@ public class JglfwApplication implements Application {
 	private final JglfwClipboard clipboard = new JglfwClipboard();
 	private final GlfwCallbacks callbacks = new GlfwCallbacks();
 	private int logLevel = LOG_INFO;
+	private ApplicationLogger applicationLogger;
 	volatile boolean running = true;
 	boolean isPaused;
 	protected String preferencesdir;
@@ -114,12 +116,12 @@ public class JglfwApplication implements Application {
 		final Thread glThread = Thread.currentThread();
 
 		GdxNativesLoader.load();
+		setApplicationLogger(new JglfwApplicationLogger());
 
 		boolean inputCallbacksOnAppKitThread = isMac;
 		if (inputCallbacksOnAppKitThread) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
 
 		if (!glfwInit()) throw new GdxRuntimeException("Unable to initialize GLFW.");
-
 		Gdx.app = this;
 		Gdx.graphics = graphics = new JglfwGraphics(config);
 		Gdx.files = files = new JglfwFiles();
@@ -205,6 +207,12 @@ public class JglfwApplication implements Application {
 		if (!running) return;
 
 		boolean shouldRender = false;
+
+		int width = glfwGetWindowWidth(graphics.window), height = glfwGetWindowHeight(graphics.window);
+		if (width != graphics.width || height != graphics.height) {
+			graphics.sizeChanged(width, height); // Seems OS X Sierra doesn't notify of some window size changes.
+			shouldRender = true;
+		}
 
 		if (executeRunnables()) shouldRender = true;
 
@@ -366,48 +374,40 @@ public class JglfwApplication implements Application {
 		this.logLevel = logLevel;
 	}
 
-	@Override
 	public int getLogLevel () {
 		return logLevel;
 	}
 
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
+	}
+
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	public void addLifecycleListener (LifecycleListener listener) {
