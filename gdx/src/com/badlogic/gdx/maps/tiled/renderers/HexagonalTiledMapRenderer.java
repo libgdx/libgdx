@@ -155,9 +155,9 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			for (int row = row2 - 1; row >= row1; row--) {
 				// depending on the stagger index either shift for even or uneven indexes
 				if ((row % 2 == 0) == staggerIndexEven)
-					shiftX = 0;
-				else
 					shiftX = layerTileWidth50;
+				else
+					shiftX = 0;
 				for (int col = col1; col < col2; col++) {
 					renderCell(layer.getCell(col, row), layerTileWidth * col + shiftX, tileHeightUpperCorner * row, color);
 				}
