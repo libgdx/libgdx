@@ -63,7 +63,7 @@ public class JglfwGraphics implements Graphics {
 	private long frameStart, lastTime = -1;
 	private int frames, fps;
 
-	private JglfwGL20 gl20;
+	private GL20 gl20;
 
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
 		// Store values from config.
@@ -193,6 +193,25 @@ public class JglfwGraphics implements Graphics {
 
 	public GL20 getGL20 () {
 		return gl20;
+	}
+
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+
+		Gdx.gl20 = gl20;
+		Gdx.gl = gl20;
+	}
+
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	public GL30 getGL30 () {
+		return null;
+	}
+
+	public void setGL30 (GL30 gl30) {
+
 	}
 
 	public int getWidth () {
@@ -451,16 +470,6 @@ public class JglfwGraphics implements Graphics {
 		} finally {
 			renderRequested = false;
 		}
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	@Override

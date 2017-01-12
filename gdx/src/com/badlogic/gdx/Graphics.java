@@ -135,6 +135,12 @@ public interface Graphics {
 	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
 
+	/** Set the GL20 instance **/
+	public void setGL20 (GL20 gl20);
+
+	/** Set the GL30 instance **/
+	public void setGL30 (GL30 gl30);
+
 	/** @return the width of the client area in logical pixels. */
 	public int getWidth ();
 

@@ -83,9 +83,6 @@ public class LwjglGraphics implements Graphics {
 		this.canvas = canvas;
 	}
 
-	public GL20 getGL20 () {
-		return gl20;
-	}
 
 	public int getHeight () {
 		if (canvas != null)
@@ -111,9 +108,6 @@ public class LwjglGraphics implements Graphics {
 		return getHeight();
 	}
 
-	public boolean isGL20Available () {
-		return gl20 != null;
-	}
 
 	public long getFrameId () {
 		return frameId;
@@ -133,6 +127,45 @@ public class LwjglGraphics implements Graphics {
 
 	public GLVersion getGLVersion () {
 		return glVersion;
+	}
+
+	public boolean isGL20Available () {
+		return gl20 != null;
+	}
+
+	public GL20 getGL20 () {
+		return gl20;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
 	}
 
 	public int getFramesPerSecond () {
@@ -595,16 +628,6 @@ public class LwjglGraphics implements Graphics {
 
 	public boolean isSoftwareMode () {
 		return softwareMode;
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return gl30 != null;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return gl30;
 	}
 
 	/** A callback used by LwjglApplication when trying to create the display */
