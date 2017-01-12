@@ -71,9 +71,9 @@ public final class BufferUtils {
 
 		ByteBuffer byteBuffer = (ByteBuffer)dst;
 		int oldPosition = byteBuffer.position();
+		byteBuffer.limit(oldPosition + numElements);
 		byteBuffer.put(src, srcOffset, numElements);
 		byteBuffer.position(oldPosition);
-		byteBuffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -93,9 +93,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or ShortBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -115,9 +115,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -137,9 +137,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -159,9 +159,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -177,9 +177,9 @@ public final class BufferUtils {
 		FloatBuffer buffer = asFloatBuffer(dst);
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -199,9 +199,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 	
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
