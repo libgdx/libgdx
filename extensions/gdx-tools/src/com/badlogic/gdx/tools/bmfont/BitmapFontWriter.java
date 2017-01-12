@@ -181,8 +181,8 @@ public class BitmapFontWriter {
 			.append(quote(info.italic ? 1 : 0)).append(" charset=\"").append(info.charset == null ? "" : info.charset)
 			.append("\" unicode=").append(quote(info.unicode ? 1 : 0)).append(" stretchH=").append(quote(info.stretchH))
 			.append(" smooth=").append(quote(info.smooth ? 1 : 0)).append(" aa=").append(quote(info.aa)).append(" padding=")
-			.append(xmlQuote).append(info.padding.up).append(",").append(info.padding.down).append(",").append(info.padding.left)
-			.append(",").append(info.padding.right).append(xmlQuote).append(" spacing=").append(xmlQuote)
+			.append(xmlQuote).append(info.padding.up).append(",").append(info.padding.right).append(",").append(info.padding.down)
+			.append(",").append(info.padding.left).append(xmlQuote).append(" spacing=").append(xmlQuote)
 			.append(info.spacing.horizontal).append(",").append(info.spacing.vertical).append(xmlQuote).append(xmlCloseSelf)
 			.append("\n");
 

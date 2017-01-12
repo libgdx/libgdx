@@ -610,7 +610,7 @@ public class IOSInput implements Input {
 				switch (event.phase) {
 				case Began:
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-					if (numTouched == 1) justTouched = true;
+					if (numTouched >= 1) justTouched = true;
 					break;
 				case Cancelled:
 				case Ended:

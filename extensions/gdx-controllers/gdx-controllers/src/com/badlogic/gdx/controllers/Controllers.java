@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.controllers;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -64,6 +66,12 @@ public class Controllers {
 	static public void clearListeners () {
 		initialize();
 		getManager().clearListeners();
+	}
+	
+	/** Returns all listeners currently registered. Modifying this array will result in undefined behaviour. **/
+	static public Array<ControllerListener> getListeners() {
+		initialize();
+		return getManager().getListeners();
 	}
 
 	static private ControllerManager getManager () {

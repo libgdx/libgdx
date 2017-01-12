@@ -1,3 +1,6 @@
+[LATEST]
+- VertexAttribute expert constructors exposed. Short types can now be used for attributes.
+
 [1.9.5]
 - Fix NPE swallowing "video driver unsupported" error on LWJGL 2 backend.
 - Allow window icons to be set in Lwjgl3ApplicationConfiguration or Lwjgl3WindowConfiguration.
@@ -16,6 +19,14 @@
 - API Change: Lwjgl3WindowListener.deiconified() removed, combined with .iconified().
 - API Change: Lwjgl3Window.deiconify() renamed to .restore() since it can also be used to de-maximize a window.
 - Lwjgl3Window now has a maximize() method, and windows can be started maximized using the window or app configuration's setMaximized() method.
+- NinePatch can now be drawn rotated or scaled.
+- NinepatchDrawable is now a TransformDrawable.
+- API Change: Group add* methods no longer remove and re-add the actor if it is already in the group, instead they do nothing.
+- API Change: g2d.Animation is now generic so it can support Drawables, PolygonRegions, NinePatches, etc. To fix existing code, specify the TextureRegion type in animation declarations (and instantiations in Java 6), i.e. Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(...);
+- TiledDrawable throws unsupported operation if trying to draw rotated/scaled. #4005
+- API Change: DragAndDrop now puts default position of drag actor at pointer location. The original default offset from the pointer was (14, -20).
+- Added ShaderProgramLoader for AssetManager.
+- BoundingBox#isValid now returns also true when min==max, see: https://github.com/libgdx/libgdx/pull/4460
 
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.

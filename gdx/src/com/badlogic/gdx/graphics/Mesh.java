@@ -1027,7 +1027,7 @@ public class Mesh implements Disposable {
 					if (a == null) continue;
 					for (int j = 0; j < a.numComponents; j++)
 						checks[++idx] = (short)(a.offset + j);
-					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					attrs[++ai] = a.copy();
 					newVertexSize += a.numComponents;
 				}
 			}
