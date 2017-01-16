@@ -63,6 +63,7 @@ public class IOSNet implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		return uiApp.openURL(NSURL.fileURLWithPath(URI));
+		//return uiApp.openURL(NSURL.fileURLWithPath(URI));
+		return uiApp.openURL(NSURL.URLWithString(URI));
 	}
 }
