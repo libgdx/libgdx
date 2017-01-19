@@ -95,6 +95,11 @@ public class IOSApplication implements Application {
 		public void applicationWillTerminate (UIApplication application) {
 			app.willTerminate(application);
 		}
+
+		@Override
+        public UIWindow window() {
+            return app.window();
+        }
 	}
 
 	UIApplication uiApp;
