@@ -1,4 +1,5 @@
-[LATEST]
+[1.9.6]
+- API Change: Pixmap.setBlending, Pixmap.setFilter are now instance methods
 - VertexAttribute expert constructors exposed. Short types can now be used for attributes.
 
 [1.9.5]
