@@ -46,7 +46,7 @@ public class ParticleEffect implements Disposable {
 	public ParticleEffect (ParticleEffect effect) {
 		emitters = new Array(true, effect.emitters.size);
 		for (int i = 0, n = effect.emitters.size; i < n; i++)
-			emitters.add(new ParticleEmitter(effect.emitters.get(i)));
+			emitters.add(newEmitter(effect.emitters.get(i)));
 	}
 
 	public void start () {
@@ -154,7 +154,7 @@ public class ParticleEffect implements Disposable {
 		try {
 			reader = new BufferedReader(new InputStreamReader(input), 512);
 			while (true) {
-				ParticleEmitter emitter = new ParticleEmitter(reader);
+				ParticleEmitter emitter = newEmitter(reader);
 				emitters.add(emitter);
 				if (reader.readLine() == null) break;
 				if (reader.readLine() == null) break;
@@ -200,6 +200,14 @@ public class ParticleEffect implements Disposable {
 			}
 			emitter.setSprite(sprite);
 		}
+	}
+
+	protected ParticleEmitter newEmitter (BufferedReader reader) throws IOException {
+		return new ParticleEmitter(reader);
+	}
+
+	protected ParticleEmitter newEmitter (ParticleEmitter emitter) {
+		return new ParticleEmitter(emitter);
 	}
 
 	protected Texture loadTexture (FileHandle file) {
