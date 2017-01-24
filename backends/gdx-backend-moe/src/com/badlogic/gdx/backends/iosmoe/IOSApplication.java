@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import android.util.Log;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
