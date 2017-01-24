@@ -93,7 +93,7 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	static String clearColor = make(255, 255, 255, 1.0f);
-	static Blending blending;
+	Blending blending;
 	CanvasPixelArray pixels;
 	private ImageElement imageElement;
 
@@ -144,8 +144,8 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
+	public void setBlending (Blending blending) {
+		this.blending = blending;
 		Composite composite = getComposite();
 		for (Pixmap pixmap : pixmaps.values()) {
 			pixmap.ensureCanvasExists();
@@ -154,14 +154,14 @@ public class Pixmap implements Disposable {
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
+	public void setFilter (Filter filter) {
 	}
 
 	public Format getFormat () {
