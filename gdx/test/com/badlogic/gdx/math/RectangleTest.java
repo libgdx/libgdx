@@ -68,9 +68,10 @@ public class RectangleTest {
 	@Test
 	public void givenARectangle_whenGettingCenterWithoutVector_returnCenterCorrectly () throws Exception {
 		// GIVEN default rectangle on 1,2 with width 3 and height 4
+		Vector2 center = new Vector2();
 
 		// WHEN
-		Vector2 center = rectangle.getCenter();
+		rectangle.getCenter(center);
 
 		// THEN
 		assertEquals("Wrong X value", 2.5, center.x, 0);
@@ -79,11 +80,11 @@ public class RectangleTest {
 		// GIVEN default rectangle on 1,1 with width 1 and height 1
 
 		// WHEN
-		Vector2 center2 = rectangle2.getCenter();
+		rectangle2.getCenter(center);
 
 		// THEN
-		assertEquals("Wrong X value", 1.5, center2.x, 0);
-		assertEquals("Wrong Y value", 1.5, center2.y, 0);
+		assertEquals("Wrong X value", 1.5, center.x, 0);
+		assertEquals("Wrong Y value", 1.5, center.y, 0);
 	}
 
 	@Test
