@@ -337,9 +337,12 @@ public class KTXProcessor {
 				}
 
 				out.close();
+				System.out.println("Finished");
 			} catch (Exception e) {
 				Gdx.app.error("KTXProcessor", "Error writing to file: " + output.getName(), e);
 			}
+
+			Gdx.app.exit();
 		}
 	}
 
