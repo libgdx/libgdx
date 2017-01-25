@@ -34,7 +34,7 @@ public class IOSTests extends IOSApplication.Delegate {
 		IOSApplicationConfiguration config = new  IOSApplicationConfiguration();
 		config.useAccelerometer = false;
 		config.useGL30 = false;
-		return new IOSApplication(new SpriteBatchTest(), config);
+		return new IOSApplication(new BulletTestCollection(), config);
 	}
 
 	public static void main(String[] argv) {
