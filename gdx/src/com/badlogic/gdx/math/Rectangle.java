@@ -303,6 +303,60 @@ public class Rectangle implements Serializable, Shape2D {
 		return (height == 0) ? Float.NaN : width / height;
 	}
 
+	/** Returns the bottommost coordinate of the rectangle.
+	 * @return The bottommost coordinate of the rectangle. */
+	public float getBottom () {
+		return y;
+	}
+
+	/** Sets the Y coordinate so that the bottom of the rectangle is at the given value.
+	 * @param y The value for the bottom. */
+	public void setBottom (float y) {
+		this.y = y;
+	}
+
+	/** Returns the topmost coordinate of the rectangle.
+	 * @return The topmost coordinate of the rectangle. */
+	public float getTop () {
+		return y + height;
+	}
+
+	/** Sets the Y coordinate so that the top of the rectangle is at the given value.
+	 * @param y The value for the top. */
+	public void setTop (float y) {
+		this.y = y - height;
+	}
+
+	/** Returns the rightmost coordinate of the rectangle.
+	 * @return The rightmost coordinate of the rectangle. */
+	public float getRight () {
+		return x + width;
+	}
+
+	/** Sets the X coordinate so that the right of the rectangle is at the given value.
+	 * @param x The value for the right. */
+	public void setRight (float x) {
+		this.x = x - width;
+	}
+
+	/** Returns the leftmost coordinate of the rectangle.
+	 * @return The leftmost coordinate of the rectangle. */
+	public float getLeft () {
+		return x;
+	}
+
+	/** Sets the X coordinate so that the left of the rectangle is at the given value.
+	 * @param x The value for the left. */
+	public void setLeft (float x) {
+		this.x = x;
+	}
+
+	/** Calculates the center of the rectangle.
+	 * @return A vector with the center position. */
+	public Vector2 getCenter () {
+		return getCenter(new Vector2());
+	}
+
 	/** Calculates the center of the rectangle. Results are located in the given Vector2
 	 * @param vector the Vector2 to use
 	 * @return the given vector with results stored inside */
