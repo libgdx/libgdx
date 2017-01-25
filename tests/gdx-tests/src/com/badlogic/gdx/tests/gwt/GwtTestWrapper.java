@@ -88,6 +88,7 @@ import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
+import com.badlogic.gdx.tests.ReflectionCorrectnessTest;
 import com.badlogic.gdx.tests.ReflectionTest;
 import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
@@ -667,6 +668,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new RotationTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new ReflectionCorrectnessTest();
 			}
 		},
 // new Instancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
