@@ -3,7 +3,7 @@
 - Updated IOS Multi-OS Engine backend to 1.3.0-beta-2
 - API Change: Pixmap.setBlending, Pixmap.setFilter are now instance methods
 - VertexAttribute expert constructors exposed. Short types can now be used for attributes.
-- Add methods to Rectangle class for getting and setting its sides and center (without the need to pass a Vector param).
+- Add methods to Rectangle class for getting and setting its sides.
 
 [1.9.5]
 - Fix NPE swallowing "video driver unsupported" error on LWJGL 2 backend.

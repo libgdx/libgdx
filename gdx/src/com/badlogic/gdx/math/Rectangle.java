@@ -351,12 +351,6 @@ public class Rectangle implements Serializable, Shape2D {
 		this.x = x;
 	}
 
-	/** Calculates the center of the rectangle.
-	 * @return A vector with the center position. */
-	public Vector2 getCenter () {
-		return getCenter(new Vector2());
-	}
-
 	/** Calculates the center of the rectangle. Results are located in the given Vector2
 	 * @param vector the Vector2 to use
 	 * @return the given vector with results stored inside */
