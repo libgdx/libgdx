@@ -25,8 +25,8 @@
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-macos.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-windows.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry exported="true" kind="lib" path="libs/AppleJavaExtensions-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-windows.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
