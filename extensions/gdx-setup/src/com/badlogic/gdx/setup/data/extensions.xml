@@ -149,8 +149,8 @@
 	   <name>gdx-dialogs</name>
 	   <description>Provides cross-platform support for native dialogs</description>
 	   <package>de.tomgrill.gdxdialogs</package>
-	   <version>1.1.0</version>
-	   <compatibility>1.9.3</compatibility>
+	   <version>1.2.0</version>
+	   <compatibility>1.9.5</compatibility>
 	   <website>https://github.com/TomGrill/gdx-dialogs</website>
 	   <gwtInherits></gwtInherits>
 	   <projects>
@@ -169,7 +169,11 @@
 			<ios-moe>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
 			</ios-moe>
-			<html>null</html>
+			<html>
+		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-core:sources</dependency>
+		   	</html>
 		</projects>
 	</extension>
 	<extension>

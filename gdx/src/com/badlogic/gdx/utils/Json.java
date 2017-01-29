@@ -939,7 +939,7 @@ public class Json {
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) return (T)serializer.read(this, jsonData, type);
 
-			if (Serializable.class.isAssignableFrom(type)) {
+			if (ClassReflection.isAssignableFrom(Serializable.class, type)) {
 				// A Serializable may be read as an array, string, etc, even though it will be written as an object.
 				Object object = newInstance(type);
 				((Serializable)object).read(this, jsonData);

@@ -404,7 +404,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						imageSource = imageElement.getAttribute("source");
 						imageWidth = imageElement.getIntAttribute("width", 0);
 						imageHeight = imageElement.getIntAttribute("height", 0);
-						image = getRelativeFileHandle(tmxFile, imageSource);
+
+						if (source != null) {
+							image = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
+						} else {
+							image = getRelativeFileHandle(tmxFile, imageSource);
+						}
 					}
 					TextureRegion texture = imageResolver.getImage(image.path());
 					TiledMapTile tile = new StaticTiledMapTile(texture);

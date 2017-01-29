@@ -50,14 +50,18 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
 		floatBuffer.clear();
-		com.badlogic.gdx.utils.BufferUtils.copy(v, floatBuffer, count, offset);
+		floatBuffer.limit(count);
+		floatBuffer.put(v,  offset, count);
+		floatBuffer.position(0);
 		return floatBuffer;
 	}
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
 		intBuffer.clear();
-		com.badlogic.gdx.utils.BufferUtils.copy(v, count, offset, intBuffer);
+		intBuffer.limit(count);
+		intBuffer.put(v, offset, count);
+		intBuffer.position(0);
 		return intBuffer;
 	}
 

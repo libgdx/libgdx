@@ -675,10 +675,8 @@ public class FreeType {
 			Pixmap converted = pixmap;
 			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-				Blending blending = Pixmap.getBlending();
-				Pixmap.setBlending(Blending.None);
+				converted.setBlending(Blending.None);
 				converted.drawPixmap(pixmap, 0, 0);
-				Pixmap.setBlending(blending);
 				pixmap.dispose();
 			}
 			return converted;
