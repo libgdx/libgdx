@@ -76,7 +76,6 @@ public class LwjglAWTCanvas implements Application {
 	int logLevel = LOG_INFO;
 	ApplicationLogger applicationLogger;
 	final String logTag = "LwjglAWTCanvas";
-	Cursor cursor;
 
 	public LwjglAWTCanvas (ApplicationListener listener) {
 		this(listener, null, null);
@@ -251,7 +250,6 @@ public class LwjglAWTCanvas implements Application {
 		if (!running) return;
 
 		setGlobals();
-		canvas.setCursor(cursor);
 
 		int width = Math.max(1, graphics.getWidth());
 		int height = Math.max(1, graphics.getHeight());
@@ -481,7 +479,7 @@ public class LwjglAWTCanvas implements Application {
 
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
-		this.cursor = cursor;
+		canvas.setCursor(cursor);
 	}
 
 	@Override

@@ -63,7 +63,6 @@ public class LwjglCanvas implements Application {
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	ApplicationLogger applicationLogger;
-	Cursor cursor;
 
 	public LwjglCanvas (ApplicationListener listener) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -213,7 +212,6 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					Display.processMessages();
-					if (cursor != null || !isWindows) canvas.setCursor(cursor);
 
 					boolean shouldRender = false;
 
@@ -416,7 +414,7 @@ public class LwjglCanvas implements Application {
 
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
-		this.cursor = cursor;
+		canvas.setCursor(cursor);
 	}
 
 	@Override
