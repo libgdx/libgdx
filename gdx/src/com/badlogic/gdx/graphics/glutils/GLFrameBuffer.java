@@ -129,7 +129,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
 	protected abstract void attachFrameBufferColorTexture ();
 
-	private void build () {
+	protected void build () {
 		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
