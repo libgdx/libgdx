@@ -49,29 +49,29 @@ import com.badlogic.gdx.utils.Disposable;
  * @author mzechner, realitix */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
-	private final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
+	protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
-	private final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
+	protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
 
 	/** the color buffer texture **/
 	protected T colorTexture;
 
 	/** the default framebuffer handle, a.k.a screen. */
-	private static int defaultFramebufferHandle;
+	protected static int defaultFramebufferHandle;
 	/** true if we have polled for the default handle already. */
-	private static boolean defaultFramebufferHandleInitialized = false;
+	protected static boolean defaultFramebufferHandleInitialized = false;
 
 	/** the framebuffer handle **/
-	private int framebufferHandle;
+	protected int framebufferHandle;
 
 	/** the depthbuffer render object handle **/
-	private int depthbufferHandle;
+	protected int depthbufferHandle;
 
 	/** the stencilbuffer render object handle **/
-	private int stencilbufferHandle;
+	protected int stencilbufferHandle;
 
 	/** the depth stencil packed render buffer object handle **/
-	private int depthStencilPackedBufferHandle;
+	protected int depthStencilPackedBufferHandle;
 
 	/** width **/
 	protected final int width;
@@ -86,7 +86,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	protected final boolean hasStencil;
 
 	/** if has depth stencil packed buffer **/
-	private boolean hasDepthStencilPackedBuffer;
+	protected boolean hasDepthStencilPackedBuffer;
 
 	/** format **/
 	protected final Pixmap.Format format;
@@ -129,7 +129,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
 	protected abstract void attachFrameBufferColorTexture ();
 
-	private void build () {
+	protected void build () {
 		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)

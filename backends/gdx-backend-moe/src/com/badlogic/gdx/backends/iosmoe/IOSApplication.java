@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import android.util.Log;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
@@ -94,6 +93,11 @@ public class IOSApplication implements Application {
 		@Override
 		public void applicationWillTerminate (UIApplication application) {
 			app.willTerminate(application);
+		}
+		
+		@Override
+		public UIWindow window(){
+			return app.getUIWindow();
 		}
 	}
 

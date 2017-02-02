@@ -263,7 +263,7 @@ public class Lwjgl3Window implements Disposable {
 	
 	/**
 	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
-	 * @param icon One or more images. The one closest to the system's desired size will be scaled. Good sizes include 
+	 * @param image One or more images. The one closest to the system's desired size will be scaled. Good sizes include
 	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
 	 * have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not disposed.
 	 */
@@ -291,9 +291,6 @@ public class Lwjgl3Window implements Disposable {
 		if (SharedLibraryLoader.isMac)
 			return;
 
-		Pixmap.Blending previousBlending = Pixmap.getBlending();
-		Pixmap.setBlending(Pixmap.Blending.None);
-
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
 
@@ -302,6 +299,7 @@ public class Lwjgl3Window implements Disposable {
 
 			if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
 				Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+				rgba.setBlending(Pixmap.Blending.None);
 				rgba.drawPixmap(pixmap, 0, 0);
 				tmpPixmaps[i] = rgba;
 				pixmap = rgba;
@@ -324,7 +322,6 @@ public class Lwjgl3Window implements Disposable {
 			}
 		}
 
-		Pixmap.setBlending(previousBlending);
 	}
 
 	public void setTitle (CharSequence title){

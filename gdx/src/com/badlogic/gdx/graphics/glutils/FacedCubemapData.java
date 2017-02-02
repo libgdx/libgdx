@@ -164,10 +164,8 @@ public class FacedCubemapData implements CubemapData {
 				boolean disposePixmap = data[i].disposePixmap();
 				if (data[i].getFormat() != pixmap.getFormat()) {
 					Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data[i].getFormat());
-					Blending blend = Pixmap.getBlending();
-					Pixmap.setBlending(Blending.None);
+					tmp.setBlending(Blending.None);
 					tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-					Pixmap.setBlending(blend);
 					if (data[i].disposePixmap()) pixmap.dispose();
 					pixmap = tmp;
 					disposePixmap = true;

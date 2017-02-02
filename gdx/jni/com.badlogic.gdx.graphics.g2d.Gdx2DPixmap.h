@@ -134,18 +134,18 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawPixmap
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    setBlend
- * Signature: (I)V
+ * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setBlend
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    setScale
- * Signature: (I)V
+ * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap

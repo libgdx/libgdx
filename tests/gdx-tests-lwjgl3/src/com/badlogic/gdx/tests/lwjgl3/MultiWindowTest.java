@@ -61,8 +61,8 @@ public class MultiWindowTest {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && latestWindow != null){
 				latestWindow.setTitle("Retitled window");
 				int size = 48;
-				Pixmap.setBlending(Blending.None);
 				Pixmap icon = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+				icon.setBlending(Blending.None);
 				icon.setColor(Color.BLUE);
 				icon.fill();
 				icon.setColor(Color.CLEAR);

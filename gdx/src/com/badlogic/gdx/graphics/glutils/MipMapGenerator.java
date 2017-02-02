@@ -84,10 +84,9 @@ public class MipMapGenerator {
 		int width = pixmap.getWidth() / 2;
 		int height = pixmap.getHeight() / 2;
 		int level = 1;
-		Blending blending = Pixmap.getBlending();
-		Pixmap.setBlending(Blending.None);
 		while (width > 0 && height > 0) {
 			Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());
+			tmp.setBlending(Blending.None);
 			tmp.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
 			if (level > 1) pixmap.dispose();
 			pixmap = tmp;
@@ -99,6 +98,5 @@ public class MipMapGenerator {
 			height = pixmap.getHeight() / 2;
 			level++;
 		}
-		Pixmap.setBlending(blending);
 	}
 }

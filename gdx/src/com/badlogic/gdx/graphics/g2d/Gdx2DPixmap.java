@@ -80,11 +80,6 @@ public class Gdx2DPixmap implements Disposable {
 	ByteBuffer pixelPtr;
 	long[] nativeData = new long[4];
 
-	static {
-		setBlend(GDX2D_BLEND_SRC_OVER);
-		setScale(GDX2D_SCALE_LINEAR);
-	}
-
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
 		pixelPtr = load(nativeData, encodedData, offset, len);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
@@ -201,6 +196,14 @@ public class Gdx2DPixmap implements Disposable {
 	public void drawPixmap (Gdx2DPixmap src, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth,
 		int dstHeight) {
 		drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+	}
+
+	public void setBlend (int blend) {
+		setBlend(basePtr, blend);
+	}
+
+	public void setScale (int scale) {
+		setScale(basePtr, scale);
 	}
 
 	public static Gdx2DPixmap newPixmap (InputStream in, int requestedFormat) {
@@ -352,12 +355,12 @@ public class Gdx2DPixmap implements Disposable {
 		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 		 */
 
-	public static native void setBlend (int blend); /*
-		gdx2d_set_blend(blend);
+	private static native void setBlend (long src, int blend); /*
+		gdx2d_set_blend((gdx2d_pixmap*)src, blend);
 	 */
 
-	public static native void setScale (int scale); /*
-		gdx2d_set_scale(scale);
+	private static native void setScale (long src, int scale); /*
+		gdx2d_set_scale((gdx2d_pixmap*)src, scale);
 	 */
 
 	public static native String getFailureReason (); /*
