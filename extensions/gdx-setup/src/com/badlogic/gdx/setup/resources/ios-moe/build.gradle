@@ -1,3 +1,6 @@
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
 task copyNatives << {
     file("xcode/native/ios/").mkdirs();
     def LD_FLAGS = "LIBGDX_NATIVES = "
@@ -20,33 +23,23 @@ task copyNatives << {
     def outFlags = file("xcode/ios-moe/custom.xcconfig");
     outFlags.write LD_FLAGS
 
-    def proguard = file("/Applications/Intel/multi_os_engine/tools/proguard.cfg")
-    if (proguard.exists()) {
-        if (!proguard.text.contains("-keep class com.badlogic.**")) {
-            proguard << "\n-keep class com.badlogic.** { *; }\n"
-            proguard << "-keep enum com.badlogic.** { *; }\n"
-        }
-    }
-}
-
-task createBuildDir {
-    def file = new File('build/xcode/ios-moe.xcodeproj')
-    if (!file.exists()) {
-        file.mkdirs();
+    def proguard = file("proguard.append.cfg")
+    if (!proguard.exists()) {
+        proguard = new File("proguard.append.cfg")
+        proguard << "\n-keep class com.badlogic.** { *; }\n"
+        proguard << "-keep enum com.badlogic.** { *; }\n"
     }
 }
 
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ file("../%ASSET_PATH%") ]
 
-
+// Setup Multi-OS Engine
 moe {
-    mainClassName 'IOSMoeLauncher'
     xcode {
+        project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
-        packageName '%PACKAGE%'
-        deploymentTarget = '9.0'
-        xcodeProjectDirPath 'xcode'
-        generateProject false
+        testTarget 'ios-moe-Test'
     }
 }
 
@@ -54,3 +47,11 @@ moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
 moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
 moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
 moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+// Setup Eclipse
+eclipse {
+    // Set Multi-OS Engine nature
+    project {
+        natures 'org.multi-os-engine.project'
+    }
+}

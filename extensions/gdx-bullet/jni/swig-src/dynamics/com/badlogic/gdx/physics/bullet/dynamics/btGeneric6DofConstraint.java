@@ -201,6 +201,14 @@ public class btGeneric6DofConstraint extends btTypedConstraint {
     DynamicsJNI.btGeneric6DofConstraint_setUseFrameOffset(swigCPtr, this, frameOffsetOnOff);
   }
 
+  public boolean getUseLinearReferenceFrameA() {
+    return DynamicsJNI.btGeneric6DofConstraint_getUseLinearReferenceFrameA(swigCPtr, this);
+  }
+
+  public void setUseLinearReferenceFrameA(boolean linearReferenceFrameA) {
+    DynamicsJNI.btGeneric6DofConstraint_setUseLinearReferenceFrameA(swigCPtr, this, linearReferenceFrameA);
+  }
+
   public void setParam(int num, float value, int axis) {
     DynamicsJNI.btGeneric6DofConstraint_setParam__SWIG_0(swigCPtr, this, num, value, axis);
   }
@@ -219,6 +227,10 @@ public class btGeneric6DofConstraint extends btTypedConstraint {
 
   public void setAxis(Vector3 axis1, Vector3 axis2) {
     DynamicsJNI.btGeneric6DofConstraint_setAxis(swigCPtr, this, axis1, axis2);
+  }
+
+  public int getFlags() {
+    return DynamicsJNI.btGeneric6DofConstraint_getFlags(swigCPtr, this);
   }
 
 }

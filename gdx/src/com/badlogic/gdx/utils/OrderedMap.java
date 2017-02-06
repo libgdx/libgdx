@@ -21,8 +21,8 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 
-/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead for
- * put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
+/** An {@link ObjectMap} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead
+ * for put and remove. Iteration over the {@link #entries()}, {@link #keys()}, and {@link #values()} is ordered and faster than an
  * unordered map. Keys can also be accessed and the order changed using {@link #orderedKeys()}.
  * @author Nathan Sweet */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
@@ -46,9 +46,9 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		keys = new Array(capacity);
 	}
 
-	public OrderedMap (ObjectMap<? extends K, ? extends V> map) {
+	public OrderedMap (OrderedMap<? extends K, ? extends V> map) {
 		super(map);
-		keys = new Array(capacity);
+		keys = new Array(map.keys);
 	}
 
 	public V put (K key, V value) {
@@ -117,8 +117,8 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return values2;
 	}
 
-	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
 			keys1 = new OrderedMapKeys(this);
@@ -178,6 +178,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			map.remove(entry.key);
+			nextIndex--;
 		}
 	}
 
@@ -198,6 +199,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			K key = keys.get(nextIndex);
+			currentIndex = nextIndex;
 			nextIndex++;
 			hasNext = nextIndex < map.size;
 			return key;
@@ -206,6 +208,8 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			map.remove(keys.get(nextIndex - 1));
+			nextIndex = currentIndex;
+			currentIndex = -1;
 		}
 	}
 
@@ -226,6 +230,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value = (V)map.get(keys.get(nextIndex));
+			currentIndex = nextIndex;
 			nextIndex++;
 			hasNext = nextIndex < map.size;
 			return value;
@@ -233,7 +238,9 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 		public void remove () {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			map.remove(keys.get(nextIndex - 1));
+			map.remove(keys.get(currentIndex));
+			nextIndex = currentIndex;
+			currentIndex = -1;
 		}
 	}
 }

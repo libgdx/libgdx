@@ -1,7 +1,42 @@
+[1.9.6]
+- API addition: Configurable TexturePacker bleed iterations
+- Updated IOS Multi-OS Engine backend to 1.3.0-beta-2
+- API Change: Pixmap.setBlending, Pixmap.setFilter are now instance methods
+- VertexAttribute expert constructors exposed. Short types can now be used for attributes.
+
+[1.9.5]
+- Fix NPE swallowing "video driver unsupported" error on LWJGL 2 backend.
+- Allow window icons to be set in Lwjgl3ApplicationConfiguration or Lwjgl3WindowConfiguration.
+- Allow window icon and title to be changed in Lwjgl3Window
+- API Addition: ApplicationLogger interface, allowing easier access to custom logging
+- DefaultRenderableSorter accounts for center of Renderable mesh, see https://github.com/libgdx/libgdx/pull/4319
+- Bullet: added FilterableVehicleRaycaster, see https://github.com/libgdx/libgdx/pull/4361
+- Bullet: updated to 2.85, see: http://bulletphysics.org/wordpress/?p=456
+- Updated iOS native build scripts to iOS 10.1 and TVOS 10.0
+- API Addition: BitmapFont#blankLineScale.
+- Fixed rounding of Drawables in ProgressBar. Allow rounding to be disabled with setRound().
+- Updated LWJGL3 backend to LWJGL 3.1.0, see https://blog.lwjgl.org/lwjgl-3-1-0-released/
+- LWJGL3 backend now supports non-continuous rendering, see https://github.com/libgdx/libgdx/pull/3772
+- API Change: Lwjgl3WindowListener.refreshRequested() is called when the windowing system (GLFW) reports contents of a window are dirty and need to be redrawn.
+- API Change: Lwjgl3WindowListener.maximized() is called when a window enters or exits a maximized state.
+- API Change: Lwjgl3WindowListener.deiconified() removed, combined with .iconified().
+- API Change: Lwjgl3Window.deiconify() renamed to .restore() since it can also be used to de-maximize a window.
+- Lwjgl3Window now has a maximize() method, and windows can be started maximized using the window or app configuration's setMaximized() method.
+- NinePatch can now be drawn rotated or scaled.
+- NinepatchDrawable is now a TransformDrawable.
+- API Change: Group add* methods no longer remove and re-add the actor if it is already in the group, instead they do nothing.
+- API Change: g2d.Animation is now generic so it can support Drawables, PolygonRegions, NinePatches, etc. To fix existing code, specify the TextureRegion type in animation declarations (and instantiations in Java 6), i.e. Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(...);
+- TiledDrawable throws unsupported operation if trying to draw rotated/scaled. #4005
+- API Change: DragAndDrop now puts default position of drag actor at pointer location. The original default offset from the pointer was (14, -20).
+- Added ShaderProgramLoader for AssetManager.
+- BoundingBox#isValid now returns also true when min==max, see: https://github.com/libgdx/libgdx/pull/4460
+
 [1.9.4]
 - Moved snapping from ProgressBar to Slider to prevent snapping when setting the value programmatically.
 - Bullet: added btSoftBody#getLinkCount() and btSoftBody#getLink(int), see https://github.com/libgdx/libgdx/issues/4152
 - API Change: Wrapping for scene2d's HorizontalGroup and VerticalGroup.
+- Fix hiero problem with certain unicode characters. See https://github.com/libgdx/libgdx/issues/4202
+- Switched to RoboVM fork 2.2.0, fixes incompatibility with Android Gradle plugin and iOS 9.3.4
 
 [1.9.3]
 - Switched to MobiDevelop's RoboVM fork (http://robovm.mobidevelop.com)
@@ -17,6 +52,7 @@
 - Added FlushablePool
 - Added ShapeCache see https://github.com/libgdx/libgdx/pull/3953
 - API Change: moved shape builder logic out of MeshBuilder, see: https://github.com/libgdx/libgdx/pull/3996
+- API Change: changed copy constructor OrderedMap(ObjectMap) to OrderedMap(OrderedMap)
 - API Change: Table reset now calls clearChildren, not clear.
 - Fixed crashes in AndroidMusic.java when isPlaying is called. Errors are now logged only rather than crashing the app.
 - Added emulation of ScreenUtils for GWT

@@ -25,6 +25,8 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -442,7 +444,11 @@ public class BitmapFont implements Disposable {
 		public float ascent;
 		/** The distance from the bottom of the glyph that extends the lowest to the baseline. This number is negative. */
 		public float descent;
+		/** The distance to move down when \n is encountered. */
 		public float down;
+		/** Multiplier for the line height of blank lines. down * blankLineHeight is used as the distance to move down for a blank
+		 * line. */
+		public float blankLineScale = 1;
 		public float scaleX = 1, scaleY = 1;
 		public boolean markupEnabled;
 		/** The amount to add to the glyph X position when drawing a cursor between glyphs. This field is not set by the BMFont
@@ -487,9 +493,9 @@ public class BitmapFont implements Disposable {
 				String[] padding = line.substring(0, line.indexOf(' ')).split(",", 4);
 				if (padding.length != 4) throw new GdxRuntimeException("Invalid padding.");
 				padTop = Integer.parseInt(padding[0]);
-				padLeft = Integer.parseInt(padding[1]);
+				padRight = Integer.parseInt(padding[1]);
 				padBottom = Integer.parseInt(padding[2]);
-				padRight = Integer.parseInt(padding[3]);
+				padLeft = Integer.parseInt(padding[3]);
 				float padY = padTop + padBottom;
 
 				line = reader.readLine();
@@ -520,26 +526,22 @@ public class BitmapFont implements Disposable {
 					// Read each "page" info line.
 					line = reader.readLine();
 					if (line == null) throw new GdxRuntimeException("Missing additional page definitions.");
-					String[] pageLine = line.split(" ", 4);
-					if (!pageLine[2].startsWith("file=")) throw new GdxRuntimeException("Missing: file");
 
 					// Expect ID to mean "index".
-					if (pageLine[1].startsWith("id=")) {
+					Matcher matcher = Pattern.compile(".*id=(\\d+)").matcher(line);
+					if (matcher.find()) {
+						String id = matcher.group(1);
 						try {
-							int pageID = Integer.parseInt(pageLine[1].substring(3));
-							if (pageID != p)
-								throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + pageLine[1].substring(3));
+							int pageID = Integer.parseInt(id);
+							if (pageID != p) throw new GdxRuntimeException("Page IDs must be indices starting at 0: " + id);
 						} catch (NumberFormatException ex) {
-							throw new GdxRuntimeException("Invalid page id: " + pageLine[1].substring(3), ex);
+							throw new GdxRuntimeException("Invalid page id: " + id, ex);
 						}
 					}
 
-					String fileName = null;
-					if (pageLine[2].endsWith("\"")) {
-						fileName = pageLine[2].substring(6, pageLine[2].length() - 1);
-					} else {
-						fileName = pageLine[2].substring(5, pageLine[2].length());
-					}
+					matcher = Pattern.compile(".*file=\"?([^\"]+)\"?").matcher(line);
+					if (!matcher.find()) throw new GdxRuntimeException("Missing: file");
+					String fileName = matcher.group(1);
 
 					imagePaths[p] = fontFile.parent().child(fileName).path().replaceAll("\\\\", "/");
 				}

@@ -278,6 +278,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-xxxhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
@@ -323,25 +324,24 @@ public class GdxSetup {
 		}
 
 		if(builder.modules.contains(ProjectType.IOSMOE)) {			
-			project.files.add(new ProjectFile("ios-moe/resources/Default.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon-72.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon-72@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/build.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/build.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info-Test.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}

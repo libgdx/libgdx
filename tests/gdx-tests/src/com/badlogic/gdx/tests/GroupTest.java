@@ -40,6 +40,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /** This tests both {@link Actor#parentToLocalCoordinates(Vector2)} and {@link Actor#localToParentCoordinates(Vector2)}. */
 public class GroupTest extends GdxTest {
@@ -58,7 +60,7 @@ public class GroupTest extends GdxTest {
 		font = new BitmapFont();
 		renderer = new ShapeRenderer();
 
-		stage = new Stage();
+		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
 		region = new TextureRegion(new Texture(Gdx.files.internal("data/group-debug.png")));
@@ -81,13 +83,13 @@ public class GroupTest extends GdxTest {
 			horiz.addActor(new Label(i + ",", style));
 			if (i == 7) horiz.addActor(new Container(new Image(texture)).size(10));
 		}
-		horiz.addActor(new Container(new Image(texture)).size(30));
+		horiz.addActor(new Container(new Image(texture)).fill().prefSize(30));
 		horiz.debug();
 		horiz.setPosition(10, 10);
 		horiz.pack();
 		stage.addActor(horiz);
 
-		horizWrap = new HorizontalGroup().wrap().pad(10, 20, 30, 40).right().rowRight().space(5).wrapSpace(15).reverse();
+		horizWrap = new HorizontalGroup().wrap().pad(10, 20, 30, 40).right().rowBottom().space(5).wrapSpace(15).reverse();
 		for (int i = 1; i <= 15; i++) {
 			horizWrap.addActor(new Label(i + ",", style));
 			if (i == 7) horizWrap.addActor(new Container(new Image(texture)).prefSize(10).fill());
@@ -108,7 +110,7 @@ public class GroupTest extends GdxTest {
 		vert.pack();
 		stage.addActor(vert);
 
-		vertWrap = new VerticalGroup().wrap().pad(10, 20, 30, 40).bottom().columnBottom().space(5).wrapSpace(15).reverse();
+		vertWrap = new VerticalGroup().wrap().pad(10, 20, 30, 40).bottom().columnRight().space(5).wrapSpace(15).reverse();
 		for (int i = 1; i <= 8; i++) {
 			vertWrap.addActor(new Label(i + ",", style));
 			if (i == 4) vertWrap.addActor(new Container(new Image(texture)).prefSize(10).fill());
@@ -120,17 +122,28 @@ public class GroupTest extends GdxTest {
 	}
 
 	public void render () {
+
+		horiz.setVisible(true);
 		horiz.setWidth(Gdx.input.getX() - horiz.getX());
 		// horiz.setWidth(200);
+		horiz.setHeight(100);
+		horiz.fill();
+		horiz.expand();
+		horiz.invalidate();
+		
+		horizWrap.setVisible(true);
+		horizWrap.fill();
+		horizWrap.expand();
 		horizWrap.setWidth(Gdx.input.getX() - horizWrap.getX());
 		// horizWrap.setHeight(horizWrap.getPrefHeight());
 		horizWrap.setHeight(200);
-
+		
 		vert.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vert.getY());
 		// vert.setWidth(200);
 		vertWrap.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vertWrap.getY());
 // vertWrap.setWidth(vertWrap.getPrefWidth());
 		vertWrap.setWidth(200);
+		
 
 		// Vary the transforms to exercise the different code paths.
 		group2.setBounds(150, 150, 150, 150);

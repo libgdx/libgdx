@@ -45,6 +45,7 @@ public class Label extends Widget {
 	private float lastPrefHeight;
 	private boolean prefSizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
+	private boolean fontScaleChanged = false;
 	private String ellipsis;
 
 	public Label (CharSequence text, Skin skin) {
@@ -124,11 +125,11 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
+		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		computePrefSize();
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	private void computePrefSize () {
@@ -147,7 +148,7 @@ public class Label extends Widget {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(fontScaleX, fontScaleY);
+		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		boolean wrap = this.wrap && ellipsis == null;
 		if (wrap) {
@@ -201,7 +202,7 @@ public class Label extends Widget {
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
 
-		if (fontScaleX != 1 || fontScaleY != 1) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
@@ -283,12 +284,11 @@ public class Label extends Widget {
 	}
 
 	public void setFontScale (float fontScale) {
-		this.fontScaleX = fontScale;
-		this.fontScaleY = fontScale;
-		invalidateHierarchy();
+		setFontScale(fontScale, fontScale);
 	}
 
 	public void setFontScale (float fontScaleX, float fontScaleY) {
+		fontScaleChanged = true;
 		this.fontScaleX = fontScaleX;
 		this.fontScaleY = fontScaleY;
 		invalidateHierarchy();
@@ -299,8 +299,7 @@ public class Label extends Widget {
 	}
 
 	public void setFontScaleX (float fontScaleX) {
-		this.fontScaleX = fontScaleX;
-		invalidateHierarchy();
+		setFontScale(fontScaleX, fontScaleY);
 	}
 
 	public float getFontScaleY () {
@@ -308,8 +307,7 @@ public class Label extends Widget {
 	}
 
 	public void setFontScaleY (float fontScaleY) {
-		this.fontScaleY = fontScaleY;
-		invalidateHierarchy();
+		setFontScale(fontScaleX, fontScaleY);
 	}
 
 	/** When non-null the text will be truncated "..." if it does not fit within the width of the label. Wrapping will not occur

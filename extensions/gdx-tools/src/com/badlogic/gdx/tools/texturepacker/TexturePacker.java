@@ -22,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -222,8 +221,9 @@ public class TexturePacker {
 				}
 			}
 
-			if (settings.bleed && !settings.premultiplyAlpha && !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
-				canvas = new ColorBleedEffect().processImage(canvas, 2);
+			if (settings.bleed && !settings.premultiplyAlpha
+				&& !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
+				canvas = new ColorBleedEffect().processImage(canvas, settings.bleedIterations);
 				g = (Graphics2D)canvas.getGraphics();
 			}
 
@@ -293,8 +293,8 @@ public class TexturePacker {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
-							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
-								+ rect.name);
+							throw new GdxRuntimeException(
+								"A region with the name \"" + rectName + "\" has already been packed: " + rect.name);
 						}
 					}
 				}
@@ -429,8 +429,9 @@ public class TexturePacker {
 		int score1, score2;
 
 		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
-			image = new BufferedImage(source.getColorModel(), source.getRaster().createWritableChild(left, top, newWidth, newHeight,
-				0, 0, null), source.getColorModel().isAlphaPremultiplied(), null);
+			image = new BufferedImage(source.getColorModel(),
+				source.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null),
+				source.getColorModel().isAlphaPremultiplied(), null);
 			offsetX = left;
 			offsetY = top;
 			regionWidth = newWidth;
@@ -547,10 +548,12 @@ public class TexturePacker {
 		public boolean debug;
 		public boolean silent;
 		public boolean combineSubdirectories;
+		public boolean ignore;
 		public boolean flattenPaths;
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
 		public boolean bleed = true;
+		public int bleedIterations = 2;
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
@@ -560,7 +563,13 @@ public class TexturePacker {
 		public Settings () {
 		}
 
+		/** @see #set(Settings) */
 		public Settings (Settings settings) {
+			set(settings);
+		}
+
+		/** Copies values from another instance to the current one */
+		public void set (Settings settings) {
 			fast = settings.fast;
 			rotation = settings.rotation;
 			pot = settings.pot;
@@ -587,11 +596,13 @@ public class TexturePacker {
 			debug = settings.debug;
 			silent = settings.silent;
 			combineSubdirectories = settings.combineSubdirectories;
+			ignore = settings.ignore;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
 			square = settings.square;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
+			bleedIterations = settings.bleedIterations;
 			limitMemory = settings.limitMemory;
 			grid = settings.grid;
 			scale = settings.scale;
@@ -639,8 +650,8 @@ public class TexturePacker {
 		}
 	}
 
-	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of the
-	 *         input file */
+	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of
+	 *         the input file */
 	static public boolean isModified (String input, String output, String packFileName, Settings settings) {
 		String packFullFileName = output;
 
@@ -663,22 +674,36 @@ public class TexturePacker {
 			throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		}
 
-		return inputFile.lastModified() > outputFile.lastModified();
+		return isModified(inputFile, outputFile.lastModified());
 	}
 
-	static public void processIfModified (String input, String output, String packFileName) {
+	static private boolean isModified (File file, long lastModified) {
+		if (file.lastModified() > lastModified) return true;
+		File[] children = file.listFiles();
+		if (children != null) {
+			for (File child : children)
+				if (isModified(child, lastModified)) return true;
+		}
+		return false;
+	}
+
+	static public boolean processIfModified (String input, String output, String packFileName) {
 		// Default settings (Needed to access the default atlas extension string)
 		Settings settings = new Settings();
 
 		if (isModified(input, output, packFileName, settings)) {
 			process(settings, input, output, packFileName);
+			return true;
 		}
+		return false;
 	}
 
-	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
+	static public boolean processIfModified (Settings settings, String input, String output, String packFileName) {
 		if (isModified(input, output, packFileName, settings)) {
 			process(settings, input, output, packFileName);
+			return true;
 		}
+		return false;
 	}
 
 	static public interface Packer {
@@ -714,8 +739,7 @@ public class TexturePacker {
 			File inputFile = new File(input);
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
-		if (settings == null)
-			settings = new Settings();
+		if (settings == null) settings = new Settings();
 
 		process(settings, input, output, packFileName);
 	}

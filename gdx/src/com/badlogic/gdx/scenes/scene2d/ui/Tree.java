@@ -86,9 +86,12 @@ public class Tree extends WidgetGroup {
 					if (!UIUtils.ctrl()) selection.clear();
 					float start = rangeStart.actor.getY(), end = node.actor.getY();
 					if (start > end)
-						selectNodes(rootNodes, end, start, true);
-					else
-						selectNodes(rootNodes, start, end, true);
+						selectNodes(rootNodes, end, start);
+					else {
+						selectNodes(rootNodes, start, end);
+						selection.items().orderedItems().reverse();
+					}
+
 					selection.fireChangeEvent();
 					Tree.this.rangeStart = rangeStart;
 					return;
@@ -282,18 +285,13 @@ public class Tree extends WidgetGroup {
 		return rowY;
 	}
 
-	void selectNodes (Array<Node> nodes, float low, float high, boolean checked) {
+	void selectNodes (Array<Node> nodes, float low, float high) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (node.actor.getY() < low) break;
 			if (!node.isSelectable()) continue;
-			if (node.actor.getY() <= high) {
-				if (checked)
-					selection.add(node);
-				else
-					selection.remove(node);
-			}
-			if (node.expanded) selectNodes(node.children, low, high, checked);
+			if (node.actor.getY() <= high) selection.add(node);
+			if (node.expanded) selectNodes(node.children, low, high);
 		}
 	}
 
@@ -471,8 +469,9 @@ public class Tree extends WidgetGroup {
 		protected void removeFromTree (Tree tree) {
 			tree.removeActor(actor);
 			if (!expanded) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).removeFromTree(tree);
+			Object[] children = this.children.items;
+			for (int i = 0, n = this.children.size; i < n; i++)
+				((Node)children[i]).removeFromTree(tree);
 		}
 
 		public void add (Node node) {

@@ -49,29 +49,29 @@ import com.badlogic.gdx.utils.Disposable;
  * @author mzechner, realitix */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
-	private final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
+	protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
-	private final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
+	protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
 
 	/** the color buffer texture **/
 	protected T colorTexture;
 
 	/** the default framebuffer handle, a.k.a screen. */
-	private static int defaultFramebufferHandle;
+	protected static int defaultFramebufferHandle;
 	/** true if we have polled for the default handle already. */
-	private static boolean defaultFramebufferHandleInitialized = false;
+	protected static boolean defaultFramebufferHandleInitialized = false;
 
 	/** the framebuffer handle **/
-	private int framebufferHandle;
+	protected int framebufferHandle;
 
 	/** the depthbuffer render object handle **/
-	private int depthbufferHandle;
+	protected int depthbufferHandle;
 
 	/** the stencilbuffer render object handle **/
-	private int stencilbufferHandle;
+	protected int stencilbufferHandle;
 
 	/** the depth stencil packed render buffer object handle **/
-	private int depthStencilPackedBufferHandle;
+	protected int depthStencilPackedBufferHandle;
 
 	/** width **/
 	protected final int width;
@@ -86,7 +86,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	protected final boolean hasStencil;
 
 	/** if has depth stencil packed buffer **/
-	private boolean hasDepthStencilPackedBuffer;
+	protected boolean hasDepthStencilPackedBuffer;
 
 	/** format **/
 	protected final Pixmap.Format format;
@@ -126,7 +126,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** Override this method in a derived class to dispose the backing texture as you like. */
 	protected abstract void disposeColorTexture (T colorTexture);
 
-	private void build () {
+	/** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
+	protected abstract void attachFrameBufferColorTexture ();
+
+	protected void build () {
 		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
@@ -153,7 +156,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			stencilbufferHandle = gl.glGenRenderbuffer();
 		}
 
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
+		gl.glBindTexture(colorTexture.glTarget, colorTexture.getTextureObjectHandle());
 
 		if (hasDepth) {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
@@ -167,8 +170,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		}
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
-		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
-			colorTexture.getTextureObjectHandle(), 0);
+
+		attachFrameBufferColorTexture();
+
 		if (hasDepth) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
 		}
@@ -178,7 +182,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		}
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		gl.glBindTexture(colorTexture.glTarget, 0);
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 

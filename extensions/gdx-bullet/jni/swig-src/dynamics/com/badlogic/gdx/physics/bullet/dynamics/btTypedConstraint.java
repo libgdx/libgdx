@@ -267,15 +267,6 @@ public class btTypedConstraint extends btTypedObject {
       return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
     }
   
-    public void setFindex(SWIGTYPE_p_int value) {
-      DynamicsJNI.btTypedConstraint_btConstraintInfo2_findex_set(swigCPtr, this, SWIGTYPE_p_int.getCPtr(value));
-    }
-  
-    public SWIGTYPE_p_int getFindex() {
-      long cPtr = DynamicsJNI.btTypedConstraint_btConstraintInfo2_findex_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new SWIGTYPE_p_int(cPtr, false);
-    }
-  
     public void setNumIterations(int value) {
       DynamicsJNI.btTypedConstraint_btConstraintInfo2_numIterations_set(swigCPtr, this, value);
     }

@@ -91,6 +91,22 @@ public class btGeneric6DofSpringConstraint extends btGeneric6DofConstraint {
     DynamicsJNI.btGeneric6DofSpringConstraint_setEquilibriumPoint__SWIG_2(swigCPtr, this, index, val);
   }
 
+  public boolean isSpringEnabled(int index) {
+    return DynamicsJNI.btGeneric6DofSpringConstraint_isSpringEnabled(swigCPtr, this, index);
+  }
+
+  public float getStiffness(int index) {
+    return DynamicsJNI.btGeneric6DofSpringConstraint_getStiffness(swigCPtr, this, index);
+  }
+
+  public float getDamping(int index) {
+    return DynamicsJNI.btGeneric6DofSpringConstraint_getDamping(swigCPtr, this, index);
+  }
+
+  public float getEquilibriumPoint(int index) {
+    return DynamicsJNI.btGeneric6DofSpringConstraint_getEquilibriumPoint(swigCPtr, this, index);
+  }
+
   public void setAxis(Vector3 axis1, Vector3 axis2) {
     DynamicsJNI.btGeneric6DofSpringConstraint_setAxis(swigCPtr, this, axis1, axis2);
   }

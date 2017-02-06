@@ -610,6 +610,10 @@ public class btDbvt extends BulletBase {
     CollisionJNI.btDbvt_collideTV(swigCPtr, this, btDbvtNode.getCPtr(root), root, btDbvtAabbMm.getCPtr(volume), volume, ICollide.getCPtr(policy), policy);
   }
 
+  public void collideTVNoStackAlloc(btDbvtNode root, btDbvtAabbMm volume, SWIGTYPE_p_btAlignedObjectArrayT_btDbvtNode_const_p_t stack, ICollide policy) {
+    CollisionJNI.btDbvt_collideTVNoStackAlloc(swigCPtr, this, btDbvtNode.getCPtr(root), root, btDbvtAabbMm.getCPtr(volume), volume, SWIGTYPE_p_btAlignedObjectArrayT_btDbvtNode_const_p_t.getCPtr(stack), ICollide.getCPtr(policy), policy);
+  }
+
   public static void rayTest(btDbvtNode root, Vector3 rayFrom, Vector3 rayTo, ICollide policy) {
     CollisionJNI.btDbvt_rayTest(btDbvtNode.getCPtr(root), root, rayFrom, rayTo, ICollide.getCPtr(policy), policy);
   }

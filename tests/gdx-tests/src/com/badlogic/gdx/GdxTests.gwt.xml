@@ -19,6 +19,7 @@
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/JsonReaderTest.java"/> <!-- uses ArrayList -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
+        <exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->
@@ -41,4 +42,5 @@
 		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0 -->
 	</source>
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
+	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.ReflectionCorrectnessTest" />
 </module>

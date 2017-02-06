@@ -1,7 +1,6 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -10,12 +9,8 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.FrameBufferCubemap;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * Render a basic scene in a FrameBufferCubemap and displays it
@@ -42,7 +37,8 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		camFb.update();
 		
 		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, true);
-		
+		cubemap = fb.getColorBufferTexture();
+
 		ObjLoader objLoader = new ObjLoader();
 		cubeMesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		cubeInstance = new ModelInstance(cubeMesh);
@@ -50,7 +46,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		cubeBatch = new ModelBatch(Gdx.files.internal("data/shaders/cubemap-vert.glsl"),
 											 Gdx.files.internal("data/shaders/cubemap-frag.glsl"));
 		
-		cubeMesh.materials.get(0).set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
+		cubeInstance.materials.get(0).set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 		
 		camCube = new PerspectiveCamera(67, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
 		camCube.position.set(0f, 2f, 2f);
@@ -93,13 +89,12 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 			modelBatch.end();
 		}
 		fb.end();
-		cubemap = fb.getColorBufferTexture();
 	}
 	
 	float yaw, pitch, roll;
 	public void renderCube() {
-		int w = Gdx.graphics.getWidth();
-		int h = Gdx.graphics.getHeight();
+		int w = Gdx.graphics.getBackBufferWidth();
+		int h = Gdx.graphics.getBackBufferHeight();
 		int x = (int)(w - w*0.5f);
 		int y = (int)(h - h*0.5f);
 		w *= 0.5f;

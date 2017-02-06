@@ -218,6 +218,7 @@ public abstract class BaseShader implements Shader {
 		for (int i = 0; i < n; i++) {
 			tempArray.add(attributes.get(attrs.get(i).getKey(), -1));
 		}
+		tempArray.shrink();
 		return tempArray.items;
 	}
 

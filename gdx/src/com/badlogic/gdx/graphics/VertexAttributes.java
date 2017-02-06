@@ -92,10 +92,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
-			if (attribute.usage == VertexAttributes.Usage.ColorPacked)
-				count += 4;
-			else
-				count += 4 * attribute.numComponents;
+			count += attribute.getSizeInBytes();
 		}
 
 		return count;

@@ -177,6 +177,7 @@ public:
 	//       maintain a given angular target.
 	void enableMotor(bool enableMotor) 	{ m_enableAngularMotor = enableMotor; }
 	void setMaxMotorImpulse(btScalar maxMotorImpulse) { m_maxMotorImpulse = maxMotorImpulse; }
+	void setMotorTargetVelocity(btScalar motorTargetVelocity) { m_motorTargetVelocity = motorTargetVelocity; }
 	void setMotorTarget(const btQuaternion& qAinB, btScalar dt); // qAinB is rotation of body A wrt body B.
 	void setMotorTarget(btScalar targetAngle, btScalar dt);
 
@@ -191,6 +192,33 @@ public:
 		m_limitSoftness =  _softness;
 		m_biasFactor = _biasFactor;
 		m_relaxationFactor = _relaxationFactor;
+#endif
+	}
+	
+	btScalar getLimitSoftness() const
+	{
+#ifdef	_BT_USE_CENTER_LIMIT_
+		return m_limit.getSoftness();
+#else
+		return m_limitSoftness;
+#endif
+	}
+
+	btScalar getLimitBiasFactor() const
+	{
+#ifdef	_BT_USE_CENTER_LIMIT_
+		return m_limit.getBiasFactor();
+#else
+		return m_biasFactor;
+#endif
+	}
+
+	btScalar getLimitRelaxationFactor() const
+	{
+#ifdef	_BT_USE_CENTER_LIMIT_
+		return m_limit.getRelaxationFactor();
+#else
+		return m_relaxationFactor;
 #endif
 	}
 
@@ -297,13 +325,20 @@ public:
 	// access for UseFrameOffset
 	bool getUseFrameOffset() { return m_useOffsetForConstraintFrame; }
 	void setUseFrameOffset(bool frameOffsetOnOff) { m_useOffsetForConstraintFrame = frameOffsetOnOff; }
-
+	// access for UseReferenceFrameA
+	bool getUseReferenceFrameA() const { return m_useReferenceFrameA; }
+	void setUseReferenceFrameA(bool useReferenceFrameA) { m_useReferenceFrameA = useReferenceFrameA; }
 
 	///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
 	///If no axis is provided, it uses the default axis for this constraint.
 	virtual	void	setParam(int num, btScalar value, int axis = -1);
 	///return the local value of parameter
 	virtual	btScalar getParam(int num, int axis = -1) const;
+	
+	virtual	int getFlags() const
+	{
+  	    return m_flags;
+	}
 
 	virtual	int	calculateSerializeBufferSize() const;
 
