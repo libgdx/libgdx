@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** A convenient 2D ellipse class, based on the circle class
  * @author tonyp7 */
-public class Ellipse implements Serializable {
+public class Ellipse implements Serializable, Shape2D {
 
 	public float x, y;
 	public float width, height;

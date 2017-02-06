@@ -25,8 +25,8 @@ public class IOSFiles implements Files {
 	// TODO: Use NSSearchPathForDirectoriesInDomains instead?
 	// $HOME should point to the app root dir.
 	static final String appDir = System.getenv("HOME");
-	static final String externalPath = appDir + "/Documents";
-	static final String localPath = appDir + "/Library/local";
+	static final String externalPath = appDir + "/Documents/";
+	static final String localPath = appDir + "/Library/local/";
 	static final String internalPath = NSBundle.getMainBundle().getBundlePath();
 
 	public IOSFiles () {

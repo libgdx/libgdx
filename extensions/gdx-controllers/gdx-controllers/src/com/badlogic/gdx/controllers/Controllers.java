@@ -16,9 +16,12 @@
 
 package com.badlogic.gdx.controllers;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.utils.Array;
@@ -58,6 +61,18 @@ public class Controllers {
 		initialize();
 		getManager().removeListener(listener);
 	}
+	
+	/** Removes every global {@link ControllerListener} previously added. */
+	static public void clearListeners () {
+		initialize();
+		getManager().clearListeners();
+	}
+	
+	/** Returns all listeners currently registered. Modifying this array will result in undefined behaviour. **/
+	static public Array<ControllerListener> getListeners() {
+		initialize();
+		return getManager().getListeners();
+	}
 
 	static private ControllerManager getManager () {
 		return managers.get(Gdx.app);
@@ -78,7 +93,11 @@ public class Controllers {
 				manager = new ControllerManagerStub();
 			}
 		} else if (type == ApplicationType.Desktop) {
-			className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
+			if(Gdx.graphics.getType() == GraphicsType.LWJGL3) {
+				className = "com.badlogic.gdx.controllers.lwjgl3.Lwjgl3ControllerManager";
+			} else {
+				className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
+			}
 		} else if (type == ApplicationType.WebGL) {
 			className = "com.badlogic.gdx.controllers.gwt.GwtControllers";
 		} else {
@@ -98,7 +117,6 @@ public class Controllers {
 		managers.put(Gdx.app, manager);
 		final Application app = Gdx.app;
 		Gdx.app.addLifecycleListener(new LifecycleListener() {
-
 			@Override
 			public void resume () {
 			}

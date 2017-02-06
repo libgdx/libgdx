@@ -41,9 +41,9 @@ public class Contact {
 		this.world = world;
 	}
 
-	/** Get the world manifold. */
 	private final float[] tmp = new float[8];
 
+	/** Get the world manifold. */
 	public WorldManifold getWorldManifold () {
 		int numContactPoints = jniGetWorldManifold(addr, tmp);
 

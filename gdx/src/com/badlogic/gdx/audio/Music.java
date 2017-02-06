@@ -78,6 +78,9 @@ public interface Music extends Disposable {
 	 * @param volume the volume in the range [0,1]. */
 	public void setPan (float pan, float volume);
 
+	/** Set the playback position in seconds. */ 
+	public void setPosition (float position);
+	
 	/** Returns the playback position in seconds. */
 	public float getPosition ();
 

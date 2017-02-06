@@ -30,18 +30,25 @@ public class Executor {
 	 * @return whether the Ant succeeded */
 	public static boolean execute (File workingDir, String windowsFile, String unixFile, String parameters, CharCallback callback) {
 		String exec = workingDir.getAbsolutePath() + "/" + (System.getProperty("os.name").contains("Windows") ? windowsFile : unixFile);
-		String command = exec + " " + parameters;
-		String log = "Executing '" + command + "'";
+		String log = "Executing '" + exec + " " + parameters + "'";
 		for(int i = 0; i < log.length(); i++) {
 			callback.character(log.charAt(i));
 		}
 		callback.character('\n');
-		return startProcess(command, workingDir, callback);
+		
+		String[] params = parameters.split(" ");
+		String[] commands = new String[params.length + 1];
+		commands[0] = exec;
+		for (int i = 0; i < params.length; i++) {
+			commands[i + 1] = params[i];
+		}
+		
+		return startProcess(commands, workingDir, callback);
 	}
 
-	private static boolean startProcess (String command, File directory, final CharCallback callback) {
+	private static boolean startProcess (String[] commands, File directory, final CharCallback callback) {
 		try {
-			final Process process = new ProcessBuilder(command.split(" ")).redirectErrorStream(true).directory(directory).start();
+			final Process process = new ProcessBuilder(commands).redirectErrorStream(true).directory(directory).start();
 
 			Thread t = new Thread(new Runnable() {
 				@Override

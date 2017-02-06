@@ -45,7 +45,57 @@ public class ControllersTest extends GdxTest {
 	@Override
 	public void create () {
 		setupUi();
+	}
 
+	void print (String message) {
+		String[] lines = console.getItems().toArray(String.class);
+		String[] newLines = new String[lines.length + 1];
+		System.arraycopy(lines, 0, newLines, 0, lines.length);
+		newLines[newLines.length - 1] = message;
+		console.setItems(newLines);
+		scrollPane.invalidate();
+		scrollPane.validate();
+		scrollPane.setScrollPercentY(1.0f);
+	}
+
+	void clear () {
+		console.setItems(new String[0]);
+	}
+
+	private void setupUi () {
+		// setup a tiny ui with a console and a clear button.
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		stage = new Stage();
+		ui = new Table();
+		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		console = new List(skin);
+		scrollPane = new ScrollPane(console);
+		scrollPane.setScrollbarsOnTop(true);
+		TextButton clear = new TextButton("Clear", skin);
+		ui.add(scrollPane).expand(true, true).fill();
+		ui.row();
+		ui.add(clear).expand(true, false).fill();
+		stage.addActor(ui);
+		clear.addListener(new ClickListener() {
+			@Override
+			public void clicked (InputEvent event, float x, float y) {
+				clear();
+			}
+		});
+		Gdx.input.setInputProcessor(stage);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+		ui.setSize(width, height);
+		ui.invalidate();
+		stage.getViewport().update(width, height, true);
+	}
+
+	boolean initialized = false;
+
+	private void initialize () {
+		if (initialized) return;
 		// print the currently connected controllers to the console
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
@@ -121,55 +171,12 @@ public class ControllersTest extends GdxTest {
 				return false;
 			}
 		});
-	}
-
-	void print (String message) {
-		String[] lines = console.getItems().toArray(String.class);
-		String[] newLines = new String[lines.length + 1];
-		System.arraycopy(lines, 0, newLines, 0, lines.length);
-		newLines[newLines.length - 1] = message;
-		console.setItems(newLines);
-		scrollPane.invalidate();
-		scrollPane.validate();
-		scrollPane.setScrollPercentY(1.0f);
-	}
-
-	void clear () {
-		console.setItems(new String[0]);
-	}
-
-	private void setupUi () {
-		// setup a tiny ui with a console and a clear button.
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage();
-		ui = new Table();
-		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		console = new List(skin);
-		scrollPane = new ScrollPane(console);
-		scrollPane.setScrollbarsOnTop(true);
-		TextButton clear = new TextButton("Clear", skin);
-		ui.add(scrollPane).expand(true, true).fill();
-		ui.row();
-		ui.add(clear).expand(true, false).fill();
-		stage.addActor(ui);
-		clear.addListener(new ClickListener() {
-			@Override
-			public void clicked (InputEvent event, float x, float y) {
-				clear();
-			}
-		});
-		Gdx.input.setInputProcessor(stage);
-	}
-
-	@Override
-	public void resize (int width, int height) {
-		ui.setSize(width, height);
-		ui.invalidate();
-		stage.getViewport().update(width, height, true);
+		initialized = true;
 	}
 
 	@Override
 	public void render () {
+		initialize();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

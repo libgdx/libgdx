@@ -19,11 +19,9 @@ package com.badlogic.gdx.graphics.glutils;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /** <p>
@@ -32,7 +30,7 @@ import com.badlogic.gdx.utils.BufferUtils;
  * </p>
  * 
  * <p>
- * This class does not support shaders and for that matter OpenGL ES 2.0. For this {@link VertexBufferObject}s are needed.
+ * This class is not compatible with OpenGL 3+ core profiles. For this {@link VertexBufferObject}s are needed.
  * </p>
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
@@ -103,7 +101,6 @@ public class VertexArray implements VertexData {
 
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		byteBuffer.limit(buffer.limit() * 4);
 		if (locations == null) {
@@ -113,15 +110,9 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.type == GL20.GL_FLOAT) {
-					buffer.position(attribute.offset / 4);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-							buffer);
-				} else {
-					byteBuffer.position(attribute.offset);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						byteBuffer);
-				}
+				byteBuffer.position(attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+					byteBuffer);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -130,15 +121,9 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.type == GL20.GL_FLOAT) {
-					buffer.position(attribute.offset / 4);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-							buffer);
-				} else {
-					byteBuffer.position(attribute.offset);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						byteBuffer);
-				}
+				byteBuffer.position(attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+					byteBuffer);
 			}
 		}
 		isBound = true;
@@ -154,7 +139,6 @@ public class VertexArray implements VertexData {
 
 	@Override
 	public void unbind (ShaderProgram shader, int[] locations) {
-		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
@@ -172,5 +156,9 @@ public class VertexArray implements VertexData {
 	@Override
 	public VertexAttributes getAttributes () {
 		return attributes;
+	}
+	
+	@Override
+	public void invalidate () {
 	}
 }

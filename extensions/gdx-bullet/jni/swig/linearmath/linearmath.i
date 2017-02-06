@@ -18,6 +18,9 @@ static  int btInfinityMask = 0x7F800000;
  * btScalar.h defines macros the other types need, so process it first.  
  * It also defines some static functions that end up in gdxBulletJNI.java.
  */
+%ignore btInfMaskConverter;
+%ignore btInfinityMask;
+%ignore btGetInfinityMask();
 %include "LinearMath/btScalar.h"
 
 %include "btTransform.i"

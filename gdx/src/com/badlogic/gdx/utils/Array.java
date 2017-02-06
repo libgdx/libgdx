@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
@@ -78,9 +78,9 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
 
-	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of backing
-	 * array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
-	 * grown. */
+	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of
+	 * backing array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array
+	 * to be grown. */
 	public Array (T[] array) {
 		this(true, array, 0, array.length);
 	}
@@ -92,7 +92,7 @@ public class Array<T> implements Iterable<T> {
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
-		System.arraycopy(array, 0, items, 0, size);
+		System.arraycopy(array, start, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -105,22 +105,22 @@ public class Array<T> implements Iterable<T> {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
-		if (offset + length > array.size)
-			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+	public void addAll (Array<? extends T> array, int start, int count) {
+		if (start + count > array.size)
+			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
+		addAll((T[])array.items, start, count);
 	}
 
 	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
-	public void addAll (T[] array, int offset, int length) {
+	public void addAll (T[] array, int start, int count) {
 		T[] items = this.items;
-		int sizeNeeded = size + length;
+		int sizeNeeded = size + count;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array, offset, items, size, length);
-		size += length;
+		System.arraycopy(array, start, items, size, count);
+		size += count;
 	}
 
 	public T get (int index) {
@@ -155,6 +155,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns if this array contains value.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if array contains value, false if it doesn't */
 	public boolean contains (T value, boolean identity) {
@@ -170,7 +171,8 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	/** Returns an index of first occurrence of value in array or -1 if no such value exists
+	/** Returns the index of first occurrence of value in the array, or -1 if no such value exists.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of first occurrence of value in array or -1 if no such value exists */
 	public int indexOf (T value, boolean identity) {
@@ -187,6 +189,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an index of last occurrence of value in array or -1 if no such value exists. Search is started from the end of an
 	 * array.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return An index of last occurrence of value in array or -1 if no such value exists */
 	public int lastIndexOf (T value, boolean identity) {
@@ -202,6 +205,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes the first instance of the specified value in the array.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
 	public boolean removeValue (T value, boolean identity) {
@@ -315,8 +319,8 @@ public class Array<T> implements Iterable<T> {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public T[] shrink () {
 		if (items.length != size) resize(size);
@@ -329,6 +333,15 @@ public class Array<T> implements Iterable<T> {
 	public T[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size null.
+	 * @return {@link #items} */
+	public T[] setSize (int newSize) {
+		truncate(newSize);
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 
@@ -443,10 +456,24 @@ public class Array<T> implements Iterable<T> {
 		return result;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		Object[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++) {
+			h *= 31;
+			Object item = items[i];
+			if (item != null) h += item.hashCode();
+		}
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof Array)) return false;
 		Array array = (Array)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
 		Object[] items1 = this.items;
@@ -506,6 +533,8 @@ public class Array<T> implements Iterable<T> {
 		int index;
 		boolean valid = true;
 
+// ArrayIterable<T> iterable;
+
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
 		}
@@ -516,13 +545,19 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return index < array.size;
 		}
 
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			if (!valid) {
+// System.out.println(iterable.lastAcquire);
+				throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			}
 			return array.items[index++];
 		}
 
@@ -546,6 +581,8 @@ public class Array<T> implements Iterable<T> {
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
 
+// java.io.StringWriter lastAcquire = new java.io.StringWriter();
+
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
 		}
@@ -556,9 +593,13 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public Iterator<T> iterator () {
+// lastAcquire.getBuffer().setLength(0);
+// new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
 				iterator1 = new ArrayIterator(array, allowRemove);
 				iterator2 = new ArrayIterator(array, allowRemove);
+// iterator1.iterable = this;
+// iterator2.iterable = this;
 			}
 			if (!iterator1.valid) {
 				iterator1.index = 0;

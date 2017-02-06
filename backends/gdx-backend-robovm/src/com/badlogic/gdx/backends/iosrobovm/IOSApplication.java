@@ -18,14 +18,16 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 
-import org.robovm.apple.coregraphics.CGSize;
+import com.badlogic.gdx.ApplicationLogger;
+import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.foundation.NSThread;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
@@ -33,6 +35,7 @@ import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
 import org.robovm.apple.uikit.UIWindow;
+import org.robovm.rt.bro.Bro;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -58,7 +61,7 @@ public class IOSApplication implements Application {
 		protected abstract IOSApplication createApplication ();
 
 		@Override
-		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -96,9 +99,12 @@ public class IOSApplication implements Application {
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	ApplicationLogger applicationLogger;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
+
+	private CGRect lastScreenBounds = null;
 
 	Array<Runnable> runnables = new Array<Runnable>();
 	Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -109,22 +115,29 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 
-	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
+	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
+		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
 		UIApplication.getSharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
 
+		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
-		if (UIScreen.getMainScreen().getScale() == 2.0f) {
-			// we have a retina device!
+
+		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
+
+		float scale = (float)(getIosVersion() >= 8 ? UIScreen.getMainScreen().getNativeScale() : UIScreen.getMainScreen()
+			.getScale());
+		if (scale >= 2.0f) {
+			Gdx.app.debug("IOSApplication", "scale: " + scale);
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina * scale;
 			} else {
 				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina * scale;
 			}
 		} else {
 			// no retina screen: no scaling!
@@ -137,14 +150,11 @@ public class IOSApplication implements Application {
 			}
 		}
 
-		GL20 gl20 = new IOSGLES20();
-
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
-
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
+		this.graphics = new IOSGraphics(scale, this, config, input, config.useGL30);
+		Gdx.gl = Gdx.gl20 = graphics.gl20;
+		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
@@ -164,6 +174,12 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
+	private int getIosVersion () {
+		String systemVersion = UIDevice.getCurrentDevice().getSystemVersion();
+		int version = Integer.parseInt(systemVersion.split("\\.")[0]);
+		return version;
+	}
+
 	/** Return the UI view controller of IOSApplication
 	 * @return the view controller of IOSApplication */
 	public UIViewController getUIViewController () {
@@ -176,51 +192,55 @@ public class IOSApplication implements Application {
 		return uiWindow;
 	}
 
-	/** Returns our real display dimension based on screen orientation.
+	/** GL View spans whole screen, that is, even under the status bar. iOS can also rotate the screen, which is not handled
+	 * consistently over iOS versions. This method returns, in pixels, rectangle in which libGDX draws.
 	 *
-	 * @param viewController The view controller.
-	 * @return Or real display dimension. */
-	CGSize getBounds (UIViewController viewController) {
-		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
+	 * @return dimensions of space we draw to, adjusted for device orientation */
+	protected CGRect getBounds () {
+		final CGRect screenBounds = UIScreen.getMainScreen().getBounds();
+		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
+		final UIInterfaceOrientation statusBarOrientation = uiApp.getStatusBarOrientation();
 
-		// determine orientation and resulting width + height
-		UIInterfaceOrientation orientation;
-		if (viewController != null) {
-			orientation = viewController.getInterfaceOrientation();
-		} else if (config.orientationLandscape == config.orientationPortrait) {
-			/*
-			 * if the app has orientation in any side then we can only check status bar orientation
-			 */
-			orientation = uiApp.getStatusBarOrientation();
-		} else if (config.orientationLandscape) {// is landscape true and portrait false
-			orientation = UIInterfaceOrientation.LandscapeRight;
-		} else {// is portrait true and landscape false
-			orientation = UIInterfaceOrientation.Portrait;
-		}
-		int width;
-		int height;
-		switch (orientation) {
+		double statusBarHeight = Math.min(statusBarFrame.getWidth(), statusBarFrame.getHeight());
+
+		double screenWidth = screenBounds.getWidth();
+		double screenHeight = screenBounds.getHeight();
+
+		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
+		switch (statusBarOrientation) {
 		case LandscapeLeft:
 		case LandscapeRight:
-			height = (int)bounds.width();
-			width = (int)bounds.height();
-			break;
-		default:
-			// assume portrait
-			width = (int)bounds.width();
-			height = (int)bounds.height();
+			if (screenHeight > screenWidth) {
+				debug("IOSApplication", "Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
+				double tmp = screenHeight;
+				// noinspection SuspiciousNameCombination
+				screenHeight = screenWidth;
+				screenWidth = tmp;
+			}
 		}
 
 		// update width/height depending on display scaling selected
-		width *= displayScaleFactor;
-		height *= displayScaleFactor;
+		screenWidth *= displayScaleFactor;
+		screenHeight *= displayScaleFactor;
 
-		// log screen dimensions
-		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
+		if (statusBarHeight != 0.0) {
+			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
+			statusBarHeight *= displayScaleFactor;
+			screenHeight -= statusBarHeight;
+		} else {
+			debug("IOSApplication", "Status bar is not visible");
+		}
 
-		// return resulting view size (based on orientation)
-		return new CGSize(width, height);
+		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
+
+		return lastScreenBounds = new CGRect(0.0, statusBarHeight, screenWidth, screenHeight);
+	}
+
+	protected CGRect getCachedBounds () {
+		if (lastScreenBounds == null)
+			return getBounds();
+		else
+			return lastScreenBounds;
 	}
 
 	final void didBecomeActive (UIApplication uiApp) {
@@ -229,7 +249,7 @@ public class IOSApplication implements Application {
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		OALAudioSession.sharedInstance().forceEndInterruption();
 		if (config.allowIpod) {
-			 OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+			OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
 		}
 		graphics.makeCurrent();
 		graphics.resume();
@@ -292,48 +312,33 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("[info] " + tag + ": " + message);
-		}
-	}
-
-	@Override
-	public void log (String tag, String message, Throwable exception) {
-		if (logLevel > LOG_NONE) {
-			Foundation.log("[info] " + tag + ": " + message);
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("[error] " + tag + ": " + message);
-		}
-	}
-
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			Foundation.log("[error] " + tag + ": " + message);
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("[debug] " + tag + ": " + message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Foundation.log("[error] " + tag + ": " + message);
-			exception.printStackTrace();
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
+	}
+
+	@Override
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
+	}
+
+	@Override
+	public void log (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
+	}
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
+	}
+
+	@Override
+	public void error (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -344,6 +349,16 @@ public class IOSApplication implements Application {
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override
@@ -387,6 +402,7 @@ public class IOSApplication implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -407,7 +423,7 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void exit () {
-		System.exit(0);
+		NSThread.exit();
 	}
 
 	@Override
@@ -415,12 +431,12 @@ public class IOSApplication implements Application {
 		return new Clipboard() {
 			@Override
 			public void setContents (String content) {
-				UIPasteboard.getGeneral().setString(content);
+				UIPasteboard.getGeneralPasteboard().setString(content);
 			}
 
 			@Override
 			public String getContents () {
-				return UIPasteboard.getGeneral().getString();
+				return UIPasteboard.getGeneralPasteboard().getString();
 			}
 		};
 	}
@@ -439,11 +455,9 @@ public class IOSApplication implements Application {
 		}
 	}
 
-	/**
-	 * Add a listener to handle events from the libgdx root view controller
-	 * @param listener The {#link IOSViewControllerListener} to add
-	 */
-	public void addViewControllerListener(IOSViewControllerListener listener) {
+	/** Add a listener to handle events from the libgdx root view controller
+	 * @param listener The {#link IOSViewControllerListener} to add */
+	public void addViewControllerListener (IOSViewControllerListener listener) {
 		viewControllerListener = listener;
 	}
 }

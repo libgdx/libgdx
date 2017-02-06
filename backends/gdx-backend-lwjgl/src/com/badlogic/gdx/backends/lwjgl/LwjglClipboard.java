@@ -32,26 +32,29 @@ public class LwjglClipboard implements Clipboard, ClipboardOwner {
 	@Override
 	public String getContents () {
 		String result = "";
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		Transferable contents = clipboard.getContents(null);
-		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-		if (hasTransferableText) {
-			try {
-				result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-			} catch (UnsupportedFlavorException ex) {
-				// doh...
-			} catch (IOException ex) {
-				// doh...
+		try {
+			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			Transferable contents = clipboard.getContents(null);
+			boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+			if (hasTransferableText) {
+				try {
+					result = (String)contents.getTransferData(DataFlavor.stringFlavor);
+				} catch (Exception ex) {
+				}
 			}
+		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
 		}
 		return result;
 	}
 
 	@Override
 	public void setContents (String content) {
-		StringSelection stringSelection = new StringSelection(content);
-		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboard.setContents(stringSelection, this);
+		try {
+			StringSelection stringSelection = new StringSelection(content);
+			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(stringSelection, this);
+		} catch (Exception ignored) { // Ignore JDK crashes sorting data flavors.
+		}
 	}
 
 	@Override

@@ -16,7 +16,7 @@ subject to the following restrictions:
 
 
 #include "btCollisionDispatcher.h"
-
+#include "LinearMath/btQuickprof.h"
 
 #include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
 
@@ -189,7 +189,7 @@ bool	btCollisionDispatcher::needsCollision(const btCollisionObject* body0,const 
 
 	if ((!body0->isActive()) && (!body1->isActive()))
 		needsCollision = false;
-	else if (!body0->checkCollideWith(body1))
+	else if ((!body0->checkCollideWith(body1)) || (!body1->checkCollideWith(body0)))
 		needsCollision = false;
 	
 	return needsCollision ;
@@ -227,6 +227,8 @@ public:
 
 	virtual bool	processOverlap(btBroadphasePair& pair)
 	{
+		BT_PROFILE("btCollisionDispatcher::processOverlap");
+
 		(*m_dispatcher->getNearCallback())(pair,*m_dispatcher,m_dispatchInfo);
 
 		return false;
@@ -246,7 +248,6 @@ void	btCollisionDispatcher::dispatchAllCollisionPairs(btOverlappingPairCache* pa
 	//m_blockedForChanges = false;
 
 }
-
 
 
 

@@ -201,8 +201,8 @@ public class BooleanArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public boolean[] shrink () {
 		if (items.length != size) resize(size);
@@ -215,6 +215,14 @@ public class BooleanArray {
 	public boolean[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined.
+	 * @return {@link #items} */
+	public boolean[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 
@@ -264,14 +272,27 @@ public class BooleanArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		boolean[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + (items[i] ? 1231 : 1237);
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof BooleanArray)) return false;
 		BooleanArray array = (BooleanArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		boolean[] items1 = this.items;
+		boolean[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

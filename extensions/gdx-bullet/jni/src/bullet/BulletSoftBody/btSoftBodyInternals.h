@@ -161,7 +161,7 @@ public:
 	}
 	virtual btScalar	getMargin() const
 	{
-		return getMargin();
+		return btConvexInternalShape::getMargin();
 	}
 };
 

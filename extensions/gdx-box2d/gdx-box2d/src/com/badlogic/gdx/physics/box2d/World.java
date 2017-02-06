@@ -204,7 +204,7 @@ b2ContactFilter defaultFilter;
 	};
 
 	/** the address of the world instance **/
-	private final long addr;
+	protected final long addr;
 
 	/** all known bodies **/
 	protected final LongMap<Body> bodies = new LongMap<Body>(100);
@@ -325,8 +325,11 @@ b2ContactFilter defaultFilter;
 		this.bodies.remove(body.addr);
 		Array<Fixture> fixtureList = body.getFixtureList();
 		while(fixtureList.size > 0) {
-			this.fixtures.remove(fixtureList.removeIndex(0).addr).setUserData(null);
-		}
+			Fixture fixtureToDelete = fixtureList.removeIndex(0);
+ 			this.fixtures.remove(fixtureToDelete.addr).setUserData(null);
+ 			freeFixtures.free(fixtureToDelete);
+ 		}
+		
 		freeBodies.free(body);
 	}
 
@@ -338,6 +341,46 @@ b2ContactFilter defaultFilter;
 		world->SetContactFilter(&contactFilter);
 		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for fixture destruction with notifying custom
+	 * contact listener
+	 * @param body
+	 * @param fixture */
+	void destroyFixture(Body body, Fixture fixture) {
+		jniDestroyFixture(addr, body.addr, fixture.addr);
+	}
+	
+	private native void jniDestroyFixture(long addr, long bodyAddr, long fixtureAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);
+		b2Fixture* fixture = (b2Fixture*)(fixtureAddr);
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->DestroyFixture(fixture);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
+	
+	/** Internal method for body deactivation with notifying custom
+	 * contact listener
+	 * @param body */
+	void deactivateBody(Body body) {
+		jniDeactivateBody(addr, body.addr);
+	}
+	
+	private native void jniDeactivateBody(long addr, long bodyAddr); /*
+		b2World* world = (b2World*)(addr);
+		b2Body* body = (b2Body*)(bodyAddr);	
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env, object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		body->SetActive(false);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
 	*/
@@ -710,6 +753,11 @@ b2ContactFilter defaultFilter;
 		b2World* world = (b2World*)addr;
 		return world->GetBodyCount();
 	*/
+	
+	/** Get the number of fixtures. */
+	public int getFixtureCount () {
+		return fixtures.size;
+	}
 
 	/** Get the number of joints. */
 	public int getJointCount () {
@@ -869,6 +917,15 @@ b2ContactFilter defaultFilter;
 		}		
 	}
 
+	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
+	public void getFixtures (Array<Fixture> fixtures) {
+		fixtures.clear();
+		fixtures.ensureCapacity(this.fixtures.size);
+		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
+			fixtures.add(iter.next());
+		}		
+	}
+
 	/** @param joints an Array in which to place all joints currently in the simulation */
 	public void getJoints (Array<Joint> joints) {
 		joints.clear();
@@ -968,8 +1025,18 @@ b2ContactFilter defaultFilter;
 	 * @param point1 the ray starting point
 	 * @param point2 the ray ending point */
 	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		rayCast(callback, point1.x, point1.y, point2.x, point2.y);
+	}
+
+	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
+	 * @param callback a user implemented callback class.
+	 * @param point1X the ray starting point X
+	 * @param point1Y the ray starting point Y
+	 * @param point2X the ray ending point X
+	 * @param point2Y the ray ending point Y */
+	public void rayCast (RayCastCallback callback, float point1X, float point1Y, float point2X, float point2Y) {
 		rayCastCallback = callback;
-		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
+		jniRayCast(addr, point1X, point1Y, point2X, point2Y);
 	}
 
 	private RayCastCallback rayCastCallback = null;

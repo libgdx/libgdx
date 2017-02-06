@@ -16,17 +16,18 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import com.badlogic.gdx.ApplicationListener;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Point;
 
 import javax.swing.JFrame;
 
+import com.badlogic.gdx.ApplicationListener;
+
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
 	LwjglCanvas lwjglCanvas;
+	private Thread shutdownHook;
 
 	public LwjglFrame (ApplicationListener listener, String title, int width, int height) {
 		super(title);
@@ -78,11 +79,7 @@ public class LwjglFrame extends JFrame {
 			}
 		};
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run () {
-				Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
-			}
-		});
+		setHaltOnShutdown(true);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(config.width, config.height));
@@ -101,6 +98,23 @@ public class LwjglFrame extends JFrame {
 				lwjglCanvas.getCanvas().requestFocus();
 			}
 		});
+	}
+
+	/** When true, <code>Runtime.getRuntime().halt(0);</code> is used when the JVM shuts down. This prevents Swing shutdown hooks
+	 * from causing a deadlock and keeping the JVM alive indefinitely. Default is true. */
+	public void setHaltOnShutdown (boolean halt) {
+		if (halt) {
+			if (shutdownHook != null) return;
+			shutdownHook = new Thread() {
+				public void run () {
+					Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
+				}
+			};
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+		} else if (shutdownHook != null) {
+			Runtime.getRuntime().removeShutdownHook(shutdownHook);
+			shutdownHook = null;
+		}
 	}
 
 	protected int getFrameRate () {

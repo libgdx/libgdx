@@ -30,8 +30,7 @@ namespace
   }
 }
 
-const btScalar btPolarDecomposition::DEFAULT_TOLERANCE = btScalar(0.0001);
-const unsigned int btPolarDecomposition::DEFAULT_MAX_ITERATIONS = 16;
+
 
 btPolarDecomposition::btPolarDecomposition(btScalar tolerance, unsigned int maxIterations)
 : m_tolerance(tolerance)

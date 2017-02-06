@@ -52,8 +52,9 @@ public interface VertexData extends Disposable {
 	 * @param count the number of floats to copy */
 	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count);
 
-	/** Returns the underlying FloatBuffer. If you modify the buffer contents they will be uploaded on the next call to bind. If you
-	 * need immediate uploading use {@link #setVertices(float[], int, int)};
+	/** Returns the underlying FloatBuffer and marks it as dirty, causing the buffer contents to be uploaded on the next call to
+	 * bind. If you need immediate uploading use {@link #setVertices(float[], int, int)}; Any modifications made to the Buffer
+	 * *after* the call to bind will not automatically be uploaded.
 	 * @return the underlying FloatBuffer holding the vertex data. */
 	public FloatBuffer getBuffer ();
 
@@ -70,6 +71,9 @@ public interface VertexData extends Disposable {
 	/** Unbinds this VertexData.
 	 * @param locations array containing the attribute locations. */
 	public void unbind (ShaderProgram shader, int[] locations);
+	
+	/** Invalidates the VertexData if applicable. Use this in case of a context loss. */
+	public void invalidate ();
 
 	/** Disposes this VertexData and all its associated OpenGL resources. */
 	public void dispose ();

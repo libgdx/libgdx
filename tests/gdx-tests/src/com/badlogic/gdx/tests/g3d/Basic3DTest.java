@@ -45,7 +45,7 @@ public class Basic3DTest extends GdxTest {
 	@Override
 	public void create () {
 		modelBatch = new ModelBatch(new DefaultShaderProvider());
-// modelBatch = new ModelBatch();
+
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .4f, .4f, .4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
@@ -53,17 +53,14 @@ public class Basic3DTest extends GdxTest {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
 		cam.lookAt(0, 0, 0);
-		cam.near = 0.1f;
-		cam.far = 300f;
+		cam.near = 1f;
+		cam.far = 30f;
 		cam.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position
 			| Usage.Normal);
 		instance = new ModelInstance(model);
-
-// model = new G3dModelLoader(new UBJsonReader()).loadModel(Gdx.files.internal("data/g3d/knight.g3db"));
-// instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
@@ -72,7 +69,7 @@ public class Basic3DTest extends GdxTest {
 	public void render () {
 		inputController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);

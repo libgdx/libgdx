@@ -41,9 +41,10 @@ public class Mp3 {
 			if (audio.noDevice) return;
 			bitstream = new Bitstream(file.read());
 			decoder = new MP3Decoder();
+			bufferOverhead = 4096;
 			try {
 				Header header = bitstream.readFrame();
-				if (header == null) throw new GdxRuntimeException("empty ogg");
+				if (header == null) throw new GdxRuntimeException("Empty MP3");
 				int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
 				outputBuffer = new OutputBuffer(channels, false);
 				decoder.setOutputBuffer(outputBuffer);

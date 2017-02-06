@@ -821,14 +821,15 @@ void btSolveL1T (const btScalar *L, btScalar *B, int n, int lskip1)
   /* declare variables - Z matrix, p and q vectors, etc */
   btScalar Z11,m11,Z21,m21,Z31,m31,Z41,m41,p1,q1,p2,p3,p4,*ex;
   const btScalar *ell;
-  int lskip2,lskip3,i,j;
+  int lskip2,i,j;
+//  int lskip3;
   /* special handling for L and B because we're solving L1 *transpose* */
   L = L + (n-1)*(lskip1+1);
   B = B + n-1;
   lskip1 = -lskip1;
   /* compute lskip values */
   lskip2 = 2*lskip1;
-  lskip3 = 3*lskip1;
+  //lskip3 = 3*lskip1;
   /* compute all 4 x 1 blocks of X */
   for (i=0; i <= n-4; i+=4) {
     /* compute all 4 x 1 block of X, from rows i..i+4-1 */
@@ -1199,9 +1200,9 @@ struct btLCP
 	int *const m_findex, *const m_p, *const m_C;
 
 	btLCP (int _n, int _nskip, int _nub, btScalar *_Adata, btScalar *_x, btScalar *_b, btScalar *_w,
-		btScalar *_lo, btScalar *_hi, btScalar *_L, btScalar *_d,
+		btScalar *_lo, btScalar *_hi, btScalar *l, btScalar *_d,
 		btScalar *_Dell, btScalar *_ell, btScalar *_tmp,
-		bool *_state, int *_findex, int *_p, int *_C, btScalar **Arows);
+		bool *_state, int *_findex, int *p, int *c, btScalar **Arows);
 	int getNub() const { return m_nub; }
 	void transfer_i_to_C (int i);
 	void transfer_i_to_N (int i) { m_nN++; }			// because we can assume C and N span 1:i-1
@@ -1224,9 +1225,9 @@ struct btLCP
 
 
 btLCP::btLCP (int _n, int _nskip, int _nub, btScalar *_Adata, btScalar *_x, btScalar *_b, btScalar *_w,
-            btScalar *_lo, btScalar *_hi, btScalar *_L, btScalar *_d,
+            btScalar *_lo, btScalar *_hi, btScalar *l, btScalar *_d,
             btScalar *_Dell, btScalar *_ell, btScalar *_tmp,
-            bool *_state, int *_findex, int *_p, int *_C, btScalar **Arows):
+            bool *_state, int *_findex, int *p, int *c, btScalar **Arows):
   m_n(_n), m_nskip(_nskip), m_nub(_nub), m_nC(0), m_nN(0),
 # ifdef BTROWPTRS
   m_A(Arows),
@@ -1234,8 +1235,8 @@ btLCP::btLCP (int _n, int _nskip, int _nub, btScalar *_Adata, btScalar *_x, btSc
   m_A(_Adata),
 #endif
   m_x(_x), m_b(_b), m_w(_w), m_lo(_lo), m_hi(_hi),
-  m_L(_L), m_d(_d), m_Dell(_Dell), m_ell(_ell), m_tmp(_tmp),
-  m_state(_state), m_findex(_findex), m_p(_p), m_C(_C)
+  m_L(l), m_d(_d), m_Dell(_Dell), m_ell(_ell), m_tmp(_tmp),
+  m_state(_state), m_findex(_findex), m_p(p), m_C(c)
 {
   {
     btSetZero (m_x,m_n);

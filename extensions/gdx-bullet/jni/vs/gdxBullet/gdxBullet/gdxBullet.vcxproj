@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -36,6 +36,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp" />
@@ -119,9 +120,11 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHingeConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btPoint2PointConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btSliderConstraint.cpp" />
@@ -131,15 +134,17 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
@@ -164,6 +169,7 @@
     <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactCache.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactListener.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\common\jniHelpers.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\FilterableVehicleRaycaster.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp" />
@@ -187,27 +193,27 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

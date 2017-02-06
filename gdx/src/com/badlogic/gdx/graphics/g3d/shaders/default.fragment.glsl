@@ -30,7 +30,14 @@ varying float v_alphaTest;
 
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
-varying MED vec2 v_texCoords0;
+#endif
+
+#ifdef diffuseTextureFlag
+varying MED vec2 v_diffuseUV;
+#endif
+
+#ifdef specularTextureFlag
+varying MED vec2 v_specularUV;
 #endif
 
 #ifdef diffuseColorFlag
@@ -72,7 +79,7 @@ varying vec3 v_shadowMapUv;
 
 float getShadowness(vec2 offset)
 {
-    const vec4 bitShifts = vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 160581375.0);
+    const vec4 bitShifts = vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0);
     return step(v_shadowMapUv.z, dot(texture2D(u_shadowTexture, v_shadowMapUv.xy + offset), bitShifts));//+(1.0/255.0));	
 }
 
@@ -103,13 +110,13 @@ void main() {
 	#endif // normalFlag
 		
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor * v_color;
+		vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor * v_color;
 	#elif defined(diffuseTextureFlag) && defined(diffuseColorFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor;
+		vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
 	#elif defined(diffuseTextureFlag) && defined(colorFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * v_color;
+		vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * v_color;
 	#elif defined(diffuseTextureFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0);
+		vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV);
 	#elif defined(diffuseColorFlag) && defined(colorFlag)
 		vec4 diffuse = u_diffuseColor * v_color;
 	#elif defined(diffuseColorFlag)
@@ -139,9 +146,9 @@ void main() {
 		#endif
 	#else
 		#if defined(specularTextureFlag) && defined(specularColorFlag)
-			vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * u_specularColor.rgb * v_lightSpecular;
+			vec3 specular = texture2D(u_specularTexture, v_specularUV).rgb * u_specularColor.rgb * v_lightSpecular;
 		#elif defined(specularTextureFlag)
-			vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * v_lightSpecular;
+			vec3 specular = texture2D(u_specularTexture, v_specularUV).rgb * v_lightSpecular;
 		#elif defined(specularColorFlag)
 			vec3 specular = u_specularColor.rgb * v_lightSpecular;
 		#else

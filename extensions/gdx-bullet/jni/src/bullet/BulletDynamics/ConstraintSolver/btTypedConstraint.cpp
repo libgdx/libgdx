@@ -24,7 +24,7 @@ subject to the following restrictions:
 btTypedConstraint::btTypedConstraint(btTypedConstraintType type, btRigidBody& rbA)
 :btTypedObject(type),
 m_userConstraintType(-1),
-m_userConstraintId(-1),
+m_userConstraintPtr((void*)-1),
 m_breakingImpulseThreshold(SIMD_INFINITY),
 m_isEnabled(true),
 m_needsFeedback(false),
@@ -41,7 +41,7 @@ m_jointFeedback(0)
 btTypedConstraint::btTypedConstraint(btTypedConstraintType type, btRigidBody& rbA,btRigidBody& rbB)
 :btTypedObject(type),
 m_userConstraintType(-1),
-m_userConstraintId(-1),
+m_userConstraintPtr((void*)-1),
 m_breakingImpulseThreshold(SIMD_INFINITY),
 m_isEnabled(true),
 m_needsFeedback(false),

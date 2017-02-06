@@ -19,8 +19,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 
 /** A checkbox is a button that contains an image indicating the checked or unchecked state and a label.
  * @author Nathan Sweet */
@@ -40,8 +41,8 @@ public class CheckBox extends TextButton {
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
-		imageCell = add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
+		imageCell = add(image = new Image(style.checkboxOff, Scaling.none));
 		add(label);
 		label.setAlignment(Align.left);
 		setSize(getPrefWidth(), getPrefHeight());
@@ -105,13 +106,12 @@ public class CheckBox extends TextButton {
 		}
 
 		public CheckBoxStyle (CheckBoxStyle style) {
+			super(style);
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;
 			this.checkboxOver = style.checkboxOver;
 			this.checkboxOffDisabled = style.checkboxOffDisabled;
 			this.checkboxOnDisabled = style.checkboxOnDisabled;
-			this.font = style.font;
-			this.fontColor = new Color(style.fontColor);
 		}
 	}
 }

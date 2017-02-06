@@ -21,6 +21,7 @@ subject to the following restrictions:
 #include "btTransform.h"
 
 
+
 ///The btIDebugDraw interface class allows hooking up a debug renderer to visually debug simulations.
 ///Typical use case: create a debug drawer object, and assign it to a btCollisionWorld or btDynamicsWorld using setDebugDrawer and call debugDrawWorld.
 ///A class that implements the btIDebugDraw interface has to implement the drawLine method at a minimum.
@@ -29,6 +30,29 @@ class	btIDebugDraw
 {
 	public:
 
+	ATTRIBUTE_ALIGNED16(struct) DefaultColors
+	{
+		btVector3	m_activeObject;
+		btVector3	m_deactivatedObject;
+		btVector3	m_wantsDeactivationObject;
+		btVector3	m_disabledDeactivationObject;
+		btVector3	m_disabledSimulationObject;
+		btVector3	m_aabb;
+		btVector3 m_contactPoint;
+		
+		DefaultColors()
+		:	m_activeObject(1,1,1),
+			m_deactivatedObject(0,1,0),
+			m_wantsDeactivationObject(0,1,1),
+			m_disabledDeactivationObject(1,0,0),
+			m_disabledSimulationObject(1,1,0),
+			m_aabb(1,0,0),
+			m_contactPoint(1,1,0)
+		{
+		}
+	};
+
+	
 	enum	DebugDrawModes
 	{
 		DBG_NoDebug=0,
@@ -46,12 +70,18 @@ class	btIDebugDraw
 		DBG_DrawConstraints = (1 << 11),
 		DBG_DrawConstraintLimits = (1 << 12),
 		DBG_FastWireframe = (1<<13),
-        DBG_DrawNormals = (1<<14),
+		DBG_DrawNormals = (1<<14),
+		DBG_DrawFrames = (1<<15),
 		DBG_MAX_DEBUG_DRAW_MODE
 	};
 
 	virtual ~btIDebugDraw() {};
 
+	
+	virtual DefaultColors	getDefaultColors() const	{	DefaultColors colors;	return colors;	}
+	///the default implementation for setDefaultColors has no effect. A derived class can implement it and store the colors.
+	virtual void setDefaultColors(const DefaultColors& /*colors*/) {}
+	
 	virtual void	drawLine(const btVector3& from,const btVector3& to,const btVector3& color)=0;
 		
 	virtual void    drawLine(const btVector3& from,const btVector3& to, const btVector3& fromColor, const btVector3& toColor)
@@ -136,9 +166,9 @@ class	btIDebugDraw
 	virtual void drawTransform(const btTransform& transform, btScalar orthoLen)
 	{
 		btVector3 start = transform.getOrigin();
-		drawLine(start, start+transform.getBasis() * btVector3(orthoLen, 0, 0), btVector3(0.7f,0,0));
-		drawLine(start, start+transform.getBasis() * btVector3(0, orthoLen, 0), btVector3(0,0.7f,0));
-		drawLine(start, start+transform.getBasis() * btVector3(0, 0, orthoLen), btVector3(0,0,0.7f));
+		drawLine(start, start+transform.getBasis() * btVector3(orthoLen, 0, 0), btVector3(1.f,0.3,0.3));
+		drawLine(start, start+transform.getBasis() * btVector3(0, orthoLen, 0), btVector3(0.3,1.f, 0.3));
+		drawLine(start, start+transform.getBasis() * btVector3(0, 0, orthoLen), btVector3(0.3, 0.3,1.f));
 	}
 
 	virtual void drawArc(const btVector3& center, const btVector3& normal, const btVector3& axis, btScalar radiusA, btScalar radiusB, btScalar minAngle, btScalar maxAngle, 
@@ -147,7 +177,7 @@ class	btIDebugDraw
 		const btVector3& vx = axis;
 		btVector3 vy = normal.cross(axis);
 		btScalar step = stepDegrees * SIMD_RADS_PER_DEG;
-		int nSteps = (int)((maxAngle - minAngle) / step);
+		int nSteps = (int)btFabs((maxAngle - minAngle) / step);
 		if(!nSteps) nSteps = 1;
 		btVector3 prev = center + radiusA * vx * btCos(minAngle) + radiusB * vy * btSin(minAngle);
 		if(drawSect)
@@ -437,6 +467,10 @@ class	btIDebugDraw
 		btVector3 pt3 = planeOrigin - vec1*vecLen;
 		drawLine(transform*pt0,transform*pt1,color);
 		drawLine(transform*pt2,transform*pt3,color);
+	}
+
+	virtual void flushLines()
+	{
 	}
 };
 

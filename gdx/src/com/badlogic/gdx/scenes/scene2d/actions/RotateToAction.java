@@ -22,11 +22,11 @@ public class RotateToAction extends TemporalAction {
 	private float start, end;
 
 	protected void begin () {
-		start = actor.getRotation();
+		start = target.getRotation();
 	}
 
 	protected void update (float percent) {
-		actor.setRotation(start + (end - start) * percent);
+		target.setRotation(start + (end - start) * percent);
 	}
 
 	public float getRotation () {

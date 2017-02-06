@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.Array;
  * file as well the parameters used to generate the BitmapFont (size, characters, etc.) 
  */
 public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, FreetypeFontLoader.FreeTypeFontLoaderParameter>{
-
 	public FreetypeFontLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -38,17 +37,15 @@ public class FreetypeFontLoader extends AsynchronousAssetLoader<BitmapFont, Free
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter) {
 		if(parameter == null) throw new RuntimeException("FreetypeFontParameter must be set in AssetManager#load to point at a TTF file!");
-		FreeTypeFontGenerator generator = manager.get(parameter.fontFileName, FreeTypeFontGenerator.class);	
-		FreeTypeBitmapFontData data = generator.generateData(parameter.fontParameters);
-		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
-		font.setOwnsTexture(true);
+		FreeTypeFontGenerator generator = manager.get(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class);
+		BitmapFont font = generator.generateFont(parameter.fontParameters);
 		return font;
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, FreeTypeFontLoaderParameter parameter) {
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
-		deps.add(new AssetDescriptor<FreeTypeFontGenerator>(parameter.fontFileName, FreeTypeFontGenerator.class));
+		deps.add(new AssetDescriptor<FreeTypeFontGenerator>(parameter.fontFileName + ".gen", FreeTypeFontGenerator.class));
 		return deps;
 	}
 }

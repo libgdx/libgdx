@@ -17,21 +17,27 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.utils.BufferUtils;
 
 public class IndexArray implements IndexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
+	final ShortBuffer buffer;
+	final ByteBuffer byteBuffer;
 
-	ShortBuffer buffer;
-	ByteBuffer byteBuffer;
+	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
+	private final boolean empty;
 
 	/** Creates a new IndexArray to be used with vertex arrays.
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexArray (int maxIndices) {
+
+		empty = maxIndices == 0;
+		if (empty) {
+			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
+		}
+
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
@@ -40,12 +46,12 @@ public class IndexArray implements IndexData {
 
 	/** @return the number of indices currently stored in this buffer */
 	public int getNumIndices () {
-		return buffer.limit();
+		return empty ? 0 : buffer.limit();
 	}
 
 	/** @return the maximum number of indices this IndexArray can store. */
 	public int getNumMaxIndices () {
-		return buffer.capacity();
+		return empty ? 0 : buffer.capacity();
 	}
 
 	/** <p>
@@ -66,6 +72,25 @@ public class IndexArray implements IndexData {
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
+	}
+	
+	public void setIndices (ShortBuffer indices) {
+		int pos = indices.position();
+		buffer.clear();
+		buffer.limit(indices.remaining());
+		buffer.put(indices);
+		buffer.flip();
+		indices.position(pos);
+		byteBuffer.position(0);
+		byteBuffer.limit(buffer.limit() << 1);
+	}
+
+	@Override
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count) {
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 2);
+		BufferUtils.copy(indices, offset, byteBuffer, count);
+		byteBuffer.position(pos);
 	}
 
 	/** <p>

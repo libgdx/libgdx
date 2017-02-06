@@ -70,7 +70,9 @@ public class Matrix4 implements Serializable {
 	/** WW: Typically the value one. On Vector3 multiplication this value is ignored. */
 	public static final int M33 = 15;
 
-	public final float tmp[] = new float[16];
+	/** @Deprecated Do not use this member, instead use a temporary Matrix4 instance, or create a temporary float array. */
+	@Deprecated
+	public static final float tmp[] = new float[16]; // FIXME Change to private access
 	public final float val[] = new float[16];
 
 	/** Constructs an identity matrix */
@@ -542,16 +544,18 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
-	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio.
+	/** Sets the matrix to a projection matrix with a near- and far plane, a field of view in degrees and an aspect ratio. Note that
+	 * the field of view specified is the angle in degrees for the height, the field of view for the width will be calculated
+	 * according to the aspect ratio.
 	 * 
 	 * @param near The near plane
 	 * @param far The far plane
-	 * @param fov The field of view in degrees
+	 * @param fovy The field of view of the height in degrees
 	 * @param aspectRatio The "width over height" aspect ratio
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {
+	public Matrix4 setToProjection (float near, float far, float fovy, float aspectRatio) {
 		idt();
-		float l_fd = (float)(1.0 / Math.tan((fov * (Math.PI / 180)) / 2.0));
+		float l_fd = (float)(1.0 / Math.tan((fovy * (Math.PI / 180)) / 2.0));
 		float l_a1 = (far + near) / (near - far);
 		float l_a2 = (2 * far * near) / (near - far);
 		val[M00] = l_fd / aspectRatio;
@@ -564,6 +568,44 @@ public class Matrix4 implements Serializable {
 		val[M31] = 0;
 		val[M02] = 0;
 		val[M12] = 0;
+		val[M22] = l_a1;
+		val[M32] = -1;
+		val[M03] = 0;
+		val[M13] = 0;
+		val[M23] = l_a2;
+		val[M33] = 0;
+
+		return this;
+	}
+
+	/** Sets the matrix to a projection matrix with a near/far plane, and left, bottom, right and top specifying the points on the
+	 * near plane that are mapped to the lower left and upper right corners of the viewport. This allows to create projection
+	 * matrix with off-center vanishing point.
+	 * 
+	 * @param left
+	 * @param right
+	 * @param bottom
+	 * @param top
+	 * @param near The near plane
+	 * @param far The far plane
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 setToProjection (float left, float right, float bottom, float top, float near, float far) {
+		float x = 2.0f * near / (right - left);
+		float y = 2.0f * near / (top - bottom);
+		float a = (right + left) / (right - left);
+		float b = (top + bottom) / (top - bottom);
+		float l_a1 = (far + near) / (near - far);
+		float l_a2 = (2 * far * near) / (near - far);
+		val[M00] = x;
+		val[M10] = 0;
+		val[M20] = 0;
+		val[M30] = 0;
+		val[M01] = 0;
+		val[M11] = y;
+		val[M21] = 0;
+		val[M31] = 0;
+		val[M02] = a;
+		val[M12] = b;
 		val[M22] = l_a1;
 		val[M32] = -1;
 		val[M03] = 0;
@@ -822,6 +864,16 @@ public class Matrix4 implements Serializable {
 		quat.setEulerAngles(yaw, pitch, roll);
 		return set(quat);
 	}
+	
+	/** Sets this matrix to a rotation matrix from the given euler angles.
+	 * @param yaw the yaw in radians
+	 * @param pitch the pitch in radians
+	 * @param roll the roll in radians
+	 * @return This matrix */
+	public Matrix4 setFromEulerAnglesRad (float yaw, float pitch, float roll) {
+		quat.setEulerAnglesRad(yaw, pitch, roll);
+		return set(quat);
+	}
 
 	/** Sets this matrix to a scaling matrix
 	 * 
@@ -931,26 +983,17 @@ public class Matrix4 implements Serializable {
 	 * @param w Weight of this transform; weight of the other transform is (1 - w)
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4 other, float w) {
-
-		//Get this and other matrix's scale component
 		getScale(tmpVec);
 		other.getScale(tmpForward);
 		
-		//Get this and other matrix's rotation component
 		getRotation(quat);
 		other.getRotation(quat2);
 		
-		//Get this and other matrix's translation component
 		getTranslation(tmpUp);
 		other.getTranslation(right);
 		
-		//Calculate scale components
 		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
-
-		//Calculate rotation components
 		rotate(quat.slerp(quat2, 1 - w));
-
-		//Calculate translation components
 		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
 		
 		return this;
@@ -965,30 +1008,17 @@ public class Matrix4 implements Serializable {
 	public Matrix4 avg (Matrix4[] t) {
 		final float w = 1.0f/t.length;
 
-		//Initialize scale components
 		tmpVec.set(t[0].getScale(tmpUp).scl(w));
-		
-		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w));
-		
-		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
 		
-		//Continue calculating
 		for(int i=1;i<t.length;i++){
-			
-			//Calculate scale components
 			tmpVec.add(t[i].getScale(tmpUp).scl(w));
-			
-			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w));
-			
-			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
 		}
 		quat.nor();
 		
-		//Set calculated components to this matrix
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
@@ -1005,31 +1035,17 @@ public class Matrix4 implements Serializable {
 	 * @param w List of weights
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4[] t, float[] w) {
-
-		//Initialize scale components
 		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
-		
-		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w[0]));
-		
-		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
 		
-		//Continue calculating
 		for(int i=1;i<t.length;i++){
-			
-			//Calculate scale components
 			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
-			
-			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w[i]));
-			
-			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
 		}
 		quat.nor();
 		
-		//Set calculated components to this matrix
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
@@ -1056,6 +1072,77 @@ public class Matrix4 implements Serializable {
 		val[13] = mat.val[7];
 		val[14] = 0;
 		val[15] = mat.val[8];
+		return this;
+	}
+
+	/** Sets this matrix to the given affine matrix. The values are mapped as follows:
+	 *
+	 * <pre>
+	 *      [  M00  M01   0   M02  ]
+	 *      [  M10  M11   0   M12  ]
+	 *      [   0    0    1    0   ]
+	 *      [   0    0    0    1   ]
+	 * </pre>
+	 * @param affine the affine matrix
+	 * @return This matrix for chaining */
+	public Matrix4 set (Affine2 affine) {
+		val[M00] = affine.m00;
+		val[M10] = affine.m10;
+		val[M20] = 0;
+		val[M30] = 0;
+		val[M01] = affine.m01;
+		val[M11] = affine.m11;
+		val[M21] = 0;
+		val[M31] = 0;
+		val[M02] = 0;
+		val[M12] = 0;
+		val[M22] = 1;
+		val[M32] = 0;
+		val[M03] = affine.m02;
+		val[M13] = affine.m12;
+		val[M23] = 0;
+		val[M33] = 1;
+		return this;
+	}
+
+	/** Assumes that this matrix is a 2D affine transformation, copying only the relevant components. The values are mapped as
+	 * follows:
+	 *
+	 * <pre>
+	 *      [  M00  M01   _   M02  ]
+	 *      [  M10  M11   _   M12  ]
+	 *      [   _    _    _    _   ]
+	 *      [   _    _    _    _   ]
+	 * </pre>
+	 * @param affine the source matrix
+	 * @return This matrix for chaining */
+	public Matrix4 setAsAffine (Affine2 affine) {
+		val[M00] = affine.m00;
+		val[M10] = affine.m10;
+		val[M01] = affine.m01;
+		val[M11] = affine.m11;
+		val[M03] = affine.m02;
+		val[M13] = affine.m12;
+		return this;
+	}
+
+	/** Assumes that both matrices are 2D affine transformations, copying only the relevant components. The copied values are:
+	 *
+	 * <pre>
+	 *      [  M00  M01   _   M03  ]
+	 *      [  M10  M11   _   M13  ]
+	 *      [   _    _    _    _   ]
+	 *      [   _    _    _    _   ]
+	 * </pre>
+	 * @param mat the source matrix
+	 * @return This matrix for chaining */
+	public Matrix4 setAsAffine (Matrix4 mat) {
+		val[M00] = mat.val[M00];
+		val[M10] = mat.val[M10];
+		val[M01] = mat.val[M01];
+		val[M11] = mat.val[M11];
+		val[M03] = mat.val[M03];
+		val[M13] = mat.val[M13];
 		return this;
 	}
 
@@ -1524,5 +1611,12 @@ public class Matrix4 implements Serializable {
 		dst[9] = val[M03];
 		dst[10] = val[M13];
 		dst[11] = val[M23];
+	}
+
+	/** @return True if this matrix has any rotation or scaling, false otherwise */
+	public boolean hasRotationOrScaling () {
+		return !(MathUtils.isEqual(val[M00], 1) && MathUtils.isEqual(val[M11], 1) && MathUtils.isEqual(val[M22], 1)
+				&& MathUtils.isZero(val[M01]) && MathUtils.isZero(val[M02]) && MathUtils.isZero(val[M10]) && MathUtils.isZero(val[M12])
+				&& MathUtils.isZero(val[M20]) && MathUtils.isZero(val[M21]));
 	}
 }

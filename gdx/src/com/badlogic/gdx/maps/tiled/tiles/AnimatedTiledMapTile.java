@@ -19,11 +19,9 @@ package com.badlogic.gdx.maps.tiled.tiles;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.LongArray;
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** @brief Represents a changing {@link TiledMapTile}. */
@@ -39,9 +37,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private StaticTiledMapTile[] frameTiles;
 
-	private long[] animationIntervals;
-	private long frameCount = 0;
-	private long loopDuration;
+	private int[] animationIntervals;
+	private int frameCount = 0;
+	private int loopDuration;
 	private static final long initialTimeOffset = TimeUtils.millis();
 
 	@Override
@@ -64,16 +62,21 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
-	private TiledMapTile getCurrentFrame() {
-		long currentTime = lastTiledMapRenderTime % loopDuration;
+	public int getCurrentFrameIndex () {
+		int currentTime = (int)(lastTiledMapRenderTime % loopDuration);
 
-		for (int i = 0; i < animationIntervals.length; ++i){
-			long animationInterval = animationIntervals[i];
-			if (currentTime<=animationInterval) return frameTiles[i];
+		for (int i = 0; i < animationIntervals.length; ++i) {
+			int animationInterval = animationIntervals[i];
+			if (currentTime <= animationInterval) return i;
 			currentTime -= animationInterval;
 		}
 
-		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+		throw new GdxRuntimeException(
+			"Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+	}
+
+	public TiledMapTile getCurrentFrame () {
+		return frameTiles[getCurrentFrameIndex()];
 	}
 
 	@Override
@@ -82,10 +85,10 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
-	public void setTextureRegion(TextureRegion textureRegion) {
+	public void setTextureRegion (TextureRegion textureRegion) {
 		throw new GdxRuntimeException("Cannot set the texture region of AnimatedTiledMapTile.");
 	}
-	
+
 	@Override
 	public float getOffsetX () {
 		return getCurrentFrame().getOffsetX();
@@ -104,6 +107,25 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	@Override
 	public void setOffsetY (float offsetY) {
 		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
+	}
+
+	public int[] getAnimationIntervals () {
+		return animationIntervals;
+	}
+
+	public void setAnimationIntervals (int[] intervals) {
+		if (intervals.length == animationIntervals.length) {
+			this.animationIntervals = intervals;
+
+			loopDuration = 0;
+			for (int i = 0; i < intervals.length; i++) {
+				loopDuration += intervals[i];
+			}
+
+		} else {
+			throw new GdxRuntimeException("Cannot set " + intervals.length
+				+ " frame intervals. The given int[] must have a size of " + animationIntervals.length + ".");
+		}
 	}
 
 	@Override
@@ -128,11 +150,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
-		this.loopDuration = (long)(frameTiles.size * interval * 1000f);
-		this.animationIntervals = new long[frameTiles.size];
-		for (int i = 0; i < frameTiles.size; ++i){
+		this.loopDuration = frameTiles.size * (int)(interval * 1000f);
+		this.animationIntervals = new int[frameTiles.size];
+		for (int i = 0; i < frameTiles.size; ++i) {
 			this.frameTiles[i] = frameTiles.get(i);
-			this.animationIntervals[i] = (long)(interval * 1000f);
+			this.animationIntervals[i] = (int)(interval * 1000f);
 		}
 	}
 
@@ -140,17 +162,20 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	 *
 	 * @param intervals The intervals between each individual frame tile in milliseconds.
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
-	public AnimatedTiledMapTile (LongArray intervals, Array<StaticTiledMapTile> frameTiles) {
+	public AnimatedTiledMapTile (IntArray intervals, Array<StaticTiledMapTile> frameTiles) {
 		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
 		this.animationIntervals = intervals.toArray();
 		this.loopDuration = 0;
 
-		for (int i = 0; i < intervals.size; ++i){
+		for (int i = 0; i < intervals.size; ++i) {
 			this.frameTiles[i] = frameTiles.get(i);
 			this.loopDuration += intervals.get(i);
 		}
 	}
 
+	public StaticTiledMapTile[] getFrameTiles () {
+		return frameTiles;
+	}
 }

@@ -1,6 +1,7 @@
 %module btManifoldPoint
 
 %typemap(javadirectorin) btManifoldPoint, const btManifoldPoint, const btManifoldPoint &, btManifoldPoint & 	"btManifoldPoint.obtainForArgument($1, false)"
+%typemap(javadirectorin) btManifoldPoint *, const btManifoldPoint *, btManifoldPoint * const &		"btManifoldPoint.obtainForArgument($1, false)"
 
 %typemap(javaout) 	btManifoldPoint *, const btManifoldPoint *, btManifoldPoint * const & {
 	return btManifoldPoint.obtainTemp($jnicall, $owner);

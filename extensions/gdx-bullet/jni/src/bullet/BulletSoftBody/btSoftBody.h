@@ -171,6 +171,7 @@ public:
 	/* ImplicitFn	*/ 
 	struct	ImplicitFn
 	{
+		virtual ~ImplicitFn() {}
 		virtual btScalar	Eval(const btVector3& x)=0;
 	};
 
@@ -528,6 +529,7 @@ public:
 	{
 		struct IControl
 		{
+			virtual ~IControl() {}
 			virtual void			Prepare(AJoint*)				{}
 			virtual btScalar		Speed(AJoint*,btScalar current) { return(current); }
 			static IControl*		Default()						{ static IControl def;return(&def); }
@@ -612,7 +614,7 @@ public:
 		RayFromToCaster(const btVector3& rayFrom,const btVector3& rayTo,btScalar mxt);
 		void					Process(const btDbvtNode* leaf);
 
-		static btScalar	rayFromToTriangle(const btVector3& rayFrom,
+		static /*inline*/ btScalar	rayFromToTriangle(const btVector3& rayFrom,
 			const btVector3& rayTo,
 			const btVector3& rayNormalizedDirection,
 			const btVector3& a,

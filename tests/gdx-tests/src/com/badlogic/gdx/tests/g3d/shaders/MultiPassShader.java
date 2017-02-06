@@ -38,7 +38,7 @@ public class MultiPassShader extends DefaultShader {
 			context.setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			for (int i = 1; i < passes; ++i) {
 				set(u_pass, (float)i / (float)passes);
-				renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize, false);
+				renderable.meshPart.render(program, false);
 			}
 		}
 	}

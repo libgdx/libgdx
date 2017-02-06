@@ -20,6 +20,7 @@ subject to the following restrictions:
 #include "LinearMath/btAlignedObjectArray.h"
 
 class btMultiBody;
+class btMultiBodyConstraint;
 #include "BulletDynamics/ConstraintSolver/btSolverBody.h"
 #include "BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
 
@@ -28,16 +29,19 @@ ATTRIBUTE_ALIGNED16 (struct)	btMultiBodySolverConstraint
 {
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
+	btMultiBodySolverConstraint() : m_solverBodyIdA(-1), m_multiBodyA(0), m_linkA(-1), m_solverBodyIdB(-1), m_multiBodyB(0), m_linkB(-1),m_orgConstraint(0), m_orgDofIndex(-1)
+	{}
 
 	int				m_deltaVelAindex;//more generic version of m_relpos1CrossNormal/m_contactNormal1
-	btVector3		m_relpos1CrossNormal;
-	btVector3		m_contactNormal1;
 	int				m_jacAindex;
-
 	int				m_deltaVelBindex;
+	int				m_jacBindex;
+
+	btVector3		m_relpos1CrossNormal;
+	btVector3		m_contactNormal1;	
 	btVector3		m_relpos2CrossNormal;
 	btVector3		m_contactNormal2; //usually m_contactNormal2 == -m_contactNormal1, but not always
-	int				m_jacBindex;
+	
 
 	btVector3		m_angularComponentA;
 	btVector3		m_angularComponentB;
@@ -69,6 +73,10 @@ ATTRIBUTE_ALIGNED16 (struct)	btMultiBodySolverConstraint
 	int m_solverBodyIdB;
 	btMultiBody* m_multiBodyB;
 	int			m_linkB;
+
+	//for writing back applied impulses
+	btMultiBodyConstraint*	m_orgConstraint;
+	int m_orgDofIndex;
 
 	enum		btSolverConstraintType
 	{

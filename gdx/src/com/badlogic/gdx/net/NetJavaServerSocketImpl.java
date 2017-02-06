@@ -38,6 +38,10 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 	private java.net.ServerSocket server;
 
 	public NetJavaServerSocketImpl (Protocol protocol, int port, ServerSocketHints hints) {
+		this(protocol, null, port, hints);
+	}
+	
+	public NetJavaServerSocketImpl (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		this.protocol = protocol;
 
 		// create the server socket
@@ -53,7 +57,13 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 			}
 
 			// and bind the server...
-			InetSocketAddress address = new InetSocketAddress(port);
+			InetSocketAddress address;
+			if( hostname != null ) {
+				address = new InetSocketAddress(hostname, port); 
+			} else {
+				address = new InetSocketAddress(port);
+			}
+			
 			if (hints != null) {
 				server.bind(address, hints.backlog);
 			} else {

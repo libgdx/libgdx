@@ -453,9 +453,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
     </ClCompile>
@@ -566,6 +563,27 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\FilterableVehicleRaycaster.cpp">
+      <Filter>Source Files\custom\gdx\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

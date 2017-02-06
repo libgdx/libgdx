@@ -249,8 +249,8 @@ public class ShortArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public short[] shrink () {
 		if (items.length != size) resize(size);
@@ -263,6 +263,14 @@ public class ShortArray {
 	public short[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined. 
+	 * @return {@link #items} */
+	public short[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 
@@ -316,12 +324,25 @@ public class ShortArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		short[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + items[i];
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof ShortArray)) return false;
 		ShortArray array = (ShortArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		short[] items1 = this.items;
+		short[] items2 = array.items;
 		for (int i = 0; i < n; i++)
 			if (items[i] != array.items[i]) return false;
 		return true;

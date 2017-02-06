@@ -108,7 +108,15 @@ public class ShapeRenderer implements Disposable {
 	}
 
 	public ShapeRenderer (int maxVertices) {
-		renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
+		this(maxVertices, null);
+	}
+
+	public ShapeRenderer (int maxVertices, ShaderProgram defaultShader) {
+		if (defaultShader == null) {
+			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
+		} else {
+			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0, defaultShader);
+		}
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		matrixDirty = true;
 	}
@@ -187,7 +195,7 @@ public class ShapeRenderer implements Disposable {
 	/** Begins a new batch without specifying a shape type.
 	 * @throws IllegalStateException if {@link #autoShapeType} is false. */
 	public void begin () {
-		if (!autoShapeType) throw new IllegalStateException("");
+		if (!autoShapeType) throw new IllegalStateException("autoShapeType must be true to use this method.");
 		begin(ShapeType.Line);
 	}
 
@@ -258,7 +266,7 @@ public class ShapeRenderer implements Disposable {
 	 * between the start and end points. */
 	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
 		if (shapeType == ShapeType.Filled) {
-			rectLine(x, y, x2, y2, defaultRectLineWidth);
+			rectLine(x, y, x2, y2, defaultRectLineWidth, c1, c2);
 			return;
 		}
 		check(ShapeType.Line, null, 2);
@@ -271,7 +279,8 @@ public class ShapeRenderer implements Disposable {
 	/** Draws a curve using {@link ShapeType#Line}. */
 	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		check(ShapeType.Line, null, segments * 2 + 2);
-
+		float colorBits = color.toFloatBits();
+		
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
 		float subdiv_step = 1f / segments;
 		float subdiv_step2 = subdiv_step * subdiv_step;
@@ -301,7 +310,7 @@ public class ShapeRenderer implements Disposable {
 		float dddfy = tmp2y * pre5;
 
 		while (segments-- > 0) {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(fx, fy, 0);
 			fx += dfx;
 			fy += dfy;
@@ -309,39 +318,40 @@ public class ShapeRenderer implements Disposable {
 			dfy += ddfy;
 			ddfx += dddfx;
 			ddfy += dddfy;
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(fx, fy, 0);
 		}
-		renderer.color(color);
+		renderer.color(colorBits);
 		renderer.vertex(fx, fy, 0);
-		renderer.color(color);
+		renderer.color(colorBits);
 		renderer.vertex(x2, y2, 0);
 	}
 
 	/** Draws a triangle in x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
 	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
 		check(ShapeType.Line, ShapeType.Filled, 6);
+		float colorBits = color.toFloatBits();
 		if (shapeType == ShapeType.Line) {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1, y1, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2, y2, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2, y2, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x3, y3, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x3, y3, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1, y1, 0);
 		} else {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1, y1, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2, y2, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x3, y3, 0);
 		}
 	}
@@ -377,40 +387,40 @@ public class ShapeRenderer implements Disposable {
 	/** Draws a rectangle in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
 	public void rect (float x, float y, float width, float height) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
-
+		float colorBits = color.toFloatBits();
 		if (shapeType == ShapeType.Line) {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
 		} else {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
 		}
 	}
@@ -548,44 +558,90 @@ public class ShapeRenderer implements Disposable {
 	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
 	public void rectLine (float x1, float y1, float x2, float y2, float width) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
-
+		float colorBits = color.toFloatBits();
 		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
 		width *= 0.5f;
 		float tx = t.x * width;
 		float ty = t.y * width;
 		if (shapeType == ShapeType.Line) {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 + tx, y1 + ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 - tx, y2 - ty, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 + tx, y1 + ty, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 - tx, y2 - ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 		} else {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 + tx, y1 + ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1 - tx, y1 - ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 + tx, y2 + ty, 0);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 - tx, y2 - ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		}
+	}
+	
+	/** Draws a line using a rotated rectangle, where with one edge is centered at x1, y1 and the opposite edge centered at x2, y2. */
+	public void rectLine (float x1, float y1, float x2, float y2, float width, Color c1, Color c2) {
+		check(ShapeType.Line, ShapeType.Filled, 8);
+		float col1Bits = c1.toFloatBits();
+		float col2Bits = c2.toFloatBits();
+		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
+		width *= 0.5f;
+		float tx = t.x * width;
+		float ty = t.y * width;
+		if (shapeType == ShapeType.Line) {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		} else {
+			renderer.color(col1Bits);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(col1Bits);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+
+			renderer.color(col2Bits);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(col2Bits);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(col1Bits);
 			renderer.vertex(x1 - tx, y1 - ty, 0);
 		}
 	}
@@ -599,174 +655,174 @@ public class ShapeRenderer implements Disposable {
 	 * of the rectangle. */
 	public void box (float x, float y, float z, float width, float height, float depth) {
 		depth = -depth;
-
+		float colorBits = color.toFloatBits();
 		if (shapeType == ShapeType.Line) {
 			check(ShapeType.Line, ShapeType.Filled, 24);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
 		} else {
 			check(ShapeType.Line, ShapeType.Filled, 36);
 
 			// Front
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
 
 			// Back
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
 			// Left
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
 
 			// Right
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
 
 			// Top
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y + height, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y + height, z + depth);
 
 			// Bottom
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + depth);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + width, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
 		}
 
 	}
 
 	/** Draws two crossed lines using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
-	public void x (float x, float y, float radius) {
-		line(x - radius, y - radius, x + radius, y + radius);
-		line(x - radius, y + radius, x + radius, y - radius);
+	public void x (float x, float y, float size) {
+		line(x - size, y - size, x + size, y + size);
+		line(x - size, y + size, x + size, y - size);
 	}
 
 	/** @see #x(float, float, float) */
-	public void x (Vector2 p, float radius) {
-		x(p.x, p.y, radius);
+	public void x (Vector2 p, float size) {
+		x(p.x, p.y, size);
 	}
 
 	/** Calls {@link #arc(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth arc. */
@@ -777,7 +833,7 @@ public class ShapeRenderer implements Disposable {
 	/** Draws an arc using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
 	public void arc (float x, float y, float radius, float start, float degrees, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
-
+		float colorBits = color.toFloatBits();
 		float theta = (2 * MathUtils.PI * (degrees / 360.0f)) / segments;
 		float cos = MathUtils.cos(theta);
 		float sin = MathUtils.sin(theta);
@@ -787,45 +843,45 @@ public class ShapeRenderer implements Disposable {
 		if (shapeType == ShapeType.Line) {
 			check(ShapeType.Line, ShapeType.Filled, segments * 2 + 2);
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, 0);
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 				float temp = cx;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 			}
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, 0);
 		} else {
 			check(ShapeType.Line, ShapeType.Filled, segments * 3 + 3);
 
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x, y, 0);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 				float temp = cx;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 			}
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
 
 		float temp = cx;
 		cx = 0;
 		cy = 0;
-		renderer.color(color);
+		renderer.color(colorBits);
 		renderer.vertex(x + cx, y + cy, 0);
 	}
 
@@ -837,7 +893,7 @@ public class ShapeRenderer implements Disposable {
 	/** Draws a circle using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
 	public void circle (float x, float y, float radius, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
-
+		float colorBits = color.toFloatBits();
 		float angle = 2 * MathUtils.PI / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
@@ -845,42 +901,42 @@ public class ShapeRenderer implements Disposable {
 		if (shapeType == ShapeType.Line) {
 			check(ShapeType.Line, ShapeType.Filled, segments * 2 + 2);
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 				float temp = cx;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 			}
 			// Ensure the last segment is identical to the first.
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, 0);
 		} else {
 			check(ShapeType.Line, ShapeType.Filled, segments * 3 + 3);
 			segments--;
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x, y, 0);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 				float temp = cx;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, 0);
 			}
 			// Ensure the last segment is identical to the first.
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
 
 		float temp = cx;
 		cx = radius;
 		cy = 0;
-		renderer.color(color);
+		renderer.color(colorBits);
 		renderer.vertex(x + cx, y + cy, 0);
 	}
 
@@ -893,30 +949,77 @@ public class ShapeRenderer implements Disposable {
 	public void ellipse (float x, float y, float width, float height, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		check(ShapeType.Line, ShapeType.Filled, segments * 3);
-
+		float colorBits = color.toFloatBits();
 		float angle = 2 * MathUtils.PI / segments;
 
 		float cx = x + width / 2, cy = y + height / 2;
 		if (shapeType == ShapeType.Line) {
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(cx + (width * 0.5f * MathUtils.cos(i * angle)), cy + (height * 0.5f * MathUtils.sin(i * angle)), 0);
 
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(cx + (width * 0.5f * MathUtils.cos((i + 1) * angle)),
 					cy + (height * 0.5f * MathUtils.sin((i + 1) * angle)), 0);
 			}
 		} else {
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(cx + (width * 0.5f * MathUtils.cos(i * angle)), cy + (height * 0.5f * MathUtils.sin(i * angle)), 0);
 
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(cx, cy, 0);
 
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(cx + (width * 0.5f * MathUtils.cos((i + 1) * angle)),
 					cy + (height * 0.5f * MathUtils.sin((i + 1) * angle)), 0);
+			}
+		}
+	}
+	
+	/** Calls {@link #ellipse(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	public void ellipse (float x, float y, float width, float height, float rotation) {
+		ellipse(x, y, width, height, rotation, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
+	}
+
+	/** Draws an ellipse using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
+	public void ellipse (float x, float y, float width, float height, float rotation, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
+		check(ShapeType.Line, ShapeType.Filled, segments * 3);
+		float colorBits = color.toFloatBits();
+		float angle = 2 * MathUtils.PI / segments;
+		
+		rotation = MathUtils.PI * rotation / 180f;
+		float sin = MathUtils.sin(rotation);
+		float cos = MathUtils.cos(rotation);
+
+		float cx = x + width / 2, cy = y + height / 2;
+		float x1 = width * 0.5f;
+		float y1 = 0;
+		if (shapeType == ShapeType.Line) {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+			}
+		} else {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
+
+				renderer.color(colorBits);
+				renderer.vertex(cx, cy, 0);
+				
+				x1 = (width * 0.5f * MathUtils.cos((i + 1) * angle));
+				y1 = (height * 0.5f * MathUtils.sin((i + 1) * angle));
+
+				renderer.color(colorBits);
+				renderer.vertex(cx + cos * x1 - sin * y1, cy + sin * x1 + cos * y1, 0);
 			}
 		}
 	}
@@ -931,67 +1034,67 @@ public class ShapeRenderer implements Disposable {
 	public void cone (float x, float y, float z, float radius, float height, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		check(ShapeType.Line, ShapeType.Filled, segments * 4 + 2);
-
+		float colorBits = color.toFloatBits();
 		float angle = 2 * MathUtils.PI / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
 		if (shapeType == ShapeType.Line) {
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x, y, z + height);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
 				float temp = cx;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
 			}
 			// Ensure the last segment is identical to the first.
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, z);
 		} else {
 			segments--;
 			for (int i = 0; i < segments; i++) {
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x, y, z);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
 				float temp = cx;
 				float temp2 = cy;
 				cx = cos * cx - sin * cy;
 				cy = sin * temp + cos * cy;
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
 
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + temp, y + temp2, z);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x + cx, y + cy, z);
-				renderer.color(color);
+				renderer.color(colorBits);
 				renderer.vertex(x, y, z + height);
 			}
 			// Ensure the last segment is identical to the first.
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, z);
 		}
 		float temp = cx;
 		float temp2 = cy;
 		cx = radius;
 		cy = 0;
-		renderer.color(color);
+		renderer.color(colorBits);
 		renderer.vertex(x + cx, y + cy, z);
 		if (shapeType != ShapeType.Line) {
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + temp, y + temp2, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x + cx, y + cy, z);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x, y, z + height);
 		}
 	}
@@ -1002,7 +1105,7 @@ public class ShapeRenderer implements Disposable {
 		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
 
 		check(ShapeType.Line, null, count);
-
+		float colorBits = color.toFloatBits();
 		float firstX = vertices[0];
 		float firstY = vertices[1];
 
@@ -1021,9 +1124,9 @@ public class ShapeRenderer implements Disposable {
 				y2 = vertices[i + 3];
 			}
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1, y1, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2, y2, 0);
 		}
 	}
@@ -1039,7 +1142,7 @@ public class ShapeRenderer implements Disposable {
 		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have an even number of vertices.");
 
 		check(ShapeType.Line, null, count);
-
+		float colorBits = color.toFloatBits();
 		for (int i = offset, n = offset + count - 2; i < n; i += 2) {
 			float x1 = vertices[i];
 			float y1 = vertices[i + 1];
@@ -1050,9 +1153,9 @@ public class ShapeRenderer implements Disposable {
 			x2 = vertices[i + 2];
 			y2 = vertices[i + 3];
 
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x1, y1, 0);
-			renderer.color(color);
+			renderer.color(colorBits);
 			renderer.vertex(x2, y2, 0);
 		}
 	}

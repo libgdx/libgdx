@@ -22,7 +22,7 @@ public class BufferedReader extends Reader {
 	}
 
 	public BufferedReader (Reader in) {
-		this(in, 32);
+		this(in, 8192);
 	}
 
 	private void fill () throws IOException {

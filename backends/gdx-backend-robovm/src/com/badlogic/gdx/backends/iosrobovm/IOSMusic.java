@@ -50,7 +50,7 @@ public class IOSMusic implements Music {
 	public void play () {
 		if (track.isPaused()) {
 			track.setPaused(false);
-		} else {
+		} else if (!track.isPlaying()) {
 			track.play();
 		}
 	}
@@ -87,8 +87,9 @@ public class IOSMusic implements Music {
 		track.setVolume(volume);
 	}
 
+	@Override
 	public void setPosition (float position) {
-		track.setCurrentTime(position / 1000);
+		track.setCurrentTime(position);
 	}
 
 	@Override

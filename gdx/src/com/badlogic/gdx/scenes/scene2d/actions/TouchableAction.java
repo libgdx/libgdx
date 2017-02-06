@@ -26,7 +26,7 @@ public class TouchableAction extends Action {
 	private Touchable touchable;
 
 	public boolean act (float delta) {
-		actor.setTouchable(touchable);
+		target.setTouchable(touchable);
 		return true;
 	}
 

@@ -26,8 +26,17 @@ varying vec3 v_normal;
 
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
-varying vec2 v_texCoords0;
 #endif // textureFlag
+
+#ifdef diffuseTextureFlag
+uniform vec4 u_diffuseUVTransform;
+varying vec2 v_diffuseUV;
+#endif
+
+#ifdef specularTextureFlag
+uniform vec4 u_specularUVTransform;
+varying vec2 v_specularUV;
+#endif
 
 #ifdef boneWeight0Flag
 #define boneWeightsFlag
@@ -141,7 +150,7 @@ varying float v_fog;
 #endif // fogFlag
 
 
-#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+#if numDirectionalLights > 0
 struct DirectionalLight
 {
 	vec3 color;
@@ -150,7 +159,7 @@ struct DirectionalLight
 uniform DirectionalLight u_dirLights[numDirectionalLights];
 #endif // numDirectionalLights
 
-#if defined(numPointLights) && (numPointLights > 0)
+#if numPointLights > 0
 struct PointLight
 {
 	vec3 color;
@@ -176,9 +185,13 @@ varying vec3 v_ambientLight;
 #endif // lightingFlag
 
 void main() {
-	#ifdef textureFlag
-		v_texCoords0 = a_texCoord0;
-	#endif // textureFlag
+	#ifdef diffuseTextureFlag
+		v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
+	#endif //diffuseTextureFlag
+	
+	#ifdef specularTextureFlag
+		v_specularUV = u_specularUVTransform.xy + a_texCoord0 * u_specularUVTransform.zw;
+	#endif //specularTextureFlag
 	
 	#if defined(colorFlag)
 		v_color = a_color;
@@ -292,7 +305,7 @@ void main() {
 			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
 			
-		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+		#if (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -u_dirLights[i].direction;
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
@@ -305,7 +318,7 @@ void main() {
 			}
 		#endif // numDirectionalLights
 
-		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+		#if (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
 				vec3 lightDir = u_pointLights[i].position - pos.xyz;
 				float dist2 = dot(lightDir, lightDir);

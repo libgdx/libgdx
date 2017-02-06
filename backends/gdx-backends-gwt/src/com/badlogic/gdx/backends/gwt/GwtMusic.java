@@ -74,7 +74,7 @@ public class GwtMusic implements Music, SMSoundCallback {
 
 	@Override
 	public boolean isPlaying () {
-		isPlaying &= sound.getPlayState() == 1;
+		isPlaying = !sound.getPaused() && sound.getPlayState() == 1;
 		return isPlaying;
 	}
 
@@ -107,6 +107,11 @@ public class GwtMusic implements Music, SMSoundCallback {
 		this.volume = volume;
 	}
 
+	@Override
+	public void setPosition (float position) {
+		sound.setPosition((int)(position * 1000f));
+	}
+	
 	@Override
 	public float getPosition () {
 		return sound.getPosition() / 1000f;

@@ -71,9 +71,9 @@ public final class BufferUtils {
 
 		ByteBuffer byteBuffer = (ByteBuffer)dst;
 		int oldPosition = byteBuffer.position();
+		byteBuffer.limit(oldPosition + numElements);
 		byteBuffer.put(src, srcOffset, numElements);
 		byteBuffer.position(oldPosition);
-		byteBuffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -93,9 +93,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or ShortBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -115,9 +115,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -137,9 +137,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -159,9 +159,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -177,9 +177,9 @@ public final class BufferUtils {
 		FloatBuffer buffer = asFloatBuffer(dst);
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -199,9 +199,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 	
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -293,26 +293,48 @@ public final class BufferUtils {
 			buffer = ((ByteBuffer)dst).asDoubleBuffer();
 		else if (dst instanceof DoubleBuffer) buffer = (DoubleBuffer)dst;
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
-
+		
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
 	}
-	
-// /** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
-// * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
-// * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set
-// * to dst.position() + numElements, where numElements are translated to the number of elements appropriate for the dst Buffer
-// * data type. <b>The Buffers must be direct Buffers with native byte order. No error checking is performed</b>.
-// *
-// * @param src the source Buffer.
-// * @param dst the destination Buffer.
-// * @param numElements the number of elements to copy. */
-// public static void copy (Buffer src, Buffer dst, int numElements) {
-// int numBytes = elementsToBytes(src, numElements);
-// copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
-// dst.limit(dst.position() + bytesToElements(dst, numBytes));
-// }
+
+	/** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
+	 * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
+	 * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set
+	 * to dst.position() + numElements, where numElements are translated to the number of elements appropriate for the dst Buffer
+	 * data type. <b>The Buffers must be direct Buffers with native byte order. No error checking is performed</b>.
+	 *
+	 * @param src the source Buffer.
+	 * @param dst the destination Buffer.
+	 * @param numElements the number of elements to copy. */
+	public static void copy (Buffer src, Buffer dst, int numElements) {
+		int srcPos = src.position();
+		int dstPos = dst.position();
+		src.limit(srcPos + numElements);
+		final boolean srcIsByte = src instanceof ByteBuffer;
+		final boolean dstIsByte = dst instanceof ByteBuffer;
+		dst.limit(dst.capacity());
+		if (srcIsByte && dstIsByte)
+			((ByteBuffer)dst).put((ByteBuffer)src);
+		else if ((srcIsByte || src instanceof CharBuffer) && (dstIsByte || dst instanceof CharBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asCharBuffer() : (CharBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asCharBuffer() : (CharBuffer)src));
+		else if ((srcIsByte || src instanceof ShortBuffer) && (dstIsByte || dst instanceof ShortBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asShortBuffer() : (ShortBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asShortBuffer() : (ShortBuffer)src));
+		else if ((srcIsByte || src instanceof IntBuffer) && (dstIsByte || dst instanceof IntBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asIntBuffer() : (IntBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asIntBuffer() : (IntBuffer)src));
+		else if ((srcIsByte || src instanceof LongBuffer) && (dstIsByte || dst instanceof LongBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asLongBuffer() : (LongBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asLongBuffer() : (LongBuffer)src));
+		else if ((srcIsByte || src instanceof FloatBuffer) && (dstIsByte || dst instanceof FloatBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asFloatBuffer() : (FloatBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asFloatBuffer() : (FloatBuffer)src));
+		else if ((srcIsByte || src instanceof DoubleBuffer) && (dstIsByte || dst instanceof DoubleBuffer))
+			(dstIsByte ? ((ByteBuffer)dst).asDoubleBuffer() : (DoubleBuffer)dst).put((srcIsByte ? ((ByteBuffer)src).asDoubleBuffer() : (DoubleBuffer)src));
+		else
+			throw new GdxRuntimeException("Buffers must be of same type or ByteBuffer");
+		src.position(srcPos);
+		dst.flip();
+		dst.position(dstPos);
+	}
 	
 	private final static FloatBuffer asFloatBuffer(final Buffer data) {
 		FloatBuffer buffer = null;
@@ -346,7 +368,6 @@ public final class BufferUtils {
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
-			idx += stride;
 			final float x = arr[idx    ];
 			final float y = arr[idx + 1];
 			final float z = dimensions >= 3 ? arr[idx + 2] : 0f;
@@ -358,6 +379,7 @@ public final class BufferUtils {
 				if (dimensions >= 4)
 					arr[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
 			}
+			idx += stride;
 		}
 		buffer.put(arr);
 		buffer.position(pos);
@@ -379,7 +401,6 @@ public final class BufferUtils {
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
-			idx += stride;
 			final float x = arr[idx    ];
 			final float y = arr[idx + 1];
 			final float z = dimensions >= 3 ? arr[idx + 2] : 1f;
@@ -387,6 +408,7 @@ public final class BufferUtils {
 			arr[idx+1] = x * m[ 1] + y * m[ 4] + z * m[ 7];
 			if (dimensions >= 3)
 				arr[idx+2] = x * m[ 2] + y * m[ 5] + z * m[8];
+			idx += stride;
 		}
 		buffer.put(arr);
 		buffer.position(pos);

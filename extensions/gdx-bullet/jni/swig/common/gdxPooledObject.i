@@ -33,7 +33,7 @@
 
 %fragment(gdxToString(gdxPooled##JTYPE), "header") {
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass &gdx_getClass##JTYPE(JNIEnv * jenv) {
+	SWIGINTERN inline jclass &gdx_getClass##JTYPE(JNIEnv * const &jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass(gdxToString(_JCLASS)));

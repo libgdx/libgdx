@@ -19,7 +19,6 @@ subject to the following restrictions:
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdint.h>
 
 //this define will force traversal of structures, to check backward (and forward) compatibility
 //#define TEST_BACKWARD_FORWARD_COMPATIBILITY
@@ -177,7 +176,8 @@ void bDNA::initCmpFlags(bDNA *memDNA)
 	// this ptr should be the file data
 
 
-	assert(!m_Names.size() == 0 && "SDNA empty!");
+	assert(!(m_Names.size() == 0));//DNA empty!
+
 	mCMPFlags.resize(mStructs.size(), FDF_NONE);
 
 
@@ -369,8 +369,11 @@ void bDNA::init(char *data, int len, bool swap)
 
 
 	// Parse names
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 	cp = (char*)intPtr;
@@ -386,18 +389,10 @@ void bDNA::init(char *data, int len, bool swap)
 		cp++;
 	}
 
+
 	
-	{
-		nr= (long)*(intptr_t*)&cp;
-	//long mask=3;
-		nr= ((nr+3)&~3)-nr;
-		while (nr--)
-		{
-			cp++;
-		}
-	}
-
-
+	cp = btAlignPointer(cp,4);
+	
 	/*
 		TYPE (4 bytes)
 		<nr> amount of types (int)
@@ -408,8 +403,11 @@ void bDNA::init(char *data, int len, bool swap)
 	intPtr = (int*)cp;
 	assert(strncmp(cp, "TYPE", 4)==0); intPtr++;
 
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 	cp = (char*)intPtr;
@@ -420,17 +418,8 @@ void bDNA::init(char *data, int len, bool swap)
 		cp++;
 	}
 
-{
-		nr= (long)*(intptr_t*)&cp;
-	//	long mask=3;
-		nr= ((nr+3)&~3)-nr;
-		while (nr--)
-		{
-			cp++;
-		}
-	}
-
-
+	cp = btAlignPointer(cp,4);
+	
 	/*
 		TLEN (4 bytes)
 		<len> (short) the lengths of types
@@ -468,8 +457,11 @@ void bDNA::init(char *data, int len, bool swap)
 	cp = (char*)intPtr;
 	assert(strncmp(cp, "STRC", 4)==0); intPtr++;
 
-	if (swap) dataLen = ChunkUtils::swapInt(*intPtr);
-	else      dataLen = *intPtr;
+	if (swap) 
+	{
+		*intPtr = ChunkUtils::swapInt(*intPtr);
+	}
+	dataLen = *intPtr;
 	intPtr++;
 
 

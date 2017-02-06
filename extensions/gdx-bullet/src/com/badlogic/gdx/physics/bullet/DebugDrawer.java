@@ -19,12 +19,12 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -90,8 +90,7 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 			spriteBatch.begin();
 
 			// the text will be centered on the position
-			TextBounds bounds = font.getBounds(textString);
-			font.draw(spriteBatch, textString, location.x - (bounds.width / 2), location.y + (bounds.height / 2));
+			font.draw(spriteBatch, textString, location.x, location.y, 0, textString.length(), 0, Align.center, false);
 
 			spriteBatch.end();
 			shapeRenderer.begin(ShapeType.Line);

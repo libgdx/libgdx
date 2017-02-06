@@ -242,8 +242,8 @@ public class FloatArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public float[] shrink () {
 		if (items.length != size) resize(size);
@@ -256,6 +256,14 @@ public class FloatArray {
 	public float[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined.
+	 * @return {@link #items} */
+	public float[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 
@@ -309,16 +317,27 @@ public class FloatArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		float[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + Float.floatToIntBits(items[i]);
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof FloatArray)) return false;
 		FloatArray array = (FloatArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
-		float[] items = this.items;
-		float[] arrayItems = array.items;
+		float[] items1 = this.items;
+		float[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != arrayItems[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 
@@ -328,10 +347,12 @@ public class FloatArray {
 		FloatArray array = (FloatArray)object;
 		int n = size;
 		if (n != array.size) return false;
-		float[] items = this.items;
-		float[] arrayItems = array.items;
+		if (!ordered) return false;
+		if (!array.ordered) return false;
+		float[] items1 = this.items;
+		float[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (Math.abs(items[i] - arrayItems[i]) > epsilon) return false;
+			if (Math.abs(items1[i] - items2[i]) > epsilon) return false;
 		return true;
 	}
 

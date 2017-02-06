@@ -52,7 +52,7 @@ public class FramebufferToTextureTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		ObjLoader objLoader = new ObjLoader();
-		mesh = objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		mesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		mesh.materials.get(0).set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		modelInstance = new ModelInstance(mesh);
 		modelBatch = new ModelBatch();
@@ -66,11 +66,10 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClearColor(clearColor.g, clearColor.g, clearColor.b, clearColor.a);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+		Gdx.gl.glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
 		cam.update();
 

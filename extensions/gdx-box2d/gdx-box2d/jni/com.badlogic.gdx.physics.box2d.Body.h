@@ -25,14 +25,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniCreateFixtur
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
- * Method:    jniDestroyFixture
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniDestroyFixture
-  (JNIEnv *, jobject, jlong, jlong);
-
-/*
- * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniSetTransform
  * Signature: (JFFF)V
  */

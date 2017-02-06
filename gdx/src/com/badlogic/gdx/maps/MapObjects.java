@@ -49,6 +49,21 @@ public class MapObjects implements Iterable<MapObject> {
 		return null;
 	}
 
+	/** Get the index of the object having the specified name, or -1 if no such object exists. */
+	public int getIndex (String name) {
+		return getIndex(get(name));
+	}
+
+	/** Get the index of the object in the collection, or -1 if no such object exists. */
+	public int getIndex (MapObject object) {
+		return objects.indexOf(object, true);
+	}
+
+	/** @return number of objects in the collection */
+	public int getCount () {
+		return objects.size;
+	}
+
 	/** @param object instance to be added to the collection */
 	public void add (MapObject object) {
 		this.objects.add(object);
@@ -62,11 +77,6 @@ public class MapObjects implements Iterable<MapObject> {
 	/** @param object instance to be removed */
 	public void remove (MapObject object) {
 		objects.removeValue(object, true);
-	}
-
-	/** @return number of objects in the collection */
-	public int getCount () {
-		return objects.size;
 	}
 
 	/** @param type class of the objects we want to retrieve

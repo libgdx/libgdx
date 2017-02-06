@@ -94,7 +94,7 @@ public class ImageProcessor {
 		Rect rect = processImage(image, name);
 
 		if (rect == null) {
-			System.out.println("Ignoring blank input image: " + name);
+			if(!settings.silent) System.out.println("Ignoring blank input image: " + name);
 			return null;
 		}
 
@@ -102,7 +102,7 @@ public class ImageProcessor {
 			String crc = hash(rect.getImage(this));
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
-				System.out.println(rect.name + " (alias of " + existing.name + ")");
+				if (!settings.silent) System.out.println(rect.name + " (alias of " + existing.name + ")");
 				existing.aliases.add(new Alias(rect));
 				return null;
 			}
@@ -157,8 +157,8 @@ public class ImageProcessor {
 		// Scale image.
 		if (scale != 1) {
 			int originalWidth = width, originalHeight = height;
-			width = Math.round(width * scale);
-			height = Math.round(height * scale);
+			width = Math.max(1, Math.round(width * scale));
+			height = Math.max(1, Math.round(height * scale));
 			BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 			if (scale < 1) {
 				newImage.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);

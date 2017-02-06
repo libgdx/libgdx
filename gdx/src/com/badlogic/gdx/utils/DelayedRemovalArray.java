@@ -23,7 +23,7 @@ import java.util.Comparator;
  * IllegalStateException. Only {@link #removeIndex(int)}, {@link #removeValue(Object, boolean)}, and add methods are allowed.
  * <p>
  * Code using this class must not rely on items being removed immediately. Consider using {@link SnapshotArray} if this is a
- * problem..
+ * problem.
  * @author Nathan Sweet */
 public class DelayedRemovalArray<T> extends Array<T> {
 	private int iterating;
@@ -160,6 +160,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.truncate(newSize);
+	}
+
+	public T[] setSize (int newSize) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.setSize(newSize);
 	}
 
 	/** @see #DelayedRemovalArray(Object[]) */

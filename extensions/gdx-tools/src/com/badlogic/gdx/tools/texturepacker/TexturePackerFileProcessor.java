@@ -48,14 +48,12 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName) {
 		this.defaultSettings = defaultSettings;
 
-		if (packFileName.indexOf('.') == -1 || packFileName.toLowerCase().endsWith(".png")
-			|| packFileName.toLowerCase().endsWith(".jpg")) {
-			packFileName += ".atlas";
-		}
+		if (packFileName.toLowerCase().endsWith(defaultSettings.atlasExtension.toLowerCase()))
+			packFileName = packFileName.substring(0, packFileName.length() - defaultSettings.atlasExtension.length());
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
-		addInputSuffix(".png", ".jpg");
+		addInputSuffix(".png", ".jpg", ".jpeg");
 	}
 
 	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
@@ -118,6 +116,9 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				merge(rootSettings, settingsFile);
 			}
 
+			String atlasExtension = rootSettings.atlasExtension == null ? "" : rootSettings.atlasExtension;
+			atlasExtension = Pattern.quote(atlasExtension);
+
 			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
 				FileProcessor deleteProcessor = new FileProcessor() {
 					protected void processFile (Entry inputFile) throws Exception {
@@ -126,14 +127,14 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				};
 				deleteProcessor.setRecursive(false);
 
-				String scaledPackFileName = rootSettings.scaledPackFileName(packFileName, i);
+				String scaledPackFileName = rootSettings.getScaledPackFileName(packFileName, i);
 				File packFile = new File(scaledPackFileName);
 
 				String prefix = packFile.getName();
 				int dotIndex = prefix.lastIndexOf('.');
 				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg)");
-				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg|jpeg)");
+				deleteProcessor.addInputRegex("(?i)" + prefix + atlasExtension);
 
 				String dir = packFile.getParent();
 				if (dir == null)
@@ -154,10 +155,12 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		while (true) {
 			settings = dirToSettings.get(parent);
 			if (settings != null) break;
-			if (parent.equals(root)) break;
+			if (parent == null || parent.equals(root)) break;
 			parent = parent.getParentFile();
 		}
 		if (settings == null) settings = defaultSettings;
+
+		if (settings.ignore) return;
 
 		if (settings.combineSubdirectories) {
 			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
@@ -213,7 +216,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		});
 
 		// Pack.
-		System.out.println(inputDir.inputFile.getName());
+		if (!settings.silent) System.out.println(inputDir.inputFile.getName());
 		TexturePacker packer = new TexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);

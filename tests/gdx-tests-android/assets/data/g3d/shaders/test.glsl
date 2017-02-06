@@ -10,6 +10,7 @@
 varying vec3 v_lightDir;
 varying vec3 v_lightCol;
 varying vec3 v_viewDir;
+varying vec3 v_ambientLight;
 #ifdef environmentCubemapFlag
 varying vec3 v_reflect;
 #endif
@@ -29,6 +30,8 @@ void main() {
 	worldToTangent[0] = g_tangent;
 	worldToTangent[1] = g_binormal;
 	worldToTangent[2] = g_normal;
+
+	v_ambientLight = getAmbient(g_normal);
 	
 	v_lightDir = normalize(-u_dirLights[0].direction) * worldToTangent;
 	v_lightCol = u_dirLights[0].color;
@@ -64,6 +67,7 @@ precision mediump float;
 varying vec3 v_lightDir;
 varying vec3 v_lightCol;
 varying vec3 v_viewDir;
+varying vec3 v_ambientLight;
 #ifdef environmentCubemapFlag
 varying vec3 v_reflect;
 #endif
@@ -115,6 +119,7 @@ void main() {
 #endif
 #endif
 
-	gl_FragColor = vec4((v_lightCol * diffuse.rgb) * NL, diffuse.w);
+	gl_FragColor = vec4(saturate((v_lightCol * diffuse.rgb) * NL), diffuse.w);
+	gl_FragColor.rgb += v_ambientLight * diffuse.rgb;
 	gl_FragColor.rgb += (selfShadow * spec) * specular;
 }

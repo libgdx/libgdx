@@ -39,12 +39,14 @@ protected:
 	btVectorXu m_xSplit2;
 
 	btAlignedObjectArray<int> m_limitDependencies;
-	btConstraintArray m_allConstraintArray;
+	btAlignedObjectArray<btSolverConstraint*>	m_allConstraintPtrArray;
 	btMLCPSolverInterface* m_solver;
 	int m_fallback;
 
 	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject** bodies, int numBodies, btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 	virtual btScalar solveGroupCacheFriendlyIterations(btCollisionObject** bodies ,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
+
+
 	virtual void createMLCP(const btContactSolverInfo& infoGlobal);
 	virtual void createMLCPFast(const btContactSolverInfo& infoGlobal);
 

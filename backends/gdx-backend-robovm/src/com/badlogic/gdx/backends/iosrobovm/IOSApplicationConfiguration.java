@@ -81,10 +81,23 @@ public class IOSApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
+	/** the update interval to poll the magnetometer with, in seconds **/
+	public float magnetometerUpdate = 0.05f;
 
 	/** whether to use the compass, default true **/
 	public boolean useCompass = true;
 
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = false;
+	
+	/** whether or not the onScreenKeyboard should be closed on return key **/
+	public boolean keyboardCloseOnReturn = true;
+
+	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0.
+	 *  When GL ES 3 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access it's functionality.
+	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
+	@Deprecated public boolean useGL30 = false;
+	
+	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
+	public boolean overrideRingerSwitch = false;
 }

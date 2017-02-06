@@ -76,7 +76,7 @@ public class TableTest extends GdxTest {
 				System.out.println("click!");
 			}
 		});
-		root.addActor(table);
+//		root.addActor(table);
 
 		TextButton button = new TextButton("Text Button", skin);
 		Table table2 = new Table();
@@ -86,14 +86,17 @@ public class TableTest extends GdxTest {
 		table2.setScaleX(1.5f);
 		table2.setOrigin(table2.getPrefWidth() / 2, table2.getPrefHeight() / 2);
 
-		root.setPosition(10, 10);
-		// root.debug();
-		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3);
+		// Test colspan with expandX.
+		// root.setPosition(10, 10);
+		root.debug();
+		root.setFillParent(true);
+		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3).expandX();
+		root.add(new TextButton("Text Button", skin));
 		root.row();
-		root.add(table2).expand();
+		root.add(new TextButton("Text Button", skin));
 		root.add(new TextButton("Toggle Button", skin.get("toggle", TextButtonStyle.class)));
-		root.add(new CheckBox("meow", skin));
-		root.pack();
+		root.add(new CheckBox("meow meow meow meow meow meow meow meow", skin));
+		// root.pack();
 		// root.add(new Button(new Image(region), skin));
 		// root.add(new LabelButton("Toggley", skin.getStyle("toggle", LabelButtonStyle.class)));
 	}

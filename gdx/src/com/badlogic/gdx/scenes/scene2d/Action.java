@@ -27,6 +27,9 @@ abstract public class Action implements Poolable {
 	/** The actor this action is attached to, or null if it is not attached. */
 	protected Actor actor;
 
+	/** The actor this action targets, or null if a target has not been set. */
+	protected Actor target;
+
 	private Pool pool;
 
 	/** Updates the action based on time. Typically this is called each frame by {@link Actor#act(float)}.
@@ -38,27 +41,42 @@ abstract public class Action implements Poolable {
 	public void restart () {
 	}
 
-	/** @return null if the action is not attached to an actor. */
-	public Actor getActor () {
-		return actor;
-	}
-
-	/** Sets the actor this action will be used for. This is called automatically when an action is added to an actor. This is also
-	 * called with null when an action is removed from an actor. When set to null, if the action has a {@link #setPool(Pool) pool}
-	 * then the action is {@link Pool#free(Object) returned} to the pool (which calls {@link #reset()}) and the pool is set to null.
-	 * If the action does not have a pool, {@link #reset()} is not called.
+	/** Sets the actor this action is attached to. This also sets the {@link #setTarget(Actor) target} actor if it is null. This
+	 * method is called automatically when an action is added to an actor. This method is also called with null when an action is
+	 * removed from an actor.
 	 * <p>
-	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
-	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
+	 * When set to null, if the action has a {@link #setPool(Pool) pool} then the action is {@link Pool#free(Object) returned} to
+	 * the pool (which calls {@link #reset()}) and the pool is set to null. If the action does not have a pool, {@link #reset()} is
+	 * not called.
+	 * <p>
+	 * This method is not typically a good place for an action subclass to query the actor's state because the action may not be
+	 * executed for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
 	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#begin(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
+		if (target == null) setTarget(actor);
 		if (actor == null) {
 			if (pool != null) {
 				pool.free(this);
 				pool = null;
 			}
 		}
+	}
+
+	/** @return null if the action is not attached to an actor. */
+	public Actor getActor () {
+		return actor;
+	}
+
+	/** Sets the actor this action will manipulate. If no target actor is set, {@link #setActor(Actor)} will set the target actor
+	 * when the action is added to an actor. */
+	public void setTarget (Actor target) {
+		this.target = target;
+	}
+
+	/** @return null if the action has no target. */
+	public Actor getTarget () {
+		return target;
 	}
 
 	/** Resets the optional state of this action to as if it were newly created, allowing the action to be pooled and reused. State
@@ -68,6 +86,9 @@ abstract public class Action implements Poolable {
 	 * <p>
 	 * If a subclass has optional state, it must override this method, call super, and reset the optional state. */
 	public void reset () {
+		actor = null;
+		target = null;
+		pool = null;
 		restart();
 	}
 

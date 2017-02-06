@@ -32,10 +32,12 @@ public:
    //@BP Mod - allow backface filtering and unflipped normals
    enum EFlags
    {
-      kF_None                 = 0,
+	  kF_None                 = 0,
       kF_FilterBackfaces      = 1 << 0,
       kF_KeepUnflippedNormal  = 1 << 1,   // Prevents returned face normal getting flipped when a ray hits a back-facing triangle
-	  kF_UseSubSimplexConvexCastRaytest =  1 << 2,   // Uses an approximate but faster ray versus convex intersection algorithm
+		///SubSimplexConvexCastRaytest is the default, even if kF_None is set.
+	  kF_UseSubSimplexConvexCastRaytest = 1 << 2,   // Uses an approximate but faster ray versus convex intersection algorithm
+	  kF_UseGjkConvexCastRaytest = 1 << 3,
       kF_Terminator        = 0xFFFFFFFF
    };
    unsigned int m_flags;

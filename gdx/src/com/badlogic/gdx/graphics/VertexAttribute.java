@@ -16,21 +16,25 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.FloatBuffer;
+
+
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
 
-/** A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is needed for
- * the fixed function pipeline of OpenGL ES 1.x. Generic attributes are not supported in the fixed function pipeline. The number
- * of components defines how many components the attribute has. The alias defines to which shader attribute this attribute should
- * bind. The alias is used by a {@link Mesh} when drawing with a {@link ShaderProgram}. The alias can be changed at any time.
+/** A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is used
+ * for uniquely identifying the vertex attribute from among its {@linkplain VertexAttributes} siblings. The number of components 
+ * defines how many components the attribute has. The alias defines to which shader attribute this attribute should bind. The alias 
+ * is used by a {@link Mesh} when drawing with a {@link ShaderProgram}. The alias can be changed at any time.
  * 
  * @author mzechner */
 public final class VertexAttribute {
-	/** the attribute {@link Usage} **/
+	/** The attribute {@link Usage}, used for identification. **/
 	public final int usage;
 	/** the number of components this attribute has **/
 	public final int numComponents;
-	/** whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) */
+	/** For fixed types, whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) */
 	public final boolean normalized;
 	/** the OpenGL type of each component, e.g. {@link GL20#GL_FLOAT} or {@link GL20#GL_UNSIGNED_BYTE}  */
 	public final int type;
@@ -42,40 +46,63 @@ public final class VertexAttribute {
 	public int unit;
 	private final int usageIndex;
 
-	/** Constructs a new VertexAttribute.
+	/** Constructs a new VertexAttribute. The GL data type is automatically selected based on the usage.
 	 * 
-	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
-	 *           pipeline.
+	 * @param usage The attribute {@link Usage}, used to select the {@link #type} and for identification.
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction. */
 	public VertexAttribute (int usage, int numComponents, String alias) {
 		this(usage, numComponents, alias, 0);
 	}
 
-	/** Constructs a new VertexAttribute.
+	/** Constructs a new VertexAttribute. The GL data type is automatically selected based on the usage.
 	 * 
-	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
-	 *           pipeline.
+	 * @param usage The attribute {@link Usage}, used to select the {@link #type} and for identification.
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
-	 * @param index unit/index of the attribute, used for boneweights and texture coordinates. */
-	public VertexAttribute (int usage, int numComponents, String alias, int index) {
+	 * @param unit Optional unit/index specifier, used for texture coordinates and bone weights */
+	public VertexAttribute (int usage, int numComponents, String alias, int unit) {
 		this(usage, numComponents, usage == Usage.ColorPacked ? GL20.GL_UNSIGNED_BYTE : GL20.GL_FLOAT, 
-				usage == Usage.ColorPacked, alias, index);
+				usage == Usage.ColorPacked, alias, unit);
 	}
-	
-	private VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias) {
+
+	/** Constructs a new VertexAttribute.
+	 * 
+	 * @param usage The attribute {@link Usage}, used for identification.
+	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
+	 * @param type the OpenGL type of each component, e.g. {@link GL20#GL_FLOAT} or {@link GL20#GL_UNSIGNED_BYTE}. Since {@link Mesh}
+	 * stores vertex data in 32bit floats, the total size of this attribute (type size times number of components) must be a 
+	 * multiple of four.
+	 * @param normalized For fixed types, whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) 
+	 * @param alias The alias used in a shader for this attribute. Can be changed after construction. */
+	public VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias) {
 		this(usage, numComponents, type, normalized, alias, 0);
 	}
 	
-	private VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias, int index) {
+	/** Constructs a new VertexAttribute.
+	 * 
+	 * @param usage The attribute {@link Usage}, used for identification.
+	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
+	 * @param type the OpenGL type of each component, e.g. {@link GL20#GL_FLOAT} or {@link GL20#GL_UNSIGNED_BYTE}. Since {@link Mesh}
+	 * stores vertex data in 32bit floats, the total size of this attribute (type size times number of components) must be a 
+	 * multiple of four bytes.
+	 * @param normalized For fixed types, whether the values are normalized to either -1f and +1f (signed) or 0f and +1f (unsigned) 
+	 * @param alias The alias used in a shader for this attribute. Can be changed after construction.
+	 * @param unit Optional unit/index specifier, used for texture coordinates and bone weights */
+	public VertexAttribute (int usage, int numComponents, int type, boolean normalized, String alias, int unit) {
 		this.usage = usage;
 		this.numComponents = numComponents;
 		this.type = type;
 		this.normalized = normalized;
 		this.alias = alias;
-		this.unit = index;
-		this.usageIndex = Integer.numberOfTrailingZeros(usage);	
+		this.unit = unit;
+		this.usageIndex = Integer.numberOfTrailingZeros(usage);
+	}
+	
+	/** @return A copy of this VertexAttribute with the same parameters. The {@link #offset} is not copied and must
+	 * be recalculated, as is typically done by the {@linkplain VertexAttributes} that owns the VertexAttribute. */
+	public VertexAttribute copy (){
+		return new VertexAttribute(usage, numComponents, type, normalized, alias, unit);
 	}
 
 	public static VertexAttribute Position () {
@@ -89,19 +116,13 @@ public final class VertexAttribute {
 	public static VertexAttribute Normal () {
 		return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 	}
-
-	/** @deprecated use {@link #ColorPacked()} */
-	@Deprecated
-	public static VertexAttribute Color () {
-		return ColorPacked();
-	}
 	
 	public static VertexAttribute ColorPacked () {
 		return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, ShaderProgram.COLOR_ATTRIBUTE);
 	}
 
 	public static VertexAttribute ColorUnpacked () {
-		return new VertexAttribute(Usage.Color, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
+		return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
 	}
 
 	public static VertexAttribute Tangent () {
@@ -113,7 +134,7 @@ public final class VertexAttribute {
 	}
 
 	public static VertexAttribute BoneWeight (int unit) {
-		return new VertexAttribute(Usage.BoneWeight, 2, "a_boneWeight" + unit, unit);
+		return new VertexAttribute(Usage.BoneWeight, 2, ShaderProgram.BONEWEIGHT_ATTRIBUTE + unit, unit);
 	}
 
 	/** Tests to determine if the passed object was created with the same parameters */
@@ -126,7 +147,8 @@ public final class VertexAttribute {
 	}
 
 	public boolean equals (final VertexAttribute other) {
-		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias)
+		return other != null && usage == other.usage && numComponents == other.numComponents 
+			&& type == other.type && normalized == other.normalized && alias.equals(other.alias)
 			&& unit == other.unit;
 	}
 
@@ -135,11 +157,27 @@ public final class VertexAttribute {
 		return (usageIndex << 8) + (unit & 0xFF);
 	}
 	
+	/** @return How many bytes this attribute uses. */
+	public int getSizeInBytes () {
+		switch (type) {
+		case GL20.GL_FLOAT:
+		case GL20.GL_FIXED:
+			return 4 * numComponents;
+		case GL20.GL_UNSIGNED_BYTE:
+		case GL20.GL_BYTE:
+			return numComponents;
+		case GL20.GL_UNSIGNED_SHORT:
+		case GL20.GL_SHORT:
+			return 2 * numComponents;
+		}
+		return 0;
+	}
+
 	@Override
 	public int hashCode () {
 		int result = getKey();
 		result = 541 * result + numComponents;
 		result = 541 * result + alias.hashCode();
-		return result; 
+		return result;
 	}
 }

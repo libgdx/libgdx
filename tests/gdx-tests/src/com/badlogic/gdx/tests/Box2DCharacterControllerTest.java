@@ -280,8 +280,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 
 		cam.project(point.set(pos.x, pos.y, 0));
 		batch.begin();
-		font.drawMultiLine(batch, "friction: " + playerPhysicsFixture.getFriction() + "\ngrounded: " + grounded, point.x + 20,
-			point.y);
+		font.draw(batch, "friction: " + playerPhysicsFixture.getFriction() + "\ngrounded: " + grounded, point.x + 20, point.y);
 		batch.end();
 	}
 
