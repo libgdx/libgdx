@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -51,6 +53,11 @@ public class GwtApplicationConfiguration {
 	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
+	/** Whether to disable audio or not. If set to false, the returned audio
+	 * class instances like {@link Audio} or {@link Music} will be mock
+	 * implementations.
+	 */
+	public boolean disableAudio = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
