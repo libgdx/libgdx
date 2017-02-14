@@ -16,17 +16,41 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /** Sets the actor's rotation from its current value to a specific value.
+ * 
+ * By default, the rotation will take you from the starting value to the specified value directly. For example, setting the start
+ * at 350 and the target at 10 will result in 340 degrees of movement.
+ * 
+ * If the action is instead set to use LERP instead, it will rotate straight to the target angle, regardless of where the angle
+ * starts and stops. For example, starting at 350 and rotating to 10 will cause 20 degrees of rotation.
+ * 
+ * @see com.badlogic.gdx.math.MathUtils#lerpAngleDeg(float, float, float)
+ * 
  * @author Nathan Sweet */
 public class RotateToAction extends TemporalAction {
 	private float start, end;
+
+	private boolean lerp = false;
+
+	public RotateToAction () {
+	}
+
+	/** @param useLerp Set to true to LERP directly to the closest angle */
+	public RotateToAction (boolean useLerp) {
+		this.setLerp(useLerp);
+	}
 
 	protected void begin () {
 		start = target.getRotation();
 	}
 
 	protected void update (float percent) {
-		target.setRotation(start + (end - start) * percent);
+		if (isLerp())
+			target.setRotation(MathUtils.lerpAngleDeg(this.start, this.end, percent));
+		else
+			target.setRotation(start + (end - start) * percent);
 	}
 
 	public float getRotation () {
@@ -35,5 +59,13 @@ public class RotateToAction extends TemporalAction {
 
 	public void setRotation (float rotation) {
 		this.end = rotation;
+	}
+
+	public boolean isLerp () {
+		return lerp;
+	}
+
+	public void setLerp (boolean lerp) {
+		this.lerp = lerp;
 	}
 }
