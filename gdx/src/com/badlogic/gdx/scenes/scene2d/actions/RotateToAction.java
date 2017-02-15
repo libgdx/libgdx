@@ -20,11 +20,11 @@ import com.badlogic.gdx.math.MathUtils;
 
 /** Sets the actor's rotation from its current value to a specific value.
  * 
- * By default, the rotation will take you from the starting value to the specified value directly. For example, setting the start
- * at 350 and the target at 10 will result in 340 degrees of movement.
+ * By default, the rotation will take you from the starting value to the specified value via simple subtraction. For example,
+ * setting the start at 350 and the target at 10 will result in 340 degrees of movement.
  * 
- * If the action is instead set to use LERP instead, it will rotate straight to the target angle, regardless of where the angle
- * starts and stops. For example, starting at 350 and rotating to 10 will cause 20 degrees of rotation.
+ * If the action is instead set to useShortestDirection instead, it will rotate straight to the target angle, regardless of where
+ * the angle starts and stops. For example, starting at 350 and rotating to 10 will cause 20 degrees of rotation.
  * 
  * @see com.badlogic.gdx.math.MathUtils#lerpAngleDeg(float, float, float)
  * 
@@ -32,22 +32,24 @@ import com.badlogic.gdx.math.MathUtils;
 public class RotateToAction extends TemporalAction {
 	private float start, end;
 
-	private boolean lerp = false;
+	private boolean useShortestDirection = false;
 
 	public RotateToAction () {
 	}
 
-	/** @param useLerp Set to true to LERP directly to the closest angle */
-	public RotateToAction (boolean useLerp) {
-		this.setLerp(useLerp);
+	/** @param useShortestDirection Set to true to move directly to the closest angle */
+	public RotateToAction (boolean useShortestDirection) {
+		this.useShortestDirection = useShortestDirection;
 	}
 
+	@Override
 	protected void begin () {
 		start = target.getRotation();
 	}
 
+	@Override
 	protected void update (float percent) {
-		if (isLerp())
+		if (useShortestDirection)
 			target.setRotation(MathUtils.lerpAngleDeg(this.start, this.end, percent));
 		else
 			target.setRotation(start + (end - start) * percent);
@@ -61,11 +63,11 @@ public class RotateToAction extends TemporalAction {
 		this.end = rotation;
 	}
 
-	public boolean isLerp () {
-		return lerp;
+	public boolean isUseShortestDirection () {
+		return useShortestDirection;
 	}
 
-	public void setLerp (boolean lerp) {
-		this.lerp = lerp;
+	public void setUseShortestDirection (boolean useShortestDirection) {
+		this.useShortestDirection = useShortestDirection;
 	}
 }
