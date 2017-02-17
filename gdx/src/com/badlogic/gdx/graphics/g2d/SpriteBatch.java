@@ -172,7 +172,7 @@ public class SpriteBatch implements Batch {
 			customShader.begin();
 		else
 			shader.begin();
-		setupMatrices();
+		setupShaderUniforms();
 
 		drawing = true;
 	}
@@ -1029,17 +1029,21 @@ public class SpriteBatch implements Batch {
 	public void setProjectionMatrix (Matrix4 projection) {
 		if (drawing) flush();
 		projectionMatrix.set(projection);
-		if (drawing) setupMatrices();
+		if (drawing) setupShaderUniforms();
 	}
 
 	@Override
 	public void setTransformMatrix (Matrix4 transform) {
 		if (drawing) flush();
 		transformMatrix.set(transform);
-		if (drawing) setupMatrices();
+		if (drawing) setupShaderUniforms();
 	}
 
-	private void setupMatrices () {
+	/** Sets up uniforms and applies their values to the current shader program. By default, the uniform integer
+	 * {@code "u_texture"} is given the value of 0, and the uniform matrix {@code "u_projTrans"} is given the value of the
+	 * {@linkplain #getProjectionMatrix() projection matrix} multiplied by the {@linkplain #getTransformMatrix() transform matrix}.
+	 * These uniform names match those of the default shader. */
+	protected void setupShaderUniforms () {
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 		if (customShader != null) {
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
@@ -1072,7 +1076,7 @@ public class SpriteBatch implements Batch {
 				customShader.begin();
 			else
 				this.shader.begin();
-			setupMatrices();
+			setupShaderUniforms();
 		}
 	}
 
