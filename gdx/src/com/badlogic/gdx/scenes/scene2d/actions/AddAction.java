@@ -22,21 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 /** Adds an action to an actor.
  * @author Nathan Sweet */
 public class AddAction extends Action {
-	private Actor targetActor;
 	private Action action;
 
 	public boolean act (float delta) {
-		(targetActor != null ? targetActor : actor).addAction(action);
+		target.addAction(action);
 		return true;
-	}
-
-	public Actor getTargetActor () {
-		return targetActor;
-	}
-
-	/** Sets the actor to add an action to. If null (the default), the {@link #getActor() actor} will be used. */
-	public void setTargetActor (Actor actor) {
-		this.targetActor = actor;
 	}
 
 	public Action getAction () {
@@ -53,7 +43,6 @@ public class AddAction extends Action {
 
 	public void reset () {
 		super.reset();
-		targetActor = null;
 		action = null;
 	}
 }

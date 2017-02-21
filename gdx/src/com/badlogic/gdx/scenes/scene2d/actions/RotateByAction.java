@@ -22,7 +22,7 @@ public class RotateByAction extends RelativeTemporalAction {
 	private float amount;
 
 	protected void updateRelative (float percentDelta) {
-		actor.rotateBy(amount * percentDelta);
+		target.rotateBy(amount * percentDelta);
 	}
 
 	public float getAmount () {

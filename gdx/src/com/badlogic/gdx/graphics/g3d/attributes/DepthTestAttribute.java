@@ -18,7 +18,9 @@ package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class DepthTestAttribute extends Attribute {
 	public final static String Alias = "depthStencil";
@@ -83,11 +85,24 @@ public class DepthTestAttribute extends Attribute {
 
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 971 * result + depthFunc;
-		result = 971 * result + Float.floatToRawIntBits(depthRangeNear);
-		result = 971 * result + Float.floatToRawIntBits(depthRangeFar);
+		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeNear);
+		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeFar);
 		result = 971 * result + (depthMask ? 1 : 0);
 		return result; 
+	}
+	
+	@Override
+	public int compareTo (Attribute o) {
+		if (type != o.type) return (int)(type - o.type);
+		DepthTestAttribute other = (DepthTestAttribute)o;
+		if (depthFunc != other.depthFunc) return depthFunc - other.depthFunc;
+		if (depthMask != other.depthMask) return depthMask ? -1 : 1;
+		if (!MathUtils.isEqual(depthRangeNear, other.depthRangeNear))
+			return depthRangeNear < other.depthRangeNear ? -1 : 1;
+		if (!MathUtils.isEqual(depthRangeFar, other.depthRangeFar))
+			return depthRangeFar < other.depthRangeFar ? -1 : 1;
+		return 0;
 	}
 }

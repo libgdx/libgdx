@@ -35,14 +35,20 @@ public class WeldJointDef extends JointDef {
 		referenceAngle = body2.getAngle() - body1.getAngle();
 	}
 
-	// / The local anchor point relative to body1's origin.
+	/** The local anchor point relative to body1's origin. */
 	public final Vector2 localAnchorA = new Vector2();
 
-	// / The local anchor point relative to body2's origin.
+	/** The local anchor point relative to body2's origin. */
 	public final Vector2 localAnchorB = new Vector2();
 
-	// / The body2 angle minus body1 angle in the reference state (radians).
+	/** The body2 angle minus body1 angle in the reference state (radians). */
 	public float referenceAngle = 0;
+
+	/** The mass-spring-damper frequency in Hertz. Rotation only. Disable softness with a value of 0. */
+	public float frequencyHz = 0;
+
+	/** The damping ratio. 0 = no damping, 1 = critical damping. */
+	public float dampingRatio = 0;
 
 	@Override
 	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
@@ -50,8 +56,8 @@ public class WeldJointDef extends JointDef {
 		jd.bodyA = bodyA.body;
 		jd.bodyB = bodyB.body;
 		jd.collideConnected = collideConnected;
-		jd.dampingRatio = 0; // not in native box2d wrapper
-		jd.frequencyHz = 0; // not in native box2d wrapper
+		jd.dampingRatio = dampingRatio;
+		jd.frequencyHz = frequencyHz;
 		jd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
 		jd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
 		jd.referenceAngle = referenceAngle;

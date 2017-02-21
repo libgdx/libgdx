@@ -41,6 +41,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniDestroyFixture
+ * Signature: (JJJ)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyFixture
+  (JNIEnv *, jobject, jlong, jlong, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniDeactivateBody
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDeactivateBody
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateWheelJoint
  * Signature: (JJJZFFFFFFZFFFF)J
  */
@@ -122,10 +138,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRevol
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateWeldJoint
- * Signature: (JJJZFFFFF)J
+ * Signature: (JJJZFFFFFFF)J
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJoint
-  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World

@@ -151,6 +151,12 @@ public interface Application {
 	/** Gets the log level. */
 	public int getLogLevel ();
 
+	/** Sets the current Application logger. Calls to {@link #log(String, String)} are delegated to this {@link ApplicationLogger} */
+	public void setApplicationLogger (ApplicationLogger applicationLogger);
+
+	/** @return the current {@link ApplicationLogger} */
+	public ApplicationLogger getApplicationLogger ();
+
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 
@@ -172,11 +178,18 @@ public interface Application {
 
 	/** Posts a {@link Runnable} on the main loop thread.
 	 * 
+	 * In a multi-window application, the {@linkplain Gdx#graphics} and {@linkplain Gdx#input} values may be
+	 * unpredictable at the time the Runnable is executed. If graphics or input are needed, they can be copied
+	 * to a variable to be used in the Runnable. For example:
+	 * <p><code>
+	 * final Graphics graphics = Gdx.graphics;
+	 * 
 	 * @param runnable the runnable. */
 	public void postRunnable (Runnable runnable);
 
 	/** Schedule an exit from the application. On android, this will cause a call to pause() and dispose() some time in the future,
-	 * it will not immediately finish your application. */
+	 * it will not immediately finish your application.
+	 * On iOS this should be avoided in production as it breaks Apples guidelines*/
 	public void exit ();
 
 	/** Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more

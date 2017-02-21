@@ -53,19 +53,19 @@ public class ExtendViewport extends Viewport {
 		this.minWorldHeight = minWorldHeight;
 		this.maxWorldWidth = maxWorldWidth;
 		this.maxWorldHeight = maxWorldHeight;
-		this.camera = camera;
+		setCamera(camera);
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
 		// Fit min size to the screen.
-		worldWidth = minWorldWidth;
-		worldHeight = minWorldHeight;
+		float worldWidth = minWorldWidth;
+		float worldHeight = minWorldHeight;
 		Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
 
 		// Extend in the short direction.
-		viewportWidth = Math.round(scaled.x);
-		viewportHeight = Math.round(scaled.y);
+		int viewportWidth = Math.round(scaled.x);
+		int viewportHeight = Math.round(scaled.y);
 		if (viewportWidth < screenWidth) {
 			float toViewportSpace = viewportHeight / worldHeight;
 			float toWorldSpace = worldHeight / viewportHeight;
@@ -82,11 +82,12 @@ public class ExtendViewport extends Viewport {
 			viewportHeight += Math.round(lengthen * toViewportSpace);
 		}
 
-		// Center.
-		viewportX = (screenWidth - viewportWidth) / 2;
-		viewportY = (screenHeight - viewportHeight) / 2;
+		setWorldSize(worldWidth, worldHeight);
 
-		super.update(screenWidth, screenHeight, centerCamera);
+		// Center.
+		setScreenBounds((screenWidth - viewportWidth) / 2, (screenHeight - viewportHeight) / 2, viewportWidth, viewportHeight);
+
+		apply(centerCamera);
 	}
 
 	public float getMinWorldWidth () {

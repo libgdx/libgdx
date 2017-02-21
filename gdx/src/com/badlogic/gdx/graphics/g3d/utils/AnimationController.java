@@ -16,20 +16,12 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
-import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Class to control one or more {@link Animation}s on a {@link ModelInstance}. Use the
  * {@link #setAnimation(String, int, float, AnimationListener)} method to change the current animation. Use the
@@ -82,15 +74,19 @@ public class AnimationController extends BaseAnimationController {
 		/** @return the remaining time or 0 if still animating. */
 		protected float update (float delta) {
 			if (loopCount != 0 && animation != null) {
+				int loops;
 				final float diff = speed * delta;
-				time += diff;
-				int loops = (int)Math.abs(time / duration);
-				if (time < 0f) {
-					loops++;
-					while (time < 0f)
-						time += duration;
-				}
-				time = Math.abs(time % duration);
+				if (!MathUtils.isZero(duration)) {
+					time += diff;
+					loops = (int)Math.abs(time / duration);
+					if (time < 0f) {
+						loops++;
+						while (time < 0f)
+							time += duration;
+					}
+					time = Math.abs(time % duration);
+				} else
+					loops = 1;
 				for (int i = 0; i < loops; i++) {
 					if (loopCount > 0) loopCount--;
 					if (loopCount != 0 && listener != null) listener.onLoop(this);
@@ -167,8 +163,6 @@ public class AnimationController extends BaseAnimationController {
 		return obtain(anim.animation, anim.offset, anim.duration, anim.loopCount, anim.speed, anim.listener);
 	}
 
-	private boolean updating; // FIXME
-
 	/** Update any animations currently being played.
 	 * @param delta The time elapsed since last update, change this to alter the overall speed (can be negative). */
 	public void update (float delta) {
@@ -184,14 +178,11 @@ public class AnimationController extends BaseAnimationController {
 			justChangedAnimation = false;
 		}
 		if (current == null || current.loopCount == 0 || current.animation == null) return;
-		justChangedAnimation = false;
-		updating = true;
 		final float remain = current.update(delta);
 		if (remain != 0f && queued != null) {
 			inAction = false;
 			animate(queued, queuedTransitionTime);
-			queued = null;
-			updating = false;
+			queued = null;			
 			update(remain);
 			return;
 		}
@@ -200,7 +191,6 @@ public class AnimationController extends BaseAnimationController {
 				transitionCurrentTime / transitionTargetTime);
 		else
 			applyAnimation(current.animation, current.offset + current.time);
-		updating = false;
 	}
 
 	/** Set the active animation, replacing any current animation.
@@ -280,8 +270,6 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Set the active animation, replacing any current animation. */
 	protected AnimationDesc setAnimation (final AnimationDesc anim) {
-		if (updating) // FIXME Remove this? Just intended for debugging
-			throw new GdxRuntimeException("Cannot change animation during update");
 		if (current == null)
 			current = anim;
 		else {

@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -38,7 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * A Batch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A Batch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw all provided
+ * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided
  * sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
  * <p>
  * A Batch has to be disposed if it is no longer used.
@@ -67,6 +68,10 @@ public interface Batch extends Disposable {
 
 	/** @return the rendering color of this Batch. Manipulating the returned instance has no effect. */
 	public Color getColor ();
+
+	/** @return the rendering color of this Batch in vertex format
+	 * @see Color#toFloatBits() */
+	public float getPackedColor ();
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
 	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
@@ -160,6 +165,9 @@ public interface Batch extends Disposable {
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise);
 
+	/** Draws a rectangle transformed by the given matrix. */
+	public void draw (TextureRegion region, float width, float height, Affine2 transform);
+
 	/** Causes any pending sprites to be rendered, without ending the Batch. */
 	public void flush ();
 
@@ -170,8 +178,8 @@ public interface Batch extends Disposable {
 	public void enableBlending ();
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
-	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
+	 * @param srcFunc the source function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param dstFunc the destination function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc);
 
 	public int getBlendSrcFunc ();
@@ -188,8 +196,7 @@ public interface Batch extends Disposable {
 	 * current batch is flushed to the gpu. */
 	public void setProjectionMatrix (Matrix4 projection);
 
-	/** Sets the transform matrix to be used by this Batch. If this is called inside a {@link #begin()}/{@link #end()} block, the
-	 * current batch is flushed to the gpu. */
+	/** Sets the transform matrix to be used by this Batch. */
 	public void setTransformMatrix (Matrix4 transform);
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
@@ -205,8 +212,14 @@ public interface Batch extends Disposable {
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader);
 
+	/** @return the current {@link ShaderProgram} set by {@link #setShader(ShaderProgram)} or the defaultShader */
+	public ShaderProgram getShader ();
+
 	/** @return true if blending for sprites is enabled */
 	public boolean isBlendingEnabled ();
+
+	/** @return true if currently between begin and end. */
+	public boolean isDrawing ();
 
 	static public final int X1 = 0;
 	static public final int Y1 = 1;

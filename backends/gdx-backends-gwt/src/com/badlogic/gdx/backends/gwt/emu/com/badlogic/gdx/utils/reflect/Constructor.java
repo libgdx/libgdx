@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils.reflect;
 
+import com.badlogic.gwtref.client.Parameter;
+
 /** Provides information about, and access to, a single constructor for a Class.
  * @author nexsoftware */
 public final class Constructor {
@@ -28,7 +30,12 @@ public final class Constructor {
 
 	/** Returns an array of Class objects that represent the formal parameter types, in declaration order, of the constructor. */
 	public Class[] getParameterTypes () {
-		return null;
+		Parameter[] parameters = constructor.getParameters();
+		Class[] parameterTypes = new Class[parameters.length];
+		for (int i = 0, j = parameters.length; i < j; i++) {
+			parameterTypes[i] = parameters[i].getClazz();
+		}
+		return parameterTypes;
 	}
 
 	/** Returns the Class object representing the class or interface that declares the constructor. */

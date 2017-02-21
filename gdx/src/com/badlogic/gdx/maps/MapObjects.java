@@ -32,20 +32,36 @@ public class MapObjects implements Iterable<MapObject> {
 	}
 
 	/** @param index
-	 * @return MapObject at index */
+	 * @return the MapObject at the specified index */
 	public MapObject get (int index) {
 		return objects.get(index);
 	}
 
 	/** @param name
-	 * @return name matching object, null if it´s not in the set */
+	 * @return the first object having the specified name, if one exists, otherwise null */
 	public MapObject get (String name) {
-		for (MapObject object : objects) {
+		for (int i = 0, n = objects.size; i < n; i++) {
+			MapObject object = objects.get(i);
 			if (name.equals(object.getName())) {
 				return object;
 			}
 		}
 		return null;
+	}
+
+	/** Get the index of the object having the specified name, or -1 if no such object exists. */
+	public int getIndex (String name) {
+		return getIndex(get(name));
+	}
+
+	/** Get the index of the object in the collection, or -1 if no such object exists. */
+	public int getIndex (MapObject object) {
+		return objects.indexOf(object, true);
+	}
+
+	/** @return number of objects in the collection */
+	public int getCount () {
+		return objects.size;
 	}
 
 	/** @param object instance to be added to the collection */
@@ -63,11 +79,6 @@ public class MapObjects implements Iterable<MapObject> {
 		objects.removeValue(object, true);
 	}
 
-	/** @return number of objects in the collection */
-	public int getCount () {
-		return objects.size;
-	}
-
 	/** @param type class of the objects we want to retrieve
 	 * @return array filled with all the objects in the collection matching type */
 	public <T extends MapObject> Array<T> getByType (Class<T> type) {
@@ -79,7 +90,8 @@ public class MapObjects implements Iterable<MapObject> {
 	 * @return array filled with all the objects in the collection matching type */
 	public <T extends MapObject> Array<T> getByType (Class<T> type, Array<T> fill) {
 		fill.clear();
-		for (MapObject object : objects) {
+		for (int i = 0, n = objects.size; i < n; i++) {
+			MapObject object = objects.get(i);
 			if (ClassReflection.isInstance(type, object)) {
 				fill.add((T)object);
 			}

@@ -34,6 +34,13 @@ public class Plane implements Serializable {
 
 	public final Vector3 normal = new Vector3();
 	public float d = 0;
+	
+	/**
+	 * Constructs a new plane with all values set to 0
+	 */
+	public Plane () {
+		
+	}
 
 	/** Constructs a new plane based on the normal and distance to the origin.
 	 * 

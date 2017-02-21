@@ -185,7 +185,11 @@ public class TextureRegion {
 	}
 
 	public void setRegionWidth (int width) {
-		setU2(u + width / (float)texture.getWidth());
+		if (isFlipX()) {
+			setU(u2 + width / (float)texture.getWidth());
+		} else {
+			setU2(u + width / (float)texture.getWidth());
+		}
 	}
 
 	/** Returns the region's height. */
@@ -194,7 +198,11 @@ public class TextureRegion {
 	}
 
 	public void setRegionHeight (int height) {
-		setV2(v + height / (float)texture.getHeight());
+		if (isFlipY()) {
+			setV(v2 + height / (float)texture.getHeight());			
+		} else {
+			setV2(v + height / (float)texture.getHeight());
+		}
 	}
 
 	public void flip (boolean x, boolean y) {

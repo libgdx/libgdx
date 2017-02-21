@@ -36,7 +36,9 @@ public class InputTest extends GdxTest implements InputProcessor {
 		if (Gdx.input.justTouched()) {
 			Gdx.app.log("Input Test", "just touched, button: " + (Gdx.input.isButtonPressed(Buttons.LEFT) ? "left " : "")
 				+ (Gdx.input.isButtonPressed(Buttons.MIDDLE) ? "middle " : "")
-				+ (Gdx.input.isButtonPressed(Buttons.RIGHT) ? "right" : ""));
+				+ (Gdx.input.isButtonPressed(Buttons.RIGHT) ? "right" : "")
+				+ (Gdx.input.isButtonPressed(Buttons.BACK) ? "back" : "")
+				+ (Gdx.input.isButtonPressed(Buttons.FORWARD) ? "forward" : ""));
 		}
 
 		for (int i = 0; i < 10; i++) {
@@ -103,6 +105,8 @@ public class InputTest extends GdxTest implements InputProcessor {
 		if (button == Buttons.LEFT) return "left";
 		if (button == Buttons.RIGHT) return "right";
 		if (button == Buttons.MIDDLE) return "middle";
-		return "left";
+		if (button == Buttons.BACK) return "back";
+		if (button == Buttons.FORWARD) return "forward";
+		return "unknown";
 	}
 }

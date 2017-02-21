@@ -33,6 +33,7 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public void addProcessor (int index, InputProcessor processor) {
+		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.insert(index, processor);
 	}
 
@@ -41,6 +42,7 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public void addProcessor (InputProcessor processor) {
+		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.add(processor);
 	}
 

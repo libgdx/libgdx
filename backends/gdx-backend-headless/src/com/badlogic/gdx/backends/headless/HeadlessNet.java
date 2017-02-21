@@ -29,7 +29,6 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Headless implementation of the {@link com.badlogic.gdx.Net} API, based on LWJGL implementation
  * @author acoppes
@@ -49,6 +48,11 @@ public class HeadlessNet implements Net {
 	}
 	
 	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
+	}
+	
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
@@ -59,18 +63,20 @@ public class HeadlessNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
+	public boolean openURI (String URI) {
+		boolean result = false;
 		try {
 			if (!GraphicsEnvironment.isHeadless() && Desktop.isDesktopSupported()) {
 				if (Desktop.getDesktop().isSupported(Action.BROWSE)) {
 					Desktop.getDesktop().browse(java.net.URI.create(URI));
-					return;
+					result = true;
 				}
+			} else {
+				Gdx.app.error("HeadlessNet", "Opening URIs on this environment is not supported. Ignoring.");		
 			}
 		} catch (Throwable t) {
 			Gdx.app.error("HeadlessNet", "Failed to open URI. ", t);
-			return;
 		}
-		Gdx.app.error("HeadlessNet", "Opening URIs on this environment is not supported. Ignoring.");
+		return result;
 	}
 }

@@ -46,6 +46,11 @@ public class IOSNet implements Net {
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
+	
+	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
+	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
@@ -58,7 +63,12 @@ public class IOSNet implements Net {
 	}
 
 	@Override
-	public void openURI (String URI) {
-		uiApp.openURL(new NSURL(URI));
+	public boolean openURI (String URI) {
+		NSURL url = new NSURL(URI);
+		if (uiApp.canOpenURL(url)) {
+			uiApp.openURL(url);
+			return true;
+		}
+		return false;
 	}
 }

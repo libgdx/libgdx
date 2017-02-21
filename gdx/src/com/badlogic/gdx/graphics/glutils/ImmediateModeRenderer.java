@@ -27,6 +27,8 @@ public interface ImmediateModeRenderer {
 	public void color (Color color);
 
 	public void color (float r, float g, float b, float a);
+	
+	public void color (float colorBits);
 
 	public void texCoord (float u, float v);
 

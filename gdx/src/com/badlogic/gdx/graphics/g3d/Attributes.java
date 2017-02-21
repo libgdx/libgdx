@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
 
-public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
+public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, Comparable<Attributes> {
 	protected long mask;
 	protected final Array<Attribute> attributes = new Array<Attribute>();
 
@@ -78,7 +78,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	}
 
 	private final void disable (final long mask) {
-		this.mask &= -1L ^ mask;
+		this.mask &= ~mask;
 	}
 
 	/** Add a attribute to this material. If the material already contains an attribute of the same type it is overwritten. */
@@ -91,6 +91,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 		} else {
 			attributes.set(idx, attribute);
 		}
+		sort(); //FIXME: See #4186
 	}
 
 	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is overwritten. */
@@ -132,7 +133,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	/** Removes the attribute from the material, i.e.: material.remove(BlendingAttribute.ID); Can also be used to remove multiple
 	 * attributes also, i.e. remove(AttributeA.ID | AttributeB.ID); */
 	public final void remove (final long mask) {
-		for (int i = 0; i < attributes.size; i++) {
+		for (int i = attributes.size - 1; i >= 0; i--) {
 			final long type = attributes.get(i).type;
 			if ((mask & type) == type) {
 				attributes.removeIndex(i);
@@ -140,6 +141,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 				sorted = false;
 			}
 		}
+		sort(); //FIXME: See #4186
 	}
 
 	/** @return True if this collection has the specified attribute, i.e. attributes.has(ColorAttribute.Diffuse); Or when multiple
@@ -177,7 +179,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 		return same(other, false);
 	}
 
-	/** Used for sorting attributes */
+	/** Used for sorting attributes by type (not by value) */
 	@Override
 	public final int compare (final Attribute arg0, final Attribute arg1) {
 		return (int)(arg0.type - arg1.type);
@@ -188,23 +190,44 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
 	}
-	
-	@Override
-	public int hashCode () {
+
+	/** @return A hash code based on only the attribute values, which might be different compared to {@link #hashCode()} because the latter
+	 * might include other properties as well, i.e. the material id. */
+	public int attributesHash () {
 		sort();
 		final int n = attributes.size;
-		int result = 71 + (int)mask;
+		long result = 71 + mask;
 		int m = 1;
 		for (int i = 0; i < n; i++)
 			result += mask * attributes.get(i).hashCode() * (m = (m * 7) & 0xFFFF);
-		return result;
+		return (int)(result ^ (result >> 32));
 	}
-	
+
+	@Override
+	public int hashCode () {
+		return attributesHash();
+	}
+
 	@Override
 	public boolean equals (Object other) {
-		if (other == null) return false;
-		if (other == this) return true;
 		if (!(other instanceof Attributes)) return false;
-		return hashCode() == other.hashCode();
+		if (other == this) return true;
+		return same((Attributes)other, true);
+	}
+
+	@Override
+	public int compareTo (Attributes other) {
+		if (other == this)
+			return 0;
+		if (mask != other.mask)
+			return mask < other.mask ? -1 : 1;
+		sort();
+		other.sort();
+		for (int i = 0; i < attributes.size; i++) {
+			final int c = attributes.get(i).compareTo(other.attributes.get(i));
+			if (c != 0)
+				return c < 0 ? -1 : (c > 0 ? 1 : 0);
+		}
+		return 0;
 	}
 }

@@ -193,10 +193,10 @@ public class VoxelWorld implements RenderableProvider {
 			if (numVertices[i] == 0) continue;
 			Renderable renderable = pool.obtain();
 			renderable.material = materials[i];
-			renderable.mesh = mesh;
-			renderable.meshPartOffset = 0;
-			renderable.meshPartSize = numVertices[i];
-			renderable.primitiveType = GL20.GL_TRIANGLES;
+			renderable.meshPart.mesh = mesh;
+			renderable.meshPart.offset = 0;
+			renderable.meshPart.size = numVertices[i];
+			renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
 			renderables.add(renderable);
 			renderedChunks++;
 		}

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.ObjectFloatMap.Entry;
 
 /** An unordered map where the values are floats. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
  * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
@@ -49,24 +48,25 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
-	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectFloatMap () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new map with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectFloatMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public ObjectFloatMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -83,7 +83,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 
 	/** Creates a new map identical to the specified map. */
 	public ObjectFloatMap (ObjectFloatMap<? extends K> map) {
-		this(map.capacity, map.loadFactor);
+		this((int)Math.floor(map.capacity * map.loadFactor), map.loadFactor);
 		stashSize = map.stashSize;
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
@@ -408,9 +408,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
 	 * an expensive operation. */
 	public boolean containsValue (float value) {
+		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return true;
+			if (keyTable[i] != null && valueTable[i] == value) return true;
 		return false;
 	}
 
@@ -437,9 +438,10 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
 	public K findKey (float value) {
+		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
-			if (valueTable[i] == value) return keyTable[i];
+			if (keyTable[i] != null && valueTable[i] == value) return keyTable[i];
 		return null;
 	}
 
@@ -447,7 +449,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {
@@ -487,6 +489,41 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return (h ^ h >>> hashShift) & mask;
 	}
 
+	public int hashCode () {
+		int h = 0;
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				h += key.hashCode() * 31;
+
+				float value = valueTable[i];
+				h += Float.floatToIntBits(value);
+			}
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof ObjectFloatMap)) return false;
+		ObjectFloatMap<K> other = (ObjectFloatMap) obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				float otherValue = other.get(key, 0f);
+				if (otherValue == 0f && !other.containsKey(key)) return false;
+				float value = valueTable[i];
+				if (otherValue != value) return false;
+			}
+		}
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "{}";
 		StringBuilder buffer = new StringBuilder(32);
@@ -514,7 +551,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return buffer.toString();
 	}
 
-	public Iterator<Entry<K>> iterator () {
+	public Entries<K> iterator () {
 		return entries();
 	}
 
@@ -651,8 +688,12 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			return hasNext;
 		}
 
-		public Iterator<Entry<K>> iterator () {
+		public Entries<K> iterator () {
 			return this;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 
@@ -703,7 +744,7 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			return key;
 		}
 
-		public Iterator<K> iterator () {
+		public Keys<K> iterator () {
 			return this;
 		}
 
@@ -713,6 +754,17 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 			while (hasNext)
 				array.add(next());
 			return array;
+		}
+
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
+			while (hasNext)
+				array.add(next());
+			return array;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 }

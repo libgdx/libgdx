@@ -13,6 +13,10 @@
 	return btCollisionObject.getInstance($jnicall, $owner);
 }
 
+%typemap(javaout) 	btCollisionObject, const btCollisionObject, btCollisionObject & {
+	return btCollisionObject.getInstance($jnicall, $owner);
+}
+
 %typemap(javadirectorin) btCollisionObject *, const btCollisionObject *, btCollisionObject * const &	"btCollisionObject.getInstance($1, false)"
 
 %typemap(javacode) btCollisionObject %{

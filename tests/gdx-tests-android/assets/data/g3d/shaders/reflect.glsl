@@ -58,7 +58,7 @@ void main() {
 	vec4 N = vec4(0.0, 0.0, 1.0, 1.0);
 #endif
 	
-	vec3 reflectDir = normalize(v_reflect + (vec3(0.0, 0.0, 1.0) - N.xyz));
+	vec3 reflectDir = normalize(v_reflect) + (vec3(0.0, 0.0, 1.0) - N.xyz);
 
 #ifdef environmentCubemapFlag
 	gl_FragColor = vec4(textureCube(u_environmentCubemap, reflectDir).rgb, 1.0);

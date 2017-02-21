@@ -27,13 +27,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class LayoutAction extends Action {
 	private boolean enabled;
 
-	public void setActor (Actor actor) {
+	public void setTarget (Actor actor) {
 		if (actor != null && !(actor instanceof Layout)) throw new GdxRuntimeException("Actor must implement layout: " + actor);
-		super.setActor(actor);
+		super.setTarget(actor);
 	}
 
 	public boolean act (float delta) {
-		((Layout)actor).setLayoutEnabled(enabled);
+		((Layout)target).setLayoutEnabled(enabled);
 		return true;
 	}
 

@@ -207,7 +207,7 @@ public class Sprite extends TextureRegion {
 		setX(x - width / 2);
 	}
 	
-	/** Sets the y position so that it is centered on the given x parameter */
+	/** Sets the y position so that it is centered on the given y parameter */
 	public void setCenterY(float y){
 		setY(y - height / 2);
 	}

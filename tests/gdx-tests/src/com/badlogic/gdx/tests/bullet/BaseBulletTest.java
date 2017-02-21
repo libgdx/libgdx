@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Disposable;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib.
-	private final static String customDesktopLib = null; //"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null;//"D:\\Xoppa\\code\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 
 	private static boolean initialized = false;
 	
@@ -183,7 +183,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 
 	protected void beginRender (boolean lighting) {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		camera.update();
@@ -231,7 +231,7 @@ public class BaseBulletTest extends BulletTest {
 
 	public void toggleDebugMode () {
 		if (world.getDebugMode() == DebugDrawModes.DBG_NoDebug)
-			setDebugMode(DebugDrawModes.DBG_DrawWireframe);
+			setDebugMode(DebugDrawModes.DBG_DrawWireframe | DebugDrawModes.DBG_DrawFeaturesText | DebugDrawModes.DBG_DrawText | DebugDrawModes.DBG_DrawContactPoints);
 		else if (world.renderMeshes)
 			world.renderMeshes = false;
 		else {

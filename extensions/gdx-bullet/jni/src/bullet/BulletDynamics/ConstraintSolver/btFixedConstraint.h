@@ -16,33 +16,17 @@ subject to the following restrictions:
 #ifndef BT_FIXED_CONSTRAINT_H
 #define BT_FIXED_CONSTRAINT_H
 
-#include "btTypedConstraint.h"
+#include "btGeneric6DofSpring2Constraint.h"
 
-ATTRIBUTE_ALIGNED16(class) btFixedConstraint : public btTypedConstraint
+
+ATTRIBUTE_ALIGNED16(class) btFixedConstraint : public btGeneric6DofSpring2Constraint
 {
-	btVector3 m_pivotInA;
-	btVector3 m_pivotInB;
-	btQuaternion m_relTargetAB;
 
 public:
 	btFixedConstraint(btRigidBody& rbA,btRigidBody& rbB, const btTransform& frameInA,const btTransform& frameInB);
+
 	
 	virtual ~btFixedConstraint();
-
-	
-	virtual void getInfo1 (btConstraintInfo1* info);
-
-	virtual void getInfo2 (btConstraintInfo2* info);
-
-	virtual	void	setParam(int num, btScalar value, int axis = -1)
-	{
-		btAssert(0);
-	}
-	virtual	btScalar getParam(int num, int axis = -1) const
-	{
-		btAssert(0);
-		return 0.f;
-	}
 
 };
 

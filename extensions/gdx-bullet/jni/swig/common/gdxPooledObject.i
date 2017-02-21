@@ -33,7 +33,7 @@
 
 %fragment(gdxToString(gdxPooled##JTYPE), "header") {
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass gdx_getClass##JTYPE(JNIEnv * jenv) {
+	SWIGINTERN inline jclass &gdx_getClass##JTYPE(JNIEnv * const &jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass(gdxToString(_JCLASS)));
@@ -43,9 +43,9 @@
 	// Inline method to get the termporary instance
 	SWIGINTERN inline jobject gdx_getTemp##JTYPE(JNIEnv * jenv, void *cPtr, bool ownMem) {
 	  static jobject ret = NULL;
-	  static jclass clazz = gdx_getClass##JTYPE(jenv);
+	  jclass &clazz = gdx_getClass##JTYPE(jenv);
 	  if (ret == NULL) {
-	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "_JCLASS");
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", gdxToString(L##_JCLASS##;));
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
 	  }
 	  

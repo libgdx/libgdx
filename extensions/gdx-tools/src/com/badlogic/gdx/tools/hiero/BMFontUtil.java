@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tools.hiero;
 
 import java.awt.Font;
-import java.awt.font.GlyphMetrics;
+import java.awt.Rectangle;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -27,10 +27,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -42,6 +43,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
+import com.badlogic.gdx.utils.IntIntMap;
 
 /** @author Nathan Sweet */
 public class BMFontUtil {
@@ -56,6 +58,9 @@ public class BMFontUtil {
 		String outputName = outputBMFontFile.getName();
 		if (outputName.endsWith(".fnt")) outputName = outputName.substring(0, outputName.length() - 4);
 
+		// Always include space and the missing gyph.
+		getGlyph(' ');
+		getGlyph('\u0000');
 		unicodeFont.loadGlyphs();
 
 		PrintStream out = new PrintStream(new FileOutputStream(new File(outputDir, outputName + ".fnt")));
@@ -64,11 +69,11 @@ public class BMFontUtil {
 		int pageHeight = unicodeFont.getGlyphPageHeight();
 		out.println("info face=\"" + font.getFontName() + "\" size=" + font.getSize() + " bold=" + (font.isBold() ? 1 : 0)
 			+ " italic=" + (font.isItalic() ? 1 : 0) + " charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding="
-			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingLeft() + "," + unicodeFont.getPaddingBottom() + ","
-			+ unicodeFont.getPaddingRight() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
+			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingRight() + "," + unicodeFont.getPaddingBottom() + ","
+			+ unicodeFont.getPaddingLeft() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
 			+ unicodeFont.getPaddingAdvanceY());
-		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW="
-			+ pageWidth + " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
+		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW=" + pageWidth
+			+ " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
 
 		int pageIndex = 0, glyphCount = 0;
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
@@ -85,27 +90,19 @@ public class BMFontUtil {
 
 		out.println("chars count=" + glyphCount);
 
-		// Always output space entry (codepoint 32).
-		int[] glyphMetrics = getGlyphMetrics(font, 32);
-		int xAdvance = glyphMetrics[1];
-		out.println("char id=32   x=0     y=0     width=0     height=0     xoffset=0     yoffset=" + unicodeFont.getAscent()
-			+ "    xadvance=" + xAdvance + "     page=0  chnl=0 ");
-
 		pageIndex = 0;
 		List allGlyphs = new ArrayList(512);
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
 			GlyphPage page = (GlyphPage)pageIter.next();
+			List<Glyph> glyphs = page.getGlyphs();
+			Collections.sort(glyphs, new Comparator<Glyph>() {
+				public int compare (Glyph o1, Glyph o2) {
+					return o1.getCodePoint() - o2.getCodePoint();
+				}
+			});
 			for (Iterator glyphIter = page.getGlyphs().iterator(); glyphIter.hasNext();) {
 				Glyph glyph = (Glyph)glyphIter.next();
-
-				glyphMetrics = getGlyphMetrics(font, glyph.getCodePoint());
-				int xOffset = glyphMetrics[0];
-				xAdvance = glyphMetrics[1];
-
-				out.println("char id=" + glyph.getCodePoint() + "   " + "x=" + (int)(glyph.getU() * pageWidth) + "     y="
-					+ (int)(glyph.getV() * pageHeight) + "     width=" + glyph.getWidth() + "     height=" + glyph.getHeight()
-					+ "     xoffset=" + xOffset + "     yoffset=" + glyph.getYOffset() + "    xadvance=" + xAdvance + "     page="
-					+ pageIndex + "  chnl=0 ");
+				writeGlyph(out, pageWidth, pageHeight, pageIndex, glyph);
 			}
 			allGlyphs.addAll(page.getGlyphs());
 			pageIndex++;
@@ -120,9 +117,10 @@ public class BMFontUtil {
 				kerning.load(Gdx.files.internal(ttfFileRef).read(), font.getSize());
 			} catch (IOException ex) {
 				System.out.println("Unable to read kerning information from font: " + ttfFileRef);
+				ex.printStackTrace();
 			}
 
-			Map glyphCodeToCodePoint = new HashMap();
+			IntIntMap glyphCodeToCodePoint = new IntIntMap();
 			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
 				Glyph glyph = (Glyph)iter.next();
 				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
@@ -132,26 +130,28 @@ public class BMFontUtil {
 			class KerningPair {
 				public int firstCodePoint, secondCodePoint, offset;
 			}
-			for (Iterator iter1 = allGlyphs.iterator(); iter1.hasNext();) {
-				Glyph firstGlyph = (Glyph)iter1.next();
-				int firstGlyphCode = getGlyphCode(font, firstGlyph.getCodePoint());
-				int[] values = kerning.getValues(firstGlyphCode);
-				if (values == null) continue;
-				for (int i = 0; i < values.length; i++) {
-					Integer secondCodePoint = (Integer)glyphCodeToCodePoint.get(new Integer(values[i] & 0xffff));
-					if (secondCodePoint == null) continue; // We may not be outputting the second character.
-					int offset = values[i] >> 16;
-					KerningPair pair = new KerningPair();
-					pair.firstCodePoint = firstGlyph.getCodePoint();
-					pair.secondCodePoint = secondCodePoint.intValue();
-					pair.offset = offset;
-					kernings.add(pair);
+			for (IntIntMap.Entry entry : kerning.getKernings()) {
+				int firstGlyphCode = entry.key >> 16;
+				int secondGlyphCode = entry.key & 0xffff;
+				int offset = entry.value;
+				int firstCodePoint = glyphCodeToCodePoint.get(firstGlyphCode, -1);
+				int secondCodePoint = glyphCodeToCodePoint.get(secondGlyphCode, -1);
+
+				if (firstCodePoint == -1 || secondCodePoint == -1 || offset == 0) {
+					// We are not outputting one or both of these glyphs, or the offset is zero anyway.
+					continue;
 				}
+
+				KerningPair pair = new KerningPair();
+				pair.firstCodePoint = firstCodePoint;
+				pair.secondCodePoint = secondCodePoint;
+				pair.offset = offset;
+				kernings.add(pair);
 			}
-			out.println("kernings count=" + kerning.getCount());
+			out.println("kernings count=" + kernings.size());
 			for (Iterator iter = kernings.iterator(); iter.hasNext();) {
 				KerningPair pair = (KerningPair)iter.next();
-				out.println("kerning first=" + pair.firstCodePoint + "  second=" + pair.secondCodePoint + "  amount=" + pair.offset);
+				out.println("kerning first=" + pair.firstCodePoint + " second=" + pair.secondCodePoint + " amount=" + pair.offset);
 			}
 		}
 		out.close();
@@ -186,22 +186,31 @@ public class BMFontUtil {
 		}
 	}
 
+	/** @return May be null. */
+	private Glyph getGlyph (char c) {
+		char[] chars = {c};
+		GlyphVector vector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
+			Font.LAYOUT_LEFT_TO_RIGHT);
+		Rectangle bounds = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0, 0);
+		return unicodeFont.getGlyph(vector.getGlyphCode(0), c, bounds, vector, 0);
+	}
+
+	void writeGlyph (PrintStream out, int pageWidth, int pageHeight, int pageIndex, Glyph glyph) {
+		out.println("char id=" + String.format("%-7s ", glyph.getCodePoint()) //
+			+ "x=" + String.format("%-5s", (int)(glyph.getU() * pageWidth)) //
+			+ "y=" + String.format("%-5s", (int)(glyph.getV() * pageHeight)) //
+			+ "width=" + String.format("%-5s", glyph.getWidth()) //
+			+ "height=" + String.format("%-5s", glyph.getHeight()) //
+			+ "xoffset=" + String.format("%-5s", glyph.getXOffset()) //
+			+ "yoffset=" + String.format("%-5s", glyph.getYOffset()) //
+			+ "xadvance=" + String.format("%-5s", glyph.getXAdvance()) //
+			+ "page=" + String.format("%-5s", pageIndex) //
+			+ "chnl=0 ");
+	}
+
 	private int getGlyphCode (Font font, int codePoint) {
 		char[] chars = Character.toChars(codePoint);
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 		return vector.getGlyphCode(0);
-	}
-
-	private int[] getGlyphMetrics (Font font, int codePoint) {
-		// xOffset and xAdvance will be incorrect for unicode characters such as combining marks or non-spacing characters
-		// (eg Pnujabi's "\u0A1C\u0A47") that require the context of surrounding glyphs to determine spacing, but thisis the
-		// best we can do with the BMFont format.
-		char[] chars = Character.toChars(codePoint);
-		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
-		GlyphMetrics metrics = vector.getGlyphMetrics(0);
-		int xOffset = vector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0.5f, 0).x - unicodeFont.getPaddingLeft();
-		int xAdvance = (int)(metrics.getAdvanceX() + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft() + unicodeFont
-			.getPaddingRight());
-		return new int[] {xOffset, xAdvance};
 	}
 }

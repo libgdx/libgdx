@@ -31,3 +31,10 @@ badlogicsmall
   orig: 256, 256
   offset: 32, 32
   index: 0
+badlogicsmall-rotated
+  rotate: true
+  xy: 42, 98
+  size: 32, 32
+  orig: 256, 256
+  offset: 32, 32
+  index: 0

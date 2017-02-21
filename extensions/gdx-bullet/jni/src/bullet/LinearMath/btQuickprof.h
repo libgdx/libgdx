@@ -15,18 +15,7 @@
 #ifndef BT_QUICK_PROF_H
 #define BT_QUICK_PROF_H
 
-//To disable built-in profiling, please comment out next line
-//#define BT_NO_PROFILE 1
-#ifndef BT_NO_PROFILE
-#include <stdio.h>//@todo remove this, backwards compatibility
 #include "btScalar.h"
-#include "btAlignedAllocator.h"
-#include <new>
-
-
-
-
-
 #define USE_BT_CLOCK 1
 
 #ifdef USE_BT_CLOCK
@@ -52,11 +41,32 @@ public:
 	/// Returns the time in us since the last call to reset or since 
 	/// the Clock was created.
 	unsigned long int getTimeMicroseconds();
+	
+	/// Returns the time in s since the last call to reset or since 
+	/// the Clock was created.
+	btScalar getTimeSeconds();
+	
 private:
 	struct btClockData* m_data;
 };
 
 #endif //USE_BT_CLOCK
+
+#ifndef BT_NO_PROFILE // FIX redefinition
+//To disable built-in profiling, please comment out next line
+#define BT_NO_PROFILE 1
+#endif //BT_NO_PROFILE
+
+#ifndef BT_NO_PROFILE
+#include <stdio.h>//@todo remove this, backwards compatibility
+
+#include "btAlignedAllocator.h"
+#include <new>
+
+
+
+
+
 
 
 

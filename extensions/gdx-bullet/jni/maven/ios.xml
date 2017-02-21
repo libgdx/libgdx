@@ -8,11 +8,32 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
+        <directory>${project.basedir}</directory>
+        <outputDirectory>/META-INF/robovm/ios</outputDirectory>
+        <includes>
+          <include>robovm.xml</include>
+        </includes>
+    </fileSet>
+    <fileSet>
       <directory>${project.build.directory}/ios</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>/META-INF/robovm/ios/libs</outputDirectory>
       <includes>
-        <include>**</include>
+        <include>*.a</include>
       </includes>
     </fileSet>
+    <fileSet>
+        <directory>${project.basedir}</directory>
+        <outputDirectory>/META-INF/robovm/tvos</outputDirectory>
+        <includes>
+          <include>robovm.xml</include>
+        </includes>
+    </fileSet>
   </fileSets>
+  <files>
+    <file>
+      <source>${project.build.directory}/ios/libgdx-bullet.a.tvos</source>
+      <outputDirectory>/META-INF/robovm/tvos/libs</outputDirectory>
+      <destName>libgdx-bullet.a</destName>
+    </file>
+  </files>
 </assembly>

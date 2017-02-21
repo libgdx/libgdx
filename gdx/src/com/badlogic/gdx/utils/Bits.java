@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /** A bitset, without size limitation, allows comparison via bitwise operators to other bitfields.
  * 
  * @author mzechner
@@ -123,7 +125,7 @@ public class Bits {
 			if (bitsAtWord != 0) {
 				for (int bit = 63; bit >= 0; --bit) {
 					if ((bitsAtWord & (1L << (bit & 0x3F))) != 0L) {
-						return (word << 6) + bit;
+						return (word << 6) + bit + 1;
 					}
 				}
 			}
@@ -173,13 +175,12 @@ public class Bits {
 		return -1;
 	}
 
-	/** Returns the index of the first bit that is set to false that occurs on or after the specified starting index. If no such bit
-	 * exists then -1 is returned. */
+	/** Returns the index of the first bit that is set to false that occurs on or after the specified starting index. */
 	public int nextClearBit (int fromIndex) {
 		long[] bits = this.bits;
 		int word = fromIndex >>> 6;
 		int bitsLength = bits.length;
-		if (word >= bitsLength) return -1;
+		if (word >= bitsLength) return bits.length << 6;
 		long bitsAtWord = bits[word];
 		for (int i = fromIndex & 0x3f; i < 64; i++) {
 			if ((bitsAtWord & (1L << (i & 0x3F))) == 0L) {
@@ -197,7 +198,7 @@ public class Bits {
 				}
 			}
 		}
-		return -1;
+		return bits.length << 6;
 	}
 
 	/** Performs a logical <b>AND</b> of this target bit set with the argument bit set. This bit set is modified so that each bit in
@@ -205,8 +206,15 @@ public class Bits {
 	 * also had the value true.
 	 * @param other a bit set */
 	public void and (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] &= other.bits[i];
+		}
+		
+		if (bits.length > commonWords) {
+			for (int i = commonWords, s = bits.length; s > i; i++) {
+				bits[i] = 0L;
+			}
 		}
 	}
 
@@ -224,8 +232,16 @@ public class Bits {
 	 * value true.
 	 * @param other a bit set */
 	public void or (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] |= other.bits[i];
+		}
+		
+		if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
 		}
 	}
 
@@ -237,8 +253,17 @@ public class Bits {
 	 * </ul>
 	 * @param other */
 	public void xor (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
+		int commonWords = Math.min(bits.length, other.bits.length);
+		
+		for (int i = 0; commonWords > i; i++) {
 			bits[i] ^= other.bits[i];
+		}
+		
+		if (commonWords < other.bits.length) {
+			checkCapacity(other.bits.length);
+			for (int i = commonWords, s = other.bits.length; s > i; i++) {
+				bits[i] = other.bits[i];
+			}
 		}
 	}
 
@@ -279,5 +304,39 @@ public class Bits {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int word = length() >>> 6;
+		int hash = 0;
+		for (int i = 0; word >= i; i++) {
+			hash = 127 * hash + (int)(bits[i] ^ (bits[i] >>> 32));
+		}
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Bits other = (Bits) obj;
+		long[] otherBits = other.bits;
+		
+		int commonWords = Math.min(bits.length, otherBits.length);
+		for (int i = 0; commonWords > i; i++) {
+			if (bits[i] != otherBits[i])
+				return false;
+		}
+		
+		if (bits.length == otherBits.length)
+			return true;
+		
+		return length() == other.length();
 	}
 }

@@ -56,7 +56,7 @@ public class SimpleTest extends Box2DTest {
 		// finally we add a fixture to the body using the polygon
 		// defined above. Note that we have to dispose PolygonShapes
 		// and CircleShapes once they are no longer used. This is the
-		// only time you have to care explicitely for memomry managment.
+		// only time you have to care explicitly for memomry managment.
 		groundBody.createFixture(groundPoly, 10);
 		groundPoly.dispose();
 

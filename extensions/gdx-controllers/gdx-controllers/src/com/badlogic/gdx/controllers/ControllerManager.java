@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.controllers;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */
@@ -25,6 +27,8 @@ public interface ControllerManager {
 	public void addListener (ControllerListener listener);
 
 	public void removeListener (ControllerListener listener);
+	
+	public Array<ControllerListener> getListeners();
 
 	/** Clear all listeners */
 	public void clearListeners ();

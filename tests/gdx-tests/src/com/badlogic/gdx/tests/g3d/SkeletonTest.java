@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -74,7 +75,7 @@ public class SkeletonTest extends BaseG3dHudTest {
 			shapeRenderer.setColor(node.isAnimated ? Color.RED : Color.YELLOW);
 			node.globalTransform.getTranslation(tmpV);
 			shapeRenderer.box(tmpV.x, tmpV.y, tmpV.z, 0.5f, 0.5f, 0.5f);
-			for (Node child : node.children)
+			for (Node child : node.getChildren())
 				renderSkeleton(tmpV, child);
 		}
 		shapeRenderer.end();
@@ -87,7 +88,7 @@ public class SkeletonTest extends BaseG3dHudTest {
 		shapeRenderer.box(pos.x, pos.y, pos.z, 0.5f, 0.5f, 0.5f);
 		shapeRenderer.setColor(Color.WHITE);
 		shapeRenderer.line(from.x, from.y, from.z, pos.x, pos.y, pos.z);
-		for (Node child : node.children)
+		for (Node child : node.getChildren())
 			renderSkeleton(pos, child);
 		vectorPool.free(pos);
 	}
@@ -122,7 +123,8 @@ public class SkeletonTest extends BaseG3dHudTest {
 		instances.clear();
 		animationControllers.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
-		instance.materials.get(0).set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 0.5f));
+		for (Material m : instance.materials)
+			m.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 0.8f));
 		instances.add(instance);
 		if (instance.animations.size > 0) animationControllers.put(instance, new AnimationController(instance));
 		currentlyLoading = null;

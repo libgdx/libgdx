@@ -1,7 +1,7 @@
 // THE MACRO
 // NOTE: JTYPE must have a ctor
 %define CREATE_POOLED_TYPEMAP(CTYPE, JTYPE, JCLASS, FROMJTOC, FROMCTOJ)
-%fragment("gdxBulletHelpers##JTYPE", "header", fragment="gdxPool") {
+%fragment("gdxBulletHelpers##JTYPE", "header", fragment="gdxPoolMethods##JTYPE") {
 	
 // Workaround for some strange swig behaviour
 #define TOSTRING##JTYPE(X)	"X"
@@ -10,7 +10,7 @@
 	SWIGINTERN inline jobject gdx_getReturn##JTYPE(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClass##JTYPE(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, TOSTRING##JTYPE(static##JTYPE), JCLASS);
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -66,7 +66,7 @@
 	    jenv(jenv), j##JTYPE(j##JTYPE), c##CTYPE(*c##CTYPE), poolName(poolName) { };
 	  virtual ~gdxAutoCommit##CTYPE##AndRelease##JTYPE() {
 	    gdx_set##CTYPE##From##JTYPE(this->jenv, this->c##CTYPE, this->j##JTYPE);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->j##JTYPE);
+	    gdx_releasePoolObject##JTYPE(this->jenv, this->poolName, this->j##JTYPE);
 	  };
 	};
 }
@@ -102,16 +102,15 @@
 	gdxAutoCommit##JTYPE auto_commit_$1(jenv, $input, &local_$1);
 }
 %typemap(directorin, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1)	const CTYPE & {
-	$input = gdx_takePoolObject(jenv, TOSTRING##JTYPE(pool##JTYPE));
+	$input = gdx_takePoolObject##JTYPE(jenv, TOSTRING##JTYPE(pool##JTYPE));
 	gdx_set##JTYPE##From##CTYPE(jenv, $input, $1);
-	gdxPoolAutoRelease autoRelease_$input(jenv, TOSTRING##JTYPE(pool##JTYPE), $input);
+	gdxPoolAutoRelease##JTYPE autoRelease_$input(jenv, TOSTRING##JTYPE(pool##JTYPE), $input);
 }
 %typemap(directorin, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1)	CTYPE, CTYPE & {
-	$input = gdx_takePoolObject(jenv, TOSTRING##JTYPE(pool##JTYPE));
+	$input = gdx_takePoolObject##JTYPE(jenv, TOSTRING##JTYPE(pool##JTYPE));
 	gdx_set##JTYPE##From##CTYPE(jenv, $input, $1);
 	gdxAutoCommit##CTYPE##AndRelease##JTYPE auto_commit_$1(jenv, $input, &$1, TOSTRING##JTYPE(pool##JTYPE));
 }
-
 %typemap(out, fragment="gdxBulletHelpers##JTYPE", noblock=1)		CTYPE, CTYPE &, const CTYPE &	{
 	$result = gdx_getReturn##JTYPE(jenv);
 	gdx_set##JTYPE##From##CTYPE(jenv, $result, $1);

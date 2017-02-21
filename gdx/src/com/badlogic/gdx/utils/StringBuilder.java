@@ -919,6 +919,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append (CharSequence csq) {
 		if (csq == null) {
 			appendNull();
+		} else if (csq instanceof StringBuilder) {
+			StringBuilder builder = (StringBuilder)csq;
+			append0(builder.chars, 0, builder.length);
 		} else {
 			append0(csq.toString());
 		}
@@ -1164,6 +1167,34 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder replace (int start, int end, String str) {
 		replace0(start, end, str);
 		return this;
+	}
+
+	/** Replaces all instances of {@code find} with {@code replace}. */
+	public StringBuilder replace (String find, String replace) {
+		int findLength = find.length(), replaceLength = replace.length();
+		int index = 0;
+		while (true) {
+			index = indexOf(find, index);
+			if (index == -1) break;
+			replace0(index, index + findLength, replace);
+			index += replaceLength;
+		}
+		return this;
+	}
+
+	/** Replaces all instances of {@code find} with {@code replace}. */
+	public StringBuilder replace (char find, String replace) {
+		int replaceLength = replace.length();
+		int index = 0;
+		while (true) {
+			while (true) {
+				if (index == length) return this;
+				if (chars[index] == find) break;
+				index++;
+			}
+			replace0(index, index + 1, replace);
+			index += replaceLength;
+		}
 	}
 
 	/** Reverses the order of characters in this builder.

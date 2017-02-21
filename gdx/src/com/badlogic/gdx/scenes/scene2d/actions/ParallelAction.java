@@ -68,7 +68,8 @@ public class ParallelAction extends Action {
 		try {
 			Array<Action> actions = this.actions;
 			for (int i = 0, n = actions.size; i < n && actor != null; i++) {
-				if (!actions.get(i).act(delta)) complete = false;
+				Action currentAction = actions.get(i);
+				if (currentAction.getActor() != null && !currentAction.act(delta)) complete = false;
 				if (actor == null) return true; // This action was removed.
 			}
 			return complete;

@@ -107,6 +107,8 @@ void	btQuantizedBvh::setQuantizationValues(const btVector3& bvhAabbMin,const btV
 			v = unQuantize(vecIn);
 			m_bvhAabbMin.setMin(v-clampValue);
 		}
+        aabbSize = m_bvhAabbMax - m_bvhAabbMin;
+        m_bvhQuantization = btVector3(btScalar(65533.0),btScalar(65533.0),btScalar(65533.0)) / aabbSize;
 		{
 			quantize(vecIn,m_bvhAabbMax,true);
 			v = unQuantize(vecIn);

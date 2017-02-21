@@ -48,16 +48,22 @@ public class Decal {
 	protected Vector3 position = new Vector3();
 	protected Quaternion rotation = new Quaternion();
 	protected Vector2 scale = new Vector2(1, 1);
+	protected Color color = new Color();
 
 	/** The transformation offset can be used to change the pivot point for rotation and scaling. By default the pivot is the middle
 	 * of the decal. */
 	public Vector2 transformationOffset = null;
 	protected Vector2 dimensions = new Vector2();
 
-	protected DecalMaterial material = new DecalMaterial();
+	protected DecalMaterial material;
 	protected boolean updated = false;
 
 	public Decal () {
+		this.material = new DecalMaterial();
+	}
+
+	public Decal (DecalMaterial material) {
+		this.material = material;
 	}
 
 	/** Sets the color of all four vertices to the specified color
@@ -67,6 +73,7 @@ public class Decal {
 	 * @param b Blue component
 	 * @param a Alpha component */
 	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
 		vertices[C1] = color;
@@ -77,6 +84,7 @@ public class Decal {
 
 	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
+		color.set(tint);
 		float color = tint.toFloatBits();
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -86,6 +94,7 @@ public class Decal {
 
 	/** @see #setColor(Color) */
 	public void setColor (float color) {
+		this.color.set(NumberUtils.floatToIntColor(color));
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
@@ -96,7 +105,7 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
 	public void setRotationX (float angle) {
-		rotation.set(X_AXIS, angle);
+		rotation.set(Vector3.X, angle);
 		updated = false;
 	}
 
@@ -104,7 +113,7 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
 	public void setRotationY (float angle) {
-		rotation.set(Y_AXIS, angle);
+		rotation.set(Vector3.Y, angle);
 		updated = false;
 	}
 
@@ -112,7 +121,7 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
 	public void setRotationZ (float angle) {
-		rotation.set(Z_AXIS, angle);
+		rotation.set(Vector3.Z, angle);
 		updated = false;
 	}
 
@@ -120,7 +129,7 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to rotate by */
 	public void rotateX (float angle) {
-		rotator.set(X_AXIS, angle);
+		rotator.set(Vector3.X, angle);
 		rotation.mul(rotator);
 		updated = false;
 	}
@@ -129,7 +138,7 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to rotate by */
 	public void rotateY (float angle) {
-		rotator.set(Y_AXIS, angle);
+		rotator.set(Vector3.Y, angle);
 		rotation.mul(rotator);
 		updated = false;
 	}
@@ -138,8 +147,17 @@ public class Decal {
 	 * 
 	 * @param angle Angle in degrees to rotate by */
 	public void rotateZ (float angle) {
-		rotator.set(Z_AXIS, angle);
+		rotator.set(Vector3.Z, angle);
 		rotation.mul(rotator);
+		updated = false;
+	}
+
+	/** Sets the rotation of this decal to the given angles on all axes.
+	 * @param yaw Angle in degrees to rotate around the Y axis
+	 * @param pitch Angle in degrees to rotate around the X axis
+	 * @param roll Angle in degrees to rotate around the Z axis */
+	public void setRotation (float yaw, float pitch, float roll) {
+		rotation.setEulerAngles(yaw, pitch, roll);
 		updated = false;
 	}
 
@@ -150,6 +168,13 @@ public class Decal {
 		tmp.set(up).crs(dir).nor();
 		tmp2.set(dir).crs(tmp).nor();
 		rotation.setFromAxes(tmp.x, tmp2.x, dir.x, tmp.y, tmp2.y, dir.y, tmp.z, tmp2.z, dir.z);
+		updated = false;
+	}
+
+	/** Sets the rotation of this decal based on the provided Quaternion
+	 * @param q desired Rotation */
+	public void setRotation (Quaternion q) {
+		rotation.set(q);
 		updated = false;
 	}
 
@@ -233,6 +258,12 @@ public class Decal {
 		updated = false;
 	}
 
+	/** @see Decal#translate(float, float, float) */
+	public void translate (Vector3 trans) {
+		this.position.add(trans);
+		updated = false;
+	}
+
 	/** Sets the position to the given world coordinates
 	 * 
 	 * @param x X position
@@ -241,6 +272,19 @@ public class Decal {
 	public void setPosition (float x, float y, float z) {
 		this.position.set(x, y, z);
 		updated = false;
+	}
+
+	/** @see Decal#setPosition(float, float, float) */
+	public void setPosition (Vector3 pos) {
+		this.position.set(pos);
+		updated = false;
+	}
+
+	/** Returns the color of this decal. The returned color should under no circumstances be modified.
+	 * 
+	 * @return The color of this decal. */
+	public Color getColor () {
+		return color;
 	}
 
 	/** Returns the position of this decal. The returned vector should under no circumstances be modified.
@@ -523,6 +567,14 @@ public class Decal {
 		return material;
 	}
 
+	/**Set material
+	 * 
+	 * @param material custom material
+	 */
+	public void setMaterial (DecalMaterial material) {
+		this.material = material;
+	}
+
 	final static Vector3 dir = new Vector3();
 
 	/** Sets the rotation of the Decal to face the given point. Useful for billboarding.
@@ -560,9 +612,6 @@ public class Decal {
 	public static final int V4 = 23;
 
 	protected static Quaternion rotator = new Quaternion(0, 0, 0, 0);
-	protected static final Vector3 X_AXIS = new Vector3(1, 0, 0);
-	protected static final Vector3 Y_AXIS = new Vector3(0, 1, 0);
-	protected static final Vector3 Z_AXIS = new Vector3(0, 0, 1);
 
 	/** Creates a decal assuming the dimensions of the texture region
 	 * 
@@ -625,4 +674,25 @@ public class Decal {
 		decal.setColor(1, 1, 1, 1);
 		return decal;
 	}
+
+	/** Creates a decal using the region for texturing and the specified blending parameters for blending
+	 * 
+	 * @param width Width of the decal in world units
+	 * @param height Height of the decal in world units
+	 * @param textureRegion TextureRegion to use
+	 * @param srcBlendFactor Source blend used by glBlendFunc
+	 * @param dstBlendFactor Destination blend used by glBlendFunc
+	 * @param material Custom decal material
+	 * @return Created decal */
+	public static Decal newDecal (float width, float height, TextureRegion textureRegion, int srcBlendFactor, int dstBlendFactor,
+		DecalMaterial material) {
+		Decal decal = new Decal(material);
+		decal.setTextureRegion(textureRegion);
+		decal.setBlending(srcBlendFactor, dstBlendFactor);
+		decal.dimensions.x = width;
+		decal.dimensions.y = height;
+		decal.setColor(1, 1, 1, 1);
+		return decal;
+	}
+
 }

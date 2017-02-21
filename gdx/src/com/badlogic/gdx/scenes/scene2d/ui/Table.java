@@ -16,25 +16,21 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -42,7 +38,11 @@ import com.badlogic.gdx.utils.Pool;
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
-	static Pool<Cell> cellPool = new Pool() {
+	static public Color debugTableColor = new Color(0, 0, 1, 1);
+	static public Color debugCellColor = new Color(1, 0, 0, 1);
+	static public Color debugActorColor = new Color(0, 1, 0, 1);
+
+	static final Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
 			return new Cell();
 		}
@@ -50,6 +50,7 @@ public class Table extends WidgetGroup {
 	static private float[] columnWeightedWidth, rowWeightedHeight;
 
 	private int columns, rows;
+	private boolean implicitEndRow;
 
 	private final Array<Cell> cells = new Array(4);
 	private final Cell cellDefaults;
@@ -64,13 +65,13 @@ public class Table extends WidgetGroup {
 	private float[] columnWidth, rowHeight;
 	private float[] expandWidth, expandHeight;
 
-	Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
+	Value padTop = backgroundTop, padLeft = backgroundLeft, padBottom = backgroundBottom, padRight = backgroundRight;
 	int align = Align.center;
 
 	Debug debug = Debug.none;
 	Array<DebugRect> debugRects;
 
-	private Drawable background;
+	Drawable background;
 	private boolean clip;
 	private Skin skin;
 	boolean round = true;
@@ -79,12 +80,12 @@ public class Table extends WidgetGroup {
 		this(null);
 	}
 
-	/** Creates a table with a skin, which enables the {@link #add(String)} and {@link #add(String, String)} methods to be used. */
+	/** Creates a table with a skin, which enables the {@link #add(CharSequence)} and {@link #add(CharSequence, String)} methods to
+	 * be used. */
 	public Table (Skin skin) {
 		this.skin = skin;
 
 		cellDefaults = obtainCell();
-		cellDefaults.defaults();
 
 		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
@@ -103,16 +104,11 @@ public class Table extends WidgetGroup {
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
 				batch.flush();
-				float x = 0, y = 0, width = getWidth(), height = getHeight();
-				if (background != null) {
-					x = padLeft.get(this);
-					y = padBottom.get(this);
-					width -= x + padRight.get(this);
-					height -= y + padTop.get(this);
-				}
-				boolean draw = clipBegin(x, y, width, height);
-				if (draw) {
+				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
+				if (clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+					getHeight() - padBottom - padTop.get(this))) {
 					drawChildren(batch, parentAlpha);
+					batch.flush();
 					clipEnd();
 				}
 			} else
@@ -135,30 +131,22 @@ public class Table extends WidgetGroup {
 
 	/** Sets the background drawable from the skin and adjusts the table's padding to match the background. This may only be called
 	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
-	 * @see #setBackground(Drawable, boolean) */
+	 * @see #setBackground(Drawable) */
 	public void setBackground (String drawableName) {
-		setBackground(skin.getDrawable(drawableName), true);
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		setBackground(skin.getDrawable(drawableName));
 	}
 
-	/** Sets the background drawable and adjusts the table's padding to match the background.
-	 * @see #setBackground(Drawable, boolean) */
+	/** @param background May be null to clear the background. */
 	public void setBackground (Drawable background) {
-		setBackground(background, true);
-	}
-
-	/** Sets the background drawable and, if adjustPadding is true, sets the table's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and padding removed. */
-	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
-		this.background = background;
-		if (adjustPadding) {
-			if (background == null)
-				pad(null);
-			else
-				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+		float padTopOld = getPadTop(), padLeftOld = getPadLeft(), padBottomOld = getPadBottom(), padRightOld = getPadRight();
+		this.background = background; // The default pad values use the background's padding.
+		float padTopNew = getPadTop(), padLeftNew = getPadLeft(), padBottomNew = getPadBottom(), padRightNew = getPadRight();
+		if (padTopOld + padBottomOld != padTopNew + padBottomNew || padLeftOld + padRightOld != padLeftNew + padRightNew)
+			invalidateHierarchy();
+		else if (padTopOld != padTopNew || padLeftOld != padLeftNew || padBottomOld != padBottomNew || padRightOld != padRightNew)
 			invalidate();
-		}
 	}
 
 	/** @see #setBackground(Drawable) */
@@ -203,9 +191,16 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell to the table with the specified actor. */
-	public Cell add (Actor actor) {
-		Cell cell = obtainCell();
+	public <T extends Actor> Cell<T> add (T actor) {
+		Cell<T> cell = obtainCell();
 		cell.actor = actor;
+
+		// The row was ended for layout, not by the user, so revert it.
+		if (implicitEndRow) {
+			implicitEndRow = false;
+			rows--;
+			cells.peek().endRow = false;
+		}
 
 		Array<Cell> cells = this.cells;
 		int cellCount = cells.size;
@@ -256,25 +251,25 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text) {
+	public Cell<Label> add (CharSequence text) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String labelStyleName) {
+	public Cell<Label> add (CharSequence text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, Color color) {
+	public Cell<Label> add (CharSequence text, String fontName, Color color) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell<Label> add (String text, String fontName, String colorName) {
+	public Cell<Label> add (CharSequence text, String fontName, String colorName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
@@ -296,7 +291,11 @@ public class Table extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
-		if (!super.removeActor(actor)) return false;
+		return removeActor(actor, true);
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		if (!super.removeActor(actor, unfocus)) return false;
 		Cell cell = getCell(actor);
 		if (cell != null) cell.actor = null;
 		return true;
@@ -316,22 +315,22 @@ public class Table extends WidgetGroup {
 		columns = 0;
 		if (rowDefaults != null) cellPool.free(rowDefaults);
 		rowDefaults = null;
+		implicitEndRow = false;
 
 		super.clearChildren();
 	}
 
-	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
-	 * cell, column, and row defaults. */
+	/** Removes all actors and cells from the table (same as {@link #clearChildren()}) and additionally resets all table properties
+	 * and cell, column, and row defaults. */
 	public void reset () {
-		clear();
-		padTop = Value.zero;
-		padLeft = Value.zero;
-		padBottom = Value.zero;
-		padRight = Value.zero;
+		clearChildren();
+		padTop = backgroundTop;
+		padLeft = backgroundLeft;
+		padBottom = backgroundBottom;
+		padRight = backgroundRight;
 		align = Align.center;
-		if (debug != Debug.none) debugRects.clear();
-		debug = Debug.none;
-		cellDefaults.defaults();
+		debug(Debug.none);
+		cellDefaults.reset();
 		for (int i = 0, n = columnDefaults.size; i < n; i++) {
 			Cell columnCell = columnDefaults.get(i);
 			if (columnCell != null) cellPool.free(columnCell);
@@ -343,9 +342,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			endRow();
+			if (!implicitEndRow) endRow();
 			invalidate();
 		}
+		implicitEndRow = false;
 		if (rowDefaults != null) cellPool.free(rowDefaults);
 		rowDefaults = obtainCell();
 		rowDefaults.clear();
@@ -428,6 +428,7 @@ public class Table extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (Value pad) {
+		if (pad == null) throw new IllegalArgumentException("pad cannot be null.");
 		padTop = pad;
 		padLeft = pad;
 		padBottom = pad;
@@ -437,6 +438,10 @@ public class Table extends WidgetGroup {
 	}
 
 	public Table pad (Value top, Value left, Value bottom, Value right) {
+		if (top == null) throw new IllegalArgumentException("top cannot be null.");
+		if (left == null) throw new IllegalArgumentException("left cannot be null.");
+		if (bottom == null) throw new IllegalArgumentException("bottom cannot be null.");
+		if (right == null) throw new IllegalArgumentException("right cannot be null.");
 		padTop = top;
 		padLeft = left;
 		padBottom = bottom;
@@ -447,6 +452,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the top edge of the table. */
 	public Table padTop (Value padTop) {
+		if (padTop == null) throw new IllegalArgumentException("padTop cannot be null.");
 		this.padTop = padTop;
 		sizeInvalid = true;
 		return this;
@@ -454,6 +460,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the left edge of the table. */
 	public Table padLeft (Value padLeft) {
+		if (padLeft == null) throw new IllegalArgumentException("padLeft cannot be null.");
 		this.padLeft = padLeft;
 		sizeInvalid = true;
 		return this;
@@ -461,6 +468,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the bottom edge of the table. */
 	public Table padBottom (Value padBottom) {
+		if (padBottom == null) throw new IllegalArgumentException("padBottom cannot be null.");
 		this.padBottom = padBottom;
 		sizeInvalid = true;
 		return this;
@@ -468,6 +476,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the right edge of the table. */
 	public Table padRight (Value padRight) {
+		if (padRight == null) throw new IllegalArgumentException("padRight cannot be null.");
 		this.padRight = padRight;
 		sizeInvalid = true;
 		return this;
@@ -557,45 +566,64 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	/** Turns on all debug lines. */
+	public void setDebug (boolean enabled) {
+		debug(enabled ? Debug.all : Debug.none);
+	}
+
 	public Table debug () {
-		this.debug = Debug.all;
-		invalidate();
+		super.debug();
+		return this;
+	}
+
+	public Table debugAll () {
+		super.debugAll();
 		return this;
 	}
 
 	/** Turns on table debug lines. */
 	public Table debugTable () {
-		this.debug = Debug.table;
-		invalidate();
+		super.setDebug(true);
+		if (debug != Debug.table) {
+			this.debug = Debug.table;
+			invalidate();
+		}
 		return this;
 	}
 
 	/** Turns on cell debug lines. */
 	public Table debugCell () {
-		this.debug = Debug.cell;
-		invalidate();
+		super.setDebug(true);
+		if (debug != Debug.cell) {
+			this.debug = Debug.cell;
+			invalidate();
+		}
 		return this;
 	}
 
 	/** Turns on actor debug lines. */
 	public Table debugActor () {
-		this.debug = Debug.actor;
-		invalidate();
-		return this;
-	}
-
-	/** Turns on debug lines. */
-	public Table debug (Debug debug) {
-		this.debug = debug;
-		if (debug == Debug.none) {
-			if (debugRects != null) debugRects.clear();
-		} else
+		super.setDebug(true);
+		if (debug != Debug.actor) {
+			this.debug = Debug.actor;
 			invalidate();
+		}
 		return this;
 	}
 
-	public Debug getDebug () {
+	/** Turns debug lines on or off. */
+	public Table debug (Debug debug) {
+		super.setDebug(debug != Debug.none);
+		if (this.debug != debug) {
+			this.debug = debug;
+			if (debug == Debug.none)
+				clearDebugRects();
+			else
+				invalidate();
+		}
+		return this;
+	}
+
+	public Debug getTableDebug () {
 		return debug;
 	}
 
@@ -645,7 +673,8 @@ public class Table extends WidgetGroup {
 		return align;
 	}
 
-	/** Returns the row index for the y coordinate, or -1 if there are no cells. */
+	/** Returns the row index for the y coordinate, or -1 if there are no cells.
+	 * @param y The y coordinate, where 0 is the top of the table. */
 	public int getRow (float y) {
 		Array<Cell> cells = this.cells;
 		int row = 0;
@@ -668,6 +697,24 @@ public class Table extends WidgetGroup {
 	/** If true (the default), positions and sizes are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
+	}
+
+	public int getRows () {
+		return rows;
+	}
+
+	public int getColumns () {
+		return columns;
+	}
+
+	/** Returns the height of the specified row. */
+	public float getRowHeight (int rowIndex) {
+		return rowHeight[rowIndex];
+	}
+
+	/** Returns the width of the specified column. */
+	public float getColumnWidth (int columnIndex) {
+		return columnWidth[columnIndex];
 	}
 
 	private float[] ensureSize (float[] array, int size) {
@@ -719,7 +766,11 @@ public class Table extends WidgetGroup {
 		Array<Cell> cells = this.cells;
 		int cellCount = cells.size;
 
-		if (cellCount > 0 && !cells.peek().endRow) endRow();
+		// Implicitly End the row for layout purposes.
+		if (cellCount > 0 && !cells.peek().endRow) {
+			endRow();
+			implicitEndRow = true;
+		}
 
 		int columns = this.columns, rows = this.rows;
 		float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);
@@ -737,7 +788,7 @@ public class Table extends WidgetGroup {
 			int column = c.column, row = c.row, colspan = c.colspan;
 			Actor a = c.actor;
 
-			// Collect columns/rows that expand.
+			// Collect rows that expand and colspan=1 columns that expand.
 			if (c.expandY != 0 && expandHeight[row] == 0) expandHeight[row] = c.expandY;
 			if (colspan == 1 && c.expandX != 0 && expandWidth[column] == 0) expandWidth[column] = c.expandX;
 
@@ -776,65 +827,28 @@ public class Table extends WidgetGroup {
 			rowMinHeight[row] = Math.max(rowMinHeight[row], minHeight + vpadding);
 		}
 
-		// Colspan with expand will expand all spanned columns if none of the spanned columns have expand.
-		outer:
-		for (int i = 0; i < cellCount; i++) {
-			Cell c = cells.get(i);
-			if (c.expandX == 0) continue;
-			int column = c.column;
-			int nn = column + c.colspan;
-			for (int ii = column; ii < nn; ii++)
-				if (expandWidth[ii] != 0) continue outer;
-			int expandX = c.expandX;
-			for (int ii = column; ii < nn; ii++)
-				expandWidth[ii] = expandX;
-		}
-
-		// Distribute any additional min and pref width added by colspanned cells to the columns spanned.
-		for (int i = 0; i < cellCount; i++) {
-			Cell c = cells.get(i);
-			int colspan = c.colspan;
-			if (colspan == 1) continue;
-			int column = c.column;
-
-			Actor a = c.actor;
-			float minWidth = c.minWidth.get(a);
-			float prefWidth = c.prefWidth.get(a);
-			float maxWidth = c.maxWidth.get(a);
-			if (prefWidth < minWidth) prefWidth = minWidth;
-			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
-
-			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
-				spannedMinWidth += columnMinWidth[ii];
-				spannedPrefWidth += columnPrefWidth[ii];
-			}
-
-			// Distribute extra space using expand, if any columns have expand.
-			float totalExpandWidth = 0;
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
-				totalExpandWidth += expandWidth[ii];
-
-			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
-			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
-			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
-				float ratio = totalExpandWidth == 0 ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
-				columnMinWidth[ii] += extraMinWidth * ratio;
-				columnPrefWidth[ii] += extraPrefWidth * ratio;
-			}
-		}
-
-		// Collect uniform size.
 		float uniformMinWidth = 0, uniformMinHeight = 0;
 		float uniformPrefWidth = 0, uniformPrefHeight = 0;
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			int column = c.column;
+
+			// Colspan with expand will expand all spanned columns if none of the spanned columns have expand.
+			int expandX = c.expandX;
+			outer:
+			if (expandX != 0) {
+				int nn = column + c.colspan;
+				for (int ii = column; ii < nn; ii++)
+					if (expandWidth[ii] != 0) break outer;
+				for (int ii = column; ii < nn; ii++)
+					expandWidth[ii] = expandX;
+			}
 
 			// Collect uniform sizes.
 			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
 				float hpadding = c.computedPadLeft + c.computedPadRight;
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column] - hpadding);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column] - hpadding);
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[column] - hpadding);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[column] - hpadding);
 			}
 			if (c.uniformY == Boolean.TRUE) {
 				float vpadding = c.computedPadTop + c.computedPadBottom;
@@ -857,6 +871,37 @@ public class Table extends WidgetGroup {
 					rowMinHeight[c.row] = uniformMinHeight + vpadding;
 					rowPrefHeight[c.row] = uniformPrefHeight + vpadding;
 				}
+			}
+		}
+
+		// Distribute any additional min and pref width added by colspanned cells to the columns spanned.
+		for (int i = 0; i < cellCount; i++) {
+			Cell c = cells.get(i);
+			int colspan = c.colspan;
+			if (colspan == 1) continue;
+			int column = c.column;
+
+			Actor a = c.actor;
+			float minWidth = c.minWidth.get(a);
+			float prefWidth = c.prefWidth.get(a);
+			float maxWidth = c.maxWidth.get(a);
+			if (prefWidth < minWidth) prefWidth = minWidth;
+			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
+
+			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
+			float totalExpandWidth = 0;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
+				spannedMinWidth += columnMinWidth[ii];
+				spannedPrefWidth += columnPrefWidth[ii];
+				totalExpandWidth += expandWidth[ii]; // Distribute extra space using expand, if any columns have expand.
+			}
+
+			float extraMinWidth = Math.max(0, minWidth - spannedMinWidth);
+			float extraPrefWidth = Math.max(0, prefWidth - spannedPrefWidth);
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++) {
+				float ratio = totalExpandWidth == 0 ? 1f / colspan : expandWidth[ii] / totalExpandWidth;
+				columnMinWidth[ii] += extraMinWidth * ratio;
+				columnPrefWidth[ii] += extraPrefWidth * ratio;
 			}
 		}
 
@@ -942,7 +987,8 @@ public class Table extends WidgetGroup {
 			Actor a = c.actor;
 
 			float spannedWeightedWidth = 0;
-			for (int ii = column, nn = ii + c.colspan; ii < nn; ii++)
+			int colspan = c.colspan;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
 				spannedWeightedWidth += columnWeightedWidth[ii];
 			float weightedHeight = rowWeightedHeight[row];
 
@@ -960,7 +1006,7 @@ public class Table extends WidgetGroup {
 			c.actorWidth = Math.min(spannedWeightedWidth - c.computedPadLeft - c.computedPadRight, prefWidth);
 			c.actorHeight = Math.min(weightedHeight - c.computedPadTop - c.computedPadBottom, prefHeight);
 
-			if (c.colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
+			if (colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
 			rowHeight[row] = Math.max(rowHeight[row], weightedHeight);
 		}
 
@@ -1047,27 +1093,29 @@ public class Table extends WidgetGroup {
 
 			currentX += c.computedPadLeft;
 
-			if (c.fillX > 0) {
-				c.actorWidth = spannedCellWidth * c.fillX;
+			float fillX = c.fillX, fillY = c.fillY;
+			if (fillX > 0) {
+				c.actorWidth = Math.max(spannedCellWidth * fillX, c.minWidth.get(c.actor));
 				float maxWidth = c.maxWidth.get(c.actor);
 				if (maxWidth > 0) c.actorWidth = Math.min(c.actorWidth, maxWidth);
 			}
-			if (c.fillY > 0) {
-				c.actorHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
+			if (fillY > 0) {
+				c.actorHeight = Math.max(rowHeight[c.row] * fillY - c.computedPadTop - c.computedPadBottom, c.minHeight.get(c.actor));
 				float maxHeight = c.maxHeight.get(c.actor);
 				if (maxHeight > 0) c.actorHeight = Math.min(c.actorHeight, maxHeight);
 			}
 
-			if ((c.align & Align.left) != 0)
+			align = c.align;
+			if ((align & Align.left) != 0)
 				c.actorX = currentX;
-			else if ((c.align & Align.right) != 0)
+			else if ((align & Align.right) != 0)
 				c.actorX = currentX + spannedCellWidth - c.actorWidth;
 			else
 				c.actorX = currentX + (spannedCellWidth - c.actorWidth) / 2;
 
-			if ((c.align & Align.top) != 0)
+			if ((align & Align.top) != 0)
 				c.actorY = currentY + c.computedPadTop;
-			else if ((c.align & Align.bottom) != 0)
+			else if ((align & Align.bottom) != 0)
 				c.actorY = currentY + rowHeight[c.row] - c.actorHeight - c.computedPadBottom;
 			else
 				c.actorY = currentY + (rowHeight[c.row] - c.actorHeight + c.computedPadTop - c.computedPadBottom) / 2;
@@ -1081,19 +1129,19 @@ public class Table extends WidgetGroup {
 
 		// Store debug rectangles.
 		if (debug == Debug.none) return;
-		if (debugRects != null) debugRects.clear();
+		clearDebugRects();
 		currentX = x;
 		currentY = y;
 		if (debug == Debug.table || debug == Debug.all) {
-			TableDebug.addRectangle(this, Debug.table, layoutX, layoutY, layoutWidth, layoutHeight);
-			TableDebug.addRectangle(this, Debug.table, x, y, tableWidth - hpadding, tableHeight - vpadding);
+			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, debugTableColor);
+			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, debugTableColor);
 		}
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
 
 			// Actor bounds.
 			if (debug == Debug.actor || debug == Debug.all)
-				TableDebug.addRectangle(this, Debug.actor, c.actorX, c.actorY, c.actorWidth, c.actorHeight);
+				addDebugRect(c.actorX, c.actorY, c.actorWidth, c.actorHeight, debugActorColor);
 
 			// Cell bounds.
 			float spannedCellWidth = 0;
@@ -1102,8 +1150,8 @@ public class Table extends WidgetGroup {
 			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
-				TableDebug.addRectangle(this, Debug.cell, currentX, currentY + c.computedPadTop, spannedCellWidth, rowHeight[c.row]
-					- c.computedPadTop - c.computedPadBottom);
+				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth,
+					rowHeight[c.row] - c.computedPadTop - c.computedPadBottom, debugCellColor);
 			}
 
 			if (c.endRow) {
@@ -1114,11 +1162,74 @@ public class Table extends WidgetGroup {
 		}
 	}
 
-	/** Draws the debug lines for all tables in the stage. If this method is not called each frame, no debug lines will be drawn. If
-	 * debug is never turned on for any table in the application, calling this method will have no effect. If a table has ever had
-	 * debug set, calling this method causes an expensive traversal of all actors in the stage. */
-	static public void drawDebug (Stage stage) {
-		if (TableDebug.draw) TableDebug.draw(stage);
+	private void clearDebugRects () {
+		if (debugRects == null) return;
+		DebugRect.pool.freeAll(debugRects);
+		debugRects.clear();
+	}
+
+	private void addDebugRect (float x, float y, float w, float h, Color color) {
+		if (debugRects == null) debugRects = new Array();
+		DebugRect rect = DebugRect.pool.obtain();
+		rect.color = color;
+		rect.set(x, getHeight() - y - h, w, h);
+		debugRects.add(rect);
+	}
+
+	public void drawDebug (ShapeRenderer shapes) {
+		if (isTransform()) {
+			applyTransform(shapes, computeTransform());
+			drawDebugRects(shapes);
+			if (clip) {
+				shapes.flush();
+				float x = 0, y = 0, width = getWidth(), height = getHeight();
+				if (background != null) {
+					x = padLeft.get(this);
+					y = padBottom.get(this);
+					width -= x + padRight.get(this);
+					height -= y + padTop.get(this);
+				}
+				if (clipBegin(x, y, width, height)) {
+					drawDebugChildren(shapes);
+					clipEnd();
+				}
+			} else
+				drawDebugChildren(shapes);
+			resetTransform(shapes);
+		} else {
+			drawDebugRects(shapes);
+			super.drawDebug(shapes);
+		}
+	}
+
+	protected void drawDebugBounds (ShapeRenderer shapes) {
+	}
+
+	private void drawDebugRects (ShapeRenderer shapes) {
+		if (debugRects == null || !getDebug()) return;
+		shapes.set(ShapeType.Line);
+		shapes.setColor(getStage().getDebugColor());
+		float x = 0, y = 0;
+		if (!isTransform()) {
+			x = getX();
+			y = getY();
+		}
+		for (int i = 0, n = debugRects.size; i < n; i++) {
+			DebugRect debugRect = debugRects.get(i);
+			shapes.setColor(debugRect.color);
+			shapes.rect(x + debugRect.x, y + debugRect.y, debugRect.width, debugRect.height);
+		}
+	}
+
+	/** @return The skin that was passed to this table in its constructor, or null if none was given. */
+	public Skin getSkin () {
+		return skin;
+	}
+
+	/** @author Nathan Sweet */
+	static public class DebugRect extends Rectangle {
+		static Pool<DebugRect> pool = Pools.get(DebugRect.class);
+		Color color;
 	}
 
 	/** @author Nathan Sweet */
@@ -1126,93 +1237,39 @@ public class Table extends WidgetGroup {
 		none, all, table, cell, actor
 	}
 
-	/** @author Nathan Sweet */
-	static class DebugRect extends Rectangle {
-		final Debug type;
-
-		public DebugRect (Debug type, float x, float y, float width, float height) {
-			super(x, y, width, height);
-			this.type = type;
+	/** Value that is the top padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundTop = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getTopHeight();
 		}
-	}
+	};
 
-	/** @author Nathan Sweet */
-	static class TableDebug {
-		static boolean draw;
-
-		static private Application app;
-		static private ImmediateModeRenderer debugRenderer;
-
-		static public void addRectangle (Table table, Debug type, float x, float y, float w, float h) {
-			draw = true;
-			if (table.debugRects == null) table.debugRects = new Array();
-			table.debugRects.add(new DebugRect(type, x, table.getHeight() - y, w, h));
+	/** Value that is the left padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundLeft = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getLeftWidth();
 		}
+	};
 
-		static void draw (Stage stage) {
-			if (app != Gdx.app) debugRenderer = new ImmediateModeRenderer20(128, false, true, 0);
-
-			debugRenderer.begin(stage.getBatch().getProjectionMatrix(), GL20.GL_LINES);
-			draw(stage.getActors());
-			debugRenderer.end();
+	/** Value that is the bottom padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundBottom = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getBottomHeight();
 		}
+	};
 
-		static void draw (Array<Actor> actors) {
-			for (int i = 0, n = actors.size; i < n; i++) {
-				Actor actor = actors.get(i);
-				if (!actor.isVisible()) continue;
-				if (actor instanceof Table) draw((Table)actor);
-				if (actor instanceof Group) draw(((Group)actor).getChildren());
-			}
+	/** Value that is the right padding of the table's background.
+	 * @author Nathan Sweet */
+	static public Value backgroundRight = new Value() {
+		public float get (Actor context) {
+			Drawable background = ((Table)context).background;
+			return background == null ? 0 : background.getRightWidth();
 		}
-
-		static public void draw (Table table) {
-			if (table.debug == Debug.none) return;
-			Array<DebugRect> debugRects = table.debugRects;
-			if (debugRects == null) return;
-
-			float x = 0, y = 0;
-			Actor parent = table;
-			while (parent != null) {
-				if (parent instanceof Group) {
-					x += parent.getX();
-					y += parent.getY();
-				}
-				parent = parent.getParent();
-			}
-
-			for (int i = 0, n = debugRects.size; i < n; i++) {
-				DebugRect rect = debugRects.get(i);
-				float x1 = x + rect.x;
-				float y1 = y + rect.y - rect.height;
-				float x2 = x1 + rect.width;
-				float y2 = y1 + rect.height;
-				float r = rect.type == Debug.cell ? 1 : 0;
-				float g = rect.type == Debug.actor ? 1 : 0;
-				float b = rect.type == Debug.table ? 1 : 0;
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-
-				if (debugRenderer.getNumVertices() == 128) debugRenderer.flush();
-			}
-		}
-	}
+	};
 }

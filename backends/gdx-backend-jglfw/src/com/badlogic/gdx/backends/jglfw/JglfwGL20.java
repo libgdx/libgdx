@@ -16,16 +16,51 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
-import static com.badlogic.jglfw.utils.Memory.*;
+import static com.badlogic.jglfw.utils.Memory.getPosition;
+
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.jglfw.gl.GL;
 
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
 public class JglfwGL20 implements GL20 {
+	private ByteBuffer buffer = null;
+	private FloatBuffer floatBuffer = null;
+	private IntBuffer intBuffer = null;
+
+	private void ensureBufferCapacity (int numBytes) {
+		if (buffer == null || buffer.capacity() < numBytes) {
+			buffer = com.badlogic.gdx.utils.BufferUtils.newByteBuffer(numBytes);
+			floatBuffer = buffer.asFloatBuffer();
+			intBuffer = buffer.asIntBuffer();
+		}
+	}
+
+	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
+		ensureBufferCapacity(count << 2);
+		floatBuffer.clear();
+		com.badlogic.gdx.utils.BufferUtils.copy(v, floatBuffer, count, offset);
+		return floatBuffer;
+	}
+
+	private IntBuffer toIntBuffer (int v[], int offset, int count) {
+		ensureBufferCapacity(count << 2);
+		intBuffer.clear();
+		com.badlogic.gdx.utils.BufferUtils.copy(v, count, offset, intBuffer);
+		return intBuffer;
+	}
+	
+	private IntBuffer toIntBuffer (int v) {
+		ensureBufferCapacity(4);
+		intBuffer.put(0, v);
+		intBuffer.position(0);
+		intBuffer.limit(1);
+		return intBuffer;
+	}
+	
 	public void glActiveTexture (int texture) {
 		GL.glActiveTexture(texture);
 	}
@@ -83,6 +118,10 @@ public class JglfwGL20 implements GL20 {
 	public void glDeleteTextures (int n, IntBuffer textures) {
 		GL.glDeleteTextures(n, textures, getPosition(textures));
 	}
+	
+	public void glDeleteTexture (int texture) {
+		glDeleteTextures(1, toIntBuffer(texture));
+	}
 
 	public void glDepthFunc (int func) {
 		GL.glDepthFunc(func);
@@ -126,6 +165,14 @@ public class JglfwGL20 implements GL20 {
 
 	public void glGenTextures (int n, IntBuffer textures) {
 		GL.glGenTextures(n, textures, getPosition(textures));
+	}
+	
+	public int glGenTexture () {
+		ensureBufferCapacity(4);
+		intBuffer.position(0);
+		intBuffer.limit(1);
+		glGenTextures(1, intBuffer);
+		return intBuffer.get(0);
 	}
 
 	public int glGetError () {
@@ -221,6 +268,10 @@ public class JglfwGL20 implements GL20 {
 	public void glDeleteBuffers (int n, IntBuffer buffers) {
 		GL.glDeleteBuffers(n, buffers, getPosition(buffers));
 	}
+	
+	public void glDeleteBuffer (int buffer) {
+		glDeleteBuffers(1, toIntBuffer(buffer));
+	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {
 		GL.glGetBufferParameteriv(target, pname, params, getPosition(params));
@@ -228,6 +279,14 @@ public class JglfwGL20 implements GL20 {
 
 	public void glGenBuffers (int n, IntBuffer buffers) {
 		GL.glGenBuffers(n, buffers, getPosition(buffers));
+	}
+	
+	public int glGenBuffer () {
+		ensureBufferCapacity(4);
+		intBuffer.position(0);
+		intBuffer.limit(1);
+		glGenBuffers(1, intBuffer);
+		return intBuffer.get(0);
 	}
 
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
@@ -309,6 +368,10 @@ public class JglfwGL20 implements GL20 {
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
 		GL.glDeleteFramebuffersEXT(n, framebuffers, getPosition(framebuffers));
 	}
+	
+	public void glDeleteFramebuffer (int framebuffer) {
+		glDeleteFramebuffers(1, toIntBuffer(framebuffer));
+	}
 
 	public void glDeleteProgram (int program) {
 		GL.glDeleteProgram(program);
@@ -316,6 +379,10 @@ public class JglfwGL20 implements GL20 {
 
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
 		GL.glDeleteRenderbuffersEXT(n, renderbuffers, getPosition(renderbuffers));
+	}
+	
+	public void glDeleteRenderbuffer (int renderbuffer) {
+		glDeleteRenderbuffers(1, toIntBuffer(renderbuffer));
 	}
 
 	public void glDeleteShader (int shader) {
@@ -349,9 +416,25 @@ public class JglfwGL20 implements GL20 {
 	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
 		GL.glGenFramebuffersEXT(n, framebuffers, getPosition(framebuffers));
 	}
+	
+	public int glGenFramebuffer () {
+		ensureBufferCapacity(4);
+		intBuffer.position(0);
+		intBuffer.limit(1);
+		glGenFramebuffers(1, intBuffer);
+		return intBuffer.get(0);
+	}
 
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
 		GL.glGenRenderbuffersEXT(n, renderbuffers, getPosition(renderbuffers));
+	}
+	
+	public int glGenRenderbuffer () {
+		ensureBufferCapacity(4);
+		intBuffer.position(0);
+		intBuffer.limit(1);
+		glGenRenderbuffers(1, intBuffer);
+		return intBuffer.get(0);
 	}
 
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
@@ -490,12 +573,20 @@ public class JglfwGL20 implements GL20 {
 		GL.glUniform1fv(location, count, v, getPosition(v));
 	}
 
+	public void glUniform1fv (int location, int count, float[] v, int offset) {
+		glUniform1fv(location, count, toFloatBuffer(v, offset, count));
+	}
+	
 	public void glUniform1i (int location, int x) {
 		GL.glUniform1i(location, x);
 	}
 
 	public void glUniform1iv (int location, int count, IntBuffer v) {
 		GL.glUniform1iv(location, count, v, getPosition(v));
+	}
+	
+	public void glUniform1iv (int location, int count, int[] v, int offset) {
+		glUniform1iv(location, count, toIntBuffer(v, offset, count));
 	}
 
 	public void glUniform2f (int location, float x, float y) {
@@ -505,6 +596,10 @@ public class JglfwGL20 implements GL20 {
 	public void glUniform2fv (int location, int count, FloatBuffer v) {
 		GL.glUniform2fv(location, count, v, getPosition(v));
 	}
+	
+	public void glUniform2fv (int location, int count, float[] v, int offset) {
+		glUniform2fv(location, count, toFloatBuffer(v, offset, count << 1));
+	}
 
 	public void glUniform2i (int location, int x, int y) {
 		GL.glUniform2i(location, x, y);
@@ -512,6 +607,10 @@ public class JglfwGL20 implements GL20 {
 
 	public void glUniform2iv (int location, int count, IntBuffer v) {
 		GL.glUniform2iv(location, count, v, getPosition(v));
+	}
+	
+	public void glUniform2iv (int location, int count, int[] v, int offset) {
+		glUniform2iv(location, count, toIntBuffer(v, offset, count<<1));
 	}
 
 	public void glUniform3f (int location, float x, float y, float z) {
@@ -521,6 +620,10 @@ public class JglfwGL20 implements GL20 {
 	public void glUniform3fv (int location, int count, FloatBuffer v) {
 		GL.glUniform3fv(location, count, v, getPosition(v));
 	}
+	
+	public void glUniform3fv (int location, int count, float[] v, int offset) {
+		glUniform3fv(location, count, toFloatBuffer(v, offset, count*3));
+	}
 
 	public void glUniform3i (int location, int x, int y, int z) {
 		GL.glUniform3i(location, x, y, z);
@@ -528,6 +631,10 @@ public class JglfwGL20 implements GL20 {
 
 	public void glUniform3iv (int location, int count, IntBuffer v) {
 		GL.glUniform3iv(location, count, v, getPosition(v));
+	}
+	
+	public void glUniform3iv (int location, int count, int[] v, int offset) {
+		glUniform3iv(location, count, toIntBuffer(v, offset, count*3));
 	}
 
 	public void glUniform4f (int location, float x, float y, float z, float w) {
@@ -537,6 +644,10 @@ public class JglfwGL20 implements GL20 {
 	public void glUniform4fv (int location, int count, FloatBuffer v) {
 		GL.glUniform4fv(location, count, v, getPosition(v));
 	}
+	
+	public void glUniform4fv (int location, int count, float[] v, int offset) {
+		glUniform4fv(location, count, toFloatBuffer(v, offset, count << 2));
+	}
 
 	public void glUniform4i (int location, int x, int y, int z, int w) {
 		GL.glUniform4i(location, x, y, z, w);
@@ -545,17 +656,33 @@ public class JglfwGL20 implements GL20 {
 	public void glUniform4iv (int location, int count, IntBuffer v) {
 		GL.glUniform4iv(location, count, v, getPosition(v));
 	}
+	
+	public void glUniform4iv (int location, int count, int[] v, int offset) {
+		glUniform4iv(location, count, toIntBuffer(v, offset, count << 2));
+	}
 
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value) {
 		GL.glUniformMatrix2fv(location, count, transpose, value, getPosition(value));
+	}
+	
+	public void glUniformMatrix2fv (int location, int count, boolean transpose, float[] value, int offset) {
+		glUniformMatrix2fv(location, count, transpose, toFloatBuffer(value, offset, count << 2));
 	}
 
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value) {
 		GL.glUniformMatrix3fv(location, count, transpose, value, getPosition(value));
 	}
+	
+	public void glUniformMatrix3fv (int location, int count, boolean transpose, float[] value, int offset) {
+		glUniformMatrix3fv(location, count, transpose, toFloatBuffer(value, offset, count * 9));
+	}
 
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value) {
 		GL.glUniformMatrix4fv(location, count, transpose, value, getPosition(value));
+	}
+	
+	public void glUniformMatrix4fv (int location, int count, boolean transpose, float[] value, int offset) {
+		glUniformMatrix4fv(location, count, transpose, toFloatBuffer(value, offset, count << 4));
 	}
 
 	public void glUseProgram (int program) {

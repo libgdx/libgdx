@@ -56,8 +56,8 @@ public class LightsTest extends ModelTest {
 	protected void onLoaded () {
 		super.onLoaded();
 		BoundingBox bounds = instances.get(0).calculateBoundingBox(new BoundingBox());
-		center.set(bounds.getCenter());
-		radius = bounds.getDimensions().len() * .5f;
+		bounds.getCenter(center);
+		radius = bounds.getDimensions(tmpV).len() * .5f;
 		pointLight.position.set(0, radius, 0).add(transformedCenter.set(center).mul(transform));
 		pointLight.intensity = radius * radius;
 		((ColorAttribute)pLight.material.get(ColorAttribute.Diffuse)).color.set(pointLight.color);

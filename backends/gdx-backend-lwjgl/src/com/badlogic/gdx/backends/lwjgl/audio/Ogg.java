@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.lwjgl.audio;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class Ogg {
 	static public class Music extends OpenALMusic {
 		private OggInputStream input;
+		private OggInputStream previousInput;
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
@@ -36,14 +36,23 @@ public class Ogg {
 
 		public int read (byte[] buffer) {
 			if (input == null) {
-				input = new OggInputStream(file.read());
+				input = new OggInputStream(file.read(), previousInput);
 				setup(input.getChannels(), input.getSampleRate());
+				previousInput = null; // release this reference
 			}
 			return input.read(buffer);
 		}
 
 		public void reset () {
 			StreamUtils.closeQuietly(input);
+			previousInput = null;
+			input = null;
+		}
+
+		@Override
+		protected void loop () {
+			StreamUtils.closeQuietly(input);
+			previousInput = input;
 			input = null;
 		}
 	}

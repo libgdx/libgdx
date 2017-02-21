@@ -22,12 +22,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -66,7 +64,7 @@ public class FreeTypePackTest extends GdxTest {
 
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	TextureRegion[] regions;
+	Array<TextureRegion> regions;
 	String text;
 
 	FontMap<BitmapFont> fontMap;
@@ -91,7 +89,7 @@ public class FreeTypePackTest extends GdxTest {
 		long start = System.currentTimeMillis();
 		int glyphCount = createFonts();
 		long time = System.currentTimeMillis() - start;
-		text = glyphCount + " glyphs packed in " + regions.length + " page(s) in " + time + " ms";
+		text = glyphCount + " glyphs packed in " + regions.size + " page(s) in " + time + " ms";
 
 	}
 
@@ -126,7 +124,7 @@ public class FreeTypePackTest extends GdxTest {
 
 		// draw all glyphs in background
 		batch.setColor(1f, 1f, 1f, 0.15f);
-		batch.draw(regions[0], 0, 0);
+		batch.draw(regions.first(), 0, 0);
 		batch.setColor(1f, 1f, 1f, 1f);
 		batch.end();
 	}
@@ -153,7 +151,7 @@ public class FreeTypePackTest extends GdxTest {
 		// Keep hold of the returned BitmapFontData for later
 		// 4. Repeat for other sizes.
 		// 5. Dispose the generator and repeat for other font styles/families
-		// 6. Create new Texture(s) and TextureRegion(s) from the Pixmap object from pixmapPacker.getPages()
+		// 6. Get the TextureRegion(s) from the packer using packer.updateTextureRegions()
 		// 7. Dispose the PixmapPacker
 		// 8. Use each BitmapFontData to construct a new BitmapFont, and specify your TextureRegion(s) to the font constructor
 		// 9. Dispose of the Texture upon application exit or when you are done using the font atlas
@@ -173,7 +171,11 @@ public class FreeTypePackTest extends GdxTest {
 			// For each size...
 			for (FontSize size : FontSize.values()) {
 				// pack the glyphs into the atlas using the default chars
-				BitmapFontData data = gen.generateData(size.size, CHARACTERS, false, packer);
+				FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+				fontParameter.size = size.size;
+				fontParameter.packer = packer;
+				fontParameter.characters = CHARACTERS;
+				BitmapFontData data = gen.generateData(fontParameter);
 
 				// store the info for later, when we generate the texture
 				dataMap.get(style).put(size, data);
@@ -183,22 +185,9 @@ public class FreeTypePackTest extends GdxTest {
 			gen.dispose();
 		}
 
-		// The pages of pixmaps from our packer
-		Array<Page> pages = packer.getPages();
-
-		// our resulting regions
-		regions = new TextureRegion[pages.size];
-
-		// Now generate a TextureRegion from each pixmap page
-		for (int i = 0; i < regions.length; i++) {
-			Page page = pages.get(i);
-
-			// create a Texture from the pixmap
-			Texture tex = new Texture(page.getPixmap());
-			tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-
-			regions[i] = new TextureRegion(tex);
-		}
+		// Get regions from our packer
+		regions = new Array<TextureRegion>();
+		packer.updateTextureRegions(regions, TextureFilter.Nearest, TextureFilter.Nearest, false);
 
 		// No more need for our CPU-based pixmap packer, as our textures are now on GPU
 		packer.dispose();

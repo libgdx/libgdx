@@ -52,7 +52,7 @@ public class SMSound {
 	/** Seeks to a given position within a sound, specified by miliseconds (1000 msec = 1 second.) Affects position property.
 	 * @param position the position to seek to. */
 	public native final void setPosition (int position) /*-{
-		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPosition(position);
+		this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.setPosition(position);
 	}-*/;
 	
 	/** Pauses the given sound. (Does not toggle.) Affects paused property (boolean.) */

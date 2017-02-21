@@ -17,19 +17,20 @@
  * 4. Or let it be released when out of scope, ie:
  * gdxPoolAutoRelease autoRelease_somevar(jenv, "SomeJavaClassPool", somevar);
  */
-%fragment("gdxPool", "header") {
+%define CREATE_POOLED_METHODS(JTYPE, CLAZZ)
+%fragment("gdxPoolMethods##JTYPE", "header") {
 
 	/* Gets a global ref to the temp class.  Do not release this. */
-	SWIGINTERN inline jclass gdx_getTempClass(JNIEnv * jenv) {
+	SWIGINTERN inline jclass gdx_getTempClass##JTYPE(JNIEnv * jenv) {
 	  static jclass cls = NULL;
 	  if (cls == NULL) {
-		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass(CLAZZ));
 	  }
 	  return cls;
 	}
 	
-	SWIGINTERN inline jobject gdx_takePoolObject(JNIEnv * jenv, const char * poolName) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline jobject gdx_takePoolObject##JTYPE(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClass##JTYPE(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -52,8 +53,8 @@
 	  return ret;
 	}
 	
-	SWIGINTERN inline void gdx_releasePoolObject(JNIEnv * jenv, const char * poolName, jobject obj) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline void gdx_releasePoolObject##JTYPE(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClass##JTYPE(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -80,17 +81,17 @@
 	 * directorin typemaps.  SWIG doesn't have hooks to release them after
 	 * they're used. 
 	 */
-	class gdxPoolAutoRelease {
+	class gdxPoolAutoRelease##JTYPE {
 	private:
 	  JNIEnv * jenv;
 	  const char * poolName;
 	  jobject obj;
 	public:
-	  gdxPoolAutoRelease(JNIEnv * jenv, const char * poolName, jobject obj) : 
+	  gdxPoolAutoRelease##JTYPE(JNIEnv * jenv, const char * poolName, jobject obj) : 
 		jenv(jenv), poolName(poolName), obj(obj) { };
-	  virtual ~gdxPoolAutoRelease() {
-		gdx_releasePoolObject(this->jenv, this->poolName, this->obj);
+	  virtual ~gdxPoolAutoRelease##JTYPE() {
+		gdx_releasePoolObject##JTYPE(this->jenv, this->poolName, this->obj);
 	  };
 	};
-
 }
+%enddef

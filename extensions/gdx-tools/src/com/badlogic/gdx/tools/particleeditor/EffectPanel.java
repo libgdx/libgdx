@@ -16,23 +16,15 @@
 
 package com.badlogic.gdx.tools.particleeditor;
 
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.net.URI;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -145,7 +137,7 @@ class EffectPanel extends JPanel {
 		editor.reloadRows();
 	}
 
-	void openEffect () {
+	void openEffect (boolean mergeIntoCurrent) {
 		FileDialog dialog = new FileDialog(editor, "Open Effect", FileDialog.LOAD);
 		if (lastDir != null) dialog.setDirectory(lastDir);
 		dialog.setVisible(true);
@@ -155,8 +147,16 @@ class EffectPanel extends JPanel {
 		lastDir = dir;
 		ParticleEffect effect = new ParticleEffect();
 		try {
-			effect.loadEmitters(Gdx.files.absolute(new File(dir, file).getAbsolutePath()));
-			editor.effect = effect;
+			File effectFile = new File(dir, file);
+			effect.loadEmitters(Gdx.files.absolute(effectFile.getAbsolutePath()));
+			if (mergeIntoCurrent){
+				for (ParticleEmitter emitter : effect.getEmitters()){
+					addEmitter(emitter.getName(), false, emitter);
+				}
+			} else {
+				editor.effect = effect;
+				editor.effectFile = effectFile;
+			}
 			emitterTableModel.getDataVector().removeAllElements();
 			editor.particleData.clear();
 		} catch (Exception ex) {
@@ -165,7 +165,7 @@ class EffectPanel extends JPanel {
 			JOptionPane.showMessageDialog(editor, "Error opening effect.");
 			return;
 		}
-		for (ParticleEmitter emitter : effect.getEmitters()) {
+		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
 			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
 			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
@@ -183,8 +183,19 @@ class EffectPanel extends JPanel {
 		if (dir == null || file == null || file.trim().length() == 0) return;
 		lastDir = dir;
 		int index = 0;
-		for (ParticleEmitter emitter : editor.effect.getEmitters())
+		File effectFile = new File(dir, file);
+
+		// save each image path as relative path to effect file directory
+		URI effectDirUri = effectFile.getParentFile().toURI();
+		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
 			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
+			String imagePath = emitter.getImagePath();
+			if ((imagePath.contains("/") || imagePath.contains("\\")) && !imagePath.contains("..")) {
+				// it's absolute, make it relative:
+				URI imageUri = new File(emitter.getImagePath()).toURI();
+				emitter.setImagePath(effectDirUri.relativize(imageUri).getPath());
+			}
+		}
 
 		File outputFile = new File(dir, file);
 		Writer fileWriter = null;
@@ -199,13 +210,13 @@ class EffectPanel extends JPanel {
 			StreamUtils.closeQuietly(fileWriter);
 		}
 	}
-	
-	void duplicateEmitter() {
+
+	void duplicateEmitter () {
 		int row = emitterTable.getSelectedRow();
 		if (row == -1) return;
-		
+
 		String name = (String)emitterTableModel.getValueAt(row, 0);
-		
+
 		addEmitter(name, true, new ParticleEmitter(editor.effect.getEmitters().get(row)));
 	}
 
@@ -298,7 +309,17 @@ class EffectPanel extends JPanel {
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 				openButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
-						openEffect();
+						openEffect(false);
+					}
+				});
+			}
+			{
+				JButton mergeButton = new JButton("Merge");
+				sideButtons.add(mergeButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				mergeButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						openEffect(true);
 					}
 				});
 			}

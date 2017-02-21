@@ -41,6 +41,9 @@ public interface TiledMapTile {
 	/** @return texture region used to render the tile */
 	public TextureRegion getTextureRegion ();
 
+	/** Sets the texture region used to render the tile */
+	public void setTextureRegion(TextureRegion textureRegion);
+
 	/** @return the amount to offset the x position when rendering the tile */
 	public float getOffsetX();
 

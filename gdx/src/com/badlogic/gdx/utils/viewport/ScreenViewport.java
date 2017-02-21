@@ -32,18 +32,14 @@ public class ScreenViewport extends Viewport {
 	}
 
 	public ScreenViewport (Camera camera) {
-		this.camera = camera;
+		setCamera(camera);
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
-		viewportX = 0;
-		viewportY = 0;
-		viewportWidth = screenWidth;
-		viewportHeight = screenHeight;
-		worldWidth = screenWidth * unitsPerPixel;
-		worldHeight = screenHeight * unitsPerPixel;
-		super.update(screenWidth, screenHeight, centerCamera);
+		setScreenBounds(0, 0, screenWidth, screenHeight);
+		setWorldSize(screenWidth * unitsPerPixel, screenHeight * unitsPerPixel);
+		apply(centerCamera);
 	}
 
 	public float getUnitsPerPixel () {

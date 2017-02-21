@@ -55,7 +55,6 @@ public class StaticTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
-	/** @return tile's properties set */
 	@Override
 	public MapProperties getProperties () {
 		if (properties == null) {
@@ -64,10 +63,14 @@ public class StaticTiledMapTile implements TiledMapTile {
 		return properties;
 	}
 
-	/** @return texture region used to render the tile */
 	@Override
 	public TextureRegion getTextureRegion () {
 		return textureRegion;
+	}
+
+	@Override
+	public void setTextureRegion(TextureRegion textureRegion) {
+		this.textureRegion = textureRegion;
 	}
 
 	@Override

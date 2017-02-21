@@ -106,7 +106,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 	 * @return the {@link TiledMap} */
 	private TiledMap loadMap (Element root, FileHandle tmxFile, ImageResolver imageResolver) {
 		TiledMap map = new TiledMap();
-		Element properties = root.getChildByName("properties");
+		Element properties = root.getChildByName("Properties");
 		if (properties != null) {
 			loadProperties(map.getProperties(), properties);
 		}
@@ -261,6 +261,12 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					}
 				}
 			}
+			
+			Element properties = element.getChildByName("Properties");
+			if (properties != null) {
+				loadProperties(layer.getProperties(), properties);
+			}
+			
 			map.getLayers().add(layer);
 		}
 	}

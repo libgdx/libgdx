@@ -17,7 +17,7 @@
 #ifndef InternalTickCallback_H
 #define InternalTickCallback_H
 
-#include "../../bullet/BulletDynamics/Dynamics/btDynamicsWorld.h"
+#include "../../../bullet/BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 static void InternalTickCallback_CB(btDynamicsWorld *world, btScalar timeStep);
 

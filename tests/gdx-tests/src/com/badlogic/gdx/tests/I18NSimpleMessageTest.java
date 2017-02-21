@@ -52,7 +52,7 @@ public class I18NSimpleMessageTest extends GdxTest {
 
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message2");
-			rb_root = I18NBundle.createBundle(bfh, Locale.ROOT);
+			rb_root = I18NBundle.createBundle(bfh, new Locale("", "", "")); // Locale.ROOT doesn't exist in Android API level 8
 			rb_default = I18NBundle.createBundle(bfh);
 			rb_en = I18NBundle.createBundle(bfh, new Locale("en", "US"));
 			rb_it = I18NBundle.createBundle(bfh, new Locale("it", "IT"));
@@ -100,7 +100,7 @@ public class I18NSimpleMessageTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
 	}
 

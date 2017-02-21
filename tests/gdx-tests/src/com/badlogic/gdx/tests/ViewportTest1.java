@@ -86,7 +86,6 @@ public class ViewportTest1 extends GdxTest {
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	public void resize (int width, int height) {

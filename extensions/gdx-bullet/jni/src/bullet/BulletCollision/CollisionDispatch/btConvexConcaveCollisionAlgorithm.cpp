@@ -15,6 +15,7 @@ subject to the following restrictions:
 
 
 #include "btConvexConcaveCollisionAlgorithm.h"
+#include "LinearMath/btQuickprof.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
@@ -79,6 +80,7 @@ void	btConvexTriangleCallback::clearCache()
 void btConvexTriangleCallback::processTriangle(btVector3* triangle,int
 partId, int triangleIndex)
 {
+	BT_PROFILE("btConvexTriangleCallback::processTriangle");
 
 	if (!TestTriangleAgainstAabb2(triangle, m_aabbMin, m_aabbMax))
 	{
@@ -88,20 +90,19 @@ partId, int triangleIndex)
         //just for debugging purposes
         //printf("triangle %d",m_triangleCount++);
 
-        const btCollisionObject* ob = const_cast<btCollisionObject*>(m_triBodyWrap->getCollisionObject());
+
 
 	btCollisionAlgorithmConstructionInfo ci;
 	ci.m_dispatcher1 = m_dispatcher;
 
-	//const btCollisionObject* ob = static_cast<btCollisionObject*>(m_triBodyWrap->getCollisionObject());
-
-	
 
 
 #if 0	
+	
 	///debug drawing of the overlapping triangles
 	if (m_dispatchInfoPtr && m_dispatchInfoPtr->m_debugDraw && (m_dispatchInfoPtr->m_debugDraw->getDebugMode() &btIDebugDraw::DBG_DrawWireframe ))
 	{
+		const btCollisionObject* ob = const_cast<btCollisionObject*>(m_triBodyWrap->getCollisionObject());
 		btVector3 color(1,1,0);
 		btTransform& tr = ob->getWorldTransform();
 		m_dispatchInfoPtr->m_debugDraw->drawLine(tr(triangle[0]),tr(triangle[1]),color);
@@ -185,7 +186,7 @@ void btConvexConcaveCollisionAlgorithm::clearCache()
 
 void btConvexConcaveCollisionAlgorithm::processCollision (const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut)
 {
-	
+	BT_PROFILE("btConvexConcaveCollisionAlgorithm::processCollision");
 	
 	const btCollisionObjectWrapper* convexBodyWrap = m_isSwapped ? body1Wrap : body0Wrap;
 	const btCollisionObjectWrapper* triBodyWrap = m_isSwapped ? body0Wrap : body1Wrap;
@@ -266,6 +267,7 @@ btScalar btConvexConcaveCollisionAlgorithm::calculateTimeOfImpact(btCollisionObj
 		
 		virtual void processTriangle(btVector3* triangle, int partId, int triangleIndex)
 		{
+			BT_PROFILE("processTriangle");
 			(void)partId;
 			(void)triangleIndex;
 			//do a swept sphere for now

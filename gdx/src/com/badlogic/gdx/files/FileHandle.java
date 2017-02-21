@@ -160,9 +160,11 @@ public class FileHandle {
 	/** Returns a reader for reading this file as characters.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
+		InputStream stream = read();
 		try {
-			return new InputStreamReader(read(), charset);
+			return new InputStreamReader(stream, charset);
 		} catch (UnsupportedEncodingException ex) {
+			StreamUtils.closeQuietly(stream);
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
@@ -289,7 +291,7 @@ public class FileHandle {
 		OutputStream output = null;
 		try {
 			output = write(append);
-			StreamUtils.copyStream(input, output, 4096);
+			StreamUtils.copyStream(input, output);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {
@@ -337,7 +339,7 @@ public class FileHandle {
 		writeString(string, append, null);
 	}
 
-	/** Writes the specified string to the file as UTF-8. Parent directories will be created if necessary.
+	/** Writes the specified string to the file using the specified charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -412,8 +414,9 @@ public class FileHandle {
 		int count = 0;
 		for (int i = 0, n = relativePaths.length; i < n; i++) {
 			String path = relativePaths[i];
-			if (!filter.accept(file)) continue;
-			handles[count] = child(path);
+			FileHandle child = child(path);
+			if (!filter.accept(child.file())) continue;
+			handles[count] = child;
 			count++;
 		}
 		if (count < relativePaths.length) {
@@ -482,17 +485,14 @@ public class FileHandle {
 		return file().isDirectory();
 	}
 
-	/** Returns a handle to the child with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
-	 *            doesn't exist. */
+	/** Returns a handle to the child with the specified name. */
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
 	}
 
 	/** Returns a handle to the sibling with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
-	 *            doesn't exist, or this file is the root. */
+	 * @throws GdxRuntimeException if this file is the root. */
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new FileHandle(new File(file.getParent(), name), type);

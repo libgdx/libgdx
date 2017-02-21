@@ -38,10 +38,24 @@ public interface IndexData extends Disposable {
 	 * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated instantly.
 	 * </p>
 	 * 
-	 * @param indices the vertex data
+	 * @param indices the index data
 	 * @param offset the offset to start copying the data from
-	 * @param count the number of floats to copy */
+	 * @param count the number of shorts to copy */
 	public void setIndices (short[] indices, int offset, int count);
+
+	/** Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start at the
+	 * current {@link ShortBuffer#position()} of the specified buffer and copied the {@link ShortBuffer#remaining()} amount of
+	 * indices. This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated
+	 * instantly.
+	 * @param indices the index data to copy */
+	public void setIndices (ShortBuffer indices);
+
+	/** Update (a portion of) the indices.
+	 * @param targetOffset offset in indices buffer
+	 * @param indices the index data
+	 * @param offset the offset to start copying the data from
+	 * @param count the number of shorts to copy */
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count);
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.

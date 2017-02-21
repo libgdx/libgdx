@@ -43,7 +43,7 @@ public class Tree extends WidgetGroup {
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private Node foundNode;
-	Node overNode;
+	Node overNode, rangeStart;
 	private ClickListener clickListener;
 
 	public Tree (Skin skin) {
@@ -55,7 +55,18 @@ public class Tree extends WidgetGroup {
 	}
 
 	public Tree (TreeStyle style) {
-		selection = new Selection();
+		selection = new Selection<Node>() {
+			protected void changed () {
+				switch (size()) {
+				case 0:
+					rangeStart = null;
+					break;
+				case 1:
+					rangeStart = first();
+					break;
+				}
+			}
+		};
 		selection.setActor(this);
 		selection.setMultiple(true);
 		setStyle(style);
@@ -70,14 +81,19 @@ public class Tree extends WidgetGroup {
 				if (node != getNodeAt(getTouchDownY())) return;
 				if (selection.getMultiple() && selection.hasItems() && UIUtils.shift()) {
 					// Select range (shift).
-					float low = selection.getLastSelected().actor.getY();
-					float high = node.actor.getY();
+					if (rangeStart == null) rangeStart = node;
+					Node rangeStart = Tree.this.rangeStart;
 					if (!UIUtils.ctrl()) selection.clear();
-					if (low > high)
-						selectNodes(rootNodes, high, low);
-					else
-						selectNodes(rootNodes, low, high);
+					float start = rangeStart.actor.getY(), end = node.actor.getY();
+					if (start > end)
+						selectNodes(rootNodes, end, start);
+					else {
+						selectNodes(rootNodes, start, end);
+						selection.items().orderedItems().reverse();
+					}
+
 					selection.fireChangeEvent();
+					Tree.this.rangeStart = rangeStart;
 					return;
 				}
 				if (node.children.size > 0 && (!selection.getMultiple() || !UIUtils.ctrl())) {
@@ -91,6 +107,7 @@ public class Tree extends WidgetGroup {
 				}
 				if (!node.isSelectable()) return;
 				selection.choose(node);
+				if (!selection.isEmpty()) rangeStart = node;
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -196,7 +213,6 @@ public class Tree extends WidgetGroup {
 		float ySpacing = this.ySpacing;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			Actor actor = node.actor;
 			float x = indent;
 			if (node.icon != null) x += node.icon.getMinWidth();
 			y -= node.height;
@@ -291,10 +307,18 @@ public class Tree extends WidgetGroup {
 		return rootNodes;
 	}
 
+	/** @return May be null. */
 	public Node getOverNode () {
 		return overNode;
 	}
 
+	/** @return May be null. */
+	public Object getOverObject () {
+		if (overNode == null) return null;
+		return overNode.getObject();
+	}
+
+	/** @param overNode May be null. */
 	public void setOverNode (Node overNode) {
 		this.overNode = overNode;
 	}
@@ -304,9 +328,18 @@ public class Tree extends WidgetGroup {
 		this.padding = padding;
 	}
 
+	/** Returns the amount of horizontal space for indentation level. */
+	public float getIndentSpacing () {
+		return indentSpacing;
+	}
+
 	/** Sets the amount of vertical space between nodes. */
 	public void setYSpacing (float ySpacing) {
 		this.ySpacing = ySpacing;
+	}
+
+	public float getYSpacing () {
+		return ySpacing;
 	}
 
 	/** Sets the amount of horizontal space between the node actors and icons. */
@@ -394,7 +427,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	static public class Node {
-		Actor actor;
+		final Actor actor;
 		Node parent;
 		final Array<Node> children = new Array(0);
 		boolean selectable = true;
@@ -436,8 +469,9 @@ public class Tree extends WidgetGroup {
 		protected void removeFromTree (Tree tree) {
 			tree.removeActor(actor);
 			if (!expanded) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).removeFromTree(tree);
+			Object[] children = this.children.items;
+			for (int i = 0, n = this.children.size; i < n; i++)
+				((Node)children[i]).removeFromTree(tree);
 		}
 
 		public void add (Node node) {
@@ -530,6 +564,16 @@ public class Tree extends WidgetGroup {
 
 		public Drawable getIcon () {
 			return icon;
+		}
+
+		public int getLevel () {
+			int level = 0;
+			Node current = this;
+			do {
+				level++;
+				current = current.getParent();
+			} while (current != null);
+			return level;
 		}
 
 		/** Returns this node or the child node with the specified object, or null. */

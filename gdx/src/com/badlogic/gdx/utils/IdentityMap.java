@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map that uses identity comparison for keys. This implementation is a cuckoo hash map using 3 hashes, random
  * walking, and a small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done
@@ -49,24 +49,25 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	private Values values1, values2;
 	private Keys keys1, keys2;
 
-	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
-	 * backing table. */
+	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public IdentityMap () {
-		this(32, 0.8f);
+		this(51, 0.8f);
 	}
 
-	/** Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
-	 * table. */
+	/** Creates a new map with a load factor of 0.8.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IdentityMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
-	 * before growing the backing table. */
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
+	 * growing the backing table.
+	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IdentityMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
+		initialCapacity = MathUtils.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
+		capacity = initialCapacity;
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -83,7 +84,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 
 	/** Creates a new map identical to the specified map. */
 	public IdentityMap (IdentityMap map) {
-		this(map.capacity, map.loadFactor);
+		this((int)Math.floor(map.capacity * map.loadFactor), map.loadFactor);
 		stashSize = map.stashSize;
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
@@ -460,7 +461,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {
@@ -498,6 +499,49 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	private int hash3 (int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
+	}
+
+	public int hashCode () {
+		int h = 0;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				h += key.hashCode() * 31;
+
+				V value = valueTable[i];
+				if (value != null) {
+					h += value.hashCode();
+				}
+			}
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (obj == this) return true;
+		if (!(obj instanceof IdentityMap)) return false;
+		IdentityMap<K, V> other = (IdentityMap) obj;
+		if (other.size != size) return false;
+		K[] keyTable = this.keyTable;
+		V[] valueTable = this.valueTable;
+		for (int i = 0, n = capacity + stashSize; i < n; i++) {
+			K key = keyTable[i];
+			if (key != null) {
+				 V value = valueTable[i];
+				 if (value == null) {
+					 if (!other.containsKey(key) || other.get(key) != null) {
+						 return false;
+					 }
+				 } else {
+					if (!value.equals(other.get(key))) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	public String toString () {
@@ -597,7 +641,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static private class MapIterator<K, V> {
+	static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I> {
 		public boolean hasNext;
 
 		final IdentityMap<K, V> map;
@@ -641,7 +685,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Entries<K, V> extends MapIterator<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
+	static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>> {
 		private Entry<K, V> entry = new Entry();
 
 		public Entries (IdentityMap<K, V> map) {
@@ -670,7 +714,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Values<V> extends MapIterator<Object, V> implements Iterable<V>, Iterator<V> {
+	static public class Values<V> extends MapIterator<Object, V, V> {
 		public Values (IdentityMap<?, V> map) {
 			super((IdentityMap<Object, V>)map);
 		}
@@ -708,7 +752,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Keys<K> extends MapIterator<K, Object> implements Iterable<K>, Iterator<K> {
+	static public class Keys<K> extends MapIterator<K, Object, K> {
 		public Keys (IdentityMap<K, ?> map) {
 			super((IdentityMap<K, Object>)map);
 		}

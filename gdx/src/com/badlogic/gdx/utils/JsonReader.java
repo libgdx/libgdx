@@ -19,13 +19,13 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight JSON parser.<br>
  * <br>
@@ -92,13 +92,13 @@ public class JsonReader implements BaseJsonReader {
 
 		try {
 
-			// line 3 "JsonReader.java"
+			// line 97 "JsonReader.java"
 			{
 				cs = json_start;
 				top = 0;
 			}
 
-			// line 8 "JsonReader.java"
+			// line 103 "JsonReader.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -177,16 +177,15 @@ public class JsonReader implements BaseJsonReader {
 							while (_nacts-- > 0) {
 								switch (_json_actions[_acts++]) {
 								case 0:
-								// line 108 "JsonReader.rl"
+								// line 104 "JsonReader.rl"
 								{
 									stringIsName = true;
 								}
 									break;
 								case 1:
-								// line 111 "JsonReader.rl"
+								// line 107 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
-									s = p;
 									if (needsUnescape) value = unescape(value);
 									outer:
 									if (stringIsName) {
@@ -207,17 +206,47 @@ public class JsonReader implements BaseJsonReader {
 											} else if (value.equals("null")) {
 												string(name, null);
 												break outer;
-											} else if (value.indexOf('.') != -1) {
+											}
+											boolean couldBeDouble = false, couldBeLong = true;
+											outer2:
+											for (int i = s; i < p; i++) {
+												switch (data[i]) {
+												case '0':
+												case '1':
+												case '2':
+												case '3':
+												case '4':
+												case '5':
+												case '6':
+												case '7':
+												case '8':
+												case '9':
+												case '-':
+												case '+':
+													break;
+												case '.':
+												case 'e':
+												case 'E':
+													couldBeDouble = true;
+													couldBeLong = false;
+													break;
+												default:
+													couldBeDouble = false;
+													couldBeLong = false;
+													break outer2;
+												}
+											}
+											if (couldBeDouble) {
 												try {
 													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value));
+													number(name, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
-											} else {
+											} else if (couldBeLong) {
+												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 												try {
-													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Long.parseLong(value));
+													number(name, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
@@ -227,10 +256,11 @@ public class JsonReader implements BaseJsonReader {
 										string(name, value);
 									}
 									stringIsUnquoted = false;
+									s = p;
 								}
 									break;
 								case 2:
-								// line 153 "JsonReader.rl"
+								// line 181 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startObject: " + name);
@@ -251,7 +281,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 3:
-								// line 159 "JsonReader.rl"
+								// line 187 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endObject");
 									pop();
@@ -263,7 +293,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 4:
-								// line 164 "JsonReader.rl"
+								// line 192 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startArray: " + name);
@@ -276,7 +306,7 @@ public class JsonReader implements BaseJsonReader {
 										}
 										{
 											stack[top++] = cs;
-											cs = 22;
+											cs = 23;
 											_goto_targ = 2;
 											if (true) continue _goto;
 										}
@@ -284,7 +314,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 5:
-								// line 170 "JsonReader.rl"
+								// line 198 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endArray");
 									pop();
@@ -296,21 +326,23 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 6:
-								// line 175 "JsonReader.rl"
+								// line 203 "JsonReader.rl"
 								{
-									if (debug) System.out.println("comment /" + data[p]);
+									int start = p - 1;
 									if (data[p++] == '/') {
-										while (data[p] != '\n')
+										while (p != eof && data[p] != '\n')
 											p++;
+										p--;
 									} else {
-										while (data[p] != '*' || data[p + 1] != '/')
+										while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
 											p++;
 										p++;
 									}
+									if (debug) System.out.println("comment " + new String(data, start, p - start));
 								}
 									break;
 								case 7:
-								// line 186 "JsonReader.rl"
+								// line 216 "JsonReader.rl"
 								{
 									if (debug) System.out.println("unquotedChars");
 									s = p;
@@ -320,14 +352,20 @@ public class JsonReader implements BaseJsonReader {
 										outer:
 										while (true) {
 											switch (data[p]) {
+											case '\\':
+												needsUnescape = true;
+												break;
+											case '/':
+												if (p + 1 == eof) break;
+												char c = data[p + 1];
+												if (c == '/' || c == '*') break outer;
+												break;
 											case ':':
-											case ' ':
 											case '\r':
 											case '\n':
-											case '\t':
 												break outer;
 											}
-											// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
+											if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
 											p++;
 											if (p == eof) break;
 										}
@@ -335,25 +373,33 @@ public class JsonReader implements BaseJsonReader {
 										outer:
 										while (true) {
 											switch (data[p]) {
+											case '\\':
+												needsUnescape = true;
+												break;
+											case '/':
+												if (p + 1 == eof) break;
+												char c = data[p + 1];
+												if (c == '/' || c == '*') break outer;
+												break;
 											case '}':
 											case ']':
 											case ',':
-											case ' ':
 											case '\r':
 											case '\n':
-											case '\t':
 												break outer;
 											}
-											// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
+											if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
 											p++;
 											if (p == eof) break;
 										}
 									}
 									p--;
+									while (Character.isSpace(data[p]))
+										p--;
 								}
 									break;
 								case 8:
-								// line 226 "JsonReader.rl"
+								// line 270 "JsonReader.rl"
 								{
 									if (debug) System.out.println("quotedChars");
 									s = ++p;
@@ -375,7 +421,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 265 "JsonReader.java"
+								// line 408 "JsonReader.java"
 								}
 							}
 						}
@@ -396,10 +442,9 @@ public class JsonReader implements BaseJsonReader {
 							while (__nacts-- > 0) {
 								switch (_json_actions[__acts++]) {
 								case 1:
-								// line 111 "JsonReader.rl"
+								// line 107 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
-									s = p;
 									if (needsUnescape) value = unescape(value);
 									outer:
 									if (stringIsName) {
@@ -420,17 +465,47 @@ public class JsonReader implements BaseJsonReader {
 											} else if (value.equals("null")) {
 												string(name, null);
 												break outer;
-											} else if (value.indexOf('.') != -1) {
+											}
+											boolean couldBeDouble = false, couldBeLong = true;
+											outer2:
+											for (int i = s; i < p; i++) {
+												switch (data[i]) {
+												case '0':
+												case '1':
+												case '2':
+												case '3':
+												case '4':
+												case '5':
+												case '6':
+												case '7':
+												case '8':
+												case '9':
+												case '-':
+												case '+':
+													break;
+												case '.':
+												case 'e':
+												case 'E':
+													couldBeDouble = true;
+													couldBeLong = false;
+													break;
+												default:
+													couldBeDouble = false;
+													couldBeLong = false;
+													break outer2;
+												}
+											}
+											if (couldBeDouble) {
 												try {
 													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value));
+													number(name, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
-											} else {
+											} else if (couldBeLong) {
+												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
 												try {
-													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Long.parseLong(value));
+													number(name, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
@@ -440,9 +515,10 @@ public class JsonReader implements BaseJsonReader {
 										string(name, value);
 									}
 									stringIsUnquoted = false;
+									s = p;
 								}
 									break;
-								// line 331 "JsonReader.java"
+								// line 506 "JsonReader.java"
 								}
 							}
 						}
@@ -453,7 +529,7 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			// line 257 "JsonReader.rl"
+			// line 306 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -468,8 +544,9 @@ public class JsonReader implements BaseJsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
-				parseRuntimeEx);
+			int start = Math.max(0, p - 32);
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: "
+				+ new String(data, start, p - start) + "*ERROR*" + new String(data, p, Math.min(64, pe - p)), parseRuntimeEx);
 		} else if (elements.size != 0) {
 			JsonValue element = elements.peek();
 			elements.clear();
@@ -483,102 +560,97 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 341 "JsonReader.java"
+	// line 548 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
-		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5, 2, 6, 1, 2, 7, 6,
-			3, 0, 7, 6};
+		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
 
 	private static final byte _json_actions[] = init__json_actions_0();
 
 	private static short[] init__json_key_offsets_0 () {
-		return new short[] {0, 0, 12, 14, 15, 28, 40, 46, 52, 54, 66, 73, 80, 92, 93, 100, 113, 115, 116, 124, 137, 144, 157, 169,
-			176, 183, 195, 196, 204, 217, 219, 227, 240, 245, 250, 256, 256};
+		return new short[] {0, 0, 11, 13, 14, 16, 25, 31, 37, 39, 50, 57, 64, 73, 74, 83, 85, 87, 96, 98, 100, 101, 103, 105, 116,
+			123, 130, 141, 142, 153, 155, 157, 168, 170, 172, 174, 179, 184, 184};
 	}
 
 	private static final short _json_key_offsets[] = init__json_key_offsets_0();
 
 	private static char[] init__json_trans_keys_0 () {
-		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 125, 9, 10, 42, 47, 34, 13, 32, 34, 42, 44, 47, 58, 91, 93, 123,
-			125, 9, 10, 13, 32, 34, 44, 47, 58, 91, 93, 123, 125, 9, 10, 13, 32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13,
-			32, 34, 44, 47, 58, 91, 93, 123, 125, 9, 10, 13, 32, 44, 47, 125, 9, 10, 13, 32, 44, 47, 125, 9, 10, 13, 32, 34, 44, 47,
-			58, 91, 93, 123, 125, 9, 10, 34, 13, 32, 42, 47, 58, 9, 10, 13, 32, 34, 42, 44, 47, 58, 91, 93, 123, 125, 9, 10, 42, 47,
-			34, 13, 32, 42, 44, 47, 125, 9, 10, 13, 32, 34, 42, 44, 47, 58, 91, 93, 123, 125, 9, 10, 13, 32, 42, 47, 58, 9, 10, 13,
-			32, 34, 42, 44, 47, 58, 91, 93, 123, 125, 9, 10, 13, 32, 34, 44, 47, 58, 91, 93, 123, 125, 9, 10, 13, 32, 44, 47, 93, 9,
-			10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 34, 44, 47, 58, 91, 93, 123, 125, 9, 10, 34, 13, 32, 42, 44, 47, 93, 9, 10, 13,
-			32, 34, 42, 44, 47, 58, 91, 93, 123, 125, 9, 10, 42, 47, 13, 32, 42, 44, 47, 93, 9, 10, 13, 32, 34, 42, 44, 47, 58, 91,
-			93, 123, 125, 9, 10, 13, 32, 47, 9, 10, 13, 32, 47, 9, 10, 13, 32, 42, 47, 9, 10, 0};
+		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 34, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13,
+			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 125,
+			9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47,
+			13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9,
+			10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 34, 13, 32, 34, 44, 47,
+			58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32, 47,
+			9, 10, 13, 32, 47, 9, 10, 0};
 	}
 
 	private static final char _json_trans_keys[] = init__json_trans_keys_0();
 
 	private static byte[] init__json_single_lengths_0 () {
-		return new byte[] {0, 10, 2, 1, 11, 10, 4, 4, 2, 10, 5, 5, 10, 1, 5, 11, 2, 1, 6, 11, 5, 11, 10, 5, 5, 10, 1, 6, 11, 2, 6,
-			11, 3, 3, 4, 0, 0};
+		return new byte[] {0, 9, 2, 1, 2, 7, 4, 4, 2, 9, 7, 7, 7, 1, 7, 2, 2, 7, 2, 2, 1, 2, 2, 9, 7, 7, 9, 1, 9, 2, 2, 9, 2, 2, 2,
+			3, 3, 0, 0};
 	}
 
 	private static final byte _json_single_lengths[] = init__json_single_lengths_0();
 
 	private static byte[] init__json_range_lengths_0 () {
-		return new byte[] {0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1,
-			0, 0};
+		return new byte[] {0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0,
+			1, 1, 0, 0};
 	}
 
 	private static final byte _json_range_lengths[] = init__json_range_lengths_0();
 
 	private static short[] init__json_index_offsets_0 () {
-		return new short[] {0, 0, 12, 15, 17, 30, 42, 48, 54, 57, 69, 76, 83, 95, 97, 104, 117, 120, 122, 130, 143, 150, 163, 175,
-			182, 189, 201, 203, 211, 224, 227, 235, 248, 253, 258, 264, 265};
+		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 90, 93, 96, 105, 108, 111, 113, 116, 119, 130,
+			138, 146, 157, 159, 170, 173, 176, 187, 190, 193, 196, 201, 206, 207};
 	}
 
 	private static final short _json_index_offsets[] = init__json_index_offsets_0();
 
 	private static byte[] init__json_indicies_0 () {
-		return new byte[] {1, 1, 2, 3, 4, 3, 5, 3, 6, 3, 1, 0, 7, 7, 3, 8, 3, 1, 1, 2, 9, 3, 10, 3, 5, 3, 6, 3, 1, 0, 12, 12, 13,
-			14, 15, 3, 3, 3, 3, 16, 12, 11, 17, 17, 18, 19, 17, 3, 20, 20, 21, 22, 20, 3, 23, 23, 3, 22, 22, 25, 3, 26, 3, 27, 3,
-			28, 3, 22, 24, 29, 29, 30, 31, 32, 29, 3, 33, 33, 14, 34, 16, 33, 3, 14, 14, 13, 3, 35, 3, 3, 3, 3, 16, 14, 11, 17, 3,
-			17, 17, 36, 37, 19, 17, 3, 14, 14, 13, 38, 3, 39, 3, 3, 3, 3, 16, 14, 11, 40, 40, 3, 29, 3, 29, 29, 41, 30, 42, 32, 29,
-			3, 22, 22, 25, 43, 3, 44, 3, 27, 3, 28, 3, 22, 24, 17, 17, 45, 46, 19, 17, 3, 12, 12, 13, 38, 14, 47, 3, 3, 3, 3, 16,
-			12, 11, 49, 49, 50, 51, 52, 3, 53, 54, 55, 3, 49, 48, 56, 56, 57, 58, 59, 56, 3, 60, 60, 51, 61, 54, 60, 3, 51, 51, 50,
-			3, 62, 3, 53, 54, 55, 3, 51, 48, 56, 3, 56, 56, 63, 57, 64, 59, 56, 3, 51, 51, 50, 65, 3, 66, 3, 53, 54, 55, 3, 51, 48,
-			67, 67, 3, 56, 56, 68, 57, 69, 59, 56, 3, 49, 49, 50, 65, 51, 70, 3, 53, 54, 55, 3, 49, 48, 8, 8, 71, 8, 3, 72, 72, 73,
-			72, 3, 8, 8, 74, 75, 8, 3, 3, 3, 0};
+		return new byte[] {1, 1, 2, 3, 4, 3, 5, 3, 6, 1, 0, 7, 7, 3, 8, 3, 9, 9, 3, 11, 11, 12, 13, 14, 3, 15, 11, 10, 16, 16, 17,
+			18, 16, 3, 19, 19, 20, 21, 19, 3, 22, 22, 3, 21, 21, 24, 3, 25, 3, 26, 3, 27, 21, 23, 28, 29, 28, 28, 30, 31, 32, 3, 33,
+			34, 33, 33, 13, 35, 15, 3, 34, 34, 12, 36, 37, 3, 15, 34, 10, 16, 3, 36, 36, 12, 3, 38, 3, 3, 36, 10, 39, 39, 3, 40, 40,
+			3, 13, 13, 12, 3, 41, 3, 15, 13, 10, 42, 42, 3, 43, 43, 3, 28, 3, 44, 44, 3, 45, 45, 3, 47, 47, 48, 49, 50, 3, 51, 52,
+			53, 47, 46, 54, 55, 54, 54, 56, 57, 58, 3, 59, 60, 59, 59, 49, 61, 52, 3, 60, 60, 48, 62, 63, 3, 51, 52, 53, 60, 46, 54,
+			3, 62, 62, 48, 3, 64, 3, 51, 3, 53, 62, 46, 65, 65, 3, 66, 66, 3, 49, 49, 48, 3, 67, 3, 51, 52, 53, 49, 46, 68, 68, 3,
+			69, 69, 3, 70, 70, 3, 8, 8, 71, 8, 3, 72, 72, 73, 72, 3, 3, 3, 0};
 	}
 
 	private static final byte _json_indicies[] = init__json_indicies_0();
 
 	private static byte[] init__json_trans_targs_0 () {
-		return new byte[] {32, 1, 3, 0, 34, 33, 33, 33, 33, 32, 34, 6, 5, 13, 12, 20, 35, 7, 8, 9, 7, 8, 9, 7, 10, 17, 18, 11, 11,
-			11, 12, 16, 35, 11, 16, 14, 12, 15, 6, 14, 11, 9, 19, 10, 18, 5, 21, 20, 23, 22, 26, 25, 30, 24, 36, 24, 24, 25, 29, 36,
-			24, 29, 27, 25, 28, 23, 27, 24, 22, 31, 30, 2, 33, 2, 1, 4};
+		return new byte[] {35, 1, 3, 0, 4, 36, 36, 36, 36, 1, 6, 5, 13, 17, 22, 37, 7, 8, 9, 7, 8, 9, 7, 10, 20, 21, 11, 11, 11, 12,
+			17, 19, 37, 11, 12, 19, 14, 16, 15, 14, 12, 18, 17, 11, 9, 5, 24, 23, 27, 31, 34, 25, 38, 25, 25, 26, 31, 33, 38, 25, 26,
+			33, 28, 30, 29, 28, 26, 32, 31, 25, 23, 2, 36, 2};
 	}
 
 	private static final byte _json_trans_targs[] = init__json_trans_targs_0();
 
 	private static byte[] init__json_trans_actions_0 () {
-		return new byte[] {13, 0, 15, 0, 13, 7, 3, 11, 1, 32, 32, 17, 0, 20, 0, 17, 5, 1, 1, 1, 0, 0, 0, 11, 13, 15, 13, 7, 3, 1,
-			1, 1, 23, 0, 0, 17, 11, 29, 35, 35, 11, 11, 29, 32, 32, 11, 29, 35, 13, 0, 15, 0, 13, 7, 9, 3, 1, 1, 1, 26, 0, 0, 13,
-			11, 29, 32, 32, 11, 11, 29, 32, 1, 0, 0, 11, 29};
+		return new byte[] {13, 0, 15, 0, 0, 7, 3, 11, 1, 11, 17, 0, 20, 0, 0, 5, 1, 1, 1, 0, 0, 0, 11, 13, 15, 0, 7, 3, 1, 1, 1, 1,
+			23, 0, 0, 0, 0, 0, 0, 11, 11, 0, 11, 11, 11, 11, 13, 0, 15, 0, 0, 7, 9, 3, 1, 1, 1, 1, 26, 0, 0, 0, 0, 0, 0, 11, 11, 0,
+			11, 11, 11, 1, 0, 0};
 	}
 
 	private static final byte _json_trans_actions[] = init__json_trans_actions_0();
 
 	private static byte[] init__json_eof_actions_0 () {
-		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
-			0, 0};
+		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			1, 0, 0, 0};
 	}
 
 	private static final byte _json_eof_actions[] = init__json_eof_actions_0();
 
 	static final int json_start = 1;
-	static final int json_first_final = 32;
+	static final int json_first_final = 35;
 	static final int json_error = 0;
 
 	static final int json_en_object = 5;
-	static final int json_en_array = 22;
+	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 287 "JsonReader.rl"
+	// line 337 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);
@@ -590,6 +662,7 @@ public class JsonReader implements BaseJsonReader {
 			current = child;
 			root = child;
 		} else if (current.isArray() || current.isObject()) {
+			child.parent = current;
 			if (current.size == 0)
 				current.child = child;
 			else {
@@ -627,12 +700,12 @@ public class JsonReader implements BaseJsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, double value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value) {
-		addChild(name, new JsonValue(value));
+	protected void number (String name, long value, String stringValue) {
+		addChild(name, new JsonValue(value, stringValue));
 	}
 
 	protected void bool (String name, boolean value) {

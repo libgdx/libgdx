@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.math;
 
-public class Polyline {
-	private final float[] localVertices;
+public class Polyline implements Shape2D {
+	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
 	private float originX, originY;
@@ -156,6 +156,12 @@ public class Polyline {
 		dirty = true;
 	}
 
+	public void setVertices (float[] vertices) {
+		if (vertices.length < 4) throw new IllegalArgumentException("polylines must contain at least 2 points.");
+		this.localVertices = vertices;
+		dirty = true;
+	}
+
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
 		dirty = true;
@@ -196,5 +202,15 @@ public class Polyline {
 		this.x += x;
 		this.y += y;
 		dirty = true;
+	}
+
+	@Override
+	public boolean contains (Vector2 point) {
+		return false;
+	}
+
+	@Override
+	public boolean contains (float x, float y) {
+		return false;
 	}
 }

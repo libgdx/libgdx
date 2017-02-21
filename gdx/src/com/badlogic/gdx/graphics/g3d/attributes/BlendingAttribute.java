@@ -18,6 +18,8 @@ package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class BlendingAttribute extends Attribute {
 	public final static String Alias = "blended";
@@ -75,14 +77,24 @@ public class BlendingAttribute extends Attribute {
 	public BlendingAttribute copy () {
 		return new BlendingAttribute(this);
 	}
-	
+
 	@Override
 	public int hashCode () {
-		int result = (int)type;
+		int result = super.hashCode();
 		result = 947 * result + (blended ? 1 : 0);
 		result = 947 * result + sourceFunction;
 		result = 947 * result + destFunction;
-		result = 947 * result + Float.floatToRawIntBits(opacity);
-		return result; 
+		result = 947 * result + NumberUtils.floatToRawIntBits(opacity);
+		return result;
+	}
+
+	@Override
+	public int compareTo (Attribute o) {
+		if (type != o.type) return (int)(type - o.type);
+		BlendingAttribute other = (BlendingAttribute)o;
+		if (blended != other.blended) return blended ? 1 : -1;
+		if (sourceFunction != other.sourceFunction) return sourceFunction - other.sourceFunction;
+		if (destFunction != other.destFunction) return destFunction - other.destFunction;
+		return (MathUtils.isEqual(opacity, other.opacity)) ? 0 : (opacity < other.opacity ? 1 : -1);
 	}
 }

@@ -47,22 +47,20 @@ public abstract class OpenALMusic implements Music {
 	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
+	protected int bufferOverhead = 0;
 
 	private OnCompletionListener onCompletionListener;
 
 	public OpenALMusic (OpenALAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
-		if (audio != null) {
-			if (!audio.noDevice) audio.music.add(this);
-		}
 		this.onCompletionListener = null;
 	}
 
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
-		secondsPerBuffer = (float)bufferSize / bytesPerSample / channels / sampleRate;
+		secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
 	}
 
 	public void play () {
@@ -70,36 +68,42 @@ public abstract class OpenALMusic implements Music {
 		if (sourceID == -1) {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
+
+			audio.music.add(this);
+
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
 				alGenBuffers(buffers);
-				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
+				int errorCode = alGetError();
+				if (errorCode != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
-			int filled = 0; // check if there's anything to play actually, see #1770
+
+			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				if (!fill(bufferID)) break;
-				filled++;
+				filled = true;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
-			if(filled == 0) {
-				if(onCompletionListener != null) onCompletionListener.onCompletion(this);
-			}
-			
+			if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
+
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
 			}
 		}
-		alSourcePlay(sourceID);
-		isPlaying = true;
+		if (!isPlaying) {
+			alSourcePlay(sourceID);
+			isPlaying = true;
+		}
 	}
 
 	public void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
+		audio.music.removeValue(this, true);
 		reset();
 		audio.freeSource(sourceID);
 		sourceID = -1;
@@ -147,6 +151,40 @@ public abstract class OpenALMusic implements Music {
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
+	public void setPosition (float position) {
+		if (audio.noDevice) return;
+		if (sourceID == -1) return;
+		boolean wasPlaying = isPlaying;
+		isPlaying = false;
+		alSourceStop(sourceID);
+		alSourceUnqueueBuffers(sourceID, buffers);
+		renderedSeconds += (secondsPerBuffer * bufferCount);
+		if (position <= renderedSeconds) {
+			reset();
+			renderedSeconds = 0;
+		}
+		while (renderedSeconds < (position - secondsPerBuffer)) {
+			if (read(tempBytes) <= 0) break;
+			renderedSeconds += secondsPerBuffer;
+		}
+		boolean filled = false;
+		for (int i = 0; i < bufferCount; i++) {
+			int bufferID = buffers.get(i);
+			if (!fill(bufferID)) break;
+			filled = true;
+			alSourceQueueBuffers(sourceID, bufferID);
+		}
+		if (!filled) {
+			stop();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+		}
+		alSourcef(sourceID, AL11.AL_SEC_OFFSET, position - renderedSeconds);
+		if (wasPlaying) {
+			alSourcePlay(sourceID);
+			isPlaying = true;
+		}
+	}
+
 	public float getPosition () {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
@@ -159,6 +197,11 @@ public abstract class OpenALMusic implements Music {
 
 	/** Resets the stream to the beginning. */
 	abstract public void reset ();
+
+	/** By default, does just the same as reset(). Used to add special behaviour in Ogg.Music. */
+	protected void loop () {
+		reset();
+	}
 
 	public int getChannels () {
 		return format == AL_FORMAT_STEREO16 ? 2 : 1;
@@ -185,8 +228,8 @@ public abstract class OpenALMusic implements Music {
 				end = true;
 		}
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 			stop();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 		}
 
 		// A buffer underflow will cause the source to stop.
@@ -198,7 +241,7 @@ public abstract class OpenALMusic implements Music {
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
-				reset();
+				loop();
 				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;
@@ -211,14 +254,9 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void dispose () {
+		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;
-		if (sourceID != -1) {
-			reset();
-			audio.music.removeValue(this, true);
-			audio.freeSource(sourceID);
-			sourceID = -1;
-		}
 		alDeleteBuffers(buffers);
 		buffers = null;
 		onCompletionListener = null;

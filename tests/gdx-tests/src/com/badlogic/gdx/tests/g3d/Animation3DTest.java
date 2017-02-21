@@ -26,10 +26,13 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
@@ -45,6 +48,8 @@ public class Animation3DTest extends BaseG3dHudTest {
 	ModelInstance skydome;
 	Model floorModel;
 	ModelInstance character;
+	Node ship;
+	ModelInstance tree;
 	AnimationController animation;
 	DirectionalShadowLight shadowLight;
 	ModelBatch shadowBatch;
@@ -57,7 +62,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f))
-			.set(0.8f, 0.8f, 0.8f, -1f, -.8f, -.2f));
+			.set(0.8f, 0.8f, 0.8f, -.4f, -.4f, -.4f));
 		lights.shadowMap = shadowLight;
 		inputController.rotateLeftKey = inputController.rotateRightKey = inputController.forwardKey = inputController.backwardKey = 0;
 		cam.position.set(25, 25, 25);
@@ -66,6 +71,8 @@ public class Animation3DTest extends BaseG3dHudTest {
 		modelsWindow.setVisible(false);
 		assets.load("data/g3d/skydome.g3db", Model.class);
 		assets.load("data/g3d/concrete.png", Texture.class);
+		assets.load("data/tree.png", Texture.class);
+		assets.load("data/g3d/ship.obj", Model.class);
 		loading = true;
 		trForward.translation.set(0, 0, 8f);
 		trBackward.translation.set(0, 0, -8f);
@@ -74,14 +81,21 @@ public class Animation3DTest extends BaseG3dHudTest {
 
 		ModelBuilder builder = new ModelBuilder();
 		builder.begin();
+		builder.node().id = "floor";
 		MeshPartBuilder part = builder.part("floor", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates | Usage.Normal,
-			new Material());
+			new Material("concrete"));
 		((MeshBuilder)part).ensureRectangles(1600);
 		for (float x = -200f; x < 200f; x += 10f) {
 			for (float z = -200f; z < 200f; z += 10f) {
 				part.rect(x, 0, z + 10f, x + 10f, 0, z + 10f, x + 10f, 0, z, x, 0, z, 0, 1, 0);
 			}
 		}
+		builder.node().id = "tree";
+		part = builder.part("tree", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates | Usage.Normal,
+			new Material("tree"));
+		part.rect( 0f, 0f, -10f, 10f, 0f, -10f, 10f, 10f, -10f,  0f, 10f, -10f, 0, 0, 1f);
+		part.setUVRange(1, 0, 0, 1);
+		part.rect(10f, 0f, -10f,  0f, 0f, -10f,  0f, 10f, -10f, 10f, 10f, -10f, 0, 0, -1f);
 		floorModel = builder.end();
 
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
@@ -105,7 +119,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	public void render () {
 		if (character != null) {
 			animation.update(Gdx.graphics.getDeltaTime());
-			if (upKey) {
+			if (Gdx.input.isKeyPressed(Keys.UP)) {
 				if (!animation.inAction) {
 					trTmp.idt().lerp(trForward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
@@ -114,7 +128,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 					animation.animate("Walk", -1, 1f, null, 0.2f);
 					status = walk;
 				}
-			} else if (downKey) {
+			} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 				if (!animation.inAction) {
 					trTmp.idt().lerp(trBackward, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 					character.transform.mul(trTmp.toMatrix4(tmpMatrix));
@@ -127,22 +141,25 @@ public class Animation3DTest extends BaseG3dHudTest {
 				animation.animate("Idle", -1, 1f, null, 0.2f);
 				status = idle;
 			}
-			if (rightKey && (status == walk || status == back) && !animation.inAction) {
+			if (Gdx.input.isKeyPressed(Keys.RIGHT) && (status == walk || status == back) && !animation.inAction) {
 				trTmp.idt().lerp(trRight, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
-			} else if (leftKey && (status == walk || status == back) && !animation.inAction) {
+			} else if (Gdx.input.isKeyPressed(Keys.LEFT) && (status == walk || status == back) && !animation.inAction) {
 				trTmp.idt().lerp(trLeft, Gdx.graphics.getDeltaTime() / animation.current.animation.duration);
 				character.transform.mul(trTmp.toMatrix4(tmpMatrix));
 			}
-			if (spaceKey && !animation.inAction) {
+			if (Gdx.input.isKeyPressed(Keys.SPACE) && !animation.inAction) {
 				animation.action("Attack", 1, 1f, null, 0.2f);
 			}
+			if (Gdx.input.isKeyJustPressed(Keys.Z))
+				ship.parts.get(0).enabled = !ship.parts.get(0).enabled; 
 		}
 
 		if (character != null) {
 			shadowLight.begin(character.transform.getTranslation(tmpVector), cam.direction);
 			shadowBatch.begin(shadowLight.getCamera());
 			if (character != null) shadowBatch.render(character);
+			if (tree != null) shadowBatch.render(tree);
 			shadowBatch.end();
 			shadowLight.end();
 		}
@@ -158,7 +175,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	@Override
 	protected void getStatus (StringBuilder stringBuilder) {
 		super.getStatus(stringBuilder);
-		stringBuilder.append(" use arrow keys to walk around, space to attack.");
+		stringBuilder.append(" use arrow keys to walk around, space to attack, Z to toggle attached node.");
 	}
 
 	@Override
@@ -169,8 +186,13 @@ public class Animation3DTest extends BaseG3dHudTest {
 	protected void onLoaded () {
 		if (skydome == null) {
 			skydome = new ModelInstance(assets.get("data/g3d/skydome.g3db", Model.class));
-			floorModel.materials.get(0).set(TextureAttribute.createDiffuse(assets.get("data/g3d/concrete.png", Texture.class)));
-			instances.add(new ModelInstance(floorModel));
+			floorModel.getMaterial("concrete").set(TextureAttribute.createDiffuse(assets.get("data/g3d/concrete.png", Texture.class)));
+			floorModel.getMaterial("tree").set(
+				TextureAttribute.createDiffuse(assets.get("data/tree.png", Texture.class)),
+				new BlendingAttribute()
+				);
+			instances.add(new ModelInstance(floorModel, "floor"));
+			instances.add(tree = new ModelInstance(floorModel, "tree"));
 			assets.load("data/g3d/knight.g3db", Model.class);
 			loading = true;
 		} else if (character == null) {
@@ -184,29 +206,15 @@ public class Animation3DTest extends BaseG3dHudTest {
 			status = idle;
 			for (Animation anim : character.animations)
 				Gdx.app.log("Test", anim.id);
+			// Now attach the node of another model at the tip of this knights sword:
+			ship = assets.get("data/g3d/ship.obj", Model.class).nodes.get(0).copy();
+			ship.detach();
+			ship.translation.x = 10f; // offset from the sword node to the tip of the sword, in rest pose
+			ship.rotation.set(Vector3.Z, 90f);
+			ship.scale.scl(5f);
+			ship.parts.get(0).enabled = false;
+			character.getNode("sword").addChild(ship);
 		}
-	}
-
-	boolean rightKey, leftKey, upKey, downKey, spaceKey;
-
-	@Override
-	public boolean keyUp (int keycode) {
-		if (keycode == Keys.LEFT) leftKey = false;
-		if (keycode == Keys.RIGHT) rightKey = false;
-		if (keycode == Keys.UP) upKey = false;
-		if (keycode == Keys.DOWN) downKey = false;
-		if (keycode == Keys.SPACE) spaceKey = false;
-		return super.keyUp(keycode);
-	}
-
-	@Override
-	public boolean keyDown (int keycode) {
-		if (keycode == Keys.LEFT) leftKey = true;
-		if (keycode == Keys.RIGHT) rightKey = true;
-		if (keycode == Keys.UP) upKey = true;
-		if (keycode == Keys.DOWN) downKey = true;
-		if (keycode == Keys.SPACE) spaceKey = true;
-		return super.keyDown(keycode);
 	}
 
 	@Override

@@ -37,12 +37,23 @@ public class SimpleVertexShader extends GdxTest {
 
 	@Override
 	public void create () {
-		String vertexShader = "uniform mat4 u_mvpMatrix;                   \n" + "attribute vec4 a_position;                  \n"
-			+ "void main()                                 \n" + "{                                           \n"
-			+ "   gl_Position = u_mvpMatrix * a_position;  \n" + "}                            \n";
-		String fragmentShader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n"
-			+ "void main()                                  \n" + "{                                            \n"
-			+ "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n" + "}";
+		// @off
+		String vertexShader =
+			  "uniform mat4 u_mvpMatrix;                   \n"
+			+ "attribute vec4 a_position;                  \n"
+			+ "void main()                                 \n"
+			+ "{                                           \n"
+			+ "   gl_Position = u_mvpMatrix * a_position;  \n"
+			+ "}                            \n";
+		String fragmentShader =
+			"#ifdef GL_ES\n"
+			+ "precision mediump float;\n"
+			+ "#endif\n"
+			+ "void main()                                  \n"
+			+ "{                                            \n"
+			+ "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
+			+ "}";
+		// @on
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		mesh = Shapes.genCube();
@@ -58,7 +69,7 @@ public class SimpleVertexShader extends GdxTest {
 		model.setToRotation(axis, angle);
 		combined.set(projection).mul(view).mul(model);
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shader.begin();
 		shader.setUniformMatrix("u_mvpMatrix", combined);

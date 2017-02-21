@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 public class HeadlessPreferences implements Preferences {
-	private final String name;
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
@@ -42,7 +41,6 @@ public class HeadlessPreferences implements Preferences {
 	}
 
 	public HeadlessPreferences(FileHandle file) {
-		this.name = file.name();
 		this.file = file;
 		if (!file.exists()) return;
 		InputStream in = null;
@@ -57,32 +55,37 @@ public class HeadlessPreferences implements Preferences {
 	}
 
 	@Override
-	public void putBoolean (String key, boolean val) {
+	public Preferences putBoolean (String key, boolean val) {
 		properties.put(key, Boolean.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putInteger (String key, int val) {
+	public Preferences putInteger (String key, int val) {
 		properties.put(key, Integer.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putLong (String key, long val) {
+	public Preferences putLong (String key, long val) {
 		properties.put(key, Long.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putFloat (String key, float val) {
+	public Preferences putFloat (String key, float val) {
 		properties.put(key, Float.toString(val));
+		return this;
 	}
 
 	@Override
-	public void putString (String key, String val) {
+	public Preferences putString (String key, String val) {
 		properties.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void put (Map<String, ?> vals) {
+	public Preferences put (Map<String, ?> vals) {
 		for (Entry<String, ?> val : vals.entrySet()) {
 			if (val.getValue() instanceof Boolean) putBoolean(val.getKey(), (Boolean)val.getValue());
 			if (val.getValue() instanceof Integer) putInteger(val.getKey(), (Integer)val.getValue());
@@ -90,6 +93,7 @@ public class HeadlessPreferences implements Preferences {
 			if (val.getValue() instanceof String) putString(val.getKey(), (String)val.getValue());
 			if (val.getValue() instanceof Float) putFloat(val.getKey(), (Float)val.getValue());
 		}
+		return this;
 	}
 
 	@Override

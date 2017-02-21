@@ -48,8 +48,8 @@ public class AnimationTest extends GdxTest {
 		}
 	}
 
-	Animation leftWalk;
-	Animation rightWalk;
+	Animation<TextureRegion> leftWalk;
+	Animation<TextureRegion> rightWalk;
 	Caveman[] cavemen;
 	Texture texture;
 	SpriteBatch batch;
@@ -65,8 +65,8 @@ public class AnimationTest extends GdxTest {
 			frame.flip(true, false);
 			rightWalkFrames[i] = frame;
 		}
-		leftWalk = new Animation(0.25f, leftWalkFrames);
-		rightWalk = new Animation(0.25f, rightWalkFrames);
+		leftWalk = new Animation<TextureRegion>(0.25f, leftWalkFrames);
+		rightWalk = new Animation<TextureRegion>(0.25f, rightWalkFrames);
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {

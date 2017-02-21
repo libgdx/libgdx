@@ -39,6 +39,7 @@ public class DownloadTest extends GdxTest {
 			
 			@Override
 			public void failed (Throwable t) {
+				t.printStackTrace();
 				Gdx.app.log("EmptyDownloadTest", "Failed", t);
 			}
 			

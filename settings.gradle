@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+include ":gdx"
+
+include ":backends"
+include ":backends:gdx-backend-android"
+include ":backends:gdx-backend-headless"
+include ":backends:gdx-backend-jglfw"
+include ":backends:gdx-backend-lwjgl"
+include ":backends:gdx-backend-lwjgl3"
+include ":backends:gdx-backend-robovm"
+include ":backends:gdx-backend-moe"
+include ":backends:gdx-backends-gwt"
+
+include ":extensions:gdx-box2d:gdx-box2d"
+include ":extensions:gdx-box2d:gdx-box2d-gwt"
+include ":extensions:gdx-bullet"
+include ":extensions:gdx-controllers:gdx-controllers"
+include ":extensions:gdx-controllers:gdx-controllers-android"
+include ":extensions:gdx-controllers:gdx-controllers-desktop"
+include ":extensions:gdx-controllers:gdx-controllers-lwjgl3"
+include ":extensions:gdx-controllers:gdx-controllers-gwt"
+include ":extensions:gdx-freetype"
+include ":extensions:gdx-jnigen"
+include ":extensions:gdx-setup"
+include ":extensions:gdx-tools"
+
+include ":tests"
+include ":tests:gdx-tests"
+include ":tests:gdx-tests-android"
+include ":tests:gdx-tests-gwt"
+include ":tests:gdx-tests-iosrobovm"
+include ':tests:gdx-tests-ios-intel'
+include ":tests:gdx-tests-jglfw"
+include ":tests:gdx-tests-lwjgl"
+include ":tests:gdx-tests-lwjgl3"
+
+rootProject.name = "libgdx"

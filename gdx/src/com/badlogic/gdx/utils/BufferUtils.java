@@ -47,12 +47,12 @@ public final class BufferUtils {
 	 * @param numFloats the number of floats to copy
 	 * @param offset the offset in src to start copying from */
 	public static void copy (float[] src, Buffer dst, int numFloats, int offset) {
-		copyJni(src, dst, numFloats, offset);
-		dst.position(0);
-
 		if (dst instanceof ByteBuffer)
 			dst.limit(numFloats << 2);
 		else if (dst instanceof FloatBuffer) dst.limit(numFloats);
+
+		copyJni(src, dst, numFloats, offset);
+		dst.position(0);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -65,8 +65,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (byte[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements);
 		dst.limit(dst.position() + bytesToElements(dst, numElements));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -79,8 +79,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (short[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 1, dst, positionInBytes(dst), numElements << 1);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -92,7 +92,7 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (char[] src, int srcOffset, int numElements, Buffer dst) {
-		copyJni(src, srcOffset << 1, dst, positionInBytes(dst), numElements << 1);
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -104,7 +104,7 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (int[] src, int srcOffset, int numElements, Buffer dst) {
-		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -116,7 +116,7 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (long[] src, int srcOffset, int numElements, Buffer dst) {
-		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -128,7 +128,7 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (float[] src, int srcOffset, int numElements, Buffer dst) {
-		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -140,7 +140,7 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (double[] src, int srcOffset, int numElements, Buffer dst) {
-		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -153,8 +153,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (char[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 1, dst, positionInBytes(dst), numElements << 1);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -167,8 +167,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (int[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 2));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -181,8 +181,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (long[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -195,8 +195,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (float[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 2));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -209,8 +209,8 @@ public final class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (double[] src, int srcOffset, Buffer dst, int numElements) {
-		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
+		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
 
 	/** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
@@ -224,8 +224,8 @@ public final class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (Buffer src, Buffer dst, int numElements) {
 		int numBytes = elementsToBytes(src, numElements);
-		copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
 		dst.limit(dst.position() + bytesToElements(dst, numBytes));
+		copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
 	}
 
 	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as the

@@ -610,6 +610,27 @@ public:
 	/**@brief Return the inverse of the matrix */
 	btMatrix3x3 inverse() const; 
 
+	/// Solve A * x = b, where b is a column vector. This is more efficient
+	/// than computing the inverse in one-shot cases.
+	///Solve33 is from Box2d, thanks to Erin Catto,
+	btVector3 solve33(const btVector3& b) const
+	{
+		btVector3 col1 = getColumn(0);
+		btVector3 col2 = getColumn(1);
+		btVector3 col3 = getColumn(2);
+		
+		btScalar det = btDot(col1, btCross(col2, col3));
+		if (btFabs(det)>SIMD_EPSILON)
+		{
+			det = 1.0f / det;
+		}
+		btVector3 x;
+		x[0] = det * btDot(b, btCross(col2, col3));
+		x[1] = det * btDot(col1, btCross(b, col3));
+		x[2] = det * btDot(col1, btCross(col2, b));
+		return x;
+	}
+
 	btMatrix3x3 transposeTimes(const btMatrix3x3& m) const;
 	btMatrix3x3 timesTranspose(const btMatrix3x3& m) const;
 
@@ -1026,7 +1047,8 @@ btMatrix3x3::inverse() const
 {
 	btVector3 co(cofac(1, 1, 2, 2), cofac(1, 2, 2, 0), cofac(1, 0, 2, 1));
 	btScalar det = (*this)[0].dot(co);
-	btFullAssert(det != btScalar(0.0));
+	//btFullAssert(det != btScalar(0.0));
+	btAssert(det != btScalar(0.0));
 	btScalar s = btScalar(1.0) / det;
 	return btMatrix3x3(co.x() * s, cofac(0, 2, 2, 1) * s, cofac(0, 1, 1, 2) * s,
 		co.y() * s, cofac(0, 0, 2, 2) * s, cofac(0, 2, 1, 0) * s,
@@ -1308,7 +1330,9 @@ SIMD_FORCE_INLINE bool operator==(const btMatrix3x3& m1, const btMatrix3x3& m2)
     c0 = _mm_and_ps(c0, c1);
     c0 = _mm_and_ps(c0, c2);
 
-    return (0x7 == _mm_movemask_ps((__m128)c0));
+	int m = _mm_movemask_ps((__m128)c0);
+	return (0x7 == (m & 0x7));
+	
 #else 
 	return 
     (   m1[0][0] == m2[0][0] && m1[1][0] == m2[1][0] && m1[2][0] == m2[2][0] &&

@@ -105,7 +105,7 @@ public class TextureUnpacker {
 					}
 
 					// check if the parent directories of this image file exist and create them if not
-					File imgOutput = new File(outputDirFile, String.format("%s.%s", region.name, extension));
+					File imgOutput = new File(outputDirFile, String.format("%s.%s", region.index == -1?region.name:region.name + "_" + region.index, extension));
 					File imgDir = imgOutput.getParentFile();
 					if (!imgDir.exists()) {
 						System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
@@ -134,12 +134,12 @@ public class TextureUnpacker {
 
 		// get the needed part of the page and rotate if needed
 		if (region.rotate) {
-			BufferedImage srcImage = page.getSubimage(region.left, region.top, region.width, region.height);
-			splitImage = new BufferedImage(region.height, region.width, page.getType());
+			BufferedImage srcImage = page.getSubimage(region.left, region.top, region.height, region.width);
+			splitImage = new BufferedImage(region.width, region.height, page.getType());
 
 			AffineTransform transform = new AffineTransform();
 			transform.rotate(Math.toRadians(90.0));
-			transform.translate(0, -region.height);
+			transform.translate(0, -region.width);
 			AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 			op.filter(srcImage, splitImage);
 		} else {
@@ -169,13 +169,19 @@ public class TextureUnpacker {
 		g2.setColor(Color.BLACK);
 
 		// Draw the four lines to save the ninepatch's padding and splits
-		g2.drawLine(region.splits[0] + NINEPATCH_PADDING, 0, region.width - region.splits[1] + NINEPATCH_PADDING - 1, 0);
-		g2.drawLine(0, region.splits[2] + NINEPATCH_PADDING, 0, region.height - region.splits[3] + NINEPATCH_PADDING - 1);
+		int startX = region.splits[0] + NINEPATCH_PADDING;
+		int endX = region.width - region.splits[1] + NINEPATCH_PADDING - 1;
+		int startY = region.splits[2] + NINEPATCH_PADDING;
+		int endY = region.height - region.splits[3] + NINEPATCH_PADDING - 1;
+		if (endX >= startX) g2.drawLine(startX, 0, endX, 0);
+		if (endY >= startY) g2.drawLine(0, startY, 0, endY);
 		if (region.pads != null) {
-			g2.drawLine(region.pads[0] + NINEPATCH_PADDING, splitImage.getHeight() - 1, splitImage.getWidth() - region.pads[1]
-				+ NINEPATCH_PADDING - 1, splitImage.getHeight() - 1);
-			g2.drawLine(splitImage.getWidth() - 1, region.pads[2] + NINEPATCH_PADDING, splitImage.getWidth() - 1,
-				splitImage.getHeight() - region.pads[3] + NINEPATCH_PADDING - 1);
+			int padStartX = region.pads[0] + NINEPATCH_PADDING;
+			int padEndX = region.width - region.pads[1] + NINEPATCH_PADDING - 1;
+			int padStartY = region.pads[2] + NINEPATCH_PADDING;
+			int padEndY = region.height - region.pads[3] + NINEPATCH_PADDING - 1;
+			g2.drawLine(padStartX, splitImage.getHeight() - 1, padEndX, splitImage.getHeight() - 1);
+			g2.drawLine(splitImage.getWidth() - 1, padStartY, splitImage.getWidth() - 1, padEndY);
 		}
 		g2.dispose();
 
