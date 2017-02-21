@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -58,6 +59,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
@@ -66,6 +68,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 
 	protected Callbacks callbacks;
 
@@ -151,6 +154,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
@@ -159,6 +163,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.clipboard = new AndroidClipboard(getActivity());
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -306,13 +311,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return new AndroidPreferences(getActivity().getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(getActivity());
-		}
 		return clipboard;
 	}
 
@@ -384,6 +384,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

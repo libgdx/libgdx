@@ -92,8 +92,7 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
-	/** global blending state **/
-	private static Blending blending = Blending.SourceOver;
+	private Blending blending = Blending.SourceOver;
 
 	final Gdx2DPixmap pixmap;
 	int color = 0;
@@ -102,16 +101,16 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
-		Gdx2DPixmap.setBlend(blending == Blending.None ? 0 : 1);
+	public void setBlending (Blending blending) {
+		this.blending = blending;
+		pixmap.setBlend(blending == Blending.None ? 0 : 1);
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
-		Gdx2DPixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+	public void setFilter (Filter filter) {
+		pixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 	}
 
 	/** Creates a new Pixmap instance with the given width, height and format.
@@ -371,7 +370,7 @@ public class Pixmap implements Disposable {
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
 	}
 }

@@ -2,7 +2,10 @@
 <project name="fetch-natives" default="all">
 	<property name="domain" value="https://libgdx.badlogicgames.com/nightlies/dist"/>
     <property name="robovm" value="https://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
-    
+
+    <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
+    <property name="lwjgl-version" value="3.1.0"/>
+
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
         <get src="${robovm}/robovm-cacerts-full.jar" dest="backends/gdx-backend-robovm/libs/"/>
@@ -10,8 +13,38 @@
         <get src="${robovm}/robovm-objc.jar" dest="backends/gdx-backend-robovm/libs/"/>
         <get src="${robovm}/robovm-rt.jar" dest="backends/gdx-backend-robovm/libs/"/>
     </target>
-    
-	<target name="fetch">		
+
+    <target name="fetch-lwjgl">
+        <!-- lwjgl -->
+        <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl.jar"/>
+        <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-windows.jar"/>
+        <!-- lwjgl-glfw -->
+        <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw.jar"/>
+        <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-glfw/${lwjgl-version}/lwjgl-glfw-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-glfw-natives-windows.jar"/>
+        <!-- lwjgl-jemalloc -->
+        <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc.jar"/>
+        <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-jemalloc/${lwjgl-version}/lwjgl-jemalloc-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-jemalloc-natives-windows.jar"/>
+        <!-- lwjgl-openal -->
+        <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal.jar"/>
+        <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-windows.jar"/>
+        <!-- lwjgl-opengl -->
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl.jar"/>
+        <!-- lwjgl-stb -->
+        <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb.jar"/>
+        <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-windows.jar"/>
+    </target>
+
+    <target name="fetch">
 		<!-- create a temporary directory for all android and ios natives, to be distributed
 		     across demos and tests. The xxx-natives.jar files are put into the respective 
 			 project's libs/ folder -->
@@ -46,10 +79,11 @@
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/arm64-v8a"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
         <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86_64"/>
+        <mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 
 		<!-- core -->		
-		<get src="http://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>
-		<get src="http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="gdx/libs/hamcrest-core-1.3.jar"/>
+		<get src="https://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar" dest="gdx/libs/junit-4.11.jar"/>
+		<get src="https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" dest="gdx/libs/hamcrest-core-1.3.jar"/>
 		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
 		<get src="${domain}/armeabi/libgdx.so" dest="tmp/armeabi"/>
         <get src="${domain}/armeabi/libgdx.so" dest="gdx/libs/armeabi"/>
@@ -119,10 +153,13 @@
 
 		<!-- jglfw -->
 		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
+		<get src="https://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+		<get src="https://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
+
+        <!-- lwjgl 3 -->
+        <antcall target="fetch-lwjgl"/>
 	</target>
-	
+
 	<target name="copy">
 		<!-- copy all extension natives to android tests -->
 		<copy todir="tests/gdx-tests-android/libs/armeabi">

@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -9,25 +25,27 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 
-/** A {@link ParticleControllerRenderer} which will render particles 
- * as {@link ModelInstance} to a {@link ModelInstanceParticleBatch}.
+/** A {@link ParticleControllerRenderer} which will render particles as {@link ModelInstance} to a
+ * {@link ModelInstanceParticleBatch}.
  * @author Inferno */
-public class ModelInstanceRenderer extends ParticleControllerRenderer<ModelInstanceControllerRenderData, ModelInstanceParticleBatch> {
+public class ModelInstanceRenderer extends
+	ParticleControllerRenderer<ModelInstanceControllerRenderData, ModelInstanceParticleBatch> {
 	private boolean hasColor, hasScale, hasRotation;
-	public ModelInstanceRenderer(){
+
+	public ModelInstanceRenderer () {
 		super(new ModelInstanceControllerRenderData());
 	}
-	
-	public ModelInstanceRenderer(ModelInstanceParticleBatch batch){
+
+	public ModelInstanceRenderer (ModelInstanceParticleBatch batch) {
 		this();
 		setBatch(batch);
 	}
-	
+
 	@Override
 	public void allocateChannels () {
 		renderData.positionChannel = controller.particles.addChannel(ParticleChannels.Position);
 	}
-	
+
 	@Override
 	public void init () {
 		renderData.modelInstanceChannel = controller.particles.getChannel(ParticleChannels.ModelInstance);
@@ -41,39 +59,35 @@ public class ModelInstanceRenderer extends ParticleControllerRenderer<ModelInsta
 
 	@Override
 	public void update () {
-		for(int i=0, positionOffset = 0, c = controller.particles.size;
-			i< c; 
-			++i, positionOffset += renderData.positionChannel.strideSize){
+		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += renderData.positionChannel.strideSize) {
 			ModelInstance instance = renderData.modelInstanceChannel.data[i];
 			float scale = hasScale ? renderData.scaleChannel.data[i] : 1;
-			float qx=0, qy=0, qz=0, qw=1;
-			if(hasRotation){
-				int rotationOffset = i* renderData.rotationChannel.strideSize;
+			float qx = 0, qy = 0, qz = 0, qw = 1;
+			if (hasRotation) {
+				int rotationOffset = i * renderData.rotationChannel.strideSize;
 				qx = renderData.rotationChannel.data[rotationOffset + ParticleChannels.XOffset];
-				qy = renderData.rotationChannel.data[rotationOffset + ParticleChannels.YOffset]; 
+				qy = renderData.rotationChannel.data[rotationOffset + ParticleChannels.YOffset];
 				qz = renderData.rotationChannel.data[rotationOffset + ParticleChannels.ZOffset];
 				qw = renderData.rotationChannel.data[rotationOffset + ParticleChannels.WOffset];
 			}
-			
-			instance.transform.set(	renderData.positionChannel.data[positionOffset + ParticleChannels.XOffset],
+
+			instance.transform.set(renderData.positionChannel.data[positionOffset + ParticleChannels.XOffset],
 				renderData.positionChannel.data[positionOffset + ParticleChannels.YOffset],
-				renderData.positionChannel.data[positionOffset + ParticleChannels.ZOffset],
-				qx, qy, qz, qw,
-				scale, scale, scale);
-			if(hasColor){
-				int colorOffset = i*renderData.colorChannel.strideSize;
+				renderData.positionChannel.data[positionOffset + ParticleChannels.ZOffset], qx, qy, qz, qw, scale, scale, scale);
+			if (hasColor) {
+				int colorOffset = i * renderData.colorChannel.strideSize;
 				ColorAttribute colorAttribute = (ColorAttribute)instance.materials.get(0).get(ColorAttribute.Diffuse);
 				BlendingAttribute blendingAttribute = (BlendingAttribute)instance.materials.get(0).get(BlendingAttribute.Type);
-				colorAttribute.color.r = renderData.colorChannel.data[colorOffset +ParticleChannels.RedOffset];
-				colorAttribute.color.g = renderData.colorChannel.data[colorOffset +ParticleChannels.GreenOffset];
-				colorAttribute.color.b = renderData.colorChannel.data[colorOffset +ParticleChannels.BlueOffset];
-				if(blendingAttribute != null)
-					blendingAttribute.opacity  = renderData.colorChannel.data[colorOffset +ParticleChannels.AlphaOffset];
+				colorAttribute.color.r = renderData.colorChannel.data[colorOffset + ParticleChannels.RedOffset];
+				colorAttribute.color.g = renderData.colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
+				colorAttribute.color.b = renderData.colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
+				if (blendingAttribute != null)
+					blendingAttribute.opacity = renderData.colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 			}
 		}
 		super.update();
 	}
-	
+
 	@Override
 	public ParticleControllerComponent copy () {
 		return new ModelInstanceRenderer(batch);

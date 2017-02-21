@@ -52,6 +52,7 @@ public class Json {
 	private OutputType outputType;
 	private boolean quoteLongValues;
 	private boolean ignoreUnknownFields;
+	private boolean ignoreDeprecated;
 	private boolean enumNames = true;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
@@ -73,6 +74,11 @@ public class Json {
 	 * false. */
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
+	}
+
+	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
+	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
+		this.ignoreDeprecated = ignoreDeprecated;
 	}
 
 	/** @see JsonWriter#setOutputType(OutputType) */
@@ -173,6 +179,8 @@ public class Json {
 					continue;
 				}
 			}
+
+			if (ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
@@ -901,18 +909,24 @@ public class Json {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
+
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
+
 					return (T)result;
 				}
 				if (object instanceof Map) {
 					Map result = (Map)object;
-					for (JsonValue child = jsonData.child; child != null; child = child.next)
+					for (JsonValue child = jsonData.child; child != null; child = child.next) {
+						if (child.name.equals(typeName)) {
+							continue;
+						}
 						result.put(child.name, readValue(elementType, null, child));
+					}
 					return (T)result;
 				}
 
@@ -924,6 +938,13 @@ public class Json {
 		if (type != null) {
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) return (T)serializer.read(this, jsonData, type);
+
+			if (ClassReflection.isAssignableFrom(Serializable.class, type)) {
+				// A Serializable may be read as an array, string, etc, even though it will be written as an object.
+				Object object = newInstance(type);
+				((Serializable)object).read(this, jsonData);
+				return (T)object;
+			}
 		}
 
 		if (jsonData.isArray()) {

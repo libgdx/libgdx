@@ -16,11 +16,12 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 
 /** <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
@@ -71,6 +72,12 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	@Override
 	protected void disposeColorTexture (Texture colorTexture) {
 		colorTexture.dispose();
+	}
+
+	@Override
+	protected void attachFrameBufferColorTexture () {
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+				colorTexture.getTextureObjectHandle(), 0);
 	}
 
 	/** See {@link GLFrameBuffer#unbind()} */

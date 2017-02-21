@@ -23,14 +23,35 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 
 public class TiledMapAssetManagerTest extends GdxTest {
+
+	private static final String MAP_PROPERTY_NAME = "mapCustomProperty";
+	private static final String BOOL_PROPERTY_NAME = "boolCustomProperty";
+	private static final String INT_PROPERTY_NAME = "intCustomProperty";
+	private static final String FLOAT_PROPERTY_NAME = "floatCustomProperty";
+
+	private static final String TILESET_PROPERTY_NAME = "tilesetCustomProperty";
+	private static final String TILE_PROPERTY_NAME = "tileCustomProperty";
+	private static final String LAYER_PROPERTY_NAME = "layerCustomProperty";
+
+	private static final String MAP_PROPERTY_VALUE = "mapCustomValue";
+	private static final boolean BOOL_PROPERTY_VALUE = true;
+	private static final int INT_PROPERTY_VALUE = 5;
+	private static final float FLOAT_PROPERTY_VALUE = 1.56f;
+
+	private static final String TILESET_PROPERTY_VALUE = "tilesetCustomValue";
+	private static final String TILE_PROPERTY_VALUE = "tileCustomValue";
+	private static final String LAYER_PROPERTY_VALUE = "layerCustomValue";
 
 	private TiledMap map;
 	private TiledMapRenderer renderer;
@@ -62,6 +83,48 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		assetManager.finishLoading();
 		map = assetManager.get("data/maps/tiled/isometric_grass_and_water.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
+
+		String mapCustomValue = map.getProperties().get(MAP_PROPERTY_NAME, String.class);
+		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + MAP_PROPERTY_NAME + ", Value : " + mapCustomValue);
+		if (!MAP_PROPERTY_VALUE.equals(mapCustomValue)) {
+			throw new RuntimeException("Failed to get map properties");
+		}
+
+		boolean boolCustomValue = map.getProperties().get(BOOL_PROPERTY_NAME, Boolean.class);
+		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + BOOL_PROPERTY_NAME + ", Value : " + boolCustomValue);
+		if (boolCustomValue != BOOL_PROPERTY_VALUE) {
+			throw new RuntimeException("Failed to get boolean map properties");
+		}
+
+		int intCustomValue = map.getProperties().get(INT_PROPERTY_NAME, Integer.class);
+		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + INT_PROPERTY_NAME + ", Value : " + intCustomValue);
+		if (intCustomValue != INT_PROPERTY_VALUE) {
+			throw new RuntimeException("Failed to get int map properties");
+		}
+
+		float floatCustomValue = map.getProperties().get(FLOAT_PROPERTY_NAME, Float.class);
+		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + FLOAT_PROPERTY_NAME + ", Value : " + floatCustomValue);
+		if (floatCustomValue != FLOAT_PROPERTY_VALUE) {
+			throw new RuntimeException("Failed to get float map properties");
+		}
+
+		TiledMapTileSet tileset = map.getTileSets().getTileSet(0);
+		String tilesetCustomValue = tileset.getProperties().get(TILESET_PROPERTY_NAME, String.class);
+		if (!TILESET_PROPERTY_VALUE.equals(tilesetCustomValue)) {
+			throw new RuntimeException("Failed to get tileset properties");
+		}
+
+		TiledMapTile tile = tileset.getTile(1);
+		String tileCustomValue = tile.getProperties().get(TILE_PROPERTY_NAME, String.class);
+		if (!TILE_PROPERTY_VALUE.equals(tileCustomValue)) {
+			throw new RuntimeException("Failed to get tile properties");
+		}
+
+		MapLayer layer = map.getLayers().get(0);
+		String layerCustomValue = layer.getProperties().get(LAYER_PROPERTY_NAME, String.class);
+		if (!LAYER_PROPERTY_VALUE.equals(layerCustomValue)) {
+			throw new RuntimeException("Failed to get layer properties");
+		}
 	}
 
 	@Override

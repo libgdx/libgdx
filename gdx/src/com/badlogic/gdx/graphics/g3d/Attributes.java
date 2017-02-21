@@ -91,6 +91,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		} else {
 			attributes.set(idx, attribute);
 		}
+		sort(); //FIXME: See #4186
 	}
 
 	/** Add multiple attributes to this material. If the material already contains an attribute of the same type it is overwritten. */
@@ -140,6 +141,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 				sorted = false;
 			}
 		}
+		sort(); //FIXME: See #4186
 	}
 
 	/** @return True if this collection has the specified attribute, i.e. attributes.has(ColorAttribute.Diffuse); Or when multiple
@@ -224,7 +226,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		for (int i = 0; i < attributes.size; i++) {
 			final int c = attributes.get(i).compareTo(other.attributes.get(i));
 			if (c != 0)
-				return c;
+				return c < 0 ? -1 : (c > 0 ? 1 : 0);
 		}
 		return 0;
 	}

@@ -77,7 +77,7 @@ public class ScrollPane extends WidgetGroup {
 	float flingTime = 1f;
 	private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
 	private boolean forceScrollX, forceScrollY;
-	private boolean disableX, disableY;
+	boolean disableX, disableY;
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
 	private boolean variableSizeKnobs = true;
@@ -186,16 +186,16 @@ public class ScrollPane extends WidgetGroup {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				if (cancelTouchFocus) cancelTouchFocus();
+				if (cancelTouchFocus && ((scrollX && deltaX != 0) || (scrollY && deltaY != 0))) cancelTouchFocus();
 			}
 
 			public void fling (InputEvent event, float x, float y, int button) {
-				if (Math.abs(x) > 150) {
+				if (Math.abs(x) > 150 && scrollX) {
 					flingTimer = flingTime;
 					velocityX = x;
 					if (cancelTouchFocus) cancelTouchFocus();
 				}
-				if (Math.abs(y) > 150) {
+				if (Math.abs(y) > 150 && scrollY) {
 					flingTimer = flingTime;
 					velocityY = -y;
 					if (cancelTouchFocus) cancelTouchFocus();
@@ -303,9 +303,9 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !panning && //
-		// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 20% of the scroll area.
-		((!touchScrollH || (scrollX && maxX / (hScrollBounds.width - hKnobBounds.width) > areaWidth * 0.1f)) //
-			&& (!touchScrollV || (scrollY && maxY / (vScrollBounds.height - vKnobBounds.height) > areaHeight * 0.1f))) //
+		// Scroll smoothly when grabbing the scrollbar if one pixel of scrollbar movement is > 10% of the scroll area.
+			((!touchScrollH || (scrollX && maxX / (hScrollBounds.width - hKnobBounds.width) > areaWidth * 0.1f)) //
+				&& (!touchScrollV || (scrollY && maxY / (vScrollBounds.height - vKnobBounds.height) > areaHeight * 0.1f))) //
 		) {
 			if (visualAmountX != amountX) {
 				if (visualAmountX < amountX)
@@ -735,12 +735,12 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Returns the amount to scroll horizontally when the mouse wheel is scrolled. */
 	protected float getMouseWheelX () {
-		return Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4;
+		return Math.min(areaWidth, Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4);
 	}
 
 	/** Returns the amount to scroll vertically when the mouse wheel is scrolled. */
 	protected float getMouseWheelY () {
-		return Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4;
+		return Math.min(areaHeight, Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4);
 	}
 
 	public void setScrollX (float pixels) {

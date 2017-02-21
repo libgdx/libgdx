@@ -19,7 +19,6 @@ package com.badlogic.gdx.utils;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.badlogic.gdx.utils.Array.ArrayIterable;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
@@ -180,25 +179,25 @@ public class Queue<T> implements Iterable<T> {
 	public int indexOf (T value, boolean identity) {
 		if (size == 0) return -1;
 		T[] values = this.values;
-		int head = this.head, tail = this.tail;
+		final int head = this.head, tail = this.tail;
 		if (identity || value == null) {
 			if (head < tail) {
-				for (int i = head, n = tail; i < n; i++)
+				for (int i = head; i < tail; i++)
 					if (values[i] == value) return i;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (values[i] == value) return i - head;
-				for (int i = 0, n = tail; i < n; i++)
+				for (int i = 0; i < tail; i++)
 					if (values[i] == value) return i + values.length - head;
 			}
 		} else {
 			if (head < tail) {
-				for (int i = head, n = tail; i < n; i++)
+				for (int i = head; i < tail; i++)
 					if (value.equals(values[i])) return i;
 			} else {
 				for (int i = head, n = values.length; i < n; i++)
 					if (value.equals(values[i])) return i - head;
-				for (int i = 0, n = tail; i < n; i++)
+				for (int i = 0; i < tail; i++)
 					if (value.equals(values[i])) return i + values.length - head;
 			}
 		}
@@ -225,20 +224,23 @@ public class Queue<T> implements Iterable<T> {
 		index += head;
 		T value;
 		if (head < tail) { // index is between head and tail.
-			value = (T)values[index];
+			value = values[index];
 			System.arraycopy(values, index + 1, values, index, tail - index);
 			values[tail] = null;
 			this.tail--;
 		} else if (index >= values.length) { // index is between 0 and tail.
 			index -= values.length;
-			value = (T)values[index];
+			value = values[index];
 			System.arraycopy(values, index + 1, values, index, tail - index);
 			this.tail--;
 		} else { // index is between head and values.length.
-			value = (T)values[index];
+			value = values[index];
 			System.arraycopy(values, head, values, head + 1, index - head);
 			values[head] = null;
 			this.head++;
+			if (this.head == values.length) {
+				this.head = 0;
+			}
 		}
 		size--;
 		return value;

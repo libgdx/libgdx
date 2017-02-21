@@ -47,6 +47,7 @@ public class SharedLibraryLoader {
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
 	static {
+		boolean isMOEiOS = "iOS".equals(System.getProperty("moe.platform.name"));
 		String vm = System.getProperty("java.runtime.name");
 		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
@@ -55,8 +56,12 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-		if (!isAndroid && !isWindows && !isLinux && !isMac) {
+		if (isMOEiOS || (!isAndroid && !isWindows && !isLinux && !isMac)) {
 			isIos = true;
+			isAndroid = false;
+			isWindows = false;
+			isLinux = false;
+			isMac = false;
 			is64Bit = false;
 		}
 	}
@@ -101,23 +106,24 @@ public class SharedLibraryLoader {
 
 	/** Loads a shared library for the platform the application is running on.
 	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
-	public synchronized void load (String libraryName) {
+	public void load (String libraryName) {
 		// in case of iOS, things have been linked statically to the executable, bail out.
 		if (isIos) return;
 
-		libraryName = mapLibraryName(libraryName);
-		if (loadedLibraries.contains(libraryName)) return;
-
-		try {
-			if (isAndroid)
-				System.loadLibrary(libraryName);
-			else
-				loadFile(libraryName);
-		} catch (Throwable ex) {
-			throw new GdxRuntimeException("Couldn't load shared library '" + libraryName + "' for target: "
-				+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
+		synchronized (SharedLibraryLoader.class) {
+			if (isLoaded(libraryName)) return;
+			String platformName = mapLibraryName(libraryName);
+			try {
+				if (isAndroid)
+					System.loadLibrary(platformName);
+				else
+					loadFile(platformName);
+				setLoaded(libraryName);
+			} catch (Throwable ex) {
+				throw new GdxRuntimeException("Couldn't load shared library '" + platformName + "' for target: "
+					+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
+			}
 		}
-		loadedLibraries.add(libraryName);
 	}
 
 	private InputStream readFile (String path) {
@@ -196,6 +202,9 @@ public class SharedLibraryLoader {
 		// Relative directory.
 		file = new File(".temp/" + dirName, fileName);
 		if (canWrite(file)) return file;
+
+		// We are running in the OS X sandbox.
+		if (System.getenv("APP_SANDBOX_CONTAINER_ID") != null) return idealFile;
 
 		return null;
 	}
@@ -316,5 +325,14 @@ public class SharedLibraryLoader {
 		} catch (Throwable ex) {
 			return ex;
 		}
+	}
+
+	/** Sets the library as loaded, for when application code wants to handle libary loading itself. */
+	static public synchronized void setLoaded (String libraryName) {
+		loadedLibraries.add(libraryName);
+	}
+
+	static public synchronized boolean isLoaded (String libraryName) {
+		return loadedLibraries.contains(libraryName);
 	}
 }

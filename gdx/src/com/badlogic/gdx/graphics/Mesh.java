@@ -115,7 +115,7 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
-	/** by jw: Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
+	/** Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
 	 * 
 	 * @param staticVertices whether vertices of this mesh are static or not. Allows for internal optimizations.
 	 * @param staticIndices whether indices of this mesh are static or not. Allows for internal optimizations.
@@ -1027,7 +1027,7 @@ public class Mesh implements Disposable {
 					if (a == null) continue;
 					for (int j = 0; j < a.numComponents; j++)
 						checks[++idx] = (short)(a.offset + j);
-					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					attrs[++ai] = a.copy();
 					newVertexSize += a.numComponents;
 				}
 			}

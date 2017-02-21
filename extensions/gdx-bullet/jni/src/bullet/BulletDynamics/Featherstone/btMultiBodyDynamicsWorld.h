@@ -36,6 +36,16 @@ protected:
 	btMultiBodyConstraintSolver*	m_multiBodyConstraintSolver;
 	MultiBodyInplaceSolverIslandCallback*	m_solverMultiBodyIslandCallback;
 
+	//cached data to avoid memory allocations
+	btAlignedObjectArray<btQuaternion> m_scratch_world_to_local;
+	btAlignedObjectArray<btVector3> m_scratch_local_origin;
+	btAlignedObjectArray<btQuaternion> m_scratch_world_to_local1;
+	btAlignedObjectArray<btVector3> m_scratch_local_origin1;
+	btAlignedObjectArray<btScalar> m_scratch_r;
+	btAlignedObjectArray<btVector3> m_scratch_v;
+	btAlignedObjectArray<btMatrix3x3> m_scratch_m;
+
+	
 	virtual void	calculateSimulationIslands();
 	virtual void	updateActivationState(btScalar timeStep);
 	virtual void	solveConstraints(btContactSolverInfo& solverInfo);

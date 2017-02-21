@@ -534,16 +534,25 @@ public class ReflectionCacheSourceCreator {
 		pb("if(" + varName + "!=null) return " + varName + ";");
 		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ", " + interfaces + ");");
 
+		if( c == null && t.isArray() != null){
+			// if it's not a class or an interface, it may be an array instead
+			c = t.isArray();
+		}
+		
 		if (c != null) {
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
-			if (c.isArray() != null) pb(varName + ".isArray = true;");
-			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
-			if (c.isInterface() != null) {
-				pb(varName + ".isInterface = true;");
+			if (c.isArray() != null) {
+				pb(varName + ".isArray = true;");
+				// For some reason the isStatic() method returns always true for array, which is wrong
+				pb(varName + ".isStatic = false;");
+				pb(varName + ".isAbstract = true;"); // Arrays are _always_ abstract
 			} else {
 				pb(varName + ".isStatic = " + c.isStatic() + ";");
 				pb(varName + ".isAbstract = " + c.isAbstract() + ";");
 			}
+			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
+			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
+			if (c.isAnnotation() != null) pb(varName + ".isAnnotation = true;");			
 
 			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
@@ -599,9 +608,8 @@ public class ReflectionCacheSourceCreator {
 			if (annotations != null && annotations.length > 0) {
 				pb(varName + ".annotations = " + getAnnotations(annotations) + ";");
 			}
-		} else if (t.isAnnotation() != null) {
-			pb(varName + ".isAnnotation = true;");
 		} else {
+			pb(varName + ".isAbstract = true;"); // Primitives are _always_ abstract
 			pb(varName + ".isPrimitive = true;");
 		}
 

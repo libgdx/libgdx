@@ -116,6 +116,9 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				merge(rootSettings, settingsFile);
 			}
 
+			String atlasExtension = rootSettings.atlasExtension == null ? "" : rootSettings.atlasExtension;
+			atlasExtension = Pattern.quote(atlasExtension);
+
 			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
 				FileProcessor deleteProcessor = new FileProcessor() {
 					protected void processFile (Entry inputFile) throws Exception {
@@ -131,7 +134,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				int dotIndex = prefix.lastIndexOf('.');
 				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
 				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg|jpeg)");
-				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
+				deleteProcessor.addInputRegex("(?i)" + prefix + atlasExtension);
 
 				String dir = packFile.getParent();
 				if (dir == null)
@@ -152,10 +155,12 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		while (true) {
 			settings = dirToSettings.get(parent);
 			if (settings != null) break;
-			if (parent.equals(root)) break;
+			if (parent == null || parent.equals(root)) break;
 			parent = parent.getParentFile();
 		}
 		if (settings == null) settings = defaultSettings;
+
+		if (settings.ignore) return;
 
 		if (settings.combineSubdirectories) {
 			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.

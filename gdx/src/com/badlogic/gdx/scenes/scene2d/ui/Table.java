@@ -141,7 +141,7 @@ public class Table extends WidgetGroup {
 	public void setBackground (Drawable background) {
 		if (this.background == background) return;
 		float padTopOld = getPadTop(), padLeftOld = getPadLeft(), padBottomOld = getPadBottom(), padRightOld = getPadRight();
-		this.background = background;
+		this.background = background; // The default pad values use the background's padding.
 		float padTopNew = getPadTop(), padLeftNew = getPadLeft(), padBottomNew = getPadBottom(), padRightNew = getPadRight();
 		if (padTopOld + padBottomOld != padTopNew + padBottomNew || padLeftOld + padRightOld != padLeftNew + padRightNew)
 			invalidateHierarchy();
@@ -195,7 +195,7 @@ public class Table extends WidgetGroup {
 		Cell<T> cell = obtainCell();
 		cell.actor = actor;
 
-		// The row was ended for layout, not be the user, so revert it.
+		// The row was ended for layout, not by the user, so revert it.
 		if (implicitEndRow) {
 			implicitEndRow = false;
 			rows--;
@@ -320,10 +320,10 @@ public class Table extends WidgetGroup {
 		super.clearChildren();
 	}
 
-	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
-	 * cell, column, and row defaults. */
+	/** Removes all actors and cells from the table (same as {@link #clearChildren()}) and additionally resets all table properties
+	 * and cell, column, and row defaults. */
 	public void reset () {
-		clear();
+		clearChildren();
 		padTop = backgroundTop;
 		padLeft = backgroundLeft;
 		padBottom = backgroundBottom;
@@ -342,9 +342,10 @@ public class Table extends WidgetGroup {
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size > 0) {
-			endRow();
+			if (!implicitEndRow) endRow();
 			invalidate();
 		}
+		implicitEndRow = false;
 		if (rowDefaults != null) cellPool.free(rowDefaults);
 		rowDefaults = obtainCell();
 		rowDefaults.clear();
@@ -769,8 +770,7 @@ public class Table extends WidgetGroup {
 		if (cellCount > 0 && !cells.peek().endRow) {
 			endRow();
 			implicitEndRow = true;
-		} else
-			implicitEndRow = false;
+		}
 
 		int columns = this.columns, rows = this.rows;
 		float[] columnMinWidth = this.columnMinWidth = ensureSize(this.columnMinWidth, columns);

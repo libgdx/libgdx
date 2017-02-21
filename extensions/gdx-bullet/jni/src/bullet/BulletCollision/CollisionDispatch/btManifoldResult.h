@@ -145,6 +145,10 @@ public:
 	/// in the future we can let the user override the methods to combine restitution and friction
 	static btScalar	calculateCombinedRestitution(const btCollisionObject* body0,const btCollisionObject* body1);
 	static btScalar	calculateCombinedFriction(const btCollisionObject* body0,const btCollisionObject* body1);
+	static btScalar calculateCombinedRollingFriction(const btCollisionObject* body0,const btCollisionObject* body1);
+    static btScalar calculateCombinedSpinningFriction(const btCollisionObject* body0,const btCollisionObject* body1);
+    static btScalar calculateCombinedContactDamping(const btCollisionObject* body0,const btCollisionObject* body1);
+	static btScalar calculateCombinedContactStiffness(const btCollisionObject* body0,const btCollisionObject* body1);
 };
 
 #endif //BT_MANIFOLD_RESULT_H

@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -54,6 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #createApplicationListener()}. Clients can override the default loading screen via
@@ -66,8 +68,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private GwtInput input;
 	private GwtNet net;
 	private Panel root = null;
-	private TextArea log = null;
+	protected TextArea log = null;
 	private int logLevel = LOG_ERROR;
+	private ApplicationLogger applicationLogger;
 	private Array<Runnable> runnables = new Array<Runnable>();
 	private Array<Runnable> runnablesHelper = new Array<Runnable>();
 	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
@@ -100,7 +103,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		GwtApplication.agentInfo = computeAgentInfo();
 		this.listener = createApplicationListener();
 		this.config = getConfig();
-		this.log = config.log;
+		setApplicationLogger(new GwtApplicationLogger(this.config.log));
 
 		addEventListeners();
 
@@ -165,13 +168,22 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		});
 	}
 
+	/**
+	 * Override this method to return a custom widget informing the that their browser lacks support of WebGL.
+	 *
+	 * @return Widget to display when WebGL is not supported.
+	 */
+	public Widget getNoWebGLSupportWidget() {
+		return new Label("Sorry, your browser doesn't seem to support WebGL");
+	}
+
 	void setupLoop () {
 		// setup modules
 		try {			
 			graphics = new GwtGraphics(root, config);			
 		} catch (Throwable e) {
 			root.clear();
-			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
+			root.add(getNoWebGLSupportWidget());
 			return;
 		}
 		lastWidth = graphics.getWidth();
@@ -187,6 +199,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.net = new GwtNet();
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
+		updateLogLabelSize();
 
 		// tell listener about app creation
 		try {
@@ -296,93 +309,44 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return Gdx.net;
 	}
 
-	private void checkLogLabel () {
-		if (log == null) {
-			log = new TextArea();
-			log.setSize(graphics.getWidth() + "px", "200px");
-			log.setReadOnly(true);
-			root.add(log);
+	private void updateLogLabelSize () {
+		if (log != null) {
+			if (graphics != null) {
+				log.setSize(graphics.getWidth() + "px", "200px");
+			} else {
+				log.setSize("400px", "200px"); // Should not happen at this point, use dummy value
+			}
 		}
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			System.out.println(getStackTrace(exception));
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n");
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + getMessages(exception) + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
-		}
-	}
-	
-	private String getMessages (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
-		while (e != null) {
-			buffer.append(e.getMessage() + "\n");
-			e = e.getCause();
-		}
-		return buffer.toString();
-	}
-	
-	private String getStackTrace (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
-		for (StackTraceElement trace : e.getStackTrace()) {
-			buffer.append(trace.toString() + "\n");
-		}
-		return buffer.toString();
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
@@ -393,6 +357,16 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override
@@ -538,11 +512,25 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		console.log( "GWT: " + message );
 	}-*/;
 	
-	private native void addEventListeners () /*-{
+	private native void addEventListeners() /*-{
 		var self = this;
-		$doc.addEventListener('visibilitychange', function (e) {
-			self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
-		});
+
+		var eventName = null;
+		if ("hidden" in $doc) {
+			eventName = "visibilitychange"
+		} else if ("webkitHidden" in $doc) {
+			eventName = "webkitvisibilitychange"
+		} else if ("mozHidden" in $doc) {
+			eventName = "mozvisibilitychange"
+		} else if ("msHidden" in $doc) {
+			eventName = "msvisibilitychange"
+		}
+
+		if (eventName !== null) {
+			$doc.addEventListener(eventName, function(e) {
+				self.@com.badlogic.gdx.backends.gwt.GwtApplication::onVisibilityChange(Z)($doc['hidden'] !== true);
+			});
+		}
 	}-*/;
 
 	private void onVisibilityChange (boolean visible) {
