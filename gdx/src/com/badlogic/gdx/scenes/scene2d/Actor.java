@@ -520,6 +520,13 @@ public class Actor {
 			sizeChanged();
 		}
 	}
+	
+	public void fitScreen()
+	{
+		int screenW = Gdx.graphics.getWidth();
+		int screenH = Gdx.graphics.getHeight();
+		setSize(screenW, screenH);
+	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float size) {
