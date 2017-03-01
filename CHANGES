@@ -1,3 +1,9 @@
+[gles31]
+- Improved OpenGL ES 3.0 Support (somo missing functions)
+- Added OpenGL ES 3.1 Support (for LWJGL3 and Android)
+- API addition: added Lwjgl3ApplicationConfiguration.useOpenGL31() for OpenGL ES 3.1 
+- API addition: added Graphics.isGL31Available() and Graphics.getGL31() for OpenGL ES 3.1
+
 [1.9.6]
 - API addition: Configurable TexturePacker bleed iterations
 - Updated IOS Multi-OS Engine backend to 1.3.0-beta-2
