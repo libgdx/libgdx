@@ -21,6 +21,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
@@ -42,12 +43,22 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isGL31Available() {
+		return false;
+	}
+
+	@Override
 	public GL20 getGL20() {
 		return null;
 	}
 
 	@Override
 	public GL30 getGL30() {
+		return null;
+	}
+
+	@Override
+	public GL31 getGL31() {
 		return null;
 	}
 

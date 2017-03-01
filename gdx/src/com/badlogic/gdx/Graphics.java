@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -129,11 +130,17 @@ public interface Graphics {
 	 * @return whether OpenGL ES 3.0 is available */
 	public boolean isGL30Available ();
 
+	/** @return whether OpenGL ES 3.1 is available */
+	public boolean isGL31Available ();		
+
 	/** @return the {@link GL20} instance */
 	public GL20 getGL20 ();
 
 	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
+
+	/** @return the {@link GL31} instance or null if not supported */
+	public GL31 getGL31 ();
 
 	/** @return the width of the client area in logical pixels. */
 	public int getWidth ();

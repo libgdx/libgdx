@@ -611,14 +611,8 @@ public interface GL30 extends GL20 {
 
 	public void glFramebufferTextureLayer (int target, int attachment, int texture, int level, int layer);
 
-// // C function GLvoid * glMapBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access )
-//
-// public java.nio.Buffer glMapBufferRange(
-// int target,
-// int offset,
-// int length,
-// int access
-// );
+	// C function GLvoid * glMapBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access )
+	public java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access);
 
 	// C function void glFlushMappedBufferRange ( GLenum target, GLintptr offset, GLsizeiptr length )
 
@@ -823,40 +817,22 @@ public interface GL30 extends GL20 {
 
 	public int glGetFragDataLocation (int program, String name);
 
-// // C function void glUniform1ui ( GLint location, GLuint v0 )
-//
-// public void glUniform1ui(
-// int location,
-// int v0
-// );
-//
-// // C function void glUniform2ui ( GLint location, GLuint v0, GLuint v1 )
-//
-// public void glUniform2ui(
-// int location,
-// int v0,
-// int v1
-// );
-//
-// // C function void glUniform3ui ( GLint location, GLuint v0, GLuint v1, GLuint v2 )
-//
-// public void glUniform3ui(
-// int location,
-// int v0,
-// int v1,
-// int v2
-// );
-//
-// // C function void glUniform4ui ( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 )
-//
-// public void glUniform4ui(
-// int location,
-// int v0,
-// int v1,
-// int v2,
-// int v3
-// );
-//
+	// C function void glUniform1ui ( GLint location, GLuint v0 )
+
+	public void glUniform1ui (int location, int v0);
+
+	// C function void glUniform2ui ( GLint location, GLuint v0, GLuint v1 )
+
+	public void glUniform2ui (int location, int v0, int v1);
+
+	// C function void glUniform3ui ( GLint location, GLuint v0, GLuint v1, GLuint v2 )
+
+ 	public void glUniform3ui (int location, int v0, int v1, int v2);
+
+	// C function void glUniform4ui ( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 )
+
+	public void glUniform4ui (int location, int v0, int v1, int v2, int v3);
+
 // // C function void glUniform1uiv ( GLint location, GLsizei count, const GLuint *value )
 //
 // public void glUniform1uiv(
@@ -1065,13 +1041,13 @@ public interface GL30 extends GL20 {
 
 	public void glDrawElementsInstanced (int mode, int count, int type, int indicesOffset, int instanceCount);
 
-// // C function GLsync glFenceSync ( GLenum condition, GLbitfield flags )
-//
-// public long glFenceSync(
-// int condition,
-// int flags
-// );
-//
+ // C function GLsync glFenceSync ( GLenum condition, GLbitfield flags )
+
+ public long glFenceSync(
+ int condition,
+ int flags
+ );
+
 // // C function GLboolean glIsSync ( GLsync sync )
 //
 // public boolean glIsSync(
@@ -1079,11 +1055,11 @@ public interface GL30 extends GL20 {
 // );
 //
 // // C function void glDeleteSync ( GLsync sync )
-//
-// public void glDeleteSync(
-// long sync
-// );
-//
+
+ public void glDeleteSync(
+ long sync
+ );
+
 // // C function GLenum glClientWaitSync ( GLsync sync, GLbitfield flags, GLuint64 timeout )
 //
 // public int glClientWaitSync(
@@ -1093,12 +1069,12 @@ public interface GL30 extends GL20 {
 // );
 //
 // // C function void glWaitSync ( GLsync sync, GLbitfield flags, GLuint64 timeout )
-//
-// public void glWaitSync(
-// long sync,
-// int flags,
-// long timeout
-// );
+
+ public void glWaitSync(
+ long sync,
+ int flags,
+ long timeout
+ );
 
 // // C function void glGetInteger64v ( GLenum pname, GLint64 *params )
 //

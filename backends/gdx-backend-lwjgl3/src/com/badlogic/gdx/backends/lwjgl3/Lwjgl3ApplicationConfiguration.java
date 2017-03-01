@@ -45,6 +45,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceBufferCount = 9;
 
 	boolean useGL30 = false;
+	boolean useGL31 = false;	
 	int gles30ContextMajorVersion = 3;
 	int gles30ContextMinorVersion = 2;
 
@@ -76,6 +77,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		audioDeviceBufferSize = config.audioDeviceBufferSize;
 		audioDeviceBufferCount = config.audioDeviceBufferCount;
 		useGL30 = config.useGL30;
+		useGL31 = config.useGL31;		
 		gles30ContextMajorVersion = config.gles30ContextMajorVersion;
 		gles30ContextMinorVersion = config.gles30ContextMinorVersion;
 		r = config.r;
@@ -150,6 +152,26 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.gles30ContextMajorVersion = gles3MajorVersion;
 		this.gles30ContextMinorVersion = gles3MinorVersion;
 	}
+
+	/**
+	 * Sets whether to use OpenGL ES 3.1 emulation. If the given major/minor
+	 * version is not supported, the backend falls back to OpenGL ES 2.0
+	 * emulation. The default parameters for major and minor should be 4 and 5 for full support,
+	 * but 4 and 3 can be used for almost full support (only glGetTextureLevelParameter and
+	 * glMemoryBarrierByRegion will fail).
+	 *
+	 * @param useGL31
+	 *            whether to use OpenGL ES 3.1
+	 * @param gles3MajorVersion
+	 *            OpenGL ES major version, use 3 as default
+	 * @param gles3MinorVersion
+	 *            OpenGL ES minor version, use 2 as default	 
+	 */
+	public void useOpenGL31(boolean useGL31, int gles3MajorVersion, int gles3MinorVersion) {
+		this.useGL31 = useGL31;
+		this.gles30ContextMajorVersion = gles3MajorVersion;
+		this.gles30ContextMinorVersion = gles3MinorVersion;
+	}	
 
 	/**
 	 * Sets the bit depth of the color, depth and stencil buffer as well as

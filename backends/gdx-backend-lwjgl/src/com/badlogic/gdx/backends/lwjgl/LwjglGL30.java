@@ -36,6 +36,7 @@ import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL41;
 import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLSync; 
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -648,4 +649,46 @@ class LwjglGL30 extends LwjglGL20 implements com.badlogic.gdx.graphics.GL30 {
 		int height) {
 		GL43.glInvalidateSubFramebuffer(target, attachments, x, y, width, height);
 	}
+
+	@Override
+	public long glFenceSync(int condition, int flags) {
+		GLSync s = GL32.glFenceSync(condition, flags);
+		return s.getPointer();
+	}
+	
+	@Override
+	public void glDeleteSync(long sync) {
+		throw new UnsupportedOperationException("Not implemented, please use LWJGL3 instead.");
+	}
+	
+	@Override
+	public void glWaitSync(long sync, int flags, long timeout) {
+		throw new UnsupportedOperationException("Not implemented, please use LWJGL3 instead.");	
+	}	
+
+	@Override	
+	public java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access) {
+		throw new UnsupportedOperationException("Not implemented, please use LWJGL3 instead.");	
+	}
+
+	@Override
+	public void glUniform1ui(int location, int v0) {
+		GL30.glUniform1ui(location, v0);
+	}
+
+	@Override
+	public void glUniform2ui(int location, int v0, int v1) {
+		GL30.glUniform2ui(location, v0, v1);
+	}
+
+	@Override
+	public void glUniform3ui(int location, int v0, int v1, int v2) {
+		GL30.glUniform3ui(location, v0, v1, v2);
+	}
+
+	@Override
+	public void glUniform4ui(int location, int v0, int v1, int v2, int v3) {
+		GL30.glUniform4ui(location, v0, v1, v2, v3);
+	}		
+
 }

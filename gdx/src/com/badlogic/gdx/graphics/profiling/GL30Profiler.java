@@ -1880,4 +1880,64 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 		gl30.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
 		check();
 	}
+	
+	@Override
+	public long glFenceSync(int condition, int flags) {
+		calls++;
+		long result = gl30.glFenceSync(condition, flags);
+		check();
+		return result;		
+	}
+	
+	@Override
+	public void glDeleteSync(long sync) {
+		calls++;
+		gl30.glDeleteSync(sync);
+		check();
+	}
+	
+	@Override
+	public void glWaitSync(long sync, int flags, long timeout) {
+		calls++;
+		gl30.glWaitSync(sync, flags, timeout);
+		check();
+	}
+
+	@Override
+	public java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access) {
+		calls++;
+		java.nio.Buffer result = gl30.glMapBufferRange(target, offset, length, access);
+		check();	
+		return result;
+	}	
+
+	@Override
+	public void glUniform1ui (int location, int v0) {
+		calls++;
+		gl30.glUniform1ui(location, v0);
+		check();
+	}
+	
+	@Override
+	public void glUniform2ui (int location, int v0, int v1) {
+		calls++;
+		gl30.glUniform2ui(location, v0, v1);
+		check();
+	}
+
+	@Override
+	public void glUniform3ui (int location, int v0, int v1, int v2) {
+		calls++;
+		gl30.glUniform3ui(location, v0, v1, v2);
+		check();
+	}
+
+	@Override
+	public void glUniform4ui (int location, int v0, int v1, int v2, int v3) {
+		calls++;
+		gl30.glUniform4ui(location, v0, v1, v2, v3);
+		check();
+	}
+
+	
 }
