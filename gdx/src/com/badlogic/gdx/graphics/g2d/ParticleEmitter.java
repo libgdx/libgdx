@@ -609,6 +609,7 @@ public class ParticleEmitter {
 			if (particle == null) break;
 			particle.setTexture(texture);
 			particle.setOrigin(originX, originY);
+			particle.setRegion(sprite);
 		}
 	}
 
