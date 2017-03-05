@@ -28,20 +28,36 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 
+	private float unitScaleY;
+	
 	public IsometricStaggeredTiledMapRenderer (TiledMap map) {
 		super(map);
+		unitScaleY = 1.0f;
 	}
 
 	public IsometricStaggeredTiledMapRenderer (TiledMap map, Batch batch) {
 		super(map, batch);
+		unitScaleY = 1.0f;
 	}
 
 	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale) {
 		super(map, unitScale);
+		unitScaleY = unitScale;
 	}
 
+	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale, float unitScaleY) {
+		super(map, unitScale);
+		this.unitScaleY = unitScaleY;
+	}
+	
 	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
 		super(map, unitScale, batch);
+		unitScaleY = unitScale;
+	}
+
+	public IsometricStaggeredTiledMapRenderer (TiledMap map, float unitScale, float unitScaleY, Batch batch) {
+		super(map, unitScale, batch);
+		this.unitScaleY = unitScaleY;
 	}
 
 	@Override
@@ -53,7 +69,7 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		final int layerHeight = layer.getHeight();
 
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
-		final float layerTileHeight = layer.getTileHeight() * unitScale;
+		final float layerTileHeight = layer.getTileHeight() * unitScaleY;
 
 		final float layerTileWidth50 = layerTileWidth * 0.50f;
 		final float layerTileHeight50 = layerTileHeight * 0.50f;
@@ -79,9 +95,9 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 					TextureRegion region = tile.getTextureRegion();
 
 					float x1 = x * layerTileWidth - offsetX + tile.getOffsetX() * unitScale;
-					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScale;
+					float y1 = y * layerTileHeight50 + tile.getOffsetY() * unitScaleY;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
-					float y2 = y1 + region.getRegionHeight() * unitScale;
+					float y2 = y1 + region.getRegionHeight() * unitScaleY;
 
 					float u1 = region.getU();
 					float v1 = region.getV2();
