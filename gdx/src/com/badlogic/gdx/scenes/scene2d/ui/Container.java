@@ -154,7 +154,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public void setActor (T actor) {
 		if (actor == this) throw new IllegalArgumentException("actor cannot be the Container.");
 		if (actor == this.actor) return;
-		if (this.actor != null) super.removeActor(this.actor);
+		if (this.actor != null) super.removeActor(this.actor, true);
 		this.actor = actor;
 		if (actor != null) super.addActor(actor);
 	}
@@ -192,6 +192,11 @@ public class Container<T extends Actor> extends WidgetGroup {
 		if (actor != this.actor) return false;
 		setActor(null);
 		return true;
+	}
+
+	/** @param unfocus <b>Container doesn't support this parameter and always treats it as true!</b> */
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		return removeActor(actor);
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
