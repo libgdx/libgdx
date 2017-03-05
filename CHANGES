@@ -1,5 +1,7 @@
+[1.9.7]
+
 [1.9.6]
-- Fixe performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
+- Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
 - Updated to latest Sound Manager 2
 - Added mappings for Xbox 360 controller for Linux
 - Separated error log for vertex/fragment shaders for easier debugging
