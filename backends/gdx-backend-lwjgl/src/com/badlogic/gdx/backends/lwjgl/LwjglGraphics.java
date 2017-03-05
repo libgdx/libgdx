@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.Array;
@@ -603,8 +604,18 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
 	public GL30 getGL30 () {
 		return gl30;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
 	}
 
 	/** A callback used by LwjglApplication when trying to create the display */

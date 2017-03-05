@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Array;
@@ -459,7 +460,17 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
 	public GL30 getGL30 () {
+		return null;
+	}
+
+	@Override
+	public GL31 getGL31 () {
 		return null;
 	}
 

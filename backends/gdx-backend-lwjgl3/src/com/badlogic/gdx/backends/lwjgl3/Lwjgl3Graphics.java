@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
@@ -39,6 +40,7 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	private final Lwjgl3Window window;
 	private final GL20 gl20;
 	private final GL30 gl30;
+	private final GL31 gl31;	
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
 	private volatile int backBufferHeight;
@@ -76,12 +78,20 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 
 	public Lwjgl3Graphics(Lwjgl3Window window) {
 		this.window = window;
-		if (window.getConfig().useGL30) {
-			this.gl30 = new Lwjgl3GL30();
-			this.gl20 = this.gl30;
+		if (window.getConfig().useGL31) {
+			this.gl31 = new Lwjgl3GL31();
+			this.gl30 = this.gl31;
+			this.gl20 = this.gl31;
 		} else {
-			this.gl20 = new Lwjgl3GL20();
-			this.gl30 = null;
+			if (window.getConfig().useGL30) {
+				this.gl30 = new Lwjgl3GL30();
+				this.gl20 = this.gl30;
+				this.gl31 = null;
+			} else {
+				this.gl20 = new Lwjgl3GL20();
+				this.gl30 = null;
+				this.gl31 = null;
+			}			
 		}
 		updateFramebufferInfo();
 		initiateGL();
@@ -133,6 +143,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	}
 
 	@Override
+	public boolean isGL31Available() {
+		return gl31 != null;
+	}
+
+	@Override
 	public GL20 getGL20() {
 		return gl20;
 	}
@@ -142,6 +157,11 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		return gl30;
 	}
 
+	@Override
+	public GL31 getGL31() {
+		return gl31;
+	}
+	
 	@Override
 	public int getWidth() {
 		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {

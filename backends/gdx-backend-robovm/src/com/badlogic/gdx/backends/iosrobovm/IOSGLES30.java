@@ -198,4 +198,20 @@ public class IOSGLES30 extends IOSGLES20 implements GL30 {
     public native void glInvalidateFramebuffer(int target, int numAttachments, IntBuffer attachments);
 
     public native void glInvalidateSubFramebuffer(int target, int numAttachments, IntBuffer attachments, int x, int y, int width, int height);
+
+    public native long glFenceSync(int condition, int flags);
+
+    public native void glDeleteSync(long sync);
+
+    public native void glWaitSync(long sync, int flags, long timeout);
+
+    public native java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access);
+
+    public native void glUniform1ui(int location, int v0);
+
+    public native void glUniform2ui(int location, int v0, int v1);
+
+    public native void glUniform3ui(int location, int v0, int v1, int v2);
+
+    public native void glUniform4ui(int location, int v0, int v1, int v2, int v3);
 }

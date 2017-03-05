@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -79,6 +80,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
+	GL31 gl31;
 	EGLContext eglContext;
 	GLVersion glVersion;
 	String extensions;
@@ -149,6 +151,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 			view.setRenderer(this);
 			return view;
 		} else {
+			/* no changes needed here for opengles3.1 since 3.0 and 3.1 both use the same context */
 			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
@@ -244,19 +247,30 @@ public class AndroidGraphics implements Graphics, Renderer {
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);
 		String rendererString = gl.glGetString(GL10.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
-		if (config.useGL30 && glVersion.getMajorVersion() > 2) {
-			if (gl30 != null) return;
-			gl20 = gl30 = new AndroidGL30();
 
-			Gdx.gl = gl30;
-			Gdx.gl20 = gl30;
-			Gdx.gl30 = gl30;
+		if ((glVersion.getMajorVersion() > 3) || (glVersion.getMajorVersion() == 3 && glVersion.getMinorVersion() > 0)) {
+			if (gl31 != null) return;
+			gl20 = gl30 = gl31 = new AndroidGL31();
+
+			Gdx.gl = gl31;
+			Gdx.gl20 = gl31;
+			Gdx.gl30 = gl31;
+			Gdx.gl31 = gl31;
 		} else {
-			if (gl20 != null) return;
-			gl20 = new AndroidGL20();
+			if (config.useGL30 && glVersion.getMajorVersion() > 2) {
+				if (gl30 != null) return;
+				gl20 = gl30 = new AndroidGL30();
 
-			Gdx.gl = gl20;
-			Gdx.gl20 = gl20;
+				Gdx.gl = gl30;
+				Gdx.gl20 = gl30;
+				Gdx.gl30 = gl30;
+			} else {
+				if (gl20 != null) return;
+				gl20 = new AndroidGL20();
+
+				Gdx.gl = gl20;
+				Gdx.gl20 = gl20;
+			}
 		}
 
 		Gdx.app.log(LOG_TAG, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
@@ -692,8 +706,18 @@ public class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return gl31 != null;
+	}
+
+	@Override
 	public GL30 getGL30 () {
 		return gl30;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return gl31;
 	}
 
 	@Override

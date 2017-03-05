@@ -649,4 +649,44 @@ class Lwjgl3GL30 extends Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL30 {
 		int height) {
 		GL43.glInvalidateSubFramebuffer(target, attachments, x, y, width, height);
 	}
+	
+	@Override
+	public long glFenceSync(int condition, int flags) {
+		return GL32.glFenceSync(condition, flags);
+	}
+	
+	@Override
+	public void glDeleteSync(long sync) {
+		GL32.glDeleteSync(sync);
+	}
+	
+	@Override
+	public void glWaitSync(long sync, int flags, long timeout) {
+		GL32.glWaitSync(sync, flags, timeout);
+	}
+
+	@Override
+	public java.nio.Buffer glMapBufferRange(int target, int offset, int length, int access) {
+		return GL30.glMapBufferRange(target, offset, length, access);
+	}	
+
+	@Override
+	public void glUniform1ui(int location, int v0) {
+		GL30.glUniform1ui(location, v0);
+	}
+
+	@Override
+	public void glUniform2ui(int location, int v0, int v1) {
+		GL30.glUniform2ui(location, v0, v1);
+	}
+
+	@Override
+	public void glUniform3ui(int location, int v0, int v1, int v2) {
+		GL30.glUniform3ui(location, v0, v1, v2);
+	}
+
+	@Override
+	public void glUniform4ui(int location, int v0, int v1, int v2, int v3) {
+		GL30.glUniform4ui(location, v0, v1, v2, v3);
+	}	
 }

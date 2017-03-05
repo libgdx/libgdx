@@ -1,3 +1,9 @@
+[gles31]
+- Improved OpenGL ES 3.0 Support (somo missing functions)
+- Added OpenGL ES 3.1 Support (for LWJGL3 and Android)
+- API addition: added Lwjgl3ApplicationConfiguration.useOpenGL31() for OpenGL ES 3.1 
+- API addition: added Graphics.isGL31Available() and Graphics.getGL31() for OpenGL ES 3.1
+
 [1.9.6]
 - Fixe performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
 - Updated to latest Sound Manager 2
