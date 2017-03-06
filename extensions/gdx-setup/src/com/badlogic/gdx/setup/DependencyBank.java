@@ -22,9 +22,9 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.9.5";
+	static String libgdxVersion = "1.9.6";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.9.6-SNAPSHOT";
+	static String libgdxNightlyVersion = "1.9.7-SNAPSHOT";
 	static String roboVMVersion = "2.3.0";
 	static String moeVersion = "1.3.0-beta-2";
 	static String buildToolsVersion = "23.0.1";

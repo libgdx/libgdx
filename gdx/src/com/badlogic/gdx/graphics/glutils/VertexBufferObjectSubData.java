@@ -47,15 +47,24 @@ public class VertexBufferObjectSubData implements VertexData {
 	final int usage;
 	boolean isDirty = false;
 	boolean isBound = false;
+	
+	/** Constructs a new interleaved VertexBufferObject.
+	 * 
+	 * @param isStatic whether the vertex data is static.
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttributes}. */
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(isStatic, numVertices, new VertexAttributes(attributes));
+	}
 
 	/** Constructs a new interleaved VertexBufferObject.
 	 * 
 	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttribute}s. */
-	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttributes attributes) {
 		this.isStatic = isStatic;
-		this.attributes = new VertexAttributes(attributes);
+		this.attributes = attributes;
 		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		isDirect = true;
 
