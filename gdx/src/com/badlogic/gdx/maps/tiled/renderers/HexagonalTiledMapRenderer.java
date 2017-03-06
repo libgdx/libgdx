@@ -112,6 +112,10 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
+		final float layerOffsetX = layer.getOffsetX() * unitScale;
+		// offset in tiled is y down, so we flip it
+		final float layerOffsetY = -layer.getOffsetY() * unitScale;
+
 		final float layerHexLength = hexSideLength * unitScale;
 
 		if (staggerAxisX) {
@@ -119,12 +123,13 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			final float tileWidthUpperCorner = (layerTileWidth + layerHexLength) / 2;
 			final float layerTileHeight50 = layerTileHeight * 0.50f;
 
-			final int row1 = Math.max(0, (int)((viewBounds.y - layerTileHeight50) / layerTileHeight));
-			final int row2 = Math.min(layerHeight, (int)((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
+			final int row1 = Math.max(0, (int)((viewBounds.y - layerTileHeight50 - layerOffsetX) / layerTileHeight));
+			final int row2 = Math.min(layerHeight,
+				(int)((viewBounds.y + viewBounds.height + layerTileHeight - layerOffsetX) / layerTileHeight));
 
-			final int col1 = Math.max(0, (int)(((viewBounds.x - tileWidthLowerCorner) / tileWidthUpperCorner)));
+			final int col1 = Math.max(0, (int)(((viewBounds.x - tileWidthLowerCorner - layerOffsetY) / tileWidthUpperCorner)));
 			final int col2 = Math.min(layerWidth,
-				(int)((viewBounds.x + viewBounds.width + tileWidthUpperCorner) / tileWidthUpperCorner));
+				(int)((viewBounds.x + viewBounds.width + tileWidthUpperCorner - layerOffsetY) / tileWidthUpperCorner));
 
 			// depending on the stagger index either draw all even before the odd or vice versa
 			final int colA = (staggerIndexEven == (col1 % 2 == 0)) ? col1 + 1 : col1;
@@ -132,11 +137,12 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 			for (int row = row2 - 1; row >= row1; row--) {
 				for (int col = colA; col < col2; col += 2) {
-					renderCell(layer.getCell(col, row), tileWidthUpperCorner * col, layerTileHeight50 + (layerTileHeight * row),
-						color);
+					renderCell(layer.getCell(col, row), tileWidthUpperCorner * col + layerOffsetX,
+						layerTileHeight50 + (layerTileHeight * row) + layerOffsetY, color);
 				}
 				for (int col = colB; col < col2; col += 2) {
-					renderCell(layer.getCell(col, row), tileWidthUpperCorner * col, layerTileHeight * row, color);
+					renderCell(layer.getCell(col, row), tileWidthUpperCorner * col + layerOffsetX,
+						layerTileHeight * row + layerOffsetY, color);
 				}
 			}
 		} else {
@@ -144,22 +150,24 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			final float tileHeightUpperCorner = (layerTileHeight + layerHexLength) / 2;
 			final float layerTileWidth50 = layerTileWidth * 0.50f;
 
-			final int row1 = Math.max(0, (int)(((viewBounds.y - tileHeightLowerCorner) / tileHeightUpperCorner)));
+			final int row1 = Math.max(0, (int)(((viewBounds.y - tileHeightLowerCorner - layerOffsetX) / tileHeightUpperCorner)));
 			final int row2 = Math.min(layerHeight,
-				(int)((viewBounds.y + viewBounds.height + tileHeightUpperCorner) / tileHeightUpperCorner));
+				(int)((viewBounds.y + viewBounds.height + tileHeightUpperCorner - layerOffsetX) / tileHeightUpperCorner));
 
-			final int col1 = Math.max(0, (int)(((viewBounds.x - layerTileWidth50) / layerTileWidth)));
-			final int col2 = Math.min(layerWidth, (int)((viewBounds.x + viewBounds.width + layerTileWidth) / layerTileWidth));
+			final int col1 = Math.max(0, (int)(((viewBounds.x - layerTileWidth50 - layerOffsetY) / layerTileWidth)));
+			final int col2 = Math.min(layerWidth,
+				(int)((viewBounds.x + viewBounds.width + layerTileWidth - layerOffsetY) / layerTileWidth));
 
 			float shiftX = 0;
 			for (int row = row2 - 1; row >= row1; row--) {
 				// depending on the stagger index either shift for even or uneven indexes
 				if ((row % 2 == 0) == staggerIndexEven)
-					shiftX = 0;
-				else
 					shiftX = layerTileWidth50;
+				else
+					shiftX = 0;
 				for (int col = col1; col < col2; col++) {
-					renderCell(layer.getCell(col, row), layerTileWidth * col + shiftX, tileHeightUpperCorner * row, color);
+					renderCell(layer.getCell(col, row), layerTileWidth * col + shiftX + layerOffsetX,
+						tileHeightUpperCorner * row + layerOffsetY, color);
 				}
 			}
 		}

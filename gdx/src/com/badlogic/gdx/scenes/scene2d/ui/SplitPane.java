@@ -163,20 +163,20 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth () {
-		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget
-			.getWidth());
-		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth()
-			: secondWidget.getWidth());
+		float first = firstWidget == null ? 0
+			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth());
+		float second = secondWidget == null ? 0
+			: (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth());
 		if (vertical) return Math.max(first, second);
 		return first + style.handle.getMinWidth() + second;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight()
-			: firstWidget.getHeight());
-		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight()
-			: secondWidget.getHeight());
+		float first = firstWidget == null ? 0
+			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight());
+		float second = secondWidget == null ? 0
+			: (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight());
 		if (!vertical) return Math.max(first, second);
 		return first + style.handle.getMinHeight() + second;
 	}
@@ -307,6 +307,10 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
 	}
 

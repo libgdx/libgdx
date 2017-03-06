@@ -21,6 +21,8 @@ public class MapLayer {
 	private String name = "";
 	private float opacity = 1.0f;
 	private boolean visible = true;
+	private float offsetX;
+	private float offsetY;
 	private MapObjects objects = new MapObjects();
 	private MapProperties properties = new MapProperties();
 
@@ -42,6 +44,26 @@ public class MapLayer {
 	/** @param opacity new opacity for the layer */
 	public void setOpacity (float opacity) {
 		this.opacity = opacity;
+	}
+
+	/** @return layer's x offset */
+	public float getOffsetX () {
+		return offsetX;
+	}
+
+	/** @param offsetX new x offset for the layer */
+	public void setOffsetX (float offsetX) {
+		this.offsetX = offsetX;
+	}
+
+	/** @return layer's y offset */
+	public float getOffsetY () {
+		return offsetY;
+	}
+
+	/** @param offsetY new y offset for the layer */
+	public void setOffsetY (float offsetY) {
+		this.offsetY = offsetY;
 	}
 
 	/** @return collection of objects contained in the layer */

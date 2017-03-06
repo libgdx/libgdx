@@ -885,6 +885,16 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(str);
 		return this;
 	}
+	
+	/** Appends the contents of the specified string, then create a new line. If the string is {@code null}, then the string {@code "null"} is appended.
+	 * 
+	 * @param str the string to append.
+	 * @return this builder. */
+	public StringBuilder appendLine (String str) {
+		append0(str);
+		append0("\n");
+		return this;
+	}
 
 	/** Appends the string representation of the specified {@code char[]}. The {@code char[]} is converted to a string according to
 	 * the rule defined by {@link String#valueOf(char[])}.
