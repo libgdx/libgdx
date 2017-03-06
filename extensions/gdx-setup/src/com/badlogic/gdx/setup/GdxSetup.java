@@ -263,6 +263,7 @@ public class GdxSetup {
 		// desktop project
 		if (builder.modules.contains(ProjectType.DESKTOP)) {
 			project.files.add(new ProjectFile("desktop/build.gradle"));
+			project.files.add(new ProjectFile("desktop/lint.xml"));
 			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
 		}
 
