@@ -316,7 +316,7 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Calls {@link #removeActor(Actor, boolean)} with true. */
+	/** Removes an actor from this group and unfocuses it. Calls {@link #removeActor(Actor, boolean)} with true. */
 	public boolean removeActor (Actor actor) {
 		return removeActor(actor, true);
 	}
