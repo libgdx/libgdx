@@ -21,9 +21,8 @@ ext {
 }
 
 versions.robovm = "2.2.1-SNAPSHOT"
-versions.moe = "1.2.3"
-versions.moePlugin = "1.2.3"
-versions.gwt = "2.6.0"
+versions.moe = "1.3.0-beta-2"
+versions.gwt = "2.8.0"
 versions.gwtPlugin = "0.6"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.2"
@@ -33,7 +32,7 @@ versions.jorbis = "0.0.17"
 versions.junit = "4.11"
 versions.appleExtension = "1.4"
 versions.androidPlugin = "2.2.0"
-versions.androidSdk = 23;
+versions.androidSdk = 23
 versions.androidBuildTools = "23.0.3"
 versions.androidSupport = "+"
 versions.javaparser = "2.3.0"

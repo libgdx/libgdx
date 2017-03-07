@@ -223,7 +223,7 @@ public class TexturePacker {
 
 			if (settings.bleed && !settings.premultiplyAlpha
 				&& !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
-				canvas = new ColorBleedEffect().processImage(canvas, 2);
+				canvas = new ColorBleedEffect().processImage(canvas, settings.bleedIterations);
 				g = (Graphics2D)canvas.getGraphics();
 			}
 
@@ -553,6 +553,7 @@ public class TexturePacker {
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
 		public boolean bleed = true;
+		public int bleedIterations = 2;
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
@@ -601,6 +602,7 @@ public class TexturePacker {
 			square = settings.square;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
+			bleedIterations = settings.bleedIterations;
 			limitMemory = settings.limitMemory;
 			grid = settings.grid;
 			scale = settings.scale;

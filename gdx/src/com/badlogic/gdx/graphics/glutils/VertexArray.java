@@ -110,15 +110,9 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.type == GL20.GL_FLOAT) {
-					buffer.position(attribute.offset / 4);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-							buffer);
-				} else {
-					byteBuffer.position(attribute.offset);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						byteBuffer);
-				}
+				byteBuffer.position(attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+					byteBuffer);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -127,15 +121,9 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.type == GL20.GL_FLOAT) {
-					buffer.position(attribute.offset / 4);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-							buffer);
-				} else {
-					byteBuffer.position(attribute.offset);
-					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-						byteBuffer);
-				}
+				byteBuffer.position(attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+					byteBuffer);
 			}
 		}
 		isBound = true;

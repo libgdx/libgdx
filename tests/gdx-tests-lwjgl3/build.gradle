@@ -34,6 +34,11 @@ task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = new File("../gdx-tests-android/assets")
     ignoreExitValue = true
+    
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        // Required to run lwjgl java apps on Mac OSX
+        jvmArgs = ["-XstartOnFirstThread"]
+    }
 }
 configure (launchTestsLwjgl3) {
     group "LibGDX"

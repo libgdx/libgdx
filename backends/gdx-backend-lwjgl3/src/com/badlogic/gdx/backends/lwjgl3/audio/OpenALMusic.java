@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT;
 
 /** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music {
@@ -77,6 +78,8 @@ public abstract class OpenALMusic implements Music {
 				int errorCode = alGetError();
 				if (errorCode != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
 			}
+
+			alSourcei(sourceID, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
 

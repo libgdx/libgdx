@@ -159,10 +159,14 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		String name = element.getAttribute("name", null);
 		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
+		float offsetX = element.getFloatAttribute("offsetx", 0);
+		float offsetY = element.getFloatAttribute("offsety", 0);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
+		layer.setOffsetX(offsetX);
+		layer.setOffsetY(offsetY);
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {

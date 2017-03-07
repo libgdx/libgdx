@@ -63,6 +63,8 @@ typedef struct {
 	uint32_t width;
 	uint32_t height;
 	uint32_t format;
+	uint32_t blend;
+	uint32_t scale;
 	const unsigned char* pixels;
 } gdx2d_pixmap;
 
@@ -70,8 +72,8 @@ JNIEXPORT gdx2d_pixmap* gdx2d_load (const unsigned char *buffer, uint32_t len);
 JNIEXPORT gdx2d_pixmap* gdx2d_new  (uint32_t width, uint32_t height, uint32_t format);
 JNIEXPORT void 		 gdx2d_free (const gdx2d_pixmap* pixmap);
 
-JNIEXPORT void gdx2d_set_blend	  (uint32_t blend);
-JNIEXPORT void gdx2d_set_scale	  (uint32_t scale);
+JNIEXPORT void gdx2d_set_blend	  (gdx2d_pixmap* pixmap, uint32_t blend);
+JNIEXPORT void gdx2d_set_scale	  (gdx2d_pixmap* pixmap, uint32_t scale);
 
 JNIEXPORT const char*   gdx2d_get_failure_reason(void);
 JNIEXPORT void		gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, uint32_t col);

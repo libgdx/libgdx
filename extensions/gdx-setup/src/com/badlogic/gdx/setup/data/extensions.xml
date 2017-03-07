@@ -74,8 +74,8 @@
 		<name>libgdx-utils</name>
 		<description>Various utilities and features</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.3</version>
-		<compatibility>1.9.2</compatibility>
+		<version>0.13.4</version>
+		<compatibility>1.9.5</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils</inherit>
@@ -97,8 +97,8 @@
 		<name>libgdx-utils-box2d</name>
 		<description>Various utilities and features for the Box2D extension</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.3</version>
-		<compatibility>1.9.2</compatibility>
+		<version>0.13.4</version>
+		<compatibility>1.9.5</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils-box2d</inherit>
@@ -149,8 +149,8 @@
 	   <name>gdx-dialogs</name>
 	   <description>Provides cross-platform support for native dialogs</description>
 	   <package>de.tomgrill.gdxdialogs</package>
-	   <version>1.1.0</version>
-	   <compatibility>1.9.3</compatibility>
+	   <version>1.2.0</version>
+	   <compatibility>1.9.5</compatibility>
 	   <website>https://github.com/TomGrill/gdx-dialogs</website>
 	   <gwtInherits></gwtInherits>
 	   <projects>
@@ -169,7 +169,11 @@
 			<ios-moe>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
 			</ios-moe>
-			<html>null</html>
+			<html>
+		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-core:sources</dependency>
+		   	</html>
 		</projects>
 	</extension>
 	<extension>

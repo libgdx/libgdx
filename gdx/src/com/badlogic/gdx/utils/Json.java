@@ -909,14 +909,14 @@ public class Json {
 					ObjectMap result = (ObjectMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-					
+
 					return (T)result;
 				}
 				if (object instanceof ArrayMap) {
 					ArrayMap result = (ArrayMap)object;
 					for (JsonValue child = jsonData.child; child != null; child = child.next)
 						result.put(child.name, readValue(elementType, null, child));
-					
+
 					return (T)result;
 				}
 				if (object instanceof Map) {
@@ -938,6 +938,13 @@ public class Json {
 		if (type != null) {
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) return (T)serializer.read(this, jsonData, type);
+
+			if (ClassReflection.isAssignableFrom(Serializable.class, type)) {
+				// A Serializable may be read as an array, string, etc, even though it will be written as an object.
+				Object object = newInstance(type);
+				((Serializable)object).read(this, jsonData);
+				return (T)object;
+			}
 		}
 
 		if (jsonData.isArray()) {

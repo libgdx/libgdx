@@ -67,6 +67,31 @@ public final class ClassReflection {
 		return ReflectionCache.getType(c).isArray();
 	}
 	
+	/** Determines if the supplied Class object represents a primitive type. */
+	static public boolean isPrimitive (Class c) {
+		return ReflectionCache.getType(c).isPrimitive();
+	}
+	
+	/** Determines if the supplied Class object represents an enum type. */
+	static public boolean isEnum (Class c) {
+		return ReflectionCache.getType(c).isEnum();
+	}
+	
+	/** Determines if the supplied Class object represents an annotation type. */
+	static public boolean isAnnotation (Class c) {
+		return ReflectionCache.getType(c).isAnnotation();
+	}
+	
+	/** Determines if the supplied Class object represents an interface type. */
+	static public boolean isInterface (Class c) {
+		return ReflectionCache.getType(c).isInterface();
+	}
+	
+	/** Determines if the supplied Class object represents an abstract type. */
+	static public boolean isAbstract (Class c) {
+		return ReflectionCache.getType(c).isAbstract();
+	}
+	
 	/** Creates a new instance of the class represented by the supplied Class. */
 	static public <T> T newInstance (Class<T> c) throws ReflectionException {
 		try {
@@ -74,6 +99,11 @@ public final class ClassReflection {
 		} catch (NoSuchMethodException e) {
 			throw new ReflectionException("Could not use default constructor of " + c.getName(), e);
 		}
+	}
+	
+	/** Returns the Class representing the component type of an array. If this class does not represent an array class this method returns null.	 */
+	static public Class getComponentType(Class c){
+		return ReflectionCache.getType(c).getComponentType();
 	}
 
 	/** Returns an array of {@link Constructor} containing the public constructors of the class represented by the supplied Class. */
@@ -108,6 +138,11 @@ public final class ClassReflection {
 		} catch (NoSuchMethodException e) {
 			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
+	}
+	
+	/** Returns the elements of this enum class or null if this Class object does not represent an enum type. */
+	static public Object[] getEnumConstants (Class c) {
+		return ReflectionCache.getType(c).getEnumConstants();
 	}
 
 	/** Returns an array of {@link Method} containing the public member methods of the class represented by the supplied Class. */

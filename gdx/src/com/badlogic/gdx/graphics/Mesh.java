@@ -150,6 +150,17 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+		this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
+	}
+	
+	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+	 * 
+	 * @param type the {@link VertexDataType} to be used, VBO or VA.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param maxVertices the maximum number of vertices this mesh can hold
+	 * @param maxIndices the maximum number of indices this mesh can hold
+	 * @param attributes the {@link VertexAttributes}. */
+	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
 		switch (type) {
 		case VertexBufferObject:
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
@@ -1027,7 +1038,7 @@ public class Mesh implements Disposable {
 					if (a == null) continue;
 					for (int j = 0; j < a.numComponents; j++)
 						checks[++idx] = (short)(a.offset + j);
-					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					attrs[++ai] = a.copy();
 					newVertexSize += a.numComponents;
 				}
 			}
