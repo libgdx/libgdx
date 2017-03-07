@@ -539,7 +539,7 @@ public class BitmapFont implements Disposable {
 						}
 					}
 
-					matcher = Pattern.compile(".*file=\"(.*)\"").matcher(line);
+					matcher = Pattern.compile(".*file=\"?([^\"]+)\"?").matcher(line);
 					if (!matcher.find()) {
 					    throw new GdxRuntimeException("Missing: file");
                     }
