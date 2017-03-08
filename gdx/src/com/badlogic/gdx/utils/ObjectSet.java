@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
  * hash collisions. Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT
  * size.
  * @author Nathan Sweet */
-public class ObjectSet<T> implements Iterable<T> {
+public class ObjectSet<T> implements Iterable<T>, Container {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -83,6 +83,11 @@ public class ObjectSet<T> implements Iterable<T> {
 		stashSize = set.stashSize;
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
+	}
+	
+	@Override
+	public int size () {
+		return size;
 	}
 
 	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged

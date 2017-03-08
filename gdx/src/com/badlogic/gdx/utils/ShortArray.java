@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.MathUtils;
 /** A resizable, ordered or unordered short array. Avoids the boxing that occurs with ArrayList<Short>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class ShortArray {
+public class ShortArray implements Container {
 	public short[] items;
 	public int size;
 	public boolean ordered;
@@ -70,6 +70,11 @@ public class ShortArray {
 		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	/** Casts the specified value to short and adds it. */

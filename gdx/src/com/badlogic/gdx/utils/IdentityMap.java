@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.MathUtils;
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
  * next higher POT size.
  * @author Nathan Sweet */
-public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
+public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>>, Container {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -89,6 +89,11 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public V put (K key, V value) {

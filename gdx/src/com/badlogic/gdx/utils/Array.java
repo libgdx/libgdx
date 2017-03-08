@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class Array<T> implements Iterable<T> {
+public class Array<T> implements Iterable<T>, Container {
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
 	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
 	public T[] items;
@@ -93,6 +93,11 @@ public class Array<T> implements Iterable<T> {
 		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
 		System.arraycopy(array, start, items, 0, size);
+	}
+	
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public void add (T value) {

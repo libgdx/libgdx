@@ -23,7 +23,7 @@ import java.util.Arrays;
 /** A resizable, ordered or unordered float array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class FloatArray {
+public class FloatArray implements Container {
 	public float[] items;
 	public int size;
 	public boolean ordered;
@@ -70,6 +70,11 @@ public class FloatArray {
 		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public void add (float value) {

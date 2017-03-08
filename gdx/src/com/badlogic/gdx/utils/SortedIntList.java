@@ -19,7 +19,7 @@ package com.badlogic.gdx.utils;
 /** A sorted double linked list which uses ints for indexing
  * 
  * @param <E> */
-public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
+public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>>, Container {
 	private NodePool<E> nodePool = new NodePool<E>(); // avoid allocating nodes
 	private Iterator iterator;
 	int size = 0;

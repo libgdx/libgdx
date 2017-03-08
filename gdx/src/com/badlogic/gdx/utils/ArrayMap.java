@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
  * makes iteration fast. Like {@link Array}, if ordered is false, this class avoids a memory copy when removing elements (the last
  * element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
+public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>>, Container {
 	public K[] keys;
 	public V[] values;
 	public int size;
@@ -81,6 +81,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size = array.size;
 		System.arraycopy(array.keys, 0, keys, 0, size);
 		System.arraycopy(array.values, 0, values, 0, size);
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public int put (K key, V value) {

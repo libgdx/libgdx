@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
  * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}. */
-public class Queue<T> implements Iterable<T> {
+public class Queue<T> implements Iterable<T>, Container {
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
 	protected T[] values;
 
@@ -56,6 +56,11 @@ public class Queue<T> implements Iterable<T> {
 	public Queue (int initialSize, Class<T> type) {
 		// noinspection unchecked
 		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
