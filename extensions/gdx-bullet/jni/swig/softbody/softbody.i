@@ -74,6 +74,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 %}
 %include "BulletSoftBody/btSoftBodyData.h"
 
+%rename(EnumFlagType) fDrawFlags::_;
 %{
 #include <BulletSoftBody/btSoftBodyHelpers.h>
 %}

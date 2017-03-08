@@ -127,7 +127,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eAeroModel(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int V_Point = 0;
       public final static int V_TwoSided = V_Point + 1;
       public final static int V_TwoSidedLiftDrag = V_TwoSided + 1;
@@ -187,7 +187,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eVSolver(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int Linear = 0;
       public final static int END = Linear + 1;
     }
@@ -241,7 +241,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_ePSolver(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int Linear = 0;
       public final static int Anchors = Linear + 1;
       public final static int RContacts = Anchors + 1;
@@ -298,7 +298,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eSolverPresets(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int Positions = 0;
       public final static int Velocities = Positions + 1;
       public final static int Default = Positions;
@@ -354,7 +354,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eFeature(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int None = 0;
       public final static int Node = None + 1;
       public final static int Link = Node + 1;
@@ -412,7 +412,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_fCollision(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int RVSmask = 0x000f;
       public final static int SDF_RS = 0x0001;
       public final static int CL_RS = 0x0002;
@@ -473,7 +473,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_fMaterial(), true);
     }
   
-    public final static class _ {
+    public final static class EnumFlagType {
       public final static int DebugDraw = 0x0001;
       public final static int Default = DebugDraw;
       public final static int END = Default + 1;
@@ -2527,7 +2527,7 @@ public class btSoftBody extends btCollisionObject {
           this(SoftbodyJNI.new_btSoftBody_Joint_eType(), true);
         }
       
-        public final static class _ {
+        public final static class EnumFlagType {
           public final static int Linear = 0;
           public final static int Angular = Linear + 1;
           public final static int Contact = Angular + 1;

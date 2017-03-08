@@ -55,6 +55,7 @@ libgdx-*.zip.MD5
 #msvc files
 *.user
 *.VC.db
+*.VC.VC.opendb
 *.suo
 
 #core & extension libs/ folders that have no 3rd party dependencies in them
