@@ -28,14 +28,28 @@
         </ant>
     </target>
     
-    <target name="extras" depends="softbody">
+    <target name="b3common">
+        <echo message="Generating b3common wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="b3common" />
+        </ant>
+    </target>
+    
+    <target name="inversedynamics" depends="dynamics,b3common">
+        <echo message="Generating inverse dynamics wrapper" level="info" />
+        <ant antfile="module.xml">
+            <property name="module.name" value="inversedynamics" />
+        </ant>
+    </target>
+    
+    <target name="extras" depends="softbody,inversedynamics">
         <echo message="Generating extras wrapper" level="info" />
         <ant antfile="module.xml">
             <property name="module.name" value="extras" />
         </ant>
     </target>
 
-	<target name="all" depends="linearmath,collision,dynamics,softbody,extras">
+	<target name="all" depends="linearmath,collision,dynamics,softbody,b3common,inversedynamics,extras">
 		<echo message="All wrapper files generated, now rebuild the gdx-bullet project." level="info" />
 	</target>
 </project>

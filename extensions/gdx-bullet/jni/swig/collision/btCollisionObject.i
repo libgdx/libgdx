@@ -9,6 +9,11 @@
 %rename(internalGetCollisionShape) btCollisionObject::getCollisionShape;
 %javamethodmodifiers btCollisionObject::getCollisionShape "private";
 
+%rename(getCollisionShapeConst) btCollisionObject::getCollisionShape() const;
+%rename(getWorldTransformConst) btCollisionObject::getWorldTransform() const;
+%rename(getBroadphaseHandleConst) btCollisionObject::getBroadphaseHandle() const;
+%rename(getInterpolationWorldTransformConst) btCollisionObject::getInterpolationWorldTransform() const;
+
 %typemap(javaout) 	btCollisionObject *, const btCollisionObject *, btCollisionObject * const & {
 	return btCollisionObject.getInstance($jnicall, $owner);
 }

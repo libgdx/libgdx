@@ -1,0 +1,5 @@
+SPECIFY_CLASS(Bullet3Common, com.badlogic.gdx.physics.bullet.b3common)
+SPECIFY_CLASS(Bullet3CommonJNI, com.badlogic.gdx.physics.bullet.b3common)
+SPECIFY_CLASS(SWIGTYPE_p_f___void, com.badlogic.gdx.physics.bullet.b3common)
+SPECIFY_CLASS(SWIGTYPE_p_f_p_q_const__char__void, com.badlogic.gdx.physics.bullet.b3common)
+SPECIFY_CLASS(b3ProfileZone, com.badlogic.gdx.physics.bullet.b3common)

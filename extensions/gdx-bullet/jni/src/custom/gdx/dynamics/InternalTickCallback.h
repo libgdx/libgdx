@@ -19,8 +19,6 @@
 
 #include "../../../bullet/BulletDynamics/Dynamics/btDynamicsWorld.h"
 
-static void InternalTickCallback_CB(btDynamicsWorld *world, btScalar timeStep);
-
 /** @author xoppa */
 class InternalTickCallback {
 protected:
@@ -28,6 +26,7 @@ protected:
 	bool mIsPreTick;
 public:
 	InternalTickCallback(btDynamicsWorld *dynamicsWorld = NULL, bool isPreTick = false);
+	virtual ~InternalTickCallback() {}
 	virtual void onInternalTick(btDynamicsWorld *dynamicsWorld, btScalar timeStep) { }
 	void detach();
 	void attach(btDynamicsWorld *dynamicsWorld, bool isPreTick);

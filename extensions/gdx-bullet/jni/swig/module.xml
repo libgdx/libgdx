@@ -27,11 +27,16 @@
 		<exec executable="swig">
 			<arg value="-java" />
 			<arg value="-c++" />
+			<arg value="-Wall" />
+			<arg value="-Wextra" />
 			<arg value="-fvirtual" />
+			<arg value="-fastdispatch" />
+			<arg value="-macroerrors" />
 			<arg value="-package" />
 			<arg value="${module.package}" />
 			<arg value="-I${basedir}/../src/bullet" />
 			<arg value="-I${basedir}/../src/custom" />
+			<arg value="-I${basedir}/../src/extras" />
 			<arg value="-I${basedir}/../src/extras/Serialize" />
 			<!-- Disable Bullet profiling -->
 			<arg value="-DBT_NO_PROFILE" />

@@ -1,9 +1,7 @@
-%module Softbody
+%module(directors="1") Softbody
 
 %include "arrays_java.i"
 
-%import "../linearmath/linearmath.i"
-%import "../collision/collision.i"
 %import "../dynamics/dynamics.i"
 
 %include "../common/gdxCommon.i"
@@ -101,6 +99,8 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 %}
 %include "BulletSoftBody/btSoftRigidCollisionAlgorithm.h"
 
+%rename(getWorldInfoConst) btSoftRigidDynamicsWorld::getWorldInfo() const;
+%rename(getSoftBodyArrayConst) btSoftRigidDynamicsWorld::getSoftBodyArray() const;
 %{
 #include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
 %}
@@ -110,3 +110,10 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 #include <BulletSoftBody/btSoftSoftCollisionAlgorithm.h>
 %}
 %include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
+
+%rename(getWorldInfoConst) btSoftMultiBodyDynamicsWorld::getWorldInfo() const;
+%rename(getSoftBodyArrayConst) btSoftMultiBodyDynamicsWorld::getSoftBodyArray() const;
+%{
+#include <BulletSoftBody/btSoftMultiBodyDynamicsWorld.h>
+%}
+%include "BulletSoftBody/btSoftMultiBodyDynamicsWorld.h"

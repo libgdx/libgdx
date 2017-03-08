@@ -93,9 +93,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -111,9 +112,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>

@@ -48,21 +48,13 @@ public:
 	
 	virtual void setMargin(btScalar collisionMargin)
 	{
-		//correct the m_implicitShapeDimensions for the margin
-		btVector3 oldMargin(getMargin(),getMargin(),getMargin());
-		btVector3 implicitShapeDimensionsWithMargin = m_implicitShapeDimensions+oldMargin;
-		
-		btConvexInternalShape::setMargin(collisionMargin);
-		btVector3 newMargin(getMargin(),getMargin(),getMargin());
-		m_implicitShapeDimensions = implicitShapeDimensionsWithMargin - newMargin;
-
+		//don't override the margin for capsules, their entire radius == margin
 	}
 
 	virtual void getAabb (const btTransform& t, btVector3& aabbMin, btVector3& aabbMax) const
 	{
 			btVector3 halfExtents(getRadius(),getRadius(),getRadius());
 			halfExtents[m_upAxis] = getRadius() + getHalfHeight();
-			halfExtents += btVector3(getMargin(),getMargin(),getMargin());
 			btMatrix3x3 abs_b = t.getBasis().absolute();  
 			btVector3 center = t.getOrigin();
             btVector3 extent = halfExtents.dot3(abs_b[0], abs_b[1], abs_b[2]);
@@ -94,14 +86,12 @@ public:
 
 	virtual void	setLocalScaling(const btVector3& scaling)
 	{
-		btVector3 oldMargin(getMargin(),getMargin(),getMargin());
-		btVector3 implicitShapeDimensionsWithMargin = m_implicitShapeDimensions+oldMargin;
-		btVector3 unScaledImplicitShapeDimensionsWithMargin = implicitShapeDimensionsWithMargin / m_localScaling;
-
-		btConvexInternalShape::setLocalScaling(scaling);
-
-		m_implicitShapeDimensions = (unScaledImplicitShapeDimensionsWithMargin * m_localScaling) - oldMargin;
-
+		btVector3 unScaledImplicitShapeDimensions = m_implicitShapeDimensions / m_localScaling;
+                btConvexInternalShape::setLocalScaling(scaling);
+		m_implicitShapeDimensions = (unScaledImplicitShapeDimensions * scaling);
+		//update m_collisionMargin, since entire radius==margin
+		int radiusAxis = (m_upAxis+2)%3;
+		m_collisionMargin = m_implicitShapeDimensions[radiusAxis];
 	}
 
 	virtual btVector3	getAnisotropicRollingFrictionDirection() const

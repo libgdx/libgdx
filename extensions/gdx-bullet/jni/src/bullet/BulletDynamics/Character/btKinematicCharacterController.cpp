@@ -559,7 +559,7 @@ void btKinematicCharacterController::stepDown ( btCollisionWorld* collisionWorld
 		break;
 	}
 
-	if (m_ghostObject->hasContactResponse() && (callback.hasHit() && needsCollision(m_ghostObject, callback.m_hitCollisionObject)) || runonce == true)
+	if ((m_ghostObject->hasContactResponse() && (callback.hasHit() && needsCollision(m_ghostObject, callback.m_hitCollisionObject))) || runonce == true)
 	{
 		// we dropped a fraction of the height -> hit floor
 		btScalar fraction = (m_currentPosition.getY() - callback.m_hitPointWorld.getY()) / 2;
@@ -751,7 +751,7 @@ void btKinematicCharacterController::playerStep (  btCollisionWorld* collisionWo
 	m_wasOnGround = onGround();
 
 	//btVector3 lvel = m_walkDirection;
-	btScalar c = 0.0f;
+	//btScalar c = 0.0f;
 	
 	if (m_walkDirection.length2() > 0)
 	{

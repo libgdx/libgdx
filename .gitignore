@@ -52,6 +52,11 @@ libgdx-*.zip.MD5
 *.iml
 /.idea/
 
+#msvc files
+*.user
+*.VC.db
+*.suo
+
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /gdx/libs
 /backends/gdx-backend-jglfw/libs/

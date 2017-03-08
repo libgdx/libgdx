@@ -19,6 +19,13 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 #include <BulletSoftBody/btSoftBody.h>
 %}
 
+%immutable btSoftBody::Note::m_text;
+
+%rename(upcastConstBtCollisionObject) btSoftBody::upcast(btCollisionObject const *);
+
+%rename(getSolverV) btSoftBody::getSolver(btSoftBody::eVSolver::_);
+%rename(getSolverP) btSoftBody::getSolver(btSoftBody::ePSolver::_);
+
 %ignore btSoftBody::getWorldInfo;
 %ignore btSoftBody::getRestLengthScale;
 %ignore btSoftBody::setRestLengthScale;

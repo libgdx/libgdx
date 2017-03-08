@@ -215,12 +215,12 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 		jointNodeArray.reserve(2*m_allConstraintPtrArray.size());
 	}
 
-	static btMatrixXu J3;
+    btMatrixXu& J3 = m_scratchJ3;
 	{
 		BT_PROFILE("J3.resize");
 		J3.resize(2*m,8);
 	}
-	static btMatrixXu JinvM3;
+    btMatrixXu& JinvM3 = m_scratchJInvM3;
 	{
 		BT_PROFILE("JinvM3.resize/setZero");
 
@@ -230,7 +230,7 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 	}
 	int cur=0;
 	int rowOffset = 0;
-	static btAlignedObjectArray<int> ofs;
+    btAlignedObjectArray<int>& ofs = m_scratchOfs;
 	{
 		BT_PROFILE("ofs resize");
 		ofs.resize(0);
@@ -489,7 +489,7 @@ void btMLCPSolver::createMLCP(const btContactSolverInfo& infoGlobal)
 		}
 	}
  
-	static btMatrixXu Minv;
+    btMatrixXu& Minv = m_scratchMInv;
 	Minv.resize(6*numBodies,6*numBodies);
 	Minv.setZero();
 	for (int i=0;i<numBodies;i++)
@@ -506,7 +506,7 @@ void btMLCPSolver::createMLCP(const btContactSolverInfo& infoGlobal)
 				setElem(Minv,i*6+3+r,i*6+3+c,orgBody? orgBody->getInvInertiaTensorWorld()[r][c] : 0);
 	}
  
-	static btMatrixXu J;
+    btMatrixXu& J = m_scratchJ;
 	J.resize(numConstraintRows,6*numBodies);
 	J.setZero();
  
@@ -541,10 +541,10 @@ void btMLCPSolver::createMLCP(const btContactSolverInfo& infoGlobal)
 		}
 	}
  
-	static btMatrixXu J_transpose;
+    btMatrixXu& J_transpose = m_scratchJTranspose;
 	J_transpose= J.transpose();
 
-	static btMatrixXu tmp;
+    btMatrixXu& tmp = m_scratchTmp;
 
 	{
 		{

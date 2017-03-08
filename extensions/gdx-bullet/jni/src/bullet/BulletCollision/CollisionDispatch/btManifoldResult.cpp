@@ -96,6 +96,7 @@ btManifoldResult::btManifoldResult(const btCollisionObjectWrapper* body0Wrap,con
 	m_index0(-1),
 	m_index1(-1)
 #endif //DEBUG_PART_INDEX
+	, m_closestPointDistanceThreshold(0)
 {
 }
 

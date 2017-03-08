@@ -24,6 +24,11 @@
 %ignore btCollisionWorld::ClosestRayResultCallback::m_hitNormalWorld;
 %ignore btCollisionWorld::ClosestRayResultCallback::m_hitPointWorld;
 
+%rename(getBroadphaseConst) btCollisionWorld::getBroadphase() const;
+%rename(getDispatcherConst) btCollisionWorld::getDispatcher() const;
+%rename(getCollisionObjectArrayConst) btCollisionWorld::getCollisionObjectArray() const;
+%rename(getDispatchInfoConst) btCollisionWorld::getDispatchInfo() const;
+
 %extend btCollisionWorld::ClosestRayResultCallback {
 	void getRayFromWorld(btVector3 &out) {
 		out = $self->m_rayFromWorld;

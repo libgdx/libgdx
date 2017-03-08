@@ -19,7 +19,7 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="memcpy_wrap.c"/>
+		<include name="memcpy_wrap.c"/>
 		<include name="**/*.c"/>
 
 				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
@@ -93,9 +93,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -111,9 +112,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>

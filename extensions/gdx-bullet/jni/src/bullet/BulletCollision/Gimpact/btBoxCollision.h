@@ -234,7 +234,24 @@ public:
 
 	btAABB()
 	{}
-
+	
+	bool operator<(const btAABB& obj) const {
+        return
+            m_min < obj.m_min &&
+            m_max < obj.m_max;
+    }
+    
+    bool operator>(const btAABB& obj) const {
+        return
+            m_min > obj.m_min &&
+            m_max > obj.m_max;
+    }
+    
+    bool operator==(const btAABB& obj) const {
+        return
+            m_min == obj.m_min &&
+            m_max == obj.m_max;
+    }
 
 	btAABB(const btVector3 & V1,
 			 const btVector3 & V2,

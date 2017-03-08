@@ -4,6 +4,9 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 %}
 
+%rename(getBroadphaseProxyConst) btRigidBody::getBroadphaseProxy() const;
+%rename(getMotionStateConst) btRigidBody::getMotionState() const;
+
 %rename(i_motionState) btRigidBody::btRigidBodyConstructionInfo::m_motionState;
 %javamethodmodifiers btRigidBody::btRigidBodyConstructionInfo::m_motionState "private";
 %rename(i_collisionShape) btRigidBody::btRigidBodyConstructionInfo::m_collisionShape;
