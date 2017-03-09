@@ -316,6 +316,19 @@ public final class MathUtils {
 		return (int)(value + 0.5f);
 	}
 
+	/** Returns a re-mapped float value from one range to another. Examples:
+	 * 2 in [ 0, 10] ->  6 in [ 5, 10].
+	 * 0 in [-5,  5] -> 20 in [10, 30].
+	 * 9 in [ 0, 10] ->  1 in [10,  0].
+	 * value in [istart, iend] -> re-mapped in [ostart, stop] */
+	static public final float map(float value, float istart, float istop, float ostart, float ostop) {
+		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	}
+
+	static public final double map(double value, double istart, double istop, double ostart, double ostop) {
+		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	}
+
 	/** Returns true if the value is zero (using the default tolerance as upper bound) */
 	static public boolean isZero (float value) {
 		return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
