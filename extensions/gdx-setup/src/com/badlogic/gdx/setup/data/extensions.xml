@@ -121,8 +121,8 @@
 	   <name>gdx-facebook</name>
 	   <description>Provides cross-platform support for Facebook Graph API</description>
 	   <package>de.tomgrill.gdxfacebook</package>
-	   <version>1.2.2</version>
-	   <compatibility>1.9.3</compatibility>
+	   <version>1.3.0</version>
+	   <compatibility>1.9.6</compatibility>
 	   <website>https://github.com/TomGrill/gdx-facebook</website>
 	   <gwtInherits></gwtInherits>
 	   <projects>
