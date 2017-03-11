@@ -127,7 +127,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Sets the texture and resizes the sprite to the size of that texture. */
-	public setTextureFit (Texture texture) {
+	public void setTextureFit (Texture texture) {
 		setSize (texture.getWidth(), texture.getHeight());
 		setRegion (0, 0, texture.getWidth(), texture.getHeight());
 	}
