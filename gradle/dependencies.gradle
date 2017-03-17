@@ -62,7 +62,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
-		"org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
