@@ -80,9 +80,11 @@ public class TextureUnpacker {
 
 		for (Page page : atlas.getPages()) {
 			// load the image file belonging to this page as a Buffered Image
+			File file = page.textureFile.file();
+			if (!file.exists()) throw new RuntimeException("Unable to find atlas image: " + file.getAbsolutePath());
 			BufferedImage img = null;
 			try {
-				img = ImageIO.read(page.textureFile.file());
+				img = ImageIO.read(file);
 			} catch (IOException e) {
 				printExceptionAndExit(e);
 			}
@@ -105,7 +107,8 @@ public class TextureUnpacker {
 					}
 
 					// check if the parent directories of this image file exist and create them if not
-					File imgOutput = new File(outputDirFile, String.format("%s.%s", region.index == -1?region.name:region.name + "_" + region.index, extension));
+					File imgOutput = new File(outputDirFile,
+						String.format("%s.%s", region.index == -1 ? region.name : region.name + "_" + region.index, extension));
 					File imgDir = imgOutput.getParentFile();
 					if (!imgDir.exists()) {
 						System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
@@ -115,7 +118,7 @@ public class TextureUnpacker {
 					// save the image
 					try {
 						ImageIO.write(splitImage, OUTPUT_TYPE, imgOutput);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						printExceptionAndExit(e);
 					}
 				}
@@ -211,7 +214,8 @@ public class TextureUnpacker {
 			atlasFile = args[0];
 		}
 
-		File atlasFileHandle = new File(atlasFile);
+		File atlasFileHandle = new File(atlasFile).getAbsoluteFile();
+		if (!atlasFileHandle.exists()) throw new RuntimeException("Atlas file not found: " + atlasFileHandle.getAbsolutePath());
 		String atlasParentPath = atlasFileHandle.getParentFile().getAbsolutePath();
 
 		// Set the directory variables to a default when they weren't given in the variables
