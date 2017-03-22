@@ -1,4 +1,6 @@
 [1.9.7]
+- LWJGL3: The creation of additional windows via Lwjgl3Application.newWindow() is now deferred, with postRunnable(), until all existing windows have been updated. This fixes a potential native crash with NVidia GL drivers on Windows, presumably caused by a GL context conflict.
+- API addition: Lwjgl3WindowListener.created() is called after a new window has been created. It's unsafe to call Lwjgl3Window functions in between Lwjgl3Application.newWindow() and this callback.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
