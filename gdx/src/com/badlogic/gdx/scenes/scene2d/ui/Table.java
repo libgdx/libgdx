@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -1272,4 +1273,27 @@ public class Table extends WidgetGroup {
 			return background == null ? 0 : background.getRightWidth();
 		}
 	};
+
+
+	/** From the <a href="https://github.com/libgdx/libgdx/wiki/Table#inserting-cells">documentation</a>
+	 * <p><i>Table currently does not allow cells to be inserted in the middle or removed.
+	 * To do that, the Table needs to be rebuilt: call clearChildren to remove all children and cells,
+	 * then add them all to the Table again.
+	 * If inserting or removing cells is needed, {@link VerticalGroup} or {@link HorizontalGroup} can be used.</i></p>
+	 * @author Cedric Martens */
+	@Override
+	public void addActorBefore(Actor actorBefore, Actor actor) {
+		throw new NotImplementedException();
+	}
+
+	/** From the <a href="https://github.com/libgdx/libgdx/wiki/Table#inserting-cells">documentation</a>
+	 * <p><i>Table currently does not allow cells to be inserted in the middle or removed.
+	 * To do that, the Table needs to be rebuilt: call clearChildren to remove all children and cells,
+	 * then add them all to the Table again.
+	 * If inserting or removing cells is needed, {@link VerticalGroup} or {@link HorizontalGroup} can be used.</i></p>
+	 * @author Cedric Martens */
+	@Override
+	public void addActorAfter(Actor actorAfter, Actor actor) {
+		throw new NotImplementedException();
+	}
 }
