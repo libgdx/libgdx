@@ -47,6 +47,12 @@ public class HorizontalGroup extends WidgetGroup {
 	public HorizontalGroup () {
 		setTouchable(Touchable.childrenOnly);
 	}
+	
+	public HorizontalGroup (Actor... actors) {
+		this();
+		for(Actor actor: actors)
+			addActor(actor)
+	}
 
 	public void invalidate () {
 		super.invalidate();
