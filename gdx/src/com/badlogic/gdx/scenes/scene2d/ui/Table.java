@@ -31,7 +31,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -1283,7 +1282,7 @@ public class Table extends WidgetGroup {
 	 * @author Cedric Martens */
 	@Override
 	public void addActorBefore(Actor actorBefore, Actor actor) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	/** From the <a href="https://github.com/libgdx/libgdx/wiki/Table#inserting-cells">documentation</a>
@@ -1294,6 +1293,6 @@ public class Table extends WidgetGroup {
 	 * @author Cedric Martens */
 	@Override
 	public void addActorAfter(Actor actorAfter, Actor actor) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 }
