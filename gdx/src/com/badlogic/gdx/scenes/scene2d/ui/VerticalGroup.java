@@ -48,6 +48,12 @@ public class VerticalGroup extends WidgetGroup {
 		setTouchable(Touchable.childrenOnly);
 	}
 
+	public VerticalGroup (Actor... actors) {
+		this();
+		for(Actor actor: actors)
+			addActor(actor)
+	}
+
 	public void invalidate () {
 		super.invalidate();
 		sizeInvalid = true;
