@@ -21,7 +21,7 @@ ext {
 }
 
 versions.robovm = "2.2.1-SNAPSHOT"
-versions.moe = "1.3.0-beta-2"
+versions.moe = "1.3.2"
 versions.gwt = "2.8.0"
 versions.gwtPlugin = "0.6"
 versions.jglwf = "1.1"
