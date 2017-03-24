@@ -51,7 +51,7 @@ public class HorizontalGroup extends WidgetGroup {
 	public HorizontalGroup (Actor... actors) {
 		this();
 		for(Actor actor: actors)
-			addActor(actor)
+			addActor(actor);
 	}
 
 	public void invalidate () {
