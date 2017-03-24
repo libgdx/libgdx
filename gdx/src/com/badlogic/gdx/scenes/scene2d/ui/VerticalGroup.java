@@ -51,7 +51,7 @@ public class VerticalGroup extends WidgetGroup {
 	public VerticalGroup (Actor... actors) {
 		this();
 		for(Actor actor: actors)
-			addActor(actor)
+			addActor(actor);
 	}
 
 	public void invalidate () {
