@@ -136,9 +136,8 @@ public class Texture extends GLTexture {
 		bind();
 		uploadImageData(GL20.GL_TEXTURE_2D, data);
 
-		setFilter(minFilter, magFilter);
-		setWrap(uWrap, vWrap);
-		Gdx.gl.glBindTexture(glTarget, 0);
+		setFilter(minFilter, magFilter, false);
+		setWrap(uWrap, vWrap, false);
 	}
 
 	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only

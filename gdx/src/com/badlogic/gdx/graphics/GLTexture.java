@@ -124,9 +124,17 @@ public abstract class GLTexture implements Disposable {
 	 * @param u the u wrap
 	 * @param v the v wrap */
 	public void setWrap (TextureWrap u, TextureWrap v) {
+		setWrap(u, v, true);
+	}
+	
+	/** Sets the {@link TextureWrap} for this texture on the u and v axis.
+	 * @param u the u wrap
+	 * @param v the v wrap 
+	 * @param shouldBind wether the texture should be bind*/
+	public void setWrap (TextureWrap u, TextureWrap v, boolean shouldBind) {
 		this.uWrap = u;
 		this.vWrap = v;
-		bind();
+		if(shouldBind) bind();
 		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
 		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
 	}
@@ -157,9 +165,17 @@ public abstract class GLTexture implements Disposable {
 	 * @param minFilter the minification filter
 	 * @param magFilter the magnification filter */
 	public void setFilter (TextureFilter minFilter, TextureFilter magFilter) {
+		setFilter(minFilter, magFilter, true);
+	}
+	
+	/** Sets the {@link TextureFilter} for this texture for minification and magnification.
+	 * @param minFilter the minification filter
+	 * @param magFilter the magnification filter
+	 * @param shouldBind wether the texture should be bind*/
+	public void setFilter (TextureFilter minFilter, TextureFilter magFilter, boolean shouldBind) {
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
-		bind();
+		if(shouldBind) bind();
 		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
 		Gdx.gl.glTexParameterf(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
 	}
