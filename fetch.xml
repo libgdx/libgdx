@@ -4,7 +4,7 @@
     <property name="robovm" value="https://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
-    <property name="lwjgl-version" value="3.1.0"/>
+    <property name="lwjgl-version" value="3.1.1"/>
 
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
@@ -37,6 +37,9 @@
         <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-windows.jar"/>
         <!-- lwjgl-opengl -->
         <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-windows.jar"/>
         <!-- lwjgl-stb -->
         <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb.jar"/>
         <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-linux.jar"/>
