@@ -136,8 +136,8 @@ public class Texture extends GLTexture {
 		bind();
 		uploadImageData(GL20.GL_TEXTURE_2D, data);
 
-		setFilter(minFilter, magFilter);
-		setWrap(uWrap, vWrap);
+		unsafeSetFilter(minFilter, magFilter, true);
+		unsafeSetWrap(uWrap, vWrap, true);
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 
