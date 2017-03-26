@@ -727,17 +727,17 @@ public class XmlReader {
 		}
 		
 		/** Return true if the attribute exist **/
-        	public boolean hasAttribute(String name) {
+		public boolean hasAttribute(String name) {
 			if (getAttributes() == null) return false;
-            		return getAttributes().containsKey(name);
-        	}
+			return getAttributes().containsKey(name);
+		}
 
-        	/** Return true if the child exist **/
-        	public boolean hasChild(String name, boolean recursive) {
-            		if(recursive)
-                		return getChildByNameRecursive(name) != null;
-            		else
-                		return getChildByName(name) != null;
-        	}
+		/** Return true if the child exist **/
+		public boolean hasChild(String name, boolean recursive) {
+			if(recursive)
+				return getChildByNameRecursive(name) != null;
+			else
+				return getChildByName(name) != null;
+		}
 	}
 }
