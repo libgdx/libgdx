@@ -728,6 +728,7 @@ public class XmlReader {
 		
 		/** Return true if the attribute exist **/
         	public boolean hasAttribute(String name) {
+			if (getAttributes() == null) return false;
             		return getAttributes().containsKey(name);
         	}
 
