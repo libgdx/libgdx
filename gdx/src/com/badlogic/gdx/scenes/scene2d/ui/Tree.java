@@ -224,11 +224,20 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		drawBackground(batch, parentAlpha, getX(), getY());
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, leftColumnWidth);
 		super.draw(batch, parentAlpha); // Draw actors.
+	}
+
+	/** Called to draw the background. Default implementation draws the style background drawable. */
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		if (style.background != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
 	}
 
 	/** Draws selection, icons, and expand icons. */
