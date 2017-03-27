@@ -14,7 +14,7 @@
         <get src="${robovm}/robovm-rt.jar" dest="backends/gdx-backend-robovm/libs/"/>
     </target>
 
-    <target name="fetch-lwjgl">
+    <target name="fetch-lwjgl3">
         <!-- lwjgl -->
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl.jar"/>
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux.jar"/>
@@ -160,7 +160,7 @@
 		<get src="https://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
 
         <!-- lwjgl 3 -->
-        <antcall target="fetch-lwjgl"/>
+        <antcall target="fetch-lwjgl3"/>
 	</target>
 
 	<target name="copy">
