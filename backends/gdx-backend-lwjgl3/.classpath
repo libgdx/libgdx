@@ -22,6 +22,9 @@
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-macos.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-windows.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-windows.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-macos.jar"/>

@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -289,15 +290,17 @@ public class NinePatch {
 		// Add half pixel offsets on stretchable dimensions to avoid color bleeding when GL_LINEAR
 		// filtering is used for the texture. This nudges the texture coordinate to the center
 		// of the texel where the neighboring pixel has 0% contribution in linear blending mode.
-		if (isStretchW) {
-			float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();
-			u += halfTexelWidth;
-			u2 -= halfTexelWidth;
-		}
-		if (isStretchH) {
-			float halfTexelHeight = 0.5f * 1.0f / texture.getHeight();
-			v -= halfTexelHeight;
-			v2 += halfTexelHeight;
+		if (texture.getMagFilter() == TextureFilter.Linear || texture.getMinFilter() == TextureFilter.Linear) {
+			if (isStretchW) {
+				float halfTexelWidth = 0.5f * 1.0f / texture.getWidth();
+				u += halfTexelWidth;
+				u2 -= halfTexelWidth;
+			}
+			if (isStretchH) {
+				float halfTexelHeight = 0.5f * 1.0f / texture.getHeight();
+				v -= halfTexelHeight;
+				v2 += halfTexelHeight;
+			}
 		}
 
 		final float[] vertices = this.vertices;

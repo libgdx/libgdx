@@ -88,6 +88,9 @@
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
+		<ant antfile="fetch.xml">
+			<target name="fetch-lwjgl3"/>
+		</ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
 			<property name="javacTarget" value="1.8"/>
 			<property name="jar" value="gdx-backend-lwjgl3"/>
