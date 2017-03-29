@@ -58132,72 +58132,6 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_BT_1QUANTIZED_1BVH_1NODE_1operatorLessThan(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  BT_QUANTIZED_BVH_NODE *arg1 = (BT_QUANTIZED_BVH_NODE *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(BT_QUANTIZED_BVH_NODE **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (bool)((BT_QUANTIZED_BVH_NODE const *)arg1)->operator <((BT_QUANTIZED_BVH_NODE const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_BT_1QUANTIZED_1BVH_1NODE_1operatorGreaterThan(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  BT_QUANTIZED_BVH_NODE *arg1 = (BT_QUANTIZED_BVH_NODE *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(BT_QUANTIZED_BVH_NODE **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (bool)((BT_QUANTIZED_BVH_NODE const *)arg1)->operator >((BT_QUANTIZED_BVH_NODE const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_BT_1QUANTIZED_1BVH_1NODE_1operatorEqualTo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  BT_QUANTIZED_BVH_NODE *arg1 = (BT_QUANTIZED_BVH_NODE *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(BT_QUANTIZED_BVH_NODE **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (bool)((BT_QUANTIZED_BVH_NODE const *)arg1)->operator ==((BT_QUANTIZED_BVH_NODE const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1BT_1QUANTIZED_1BVH_1NODE(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   BT_QUANTIZED_BVH_NODE *result = 0 ;
@@ -58634,35 +58568,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimQuantizedBvhNodeArray_1less_1operatorFunctionCall(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
-  jboolean jresult = 0 ;
-  btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::less *arg1 = (btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::less *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  BT_QUANTIZED_BVH_NODE *arg3 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  (void)jarg3_;
-  arg1 = *(btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::less **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  arg3 = *(BT_QUANTIZED_BVH_NODE **)&jarg3;
-  if (!arg3) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (bool)((btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::less const *)arg1)->operator ()((BT_QUANTIZED_BVH_NODE const &)*arg2,(BT_QUANTIZED_BVH_NODE const &)*arg3);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btGimQuantizedBvhNodeArray_1less(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::less *result = 0 ;
@@ -58700,50 +58605,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimQuantizedBvhNodeArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *arg1 = (btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (int)((btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > const *)arg1)->findBinarySearch((BT_QUANTIZED_BVH_NODE const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimQuantizedBvhNodeArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *arg1 = (btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return 0;
-  } 
-  result = (int)((btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > const *)arg1)->findLinearSearch((BT_QUANTIZED_BVH_NODE const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimQuantizedBvhNodeArray_1removeAtIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *arg1 = (btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *) 0 ;
   int arg2 ;
@@ -58754,24 +58615,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   arg1 = *(btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > **)&jarg1; 
   arg2 = (int)jarg2; 
   (arg1)->removeAtIndex(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimQuantizedBvhNodeArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *arg1 = (btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > *) 0 ;
-  BT_QUANTIZED_BVH_NODE *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< BT_QUANTIZED_BVH_NODE > **)&jarg1; 
-  arg2 = *(BT_QUANTIZED_BVH_NODE **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BT_QUANTIZED_BVH_NODE const & reference is null");
-    return ;
-  } 
-  (arg1)->remove((BT_QUANTIZED_BVH_NODE const &)*arg2);
 }
 
 
@@ -61303,72 +61146,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_GIM_1CONTACT_1operatorLessThan(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  GIM_CONTACT *arg1 = (GIM_CONTACT *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(GIM_CONTACT **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (bool)((GIM_CONTACT const *)arg1)->operator <((GIM_CONTACT const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_GIM_1CONTACT_1operatorGreaterThan(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  GIM_CONTACT *arg1 = (GIM_CONTACT *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(GIM_CONTACT **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (bool)((GIM_CONTACT const *)arg1)->operator >((GIM_CONTACT const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_GIM_1CONTACT_1operatorEqualTo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jboolean jresult = 0 ;
-  GIM_CONTACT *arg1 = (GIM_CONTACT *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(GIM_CONTACT **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (bool)((GIM_CONTACT const *)arg1)->operator ==((GIM_CONTACT const &)*arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1GIM_1CONTACT_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   GIM_CONTACT *arg1 = 0 ;
@@ -61769,35 +61546,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimContactArray_1less_1operatorFunctionCall(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
-  jboolean jresult = 0 ;
-  btAlignedObjectArray< GIM_CONTACT >::less *arg1 = (btAlignedObjectArray< GIM_CONTACT >::less *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  GIM_CONTACT *arg3 = 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  (void)jarg3_;
-  arg1 = *(btAlignedObjectArray< GIM_CONTACT >::less **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  arg3 = *(GIM_CONTACT **)&jarg3;
-  if (!arg3) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (bool)((btAlignedObjectArray< GIM_CONTACT >::less const *)arg1)->operator ()((GIM_CONTACT const &)*arg2,(GIM_CONTACT const &)*arg3);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btGimContactArray_1less(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   btAlignedObjectArray< GIM_CONTACT >::less *result = 0 ;
@@ -61835,50 +61583,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimContactArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< GIM_CONTACT > *arg1 = (btAlignedObjectArray< GIM_CONTACT > *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< GIM_CONTACT > **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (int)((btAlignedObjectArray< GIM_CONTACT > const *)arg1)->findBinarySearch((GIM_CONTACT const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimContactArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< GIM_CONTACT > *arg1 = (btAlignedObjectArray< GIM_CONTACT > *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< GIM_CONTACT > **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return 0;
-  } 
-  result = (int)((btAlignedObjectArray< GIM_CONTACT > const *)arg1)->findLinearSearch((GIM_CONTACT const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimContactArray_1removeAtIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btAlignedObjectArray< GIM_CONTACT > *arg1 = (btAlignedObjectArray< GIM_CONTACT > *) 0 ;
   int arg2 ;
@@ -61889,24 +61593,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   arg1 = *(btAlignedObjectArray< GIM_CONTACT > **)&jarg1; 
   arg2 = (int)jarg2; 
   (arg1)->removeAtIndex(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btGimContactArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< GIM_CONTACT > *arg1 = (btAlignedObjectArray< GIM_CONTACT > *) 0 ;
-  GIM_CONTACT *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< GIM_CONTACT > **)&jarg1; 
-  arg2 = *(GIM_CONTACT **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "GIM_CONTACT const & reference is null");
-    return ;
-  } 
-  (arg1)->remove((GIM_CONTACT const &)*arg2);
 }
 
 

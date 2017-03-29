@@ -82,18 +82,6 @@ public class BT_QUANTIZED_BVH_NODE extends BulletBase {
     return CollisionJNI.BT_QUANTIZED_BVH_NODE_escapeIndexOrDataIndex_get(swigCPtr, this);
   }
 
-  public boolean operatorLessThan(BT_QUANTIZED_BVH_NODE obj) {
-    return CollisionJNI.BT_QUANTIZED_BVH_NODE_operatorLessThan(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(BT_QUANTIZED_BVH_NODE obj) {
-    return CollisionJNI.BT_QUANTIZED_BVH_NODE_operatorGreaterThan(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(BT_QUANTIZED_BVH_NODE obj) {
-    return CollisionJNI.BT_QUANTIZED_BVH_NODE_operatorEqualTo(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(obj), obj);
-  }
-
   public BT_QUANTIZED_BVH_NODE() {
     this(CollisionJNI.new_BT_QUANTIZED_BVH_NODE(), true);
   }

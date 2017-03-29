@@ -28,6 +28,7 @@ subject to the following restrictions:
 #include "LinearMath/btAlignedObjectArray.h"
 #include "btTriangleShapeEx.h"
 
+
 /**
 Configuration var for applying interpolation of  contact normals
 */
@@ -49,36 +50,6 @@ public:
 public:
     GIM_CONTACT()
     {
-    }
-    
-    bool operator<(const GIM_CONTACT& obj) const {
-        return
-            m_point < obj.m_point &&
-            m_normal < obj.m_normal &&
-            m_depth < obj.m_depth &&
-            m_distance < obj.m_distance &&
-            m_feature1 < obj.m_feature1 &&
-            m_feature2 < obj.m_feature2;
-    }
-    
-    bool operator>(const GIM_CONTACT& obj) const {
-        return
-            m_point > obj.m_point &&
-            m_normal > obj.m_normal &&
-            m_depth > obj.m_depth &&
-            m_distance > obj.m_distance &&
-            m_feature1 > obj.m_feature1 &&
-            m_feature2 > obj.m_feature2;
-    }
-    
-    bool operator==(const GIM_CONTACT& obj) const {
-        return
-            m_point == obj.m_point &&
-            m_normal == obj.m_normal &&
-            m_depth == obj.m_depth &&
-            m_distance == obj.m_distance &&
-            m_feature1 == obj.m_feature1 &&
-            m_feature2 == obj.m_feature2;
     }
 
     GIM_CONTACT(const GIM_CONTACT & contact):

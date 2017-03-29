@@ -112,18 +112,6 @@ public class GIM_CONTACT extends BulletBase {
     this(CollisionJNI.new_GIM_CONTACT__SWIG_0(), true);
   }
 
-  public boolean operatorLessThan(GIM_CONTACT obj) {
-    return CollisionJNI.GIM_CONTACT_operatorLessThan(swigCPtr, this, GIM_CONTACT.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(GIM_CONTACT obj) {
-    return CollisionJNI.GIM_CONTACT_operatorGreaterThan(swigCPtr, this, GIM_CONTACT.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(GIM_CONTACT obj) {
-    return CollisionJNI.GIM_CONTACT_operatorEqualTo(swigCPtr, this, GIM_CONTACT.getCPtr(obj), obj);
-  }
-
   public GIM_CONTACT(GIM_CONTACT contact) {
     this(CollisionJNI.new_GIM_CONTACT__SWIG_1(GIM_CONTACT.getCPtr(contact), contact), true);
   }

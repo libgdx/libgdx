@@ -73,6 +73,11 @@
 %}
 %include "BulletCollision/Gimpact/btGImpactQuantizedBvhStructs.h"
 
+%ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::less::operator();
+%ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::findLinearSearch;
+%ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::findBinarySearch;
+%ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::remove;
+
 %rename(atConst) btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::at(int) const;
 %rename(operatorSubscriptConst) btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::operator [](int) const;
 %template(btGimQuantizedBvhNodeArray) btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>;
@@ -101,6 +106,11 @@
 #include <BulletCollision/Gimpact/btContactProcessingStructs.h>
 %}
 %include "BulletCollision/Gimpact/btContactProcessingStructs.h"
+
+%ignore btAlignedObjectArray<GIM_CONTACT>::less::operator();
+%ignore btAlignedObjectArray<GIM_CONTACT>::findLinearSearch;
+%ignore btAlignedObjectArray<GIM_CONTACT>::findBinarySearch;
+%ignore btAlignedObjectArray<GIM_CONTACT>::remove;
 
 %rename(atConst) btAlignedObjectArray< GIM_CONTACT >::at(int) const;
 %rename(operatorSubscriptConst) btAlignedObjectArray< GIM_CONTACT >::operator [](int) const;

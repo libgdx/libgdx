@@ -37,39 +37,6 @@ ATTRIBUTE_ALIGNED16	(struct) BT_QUANTIZED_BVH_NODE
 	//4 bytes
 	int	m_escapeIndexOrDataIndex;
 
-    bool operator<(const BT_QUANTIZED_BVH_NODE& obj) const {
-        return
-            m_quantizedAabbMin[0] < obj.m_quantizedAabbMin[0] &&
-            m_quantizedAabbMin[1] < obj.m_quantizedAabbMin[1] &&
-            m_quantizedAabbMin[2] < obj.m_quantizedAabbMin[2] &&
-            m_quantizedAabbMax[0] < obj.m_quantizedAabbMax[0] &&
-            m_quantizedAabbMax[1] < obj.m_quantizedAabbMax[1] &&
-            m_quantizedAabbMax[2] < obj.m_quantizedAabbMax[2] &&
-            m_escapeIndexOrDataIndex < obj.m_escapeIndexOrDataIndex;
-    }
-    
-    bool operator>(const BT_QUANTIZED_BVH_NODE& obj) const {
-        return
-            m_quantizedAabbMin[0] > obj.m_quantizedAabbMin[0] &&
-            m_quantizedAabbMin[1] > obj.m_quantizedAabbMin[1] &&
-            m_quantizedAabbMin[2] > obj.m_quantizedAabbMin[2] &&
-            m_quantizedAabbMax[0] > obj.m_quantizedAabbMax[0] &&
-            m_quantizedAabbMax[1] > obj.m_quantizedAabbMax[1] &&
-            m_quantizedAabbMax[2] > obj.m_quantizedAabbMax[2] &&
-            m_escapeIndexOrDataIndex > obj.m_escapeIndexOrDataIndex;
-    }
-    
-    bool operator==(const BT_QUANTIZED_BVH_NODE& obj) const {
-        return
-            m_quantizedAabbMin[0] == obj.m_quantizedAabbMin[0] &&
-            m_quantizedAabbMin[1] == obj.m_quantizedAabbMin[1] &&
-            m_quantizedAabbMin[2] == obj.m_quantizedAabbMin[2] &&
-            m_quantizedAabbMax[0] == obj.m_quantizedAabbMax[0] &&
-            m_quantizedAabbMax[1] == obj.m_quantizedAabbMax[1] &&
-            m_quantizedAabbMax[2] == obj.m_quantizedAabbMax[2] &&
-            m_escapeIndexOrDataIndex == obj.m_escapeIndexOrDataIndex;
-    }
-    
 	BT_QUANTIZED_BVH_NODE()
 	{
 		m_escapeIndexOrDataIndex = 0;

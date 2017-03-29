@@ -177,10 +177,6 @@ public class btGimQuantizedBvhNodeArray extends BulletBase {
   		super.delete();
   	}
   
-    public boolean operatorFunctionCall(BT_QUANTIZED_BVH_NODE a, BT_QUANTIZED_BVH_NODE b) {
-      return CollisionJNI.btGimQuantizedBvhNodeArray_less_operatorFunctionCall(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(a), a, BT_QUANTIZED_BVH_NODE.getCPtr(b), b);
-    }
-  
     public less() {
       this(CollisionJNI.new_btGimQuantizedBvhNodeArray_less(), true);
     }
@@ -191,20 +187,8 @@ public class btGimQuantizedBvhNodeArray extends BulletBase {
     CollisionJNI.btGimQuantizedBvhNodeArray_swap(swigCPtr, this, index0, index1);
   }
 
-  public int findBinarySearch(BT_QUANTIZED_BVH_NODE key) {
-    return CollisionJNI.btGimQuantizedBvhNodeArray_findBinarySearch(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(key), key);
-  }
-
-  public int findLinearSearch(BT_QUANTIZED_BVH_NODE key) {
-    return CollisionJNI.btGimQuantizedBvhNodeArray_findLinearSearch(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(key), key);
-  }
-
   public void removeAtIndex(int index) {
     CollisionJNI.btGimQuantizedBvhNodeArray_removeAtIndex(swigCPtr, this, index);
-  }
-
-  public void remove(BT_QUANTIZED_BVH_NODE key) {
-    CollisionJNI.btGimQuantizedBvhNodeArray_remove(swigCPtr, this, BT_QUANTIZED_BVH_NODE.getCPtr(key), key);
   }
 
   public void initializeFromBuffer(long buffer, int size, int capacity) {
