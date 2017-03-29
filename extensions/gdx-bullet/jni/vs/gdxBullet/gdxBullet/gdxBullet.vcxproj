@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\bullet\Bullet3Common\b3Logging.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
@@ -198,7 +197,6 @@
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\btBulletFile.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btBulletWorldImporter.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp" />
-    <ClCompile Include="..\..\..\swig-src\b3common\b3common_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\collision\collision_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\dynamics\dynamics_wrap.cpp" />
     <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp" />
@@ -263,6 +261,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -272,6 +271,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

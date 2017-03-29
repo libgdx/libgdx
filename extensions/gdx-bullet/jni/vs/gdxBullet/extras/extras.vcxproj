@@ -76,6 +76,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_MBCS;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,6 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_MBCS;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -137,9 +139,6 @@
     <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\b3common\b3common.vcxproj">
-      <Project>{58920bba-0561-4073-9db6-9dc2f6820d12}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\collision\collision.vcxproj">
       <Project>{0964bea7-76e4-41f1-a5a8-4c59edbe8dd3}</Project>
     </ProjectReference>

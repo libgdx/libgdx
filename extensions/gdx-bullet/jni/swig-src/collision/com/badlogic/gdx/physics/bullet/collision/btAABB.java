@@ -80,18 +80,6 @@ public class btAABB extends BulletBase {
     this(CollisionJNI.new_btAABB__SWIG_0(), true);
   }
 
-  public boolean operatorLessThan(btAABB obj) {
-    return CollisionJNI.btAABB_operatorLessThan(swigCPtr, this, btAABB.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(btAABB obj) {
-    return CollisionJNI.btAABB_operatorGreaterThan(swigCPtr, this, btAABB.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(btAABB obj) {
-    return CollisionJNI.btAABB_operatorEqualTo(swigCPtr, this, btAABB.getCPtr(obj), obj);
-  }
-
   public btAABB(Vector3 V1, Vector3 V2, Vector3 V3) {
     this(CollisionJNI.new_btAABB__SWIG_1(V1, V2, V3), true);
   }

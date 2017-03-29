@@ -27,7 +27,7 @@ subject to the following restrictions:
 #include "LinearMath/btTransform.h"
 #include "LinearMath/btAlignedObjectArray.h"
 #include "btTriangleShapeEx.h"
-#include "btContactProcessingSructs.h"
+#include "btContactProcessingStructs.h"
 
 class btContactArray:public btAlignedObjectArray<GIM_CONTACT>
 {

@@ -5,12 +5,11 @@ LOCAL_MODULE    := gdx-bullet
 LOCAL_C_INCLUDES := src/bullet/ src/custom/ src/extras/Serialize/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
-LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -fexceptions
+LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2 -fexceptions
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
 LOCAL_SRC_FILES := memcpy_wrap.c\
-    src/bullet/Bullet3Common/b3Logging.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btAxisSweep3.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btBroadphaseProxy.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btCollisionAlgorithm.cpp\
@@ -190,7 +189,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/extras/InverseDynamics/RandomTreeCreator.cpp\
 	src/extras/InverseDynamics/SimpleTreeCreator.cpp\
 	src/extras/InverseDynamics/User2InternalIndex.cpp\
-	swig-src/b3common/b3common_wrap.cpp\
 	swig-src/collision/collision_wrap.cpp\
 	swig-src/dynamics/dynamics_wrap.cpp\
 	swig-src/inversedynamics/inversedynamics_wrap.cpp\

@@ -67,18 +67,6 @@ public class GIM_BVH_TREE_NODE extends BulletBase {
     return (cPtr == 0) ? null : new btAABB(cPtr, false);
   }
 
-  public boolean operatorLessThan(GIM_BVH_TREE_NODE obj) {
-    return CollisionJNI.GIM_BVH_TREE_NODE_operatorLessThan(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(GIM_BVH_TREE_NODE obj) {
-    return CollisionJNI.GIM_BVH_TREE_NODE_operatorGreaterThan(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(GIM_BVH_TREE_NODE obj) {
-    return CollisionJNI.GIM_BVH_TREE_NODE_operatorEqualTo(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(obj), obj);
-  }
-
   public GIM_BVH_TREE_NODE() {
     this(CollisionJNI.new_GIM_BVH_TREE_NODE(), true);
   }

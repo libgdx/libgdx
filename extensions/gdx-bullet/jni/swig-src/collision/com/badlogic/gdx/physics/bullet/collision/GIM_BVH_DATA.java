@@ -75,18 +75,6 @@ public class GIM_BVH_DATA extends BulletBase {
     return CollisionJNI.GIM_BVH_DATA_data_get(swigCPtr, this);
   }
 
-  public boolean operatorLessThan(GIM_BVH_DATA obj) {
-    return CollisionJNI.GIM_BVH_DATA_operatorLessThan(swigCPtr, this, GIM_BVH_DATA.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(GIM_BVH_DATA obj) {
-    return CollisionJNI.GIM_BVH_DATA_operatorGreaterThan(swigCPtr, this, GIM_BVH_DATA.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(GIM_BVH_DATA obj) {
-    return CollisionJNI.GIM_BVH_DATA_operatorEqualTo(swigCPtr, this, GIM_BVH_DATA.getCPtr(obj), obj);
-  }
-
   public GIM_BVH_DATA() {
     this(CollisionJNI.new_GIM_BVH_DATA(), true);
   }

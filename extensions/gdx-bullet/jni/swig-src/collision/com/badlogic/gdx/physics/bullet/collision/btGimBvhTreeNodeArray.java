@@ -177,10 +177,6 @@ public class btGimBvhTreeNodeArray extends BulletBase {
   		super.delete();
   	}
   
-    public boolean operatorFunctionCall(GIM_BVH_TREE_NODE a, GIM_BVH_TREE_NODE b) {
-      return CollisionJNI.btGimBvhTreeNodeArray_less_operatorFunctionCall(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(a), a, GIM_BVH_TREE_NODE.getCPtr(b), b);
-    }
-  
     public less() {
       this(CollisionJNI.new_btGimBvhTreeNodeArray_less(), true);
     }
@@ -191,20 +187,8 @@ public class btGimBvhTreeNodeArray extends BulletBase {
     CollisionJNI.btGimBvhTreeNodeArray_swap(swigCPtr, this, index0, index1);
   }
 
-  public int findBinarySearch(GIM_BVH_TREE_NODE key) {
-    return CollisionJNI.btGimBvhTreeNodeArray_findBinarySearch(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(key), key);
-  }
-
-  public int findLinearSearch(GIM_BVH_TREE_NODE key) {
-    return CollisionJNI.btGimBvhTreeNodeArray_findLinearSearch(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(key), key);
-  }
-
   public void removeAtIndex(int index) {
     CollisionJNI.btGimBvhTreeNodeArray_removeAtIndex(swigCPtr, this, index);
-  }
-
-  public void remove(GIM_BVH_TREE_NODE key) {
-    CollisionJNI.btGimBvhTreeNodeArray_remove(swigCPtr, this, GIM_BVH_TREE_NODE.getCPtr(key), key);
   }
 
   public void initializeFromBuffer(long buffer, int size, int capacity) {

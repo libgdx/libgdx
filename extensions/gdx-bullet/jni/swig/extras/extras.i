@@ -9,7 +9,6 @@
 %include "../../swig-src/linearmath/classes.i"
 %include "../../swig-src/collision/classes.i"
 %include "../../swig-src/dynamics/classes.i"
-%include "../../swig-src/b3common/classes.i"
 %include "../../swig-src/softbody/classes.i"
 %include "../../swig-src/inversedynamics/classes.i"
 

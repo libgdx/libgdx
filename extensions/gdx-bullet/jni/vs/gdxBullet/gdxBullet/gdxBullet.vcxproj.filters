@@ -88,9 +88,6 @@
     <Filter Include="Source Files\bullet\BulletInverseDynamics\details">
       <UniqueIdentifier>{c7312d05-d1bb-4715-b983-5a46bbf316de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\bullet\Bullet3Common">
-      <UniqueIdentifier>{898e9100-ad72-4814-bab8-8ca3827d0606}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\extras">
       <UniqueIdentifier>{e18bacf3-7b2d-4a9e-95c6-0b3a0a777239}</UniqueIdentifier>
     </Filter>
@@ -606,9 +603,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp">
       <Filter>Source Files\bullet\BulletInverseDynamics\details</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\Bullet3Common\b3Logging.cpp">
-      <Filter>Source Files\bullet\Bullet3Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\extras\InverseDynamics\btMultiBodyTreeCreator.cpp">
       <Filter>Source Files\extras\InverseDynamics</Filter>
     </ClCompile>
@@ -644,9 +638,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\extras\InverseDynamics\User2InternalIndex.cpp">
       <Filter>Source Files\extras\InverseDynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\swig-src\b3common\b3common_wrap.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\swig-src\inversedynamics\inversedynamics_wrap.cpp">
       <Filter>Source Files</Filter>

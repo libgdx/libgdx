@@ -177,10 +177,6 @@ public class btGimBvhDataArray extends BulletBase {
   		super.delete();
   	}
   
-    public boolean operatorFunctionCall(GIM_BVH_DATA a, GIM_BVH_DATA b) {
-      return CollisionJNI.btGimBvhDataArray_less_operatorFunctionCall(swigCPtr, this, GIM_BVH_DATA.getCPtr(a), a, GIM_BVH_DATA.getCPtr(b), b);
-    }
-  
     public less() {
       this(CollisionJNI.new_btGimBvhDataArray_less(), true);
     }
@@ -191,20 +187,8 @@ public class btGimBvhDataArray extends BulletBase {
     CollisionJNI.btGimBvhDataArray_swap(swigCPtr, this, index0, index1);
   }
 
-  public int findBinarySearch(GIM_BVH_DATA key) {
-    return CollisionJNI.btGimBvhDataArray_findBinarySearch(swigCPtr, this, GIM_BVH_DATA.getCPtr(key), key);
-  }
-
-  public int findLinearSearch(GIM_BVH_DATA key) {
-    return CollisionJNI.btGimBvhDataArray_findLinearSearch(swigCPtr, this, GIM_BVH_DATA.getCPtr(key), key);
-  }
-
   public void removeAtIndex(int index) {
     CollisionJNI.btGimBvhDataArray_removeAtIndex(swigCPtr, this, index);
-  }
-
-  public void remove(GIM_BVH_DATA key) {
-    CollisionJNI.btGimBvhDataArray_remove(swigCPtr, this, GIM_BVH_DATA.getCPtr(key), key);
   }
 
   public void initializeFromBuffer(long buffer, int size, int capacity) {

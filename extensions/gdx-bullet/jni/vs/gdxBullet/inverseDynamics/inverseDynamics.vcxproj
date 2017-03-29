@@ -76,6 +76,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_MBCS;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,6 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_MBCS;BT_USE_INVERSE_DYNAMICS_WITH_BULLET2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -124,9 +126,6 @@
     <ClCompile Include="..\..\..\swig-src\inversedynamics\inversedynamics_wrap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\b3common\b3common.vcxproj">
-      <Project>{58920BBA-0561-4073-9DB6-9DC2F6820D12}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\dynamics\dynamics.vcxproj">
       <Project>{58920bba-0561-4073-9db6-9dc2f6820d52}</Project>
     </ProjectReference>

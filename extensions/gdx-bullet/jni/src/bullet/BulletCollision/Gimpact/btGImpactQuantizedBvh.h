@@ -26,7 +26,7 @@ subject to the following restrictions:
 
 #include "btGImpactBvh.h"
 #include "btQuantization.h"
-#include "btGImpactQuantizedBvhSructs.h"
+#include "btGImpactQuantizedBvhStructs.h"
 
 class GIM_QUANTIZED_BVH_NODE_ARRAY:public btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>
 {

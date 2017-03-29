@@ -29,7 +29,7 @@ subject to the following restrictions:
 
 #include "btBoxCollision.h"
 #include "btTriangleShapeEx.h"
-#include "btGImpactBvhSructs.h"
+#include "btGImpactBvhStructs.h"
 
 //! A pairset array
 class btPairSet: public btAlignedObjectArray<GIM_PAIR>

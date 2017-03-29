@@ -35,25 +35,6 @@ struct GIM_PAIR
 {
     int m_index1;
     int m_index2;
-    
-    bool operator<(const GIM_PAIR& obj) const {
-        return
-            m_index1 < obj.m_index1 &&
-            m_index2 < obj.m_index2;
-    }
-    
-    bool operator>(const GIM_PAIR& obj) const {
-        return
-            m_index1 > obj.m_index1 &&
-            m_index2 > obj.m_index2;
-    }
-    
-    bool operator==(const GIM_PAIR& obj) const {
-        return
-            m_index1 == obj.m_index1 &&
-            m_index2 == obj.m_index2;
-    }
-    
     GIM_PAIR()
     {}
 
@@ -75,24 +56,6 @@ struct GIM_BVH_DATA
 {
 	btAABB m_bound;
 	int m_data;
-	
-    bool operator<(const GIM_BVH_DATA& obj) const {
-        return
-            m_bound < obj.m_bound &&
-            m_data < obj.m_data;
-    }
-    
-    bool operator>(const GIM_BVH_DATA& obj) const {
-        return
-            m_bound > obj.m_bound &&
-            m_data > obj.m_data;
-    }
-    
-    bool operator==(const GIM_BVH_DATA& obj) const {
-        return
-            m_bound == obj.m_bound &&
-            m_data == obj.m_data;
-    }
 };
 
 //! Node Structure for trees
@@ -103,25 +66,6 @@ public:
 protected:
 	int	m_escapeIndexOrDataIndex;
 public:
-
-    bool operator<(const GIM_BVH_TREE_NODE& obj) const {
-        return
-            m_bound < obj.m_bound &&
-            m_escapeIndexOrDataIndex < obj.m_escapeIndexOrDataIndex;
-    }
-    
-    bool operator>(const GIM_BVH_TREE_NODE& obj) const {
-        return
-            m_bound > obj.m_bound &&
-            m_escapeIndexOrDataIndex > obj.m_escapeIndexOrDataIndex;
-    }
-    
-    bool operator==(const GIM_BVH_TREE_NODE& obj) const {
-        return
-            m_bound == obj.m_bound &&
-            m_escapeIndexOrDataIndex == obj.m_escapeIndexOrDataIndex;
-    }
-    
 	GIM_BVH_TREE_NODE()
 	{
 		m_escapeIndexOrDataIndex = 0;

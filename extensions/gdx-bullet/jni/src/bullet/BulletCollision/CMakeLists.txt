@@ -190,15 +190,15 @@ SET(CollisionShapes_HDRS
 SET(Gimpact_HDRS
 	Gimpact/btBoxCollision.h
 	Gimpact/btClipPolygon.h
-	Gimpact/btContactProcessingSructs.h
+	Gimpact/btContactProcessingStructs.h
 	Gimpact/btContactProcessing.h
 	Gimpact/btGenericPoolAllocator.h
 	Gimpact/btGeometryOperations.h
-	Gimpact/btGImpactBvhSructs.h
+	Gimpact/btGImpactBvhStructs.h
 	Gimpact/btGImpactBvh.h
 	Gimpact/btGImpactCollisionAlgorithm.h
 	Gimpact/btGImpactMassUtil.h
-	Gimpact/btGImpactQuantizedBvhSructs.h
+	Gimpact/btGImpactQuantizedBvhStructs.h
 	Gimpact/btGImpactQuantizedBvh.h
 	Gimpact/btGImpactShape.h
 	Gimpact/btQuantization.h

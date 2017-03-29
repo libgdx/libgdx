@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extras", "extras\extras.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inverseDynamics", "inverseDynamics\inverseDynamics.vcxproj", "{58920BBA-0561-4073-9DB6-9DC2F6820D58}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "b3common", "b3common\b3common.vcxproj", "{58920BBA-0561-4073-9DB6-9DC2F6820D12}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -73,14 +71,6 @@ Global
 		{58920BBA-0561-4073-9DB6-9DC2F6820D58}.Release|Win32.Build.0 = Release|Win32
 		{58920BBA-0561-4073-9DB6-9DC2F6820D58}.Release|x64.ActiveCfg = Release|x64
 		{58920BBA-0561-4073-9DB6-9DC2F6820D58}.Release|x64.Build.0 = Release|x64
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Debug|Win32.ActiveCfg = Debug|Win32
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Debug|Win32.Build.0 = Debug|Win32
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Debug|x64.ActiveCfg = Debug|x64
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Debug|x64.Build.0 = Debug|x64
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Release|Win32.ActiveCfg = Release|Win32
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Release|Win32.Build.0 = Release|Win32
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Release|x64.ActiveCfg = Release|x64
-		{58920BBA-0561-4073-9DB6-9DC2F6820D12}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -74,18 +74,6 @@ public class GIM_PAIR extends BulletBase {
     return CollisionJNI.GIM_PAIR_index2_get(swigCPtr, this);
   }
 
-  public boolean operatorLessThan(GIM_PAIR obj) {
-    return CollisionJNI.GIM_PAIR_operatorLessThan(swigCPtr, this, GIM_PAIR.getCPtr(obj), obj);
-  }
-
-  public boolean operatorGreaterThan(GIM_PAIR obj) {
-    return CollisionJNI.GIM_PAIR_operatorGreaterThan(swigCPtr, this, GIM_PAIR.getCPtr(obj), obj);
-  }
-
-  public boolean operatorEqualTo(GIM_PAIR obj) {
-    return CollisionJNI.GIM_PAIR_operatorEqualTo(swigCPtr, this, GIM_PAIR.getCPtr(obj), obj);
-  }
-
   public GIM_PAIR() {
     this(CollisionJNI.new_GIM_PAIR__SWIG_0(), true);
   }

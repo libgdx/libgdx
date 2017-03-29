@@ -68,17 +68,34 @@ typedef btScalar idScalar;
 #ifdef BT_USE_DOUBLE_PRECISION
 #define BT_ID_USE_DOUBLE_PRECISION
 #endif
+
+#ifndef BT_USE_INVERSE_DYNAMICS_WITH_BULLET2
+
+
 // use bullet types for arrays and array indices
-#include "LinearMath/btAlignedObjectArray.h"
+#include "Bullet3Common/b3AlignedObjectArray.h"
 // this is to make it work with C++2003, otherwise we could do this:
 // template <typename T>
 // using idArray = b3AlignedObjectArray<T>;
+template <typename T>
+struct idArray {
+	typedef b3AlignedObjectArray<T> type;
+};
+typedef int idArrayIdx;
+#define ID_DECLARE_ALIGNED_ALLOCATOR() B3_DECLARE_ALIGNED_ALLOCATOR()
+
+#else // BT_USE_INVERSE_DYNAMICS_WITH_BULLET2
+
+#include "LinearMath/btAlignedObjectArray.h"
 template <typename T>
 struct idArray {
 	typedef btAlignedObjectArray<T> type;
 };
 typedef int idArrayIdx;
 #define ID_DECLARE_ALIGNED_ALLOCATOR() BT_DECLARE_ALIGNED_ALLOCATOR()
+
+#endif // BT_USE_INVERSE_DYNAMICS_WITH_BULLET2
+
 
 // use bullet's allocator functions
 #define idMalloc btAllocFunc

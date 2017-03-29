@@ -29,9 +29,25 @@
 //////////////////////////////////////////////////////////////
 
 %{
-#include <BulletCollision/Gimpact/btGImpactBvhSructs.h>
+#include <BulletCollision/Gimpact/btGImpactBvhStructs.h>
 %}
-%include "BulletCollision/Gimpact/btGImpactBvhSructs.h"
+%include "BulletCollision/Gimpact/btGImpactBvhStructs.h"
+
+%ignore btAlignedObjectArray<GIM_PAIR>::less::operator();
+%ignore btAlignedObjectArray<GIM_BVH_DATA>::less::operator();
+%ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::less::operator();
+
+%ignore btAlignedObjectArray<GIM_PAIR>::findLinearSearch;
+%ignore btAlignedObjectArray<GIM_BVH_DATA>::findLinearSearch;
+%ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::findLinearSearch;
+
+%ignore btAlignedObjectArray<GIM_PAIR>::findBinarySearch;
+%ignore btAlignedObjectArray<GIM_BVH_DATA>::findBinarySearch;
+%ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::findBinarySearch;
+
+%ignore btAlignedObjectArray<GIM_PAIR>::remove;
+%ignore btAlignedObjectArray<GIM_BVH_DATA>::remove;
+%ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::remove;
 
 %rename(atConst) btAlignedObjectArray< GIM_PAIR >::at(int) const;
 %rename(operatorSubscriptConst) btAlignedObjectArray< GIM_PAIR >::operator [](int) const;
@@ -53,9 +69,9 @@
 //////////////////////////////////////////////////////////////
 
 %{
-#include <BulletCollision/Gimpact/btGImpactQuantizedBvhSructs.h>
+#include <BulletCollision/Gimpact/btGImpactQuantizedBvhStructs.h>
 %}
-%include "BulletCollision/Gimpact/btGImpactQuantizedBvhSructs.h"
+%include "BulletCollision/Gimpact/btGImpactQuantizedBvhStructs.h"
 
 %rename(atConst) btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::at(int) const;
 %rename(operatorSubscriptConst) btAlignedObjectArray< BT_QUANTIZED_BVH_NODE >::operator [](int) const;
@@ -82,9 +98,9 @@
 //////////////////////////////////////////////////////////////
 
 %{
-#include <BulletCollision/Gimpact/btContactProcessingSructs.h>
+#include <BulletCollision/Gimpact/btContactProcessingStructs.h>
 %}
-%include "BulletCollision/Gimpact/btContactProcessingSructs.h"
+%include "BulletCollision/Gimpact/btContactProcessingStructs.h"
 
 %rename(atConst) btAlignedObjectArray< GIM_CONTACT >::at(int) const;
 %rename(operatorSubscriptConst) btAlignedObjectArray< GIM_CONTACT >::operator [](int) const;

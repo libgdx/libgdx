@@ -38,6 +38,7 @@
 			<arg value="-I${basedir}/../src/custom" />
 			<arg value="-I${basedir}/../src/extras" />
 			<arg value="-I${basedir}/../src/extras/Serialize" />
+			<arg value="-DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2" />
 			<!-- Disable Bullet profiling -->
 			<arg value="-DBT_NO_PROFILE" />
 			<arg value="-outdir" />
