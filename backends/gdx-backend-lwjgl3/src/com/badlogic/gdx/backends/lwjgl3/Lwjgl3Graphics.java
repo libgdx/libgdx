@@ -370,24 +370,18 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		GLFW.glfwSetWindowTitle(window.getWindowHandle(), title);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setUndecorated(boolean undecorated) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setDecorated(!undecorated);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setResizable(boolean resizable) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setResizable(resizable);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override

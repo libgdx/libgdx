@@ -378,6 +378,10 @@ public class ParticleEmitter {
 		return new Particle(sprite);
 	}
 
+	protected Particle[] getParticles () {
+		return particles;
+	}
+
 	private void activateParticle (int index) {
 		Particle particle = particles[index];
 		if (particle == null) {

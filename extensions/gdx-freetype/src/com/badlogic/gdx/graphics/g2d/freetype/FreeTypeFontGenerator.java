@@ -537,22 +537,23 @@ public class FreeTypeFontGenerator implements Disposable {
 				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
 
 				Color shadowColor = parameter.shadowColor;
-				byte r = (byte)(shadowColor.r * 255), g = (byte)(shadowColor.g * 255), b = (byte)(shadowColor.b * 255);
 				float a = shadowColor.a;
-
-				ByteBuffer mainPixels = mainPixmap.getPixels();
-				ByteBuffer shadowPixels = shadowPixmap.getPixels();
-				for (int y = 0; y < mainH; y++) {
-					int shadowRow = shadowW * (y + shadowOffsetY) + shadowOffsetX;
-					for (int x = 0; x < mainW; x++) {
-						int mainPixel = (mainW * y + x) * 4;
-						byte mainA = mainPixels.get(mainPixel + 3);
-						if (mainA == 0) continue;
-						int shadowPixel = (shadowRow + x) * 4;
-						shadowPixels.put(shadowPixel, r);
-						shadowPixels.put(shadowPixel + 1, g);
-						shadowPixels.put(shadowPixel + 2, b);
-						shadowPixels.put(shadowPixel + 3, (byte)((mainA & 0xff) * a));
+				if (a != 0) {
+					byte r = (byte)(shadowColor.r * 255), g = (byte)(shadowColor.g * 255), b = (byte)(shadowColor.b * 255);
+					ByteBuffer mainPixels = mainPixmap.getPixels();
+					ByteBuffer shadowPixels = shadowPixmap.getPixels();
+					for (int y = 0; y < mainH; y++) {
+						int shadowRow = shadowW * (y + shadowOffsetY) + shadowOffsetX;
+						for (int x = 0; x < mainW; x++) {
+							int mainPixel = (mainW * y + x) * 4;
+							byte mainA = mainPixels.get(mainPixel + 3);
+							if (mainA == 0) continue;
+							int shadowPixel = (shadowRow + x) * 4;
+							shadowPixels.put(shadowPixel, r);
+							shadowPixels.put(shadowPixel + 1, g);
+							shadowPixels.put(shadowPixel + 2, b);
+							shadowPixels.put(shadowPixel + 3, (byte)((mainA & 0xff) * a));
+						}
 					}
 				}
 
@@ -753,7 +754,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int shadowOffsetX = 0;
 		/** Offset of text shadow on Y axis in pixels, 0 to disable */
 		public int shadowOffsetY = 0;
-		/** Shadow color; only used if shadowOffset > 0 */
+		/** Shadow color; only used if shadowOffset > 0. If alpha component is 0, no shadow is drawn but characters are still offset
+		 * by shadowOffset. */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** Pixels to add to glyph spacing. Can be negative. */
 		public int spaceX, spaceY;

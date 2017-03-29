@@ -215,7 +215,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			float x = indent;
 			if (node.icon != null) x += node.icon.getMinWidth();
-			y -= node.height;
+			y -= node.getHeight();
 			node.actor.setPosition(x, y);
 			y -= ySpacing;
 			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
@@ -224,11 +224,20 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		drawBackground(batch, parentAlpha, getX(), getY());
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, leftColumnWidth);
 		super.draw(batch, parentAlpha); // Draw actors.
+	}
+
+	/** Called to draw the background. Default implementation draws the style background drawable. */
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		if (style.background != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
 	}
 
 	/** Draws selection, icons, and expand icons. */
@@ -272,11 +281,13 @@ public class Tree extends WidgetGroup {
 	private float getNodeAt (Array<Node> nodes, float y, float rowY) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (y >= rowY - node.height - ySpacing && y < rowY) {
+			float height = node.height;
+			rowY -= node.getHeight() - height; // Node subclass may increase getHeight.
+			if (y >= rowY - height - ySpacing && y < rowY) {
 				foundNode = node;
 				return -1;
 			}
-			rowY -= node.height + ySpacing;
+			rowY -= height + ySpacing;
 			if (node.expanded) {
 				rowY = getNodeAt(node.children, y, rowY);
 				if (rowY == -1) return -1;
@@ -624,6 +635,12 @@ public class Tree extends WidgetGroup {
 					node.expandTo();
 				}
 			}
+		}
+
+		/** Returns the height of the node as calculated for layout. A subclass may override and increase the returned height to
+		 * create a blank space in the tree above the node, eg for a separator. */
+		public float getHeight () {
+			return height;
 		}
 	}
 

@@ -307,11 +307,33 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor == firstWidget) {
+			setFirstWidget(null);
+			return true;
+		}
+		if (actor == secondWidget) {
+			setSecondWidget(null);
+			return true;
+		}
+		return true;
 	}
 
 	public boolean removeActor (Actor actor, boolean unfocus) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor == firstWidget) {
+			super.removeActor(actor, unfocus);
+			firstWidget = null;
+			invalidate();
+			return true;
+		}
+		if (actor == secondWidget) {
+			super.removeActor(actor, unfocus);
+			secondWidget = null;
+			invalidate();
+			return true;
+		}
+		return false;
 	}
 
 	/** The style for a splitpane, see {@link SplitPane}.
