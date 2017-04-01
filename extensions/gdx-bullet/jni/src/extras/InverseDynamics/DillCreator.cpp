@@ -4,7 +4,7 @@ namespace btInverseDynamics {
 
 DillCreator::DillCreator(int level)
     : m_level(level),
-      m_num_bodies(BT_ID_POW(2, level))
+      m_num_bodies(static_cast<int>(BT_ID_POW(2, level)))
      {
 		  m_parent.resize(m_num_bodies);
 		m_parent_r_parent_body_ref.resize(m_num_bodies);
@@ -79,7 +79,7 @@ int DillCreator::recurseDill(const int level, const int parent, const idScalar d
         return -1;
     }
 
-    idScalar size = BT_ID_MAX(level, 1);
+    idScalar size = static_cast<idScalar>(BT_ID_MAX(level, 1));
     const int body = m_current_body;
     //  length = 0.1 * size;
     //  with = 2 * 0.01 * size;
@@ -87,8 +87,8 @@ int DillCreator::recurseDill(const int level, const int parent, const idScalar d
     /// these parameters are from the paper ...
     /// TODO: add proper citation
     m_parent[body] = parent;
-    m_mass[body] = 0.1 * BT_ID_POW(size, 3);
-    m_body_r_body_com[body](0) = 0.05 * size;
+    m_mass[body] = static_cast<idScalar>(0.1 * BT_ID_POW(size, 3));
+    m_body_r_body_com[body](0) = static_cast<idScalar>(0.05 * size);
     m_body_r_body_com[body](1) = 0;
     m_body_r_body_com[body](2) = 0;
     // initialization
@@ -100,8 +100,8 @@ int DillCreator::recurseDill(const int level, const int parent, const idScalar d
         }
     }
     const idScalar size_5 = pow(size, 5);
-    m_body_I_body[body](0, 0) = size_5 / 0.2e6;
-    m_body_I_body[body](1, 1) = size_5 * 403 / 1.2e6;
+    m_body_I_body[body](0, 0) = static_cast<idScalar>(size_5 / 0.2e6);
+    m_body_I_body[body](1, 1) = static_cast<idScalar>(size_5 * 403 / 1.2e6);
     m_body_I_body[body](2, 2) = m_body_I_body[body](1, 1);
 
     getVecMatFromDH(0, 0, a_DH_in, alpha_DH_in, &m_parent_r_parent_body_ref[body],
@@ -109,12 +109,12 @@ int DillCreator::recurseDill(const int level, const int parent, const idScalar d
 
     // attach "level" Dill systems of levels 1...level
     for (int i = 1; i <= level; i++) {
-        idScalar d_DH = 0.01 * size;
+        idScalar d_DH = static_cast<idScalar>(0.01 * size);
         if (i == level) {
             d_DH = 0.0;
         }
-        const idScalar a_DH = i * 0.1;
-        const idScalar alpha_DH = i * BT_ID_PI / 3.0;
+        const idScalar a_DH = static_cast<idScalar>(i * 0.1);
+        const idScalar alpha_DH = static_cast<idScalar>(i * BT_ID_PI / 3.0);
         m_current_body++;
         recurseDill(i - 1, body, d_DH, a_DH, alpha_DH);
     }

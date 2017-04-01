@@ -123,6 +123,7 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btPolarDecomposition.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btThreads.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\common\jniHelpers.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp" />

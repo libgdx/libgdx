@@ -218,7 +218,7 @@ unsigned long long int btClock::getTimeNanoseconds()
 		QueryPerformanceCounter(&currentTime);
 		elapsedTime.QuadPart = currentTime.QuadPart - 
 			m_data->mStartTime.QuadPart;
-		elapsedTime.QuadPart *= 1e9;
+		elapsedTime.QuadPart *= static_cast<LONGLONG>(1e9);
 		elapsedTime.QuadPart /= m_data->mClockFrequency.QuadPart;
 
 		return (unsigned long long) elapsedTime.QuadPart;
@@ -287,7 +287,7 @@ static btClock gProfileClock;
 
 inline void Profile_Get_Ticks(unsigned long int * ticks)
 {
-	*ticks = gProfileClock.getTimeMicroseconds();
+	*ticks = static_cast<unsigned long int>(gProfileClock.getTimeMicroseconds());
 }
 
 inline float Profile_Get_Tick_Rate(void)

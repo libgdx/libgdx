@@ -248,8 +248,8 @@ int btMultiBodyTreeCreator::getBody(const int body_index, int *parent_index, Joi
     }
 
     if (body_index < 0 || body_index >= static_cast<int>(m_data.size())) {
-        error_message("index out of range (got %d but only %zu bodies)\n", body_index,
-                      m_data.size());
+        error_message("index out of range (got %d but only %d bodies)\n", body_index,
+                      static_cast<int>(m_data.size()));
         return -1;
     }
 

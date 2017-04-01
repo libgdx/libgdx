@@ -29,7 +29,7 @@
 #define BT_ID_COS(x) btCos(x)
 #define BT_ID_SIN(x) btSin(x)
 #define BT_ID_ATAN2(x, y) btAtan2(x, y)
-#define BT_ID_POW(x, y) btPow(x, y)
+#define BT_ID_POW(x, y) btPow(static_cast<btScalar>(x), static_cast<btScalar>(y))
 #define BT_ID_PI SIMD_PI
 #ifdef _WIN32
 	#define BT_ID_SNPRINTF _snprintf

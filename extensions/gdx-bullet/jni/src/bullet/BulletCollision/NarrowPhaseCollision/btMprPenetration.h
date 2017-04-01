@@ -40,7 +40,7 @@ struct btMprCollisionDescription
     :	m_firstDir(0,1,0),
         m_maxGjkIterations(1000),
         m_maximumDistanceSquared(1e30f),
-        m_gjkRelError2(1.0e-6)
+        m_gjkRelError2(static_cast<btScalar>(1.0e-6))
     {
     }
     virtual ~btMprCollisionDescription()
@@ -62,7 +62,7 @@ struct btMprDistanceInfo
 #define BT_MPR_SQRT sqrt
 #endif
 #define BT_MPR_FMIN(x, y) ((x) < (y) ? (x) : (y))
-#define BT_MPR_FABS fabs
+#define BT_MPR_FABS(val) static_cast<btScalar>(fabs(static_cast<btScalar>(val)))
 
 #define BT_MPR_TOLERANCE 1E-6f
 #define BT_MPR_MAX_ITERATIONS 1000
@@ -110,7 +110,7 @@ inline int btMprSimplexSize(const btMprSimplex_t *s)
 }
 
 
-inline const btMprSupport_t* btMprSimplexPoint(const btMprSimplex_t* s, int idx)
+inline const btMprSupport_t* btMprSimplexPoint(const btMprSimplex_t* s, const size_t idx)
 {
     // here is no check on boundaries
     return &s->ps[idx];
@@ -137,17 +137,17 @@ inline void btMprSimplexSwap(btMprSimplex_t *s, size_t pos1, size_t pos2)
 }
 
 
-inline int btMprIsZero(float val)
+inline int btMprIsZero(const btScalar val)
 {
     return BT_MPR_FABS(val) < FLT_EPSILON;
 }
 
 
 
-inline int btMprEq(float _a, float _b)
+inline int btMprEq(const btScalar _a, const btScalar _b)
 {
-    float ab;
-    float a, b;
+    btScalar ab;
+    btScalar a, b;
 
     ab = BT_MPR_FABS(_a - _b);
     if (BT_MPR_FABS(ab) < FLT_EPSILON)
