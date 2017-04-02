@@ -21,6 +21,7 @@ ext {
 dependencies {
     compile project(":tests:gdx-tests")
     compile project(":backends:gdx-backend-lwjgl")
+    compile project(":extensions:gdx-controllers:gdx-controllers-desktop")
     compile testnatives.desktop
 }
 
