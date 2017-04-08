@@ -17,6 +17,7 @@
 package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /** Represents a connected controller. Provides methods to query the state of buttons, axes, POVs, sliders and accelerometers on
  * the controller. Multiple {@link ControllerListener} instances can be registered with the Controller to receive events in case
@@ -62,4 +63,8 @@ public interface Controller {
 	/** Removes the given {@link ControllerListener}
 	 * @param listener */
 	public void removeListener (ControllerListener listener);
+
+	 /** Returns the array of {@link ControllerListener}s
+	  * attached to the current {@link Controller}*/
+	 public Array<ControllerListener> getListeners();
 }
