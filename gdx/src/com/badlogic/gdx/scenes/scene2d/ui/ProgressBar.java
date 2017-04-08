@@ -359,6 +359,11 @@ public class ProgressBar extends Widget implements Disableable {
 	public boolean isDisabled () {
 		return disabled;
 	}
+	
+	/** True if the progress bar is vertical, false if it is horizontal. **/
+	public boolean isVertical() {
+		return vertical;
+	}
 
 	/** The style for a progress bar, see {@link ProgressBar}.
 	 * @author mzechner
