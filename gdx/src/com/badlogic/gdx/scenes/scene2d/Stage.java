@@ -781,6 +781,10 @@ public class Stage extends InputAdapter implements Disposable {
 		else
 			root.setDebug(false, true);
 	}
+	
+	public boolean isDebugAll () {
+		return debugAll;
+	}
 
 	/** If true, debug is enabled only for the actor under the mouse. Can be combined with {@link #setDebugAll(boolean)}. */
 	public void setDebugUnderMouse (boolean debugUnderMouse) {
