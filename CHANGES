@@ -2,6 +2,9 @@
 - LWJGL3: The creation of additional windows via Lwjgl3Application.newWindow() is now deferred, with postRunnable(), until all existing windows have been updated. This fixes a potential native crash with NVidia GL drivers on Windows, presumably caused by a GL context conflict.
 - API addition: Lwjgl3WindowListener.created() is called after a new window has been created. It's unsafe to call Lwjgl3Window functions in between Lwjgl3Application.newWindow() and this callback.
 - Updated LWJGL3 backend to 3.1.1. Lwjgl3Graphics.setUndecorated() and Lwjgl3Graphics.setResizable() now delegate their work to the respective GLFW functions.
+- API addition: ProgressBar.isVertical() - returns whether a progress bar is vertical or horizontal.
+- API Change: SplitPane now by default does not allow the split amount to shrink children below their minimum sizes (cropping them). This behavior can be reverted by overriding clampSplitAmount or wrapping the children in Containers set to minSize(0) and fill(). SplitPane also now correctly includes the handle min size in its own min size calculations.
+- API Change: SplitPane.getSplit() renamed to SplitPane.getSplitAmount() to match other getter and setter names.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
