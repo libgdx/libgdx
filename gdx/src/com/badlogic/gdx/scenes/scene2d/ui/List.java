@@ -49,9 +49,7 @@ public class List<T> extends Widget implements Cullable {
 	private Rectangle cullingArea;
 	private float prefWidth, prefHeight;
 	private float itemHeight;
-	private float textOffsetX, textOffsetY;
-	private GlyphLayout layout = new GlyphLayout();
-	private int listAlignment = Align.left;
+	private int alignment = Align.left;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -120,9 +118,6 @@ public class List<T> extends Widget implements Cullable {
 		itemHeight = font.getCapHeight() - font.getDescent() * 2;
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
 
-		textOffsetX = selectedDrawable.getLeftWidth();
-		textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
-
 		prefWidth = 0;
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
@@ -165,6 +160,9 @@ public class List<T> extends Widget implements Cullable {
 			width -= leftWidth + background.getRightWidth();
 		}
 
+		float textOffsetX = selectedDrawable.getLeftWidth(), textWidth = width - textOffsetX - selectedDrawable.getRightWidth();
+		float textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
+
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		for (int i = 0; i < items.size; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
@@ -174,7 +172,7 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-        drawItem(batch, layout, font, i, item, x + textOffsetX, y + itemY - textOffsetY, width);
+				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY, textWidth);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
 						fontColorUnselected.a * parentAlpha);
@@ -186,23 +184,9 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-/**
-	 * Sets the alignment of the items in the list.
-	 * @param listAlignment The alignment. Use Align constants.
-	 */
-	public void setListAlignment(int listAlignment){
-		this.listAlignment = listAlignment;
-	}
-
-	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y) {
-		return font.draw(batch, toString(item), x, y);
-	}
-
-	protected GlyphLayout drawItem (Batch batch, GlyphLayout layout, BitmapFont font, int index, T item, float x, float y, float width) {
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y, float width) {
 		String string = toString(item);
-		layout.setText(font, string, 0, string.length(), font.getColor(), width, listAlignment, false, "...");
-		font.draw(batch, layout, x, y);
-		return layout;
+		return font.draw(batch, string, x, y, 0, string.length(), width, alignment, false, "...");
 	}
 
 	public ArraySelection<T> getSelection () {
@@ -300,6 +284,12 @@ public class List<T> extends Widget implements Cullable {
 
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
+	}
+
+	/** Sets the horizontal alignment of the list items.
+	 * @param alignment See {@link Align}. */
+	public void setAlignment (int alignment) {
+		this.alignment = alignment;
 	}
 
 	/** The style for a list, see {@link List}.

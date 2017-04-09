@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -41,11 +43,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
  * <p>
@@ -65,8 +62,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	boolean disabled;
-	private GlyphLayout layout = new GlyphLayout();
-	private int selectedAlignment = Align.left;
+	private int alignment = Align.left;
 
 	public SelectBox (Skin skin) {
 		this(skin.get(SelectBoxStyle.class));
@@ -219,21 +215,18 @@ public class SelectBox<T> extends Widget implements Disableable {
 			background = style.background;
 		else
 			background = null;
-		final BitmapFont font = style.font;
-		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
+		BitmapFont font = style.font;
+		Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
 
 		Color color = getColor();
-		float x = getX();
-		float y = getY();
-		float width = getWidth();
-		float height = getHeight();
+		float x = getX(), y = getY();
+		float width = getWidth(), height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (background != null) background.draw(batch, x, y, width, height);
 
 		T selected = selection.first();
 		if (selected != null) {
-			String string = toString(selected);
 			if (background != null) {
 				width -= background.getLeftWidth() + background.getRightWidth();
 				height -= background.getBottomHeight() + background.getTopHeight();
@@ -243,17 +236,20 @@ public class SelectBox<T> extends Widget implements Disableable {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			layout.setText(font, string, 0, string.length(), font.getColor(), width, selectedAlignment, false, "...");
-			font.draw(batch, layout, x, y);
+			drawItem(batch, font, selected, x, y, width);
 		}
 	}
 
-	/**
-	 * Sets the alignment of the selected element.
-	 * @param alignment The alignment. Use Align constants.
-     */
-	public void setSelectedAlignment(int alignment){
-		this.selectedAlignment = alignment;
+	protected GlyphLayout drawItem (Batch batch, BitmapFont font, T item, float x, float y, float width) {
+		String string = toString(item);
+		return font.draw(batch, string, x, y, 0, string.length(), width, alignment, false, "...");
+	}
+
+	/** Sets the alignment of the selected item in the select box. See {@link #getList()} and {@link List#setAlignment(int)} to set
+	 * the alignment in the list shown when the select box is open.
+	 * @param alignment See {@link Align}. */
+	public void setAlignment (int alignment) {
+		this.alignment = alignment;
 	}
 
 	/** Get the set of selected items, useful when multiple items are selected

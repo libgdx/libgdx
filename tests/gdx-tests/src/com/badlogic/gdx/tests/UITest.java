@@ -105,6 +105,10 @@ public class UITest extends GdxTest {
 		textfield.setMessageText("Click here!");
 		textfield.setAlignment(Align.center);
 		final SelectBox selectBox = new SelectBox(skin);
+		selectBox.setAlignment(Align.right);
+		selectBox.getList().setAlignment(Align.right);
+		selectBox.getStyle().listStyle.selection.setRightWidth(10);
+		selectBox.getStyle().listStyle.selection.setLeftWidth(20);
 		selectBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println(selectBox.getSelected());
@@ -137,7 +141,9 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
-		buttonMulti.addListener(new TextTooltip("This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!", skin));
+		buttonMulti.addListener(new TextTooltip(
+			"This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!",
+			skin));
 		Table tooltipTable = new Table(skin);
 		tooltipTable.pad(10).background("default-round");
 		tooltipTable.add(new TextButton("Fancy tooltip!", skin));
