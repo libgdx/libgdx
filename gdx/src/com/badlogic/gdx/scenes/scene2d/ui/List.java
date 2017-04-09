@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -49,6 +50,8 @@ public class List<T> extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
+	private GlyphLayout layout = new GlyphLayout();
+	private int listAlignment = Align.left;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -171,7 +174,7 @@ public class List<T> extends Widget implements Cullable {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
-				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY);
+        drawItem(batch, layout, font, i, item, x + textOffsetX, y + itemY - textOffsetY, width);
 				if (selected) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
 						fontColorUnselected.a * parentAlpha);
@@ -183,8 +186,23 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
+/**
+	 * Sets the alignment of the items in the list.
+	 * @param listAlignment The alignment. Use Align constants.
+	 */
+	public void setListAlignment(int listAlignment){
+		this.listAlignment = listAlignment;
+	}
+
 	protected GlyphLayout drawItem (Batch batch, BitmapFont font, int index, T item, float x, float y) {
 		return font.draw(batch, toString(item), x, y);
+	}
+
+	protected GlyphLayout drawItem (Batch batch, GlyphLayout layout, BitmapFont font, int index, T item, float x, float y, float width) {
+		String string = toString(item);
+		layout.setText(font, string, 0, string.length(), font.getColor(), width, listAlignment, false, "...");
+		font.draw(batch, layout, x, y);
+		return layout;
 	}
 
 	public ArraySelection<T> getSelection () {
