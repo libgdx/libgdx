@@ -1,11 +1,27 @@
 
 package com.badlogic.gdx.tools.ktx;
 
+import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -23,6 +39,7 @@ import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class KTXProcessor {
 
@@ -31,12 +48,18 @@ public class KTXProcessor {
 
 	public static void convert (String input, String output, boolean genMipmaps, boolean packETC1, boolean genAlphaAtlas)
 		throws Exception {
+		convert(input, output, genMipmaps, packETC1, genAlphaAtlas, null);
+	}
+	
+	public static void convert (String input, String output, boolean genMipmaps, boolean packETC1, boolean genAlphaAtlas, String ETC2Format)
+		throws Exception {
 		Array<String> opts = new Array<String>(String.class);
 		opts.add(input);
 		opts.add(output);
 		if (genMipmaps) opts.add("-mipmaps");
 		if (packETC1 && !genAlphaAtlas) opts.add("-etc1");
 		if (packETC1 && genAlphaAtlas) opts.add("-etc1a");
+		if (ETC2Format != null) opts.add(ETC2Format);
 		main(opts.toArray());
 	}
 
@@ -75,8 +98,8 @@ public class KTXProcessor {
 		@Override
 		public void create () {
 			boolean isCubemap = args.length == 7 || args.length == 8 || args.length == 9;
-			boolean isTexture = args.length == 2 || args.length == 3 || args.length == 4;
-			boolean isPackETC1 = false, isAlphaAtlas = false, isGenMipMaps = false;
+			boolean isTexture = args.length == 2 || args.length == 3 || args.length == 4 || args.length == 5;
+			boolean isPackETC1 = false, isAlphaAtlas = false, isGenMipMaps = false, useEtc2Comp = false;
 			if (!isCubemap && !isTexture) {
 				System.out.println("usage : KTXProcessor input_file output_file [-etc1|-etc1a] [-mipmaps]");
 				System.out.println("  input_file  is the texture file to include in the output KTX or ZKTX file.");
@@ -89,6 +112,8 @@ public class KTXProcessor {
 				System.out.println("    -etc1    input file will be packed using ETC1 compression, dropping the alpha channel");
 				System.out
 					.println("    -etc1a   input file will be packed using ETC1 compression, doubling the height and placing the alpha channel in the bottom half");
+				System.out
+					.println("    -RGB8, -SRGB8, -RGBA8, -SRGB8, -RGB8A1, -SRGB8A1, -R11   input file will be packed using ETC2 compression and specified format");
 				System.out.println("    -mipmaps input file will be processed to generate mipmaps");
 				System.out.println();
 				System.out.println("  examples:");
@@ -106,6 +131,9 @@ public class KTXProcessor {
 			}
 
 			LwjglNativesLoader.load();
+			
+			String etc2Format = "RGBA8";
+			String[] etc2Attr = {"-RGB8", "-SRGB8", "-RGBA8", "-SRGB8", "-RGB8A1", "-SRGB8A1", "-R11"};
 
 			// Loads other options
 			for (int i = 0; i < args.length; i++) {
@@ -115,9 +143,22 @@ public class KTXProcessor {
 				if ("-etc1".equals(args[i])) isPackETC1 = true;
 				if ("-etc1a".equals(args[i])) isAlphaAtlas = isPackETC1 = true;
 				if ("-mipmaps".equals(args[i])) isGenMipMaps = true;
+				for (String format : etc2Attr) {
+					if(format.equals(args[i])) {
+						useEtc2Comp = true;
+						etc2Format = format;
+					}
+				}
 			}
 
 			File output = new File(args[isCubemap ? 6 : 1]);
+			
+			if (!isPackETC1 && !isGenMipMaps && useEtc2Comp) {
+				executeEtc2Comp(args[0], output, etc2Format);
+				
+				Gdx.app.exit();
+				return;
+			}
 
 			// Check if we have a cubemapped ktx file as input
 			int ktxDispose = DISPOSE_DONT;
@@ -301,6 +342,8 @@ public class KTXProcessor {
 				totalSize += 4;
 				totalSize += nFaces * faceLodSizeRounded;
 			}
+			
+			if (useEtc2Comp) executeEtc2Comp(args[0], output, etc2Format);
 
 			try {
 				DataOutputStream out;
@@ -345,6 +388,76 @@ public class KTXProcessor {
 			Gdx.app.exit();
 		}
 	}
+	
+	public static File executeEtc2Comp (String filePath, File outputFile, String etc2Format) {
+		try {
+			final URI uri;
+			final URI exe;
+
+			final String libName;
+			String outputPath = outputFile.getAbsolutePath();
+			if (SharedLibraryLoader.isWindows) {
+				libName = "etctool.exe";
+			} else if (SharedLibraryLoader.isLinux) {
+				libName = "etctool-linux";
+			} else if (SharedLibraryLoader.isMac) {
+				libName = "etctool-mac";
+			} else
+				return null;
+
+			uri = Extractor.getJarURI();
+			exe = Extractor.getFile(uri, libName, "etctool");
+			int index = outputPath.lastIndexOf(".");
+			if (index >= 0) outputPath = outputPath.substring(0, index) + etc2Format + ".ktx";
+
+			String[] cmd = {exe.getPath(), filePath, "-format", etc2Format.replace("-", ""), "-output", outputPath};
+
+			ProcessBuilder pb = new ProcessBuilder(cmd);
+			System.out.println("Starting etc2comp");
+			Process p = pb.start();
+			InputStream is = p.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				System.out.println("Etc2Comp output: " + line);
+			}
+			int r = p.waitFor(); // Let the process finish.
+			if (r == 0) {
+				File etc2File = new File(outputPath);
+				if (outputFile.getName().toLowerCase().endsWith(".zktx")) try {
+					gzip(etc2File.getAbsolutePath(), etc2File.getAbsolutePath().replace("ktx", "zktx"));
+				} catch (IOException e) {
+					Gdx.app.error("KTXProcessor", "Error zipping file: " + outputFile.getName(), e);
+				}
+				System.out.println("etc2comp finished");
+				return etc2File;
+			}
+		} catch (IOException e) {
+			Gdx.app.error("KTXProcessor", "Error executing ETC2 tool command: ", e);
+		} catch (InterruptedException e) {
+			Gdx.app.error("KTXProcessor", "Error executing ETC2 tool command: ", e);
+		} catch (URISyntaxException e) {
+			Gdx.app.error("KTXProcessor", "Error executing ETC2 tool command: ", e);
+		}
+		return null;
+	}
+   
+   public static void gzip (String inFile, String outFile) throws FileNotFoundException, IOException {
+   	System.out.println("zipping file: " + inFile);
+      File in = new File(inFile), out = new File(outFile);
+      int writtenBytes = 0, length = (int)in.length();
+      byte[] buffer = new byte[10 * 1024];
+      FileInputStream read = new FileInputStream(in);
+      DataOutputStream write = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(out)));
+      write.writeInt(length);
+      while (writtenBytes != length) {
+          int nBytesRead = read.read(buffer);
+          write.write(buffer, 0, nBytesRead);
+          writtenBytes += nBytesRead;
+      }
+      write.close();
+      read.close();
+  }
 
 	private static class Image {
 
@@ -370,4 +483,96 @@ public class KTXProcessor {
 		}
 
 	}
+	
+	private static class Extractor {
+
+		static URI getJarURI () throws URISyntaxException {
+			final ProtectionDomain domain;
+			final CodeSource source;
+			final URL url;
+			final URI uri;
+
+			domain = KTXProcessor.class.getProtectionDomain();
+			source = domain.getCodeSource();
+			url = source.getLocation();
+			uri = url.toURI();
+
+			return (uri);
+		}
+
+		static URI getFile (final URI where, final String fileName, final String newName) throws ZipException, IOException {
+			final File location;
+			final URI fileURI;
+
+			location = new File(where);
+
+			// not in a JAR, just return the path on disk
+			if (location.isDirectory()) {
+				fileURI = URI.create(where.toString() + fileName);
+			} else {
+				final ZipFile zipFile;
+
+				zipFile = new ZipFile(location);
+
+				try {
+					fileURI = extract(zipFile, fileName, newName);
+				} finally {
+					zipFile.close();
+				}
+			}
+
+			return (fileURI);
+		}
+
+		static URI extract (final ZipFile zipFile, final String fileName, final String newName) throws IOException {
+			final File tempFile;
+			final ZipEntry entry;
+			final InputStream zipStream;
+			OutputStream fileStream;
+
+			tempFile = File.createTempFile(newName, Long.toString(System.currentTimeMillis()));
+			tempFile.deleteOnExit();
+			tempFile.setReadable(true);
+			tempFile.setWritable(true);
+			tempFile.setExecutable(true);
+			entry = zipFile.getEntry(fileName);
+
+			if (entry == null) {
+				throw new FileNotFoundException("cannot find file: " + fileName + " in archive: " + zipFile.getName());
+			}
+
+			zipStream = zipFile.getInputStream(entry);
+			fileStream = null;
+
+			try {
+				final byte[] buf;
+				int i;
+
+				fileStream = new FileOutputStream(tempFile);
+				buf = new byte[1024];
+				i = 0;
+
+				while ((i = zipStream.read(buf)) != -1) {
+					fileStream.write(buf, 0, i);
+				}
+			} finally {
+				close(zipStream);
+				close(fileStream);
+			}
+
+			return (tempFile.toURI());
+		}
+
+		static void close (final Closeable stream) {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (final IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+
+	
 }
