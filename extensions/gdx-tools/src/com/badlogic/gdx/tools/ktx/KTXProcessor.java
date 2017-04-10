@@ -97,6 +97,13 @@ public class KTXProcessor {
 
 		@Override
 		public void create () {
+			init(args);
+			Gdx.app.exit();
+		}
+		
+	}
+		
+	public static void init (String[] args) {
 			boolean isCubemap = args.length == 7 || args.length == 8 || args.length == 9;
 			boolean isTexture = args.length == 2 || args.length == 3 || args.length == 4 || args.length == 5;
 			boolean isPackETC1 = false, isAlphaAtlas = false, isGenMipMaps = false, useEtc2Comp = false;
@@ -155,8 +162,6 @@ public class KTXProcessor {
 			
 			if (!isPackETC1 && !isGenMipMaps && useEtc2Comp) {
 				executeEtc2Comp(args[0], output, etc2Format);
-				
-				Gdx.app.exit();
 				return;
 			}
 
@@ -384,9 +389,6 @@ public class KTXProcessor {
 			} catch (Exception e) {
 				Gdx.app.error("KTXProcessor", "Error writing to file: " + output.getName(), e);
 			}
-
-			Gdx.app.exit();
-		}
 	}
 	
 	public static File executeEtc2Comp (String filePath, File outputFile, String etc2Format) {
