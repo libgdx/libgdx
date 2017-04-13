@@ -147,11 +147,8 @@ public class Pixmap implements Disposable {
 	 * @param blending the blending type */
 	public void setBlending (Blending blending) {
 		this.blending = blending;
-		Composite composite = getComposite();
-		for (Pixmap pixmap : pixmaps.values()) {
-			pixmap.ensureCanvasExists();
-			pixmap.context.setGlobalCompositeOperation(composite);
-		}
+		this.ensureCanvasExists();
+		this.context.setGlobalCompositeOperation(getComposite());
 	}
 
 	/** @return the currently set {@link Blending} */
