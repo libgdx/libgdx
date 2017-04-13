@@ -7,6 +7,7 @@
 - API Change: SplitPane.getSplit() renamed to SplitPane.getSplitAmount() to match other getter and setter names.
 - Improved internal Timer synchronization.
 - API Change: List#drawItem, added float width parameter.
+- API Addition: Make it possible to disable sound on the GWT-Backend with disableSound=true.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
