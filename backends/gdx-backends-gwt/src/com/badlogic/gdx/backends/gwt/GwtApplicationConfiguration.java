@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
+	/** If true, SoundManager2 will not be used. This means {@link Application#getAudio()} returns null and the SoundManager2 file
+	 * are not used. */
+	public boolean disableAudio;
 	/** the width of the drawing area in pixels **/
 	public int width;
 	/** the height of the drawing area in pixels **/
