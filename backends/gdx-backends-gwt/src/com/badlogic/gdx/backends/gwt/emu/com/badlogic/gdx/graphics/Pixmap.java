@@ -123,6 +123,7 @@ public class Pixmap implements Disposable {
 		this.imageElement = imageElement;
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
+		this.format = Format.RGBA8888;
 
 		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;
