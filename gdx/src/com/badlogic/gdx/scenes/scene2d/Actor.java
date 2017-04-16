@@ -408,12 +408,42 @@ public class Actor {
 		}
 	}
 
+	/** Sets the x position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
+	public void setX (float x, int alignment) {
+
+		if ((alignment & right) != 0)
+			x -= width;
+		else if ((alignment & left) == 0) //
+			x -= width / 2;
+
+		if (this.x != x) {
+			this.x = x;
+			positionChanged();
+		}
+	}
+
 	/** Returns the Y position of the actor's bottom edge. */
 	public float getY () {
 		return y;
 	}
 
 	public void setY (float y) {
+		if (this.y != y) {
+			this.y = y;
+			positionChanged();
+		}
+	}
+
+	/** Sets the y position using the specified {@link Align alignment}. Note this may set the position to non-integer
+	 * coordinates. */
+	public void setY (float y, int alignment) {
+
+		if ((alignment & top) != 0)
+			y -= height;
+		else if ((alignment & bottom) == 0) //
+			y -= height / 2;
+
 		if (this.y != y) {
 			this.y = y;
 			positionChanged();
