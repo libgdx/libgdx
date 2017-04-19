@@ -663,19 +663,16 @@ public class FreeType {
 					for (int y = 0; y < rows; y++) {
 						src.get(srcRow);
 						for (int x = 0; x < width; x++) {
-							float alpha;
-
 							// Zero raised to any power is always zero.
-							// 255 (=one) raised to any power is always one
-							// This means that we only have to calculate Math.pow() when alpha is NOT zero and NOT one
-							if ((srcRow[x] & 0xff) == 0) {
-								alpha = 0f;
-							} else if ((srcRow[x] & 0xff) == 255) {
-								alpha = 1f;
-							} else {
-								alpha = (float)Math.pow(((srcRow[x] & 0xff) / 255f), gamma); // Inverse gamma.
-							}
-							dstRow[x] = rgb | (int)(a * alpha);
+							// 255 (=one) raised to any power is always one.
+							// We only need Math.pow() when alpha is NOT zero and NOT one.
+							int alpha = srcRow[x] & 0xff;
+							if (alpha == 0)
+								dstRow[x] = rgb;
+							else if (alpha == 255)
+								dstRow[x] = rgb | a;
+							else
+								dstRow[x] = rgb | (int)(a * (float)Math.pow(alpha / 255f, gamma)); // Inverse gamma.
 						}
 						dst.put(dstRow);
 					}
