@@ -587,7 +587,7 @@ public class XmlReader {
 		}
 
 		public boolean hasChild (String name) {
-			if (attributes == null) return false;
+			if (children == null) return false;
 			return getChildByName(name) != null;
 		}
 
@@ -605,7 +605,7 @@ public class XmlReader {
 		}
 
 		public boolean hasChildRecursive (String name) {
-			if (attributes == null) return false;
+			if (children == null) return false;
 			return getChildByNameRecursive(name) != null;
 		}
 
