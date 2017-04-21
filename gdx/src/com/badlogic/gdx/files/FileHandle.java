@@ -568,16 +568,19 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
 	 *            file, or copying failed. */
 	public void copyTo (FileHandle dest) {
-		 if (!isDirectory())
-			  copyFile(this, dest.isDirectory() ? dest.child(name()) : dest);
-		 else {
-			  if (!dest.exists()) {
-					dest.mkdirs();
-					if (!dest.isDirectory()) throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
-			  } else if (!dest.isDirectory())
-					throw new GdxRuntimeException("Destination exists but is not a directory: " + dest);
-			  copyDirectory(this, dest);
-		 }
+		if (!isDirectory())
+			copyFile(this, dest.isDirectory() ? dest.child(name()) : dest);
+		else {
+			if (!dest.exists()) {
+				dest.mkdirs();
+				if (!dest.isDirectory()) {
+					throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
+				}
+			} else if (!dest.isDirectory()) {
+				throw new GdxRuntimeException("Destination exists but is not a directory: " + dest);
+			}
+			copyDirectory(this, dest);
+		}
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
