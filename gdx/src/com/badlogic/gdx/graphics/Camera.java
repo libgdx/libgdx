@@ -118,7 +118,7 @@ public abstract class Camera {
 	 * will not be orthogonalized.
 	 * 
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotate (Vector3 axis, float angle) {
 		direction.rotate(axis, angle);
 		up.rotate(axis, angle);
@@ -147,7 +147,7 @@ public abstract class Camera {
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotateAround (Vector3 point, Vector3 axis, float angle) {
 		tmpVec.set(point);
 		tmpVec.sub(position);
