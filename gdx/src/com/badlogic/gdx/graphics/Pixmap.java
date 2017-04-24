@@ -226,7 +226,7 @@ public class Pixmap implements Disposable {
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
 	 * @param srcWidth The width of the area from the other Pixmap in pixels
-	 * @param srcHeight The height of the area from the other Pixmap in pixles */
+	 * @param srcHeight The height of the area from the other Pixmap in pixels */
 	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
 	}
@@ -239,7 +239,7 @@ public class Pixmap implements Disposable {
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
 	 * @param srcWidth The width of the area from the other Pixmap in pixels
-	 * @param srcHeight The height of the area from the other Pixmap in pixles
+	 * @param srcHeight The height of the area from the other Pixmap in pixels
 	 * @param dstx The target x-coordinate (top left corner)
 	 * @param dsty The target y-coordinate (top left corner)
 	 * @param dstWidth The target width
