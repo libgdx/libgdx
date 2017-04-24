@@ -531,23 +531,22 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public int getDeltaX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX (int pointer) {
-		return 0;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getDeltaY () {
-		return 0;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
-		return 0;
+		return deltaY[pointer];
 	}
 
 	@Override
