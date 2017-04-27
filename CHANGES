@@ -16,7 +16,7 @@
 - Separated error log for vertex/fragment shaders for easier debugging
 - Minimum Android API level is now level 9 (Android 2.3)
 - API addition: Configurable TexturePacker bleed iterations
-- Updated IOS Multi-OS Engine backend to 1.3.2
+- Updated IOS Multi-OS Engine backend to 1.3.6
 - API Change: Pixmap.setBlending, Pixmap.setFilter are now instance methods
 - VertexAttribute expert constructors exposed. Short types can now be used for attributes.
 

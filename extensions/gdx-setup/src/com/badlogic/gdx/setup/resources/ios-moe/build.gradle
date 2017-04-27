@@ -32,7 +32,6 @@ task copyNatives << {
 }
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [ file("../%ASSET_PATH%") ]
 
 // Setup Multi-OS Engine
 moe {
