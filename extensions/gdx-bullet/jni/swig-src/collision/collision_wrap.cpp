@@ -67522,17 +67522,17 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btMprSimplexPoint(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btMprSimplexPoint(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   jlong jresult = 0 ;
   btMprSimplex_t *arg1 = (btMprSimplex_t *) 0 ;
-  int arg2 ;
+  size_t arg2 ;
   btMprSupport_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btMprSimplex_t **)&jarg1; 
-  arg2 = (int)jarg2; 
+  arg2 = (size_t)jarg2; 
   result = (btMprSupport_t *)btMprSimplexPoint((_btMprSimplex_t const *)arg1,arg2);
   *(btMprSupport_t **)&jresult = result; 
   return jresult;
@@ -67586,12 +67586,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 
 SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btMprIsZero(JNIEnv *jenv, jclass jcls, jfloat jarg1) {
   jint jresult = 0 ;
-  float arg1 ;
+  btScalar arg1 ;
   int result;
   
   (void)jenv;
   (void)jcls;
-  arg1 = (float)jarg1; 
+  arg1 = (btScalar)jarg1; 
   result = (int)btMprIsZero(arg1);
   jresult = (jint)result; 
   return jresult;
@@ -67600,14 +67600,14 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 
 SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btMprEq(JNIEnv *jenv, jclass jcls, jfloat jarg1, jfloat jarg2) {
   jint jresult = 0 ;
-  float arg1 ;
-  float arg2 ;
+  btScalar arg1 ;
+  btScalar arg2 ;
   int result;
   
   (void)jenv;
   (void)jcls;
-  arg1 = (float)jarg1; 
-  arg2 = (float)jarg2; 
+  arg1 = (btScalar)jarg1; 
+  arg2 = (btScalar)jarg2; 
   result = (int)btMprEq(arg1,arg2);
   jresult = (jint)result; 
   return jresult;

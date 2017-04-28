@@ -387,7 +387,7 @@ public class Collision implements CollisionConstants {
     return CollisionJNI.btMprSimplexSize(_btMprSimplex_t.getCPtr(s), s);
   }
 
-  public static _btMprSupport_t btMprSimplexPoint(_btMprSimplex_t s, int idx) {
+  public static _btMprSupport_t btMprSimplexPoint(_btMprSimplex_t s, long idx) {
     long cPtr = CollisionJNI.btMprSimplexPoint(_btMprSimplex_t.getCPtr(s), s, idx);
     return (cPtr == 0) ? null : new _btMprSupport_t(cPtr, false);
   }

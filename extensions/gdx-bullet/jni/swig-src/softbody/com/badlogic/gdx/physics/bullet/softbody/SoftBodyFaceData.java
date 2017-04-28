@@ -78,13 +78,14 @@ public class SoftBodyFaceData extends BulletBase {
     return (cPtr == 0) ? null : new SoftBodyMaterialData(cPtr, false);
   }
 
-  public void setNodeIndices(int[] value) {
-    SoftbodyJNI.SoftBodyFaceData_nodeIndices_set(swigCPtr, this, value);
+  public void setNodeIndices(SWIGTYPE_p_ptrdiff_t value) {
+    SoftbodyJNI.SoftBodyFaceData_nodeIndices_set(swigCPtr, this, SWIGTYPE_p_ptrdiff_t.getCPtr(value));
   }
 
-  public int[] getNodeIndices() {
-    return SoftbodyJNI.SoftBodyFaceData_nodeIndices_get(swigCPtr, this);
-}
+  public SWIGTYPE_p_ptrdiff_t getNodeIndices() {
+    long cPtr = SoftbodyJNI.SoftBodyFaceData_nodeIndices_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_ptrdiff_t(cPtr, false);
+  }
 
   public void setRestArea(float value) {
     SoftbodyJNI.SoftBodyFaceData_restArea_set(swigCPtr, this, value);

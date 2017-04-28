@@ -14598,39 +14598,35 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jintArray jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyLinkData *arg1 = (SoftBodyLinkData *) 0 ;
-  int *arg2 ;
+  ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyLinkData **)&jarg1; 
-  if (jarg2 && jenv->GetArrayLength(jarg2) != 2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
-    return ;
-  }
-  arg2 = (int *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  arg2 = *(ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    int *b = (int *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)2; ii++) b[ii] = *((int *) arg2 + ii);
+    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)2; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
   }
-  jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
+  
 }
 
 
-SWIGEXPORT jintArray JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jintArray jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   SoftBodyLinkData *arg1 = (SoftBodyLinkData *) 0 ;
-  int *result = 0 ;
+  ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyLinkData **)&jarg1; 
-  result = (int *)(int *) ((arg1)->m_nodeIndices);
-  /*jresult = SWIG_JavaArrayOut##Int(jenv, (int *)result, 2);*/ 
+  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -14771,39 +14767,35 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jintArray jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyFaceData *arg1 = (SoftBodyFaceData *) 0 ;
-  int *arg2 ;
+  ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyFaceData **)&jarg1; 
-  if (jarg2 && jenv->GetArrayLength(jarg2) != 3) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
-    return ;
-  }
-  arg2 = (int *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  arg2 = *(ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    int *b = (int *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((int *) arg2 + ii);
+    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
   }
-  jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
+  
 }
 
 
-SWIGEXPORT jintArray JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jintArray jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   SoftBodyFaceData *arg1 = (SoftBodyFaceData *) 0 ;
-  int *result = 0 ;
+  ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyFaceData **)&jarg1; 
-  result = (int *)(int *) ((arg1)->m_nodeIndices);
-  /*jresult = SWIG_JavaArrayOut##Int(jenv, (int *)result, 3);*/ 
+  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -14921,39 +14913,35 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jintArray jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyTetraData *arg1 = (SoftBodyTetraData *) 0 ;
-  int *arg2 ;
+  ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyTetraData **)&jarg1; 
-  if (jarg2 && jenv->GetArrayLength(jarg2) != 4) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "incorrect array size");
-    return ;
-  }
-  arg2 = (int *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  arg2 = *(ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    int *b = (int *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)4; ii++) b[ii] = *((int *) arg2 + ii);
+    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)4; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
   }
-  jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
+  
 }
 
 
-SWIGEXPORT jintArray JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jintArray jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   SoftBodyTetraData *arg1 = (SoftBodyTetraData *) 0 ;
-  int *result = 0 ;
+  ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyTetraData **)&jarg1; 
-  result = (int *)(int *) ((arg1)->m_nodeIndices);
-  /*jresult = SWIG_JavaArrayOut##Int(jenv, (int *)result, 4);*/ 
+  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -15208,30 +15196,36 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftRigidAnchorData *arg1 = (SoftRigidAnchorData *) 0 ;
-  int arg2 ;
+  ptrdiff_t arg2 ;
+  ptrdiff_t *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftRigidAnchorData **)&jarg1; 
-  arg2 = (int)jarg2; 
+  argp2 = *(ptrdiff_t **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null ptrdiff_t");
+    return ;
+  }
+  arg2 = *argp2; 
   if (arg1) (arg1)->m_nodeIndex = arg2;
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   SoftRigidAnchorData *arg1 = (SoftRigidAnchorData *) 0 ;
-  int result;
+  ptrdiff_t result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftRigidAnchorData **)&jarg1; 
-  result = (int) ((arg1)->m_nodeIndex);
-  jresult = (jint)result; 
+  result =  ((arg1)->m_nodeIndex);
+  *(ptrdiff_t **)&jresult = new ptrdiff_t((const ptrdiff_t &)result); 
   return jresult;
 }
 

@@ -3825,7 +3825,7 @@ public class CollisionJNI {
   public final static native long btMprSimplexPointW(long jarg1, _btMprSimplex_t jarg1_, int jarg2);
   public final static native void btMprSimplexSetSize(long jarg1, _btMprSimplex_t jarg1_, int jarg2);
   public final static native int btMprSimplexSize(long jarg1, _btMprSimplex_t jarg1_);
-  public final static native long btMprSimplexPoint(long jarg1, _btMprSimplex_t jarg1_, int jarg2);
+  public final static native long btMprSimplexPoint(long jarg1, _btMprSimplex_t jarg1_, long jarg2);
   public final static native void btMprSupportCopy(long jarg1, _btMprSupport_t jarg1_, long jarg2, _btMprSupport_t jarg2_);
   public final static native void btMprSimplexSet(long jarg1, _btMprSimplex_t jarg1_, long jarg2, long jarg3, _btMprSupport_t jarg3_);
   public final static native void btMprSimplexSwap(long jarg1, _btMprSimplex_t jarg1_, long jarg2, long jarg3);

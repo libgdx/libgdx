@@ -858,8 +858,8 @@ public class SoftbodyJNI {
   public final static native void delete_SoftBodyNodeData(long jarg1);
   public final static native void SoftBodyLinkData_material_set(long jarg1, SoftBodyLinkData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
   public final static native long SoftBodyLinkData_material_get(long jarg1, SoftBodyLinkData jarg1_);
-  public final static native void SoftBodyLinkData_nodeIndices_set(long jarg1, SoftBodyLinkData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyLinkData_nodeIndices_get(long jarg1, SoftBodyLinkData jarg1_);
+  public final static native void SoftBodyLinkData_nodeIndices_set(long jarg1, SoftBodyLinkData jarg1_, long jarg2);
+  public final static native long SoftBodyLinkData_nodeIndices_get(long jarg1, SoftBodyLinkData jarg1_);
   public final static native void SoftBodyLinkData_restLength_set(long jarg1, SoftBodyLinkData jarg1_, float jarg2);
   public final static native float SoftBodyLinkData_restLength_get(long jarg1, SoftBodyLinkData jarg1_);
   public final static native void SoftBodyLinkData_bbending_set(long jarg1, SoftBodyLinkData jarg1_, int jarg2);
@@ -870,8 +870,8 @@ public class SoftbodyJNI {
   public final static native long SoftBodyFaceData_normal_get(long jarg1, SoftBodyFaceData jarg1_);
   public final static native void SoftBodyFaceData_material_set(long jarg1, SoftBodyFaceData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
   public final static native long SoftBodyFaceData_material_get(long jarg1, SoftBodyFaceData jarg1_);
-  public final static native void SoftBodyFaceData_nodeIndices_set(long jarg1, SoftBodyFaceData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyFaceData_nodeIndices_get(long jarg1, SoftBodyFaceData jarg1_);
+  public final static native void SoftBodyFaceData_nodeIndices_set(long jarg1, SoftBodyFaceData jarg1_, long jarg2);
+  public final static native long SoftBodyFaceData_nodeIndices_get(long jarg1, SoftBodyFaceData jarg1_);
   public final static native void SoftBodyFaceData_restArea_set(long jarg1, SoftBodyFaceData jarg1_, float jarg2);
   public final static native float SoftBodyFaceData_restArea_get(long jarg1, SoftBodyFaceData jarg1_);
   public final static native long new_SoftBodyFaceData();
@@ -880,8 +880,8 @@ public class SoftbodyJNI {
   public final static native long SoftBodyTetraData_c0_get(long jarg1, SoftBodyTetraData jarg1_);
   public final static native void SoftBodyTetraData_material_set(long jarg1, SoftBodyTetraData jarg1_, long jarg2, SoftBodyMaterialData jarg2_);
   public final static native long SoftBodyTetraData_material_get(long jarg1, SoftBodyTetraData jarg1_);
-  public final static native void SoftBodyTetraData_nodeIndices_set(long jarg1, SoftBodyTetraData jarg1_, int[] jarg2);
-  public final static native int[] SoftBodyTetraData_nodeIndices_get(long jarg1, SoftBodyTetraData jarg1_);
+  public final static native void SoftBodyTetraData_nodeIndices_set(long jarg1, SoftBodyTetraData jarg1_, long jarg2);
+  public final static native long SoftBodyTetraData_nodeIndices_get(long jarg1, SoftBodyTetraData jarg1_);
   public final static native void SoftBodyTetraData_restVolume_set(long jarg1, SoftBodyTetraData jarg1_, float jarg2);
   public final static native float SoftBodyTetraData_restVolume_get(long jarg1, SoftBodyTetraData jarg1_);
   public final static native void SoftBodyTetraData_c1_set(long jarg1, SoftBodyTetraData jarg1_, float jarg2);
@@ -900,8 +900,8 @@ public class SoftbodyJNI {
   public final static native long SoftRigidAnchorData_localFrame_get(long jarg1, SoftRigidAnchorData jarg1_);
   public final static native void SoftRigidAnchorData_rigidBody_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2, btRigidBodyFloatData jarg2_);
   public final static native long SoftRigidAnchorData_rigidBody_get(long jarg1, SoftRigidAnchorData jarg1_);
-  public final static native void SoftRigidAnchorData_nodeIndex_set(long jarg1, SoftRigidAnchorData jarg1_, int jarg2);
-  public final static native int SoftRigidAnchorData_nodeIndex_get(long jarg1, SoftRigidAnchorData jarg1_);
+  public final static native void SoftRigidAnchorData_nodeIndex_set(long jarg1, SoftRigidAnchorData jarg1_, long jarg2);
+  public final static native long SoftRigidAnchorData_nodeIndex_get(long jarg1, SoftRigidAnchorData jarg1_);
   public final static native void SoftRigidAnchorData_c2_set(long jarg1, SoftRigidAnchorData jarg1_, float jarg2);
   public final static native float SoftRigidAnchorData_c2_get(long jarg1, SoftRigidAnchorData jarg1_);
   public final static native long new_SoftRigidAnchorData();

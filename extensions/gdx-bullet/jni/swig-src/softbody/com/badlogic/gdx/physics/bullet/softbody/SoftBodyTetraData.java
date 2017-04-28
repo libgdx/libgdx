@@ -78,13 +78,14 @@ public class SoftBodyTetraData extends BulletBase {
     return (cPtr == 0) ? null : new SoftBodyMaterialData(cPtr, false);
   }
 
-  public void setNodeIndices(int[] value) {
-    SoftbodyJNI.SoftBodyTetraData_nodeIndices_set(swigCPtr, this, value);
+  public void setNodeIndices(SWIGTYPE_p_ptrdiff_t value) {
+    SoftbodyJNI.SoftBodyTetraData_nodeIndices_set(swigCPtr, this, SWIGTYPE_p_ptrdiff_t.getCPtr(value));
   }
 
-  public int[] getNodeIndices() {
-    return SoftbodyJNI.SoftBodyTetraData_nodeIndices_get(swigCPtr, this);
-}
+  public SWIGTYPE_p_ptrdiff_t getNodeIndices() {
+    long cPtr = SoftbodyJNI.SoftBodyTetraData_nodeIndices_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_ptrdiff_t(cPtr, false);
+  }
 
   public void setRestVolume(float value) {
     SoftbodyJNI.SoftBodyTetraData_restVolume_set(swigCPtr, this, value);

@@ -28,6 +28,14 @@ subject to the following restrictions:
 #include <stdlib.h>//size_t for MSVC 6.0
 #include <float.h>
 
+#ifdef __GNUC__
+	#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+		// support ptrdiff_t in GCC 4.6
+		// see more https://gcc.gnu.org/gcc-4.6/porting_to.html
+		#include <cstddef>
+	#endif
+#endif
+
 /* SVN $Revision$ on $Date$ from http://bullet.googlecode.com*/
 #define BT_BULLET_VERSION 286
 
