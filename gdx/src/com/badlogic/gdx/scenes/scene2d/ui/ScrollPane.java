@@ -711,7 +711,7 @@ public class ScrollPane extends WidgetGroup {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		if (actor != widget) return false;
 		this.widget = null;
-		return super.removeActor(this.widget, unfocus);
+		return super.removeActor(actor, unfocus);
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {

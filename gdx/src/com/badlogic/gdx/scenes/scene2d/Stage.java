@@ -257,9 +257,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
+		if (!isInsideViewport(screenX, screenY)) return false;
 
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
@@ -363,9 +361,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
-		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
+		if (!isInsideViewport(screenX, screenY)) return false;
 
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
@@ -785,6 +781,10 @@ public class Stage extends InputAdapter implements Disposable {
 		else
 			root.setDebug(false, true);
 	}
+	
+	public boolean isDebugAll () {
+		return debugAll;
+	}
 
 	/** If true, debug is enabled only for the actor under the mouse. Can be combined with {@link #setDebugAll(boolean)}. */
 	public void setDebugUnderMouse (boolean debugUnderMouse) {
@@ -829,6 +829,16 @@ public class Stage extends InputAdapter implements Disposable {
 	public void dispose () {
 		clear();
 		if (ownsBatch) batch.dispose();
+	}
+
+	/** Check if screen coordinates are inside the viewport's screen area. */
+	protected boolean isInsideViewport (int screenX, int screenY) {
+		int x0 = viewport.getScreenX();
+		int x1 = x0 + viewport.getScreenWidth();
+		int y0 = viewport.getScreenY();
+		int y1 = y0 + viewport.getScreenHeight();
+		screenY = Gdx.graphics.getHeight() - screenY;
+		return screenX >= x0 && screenX < x1 && screenY >= y0 && screenY < y1;
 	}
 
 	/** Internal class for managing touch focus. Public only for GWT.

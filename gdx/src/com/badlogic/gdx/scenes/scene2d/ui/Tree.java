@@ -224,7 +224,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
-		drawBackground(batch, parentAlpha, getX(), getY());
+		drawBackground(batch, parentAlpha);
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		draw(batch, rootNodes, leftColumnWidth);
@@ -232,7 +232,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	/** Called to draw the background. Default implementation draws the style background drawable. */
-	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+	protected void drawBackground (Batch batch, float parentAlpha) {
 		if (style.background != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
