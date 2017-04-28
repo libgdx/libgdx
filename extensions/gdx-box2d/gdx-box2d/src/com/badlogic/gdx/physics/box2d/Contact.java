@@ -41,10 +41,22 @@ public class Contact {
 		this.world = world;
 	}
 
-	private final float[] tmp = new float[8];
+	public Contact (Contact contact) {
+		this(contact.world, contact.addr);
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj instanceof Contact) return ((Contact)obj).addr == this.addr && ((Contact)obj).world == this.world;
+		return super.equals(obj);
+	}
+
+	private float[] tmp;
 
 	/** Get the world manifold. */
 	public WorldManifold getWorldManifold () {
+		if (tmp == null) tmp = new float[8];
 		int numContactPoints = jniGetWorldManifold(addr, tmp);
 
 		worldManifold.numContactPoints = numContactPoints;
