@@ -299,6 +299,7 @@ public class TextureAtlas implements Disposable {
 	 * should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
 	public AtlasRegion findRegion (String name) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++)
 			if (regions.get(i).name.equals(name)) return regions.get(i);
 		return null;
@@ -308,6 +309,7 @@ public class TextureAtlas implements Disposable {
 	 * the result should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
 	public AtlasRegion findRegion (String name, int index) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -320,22 +322,36 @@ public class TextureAtlas implements Disposable {
 	/** Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
 	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times. */
 	public Array<AtlasRegion> findRegions (String name) {
-		Array<AtlasRegion> matched = new Array();
+		return findRegions(name, new Array());
+	}
+
+	/** Returns all regions with the specified name filled into the given list, ordered by smallest to largest
+	 * {@link AtlasRegion#index index}. This method uses string comparison to find the regions, so the result should be cached
+	 * rather than calling this method multiple times. */
+	public Array<AtlasRegion> findRegions (String name, Array<AtlasRegion> fill) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
+			if (region.name.equals(name)) fill.add(new AtlasRegion(region));
 		}
-		return matched;
+		return fill;
 	}
 
 	/** Returns all regions in the atlas as sprites. This method creates a new sprite for each region, so the result should be
 	 * stored rather than calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites () {
-		Array sprites = new Array(regions.size);
+		return createSprites(new Array(regions.size));
+	}
+
+	/** Returns all regions in the atlas as sprites filled into the given list. This method creates a new sprite for each region, so
+	 * the result should be stored rather than calling this method multiple times.
+	 * @see #createSprite(String) */
+	public Array<Sprite> createSprites (Array<Sprite> fill) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++)
-			sprites.add(newSprite(regions.get(i)));
-		return sprites;
+			fill.add(newSprite(regions.get(i)));
+		return fill;
 	}
 
 	/** Returns the first region found with the specified name as a sprite. If whitespace was stripped from the region when it was
@@ -343,6 +359,7 @@ public class TextureAtlas implements Disposable {
 	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null. */
 	public Sprite createSprite (String name) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++)
 			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
 		return null;
@@ -353,6 +370,7 @@ public class TextureAtlas implements Disposable {
 	 * @return The sprite, or null.
 	 * @see #createSprite(String) */
 	public Sprite createSprite (String name, int index) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -367,12 +385,20 @@ public class TextureAtlas implements Disposable {
 	 * calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites (String name) {
-		Array<Sprite> matched = new Array();
+		return createSprites(name, new Array());
+	}
+
+	/** Returns all regions with the specified name as sprites filled into the given list, ordered by smallest to largest
+	 * {@link AtlasRegion#index index}. This method uses string comparison to find the regions and constructs new sprites, so the
+	 * result should be cached rather than calling this method multiple times.
+	 * @see #createSprite(String) */
+	public Array<Sprite> createSprites (String name, Array<Sprite> fill) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) matched.add(newSprite(region));
+			if (region.name.equals(name)) fill.add(newSprite(region));
 		}
-		return matched;
+		return fill;
 	}
 
 	private Sprite newSprite (AtlasRegion region) {
@@ -393,6 +419,7 @@ public class TextureAtlas implements Disposable {
 	 * be cached rather than calling this method multiple times.
 	 * @return The ninepatch, or null. */
 	public NinePatch createPatch (String name) {
+		Array<AtlasRegion> regions = this.regions;
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) {
