@@ -115,6 +115,7 @@ public class Image extends Widget {
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
+		Color batchColor = batch.getColor();
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
@@ -132,6 +133,7 @@ public class Image extends Widget {
 			}
 		}
 		if (drawable != null) drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
+		batch.setColor(batchColor);
 	}
 
 	public void setDrawable (Skin skin, String drawableName) {
