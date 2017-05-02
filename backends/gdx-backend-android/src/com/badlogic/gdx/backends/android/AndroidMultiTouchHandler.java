@@ -36,13 +36,16 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
 		int button = Buttons.LEFT;
+		int pointerCount = 0;
 
 		long timeStamp = System.nanoTime();
 		synchronized (input) {
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
-				realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
+				realPointerIndex = input.lookUpPointerIndex(pointerId);
+				if (realPointerIndex == -1)
+					realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
 				if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
@@ -60,7 +63,6 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_OUTSIDE:
-			case MotionEvent.ACTION_CANCEL:
 				realPointerIndex = input.lookUpPointerIndex(pointerId);
 				if (realPointerIndex == -1) break;
 				if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
@@ -77,8 +79,30 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.button[realPointerIndex] = 0;
 				break;
 
+			case MotionEvent.ACTION_CANCEL:
+				pointerCount = event.getPointerCount();
+				for (int i = 0; i < pointerCount; i++) {
+					pointerIndex = i;
+					pointerId = event.getPointerId(pointerIndex);
+					realPointerIndex = input.lookUpPointerIndex(pointerId);
+					if (realPointerIndex == -1) break;
+					if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
+					input.realId[realPointerIndex] = -1;
+					x = (int)event.getX(pointerIndex);
+					y = (int)event.getY(pointerIndex);
+					button = input.button[realPointerIndex];
+					if (button != -1) postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
+					input.touchX[realPointerIndex] = x;
+					input.touchY[realPointerIndex] = y;
+					input.deltaX[realPointerIndex] = 0;
+					input.deltaY[realPointerIndex] = 0;
+					input.touched[realPointerIndex] = false;
+					input.button[realPointerIndex] = 0;
+				}
+				break;
+
 			case MotionEvent.ACTION_MOVE:
-				int pointerCount = event.getPointerCount();
+				pointerCount = event.getPointerCount();
 				for (int i = 0; i < pointerCount; i++) {
 					pointerIndex = i;
 					pointerId = event.getPointerId(pointerIndex);
