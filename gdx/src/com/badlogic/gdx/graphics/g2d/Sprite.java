@@ -530,6 +530,16 @@ public class Sprite extends TextureRegion {
 		return y;
 	}
 
+	/** @return the width of the sprite, accounting for scale. */
+	public float getScaledWidth () {
+		return width * scaleX;
+	}
+	
+	/** @return the height of the sprite, accounting for scale. */
+	public float getScaledHeight () {
+		return height * scaleY;
+	}
+	
 	/** @return the width of the sprite, not accounting for scale. */
 	public float getWidth () {
 		return width;
