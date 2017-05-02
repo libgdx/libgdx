@@ -64,11 +64,11 @@ public class Actor {
 	private String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true, debug;
-	float x, y;
-	float width, height;
+	float x, y, lastX, lastY;
+	float width, height, lastWidth, lastHeight;
 	float originX, originY;
 	float scaleX = 1, scaleY = 1;
-	float rotation;
+	float rotation, lastRotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 
@@ -404,6 +404,8 @@ public class Actor {
 	public void setX (float x) {
 		if (this.x != x) {
 			this.x = x;
+			positionChanged(lastX - this.x, 0);
+			lastX = this.x;
 			positionChanged();
 		}
 	}
@@ -416,6 +418,8 @@ public class Actor {
 	public void setY (float y) {
 		if (this.y != y) {
 			this.y = y;
+			positionChanged(0, lastY - this.y);
+			lastY = this.y;
 			positionChanged();
 		}
 	}
@@ -435,6 +439,9 @@ public class Actor {
 		if (this.x != x || this.y != y) {
 			this.x = x;
 			this.y = y;
+			positionChanged(lastX - this.x, lastY - this.y);
+			lastX = this.x;
+			lastY = this.y;
 			positionChanged();
 		}
 	}
@@ -455,6 +462,9 @@ public class Actor {
 		if (this.x != x || this.y != y) {
 			this.x = x;
 			this.y = y;
+			positionChanged(lastX - this.x, lastY - this.y);
+			lastX = this.x;
+			lastY = this.y;
 			positionChanged();
 		}
 	}
@@ -464,6 +474,9 @@ public class Actor {
 		if (x != 0 || y != 0) {
 			this.x += x;
 			this.y += y;
+			positionChanged(lastX - this.x, lastY - this.y);
+			lastX = this.x;
+			lastY = this.y;
 			positionChanged();
 		}
 	}
@@ -475,6 +488,8 @@ public class Actor {
 	public void setWidth (float width) {
 		if (this.width != width) {
 			this.width = width;
+			sizeChanged(lastWidth - this.width, 0);
+			lastWidth = this.width;
 			sizeChanged();
 		}
 	}
@@ -486,6 +501,8 @@ public class Actor {
 	public void setHeight (float height) {
 		if (this.height != height) {
 			this.height = height;
+			sizeChanged(0, lastHeight - this.height);
+			lastHeight = this.height;
 			sizeChanged();
 		}
 	}
@@ -504,12 +521,29 @@ public class Actor {
 	protected void positionChanged () {
 	}
 
+	/** Called when the actor's position has been changed.
+	 * @param deltaX Change in x position.
+	 * @param deltaY Change in y position. */
+	protected void positionChanged (float deltaX, float deltaY) {
+	}
+
 	/** Called when the actor's size has been changed. */
 	protected void sizeChanged () {
 	}
 
+	/** Called when the actor's size has been changed.
+	 * @param deltaWidth Change in width.
+	 * @param deltaHeight Change in height. */
+	protected void sizeChanged (float deltaWidth, float deltaHeight) {
+	}
+
 	/** Called when the actor's rotation has been changed. */
 	protected void rotationChanged () {
+	}
+
+	/** Called when the actor's rotation has been changed.
+	 * @param deltaRotation Change in rotation. */
+	protected void rotationChanged (float deltaRotation) {
 	}
 
 	/** Sets the width and height. */
@@ -517,6 +551,9 @@ public class Actor {
 		if (this.width != width || this.height != height) {
 			this.width = width;
 			this.height = height;
+			sizeChanged(lastWidth - this.width, lastHeight - this.height);
+			lastWidth = this.width;
+			lastHeight = this.height;
 			sizeChanged();
 		}
 	}
@@ -526,6 +563,9 @@ public class Actor {
 		if (size != 0) {
 			width += size;
 			height += size;
+			sizeChanged(lastWidth - width, lastHeight - height);
+			lastWidth = width;
+			lastHeight = height;
 			sizeChanged();
 		}
 	}
@@ -535,6 +575,9 @@ public class Actor {
 		if (width != 0 || height != 0) {
 			this.width += width;
 			this.height += height;
+			sizeChanged(lastWidth - this.width, lastHeight - this.height);
+			lastWidth = this.width;
+			lastHeight = this.height;
 			sizeChanged();
 		}
 	}
@@ -544,11 +587,17 @@ public class Actor {
 		if (this.x != x || this.y != y) {
 			this.x = x;
 			this.y = y;
+			positionChanged(lastX - this.x, lastY - this.y);
+			lastX = this.x;
+			lastY = this.y;
 			positionChanged();
 		}
 		if (this.width != width || this.height != height) {
 			this.width = width;
 			this.height = height;
+			sizeChanged(lastWidth - this.width, lastHeight - this.height);
+			lastWidth = this.width;
+			lastHeight = this.height;
 			sizeChanged();
 		}
 	}
@@ -639,6 +688,8 @@ public class Actor {
 	public void setRotation (float degrees) {
 		if (this.rotation != degrees) {
 			this.rotation = degrees;
+			rotationChanged(lastRotation - this.rotation);
+			lastRotation = this.rotation;
 			rotationChanged();
 		}
 	}
@@ -647,6 +698,8 @@ public class Actor {
 	public void rotateBy (float amountInDegrees) {
 		if (amountInDegrees != 0) {
 			rotation += amountInDegrees;
+			rotationChanged(lastRotation - this.rotation);
+			lastRotation = this.rotation;
 			rotationChanged();
 		}
 	}
