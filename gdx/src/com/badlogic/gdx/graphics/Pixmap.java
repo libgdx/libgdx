@@ -176,6 +176,18 @@ public class Pixmap implements Disposable {
 		this.color = Color.rgba8888(color.r, color.g, color.b, color.a);
 	}
 
+	/**
+	 * Returns the color this Pixmap is set to use for drawing operations.
+	 * Manipulating the returned instance has no effect.
+	 * 
+	 * @return Color pixmap is using for drawing operations.
+	 */
+	public Color getColor() {
+		Color colorCopy = new Color();
+		Color.rgb888ToColor(colorCopy, color);
+		return colorCopy;
+	}
+
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill () {
 		pixmap.clear(color);
