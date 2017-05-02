@@ -503,10 +503,16 @@ public class Mesh implements Disposable {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 			}
 		} else {
-			if (indices.getNumIndices() > 0)
+			if (indices.getNumIndices() > 0) {
+				if (count + offset > indices.getNumMaxIndices()) {
+					throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
+						+ count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+				}
+				
 				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
-			else
+			} else {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+			}
 		}
 
 		if (autoBind) unbind(shader);
