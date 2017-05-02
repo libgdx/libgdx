@@ -688,6 +688,8 @@ public class FileHandle {
 
 	static private void copyDirectory (FileHandle sourceDir, FileHandle destDir) {
 		destDir.mkdirs();
+		destDir = destDir.child(sourceDir.name());
+		destDir.mkdirs();
 		FileHandle[] files = sourceDir.list();
 		for (int i = 0, n = files.length; i < n; i++) {
 			FileHandle srcFile = files[i];
