@@ -552,4 +552,8 @@ public class BitmapFontCache {
 	public Array<GlyphLayout> getLayouts () {
 		return layouts;
 	}
+
+	public final  int getVertexCount (final int region) {
+		return this.idx[region];
+	}
 }
