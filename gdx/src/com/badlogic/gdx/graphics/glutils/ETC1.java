@@ -19,11 +19,11 @@ package com.badlogic.gdx.graphics.glutils;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -100,13 +100,28 @@ public class ETC1 {
 		/** Writes the ETC1Data with a PKM header to the given file.
 		 * @param file the file. */
 		public void write (FileHandle file) {
+			OutputStream os = null;
+			try {
+				os = file.write(false);
+				write(os);
+				os.close();
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+			}
+		}
+
+		/** Writes the ETC1Data with a PKM header to the outputStream.
+		 * @param outputStream java.io.OutputStream. */
+		public void write (OutputStream outputStream) {
 			DataOutputStream write = null;
+			GZIPOutputStream gzip = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
 			compressedData.position(0);
 			compressedData.limit(compressedData.capacity());
 			try {
-				write = new DataOutputStream(new GZIPOutputStream(file.write(false)));
+				gzip = new GZIPOutputStream(outputStream);
+				write = new DataOutputStream(gzip);
 				write.writeInt(compressedData.capacity());
 				while (writtenBytes != compressedData.capacity()) {
 					int bytesToWrite = Math.min(compressedData.remaining(), buffer.length);
@@ -114,10 +129,13 @@ public class ETC1 {
 					write.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
 				}
+
+				write.close();
+
+				gzip.close();
+
 			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
-			} finally {
-				StreamUtils.closeQuietly(write);
+				throw new GdxRuntimeException("Couldn't write PKM", e);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());
