@@ -351,4 +351,14 @@ public final class MathUtils {
 	static public float log2 (float value) {
 		return log(2, value);
 	}
+	
+	/** Returns x as its absolute value */
+	static public float abs(float x) {
+		return x < 0 ? x *-1 : x;
+	}
+	
+	/** Returns x as its absolute value */
+	static public int abs(int x) {
+		return x < 0 ? x *-1 : x;
+	}
 }
