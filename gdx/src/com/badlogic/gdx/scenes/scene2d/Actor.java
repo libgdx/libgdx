@@ -261,6 +261,18 @@ public class Actor {
 
 		if (stage != null && stage.getActionsRequestRendering()) Gdx.graphics.requestRendering();
 	}
+	
+	public void addActions (Action[] actions) {
+		for (Action a : actions) {
+			addAction(a);
+		}
+	}
+
+	public <T extends Action> void addActions (Iterable<T> actions) {
+		for (Action a : actions) {
+			addAction(a);
+		}
+	}
 
 	public void removeAction (Action action) {
 		if (actions.removeValue(action, true)) action.setActor(null);
