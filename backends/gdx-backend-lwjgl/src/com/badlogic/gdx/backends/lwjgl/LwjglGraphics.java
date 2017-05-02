@@ -404,7 +404,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public DisplayMode[] getDisplayModes (Monitor monitor) {
-		return getDisplayModes();
+		return new DisplayMode[] { getDisplayMode() };
 	}
 
 	@Override
