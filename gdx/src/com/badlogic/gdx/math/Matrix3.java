@@ -70,6 +70,52 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Subtract this matrix with the provided matrix and stores the result in this matrix. For example:
+	 *
+	 * <pre>
+	 * A.sub(B) results in A := A-B
+	 * </pre>
+	 * @param m Matrix to subtract by.
+	 * @return This matrix for the purpose of chaining operations together. */		
+	public Matrix3 sub (Matrix3 mat) {	
+		val[M00] -= mat.val[Matrix3.M00];
+		val[M01] -= mat.val[Matrix3.M01];
+		val[M02] -= mat.val[Matrix3.M02];
+		
+		val[M10] -= mat.val[Matrix3.M10];
+		val[M11] -= mat.val[Matrix3.M11];
+		val[M12] -= mat.val[Matrix3.M12];
+		
+		val[M20] -= mat.val[Matrix3.M20];
+		val[M21] -= mat.val[Matrix3.M21];
+		val[M22] -= mat.val[Matrix3.M22];
+		
+		return this;
+	}
+	
+	/** Sum this matrix with the provided matrix and stores the result in this matrix. For example:
+	*
+	* <pre>
+	* A.sum(B) results in A := A+B
+	* </pre>
+	* @param m Matrix to sum by.
+	* @return This matrix for the purpose of chaining operations together. */
+	public Matrix3 sum (Matrix3 mat) {	
+		val[M00] += mat.val[Matrix3.M00];
+		val[M01] += mat.val[Matrix3.M01];
+		val[M02] += mat.val[Matrix3.M02];
+		
+		val[M10] += mat.val[Matrix3.M10];
+		val[M11] += mat.val[Matrix3.M11];
+		val[M12] += mat.val[Matrix3.M12];
+		
+		val[M20] += mat.val[Matrix3.M20];
+		val[M21] += mat.val[Matrix3.M21];
+		val[M22] += mat.val[Matrix3.M22];
+		
+		return this;
+	}
+
 	/** Postmultiplies this matrix with the provided matrix and stores the result in this matrix. For example:
 	 * 
 	 * <pre>
