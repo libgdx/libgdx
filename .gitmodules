@@ -1,0 +1,4 @@
+[submodule "gdx/jni/libwebp"]
+	path = gdx/jni/libwebp
+	url = https://chromium.googlesource.com/webm/libwebp
+	branch = 0.5.0
