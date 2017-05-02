@@ -66,6 +66,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** True if any actor has ever had debug enabled. */
 	static boolean debug;
 
+	private String name;
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
@@ -699,6 +700,16 @@ public class Stage extends InputAdapter implements Disposable {
 	public Group getRoot () {
 		return root;
 	}
+	
+	/** Retrieve custom stage name set with {@link Stage#setName(String)}, used for easier identification */
+	public String getName () {
+		return name;
+	}
+	
+	/** Sets a name for easier identification of the stage in application code. */
+	public void setName (String name) {
+		this.name = name;
+	}
 
 	/** Replaces the root group. Usually this is not necessary but a subclass may be desired in some cases, eg being notified of
 	 * {@link Group#childrenChanged()}. */
@@ -829,6 +840,16 @@ public class Stage extends InputAdapter implements Disposable {
 	public void dispose () {
 		clear();
 		if (ownsBatch) batch.dispose();
+	}
+	
+	public String toString () {
+		String name = this.name;
+		if (name == null) {
+			name = getClass().getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) name = name.substring(dotIndex + 1);
+		}
+		return name;
 	}
 
 	/** Check if screen coordinates are inside the viewport's screen area. */
