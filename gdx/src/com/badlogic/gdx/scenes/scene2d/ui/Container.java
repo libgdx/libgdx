@@ -586,6 +586,16 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return this;
 	}
 
+	/** @return May be null if min width has not been set. */
+	public Float getMinWidthValue () {
+		return minWidth;
+	}
+
+	/** @param minWidth may be null */
+	public void setMinWidthValue (Float minWidth) {
+		this.minWidth = minWidth;
+	}
+
 	public float getMinWidth () {
 		return minWidth.get(actor) + padLeft.get(this) + padRight.get(this);
 	}
@@ -594,12 +604,22 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return minHeight;
 	}
 
+	/** @param minHeight may be null */
+	public void setMinHeightValue (Float minHeight) {
+		this.minHeight = minHeight;
+	}
+
 	public float getMinHeight () {
 		return minHeight.get(actor) + padTop.get(this) + padBottom.get(this);
 	}
 
 	public Value getPrefWidthValue () {
 		return prefWidth;
+	}
+
+	/** @param prefWidth may be null */
+	public void setPrefWidthValue (Float prefWidth) {
+		this.prefWidth = prefWidth;
 	}
 
 	public float getPrefWidth () {
@@ -612,6 +632,11 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return prefHeight;
 	}
 
+	/** @param prefHeight may be null */
+	public void setPrefHeightValue (Float prefHeight) {
+		this.prefHeight = prefHeight;
+	}
+
 	public float getPrefHeight () {
 		float v = prefHeight.get(actor);
 		if (background != null) v = Math.max(v, background.getMinHeight());
@@ -622,6 +647,11 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return maxWidth;
 	}
 
+	/** @param maxWidth may be null */
+	public void setMaxWidthValue (Float maxWidth) {
+		this.maxWidth = maxWidth;
+	}
+
 	public float getMaxWidth () {
 		float v = maxWidth.get(actor);
 		if (v > 0) v += padLeft.get(this) + padRight.get(this);
@@ -630,6 +660,11 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	public Value getMaxHeightValue () {
 		return maxHeight;
+	}
+
+	/** @param maxHeight may be null */
+	public void setMaxHeightValue (Float maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	public float getMaxHeight () {
