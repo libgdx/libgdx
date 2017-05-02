@@ -56,13 +56,13 @@ public class PolygonShape extends Shape {
 	}
 
 	/** Copy vertices from the given float array. It is assumed the vertices are in x,y order and define a convex polygon. It is
-	 * assumed that the exterior is the the right of each edge. */
+	 * assumed that the exterior is the right of each edge. */
 	public void set (float[] vertices) {
 		jniSet(addr, vertices, 0, vertices.length);
 	}
 
 	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in
-	 * x,y order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
+	 * x,y order and define a convex polygon. It is assumed that the exterior is the right of each edge. */
 	public void set (float[] vertices, int offset, int len) {
 		jniSet(addr, vertices, offset, len);
 	}
