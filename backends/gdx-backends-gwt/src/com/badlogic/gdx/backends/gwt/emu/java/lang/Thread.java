@@ -17,8 +17,20 @@
 package java.lang;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 public class Thread {
+	
+	Runnable runnable;
+
+	public Thread () {
+	}
+
+	public Thread (Runnable runnable) {
+		this.runnable = runnable;
+	}
+	
 	public static void sleep (long millis) throws InterruptedException {
 		// noop emu
 	}
@@ -41,4 +53,19 @@ public class Thread {
 	public static interface UncaughtExceptionHandler {
 		void uncaughtException(Thread t, Throwable e);
 	}
+
+	public synchronized void start () {
+		run();
+	}
+
+	public void run () {
+		if (runnable != null) Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute () {
+				runnable.run();
+			}
+		});
+	}
+
+
 }
