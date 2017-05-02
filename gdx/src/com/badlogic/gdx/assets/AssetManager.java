@@ -481,7 +481,7 @@ public class AssetManager implements Disposable {
 	}
 
 	/** Adds an asset to this AssetManager */
-	protected <T> void addAsset (final String fileName, Class<T> type, T asset) {
+	public <T> void addAsset (final String fileName, Class<T> type, T asset) {
 		// add the asset to the filename lookup
 		assetTypes.put(fileName, type);
 
