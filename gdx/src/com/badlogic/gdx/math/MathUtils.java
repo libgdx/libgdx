@@ -351,4 +351,70 @@ public final class MathUtils {
 	static public float log2 (float value) {
 		return log(2, value);
 	}
+	
+/** @return the average of all the values passed in */
+	static public byte average(byte... values) {
+		double ret = 0D;
+
+		for (byte currVal : values) {
+			ret += currVal;
+		}
+
+		return (byte) ((ret / values.length) + .5D);
+	}
+
+	/** @return the average of all the values passed in */
+	static public short average(short... values) {
+		double ret = 0D;
+
+		for (short currVal : values) {
+			ret += currVal;
+		}
+
+		return (short) ((ret / values.length) + .5D);
+	}
+
+	/** @return the average of all the values passed in */
+	static public int average(int... values) {
+		double ret = 0D;
+
+		for (int currVal : values) {
+			ret += currVal;
+		}
+
+		return (int) ((ret / values.length) + .5D);
+	}
+
+	/** @return the average of all the values passed in */
+	static public long average(long... values) {
+		double ret = 0D;
+
+		for (long currVal : values) {
+			ret += currVal;
+		}
+
+		return (long) ((ret / values.length) + .5D);
+	}
+
+	/** @return the average of all the values passed in */
+	static public float average(float... values) {
+		double ret = 0D;
+
+		for (float currVal : values) {
+			ret += currVal;
+		}
+
+		return (float) (ret / values.length);
+	}
+
+	/** @return the average of all the values passed in */
+	static public double average(double... values) {
+		double ret = 0D;
+
+		for (double currVal : values) {
+			ret += currVal;
+		}
+
+		return (ret / values.length);
+	}
 }
