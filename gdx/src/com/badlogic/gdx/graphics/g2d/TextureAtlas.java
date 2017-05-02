@@ -299,8 +299,8 @@ public class TextureAtlas implements Disposable {
 	 * should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
 	public AtlasRegion findRegion (String name) {
-		for (int i = 0, n = regions.size; i < n; i++)
-			if (regions.get(i).name.equals(name)) return regions.get(i);
+		for (AtlasRegion region : regions)
+			if (region.name.equals(name)) return region;
 		return null;
 	}
 
@@ -308,8 +308,7 @@ public class TextureAtlas implements Disposable {
 	 * the result should be cached rather than calling this method multiple times.
 	 * @return The region, or null. */
 	public AtlasRegion findRegion (String name, int index) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
+		for (AtlasRegion region : regions) {
 			if (!region.name.equals(name)) continue;
 			if (region.index != index) continue;
 			return region;
@@ -333,8 +332,8 @@ public class TextureAtlas implements Disposable {
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites () {
 		Array sprites = new Array(regions.size);
-		for (int i = 0, n = regions.size; i < n; i++)
-			sprites.add(newSprite(regions.get(i)));
+		for (AtlasRegion region : regions)
+			sprites.add(newSprite(region));
 		return sprites;
 	}
 
@@ -343,9 +342,8 @@ public class TextureAtlas implements Disposable {
 	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null. */
 	public Sprite createSprite (String name) {
-		for (int i = 0, n = regions.size; i < n; i++)
-			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
-		return null;
+		final AtlasRegion region = findRegion(name);
+		return null == region ? null : newSprite(region);
 	}
 
 	/** Returns the first region found with the specified name and index as a sprite. This method uses string comparison to find the
@@ -353,13 +351,8 @@ public class TextureAtlas implements Disposable {
 	 * @return The sprite, or null.
 	 * @see #createSprite(String) */
 	public Sprite createSprite (String name, int index) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (!region.name.equals(name)) continue;
-			if (region.index != index) continue;
-			return newSprite(regions.get(i));
-		}
-		return null;
+		final AtlasRegion region = findRegion(name, index);
+		return null == region ? null : newSprite(region);
 	}
 
 	/** Returns all regions with the specified name as sprites, ordered by smallest to largest {@link AtlasRegion#index index}. This
@@ -368,10 +361,8 @@ public class TextureAtlas implements Disposable {
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites (String name) {
 		Array<Sprite> matched = new Array();
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
+		for (AtlasRegion region : regions)
 			if (region.name.equals(name)) matched.add(newSprite(region));
-		}
 		return matched;
 	}
 
@@ -393,17 +384,13 @@ public class TextureAtlas implements Disposable {
 	 * be cached rather than calling this method multiple times.
 	 * @return The ninepatch, or null. */
 	public NinePatch createPatch (String name) {
-		for (int i = 0, n = regions.size; i < n; i++) {
-			AtlasRegion region = regions.get(i);
-			if (region.name.equals(name)) {
-				int[] splits = region.splits;
-				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
-				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-				if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
-				return patch;
-			}
-		}
-		return null;
+		final AtlasRegion region = findRegion(name);
+		if (null == region) return null;
+		int[] splits = region.splits;
+		if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
+		NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+		if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
+		return patch;
 	}
 
 	/** @return the textures of the pages, unordered */
