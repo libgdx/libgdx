@@ -36,6 +36,7 @@ public class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
 	private boolean layoutEnabled = true;
+	private Object userData = null;
 
 	public float getMinWidth () {
 		return getPrefWidth();
@@ -123,5 +124,15 @@ public class Widget extends Actor implements Layout {
 	}
 
 	public void layout () {
+	}
+
+	/** @return the userData, could be null */
+	public Object getUserData () {
+		return userData;
+	}
+
+	/** @param userData the userData to set */
+	public void setUserData (Object userData) {
+		this.userData = userData;
 	}
 }
