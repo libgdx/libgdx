@@ -51,6 +51,7 @@ import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
+import com.badlogic.gdx.tests.g2d.NewBatchTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.BaseG3dHudTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -206,7 +207,7 @@ public class Lwjgl3DebugStarter {
 			@Override
 			public boolean closeRequested () {
 				Gdx.app.log("Window", "closing");
-				return false;
+				return true;
 			}
 
 			@Override
@@ -226,6 +227,6 @@ public class Lwjgl3DebugStarter {
 		}	
 
 		System.setProperty("java.awt.headless", "true"); 
-		new Lwjgl3Application(test, config);
+		new Lwjgl3Application(new NewBatchTest(), config);
 	}
 }
