@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.Array;
  * @author mzechner */
 public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.SoundParameter> {
 
-	private Sound sound;
+	protected Sound sound;
 
 	public SoundLoader (FileHandleResolver resolver) {
 		super(resolver);
