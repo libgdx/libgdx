@@ -959,7 +959,7 @@ public class SpriteBatch implements Batch {
 		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
 		int count = spritesInBatch * 6;
 
-		lastTexture.bind();
+		if(lastTexture != null) lastTexture.bind();
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
 		mesh.getIndicesBuffer().position(0);
