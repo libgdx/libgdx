@@ -535,9 +535,19 @@ public class Sprite extends TextureRegion {
 		return width;
 	}
 
+	/** @return the width of the sprite multiplied by the X scale. */
+	public float getScaledWidth() {
+		return width * scaleX;
+	}
+
 	/** @return the height of the sprite, not accounting for scale. */
 	public float getHeight () {
 		return height;
+	}
+
+	/** @return the height of the sprite multiplied by the Y scale. */
+	public float getScaledHeight() {
+		return height * scaleY;
 	}
 
 	/** The origin influences {@link #setPosition(float, float)}, {@link #setRotation(float)} and the expansion direction of scaling
