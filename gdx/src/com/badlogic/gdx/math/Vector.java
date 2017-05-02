@@ -30,6 +30,10 @@ public interface Vector<T extends Vector<T>> {
 	 * but not for getting exact lengths, as the return value is the square of the actual length.
 	 * @return The squared euclidean length */
 	float len2 ();
+	
+	/** Limits this vector's length to given value
+	 * @return This vector for chaining */
+	T limit (float limit);
 
 	/** Limits the length of this vector, based on the desired maximum length.
 	 * @param limit desired maximum length for this vector

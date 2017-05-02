@@ -229,6 +229,17 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float y_d = y - this.y;
 		return x_d * x_d + y_d * y_d;
 	}
+	
+	/** Limits this vector's length to given value
+	 * @param limit Max length
+	 * @return This vector for chaining */
+	public Vector2 limit (float limit) {
+		if (len2() > limit * limit) {
+			nor();
+			mul(limit);
+		}
+		return this;
+	}
 
 	@Override
 	public Vector2 limit (float limit) {
