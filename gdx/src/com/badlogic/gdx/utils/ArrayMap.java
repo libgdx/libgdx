@@ -516,12 +516,16 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	static public class Entries<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
 		private final ArrayMap<K, V> map;
-		Entry<K, V> entry = new Entry();
+		private Array<Entry<K, V>> array;
 		int index;
 		boolean valid = true;
 
 		public Entries (ArrayMap<K, V> map) {
 			this.map = map;
+			array = new Array<Entry<K, V>>(map.size);
+			for (int i = 0; i < map.size; i++) {
+				array.items[i] = new Entry(map.keys[i], map.values[i]);
+			}
 		}
 
 		public boolean hasNext () {
@@ -537,14 +541,13 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		public Entry<K, V> next () {
 			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			entry.key = map.keys[index];
-			entry.value = map.values[index++];
-			return entry;
+			return array.items[index++];
 		}
 
 		public void remove () {
 			index--;
 			map.removeIndex(index);
+			array.removeIndex(index);
 		}
 
 		public void reset () {
