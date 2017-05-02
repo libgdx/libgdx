@@ -241,6 +241,25 @@ public class Array<T> implements Iterable<T> {
 		items[size] = null;
 		return value;
 	}
+	
+	/** Removes from this Array all of its elements that are contained in the other specified Array.
+	 * 
+	 * @param otherArray Array containing elements to be removed from this Array
+	 * @return {@code true} if this Array changed as a result of the call */
+	public boolean removeAll (Array<T> otherArray) {
+		boolean modified = false;
+		for (int i = 0; i < otherArray.size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (otherArray.get(i).equals(items[j])) {
+					removeIndex(j);
+					j--;
+					modified = true;
+					break;
+				}
+			}
+		}
+		return modified;
+	}
 
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange (int start, int end) {
