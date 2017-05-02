@@ -262,6 +262,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onPause () {
+		// no initialization done
+		if (graphics == null) {
+			super.onPause();
+			return;
+		}
+
 		boolean isContinuous = graphics.isContinuousRendering();
 		boolean isContinuousEnforced = AndroidGraphics.enforceContinuousRendering;
 
@@ -289,6 +295,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onResume () {
+		// no initialization done
+		if (graphics == null) {
+			super.onResume();
+			return;
+		}
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();

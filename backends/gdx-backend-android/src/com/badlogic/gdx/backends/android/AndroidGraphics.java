@@ -449,11 +449,11 @@ public class AndroidGraphics implements Graphics, Renderer {
 			}
 
 			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
-				try {
+//				try {
 					app.getExecutedRunnables().get(i).run();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+//				} catch (Throwable t) {
+//					t.printStackTrace();
+//				}
 			}
 			app.getInput().processEvents();
 			frameId++;

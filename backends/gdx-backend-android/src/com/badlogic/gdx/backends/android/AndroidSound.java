@@ -36,6 +36,7 @@ final class AndroidSound implements Sound {
 
 	@Override
 	public void dispose () {
+		stop();
 		soundPool.unload(soundId);
 	}
 
