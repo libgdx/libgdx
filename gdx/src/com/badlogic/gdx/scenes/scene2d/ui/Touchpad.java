@@ -203,6 +203,10 @@ public class Touchpad extends Widget {
 		this.deadzoneRadius = deadzoneRadius;
 		invalidate();
 	}
+	
+	public float getDeadzone () {
+		return deadZoneRadius;
+	}
 
 	/** Returns the x-position of the knob relative to the center of the widget. The positive direction is right. */
 	public float getKnobX () {
