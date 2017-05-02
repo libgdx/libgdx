@@ -129,9 +129,7 @@ public class JsonReader implements BaseJsonReader {
 								int _lower = _keys;
 								int _mid;
 								int _upper = _keys + _klen - 1;
-								while (true) {
-									if (_upper < _lower) break;
-
+								while (_upper >= _lower) {
 									_mid = _lower + ((_upper - _lower) >> 1);
 									if (data[p] < _json_trans_keys[_mid])
 										_upper = _mid - 1;
@@ -151,9 +149,7 @@ public class JsonReader implements BaseJsonReader {
 								int _lower = _keys;
 								int _mid;
 								int _upper = _keys + (_klen << 1) - 2;
-								while (true) {
-									if (_upper < _lower) break;
-
+								while (_upper >= _lower) {
 									_mid = _lower + (((_upper - _lower) >> 1) & ~1);
 									if (data[p] < _json_trans_keys[_mid])
 										_upper = _mid - 2;
