@@ -27,8 +27,10 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -41,6 +43,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public final class AndroidAudio implements Audio {
+	private static final String TAG = "AndroidAudio";
 	private final SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
@@ -174,20 +177,45 @@ public final class AndroidAudio implements Audio {
 		if (aHandle.type() == FileType.Internal) {
 			try {
 				AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
+				int sampleId = soundPool.load(descriptor, 1);
 				descriptor.close();
-				return sound;
+				return loadSound(sampleId);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file
 					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
+				int sampleId = soundPool.load(aHandle.file().getPath(), 1);
+				return loadSound(sampleId);
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
+	}
+	
+	/**
+	 * Loads a sound and waits until loading either succeeded or failed.
+	 * @param sampleId the id of the sample which will be loaded
+	 * @return returns the loaded sound
+	 */
+	private Sound loadSound (final int sampleId) {
+		final boolean[] loaded = {false};
+		final boolean[] failed = {false};
+		AndroidSound sound = new AndroidSound(soundPool, manager, sampleId);
+		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			@Override
+			public void onLoadComplete (SoundPool soundPool, int otherSampleId, int status) {
+				if (sampleId == otherSampleId && status == 0)
+					loaded[0] = true;
+				else if (sampleId == otherSampleId && status != 0) { // Should theoretically never happen
+					Gdx.app.log(TAG, "Sample with id " + sampleId + "has been loaded with unexpected status code " + status + " !");
+					failed[0] = true;
+				}
+			}
+		});
+		while (loaded[0] || failed[0]);
+		return sound;
 	}
 
 	/** {@inheritDoc} */
