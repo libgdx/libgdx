@@ -81,8 +81,8 @@ public class FileHandle {
 		this.type = type;
 	}
 
-	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png. backward
-	 *         slashes will be replaced by forward slashes. */
+	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
+	 *         backward slashes will be replaced by forward slashes. */
 	public String path () {
 		return file.getPath().replace('\\', '/');
 	}
@@ -477,9 +477,9 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
-	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
-	 * classpath will return false. */
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an
+	 * {@link FileType#Internal} handle to an empty directory will return false. On the desktop, an {@link FileType#Internal}
+	 * handle to a directory on the classpath will return false. */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
 		return file().isDirectory();
@@ -516,8 +516,8 @@ public class FileHandle {
 		file().mkdirs();
 	}
 
-	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
-	 * will always return false. Note that this can be very slow for internal files on Android! */
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a
+	 * directory will always return false. Note that this can be very slow for internal files on Android! */
 	public boolean exists () {
 		switch (type) {
 		case Internal:
@@ -568,8 +568,7 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
 	 *            file, or copying failed. */
 	public void copyTo (FileHandle dest) {
-		boolean sourceDir = isDirectory();
-		if (!sourceDir) {
+		if (!isDirectory()) {
 			if (dest.isDirectory()) dest = dest.child(name());
 			copyFile(this, dest);
 			return;
@@ -580,8 +579,7 @@ public class FileHandle {
 			dest.mkdirs();
 			if (!dest.isDirectory()) throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
 		}
-		if (!sourceDir) dest = dest.child(name());
-		copyDirectory(this, dest);
+		copyDirectory(this, dest.child(name()));
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
