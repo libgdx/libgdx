@@ -108,6 +108,8 @@ import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
+import com.badlogic.gdx.tests.VibratorAdvancedTest;
+import com.badlogic.gdx.tests.VibratorTest;
 import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
@@ -746,6 +748,14 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new VertexBufferObjectShaderTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new VibratorAdvancedTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new VibratorTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
