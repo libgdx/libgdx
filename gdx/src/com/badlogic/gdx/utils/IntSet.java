@@ -274,6 +274,8 @@ public class IntSet {
 
 	/** Returns true if the key was removed. */
 	public boolean remove (int key) {
+		if (size == 0) return false;
+
 		if (key == 0) {
 			if (!hasZeroValue) return false;
 			hasZeroValue = false;
@@ -356,6 +358,7 @@ public class IntSet {
 	}
 
 	public boolean contains (int key) {
+		if (size == 0) return false;
 		if (key == 0) return hasZeroValue;
 		int index = key & mask;
 		if (keyTable[index] != key) {
