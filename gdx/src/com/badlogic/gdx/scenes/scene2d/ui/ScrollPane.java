@@ -1057,8 +1057,10 @@ public class ScrollPane extends WidgetGroup {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
+		
+		public Drawable background;
 		/** Optional. */
-		public Drawable background, corner;
+		public Drawable corner;
 		/** Optional. */
 		public Drawable hScroll, hScrollKnob;
 		/** Optional. */
