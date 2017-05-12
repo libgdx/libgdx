@@ -57,10 +57,12 @@ public class Fixture {
 		int type = jniGetType(addr);
 		switch (type) {
 		case 0:
+			ChainShape.setLooped();
 			return Type.Circle;
 		case 1:
 			return Type.Edge;
 		case 2:
+			ChainShape.setLooped();
 			return Type.Polygon;
 		case 3:
 			return Type.Chain;
