@@ -469,6 +469,7 @@ public class Skin implements Disposable {
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
+				if (!fontFile.exists()) fontFile = Gdx.files.classpath(path);
 				if (!fontFile.exists()) throw new SerializationException("Font file not found: " + fontFile);
 
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
