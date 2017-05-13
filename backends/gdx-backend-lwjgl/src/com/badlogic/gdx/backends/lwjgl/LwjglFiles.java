@@ -39,7 +39,11 @@ public final class LwjglFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
-		return new LwjglFileHandle(path, FileType.Internal);
+		if(new File("./bin/" + path).exists()){
+		return new LwjglFileHandle("./bin/" + path, FileType.Internal);
+		} else{
+			return new LwjglFileHandle(path, FileType.Internal);
+		}
 	}
 
 	@Override
