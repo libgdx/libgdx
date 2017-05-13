@@ -42,6 +42,7 @@ public class SharedLibraryLoader {
 	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64")
 		|| System.getProperty("os.arch").equals("x86_64");
+	static public boolean isMOE = System.getProperty("moe.platform.name") != null;
 
 	// JDK 8 only.
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
@@ -108,7 +109,7 @@ public class SharedLibraryLoader {
 	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
 	public void load (String libraryName) {
 		// in case of iOS, things have been linked statically to the executable, bail out.
-		if (isIos) return;
+		if (isIos || isMOE) return;
 
 		synchronized (SharedLibraryLoader.class) {
 			if (isLoaded(libraryName)) return;
