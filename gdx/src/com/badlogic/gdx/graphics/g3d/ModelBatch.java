@@ -285,7 +285,6 @@ public class ModelBatch implements Disposable {
 		for (int i = offset; i < renderables.size; i++) {
 			Renderable renderable = renderables.get(i);
 			renderable.shader = shader;
-			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
 
@@ -313,7 +312,6 @@ public class ModelBatch implements Disposable {
 			Renderable renderable = renderables.get(i);
 			renderable.environment = environment;
 			renderable.shader = shader;
-			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
 
