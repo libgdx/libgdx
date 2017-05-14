@@ -182,7 +182,7 @@ public interface Input {
 		public static final int PAGE_DOWN = 93;
 		public static final int PICTSYMBOLS = 94;
 		public static final int SWITCH_CHARSET = 95;
-		public static final int BUTTON_CIRCLE = 255;
+		
 		public static final int BUTTON_A = 96;
 		public static final int BUTTON_B = 97;
 		public static final int BUTTON_C = 98;
@@ -198,7 +198,7 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
-
+		public static final int BUTTON_CIRCLE = 111;
 		public static final int NUMPAD_0 = 144;
 		public static final int NUMPAD_1 = 145;
 		public static final int NUMPAD_2 = 146;
