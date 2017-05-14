@@ -270,12 +270,7 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
-		float color = tint.toFloatBits();
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		setColor(tint.toFloatBits());
 	}
 
 	/** Sets the alpha portion of the color used to tint this sprite. */
@@ -297,12 +292,7 @@ public class Sprite extends TextureRegion {
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = NumberUtils.intToFloatColor(intBits);
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		setColor(NumberUtils.intToFloatColor(intBits));
 	}
 
 	/** @see #setColor(Color)
