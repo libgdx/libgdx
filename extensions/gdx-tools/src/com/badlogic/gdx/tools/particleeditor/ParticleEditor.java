@@ -287,7 +287,7 @@ public class ParticleEditor extends JFrame {
 					emittersPanel.add(effectPanel);
 				}
 			}
-			leftSplit.setDividerLocation(575);
+			leftSplit.setDividerLocation(375);
 		}
 		splitPane.setDividerLocation(325);
 	}
