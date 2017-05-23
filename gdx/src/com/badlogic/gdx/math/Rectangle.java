@@ -220,6 +220,26 @@ public class Rectangle implements Serializable, Shape2D {
 	public boolean overlaps (Rectangle r) {
 		return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
 	}
+	
+		/**@param r1 first {@link Rectangle}
+	 * @param r2 the other {@link Rectangle}
+	 * @return whether this rectangle overlaps the other rectangle. */
+	public static boolean overlaps(Rectangle r1, Rectangle r2) {
+		return r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height && r1.y + r1.height > r2.y;
+	}
+	/**@param r1x x of first {@link Rectangle}
+	 * @param r1y y of first {@link Rectangle}
+	 * @param r1w width of first {@link Rectangle}
+	 * @param r1h height of first {@link Rectangle}
+	 * @param r2x x of second {@link Rectangle}
+	 * @param r2y y of second {@link Rectangle}
+	 * @param r2w width of second {@link Rectangle}
+	 * @param r2h height of second {@link Rectangle}
+	 * @return whether this rectangle overlaps the other rectangle.
+	 */
+	public static boolean overlaps(float r1x, float r1y, float r1w, float r1h, float r2x, float r2y, float r2w, float r2h) {
+		return r1x < r2x + r2w && r1x + r1w > r2x && r1y < r2y + r2h && r1y + r1h > r2y;
+	}
 
 	/** Sets the values of the given rectangle to this rectangle.
 	 * @param rect the other rectangle
