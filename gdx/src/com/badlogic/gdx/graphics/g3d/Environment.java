@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,65 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Environment extends Attributes {
+
+	public static interface EnvironmentListener {
+		public void onLightAdded (BaseLight pointLight);
+
+		public void onLightRemoved (BaseLight pointLight);
+	}
+
+	private Array<EnvironmentListener> listeners = new Array<EnvironmentListener>();
+
 	/** @deprecated Experimental, likely to change, do not use! */
-	public ShadowMap shadowMap;
+	@Deprecated public ShadowMap shadowMap;
 
 	public Environment () {
+	}
+
+	public Environment addListener (EnvironmentListener listener) {
+		listeners.add(listener);
+
+		// Add all the existing lights
+		DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute)get(DirectionalLightsAttribute.Type));
+		PointLightsAttribute pointLights = ((PointLightsAttribute)get(PointLightsAttribute.Type));
+		SpotLightsAttribute spotLights = ((SpotLightsAttribute)get(SpotLightsAttribute.Type));
+
+		if (dirLights != null) {
+			for (DirectionalLight dirLight : dirLights.lights) {
+				listener.onLightAdded(dirLight);
+			}
+		}
+
+		if (pointLights != null) {
+			for (PointLight pointLight : pointLights.lights) {
+				listener.onLightAdded(pointLight);
+			}
+		}
+
+		if (spotLights != null) {
+			for (SpotLight spotLight : spotLights.lights) {
+				listener.onLightAdded(spotLight);
+			}
+		}
+
+		return this;
+	}
+
+	private void addBroadcast (BaseLight dir) {
+		for (EnvironmentListener listener : listeners) {
+			listener.onLightAdded(dir);
+		}
+	}
+
+	private void removeBroadcast (BaseLight dir) {
+		for (EnvironmentListener listener : listeners) {
+			listener.onLightRemoved(dir);
+		}
+	}
+
+	public Environment removeListener (EnvironmentListener listener) {
+		listeners.removeValue(listener, true);
+		return this;
 	}
 
 	public Environment add (final BaseLight... lights) {
@@ -55,6 +110,7 @@ public class Environment extends Attributes {
 			add((SpotLight)light);
 		else
 			throw new GdxRuntimeException("Unknown light type");
+
 		return this;
 	}
 
@@ -62,6 +118,8 @@ public class Environment extends Attributes {
 		DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute)get(DirectionalLightsAttribute.Type));
 		if (dirLights == null) set(dirLights = new DirectionalLightsAttribute());
 		dirLights.lights.add(light);
+		addBroadcast(light);
+
 		return this;
 	}
 
@@ -69,6 +127,8 @@ public class Environment extends Attributes {
 		PointLightsAttribute pointLights = ((PointLightsAttribute)get(PointLightsAttribute.Type));
 		if (pointLights == null) set(pointLights = new PointLightsAttribute());
 		pointLights.lights.add(light);
+		addBroadcast(light);
+
 		return this;
 	}
 
@@ -76,6 +136,8 @@ public class Environment extends Attributes {
 		SpotLightsAttribute spotLights = ((SpotLightsAttribute)get(SpotLightsAttribute.Type));
 		if (spotLights == null) set(spotLights = new SpotLightsAttribute());
 		spotLights.lights.add(light);
+		addBroadcast(light);
+
 		return this;
 	}
 
@@ -100,6 +162,7 @@ public class Environment extends Attributes {
 			remove((SpotLight)light);
 		else
 			throw new GdxRuntimeException("Unknown light type");
+
 		return this;
 	}
 
@@ -107,9 +170,10 @@ public class Environment extends Attributes {
 		if (has(DirectionalLightsAttribute.Type)) {
 			DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute)get(DirectionalLightsAttribute.Type));
 			dirLights.lights.removeValue(light, false);
-			if (dirLights.lights.size == 0)
-				remove(DirectionalLightsAttribute.Type);
+			if (dirLights.lights.size == 0) remove(DirectionalLightsAttribute.Type);
 		}
+		removeBroadcast(light);
+
 		return this;
 	}
 
@@ -117,9 +181,10 @@ public class Environment extends Attributes {
 		if (has(PointLightsAttribute.Type)) {
 			PointLightsAttribute pointLights = ((PointLightsAttribute)get(PointLightsAttribute.Type));
 			pointLights.lights.removeValue(light, false);
-			if (pointLights.lights.size == 0)
-				remove(PointLightsAttribute.Type);
+			if (pointLights.lights.size == 0) remove(PointLightsAttribute.Type);
 		}
+		removeBroadcast(light);
+
 		return this;
 	}
 
@@ -127,9 +192,10 @@ public class Environment extends Attributes {
 		if (has(SpotLightsAttribute.Type)) {
 			SpotLightsAttribute spotLights = ((SpotLightsAttribute)get(SpotLightsAttribute.Type));
 			spotLights.lights.removeValue(light, false);
-			if (spotLights.lights.size == 0)
-				remove(SpotLightsAttribute.Type);
+			if (spotLights.lights.size == 0) remove(SpotLightsAttribute.Type);
 		}
+		removeBroadcast(light);
+
 		return this;
 	}
 }

@@ -87,6 +87,12 @@ public class BoundingBox implements Serializable {
 		return out.set(max.x, max.y, max.z);
 	}
 
+	public Sphere getBoundingSphere(Sphere out) {
+		getCenter(out.center);
+		out.radius = getDimensions(tmpVector).len() * 0.5f;
+		return out;
+	}
+
 	/** @param out The {@link Vector3} to receive the dimensions of this bounding box on all three axis.
 	 * @return The vector specified with the out argument */
 	public Vector3 getDimensions (final Vector3 out) {

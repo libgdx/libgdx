@@ -130,6 +130,7 @@
 		<include name="graphics/g3d/ModelInstance.java"/>
 		<include name="graphics/g3d/Renderable.java"/>
 		<include name="graphics/g3d/RenderableProvider.java"/>
+		<include name="graphics/g3d/Scene.java"/>
 		<include name="graphics/g3d/Shader.java"/>
 		
 	<!-- graphics/g3d/attributes -->
@@ -196,7 +197,46 @@
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
 		<include name="graphics/g3d/shaders/DepthShader.java"/>
-		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
+
+	<!-- graphics/g3d/shadow/allocation -->
+		<include name="graphics/g3d/shadow/allocation/FixedShadowMapAllocator.java"/>
+		<include name="graphics/g3d/shadow/allocation/ShadowMapAllocator.java"/>
+
+	<!-- graphics/g3d/shadow/directional -->
+		<include name="graphics/g3d/shadow/directional/BoundingSphereDirectionalAnalyzer.java"/>
+		<include name="graphics/g3d/shadow/directional/DirectionalAnalyzer.java"/>
+		<include name="graphics/g3d/shadow/directional/DirectionalResult.java"/>
+		<include name="graphics/g3d/shadow/directional/FrustumDirectionalAnalyzer.java"/>
+
+	<!-- graphics/g3d/shadow/filter -->
+		<include name="graphics/g3d/shadow/filter/AllLightFilter.java"/>
+		<include name="graphics/g3d/shadow/filter/FrustumLightFilter.java"/>
+		<include name="graphics/g3d/shadow/filter/LightFilter.java"/>
+
+	<!-- graphics/g3d/shadow/nearfar -->
+		<include name="graphics/g3d/shadow/nearfar/AABBCachedNearFarAnalyzer.java"/>
+		<include name="graphics/g3d/shadow/nearfar/AABBNearFarAnalyzer.java"/>
+		<include name="graphics/g3d/shadow/nearfar/NearFarAnalyzer.java"/>
+
+	<!-- graphics/g3d/shadow/system -->
+		<include name="graphics/g3d/shadow/system/BaseShadowSystem.java"/>
+		<include name="graphics/g3d/shadow/system/ShadowSystem.java"/>
+
+	<!-- graphics/g3d/shadow/system/classical -->
+		<include name="graphics/g3d/shadow/system/classical/ClassicalShadowSystem.java"/>
+		<include name="graphics/g3d/shadow/system/classical/MainShader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/MainShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass1Shader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass1ShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass2Shader.java"/>
+		<include name="graphics/g3d/shadow/system/classical/Pass2ShaderProvider.java"/>
+
+	<!-- graphics/g3d/shadow/system/realistic -->
+		<include name="graphics/g3d/shadow/system/realistic/MainShader.java"/>
+		<include name="graphics/g3d/shadow/system/realistic/MainShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/realistic/Pass1Shader.java"/>
+		<include name="graphics/g3d/shadow/system/realistic/Pass1ShaderProvider.java"/>
+		<include name="graphics/g3d/shadow/system/realistic/RealisticShadowSystem.java"/>
 
 	<!-- graphics/g3d/utils -->
 		<include name="graphics/g3d/utils/AnimationController.java"/>
@@ -218,6 +258,9 @@
 		<include name="graphics/g3d/utils/TextureBinder.java"/>
 		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
 		<include name="graphics/g3d/utils/TextureProvider.java"/>
+
+	<!-- graphics/g3d/utils/helpers -->
+		<include name="graphics/g3d/utils/helpers/CameraHelper.java"/>
 		
 	<!-- graphics/g3d/utils/shapebuilders -->
 		<include name="graphics/g3d/utils/shapebuilders/ArrowShapeBuilder.java"/>
@@ -320,8 +363,8 @@
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
 	
 	<!-- maps/tiled/objects -->
-		<include name="maps/tiled/objects/TiledMapTileMapObject.java"/>	
-		
+		<include name="maps/tiled/objects/TiledMapTileMapObject.java"/> 
+
 	<!-- math -->
 		<include name="math/Affine2.java"/>
 		<include name="math/Bezier.java"/>
