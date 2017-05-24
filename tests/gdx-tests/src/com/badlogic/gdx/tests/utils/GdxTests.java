@@ -73,6 +73,7 @@ import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
+import com.badlogic.gdx.tests.ScreenTransitionTest;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -267,7 +268,8 @@ public class GdxTests {
 		FreeTypeTest.class,
 		InternationalFontsTest.class,
 		PngTest.class,
-		JsonTest.class
+		JsonTest.class,
+		ScreenTransitionTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
