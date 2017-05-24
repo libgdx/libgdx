@@ -36,7 +36,7 @@ public class HttpParametersUtils {
 	 * @return The String with the parameters encoded. */
 	public static String convertHttpParameters (Map<String, String> parameters) {
 		Set<String> keySet = parameters.keySet();
-		StringBuffer convertedParameters = new StringBuffer();
+		StringBuilder  convertedParameters = new StringBuilder ();
 		for (String name : keySet) {
 			convertedParameters.append(encode(name, defaultEncoding));
 			convertedParameters.append(nameValueSeparator);

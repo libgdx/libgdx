@@ -116,9 +116,9 @@ public class AntScriptGenerator {
 		// generate the master build script
 		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build.xml.template", FileType.Classpath)
 			.readString();
-		StringBuffer clean = new StringBuffer();
-		StringBuffer compile = new StringBuffer();
-		StringBuffer pack = new StringBuffer();
+		StringBuilder  clean = new StringBuilder ();
+		StringBuilder  compile = new StringBuilder ();
+		StringBuilder  pack = new StringBuilder ();
 
 		for (int i = 0; i < buildFiles.size(); i++) {
 			clean.append("\t\t<ant antfile=\"" + buildFiles.get(i) + "\" target=\"clean\"/>\n");
@@ -219,26 +219,26 @@ public class AntScriptGenerator {
 
 		// generate include and exclude fileset Ant description for C/C++
 		// append memcpy_wrap.c to list of files to be build
-		StringBuffer cIncludes = new StringBuffer();
+		StringBuilder  cIncludes = new StringBuilder ();
 		cIncludes.append("\t\t<include name=\"memcpy_wrap.c\"/>\n");
 		for (String cInclude : target.cIncludes) {
 			cIncludes.append("\t\t<include name=\"" + cInclude + "\"/>\n");
 		}
-		StringBuffer cppIncludes = new StringBuffer();
+		StringBuilder  cppIncludes = new StringBuilder ();
 		for (String cppInclude : target.cppIncludes) {
 			cppIncludes.append("\t\t<include name=\"" + cppInclude + "\"/>\n");
 		}
-		StringBuffer cExcludes = new StringBuffer();
+		StringBuilder  cExcludes = new StringBuilder ();
 		for (String cExclude : target.cExcludes) {
 			cExcludes.append("\t\t<exclude name=\"" + cExclude + "\"/>\n");
 		}
-		StringBuffer cppExcludes = new StringBuffer();
+		StringBuilder  cppExcludes = new StringBuilder ();
 		for (String cppExclude : target.cppExcludes) {
 			cppExcludes.append("\t\t<exclude name=\"" + cppExclude + "\"/>\n");
 		}
 
 		// generate C/C++ header directories
-		StringBuffer headerDirs = new StringBuffer();
+		StringBuilder  headerDirs = new StringBuilder ();
 		for (String headerDir : target.headerDirs) {
 			headerDirs.append("\t\t\t<arg value=\"-I" + headerDir + "\"/>\n");
 		}
