@@ -541,31 +541,32 @@ public class ParticleEmitter {
 		if ((updateFlags & UPDATE_VELOCITY) != 0) {
 			float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(percent)) * delta;
 
-			float velocityX, velocityY;
-			if ((updateFlags & UPDATE_ANGLE) != 0) {
-				float angle = particle.angle + particle.angleDiff * angleValue.getScale(percent);
-				velocityX = velocity * MathUtils.cosDeg(angle);
-				velocityY = velocity * MathUtils.sinDeg(angle);
-				if ((updateFlags & UPDATE_ROTATION) != 0) {
-					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
-					if (aligned) rotation += angle;
-					particle.setRotation(rotation);
-				}
-			} else {
-				velocityX = velocity * particle.angleCos;
-				velocityY = velocity * particle.angleSin;
-				if (aligned || (updateFlags & UPDATE_ROTATION) != 0) {
-					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
-					if (aligned) rotation += particle.angle;
-					particle.setRotation(rotation);
-				}
-			}
+			float velocityX = 0, velocityY = 0;
 
 			if ((updateFlags & UPDATE_WIND) != 0)
 				velocityX += (particle.wind + particle.windDiff * windValue.getScale(percent)) * delta;
 
 			if ((updateFlags & UPDATE_GRAVITY) != 0)
 				velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(percent)) * delta;
+
+			if ((updateFlags & UPDATE_ANGLE) != 0) {
+				float angle = particle.angle + particle.angleDiff * angleValue.getScale(percent);
+				velocityX += velocity * MathUtils.cosDeg(angle);
+				velocityY += velocity * MathUtils.sinDeg(angle);
+				if ((updateFlags & UPDATE_ROTATION) != 0) {
+					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) rotation += angle;
+					particle.setRotation(rotation);
+				}
+			} else {
+				velocityX += velocity * particle.angleCos;
+				velocityY += velocity * particle.angleSin;
+				if (aligned || (updateFlags & UPDATE_ROTATION) != 0) {
+					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) rotation += particle.angle;
+					particle.setRotation(rotation);
+				}
+			}
 
 			particle.translate(velocityX, velocityY);
 		} else {
