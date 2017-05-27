@@ -18,12 +18,9 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 
 import com.badlogic.gdx.audio.Music;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.dom.client.EndedEvent;
-import com.google.gwt.event.dom.client.EndedHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.media.client.Audio;
 
-public class WebAudioAPIMusic implements Music, EndedHandler {
+public class WebAudioAPIMusic implements Music {
 	// The Audio element to be streamed
 	private final Audio audio;
 
@@ -37,8 +34,6 @@ public class WebAudioAPIMusic implements Music, EndedHandler {
 
 	private OnCompletionListener onCompletionListener;
 
-	private HandlerRegistration endedRegistration;
-
 	public WebAudioAPIMusic (JavaScriptObject audioContext, Audio audio, AudioControlGraphPool audioControlGraphPool) {
 		this.audio = audio;
 		this.audioControlGraphPool = audioControlGraphPool;
@@ -49,13 +44,15 @@ public class WebAudioAPIMusic implements Music, EndedHandler {
 		// Setup the sound graph to control pan and volume
 		audioControlGraph = audioControlGraphPool.newObject();
 		audioControlGraph.setSource(audioSourceNode);
-
-		endedRegistration = audio.addEndedHandler(this);
 	}
 
-	public static native JavaScriptObject createMediaElementAudioSourceNode (JavaScriptObject audioContext,
-		JavaScriptObject audioElement) /*-{
-		return audioContext.createMediaElementSource(audioElement);
+	public native JavaScriptObject createMediaElementAudioSourceNode(JavaScriptObject audioContext, JavaScriptObject audioElement) /*-{
+		var source = audioContext.createMediaElementSource(audioElement);
+				var self = this;
+		audioElement.addEventListener("ended", function(){
+			self.@com.badlogic.gdx.backends.gwt.WebAudioAPIMusic::onEnded()();
+		});
+		return source;
 	}-*/;
 
 	@Override
@@ -96,10 +93,7 @@ public class WebAudioAPIMusic implements Music, EndedHandler {
 		// Volume can be controlled on the Audio element, or as part of the audio graph. We do it as part of the graph to ensure we
 		// use as much common
 		// code as possible with the sound effect code.
-
-		// audioControlGraph.setVolume(volume);
-		audio.setVolume(volume);
-
+		audioControlGraph.setVolume(volume);
 	}
 
 	@Override
@@ -130,9 +124,6 @@ public class WebAudioAPIMusic implements Music, EndedHandler {
 
 		// Tear down the audio graph
 		audioControlGraphPool.free(audioControlGraph);
-
-		// Unhook the event handler
-		endedRegistration.removeHandler();
 	}
 
 	@Override
