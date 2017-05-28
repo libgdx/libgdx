@@ -71,7 +71,7 @@ public class Wav {
 	}
 
 	/** @author Nathan Sweet */
-	static private class WavInputStream extends FilterInputStream {
+	static public class WavInputStream extends FilterInputStream {
 		int channels, sampleRate, dataRemaining;
 
 		WavInputStream (FileHandle file) {
