@@ -72,7 +72,7 @@ public class Wav {
 
 	/** @author Nathan Sweet */
 	static public class WavInputStream extends FilterInputStream {
-		int channels, sampleRate, dataRemaining;
+		public int channels, sampleRate, dataRemaining;
 
 		public WavInputStream (FileHandle file) {
 			super(file.read());
