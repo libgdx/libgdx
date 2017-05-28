@@ -74,7 +74,7 @@ public class Wav {
 	static public class WavInputStream extends FilterInputStream {
 		int channels, sampleRate, dataRemaining;
 
-		WavInputStream (FileHandle file) {
+		public WavInputStream (FileHandle file) {
 			super(file.read());
 			try {
 				if (read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')
