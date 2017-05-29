@@ -121,7 +121,7 @@ public class TextButton extends Button {
 			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
 			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
 			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
-			if (style.checkedOverFontColor != null) this.checkedFontColor = new Color(style.checkedOverFontColor);
+			if (style.checkedOverFontColor != null) this.checkedOverFontColor = new Color(style.checkedOverFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 		}
 	}
