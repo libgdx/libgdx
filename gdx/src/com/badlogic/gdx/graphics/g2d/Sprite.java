@@ -126,6 +126,13 @@ public class Sprite extends TextureRegion {
 		dirty = sprite.dirty;
 	}
 
+	/** Sets the texture and resizes the sprite to the size of that texture. */
+	public void setTextureFit (Texture texture) {
+		this.texture = texture;
+		setSize (texture.getWidth(), texture.getHeight());
+		setRegion (0, 0, texture.getWidth(), texture.getHeight());
+	}
+
 	/** Sets the position and size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale
 	 * are changed, it is slightly more efficient to set the bounds after those operations. */
 	public void setBounds (float x, float y, float width, float height) {
