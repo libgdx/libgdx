@@ -21,9 +21,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 /** A {@link ParticleControllerRenderer} which will render particles as {@link ModelInstance} to a
  * {@link ModelInstanceParticleBatch}.
@@ -59,21 +61,40 @@ public class ModelInstanceRenderer extends
 
 	@Override
 	public void update () {
+		Quaternion rot = TMP_Q2;
+		Vector3 pos = TMP_V2;
+		Vector3 scl = TMP_V3;
+		Matrix4 worldTransform = null;
+		Quaternion worldTransformRot = null;
+		Vector3 worldTransformScl = null;
+		if (renderData.controller.worldTransform != null) {
+			worldTransform = TMP_M4.set(renderData.controller.worldTransform);
+			worldTransformRot = worldTransform.getRotation(TMP_Q, true);
+			worldTransformScl = worldTransform.getScale(TMP_V1);
+		}
 		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += renderData.positionChannel.strideSize) {
 			ModelInstance instance = renderData.modelInstanceChannel.data[i];
 			float scale = hasScale ? renderData.scaleChannel.data[i] : 1;
-			float qx = 0, qy = 0, qz = 0, qw = 1;
+			scl.set(scale, scale, scale);
+			if (worldTransformScl != null && renderData.controller.worldTransformScalesParticles) scl.scl(worldTransformScl);
+
 			if (hasRotation) {
 				int rotationOffset = i * renderData.rotationChannel.strideSize;
-				qx = renderData.rotationChannel.data[rotationOffset + ParticleChannels.XOffset];
-				qy = renderData.rotationChannel.data[rotationOffset + ParticleChannels.YOffset];
-				qz = renderData.rotationChannel.data[rotationOffset + ParticleChannels.ZOffset];
-				qw = renderData.rotationChannel.data[rotationOffset + ParticleChannels.WOffset];
+				rot.x = renderData.rotationChannel.data[rotationOffset + ParticleChannels.XOffset];
+				rot.y = renderData.rotationChannel.data[rotationOffset + ParticleChannels.YOffset];
+				rot.z = renderData.rotationChannel.data[rotationOffset + ParticleChannels.ZOffset];
+				rot.w = renderData.rotationChannel.data[rotationOffset + ParticleChannels.WOffset];
+			} else {
+				rot.idt();
 			}
+			if (worldTransformRot != null) rot.mul(worldTransformRot);
 
-			instance.transform.set(renderData.positionChannel.data[positionOffset + ParticleChannels.XOffset],
-				renderData.positionChannel.data[positionOffset + ParticleChannels.YOffset],
-				renderData.positionChannel.data[positionOffset + ParticleChannels.ZOffset], qx, qy, qz, qw, scale, scale, scale);
+			pos.x = renderData.positionChannel.data[positionOffset + ParticleChannels.XOffset];
+			pos.y = renderData.positionChannel.data[positionOffset + ParticleChannels.YOffset];
+			pos.z = renderData.positionChannel.data[positionOffset + ParticleChannels.ZOffset];
+			if (worldTransform != null) pos.mul(worldTransform);
+
+			instance.transform.set(pos, rot, scl);
 			if (hasColor) {
 				int colorOffset = i * renderData.colorChannel.strideSize;
 				ColorAttribute colorAttribute = (ColorAttribute)instance.materials.get(0).get(ColorAttribute.Diffuse);

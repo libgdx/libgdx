@@ -54,8 +54,17 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public ParallelArray particles;
 	public ParticleChannels particleChannels;
 
-	/** Current transform of the controller DO NOT CHANGE MANUALLY */
-	public Matrix4 transform;
+	/** Current transform of the controller. Controls where new particles are generated. DO NOT CHANGE MANUALLY */
+	public final Matrix4 transform;
+
+	/** Optional world transform of the controller, null by default. Translation, rotation and scaling on this matrix will affect
+	 * all particles this controller has generated. */
+	public Matrix4 worldTransform;
+
+	/** If true, the scaling of {@link ParticleController#worldTransform} will affect the size of the particles and the distance
+	 * between them. If false, the scaling will only affect the distance between the particles. Scaling of point sprite particles
+	 * is not supported. */
+	public boolean worldTransformScalesParticles;
 
 	/** Transform flags */
 	public Vector3 scale;
@@ -71,6 +80,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		scale = new Vector3(1, 1, 1);
 		influencers = new Array<Influencer>(true, 3, Influencer.class);
 		setTimeStep(DEFAULT_TIME_STEP);
+		worldTransformScalesParticles = false;
 	}
 
 	public ParticleController (String name, Emitter emitter, ParticleControllerRenderer<?, ?> renderer, Influencer... influencers) {
@@ -99,6 +109,16 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public void setTransform (float x, float y, float z, float qx, float qy, float qz, float qw, float scale) {
 		transform.set(x, y, z, qx, qy, qz, qw, scale, scale, scale);
 		this.scale.set(scale, scale, scale);
+	}
+
+	/** Sets the current world transformation. */
+	public void setWorldTransform (Matrix4 worldTransform) {
+		if (worldTransform == null) {
+			this.worldTransform = null;
+		} else {
+			if (this.worldTransform == null) this.worldTransform = new Matrix4();
+			this.worldTransform.set(worldTransform);
+		}
 	}
 
 	/** Post-multiplies the current transformation with a rotation matrix represented by the given quaternion. */
