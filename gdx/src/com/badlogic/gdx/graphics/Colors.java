@@ -38,12 +38,43 @@ public final class Colors {
 	/** Convenience method to lookup a color by {@code name}. The invocation of this method is equivalent to the expression
 	 * {@code Colors.getColors().get(name)}
 	 * 
+	 * If a hex string with 6 (or 8 with alpha channel) characters is given as parameter @code name then
+	 * a new Color is returned with specified RGB (RGBA) channel values.
+	 *
 	 * @param name the name of the color
 	 * @return the color to which the specified {@code name} is mapped, or {@code null} if there was no mapping for {@code name}
 	 *         . */
-	public static Color get (String name) {
-		return map.get(name);
-	}
+	public static Color get(String name) {
+		if (name.length() == 6 || name.length() == 8)
+		{
+		    boolean isHex = true;
+		    for (int i=0; i<name.length(); i++)
+		    {
+			if (Character.digit(name.charAt(i), 16) == -1)
+			{
+			    isHex = false;
+			    break;
+			}
+		    }
+
+		    if (isHex)
+		    {
+			int r, g, b, a;
+			r = Integer.parseInt(String.valueOf(name.subSequence(0, 2)), 16);
+			g = Integer.parseInt(String.valueOf(name.subSequence(2, 4)), 16);
+			b = Integer.parseInt(String.valueOf(name.subSequence(4, 6)), 16);
+			if (name.length() == 8)
+			    a = Integer.parseInt(String.valueOf(name.subSequence(6, 8)), 16);
+			else
+			    a = 255;
+
+			return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+		    }
+
+		}
+
+		return (Color)map.get(name);
+	    }
 
 	/** Convenience method to add a {@code color} with its {@code name}. The invocation of this method is equivalent to the
 	 * expression {@code Colors.getColors().put(name, color)}
