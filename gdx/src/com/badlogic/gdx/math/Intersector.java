@@ -887,6 +887,21 @@ public final class Intersector {
 		return r1.overlaps(r2);
 	}
 
+	/**
+	 * @param r1x x of first {@link Rectangle}
+	 * @param r1y y of first {@link Rectangle}
+	 * @param r1w width of first {@link Rectangle}
+	 * @param r1h height of first {@link Rectangle}
+	 * @param r2x x of first {@link Rectangle}
+	 * @param r2y y of first {@link Rectangle}
+	 * @param r2w width of first {@link Rectangle}
+	 * @param r2h height of first {@link Rectangle}
+	 * @return true if they overlap
+	 */
+	public static boolean overlaps(float r1x, float r1y, float r1w, float r1h, float r2x, float r2y, float r2w, float r2h) {
+ 		return r1x < r2x + r2w && r1x + r1w > r2x && r1y < r2y + r2h && r1y + r1h > r2y;
+ 	}
+
 	public static boolean overlaps (Circle c, Rectangle r) {
 		float closestX = c.x;
 		float closestY = c.y;
