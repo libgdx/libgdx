@@ -162,9 +162,15 @@ public class JniGenSharedLibraryLoader {
 		boolean isLinux = System.getProperty("os.name").contains("Linux");
 		boolean isMac = System.getProperty("os.name").contains("Mac");
 		boolean isAndroid = false;
+		boolean isARM = System.getProperty("os.arch").startsWith("arm");
 		boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
-		boolean isArm = System.getProperty("os.arch").equals("arm");
-
+		/** JDK 8 introduced sun.arch.abi
+		 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8005545
+		 * Here are some ARM specific examples:
+		 * gnueabi 	GNU softfp EABI
+		 * gnueabihf	GNU hard float EABI
+		 * androideabi	Android EABI */
+		String abi = (System.getProperty("sun.arch.abi")!=null ? System.getProperty("sun.arch.abi") : "");
 		String vm = System.getProperty("java.vm.name");
 		if (vm != null && vm.contains("Dalvik")) {
 			isAndroid = true;
@@ -185,18 +191,11 @@ public class JniGenSharedLibraryLoader {
 		}
 		if (isLinux) {
 			if (libraryFinder != null)
-				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, isArm, nativesZip));
-			else if (!is64Bit) {
-				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "Arm.so");
-				else
-					loaded = loadLibrary("lib" + sharedLibName + ".so");
-			} else {
-				if (isArm)
-					loaded = loadLibrary("lib" + sharedLibName + "Arm64.so");
-				else
-					loaded = loadLibrary("lib" + sharedLibName + "64.so");
-			}
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, isARM, nativesZip));
+			else if (!is64Bit)
+				loaded = loadLibrary("lib" + sharedLibName + (isARM ? "arm"+abi : "" ) + ".so");
+			else
+				loaded = loadLibrary("lib" + sharedLibName + "64.so");
 		}
 		if (isMac) {
 			if (libraryFinder != null)

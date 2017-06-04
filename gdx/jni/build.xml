@@ -3,6 +3,9 @@
 		<ant antfile="build-windows32.xml" target="clean"/>
 		<ant antfile="build-windows64.xml" target="clean"/>
 		<ant antfile="build-linux32.xml" target="clean"/>
+		<ant antfile="build-linux32-arm.xml" target="clean"/>
+		<ant antfile="build-linux32-armgnueabi.xml" target="clean"/>
+		<ant antfile="build-linux32-armgnueabihf.xml" target="clean"/>
 		<ant antfile="build-linux64.xml" target="clean"/>
 		<ant antfile="build-android32.xml" target="clean"/>
 
@@ -12,6 +15,9 @@
 		<ant antfile="build-windows32.xml"/>
 		<ant antfile="build-windows64.xml"/>
 		<ant antfile="build-linux32.xml"/>
+		<ant antfile="build-linux32-arm.xml"/>
+		<ant antfile="build-linux32-armgnueabi.xml"/>
+		<ant antfile="build-linux32-armgnueabihf.xml"/>
 		<ant antfile="build-linux64.xml"/>
 		<ant antfile="build-android32.xml"/>
 
@@ -24,6 +30,9 @@
 			<fileset dir="../libs/windows32" includes="gdx.dll"/>
 			<fileset dir="../libs/windows64" includes="gdx64.dll"/>
 			<fileset dir="../libs/linux32" includes="libgdx.so"/>
+			<fileset dir="../libs/linux32" includes="libgdxarm.so"/>
+			<fileset dir="../libs/linux32" includes="libgdxarmgnueabi.so"/>
+			<fileset dir="../libs/linux32" includes="libgdxarmgnueabihf.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx64.so"/>
 
 		</jar>
