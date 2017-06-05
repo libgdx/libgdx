@@ -241,6 +241,10 @@ public interface Input {
 		public static final int F10 = 253;
 		public static final int F11 = 254;
 		public static final int F12 = 255;
+		
+		public static int length() {
+			return 256;
+		}
 
 		/** @return a human readable representation of the keycode. The returned value can be used in
 		 *         {@link Input.Keys#valueOf(String)} */
@@ -548,7 +552,8 @@ public interface Input {
 		/** lazily intialized in {@link Keys#valueOf(String)} */
 		private static void initializeKeyNames () {
 			keyNames = new ObjectIntMap<String>();
-			for (int i = 0; i < 256; i++) {
+			int length = Keys.length();
+			for (int i = 0; i < length; i++) {
 				String name = toString(i);
 				if (name != null) keyNames.put(name, i);
 			}
