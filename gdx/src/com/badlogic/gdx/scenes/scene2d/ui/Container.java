@@ -229,13 +229,23 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> size (float size) {
-		size(new Fixed(size));
+		if (minWidth instanceof Fixed && minHeight instanceof Fixed && prefWidth instanceof Fixed && prefHeight instanceof Fixed
+			&& maxWidth instanceof Fixed && maxHeight instanceof Fixed) {
+			((Fixed)minWidth).value = size;
+			((Fixed)minHeight).value = size;
+			((Fixed)prefWidth).value = size;
+			((Fixed)prefHeight).value = size;
+			((Fixed)maxWidth).value = size;
+			((Fixed)maxHeight).value = size;
+		} else
+			size(new Fixed(size));
 		return this;
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
 	public Container<T> size (float width, float height) {
-		size(new Fixed(width), new Fixed(height));
+		width(width);
+		height(height);
 		return this;
 	}
 
@@ -250,7 +260,12 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
 	public Container<T> width (float width) {
-		width(new Fixed(width));
+		if (minWidth instanceof Fixed && prefWidth instanceof Fixed && maxWidth instanceof Fixed) {
+			((Fixed)minWidth).value = width;
+			((Fixed)prefWidth).value = width;
+			((Fixed)maxWidth).value = width;
+		} else
+			width(new Fixed(width));
 		return this;
 	}
 
@@ -265,7 +280,12 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> height (float height) {
-		height(new Fixed(height));
+		if (minHeight instanceof Fixed && prefHeight instanceof Fixed && maxHeight instanceof Fixed) {
+			((Fixed)minHeight).value = height;
+			((Fixed)prefHeight).value = height;
+			((Fixed)maxHeight).value = height;
+		} else
+			height(new Fixed(height));
 		return this;
 	}
 
@@ -300,23 +320,34 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified value. */
 	public Container<T> minSize (float size) {
-		minSize(new Fixed(size));
+		if (minWidth instanceof Fixed && minHeight instanceof Fixed) {
+			((Fixed)minWidth).value = size;
+			((Fixed)minHeight).value = size;
+		} else
+			minSize(new Fixed(size));
 		return this;
 	}
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Container<T> minSize (float width, float height) {
-		minSize(new Fixed(width), new Fixed(height));
+		minWidth(width);
+		minHeight(height);
 		return this;
 	}
 
 	public Container<T> minWidth (float minWidth) {
-		this.minWidth = new Fixed(minWidth);
+		if (this.minWidth instanceof Fixed)
+			((Fixed)this.minWidth).value = minWidth;
+		else
+			this.minWidth = new Fixed(minWidth);
 		return this;
 	}
 
 	public Container<T> minHeight (float minHeight) {
-		this.minHeight = new Fixed(minHeight);
+		if (this.minHeight instanceof Fixed)
+			((Fixed)this.minHeight).value = minHeight;
+		else
+			this.minHeight = new Fixed(minHeight);
 		return this;
 	}
 
@@ -351,23 +382,34 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Container<T> prefSize (float width, float height) {
-		prefSize(new Fixed(width), new Fixed(height));
+		prefWidth(width);
+		prefHeight(height);
 		return this;
 	}
 
 	/** Sets the prefWidth and prefHeight to the specified values. */
 	public Container<T> prefSize (float size) {
-		prefSize(new Fixed(size));
+		if (prefWidth instanceof Fixed && prefHeight instanceof Fixed) {
+			((Fixed)prefWidth).value = size;
+			((Fixed)prefHeight).value = size;
+		} else
+			prefSize(new Fixed(size));
 		return this;
 	}
 
 	public Container<T> prefWidth (float prefWidth) {
-		this.prefWidth = new Fixed(prefWidth);
+		if (this.prefWidth instanceof Fixed)
+			((Fixed)this.prefWidth).value = prefWidth;
+		else
+			this.prefWidth = new Fixed(prefWidth);
 		return this;
 	}
 
 	public Container<T> prefHeight (float prefHeight) {
-		this.prefHeight = new Fixed(prefHeight);
+		if (this.prefHeight instanceof Fixed)
+			((Fixed)this.prefHeight).value = prefHeight;
+		else
+			this.prefHeight = new Fixed(prefHeight);
 		return this;
 	}
 
@@ -402,23 +444,34 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified value. */
 	public Container<T> maxSize (float size) {
-		maxSize(new Fixed(size));
+		if (maxWidth instanceof Fixed && maxHeight instanceof Fixed) {
+			((Fixed)maxWidth).value = size;
+			((Fixed)maxHeight).value = size;
+		} else
+			maxSize(new Fixed(size));
 		return this;
 	}
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Container<T> maxSize (float width, float height) {
-		maxSize(new Fixed(width), new Fixed(height));
+		maxWidth(width);
+		maxHeight(height);
 		return this;
 	}
 
 	public Container<T> maxWidth (float maxWidth) {
-		this.maxWidth = new Fixed(maxWidth);
+		if (this.maxWidth instanceof Fixed)
+			((Fixed)this.maxWidth).value = maxWidth;
+		else
+			this.maxWidth = new Fixed(maxWidth);
 		return this;
 	}
 
 	public Container<T> maxHeight (float maxHeight) {
-		this.maxHeight = new Fixed(maxHeight);
+		if (this.maxHeight instanceof Fixed)
+			((Fixed)this.maxHeight).value = maxHeight;
+		else
+			this.maxHeight = new Fixed(maxHeight);
 		return this;
 	}
 
@@ -470,39 +523,53 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
 	public Container<T> pad (float pad) {
-		Value value = new Fixed(pad);
-		padTop = value;
-		padLeft = value;
-		padBottom = value;
-		padRight = value;
+		if (padTop instanceof Fixed && padLeft instanceof Fixed && padBottom instanceof Fixed && padRight instanceof Fixed) {
+			((Fixed)padTop).value = pad;
+			((Fixed)padLeft).value = pad;
+			((Fixed)padBottom).value = pad;
+			((Fixed)padRight).value = pad;
+		} else
+			pad(new Fixed(pad));
 		return this;
 	}
 
 	public Container<T> pad (float top, float left, float bottom, float right) {
-		padTop = new Fixed(top);
-		padLeft = new Fixed(left);
-		padBottom = new Fixed(bottom);
-		padRight = new Fixed(right);
+		padTop(top);
+		padLeft(left);
+		padBottom(bottom);
+		padRight(right);
 		return this;
 	}
 
 	public Container<T> padTop (float padTop) {
-		this.padTop = new Fixed(padTop);
+		if (this.padTop instanceof Fixed)
+			((Fixed)this.padTop).value = padTop;
+		else
+			this.padTop = new Fixed(padTop);
 		return this;
 	}
 
 	public Container<T> padLeft (float padLeft) {
-		this.padLeft = new Fixed(padLeft);
+		if (this.padLeft instanceof Fixed)
+			((Fixed)this.padLeft).value = padLeft;
+		else
+			this.padLeft = new Fixed(padLeft);
 		return this;
 	}
 
 	public Container<T> padBottom (float padBottom) {
-		this.padBottom = new Fixed(padBottom);
+		if (this.padBottom instanceof Fixed)
+			((Fixed)this.padBottom).value = padBottom;
+		else
+			this.padBottom = new Fixed(padBottom);
 		return this;
 	}
 
 	public Container<T> padRight (float padRight) {
-		this.padRight = new Fixed(padRight);
+		if (this.padRight instanceof Fixed)
+			((Fixed)this.padRight).value = padRight;
+		else
+			this.padRight = new Fixed(padRight);
 		return this;
 	}
 
