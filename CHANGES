@@ -9,7 +9,6 @@
 - API Change: List#drawItem, added float width parameter.
 - API Addition: Make it possible to disable sound on the GWT-Backend with disableSound=true.
 - API Change: ScrollPane setWidget deprecated in favor of setActor to match other APIs.
-- Avoid allocation in Table and Container when setting fixed values.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.

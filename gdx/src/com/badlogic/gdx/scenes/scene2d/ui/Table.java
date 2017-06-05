@@ -484,61 +484,43 @@ public class Table extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (float pad) {
-		if (padTop instanceof Fixed && padLeft instanceof Fixed && padBottom instanceof Fixed && padRight instanceof Fixed) {
-			((Fixed)padTop).value = pad;
-			((Fixed)padLeft).value = pad;
-			((Fixed)padBottom).value = pad;
-			((Fixed)padRight).value = pad;
-			sizeInvalid = true;
-		} else
-			pad(new Fixed(pad));
+		pad(new Fixed(pad));
 		return this;
 	}
 
 	public Table pad (float top, float left, float bottom, float right) {
-		padTop(top);
-		padLeft(left);
-		padBottom(bottom);
-		padRight(right);
+		padTop = new Fixed(top);
+		padLeft = new Fixed(left);
+		padBottom = new Fixed(bottom);
+		padRight = new Fixed(right);
+		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the top edge of the table. */
 	public Table padTop (float padTop) {
-		if (this.padTop instanceof Fixed)
-			((Fixed)this.padTop).value = padTop;
-		else
-			this.padTop = new Fixed(padTop);
+		this.padTop = new Fixed(padTop);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the left edge of the table. */
 	public Table padLeft (float padLeft) {
-		if (this.padLeft instanceof Fixed)
-			((Fixed)this.padLeft).value = padLeft;
-		else
-			this.padLeft = new Fixed(padLeft);
+		this.padLeft = new Fixed(padLeft);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the bottom edge of the table. */
 	public Table padBottom (float padBottom) {
-		if (this.padBottom instanceof Fixed)
-			((Fixed)this.padBottom).value = padBottom;
-		else
-			this.padBottom = new Fixed(padBottom);
+		this.padBottom = new Fixed(padBottom);
 		sizeInvalid = true;
 		return this;
 	}
 
 	/** Padding at the right edge of the table. */
 	public Table padRight (float padRight) {
-		if (this.padRight instanceof Fixed)
-			((Fixed)this.padRight).value = padRight;
-		else
-			this.padRight = new Fixed(padRight);
+		this.padRight = new Fixed(padRight);
 		sizeInvalid = true;
 		return this;
 	}
@@ -725,40 +707,14 @@ public class Table extends WidgetGroup {
 		return columns;
 	}
 
-	/** Returns the height of the specified row, or 0 if the table layout has not been validated. */
+	/** Returns the height of the specified row. */
 	public float getRowHeight (int rowIndex) {
-		if (rowHeight == null) return 0;
 		return rowHeight[rowIndex];
 	}
 
-	/** Returns the min height of the specified row. */
-	public float getRowMinHeight (int rowIndex) {
-		if (sizeInvalid) computeSize();
-		return rowMinHeight[rowIndex];
-	}
-
-	/** Returns the pref height of the specified row. */
-	public float getRowPrefHeight (int rowIndex) {
-		if (sizeInvalid) computeSize();
-		return rowPrefHeight[rowIndex];
-	}
-
-	/** Returns the width of the specified column, or 0 if the table layout has not been validated. */
+	/** Returns the width of the specified column. */
 	public float getColumnWidth (int columnIndex) {
-		if (columnWidth == null) return 0;
 		return columnWidth[columnIndex];
-	}
-
-	/** Returns the min height of the specified column. */
-	public float getColumnMinWidth (int columnIndex) {
-		if (sizeInvalid) computeSize();
-		return columnMinWidth[columnIndex];
-	}
-
-	/** Returns the pref height of the specified column. */
-	public float getColumnPrefWidth (int columnIndex) {
-		if (sizeInvalid) computeSize();
-		return columnPrefWidth[columnIndex];
 	}
 
 	private float[] ensureSize (float[] array, int size) {

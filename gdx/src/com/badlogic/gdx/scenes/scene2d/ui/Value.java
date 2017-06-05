@@ -32,7 +32,7 @@ abstract public class Value {
 	/** A fixed value that is not computed each time it is used.
 	 * @author Nathan Sweet */
 	static public class Fixed extends Value {
-		float value;
+		private final float value;
 
 		public Fixed (float value) {
 			this.value = value;
@@ -40,10 +40,6 @@ abstract public class Value {
 
 		public float get (Actor context) {
 			return value;
-		}
-
-		public void set (float value) {
-			this.value = value;
 		}
 	}
 
