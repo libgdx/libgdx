@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /** <p>
  * A Pixmap represents an image in memory. It has a width and height expressed in pixels as well as a {@link Format} specifying
@@ -94,6 +94,9 @@ public class Pixmap implements Disposable {
 
 	private Blending blending = Blending.SourceOver;
 
+	/** Default y side at loading time. Do not edit unless you know what you are doing. */
+	public static int DEFAULT_Y_UP = 0;
+
 	final Gdx2DPixmap pixmap;
 	int color = 0;
 
@@ -126,26 +129,36 @@ public class Pixmap implements Disposable {
 	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP.
 	 * @param encodedData the encoded image data
 	 * @param offset the offset
-	 * @param len the length */
-	public Pixmap (byte[] encodedData, int offset, int len) {
+	 * @param len the length
+	 * @param yUp load data y up */
+	public Pixmap (byte[] encodedData, int offset, int len, int yUp) {
 		try {
-			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0, yUp);
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
 		}
 	}
 
+	public Pixmap (byte[] encodedData, int offset, int len) {
+		this(encodedData, offset, len, DEFAULT_Y_UP);
+	}
+
 	/** Creates a new Pixmap instance from the given file. The file must be a Png, Jpeg or Bitmap. Paletted formats are not
 	 * supported.
 	 * 
-	 * @param file the {@link FileHandle} */
-	public Pixmap (FileHandle file) {
+	 * @param file the {@link FileHandle}
+	 * @param yUp load file y up */
+	public Pixmap (FileHandle file, int yUp) {
 		try {
 			byte[] bytes = file.readBytes();
-			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
+			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0, yUp);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
 		}
+	}
+
+	public Pixmap (FileHandle file) {
+		this(file, DEFAULT_Y_UP);
 	}
 
 	/** Constructs a new Pixmap from a {@link Gdx2DPixmap}.

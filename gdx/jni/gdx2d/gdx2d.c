@@ -218,15 +218,21 @@ static inline get_pixel_func get_pixel_func_ptr(uint32_t format) {
 	}
 }
 
-gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
+gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, int flipY) {
 	int32_t width, height, format;
     
-	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
-	if (pixels == NULL) {
-		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
-	}
-	if (pixels == NULL)
+	unsigned char* result = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
+
+	if (result == NULL)
+		result = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
+
+	if (result == NULL)
 		return NULL;
+
+	if (flipY)
+		gdx2d_flip_y(result, width, height, format);
+
+	const unsigned char* pixels = result;
 
 	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
 	if (!pixmap) return 0;
@@ -237,6 +243,24 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	pixmap->scale = GDX2D_SCALE_BILINEAR;
 	pixmap->pixels = pixels;
 	return pixmap;
+}
+
+void gdx2d_flip_y(unsigned char *pixels , int32_t width, int32_t height, int32_t depth) {
+	int row,col,z;
+	unsigned char temp;
+
+	// Loop through lines
+	for (row = 0; row < (height>>1); row++) {
+		// Loop through columns
+		for (col = 0; col < width; col++) {
+			// Loop through depth
+			for (z = 0; z < depth; z++) {
+				temp = pixels[(row * width + col) * depth + z];
+				pixels[(row * width + col) * depth + z] = pixels[((height - row - 1) * width + col) * depth + z];
+				pixels[((height - row - 1) * width + col) * depth + z] = temp;
+			}
+		}
+	}
 }
 
 uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
