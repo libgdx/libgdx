@@ -17,161 +17,73 @@
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 /** Test for the gdx-controllers extension. */
 public class ControllersTest extends GdxTest {
-	String descriptor;
-	Skin skin;
-	Table ui;
-	Stage stage;
-	ScrollPane scrollPane;
-	List<String> console;
+
+	private Stage stage;
+	private Table table;
+
+	private Array<String> messages;
+	private List<String> messageConsole;
+	private ScrollPane messageScrollPane;
+
+	private Array<ControlValue> values;
+	private List<ControlValue> valueConsole;
+	private ScrollPane valueScrollPane;
 
 	@Override
 	public void create () {
 		setupUi();
 	}
 
-	void print (String message) {
-		String[] lines = console.getItems().toArray(String.class);
-		String[] newLines = new String[lines.length + 1];
-		System.arraycopy(lines, 0, newLines, 0, lines.length);
-		newLines[newLines.length - 1] = message;
-		console.setItems(newLines);
-		scrollPane.invalidate();
-		scrollPane.validate();
-		scrollPane.setScrollPercentY(1.0f);
-	}
-
-	void clear () {
-		console.setItems(new String[0]);
-	}
-
 	private void setupUi () {
-		// setup a tiny ui with a console and a clear button.
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage();
-		ui = new Table();
-		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		console = new List(skin);
-		scrollPane = new ScrollPane(console);
-		scrollPane.setScrollbarsOnTop(true);
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+		messages = new Array<String>();
+		messageConsole = new List<String>(skin);
+		messageScrollPane = new ScrollPane(messageConsole);
+		messageScrollPane.setScrollbarsOnTop(true);
+
+		values = new Array<ControlValue>();
+		valueConsole = new List<ControlValue>(skin);
+		valueScrollPane = new ScrollPane(valueConsole);
+		valueScrollPane.setScrollbarsOnTop(true);
+
 		TextButton clear = new TextButton("Clear", skin);
-		ui.add(scrollPane).expand(true, true).fill();
-		ui.row();
-		ui.add(clear).expand(true, false).fill();
-		stage.addActor(ui);
 		clear.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				clear();
 			}
 		});
+
+		table = new Table();
+		table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table.add(messageScrollPane).expand(true, true).fill().width(Value.percentWidth(0.5f, table));
+		table.add(valueScrollPane).expand(true, true).fill().width(Value.percentWidth(0.5f, table));
+		table.row();
+		table.add(clear).expand(true, false).fill().colspan(2);
+
+		stage = new Stage();
+		stage.addActor(table);
 		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		ui.setSize(width, height);
-		ui.invalidate();
+		table.setSize(width, height);
+		table.invalidate();
 		stage.getViewport().update(width, height, true);
-	}
-
-	boolean initialized = false;
-
-	private void initialize () {
-		if (initialized) return;
-		// print the currently connected controllers to the console
-		print("Controllers: " + Controllers.getControllers().size);
-		int i = 0;
-		for (Controller controller : Controllers.getControllers()) {
-			print("#" + i++ + ": " + controller.getName());
-		}
-		if (Controllers.getControllers().size == 0) print("No controllers attached");
-
-		// setup the listener that prints events to the console
-		Controllers.addListener(new ControllerListener() {
-			public int indexOf (Controller controller) {
-				return Controllers.getControllers().indexOf(controller, true);
-			}
-
-			@Override
-			public void connected (Controller controller) {
-				print("connected " + controller.getName());
-				int i = 0;
-				for (Controller c : Controllers.getControllers()) {
-					print("#" + i++ + ": " + c.getName());
-				}
-			}
-
-			@Override
-			public void disconnected (Controller controller) {
-				print("disconnected " + controller.getName());
-				int i = 0;
-				for (Controller c : Controllers.getControllers()) {
-					print("#" + i++ + ": " + c.getName());
-				}
-				if (Controllers.getControllers().size == 0) print("No controllers attached");
-			}
-
-			@Override
-			public boolean buttonDown (Controller controller, int buttonIndex) {
-				print("#" + indexOf(controller) + ", button " + buttonIndex + " down");
-				return false;
-			}
-
-			@Override
-			public boolean buttonUp (Controller controller, int buttonIndex) {
-				print("#" + indexOf(controller) + ", button " + buttonIndex + " up");
-				return false;
-			}
-
-			@Override
-			public boolean axisMoved (Controller controller, int axisIndex, float value) {
-				print("#" + indexOf(controller) + ", axis " + axisIndex + ": " + value);
-				return false;
-			}
-
-			@Override
-			public boolean povMoved (Controller controller, int povIndex, PovDirection value) {
-				print("#" + indexOf(controller) + ", pov " + povIndex + ": " + value);
-				return false;
-			}
-
-			@Override
-			public boolean xSliderMoved (Controller controller, int sliderIndex, boolean value) {
-				print("#" + indexOf(controller) + ", x slider " + sliderIndex + ": " + value);
-				return false;
-			}
-
-			@Override
-			public boolean ySliderMoved (Controller controller, int sliderIndex, boolean value) {
-				print("#" + indexOf(controller) + ", y slider " + sliderIndex + ": " + value);
-				return false;
-			}
-
-			@Override
-			public boolean accelerometerMoved (Controller controller, int accelerometerIndex, Vector3 value) {
-				// not printing this as we get to many values
-				return false;
-			}
-		});
-		initialized = true;
 	}
 
 	@Override
@@ -181,4 +93,191 @@ public class ControllersTest extends GdxTest {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
+
+	private boolean initialized = false;
+
+	private void initialize () {
+		if (initialized) return;
+		initialized = true;
+		displayConnectedControllers();
+		registerListener();
+	}
+
+	private void displayConnectedControllers () {
+		addMessage("Controllers: " + Controllers.getControllers().size);
+		int i = 0;
+		for (Controller controller : Controllers.getControllers()) {
+			addMessage("#" + (i++) + ": " + controller.getName());
+		}
+		if (Controllers.getControllers().size == 0) addMessage("No controllers attached");
+	}
+
+	private void registerListener () {
+		Controllers.addListener(new ControllerListener() {
+
+			public int indexOf (Controller controller) {
+				return Controllers.getControllers().indexOf(controller, true);
+			}
+
+			@Override
+			public void connected (Controller controller) {
+				addMessage("connected " + controller.getName());
+				int i = 0;
+				for (Controller c : Controllers.getControllers()) {
+					addMessage("#" + i++ + ": " + c.getName());
+				}
+			}
+
+			@Override
+			public void disconnected (Controller controller) {
+				addMessage("disconnected " + controller.getName());
+				int i = 0;
+				for (Controller c : Controllers.getControllers()) {
+					addMessage("#" + i++ + ": " + c.getName());
+				}
+				if (Controllers.getControllers().size == 0) addMessage("No controllers attached");
+			}
+
+			@Override
+			public boolean buttonDown (Controller controller, int buttonIndex) {
+				addMessage("#" + indexOf(controller) + ", button " + buttonIndex + " down");
+				return false;
+			}
+
+			@Override
+			public boolean buttonUp (Controller controller, int buttonIndex) {
+				addMessage("#" + indexOf(controller) + ", button " + buttonIndex + " up");
+				return false;
+			}
+
+			@Override
+			public boolean povMoved (Controller controller, int povIndex, PovDirection value) {
+				addMessage("#" + indexOf(controller) + ", pov " + povIndex + ": " + value);
+				return false;
+			}
+
+			@Override
+			public boolean xSliderMoved (Controller controller, int sliderIndex, boolean value) {
+				addMessage("#" + indexOf(controller) + ", x slider " + sliderIndex + ": " + value);
+				return false;
+			}
+
+			@Override
+			public boolean ySliderMoved (Controller controller, int sliderIndex, boolean value) {
+				addMessage("#" + indexOf(controller) + ", y slider " + sliderIndex + ": " + value);
+				return false;
+			}
+
+			@Override
+			public boolean axisMoved (Controller controller, int axisIndex, float value) {
+				ControlValue controlValue = findControlValue(indexOf(controller), axisIndex, AxisValue.TYPE);
+				if (controlValue != null) {
+					AxisValue axisValue = (AxisValue)controlValue;
+					axisValue.axisValue = value;
+					updateValues();
+				} else {
+					addControlValue(new AxisValue(indexOf(controller), axisIndex, value));
+				}
+				return false;
+			}
+
+			@Override
+			public boolean accelerometerMoved (Controller controller, int accelerometerIndex, Vector3 value) {
+				ControlValue controlValue = findControlValue(indexOf(controller), accelerometerIndex, AccelerometerValue.TYPE);
+				if (controller != null) {
+					AccelerometerValue accelerometerValue = (AccelerometerValue)controlValue;
+					accelerometerValue.accelerometerValue = value;
+					updateValues();
+				} else {
+					addControlValue(new AccelerometerValue(indexOf(controller), accelerometerIndex, value));
+				}
+				return false;
+			}
+
+		});
+	}
+
+	void clear () {
+		messages.clear();
+		messageConsole.setItems(messages);
+		values.clear();
+		valueConsole.setItems(values);
+	}
+
+	void addMessage (String message) {
+		messages.add(message);
+		messageConsole.setItems(messages);
+		messageScrollPane.invalidate();
+		messageScrollPane.validate();
+		messageScrollPane.setScrollPercentY(1.0f);
+	}
+
+	ControlValue findControlValue (int controller, int control, int type) {
+		for (ControlValue value : values)
+			if (value.controllerIndex == controller && value.controlIndex == control && value.controlType == type) return value;
+		return null;
+	}
+
+	void addControlValue (ControlValue value) {
+		values.add(value);
+		valueConsole.setItems(values);
+		valueScrollPane.invalidate();
+		valueScrollPane.validate();
+		valueScrollPane.setScrollPercentY(1.0f);
+	}
+
+	void updateValues () {
+		valueConsole.setItems(values);
+	}
+
+	private static abstract class ControlValue {
+
+		public final int controllerIndex;
+		public final int controlIndex;
+		public final int controlType;
+
+		public ControlValue (int controllerIndex, int controlIndex, int controlType) {
+			this.controllerIndex = controllerIndex;
+			this.controlIndex = controlIndex;
+			this.controlType = controlType;
+		}
+
+	}
+
+	private static class AxisValue extends ControlValue {
+
+		public static final int TYPE = 0;
+
+		public float axisValue;
+
+		public AxisValue (int controllerIndex, int controlIndex, float axisValue) {
+			super(controllerIndex, controlIndex, TYPE);
+			this.axisValue = axisValue;
+		}
+
+		@Override
+		public String toString () {
+			return "#" + controllerIndex + ", axis " + controlIndex + ": " + axisValue;
+		}
+
+	}
+
+	private static class AccelerometerValue extends ControlValue {
+
+		public static final int TYPE = 1;
+
+		public Vector3 accelerometerValue;
+
+		public AccelerometerValue (int controllerIndex, int controlIndex, Vector3 accelerometerValue) {
+			super(controllerIndex, controlIndex, TYPE);
+			this.accelerometerValue = accelerometerValue;
+		}
+
+		@Override
+		public String toString () {
+			return "#" + controllerIndex + ", accelerometer " + controlIndex + ": " + accelerometerValue;
+		}
+
+	}
+
 }
