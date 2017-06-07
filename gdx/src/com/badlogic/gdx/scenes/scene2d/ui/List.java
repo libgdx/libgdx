@@ -290,8 +290,8 @@ public class List<T> extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	protected String toString (T obj) {
-		return obj.toString();
+	protected String toString (T object) {
+		return object.toString();
 	}
 
 	public void setCullingArea (Rectangle cullingArea) {
