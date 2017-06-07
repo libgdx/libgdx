@@ -817,7 +817,7 @@ public class JglfwInput implements Input {
 			this.processor = processor;
 		}
 
-		public void key (long window, int key, int action) {
+		public void key (long window, int key, int scancode, int action, int mods) {
 			switch (action) {
 			case GLFW_PRESS:
 
