@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 
 import com.badlogic.gdx.audio.Music;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.dom.client.EndedEvent;
 import com.google.gwt.media.client.Audio;
 
 public class WebAudioAPIMusic implements Music {
@@ -129,12 +130,5 @@ public class WebAudioAPIMusic implements Music {
 	@Override
 	public void setOnCompletionListener (OnCompletionListener listener) {
 		this.onCompletionListener = listener;
-	}
-
-	@Override
-	public void onEnded (EndedEvent event) {
-		if (onCompletionListener != null) {
-			onCompletionListener.onCompletion(this);
-		}
 	}
 }
