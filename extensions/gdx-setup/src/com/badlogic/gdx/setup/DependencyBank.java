@@ -40,7 +40,7 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.5.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:2.2.0";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
 	

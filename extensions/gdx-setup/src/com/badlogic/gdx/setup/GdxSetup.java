@@ -283,7 +283,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
-			project.files.add(new ProjectFile("android/proguard-project.txt", false));
+			project.files.add(new ProjectFile("android/proguard-rules.pro", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
 			project.files.add(new ProjectFile("local.properties", true));
 		}
