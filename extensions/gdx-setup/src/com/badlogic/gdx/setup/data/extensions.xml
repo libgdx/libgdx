@@ -110,7 +110,9 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-			<ios-moe></ios-moe>
+			<ios-moe>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios-moe</dependency>
+			</ios-moe>
 			<html>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core:sources</dependency>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-html:sources</dependency>
