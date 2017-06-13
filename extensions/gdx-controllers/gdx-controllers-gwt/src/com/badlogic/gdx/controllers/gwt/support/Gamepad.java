@@ -41,6 +41,14 @@ public final class Gamepad extends JavaScriptObject {
 		return this.axes;
 	}-*/;
 	
+	public native float getButton(int i) /*-{
+	    var b = this.buttons[i];
+        if (typeof(b) == "object") {
+          return b.value;
+        }
+		return b;
+	}-*/;
+
 	public native JsArrayNumber getButtons() /*-{
 		return this.buttons;
 	}-*/;
