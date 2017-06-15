@@ -154,6 +154,8 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter a game class name.");
 			return;
 		}
+		
+		final Language languageEnum = ui.settings.kotlinBox.isSelected() ? Language.KOTLIN : Language.JAVA;
 
 		final String destination = ui.form.destinationText.getText().trim();
 		if (destination.length() == 0) {
@@ -201,7 +203,7 @@ public class GdxSetupUI extends JFrame {
 		List<String> incompatList = builder.buildProject(modules, dependencies);
 		if (incompatList.size() == 0) {
 			try {
-				builder.build();
+				builder.build(languageEnum);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -242,7 +244,7 @@ public class GdxSetupUI extends JFrame {
 				return;
 			} else {
 				try {
-					builder.build();
+					builder.build(languageEnum);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -253,7 +255,7 @@ public class GdxSetupUI extends JFrame {
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(builder, destination, name, pack, clazz, sdkLocation, new CharCallback() {
+				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum.name, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						log(c);
