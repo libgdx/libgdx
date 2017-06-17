@@ -74,14 +74,15 @@ public class SettingsDialog extends JDialog {
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
 	private boolean offlineSnapshot;
+	private boolean kotlinSnapshot;
 
-	public SettingsDialog () {
+	public SettingsDialog (SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
 
-		uiLayout();
+		uiLayout(gwtCheckBox);
 		uiStyle();
 
 		buttonOK.addActionListener(new ActionListener() {
@@ -128,7 +129,7 @@ public class SettingsDialog extends JDialog {
 		setLocationRelativeTo(null);
 	}
 
-	private void uiLayout () {
+	private void uiLayout (SetupCheckBox gwtCheckBox) {
 		content = new JPanel(new GridBagLayout());
 		content.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -182,6 +183,19 @@ public class SettingsDialog extends JDialog {
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
 		kotlinBox = new SetupCheckBox();
+		kotlinBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final String message = "Using Kotlin with the HTML backend is not supported. Do you want to disable the HTML backend?";
+				if(kotlinBox.isSelected() && gwtCheckBox.isSelected() &&
+						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
+						JOptionPane.YES_NO_OPTION) == 0) {
+					gwtCheckBox.setSelected(false);
+				} else if(gwtCheckBox.isSelected()) {
+					kotlinBox.setSelected(false);
+				}
+			}
+		});
 		offlineBox.setBackground(new Color(36, 36, 36));
 		kotlinLabel.setForeground(new Color(170, 170, 170));
 		kotlinDesc.setForeground(new Color(170, 170, 170));
@@ -242,9 +256,10 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setForeground(new Color(255, 255, 255));
 	}
 
-	public void showDialog () {
+	public void showDialog (SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setVisible(true);
+		kotlinBox.setSelected(!gwtCheckBox.isSelected());
 	}
 
 	public List<String> getGradleArgs () {
@@ -282,6 +297,7 @@ public class SettingsDialog extends JDialog {
 		ideaSnapshot = ideaBox.isSelected();
 		eclipseSnapshot = eclipseBox.isSelected();
 		offlineSnapshot = offlineBox.isSelected();
+		kotlinSnapshot = kotlinBox.isSelected();
 	}
 
 	private void restore () {
@@ -289,6 +305,6 @@ public class SettingsDialog extends JDialog {
 		ideaBox.setSelected(ideaSnapshot);
 		eclipseBox.setSelected(eclipseSnapshot);
 		offlineBox.setSelected(offlineSnapshot);
+		kotlinBox.setSelected(kotlinSnapshot);
 	}
-
 }

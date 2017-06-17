@@ -247,7 +247,7 @@ public class DependencyBank {
 		}
 
 		public String[] getPlugins(Language sourceLanguage) {
-			return sourceLanguage.values[ordinal()];
+			return sourceLanguage.platformPlugins[ordinal()];
 		}
 	}
 

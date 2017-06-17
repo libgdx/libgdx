@@ -255,7 +255,7 @@ public class GdxSetupUI extends JFrame {
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum.name, sdkLocation, new CharCallback() {
+				new GdxSetup().build(builder, destination, name, pack, clazz, languageEnum, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						log(c);
@@ -300,7 +300,7 @@ public class GdxSetupUI extends JFrame {
 
 	class UI extends JPanel {
 		Form form = new Form();
-		SettingsDialog settings = new SettingsDialog();
+		SettingsDialog settings;
 		SetupButton generateButton = new SetupButton("Generate");
 		SetupButton advancedButton = new SetupButton("Advanced");
 		JPanel buttonPanel = new JPanel();
@@ -380,7 +380,8 @@ public class GdxSetupUI extends JFrame {
 			textArea.setEditable(false);
 			textArea.setLineWrap(true);
 			uiLayout();
-			uiEvents();
+			uiEvents(); 
+			settings = new SettingsDialog(form.gwtCheckBox);
 			titleEvents(minimize, exit);
 		}
 
@@ -424,7 +425,7 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			advancedButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					settings.showDialog();
+					settings.showDialog(form.gwtCheckBox);
 				}
 			});
 			generateButton.addActionListener(new ActionListener() {
@@ -459,6 +460,7 @@ public class GdxSetupUI extends JFrame {
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
 		SetupButton showMoreExtensionsButton = new SetupButton("Show Third Party Extensions");
+		SetupCheckBox gwtCheckBox;
 
 		{
 			uiLayout();
@@ -524,6 +526,10 @@ public class GdxSetupUI extends JFrame {
 					continue;
 				}				
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
+				if (projectType == ProjectType.HTML) {
+					gwtCheckBox = checkBox;
+				} 
+				
 				if (projectType != ProjectType.IOSMOE) {
 					modules.add(projectType);
 					checkBox.setSelected(true);
