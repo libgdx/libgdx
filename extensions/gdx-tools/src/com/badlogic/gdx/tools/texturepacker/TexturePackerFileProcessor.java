@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.FileProcessor;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
-
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -31,6 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
@@ -217,9 +216,13 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 		// Pack.
 		if (!settings.silent) System.out.println(inputDir.inputFile.getName());
-		TexturePacker packer = new TexturePacker(root, settings);
+		TexturePacker packer = newTexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);
 		packer.pack(inputDir.outputDir, packFileName);
+	}
+
+	protected TexturePacker newTexturePacker (File root, Settings settings) {
+		return new TexturePacker(root, settings);
 	}
 }
