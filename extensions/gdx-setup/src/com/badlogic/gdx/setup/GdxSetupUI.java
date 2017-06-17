@@ -174,6 +174,12 @@ public class GdxSetupUI extends JFrame {
 							"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
 		}
+		
+		if (modules.contains(ProjectType.HTML) && !languageEnum.gwtSupported) {
+			JOptionPane.showMessageDialog(this, "HTML sub-projects are not supported by the selected programming language.");
+			ui.form.gwtCheckBox.setSelected(false);
+			modules.remove(ProjectType.HTML);
+		}
 
 		if (modules.contains(ProjectType.ANDROID)) {
 			if (!GdxSetup.isSdkUpToDate(sdkLocation)) {
