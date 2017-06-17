@@ -5,13 +5,11 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Lwjgl3Controller implements Controller {
 	final Lwjgl3ControllerManager manager;
@@ -81,7 +79,6 @@ public class Lwjgl3Controller implements Controller {
 		for(int i = 0; i < hats.limit(); i++) {
 			if(hatState[i] != hats.get(i)) {
 				hatState[i] = hats.get(i);
-				Gdx.app.log("Hat " + i, "" + hatState[i]);
 				for(ControllerListener listener: listeners) {
 					listener.povMoved(this, i, getPov(i));
 				}
@@ -120,7 +117,7 @@ public class Lwjgl3Controller implements Controller {
 	@Override
 	public PovDirection getPov (int povCode) {
 		if (povCode < 0 || povCode >= hatState.length) return PovDirection.center;
-		switch (hatState[povCode]){
+		switch (hatState[povCode]) {
 			case GLFW.GLFW_HAT_UP:
 				return PovDirection.north;
 			case GLFW.GLFW_HAT_DOWN:
@@ -140,7 +137,7 @@ public class Lwjgl3Controller implements Controller {
 			default:
 				return PovDirection.center;
 		}
-}
+	}
 
 	@Override
 	public boolean getSliderX (int sliderCode) {
