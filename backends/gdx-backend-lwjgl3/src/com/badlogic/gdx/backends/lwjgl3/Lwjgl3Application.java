@@ -208,8 +208,10 @@ public class Lwjgl3Application implements Application {
 			((OpenALAudio) audio).dispose();
 		}
 		errorCallback.free();
+		errorCallback = null;
 		if (glDebugCallback != null) {
 			glDebugCallback.free();
+			glDebugCallback = null;
 		}
 		GLFW.glfwTerminate();
 	}
