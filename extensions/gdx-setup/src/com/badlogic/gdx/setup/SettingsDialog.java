@@ -76,7 +76,7 @@ public class SettingsDialog extends JDialog {
 	private boolean offlineSnapshot;
 	private boolean kotlinSnapshot;
 
-	public SettingsDialog (SetupCheckBox gwtCheckBox) {
+	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
 		setContentPane(contentPane);
 		setModal(true);
@@ -129,7 +129,7 @@ public class SettingsDialog extends JDialog {
 		setLocationRelativeTo(null);
 	}
 
-	private void uiLayout (SetupCheckBox gwtCheckBox) {
+	private void uiLayout (final SetupCheckBox gwtCheckBox) {
 		content = new JPanel(new GridBagLayout());
 		content.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
