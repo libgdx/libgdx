@@ -245,6 +245,10 @@ public class BitmapFont implements Disposable {
 	public void setColor (float r, float g, float b, float a) {
 		cache.getColor().set(r, g, b, a);
 	}
+	
+	public void resetScale() {
+		data.setScale(1 / data.scaleX, 1 / data.scaleY);
+	}
 
 	public float getScaleX () {
 		return data.scaleX;
