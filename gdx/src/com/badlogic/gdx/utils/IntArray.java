@@ -119,6 +119,17 @@ public class IntArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
 	}
+	
+	/**
+	 * Returns the sum of every element in the array
+	 * @return the sum of elements
+	 */
+	public int sum(){
+		int sum=0;
+		for(int i=0;i<items.length;i++)
+			sum+=items[i];
+		return sum;
+	}
 
 	public void insert (int index, int value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
