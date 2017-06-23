@@ -378,6 +378,24 @@ public class Array<T> implements Iterable<T> {
 		}
 		return Select.instance().select(items, comparator, kthLowest, size);
 	}
+	
+	/**
+	 * Selects the minimum element in the array according to Comparator ranking.
+	 * @param comparator used for comparison
+	 * @return the minimum element in the array.
+	 */
+	public T selectMin(Comparator<T> comparator){
+		return selectRanked(comparator, 1);
+	}
+	
+	/**
+	 * Selects the maximum element in the array according to Comparator ranking.
+	 * @param comparator used for comparison
+	 * @return The maximum element in the array.
+	 */
+	public T selectMax(Comparator<T> comparator){
+		return selectRanked(comparator, items.length);
+	}
 
 	/** @see Array#selectRanked(java.util.Comparator, int)
 	 * @param comparator used for comparison
@@ -442,6 +460,25 @@ public class Array<T> implements Iterable<T> {
 	public T random () {
 		if (size == 0) return null;
 		return items[MathUtils.random(0, size - 1)];
+	}
+	
+	/**
+	 * Shifts the elements in the array by the specified offset
+	 * @param offset
+	 */
+	public void shift(int offset){
+		Object[] temp=new Object[items.length];
+		for(int i=0;i<items.length;i++){
+			int newPosition=i+offset;
+			// Wrap around array if element's new position is out of bounds
+			if(newPosition<0)
+				newPosition+=items.length;
+			else if(newPosition>=items.length)
+				newPosition-=items.length;
+			temp[newPosition]=items[i];
+		}
+		for(int i=0;i<items.length;i++)
+			items[i]=(T)temp[i];
 	}
 
 	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
