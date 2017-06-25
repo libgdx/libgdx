@@ -1,4 +1,14 @@
 [1.9.7]
+- API addition: Added utility methods for Vector equals with epsilon
+- Fix Animation backing array type
+- Fix Mesh copying with 0 indices 
+- Fix restoration of pooled particle effects scale
+- Fix loss of controller listeners on reconnect
+- Added basic kotlin project generation support in the setup tool
+- API addition: Allow APK expansion to be used in fragments and activities
+- API addition: Added color properties support from tiled maps
+- API Change: Added rotation vector sensor support on Android
+- API Change: GLProfiler refactored for OOP and lwjgl3 multi windows
 - LWJGL3: The creation of additional windows via Lwjgl3Application.newWindow() is now deferred, with postRunnable(), until all existing windows have been updated. This fixes a potential native crash with NVidia GL drivers on Windows, presumably caused by a GL context conflict.
 - API addition: Lwjgl3WindowListener.created() is called after a new window has been created. It's unsafe to call Lwjgl3Window functions in between Lwjgl3Application.newWindow() and this callback.
 - Updated LWJGL3 backend to 3.1.2.
