@@ -378,22 +378,18 @@ public class Array<T> implements Iterable<T> {
 		}
 		return Select.instance().select(items, comparator, kthLowest, size);
 	}
-	
-	/**
-	 * Selects the minimum element in the array according to Comparator ranking.
+
+	/** Selects the minimum element in the array according to Comparator ranking.
 	 * @param comparator used for comparison
-	 * @return the minimum element in the array.
-	 */
-	public T selectMin(Comparator<T> comparator){
+	 * @return the minimum element in the array. */
+	public T selectMin (Comparator<T> comparator) {
 		return selectRanked(comparator, 1);
 	}
-	
-	/**
-	 * Selects the maximum element in the array according to Comparator ranking.
+
+	/** Selects the maximum element in the array according to Comparator ranking.
 	 * @param comparator used for comparison
-	 * @return The maximum element in the array.
-	 */
-	public T selectMax(Comparator<T> comparator){
+	 * @return The maximum element in the array. */
+	public T selectMax (Comparator<T> comparator) {
 		return selectRanked(comparator, items.length);
 	}
 
@@ -461,24 +457,21 @@ public class Array<T> implements Iterable<T> {
 		if (size == 0) return null;
 		return items[MathUtils.random(0, size - 1)];
 	}
-	
-	/**
-	 * Shifts the elements in the array by the specified offset in a circular fashion.
-	 * @param offset The offset (negative or positive, large values cause wrap around)
-	 */
-	public void shift(int offset){
-		Object[] temp=new Object[items.length];
-		for(int i=0;i<items.length;i++){
-			int newPosition=i+offset;
+
+	/** Shifts the elements in the array by the specified offset in a circular fashion.
+	 * @param offset The offset (negative or positive, large values cause wrap around) */
+	public void shift (int offset) {
+		Object[] temp = new Object[items.length];
+		for (int i = 0; i < items.length; i++) {
+			int newPosition = i + offset;
 			// Convert negative array index to positive index
-			if(newPosition<0)
-				newPosition+=(1-(newPosition+1)/items.length)*items.length;
+			if (newPosition < 0) newPosition += (1 - (newPosition + 1) / items.length) * items.length;
 			// Convert positive index to one within the range of valid array indices
-			newPosition=newPosition%items.length;
-			temp[newPosition]=items[i];
+			newPosition = newPosition % items.length;
+			temp[newPosition] = items[i];
 		}
-		for(int i=0;i<items.length;i++)
-			items[i]=(T)temp[i];
+		for (int i = 0; i < items.length; i++)
+			items[i] = (T)temp[i];
 	}
 
 	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
