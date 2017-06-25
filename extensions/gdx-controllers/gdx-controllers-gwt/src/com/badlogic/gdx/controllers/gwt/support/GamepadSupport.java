@@ -117,8 +117,8 @@ public class GamepadSupport {
 	private static native void nativeInit() /*-{
         var gamepadSupportAvailable = !! navigator.getGamepads || !! navigator.webkitGetGamepads || !! navigator.webkitGamepads || (navigator.userAgent.indexOf('Firefox/') != -1);
         if (gamepadSupportAvailable) {
-            $wnd.addEventListener('MozGamepadConnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadConnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
-            $wnd.addEventListener('MozGamepadDisconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadDisconnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
+            $wnd.addEventListener('gamepadconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadConnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
+            $wnd.addEventListener('gamepaddisconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadDisconnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
             if ( !! navigator.getGamepads || !! navigator.webkitGamepads || !! navigator.webkitGetGamepads) {
                 @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::startPolling()();
             }
@@ -126,7 +126,8 @@ public class GamepadSupport {
 	}-*/;
 	
 	private static native JsArray<Gamepad> nativePollGamepads() /*-{
-		return rawGamepads = (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) || navigator.webkitGamepads;
+		return rawGamepads =
+           navigator.getGamepads ? navigator.getGamepads() : ((navigator.webkitGetGamepads && navigator.webkitGetGamepads()) || navigator.webkitGamepads);
 	}-*/;
 	
 	public static native void consoleLog(String message) /*-{

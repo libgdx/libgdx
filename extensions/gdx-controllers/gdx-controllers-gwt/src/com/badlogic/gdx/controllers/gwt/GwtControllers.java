@@ -175,7 +175,7 @@ public class GwtControllers implements ControllerManager, GamepadSupportListener
 				}			
 				for (int i = 0, j = buttons.length(); i < j; i++) {
 					float oldButton = controller.getButtonAmount(i);
-					float newButton = (float) buttons.get(i);
+					float newButton = gamepad.getButton(i);
 					if (oldButton != newButton) {
 						if ((oldButton < 0.5f && newButton < 0.5f) || (oldButton >= 0.5f && newButton >= 0.5f)) {
 							controller.buttons.put(i, newButton);
