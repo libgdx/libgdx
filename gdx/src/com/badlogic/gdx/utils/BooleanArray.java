@@ -25,7 +25,7 @@ import java.util.BitSet;
  * sizes or if BitSet functionality such as and, or, xor, etc are needed. If unordered, this class avoids a memory copy when
  * removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class BooleanArray {
+public class BooleanArray implements Container{
 	public boolean[] items;
 	public int size;
 	public boolean ordered;
@@ -72,6 +72,12 @@ public class BooleanArray {
 		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
+	}
+
+	
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public void add (boolean value) {

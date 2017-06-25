@@ -23,7 +23,7 @@ import java.util.Arrays;
 /** A resizable, ordered or unordered int array. Avoids the boxing that occurs with ArrayList<Integer>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
-public class IntArray {
+public class IntArray implements Container {
 	public int[] items;
 	public int size;
 	public boolean ordered;
@@ -70,6 +70,11 @@ public class IntArray {
 		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	public void add (int value) {

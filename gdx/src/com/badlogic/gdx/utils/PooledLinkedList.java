@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 /** A simple linked list that pools its nodes.
  * @author mzechner */
-public class PooledLinkedList<T> {
+public class PooledLinkedList<T> implements Container {
 	static final class Item<T> {
 		public T payload;
 		public Item<T> next;

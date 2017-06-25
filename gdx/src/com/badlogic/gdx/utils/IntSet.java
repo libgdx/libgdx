@@ -27,7 +27,8 @@ import java.util.NoSuchElementException;
  * hash collisions. Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT
  * size.
  * @author Nathan Sweet */
-public class IntSet {
+public class IntSet implements Container {
+
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -85,6 +86,11 @@ public class IntSet {
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
 		hasZeroValue = set.hasZeroValue;
+	}
+
+	@Override
+	public int size () {
+		return size;
 	}
 
 	/** Returns true if the key was not already in the set. */
