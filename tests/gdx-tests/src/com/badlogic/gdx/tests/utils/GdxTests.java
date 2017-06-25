@@ -182,6 +182,7 @@ public class GdxTests {
 		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
 		ParticleEmittersTest.class,
+		ParticleEmitterChangeSpriteTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
