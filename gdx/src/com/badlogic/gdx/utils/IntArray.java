@@ -120,6 +120,15 @@ public class IntArray {
 		items[index] *= value;
 	}
 
+	/** Returns the sum of every element in the array
+	 * @return the sum of elements */
+	public int sum () {
+		int sum = 0;
+		for (int i = 0; i < items.length; i++)
+			sum += items[i];
+		return sum;
+	}
+
 	public void insert (int index, int value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		int[] items = this.items;
@@ -259,7 +268,7 @@ public class IntArray {
 		return items;
 	}
 
-	/** Sets the array size, leaving any values beyond the current size undefined. 
+	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public int[] setSize (int newSize) {
 		if (newSize > items.length) resize(Math.max(8, newSize));
