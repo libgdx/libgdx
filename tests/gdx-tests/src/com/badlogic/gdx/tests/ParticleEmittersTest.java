@@ -52,7 +52,7 @@ public class ParticleEmittersTest extends GdxTest {
 	float fpsCounter;
 	Stage ui;
 	CheckBox skipCleanup;
-	Button clearEmitters;
+	Button clearEmitters, scaleEffects;
 	Label logLabel;
 
 	@Override
@@ -130,20 +130,21 @@ public class ParticleEmittersTest extends GdxTest {
 		ui = new Stage(new ExtendViewport(640, 480));
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		skipCleanup = new CheckBox("Skip blend function clean-up", skin);
-		skipCleanup.setTransform(false);
 		skipCleanup.addListener(listener);
 		logLabel = new Label("", skin.get(LabelStyle.class));
 		clearEmitters = new TextButton("Clear screen", skin);
-		clearEmitters.setTransform(false);
 		clearEmitters.addListener(listener);
+		scaleEffects = new TextButton("Scale existing effects", skin);
+		scaleEffects.addListener(listener);
 		Table table = new Table();
 		table.setTransform(false);
 		table.setFillParent(true);
 		table.defaults().padTop(5).left();
 		table.top().left().padLeft(5);
-		table.add(skipCleanup).row();
-		table.add(clearEmitters).row();
-		table.add(logLabel);
+		table.add(skipCleanup).colspan(2).row();
+		table.add(clearEmitters).spaceRight(10);
+		table.add(scaleEffects).row();
+		table.add(logLabel).colspan(2);
 		ui.addActor(table);
 	}
 
@@ -164,6 +165,10 @@ public class ParticleEmittersTest extends GdxTest {
 				for (PooledEffect e : effects)
 					e.free();
 				effects.clear();
+			} else if (actor == scaleEffects) {
+				for (ParticleEffect eff : effects) {
+					eff.scaleEffect(1.5f);
+				}
 			}
 		}
 	};
