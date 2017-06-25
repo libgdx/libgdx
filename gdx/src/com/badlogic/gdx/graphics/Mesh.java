@@ -1098,7 +1098,7 @@ public class Mesh implements Disposable {
 		else
 			result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, attrs);
 		result.setVertices(vertices, 0, numVertices * newVertexSize);
-		result.setIndices(indices);
+		if (indices != null) result.setIndices(indices);
 		return result;
 	}
 
