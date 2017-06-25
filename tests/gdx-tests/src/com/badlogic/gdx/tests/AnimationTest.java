@@ -71,8 +71,7 @@ public class AnimationTest extends GdxTest {
 		
 		TextureRegion[] rightRegions = rightWalk.getKeyFrames(); // testing backing array type
 		TextureRegion firstRightRegion = rightRegions[0];
-		Gdx.app.log("AnimationTest", String.format("First right walk region is %s x %s", 
-			firstRightRegion.getRegionWidth(), firstRightRegion.getRegionHeight()));
+		Gdx.app.log("AnimationTest", "First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {
