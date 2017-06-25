@@ -463,18 +463,18 @@ public class Array<T> implements Iterable<T> {
 	}
 	
 	/**
-	 * Shifts the elements in the array by the specified offset
-	 * @param offset
+	 * Shifts the elements in the array by the specified offset in a circular fashion.
+	 * @param offset The offset (negative or positive, large values cause wrap around)
 	 */
 	public void shift(int offset){
 		Object[] temp=new Object[items.length];
 		for(int i=0;i<items.length;i++){
 			int newPosition=i+offset;
-			// Wrap around array if element's new position is out of bounds
+			// Convert negative array index to positive index
 			if(newPosition<0)
-				newPosition+=items.length;
-			else if(newPosition>=items.length)
-				newPosition-=items.length;
+				newPosition+=(1-(newPosition+1)/items.length)*items.length;
+			// Convert positive index to one within the range of valid array indices
+			newPosition=newPosition%items.length;
 			temp[newPosition]=items[i];
 		}
 		for(int i=0;i<items.length;i++)
