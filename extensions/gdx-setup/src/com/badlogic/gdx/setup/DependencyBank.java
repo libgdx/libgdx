@@ -229,27 +229,25 @@ public class DependencyBank {
 
 
 	public enum ProjectType {
-		CORE("core", new String[]{"java"}),
-		DESKTOP("desktop", new String[]{"java"}),
-		ANDROID("android", new String[]{"android"}),
-		IOS("ios", new String[]{"java", "robovm"}),
-		IOSMOE("ios-moe", new String[] {"moe"}),
-		HTML("html", new String[]{"gwt", "war"});
+		CORE("core"),
+		DESKTOP("desktop"),
+		ANDROID("android"),
+		IOS("ios"),
+		IOSMOE("ios-moe"),
+		HTML("html");
 
 		private final String name;
-		private final String[] plugins;
 
-		ProjectType(String name, String plugins[]) {
+		ProjectType(String name) {
 			this.name = name;
-			this.plugins = plugins;
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		public String[] getPlugins() {
-			return plugins;
+		public String[] getPlugins(Language sourceLanguage) {
+			return sourceLanguage.platformPlugins[ordinal()];
 		}
 	}
 
