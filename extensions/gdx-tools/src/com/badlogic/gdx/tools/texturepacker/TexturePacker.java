@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 
@@ -54,6 +56,7 @@ public class TexturePacker {
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
 	private File rootDir;
+	private ProgressListener progress;
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public TexturePacker (File rootDir, Settings settings) {
@@ -96,26 +99,54 @@ public class TexturePacker {
 			packFileName = packFileName.substring(0, packFileName.length() - settings.atlasExtension.length());
 		outputDir.mkdirs();
 
-		for (int i = 0, n = settings.scale.length; i < n; i++) {
+		if (progress == null) {
+			progress = new ProgressListener() {
+				public void progress (float progress) {
+				}
+			};
+		}
+		progress.reset();
+
+		progress.start(1);
+		int n = settings.scale.length;
+		for (int i = 0; i < n; i++) {
+			progress.start(1f / n);
+
+			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
-			for (InputImage inputImage : inputImages) {
+			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
+				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
 					imageProcessor.addImage(inputImage.file);
 				else
 					imageProcessor.addImage(inputImage.image, inputImage.name);
+				if (progress.update(ii + 1, nn)) return;
 			}
+			progress.end();
 
-			Array<Page> pages = packer.pack(imageProcessor.getImages());
+			progress.start(0.19f);
+			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
+			progress.end();
 
+			progress.start(0.45f);
 			String scaledPackFileName = settings.getScaledPackFileName(packFileName, i);
 			writeImages(outputDir, scaledPackFileName, pages);
+			progress.end();
+
+			progress.start(0.01f);
 			try {
 				writePackFile(outputDir, scaledPackFileName, pages);
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing pack file.", ex);
 			}
 			imageProcessor.clear();
+			progress.end();
+
+			progress.end();
+
+			if (progress.update(i + 1, n)) return;
 		}
+		progress.end();
 	}
 
 	private void writeImages (File outputDir, String scaledPackFileName, Array<Page> pages) {
@@ -124,7 +155,9 @@ public class TexturePacker {
 		String imageName = packFileNoExt.getName();
 
 		int fileIndex = 0;
-		for (Page page : pages) {
+		for (int p = 0, pn = pages.size; p < pn; p++) {
+			Page page = pages.get(p);
+
 			int width = page.width, height = page.height;
 			int paddingX = settings.paddingX;
 			int paddingY = settings.paddingY;
@@ -162,7 +195,9 @@ public class TexturePacker {
 
 			if (!settings.silent) System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
-			for (Rect rect : page.outputRects) {
+			progress.start(1 / (float)pn);
+			for (int r = 0, rn = page.outputRects.size; r < rn; r++) {
+				Rect rect = page.outputRects.get(r);
 				BufferedImage image = rect.getImage(imageProcessor);
 				int iw = image.getWidth();
 				int ih = image.getHeight();
@@ -219,11 +254,14 @@ public class TexturePacker {
 					g.setColor(Color.magenta);
 					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1);
 				}
+
+				if (progress.update(r + 1, rn)) return;
 			}
+			progress.end();
 
 			if (settings.bleed && !settings.premultiplyAlpha
 				&& !(settings.outputFormat.equalsIgnoreCase("jpg") || settings.outputFormat.equalsIgnoreCase("jpeg"))) {
-				canvas = new ColorBleedEffect().processImage(canvas, 2);
+				canvas = new ColorBleedEffect().processImage(canvas, settings.bleedIterations);
 				g = (Graphics2D)canvas.getGraphics();
 			}
 
@@ -261,6 +299,8 @@ public class TexturePacker {
 					}
 				}
 			}
+
+			if (progress.update(p + 1, pn)) return;
 		}
 	}
 
@@ -364,6 +404,10 @@ public class TexturePacker {
 		default:
 			throw new RuntimeException("Unsupported format: " + settings.format);
 		}
+	}
+
+	public void setProgressListener (ProgressListener progressListener) {
+		this.progress = progressListener;
 	}
 
 	/** @author Nathan Sweet */
@@ -553,6 +597,7 @@ public class TexturePacker {
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
 		public boolean bleed = true;
+		public int bleedIterations = 2;
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
@@ -601,10 +646,11 @@ public class TexturePacker {
 			square = settings.square;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
+			bleedIterations = settings.bleedIterations;
 			limitMemory = settings.limitMemory;
 			grid = settings.grid;
-			scale = settings.scale;
-			scaleSuffix = settings.scaleSuffix;
+			scale = Arrays.copyOf(settings.scale, settings.scale.length);
+			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
 			atlasExtension = settings.atlasExtension;
 		}
 
@@ -630,12 +676,24 @@ public class TexturePacker {
 		process(new Settings(), input, output, packFileName);
 	}
 
+	static public void process (Settings settings, String input, String output, String packFileName) {
+		process(settings, input, output, packFileName, null);
+	}
+
 	/** @param input Directory containing individual images to be packed.
 	 * @param output Directory where the pack file and page images will be written.
-	 * @param packFileName The name of the pack file. Also used to name the page images. */
-	static public void process (Settings settings, String input, String output, String packFileName) {
+	 * @param packFileName The name of the pack file. Also used to name the page images.
+	 * @param progress May be null. */
+	static public void process (Settings settings, String input, String output, String packFileName,
+		final ProgressListener progress) {
 		try {
-			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName);
+			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName) {
+				protected TexturePacker newTexturePacker (File root, Settings settings) {
+					TexturePacker packer = super.newTexturePacker(root, settings);
+					packer.setProgressListener(progress);
+					return packer;
+				}
+			};
 			// Sort input files by name to avoid platform-dependent atlas output changes.
 			processor.setComparator(new Comparator<File>() {
 				public int compare (File file1, File file2) {
@@ -706,12 +764,64 @@ public class TexturePacker {
 
 	static public interface Packer {
 		public Array<Page> pack (Array<Rect> inputRects);
+
+		/** @param progress May be null. */
+		public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects);
 	}
 
 	static final class InputImage {
 		File file;
 		String name;
 		BufferedImage image;
+	}
+
+	static public abstract class ProgressListener {
+		private float total, scale = 1, lastUpdate;
+		private final FloatArray portions = new FloatArray(8);
+		volatile boolean cancel;
+
+		void reset () {
+			scale = 1;
+			total = 0;
+			progress(total);
+		}
+
+		void start (float portion) {
+			if (portion == 0) throw new IllegalArgumentException("portion cannot be 0.");
+			portions.add(lastUpdate);
+			portions.add(portion * scale);
+			portions.add(scale);
+			scale *= portion;
+		}
+
+		/** Returns true if cancelled. */
+		boolean update (int current, int total) {
+			if (total == 0) throw new IllegalArgumentException("total cannot be 0.");
+			update(current / (float)total);
+			return isCancelled();
+		}
+
+		void update (float percent) {
+			lastUpdate = portions.get(portions.size - 3) + portions.get(portions.size - 2) * percent;
+			progress(lastUpdate);
+		}
+
+		void end () {
+			scale = portions.pop();
+			float portion = portions.pop();
+			lastUpdate = portions.pop() + portion;
+			progress(lastUpdate);
+		}
+
+		public void cancel () {
+			cancel = true;
+		}
+
+		public boolean isCancelled () {
+			return cancel;
+		}
+
+		abstract public void progress (float progress);
 	}
 
 	static public void main (String[] args) throws Exception {

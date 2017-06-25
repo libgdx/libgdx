@@ -23,12 +23,7 @@ import java.nio.IntBuffer;
 import com.badlogic.gdx.graphics.GL20;
 
 public class AndroidGL20 implements GL20 {
-	static {
-		System.loadLibrary("gdx");
-		init();
-	}
-
-	private static native void init ();
+	public static native void init ();
 
 	public native void glActiveTexture (int texture);
 

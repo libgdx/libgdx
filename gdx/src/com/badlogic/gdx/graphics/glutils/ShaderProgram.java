@@ -219,6 +219,7 @@ public class ShaderProgram implements Disposable {
 // int infoLogLength = intbuf.get(0);
 // if (infoLogLength > 1) {
 			String infoLog = gl.glGetShaderInfoLog(shader);
+			log += type == GL20.GL_VERTEX_SHADER ? "Vertex shader\n" : "Fragment shader:\n";
 			log += infoLog;
 // }
 			return -1;

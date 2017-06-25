@@ -233,7 +233,7 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-		String sdkLocation, CharCallback callback, List<String> gradleArgs) {
+			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
@@ -256,7 +256,7 @@ public class GdxSetup {
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
-		if (builder.modules.contains(ProjectType.HTML)) {
+		if (builder.modules.contains(ProjectType.HTML) && language.gwtSupported) {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		}
 
@@ -283,7 +283,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
-			project.files.add(new ProjectFile("android/proguard-project.txt", false));
+			project.files.add(new ProjectFile("android/proguard-rules.pro", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
 			project.files.add(new ProjectFile("local.properties", true));
 		}
@@ -324,25 +324,24 @@ public class GdxSetup {
 		}
 
 		if(builder.modules.contains(ProjectType.IOSMOE)) {			
-			project.files.add(new ProjectFile("ios-moe/resources/Default.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon-72.png", false));
-			project.files.add(new ProjectFile("ios-moe/resources/Icon-72@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/build.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/build.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info-Test.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info.plist", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}
@@ -350,6 +349,7 @@ public class GdxSetup {
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%APP_NAME_ESCAPED%", appName.replace("'", "\\'"));
+		values.put("%LANG%", language.name);
 		values.put("%PACKAGE%", packageName);
 		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
@@ -654,9 +654,16 @@ public class GdxSetup {
 				 dependencies.add(bank.getDependency(ProjectDependency.GDX));
 			}
 
+			String language = params.containsKey("language") ? params.get("language") : "java";
+			Language languageEnum = Language.JAVA;
+			for(Language l: Language.values()) {
+				if(l.name.equals(language)) {
+					languageEnum = l;
+				}
+			}
 			builder.buildProject(projects, dependencies);
-			builder.build();
-			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"),
+			builder.build(languageEnum);
+			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), languageEnum,
 				sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {

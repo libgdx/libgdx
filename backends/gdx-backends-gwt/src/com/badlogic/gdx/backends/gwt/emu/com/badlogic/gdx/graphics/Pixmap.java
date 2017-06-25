@@ -24,6 +24,7 @@ import java.util.Map;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -93,7 +94,8 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	static String clearColor = make(255, 255, 255, 1.0f);
-	static Blending blending;
+	Blending blending = Blending.SourceOver;
+	Filter filter = Filter.BiLinear;
 	CanvasPixelArray pixels;
 	private ImageElement imageElement;
 
@@ -123,6 +125,7 @@ public class Pixmap implements Disposable {
 		this.imageElement = imageElement;
 		this.width = imageElement != null ? imageElement.getWidth() : width;
 		this.height = imageElement != null ? imageElement.getHeight() : height;
+		this.format = Format.RGBA8888;
 
 		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;
@@ -144,24 +147,27 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
-		Composite composite = getComposite();
-		for (Pixmap pixmap : pixmaps.values()) {
-			pixmap.ensureCanvasExists();
-			pixmap.context.setGlobalCompositeOperation(composite);
-		}
+	public void setBlending (Blending blending) {
+		this.blending = blending;
+		this.ensureCanvasExists();
+		this.context.setGlobalCompositeOperation(getComposite());
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
+	public void setFilter (Filter filter) {
+		this.filter = filter;
+	}
+
+	/** @return the currently set {@link Filter} */
+	public Filter getFilter () {
+		return filter;
 	}
 
 	public Format getFormat () {

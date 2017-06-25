@@ -74,11 +74,25 @@ public class OisControllers {
 						ois = new Ois(newWindowHandle);
 
 						ArrayList<OisJoystick> joysticks = ois.getJoysticks();
+						OisController[] oldControllers = controllers;
 						controllers = new OisController[joysticks.size()];
 						manager.controllers.clear();
 						for (int i = 0, n = joysticks.size(); i < n; i++) {
 							OisJoystick joystick = joysticks.get(i);
 							controllers[i] = new OisController(joystick);
+							if (controllers.length == oldControllers.length && oldControllers[i].getName().equals(controllers[i].getName())) {
+								if (oldControllers[i].listeners.size != 0) {
+									controllers[i].listeners.addAll(oldControllers[i].listeners);
+								}
+							}
+							else {
+								for (int j = 0; j < oldControllers.length; j++) {
+									if (oldControllers[j].listeners.size != 0 && oldControllers[j].getName().equals(controllers[i].getName())) {
+										controllers[i].listeners.addAll(oldControllers[j].listeners);
+										break;
+									}
+								}
+							}
 							manager.controllers.add(controllers[i]);
 						}
 					}

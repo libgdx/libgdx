@@ -77,6 +77,7 @@ public class Lwjgl3Application implements Application {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
+			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
@@ -208,8 +209,10 @@ public class Lwjgl3Application implements Application {
 			((OpenALAudio) audio).dispose();
 		}
 		errorCallback.free();
+		errorCallback = null;
 		if (glDebugCallback != null) {
 			glDebugCallback.free();
+			glDebugCallback = null;
 		}
 		GLFW.glfwTerminate();
 	}
@@ -359,18 +362,34 @@ public class Lwjgl3Application implements Application {
 	
 	/**
 	 * Creates a new {@link Lwjgl3Window} using the provided listener and {@link Lwjgl3WindowConfiguration}.
+	 *
+	 * This function only just instantiates a {@link Lwjgl3Window} and returns immediately. The actual window creation
+	 * is postponed with {@link Application#postRunnable(Runnable)} until after all existing windows are updated.
 	 */
 	public Lwjgl3Window newWindow(ApplicationListener listener, Lwjgl3WindowConfiguration config) {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
 		appConfig.setWindowConfiguration(config);
-		Lwjgl3Window window = createWindow(appConfig, listener, windows.get(0).getWindowHandle());
-		windows.add(window);
-		return window;
+		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 
 	private Lwjgl3Window createWindow(Lwjgl3ApplicationConfiguration config, ApplicationListener listener, long sharedContext) {
+		Lwjgl3Window window = new Lwjgl3Window(listener, config);
+		if (sharedContext == 0) {
+			// the main window is created immediately
+			createWindow(window, config, sharedContext);
+		} else {
+			// creation of additional windows is deferred to avoid GL context trouble
+			postRunnable(() -> {
+				createWindow(window, config, sharedContext);
+				windows.add(window);
+			});
+		}
+		return window;
+	}
+
+	private void createWindow(Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
-		Lwjgl3Window window = new Lwjgl3Window(windowHandle, listener, config);
+		window.create(windowHandle);
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
@@ -379,8 +398,6 @@ public class Lwjgl3Application implements Application {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
-
-		return window;
 	}
 
 	static long createGlfwWindow(Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {

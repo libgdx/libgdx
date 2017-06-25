@@ -132,39 +132,48 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		}
 
-		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
+		
+		if (config.disableAudio) {
+			preloadAssets();
+		} else {
+			// initialize SoundManager2
+			SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback() {
 
+				@Override
+				public void onready () {
+					preloadAssets();
+				}
+
+				@Override
+				public void ontimeout (String status, String errorType) {
+					error("SoundManager", status + " " + errorType);
+				}
+
+			});
+		}
+	}
+	
+	void preloadAssets () {
+		final PreloaderCallback callback = getPreloaderCallback();
+		preloader = createPreloader();
+		preloader.preload("assets.txt", new PreloaderCallback() {
 			@Override
-			public void onready () {
-				final PreloaderCallback callback = getPreloaderCallback();
-				preloader = createPreloader();
-				preloader.preload("assets.txt", new PreloaderCallback() {
-					@Override
-					public void error (String file) {
-						callback.error(file);
-					}
-
-					@Override
-					public void update (PreloaderState state) {
-						callback.update(state);
-						if (state.hasEnded()) {
-							getRootPanel().clear();
-							if(loadingListener != null)
-								loadingListener.beforeSetup();
-							setupLoop();
-							if(loadingListener != null)
-								loadingListener.afterSetup();
-						}
-					}
-				});
+			public void error (String file) {
+				callback.error(file);
 			}
 
 			@Override
-			public void ontimeout (String status, String errorType) {
-				error("SoundManager", status + " " + errorType);
+			public void update (PreloaderState state) {
+				callback.update(state);
+				if (state.hasEnded()) {
+					getRootPanel().clear();
+					if(loadingListener != null)
+						loadingListener.beforeSetup();
+					setupLoop();
+					if(loadingListener != null)
+						loadingListener.afterSetup();
+				}
 			}
-			
 		});
 	}
 
@@ -189,7 +198,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		lastWidth = graphics.getWidth();
 		lastHeight = graphics.getHeight();
 		Gdx.app = this;
-		Gdx.audio = new GwtAudio();
+		
+		if(config.disableAudio) {
+			Gdx.audio = null;
+		} else {
+			Gdx.audio = new GwtAudio();
+		}
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = Gdx.gl20;

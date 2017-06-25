@@ -102,7 +102,7 @@ public class ScrollPane extends WidgetGroup {
 	public ScrollPane (Actor widget, ScrollPaneStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		setWidget(widget);
+		setActor(widget);
 		setSize(150, 150);
 
 		addCaptureListener(new InputListener() {
@@ -663,15 +663,25 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
-	 * @param widget May be null to remove any current actor. */
-	public void setWidget (Actor widget) {
+	 * @param actor May be null to remove any current actor. */
+	public void setActor (Actor actor) {
 		if (widget == this) throw new IllegalArgumentException("widget cannot be the ScrollPane.");
 		if (this.widget != null) super.removeActor(this.widget);
-		this.widget = widget;
+		this.widget = actor;
 		if (widget != null) super.addActor(widget);
 	}
 
 	/** Returns the actor embedded in this scroll pane, or null. */
+	public Actor getActor () {
+		return widget;
+	}
+
+	/** @deprecated Use {@link #setActor(Actor)}. */
+	public void setWidget (Actor actor) {
+		setActor(actor);
+	}
+
+	/** @deprecated Use {@link #getActor()}. */
 	public Actor getWidget () {
 		return widget;
 	}
@@ -701,9 +711,17 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		if (actor != widget) return false;
-		setWidget(null);
+		setActor(null);
 		return true;
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor != widget) return false;
+		this.widget = null;
+		return super.removeActor(actor, unfocus);
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {

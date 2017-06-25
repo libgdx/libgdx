@@ -247,9 +247,15 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 		if (config.allowIpod) {
-			OALSimpleAudio.sharedInstance().setUseHardwareIfAvailable(false);
+			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+			if (audio != null) {
+				audio.setUseHardwareIfAvailable(false);
+			}
 		}
 		graphics.makeCurrent();
 		graphics.resume();
@@ -258,7 +264,10 @@ public class IOSApplication implements Application {
 	final void willEnterForeground (UIApplication uiApp) {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession.sharedInstance().forceEndInterruption();
+		OALAudioSession audioSession = OALAudioSession.sharedInstance();
+		if (audioSession != null) {
+			audioSession.forceEndInterruption();
+		}
 	}
 
 	final void willResignActive (UIApplication uiApp) {

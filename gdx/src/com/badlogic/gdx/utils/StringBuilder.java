@@ -89,8 +89,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		System.arraycopy(builder.chars, 0, chars, 0, length);
 	}
 
-	/** Constructs an instance that's initialized with the contents of the specified {@code String}. The capacity of the new builder
-	 * will be the length of the {@code String} plus 16.
+	/** Constructs an instance that's initialized with the contents of the specified {@code String}. The capacity of the new
+	 * builder will be the length of the {@code String} plus 16.
 	 * 
 	 * @param string the {@code String} to copy into the builder.
 	 * @throws NullPointerException if {@code str} is {@code null}. */
@@ -569,8 +569,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return start < length || start == 0 ? start : length;
 	}
 
-	/** Searches for the last index of the specified character. The search for the character starts at the end and moves towards the
-	 * beginning.
+	/** Searches for the last index of the specified character. The search for the character starts at the end and moves towards
+	 * the beginning.
 	 * 
 	 * @param string the string to find.
 	 * @return the index of the specified character, -1 if the character isn't found.
@@ -699,8 +699,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return Character.offsetByCodePoints(chars, 0, length, index, codePointOffset);
 	}
 
-	/** Appends the string representation of the specified {@code boolean} value. The {@code boolean} value is converted to a String
-	 * according to the rule defined by {@link String#valueOf(boolean)}.
+	/** Appends the string representation of the specified {@code boolean} value. The {@code boolean} value is converted to a
+	 * String according to the rule defined by {@link String#valueOf(boolean)}.
 	 * 
 	 * @param b the {@code boolean} value to append.
 	 * @return this builder.
@@ -721,8 +721,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
-	 * memory allocation.
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
+	 * without memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @return this builder.
@@ -731,8 +731,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return append(value, 0);
 	}
 
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
-	 * memory allocation.
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
+	 * without memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @param minLength the minimum number of characters to add
@@ -742,8 +742,8 @@ public class StringBuilder implements Appendable, CharSequence {
 		return append(value, minLength, '0');
 	}
 
-	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string without
-	 * memory allocation.
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
+	 * without memory allocation.
 	 * 
 	 * @param value the {@code int} value to append.
 	 * @param minLength the minimum number of characters to add
@@ -883,6 +883,17 @@ public class StringBuilder implements Appendable, CharSequence {
 	 * @return this builder. */
 	public StringBuilder append (String str) {
 		append0(str);
+		return this;
+	}
+
+	/** Appends the contents of the specified string, then create a new line. If the string is {@code null}, then the string
+	 * {@code "null"} is appended.
+	 * 
+	 * @param str the string to append.
+	 * @return this builder. */
+	public StringBuilder appendLine (String str) {
+		append0(str);
+		append0('\n');
 		return this;
 	}
 

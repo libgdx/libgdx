@@ -23,8 +23,8 @@
 		<name>VisUI</name>
 		<description>Flat design skin for scene2d.ui and UI toolkit</description>
 		<package>com.kotcrab.vis.ui</package>
-		<version>1.2.4</version>
-		<compatibility>1.9.4</compatibility>
+		<version>1.3.0</version>
+		<compatibility>1.9.6</compatibility>
 		<website>https://github.com/kotcrab/VisEditor/wiki/VisUI</website>
 		<gwtInherits>
 			<inherit>com.kotcrab.vis.vis-ui</inherit>
@@ -42,40 +42,12 @@
 			</html>
 		</projects>
 	</extension>
-		<extension>
-		<name>VisRuntime</name>
-		<description>Runtime for VisEditor</description>
-		<package>com.kotcrab.vis.runtime</package>
-		<version>0.3.2</version>
-		<compatibility>1.9.3</compatibility>
-		<website>http://vis.kotcrab.com</website>
-		<gwtInherits>
-			<inherit>com.kotcrab.vis.vis-runtime</inherit>
-		</gwtInherits>
-		<projects>
-			<core>
-				<dependency>com.kotcrab.vis:vis-runtime</dependency>
-			</core>
-			<desktop></desktop>
-			<android></android>
-			<ios></ios>
-			<ios-moe></ios-moe>
-			<html>
-				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.3.1</dependency>
-				<dependency external="true">net.onedaybeard.artemis:artemis-odb-gwt:1.3.1:sources</dependency>
-				<dependency external="true">net.onedaybeard.artemis:artemis-odb:1.3.1:sources</dependency>
-				<dependency>com.kotcrab.vis:vis-runtime-gwt</dependency>
-				<dependency>com.kotcrab.vis:vis-runtime-gwt:sources</dependency>
-				<dependency>com.kotcrab.vis:vis-runtime:sources</dependency>
-			</html>
-		</projects>
-	</extension>
 	<extension>
 		<name>libgdx-utils</name>
 		<description>Various utilities and features</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.3</version>
-		<compatibility>1.9.2</compatibility>
+		<version>0.13.4</version>
+		<compatibility>1.9.5</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils</inherit>
@@ -97,8 +69,8 @@
 		<name>libgdx-utils-box2d</name>
 		<description>Various utilities and features for the Box2D extension</description>
 		<package>net.dermetfan.gdx</package>
-		<version>0.13.3</version>
-		<compatibility>1.9.2</compatibility>
+		<version>0.13.4</version>
+		<compatibility>1.9.5</compatibility>
 		<website>http://dermetfan.net/libgdx-utils.php</website>
 		<gwtInherits>
 			<inherit>libgdx-utils-box2d</inherit>
@@ -121,8 +93,8 @@
 	   <name>gdx-facebook</name>
 	   <description>Provides cross-platform support for Facebook Graph API</description>
 	   <package>de.tomgrill.gdxfacebook</package>
-	   <version>1.2.2</version>
-	   <compatibility>1.9.3</compatibility>
+	   <version>1.4.0</version>
+	   <compatibility>1.9.6</compatibility>
 	   <website>https://github.com/TomGrill/gdx-facebook</website>
 	   <gwtInherits></gwtInherits>
 	   <projects>
@@ -138,7 +110,9 @@
 			<ios>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios</dependency>
 			</ios>
-			<ios-moe></ios-moe>
+			<ios-moe>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios-moe</dependency>
+			</ios-moe>
 			<html>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-core:sources</dependency>
 				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-html:sources</dependency>
@@ -149,8 +123,8 @@
 	   <name>gdx-dialogs</name>
 	   <description>Provides cross-platform support for native dialogs</description>
 	   <package>de.tomgrill.gdxdialogs</package>
-	   <version>1.1.0</version>
-	   <compatibility>1.9.3</compatibility>
+	   <version>1.2.1</version>
+	   <compatibility>1.9.5</compatibility>
 	   <website>https://github.com/TomGrill/gdx-dialogs</website>
 	   <gwtInherits></gwtInherits>
 	   <projects>
@@ -169,15 +143,19 @@
 			<ios-moe>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
 			</ios-moe>
-			<html>null</html>
+			<html>
+		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-core:sources</dependency>
+		   	</html>
 		</projects>
 	</extension>
 	<extension>
 		<name>gdx-kiwi</name>
 		<description>Guava-inspired utilities for LibGDX.</description>
 		<package>com.github.czyzby.kiwi</package>
-		<version>1.8.1.9.4</version>
-		<compatibility>1.9.4</compatibility>
+		<version>1.9.1.9.6</version>
+		<compatibility>1.9.6</compatibility>
 		<website>https://github.com/czyzby/gdx-lml/tree/master/kiwi</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.kiwi.GdxKiwi</inherit>
@@ -199,8 +177,8 @@
 		<name>gdx-lml</name>
 		<description>Parser of HTML-like templates into Scene2D actors.</description>
 		<package>com.github.czyzby.lml</package>
-		<version>1.8.1.9.4</version>
-		<compatibility>1.9.4</compatibility>
+		<version>1.9.1.9.6</version>
+		<compatibility>1.9.6</compatibility>
 		<website>https://github.com/czyzby/gdx-lml/tree/master/lml</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.lml.GdxLml</inherit>
@@ -223,8 +201,8 @@
 		<name>gdx-lml-vis</name>
 		<description>Parser of HTML-like templates into VisUI actors.</description>
 		<package>com.github.czyzby.lml.vis</package>
-		<version>1.8.1.9.4</version>
-		<compatibility>1.9.4</compatibility>
+		<version>1.9.1.9.6</version>
+		<compatibility>1.9.6</compatibility>
 		<website>https://github.com/czyzby/gdx-lml/tree/master/lml-vis</website>
 		<gwtInherits>
 			<inherit>com.github.czyzby.lml.vis.GdxLmlVis</inherit>
@@ -241,7 +219,7 @@
 				<dependency>com.github.czyzby:gdx-kiwi:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml:sources</dependency>
 				<dependency>com.github.czyzby:gdx-lml-vis:sources</dependency>
-				<dependency external="true">com.kotcrab.vis:vis-ui:1.1.1:sources</dependency>
+				<dependency external="true">com.kotcrab.vis:vis-ui:1.3.0:sources</dependency>
 			</html>
 		</projects>
 	</extension>

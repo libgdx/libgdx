@@ -11,10 +11,10 @@
 	<property name="jniPlatform" value="mac"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
 	<property name="compilerPrefix" value="%compilerPrefix%"/>		
-	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.1.sdk/"/>
-	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.1.sdk"/>
-	<property name="tvos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS10.0.sdk/"/>
-	<property name="tvossimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator10.0.sdk"/>
+	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/"/>
+	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"/>
+	<property name="tvos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/"/>
+	<property name="tvossimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator.sdk"/>
 	
 	
 	<!-- define gcc compiler, options and files to compile -->

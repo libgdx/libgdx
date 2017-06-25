@@ -1,10 +1,10 @@
 <!-- Call this to fetch all the natives from the build server -->
 <project name="fetch-natives" default="all">
-	<property name="domain" value="https://libgdx.badlogicgames.com/nightlies/dist"/>
-    <property name="robovm" value="https://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
+	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
+    <property name="robovm" value="http://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
 
     <property name="lwjgl" value="https://oss.sonatype.org/content/repositories/releases/org/lwjgl"/>
-    <property name="lwjgl-version" value="3.1.0"/>
+    <property name="lwjgl-version" value="3.1.2"/>
 
     <target name="fetch-robovm">
         <mkdir dir="backends/gdx-backend-robovm/libs/"/>
@@ -14,7 +14,7 @@
         <get src="${robovm}/robovm-rt.jar" dest="backends/gdx-backend-robovm/libs/"/>
     </target>
 
-    <target name="fetch-lwjgl">
+    <target name="fetch-lwjgl3">
         <!-- lwjgl -->
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl.jar"/>
         <get src="${lwjgl}/lwjgl/${lwjgl-version}/lwjgl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-natives-linux.jar"/>
@@ -37,6 +37,9 @@
         <get src="${lwjgl}/lwjgl-openal/${lwjgl-version}/lwjgl-openal-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-openal-natives-windows.jar"/>
         <!-- lwjgl-opengl -->
         <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-linux.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-macos.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-macos.jar"/>
+        <get src="${lwjgl}/lwjgl-opengl/${lwjgl-version}/lwjgl-opengl-${lwjgl-version}-natives-windows.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-opengl-natives-windows.jar"/>
         <!-- lwjgl-stb -->
         <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb.jar"/>
         <get src="${lwjgl}/lwjgl-stb/${lwjgl-version}/lwjgl-stb-${lwjgl-version}-natives-linux.jar" dest="backends/gdx-backend-lwjgl3/libs/lwjgl-stb-natives-linux.jar"/>
@@ -153,11 +156,11 @@
 
 		<!-- jglfw -->
 		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
-		<get src="https://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
-		<get src="https://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
 
         <!-- lwjgl 3 -->
-        <antcall target="fetch-lwjgl"/>
+        <antcall target="fetch-lwjgl3"/>
 	</target>
 
 	<target name="copy">

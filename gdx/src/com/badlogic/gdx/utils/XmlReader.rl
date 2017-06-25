@@ -278,6 +278,11 @@ public class XmlReader {
 			return value;
 		}
 
+		public boolean hasAttribute (String name) {
+			if (attributes == null) return false;
+			return attributes.containsKey(name);
+		}
+
 		public void setAttribute (String name, String value) {
 			if (attributes == null) attributes = new ObjectMap(8);
 			attributes.put(name, value);
@@ -289,9 +294,9 @@ public class XmlReader {
 		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
-		public Element getChild (int i) {
+		public Element getChild (int index) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			return children.get(i);
+			return children.get(index);
 		}
 
 		public void addChild (Element element) {
@@ -376,6 +381,11 @@ public class XmlReader {
 			return null;
 		}
 
+		public boolean hasChild (String name) {
+			if (children == null) return false;
+			return getChildByName(name) != null;
+		}
+
 		/** @param name the name of the child {@link Element}
 		 * @return the first child having the given name or null, recurses */
 		public Element getChildByNameRecursive (String name) {
@@ -387,6 +397,11 @@ public class XmlReader {
 				if (found != null) return found;
 			}
 			return null;
+		}
+
+		public boolean hasChildRecursive (String name) {
+			if (children == null) return false;
+			return getChildByNameRecursive(name) != null;
 		}
 
 		/** @param name the name of the children
