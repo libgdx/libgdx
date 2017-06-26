@@ -77,7 +77,7 @@ public class GLProfiler {
 		enabled = false;
 	}
 
-	/** Set the current listener for the {@link GLProfiler} to {@param errorListener} */
+	/** Set the current listener for the {@link GLProfiler} to {@code errorListener} */
 	public void setListener (GLErrorListener errorListener) {
 		this.listener = errorListener;
 	}
