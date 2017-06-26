@@ -316,17 +316,14 @@ public final class MathUtils {
 		return (int)(value + 0.5f);
 	}
 
-	/** Returns a re-mapped float value from one range to another. Examples:
-	 * 2 in [ 0, 10] ->  6 in [ 5, 10].
-	 * 0 in [-5,  5] -> 20 in [10, 30].
-	 * 9 in [ 0, 10] ->  1 in [10,  0].
-	 * value in [istart, iend] -> re-mapped in [ostart, stop] */
-	static public final float map(float value, float istart, float istop, float ostart, float ostop) {
-		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	/** Returns a re-mapped float value from inRange to outRange. */
+	static public float map (float value, float inRangeStart, float inRangeEnd, float outRangeStart, float outRangeEnd) {
+		return outRangeStart + (outRangeEnd - outRangeStart) * ((value - inRangeStart) / (inRangeEnd - inRangeStart));
 	}
 
-	static public final double map(double value, double istart, double istop, double ostart, double ostop) {
-		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+	/** Returns a re-mapped double value from inRange to outRange. */
+	static public double map (double value, double inRangeStart, double inRangeEnd, double outRangeStart, double outRangeEnd) {
+		return outRangeStart + (outRangeEnd - outRangeStart) * ((value - inRangeStart) / (inRangeEnd - inRangeStart));
 	}
 
 	/** Returns true if the value is zero (using the default tolerance as upper bound) */
