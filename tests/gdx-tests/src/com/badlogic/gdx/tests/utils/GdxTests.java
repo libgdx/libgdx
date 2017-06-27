@@ -214,6 +214,7 @@ public class GdxTests {
 		SoftKeyboardTest.class,
 		SortedSpriteTest.class,
 		SoundTest.class,
+		SpinnerTest.class,
 		SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
