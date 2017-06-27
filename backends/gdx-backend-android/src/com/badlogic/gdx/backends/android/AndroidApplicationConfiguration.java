@@ -16,9 +16,11 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.hardware.SensorManager;
 import android.media.SoundPool;
 
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -42,8 +44,28 @@ public class AndroidApplicationConfiguration {
 	/** whether to use the gyroscope. default: false **/
 	public boolean useGyroscope = false;
 
-	/** whether to use the compass. default: true **/
+	/** Whether to use the compass. The compass enables {@link Input#getRotationMatrix(float[])}, {@link Input#getAzimuth()},
+	 * {@link Input#getPitch()}, and {@link Input#getRoll()} if {@link #useAccelerometer} is also true.
+	 * <p>
+	 * If {@link #useRotationVectorSensor} is true and the rotation vector sensor is available, the compass will not be used.
+	 * <p>
+	 * Default: true **/
 	public boolean useCompass = true;
+
+	/** Whether to use Android's rotation vector software sensor, which provides cleaner data than that of {@link #useCompass} for
+	 * {@link Input#getRotationMatrix(float[])}, {@link Input#getAzimuth()}, {@link Input#getPitch()}, and {@link Input#getRoll()}.
+	 * The rotation vector sensor uses a combination of physical sensors, and it pre-filters and smoothes the data. If true,
+	 * {@link #useAccelerometer} is not required to enable rotation data.
+	 * <p>
+	 * If true and the rotation vector sensor is available, the compass will not be used, regardless of {@link #useCompass}.
+	 * <p>
+	 * Default: false */
+	public boolean useRotationVectorSensor = false;
+	
+	/** The requested sensor sampling rate in microseconds or one of the {@code SENSOR_DELAY_*} constants in {@link SensorManager}. 
+	 * <p>
+	 * Default: {@link SensorManager#SENSOR_DELAY_GAME} (20 ms updates). */
+	public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
 	/** the time in milliseconds to sleep after each event in the touch handler, set this to 16ms to get rid of touch flooding on
 	 * pre Android 2.0 devices. default: 0 **/

@@ -233,7 +233,7 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-		String sdkLocation, CharCallback callback, List<String> gradleArgs) {
+			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
@@ -256,7 +256,7 @@ public class GdxSetup {
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
-		if (builder.modules.contains(ProjectType.HTML)) {
+		if (builder.modules.contains(ProjectType.HTML) && language.gwtSupported) {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		}
 
@@ -349,6 +349,7 @@ public class GdxSetup {
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%APP_NAME_ESCAPED%", appName.replace("'", "\\'"));
+		values.put("%LANG%", language.name);
 		values.put("%PACKAGE%", packageName);
 		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
@@ -653,9 +654,16 @@ public class GdxSetup {
 				 dependencies.add(bank.getDependency(ProjectDependency.GDX));
 			}
 
+			String language = params.containsKey("language") ? params.get("language") : "java";
+			Language languageEnum = Language.JAVA;
+			for(Language l: Language.values()) {
+				if(l.name.equals(language)) {
+					languageEnum = l;
+				}
+			}
 			builder.buildProject(projects, dependencies);
-			builder.build();
-			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"),
+			builder.build(languageEnum);
+			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), languageEnum,
 				sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {

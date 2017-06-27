@@ -21,22 +21,22 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
 /** @author Daniel Holderbaum
  * @author Jan Polák */
-public class GL20Profiler extends GLProfiler implements GL20 {
+public class GL20Interceptor extends GLInterceptor implements GL20 {
 
-	public final GL20 gl20;
+	protected final GL20 gl20;
 
-	protected GL20Profiler (GL20 gl20) {
+	protected GL20Interceptor (GLProfiler glProfiler, GL20 gl20) {
+		super(glProfiler);
 		this.gl20 = gl20;
 	}
 	
 	private void check () {
 		int error = gl20.glGetError();
 		while (error != GL20.GL_NO_ERROR) {
-			listener.onError(error);
+			glProfiler.getListener().onError(error);
 			error = gl20.glGetError();
 		}
 	}

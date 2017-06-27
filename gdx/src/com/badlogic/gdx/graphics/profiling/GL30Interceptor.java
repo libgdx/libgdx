@@ -26,18 +26,19 @@ import com.badlogic.gdx.graphics.GL30;
 
 /** @author Daniel Holderbaum
  * @author Jan Polák */
-public class GL30Profiler extends GLProfiler implements GL30 {
+public class GL30Interceptor extends GLInterceptor implements GL30 {
 
-	public final GL30 gl30;
+	protected final GL30 gl30;
 
-	protected GL30Profiler (GL30 gl30) {
+	protected GL30Interceptor (GLProfiler glProfiler, GL30 gl30) {
+		super(glProfiler);
 		this.gl30 = gl30;
 	}
 	
 	private void check () {
 		int error = gl30.glGetError();
 		while (error != GL20.GL_NO_ERROR) {
-			listener.onError(error);
+			glProfiler.getListener().onError(error);
 			error = gl30.glGetError();
 		}
 	}

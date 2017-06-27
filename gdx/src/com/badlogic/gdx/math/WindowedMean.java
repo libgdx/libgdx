@@ -81,7 +81,7 @@ public final class WindowedMean {
 
 	/** @return the oldest value in the window */
 	public float getOldest () {
-		return last_value == values.length - 1 ? values[0] : values[last_value];
+		return added_values < values.length ? values[0] : values[last_value];
 	}
 
 	/** @return the value last added */
