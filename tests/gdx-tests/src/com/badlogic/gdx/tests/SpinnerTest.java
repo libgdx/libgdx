@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -31,7 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Spinner;
 import com.badlogic.gdx.scenes.scene2d.ui.SpinnerArrayModel;
+import com.badlogic.gdx.scenes.scene2d.ui.SpinnerDecimalModel;
 import com.badlogic.gdx.scenes.scene2d.ui.SpinnerNumberModel;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Spinner.SpinnerStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -49,22 +52,44 @@ public class SpinnerTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 
-		SpinnerArrayModel<String> arrayModel = new SpinnerArrayModel<String>(
-			new Array<String>(new String[] {"first", "second", "third"}), 0, true);
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
+
+		// This model displays natural numbers
 		SpinnerNumberModel numberModel = new SpinnerNumberModel(-6, 10, 2, 2);
 		SpinnerStyle style = new CustomStyle();
 		Spinner spin1 = new Spinner(style, numberModel);
-		stage.addActor(spin1);
+		table.add(spin1);
+		table.row();
+
+		// This model does not specify display values (i.e. toString() is used)
+		SpinnerArrayModel<String> arrayModel = new SpinnerArrayModel<String>(
+			new Array<String>(new String[] {"first", "second", "third"}), 0, true);
 		Spinner spin2 = new Spinner(style, arrayModel);
-		spin2.setPosition(100, 100);
-		spin2.setWidth(150);
-		spin2.setHeight(60);
-		stage.addActor(spin2);
+		table.add(spin2).width(150).height(60);
+		table.row();
+
+		// This model specifies display values
+		SpinnerArrayModel<Object> objectArrayModel = new SpinnerArrayModel<Object>(
+			new Array<Object>(new Object[] {new Object(), new Object(), new Object()}),
+			new Array<CharSequence>(new CharSequence[] {"Object 1", "Object 2", "Object 3"}), 0, true);
+		Spinner spin3 = new Spinner(style, objectArrayModel);
+		table.add(spin3);
+		table.row();
+
+		// This model displays decimal numbers
+		SpinnerDecimalModel decimalModel = new SpinnerDecimalModel(new BigDecimal("0"), new BigDecimal("1"), new BigDecimal("0.05"),
+			new BigDecimal("0.50"));
+		Spinner spin4 = new Spinner(style, decimalModel);
+		table.add(spin4);
+		table.row();
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1, 0, 0, 1);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
@@ -83,6 +108,8 @@ public class SpinnerTest extends GdxTest {
 		public CustomStyle () {
 			this.background = new NinePatchDrawable(
 				new NinePatch(new TextureRegion(new Texture(Gdx.files.internal("data/background.png"))), 2, 19, 15, 15));
+			this.backgroundHover = new NinePatchDrawable(
+				new NinePatch(new TextureRegion(new Texture(Gdx.files.internal("data/backgroundHover.png"))), 2, 19, 15, 15));
 			this.backgroundNext = new NinePatchDrawable(
 				new NinePatch(new TextureRegion(new Texture(Gdx.files.internal("data/backgroundNext.png"))), 2, 19, 15, 15));
 			this.backgroundPrev = new NinePatchDrawable(

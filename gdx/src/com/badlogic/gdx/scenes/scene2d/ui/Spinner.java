@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -27,6 +30,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.utils.Pools;
 
 /** A spinner allows to select a value according to a specified model, which defines the underlying data set. The appearance of
  * the spinner is given by its SpinnerStyle. To change the value displayed by the spinner, it is possible to use the scroll button
@@ -41,6 +46,7 @@ public class Spinner extends Widget {
 	private SpinnerModel model;
 	private Drawable currentBackground; // The current background drawable, either default, next button pressed or previous button
 													// pressed
+	private SpinnerState state = SpinnerState.IDLE; // The current state of the spinner
 
 	public Spinner (Skin skin, SpinnerModel model) {
 		this(skin.get(SpinnerStyle.class), model);
@@ -54,102 +60,130 @@ public class Spinner extends Widget {
 		this.style = style;
 		this.model = model;
 		currentBackground = style.background;
+		layout = new GlyphLayout(style.font, model.getDisplayValue());
 		setSize(getPrefWidth(), getPrefHeight());
 
 		this.addListener(new InputListener() {
 
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				setCurrentBackground(getBackgroundForClick(x, y));
-				invalidate();
+				updateBackgroundForCoords(x, y);
 				return true;
 			}
 
 			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				// Update spinner value, and fire change events if needed
-				if (getCurrentBackground() == getStyle().backgroundNext) {
-					if (getModel().next()) Spinner.this.fire(new ChangeListener.ChangeEvent());
-				} else if (getCurrentBackground() == getStyle().backgroundPrev) {
-					if (getModel().previous()) Spinner.this.fire(new ChangeListener.ChangeEvent());
-				}
-				setCurrentBackground(getStyle().background);
-				invalidate();
+				// Update spinner value if mouse is hovering over next or previous button
+				if (getState() == SpinnerState.NEXT)
+					updateValue(true);
+				else if (getState() == SpinnerState.PREVIOUS) updateValue(false);
+				updateBackgroundForCoords(x, y);
 			}
 
 			@Override
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				setCurrentBackground(getBackgroundForClick(x, y));
-				invalidate();
+				updateBackgroundForCoords(x, y);
 			}
 
 			@Override
 			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-				// Get scroll focus for mouse scroll button
-				if (getStage() != null) getStage().setScrollFocus(Spinner.this);
+				// Get scroll focus and keyboard focus to allow for update of spinner with mouse and keyboard
+				if (getStage() != null) {
+					getStage().setScrollFocus(Spinner.this);
+					getStage().setKeyboardFocus(Spinner.this);
+				}
+				updateBackgroundForCoords(x, y);
+			}
+
+			@Override
+			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+				updateBackgroundForCoords(x, y);
 			}
 
 			@Override
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
-				// Update spinner value, and fire change events if needed
-				if (x >= 0 && x <= getWidth() && y >= 0 && y <= getHeight()) {
-					if (amount > 0) {
-						if (getModel().previous()) Spinner.this.fire(new ChangeListener.ChangeEvent());
-					} else if (amount < 0) {
-						if (getModel().next()) Spinner.this.fire(new ChangeListener.ChangeEvent());
-					}
-					invalidate();
+				// Update spinner value if mouse is hovering over widget
+				if (getState() != SpinnerState.IDLE) updateValue(amount < 0);
+				return false;
+			}
+
+			@Override
+			public boolean keyDown (InputEvent event, int keycode) {
+				// Update spinner value if mouse is hovering over widget
+				if (getState() != SpinnerState.IDLE) {
+					if (keycode == Input.Keys.UP)
+						updateValue(true);
+					else if (keycode == Input.Keys.DOWN) updateValue(false);
 				}
 				return false;
 			}
+
 		});
 	}
 
-	protected Drawable getCurrentBackground () {
-		return this.currentBackground;
+	/** This method is called by any event that triggers a modification to the spinner's current value.
+	 * @param increase True for spinner's next value and false for spinner's previous value */
+	protected void updateValue (boolean increase) {
+		// Update value, and if change occurred, dispatch a change event
+		if ((increase && getModel().next()) || (!increase && getModel().previous())) {
+			layout.setText(style.font, model.getDisplayValue()); // Update layout for new current value
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			fire(changeEvent);
+			Pools.free(changeEvent);
+		}
+		invalidate();
 	}
 
-	protected void setCurrentBackground (Drawable currentBackground) {
-		this.currentBackground = currentBackground;
+	protected SpinnerState getState () {
+		return state;
 	}
 
-	/** Retrieves the correct background given the location an event occured.
-	 * @param x X coordinate of the fired event
-	 * @param y Y coordinate of the fired event
-	 * @return the background */
-	protected Drawable getBackgroundForClick (float x, float y) {
+	protected void setState (SpinnerState state) {
+		this.state = state;
+	}
+
+	/** Updates the spinner's background and state for the given coordinates
+	 * @param x Current x coordinate of mouse
+	 * @param y Y Current y coordinate of mouse */
+	protected void updateBackgroundForCoords (float x, float y) {
 		float diffX = getWidth() - x;
 		float diffY = y;
-		if (diffX < getStyle().background.getRightWidth() && diffX >= 0) {
-			if (diffY <= getHeight() && diffY > getHeight() / 2)
-				return getStyle().backgroundNext;
-			else if (diffY >= 0 && diffY <= getHeight() / 2) return getStyle().backgroundPrev;
+		state = SpinnerState.IDLE;
+		currentBackground = getStyle().background;
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && diffX < getStyle().background.getRightWidth() && diffX >= 0) {
+			if (diffY <= getHeight() && diffY > getHeight() / 2) {
+				state = SpinnerState.NEXT;
+				currentBackground = getStyle().backgroundNext;
+			} else if (diffY >= 0 && diffY <= getHeight() / 2) {
+				state = SpinnerState.PREVIOUS;
+				currentBackground = getStyle().backgroundPrev;
+			}
+		} else if (diffX >= 0 && diffX <= getWidth() && diffY >= 0 && diffY <= getHeight()) {
+			state = SpinnerState.HOVER;
+			currentBackground = getStyle().backgroundHover;
 		}
-		return getStyle().background;
+		invalidate();
 	}
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		currentBackground.draw(batch, getX(), getY(), getWidth(), getHeight());
 		// Center the text
-		layout = new GlyphLayout(style.font, model.getValue().toString());
-		style.font.draw(batch, model.getValue().toString() + "", getX() + style.background.getLeftWidth(),
+		style.font.draw(batch, model.getDisplayValue() + "", getX() + style.background.getLeftWidth(),
 			getY() + (getHeight() + layout.height) / 2);
 	}
 
 	@Override
 	public float getPrefWidth () {
-		// Min of borders + text width or drawable width
-		layout = new GlyphLayout(style.font, model.getValue().toString());
-		return Float.max(style.background.getMinWidth(),
+		// Max of borders + text width or drawable width
+		return Math.max(style.background.getMinWidth(),
 			style.background.getLeftWidth() + layout.width + style.background.getRightWidth());
 	}
 
 	@Override
 	public float getPrefHeight () {
-		// Min of borders + text height or drawable height
-		layout = new GlyphLayout(style.font, model.getValue().toString());
-		return Float.max(style.background.getMinHeight(),
+		// Max of borders + text height or drawable height
+		return Math.max(style.background.getMinHeight(),
 			style.background.getTopHeight() + style.background.getBottomHeight() + layout.height);
 	}
 
@@ -171,15 +205,29 @@ public class Spinner extends Widget {
 		return this.model;
 	}
 
-	/** This class defines the appearance of a Spinner. it includes the font used and the drawables for idle state, next button
-	 * pressed and previous button pressed. (See gdx-tests SpinnerTest) */
+	/** A spinner has four state. When the mouse is not over it, it is IDLE. When the mouse is over it, it is either over the NEXT
+	 * button, the PREVIOUS button or otherwise simply in a HOVER state (mouse is over the widget, but not over the buttons) */
+	enum SpinnerState {
+		IDLE, HOVER, NEXT, PREVIOUS;
+	}
+
+	/** This class defines the appearance of a Spinner. it includes the font used and the drawables for idle, hover, next button
+	 * pressed and previous button pressed states. (See gdx-tests SpinnerTest) */
 	public static class SpinnerStyle {
 
-		public Drawable background, backgroundNext, backgroundPrev; // Backgrounds for the spinner states
+		public Drawable background, backgroundHover, backgroundNext, backgroundPrev; // Backgrounds for the spinner states
 		public BitmapFont font;
 
-		public SpinnerStyle (Drawable background, Drawable backgroundNext, Drawable backgroundPrev, BitmapFont font) {
+		/** Constructor
+		 * @param background Drawable for the idle state
+		 * @param backgroundHover Drawable for the general hover state
+		 * @param backgroundNext Drawable for the next button hover state
+		 * @param backgroundPrev Drawable for the previous button hover state
+		 * @param font Font used for display */
+		public SpinnerStyle (Drawable background, Drawable backgroundHover, Drawable backgroundNext, Drawable backgroundPrev,
+			BitmapFont font) {
 			this.background = background;
+			this.backgroundHover = backgroundHover;
 			this.backgroundNext = backgroundNext;
 			this.backgroundPrev = backgroundPrev;
 			this.font = font;
@@ -204,6 +252,10 @@ public class Spinner extends Widget {
 		/** Returns the current element
 		 * @return current element */
 		public abstract T getValue ();
+
+		/** The text that will be displayed in the spinner for it's current value.
+		 * @return text displayed */
+		public abstract CharSequence getDisplayValue ();
 
 	}
 

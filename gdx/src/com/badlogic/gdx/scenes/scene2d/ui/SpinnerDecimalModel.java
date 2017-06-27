@@ -16,38 +16,41 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import java.math.BigDecimal;
+
 import com.badlogic.gdx.scenes.scene2d.ui.Spinner.SpinnerModel;
 
-/** Spinner model used to select integer values
+/** Spinner model used to display decimal numbers
  * @author Jeremy Gillespie-Cloutier */
-public class SpinnerNumberModel extends SpinnerModel<Integer> {
+public class SpinnerDecimalModel extends SpinnerModel<BigDecimal> {
 
-	private int min;
-	private int max;
-	private int value;
-	private int step;
+	private BigDecimal min;
+	private BigDecimal max;
+	private BigDecimal step;
+	private BigDecimal value;
 
 	/** Constructor
-	 * @param min The minimum value the spinner can take
-	 * @param max The maximum value the spinner can take
-	 * @param step The absolute increment when the next or previous button on the spinner is pressed
-	 * @param value The current value of the spinner */
-	public SpinnerNumberModel (int min, int max, int step, int value) {
-		if (max < min) throw new IllegalArgumentException("The maximum cannot be smaller than the minimum");
-		if (value < min || value > max)
+	 * @param min The min value the spinner can take
+	 * @param max The max value the spinner can take
+	 * @param step The absolute value for "next" and "previous" increments
+	 * @param value The current value the spinner takes */
+	public SpinnerDecimalModel (BigDecimal min, BigDecimal max, BigDecimal step, BigDecimal value) {
+		if (min.compareTo(max) > 0) throw new IllegalArgumentException("The maximum cannot be smaller than the minimum");
+		if (value.compareTo(min) < 0 || value.compareTo(max) > 0)
 			throw new IllegalArgumentException("The current value must be between the minimum and the maximum (inclusive)");
 
 		this.min = min;
 		this.max = max;
-		if (step < 0) step = -step;
+		if (step.compareTo(BigDecimal.ZERO) < 0) step = step.negate();
 		this.step = step;
 		this.value = value;
 	}
 
 	@Override
 	public boolean next () {
-		if (value + step <= max) {
-			value += step;
+		BigDecimal next = value.add(step);
+		if (next.compareTo(max) <= 0) {
+			value = next;
 			return true;
 		}
 		return false;
@@ -55,15 +58,16 @@ public class SpinnerNumberModel extends SpinnerModel<Integer> {
 
 	@Override
 	public boolean previous () {
-		if (value - step >= min) {
-			value -= step;
+		BigDecimal previous = value.subtract(step);
+		if (previous.compareTo(min) >= 0) {
+			value = previous;
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Integer getValue () {
+	public BigDecimal getValue () {
 		return value;
 	}
 
