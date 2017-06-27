@@ -39,9 +39,9 @@ public abstract class OpenALMusic implements Music {
 	static private final int bytesPerSample = 2;
 	static private final byte[] tempBytes = new byte[bufferSize];
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
-	
+
 	private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
-	
+
 	private final OpenALAudio audio;
 	private IntBuffer buffers;
 	private int sourceID = -1;
@@ -65,7 +65,7 @@ public abstract class OpenALMusic implements Music {
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
-		maxSecondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
+		maxSecondsPerBuffer = (float)(bufferSize - bufferOverhead) / (bytesPerSample * channels * sampleRate);
 	}
 
 	public void play () {
@@ -80,7 +80,8 @@ public abstract class OpenALMusic implements Music {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
 				alGenBuffers(buffers);
 				int errorCode = alGetError();
-				if (errorCode != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
+				if (errorCode != AL_NO_ERROR)
+					throw new GdxRuntimeException("Unable to allocate audio buffers. AL Error: " + errorCode);
 			}
 
 			alSourcei(sourceID, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
@@ -165,7 +166,7 @@ public abstract class OpenALMusic implements Music {
 		isPlaying = false;
 		alSourceStop(sourceID);
 		alSourceUnqueueBuffers(sourceID, buffers);
-		while(renderedSecondsQueue.size > 0){
+		while (renderedSecondsQueue.size > 0) {
 			renderedSeconds = renderedSecondsQueue.pop();
 		}
 		if (position <= renderedSeconds) {
@@ -255,7 +256,7 @@ public abstract class OpenALMusic implements Music {
 				loop();
 				length = read(tempBytes);
 				if (length <= 0) return false;
-				if(renderedSecondsQueue.size > 0){
+				if (renderedSecondsQueue.size > 0) {
 					renderedSecondsQueue.set(0, 0);
 				}
 			} else
@@ -264,7 +265,7 @@ public abstract class OpenALMusic implements Music {
 		float previousLoadedSeconds = renderedSecondsQueue.size > 0 ? renderedSecondsQueue.first() : 0;
 		float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
 		renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds);
-		
+
 		tempBuffer.put(tempBytes, 0, length).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);
 		return true;

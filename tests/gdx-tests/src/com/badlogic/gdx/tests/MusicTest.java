@@ -48,11 +48,11 @@ public class MusicTest extends GdxTest {
 	Slider slider;
 	boolean sliderUpdating = false;
 	SelectBox<Song> musicBox;
-	
-	enum Song{
+
+	enum Song {
 		MP3, OGG, WAV
 	}
-	
+
 	@Override
 	public void create () {
 
@@ -70,7 +70,7 @@ public class MusicTest extends GdxTest {
 				if (!sliderUpdating && slider.isDragging()) music.setPosition((slider.getValue() / 100f) * songDuration);
 			}
 		});
-		
+
 		musicBox = new SelectBox<Song>(skin);
 		musicBox.setItems(Song.values());
 		musicBox.addListener(new ChangeListener() {
@@ -80,22 +80,22 @@ public class MusicTest extends GdxTest {
 			}
 		});
 		setSong(musicBox.getSelected());
-		
+
 		Table table = new Table(skin);
 		table.add(musicBox);
 		table.setFillParent(true);
 		stage.addActor(table);
-		
+
 		stage.addActor(slider);
 
 		Gdx.input.setInputProcessor(stage);
 	}
-	
-	void setSong(Song song){
-		if(music != null){
+
+	void setSong (Song song) {
+		if (music != null) {
 			music.dispose();
 		}
-		switch(song){
+		switch (song) {
 		default:
 		case MP3:
 			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
