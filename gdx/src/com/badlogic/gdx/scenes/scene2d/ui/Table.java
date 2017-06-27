@@ -707,14 +707,40 @@ public class Table extends WidgetGroup {
 		return columns;
 	}
 
-	/** Returns the height of the specified row. */
+	/** Returns the height of the specified row, or 0 if the table layout has not been validated. */
 	public float getRowHeight (int rowIndex) {
+		if (rowHeight == null) return 0;
 		return rowHeight[rowIndex];
 	}
 
-	/** Returns the width of the specified column. */
+	/** Returns the min height of the specified row. */
+	public float getRowMinHeight (int rowIndex) {
+		if (sizeInvalid) computeSize();
+		return rowMinHeight[rowIndex];
+	}
+
+	/** Returns the pref height of the specified row. */
+	public float getRowPrefHeight (int rowIndex) {
+		if (sizeInvalid) computeSize();
+		return rowPrefHeight[rowIndex];
+	}
+
+	/** Returns the width of the specified column, or 0 if the table layout has not been validated. */
 	public float getColumnWidth (int columnIndex) {
+		if (columnWidth == null) return 0;
 		return columnWidth[columnIndex];
+	}
+
+	/** Returns the min height of the specified column. */
+	public float getColumnMinWidth (int columnIndex) {
+		if (sizeInvalid) computeSize();
+		return columnMinWidth[columnIndex];
+	}
+
+	/** Returns the pref height of the specified column. */
+	public float getColumnPrefWidth (int columnIndex) {
+		if (sizeInvalid) computeSize();
+		return columnPrefWidth[columnIndex];
 	}
 
 	private float[] ensureSize (float[] array, int size) {

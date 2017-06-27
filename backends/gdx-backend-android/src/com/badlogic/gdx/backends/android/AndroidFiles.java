@@ -18,6 +18,9 @@ package com.badlogic.gdx.backends.android;
 
 import java.io.IOException;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 
@@ -126,8 +129,16 @@ public class AndroidFiles implements Files {
 	 */
 	public boolean setAPKExpansion(int mainVersion, int patchVersion) {
 		try {
+			Context context;
+			if (Gdx.app instanceof Activity) {
+				context = ((Activity) Gdx.app).getBaseContext();
+			} else if (Gdx.app instanceof Fragment) {
+				context = ((Fragment) Gdx.app).getActivity().getBaseContext();
+			} else {
+				throw new GdxRuntimeException("APK expansion not supported for application type");
+			}
 			expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
-					((AndroidApplication) Gdx.app).getBaseContext(),
+					context,
 					mainVersion, patchVersion);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("APK expansion main version " + mainVersion + " or patch version " + patchVersion + " couldn't be opened!");

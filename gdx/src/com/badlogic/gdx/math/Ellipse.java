@@ -49,8 +49,8 @@ public class Ellipse implements Serializable, Shape2D {
 	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public Ellipse (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -61,8 +61,8 @@ public class Ellipse implements Serializable, Shape2D {
 	/** Costructs a new ellipse
 	 * 
 	 * @param position Position vector
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public Ellipse (Vector2 position, float width, float height) {
 		this.x = position.x;
 		this.y = position.y;
@@ -113,8 +113,8 @@ public class Ellipse implements Serializable, Shape2D {
 	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
+	 * @param width the width of the ellipse
+	 * @param height the height of the ellipse */
 	public void set (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;

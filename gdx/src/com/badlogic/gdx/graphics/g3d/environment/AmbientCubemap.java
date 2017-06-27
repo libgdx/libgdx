@@ -21,6 +21,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class AmbientCubemap {
+	private static final int NUM_VALUES = 6 * 3;
+
 	private final static float clamp (final float v) {
 		return v < 0f ? 0f : (v > 1f ? 1f : v);
 	}
@@ -28,11 +30,11 @@ public class AmbientCubemap {
 	public final float data[];
 
 	public AmbientCubemap () {
-		data = new float[6 * 3];
+		data = new float[NUM_VALUES];
 	}
 
 	public AmbientCubemap (final float copyFrom[]) {
-		if (copyFrom.length != (6 * 3)) throw new GdxRuntimeException("Incorrect array size");
+		if (copyFrom.length != (NUM_VALUES)) throw new GdxRuntimeException("Incorrect array size");
 		data = new float[copyFrom.length];
 		System.arraycopy(copyFrom, 0, data, 0, data.length);
 	}
@@ -56,10 +58,11 @@ public class AmbientCubemap {
 	}
 
 	public AmbientCubemap set (float r, float g, float b) {
-		for (int idx = 0; idx < data.length;) {
-			data[idx++] = r;
-			data[idx++] = g;
-			data[idx++] = b;
+		for (int idx = 0; idx < NUM_VALUES;) {
+			data[idx] = r;
+			data[idx+1] = g;
+			data[idx+2] = b;
+			idx += 3;
 		}
 		return this;
 	}

@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -35,7 +36,7 @@ public class TextureAtlasTest extends GdxTest {
 	Sprite badlogic, badlogicSmall, star;
 	TextureAtlas atlas;
 	TextureAtlas jumpAtlas;
-	Animation jumpAnimation;
+	Animation<TextureRegion> jumpAnimation;
 	BitmapFont font;
 	float time = 0;
 	ShapeRenderer renderer;
@@ -47,7 +48,7 @@ public class TextureAtlasTest extends GdxTest {
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 		jumpAtlas = new TextureAtlas(Gdx.files.internal("data/jump.txt"));
 
-		jumpAnimation = new Animation(0.25f, jumpAtlas.findRegions("ALIEN_JUMP_"));
+		jumpAnimation = new Animation<TextureRegion>(0.25f, jumpAtlas.findRegions("ALIEN_JUMP_"));
 
 		badlogic = atlas.createSprite("badlogicslice");
 		badlogic.setPosition(50, 50);

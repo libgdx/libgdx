@@ -71,7 +71,8 @@ public class ImageButton extends Button {
 		return style;
 	}
 
-	private void updateImage () {
+	/** Updates the Image with the appropriate Drawable from the style before it is drawn. */
+	protected void updateImage () {
 		Drawable drawable = null;
 		if (isDisabled() && style.imageDisabled != null)
 			drawable = style.imageDisabled;

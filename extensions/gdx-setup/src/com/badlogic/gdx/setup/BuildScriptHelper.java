@@ -27,8 +27,9 @@ public class BuildScriptHelper {
 
 	private static int indent = 0;
 
-	public static void addBuildScript(List<ProjectType> projects, BufferedWriter wr) throws IOException {
+	public static void addBuildScript(Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
 		write(wr, "buildscript {");
+		write(wr, language.buildScript + "\n");
 		//repos
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
@@ -50,6 +51,7 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.IOSMOE)) {
 			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
 		}
+		write(wr, language.buildScriptDependencies + "\n");
 		write(wr, "}");
 		write(wr, "}");
 		space(wr);
@@ -79,20 +81,20 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	public static void addProject(ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
+	public static void addProject(Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
 		space(wr);
 		write(wr, "project(\":" + project.getName() + "\") {");
-		for (String plugin : project.getPlugins()) {
+		for (String plugin : project.getPlugins(language)) {
 			write(wr, "apply plugin: \"" + plugin + "\"");
 		}
 		space(wr);
 		addConfigurations(project, wr);
 		space(wr);
-		addDependencies(project, dependencies, wr);
+		addDependencies(language, project, dependencies, wr);
 		write(wr, "}");
 	}
 
-	private static void addDependencies(ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
 			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
@@ -108,6 +110,7 @@ public class BuildScriptHelper {
 				}
 			}
 		}
+		write(wr, language.dependencies);
 		write(wr, "}");
 	}
 

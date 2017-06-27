@@ -28,7 +28,7 @@ dependencies {
 	compile project(":gdx")
 	compile project(":extensions:gdx-box2d:gdx-box2d")
 	compile project(":extensions:gdx-bullet")
-	compile project(":extensions:gdx-controllers:gdx-controllers")
+	compile project(":extensions:gdx-controllers:gdx-controllers-android")
 	compile project(":extensions:gdx-freetype")
 	compile project(":backends:gdx-backend-android")
 	compile libraries.android

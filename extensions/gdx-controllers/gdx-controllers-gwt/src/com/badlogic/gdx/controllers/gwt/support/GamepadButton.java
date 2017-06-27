@@ -14,24 +14,26 @@
  * limitations under the License.
  ******************************************************************************/
 
-ext {
-    mainTestClass = "com.badlogic.gdx.jglfw.tests.JglfwTestStarter"
-}
+package com.badlogic.gdx.controllers.gwt.support;
 
-dependencies {
-    compile project(":tests:gdx-tests")
-    compile project(":backends:gdx-backend-jglfw")
-    compile testnatives.desktop
-}
+import com.google.gwt.core.client.JavaScriptObject;
 
-task launchTestsJglfw (dependsOn: classes, type: JavaExec) {
-    main = mainTestClass
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = new File("../gdx-tests-android/assets")
-    ignoreExitValue = true
-}
-configure (launchTestsJglfw) {
-    group "LibGDX"
-    description = "Run the Jglfw tests"
+public final class GamepadButton extends JavaScriptObject {
+
+    protected GamepadButton() {
+        // Required by GWT
+    }
+
+    public native boolean getPressed() /*-{
+		return this.pressed;
+	}-*/;
+
+    public native double getTouched() /*-{
+		return this.touched;
+	}-*/;
+
+    public native double getValue() /*-{
+		return this.value;
+	}-*/;
+
 }

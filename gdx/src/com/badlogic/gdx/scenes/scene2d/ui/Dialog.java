@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -108,8 +109,8 @@ public class Dialog extends Window {
 				if (isModal && stage != null && stage.getRoot().getChildren().size > 0
 					&& stage.getRoot().getChildren().peek() == Dialog.this) { // Dialog is top most actor.
 					Actor newFocusedActor = event.getRelatedActor();
-					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this) &&
-						!(newFocusedActor.equals(previousKeyboardFocus) || newFocusedActor.equals(previousScrollFocus)) )
+					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this)
+						&& !(newFocusedActor.equals(previousKeyboardFocus) || newFocusedActor.equals(previousScrollFocus)))
 						event.cancel();
 				}
 			}
@@ -150,8 +151,8 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** Adds a text button to the button table. Null will be passed to {@link #result(Object)} if this button is clicked. The dialog
-	 * must have been constructed with a skin to use this method. */
+	/** Adds a text button to the button table. Null will be passed to {@link #result(Object)} if this button is clicked. The
+	 * dialog must have been constructed with a skin to use this method. */
 	public Dialog button (String text) {
 		return button(text, null);
 	}
@@ -233,9 +234,9 @@ public class Dialog extends Window {
 	}
 
 	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over 400
-	 * milliseconds and then removes it from the stage. */
+	 * milliseconds. */
 	public void hide () {
-		hide(sequence(fadeOut(0.4f, Interpolation.fade), Actions.removeListener(ignoreTouchDown, true), Actions.removeActor()));
+		hide(fadeOut(0.4f, Interpolation.fade));
 	}
 
 	public void setObject (Actor actor, Object object) {
@@ -248,9 +249,14 @@ public class Dialog extends Window {
 		addListener(new InputListener() {
 			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {
-					result(object);
-					if (!cancelHide) hide();
-					cancelHide = false;
+					// Delay a frame to eat the keyTyped event.
+					Gdx.app.postRunnable(new Runnable() {
+						public void run () {
+							result(object);
+							if (!cancelHide) hide();
+							cancelHide = false;
+						}
+					});
 				}
 				return false;
 			}

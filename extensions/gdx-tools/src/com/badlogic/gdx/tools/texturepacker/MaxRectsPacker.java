@@ -21,6 +21,7 @@ import java.util.Comparator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Packer;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.ProgressListener;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -44,7 +45,12 @@ public class MaxRectsPacker implements Packer {
 	}
 
 	public Array<Page> pack (Array<Rect> inputRects) {
-		for (int i = 0, nn = inputRects.size; i < nn; i++) {
+		return pack(null, inputRects);
+	}
+
+	public Array<Page> pack (ProgressListener progress, Array<Rect> inputRects) {
+		int n = inputRects.size;
+		for (int i = 0; i < n; i++) {
 			Rect rect = inputRects.get(i);
 			rect.width += settings.paddingX;
 			rect.height += settings.paddingY;
@@ -71,10 +77,9 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		Array<Page> pages = new Array();
-		while (inputRects.size > 0)
-
-		{
-			Page result = packPage(inputRects);
+		while (inputRects.size > 0) {
+			if (progress != null && progress.update(n - inputRects.size + 1, n)) break;
+			Page result = packPage(progress, inputRects);
 			pages.add(result);
 			inputRects = result.remainingRects;
 		}
@@ -82,7 +87,7 @@ public class MaxRectsPacker implements Packer {
 
 	}
 
-	private Page packPage (Array<Rect> inputRects) {
+	private Page packPage (ProgressListener progress, Array<Rect> inputRects) {
 		int paddingX = settings.paddingX, paddingY = settings.paddingY;
 		float maxWidth = settings.maxWidth, maxHeight = settings.maxHeight;
 		int edgePaddingX = 0, edgePaddingY = 0;

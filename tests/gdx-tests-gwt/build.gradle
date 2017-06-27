@@ -43,7 +43,6 @@ gwt {
 
     compiler {
         strict = true;
-        enableClosureCompiler = true;
         disableCastChecking = true;
     }
 }

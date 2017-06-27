@@ -215,6 +215,41 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	/** {@inheritDoc} */
 	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public int getHeight () {
 		return height;
 	}
@@ -687,15 +722,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return true;
 	}
 
-	@Override
-	public boolean isGL30Available () {
-		return gl30 != null;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return gl30;
-	}
 
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {

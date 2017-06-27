@@ -326,7 +326,8 @@ public class Actor {
 		}
 	}
 
-	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type. */
+	/** Returns this actor or the first ascendant of this actor that is assignable with the specified type, or null if none were
+	 * found. */
 	public <T extends Actor> T firstAscendant (Class<T> type) {
 		if (type == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor actor = this;
