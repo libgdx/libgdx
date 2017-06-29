@@ -20,6 +20,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES20;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES30;
 import com.badlogic.gdx.graphics.Cursor;
@@ -160,10 +161,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
-		// String machineString = HWMachine.getMachineString();
-		IOSDevice device = null; // IOSDevice.getDevice(machineString);
-		// if (device == null)
-		// 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		String machineString = HWMachine.getMachineString();
+		IOSDevice device = IOSDevice.getDevice(machineString);
+		 if (device == null)
+		 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi / 160f : scale;
 		ppiX = ppi;
