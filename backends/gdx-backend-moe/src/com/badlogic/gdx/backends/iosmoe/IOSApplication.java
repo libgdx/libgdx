@@ -405,11 +405,11 @@ public class IOSApplication implements Application {
 		File finalPath = new File(libraryPath, name + ".plist");
 		String path = libraryPath + "/" + name + ".plist";
 
-		NSMutableDictionary<NSString, NSObject> nsDictionary = NSMutableDictionary.dictionaryWithContentsOfFile(path);
+		NSMutableDictionary<String, Object> nsDictionary = NSMutableDictionary.dictionaryWithContentsOfFile(path);
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
-			nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary.alloc().init();
+			nsDictionary = (NSMutableDictionary<String, Object>)NSMutableDictionary.alloc().init();
 			nsDictionary.writeToFileAtomically(path, false);
 		}
 		return new IOSPreferences(nsDictionary, finalPath.getAbsolutePath());
