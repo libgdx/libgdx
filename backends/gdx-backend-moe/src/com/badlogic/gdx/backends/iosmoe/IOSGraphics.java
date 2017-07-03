@@ -98,7 +98,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		super(peer);
 	}
 
-	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30, IOSGLKView view) {
+		this.view = view;
+
 		init();
 		this.config = config;
 
@@ -120,7 +122,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		view = IOSGLKView.alloc().init(this, new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())), context);
+		view.setContext(context);
+		view.setGraphics(this);
 
 		view.setDelegate(this);
 		view.setDrawableColorFormat(config.colorFormat);
@@ -179,6 +182,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		appPaused = false;
 		return this;
+	}
+
+	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
+		CGRect bounds = app.getBounds();
+		IOSGLKView view = IOSGLKView.alloc().init(new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())));
+		return init(scale, app, config, input, useGLES30, view);
 	}
 
 	public void resume () {

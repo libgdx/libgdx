@@ -117,7 +117,7 @@ public class IOSApplication implements Application {
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
 
-	private CGRect lastScreenBounds = null;
+	protected CGRect lastScreenBounds = null;
 
 	Array<Runnable> runnables = new Array<Runnable>();
 	Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -129,9 +129,20 @@ public class IOSApplication implements Application {
 	}
 
 	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> launchOptions) {
+		this.uiApp = uiApp;
+
+		init();
+
+		this.uiWindow = UIWindow.alloc().initWithFrame(UIScreen.mainScreen().bounds());
+		this.uiWindow.setRootViewController(this.graphics.viewController);
+		this.uiWindow.makeKeyAndVisible();
+		Gdx.app.debug("IOSApplication", "created");
+		return true;
+	}
+
+	protected void init() {
 		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
-		this.uiApp = uiApp;
 
 		// enable or disable screen dimming
 		UIApplication.sharedApplication().setIdleTimerDisabled(config.preventScreenDimming);
@@ -163,7 +174,7 @@ public class IOSApplication implements Application {
 
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
+		createGraphics(scale);
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
@@ -177,12 +188,10 @@ public class IOSApplication implements Application {
 		Gdx.net = this.net;
 
 		this.input.setupPeripherals();
+	}
 
-		this.uiWindow = UIWindow.alloc().initWithFrame(UIScreen.mainScreen().bounds());
-		this.uiWindow.setRootViewController(this.graphics.viewController);
-		this.uiWindow.makeKeyAndVisible();
-		Gdx.app.debug("IOSApplication", "created");
-		return true;
+	protected void createGraphics(float scale) {
+		this.graphics =  IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
 	}
 
 	private int getIosVersion () {
@@ -208,11 +217,8 @@ public class IOSApplication implements Application {
 	 *
 	 * @return dimensions of space we draw to, adjusted for device orientation */
 	protected CGRect getBounds () {
-		final CGRect screenBounds = UIScreen.mainScreen().bounds();
-		final CGRect statusBarFrame = uiApp.statusBarFrame();
-		final long statusBarOrientation = uiApp.statusBarOrientation();
-
-		double statusBarHeight = Math.min(statusBarFrame.size().width(), statusBarFrame.size().height());
+		final CGRect screenBounds = getOriginalBounds();
+		final long statusBarOrientation = getStatusBarOrientation();
 
 		double screenWidth = screenBounds.size().width();
 		double screenHeight = screenBounds.size().height();
@@ -232,13 +238,7 @@ public class IOSApplication implements Application {
 		screenWidth *= displayScaleFactor;
 		screenHeight *= displayScaleFactor;
 
-		if (statusBarHeight != 0.0) {
-			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
-			statusBarHeight *= displayScaleFactor;
-			screenHeight -= statusBarHeight;
-		} else {
-			debug("IOSApplication", "Status bar is not visible");
-		}
+		double statusBarHeight = getStatusBarHeight(screenHeight);
 
 		debug("IOSApplication", "Total computed bounds are w=" + screenWidth + " h=" + screenHeight);
 
@@ -476,5 +476,27 @@ public class IOSApplication implements Application {
 	 * @param listener The {#link IOSViewControllerListener} to add */
 	public void addViewControllerListener (IOSViewControllerListener listener) {
 		viewControllerListener = listener;
+	}
+
+	protected CGRect getOriginalBounds () {
+		return UIScreen.mainScreen().bounds();
+	}
+
+	protected double getStatusBarHeight(double screenHeight) {
+		final CGRect statusBarFrame = uiApp.statusBarFrame();
+		double statusBarHeight = Math.min(statusBarFrame.size().width(), statusBarFrame.size().height());
+		if (statusBarHeight != 0.0) {
+			debug("IOSApplication", "Status bar is visible (height = " + statusBarHeight + ")");
+			statusBarHeight *= displayScaleFactor;
+			screenHeight -= statusBarHeight;
+		} else {
+			debug("IOSApplication", "Status bar is not visible");
+		}
+
+		return statusBarHeight;
+	}
+
+	protected long getStatusBarOrientation() {
+		return uiApp.statusBarOrientation();
 	}
 }

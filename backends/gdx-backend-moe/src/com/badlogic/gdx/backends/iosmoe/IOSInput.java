@@ -81,6 +81,8 @@ public class IOSInput implements Input {
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
+	IOSGLKView view;
+
 	public IOSInput (IOSApplication app) {
 		this.app = app;
 		this.config = app.config;
@@ -575,7 +577,7 @@ public class IOSInput implements Input {
 			final int locX, locY;
 			// Get and map the location to our drawing space
 			{
-				CGPoint loc = touch.locationInView(touch.window());
+				CGPoint loc = view == null ? loc = touch.locationInView(touch.window()) : touch.locationInView(view);
 				final CGRect bounds = app.getCachedBounds();
 				locX = (int)(loc.x() * app.displayScaleFactor - bounds.origin().x());
 				locY = (int)(loc.y() * app.displayScaleFactor - bounds.origin().y());
@@ -645,6 +647,10 @@ public class IOSInput implements Input {
 	public float getGyroscopeZ() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void setView(IOSGLKView view) {
+		this.view = view;
 	}
 
 
