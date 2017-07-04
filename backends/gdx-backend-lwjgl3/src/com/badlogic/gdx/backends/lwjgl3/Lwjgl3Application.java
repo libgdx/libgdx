@@ -77,6 +77,7 @@ public class Lwjgl3Application implements Application {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(System.err);
 			GLFW.glfwSetErrorCallback(errorCallback);
+			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
 			}
@@ -208,8 +209,10 @@ public class Lwjgl3Application implements Application {
 			((OpenALAudio) audio).dispose();
 		}
 		errorCallback.free();
+		errorCallback = null;
 		if (glDebugCallback != null) {
 			glDebugCallback.free();
+			glDebugCallback = null;
 		}
 		GLFW.glfwTerminate();
 	}

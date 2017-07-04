@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
@@ -289,9 +290,14 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			return Float.valueOf(value);
 		} else if (type.equals("bool")) {
 			return Boolean.valueOf(value);
+		} else if (type.equals("color")) {
+			// Tiled uses the format #AARRGGBB
+			String opaqueColor = value.substring(3);
+			String alpha = value.substring(1, 3);
+			return Color.valueOf(opaqueColor + alpha);
 		} else {
 			throw new GdxRuntimeException("Wrong type given for property " + name + ", given : " + type
-				+ ", supported : string, bool, int, float");
+				+ ", supported : string, bool, int, float, color");
 		}
 	}
 

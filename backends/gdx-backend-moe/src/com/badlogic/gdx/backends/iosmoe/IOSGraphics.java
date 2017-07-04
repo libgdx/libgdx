@@ -20,6 +20,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES20;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES30;
 import com.badlogic.gdx.graphics.Cursor;
@@ -160,10 +161,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 
-		// String machineString = HWMachine.getMachineString();
-		IOSDevice device = null; // IOSDevice.getDevice(machineString);
-		// if (device == null)
-		// 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
+		String machineString = HWMachine.getMachineString();
+		IOSDevice device = IOSDevice.getDevice(machineString);
+		 if (device == null)
+		 	app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
 		int ppi = device != null ? device.ppi : 163;
 		density = device != null ? device.ppi / 160f : scale;
 		ppiX = ppi;
@@ -273,6 +274,37 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public GL20 getGL20 () {
 		return gl20;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
 	}
 
 	@Override
@@ -443,16 +475,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public boolean isFullscreen () {
 		return true;
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	@Override

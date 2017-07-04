@@ -69,18 +69,20 @@ public class SettingsDialog extends JDialog {
 	private SetupCheckBox ideaBox;
 	private SetupCheckBox eclipseBox;
 	SetupCheckBox offlineBox;
+	SetupCheckBox kotlinBox;
 	private String mavenSnapshot;
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
 	private boolean offlineSnapshot;
+	private boolean kotlinSnapshot;
 
-	public SettingsDialog () {
+	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
 		setContentPane(contentPane);
 		setModal(true);
 		getRootPane().setDefaultButton(buttonOK);
 
-		uiLayout();
+		uiLayout(gwtCheckBox);
 		uiStyle();
 
 		buttonOK.addActionListener(new ActionListener() {
@@ -127,7 +129,7 @@ public class SettingsDialog extends JDialog {
 		setLocationRelativeTo(null);
 	}
 
-	private void uiLayout () {
+	private void uiLayout (final SetupCheckBox gwtCheckBox) {
 		content = new JPanel(new GridBagLayout());
 		content.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -174,10 +176,29 @@ public class SettingsDialog extends JDialog {
 		eclipseBox.setBackground(new Color(36, 36, 36));
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
+		JLabel kotlinLabel = new JLabel("Use Kotlin");
+		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language.");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
+		kotlinBox = new SetupCheckBox();
+		kotlinBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final String message = "Using Kotlin with the HTML backend is not supported. Do you want to disable the HTML backend?";
+				if(kotlinBox.isSelected() && gwtCheckBox.isSelected() &&
+						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
+						JOptionPane.YES_NO_OPTION) == 0) {
+					gwtCheckBox.setSelected(false);
+				} else if(gwtCheckBox.isSelected()) {
+					kotlinBox.setSelected(false);
+				}
+			}
+		});
+		offlineBox.setBackground(new Color(36, 36, 36));
+		kotlinLabel.setForeground(new Color(170, 170, 170));
+		kotlinDesc.setForeground(new Color(170, 170, 170));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -200,6 +221,10 @@ public class SettingsDialog extends JDialog {
 		content.add(offlineLabel, new GridBagConstraints(0, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(offlineBox, new GridBagConstraints(1, 5, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(offlineDesc, new GridBagConstraints(3, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		
+		content.add(kotlinLabel, new GridBagConstraints(0, 6, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(kotlinBox, new GridBagConstraints(1, 6, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(kotlinDesc, new GridBagConstraints(3, 6, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";
@@ -231,9 +256,13 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setForeground(new Color(255, 255, 255));
 	}
 
-	public void showDialog () {
+	public void showDialog (SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setVisible(true);
+		if (gwtCheckBox.isSelected()) {
+			kotlinBox.setSelected(false);
+			kotlinSnapshot = false;
+		}
 	}
 
 	public List<String> getGradleArgs () {
@@ -271,6 +300,7 @@ public class SettingsDialog extends JDialog {
 		ideaSnapshot = ideaBox.isSelected();
 		eclipseSnapshot = eclipseBox.isSelected();
 		offlineSnapshot = offlineBox.isSelected();
+		kotlinSnapshot = kotlinBox.isSelected();
 	}
 
 	private void restore () {
@@ -278,6 +308,6 @@ public class SettingsDialog extends JDialog {
 		ideaBox.setSelected(ideaSnapshot);
 		eclipseBox.setSelected(eclipseSnapshot);
 		offlineBox.setSelected(offlineSnapshot);
+		kotlinBox.setSelected(kotlinSnapshot);
 	}
-
 }

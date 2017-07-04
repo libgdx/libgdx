@@ -363,6 +363,38 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
+	}
+
+
+	@Override
 	public int getWidth () {
 		return width;
 	}
@@ -535,16 +567,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public boolean isFullscreen () {
 		return true;
-	}
-
-	@Override
-	public boolean isGL30Available () {
-		return false;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	@Override

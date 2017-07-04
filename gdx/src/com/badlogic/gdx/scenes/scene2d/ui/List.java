@@ -90,8 +90,8 @@ public class List<T> extends Widget implements Cullable {
 					y -= background.getBottomHeight();
 				}
 				int index = (int)((height - y) / itemHeight);
+				if (index > items.size - 1) return false;
 				index = Math.max(0, index);
-				index = Math.min(items.size - 1, index);
 				selection.choose(items.get(index));
 				touchDown = index;
 				return true;
@@ -290,8 +290,8 @@ public class List<T> extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	protected String toString (T obj) {
-		return obj.toString();
+	protected String toString (T object) {
+		return object.toString();
 	}
 
 	public void setCullingArea (Rectangle cullingArea) {

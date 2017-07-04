@@ -40,7 +40,7 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6";
-	static String androidPluginImport = "com.android.tools.build:gradle:1.5.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:2.2.0";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 	static String moePluginImport = "org.multi-os-engine:moe-gradle:" + moeVersion;
 	
@@ -229,27 +229,25 @@ public class DependencyBank {
 
 
 	public enum ProjectType {
-		CORE("core", new String[]{"java"}),
-		DESKTOP("desktop", new String[]{"java"}),
-		ANDROID("android", new String[]{"android"}),
-		IOS("ios", new String[]{"java", "robovm"}),
-		IOSMOE("ios-moe", new String[] {"moe"}),
-		HTML("html", new String[]{"gwt", "war"});
+		CORE("core"),
+		DESKTOP("desktop"),
+		ANDROID("android"),
+		IOS("ios"),
+		IOSMOE("ios-moe"),
+		HTML("html");
 
 		private final String name;
-		private final String[] plugins;
 
-		ProjectType(String name, String plugins[]) {
+		ProjectType(String name) {
 			this.name = name;
-			this.plugins = plugins;
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		public String[] getPlugins() {
-			return plugins;
+		public String[] getPlugins(Language sourceLanguage) {
+			return sourceLanguage.platformPlugins[ordinal()];
 		}
 	}
 

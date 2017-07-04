@@ -366,7 +366,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 				}
 			};
 			list.setTouchable(Touchable.disabled);
-			setWidget(list);
+			setActor(list);
 
 			list.addListener(new ClickListener() {
 				public void clicked (InputEvent event, float x, float y) {
