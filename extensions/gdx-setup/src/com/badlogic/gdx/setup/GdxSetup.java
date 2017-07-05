@@ -232,6 +232,16 @@ public class GdxSetup {
 		}
 	}
 
+	/**
+	 * Get relative resoruce path of src folder.
+	 * @param  language    Language
+	 * @param  projectType Type of project
+	 * @return             Relative resource path of src folder to specified language and project type. The result isn't appended with back-slash.
+	 */
+	private static String getRelativeResourceSrcPath(Language language, ProjectType projectType) {
+		return language.resourcePath + "/" + projectType.getName() + "/src";
+	}
+
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
 			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
 		Project project = new Project();
@@ -255,13 +265,7 @@ public class GdxSetup {
 
 		// CoreGdxDefinition project
 		project.files.add(new ProjectFile("core/build.gradle"));
-
-		if (language == Language.JAVA) {
-			project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
-		}
-		else {
-			project.files.add(new ProjectFile("core/src/MainClass_kotlin", "core/src/" + packageDir + "/" + mainClass + ".kt", true));
-		}
+		project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.CORE) + "/MainClass", "core/src/" + packageDir + "/" + mainClass + language.fileExtension, true));
 		
 		if (builder.modules.contains(ProjectType.HTML) && language.gwtSupported) {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
@@ -270,13 +274,7 @@ public class GdxSetup {
 		// desktop project
 		if (builder.modules.contains(ProjectType.DESKTOP)) {
 			project.files.add(new ProjectFile("desktop/build.gradle"));
-
-			if (language == Language.JAVA) {
-				project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
-			}
-			else {
-				project.files.add(new ProjectFile("desktop/src/DesktopLauncher_kotlin", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.kt", true));
-			}
+			project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.DESKTOP) + "/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher" + language.fileExtension, true));
 		}
 
 		// Assets
@@ -285,6 +283,7 @@ public class GdxSetup {
 
 		// android project
 		if (builder.modules.contains(ProjectType.ANDROID)) {
+			project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.ANDROID) + "/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher" + language.fileExtension, true));
 			project.files.add(new ProjectFile("android/res/values/strings.xml"));
 			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
@@ -298,13 +297,6 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/proguard-rules.pro", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
 			project.files.add(new ProjectFile("local.properties", true));
-
-			if (language == Language.JAVA) {
-				project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
-			}
-			else {
-				project.files.add(new ProjectFile("android/src/AndroidLauncher_kotlin", "android/src/" + packageDir + "/AndroidLauncher.kt", true));
-			}
 		}
 
 		// html project
@@ -326,11 +318,11 @@ public class GdxSetup {
 			// then create launcher with Java source file template
 			if (language == Language.JAVA ||
 				  (language == Language.KOTLIN && !language.gwtSupported)) {
-				project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
+				project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.HTML) + "/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher" + Language.JAVA.fileExtension, true));
 			}
 			// whenever gwt is supported in Kotlin then we create from kotlin source file template
 			else if (language == Language.KOTLIN && language.gwtSupported) {
-				project.files.add(new ProjectFile("html/src/HtmlLauncher_kotlin", "html/src/" + packageDir + "/client/HtmlLauncher.kt", true));
+				project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.HTML) + "/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher" + Language.KOTLIN.fileExtension, true));
 			}
 
 		}
@@ -353,13 +345,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
-
-			if (language == Language.JAVA) {
-				project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-			}
-			else {
-				project.files.add(new ProjectFile("ios/src/IOSLauncher_kotlin", "ios/src/" + packageDir + "/IOSLauncher.kt", true));
-			}
+			project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.IOS) + "/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher" + language.fileExtension, true));
 		}
 
 		// ios moe
@@ -383,13 +369,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
-
-			if (language == Language.JAVA) {
-				project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));
-			}
-			else {
-				project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher_kotlin", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.kt", true));
-			}
+			project.files.add(new ProjectFile(getRelativeResourceSrcPath(language, ProjectType.IOSMOE) + "/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher" + language.fileExtension, true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
