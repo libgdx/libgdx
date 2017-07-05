@@ -259,7 +259,10 @@ public class SettingsDialog extends JDialog {
 	public void showDialog (SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
 		setVisible(true);
-		kotlinBox.setSelected(!gwtCheckBox.isSelected());
+		if (gwtCheckBox.isSelected()) {
+			kotlinBox.setSelected(false);
+			kotlinSnapshot = false;
+		}
 	}
 
 	public List<String> getGradleArgs () {

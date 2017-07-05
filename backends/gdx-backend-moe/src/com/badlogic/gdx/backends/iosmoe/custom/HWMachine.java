@@ -18,12 +18,14 @@ package com.badlogic.gdx.backends.iosmoe.custom;
 
 import com.badlogic.gdx.utils.BufferUtils;
 import org.moe.natj.c.CRuntime;
+import org.moe.natj.c.StructObject;
 import org.moe.natj.c.ann.CFunction;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.ann.Runtime;
 import org.moe.natj.general.ann.UncertainArgument;
 import org.moe.natj.general.ptr.BytePtr;
 import org.moe.natj.general.ptr.IntPtr;
+import org.moe.natj.general.ptr.NUIntPtr;
 import org.moe.natj.general.ptr.impl.PtrFactory;
 import org.moe.natj.general.ptr.VoidPtr;
 
@@ -34,15 +36,18 @@ public class HWMachine {
 	}
 
 	@CFunction
-	public static native int sysctlbyname(@UncertainArgument("Options: java.string, c.const-byte-ptr Fallback: java.string") String name,
-		VoidPtr oldp, IntPtr oldlenp, VoidPtr newp, int newlen);
+	public static native int sysctlbyname(BytePtr name, VoidPtr oldp,
+			NUIntPtr oldlenp, VoidPtr newp, long newlen);
 
 	public static String getMachineString () {
 		String name = "hw.machine";
-		IntPtr sizePtr = PtrFactory.newIntPtr(BufferUtils.newIntBuffer(1));
-		sysctlbyname(name, null, sizePtr, null, 0);
-		BytePtr machine = PtrFactory.newBytePtr(sizePtr.get(), true, true);
-		sysctlbyname(name, machine, sizePtr, null, 0);
-		return machine.toUTF8String();
+		BytePtr namePtr = PtrFactory.newByteArray(name.getBytes());
+		NUIntPtr sizePtr = PtrFactory.newNUIntReference();
+		sysctlbyname(namePtr, null, sizePtr, null, 0);
+		long longsize = sizePtr.get();
+		BytePtr machinePtr = PtrFactory.newByteReference();
+		machinePtr.setValue((byte) longsize);
+		sysctlbyname(namePtr, machinePtr, sizePtr, null, 0);
+		return machinePtr.toUTF8String();
 	}
 }
