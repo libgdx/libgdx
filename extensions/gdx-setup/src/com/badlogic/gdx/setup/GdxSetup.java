@@ -253,9 +253,16 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
 		project.files.add(new ProjectFile("gradle.properties"));
 
-		// core project
+		// CoreGdxDefinition project
 		project.files.add(new ProjectFile("core/build.gradle"));
-		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
+
+		if (language == Language.JAVA) {
+			project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
+		}
+		else {
+			project.files.add(new ProjectFile("core/src/MainClass_kotlin", "core/src/" + packageDir + "/" + mainClass + ".kt", true));
+		}
+		
 		if (builder.modules.contains(ProjectType.HTML) && language.gwtSupported) {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		}
@@ -263,7 +270,13 @@ public class GdxSetup {
 		// desktop project
 		if (builder.modules.contains(ProjectType.DESKTOP)) {
 			project.files.add(new ProjectFile("desktop/build.gradle"));
-			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+
+			if (language == Language.JAVA) {
+				project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+			}
+			else {
+				project.files.add(new ProjectFile("desktop/src/DesktopLauncher_kotlin", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.kt", true));
+			}
 		}
 
 		// Assets
@@ -279,19 +292,24 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxxhdpi/ic_launcher.png", false));
-			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 			project.files.add(new ProjectFile("android/proguard-rules.pro", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
 			project.files.add(new ProjectFile("local.properties", true));
+
+			if (language == Language.JAVA) {
+				project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
+			}
+			else {
+				project.files.add(new ProjectFile("android/src/AndroidLauncher_kotlin", "android/src/" + packageDir + "/AndroidLauncher.kt", true));
+			}
 		}
 
 		// html project
 		if (builder.modules.contains(ProjectType.HTML)) {
 			project.files.add(new ProjectFile("html/build.gradle"));
-			project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
 			project.files.add(new ProjectFile("html/GdxDefinition", "html/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
 			project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
 			project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
@@ -300,11 +318,25 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
 			project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
 			project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
+
+			// note: It's better to check and do the following so when GWT is supported for Kotlin
+			// just go to Language.java and change false to true flag
+			// ------------------------------------------------------------------------------------
+			// either it's Java or Kotlin with (as for now) no support of gwt
+			// then create launcher with Java source file template
+			if (language == Language.JAVA ||
+				  (language == Language.KOTLIN && !language.gwtSupported)) {
+				project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
+			}
+			// whenever gwt is supported in Kotlin then we create from kotlin source file template
+			else if (language == Language.KOTLIN && language.gwtSupported) {
+				project.files.add(new ProjectFile("html/src/HtmlLauncher_kotlin", "html/src/" + packageDir + "/client/HtmlLauncher.kt", true));
+			}
+
 		}
 
 		// ios robovm
 		if (builder.modules.contains(ProjectType.IOS)) {
-			project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
 			project.files.add(new ProjectFile("ios/data/Default.png", false));
 			project.files.add(new ProjectFile("ios/data/Default@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default@2x~ipad.png", false));
@@ -321,10 +353,17 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
+
+			if (language == Language.JAVA) {
+				project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
+			}
+			else {
+				project.files.add(new ProjectFile("ios/src/IOSLauncher_kotlin", "ios/src/" + packageDir + "/IOSLauncher.kt", true));
+			}
 		}
 
-		if(builder.modules.contains(ProjectType.IOSMOE)) {			
-			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
+		// ios moe
+		if(builder.modules.contains(ProjectType.IOSMOE)) {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
@@ -344,6 +383,13 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
 			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
+
+			if (language == Language.JAVA) {
+				project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));
+			}
+			else {
+				project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher_kotlin", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.kt", true));
+			}
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
