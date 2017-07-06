@@ -104,7 +104,7 @@ public class Wav {
 						name = "8-bit ITU-T G.711 A-law";
 						break;
 					case 0x0007:
-						name = "8-bit ITU-T G.711 µ-law";
+						name = "8-bit ITU-T G.711 Î¼-law";
 						break;
 					case 0xFFFE:
 						name = "Extensible";
