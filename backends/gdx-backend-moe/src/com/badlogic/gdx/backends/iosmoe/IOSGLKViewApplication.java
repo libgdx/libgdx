@@ -16,34 +16,14 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import apple.coregraphics.struct.CGPoint;
+import com.badlogic.gdx.ApplicationListener;
+
 import apple.coregraphics.struct.CGRect;
-import apple.coregraphics.struct.CGSize;
-import apple.glkit.GLKView;
 import apple.uikit.UIApplication;
-import apple.uikit.UIDevice;
-import apple.uikit.UIScreen;
-import apple.uikit.enums.UIInterfaceOrientation;
-import apple.uikit.enums.UIUserInterfaceIdiom;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
-import com.badlogic.gdx.backends.iosmoe.IOSAudio;
-import com.badlogic.gdx.backends.iosmoe.IOSFiles;
-import com.badlogic.gdx.backends.iosmoe.IOSGraphics;
-import com.badlogic.gdx.backends.iosmoe.IOSInput;
-import com.badlogic.gdx.backends.iosmoe.IOSNet;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import android.os.Handler;
-
-import java.lang.reflect.Method;
-
-import apple.uikit.UIView;
 
 public class IOSGLKViewApplication extends IOSApplication {
 
-	public IOSGLKViewApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
+	public IOSGLKViewApplication (ApplicationListener listener, IOSApplicationConfiguration config) {
 		super(listener, config);
 	}
 
@@ -56,8 +36,8 @@ public class IOSGLKViewApplication extends IOSApplication {
 	}
 
 	@Override
-	protected void createGraphics(float scale) {
-		this.graphics =  IOSGraphics.alloc().init(scale, this, config, input, config.useGL30, view);
+	protected void createGraphics (float scale) {
+		this.graphics = IOSGraphics.alloc().init(scale, this, config, input, config.useGL30, view);
 	}
 
 	@Override
@@ -66,12 +46,12 @@ public class IOSGLKViewApplication extends IOSApplication {
 	}
 
 	@Override
-	protected double getStatusBarHeight(double screenHeight) {
+	protected double getStatusBarHeight (double screenHeight) {
 		return 0;
 	}
 
 	@Override
-	protected long getStatusBarOrientation() {
+	protected long getStatusBarOrientation () {
 		return UIApplication.sharedApplication().statusBarOrientation();
 	}
 }

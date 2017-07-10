@@ -16,6 +16,11 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import java.io.File;
+
+import org.moe.natj.general.Pointer;
+import org.moe.natj.objc.ann.Selector;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.ApplicationLogger;
@@ -31,15 +36,13 @@ import com.badlogic.gdx.backends.iosmoe.objectal.OALAudioSession;
 import com.badlogic.gdx.backends.iosmoe.objectal.OALSimpleAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import org.moe.natj.general.Pointer;
-import org.moe.natj.objc.ann.Selector;
+
 import apple.NSObject;
 import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGRect;
 import apple.coregraphics.struct.CGSize;
 import apple.foundation.NSDictionary;
 import apple.foundation.NSMutableDictionary;
-import apple.foundation.NSString;
 import apple.foundation.NSThread;
 import apple.uikit.UIApplication;
 import apple.uikit.UIDevice;
@@ -50,8 +53,6 @@ import apple.uikit.UIWindow;
 import apple.uikit.enums.UIInterfaceOrientation;
 import apple.uikit.enums.UIUserInterfaceIdiom;
 import apple.uikit.protocol.UIApplicationDelegate;
-
-import java.io.File;
 
 public class IOSApplication implements Application {
 
@@ -64,7 +65,7 @@ public class IOSApplication implements Application {
 		}
 
 		@Selector("alloc")
-		public static native Delegate alloc();
+		public static native Delegate alloc ();
 
 		protected abstract IOSApplication createApplication ();
 
@@ -78,7 +79,6 @@ public class IOSApplication implements Application {
 		public void applicationDidBecomeActive (UIApplication application) {
 			app.didBecomeActive(application);
 		}
-
 
 		@Override
 		public void applicationWillEnterForeground (UIApplication application) {
@@ -94,9 +94,9 @@ public class IOSApplication implements Application {
 		public void applicationWillTerminate (UIApplication application) {
 			app.willTerminate(application);
 		}
-		
+
 		@Override
-		public UIWindow window(){
+		public UIWindow window () {
 			return app.getUIWindow();
 		}
 	}
@@ -140,7 +140,7 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
-	protected void init() {
+	protected void init () {
 		setApplicationLogger(new IOSApplicationLogger());
 		Gdx.app = this;
 
@@ -150,8 +150,7 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.currentDevice().systemVersion());
 		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
 
-		float scale = (float)(getIosVersion() >= 8 ? UIScreen.mainScreen().nativeScale() : UIScreen.mainScreen()
-			.nativeScale());
+		float scale = (float)(getIosVersion() >= 8 ? UIScreen.mainScreen().nativeScale() : UIScreen.mainScreen().nativeScale());
 		if (scale >= 2.0f) {
 			Gdx.app.debug("IOSApplication", "scale: " + scale);
 			if (UIDevice.currentDevice().userInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -190,8 +189,8 @@ public class IOSApplication implements Application {
 		this.input.setupPeripherals();
 	}
 
-	protected void createGraphics(float scale) {
-		this.graphics =  IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
+	protected void createGraphics (float scale) {
+		this.graphics = IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
 	}
 
 	private int getIosVersion () {
@@ -224,7 +223,8 @@ public class IOSApplication implements Application {
 		double screenHeight = screenBounds.size().height();
 
 		// Make sure that the orientation is consistent with ratios. Should be, but may not be on older iOS versions
-		if (statusBarOrientation == UIInterfaceOrientation.LandscapeLeft || statusBarOrientation == UIInterfaceOrientation.LandscapeRight) {
+		if (statusBarOrientation == UIInterfaceOrientation.LandscapeLeft
+			|| statusBarOrientation == UIInterfaceOrientation.LandscapeRight) {
 			if (screenHeight > screenWidth) {
 				debug("IOSApplication", "Switching reported width and height (w=" + screenWidth + " h=" + screenHeight + ")");
 				double tmp = screenHeight;
@@ -482,7 +482,7 @@ public class IOSApplication implements Application {
 		return UIScreen.mainScreen().bounds();
 	}
 
-	protected double getStatusBarHeight(double screenHeight) {
+	protected double getStatusBarHeight (double screenHeight) {
 		final CGRect statusBarFrame = uiApp.statusBarFrame();
 		double statusBarHeight = Math.min(statusBarFrame.size().width(), statusBarFrame.size().height());
 		if (statusBarHeight != 0.0) {
@@ -496,7 +496,7 @@ public class IOSApplication implements Application {
 		return statusBarHeight;
 	}
 
-	protected long getStatusBarOrientation() {
+	protected long getStatusBarOrientation () {
 		return uiApp.statusBarOrientation();
 	}
 }

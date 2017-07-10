@@ -23,10 +23,10 @@ import org.moe.natj.general.ann.RegisterOnStartup;
 import org.moe.natj.objc.ObjCRuntime;
 import org.moe.natj.objc.ann.ObjCClassName;
 import org.moe.natj.objc.ann.Selector;
+
 import apple.coregraphics.struct.CGRect;
 import apple.foundation.NSSet;
 import apple.glkit.GLKView;
-import apple.opengles.EAGLContext;
 import apple.uikit.UIEvent;
 import apple.uikit.UITouch;
 
@@ -81,7 +81,7 @@ public class IOSGLKView extends GLKView {
 		graphics.glkViewDrawInRect(this, cgRect);
 	}
 
-	public void setGraphics(IOSGraphics graphics) {
+	public void setGraphics (IOSGraphics graphics) {
 		this.graphics = graphics;
 	}
 
