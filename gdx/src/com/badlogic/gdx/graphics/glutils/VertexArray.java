@@ -112,7 +112,7 @@ public class VertexArray implements VertexData {
 
 				byteBuffer.position(attribute.offset);
 				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-					byteBuffer);
+					buffer);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -123,7 +123,7 @@ public class VertexArray implements VertexData {
 
 				byteBuffer.position(attribute.offset);
 				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
-					byteBuffer);
+					buffer);
 			}
 		}
 		isBound = true;
