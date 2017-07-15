@@ -36,9 +36,28 @@ allprojects {
     }
 }
 
-task fetchNatives << {
-    ant.importBuild "fetch.xml"
-    fetch.execute()
-    copy.execute()
+configure(subprojects - project(":tests:gdx-tests-android")) {
+    apply plugin: "idea"
+    apply plugin: "java"
+
+    compileJava {
+        options.fork = true
+        options.incremental = true
+    }
+
+    idea {
+        module {
+            scopes.PROVIDED.minus += [configurations.compile]
+            scopes.COMPILE.plus += [configurations.compile]
+        }
+    }
+}
+
+task fetchNatives {
+    doLast {
+        ant.importBuild "fetch.xml"
+        fetch.execute()
+        copy.execute()
+    }
 }
 
