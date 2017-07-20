@@ -476,6 +476,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
+			FloatChannel scale2Channel = data.scale2Channel;
 			FloatChannel regionChannel = data.regionChannel;
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
@@ -483,7 +484,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
-				float scale = scaleChannel.data[p * scaleChannel.strideSize];
+				float scaleX = scaleChannel.data[p * scaleChannel.strideSize]
+					* scale2Channel.data[p * scale2Channel.strideSize + ParticleChannels.XOffset];
+				float scaleY = scaleChannel.data[p * scaleChannel.strideSize]
+					* scale2Channel.data[p * scale2Channel.strideSize + ParticleChannels.YOffset];
 				int regionOffset = p * regionChannel.strideSize;
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
@@ -495,8 +499,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float v = regionChannel.data[regionOffset + ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
-				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale,
-					sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scale;
+				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scaleX,
+					sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scaleY;
 				float r = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
@@ -551,6 +555,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
+			FloatChannel scale2Channel = data.scale2Channel;
 			FloatChannel regionChannel = data.regionChannel;
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
@@ -558,7 +563,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
-				float scale = scaleChannel.data[p * scaleChannel.strideSize];
+				float scaleX = scaleChannel.data[p * scaleChannel.strideSize]
+					* scale2Channel.data[p * scale2Channel.strideSize + ParticleChannels.XOffset];
+				float scaleY = scaleChannel.data[p * scaleChannel.strideSize]
+					* scale2Channel.data[p * scale2Channel.strideSize + ParticleChannels.YOffset];
 				int regionOffset = p * regionChannel.strideSize;
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
@@ -570,8 +578,8 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float v = regionChannel.data[regionOffset + ParticleChannels.VOffset];
 				float u2 = regionChannel.data[regionOffset + ParticleChannels.U2Offset];
 				float v2 = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
-				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scale,
-					sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scale;
+				float sx = regionChannel.data[regionOffset + ParticleChannels.HalfWidthOffset] * scaleX,
+					sy = regionChannel.data[regionOffset + ParticleChannels.HalfHeightOffset] * scaleY;
 				float r = colorChannel.data[colorOffset + ParticleChannels.RedOffset];
 				float g = colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
 				float b = colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
