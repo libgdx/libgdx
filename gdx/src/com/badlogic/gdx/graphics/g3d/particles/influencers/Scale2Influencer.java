@@ -35,6 +35,12 @@ public class Scale2Influencer extends Influencer {
 
 	public Scale2Influencer () {
 		super();
+		valueX = new ScaledNumericValue();
+		valueY = new ScaledNumericValue();
+
+		valueX.setHigh(1f);
+		valueY.setHigh(1f);
+
 		valueChannelDescriptor = ParticleChannels.Scale2;
 	}
 

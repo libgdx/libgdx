@@ -3,7 +3,8 @@ package com.badlogic.gdx.tools.flame;
 
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Scale2Influencer;
 
-/** @author Inferno */
+/** @author Inferno
+ * @author Pieter Schaap - P_je@hotmail.com */
 public class Scale2InfluencerPanel extends InfluencerPanel<Scale2Influencer> {
 
 	ScaledNumericPanel scalePanelX, scalePanelY;
@@ -17,16 +18,18 @@ public class Scale2InfluencerPanel extends InfluencerPanel<Scale2Influencer> {
 	public void setValue (Scale2Influencer value) {
 		super.setValue(value);
 		if (value == null) return;
-		scalePanelX.setValue(value.value);
+		scalePanelX.setValue(value.valueX);
+		scalePanelY.setValue(value.valueY);
 	}
 
 	@Override
 	protected void initializeComponents () {
 		super.initializeComponents();
-
-		addContent(0, 0, scalePanelX = new ScaledNumericPanel(editor, null, "Life", "Scale X", ""));
-		addContent(0, 0, scalePanelY = new ScaledNumericPanel(editor, null, "Life", "Scale Y", ""));
+		int i = 0;
+		addContent(i++, 0, scalePanelX = new ScaledNumericPanel(editor, null, "Life", "Scale X", ""));
+		addContent(i++, 0, scalePanelY = new ScaledNumericPanel(editor, null, "Life", "Scale Y", ""));
 		scalePanelX.setIsAlwayShown(true);
+		scalePanelY.setIsAlwayShown(true);
 	}
 
 }
