@@ -157,7 +157,7 @@ public class ParticleChannels {
 	public static final int CurrentLifeOffset = 0, TotalLifeOffset = 1, LifePercentOffset = 2;
 	public static final int RedOffset = 0, GreenOffset = 1, BlueOffset = 2, AlphaOffset = 3;
 	public static final int InterpolationStartOffset = 0, InterpolationDiffOffset = 1;
-	public static final int Interpolation6StartOffset = 0, Interpolation6DiffOffset = 3;
+	public static final int Interpolation4StartOffset = 0, Interpolation4DiffOffset = 2;
 	public static final int VelocityStrengthStartOffset = 0, VelocityStrengthDiffOffset = 1, VelocityThetaStartOffset = 0,
 		VelocityThetaDiffOffset = 1, VelocityPhiStartOffset = 2, VelocityPhiDiffOffset = 3;
 	public static final int XOffset = 0, YOffset = 1, ZOffset = 2, WOffset = 3;

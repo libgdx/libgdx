@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Pieter Schaap - Changed the scaling from 1 dimensional to 3 dimensional scaling. */
 public class Scale2Influencer extends Influencer {
 
-	public ScaledNumericValue value;
+	public ScaledNumericValue valueX, valueY;
 	FloatChannel valueChannel, interpolationChannel, lifeChannel;
 	ChannelDescriptor valueChannelDescriptor;
 
@@ -40,53 +40,85 @@ public class Scale2Influencer extends Influencer {
 
 	@Override
 	public void activateParticles (int startIndex, int count) {
-		if (value.isRelative()) {
-			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
-				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
-				float startX = value.newLowValue() * controller.scale.x;
-				float diffX = value.newHighValue() * controller.scale.x;
-				float startY = value.newLowValue() * controller.scale.y;
-				float diffY = value.newHighValue() * controller.scale.y;
-				float startZ = value.newLowValue() * controller.scale.z;
-				float diffZ = value.newHighValue() * controller.scale.z;
+		if (valueX.isRelative()) {
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.XOffset] = startX;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.XOffset] = diffX;
+			if (valueY.isRelative()) {
+				// Both X and Y scale are relative
+				for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+					+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+					float startX = valueX.newLowValue() * controller.scale.x;
+					float diffX = valueX.newHighValue() * controller.scale.x;
+					float startY = valueY.newLowValue() * controller.scale.y;
+					float diffY = valueY.newHighValue() * controller.scale.y;
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.YOffset] = startY;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.YOffset] = diffY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.XOffset] = startX;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.XOffset] = diffX;
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.ZOffset] = startZ;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.ZOffset] = diffZ;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.YOffset] = startY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.YOffset] = diffY;
 
-				valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * value.getScale(0);
-				valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * value.getScale(0);
-				valueChannel.data[i + ParticleChannels.ZOffset] = startZ + diffZ * value.getScale(0);
+					valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * valueX.getScale(0);
+					valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * valueY.getScale(0);
+				}
+			} else {
+				// Only X scale is relative
+				for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+					+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+					float startX = valueX.newLowValue() * controller.scale.x;
+					float diffX = valueX.newHighValue() * controller.scale.x;
+					float startY = valueY.newLowValue() * controller.scale.y;
+					float diffY = valueY.newHighValue() * controller.scale.y - startY;
+
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.XOffset] = startX;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.XOffset] = diffX;
+
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.YOffset] = startY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.YOffset] = diffY;
+
+					valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * valueX.getScale(0);
+					valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * valueY.getScale(0);
+				}
 			}
 		} else {
-			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
-				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
-				float startX = value.newLowValue() * controller.scale.x;
-				float diffX = value.newHighValue() * controller.scale.x - startX;
 
-				float startY = value.newLowValue() * controller.scale.y;
-				float diffY = value.newHighValue() * controller.scale.y - startY;
+			if (valueY.isRelative()) {
+				// Only Y is relative
+				for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+					+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+					float startX = valueX.newLowValue() * controller.scale.x;
+					float diffX = valueX.newHighValue() * controller.scale.x - startX;
 
-				float startZ = value.newLowValue() * controller.scale.z;
-				float diffZ = value.newHighValue() * controller.scale.z - startZ;
+					float startY = valueY.newLowValue() * controller.scale.y;
+					float diffY = valueY.newHighValue() * controller.scale.y;
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.XOffset] = startX;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.XOffset] = diffX;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.XOffset] = startX;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.XOffset] = diffX;
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.YOffset] = startY;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.YOffset] = diffY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.YOffset] = startY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.YOffset] = diffY;
 
-				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.ZOffset] = startZ;
-				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.ZOffset] = diffZ;
+					valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * valueX.getScale(0);
+					valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * valueY.getScale(0);
+				}
+			} else {
+				// X and Y both not relative
+				for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+					+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+					float startX = valueX.newLowValue() * controller.scale.x;
+					float diffX = valueX.newHighValue() * controller.scale.x - startX;
 
-				valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * value.getScale(0);
-				valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * value.getScale(0);
-				valueChannel.data[i + ParticleChannels.ZOffset] = startZ + diffZ * value.getScale(0);
+					float startY = valueY.newLowValue() * controller.scale.y;
+					float diffY = valueY.newHighValue() * controller.scale.y - startY;
+
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.XOffset] = startX;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.XOffset] = diffX;
+
+					interpolationChannel.data[a + ParticleChannels.Interpolation4StartOffset + ParticleChannels.YOffset] = startY;
+					interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.YOffset] = diffY;
+
+					valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * valueX.getScale(0);
+					valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * valueY.getScale(0);
+				}
 			}
 		}
 	}
@@ -96,8 +128,16 @@ public class Scale2Influencer extends Influencer {
 		for (int i = 0, a = 0, l = ParticleChannels.LifePercentOffset, c = i + controller.particles.size
 			* valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize, l += lifeChannel.strideSize) {
 
-			valueChannel.data[i] = interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset]
-				+ interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset] * value.getScale(lifeChannel.data[l]);
+			valueChannel.data[i + ParticleChannels.XOffset] = interpolationChannel.data[a
+				+ ParticleChannels.Interpolation4StartOffset + ParticleChannels.XOffset]
+				+ interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.XOffset]
+					* valueX.getScale(lifeChannel.data[l]);
+
+			valueChannel.data[i + ParticleChannels.YOffset] = interpolationChannel.data[a
+				+ ParticleChannels.Interpolation4StartOffset + ParticleChannels.YOffset]
+				+ interpolationChannel.data[a + ParticleChannels.Interpolation4DiffOffset + ParticleChannels.YOffset]
+					* valueY.getScale(lifeChannel.data[l]);
+
 		}
 	}
 
@@ -112,7 +152,8 @@ public class Scale2Influencer extends Influencer {
 	}
 
 	private void set (Scale2Influencer scaleInfluencer) {
-		value.load(scaleInfluencer.value);
+		valueX.load(scaleInfluencer.valueX);
+		valueY.load(scaleInfluencer.valueY);
 		valueChannelDescriptor = scaleInfluencer.valueChannelDescriptor;
 	}
 
@@ -126,12 +167,14 @@ public class Scale2Influencer extends Influencer {
 
 	@Override
 	public void write (Json json) {
-		json.writeValue("value", value);
+		json.writeValue("valueX", valueX);
+		json.writeValue("valueY", valueY);
 	}
 
 	@Override
 	public void read (Json json, JsonValue jsonData) {
-		value = json.readValue("value", ScaledNumericValue.class, jsonData);
+		valueX = json.readValue("valueX", ScaledNumericValue.class, jsonData);
+		valueY = json.readValue("valueY", ScaledNumericValue.class, jsonData);
 	}
 
 }

@@ -50,14 +50,13 @@ public abstract class SimpleInfluencer extends Influencer {
 	@Override
 	public void allocateChannels () {
 		valueChannel = controller.particles.addChannel(valueChannelDescriptor);
-		ParticleChannels.Interpolation6.id = controller.particleChannels.newId();
-		interpolationChannel = controller.particles.addChannel(ParticleChannels.Interpolation6);
+		ParticleChannels.Interpolation.id = controller.particleChannels.newId();
+		interpolationChannel = controller.particles.addChannel(ParticleChannels.Interpolation);
 		lifeChannel = controller.particles.addChannel(ParticleChannels.Life);
 	}
 
 	@Override
 	public void activateParticles (int startIndex, int count) {
-		// TODO: Check if the for loops still work as intended after changing the sizes of the channels.
 		if (!value.isRelative()) {
 			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
 				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
