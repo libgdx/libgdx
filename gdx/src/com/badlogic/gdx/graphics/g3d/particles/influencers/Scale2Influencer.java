@@ -16,17 +16,26 @@
 
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.ChannelDescriptor;
+import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
+import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 /** It's an {@link Influencer} which controls the scale of the particles.
  * @author Inferno
  * @author Pieter Schaap - Changed the scaling from 1 dimensional to 3 dimensional scaling. */
-public class ScaleInfluencer extends SimpleInfluencer {
+public class Scale2Influencer extends Influencer {
 
-	public ScaleInfluencer () {
+	public ScaledNumericValue value;
+	FloatChannel valueChannel, interpolationChannel, lifeChannel;
+	ChannelDescriptor valueChannelDescriptor;
+
+	public Scale2Influencer () {
 		super();
-		valueChannelDescriptor = ParticleChannels.Scale;
+		valueChannelDescriptor = ParticleChannels.Scale2;
 	}
 
 	@Override
@@ -82,13 +91,47 @@ public class ScaleInfluencer extends SimpleInfluencer {
 		}
 	}
 
-	public ScaleInfluencer (ScaleInfluencer scaleInfluencer) {
-		super(scaleInfluencer);
+	@Override
+	public void update () {
+		for (int i = 0, a = 0, l = ParticleChannels.LifePercentOffset, c = i + controller.particles.size
+			* valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize, l += lifeChannel.strideSize) {
+
+			valueChannel.data[i] = interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset]
+				+ interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset] * value.getScale(lifeChannel.data[l]);
+		}
+	}
+
+	public Scale2Influencer (Scale2Influencer scaleInfluencer) {
+		this();
+		set(scaleInfluencer);
 	}
 
 	@Override
 	public ParticleControllerComponent copy () {
-		return new ScaleInfluencer(this);
+		return new Scale2Influencer(this);
+	}
+
+	private void set (Scale2Influencer scaleInfluencer) {
+		value.load(scaleInfluencer.value);
+		valueChannelDescriptor = scaleInfluencer.valueChannelDescriptor;
+	}
+
+	@Override
+	public void allocateChannels () {
+		valueChannel = controller.particles.addChannel(valueChannelDescriptor);
+		ParticleChannels.Interpolation6.id = controller.particleChannels.newId();
+		interpolationChannel = controller.particles.addChannel(ParticleChannels.Interpolation4);
+		lifeChannel = controller.particles.addChannel(ParticleChannels.Life);
+	}
+
+	@Override
+	public void write (Json json) {
+		json.writeValue("value", value);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		value = json.readValue("value", ScaledNumericValue.class, jsonData);
 	}
 
 }
