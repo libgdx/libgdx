@@ -20,7 +20,8 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
 
 /** It's an {@link Influencer} which controls the scale of the particles.
- * @author Inferno */
+ * @author Inferno
+ * @author Pieter Schaap - Changed the scaling from 1 dimensional to 3 dimensional scaling. */
 public class ScaleInfluencer extends SimpleInfluencer {
 
 	public ScaleInfluencer () {
@@ -31,17 +32,25 @@ public class ScaleInfluencer extends SimpleInfluencer {
 	@Override
 	public void activateParticles (int startIndex, int count) {
 		if (value.isRelative()) {
-			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i + count
-				* valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
-				float start = value.newLowValue() * controller.scale.x;
-				float diff = value.newHighValue() * controller.scale.x;
-				interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset] = start;
-				interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset] = diff;
-				valueChannel.data[i] = start + diff * value.getScale(0);
+			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+				float startX = value.newLowValue() * controller.scale.x;
+				float diffX = value.newHighValue() * controller.scale.x;
+				float startY = value.newLowValue() * controller.scale.y;
+				float diffY = value.newHighValue() * controller.scale.y;
+				float startZ = value.newLowValue() * controller.scale.z;
+				float diffZ = value.newHighValue() * controller.scale.z;
+				interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset * (ParticleChannels.ZOffset + 1)
+					+ ParticleChannels.XOffset] = startX;
+				interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset + ParticleChannels.XOffset] = diffX;
+
+				valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * value.getScale(0);
+				valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * value.getScale(0);
+				valueChannel.data[i + ParticleChannels.ZOffset] = startZ + diffZ * value.getScale(0);
 			}
 		} else {
-			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i + count
-				* valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
+			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
+				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
 				float start = value.newLowValue() * controller.scale.x;
 				float diff = value.newHighValue() * controller.scale.x - start;
 				interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset] = start;

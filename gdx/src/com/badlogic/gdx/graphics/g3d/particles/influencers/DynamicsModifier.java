@@ -16,13 +16,17 @@
 
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BufferedParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleControllerRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -33,7 +37,74 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Inferno */
 public abstract class DynamicsModifier extends Influencer {
 	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3();
+	protected static final Vector2 TMP_2V1 = new Vector2();
 	protected static final Quaternion TMP_Q = new Quaternion();
+
+	/** Rotates particles in relation to the 2D direction on the screen. */
+	public static class ProjectedDirection extends DynamicsModifier { // TODO: Think about a better name.
+
+		FloatChannel rotChannel, accChannel, prevPosChannel, posChannel;
+
+		Camera cam;
+
+		public ProjectedDirection () {
+
+		}
+
+		public ProjectedDirection (ProjectedDirection other) {
+			super(other);
+		}
+
+		@Override
+		public void allocateChannels () {
+			BufferedParticleBatch batch = ((ParticleControllerRenderer<?, BufferedParticleBatch>)controller.renderer).getBatch();
+			cam = batch.getCamera();
+
+			rotChannel = controller.particles.addChannel(ParticleChannels.Rotation2D);
+			prevPosChannel = controller.particles.addChannel(ParticleChannels.PreviousPosition);
+			posChannel = controller.particles.addChannel(ParticleChannels.Position);
+			accChannel = controller.particles.addChannel(ParticleChannels.Acceleration);
+		}
+
+		@Override
+		public void update () {
+
+			// Get the previous position
+			float prevAngle = 0;
+			for (int prevPosOffset = 0, posOffset = 0, rotOffset = 0, c = controller.particles.size * prevPosChannel.strideSize
+				+ prevPosOffset; prevPosOffset < c; prevPosOffset += prevPosChannel.strideSize, posOffset += posChannel.strideSize, rotOffset += rotChannel.strideSize) {
+
+				// We compute the direction that the particle is moving in using its current and previous position.
+				// We then project the resulting vector onto the screen and rotate the billboard accordingly.
+				TMP_V1.set(prevPosChannel.data[prevPosOffset + ParticleChannels.XOffset],
+					prevPosChannel.data[prevPosOffset + ParticleChannels.YOffset],
+					prevPosChannel.data[prevPosOffset + ParticleChannels.ZOffset]);
+
+				TMP_V2.set(posChannel.data[posOffset + ParticleChannels.XOffset],
+					posChannel.data[posOffset + ParticleChannels.YOffset], posChannel.data[posOffset + ParticleChannels.ZOffset]);
+
+				TMP_V1.set(cam.project(TMP_V1));
+				TMP_V2.set(cam.project(TMP_V2));
+
+				TMP_2V1.set(TMP_V2.x - TMP_V1.x, TMP_V2.y - TMP_V1.y);
+
+				float angle = -TMP_2V1.angle();
+				prevAngle = angle;
+				// Set the rotation.
+
+				rotChannel.data[rotOffset + ParticleChannels.CosineOffset] = MathUtils.cosDeg(angle);
+				rotChannel.data[rotOffset + ParticleChannels.SineOffset] = MathUtils.sinDeg(angle);
+
+			}
+			super.update();
+		}
+
+		@Override
+		public ParticleControllerComponent copy () {
+			return new ProjectedDirection(this);
+		}
+
+	}
 
 	public static class FaceDirection extends DynamicsModifier {
 		FloatChannel rotationChannel, accellerationChannel;
@@ -53,12 +124,13 @@ public abstract class DynamicsModifier extends Influencer {
 
 		@Override
 		public void update () {
-			for (int i = 0, accelOffset = 0, c = i + controller.particles.size * rotationChannel.strideSize; i < c; i += rotationChannel.strideSize, accelOffset += accellerationChannel.strideSize) {
+			for (int i = 0, accelOffset = 0, c = i + controller.particles.size
+				* rotationChannel.strideSize; i < c; i += rotationChannel.strideSize, accelOffset += accellerationChannel.strideSize) {
 
 				Vector3 axisZ = TMP_V1.set(accellerationChannel.data[accelOffset + ParticleChannels.XOffset],
 					accellerationChannel.data[accelOffset + ParticleChannels.YOffset],
-					accellerationChannel.data[accelOffset + ParticleChannels.ZOffset]).nor(), axisY = TMP_V2.set(TMP_V1)
-					.crs(Vector3.Y).nor().crs(TMP_V1).nor(), axisX = TMP_V3.set(axisY).crs(axisZ).nor();
+					accellerationChannel.data[accelOffset + ParticleChannels.ZOffset]).nor(),
+					axisY = TMP_V2.set(TMP_V1).crs(Vector3.Y).nor().crs(TMP_V1).nor(), axisX = TMP_V3.set(axisY).crs(axisZ).nor();
 				TMP_Q.setFromAxes(false, axisX.x, axisY.x, axisZ.x, axisX.y, axisY.y, axisZ.y, axisX.z, axisY.z, axisZ.z);
 				rotationChannel.data[i + ParticleChannels.XOffset] = TMP_Q.x;
 				rotationChannel.data[i + ParticleChannels.YOffset] = TMP_Q.y;
@@ -97,7 +169,8 @@ public abstract class DynamicsModifier extends Influencer {
 		@Override
 		public void activateParticles (int startIndex, int count) {
 			float start, diff;
-			for (int i = startIndex * strengthChannel.strideSize, c = i + count * strengthChannel.strideSize; i < c; i += strengthChannel.strideSize) {
+			for (int i = startIndex * strengthChannel.strideSize, c = i
+				+ count * strengthChannel.strideSize; i < c; i += strengthChannel.strideSize) {
 				start = strengthValue.newLowValue();
 				diff = strengthValue.newHighValue();
 				if (!strengthValue.isRelative()) diff -= start;
@@ -150,7 +223,8 @@ public abstract class DynamicsModifier extends Influencer {
 		public void activateParticles (int startIndex, int count) {
 			super.activateParticles(startIndex, count);
 			float start, diff;
-			for (int i = startIndex * angularChannel.strideSize, c = i + count * angularChannel.strideSize; i < c; i += angularChannel.strideSize) {
+			for (int i = startIndex * angularChannel.strideSize, c = i
+				+ count * angularChannel.strideSize; i < c; i += angularChannel.strideSize) {
 
 				// Theta
 				start = thetaValue.newLowValue();
@@ -205,7 +279,7 @@ public abstract class DynamicsModifier extends Influencer {
 				* rotationalVelocity2dChannel.strideSize; i < c; s += strengthChannel.strideSize, i += rotationalVelocity2dChannel.strideSize, l += lifeChannel.strideSize) {
 				rotationalVelocity2dChannel.data[i] += strengthChannel.data[s + ParticleChannels.VelocityStrengthStartOffset]
 					+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset]
-					* strengthValue.getScale(lifeChannel.data[l]);
+						* strengthValue.getScale(lifeChannel.data[l]);
 			}
 		}
 
@@ -254,7 +328,7 @@ public abstract class DynamicsModifier extends Influencer {
 			// Sum each L for each rotation
 			// Multiply sum by constant quantity k = m*I_to(-1) , m could be optional while I is constant and can be calculated at
 // start
-			// Update rotation
+// Update rotation
 
 			// Algorithm 3
 			// Consider a channel which represent a simple angular momentum L
@@ -263,16 +337,16 @@ public abstract class DynamicsModifier extends Influencer {
 			for (int i = 0, l = ParticleChannels.LifePercentOffset, s = 0, a = 0, c = controller.particles.size
 				* rotationalForceChannel.strideSize; i < c; s += strengthChannel.strideSize, i += rotationalForceChannel.strideSize, a += angularChannel.strideSize, l += lifeChannel.strideSize) {
 
-				float lifePercent = lifeChannel.data[l], strength = strengthChannel.data[s
-					+ ParticleChannels.VelocityStrengthStartOffset]
-					+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent), phi = angularChannel.data[a
-					+ ParticleChannels.VelocityPhiStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent), theta = angularChannel.data[a
-					+ ParticleChannels.VelocityThetaStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
+				float lifePercent = lifeChannel.data[l],
+					strength = strengthChannel.data[s + ParticleChannels.VelocityStrengthStartOffset]
+						+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent),
+					phi = angularChannel.data[a + ParticleChannels.VelocityPhiStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent),
+					theta = angularChannel.data[a + ParticleChannels.VelocityThetaStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
 
-				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi), sinPhi = MathUtils
-					.sinDeg(phi);
+				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi),
+					sinPhi = MathUtils.sinDeg(phi);
 
 				TMP_V3.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi);
 				TMP_V3.scl(strength * MathUtils.degreesToRadians);
@@ -322,11 +396,10 @@ public abstract class DynamicsModifier extends Influencer {
 
 				float strength = strengthChannel.data[strengthOffset + ParticleChannels.VelocityStrengthStartOffset]
 					+ strengthChannel.data[strengthOffset + ParticleChannels.VelocityStrengthDiffOffset]
-					* strengthValue.getScale(lifeChannel.data[lifeOffset]);
-				TMP_V3
-					.set(positionChannel.data[positionOffset + ParticleChannels.XOffset] - cx,
-						positionChannel.data[positionOffset + ParticleChannels.YOffset] - cy,
-						positionChannel.data[positionOffset + ParticleChannels.ZOffset] - cz).nor().scl(strength);
+						* strengthValue.getScale(lifeChannel.data[lifeOffset]);
+				TMP_V3.set(positionChannel.data[positionOffset + ParticleChannels.XOffset] - cx,
+					positionChannel.data[positionOffset + ParticleChannels.YOffset] - cy,
+					positionChannel.data[positionOffset + ParticleChannels.ZOffset] - cz).nor().scl(strength);
 				accelerationChannel.data[forceOffset + ParticleChannels.XOffset] += TMP_V3.x;
 				accelerationChannel.data[forceOffset + ParticleChannels.YOffset] += TMP_V3.y;
 				accelerationChannel.data[forceOffset + ParticleChannels.ZOffset] += TMP_V3.z;
@@ -360,16 +433,16 @@ public abstract class DynamicsModifier extends Influencer {
 			for (int i = 0, l = ParticleChannels.LifePercentOffset, s = 0, a = 0, c = i + controller.particles.size
 				* directionalVelocityChannel.strideSize; i < c; s += strengthChannel.strideSize, i += directionalVelocityChannel.strideSize, a += angularChannel.strideSize, l += lifeChannel.strideSize) {
 
-				float lifePercent = lifeChannel.data[l], strength = strengthChannel.data[s
-					+ ParticleChannels.VelocityStrengthStartOffset]
-					+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent), phi = angularChannel.data[a
-					+ ParticleChannels.VelocityPhiStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent), theta = angularChannel.data[a
-					+ ParticleChannels.VelocityThetaStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
+				float lifePercent = lifeChannel.data[l],
+					strength = strengthChannel.data[s + ParticleChannels.VelocityStrengthStartOffset]
+						+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent),
+					phi = angularChannel.data[a + ParticleChannels.VelocityPhiStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent),
+					theta = angularChannel.data[a + ParticleChannels.VelocityThetaStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
 
-				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi), sinPhi = MathUtils
-					.sinDeg(phi);
+				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi),
+					sinPhi = MathUtils.sinDeg(phi);
 				TMP_V3.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi).nor().scl(strength);
 				directionalVelocityChannel.data[i + ParticleChannels.XOffset] += TMP_V3.x;
 				directionalVelocityChannel.data[i + ParticleChannels.YOffset] += TMP_V3.y;
@@ -403,23 +476,24 @@ public abstract class DynamicsModifier extends Influencer {
 		@Override
 		public void update () {
 			for (int i = 0, l = ParticleChannels.LifePercentOffset, s = 0, a = 0, positionOffset = 0, c = i
-				+ controller.particles.size * directionalVelocityChannel.strideSize; i < c; s += strengthChannel.strideSize, i += directionalVelocityChannel.strideSize, a += angularChannel.strideSize, l += lifeChannel.strideSize, positionOffset += positionChannel.strideSize) {
+				+ controller.particles.size
+					* directionalVelocityChannel.strideSize; i < c; s += strengthChannel.strideSize, i += directionalVelocityChannel.strideSize, a += angularChannel.strideSize, l += lifeChannel.strideSize, positionOffset += positionChannel.strideSize) {
 
-				float lifePercent = lifeChannel.data[l], strength = strengthChannel.data[s
-					+ ParticleChannels.VelocityStrengthStartOffset]
-					+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent), phi = angularChannel.data[a
-					+ ParticleChannels.VelocityPhiStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent), theta = angularChannel.data[a
-					+ ParticleChannels.VelocityThetaStartOffset]
-					+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
+				float lifePercent = lifeChannel.data[l],
+					strength = strengthChannel.data[s + ParticleChannels.VelocityStrengthStartOffset]
+						+ strengthChannel.data[s + ParticleChannels.VelocityStrengthDiffOffset] * strengthValue.getScale(lifePercent),
+					phi = angularChannel.data[a + ParticleChannels.VelocityPhiStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityPhiDiffOffset] * phiValue.getScale(lifePercent),
+					theta = angularChannel.data[a + ParticleChannels.VelocityThetaStartOffset]
+						+ angularChannel.data[a + ParticleChannels.VelocityThetaDiffOffset] * thetaValue.getScale(lifePercent);
 
-				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi), sinPhi = MathUtils
-					.sinDeg(phi);
-				TMP_V3
-					.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi)
+				float cosTheta = MathUtils.cosDeg(theta), sinTheta = MathUtils.sinDeg(theta), cosPhi = MathUtils.cosDeg(phi),
+					sinPhi = MathUtils.sinDeg(phi);
+				TMP_V3.set(cosTheta * sinPhi, cosPhi, sinTheta * sinPhi)
 					.crs(positionChannel.data[positionOffset + ParticleChannels.XOffset],
 						positionChannel.data[positionOffset + ParticleChannels.YOffset],
-						positionChannel.data[positionOffset + ParticleChannels.ZOffset]).nor().scl(strength);
+						positionChannel.data[positionOffset + ParticleChannels.ZOffset])
+					.nor().scl(strength);
 				directionalVelocityChannel.data[i + ParticleChannels.XOffset] += TMP_V3.x;
 				directionalVelocityChannel.data[i + ParticleChannels.YOffset] += TMP_V3.y;
 				directionalVelocityChannel.data[i + ParticleChannels.ZOffset] += TMP_V3.z;
@@ -455,7 +529,7 @@ public abstract class DynamicsModifier extends Influencer {
 
 				float strength = strengthChannel.data[strengthOffset + ParticleChannels.VelocityStrengthStartOffset]
 					+ strengthChannel.data[strengthOffset + ParticleChannels.VelocityStrengthDiffOffset]
-					* strengthValue.getScale(lifeChannel.data[lifeOffset]);
+						* strengthValue.getScale(lifeChannel.data[lifeOffset]);
 				TMP_V3.set(MathUtils.random(-1, 1f), MathUtils.random(-1, 1f), MathUtils.random(-1, 1f)).nor().scl(strength);
 				accelerationChannel.data[forceOffset + ParticleChannels.XOffset] += TMP_V3.x;
 				accelerationChannel.data[forceOffset + ParticleChannels.YOffset] += TMP_V3.y;
