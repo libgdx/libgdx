@@ -34,24 +34,25 @@ import com.badlogic.gdx.utils.JsonValue;
 /** It's the base class for any kind of influencer which operates on angular velocity and acceleration of the particles. All the
  * classes that will inherit this base class can and should be used only as sub-influencer of an instance of
  * {@link DynamicsInfluencer} .
- * @author Inferno */
+ * @author Inferno
+ * @author Pieter Schaap */
 public abstract class DynamicsModifier extends Influencer {
 	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3();
 	protected static final Vector2 TMP_2V1 = new Vector2();
 	protected static final Quaternion TMP_Q = new Quaternion();
 
 	/** Rotates particles in relation to the 2D direction on the screen. */
-	public static class ProjectedDirection extends DynamicsModifier { // TODO: Think about a better name.
+	public static class FaceDirection2D extends DynamicsModifier { // TODO: Think about a better name.
 
 		FloatChannel rotChannel, accChannel, prevPosChannel, posChannel;
 
 		Camera cam;
 
-		public ProjectedDirection () {
+		public FaceDirection2D () {
 
 		}
 
-		public ProjectedDirection (ProjectedDirection other) {
+		public FaceDirection2D (FaceDirection2D other) {
 			super(other);
 		}
 
@@ -101,7 +102,7 @@ public abstract class DynamicsModifier extends Influencer {
 
 		@Override
 		public ParticleControllerComponent copy () {
-			return new ProjectedDirection(this);
+			return new FaceDirection2D(this);
 		}
 
 	}
