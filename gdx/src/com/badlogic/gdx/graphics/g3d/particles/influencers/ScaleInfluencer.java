@@ -40,9 +40,15 @@ public class ScaleInfluencer extends SimpleInfluencer {
 				float diffY = value.newHighValue() * controller.scale.y;
 				float startZ = value.newLowValue() * controller.scale.z;
 				float diffZ = value.newHighValue() * controller.scale.z;
-				interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset * (ParticleChannels.ZOffset + 1)
-					+ ParticleChannels.XOffset] = startX;
-				interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset + ParticleChannels.XOffset] = diffX;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.XOffset] = startX;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.XOffset] = diffX;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.YOffset] = startY;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.YOffset] = diffY;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.ZOffset] = startZ;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.ZOffset] = diffZ;
 
 				valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * value.getScale(0);
 				valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * value.getScale(0);
@@ -51,11 +57,27 @@ public class ScaleInfluencer extends SimpleInfluencer {
 		} else {
 			for (int i = startIndex * valueChannel.strideSize, a = startIndex * interpolationChannel.strideSize, c = i
 				+ count * valueChannel.strideSize; i < c; i += valueChannel.strideSize, a += interpolationChannel.strideSize) {
-				float start = value.newLowValue() * controller.scale.x;
-				float diff = value.newHighValue() * controller.scale.x - start;
-				interpolationChannel.data[a + ParticleChannels.InterpolationStartOffset] = start;
-				interpolationChannel.data[a + ParticleChannels.InterpolationDiffOffset] = diff;
-				valueChannel.data[i] = start + diff * value.getScale(0);
+				float startX = value.newLowValue() * controller.scale.x;
+				float diffX = value.newHighValue() * controller.scale.x - startX;
+
+				float startY = value.newLowValue() * controller.scale.y;
+				float diffY = value.newHighValue() * controller.scale.y - startY;
+
+				float startZ = value.newLowValue() * controller.scale.z;
+				float diffZ = value.newHighValue() * controller.scale.z - startZ;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.XOffset] = startX;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.XOffset] = diffX;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.YOffset] = startY;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.YOffset] = diffY;
+
+				interpolationChannel.data[a + ParticleChannels.Interpolation6StartOffset + ParticleChannels.ZOffset] = startZ;
+				interpolationChannel.data[a + ParticleChannels.Interpolation6DiffOffset + ParticleChannels.ZOffset] = diffZ;
+
+				valueChannel.data[i + ParticleChannels.XOffset] = startX + diffX * value.getScale(0);
+				valueChannel.data[i + ParticleChannels.YOffset] = startY + diffY * value.getScale(0);
+				valueChannel.data[i + ParticleChannels.ZOffset] = startZ + diffZ * value.getScale(0);
 			}
 		}
 	}
