@@ -153,7 +153,7 @@ public class ParticleChannels {
 	public static final ChannelDescriptor Interpolation6 = new ChannelDescriptor(-1, float.class, 6);
 
 	// Offsets
-	/** Offsets to acess a particular value inside a stride of a given channel */
+	/** Offsets to access a particular value inside a stride of a given channel */
 	public static final int CurrentLifeOffset = 0, TotalLifeOffset = 1, LifePercentOffset = 2;
 	public static final int RedOffset = 0, GreenOffset = 1, BlueOffset = 2, AlphaOffset = 3;
 	public static final int InterpolationStartOffset = 0, InterpolationDiffOffset = 1;
