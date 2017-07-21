@@ -24,15 +24,16 @@ import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-/** It's an {@link Influencer} which controls the scale of the particles.
+/** It's an {@link Influencer} which controls the X and Y scale of the particles independently.
  * @author Inferno
- * @author Pieter Schaap - Changed the scaling from 1 dimensional to 3 dimensional scaling. */
+ * @author Pieter Schaap - Changed the scaling from 1 dimensional to 2 dimensional scaling. */
 public class Scale2Influencer extends Influencer {
 
 	public ScaledNumericValue valueX, valueY;
 	FloatChannel valueChannel, interpolationChannel, lifeChannel;
 	ChannelDescriptor valueChannelDescriptor;
 
+	/** Creates a new scale2influencer with both X and Y scaling high set to 1. */
 	public Scale2Influencer () {
 		super();
 		valueX = new ScaledNumericValue();
