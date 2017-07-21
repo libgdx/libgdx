@@ -41,7 +41,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.BrownianAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.CentripetalAcceleration;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.FaceDirection;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.FaceDirection2D;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Rotational3D;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.TangentialAcceleration;
@@ -188,7 +188,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 		strengthVelocityPanel.setIsAlwayShown(true);
 		angularVelocityPanel.setIsAlwayShown(true);
 		emptyPanel.setIsAlwayShown(true);
-		emptyPanel.setValue(null);
+		// emptyPanel.setValue(null);
 
 		// Assemble
 		int i = 0;
@@ -261,10 +261,10 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 			angularVelocityPanel.setName("Angular Velocity");
 			angularVelocityPanel.setDescription("An angular velocity (axis and magnitude), in degree/sec2.");
 			panel = angularVelocityPanel;
-		} else if (velocityValue instanceof FaceDirection) {
-			emptyPanel.setName("Face");
+		} else if (velocityValue instanceof FaceDirection2D) {
+			emptyPanel.setName("Face 2D");
 			emptyPanel.setDescription(
-				"Rotates the model to face its current velocity (Do not add any other angular velocity when using this).");
+				"Rotates the billboard to align with its motion on the screen (Do not add any other angular velocity when using this).");
 			panel = emptyPanel;
 		}
 
