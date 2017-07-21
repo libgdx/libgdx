@@ -209,6 +209,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		return shader;
 	}
 
+	public BlendingAttribute getBlendingAttribute () {
+		return blendingAttribute;
+	}
+
 	private void allocShader () {
 		Renderable newRenderable = allocRenderable();
 		shader = newRenderable.shader = getShader(newRenderable);
