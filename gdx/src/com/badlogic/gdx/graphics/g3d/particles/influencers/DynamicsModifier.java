@@ -58,7 +58,7 @@ public abstract class DynamicsModifier extends Influencer {
 
 		@Override
 		public void allocateChannels () {
-			BufferedParticleBatch batch = ((ParticleControllerRenderer<?, BufferedParticleBatch>)controller.renderer).getBatch();
+			BufferedParticleBatch batch = ((ParticleControllerRenderer<?, BufferedParticleBatch<?>>)controller.renderer).getBatch();
 			cam = batch.getCamera();
 
 			rotChannel = controller.particles.addChannel(ParticleChannels.Rotation2D);
