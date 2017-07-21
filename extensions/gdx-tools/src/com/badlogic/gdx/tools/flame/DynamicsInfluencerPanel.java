@@ -53,7 +53,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 
 	private static final String VEL_TYPE_ROTATIONAL_2D = "Angular Velocity 2D", VEL_TYPE_ROTATIONAL_3D = "Angular Velocity 3D",
 		VEL_TYPE_CENTRIPETAL = "Centripetal", VEL_TYPE_TANGENTIAL = "Tangential", VEL_TYPE_POLAR = "Polar",
-		VEL_TYPE_BROWNIAN = "Brownian", VEL_TYPE_FACE = "Face", VEL_TYPE_MOTION_ALIGN = "Face 2D";
+		VEL_TYPE_BROWNIAN = "Brownian", VEL_TYPE_FACE = "Face", VEL_TYPE_MOTION_ALIGN = "Motion Aligned";
 
 	protected class VelocityWrapper {
 		public DynamicsModifier velocityValue;
