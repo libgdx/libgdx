@@ -42,17 +42,17 @@ public abstract class DynamicsModifier extends Influencer {
 	protected static final Quaternion TMP_Q = new Quaternion();
 
 	/** Rotates particles in relation to the 2D direction on the screen. */
-	public static class FaceDirection2D extends DynamicsModifier { // TODO: Think about a better name.
+	public static class MotionDirection extends DynamicsModifier {
 
 		FloatChannel rotChannel, accChannel, prevPosChannel, posChannel;
 
 		Camera cam;
 
-		public FaceDirection2D () {
+		public MotionDirection () {
 
 		}
 
-		public FaceDirection2D (FaceDirection2D other) {
+		public MotionDirection (MotionDirection other) {
 			super(other);
 		}
 
@@ -75,8 +75,8 @@ public abstract class DynamicsModifier extends Influencer {
 			for (int prevPosOffset = 0, posOffset = 0, rotOffset = 0, c = controller.particles.size * prevPosChannel.strideSize
 				+ prevPosOffset; prevPosOffset < c; prevPosOffset += prevPosChannel.strideSize, posOffset += posChannel.strideSize, rotOffset += rotChannel.strideSize) {
 
-				// We compute the direction that the particle is moving in using its current and previous position.
-				// We then project the resulting vector onto the screen and rotate the billboard accordingly.
+				// Compute the direction that the particle is moving in using its current and previous position.
+				// Then project the resulting vector onto the screen and rotate the billboard accordingly.
 				TMP_V1.set(prevPosChannel.data[prevPosOffset + ParticleChannels.XOffset],
 					prevPosChannel.data[prevPosOffset + ParticleChannels.YOffset],
 					prevPosChannel.data[prevPosOffset + ParticleChannels.ZOffset]);
@@ -91,8 +91,8 @@ public abstract class DynamicsModifier extends Influencer {
 
 				float angle = -TMP_2V1.angle();
 				prevAngle = angle;
-				// Set the rotation.
 
+				// Set the rotation.
 				rotChannel.data[rotOffset + ParticleChannels.CosineOffset] = MathUtils.cosDeg(angle);
 				rotChannel.data[rotOffset + ParticleChannels.SineOffset] = MathUtils.sinDeg(angle);
 
@@ -102,7 +102,7 @@ public abstract class DynamicsModifier extends Influencer {
 
 		@Override
 		public ParticleControllerComponent copy () {
-			return new FaceDirection2D(this);
+			return new MotionDirection(this);
 		}
 
 	}

@@ -41,7 +41,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.BrownianAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.CentripetalAcceleration;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.FaceDirection2D;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.MotionDirection;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Rotational3D;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.TangentialAcceleration;
@@ -53,7 +53,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 
 	private static final String VEL_TYPE_ROTATIONAL_2D = "Angular Velocity 2D", VEL_TYPE_ROTATIONAL_3D = "Angular Velocity 3D",
 		VEL_TYPE_CENTRIPETAL = "Centripetal", VEL_TYPE_TANGENTIAL = "Tangential", VEL_TYPE_POLAR = "Polar",
-		VEL_TYPE_BROWNIAN = "Brownian", VEL_TYPE_FACE = "Face", VEL_TYPE_FACE_2D = "Face 2D";
+		VEL_TYPE_BROWNIAN = "Brownian", VEL_TYPE_FACE = "Face", VEL_TYPE_MOTION_ALIGN = "Face 2D";
 
 	protected class VelocityWrapper {
 		public DynamicsModifier velocityValue;
@@ -104,7 +104,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 	private Object[] getAvailableVelocities (ControllerType type) {
 		if (type == ControllerType.Billboard || type == ControllerType.PointSprite) {
 			return new String[] {VEL_TYPE_ROTATIONAL_2D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL, VEL_TYPE_POLAR,
-				VEL_TYPE_BROWNIAN, VEL_TYPE_FACE_2D};
+				VEL_TYPE_BROWNIAN, VEL_TYPE_MOTION_ALIGN};
 		} else if (type == ControllerType.ModelInstance || type == ControllerType.ParticleController) {
 			return new String[] {VEL_TYPE_ROTATIONAL_3D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL, VEL_TYPE_POLAR,
 				VEL_TYPE_BROWNIAN, VEL_TYPE_FACE};
@@ -188,7 +188,6 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 		strengthVelocityPanel.setIsAlwayShown(true);
 		angularVelocityPanel.setIsAlwayShown(true);
 		emptyPanel.setIsAlwayShown(true);
-		// emptyPanel.setValue(null);
 
 		// Assemble
 		int i = 0;
@@ -261,10 +260,10 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 			angularVelocityPanel.setName("Angular Velocity");
 			angularVelocityPanel.setDescription("An angular velocity (axis and magnitude), in degree/sec2.");
 			panel = angularVelocityPanel;
-		} else if (velocityValue instanceof FaceDirection2D) {
-			emptyPanel.setName("Face 2D");
+		} else if (velocityValue instanceof MotionDirection) {
+			emptyPanel.setName("Motion Aligned");
 			emptyPanel.setDescription(
-				"Rotates the billboard to align with its motion on the screen (Do not add any other angular velocity when using this).");
+				"Rotates the billboards to align with the particles' motion on the screen (Overrides angular velocity).");
 			panel = emptyPanel;
 		}
 
@@ -287,7 +286,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 			velocityValue = new DynamicsModifier.BrownianAcceleration();
 		else if (selectedItem == VEL_TYPE_FACE)
 			velocityValue = new DynamicsModifier.FaceDirection();
-		else if (selectedItem == VEL_TYPE_FACE_2D) velocityValue = new DynamicsModifier.FaceDirection2D();
+		else if (selectedItem == VEL_TYPE_MOTION_ALIGN) velocityValue = new DynamicsModifier.MotionDirection();
 		return velocityValue;
 	}
 
