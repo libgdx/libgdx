@@ -127,7 +127,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eAeroModel(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int V_Point = 0;
       public final static int V_TwoSided = V_Point + 1;
       public final static int V_TwoSidedLiftDrag = V_TwoSided + 1;
@@ -187,7 +187,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eVSolver(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int Linear = 0;
       public final static int END = Linear + 1;
     }
@@ -241,7 +241,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_ePSolver(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int Linear = 0;
       public final static int Anchors = Linear + 1;
       public final static int RContacts = Anchors + 1;
@@ -298,7 +298,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eSolverPresets(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int Positions = 0;
       public final static int Velocities = Positions + 1;
       public final static int Default = Positions;
@@ -354,7 +354,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_eFeature(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int None = 0;
       public final static int Node = None + 1;
       public final static int Link = Node + 1;
@@ -412,7 +412,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_fCollision(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int RVSmask = 0x000f;
       public final static int SDF_RS = 0x0001;
       public final static int CL_RS = 0x0002;
@@ -473,7 +473,7 @@ public class btSoftBody extends btCollisionObject {
       this(SoftbodyJNI.new_btSoftBody_fMaterial(), true);
     }
   
-    public final static class _ {
+    public final static class _Constants {
       public final static int DebugDraw = 0x0001;
       public final static int Default = DebugDraw;
       public final static int END = Default + 1;
@@ -533,12 +533,13 @@ public class btSoftBody extends btCollisionObject {
       return (cPtr == 0) ? null : new btSoftBody(cPtr, false);
     }
   
-    public void setFeature(int value) {
-      SoftbodyJNI.btSoftBody_sRayCast_feature_set(swigCPtr, this, value);
+    public void setFeature(SWIGTYPE_p_btSoftBody__eFeature___ value) {
+      SoftbodyJNI.btSoftBody_sRayCast_feature_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__eFeature___.getCPtr(value));
     }
   
-    public int getFeature() {
-      return SoftbodyJNI.btSoftBody_sRayCast_feature_get(swigCPtr, this);
+    public SWIGTYPE_p_btSoftBody__eFeature___ getFeature() {
+      long cPtr = SoftbodyJNI.btSoftBody_sRayCast_feature_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__eFeature___(cPtr, false);
     }
   
     public void setIndex(int value) {
@@ -2484,7 +2485,7 @@ public class btSoftBody extends btCollisionObject {
           this(SoftbodyJNI.new_btSoftBody_Joint_eType(), true);
         }
       
-        public final static class _ {
+        public final static class _Constants {
           public final static int Linear = 0;
           public final static int Angular = Linear + 1;
           public final static int Contact = Angular + 1;
@@ -2653,8 +2654,8 @@ public class btSoftBody extends btCollisionObject {
       SoftbodyJNI.btSoftBody_Joint_Terminate(swigCPtr, this, dt);
     }
   
-    public int Type() {
-      return SoftbodyJNI.btSoftBody_Joint_Type(swigCPtr, this);
+    public SWIGTYPE_p_btSoftBody__Joint__eType___ Type() {
+      return new SWIGTYPE_p_btSoftBody__Joint__eType___(SoftbodyJNI.btSoftBody_Joint_Type(swigCPtr, this), true);
     }
   
   }
@@ -3105,12 +3106,13 @@ public class btSoftBody extends btCollisionObject {
   		super.delete();
   	}
   
-    public void setAeromodel(int value) {
-      SoftbodyJNI.btSoftBody_Config_aeromodel_set(swigCPtr, this, value);
+    public void setAeromodel(SWIGTYPE_p_btSoftBody__eAeroModel___ value) {
+      SoftbodyJNI.btSoftBody_Config_aeromodel_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__eAeroModel___.getCPtr(value));
     }
   
-    public int getAeromodel() {
-      return SoftbodyJNI.btSoftBody_Config_aeromodel_get(swigCPtr, this);
+    public SWIGTYPE_p_btSoftBody__eAeroModel___ getAeromodel() {
+      long cPtr = SoftbodyJNI.btSoftBody_Config_aeromodel_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__eAeroModel___(cPtr, false);
     }
   
     public void setKVCF(float value) {
@@ -4157,8 +4159,8 @@ public class btSoftBody extends btCollisionObject {
     return SoftbodyJNI.btSoftBody_rayTest__SWIG_0(swigCPtr, this, rayFrom, rayTo, btSoftBody.sRayCast.getCPtr(results), results);
   }
 
-  public void setSolver(int preset) {
-    SoftbodyJNI.btSoftBody_setSolver(swigCPtr, this, preset);
+  public void setSolver(SWIGTYPE_p_btSoftBody__eSolverPresets___ preset) {
+    SoftbodyJNI.btSoftBody_setSolver(swigCPtr, this, SWIGTYPE_p_btSoftBody__eSolverPresets___.getCPtr(preset));
   }
 
   public void predictMotion(float dt) {
@@ -4317,9 +4319,14 @@ public class btSoftBody extends btCollisionObject {
     SoftbodyJNI.btSoftBody_VSolve_Links(btSoftBody.getCPtr(psb), psb, kst);
   }
 
-  public static SWIGTYPE_p_f_p_btSoftBody_float_float__void getSolver(int solver) {
-    long cPtr = SoftbodyJNI.btSoftBody_getSolver__SWIG_0(solver);
+  public static SWIGTYPE_p_f_p_btSoftBody_float_float__void getSolver(SWIGTYPE_p_btSoftBody__ePSolver___ solver) {
+    long cPtr = SoftbodyJNI.btSoftBody_getSolver__SWIG_0(SWIGTYPE_p_btSoftBody__ePSolver___.getCPtr(solver));
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_btSoftBody_float_float__void(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_f_p_btSoftBody_float__void getSolver(SWIGTYPE_p_btSoftBody__eVSolver___ solver) {
+    long cPtr = SoftbodyJNI.btSoftBody_getSolver__SWIG_1(SWIGTYPE_p_btSoftBody__eVSolver___.getCPtr(solver));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_btSoftBody_float__void(cPtr, false);
   }
 
   static private long SwigConstructbtSoftBody(btSoftBodyWorldInfo worldInfo, java.nio.FloatBuffer vertices, int vertexSize, int posOffset, int normalOffset, java.nio.ShortBuffer indices, int indexOffset, int numVertices, java.nio.ShortBuffer indexMap, int indexMapOffset) {

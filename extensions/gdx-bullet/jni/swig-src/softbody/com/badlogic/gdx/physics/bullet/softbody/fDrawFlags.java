@@ -64,7 +64,7 @@ public class fDrawFlags extends BulletBase {
     this(SoftbodyJNI.new_fDrawFlags(), true);
   }
 
-  public final static class _ {
+  public final static class _Constants {
     public final static int Nodes = 0x0001;
     public final static int Links = 0x0002;
     public final static int Faces = 0x0004;
