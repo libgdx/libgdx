@@ -23,7 +23,7 @@ subject to the following restrictions:
 //
 
 /* fDrawFlags															*/ 
-struct	fDrawFlags { enum _ {
+struct	fDrawFlags { enum _Constants {
 	Nodes		=	0x0001,
 	Links		=	0x0002,
 	Faces		=	0x0004,
