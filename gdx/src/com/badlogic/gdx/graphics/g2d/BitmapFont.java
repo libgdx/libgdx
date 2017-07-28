@@ -246,6 +246,13 @@ public class BitmapFont implements Disposable {
 		cache.getColor().set(r, g, b, a);
 	}
 
+	/** Reset the font to the original size */
+	public void resetScale () {
+		data.setScale(1 / data.scaleX, 1 / data.scaleY);
+		data.scaleX = 1;
+		data.scaleY = 1;
+	}
+
 	public float getScaleX () {
 		return data.scaleX;
 	}
