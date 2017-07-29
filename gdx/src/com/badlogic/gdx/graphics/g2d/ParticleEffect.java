@@ -142,7 +142,7 @@ public class ParticleEffect implements Disposable {
 		int index = 0;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			if (index++ > 0) output.write("\n\n");
+			if (index++ > 0) output.write("\n");
 			emitter.save(output);
 		}
 	}
@@ -171,7 +171,6 @@ public class ParticleEffect implements Disposable {
 				ParticleEmitter emitter = newEmitter(reader);
 				emitters.add(emitter);
 				if (reader.readLine() == null) break;
-				if (reader.readLine() == null) break;
 			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
@@ -187,15 +186,18 @@ public class ParticleEffect implements Disposable {
 	public void loadEmitterImages (TextureAtlas atlas, String atlasPrefix) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			String imagePath = emitter.getImagePath();
-			if (imagePath == null) continue;
-			String imageName = new File(imagePath.replace('\\', '/')).getName();
-			int lastDotIndex = imageName.lastIndexOf('.');
-			if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
-			if (atlasPrefix != null) imageName = atlasPrefix + imageName;
-			Sprite sprite = atlas.createSprite(imageName);
-			if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
-			emitter.setSprite(sprite);
+			if (emitter.getImagePaths().size == 0) continue;
+			Array<Sprite> sprites = new Array<Sprite>();
+			for (String imagePath : emitter.getImagePaths()) {
+				String imageName = new File(imagePath.replace('\\', '/')).getName();
+				int lastDotIndex = imageName.lastIndexOf('.');
+				if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
+				if (atlasPrefix != null) imageName = atlasPrefix + imageName;
+				Sprite sprite = atlas.createSprite(imageName);
+				if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
+				sprites.add(sprite);
+			}
+			emitter.setSprites(sprites);
 		}
 	}
 
@@ -204,15 +206,18 @@ public class ParticleEffect implements Disposable {
 		HashMap<String, Sprite> loadedSprites = new HashMap<String, Sprite>(emitters.size);
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			String imagePath = emitter.getImagePath();
-			if (imagePath == null) continue;
-			String imageName = new File(imagePath.replace('\\', '/')).getName();
-			Sprite sprite = loadedSprites.get(imageName);
-			if (sprite == null) {
-				sprite = new Sprite(loadTexture(imagesDir.child(imageName)));
-				loadedSprites.put(imageName, sprite);
+			if (emitter.getImagePaths().size == 0) continue;
+			Array<Sprite> sprites = new Array<Sprite>();
+			for (String imagePath : emitter.getImagePaths()) {
+				String imageName = new File(imagePath.replace('\\', '/')).getName();
+				Sprite sprite = loadedSprites.get(imageName);
+				if (sprite == null) {
+					sprite = new Sprite(loadTexture(imagesDir.child(imageName)));
+					loadedSprites.put(imageName, sprite);
+				}
+				sprites.add(sprite);
 			}
-			emitter.setSprite(sprite);
+			emitter.setSprites(sprites);
 		}
 	}
 
@@ -233,7 +238,9 @@ public class ParticleEffect implements Disposable {
 		if (!ownsTexture) return;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			emitter.getSprite().getTexture().dispose();
+			for (Sprite sprite : emitter.getSprites()) {
+				sprite.getTexture().dispose();
+			}
 		}
 	}
 

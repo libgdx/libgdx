@@ -25,6 +25,8 @@
 - API Change: removed JGLFW backend
 - Fixed mixed up use of TexturePacker.Settings.stripWhitespaceX|Y.
 - Added joystick POV support to LWJGL3 controller backend.
+- Added support for 2d particles sprite animation.
+- API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.

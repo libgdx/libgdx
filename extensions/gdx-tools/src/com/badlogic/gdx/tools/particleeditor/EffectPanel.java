@@ -61,7 +61,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setHigh(1);
 
 		emitter.setMaxParticleCount(25);
-		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
+		emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PARTICLE }));
 
 		addEmitter(name, select, emitter);
 		return emitter;
@@ -102,7 +102,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 
 		emitter.setMaxParticleCount(200);
-		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
+		emitter.setImagePaths(new Array<String>(new String[] { ParticleEditor.DEFAULT_PARTICLE }));
 
 		addEmitter(name, select, emitter);
 		return emitter;
@@ -189,11 +189,14 @@ class EffectPanel extends JPanel {
 		URI effectDirUri = effectFile.getParentFile().toURI();
 		for (ParticleEmitter emitter : editor.effect.getEmitters()) {
 			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
-			String imagePath = emitter.getImagePath();
-			if ((imagePath.contains("/") || imagePath.contains("\\")) && !imagePath.contains("..")) {
-				// it's absolute, make it relative:
-				URI imageUri = new File(emitter.getImagePath()).toURI();
-				emitter.setImagePath(effectDirUri.relativize(imageUri).getPath());
+			Array<String> imagePaths = emitter.getImagePaths();
+			for (int i = 0; i < imagePaths.size; i++) {
+				String imagePath = imagePaths.get(i);
+				if ((imagePath.contains("/") || imagePath.contains("\\")) && !imagePath.contains("..")) {
+					// it's absolute, make it relative:
+					URI imageUri = new File(imagePath).toURI();
+					imagePaths.set(i, effectDirUri.relativize(imageUri).getPath());
+				}
 			}
 		}
 

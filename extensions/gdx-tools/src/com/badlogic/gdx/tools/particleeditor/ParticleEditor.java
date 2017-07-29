@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
@@ -103,7 +104,7 @@ public class ParticleEditor extends JFrame {
 
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
-				addRow(new ImagePanel(ParticleEditor.this, "Image", ""));
+				addRow(new ImagePanel(ParticleEditor.this, "Images", ""));
 				addRow(new CountPanel(ParticleEditor.this, "Count",
 					"Min number of particles at all times, max number of particles allowed."));
 				addRow(new RangedNumericPanel(emitter.getDelay(), "Delay",
@@ -158,34 +159,6 @@ public class ParticleEditor extends JFrame {
 
 	public ParticleEmitter getEmitter () {
 		return effect.getEmitters().get(effectPanel.editIndex);
-	}
-
-	public ImageIcon getIcon (ParticleEmitter emitter) {
-		ParticleData data = particleData.get(emitter);
-		if (data == null) particleData.put(emitter, data = new ParticleData());
-		String imagePath = emitter.getImagePath();
-		if (data.icon == null && imagePath != null) {
-			try {
-				URL url;
-				File file = new File(imagePath);
-				if (file.exists())
-					url = file.toURI().toURL();
-				else {
-					url = ParticleEditor.class.getResource(imagePath);
-					if (url == null) return null;
-				}
-				data.icon = new ImageIcon(url);
-			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		return data.icon;
-	}
-
-	public void setIcon (ParticleEmitter emitters, ImageIcon icon) {
-		ParticleData data = particleData.get(emitters);
-		if (data == null) particleData.put(emitters, data = new ParticleData());
-		data.icon = icon;
 	}
 
 	public void setEnabled (ParticleEmitter emitter, boolean enabled) {
@@ -385,10 +358,10 @@ public class ParticleEditor extends JFrame {
 			activeCount = 0;
 			boolean complete = true;
 			for (ParticleEmitter emitter : effect.getEmitters()) {
-				if (emitter.getSprite() == null && emitter.getImagePath() != null) loadImage(emitter);
+				if (emitter.getSprites().size == 0 && emitter.getImagePaths().size > 0) loadImages(emitter);
 				boolean enabled = isEnabled(emitter);
 				if (enabled) {
-					if (emitter.getSprite() != null) emitter.draw(spriteBatch, delta);
+					if (emitter.getSprites().size > 0) emitter.draw(spriteBatch, delta);
 					activeCount += emitter.getActiveCount();
 					if (!emitter.isComplete()) complete = false;
 				}
@@ -421,37 +394,40 @@ public class ParticleEditor extends JFrame {
 			// 1);
 		}
 
-		private void loadImage (ParticleEmitter emitter) {
-			final String imagePath = emitter.getImagePath();
-			String imageName = new File(imagePath.replace('\\', '/')).getName();
+		private void loadImages (ParticleEmitter emitter) {
+			String imagePath = null;
 			try {
-				FileHandle file;
-				if (imagePath.equals(ParticleEditor.DEFAULT_PARTICLE) || imagePath.equals(ParticleEditor.DEFAULT_PREMULT_PARTICLE)) {
-					file = Gdx.files.classpath(imagePath);
-				} else {
-					if ((imagePath.contains("/") || imagePath.contains("\\")) && !imageName.contains("..")) {
-						file = Gdx.files.absolute(imagePath);
-						if (!file.exists()) {
-							// try to use image in effect directory
-							file = Gdx.files.absolute(new File(effectFile.getParentFile(), imageName).getAbsolutePath());
-						}
+				Array<Sprite> sprites = new Array<Sprite>();
+				Array<String> imagePaths = emitter.getImagePaths();
+				for (int i = 0; i < imagePaths.size; i++) {
+					imagePath = imagePaths.get(i);
+					String imageName = new File(imagePath.replace('\\', '/')).getName();
+					FileHandle file;
+					if (imagePath.equals(ParticleEditor.DEFAULT_PARTICLE) || imagePath.equals(ParticleEditor.DEFAULT_PREMULT_PARTICLE)) {
+						file = Gdx.files.classpath(imagePath);
 					} else {
-						file = Gdx.files.absolute(new File(effectFile.getParentFile(), imagePath).getAbsolutePath());
+						if ((imagePath.contains("/") || imagePath.contains("\\")) && !imageName.contains("..")) {
+							file = Gdx.files.absolute(imagePath);
+							if (!file.exists()) {
+								// try to use image in effect directory
+								file = Gdx.files.absolute(new File(effectFile.getParentFile(), imageName).getAbsolutePath());
+							}
+						} else {
+							file = Gdx.files.absolute(new File(effectFile.getParentFile(), imagePath).getAbsolutePath());
+						}
 					}
+					sprites.add(new Sprite(new Texture(file)));
 				}
-				emitter.setSprite(new Sprite(new Texture(file)));
-				if (effectFile != null) {
-					URI relativeUri = effectFile.getParentFile().toURI().relativize(file.file().toURI());
-					emitter.setImagePath(relativeUri.getPath());
-				}
+				emitter.setSprites(sprites);
 			} catch (GdxRuntimeException ex) {
 				ex.printStackTrace();
+				final String imagePathFinal = imagePath;
 				EventQueue.invokeLater(new Runnable() {
 					public void run () {
-						JOptionPane.showMessageDialog(ParticleEditor.this, "Error loading image:\n" + imagePath);
+						JOptionPane.showMessageDialog(ParticleEditor.this, "Error loading image:\n" + imagePathFinal);
 					}
 				});
-				emitter.setImagePath(null);
+				emitter.getImagePaths().clear();
 			}
 		}
 
@@ -512,8 +488,6 @@ public class ParticleEditor extends JFrame {
 	}
 
 	static class ParticleData {
-		public ImageIcon icon;
-		public String imagePath;
 		public boolean enabled = true;
 	}
 
