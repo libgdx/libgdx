@@ -41,7 +41,8 @@ public class ParticleEmitter {
 	private RangedNumericValue durationValue = new RangedNumericValue();
 	private ScaledNumericValue lifeValue = new ScaledNumericValue();
 	private ScaledNumericValue emissionValue = new ScaledNumericValue();
-	private ScaledNumericValue scaleValue = new ScaledNumericValue();
+	private ScaledNumericValue xScaleValue = new ScaledNumericValue();
+	private ScaledNumericValue yScaleValue = new ScaledNumericValue();
 	private ScaledNumericValue rotationValue = new ScaledNumericValue();
 	private ScaledNumericValue velocityValue = new ScaledNumericValue();
 	private ScaledNumericValue angleValue = new ScaledNumericValue();
@@ -55,7 +56,9 @@ public class ParticleEmitter {
 	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
 	
-	private RangedNumericValue[] sizeValues, motionValues; // lazy
+	private RangedNumericValue[] xSizeValues;
+	private RangedNumericValue[] ySizeValues;
+	private RangedNumericValue[] motionValues;
 
 	private float accumulator;
 	private Sprite sprite;
@@ -108,7 +111,8 @@ public class ParticleEmitter {
 		emissionValue.load(emitter.emissionValue);
 		lifeValue.load(emitter.lifeValue);
 		lifeOffsetValue.load(emitter.lifeOffsetValue);
-		scaleValue.load(emitter.scaleValue);
+		xScaleValue.load(emitter.xScaleValue);
+		yScaleValue.load(emitter.yScaleValue);
 		rotationValue.load(emitter.rotationValue);
 		velocityValue.load(emitter.velocityValue);
 		angleValue.load(emitter.angleValue);
@@ -134,7 +138,7 @@ public class ParticleEmitter {
 		durationValue.setAlwaysActive(true);
 		emissionValue.setAlwaysActive(true);
 		lifeValue.setAlwaysActive(true);
-		scaleValue.setAlwaysActive(true);
+		xScaleValue.setAlwaysActive(true);
 		transparencyValue.setAlwaysActive(true);
 		spawnShapeValue.setAlwaysActive(true);
 		spawnWidthValue.setAlwaysActive(true);
@@ -370,7 +374,8 @@ public class ParticleEmitter {
 		updateFlags = 0;
 		if (angleValue.active && angleValue.timeline.length > 1) updateFlags |= UPDATE_ANGLE;
 		if (velocityValue.active) updateFlags |= UPDATE_VELOCITY;
-		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
+		if (xScaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
+		if (yScaleValue.active && yScaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
 		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
 		if (windValue.active) updateFlags |= UPDATE_WIND;
 		if (gravityValue.active) updateFlags |= UPDATE_GRAVITY;
@@ -415,10 +420,21 @@ public class ParticleEmitter {
 		}
 
 		float spriteWidth = sprite.getWidth();
-		particle.scale = scaleValue.newLowValue() / spriteWidth;
-		particle.scaleDiff = scaleValue.newHighValue() / spriteWidth;
-		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scale;
-		particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
+		float spriteHeight = sprite.getHeight();
+		
+		particle.xScale = xScaleValue.newLowValue() / spriteWidth;
+		particle.xScaleDiff = xScaleValue.newHighValue() / spriteWidth;
+		if (!xScaleValue.isRelative()) particle.xScaleDiff -= particle.xScale;
+		
+		if (yScaleValue.active) {
+			particle.yScale = yScaleValue.newLowValue() / spriteHeight;
+			particle.yScaleDiff = yScaleValue.newHighValue() / spriteHeight;
+			if (!yScaleValue.isRelative()) particle.yScaleDiff -= particle.yScale;
+			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0), 
+				particle.yScale + particle.yScaleDiff * yScaleValue.getScale(0));
+		} else {
+			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0));
+		}
 
 		if (rotationValue.active) {
 			particle.rotation = rotationValue.newLowValue();
@@ -520,7 +536,6 @@ public class ParticleEmitter {
 		}
 		}
 
-		float spriteHeight = sprite.getHeight();
 		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
 
 		int offsetTime = (int)(lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent));
@@ -538,8 +553,14 @@ public class ParticleEmitter {
 		float percent = 1 - particle.currentLife / (float)particle.life;
 		int updateFlags = this.updateFlags;
 
-		if ((updateFlags & UPDATE_SCALE) != 0)
-			particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(percent));
+		if ((updateFlags & UPDATE_SCALE) != 0) {
+			if (yScaleValue.active) {
+				particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(percent),
+					particle.yScale + particle.yScaleDiff * yScaleValue.getScale(percent));
+			} else {
+				particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(percent));
+			}
+		}
 
 		if ((updateFlags & UPDATE_VELOCITY) != 0) {
 			float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(percent)) * delta;
@@ -643,8 +664,12 @@ public class ParticleEmitter {
 		return lifeValue;
 	}
 
-	public ScaledNumericValue getScale () {
-		return scaleValue;
+	public ScaledNumericValue getXScale () {
+		return xScaleValue;
+	}
+	
+	public ScaledNumericValue getYScale () {
+		return yScaleValue;
 	}
 
 	public ScaledNumericValue getRotation () {
@@ -865,16 +890,24 @@ public class ParticleEmitter {
 		return bounds;
 	}
 	
-	protected RangedNumericValue[] getSizeValues (){
-		if (sizeValues == null){
-			sizeValues = new RangedNumericValue[5];
-			sizeValues[0] = scaleValue;
-			sizeValues[1] = spawnWidthValue;
-			sizeValues[2] = spawnHeightValue;
-			sizeValues[3] = xOffsetValue;
-			sizeValues[4] = yOffsetValue;
+	protected RangedNumericValue[] getXSizeValues (){
+		if (xSizeValues == null){
+			xSizeValues = new RangedNumericValue[3];
+			xSizeValues[0] = xScaleValue;
+			xSizeValues[1] = spawnWidthValue;
+			xSizeValues[2] = xOffsetValue;
 		}
-		return sizeValues;
+		return xSizeValues;
+	}
+	
+	protected RangedNumericValue[] getYSizeValues (){
+		if (ySizeValues == null){
+			ySizeValues = new RangedNumericValue[3];
+			ySizeValues[0] = yScaleValue;
+			ySizeValues[1] = spawnHeightValue;
+			ySizeValues[2] = yOffsetValue;
+		}
+		return ySizeValues;
 	}
 	
 	protected RangedNumericValue[] getMotionValues (){
@@ -890,7 +923,14 @@ public class ParticleEmitter {
 	/** Permanently scales the size of the emitter by scaling all its ranged values related to size. */
 	public void scaleSize (float scale){
 		if (scale == 1f) return;
-		for (RangedNumericValue value : getSizeValues()) value.scale(scale);
+		scaleSize(scale, scale);
+	}
+	
+	/** Permanently scales the size of the emitter by scaling all its ranged values related to size. */
+	public void scaleSize (float scaleX, float scaleY){
+		if (scaleX == 1f && scaleY == 1f) return;
+		for (RangedNumericValue value : getXSizeValues()) value.scale(scaleX);
+		for (RangedNumericValue value : getYSizeValues()) value.scale(scaleY);
 	}
 	
 	/** Permanently scales the speed of the emitter by scaling all its ranged values related to motion. */
@@ -901,8 +941,23 @@ public class ParticleEmitter {
 	
 	/** Sets all size-related ranged values to match those of the template emitter. */
 	public void matchSize (ParticleEmitter template){
-		RangedNumericValue[] values = getSizeValues();
-		RangedNumericValue[] templateValues = template.getSizeValues();
+		matchXSize(template);
+		matchYSize(template);
+	}
+	
+	/** Sets all horizontal size-related ranged values to match those of the template emitter. */
+	public void matchXSize (ParticleEmitter template){
+		RangedNumericValue[] values = getXSizeValues();
+		RangedNumericValue[] templateValues = template.getXSizeValues();
+		for (int i=0; i<values.length; i++){
+			values[i].set(templateValues[i]);
+		}
+	}
+	
+	/** Sets all vertical size-related ranged values to match those of the template emitter. */
+	public void matchYSize (ParticleEmitter template){
+		RangedNumericValue[] values = getYSizeValues();
+		RangedNumericValue[] templateValues = template.getYSizeValues();
 		for (int i=0; i<values.length; i++){
 			values[i].set(templateValues[i]);
 		}
@@ -942,8 +997,10 @@ public class ParticleEmitter {
 		spawnWidthValue.save(output);
 		output.write("- Spawn Height - \n");
 		spawnHeightValue.save(output);
-		output.write("- Scale - \n");
-		scaleValue.save(output);
+		output.write("- X Scale - \n");
+		xScaleValue.save(output);
+		output.write("- Y Scale - \n");
+		yScaleValue.save(output);
 		output.write("- Velocity - \n");
 		velocityValue.save(output);
 		output.write("- Angle - \n");
@@ -995,8 +1052,15 @@ public class ParticleEmitter {
 			spawnWidthValue.load(reader);
 			reader.readLine();
 			spawnHeightValue.load(reader);
-			reader.readLine();
-			scaleValue.load(reader);
+			String line = reader.readLine();
+			if (line.equals("- Scale - ")) {
+				xScaleValue.load(reader);
+				yScaleValue.setActive(false);
+			} else {
+				xScaleValue.load(reader);
+				reader.readLine();
+				yScaleValue.load(reader);
+			}
 			reader.readLine();
 			velocityValue.load(reader);
 			reader.readLine();
@@ -1019,7 +1083,7 @@ public class ParticleEmitter {
 			behind = readBoolean(reader, "behind");
 
 			// Backwards compatibility
-			String line = reader.readLine();
+			line = reader.readLine();
 			if (line.startsWith("premultipliedAlpha")) {
 				premultipliedAlpha = readBoolean(line);
 				reader.readLine();
@@ -1059,7 +1123,8 @@ public class ParticleEmitter {
 
 	public static class Particle extends Sprite {
 		protected int life, currentLife;
-		protected float scale, scaleDiff;
+		protected float xScale, xScaleDiff;
+		protected float yScale, yScaleDiff;
 		protected float rotation, rotationDiff;
 		protected float velocity, velocityDiff;
 		protected float angle, angleDiff;

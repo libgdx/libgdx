@@ -38,7 +38,9 @@ public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
 	private BoundingBox bounds;
 	private boolean ownsTexture;
-	protected float sizeScale = 1f, motionScale = 1f;
+	protected float xSizeScale = 1f;
+	protected float ySizeScale = 1f;
+	protected float motionScale = 1f;
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -67,9 +69,9 @@ public class ParticleEffect implements Disposable {
 	public void reset (boolean resetScaling){
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).reset();
-		if (resetScaling && (sizeScale != 1f || motionScale != 1f)){
-			scaleEffect(1f / sizeScale, 1f / motionScale);
-			sizeScale = motionScale = 1f;
+		if (resetScaling && (xSizeScale != 1f || ySizeScale != 1f || motionScale != 1f)){
+			scaleEffect(1f / xSizeScale, 1f / ySizeScale, 1f / motionScale);
+			xSizeScale = ySizeScale = motionScale = 1f;
 		}
 	}
 
@@ -251,16 +253,23 @@ public class ParticleEffect implements Disposable {
 	/** Permanently scales all the size and motion parameters of all the emitters in this effect. If this effect originated from a
 	 * {@link ParticleEffectPool}, the scale will be reset when it is returned to the pool. */
 	public void scaleEffect (float scaleFactor) {
-		scaleEffect(scaleFactor, scaleFactor);
+		scaleEffect(scaleFactor, scaleFactor, scaleFactor);
+	}
+	
+	/** Permanently scales all the size and motion parameters of all the emitters in this effect. If this effect originated from a
+	 * {@link ParticleEffectPool}, the scale will be reset when it is returned to the pool. */
+	public void scaleEffect (float scaleFactor, float motionScaleFactor) {
+		scaleEffect(scaleFactor, scaleFactor, motionScaleFactor);
 	}
 
 	/** Permanently scales all the size and motion parameters of all the emitters in this effect. If this effect originated from a
 	 * {@link ParticleEffectPool}, the scale will be reset when it is returned to the pool. */
-	public void scaleEffect (float sizeScaleFactor, float motionScaleFactor) {
-		sizeScale *= sizeScaleFactor;
+	public void scaleEffect (float xSizeScaleFactor, float ySizeScaleFactor, float motionScaleFactor) {
+		xSizeScale *= xSizeScaleFactor;
+		ySizeScale *= ySizeScaleFactor;
 		motionScale *= motionScaleFactor;
 		for (ParticleEmitter particleEmitter : emitters) {
-			particleEmitter.scaleSize(sizeScaleFactor);
+			particleEmitter.scaleSize(xSizeScaleFactor, ySizeScaleFactor);
 			particleEmitter.scaleMotion(motionScaleFactor);
 		}
 	}
