@@ -1,4 +1,4 @@
-apply plugin: "java"
+apply plugin: "%LANG%"
 
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

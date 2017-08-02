@@ -122,7 +122,7 @@ public final class StreamUtils {
 		if (c != null) {
 			try {
 				c.close();
-			} catch (Exception ignored) {
+			} catch (Throwable ignored) {
 			}
 		}
 	}

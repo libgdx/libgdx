@@ -14,21 +14,26 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "java"
+package com.badlogic.gdx.controllers.gwt.support;
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+import com.google.gwt.core.client.JavaScriptObject;
 
-sourceSets.main.java.srcDirs = ["src"]
-sourceSets.main.resources.srcDirs = ["src"]
-sourceSets.test.java.srcDirs = ["test"]
+public final class GamepadButton extends JavaScriptObject {
 
-compileJava {
-    options.fork = true
-    options.incremental = true
-}
+    protected GamepadButton() {
+        // Required by GWT
+    }
 
-dependencies {
-    compileOnly project(":extensions:gdx-jnigen")
-    testCompile libraries.junit
+    public native boolean getPressed() /*-{
+		return this.pressed;
+	}-*/;
+
+    public native double getTouched() /*-{
+		return this.touched;
+	}-*/;
+
+    public native double getValue() /*-{
+		return this.value;
+	}-*/;
+
 }
