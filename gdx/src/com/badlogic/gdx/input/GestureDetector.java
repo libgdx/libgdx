@@ -107,7 +107,7 @@ public class GestureDetector extends InputAdapter {
 				longPressFired = false;
 				tapSquareCenterX = x;
 				tapSquareCenterY = y;
-				if (!longPressTask.isScheduled()) Timer.schedule(longPressTask, longPressSeconds);
+				if (!longPressTask.isScheduled()) new Timer().schedule(longPressTask, longPressSeconds);
 			}
 		} else {
 			// Start pinch.
