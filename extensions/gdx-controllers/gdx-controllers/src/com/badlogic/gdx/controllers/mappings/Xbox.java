@@ -154,6 +154,6 @@ public class Xbox {
 	/** @return whether the {@link Controller} is an Xbox controller
 	 */
 	public static boolean isXboxController(Controller controller) {
-		return controller.getName().contains("Xbox");
+		return controller.getName().contains("Xbox") || controller.getName().contains("X-Box");
 	}
 }
