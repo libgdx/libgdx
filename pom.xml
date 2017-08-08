@@ -45,10 +45,9 @@
     <android.version>4.4</android.version>
     <gwt.version>2.8.1</gwt.version>
     <lwjgl.version>2.9.2</lwjgl.version>
-    <lwjgl3.version>3.1.0</lwjgl3.version>
-    <jglfw.version>1.1</jglfw.version>
+    <lwjgl3.version>3.1.2</lwjgl3.version>
     <robovm.version>2.3.0</robovm.version>
-    <moe.version>1.3.0-beta-2</moe.version>
+    <moe.version>1.3.6</moe.version>
   </properties>
 
   <modules>
@@ -58,8 +57,7 @@
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
-    <module>backends/gdx-backend-lwjgl3</module>
-    <module>backends/gdx-backend-jglfw</module>
+    <module>backends/gdx-backend-lwjgl3</module>    
     <module>backends/gdx-backends-gwt</module>
     <module>backends/gdx-backend-headless</module>
     <module>backends/gdx-backend-moe</module>

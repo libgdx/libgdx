@@ -23,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Clipboard;
 
-/** Clipboard implementation for desktop that uses the system clipboard via the default AWT {@link Toolkit}.
+/** Clipboard implementation for desktop that uses the system clipboard via GLFW.
  * @author mzechner */
 public class Lwjgl3Clipboard implements Clipboard {
 	@Override

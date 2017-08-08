@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 public class ParticleEffectPool extends Pool<PooledEffect> {
@@ -30,21 +31,28 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 	protected PooledEffect newObject () {
 		return new PooledEffect(effect);
 	}
-
-	public PooledEffect obtain () {
-		PooledEffect effect = super.obtain();
-		effect.reset();
-		return effect;
+	
+	public void free (PooledEffect effect) {
+		super.free(effect);
+		
+		effect.reset(false); // copy parameters exactly to avoid introducing error
+		if (effect.sizeScale != this.effect.sizeScale || effect.motionScale != this.effect.motionScale){
+			Array<ParticleEmitter> emitters = effect.getEmitters();
+			Array<ParticleEmitter> templateEmitters = this.effect.getEmitters();
+			for (int i=0; i<emitters.size; i++){
+				ParticleEmitter emitter = emitters.get(i);
+				ParticleEmitter templateEmitter = templateEmitters.get(i);
+				emitter.matchSize(templateEmitter);
+				emitter.matchMotion(templateEmitter);
+			}
+			effect.sizeScale = this.effect.sizeScale;
+			effect.motionScale = this.effect.motionScale;
+		}
 	}
 
 	public class PooledEffect extends ParticleEffect {
 		PooledEffect (ParticleEffect effect) {
 			super(effect);
-		}
-
-		@Override
-		public void reset () {
-			super.reset();
 		}
 
 		public void free () {

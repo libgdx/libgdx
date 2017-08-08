@@ -74,32 +74,32 @@ public class FreetypeBuild {
 		win32home.excludeFromMasterBuildFile = true;
 		win32home.headerDirs = headers;
 		win32home.cIncludes = sources;
-		win32home.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		win32home.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		win32home.cFlags += "  -DFT2_BUILD_LIBRARY";
+		win32home.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.headerDirs = headers;
 		win32.cIncludes = sources;
-		win32.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		win32.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		win32.cFlags += "  -DFT2_BUILD_LIBRARY";
+		win32.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.headerDirs = headers;
 		win64.cIncludes = sources;
-		win64.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		win64.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		win64.cFlags += "  -DFT2_BUILD_LIBRARY";
+		win64.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.headerDirs = headers;
 		lin32.cIncludes = sources;
-		lin32.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		lin32.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		lin32.cFlags += "  -DFT2_BUILD_LIBRARY";
+		lin32.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.headerDirs = headers;
 		lin64.cIncludes = sources;
-		lin64.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		lin64.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		lin64.cFlags += "  -DFT2_BUILD_LIBRARY";
+		lin64.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.headerDirs = headers;
@@ -118,8 +118,8 @@ public class FreetypeBuild {
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.headerDirs = headers;
 		android.cIncludes = sources;
-		android.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
-		android.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		android.cFlags += "  -DFT2_BUILD_LIBRARY";
+		android.cppFlags += "  -DFT2_BUILD_LIBRARY";
 
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.headerDirs = headers;
@@ -127,7 +127,7 @@ public class FreetypeBuild {
 		ios.cFlags += " -DFT2_BUILD_LIBRARY";
 		ios.cppFlags += " -DFT2_BUILD_LIBRARY";
 
-		new NativeCodeGenerator().generate();
+		new NativeCodeGenerator().generate("src", "bin:../../gdx/bin", "jni");
 		new AntScriptGenerator()
 			.generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, mac64, android, ios);
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v clean");

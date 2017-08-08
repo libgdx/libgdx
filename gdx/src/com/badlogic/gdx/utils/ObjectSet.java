@@ -343,17 +343,34 @@ public class ObjectSet<T> implements Iterable<T> {
 			index = hash2(hashCode);
 			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (!key.equals(keyTable[index])) return containsKeyStash(key);
+				if (!key.equals(keyTable[index])) return getKeyStash(key) != null;
 			}
 		}
 		return true;
 	}
 
-	private boolean containsKeyStash (T key) {
+	/** @return May be null. */
+	public T get (T key) {
+		int hashCode = key.hashCode();
+		int index = hashCode & mask;
+		T found = keyTable[index];
+		if (!key.equals(found)) {
+			index = hash2(hashCode);
+			found = keyTable[index];
+			if (!key.equals(found)) {
+				index = hash3(hashCode);
+				found = keyTable[index];
+				if (!key.equals(found)) return getKeyStash(key);
+			}
+		}
+		return found;
+	}
+
+	private T getKeyStash (T key) {
 		T[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (key.equals(keyTable[i])) return true;
-		return false;
+			if (key.equals(keyTable[i])) return keyTable[i];
+		return null;
 	}
 
 	public T first () {
@@ -445,8 +462,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		return buffer.toString();
 	}
 
-	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link ObjectSetIterator} constructor for nested or multithreaded iteration. */
+	/** Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link ObjectSetIterator} constructor for nested or multithreaded iteration. */
 	public ObjectSetIterator<T> iterator () {
 		if (iterator1 == null) {
 			iterator1 = new ObjectSetIterator(this);

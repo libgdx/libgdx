@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -53,6 +54,8 @@ public class ParticleEmitter {
 	private ScaledNumericValue spawnWidthValue = new ScaledNumericValue();
 	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
+	
+	private RangedNumericValue[] sizeValues, motionValues; // lazy
 
 	private float accumulator;
 	private Sprite sprite;
@@ -378,6 +381,10 @@ public class ParticleEmitter {
 		return new Particle(sprite);
 	}
 
+	protected Particle[] getParticles () {
+		return particles;
+	}
+
 	private void activateParticle (int index) {
 		Particle particle = particles[index];
 		if (particle == null) {
@@ -609,6 +616,7 @@ public class ParticleEmitter {
 			if (particle == null) break;
 			particle.setTexture(texture);
 			particle.setOrigin(originX, originY);
+			particle.setRegion(sprite);
 		}
 	}
 
@@ -855,6 +863,58 @@ public class ParticleEmitter {
 			}
 
 		return bounds;
+	}
+	
+	protected RangedNumericValue[] getSizeValues (){
+		if (sizeValues == null){
+			sizeValues = new RangedNumericValue[5];
+			sizeValues[0] = scaleValue;
+			sizeValues[1] = spawnWidthValue;
+			sizeValues[2] = spawnHeightValue;
+			sizeValues[3] = xOffsetValue;
+			sizeValues[4] = yOffsetValue;
+		}
+		return sizeValues;
+	}
+	
+	protected RangedNumericValue[] getMotionValues (){
+		if (motionValues == null){
+			motionValues = new RangedNumericValue[3];
+			motionValues[0] = velocityValue;
+			motionValues[1] = windValue;
+			motionValues[2] = gravityValue;
+		}
+		return motionValues;
+	}
+	
+	/** Permanently scales the size of the emitter by scaling all its ranged values related to size. */
+	public void scaleSize (float scale){
+		if (scale == 1f) return;
+		for (RangedNumericValue value : getSizeValues()) value.scale(scale);
+	}
+	
+	/** Permanently scales the speed of the emitter by scaling all its ranged values related to motion. */
+	public void scaleMotion (float scale){
+		if (scale == 1f) return;
+		for (RangedNumericValue value : getMotionValues()) value.scale(scale);
+	}
+	
+	/** Sets all size-related ranged values to match those of the template emitter. */
+	public void matchSize (ParticleEmitter template){
+		RangedNumericValue[] values = getSizeValues();
+		RangedNumericValue[] templateValues = template.getSizeValues();
+		for (int i=0; i<values.length; i++){
+			values[i].set(templateValues[i]);
+		}
+	}
+	
+	/** Sets all motion-related ranged values to match those of the template emitter. */
+	public void matchMotion (ParticleEmitter template){
+		RangedNumericValue[] values = getMotionValues();
+		RangedNumericValue[] templateValues = template.getMotionValues();
+		for (int i=0; i<values.length; i++){
+			values[i].set(templateValues[i]);
+		}
 	}
 
 	public void save (Writer output) throws IOException {
@@ -1115,6 +1175,17 @@ public class ParticleEmitter {
 		public void setLowMax (float lowMax) {
 			this.lowMax = lowMax;
 		}
+		
+		/** permanently scales the range by a scalar. */
+		public void scale (float scale){
+			lowMin *= scale;
+			lowMax *= scale;
+		}
+		
+		public void set (RangedNumericValue value){
+			this.lowMin = value.lowMin;
+			this.lowMax = value.lowMax;
+		}
 
 		public void save (Writer output) throws IOException {
 			super.save(output);
@@ -1171,6 +1242,34 @@ public class ParticleEmitter {
 
 		public void setHighMax (float highMax) {
 			this.highMax = highMax;
+		}
+		
+		public void scale (float scale){
+			super.scale(scale);
+			highMin *= scale;
+			highMax *= scale;
+		}
+		
+		public void set (RangedNumericValue value){
+			if (value instanceof ScaledNumericValue)
+				set((ScaledNumericValue)value);
+			else
+				super.set(value);
+		}
+		
+		public void set (ScaledNumericValue value){
+			super.set(value);
+			this.highMin = value.highMin;
+			this.highMax = value.highMax;
+			if (scaling.length != value.scaling.length)
+				scaling = Arrays.copyOf(value.scaling, value.scaling.length);
+			else
+				System.arraycopy(value.scaling, 0, scaling, 0, scaling.length);
+			if (timeline.length != value.timeline.length)
+				timeline = Arrays.copyOf(value.timeline, value.timeline.length);
+			else
+				System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
+			this.relative = value.relative;
 		}
 
 		public float[] getScaling () {

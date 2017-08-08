@@ -446,6 +446,27 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return true;
 	}
 
+	/**
+	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 *
+	 * @param other other vector to compare
+	 * @return true if vector are equal, otherwise false
+	 */
+	public boolean epsilonEquals (final Vector2 other) {
+		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/**
+	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	 *
+	 * @param x x component of the other vector to compare
+	 * @param y y component of the other vector to compare
+	 * @return true if vector are equal, otherwise false
+	 */
+	public boolean epsilonEquals (float x, float y) {
+		return epsilonEquals(x, y, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
 	@Override
 	public boolean isUnit () {
 		return isUnit(0.000000001f);

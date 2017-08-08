@@ -41,8 +41,8 @@ public class Lwjgl3Window implements Disposable {
 	private final ApplicationListener listener;
 	private boolean listenerInitialized = false;
 	private Lwjgl3WindowListener windowListener;
-	private final Lwjgl3Graphics graphics;
-	private final Lwjgl3Input input;
+	private Lwjgl3Graphics graphics;
+	private Lwjgl3Input input;
 	private final Lwjgl3ApplicationConfiguration config;
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -152,23 +152,29 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 
-	Lwjgl3Window(long windowHandle, ApplicationListener listener,
-			Lwjgl3ApplicationConfiguration config) {
-		this.windowHandle = windowHandle;
+	Lwjgl3Window(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		this.listener = listener;
 		this.windowListener = config.windowListener;
 		this.config = config;
-		this.input = new Lwjgl3Input(this);
-		this.graphics = new Lwjgl3Graphics(this);
 		this.tmpBuffer = BufferUtils.createIntBuffer(1);
 		this.tmpBuffer2 = BufferUtils.createIntBuffer(1);
-		
+	}
+
+	void create(long windowHandle) {
+		this.windowHandle = windowHandle;
+		this.input = new Lwjgl3Input(this);
+		this.graphics = new Lwjgl3Graphics(this);
+
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
 		GLFW.glfwSetWindowMaximizeCallback(windowHandle, maximizeCallback);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback);
 		GLFW.glfwSetDropCallback(windowHandle, dropCallback);
 		GLFW.glfwSetWindowRefreshCallback(windowHandle, refreshCallback);
+
+		if (windowListener != null) {
+			windowListener.created(this);
+		}
 	}
 
 	/** @return the {@link ApplicationListener} associated with this window **/	 

@@ -23,7 +23,7 @@ uniform Light lights[NUM_LIGHTS];
 
 void main () {
     vec4 diffuse = texture(u_diffuseTexture, v_texCoords);
-    vec3 normal = normalize(texture(u_normalTexture, v_texCoords).xyz);
+    vec3 normal = (texture(u_normalTexture, v_texCoords).xyz * 2.0) - 1.0;
     //vec3 position = texture(u_positionTexture, v_texCoords).xyz;
     float specular = diffuse.a;
 
@@ -43,7 +43,7 @@ void main () {
     vec3 halfview;
     float spec;
 
-    float shiney = 37.0;
+    float shiney = 1007.0;
     vec3 globalLightColor = vec3(1.0);
     vec3 spotLightColor = vec3(1.0);
 

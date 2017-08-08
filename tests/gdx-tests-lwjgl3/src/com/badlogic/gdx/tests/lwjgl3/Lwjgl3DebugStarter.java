@@ -178,6 +178,10 @@ public class Lwjgl3DebugStarter {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
 		config.setWindowListener(new Lwjgl3WindowListener() {
+			@Override
+			public void created(Lwjgl3Window window) {
+				Gdx.app.log("Window", "created");
+			}
 
 			@Override
 			public void iconified (boolean isIconified) {

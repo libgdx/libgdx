@@ -47,8 +47,18 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public void setGL20 (GL20 gl20) {
+
+	}
+
+	@Override
 	public GL30 getGL30() {
 		return null;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+
 	}
 
 	@Override
