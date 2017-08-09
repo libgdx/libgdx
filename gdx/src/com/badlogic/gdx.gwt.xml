@@ -30,6 +30,7 @@
 		<include name="assets/AssetLoaderParameters.java"/>
 		<include name="assets/AssetLoadingTask.java"/>
 		<include name="assets/AssetManager.java"/>
+		<include name="assets/OndemandAssetManager.java"/>
 		<include name="assets/RefCountedContainer.java"/>
 
 	<!-- assets/loaders -->
