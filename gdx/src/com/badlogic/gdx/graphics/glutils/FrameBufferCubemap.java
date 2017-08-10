@@ -65,7 +65,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	private int currentSide;
 
 	/** cubemap sides cache */
-	private Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
+	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 *
