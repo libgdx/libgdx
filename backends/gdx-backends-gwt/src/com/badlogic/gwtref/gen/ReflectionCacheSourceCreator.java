@@ -275,7 +275,7 @@ public class ReflectionCacheSourceCreator {
 			return;
 		}
 		types.add(type.getErasedType());
-		out(type.getErasedType().getQualifiedSourceName(), nesting);
+		//out(type.getErasedType().getQualifiedSourceName(), nesting);
 
 		if (type instanceof JPrimitiveType) {
 			// nothing to do for a primitive type
