@@ -84,6 +84,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
+			if (!mapObject.isVisible()) continue;
 			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
