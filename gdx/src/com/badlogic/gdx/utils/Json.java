@@ -787,7 +787,7 @@ public class Json {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
-			FieldMetadata metadata = fields.get(child.name);
+			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
 				if (child.name.equals(typeName)) continue;
 				if (ignoreUnknownFields) {
@@ -887,6 +887,8 @@ public class Json {
 			if (typeName != null && ClassReflection.isAssignableFrom(Collection.class, type)) {
 				// JSON object wrapper to specify type.
 				jsonData = jsonData.get("items");
+				if (jsonData == null) throw new SerializationException(
+					"Unable to convert object to collection: " + jsonData + " (" + type.getName() + ")");
 			} else {
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonData, type);
