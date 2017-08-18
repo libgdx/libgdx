@@ -265,8 +265,9 @@
 		<include name="graphics/glutils/VertexData.java"/>
 
 	<!-- graphics/profiling -->
-		<include name="graphics/profiling/GL20Profiler.java"/>
-		<include name="graphics/profiling/GL30Profiler.java"/>
+		<include name="graphics/profiling/GL20Interceptor.java"/>
+		<include name="graphics/profiling/GL30Interceptor.java"/>
+		<include name="graphics/profiling/GLInterceptor.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
 		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						

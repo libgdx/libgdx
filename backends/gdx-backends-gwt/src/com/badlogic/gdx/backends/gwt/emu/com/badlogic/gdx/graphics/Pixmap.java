@@ -24,6 +24,7 @@ import java.util.Map;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -93,7 +94,8 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	static String clearColor = make(255, 255, 255, 1.0f);
-	Blending blending;
+	Blending blending = Blending.SourceOver;
+	Filter filter = Filter.BiLinear;
 	CanvasPixelArray pixels;
 	private ImageElement imageElement;
 
@@ -160,6 +162,12 @@ public class Pixmap implements Disposable {
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
 	public void setFilter (Filter filter) {
+		this.filter = filter;
+	}
+
+	/** @return the currently set {@link Filter} */
+	public Filter getFilter () {
+		return filter;
 	}
 
 	public Format getFormat () {

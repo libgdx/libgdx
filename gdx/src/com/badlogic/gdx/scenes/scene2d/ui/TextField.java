@@ -865,57 +865,68 @@ public class TextField extends Widget implements Disableable {
 			boolean repeat = false;
 			boolean ctrl = UIUtils.ctrl();
 			boolean jump = ctrl && !passwordMode;
+			boolean handled = true;
 
 			if (ctrl) {
-				if (keycode == Keys.V) {
+				switch (keycode) {
+				case Keys.V:
 					paste(clipboard.getContents(), true);
 					repeat = true;
-				}
-				if (keycode == Keys.C || keycode == Keys.INSERT) {
+					break;
+				case Keys.C:
+				case Keys.INSERT:
 					copy();
 					return true;
-				}
-				if (keycode == Keys.X) {
+				case Keys.X:
 					cut(true);
 					return true;
-				}
-				if (keycode == Keys.A) {
+				case Keys.A:
 					selectAll();
 					return true;
-				}
-				if (keycode == Keys.Z) {
+				case Keys.Z:
 					String oldText = text;
 					setText(undoText);
 					undoText = oldText;
 					updateDisplayText();
 					return true;
+				default:
+					handled = false;
 				}
 			}
 
 			if (UIUtils.shift()) {
-				if (keycode == Keys.INSERT) paste(clipboard.getContents(), true);
-				if (keycode == Keys.FORWARD_DEL) cut(true);
+				switch (keycode) {
+				case Keys.INSERT:
+					paste(clipboard.getContents(), true);
+					break;
+				case Keys.FORWARD_DEL:
+					cut(true);
+					break;
+				}
+
 				selection:
 				{
 					int temp = cursor;
 					keys:
 					{
-						if (keycode == Keys.LEFT) {
+						switch (keycode) {
+						case Keys.LEFT:
 							moveCursor(false, jump);
 							repeat = true;
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.RIGHT) {
+						case Keys.RIGHT:
 							moveCursor(true, jump);
 							repeat = true;
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.HOME) {
+						case Keys.HOME:
 							goHome(jump);
+							handled = true;
 							break keys;
-						}
-						if (keycode == Keys.END) {
+						case Keys.END:
 							goEnd(jump);
+							handled = true;
 							break keys;
 						}
 						break selection;
@@ -927,31 +938,36 @@ public class TextField extends Widget implements Disableable {
 				}
 			} else {
 				// Cursor movement or other keys (kills selection).
-				if (keycode == Keys.LEFT) {
+				switch (keycode) {
+				case Keys.LEFT:
 					moveCursor(false, jump);
 					clearSelection();
 					repeat = true;
-				}
-				if (keycode == Keys.RIGHT) {
+					handled = true;
+					break;
+				case Keys.RIGHT:
 					moveCursor(true, jump);
 					clearSelection();
 					repeat = true;
-				}
-				if (keycode == Keys.HOME) {
+					handled = true;
+					break;
+				case Keys.HOME:
 					goHome(jump);
 					clearSelection();
-				}
-				if (keycode == Keys.END) {
+					handled = true;
+					break;
+				case Keys.END:
 					goEnd(jump);
 					clearSelection();
+					handled = true;
+					break;
 				}
 			}
+
 			cursor = MathUtils.clamp(cursor, 0, text.length());
 
-			if (repeat) {
-				scheduleKeyRepeatTask(keycode);
-			}
-			return true;
+			if (repeat) scheduleKeyRepeatTask(keycode);
+			return handled;
 		}
 
 		protected void scheduleKeyRepeatTask (int keycode) {

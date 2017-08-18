@@ -167,6 +167,7 @@ public class SpriteCache implements Disposable {
 
 	/** Starts the definition of a new cache, allowing the add and {@link #endCache()} methods to be called. */
 	public void beginCache () {
+		if (drawing) throw new IllegalStateException("end must be called before beginCache");
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
 		currentCache = new Cache(caches.size, mesh.getVerticesBuffer().limit());
@@ -178,6 +179,7 @@ public class SpriteCache implements Disposable {
 	 * the last cache created, it cannot have more entries added to it than when it was first created. To do that, use
 	 * {@link #clear()} and then {@link #begin()}. */
 	public void beginCache (int cacheID) {
+		if (drawing) throw new IllegalStateException("end must be called before beginCache");
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		if (cacheID == caches.size - 1) {
 			Cache oldCache = caches.removeIndex(cacheID);
@@ -846,6 +848,7 @@ public class SpriteCache implements Disposable {
 	/** Prepares the OpenGL state for SpriteCache rendering. */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("end must be called before begin.");
+		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin");
 		renderCalls = 0;
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 

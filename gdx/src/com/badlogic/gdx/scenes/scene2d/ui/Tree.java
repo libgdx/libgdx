@@ -462,7 +462,7 @@ public class Tree extends WidgetGroup {
 				for (int i = 0, n = children.size; i < n; i++)
 					children.get(i).addToTree(tree);
 			} else {
-				for (int i = 0, n = children.size; i < n; i++)
+				for (int i = children.size - 1; i >= 0; i--)
 					children.get(i).removeFromTree(tree);
 			}
 			tree.invalidateHierarchy();
@@ -472,8 +472,9 @@ public class Tree extends WidgetGroup {
 		protected void addToTree (Tree tree) {
 			tree.addActor(actor);
 			if (!expanded) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).addToTree(tree);
+			Object[] children = this.children.items;
+			for (int i = this.children.size - 1; i >= 0; i--)
+				((Node)children[i]).addToTree(tree);
 		}
 
 		/** Called to remove the actor from the tree when the node's parent is collapsed. */
@@ -481,7 +482,7 @@ public class Tree extends WidgetGroup {
 			tree.removeActor(actor);
 			if (!expanded) return;
 			Object[] children = this.children.items;
-			for (int i = 0, n = this.children.size; i < n; i++)
+			for (int i = this.children.size - 1; i >= 0; i--)
 				((Node)children[i]).removeFromTree(tree);
 		}
 
@@ -520,8 +521,9 @@ public class Tree extends WidgetGroup {
 		public void removeAll () {
 			Tree tree = getTree();
 			if (tree != null) {
-				for (int i = 0, n = children.size; i < n; i++)
-					children.get(i).removeFromTree(tree);
+				Object[] children = this.children.items;
+				for (int i = this.children.size - 1; i >= 0; i--)
+					((Node)children[i]).removeFromTree(tree);
 			}
 			children.clear();
 		}
@@ -546,10 +548,13 @@ public class Tree extends WidgetGroup {
 			return children;
 		}
 
+		/** Adds the child node actors to the tree again. This is useful after changing the order of {@link #getChildren()}. */
 		public void updateChildren () {
 			if (!expanded) return;
 			Tree tree = getTree();
 			if (tree == null) return;
+			for (int i = children.size - 1; i >= 0; i--)
+				children.get(i).removeFromTree(tree);
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}

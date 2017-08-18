@@ -32,7 +32,7 @@ ext {
 }
 
 task dist2DParticles (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(toolsAssetsDir)
@@ -45,7 +45,7 @@ task dist2DParticles (type: Jar) {
 }
 
 task dist3DParticles (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(toolsAssetsDir)
@@ -58,7 +58,7 @@ task dist3DParticles (type: Jar) {
 }
 
 task distHiero (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(toolsAssetsDir)
@@ -71,7 +71,7 @@ task distHiero (type: Jar) {
 }
 
 task distTexturePacker (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(toolsAssetsDir)
@@ -83,6 +83,8 @@ task distTexturePacker (type: Jar) {
     }
 }
 
-task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) << {
-    println "Building ye runnables"
+task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) {
+    doLast {
+        println "Building ye runnables"
+    }
 }

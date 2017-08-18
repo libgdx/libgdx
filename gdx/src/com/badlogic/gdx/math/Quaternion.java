@@ -284,10 +284,10 @@ public class Quaternion implements Serializable {
 	 * @param other Quaternion to multiply with
 	 * @return This quaternion for chaining */
 	public Quaternion mulLeft (Quaternion other) {
-		final float newX = other.w * this.x + other.x * this.w + other.y * this.z - other.z * y;
-		final float newY = other.w * this.y + other.y * this.w + other.z * this.x - other.x * z;
-		final float newZ = other.w * this.z + other.z * this.w + other.x * this.y - other.y * x;
-		final float newW = other.w * this.w - other.x * this.x - other.y * this.y - other.z * z;
+		final float newX = other.w * this.x + other.x * this.w + other.y * this.z - other.z * this.y;
+		final float newY = other.w * this.y + other.y * this.w + other.z * this.x - other.x * this.z;
+		final float newZ = other.w * this.z + other.z * this.w + other.x * this.y - other.y * this.x;
+		final float newW = other.w * this.w - other.x * this.x - other.y * this.y - other.z * this.z;
 		this.x = newX;
 		this.y = newY;
 		this.z = newZ;

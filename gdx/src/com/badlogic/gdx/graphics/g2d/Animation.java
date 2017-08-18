@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** <p>
  * An Animation stores a list of objects representing an animated sequence, e.g. for running or jumping. Each
@@ -52,10 +53,12 @@ public class Animation<T> {
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the objects representing the frames. */
+	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can return the
+	 *           correct type of array. Otherwise, it returns an Object[]. */
 	public Animation (float frameDuration, Array<? extends T> keyFrames) {
 		this.frameDuration = frameDuration;
-		T[] frames = (T[]) new Object[keyFrames.size];
+		Class arrayType = keyFrames.items.getClass().getComponentType();
+		T[] frames = (T[])ArrayReflection.newInstance(arrayType, keyFrames.size);
 		for (int i = 0, n = keyFrames.size; i < n; i++) {
 			frames[i] = keyFrames.get(i);
 		}
@@ -65,7 +68,8 @@ public class Animation<T> {
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
-	 * @param keyFrames the objects representing the frames. */
+	 * @param keyFrames the objects representing the frames. If this Array is type-aware, {@link #getKeyFrames()} can
+	 * return the correct type of array. Otherwise, it returns an Object[].*/
 	public Animation (float frameDuration, Array<? extends T> keyFrames, PlayMode playMode) {
 		this(frameDuration, keyFrames);
 		setPlayMode(playMode);
@@ -161,7 +165,8 @@ public class Animation<T> {
 	}
 
 	/** Returns the keyframes[] array where all the frames of the animation are stored.
-	 * @return The keyframes[] field. */
+	 * @return The keyframes[] field. This array is an Object[] if the animation was instantiated with an Array that was not
+	 *         type-aware. */
 	public T[] getKeyFrames () {
 		return keyFrames;
 	}

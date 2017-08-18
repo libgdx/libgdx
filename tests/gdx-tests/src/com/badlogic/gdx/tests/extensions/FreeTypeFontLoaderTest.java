@@ -30,7 +30,7 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 		// load to fonts via the generator (implicitely done by the FreetypeFontLoader).
 		// Note: you MUST specify a FreetypeFontGenerator defining the ttf font file name and the size
 		// of the font to be generated. The names of the fonts are arbitrary and are not pointing
-		// to a file on disk!
+		// to a file on disk (but must end with the font's file format '.ttf')!
 		FreeTypeFontLoaderParameter size1Params = new FreeTypeFontLoaderParameter();
 		size1Params.fontFileName = "data/arial.ttf";
 		size1Params.fontParameters.size = 10;

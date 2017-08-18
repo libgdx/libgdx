@@ -167,11 +167,16 @@ public class TextArea extends TextField {
 				cursorLine = line;
 			}
 		}
+		updateFirstLineShowing();	// fix for drag-selecting text out of the TextArea's bounds
 	}
 
 	/** Scroll the text area to show the line of the cursor **/
 	void showCursor () {
 		updateCurrentLine();
+		updateFirstLineShowing();
+	}
+	
+	void updateFirstLineShowing () {
 		if (cursorLine != firstLineShowing) {
 			int step = cursorLine >= firstLineShowing ? 1 : -1;
 			while (firstLineShowing > cursorLine || firstLineShowing + linesShowing - 1 < cursorLine) {

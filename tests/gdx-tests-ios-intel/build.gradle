@@ -71,30 +71,32 @@ eclipse {
     }
 }
 
-task copyNatives << {
-    file("xcode/native/ios/").mkdirs();
-    def LD_FLAGS = "LIBGDX_NATIVES = "
-    configurations.natives.files.each { nativeFolder  ->
-        def outputDir = file("xcode/native/ios")
-        def nativeFiles = nativeFolder.listFiles()
-        nativeFiles.each { nativeFile ->
-            if (!nativeFile.absolutePath.endsWith(".tvos")) {
-                copy {
-                    from nativeFile.getAbsolutePath()
-                    into outputDir
+task copyNatives {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def LD_FLAGS = "LIBGDX_NATIVES = "
+        configurations.natives.files.each { nativeFolder ->
+            def outputDir = file("xcode/native/ios")
+            def nativeFiles = nativeFolder.listFiles()
+            nativeFiles.each { nativeFile ->
+                if (!nativeFile.absolutePath.endsWith(".tvos")) {
+                    copy {
+                        from nativeFile.getAbsolutePath()
+                        into outputDir
+                    }
+                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
                 }
-                LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
             }
         }
-    }
-    def outFlags = file("xcode/IOSTests/custom.xcconfig");
-    outFlags.write LD_FLAGS
+        def outFlags = file("xcode/IOSTests/custom.xcconfig");
+        outFlags.write LD_FLAGS
 
-    def proguard = file("proguard.append.cfg")
-    if (!proguard.exists()) {
-        proguard = new File("proguard.append.cfg")
-        proguard << "-keep class com.badlogic.** { *; }\n"
-        proguard << "-keep enum com.badlogic.** { *; }\n"
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
     }
 }
 
