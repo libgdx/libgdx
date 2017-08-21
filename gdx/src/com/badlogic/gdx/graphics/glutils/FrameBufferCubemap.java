@@ -64,6 +64,9 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** the zero-based index of the active side **/
 	private int currentSide;
 
+	/** cubemap sides cache */
+	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
+
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 *
 	 * @param format
@@ -145,6 +148,6 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 
 	/** Get the currently bound side. */
 	public Cubemap.CubemapSide getSide () {
-		return currentSide < 0 ? null : Cubemap.CubemapSide.values()[currentSide];
+		return currentSide < 0 ? null : cubemapSides [currentSide];
 	}
 }
