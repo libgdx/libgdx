@@ -109,9 +109,8 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
 	protected void loadObjectGroup (TiledMap map, Element element) {
 		if (element.getName().equals("objectgroup")) {
-			String name = element.getAttribute("name", null);
 			MapLayer layer = new MapLayer();
-			layer.setName(name);
+			loadBasicLayerInfo(layer, element);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
