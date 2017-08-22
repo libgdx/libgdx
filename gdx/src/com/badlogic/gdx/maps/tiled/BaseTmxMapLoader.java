@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
@@ -71,12 +73,49 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 		super(resolver);
 	}
 
-	protected void loadTileLayer (TiledMap map, Element element) {
+	protected void loadTileGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+		if (element.getName().equals("group")) {
+			MapGroupLayer groupLayer = new MapGroupLayer();
+			loadBasicLayerInfo(groupLayer, element);
+
+			Element properties = element.getChildByName("properties");
+			if (properties != null) {
+				loadProperties(groupLayer.getProperties(), properties);
+			}
+
+			for (int i = 0, j = element.getChildCount(); i < j; i++) {
+				Element child = element.getChild(i);
+				loadLayer(map, groupLayer.getMapLayers(), child, tmxFile, imageResolver);
+			}
+
+			for (MapLayer layer : groupLayer.getMapLayers()) {
+				layer.setParent(groupLayer);
+			}
+
+			parentLayers.add(groupLayer);
+		}
+	}
+
+	protected void loadLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+		String name = element.getName();
+		if (name.equals("group")) {
+			loadTileGroup(map, parentLayers, element, tmxFile, imageResolver);
+		} else if (name.equals("layer")) {
+			loadTileLayer(map, parentLayers, element);
+		} else if (name.equals("objectgroup")) {
+			loadObjectGroup(map, parentLayers, element);
+		}
+		else if (name.equals("imagelayer")) {
+			loadImageLayer(map, parentLayers, element, tmxFile, imageResolver);
+		}
+	}
+
+	protected void loadTileLayer (TiledMap map, MapLayers parentLayers, Element element) {
 		if (element.getName().equals("layer")) {
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
-			int tileWidth = element.getParent().getIntAttribute("tilewidth", 0);
-			int tileHeight = element.getParent().getIntAttribute("tileheight", 0);
+			int tileWidth = map.getProperties().get("tilewidth", Integer.class);
+			int tileHeight = map.getProperties().get("tileheight", Integer.class);
 			TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 
 			loadBasicLayerInfo(layer, element);
@@ -103,11 +142,11 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-			map.getLayers().add(layer);
+			parentLayers.add(layer);
 		}
 	}
 
-	protected void loadObjectGroup (TiledMap map, Element element) {
+	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element) {
 		if (element.getName().equals("objectgroup")) {
 			MapLayer layer = new MapLayer();
 			loadBasicLayerInfo(layer, element);
@@ -120,11 +159,11 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				loadObject(map, layer, objectElement);
 			}
 
-			map.getLayers().add(layer);
+			parentLayers.add(layer);
 		}
 	}
 
-	protected void loadImageLayer (TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			int x = 0;
 			int y = 0;
@@ -160,7 +199,7 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 				loadProperties(layer.getProperties(), properties);
 			}
 
-			map.getLayers().add(layer);
+			parentLayers.add(layer);
 		}
 	}
 
