@@ -85,10 +85,10 @@ public abstract class BaseTmxMapLoader<P extends AssetLoaderParameters<TiledMap>
 
 			for (int i = 0, j = element.getChildCount(); i < j; i++) {
 				Element child = element.getChild(i);
-				loadLayer(map, groupLayer.getMapLayers(), child, tmxFile, imageResolver);
+				loadLayer(map, groupLayer.getLayers(), child, tmxFile, imageResolver);
 			}
 
-			for (MapLayer layer : groupLayer.getMapLayers()) {
+			for (MapLayer layer : groupLayer.getLayers()) {
 				layer.setParent(groupLayer);
 			}
 

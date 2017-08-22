@@ -47,9 +47,9 @@ public class TiledMapGroupLayerTest extends GdxTest {
 
 		MapGroupLayer group1Visible = (MapGroupLayer)map.getLayers().get("group1Visible");
 
-		testMapProperty(group1Visible.getMapLayers().get("group1ChildGroup"), true, 1f, 32, 0, true);
-		testMapProperty(group1Visible.getMapLayers().get("group1ChildVisible"), true, 1f, 0, 0, false);
-		testMapProperty(group1Visible.getMapLayers().get("group1ChildNotVisible"), false, 1f, 32, 0, false);
+		testMapProperty(group1Visible.getLayers().get("group1ChildGroup"), true, 1f, 32, 0, true);
+		testMapProperty(group1Visible.getLayers().get("group1ChildVisible"), true, 1f, 0, 0, false);
+		testMapProperty(group1Visible.getLayers().get("group1ChildNotVisible"), false, 1f, 32, 0, false);
 
 
 		testMapProperty(map.getLayers().get("group2NotVisible"), false, 1f, 0, 0, true);
