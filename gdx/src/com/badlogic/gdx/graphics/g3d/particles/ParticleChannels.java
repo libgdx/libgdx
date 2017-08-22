@@ -83,11 +83,11 @@ public class ParticleChannels {
 		}
 	}
 
-	public static class Scale3Initializer implements ChannelInitializer<FloatChannel> {
-		private static Scale3Initializer instance;
+	public static class Scale2Initializer implements ChannelInitializer<FloatChannel> {
+		private static Scale2Initializer instance;
 
-		public static Scale3Initializer get () {
-			if (instance == null) instance = new Scale3Initializer();
+		public static Scale2Initializer get () {
+			if (instance == null) instance = new Scale2Initializer();
 			return instance;
 		}
 
@@ -142,7 +142,7 @@ public class ParticleChannels {
 	public static final ChannelDescriptor Rotation2D = new ChannelDescriptor(newGlobalId(), float.class, 2);
 	public static final ChannelDescriptor Rotation3D = new ChannelDescriptor(newGlobalId(), float.class, 4);
 	public static final ChannelDescriptor Scale = new ChannelDescriptor(newGlobalId(), float.class, 1);
-	public static final ChannelDescriptor Scale2 = new ChannelDescriptor(newGlobalId(), float.class, 3);
+	public static final ChannelDescriptor Scale2 = new ChannelDescriptor(newGlobalId(), float.class, 2);
 	public static final ChannelDescriptor ModelInstance = new ChannelDescriptor(newGlobalId(), ModelInstance.class, 1);
 	public static final ChannelDescriptor ParticleController = new ChannelDescriptor(newGlobalId(), ParticleController.class, 1);
 	public static final ChannelDescriptor Acceleration = new ChannelDescriptor(newGlobalId(), float.class, 3); // gl units/s2

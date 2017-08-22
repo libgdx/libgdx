@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics.g3d.particles.renderers;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.ColorInitializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.Rotation2dInitializer;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.Scale3Initializer;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.Scale2Initializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.ScaleInitializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels.TextureRegionInitializer;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
@@ -45,7 +45,7 @@ public class BillboardRenderer extends ParticleControllerRenderer<BillboardContr
 		renderData.regionChannel = controller.particles.addChannel(ParticleChannels.TextureRegion, TextureRegionInitializer.get());
 		renderData.colorChannel = controller.particles.addChannel(ParticleChannels.Color, ColorInitializer.get());
 		renderData.scaleChannel = controller.particles.addChannel(ParticleChannels.Scale, ScaleInitializer.get());
-		renderData.scale2Channel = controller.particles.addChannel(ParticleChannels.Scale2, Scale3Initializer.get());
+		renderData.scale2Channel = controller.particles.addChannel(ParticleChannels.Scale2, Scale2Initializer.get());
 		renderData.rotationChannel = controller.particles.addChannel(ParticleChannels.Rotation2D, Rotation2dInitializer.get());
 	}
 
