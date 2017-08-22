@@ -1,4 +1,6 @@
 [1.9.7]
+- API addition: Tiled group layer support 
+- Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
 - Fix Animation backing array type
 - Fix Mesh copying with 0 indices 
