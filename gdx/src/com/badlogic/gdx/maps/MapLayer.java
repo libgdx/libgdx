@@ -96,7 +96,7 @@ public class MapLayer {
 		return parent;
 	}
 
-	/** @param parent, the layer's new parent {@MapLayer}, internal use only **/
+	/** @param parent the layer's new parent {@MapLayer}, internal use only **/
 	public void setParent (MapLayer parent) {
 		if (parent == this) throw new GdxRuntimeException("Can't set self as the parent");
 		this.parent = parent;
