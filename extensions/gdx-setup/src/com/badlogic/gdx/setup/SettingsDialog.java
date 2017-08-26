@@ -70,11 +70,13 @@ public class SettingsDialog extends JDialog {
 	private SetupCheckBox eclipseBox;
 	SetupCheckBox offlineBox;
 	SetupCheckBox kotlinBox;
+	SetupCheckBox scalaBox;
 	private String mavenSnapshot;
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
 	private boolean offlineSnapshot;
 	private boolean kotlinSnapshot;
+	private boolean scalaSnapshot;
 
 	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
@@ -178,6 +180,8 @@ public class SettingsDialog extends JDialog {
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
 		JLabel kotlinLabel = new JLabel("Use Kotlin");
 		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language.");
+		JLabel scalaLabel = new JLabel("Use Scala");
+		JLabel scalaDesc = new JLabel("Use Scala as the main language.");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
@@ -194,11 +198,33 @@ public class SettingsDialog extends JDialog {
 				} else if(gwtCheckBox.isSelected()) {
 					kotlinBox.setSelected(false);
 				}
+				if(kotlinBox.isSelected()) {
+					scalaBox.setSelected(false);
+				}
+			}
+		});
+		scalaBox = new SetupCheckBox();
+		scalaBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final String message = "Using Scala with the HTML backend is not supported. Do you want to disable the HTML backend?";
+				if(scalaBox.isSelected() && gwtCheckBox.isSelected() &&
+						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
+						JOptionPane.YES_NO_OPTION) == 0) {
+					gwtCheckBox.setSelected(false);
+				} else if(gwtCheckBox.isSelected()) {
+					scalaBox.setSelected(false);
+				}
+				if(scalaBox.isSelected()) {
+					kotlinBox.setSelected(false);
+				}
 			}
 		});
 		offlineBox.setBackground(new Color(36, 36, 36));
 		kotlinLabel.setForeground(new Color(170, 170, 170));
 		kotlinDesc.setForeground(new Color(170, 170, 170));
+		scalaLabel.setForeground(new Color(170, 170, 170));
+		scalaDesc.setForeground(new Color(170, 170, 170));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -225,6 +251,10 @@ public class SettingsDialog extends JDialog {
 		content.add(kotlinLabel, new GridBagConstraints(0, 6, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(kotlinBox, new GridBagConstraints(1, 6, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(kotlinDesc, new GridBagConstraints(3, 6, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		
+		content.add(scalaLabel, new GridBagConstraints(0, 7, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(scalaBox, new GridBagConstraints(1, 7, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(scalaDesc, new GridBagConstraints(3, 7, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";

@@ -155,7 +155,8 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 		
-		final Language languageEnum = ui.settings.kotlinBox.isSelected() ? Language.KOTLIN : Language.JAVA;
+		final Language languageEnum = ui.settings.scalaBox.isSelected() ? Language.SCALA
+				: ui.settings.kotlinBox.isSelected() ? Language.KOTLIN : Language.JAVA;
 
 		final String destination = ui.form.destinationText.getText().trim();
 		if (destination.length() == 0) {
