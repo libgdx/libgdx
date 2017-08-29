@@ -1,9 +1,7 @@
 package com.badlogic.gdx.assets;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 
@@ -17,7 +15,7 @@ public class OndemandAssetManager {
     private final ObjectMap<String, Class> toLoadIntoMemory = new OrderedMap<String, Class>();
 
     private final ObjectMap<String, Float> progress = new ObjectMap<String, Float>();
-    private final ObjectMap<String, ObjectMap<String, Class>> dependencyTree = new OrderedMap<String, ObjectMap<String, Class>>();
+    private final ObjectMap<String, AssetLoaderParameters> assetParametersMap = new OrderedMap<String, AssetLoaderParameters>();
 
     public OndemandAssetManager(AssetManager assetManager, Retriever retriever) {
         this.assetManager = assetManager;
@@ -32,26 +30,18 @@ public class OndemandAssetManager {
         toRetrieve.clear();
         retrieved.clear();
         progress.clear();
-        dependencyTree.clear();
+        assetParametersMap.clear();
     }
 
     public void load(String fileName, final Class type) {
-        Gdx.app.debug("OAM", fileName + " isInMemory " + assetManager.isLoaded(fileName, type));
-        if (!assetManager.isLoaded(fileName, type) && !isRequestedForRetrieval(fileName) && !isRetrieved(fileName)) {
-            retrieveDependencies(fileName, type);
-            retrieve(fileName, type);
-        }
+        load(fileName, type, null);
     }
 
-    private void retrieveDependencies(String fileName, Class type) {
-        if (type == TextureAtlas.class || type == BitmapFont.class) {
-            String textureName = fileName.split("\\.")[0] + ".png";
-            Gdx.app.debug("OAM", "Retrieving dependency " + textureName + " of " + fileName + " parent type " + type);
-            ObjectMap<String, Class> dependency = dependencyTree.get(fileName, new ObjectMap<String, Class>());
-            dependency.put(textureName, Texture.class);
-            dependencyTree.put(fileName, dependency);
-
-            retrieve(textureName, Texture.class);
+    public void load(String fileName, final Class type, AssetLoaderParameters assetParameters) {
+        Gdx.app.debug("OAM", fileName + " isInMemory " + assetManager.isLoaded(fileName, type));
+        if (!assetManager.isLoaded(fileName, type) && !isRequestedForRetrieval(fileName) && !isRetrieved(fileName)) {
+            if (assetParameters != null) assetParametersMap.put(fileName, assetParameters);
+            retrieve(fileName, type);
         }
     }
 
@@ -60,7 +50,8 @@ public class OndemandAssetManager {
         retriever.retrieve(fileName, type, new RetrievalListener() {
             @Override
             public void onProgress(String fileName, Class type, float progress) {
-                OndemandAssetManager.this.progress.put(fileName, progress);
+                Gdx.app.debug("OAM", fileName + " Progress " + progress);
+                OndemandAssetManager.this.progress.put(fileName, MathUtils.clamp(progress, 0, 1));
             }
 
             @Override
@@ -128,25 +119,14 @@ public class OndemandAssetManager {
                 ObjectMap.Entry<String, Class> toLoad = entries.next();
                 String name = toLoad.key;
                 Gdx.app.debug("OAM", name + " attempting memory load");
-                if (!dependencyTree.containsKey(name)) {
-                    Gdx.app.debug("OAM", name + " added to manager for memory load");
-                    assetManager.load(toLoad.key, toLoad.value);
-                    entries.remove();
-                    break;
+                Gdx.app.debug("OAM", name + " added to manager for memory load");
+                if (assetParametersMap.containsKey(toLoad.key)) {
+                    assetManager.load(toLoad.key, toLoad.value, assetParametersMap.get(toLoad.key));
                 } else {
-                    Gdx.app.debug("OAM", name + " has dependencies");
-                    boolean dependenciesLoaded = false;
-                    ObjectMap<String, Class> dependencies = dependencyTree.get(name);
-                    for (String dependency : dependencies.keys()) {
-                        Gdx.app.debug("OAM", name + " has dependency " + dependency);
-                        dependenciesLoaded |= retrieved.containsKey(dependency);
-                    }
-                    if (dependenciesLoaded) {
-                        Gdx.app.debug("OAM", toLoad.key + " attempting memory load - dependency");
-                        assetManager.load(toLoad.key, toLoad.value);
-                        entries.remove();
-                    }
+                    assetManager.load(toLoad.key, toLoad.value);
                 }
+                entries.remove();
+                break;
             }
         }
     }
