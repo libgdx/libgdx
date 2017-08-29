@@ -96,6 +96,7 @@
 - Fixed not being able to select non-latin characters in TextFields
 - Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
 - Add window size limits option to LWJGL3 app and window configurations
+- Add handling of tag "<objectgroup>" within tags "<tile>" in TmxMap loaders.
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807
