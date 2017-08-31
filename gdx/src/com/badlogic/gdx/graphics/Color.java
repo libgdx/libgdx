@@ -489,6 +489,90 @@ public class Color {
 		color.r = ((c & 0x000000ff)) / 255f;
 	}
 
+	/** Sets the RGB Color components using the specified Hue-Saturation-Value. Note that HSV components are voluntary not clamped
+	 * to preserve high range color and can range beyond typical values.
+	 * @param h The Hue in degree from 0 to 360
+	 * @param s The Saturation from 0 to 1
+	 * @param v The Value (brightness) from 0 to 1
+	 * @return The modified Color for chaining. */
+	public Color fromHsv (float h, float s, float v) {
+		float x = (h / 60f + 6) % 6;
+		int i = (int)x;
+		float f = x - i;
+		float p = v * (1 - s);
+		float q = v * (1 - s * f);
+		float t = v * (1 - s * (1 - f));
+		switch (i) {
+		case 0:
+			r = v;
+			g = t;
+			b = p;
+			break;
+		case 1:
+			r = q;
+			g = v;
+			b = p;
+			break;
+		case 2:
+			r = p;
+			g = v;
+			b = t;
+			break;
+		case 3:
+			r = p;
+			g = q;
+			b = v;
+			break;
+		case 4:
+			r = t;
+			g = p;
+			b = v;
+			break;
+		default:
+			r = v;
+			g = p;
+			b = q;
+		}
+
+		return clamp();
+	}
+
+	/** Sets RGB components using the specified Hue-Saturation-Value. This is a convenient method for
+	 * {@link #fromHsv(float, float, float)}. This is the inverse of {@link #toHsv(float[])}.
+	 * @param hsv The Hue, Saturation and Value components in that order.
+	 * @return The modified Color for chaining. */
+	public Color fromHsv (float[] hsv) {
+		return fromHsv(hsv[0], hsv[1], hsv[2]);
+	}
+
+	/** Extract Hue-Saturation-Value. This is the inverse of {@link #fromHsv(float[])}.
+	 * @param hsv The HSV array to be modified.
+	 * @return HSV components for chaining. */
+	public float[] toHsv (float[] hsv) {
+		float max = Math.max(Math.max(r, g), b);
+		float min = Math.min(Math.min(r, g), b);
+		float range = max - min;
+		if (range == 0) {
+			hsv[0] = 0;
+		} else if (max == r) {
+			hsv[0] = (60 * (g - b) / range + 360) % 360;
+		} else if (max == g) {
+			hsv[0] = 60 * (b - r) / range + 120;
+		} else {
+			hsv[0] = 60 * (r - g) / range + 240;
+		}
+
+		if (max > 0) {
+			hsv[1] = 1 - min / max;
+		} else {
+			hsv[1] = 0;
+		}
+
+		hsv[2] = max;
+
+		return hsv;
+	}
+
 	/** @return a copy of this color */
 	public Color cpy () {
 		return new Color(this);
