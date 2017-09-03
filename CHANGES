@@ -27,6 +27,8 @@
 - Added joystick POV support to LWJGL3 controller backend.
 - Added support for 2d particles sprite animation.
 - API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
+- Added support for 2d particles independant scale X and Y.
+- API Change: ParticleEmitter getScale, matchSize are now getScaleX/getScaleY, matchSizeX/matchSizeY. Added scaleSize(float scaleX, float scaleY)
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
@@ -98,6 +100,7 @@
 - Fixed not being able to select non-latin characters in TextFields
 - Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
 - Add window size limits option to LWJGL3 app and window configurations
+- Add handling of tag "<objectgroup>" within tags "<tile>" in TmxMap loaders.
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807

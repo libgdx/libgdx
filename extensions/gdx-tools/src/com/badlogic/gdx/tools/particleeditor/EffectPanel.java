@@ -55,7 +55,7 @@ class EffectPanel extends JPanel {
 		emitter.getDuration().setLow(1000);
 		emitter.getEmission().setHigh(50);
 		emitter.getLife().setHigh(500);
-		emitter.getScale().setHigh(32, 32);
+		emitter.getXScale().setHigh(32, 32);
 
 		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
 		emitter.getTransparency().setHigh(1);
@@ -78,7 +78,7 @@ class EffectPanel extends JPanel {
 		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
 		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
 
-		emitter.getScale().setHigh(32, 32);
+		emitter.getXScale().setHigh(32, 32);
 
 		emitter.getRotation().setLow(1, 360);
 		emitter.getRotation().setHigh(180, 180);

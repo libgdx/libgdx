@@ -251,13 +251,16 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Sets the items visible in the list, clearing the selection if it is no longer valid. If a selection is
-	 * {@link ArraySelection#getRequired()}, the first item is selected. */
+	 * {@link ArraySelection#getRequired()}, the first item is selected. This can safely be called with a
+	 * (modified) array returned from {@link #getItems()}. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
-		items.clear();
-		items.addAll(newItems);
+		if (newItems != items) {
+			items.clear();
+			items.addAll(newItems);
+		}
 		selection.validate();
 
 		invalidate();

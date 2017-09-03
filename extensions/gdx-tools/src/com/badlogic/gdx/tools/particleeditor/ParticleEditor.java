@@ -124,7 +124,8 @@ public class ParticleEditor extends JFrame {
 					"Width of the spawn shape, in world units."));
 				addRow(new ScaledNumericPanel(emitter.getSpawnHeight(), "Duration", "Spawn Height",
 					"Height of the spawn shape, in world units."));
-				addRow(new ScaledNumericPanel(emitter.getScale(), "Life", "Size", "Particle size, in world units."));
+				addRow(new ScaledNumericPanel(emitter.getXScale(), "Life", "X Size", "Particle x size, in world units. If Y Size is not active, this also controls the y size"));
+				addRow(new ScaledNumericPanel(emitter.getYScale(), "Life", "Y Size", "Particle y size, in world units."));
 				addRow(new ScaledNumericPanel(emitter.getVelocity(), "Life", "Velocity", "Particle speed, in world units per second."));
 				addRow(new ScaledNumericPanel(emitter.getAngle(), "Life", "Angle", "Particle emission angle, in degrees."));
 				addRow(new ScaledNumericPanel(emitter.getRotation(), "Life", "Rotation", "Particle rotation, in degrees."));
