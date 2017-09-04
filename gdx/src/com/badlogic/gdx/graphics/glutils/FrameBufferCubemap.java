@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -73,7 +74,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	 *
 	 * @param bufferBuilder
 	 **/
-	protected FrameBufferCubemap (FrameBufferCubemapBuilder bufferBuilder) {
+	protected FrameBufferCubemap (GLFrameBufferBuilder<? extends GLFrameBuffer<Cubemap>> bufferBuilder) {
 		super(bufferBuilder);
 	}
 

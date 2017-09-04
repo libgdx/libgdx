@@ -21,6 +21,7 @@ import java.nio.FloatBuffer;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
@@ -32,12 +33,23 @@ public class FloatTextureData implements TextureData {
 
 	int width = 0;
 	int height = 0;
+
+	int internalFormat;
+	int format;
+	int type;
+
+	boolean isGpuOnly;
+
 	boolean isPrepared = false;
 	FloatBuffer buffer;
 
-	public FloatTextureData (int w, int h) {
+	public FloatTextureData (int w, int h, int internalFormat, int format, int type, boolean isGpuOnly) {
 		this.width = w;
 		this.height = h;
+		this.internalFormat = internalFormat;
+		this.format = format;
+		this.type = type;
+		this.isGpuOnly = isGpuOnly;
 	}
 
 	@Override
@@ -53,7 +65,7 @@ public class FloatTextureData implements TextureData {
 	@Override
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
-		this.buffer = BufferUtils.newFloatBuffer(width * height * 4);
+		if (!isGpuOnly) this.buffer = BufferUtils.newFloatBuffer(width * height * 4);
 		isPrepared = true;
 	}
 
@@ -73,11 +85,9 @@ public class FloatTextureData implements TextureData {
 			if (!Gdx.graphics.supportsExtension("GL_ARB_texture_float"))
 				throw new GdxRuntimeException("Extension GL_ARB_texture_float not supported!");
 
-			final int GL_RGBA32F = 34836; // this is a const from GL 3.0, used only on desktops
-
 			// in desktop OpenGL the texture format is defined only by the third argument,
 			// hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
-			Gdx.gl.glTexImage2D(target, 0, GL_RGBA32F, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
+			Gdx.gl.glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL20.GL_FLOAT, buffer);
 		}
 	}
 

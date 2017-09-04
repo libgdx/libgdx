@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -31,7 +32,7 @@ public class FloatFrameBuffer extends FrameBuffer {
 	 *
 	 * @param bufferBuilder
 	 **/
-	protected FloatFrameBuffer (FrameBufferBuilder bufferBuilder) {
+	protected FloatFrameBuffer (GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder) {
 		super(bufferBuilder);
 	}
 
@@ -42,13 +43,19 @@ public class FloatFrameBuffer extends FrameBuffer {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
 	public static FloatFrameBuffer createFloatFrameBuffer (int width, int height, boolean hasDepth) {
-		//super(null, width, height, hasDepth);
-		return null;
+		FloatFrameBufferBuilder bufferBuilder = new FloatFrameBufferBuilder(width, height);
+		bufferBuilder.addFloatAttachment(GL30.GL_RGBA32F, GL30.GL_RGBA, GL30.GL_FLOAT, false);
+		if (hasDepth) bufferBuilder.addDepthRenderBufferAttachment();
+		return bufferBuilder.build();
 	}
 
 	@Override
 	protected Texture createTexture (GLFrameBufferAttachmentSpec attachmentSpec) {
-		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height);
+		FloatTextureData data = new FloatTextureData(
+			bufferBuilder.width, bufferBuilder.height,
+			attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type,
+			attachmentSpec.isGpuOnly
+		);
 		Texture result = new Texture(data);
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)
 			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -59,13 +66,4 @@ public class FloatFrameBuffer extends FrameBuffer {
 		return result;
 	}
 
-	@Override
-	protected void attachFrameBufferColorTexture (Texture texture) {
-		super.attachFrameBufferColorTexture(texture);
-	}
-	
-	@Override
-	protected void disposeColorTexture (Texture colorTexture) {
-		colorTexture.dispose();
-	}
 }
