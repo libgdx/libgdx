@@ -47,6 +47,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLOnlyTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -69,7 +71,7 @@ import java.util.Map;
 public class MultipleRenderTargetTest extends GdxTest {
 
 	RenderContext renderContext;
-	MRTFrameBuffer frameBuffer;
+	FrameBuffer frameBuffer;
 
 	PerspectiveCamera camera;
 	FirstPersonCameraController cameraController;
@@ -143,7 +145,13 @@ public class MultipleRenderTargetTest extends GdxTest {
 		cameraController.setVelocity(50);
 		Gdx.input.setInputProcessor(cameraController);
 
-		frameBuffer = new MRTFrameBuffer(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 3);
+		GLFrameBuffer.FrameBufferBuilder frameBufferBuilder = new GLFrameBuffer.FrameBufferBuilder(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGBA8, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE);
+		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
+		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
+		frameBufferBuilder.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT32F, GL30.GL_FLOAT);
+
+		frameBuffer = frameBufferBuilder.build();
 
 		AssetManager assetManager = new AssetManager();
 		assetManager.load("data/g3d/materials/cannon.g3db", Model.class);
@@ -245,12 +253,12 @@ public class MultipleRenderTargetTest extends GdxTest {
 
 		mrtSceneShader.begin();
 		mrtSceneShader.setUniformi("u_diffuseTexture",
-			renderContext.textureBinder.bind(frameBuffer.getColorBufferTexture(DIFFUSE_ATTACHMENT)));
+			renderContext.textureBinder.bind(frameBuffer.getTextureAttachments().get(DIFFUSE_ATTACHMENT)));
 		mrtSceneShader.setUniformi("u_normalTexture",
-			renderContext.textureBinder.bind(frameBuffer.getColorBufferTexture(NORMAL_ATTACHMENT)));
+			renderContext.textureBinder.bind(frameBuffer.getTextureAttachments().get(NORMAL_ATTACHMENT)));
 		mrtSceneShader.setUniformi("u_positionTexture",
-			renderContext.textureBinder.bind(frameBuffer.getColorBufferTexture(POSITION_ATTACHMENT)));
-		mrtSceneShader.setUniformi("u_depthTexture", renderContext.textureBinder.bind(frameBuffer.getColorBufferTexture(DEPTH_ATTACHMENT)));
+			renderContext.textureBinder.bind(frameBuffer.getTextureAttachments().get(POSITION_ATTACHMENT)));
+		mrtSceneShader.setUniformi("u_depthTexture", renderContext.textureBinder.bind(frameBuffer.getTextureAttachments().get(DEPTH_ATTACHMENT)));
 		for (int i = 0; i < lights.size; i++) {
 			Light light = lights.get(i);
 			mrtSceneShader.setUniformf("lights[" + i + "].lightPosition", light.position);
@@ -265,13 +273,13 @@ public class MultipleRenderTargetTest extends GdxTest {
 
 		batch.disableBlending();
 		batch.begin();
-		batch.draw(frameBuffer.getColorBufferTexture(DIFFUSE_ATTACHMENT), 0, 0, Gdx.graphics.getWidth() / 4f,
+		batch.draw(frameBuffer.getTextureAttachments().get(DIFFUSE_ATTACHMENT), 0, 0, Gdx.graphics.getWidth() / 4f,
 			Gdx.graphics.getHeight() / 4f, 0f, 0f, 1f, 1f);
-		batch.draw(frameBuffer.getColorBufferTexture(NORMAL_ATTACHMENT), Gdx.graphics.getWidth() / 4f, 0,
+		batch.draw(frameBuffer.getTextureAttachments().get(NORMAL_ATTACHMENT), Gdx.graphics.getWidth() / 4f, 0,
 			Gdx.graphics.getWidth() / 4f, Gdx.graphics.getHeight() / 4f, 0f, 0f, 1f, 1f);
-		batch.draw(frameBuffer.getColorBufferTexture(POSITION_ATTACHMENT), 2 * Gdx.graphics.getWidth() / 4f, 0,
+		batch.draw(frameBuffer.getTextureAttachments().get(POSITION_ATTACHMENT), 2 * Gdx.graphics.getWidth() / 4f, 0,
 			Gdx.graphics.getWidth() / 4f, Gdx.graphics.getHeight() / 4f, 0f, 0f, 1f, 1f);
-		batch.draw(frameBuffer.getColorBufferTexture(DEPTH_ATTACHMENT), 3 * Gdx.graphics.getWidth() / 4f, 0,
+		batch.draw(frameBuffer.getTextureAttachments().get(DEPTH_ATTACHMENT), 3 * Gdx.graphics.getWidth() / 4f, 0,
 			Gdx.graphics.getWidth() / 4f, Gdx.graphics.getHeight() / 4f, 0f, 0f, 1f, 1f);
 		batch.end();
 	}
@@ -495,8 +503,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		}
 
 		private Texture createDepthTexture () {
-			GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, GL30.GL_DEPTH_COMPONENT32F, GL30.GL_DEPTH_COMPONENT,
-				GL30.GL_FLOAT);
+			GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, GL30.GL_DEPTH_COMPONENT32F, GL30.GL_DEPTH_COMPONENT, GL30.GL_FLOAT);
 			Texture result = new Texture(data);
 			result.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 			result.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);

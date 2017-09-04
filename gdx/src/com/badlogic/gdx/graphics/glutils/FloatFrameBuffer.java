@@ -26,19 +26,29 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** This is a {@link FrameBuffer} variant backed by a float texture. */
 public class FloatFrameBuffer extends FrameBuffer {
 
+	/**
+	 * Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder}
+	 *
+	 * @param bufferBuilder
+	 **/
+	protected FloatFrameBuffer (FrameBufferBuilder bufferBuilder) {
+		super(bufferBuilder);
+	}
+
 	/** Creates a new FrameBuffer with a float backing texture, having the given dimensions and potentially a depth buffer attached.
 	 * 
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
-	public FloatFrameBuffer (int width, int height, boolean hasDepth) {
-		super(null, width, height, hasDepth);
+	public static FloatFrameBuffer createFloatFrameBuffer (int width, int height, boolean hasDepth) {
+		//super(null, width, height, hasDepth);
+		return null;
 	}
 
 	@Override
-	protected Texture createColorTexture () {
-		FloatTextureData data = new FloatTextureData(width, height);
+	protected Texture createTexture (GLFrameBufferAttachmentSpec attachmentSpec) {
+		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height);
 		Texture result = new Texture(data);
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)
 			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -47,6 +57,11 @@ public class FloatFrameBuffer extends FrameBuffer {
 			result.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
+	}
+
+	@Override
+	protected void attachFrameBufferColorTexture (Texture texture) {
+		super.attachFrameBufferColorTexture(texture);
 	}
 	
 	@Override

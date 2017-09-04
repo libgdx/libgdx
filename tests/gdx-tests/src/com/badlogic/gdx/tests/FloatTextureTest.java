@@ -40,8 +40,8 @@ public class FloatTextureTest extends GdxTest {
 
 	@Override
 	public void create () {
-		fb = new FrameBuffer(Format.RGBA8888, 200, 100, false);
-		ffb = new FloatFrameBuffer(200, 100, false);
+		fb = FrameBuffer.createFrameBuffer(Format.RGBA8888, 200, 100, false);
+		ffb = FloatFrameBuffer.createFloatFrameBuffer(200, 100, false);
 
 		// @off
 		String vertexShader = 

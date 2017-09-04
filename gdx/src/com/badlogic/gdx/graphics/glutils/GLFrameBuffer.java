@@ -25,10 +25,13 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -64,68 +67,45 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** the framebuffer handle **/
 	protected int framebufferHandle;
-
 	/** the depthbuffer render object handle **/
 	protected int depthbufferHandle;
-
 	/** the stencilbuffer render object handle **/
 	protected int stencilbufferHandle;
-
 	/** the depth stencil packed render buffer object handle **/
 	protected int depthStencilPackedBufferHandle;
-
-
 	/** if has depth stencil packed buffer **/
 	protected boolean hasDepthStencilPackedBuffer;
 
-	/** format **/
-	protected Pixmap.Format format;
+	/** if multiple texture attachments are present **/
+	protected boolean isMRT;
 
-	private GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder;
+	protected GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder;
 
-	/** Creates an empty, uninitialized GLFrambuffer, for use with GLFrameBufferBuilder only **/
+	/** Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder} **/
 	protected GLFrameBuffer (GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder) {
 		this.bufferBuilder = bufferBuilder;
-	}
-
-	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
-	 *
-	 * @param format
-	 * @param width
-	 * @param height
-	 * @param hasDepth */
-	public GLFrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
-		this(format, width, height, hasDepth, false);
-	}
-
-	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
-	 *
-	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
-	 *           color-renderable
-	 * @param width the width of the framebuffer in pixels
-	 * @param height the height of the framebuffer in pixels
-	 * @param hasDepth whether to attach a depth buffer
-	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
-	public GLFrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
-		this.width = width;
-		this.height = height;
-		this.format = format;
-		this.hasDepth = hasDepth;
-		this.hasStencil = hasStencil;
 		build();
-
 		addManagedFrameBuffer(Gdx.app, this);
 	}
 
+	/** Convenience method to return the first Texture attachment present in the fbo **/
+	public T getColorBufferTexture () {
+		return textureAttachments.first();
+	}
+
+	/** Return the Texture attachments attached to the fbo **/
+	public Array<T> getTextureAttachments () {
+		return textureAttachments;
+	}
 
 	/** Override this method in a derived class to set up the backing texture as you like. */
-	protected abstract T createColorTexture ();
+	protected abstract T createTexture (GLFrameBufferAttachmentSpec attachmentSpec);
 
 	/** Override this method in a derived class to dispose the backing texture as you like. */
 	protected abstract void disposeColorTexture (T colorTexture);
 
 	/** Override this method in a derived class to attach the backing texture to the GL framebuffer object. */
-	protected abstract void attachFrameBufferColorTexture ();
+	protected abstract void attachFrameBufferColorTexture (T texture);
 
 	protected void build () {
 		GL20 gl = Gdx.gl20;
@@ -144,69 +124,80 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			}
 		}
 
-		boolean runningGL30 = Gdx.graphics.isGL30Available();
-
 		framebufferHandle = gl.glGenFramebuffer();
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 
 		int width = bufferBuilder.width;
 		int height = bufferBuilder.height;
 
-		if (bufferBuilder.hasStencilRenderBuffer) {
-
-		}
-
-		for (GLFrameBufferAttachmentSpec attachmentSpec : bufferBuilder.textureAttachmentSpecs) {
-
-		}
-
-		colorTexture = createColorTexture();
-
-
 		if (bufferBuilder.hasDepthRenderBuffer) {
 			depthbufferHandle = gl.glGenRenderbuffer();
-		}
-
-		if (bufferBuilder.hasStencilRenderBuffer) {
-			stencilbufferHandle = gl.glGenRenderbuffer();
-		}
-
-		gl.glBindTexture(colorTexture.glTarget, colorTexture.getTextureObjectHandle());
-
-		if (hasDepth) {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, width, height);
 		}
 
-		if (hasStencil) {
+		if (bufferBuilder.hasStencilRenderBuffer) {
+			stencilbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_STENCIL_INDEX8, colorTexture.getWidth(), colorTexture.getHeight());
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_STENCIL_INDEX8, width, height);
 		}
 
-		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 
-		attachFrameBufferColorTexture();
+		isMRT = bufferBuilder.textureAttachmentSpecs.size > 1;
+		int colorTextureCounter = 0;
+		if (isMRT) {
+			for (GLFrameBufferAttachmentSpec attachmentSpec : bufferBuilder.textureAttachmentSpecs) {
+				T texture = createTexture(attachmentSpec);
+				textureAttachments.add(texture);
+				if (attachmentSpec.isColorTexture()) {
+					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + colorTextureCounter, GL30.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+					colorTextureCounter++;
+				} else if (attachmentSpec.isDepth) {
+					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+				} else if (attachmentSpec.isStencil) {
+					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+				}
+			}
+		} else {
+			T texture = createTexture(bufferBuilder.textureAttachmentSpecs.first());
+			textureAttachments.add(texture);
+			gl.glBindTexture(texture.glTarget, texture.getTextureObjectHandle());
+		}
 
-		if (hasDepth) {
+		if (isMRT) {
+			IntBuffer buffer = BufferUtils.newIntBuffer(colorTextureCounter);
+			for (int i = 0; i < colorTextureCounter; i++) {
+				buffer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
+			}
+			buffer.position(0);
+			Gdx.gl30.glDrawBuffers(colorTextureCounter, buffer);
+		} else {
+			attachFrameBufferColorTexture(textureAttachments.first());
+		}
+
+		if (bufferBuilder.hasDepthRenderBuffer) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
 		}
 
-		if (hasStencil) {
+		if (bufferBuilder.hasStencilRenderBuffer) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_STENCIL_ATTACHMENT, GL20.GL_RENDERBUFFER, stencilbufferHandle);
 		}
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
-		gl.glBindTexture(colorTexture.glTarget, 0);
+		for (T texture : textureAttachments) {
+			gl.glBindTexture(texture.glTarget, 0);
+		}
 
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
-		if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && hasDepth && hasStencil
+		if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
 			&& (Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil") ||
 			Gdx.graphics.supportsExtension("GL_EXT_packed_depth_stencil"))) {
-			if (hasDepth) {
+			if (bufferBuilder.hasDepthRenderBuffer) {
 				gl.glDeleteRenderbuffer(depthbufferHandle);
 				depthbufferHandle = 0;
 			}
-			if (hasStencil) {
+			if (bufferBuilder.hasStencilRenderBuffer) {
 				gl.glDeleteRenderbuffer(stencilbufferHandle);
 				stencilbufferHandle = 0;
 			}
@@ -214,7 +205,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			depthStencilPackedBufferHandle = gl.glGenRenderbuffer();
 			hasDepthStencilPackedBuffer = true;
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, colorTexture.getWidth(), colorTexture.getHeight());
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, width, height);
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
 
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
@@ -225,13 +216,15 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
-			disposeColorTexture(colorTexture);
+			for (T texture : textureAttachments) {
+				disposeColorTexture(texture);
+			}
 
 			if (hasDepthStencilPackedBuffer) {
 				gl.glDeleteBuffer(depthStencilPackedBufferHandle);
 			} else {
-				if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
-				if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+				if (bufferBuilder.hasDepthRenderBuffer) gl.glDeleteRenderbuffer(depthbufferHandle);
+				if (bufferBuilder.hasStencilRenderBuffer) gl.glDeleteRenderbuffer(stencilbufferHandle);
 			}
 
 			gl.glDeleteFramebuffer(framebufferHandle);
@@ -253,13 +246,15 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
 
-		disposeColorTexture(colorTexture);
+		for (T texture : textureAttachments) {
+			disposeColorTexture(texture);
+		}
 
 		if (hasDepthStencilPackedBuffer) {
 			gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
 		} else {
-			if (hasDepth) gl.glDeleteRenderbuffer(depthbufferHandle);
-			if (hasStencil) gl.glDeleteRenderbuffer(stencilbufferHandle);
+			if (bufferBuilder.hasDepthRenderBuffer) gl.glDeleteRenderbuffer(depthbufferHandle);
+			if (bufferBuilder.hasStencilRenderBuffer) gl.glDeleteRenderbuffer(stencilbufferHandle);
 		}
 
 		gl.glDeleteFramebuffer(framebufferHandle);
@@ -285,7 +280,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
 	protected void setFrameBufferViewport () {
-		Gdx.gl20.glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
+		Gdx.gl20.glViewport(0, 0, bufferBuilder.width, bufferBuilder.height);
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
@@ -304,10 +299,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		Gdx.gl20.glViewport(x, y, width, height);
 	}
 
-	/** @return the gl texture */
-	public T getColorBufferTexture () {
-		return colorTexture;
-	}
+
 
 	/** @return The OpenGL handle of the framebuffer (see {@link GL20#glGenFramebuffer()}) */
 	public int getFramebufferHandle () {
@@ -331,17 +323,12 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** @return the height of the framebuffer in pixels */
 	public int getHeight () {
-		return colorTexture.getHeight();
+		return bufferBuilder.height;
 	}
 
 	/** @return the width of the framebuffer in pixels */
 	public int getWidth () {
-		return colorTexture.getWidth();
-	}
-
-	/** @return the depth of the framebuffer in pixels (if applicable) */
-	public int getDepth () {
-		return colorTexture.getDepth();
+		return bufferBuilder.width;
 	}
 
 	private static void addManagedFrameBuffer (Application app, GLFrameBuffer frameBuffer) {
@@ -402,8 +389,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	}
 
-	private static class GLFrameBufferAttachmentSpec {
-		private int internalFormat, format, type;
+	protected static class GLFrameBufferAttachmentSpec {
+		int internalFormat, format, type;
 		boolean isFloat;
 		boolean isDepth;
 		boolean isStencil;
@@ -413,9 +400,13 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			this.format = format;
 			this.type = type;
 		}
+
+		public boolean isColorTexture () {
+			return !isDepth && !isStencil;
+		}
 	}
 
-	private static abstract class GLFrameBufferBuilder<U extends GLFrameBuffer<? extends GLTexture>> {
+	protected static abstract class GLFrameBufferBuilder<U extends GLFrameBuffer<? extends GLTexture>> {
 
 		protected int width, height;
 
@@ -423,7 +414,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		protected boolean hasStencilRenderBuffer;
 		protected boolean hasDepthRenderBuffer;
-		protected boolean hasDepthStencilPackedBuffer;
 
 		public GLFrameBufferBuilder (int width, int height) {
 			this.width = width;
@@ -457,8 +447,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			return this;
 		}
 
-		public GLFrameBufferBuilder<U> addDepthTextureAttachment () {
-			textureAttachmentSpecs.add(new GLFrameBufferAttachmentSpec(0, 0, 0));
+		public GLFrameBufferBuilder<U> addDepthTextureAttachment (int internalFormat, int type) {
+			GLFrameBufferAttachmentSpec spec = new GLFrameBufferAttachmentSpec(internalFormat, GL30.GL_DEPTH_COMPONENT, type);
+			spec.isDepth = true;
+			textureAttachmentSpecs.add(spec);
 			return this;
 		}
 		public GLFrameBufferBuilder<U> addStencilTextureAttachment () {
@@ -475,12 +467,22 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			super(width, height);
 		}
 
-
 		@Override
 		public FrameBuffer build () {
-			FrameBuffer buffer = new FrameBuffer(this);
-			buffer.build();
-			return buffer;
+			return new FrameBuffer(this);
+		}
+
+	}
+
+	public static class FrameBufferCubemapBuilder extends GLFrameBufferBuilder<FrameBufferCubemap> {
+
+		public FrameBufferCubemapBuilder (int width, int height) {
+			super(width, height);
+		}
+
+		@Override
+		public FrameBufferCubemap build () {
+			return new FrameBufferCubemap(this);
 		}
 
 	}
