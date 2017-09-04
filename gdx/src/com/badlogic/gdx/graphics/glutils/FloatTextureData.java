@@ -20,6 +20,7 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -65,7 +66,16 @@ public class FloatTextureData implements TextureData {
 	@Override
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
-		if (!isGpuOnly) this.buffer = BufferUtils.newFloatBuffer(width * height * 4);
+		if (!isGpuOnly) {
+			int amountOfFloats = 4;
+			if (Gdx.graphics.getGLVersion().getType().equals(GLVersion.Type.OpenGL)) {
+				if (internalFormat == GL30.GL_RGBA16F || internalFormat ==  GL30.GL_RGBA32F) amountOfFloats = 4;
+				if (internalFormat == GL30.GL_RGB16F || internalFormat ==  GL30.GL_RGB32F) amountOfFloats = 3;
+				if (internalFormat == GL30.GL_RG16F || internalFormat ==  GL30.GL_RG32F) amountOfFloats = 2;
+				if (internalFormat == GL30.GL_R16F || internalFormat ==  GL30.GL_R32F) amountOfFloats = 1;
+			}
+			this.buffer = BufferUtils.newFloatBuffer(width * height * amountOfFloats);
+		}
 		isPrepared = true;
 	}
 
