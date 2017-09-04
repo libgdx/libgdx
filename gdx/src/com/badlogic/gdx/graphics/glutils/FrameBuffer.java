@@ -66,13 +66,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
 	public static FrameBuffer createFrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
 		FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
-		Pixmap.Format somePixmapFormat = Pixmap.Format.RGB888;
-		frameBufferBuilder.addBasicColorTextureAttachment(somePixmapFormat);
-
-		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGBA8, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE);
-		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
-		frameBufferBuilder.addColorTextureAttachment(GL30.GL_R32F, GL30.GL_RED, GL30.GL_FLOAT);
-
+		frameBufferBuilder.addBasicColorTextureAttachment(format);
 		if (hasDepth) frameBufferBuilder.addDepthRenderBufferAttachment();
 		if (hasStencil) frameBufferBuilder.addStencilRenderBufferAttachment();
 		return frameBufferBuilder.build();

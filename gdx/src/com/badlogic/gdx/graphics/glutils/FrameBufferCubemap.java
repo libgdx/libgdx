@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -96,8 +97,11 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	 * @param hasStencil whether to attach a stencil buffer
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
 	public static FrameBufferCubemap createFrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
-	//	return super(format, width, height, hasDepth, hasStencil);
-		return null;
+		FrameBufferCubemapBuilder frameBufferBuilder = new FrameBufferCubemapBuilder(width, height);
+		frameBufferBuilder.addBasicColorTextureAttachment(format);
+		if (hasDepth) frameBufferBuilder.addDepthRenderBufferAttachment();
+		if (hasStencil) frameBufferBuilder.addStencilRenderBufferAttachment();
+		return frameBufferBuilder.build();
 	}
 
 
