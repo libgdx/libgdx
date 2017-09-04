@@ -81,7 +81,7 @@ public class List<T> extends Widget implements Cullable {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return false;
 				if (selection.isDisabled()) return false;
-				if (selection.getMultiple()) getStage().setKeyboardFocus(List.this);
+				getStage().setKeyboardFocus(List.this);
 				if (items.size == 0) return false;
 				float height = getHeight();
 				Drawable background = List.this.style.background;
