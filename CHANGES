@@ -25,6 +25,8 @@
 - API Change: removed JGLFW backend
 - Fixed mixed up use of TexturePacker.Settings.stripWhitespaceX|Y.
 - Added joystick POV support to LWJGL3 controller backend.
+- Added support for 2d particles sprite animation.
+- API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
 - Added support for 2d particles independant scale X and Y.
 - API Change: ParticleEmitter getScale, matchSize are now getScaleX/getScaleY, matchSizeX/matchSizeY. Added scaleSize(float scaleX, float scaleY)
 
