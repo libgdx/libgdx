@@ -317,6 +317,30 @@ public class IOSInput implements Input {
 		}
 	}
 
+	// hack for software keyboard support
+	// uses a hidden textfield to capture input
+	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+
+	private class HiddenTextField extends UITextField {
+		public HiddenTextField (CGRect frame) {
+			super(frame.getPeer());
+
+			setKeyboardType(UIKeyboardType.Default);
+			setReturnKeyType(UIReturnKeyType.Done);
+			setAutocapitalizationType(UITextAutocapitalizationType.None);
+			setAutocorrectionType(UITextAutocorrectionType.No);
+			setSpellCheckingType(UITextSpellCheckingType.No);
+			setHidden(true);
+		}
+
+		@Override
+		public void deleteBackward () {
+			app.input.inputProcessor.keyTyped((char)8);
+			super.deleteBackward();
+			Gdx.graphics.requestRendering();
+		}
+	}
+
 	private UITextField textfield = null;
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegate() {
 		@Override
