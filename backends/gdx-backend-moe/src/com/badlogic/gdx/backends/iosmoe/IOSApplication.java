@@ -188,7 +188,8 @@ public class IOSApplication implements Application {
 	 /**
 	  * Extracted the IOSInput construction logic to this method. Without this method, you could extend the IOSInput class and override
 	  * some methods but it was impossible to have the IOSApplication use your custom IOSInput implementation. Unless you forked the
-	  * IOSApplication class too. Now you can extend IOSApplication and override this method to load your custom IOSInput.
+	  * IOSApplication class too (which forces you to fork 7 other classes aswell because of package protected stuff). Now you can simply
+	  * extend IOSApplication and override this method to load your custom IOSInput.
 	  *
 	  * @return an IOSInput instance that handles the input of the application.
 	  */
