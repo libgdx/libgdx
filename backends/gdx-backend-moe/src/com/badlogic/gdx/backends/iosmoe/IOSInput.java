@@ -291,7 +291,7 @@ public class IOSInput implements Input {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		buildUIAlertView(listener, title, text, hint).show();
-	}	
+	}
 
 	// hack for software keyboard support
 	// uses a hidden textfield to capture input
