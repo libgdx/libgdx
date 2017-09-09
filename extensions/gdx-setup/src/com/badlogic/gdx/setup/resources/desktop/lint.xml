@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<lint>
-    <issue id="all" severity="ignore" />
-    <!-- id="NewApi" is enough, but most the lints are irrelevant to normal Java projects when the Android project doesn't depend on those. It may also speed up builds, but didn't test that. -->
-</lint>
