@@ -162,7 +162,7 @@ public class IOSApplication implements Application {
 		}
 
 		// setup libgdx
-		this.input = new IOSInput(this);
+		this.input = createIOSInput();
 		this.graphics = IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
@@ -183,6 +183,17 @@ public class IOSApplication implements Application {
 		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
+	}
+
+	 /**
+	  * Extracted the IOSInput construction logic to this method. Without this method, you could extend the IOSInput class and override
+	  * some methods but it was impossible to have the IOSApplication use your custom IOSInput implementation. Unless you forked the
+	  * IOSApplication class too. Now you can extend IOSApplication and override this method to load your custom IOSInput.
+	  *
+	  * @return an IOSInput instance that handles the input of the application.
+	  */
+	protected IOSInput createIOSInput() {
+		 return new IOSInput(this);
 	}
 
 	private int getIosVersion () {
