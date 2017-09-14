@@ -230,7 +230,11 @@ public class AssetDownloader {
 	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener listener) /*-{
 		var _this = this;
 		req.onprogress = $entry(function(evt) {
-			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded / evt.total);
+			if (evt.lengthComputable) {
+			    listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded / evt.total);
+			} else {
+			    listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(0);
+			}
 		});
 	}-*/;
 

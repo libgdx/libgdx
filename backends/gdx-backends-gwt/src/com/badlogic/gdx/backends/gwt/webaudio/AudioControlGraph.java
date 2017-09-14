@@ -34,12 +34,12 @@ public class AudioControlGraph {
 		this.audioContext = audioContext;
 		this.destinationNode = destinationNode;
 
-		setupAudoGraph();
+		setupAudioGraph();
 
 		if (sourceNode != null) setSource(sourceNode);
 	}
 
-	public native JavaScriptObject setupAudoGraph () /*-{
+	public native JavaScriptObject setupAudioGraph () /*-{
 		// Get the Java values here, for readability
 		var audioContext = this.@com.badlogic.gdx.backends.gwt.webaudio.AudioControlGraph::audioContext;
 

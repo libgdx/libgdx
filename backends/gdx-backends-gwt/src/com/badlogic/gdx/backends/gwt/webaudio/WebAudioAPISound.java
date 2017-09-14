@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Keys;
-import com.badlogic.gdx.utils.Pool;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /** Implementation of the {@link Sound} interface for GWT, using the Web Audio API (
@@ -45,9 +44,6 @@ public class WebAudioAPISound implements Sound {
 	// Key generator for sound objects.
 	private int nextKey = 0;
 
-	// We use a pool of AudioControlGraphs in order to minimize object creation
-	private AudioControlGraphPool audioGraphPool;
-
 	/** @param audioContext The JavaScript AudioContext object that servers as the base object of the Web Audio API
 	 * @param destinationNode The JavaScript AudioNode to route all the sound output to
 	 * @param audioGraphPool A Pool that allows us to create AudioControlGraphs efficiently */
@@ -55,7 +51,6 @@ public class WebAudioAPISound implements Sound {
 		AudioControlGraphPool audioGraphPool) {
 		this.audioContext = audioContext;
 		this.destinationNode = destinationNode;
-		this.audioGraphPool = audioGraphPool;
 		this.activeSounds = new IntMap<JavaScriptObject>();
 		this.activeAudioControlGraphs = new IntMap<AudioControlGraph>();
 	}
@@ -76,7 +71,7 @@ public class WebAudioAPISound implements Sound {
 
 	protected long play (float volume, float pitch, float pan, boolean loop) {
 		// Get ourselves a fresh audio graph
-		AudioControlGraph audioControlGraph = audioGraphPool.obtain();
+		AudioControlGraph audioControlGraph = new AudioControlGraph(audioContext, destinationNode);
 
 		// Create the source node that will be feeding the audio graph
 		JavaScriptObject audioBufferSourceNode = createBufferSourceNode(loop, pitch);
@@ -102,7 +97,7 @@ public class WebAudioAPISound implements Sound {
 		// The sound might have been removed by an explicit stop, before the sound reached its end
 		if (activeSounds.containsKey(key)) {
 			activeSounds.remove(key);
-			audioGraphPool.free(activeAudioControlGraphs.remove(key));
+			activeAudioControlGraphs.remove(key);
 		}
 	}
 
@@ -228,8 +223,7 @@ public class WebAudioAPISound implements Sound {
 		if (activeSounds.containsKey(soundKey)) {
 			JavaScriptObject audioBufferSourceNode = activeSounds.remove(soundKey);
 			stopJSNI(audioBufferSourceNode);
-
-			audioGraphPool.free(activeAudioControlGraphs.remove(soundKey));
+			activeAudioControlGraphs.remove(soundKey);
 		}
 	}
 
