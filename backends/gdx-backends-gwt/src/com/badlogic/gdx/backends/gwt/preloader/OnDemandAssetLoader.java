@@ -3,6 +3,7 @@ package com.badlogic.gdx.backends.gwt.preloader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.OndemandAssetManager;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,13 +15,17 @@ import com.google.gwt.dom.client.ImageElement;
 
 public class OnDemandAssetLoader implements Preloader {
 
-    private final AssetDownloader loader = new AssetDownloader();
+    private final AssetDownloader loader;
     private final PreloadedAssetManager preloadedAssetManager = new PreloadedAssetManager();
 
     private final String baseUrl;
+    private final boolean crossDomain;
 
-    public OnDemandAssetLoader(String baseUrl) {
+    public OnDemandAssetLoader(
+            String baseUrl, boolean crossDomain) {
         this.baseUrl = baseUrl;
+        this.crossDomain = crossDomain;
+        this.loader = crossDomain ? AssetDownloader.crossDomain() : AssetDownloader.standard();
     }
 
     @Override
@@ -110,9 +115,9 @@ public class OnDemandAssetLoader implements Preloader {
                         break;
                     case Image: {
                         ImageElement imageElement = (ImageElement) result;
-                        if (baseUrl.isEmpty()) {
+                        if (crossDomain) {
                             Gdx.app.debug("LOADING", "SETTING CROSS DOMAIN");
-                            imageElement.setAttribute("crossOrigin", "anonymous");
+                            imageElement.setAttribute("crossOrigin", AssetDownloader.CROSS_DOMAIN);
                         }
                         preloadedAssetManager.images.put(assetDescriptor.fileName, (ImageElement) result);
                     }
@@ -133,7 +138,7 @@ public class OnDemandAssetLoader implements Preloader {
     }
 
     public void loadAbsoluteCrossDomain(final AssetDescriptor assetDescriptor, String mimeType, final OndemandAssetManager.RetrievalListener retrievalListener) {
-        loader.loadImage(assetDescriptor.fileName, mimeType, "anonymous", new AssetDownloader.AssetLoaderListener<ImageElement>() {
+        loader.loadImage(assetDescriptor.fileName, mimeType, AssetDownloader.CROSS_DOMAIN, new AssetDownloader.AssetLoaderListener<ImageElement>() {
             @Override
             public void onProgress(double amount) {
                 retrievalListener.onProgress(assetDescriptor.fileName, assetDescriptor.type, (float) amount);

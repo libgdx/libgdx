@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,9 +28,29 @@ import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
 
 public class AssetDownloader {
 
+    public static final String CROSS_DOMAIN = "anonymous";
+
+	public static AssetDownloader standard() {
+		return new AssetDownloader();
+	}
+
+	public static AssetDownloader crossDomain() {
+		return new AssetDownloader(true,false, CROSS_DOMAIN);
+	}
+
+	private final String crossDomain;
+
 	public AssetDownloader () {
-		useBrowserCache = true;
-		useInlineBase64 = false;
+		this(true,false, null);
+	}
+
+	public AssetDownloader (
+			boolean useBrowserCache,
+			boolean useInlineBase64,
+			String crossDomain) {
+		this.useBrowserCache = useBrowserCache;
+		this.useInlineBase64 = useInlineBase64;
+		this.crossDomain = crossDomain;
 	}
 
 	public void setUseBrowserCache (boolean useBrowserCache) {
@@ -102,7 +122,7 @@ public class AssetDownloader {
 	}
 
 	public void loadBinary (final String url, final AssetLoaderListener<Blob> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();		
+		XMLHttpRequest request = XMLHttpRequest.create();
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
 			@Override
 			public void onReadyStateChange (XMLHttpRequest xhr) {
@@ -147,9 +167,9 @@ public class AssetDownloader {
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
-		loadImage(url, mimeType, null, listener);
+		loadImage(url, mimeType, crossDomain, listener);
 	}
-	
+
 	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<ImageElement> listener) {
 		if (useBrowserCache || useInlineBase64) {
 			loadBinary(url, new AssetLoaderListener<Blob>() {
