@@ -49,5 +49,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public void previewStateChange (boolean isPreview) {
 			Log.i("LiveWallpaper test", "previewStateChange(isPreview:"+isPreview+")");
 		}
+
+		@Override
+		public void iconDropped (int x, int y) {
+			Log.i("LiveWallpaper test", "iconDropped (" + x + ", " + y + ")");
+		}
+		
+		
 	}
 }

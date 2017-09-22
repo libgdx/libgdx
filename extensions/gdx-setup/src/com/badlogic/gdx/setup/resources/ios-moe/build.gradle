@@ -40,6 +40,10 @@ moe {
         mainTarget 'ios-moe'
         testTarget 'ios-moe-Test'
     }
+
+    remoteBuild {
+        resources = [ file("../%ASSET_PATH%") ]
+    }
 }
 
 moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives

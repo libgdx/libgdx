@@ -53,6 +53,7 @@ public class Json {
 	private boolean quoteLongValues;
 	private boolean ignoreUnknownFields;
 	private boolean ignoreDeprecated;
+	private boolean readDeprecated;
 	private boolean enumNames = true;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
@@ -79,6 +80,12 @@ public class Json {
 	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
 	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
 		this.ignoreDeprecated = ignoreDeprecated;
+	}
+
+	/** When true, fields with the {@link Deprecated} annotation will be read (but not written) when
+	 * {@link #setIgnoreDeprecated(boolean)} is true. */
+	public void setReadDeprecated (boolean readDeprecated) {
+		this.readDeprecated = readDeprecated;
 	}
 
 	/** @see JsonWriter#setOutputType(OutputType) */
@@ -180,7 +187,7 @@ public class Json {
 				}
 			}
 
-			if (ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
+			if (ignoreDeprecated && !readDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
@@ -270,6 +277,7 @@ public class Json {
 		int i = 0;
 		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
 			Field field = metadata.field;
+			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {
@@ -787,7 +795,7 @@ public class Json {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = getFields(type);
 		for (JsonValue child = jsonMap.child; child != null; child = child.next) {
-			FieldMetadata metadata = fields.get(child.name);
+			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
 				if (child.name.equals(typeName)) continue;
 				if (ignoreUnknownFields) {
@@ -887,6 +895,8 @@ public class Json {
 			if (typeName != null && ClassReflection.isAssignableFrom(Collection.class, type)) {
 				// JSON object wrapper to specify type.
 				jsonData = jsonData.get("items");
+				if (jsonData == null) throw new SerializationException(
+					"Unable to convert object to collection: " + jsonData + " (" + type.getName() + ")");
 			} else {
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonData, type);

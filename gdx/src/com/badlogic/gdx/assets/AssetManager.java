@@ -21,6 +21,7 @@ import java.util.Stack;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.assets.loaders.CubemapLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -115,6 +117,7 @@ public class AssetManager implements Disposable {
 			setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 			setLoader(Model.class, ".obj", new ObjLoader(resolver));
 			setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
+			setLoader(Cubemap.class, new CubemapLoader(resolver));
 		}
 		executor = new AsyncExecutor(1);
 	}

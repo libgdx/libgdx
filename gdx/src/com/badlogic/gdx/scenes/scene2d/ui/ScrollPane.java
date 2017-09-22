@@ -590,25 +590,28 @@ public class ScrollPane extends WidgetGroup {
 			ScissorStack.popScissors();
 		}
 
-		// Render scrollbars and knobs on top.
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
-		if (scrollX && scrollY) {
-			if (style.corner != null) {
-				style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
-					vScrollBounds.y);
+		// Render scrollbars and knobs on top if they will be visible
+		float alpha = color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
+		if (alpha > 0f) {
+			batch.setColor(color.r, color.g, color.b, alpha);
+			if (scrollX && scrollY) {
+				if (style.corner != null) {
+					style.corner.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width,
+						vScrollBounds.y);
+				}
 			}
-		}
-		if (scrollX) {
-			if (style.hScroll != null)
-				style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
-			if (style.hScrollKnob != null)
-				style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
-		}
-		if (scrollY) {
-			if (style.vScroll != null)
-				style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
-			if (style.vScrollKnob != null)
-				style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
+			if (scrollX) {
+				if (style.hScroll != null)
+					style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
+				if (style.hScrollKnob != null)
+					style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
+			}
+			if (scrollY) {
+				if (style.vScroll != null)
+					style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
+				if (style.vScrollKnob != null)
+					style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
+			}
 		}
 
 		resetTransform(batch);

@@ -32,7 +32,7 @@ uniform vec2 u_regionSize;
 
 void main() {
 	vec2 uv = v_region.xy + gl_PointCoord*v_region.zw - v_uvRegionCenter;
-	vec2 texCoord = mat2(v_rotation) * uv  +v_uvRegionCenter;
+	vec2 texCoord = mat2(v_rotation.x, v_rotation.y, v_rotation.z, v_rotation.w) * uv  +v_uvRegionCenter;
 	gl_FragColor = texture2D(u_diffuseTexture, texCoord)* v_color;
 }
 
