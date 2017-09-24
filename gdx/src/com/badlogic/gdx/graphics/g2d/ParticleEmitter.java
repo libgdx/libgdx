@@ -1110,7 +1110,7 @@ public class ParticleEmitter {
 			reader.readLine();
 			spawnHeightValue.load(reader);
 			String line = reader.readLine();
-			if (line.equals("- Scale - ")) {
+			if (line.trim().equals("- Scale -")) {
 				xScaleValue.load(reader);
 				yScaleValue.setActive(false);
 			} else {
