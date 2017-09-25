@@ -46,6 +46,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.GradientColorValue;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -69,6 +70,10 @@ public class ParticleEditor extends JFrame {
 
 	float pixelsPerMeterPrev;
 	float zoomLevelPrev;
+	TransformMode transformMode = TransformMode.translate;
+	Vector2 dragStart = new Vector2();
+	Vector2 dragStartScale = new Vector2();
+	float dragStartRotation;
 
 	ParticleEffect effect = new ParticleEffect();
 	File effectFile;
@@ -385,9 +390,14 @@ public class ParticleEditor extends JFrame {
 			spriteBatch.setProjectionMatrix(textCamera.combined);
 
 			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, 15);
-			font.draw(spriteBatch, "Count: " + activeCount, 5, 35);
-			font.draw(spriteBatch, "Max: " + lastMaxActive, 5, 55);
-			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 5, 75);
+			font.draw(spriteBatch, "Pos: " + (int) effect.getEmitters().get(0).getX() + ", " + (int) effect.getEmitters().get(0).getY(), 5, 35);
+			float scaleX = (int) (effect.getEmitters().get(0).getEmitterScaleX() * 100) / 100.0f;
+			float scaleY = (int) (effect.getEmitters().get(0).getEmitterScaleY() * 100) / 100.0f;
+			font.draw(spriteBatch, "Scale: " + scaleX + ", " + scaleY, 5, 55);
+			font.draw(spriteBatch, "Rotation: " + (int) effect.getEmitters().get(0).getEmitterRotation(), 5, 75);
+			font.draw(spriteBatch, "Count: " + activeCount, 5, 95);
+			font.draw(spriteBatch, "Max: " + lastMaxActive, 5, 115);
+			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 5, 135);
 
 			spriteBatch.end();
 
@@ -447,7 +457,20 @@ public class ParticleEditor extends JFrame {
 		public boolean touchDown (int x, int y, int pointer, int newParam) {
 			Vector3 touchPoint = new Vector3(x, y, 0);
 			worldCamera.unproject(touchPoint);
-			effect.setPosition(touchPoint.x, touchPoint.y);
+			dragStart.set(touchPoint.x, touchPoint.y);
+			switch (transformMode) {
+			case translate:
+				effect.setPosition(touchPoint.x, touchPoint.y);
+				break;
+			case scale:
+			case scaleX:
+			case scaleY:
+				dragStartScale.set(effect.getEmitters().get(0).getEmitterScaleX(), effect.getEmitters().get(0).getEmitterScaleY());
+				break;
+			case rotate:
+				dragStartRotation = effect.getEmitters().get(0).getEmitterRotation();
+				break;
+			}
 			return false;
 		}
 
@@ -461,7 +484,38 @@ public class ParticleEditor extends JFrame {
 		public boolean touchDragged (int x, int y, int pointer) {
 			Vector3 touchPoint = new Vector3(x, y, 0);
 			worldCamera.unproject(touchPoint);
-			effect.setPosition(touchPoint.x, touchPoint.y);
+			switch (transformMode) {
+			case translate:
+				effect.setPosition(touchPoint.x, touchPoint.y);
+				break;
+			case scale:
+				float startDist = dragStart.dst(effect.getEmitters().get(0).getX(), effect.getEmitters().get(0).getY());
+				if (startDist < 10) startDist = 10;
+				float dist = touchPoint.dst(effect.getEmitters().get(0).getX(), effect.getEmitters().get(0).getY(), 0);
+				float scale = dragStartScale.x * dist / startDist;
+				effect.setScale(scale, scale);
+				break;
+			case scaleX:
+				float startDistX = dragStart.x - effect.getEmitters().get(0).getX();
+				if (Math.abs(startDistX) < 10) startDistX = 10 * Math.signum(startDistX);
+				float distX = touchPoint.x - effect.getEmitters().get(0).getX();
+				float scaleX = dragStartScale.x * distX / startDistX;
+				effect.setScale(scaleX, effect.getEmitters().get(0).getEmitterScaleY());
+				break;
+			case scaleY:
+				float startDistY = dragStart.y - effect.getEmitters().get(0).getY();
+				if (Math.abs(startDistY) < 10) startDistY = 10 * Math.signum(startDistY);
+				float distY = touchPoint.y - effect.getEmitters().get(0).getY();
+				float scaleY = dragStartScale.y * distY / startDistY;
+				effect.setScale(effect.getEmitters().get(0).getEmitterScaleX(), scaleY);
+				break;
+			case rotate:
+				Vector2 startVector = dragStart.cpy().sub(effect.getEmitters().get(0).getX(), effect.getEmitters().get(0).getY());
+				Vector2 vector = new Vector2(touchPoint.x, touchPoint.y).sub(effect.getEmitters().get(0).getX(), effect.getEmitters().get(0).getY());
+				float rotation = (dragStartRotation + startVector.angle(vector)) % 360;
+				effect.setRotation(rotation);
+				break;
+			}
 			return false;
 		}
 
@@ -490,6 +544,10 @@ public class ParticleEditor extends JFrame {
 
 	static class ParticleData {
 		public boolean enabled = true;
+	}
+	
+	static public enum TransformMode {
+		translate, scale, scaleX, scaleY, rotate
 	}
 
 	public static void main (String[] args) {

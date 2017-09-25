@@ -117,6 +117,16 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).setPosition(x, y);
 	}
 
+	public void setScale (float scaleX, float scaleY) {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).setEmitterScale(scaleX, scaleY);
+	}
+
+	public void setRotation (float rotation) {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).setEmitterRotation(rotation);
+	}
+
 	public void setFlip (boolean flipX, boolean flipY) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).setFlip(flipX, flipY);

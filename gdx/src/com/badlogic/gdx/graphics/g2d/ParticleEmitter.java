@@ -24,7 +24,9 @@ import java.util.Arrays;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
@@ -68,6 +70,9 @@ public class ParticleEmitter {
 	private Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
 	private float x, y;
+	private float scaleX = 1, scaleY = 1;
+	private float rotation;
+	private Matrix3 transform = new Matrix3();
 	private String name;
 	private Array<String> imagePaths;
 	private int activeCount;
@@ -93,6 +98,8 @@ public class ParticleEmitter {
 	private boolean additive = true;
 	private boolean premultipliedAlpha = false;
 	boolean cleansUpBlendFunction = true;
+
+	private Vector2 tmp = new Vector2();
 
 	public ParticleEmitter () {
 		initialize();
@@ -347,6 +354,10 @@ public class ParticleEmitter {
 		for (int i = 0, n = active.length; i < n; i++)
 			active[i] = false;
 		activeCount = 0;
+		scaleX = 1;
+		scaleY = 1;
+		rotation = 0;
+		transform.setToTranslation(x, y).rotate(rotation).scale(scaleX, scaleY);
 		start();
 	}
 
@@ -417,6 +428,13 @@ public class ParticleEmitter {
 			particle.set(sprite);
 		}
 
+		particle.baseX = x;
+		particle.baseY = y;
+		particle.baseScaleX = scaleX;
+		particle.baseScaleY = scaleY;
+		particle.baseRotation = rotation;
+		particle.baseTransform.set(transform);
+
 		float percent = durationTimer / (float)duration;
 		int updateFlags = this.updateFlags;
 
@@ -445,24 +463,26 @@ public class ParticleEmitter {
 		particle.xScale = xScaleValue.newLowValue() / spriteWidth;
 		particle.xScaleDiff = xScaleValue.newHighValue() / spriteWidth;
 		if (!xScaleValue.isRelative()) particle.xScaleDiff -= particle.xScale;
+		particle.localScaleX = particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0);
 		
 		if (yScaleValue.active) {
 			particle.yScale = yScaleValue.newLowValue() / spriteHeight;
 			particle.yScaleDiff = yScaleValue.newHighValue() / spriteHeight;
 			if (!yScaleValue.isRelative()) particle.yScaleDiff -= particle.yScale;
-			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0), 
-				particle.yScale + particle.yScaleDiff * yScaleValue.getScale(0));
+			particle.localScaleY = particle.yScale + particle.yScaleDiff * yScaleValue.getScale(0);
 		} else {
-			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0));
+			particle.localScaleY = particle.localScaleX;
 		}
+
+		particle.setScale(particle.localScaleX * particle.baseScaleX, particle.localScaleY * particle.baseScaleY);
 
 		if (rotationValue.active) {
 			particle.rotation = rotationValue.newLowValue();
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotation;
-			float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
-			if (aligned) rotation += angle;
-			particle.setRotation(rotation);
+			particle.localRotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
+			if (aligned) particle.localRotation += angle;
+			particle.setRotation(particle.localRotation + particle.baseRotation);
 		}
 
 		if (windValue.active) {
@@ -488,16 +508,16 @@ public class ParticleEmitter {
 		particle.transparencyDiff = transparencyValue.newHighValue() - particle.transparency;
 
 		// Spawn.
-		float x = this.x;
-		if (xOffsetValue.active) x += xOffsetValue.newLowValue();
-		float y = this.y;
-		if (yOffsetValue.active) y += yOffsetValue.newLowValue();
+		float localX = 0;
+		if (xOffsetValue.active) localX += xOffsetValue.newLowValue();
+		float localY = 0;
+		if (yOffsetValue.active) localY += yOffsetValue.newLowValue();
 		switch (spawnShapeValue.shape) {
 		case square: {
 			float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
 			float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
-			x += MathUtils.random(width) - width / 2;
-			y += MathUtils.random(height) - height / 2;
+			localX += MathUtils.random(width) - width / 2;
+			localY += MathUtils.random(height) - height / 2;
 			break;
 		}
 		case ellipse: {
@@ -522,8 +542,8 @@ public class ParticleEmitter {
 				}
 				float cosDeg = MathUtils.cosDeg(spawnAngle);
 				float sinDeg = MathUtils.sinDeg(spawnAngle);
-				x += cosDeg * radiusX;
-				y += sinDeg * radiusX / scaleY;
+				localX += cosDeg * radiusX;
+				localY += sinDeg * radiusX / scaleY;
 				if ((updateFlags & UPDATE_ANGLE) == 0) {
 					particle.angle = spawnAngle;
 					particle.angleCos = cosDeg;
@@ -535,8 +555,8 @@ public class ParticleEmitter {
 					float px = MathUtils.random(width) - radiusX;
 					float py = MathUtils.random(height) - radiusY;
 					if (px * px + py * py <= radius2) {
-						x += px;
-						y += py / scaleY;
+						localX += px;
+						localY += py / scaleY;
 						break;
 					}
 				}
@@ -548,15 +568,18 @@ public class ParticleEmitter {
 			float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
 			if (width != 0) {
 				float lineX = width * MathUtils.random();
-				x += lineX;
-				y += lineX * (height / (float)width);
+				localX += lineX;
+				localY += lineX * (height / (float)width);
 			} else
-				y += height * MathUtils.random();
+				localY += height * MathUtils.random();
 			break;
 		}
 		}
 
-		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
+		particle.localX = localX;
+		particle.localY = localY;
+		Vector2 worldPos = tmp.set(localX, localY).mul(particle.baseTransform);
+		particle.setBounds(worldPos.x - spriteWidth / 2, worldPos.y - spriteHeight / 2, spriteWidth, spriteHeight);
 
 		int offsetTime = (int)(lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent));
 		if (offsetTime > 0) {
@@ -572,14 +595,17 @@ public class ParticleEmitter {
 
 		float percent = 1 - particle.currentLife / (float)particle.life;
 		int updateFlags = this.updateFlags;
+		float prevLocalX = particle.localX;
+		float prevLocalY = particle.localY;
 
 		if ((updateFlags & UPDATE_SCALE) != 0) {
+			particle.localScaleX = particle.xScale + particle.xScaleDiff * xScaleValue.getScale(percent);
 			if (yScaleValue.active) {
-				particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(percent),
-					particle.yScale + particle.yScaleDiff * yScaleValue.getScale(percent));
+				particle.localScaleY = particle.yScale + particle.yScaleDiff * yScaleValue.getScale(percent);
 			} else {
-				particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(percent));
+				particle.localScaleY = particle.localScaleX;
 			}
+			particle.setScale(particle.localScaleX * particle.baseScaleX, particle.localScaleY * particle.baseScaleY);
 		}
 
 		if ((updateFlags & UPDATE_VELOCITY) != 0) {
@@ -591,17 +617,17 @@ public class ParticleEmitter {
 				velocityX = velocity * MathUtils.cosDeg(angle);
 				velocityY = velocity * MathUtils.sinDeg(angle);
 				if ((updateFlags & UPDATE_ROTATION) != 0) {
-					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
-					if (aligned) rotation += angle;
-					particle.setRotation(rotation);
+					particle.localRotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) particle.localRotation += angle;
+					particle.setRotation(particle.localRotation + particle.baseRotation);
 				}
 			} else {
 				velocityX = velocity * particle.angleCos;
 				velocityY = velocity * particle.angleSin;
 				if (aligned || (updateFlags & UPDATE_ROTATION) != 0) {
-					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
-					if (aligned) rotation += particle.angle;
-					particle.setRotation(rotation);
+					particle.localRotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) particle.localRotation += particle.angle;
+					particle.setRotation(particle.localRotation + particle.baseRotation);
 				}
 			}
 
@@ -611,10 +637,13 @@ public class ParticleEmitter {
 			if ((updateFlags & UPDATE_GRAVITY) != 0)
 				velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(percent)) * delta;
 
-			particle.translate(velocityX, velocityY);
+			particle.localX += velocityX;
+			particle.localY += velocityY;
 		} else {
-			if ((updateFlags & UPDATE_ROTATION) != 0)
-				particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(percent));
+			if ((updateFlags & UPDATE_ROTATION) != 0) {
+				particle.localRotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+				particle.setRotation(particle.localRotation + particle.baseRotation);
+			}
 		}
 
 		float[] color;
@@ -641,24 +670,78 @@ public class ParticleEmitter {
 				particle.setRegion(sprite);
 				particle.setSize(sprite.getWidth(), sprite.getHeight());
 				particle.setOrigin(sprite.getOriginX(), sprite.getOriginY());
-				particle.translate((prevSpriteWidth - sprite.getWidth()) / 2, (prevSpriteHeight - sprite.getHeight()) / 2);
+				particle.localX += (prevSpriteWidth - sprite.getWidth()) / 2;
+				particle.localY += (prevSpriteHeight - sprite.getHeight()) / 2;
 				particle.frame = frame;
 			}
 		}
 		
+		if (particle.localX != prevLocalX || particle.localY != prevLocalY) {
+			Vector2 worldPos = tmp.set(particle.localX, particle.localY).mul(particle.baseTransform);
+			particle.setPosition(worldPos.x - particle.width / 2, worldPos.y - particle.height / 2);
+		}
+
 		return true;
 	}
 
 	public void setPosition (float x, float y) {
-		if (attached) {
-			float xAmount = x - this.x;
-			float yAmount = y - this.y;
-			boolean[] active = this.active;
-			for (int i = 0, n = active.length; i < n; i++)
-				if (active[i]) particles[i].translate(xAmount, yAmount);
-		}
 		this.x = x;
 		this.y = y;
+		transform.setToTranslation(x, y).rotate(rotation).scale(scaleX, scaleY);
+
+		if (attached) {
+			boolean[] active = this.active;
+			for (int i = 0, n = active.length; i < n; i++) {
+				if (active[i]) {
+					Particle particle = particles[i];
+					particle.baseX = x;
+					particle.baseY = y;
+					particle.baseTransform.set(transform);
+					Vector2 worldPos = tmp.set(particle.localX, particle.localY).mul(transform);
+					particle.setPosition(worldPos.x - particle.width / 2, worldPos.y - particle.height / 2);
+				}
+			}
+		}
+	}
+
+	public void setEmitterScale (float scaleX, float scaleY) {
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		transform.setToTranslation(x, y).rotate(rotation).scale(scaleX, scaleY);
+
+		if (attached) {
+			boolean[] active = this.active;
+			for (int i = 0, n = active.length; i < n; i++) {
+				if (active[i]) {
+					Particle particle = particles[i];
+					particle.baseScaleX = scaleX;
+					particle.baseScaleY = scaleY;
+					particle.baseTransform.set(transform);
+					Vector2 worldPos = tmp.set(particle.localX, particle.localY).mul(transform);
+					particle.setPosition(worldPos.x - particle.width / 2, worldPos.y - particle.height / 2);
+					particle.setScale(particle.localScaleX * scaleX, particle.localScaleY * scaleY);
+				}
+			}
+		}
+	}
+
+	public void setEmitterRotation (float rotation) {
+		this.rotation = rotation;
+		transform.setToTranslation(x, y).rotate(rotation).scale(scaleX, scaleY);
+
+		if (attached) {
+			boolean[] active = this.active;
+			for (int i = 0, n = active.length; i < n; i++) {
+				if (active[i]) {
+					Particle particle = particles[i];
+					particle.baseRotation = rotation;
+					particle.baseTransform.set(transform);
+					Vector2 worldPos = tmp.set(particle.localX, particle.localY).mul(transform);
+					particle.setPosition(worldPos.x - particle.width / 2, worldPos.y - particle.height / 2);
+					particle.setRotation(particle.localRotation + rotation);
+				}
+			}
+		}
 	}
 
 	public void setSprites (Array<Sprite> sprites) {
@@ -884,6 +967,18 @@ public class ParticleEmitter {
 
 	public float getY () {
 		return y;
+	}
+
+	public float getEmitterScaleX () {
+		return scaleX;
+	}
+
+	public float getEmitterScaleY () {
+		return scaleY;
+	}
+	
+	public float getEmitterRotation () {
+		return rotation;
 	}
 
 	public int getActiveCount () {
@@ -1188,6 +1283,13 @@ public class ParticleEmitter {
 	}
 
 	public static class Particle extends Sprite {
+		protected float localX, localY;
+		protected float localScaleX = 1, localScaleY = 1;
+		protected float localRotation;
+		protected float baseX, baseY;
+		protected float baseScaleX, baseScaleY;
+		protected float baseRotation;
+		protected Matrix3 baseTransform = new Matrix3();
 		protected int life, currentLife;
 		protected float xScale, xScaleDiff;
 		protected float yScale, yScaleDiff;

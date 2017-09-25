@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.tools.particleeditor.ParticleEditor.TransformMode;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -115,6 +116,8 @@ class EffectPanel extends JPanel {
 		else {
 			ParticleEmitter p = emitters.get(0);
 			emitter.setPosition(p.getX(), p.getY());
+			emitter.setEmitterScale(p.getEmitterScaleX(), p.getEmitterScaleY());
+			emitter.setEmitterRotation(p.getEmitterRotation());
 		}
 		emitters.add(emitter);
 
@@ -256,6 +259,16 @@ class EffectPanel extends JPanel {
 		editor.effect.start();
 	}
 
+	void changeTransformMode (TransformMode transformMode) {
+		editor.transformMode = transformMode;
+	}
+
+	void resetTransform() {
+		editor.effect.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
+		editor.effect.setScale(1, 1);
+		editor.effect.setRotation(0);
+	}
+
 	private void initializeComponents () {
 		setLayout(new GridBagLayout());
 		{
@@ -327,8 +340,12 @@ class EffectPanel extends JPanel {
 				});
 			}
 			{
+				sideButtons.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, -1, 1, 1, 0, 0,
+					GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+			}
+			{
 				JButton upButton = new JButton("Up");
-				sideButtons.add(upButton, new GridBagConstraints(0, -1, 1, 1, 0, 1, GridBagConstraints.SOUTH,
+				sideButtons.add(upButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 				upButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
@@ -339,10 +356,76 @@ class EffectPanel extends JPanel {
 			{
 				JButton downButton = new JButton("Down");
 				sideButtons.add(downButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
-					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 				downButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
 						move(1);
+					}
+				});
+			}
+			{
+				sideButtons.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, -1, 1, 1, 0, 0,
+					GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+			}
+			{
+				ButtonGroup checkboxGroup = new ButtonGroup();
+				JToggleButton translateButton = new JToggleButton("Translate", editor.transformMode == TransformMode.translate);
+				sideButtons.add(translateButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				checkboxGroup.add(translateButton);
+				translateButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						changeTransformMode(TransformMode.translate);
+					}
+				});
+				JToggleButton scaleButton = new JToggleButton("Scale", editor.transformMode == TransformMode.scale);
+				sideButtons.add(scaleButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				checkboxGroup.add(scaleButton);
+				scaleButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						changeTransformMode(TransformMode.scale);
+					}
+				});
+				JToggleButton scaleXButton = new JToggleButton("Scale X", editor.transformMode == TransformMode.scaleX);
+				sideButtons.add(scaleXButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				checkboxGroup.add(scaleXButton);
+				scaleXButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						changeTransformMode(TransformMode.scaleX);
+					}
+				});
+				JToggleButton scaleYButton = new JToggleButton("Scale Y", editor.transformMode == TransformMode.scaleY);
+				sideButtons.add(scaleYButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				checkboxGroup.add(scaleYButton);
+				scaleYButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						changeTransformMode(TransformMode.scaleY);
+					}
+				});
+				JToggleButton rotateButton = new JToggleButton("Rotate", editor.transformMode == TransformMode.rotate);
+				sideButtons.add(rotateButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				checkboxGroup.add(rotateButton);
+				rotateButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						changeTransformMode(TransformMode.rotate);
+					}
+				});
+			}
+			{
+				sideButtons.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, -1, 1, 1, 0, 0,
+					GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+			}
+			{
+				JButton resetButton = new JButton("Reset");
+				sideButtons.add(resetButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				resetButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						resetTransform();
 					}
 				});
 			}
