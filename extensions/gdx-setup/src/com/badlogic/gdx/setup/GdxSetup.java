@@ -313,10 +313,29 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+
+
+
 			project.files.add(new ProjectFile("ios/build.gradle", true));
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
