@@ -134,7 +134,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />

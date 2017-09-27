@@ -134,7 +134,7 @@ public:
 
 	virtual void	calculateOverlappingPairs(btDispatcher* dispatcher);
 	
-	BP_FP_INT_TYPE addHandle(const btVector3& aabbMin,const btVector3& aabbMax, void* pOwner,short int collisionFilterGroup,short int collisionFilterMask,btDispatcher* dispatcher,void* multiSapProxy);
+	BP_FP_INT_TYPE addHandle(const btVector3& aabbMin,const btVector3& aabbMax, void* pOwner, int collisionFilterGroup, int collisionFilterMask,btDispatcher* dispatcher);
 	void removeHandle(BP_FP_INT_TYPE handle,btDispatcher* dispatcher);
 	void updateHandle(BP_FP_INT_TYPE handle, const btVector3& aabbMin,const btVector3& aabbMax,btDispatcher* dispatcher);
 	SIMD_FORCE_INLINE Handle* getHandle(BP_FP_INT_TYPE index) const {return m_pHandles + index;}
@@ -144,7 +144,7 @@ public:
 	void	processAllOverlappingPairs(btOverlapCallback* callback);
 
 	//Broadphase Interface
-	virtual btBroadphaseProxy*	createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr ,short int collisionFilterGroup,short int collisionFilterMask,btDispatcher* dispatcher,void* multiSapProxy);
+	virtual btBroadphaseProxy*	createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr , int collisionFilterGroup, int collisionFilterMask,btDispatcher* dispatcher);
 	virtual void	destroyProxy(btBroadphaseProxy* proxy,btDispatcher* dispatcher);
 	virtual void	setAabb(btBroadphaseProxy* proxy,const btVector3& aabbMin,const btVector3& aabbMax,btDispatcher* dispatcher);
 	virtual void  getAabb(btBroadphaseProxy* proxy,btVector3& aabbMin, btVector3& aabbMax ) const;
@@ -228,16 +228,16 @@ void btAxisSweep3<BP_FP_INT_TYPE>::debugPrintAxis(int axis, bool checkCardinalit
 #endif //DEBUG_BROADPHASE
 
 template <typename BP_FP_INT_TYPE>
-btBroadphaseProxy*	btAxisSweep3Internal<BP_FP_INT_TYPE>::createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr,short int collisionFilterGroup,short int collisionFilterMask,btDispatcher* dispatcher,void* multiSapProxy)
+btBroadphaseProxy*	btAxisSweep3Internal<BP_FP_INT_TYPE>::createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr, int collisionFilterGroup, int collisionFilterMask,btDispatcher* dispatcher)
 {
 		(void)shapeType;
-		BP_FP_INT_TYPE handleId = addHandle(aabbMin,aabbMax, userPtr,collisionFilterGroup,collisionFilterMask,dispatcher,multiSapProxy);
+		BP_FP_INT_TYPE handleId = addHandle(aabbMin,aabbMax, userPtr,collisionFilterGroup,collisionFilterMask,dispatcher);
 		
 		Handle* handle = getHandle(handleId);
 		
 		if (m_raycastAccelerator)
 		{
-			btBroadphaseProxy* rayProxy = m_raycastAccelerator->createProxy(aabbMin,aabbMax,shapeType,userPtr,collisionFilterGroup,collisionFilterMask,dispatcher,0);
+			btBroadphaseProxy* rayProxy = m_raycastAccelerator->createProxy(aabbMin,aabbMax,shapeType,userPtr,collisionFilterGroup,collisionFilterMask,dispatcher);
 			handle->m_dbvtProxy = rayProxy;
 		}
 		return handle;
@@ -502,7 +502,7 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::freeHandle(BP_FP_INT_TYPE handle)
 
 
 template <typename BP_FP_INT_TYPE>
-BP_FP_INT_TYPE btAxisSweep3Internal<BP_FP_INT_TYPE>::addHandle(const btVector3& aabbMin,const btVector3& aabbMax, void* pOwner,short int collisionFilterGroup,short int collisionFilterMask,btDispatcher* dispatcher,void* multiSapProxy)
+BP_FP_INT_TYPE btAxisSweep3Internal<BP_FP_INT_TYPE>::addHandle(const btVector3& aabbMin,const btVector3& aabbMax, void* pOwner, int collisionFilterGroup, int collisionFilterMask,btDispatcher* dispatcher)
 {
 	// quantize the bounds
 	BP_FP_INT_TYPE min[3], max[3];
@@ -520,7 +520,6 @@ BP_FP_INT_TYPE btAxisSweep3Internal<BP_FP_INT_TYPE>::addHandle(const btVector3& 
 	pHandle->m_clientObject = pOwner;
 	pHandle->m_collisionFilterGroup = collisionFilterGroup;
 	pHandle->m_collisionFilterMask = collisionFilterMask;
-	pHandle->m_multiSapParentProxy = multiSapProxy;
 
 	// compute current limit of edge arrays
 	BP_FP_INT_TYPE limit = static_cast<BP_FP_INT_TYPE>(m_numHandles * 2);

@@ -28,6 +28,7 @@ btCollisionObject::btCollisionObject()
 		m_collisionFlags(btCollisionObject::CF_STATIC_OBJECT),
 		m_islandTag1(-1),
 		m_companionId(-1),
+        m_worldArrayIndex(-1),
 		m_activationState1(1),
 		m_deactivationTime(btScalar(0.)),
 		m_friction(btScalar(0.5)),

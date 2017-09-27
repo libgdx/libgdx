@@ -30,8 +30,8 @@ subject to the following restrictions:
 
 btConvexConcaveCollisionAlgorithm::btConvexConcaveCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci, const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped)
 : btActivatingCollisionAlgorithm(ci,body0Wrap,body1Wrap),
-m_isSwapped(isSwapped),
-m_btConvexTriangleCallback(ci.m_dispatcher1,body0Wrap,body1Wrap,isSwapped)
+m_btConvexTriangleCallback(ci.m_dispatcher1,body0Wrap,body1Wrap,isSwapped),
+m_isSwapped(isSwapped)
 {
 }
 
@@ -118,8 +118,16 @@ partId, int triangleIndex)
 		
 		
 		btCollisionObjectWrapper triObWrap(m_triBodyWrap,&tm,m_triBodyWrap->getCollisionObject(),m_triBodyWrap->getWorldTransform(),partId,triangleIndex);//correct transform?
-		btCollisionAlgorithm* colAlgo = ci.m_dispatcher1->findAlgorithm(m_convexBodyWrap,&triObWrap,m_manifoldPtr);
-
+		btCollisionAlgorithm* colAlgo = 0;
+		
+		if (m_resultOut->m_closestPointDistanceThreshold > 0)
+		{
+			colAlgo = ci.m_dispatcher1->findAlgorithm(m_convexBodyWrap, &triObWrap, 0, BT_CLOSEST_POINT_ALGORITHMS);
+		}
+		else
+		{
+			colAlgo = ci.m_dispatcher1->findAlgorithm(m_convexBodyWrap, &triObWrap, m_manifoldPtr, BT_CONTACT_POINT_ALGORITHMS);
+		}
 		const btCollisionObjectWrapper* tmpWrap = 0;
 
 		if (m_resultOut->getBody0Internal() == m_triBodyWrap->getCollisionObject())
@@ -170,7 +178,8 @@ void	btConvexTriangleCallback::setTimeStepAndCounters(btScalar collisionMarginTr
 	const btCollisionShape* convexShape = static_cast<const btCollisionShape*>(m_convexBodyWrap->getCollisionShape());
 	//CollisionShape* triangleShape = static_cast<btCollisionShape*>(triBody->m_collisionShape);
 	convexShape->getAabb(convexInTriangleSpace,m_aabbMin,m_aabbMax);
-	btScalar extraMargin = collisionMarginTriangle;
+	btScalar extraMargin = collisionMarginTriangle+ resultOut->m_closestPointDistanceThreshold;
+	
 	btVector3 extra(extraMargin,extraMargin,extraMargin);
 
 	m_aabbMax += extra;

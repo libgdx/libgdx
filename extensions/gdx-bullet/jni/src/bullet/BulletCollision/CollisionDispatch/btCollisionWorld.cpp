@@ -108,14 +108,16 @@ btCollisionWorld::~btCollisionWorld()
 
 
 
-void	btCollisionWorld::addCollisionObject(btCollisionObject* collisionObject,short int collisionFilterGroup,short int collisionFilterMask)
+void	btCollisionWorld::addCollisionObject(btCollisionObject* collisionObject, int collisionFilterGroup, int collisionFilterMask)
 {
 
 	btAssert(collisionObject);
 
 	//check that the object isn't already added
 	btAssert( m_collisionObjects.findLinearSearch(collisionObject)  == m_collisionObjects.size());
+    btAssert(collisionObject->getWorldArrayIndex() == -1);  // do not add the same object to more than one collision world
 
+    collisionObject->setWorldArrayIndex(m_collisionObjects.size());
 	m_collisionObjects.push_back(collisionObject);
 
 	//calculate new AABB
@@ -133,8 +135,7 @@ void	btCollisionWorld::addCollisionObject(btCollisionObject* collisionObject,sho
 		collisionObject,
 		collisionFilterGroup,
 		collisionFilterMask,
-		m_dispatcher1,0
-		))	;
+		m_dispatcher1))	;
 
 
 
@@ -195,6 +196,7 @@ void	btCollisionWorld::updateAabbs()
 	for ( int i=0;i<m_collisionObjects.size();i++)
 	{
 		btCollisionObject* colObj = m_collisionObjects[i];
+        btAssert(colObj->getWorldArrayIndex() == i);
 
 		//only update aabb of active objects
 		if (m_forceUpdateAllAabbs || colObj->isActive())
@@ -253,9 +255,25 @@ void	btCollisionWorld::removeCollisionObject(btCollisionObject* collisionObject)
 	}
 
 
-	//swapremove
-	m_collisionObjects.remove(collisionObject);
-
+    int iObj = collisionObject->getWorldArrayIndex();
+//    btAssert(iObj >= 0 && iObj < m_collisionObjects.size()); // trying to remove an object that was never added or already removed previously?
+    if (iObj >= 0 && iObj < m_collisionObjects.size())
+    {
+        btAssert(collisionObject == m_collisionObjects[iObj]);
+        m_collisionObjects.swap(iObj, m_collisionObjects.size()-1);
+        m_collisionObjects.pop_back();
+        if (iObj < m_collisionObjects.size())
+        {
+            m_collisionObjects[iObj]->setWorldArrayIndex(iObj);
+        }
+    }
+    else
+    {
+        // slow linear search
+        //swapremove
+        m_collisionObjects.remove(collisionObject);
+    }
+    collisionObject->setWorldArrayIndex(-1);
 }
 
 
@@ -1212,7 +1230,7 @@ struct btSingleContactCallback : public btBroadphaseAabbCallback
 			btCollisionObjectWrapper ob0(0,m_collisionObject->getCollisionShape(),m_collisionObject,m_collisionObject->getWorldTransform(),-1,-1);
 			btCollisionObjectWrapper ob1(0,collisionObject->getCollisionShape(),collisionObject,collisionObject->getWorldTransform(),-1,-1);
 
-			btCollisionAlgorithm* algorithm = m_world->getDispatcher()->findAlgorithm(&ob0,&ob1);
+			btCollisionAlgorithm* algorithm = m_world->getDispatcher()->findAlgorithm(&ob0,&ob1,0, BT_CLOSEST_POINT_ALGORITHMS);
 			if (algorithm)
 			{
 				btBridgedManifoldResult contactPointResult(&ob0,&ob1, m_resultCallback);
@@ -1248,10 +1266,11 @@ void	btCollisionWorld::contactPairTest(btCollisionObject* colObjA, btCollisionOb
 	btCollisionObjectWrapper obA(0,colObjA->getCollisionShape(),colObjA,colObjA->getWorldTransform(),-1,-1);
 	btCollisionObjectWrapper obB(0,colObjB->getCollisionShape(),colObjB,colObjB->getWorldTransform(),-1,-1);
 
-	btCollisionAlgorithm* algorithm = getDispatcher()->findAlgorithm(&obA,&obB);
+	btCollisionAlgorithm* algorithm = getDispatcher()->findAlgorithm(&obA,&obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
 	if (algorithm)
 	{
 		btBridgedManifoldResult contactPointResult(&obA,&obB, resultCallback);
+		contactPointResult.m_closestPointDistanceThreshold = resultCallback.m_closestDistanceThreshold;
 		//discrete collision detection query
 		algorithm->processCollision(&obA,&obB, getDispatchInfo(),&contactPointResult);
 
@@ -1551,6 +1570,8 @@ void	btCollisionWorld::debugDrawWorld()
 								color = btVector3(btScalar(.3),btScalar(0.3),btScalar(0.3));
 							}
 						};
+
+						colObj->getCustomDebugColor(color);
 
 						debugDrawObject(colObj->getWorldTransform(),colObj->getCollisionShape(),color);
 					}
