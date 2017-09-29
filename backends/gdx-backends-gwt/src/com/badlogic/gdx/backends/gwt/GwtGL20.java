@@ -626,8 +626,15 @@ public class GwtGL20 implements GL20 {
 				|| pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
 				|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT)
 			params.put(0, gl.getParameteri(pname));
-		else
-			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
+		else if (pname == GL20.GL_VIEWPORT) {
+			Int32Array array = gl.getParameterv(pname);
+			params.put(0, array.get(0));
+			params.put(1, array.get(1));
+			params.put(2, array.get(2));
+			params.put(3, array.get(3));
+			params.flip();
+		} else
+			throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
 	}
 
 
