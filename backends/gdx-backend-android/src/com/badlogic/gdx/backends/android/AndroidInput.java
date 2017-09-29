@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface for Android.
- *
+ * 
  * @author mzechner */
 /** @author jshapcot */
 public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
@@ -98,7 +98,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	public static final int NUM_TOUCHES = 20;
 	public static final int SUPPORTED_KEYS = 260;
-
+	
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
@@ -199,7 +199,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
-
+	
 	@Override
 	public float getGyroscopeX () {
 		return gyroscopeValues[0];
@@ -223,9 +223,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
 				input.setHint(hint);
-				input.setText(text);
+				input.setText(text);				
 				input.setSingleLine();
-				input.setSelection(text.length());
+                                input.setSelection(text.length());
 				alert.setView(input);
 				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
@@ -259,8 +259,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					}
 				});
 				AlertDialog dialog = alert.show();
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 			}
 		});
 	}
@@ -506,7 +506,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (e.getKeyCode() < 0 || e.getKeyCode() >= SUPPORTED_KEYS) {
 				return false;
 			}
-
+			
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
@@ -601,7 +601,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void setCatchMenuKey (boolean catchMenu) {
 		this.catchMenu = catchMenu;
 	}
-
+	
 	@Override
 	public boolean isCatchMenuKey () {
 		return catchMenu;
@@ -705,7 +705,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 		} else
 			accelerometerAvailable = false;
-
+		
 		if (config.useGyroscope) {
 			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_GYROSCOPE).size() == 0) {
@@ -737,7 +737,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 						config.sensorDelay);
 			}
 		}
-
+		
 		if (config.useCompass && !rotationVectorAvailable) {
 			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -929,9 +929,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
 	private class SensorListener implements SensorEventListener {
-
+		
 		public SensorListener (){
-
+			
 		}
 
 		@Override
