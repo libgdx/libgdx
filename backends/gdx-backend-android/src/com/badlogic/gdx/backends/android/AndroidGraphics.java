@@ -177,7 +177,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
-	private void updatePpi () {
+	protected void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
 		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -239,7 +239,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * Motorola CLIQ and the Samsung Behold II.
 	 *
 	 * @param gl */
-	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
+	protected void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
 		String versionString = gl.glGetString(GL10.GL_VERSION);
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);
 		String rendererString = gl.glGetString(GL10.GL_RENDERER);
@@ -306,7 +306,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		gl.glViewport(0, 0, this.width, this.height);
 	}
 
-	private void logConfig (EGLConfig config) {
+	protected void logConfig (EGLConfig config) {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 		int r = getAttrib(egl, display, config, EGL10.EGL_RED_SIZE, 0);
