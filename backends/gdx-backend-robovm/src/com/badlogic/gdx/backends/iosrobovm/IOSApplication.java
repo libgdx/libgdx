@@ -274,7 +274,7 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.makeCurrent();
 		graphics.pause();
-		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
 	}
 
 	final void willTerminate (UIApplication uiApp) {
@@ -287,7 +287,7 @@ public class IOSApplication implements Application {
 			}
 		}
 		listener.dispose();
-		Gdx.gl.glFlush();
+		Gdx.gl.glFinish();
 	}
 
 	@Override
