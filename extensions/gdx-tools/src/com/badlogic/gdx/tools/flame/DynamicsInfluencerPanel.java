@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.BrownianAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.CentripetalAcceleration;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.CircularMotion;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.FaceDirection;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Rotational3D;
@@ -38,6 +39,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 	private static final String 	VEL_TYPE_ROTATIONAL_2D = "Angular Velocity 2D",
 															VEL_TYPE_ROTATIONAL_3D = "Angular Velocity 3D",
 											VEL_TYPE_CENTRIPETAL = "Centripetal",
+											VEL_TYPE_CIRCULAR_MOTION = "CircularMotion",
 											VEL_TYPE_TANGENTIAL = "Tangential",
 											VEL_TYPE_POLAR = "Polar",
 											VEL_TYPE_BROWNIAN = "Brownian", 
@@ -92,12 +94,12 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 
 	private Object[] getAvailableVelocities (ControllerType type) {
 		if(type == ControllerType.Billboard || type == ControllerType.PointSprite) {
-			return new String[]{	VEL_TYPE_ROTATIONAL_2D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL,
-				VEL_TYPE_POLAR, VEL_TYPE_BROWNIAN};
+			return new String[]{	VEL_TYPE_ROTATIONAL_2D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_CIRCULAR_MOTION,
+				VEL_TYPE_TANGENTIAL,	VEL_TYPE_POLAR, VEL_TYPE_BROWNIAN};
 		}
 		else if(type == ControllerType.ModelInstance|| type == ControllerType.ParticleController) {
-			return new String[]{	VEL_TYPE_ROTATIONAL_3D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL,
-				VEL_TYPE_POLAR, VEL_TYPE_BROWNIAN, VEL_TYPE_FACE};
+			return new String[]{	VEL_TYPE_ROTATIONAL_3D, VEL_TYPE_CENTRIPETAL, VEL_TYPE_CIRCULAR_MOTION,
+				VEL_TYPE_TANGENTIAL,	VEL_TYPE_POLAR, VEL_TYPE_BROWNIAN, VEL_TYPE_FACE};
 		}
 		return null;
 	}
@@ -233,6 +235,12 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 			strengthVelocityPanel.setDescription("A directional acceleration, the direction is towards the origin (global), or towards the emitter position (local), in world units/sec2 .");
 			panel = strengthVelocityPanel;
 		}
+		else if(	velocityValue instanceof CircularMotion){
+			angularVelocityPanel.setValue((DynamicsModifier.Angular) velocityValue);
+			angularVelocityPanel.setName("Circular Motion");
+			angularVelocityPanel.setDescription("Particles given initial velocity and force toward the axis of rotation for uniform circular motion. Strength controls starting speed and subsequent force");
+			panel = angularVelocityPanel;
+		}
 		else if(	velocityValue instanceof TangentialAcceleration){
 			angularVelocityPanel.setValue((DynamicsModifier.Angular) velocityValue);
 			angularVelocityPanel.setName("Tangetial Velocity");
@@ -271,6 +279,7 @@ public class DynamicsInfluencerPanel extends InfluencerPanel<DynamicsInfluencer>
 		if(selectedItem == VEL_TYPE_ROTATIONAL_2D) velocityValue = new DynamicsModifier.Rotational2D();
 		else if(selectedItem == VEL_TYPE_ROTATIONAL_3D) velocityValue = new DynamicsModifier.Rotational3D();
 		else if(selectedItem == VEL_TYPE_CENTRIPETAL) velocityValue = new DynamicsModifier.CentripetalAcceleration();
+		else if(selectedItem == VEL_TYPE_CIRCULAR_MOTION) velocityValue = new CircularMotion();
 		else if(selectedItem == VEL_TYPE_TANGENTIAL) velocityValue = new DynamicsModifier.TangentialAcceleration();
 		else if(selectedItem == VEL_TYPE_POLAR) velocityValue = new DynamicsModifier.PolarAcceleration();
 		else if(selectedItem == VEL_TYPE_BROWNIAN) velocityValue = new DynamicsModifier.BrownianAcceleration();
