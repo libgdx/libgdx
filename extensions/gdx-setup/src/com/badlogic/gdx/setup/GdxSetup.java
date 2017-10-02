@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -163,36 +164,44 @@ public class GdxSetup {
 	}
 
 	private static String readBuildToolsVersion (File parentFile) {
-		File properties = new File(parentFile, "source.properties");
-		FileReader reader;
-		BufferedReader buffer;
+		File propertiesFile = new File(parentFile, "source.properties");
+		Properties properties = null;
 		try {
-			reader = new FileReader(properties);
-			buffer = new BufferedReader(reader);
-
-			String line = null;
-
-			while ((line = buffer.readLine()) != null) {
-				if (line.contains("Pkg.Revision")) {
-
-					String versionString = line.split("\\=")[1];
-					int count = versionString.split("\\.").length;
-					for (int i = 0; i < 3 - count; i++) {
-						versionString += ".0";
-					}
-
-					buffer.close();
-					reader.close();
-
-					return versionString;
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			properties = readPropertiesFromFile(propertiesFile);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return "0.0.0";
 		}
-		return "0.0.0";
+
+		String versionString = properties.getProperty("Pkg.Revision");
+		if (versionString == null) {
+			return "0.0.0";
+		}
+
+		int count = versionString.split("\\.").length;
+		for (int i = 0; i < 3 - count; i++) {
+			versionString += ".0";
+		}
+
+		return versionString;
+	}
+
+	private static Properties readPropertiesFromFile(File propertiesFile) throws IOException {
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(propertiesFile);
+			Properties properties = new Properties();
+			properties.load(stream);
+			return properties;
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	private static boolean versionsEqual(int[] testVersion, int[] targetVersion) {
