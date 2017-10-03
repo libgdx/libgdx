@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,12 @@ package com.badlogic.gdx.backends.gwt.webaudio;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Keys;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /** Implementation of the {@link Sound} interface for GWT, using the Web Audio API (
  * <a href="https://www.w3.org/TR/webaudio/">https://www.w3.org/TR/webaudio/</a>).
- * 
+ *
  * @author barkholt */
 public class WebAudioAPISound implements Sound {
 	// JavaScript object that is the base object of the Web Audio API
@@ -252,7 +253,7 @@ public class WebAudioAPISound implements Sound {
 		int soundKey = (int)soundId;
 		if (activeSounds.containsKey(soundKey)) {
 			JavaScriptObject audioBufferSourceNode = activeSounds.remove(soundKey);
-			AudioControlGraph audioControlGraph = activeAudioControlGraphs.get(soundKey);
+			AudioControlGraph audioControlGraph = activeAudioControlGraphs.remove(soundKey);
 
 			boolean loop = getLoopingJSNI(audioBufferSourceNode);
 			float pitch = getPitchJSNI(audioBufferSourceNode);
@@ -260,10 +261,13 @@ public class WebAudioAPISound implements Sound {
 
 			if (from != null) resumeOffset = from;
 
+			soundKey = nextKey++;
+
 			// These things can not be re-used. One play only, as dictated by the Web Audio API
 			JavaScriptObject newAudioBufferSourceNode = createBufferSourceNode(loop, pitch);
 			audioControlGraph.setSource(newAudioBufferSourceNode);
 			activeSounds.put(soundKey, newAudioBufferSourceNode);
+			activeAudioControlGraphs.put(soundKey, audioControlGraph);
 
 			playJSNI(newAudioBufferSourceNode, soundKey, resumeOffset);
 		}
