@@ -208,11 +208,7 @@ public class FilesTest extends GdxTest {
 			fail();
 		} catch (Exception ignored) {
 		}
-		FileHandle dir;
-		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS)
-			dir = Gdx.files.internal("data");
-		else
-			dir = Gdx.files.internal("../gdx-tests-android/assets/data");
+		FileHandle dir = Gdx.files.internal("data");
 		if (Gdx.app.getType() != ApplicationType.Android) {
 			if (!dir.exists()) fail();
 		}
