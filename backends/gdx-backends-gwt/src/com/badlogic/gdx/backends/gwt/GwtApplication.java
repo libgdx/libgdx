@@ -442,7 +442,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 																			isChrome : userAgent.indexOf("chrome") != -1,
 																			isSafari : userAgent.indexOf("safari") != -1,
 																			isOpera : userAgent.indexOf("opera") != -1,
-																			isIE : userAgent.indexOf("msie") != -1,
+																			isIE : userAgent.indexOf("msie") != -1 || userAgent.indexOf("trident") != -1,
 																			// OS type flags
 																			isMacOS : userAgent.indexOf("mac") != -1,
 																			isLinux : userAgent.indexOf("linux") != -1,
