@@ -104,7 +104,7 @@ public class GlyphPage {
 					if (row.x + width < pageWidth) {
 						row.height = Math.max(row.height, height);
 						bestRow = row;
-					} else {
+					} else if (row.y + row.height + height < pageHeight) {
 						// Fit in new row.
 						bestRow = new Row();
 						bestRow.y = row.y + row.height;
