@@ -132,27 +132,15 @@ public class GdxSetup {
 	}
 
 	private static int readAPIVersion (File parentFile) {
-		File properties = new File(parentFile, "source.properties");
-		FileReader reader;
-		BufferedReader buffer;
+		File propertiesFile = new File(parentFile, "source.properties");
+		Properties properties;
 		try {
-			reader = new FileReader(properties);
-			buffer = new BufferedReader(reader);
+			properties = readPropertiesFromFile(propertiesFile);
 
-			String line = null;
+			String versionString = properties.getProperty("AndroidVersion.ApiLevel");
 
-			while ((line = buffer.readLine()) != null) {
-				if (line.contains("AndroidVersion.ApiLevel")) {
+			return Integer.parseInt(versionString);
 
-					String versionString = line.split("\\=")[1];
-					int apiLevel = Integer.parseInt(versionString);
-
-					buffer.close();
-					reader.close();
-
-					return apiLevel;
-				}
-			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -165,7 +153,7 @@ public class GdxSetup {
 
 	private static String readBuildToolsVersion (File parentFile) {
 		File propertiesFile = new File(parentFile, "source.properties");
-		Properties properties = null;
+		Properties properties;
 		try {
 			properties = readPropertiesFromFile(propertiesFile);
 		} catch (IOException e) {
@@ -186,7 +174,7 @@ public class GdxSetup {
 		return versionString;
 	}
 
-	private static Properties readPropertiesFromFile(File propertiesFile) throws IOException {
+	private static Properties readPropertiesFromFile (File propertiesFile) throws IOException {
 		InputStream stream = null;
 		try {
 			stream = new FileInputStream(propertiesFile);
