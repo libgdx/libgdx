@@ -40,7 +40,13 @@ public enum IOSDevice {
 	IPHONE_7("iPhone9,3", 326),
 	IPHONE_7_PLUS("iPhone9,4", 401),
 	IPHONE_SE("iPhone8,4", 326),
-
+	IPHONE_8_CDMA_GSM("iPhone10,1", 326),
+	IPHONE_8_PLUS_CDMA_GSM("iPhone10,2",401),
+	IPHONE_X_CDMA_GSM("iPhone10,3", 458),
+	IPHONE_8("iPhone10,4", 326),
+    	IPHONE_8_PLUS("iPhone10,5", 401),
+	IPHONE_X("iPhone10,6", 458),
+	
 	IPOD_TOUCH_1G("iPod1,1", 163),
 	IPOD_TOUCH_2G("iPod2,1", 163),
 	IPOD_TOUCH_3G("iPod3,1", 163),
@@ -80,6 +86,12 @@ public enum IOSDevice {
 	IPAD_PRO("iPad6,8", 264),
 	IPAD_PRO_97_WIFI("iPad6,3", 264),
 	IPAD_PRO_97("iPad6,4", 264),
+	IPAD_5_WIFI("iPad6,11", 264),
+	IPAD_5_WIFI_CELLULAR("iPad6,12", 264),
+	IPAD_PRO_2_WIFI("iPad7,1", 264),
+	IPAD_PRO_2_WIFI_CELLULAR("iPad7,2", 264),
+	IPAD_PRO_10_5_WIFI("iPad7,3", 264),
+	IPAD_PRO_10_5_WIFI_CELLULAR("iPad7,4", 264),
 
 	SIMULATOR_32("i386", 264),
 	SIMULATOR_64("x86_64", 264);

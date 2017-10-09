@@ -26,4 +26,15 @@
   <object id="12" name="Texture" gid="3" x="128" y="298.667" width="256" height="33.667"/>
   <object id="14" gid="1073741825" x="384" y="256" width="64" height="32"/>
  </objectgroup>
+ <objectgroup name="Objects" visible="1" offsetx="16" offsety="16">
+  <object id="17" name="Ellipse" x="59.3333" y="335" width="130" height="87">
+   <ellipse/>
+  </object>
+  <object id="18" name="Polygon" x="238.667" y="351.333">
+   <polygon points="0,0 78,-4 32,73"/>
+  </object>
+  <object id="19" name="Rectangle" x="340" y="341.333" width="118.667" height="100"/>
+  <object id="20" name="Texture" gid="3" x="128" y="298.667" width="256" height="33.667"/>
+  <object id="21" gid="1073741825" x="384" y="256" width="64" height="32"/>
+ </objectgroup>
 </map>

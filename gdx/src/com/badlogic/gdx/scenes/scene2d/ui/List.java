@@ -81,7 +81,7 @@ public class List<T> extends Widget implements Cullable {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0) return false;
 				if (selection.isDisabled()) return false;
-				if (selection.getMultiple()) getStage().setKeyboardFocus(List.this);
+				getStage().setKeyboardFocus(List.this);
 				if (items.size == 0) return false;
 				float height = getHeight();
 				Drawable background = List.this.style.background;
@@ -251,13 +251,16 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	/** Sets the items visible in the list, clearing the selection if it is no longer valid. If a selection is
-	 * {@link ArraySelection#getRequired()}, the first item is selected. */
+	 * {@link ArraySelection#getRequired()}, the first item is selected. This can safely be called with a
+	 * (modified) array returned from {@link #getItems()}. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
 
-		items.clear();
-		items.addAll(newItems);
+		if (newItems != items) {
+			items.clear();
+			items.addAll(newItems);
+		}
 		selection.validate();
 
 		invalidate();

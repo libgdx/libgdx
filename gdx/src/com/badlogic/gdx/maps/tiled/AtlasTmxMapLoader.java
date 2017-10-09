@@ -271,9 +271,9 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			} else if (elementName.equals("tileset")) {
 				loadTileset(map, element, tmxFile, resolver);
 			} else if (elementName.equals("layer")) {
-				loadTileLayer(map, element);
+				loadTileLayer(map, map.getLayers(), element);
 			} else if (elementName.equals("objectgroup")) {
-				loadObjectGroup(map, element);
+				loadObjectGroup(map, map.getLayers(), element);
 			}
 		}
 		return map;
@@ -439,6 +439,14 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 						animatedTile.setId(tile.getId());
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
+					}
+
+					Element objectgroupElement = tileElement.getChildByName("objectgroup");
+					if (objectgroupElement != null) {
+
+						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
+							loadObject(map, tile, objectElement);
+						}
 					}
 
 					String terrain = tileElement.getAttribute("terrain", null);

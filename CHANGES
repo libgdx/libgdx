@@ -1,4 +1,6 @@
 [1.9.7]
+- API addition: Tiled group layer support 
+- Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
 - Fix Animation backing array type
 - Fix Mesh copying with 0 indices 
@@ -11,7 +13,7 @@
 - API Change: GLProfiler refactored for OOP and lwjgl3 multi windows
 - LWJGL3: The creation of additional windows via Lwjgl3Application.newWindow() is now deferred, with postRunnable(), until all existing windows have been updated. This fixes a potential native crash with NVidia GL drivers on Windows, presumably caused by a GL context conflict.
 - API addition: Lwjgl3WindowListener.created() is called after a new window has been created. It's unsafe to call Lwjgl3Window functions in between Lwjgl3Application.newWindow() and this callback.
-- Updated LWJGL3 backend to 3.1.2.
+- Updated LWJGL3 backend to 3.1.3.
 - Lwjgl3Graphics.setUndecorated() and Lwjgl3Graphics.setResizable() now delegate their work to the respective GLFW functions.
 - API addition: ProgressBar.isVertical() - returns whether a progress bar is vertical or horizontal.
 - API Change: SplitPane now by default does not allow the split amount to shrink children below their minimum sizes (cropping them). This behavior can be reverted by overriding clampSplitAmount or wrapping the children in Containers set to minSize(0) and fill(). SplitPane also now correctly includes the handle min size in its own min size calculations.
@@ -23,6 +25,10 @@
 - API Change: removed JGLFW backend
 - Fixed mixed up use of TexturePacker.Settings.stripWhitespaceX|Y.
 - Added joystick POV support to LWJGL3 controller backend.
+- Added support for 2d particles sprite animation.
+- API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
+- Added support for 2d particles independant scale X and Y.
+- API Change: ParticleEmitter getScale, matchSize are now getScaleX/getScaleY, matchSizeX/matchSizeY. Added scaleSize(float scaleX, float scaleY)
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
@@ -94,6 +100,7 @@
 - Fixed not being able to select non-latin characters in TextFields
 - Bullet: added CustomActionInterface, see https://github.com/libgdx/libgdx/pull/4025
 - Add window size limits option to LWJGL3 app and window configurations
+- Add handling of tag "<objectgroup>" within tags "<tile>" in TmxMap loaders.
 
 [1.9.2]
 - Added TextureArray wrapper see https://github.com/libgdx/libgdx/pull/3807

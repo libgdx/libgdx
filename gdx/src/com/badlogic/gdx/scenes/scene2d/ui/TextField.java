@@ -503,15 +503,16 @@ public class TextField extends Widget implements Disableable {
 		Stage stage = getStage();
 		if (stage == null) return;
 		TextField current = this;
+		Vector2 currentCoords = current.getParent().localToStageCoordinates(tmp2.set(current.getX(), current.getY()));
+		Vector2 bestCoords = tmp1;
 		while (true) {
-			current.getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
-			TextField textField = current.findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
+			TextField textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			if (textField == null) { // Try to wrap around.
 				if (up)
-					tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
+					currentCoords.set(Float.MIN_VALUE, Float.MIN_VALUE);
 				else
-					tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
-				textField = current.findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
+					currentCoords.set(Float.MAX_VALUE, Float.MAX_VALUE);
+				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			}
 			if (textField == null) {
 				Gdx.input.setOnscreenKeyboardVisible(false);
@@ -519,24 +520,28 @@ public class TextField extends Widget implements Disableable {
 			}
 			if (stage.setKeyboardFocus(textField)) break;
 			current = textField;
+			currentCoords.set(bestCoords);
 		}
 	}
 
+	/** @return May be null. */
 	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords,
 		boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
-			if (actor == this) continue;
 			if (actor instanceof TextField) {
+				if (actor == this) continue;
 				TextField textField = (TextField)actor;
 				if (textField.isDisabled() || !textField.focusTraversal) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
-				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
-					if (best == null
-						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
-						best = (TextField)actor;
-						bestCoords.set(actorCoords);
-					}
+				boolean below = actorCoords.y != currentCoords.y && (actorCoords.y < currentCoords.y ^ up);
+				boolean right = actorCoords.y == currentCoords.y && (actorCoords.x > currentCoords.x ^ up);
+				if (!below && !right) continue;
+				boolean better = best == null || (actorCoords.y != bestCoords.y && (actorCoords.y > bestCoords.y ^ up));
+				if (!better) better = actorCoords.y == bestCoords.y && (actorCoords.x < bestCoords.x ^ up);
+				if (better) {
+					best = (TextField)actor;
+					bestCoords.set(actorCoords);
 				}
 			} else if (actor instanceof Group)
 				best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
