@@ -171,11 +171,9 @@ public class IOSApplication implements Application {
 			}
 		}
 
-		this.graphics = createGraphics(scale);
-
 		// setup libgdx
 		this.input = createInput();
-		createGraphics(scale);
+		this.graphics = createGraphics(scale);
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
