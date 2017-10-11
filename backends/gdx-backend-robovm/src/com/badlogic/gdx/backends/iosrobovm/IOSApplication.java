@@ -150,7 +150,7 @@ public class IOSApplication implements Application {
 			}
 		}
 
-        this.graphics = createGraphics(scale);
+		this.graphics = createGraphics(scale);
 
 		// setup libgdx
 		this.input = createInput();
@@ -176,9 +176,9 @@ public class IOSApplication implements Application {
 		return true;
 	}
 
-    protected IOSGraphics createGraphics (float scale) {
-        return new IOSGraphics(scale, this, config, input, config.useGL30);
-    }
+	 protected IOSGraphics createGraphics (float scale) {
+		  return new IOSGraphics(scale, this, config, input, config.useGL30);
+	 }
 
 	/**
 	 * With this method you can simply extend IOSApplication and override this method to load your custom class that
