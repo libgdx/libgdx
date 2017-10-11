@@ -36,8 +36,8 @@ public class IOSGLKViewApplication extends IOSApplication {
 	}
 
 	@Override
-	protected void createGraphics (float scale) {
-		this.graphics = IOSGraphics.alloc().init(scale, this, config, input, config.useGL30, view);
+	protected IOSGraphics createGraphics (float scale) {
+		return IOSGraphics.alloc().init(scale, this, config, input, config.useGL30, view);
 	}
 
 	@Override
