@@ -290,8 +290,8 @@ public class JsonReader implements BaseJsonReader {
 
 			comment = ('//' | '/*') @comment;
 			ws = [\r\n\t ] | comment;
-			ws2 = [\r\t ] | comment;
-			comma = ',' | ('\n' ws* ','?);
+			ws2 = [\t ] | comment;
+			comma = ',' | ([\r\n] ws* ','?);
 			quotedString = '"' @quotedChars %string '"';
 			nameString = quotedString | ^[":,}/\r\n\t ] >unquotedChars %string;
 			valueString = quotedString | ^[":,{[\]/\r\n\t ] >unquotedChars %string;

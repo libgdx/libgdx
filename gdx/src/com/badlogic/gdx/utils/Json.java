@@ -53,6 +53,7 @@ public class Json {
 	private boolean quoteLongValues;
 	private boolean ignoreUnknownFields;
 	private boolean ignoreDeprecated;
+	private boolean readDeprecated;
 	private boolean enumNames = true;
 	private Serializer defaultSerializer;
 	private final ObjectMap<Class, OrderedMap<String, FieldMetadata>> typeToFields = new ObjectMap();
@@ -79,6 +80,12 @@ public class Json {
 	/** When true, fields with the {@link Deprecated} annotation will not be serialized. */
 	public void setIgnoreDeprecated (boolean ignoreDeprecated) {
 		this.ignoreDeprecated = ignoreDeprecated;
+	}
+
+	/** When true, fields with the {@link Deprecated} annotation will be read (but not written) when
+	 * {@link #setIgnoreDeprecated(boolean)} is true. */
+	public void setReadDeprecated (boolean readDeprecated) {
+		this.readDeprecated = readDeprecated;
 	}
 
 	/** @see JsonWriter#setOutputType(OutputType) */
@@ -180,7 +187,7 @@ public class Json {
 				}
 			}
 
-			if (ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
+			if (ignoreDeprecated && !readDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 
 			nameToField.put(field.getName(), new FieldMetadata(field));
 		}
@@ -270,6 +277,7 @@ public class Json {
 		int i = 0;
 		for (FieldMetadata metadata : new OrderedMapValues<FieldMetadata>(fields)) {
 			Field field = metadata.field;
+			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				Object value = field.get(object);
 				if (defaultValues != null) {

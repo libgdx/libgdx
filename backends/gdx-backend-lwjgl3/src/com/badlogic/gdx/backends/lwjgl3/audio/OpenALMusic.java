@@ -116,6 +116,7 @@ public abstract class OpenALMusic implements Music {
 		audio.freeSource(sourceID);
 		sourceID = -1;
 		renderedSeconds = 0;
+		renderedSecondsQueue.clear();
 		isPlaying = false;
 	}
 

@@ -22,6 +22,8 @@ dependencies {
     compile testnatives.desktop
 }
 
+sourceSets.main.resources.srcDirs = ["assets"]
+
 ext {
     particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
     particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
