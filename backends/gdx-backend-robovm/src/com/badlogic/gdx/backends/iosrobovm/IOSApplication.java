@@ -151,8 +151,9 @@ public class IOSApplication implements Application {
 		}
 
 		// setup libgdx
-		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(scale, this, config, input, config.useGL30);
+		this.input = createInput();
+		this.graphics = createGraphics(scale);
+
 		Gdx.gl = Gdx.gl20 = graphics.gl20;
 		Gdx.gl30 = graphics.gl30;
 		this.files = new IOSFiles();
@@ -172,6 +173,20 @@ public class IOSApplication implements Application {
 		this.uiWindow.makeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
+	}
+
+	 protected IOSGraphics createGraphics (float scale) {
+		  return new IOSGraphics(scale, this, config, input, config.useGL30);
+	 }
+
+	/**
+	 * With this method you can simply extend IOSApplication and override this method to load your custom class that
+	 * extends IOSInput.
+	 *
+	 * @return an IOSInput instance that handles the input of the application.
+	 */
+	protected IOSInput createInput() {
+		return new IOSInput(this);
 	}
 
 	private int getIosVersion () {
