@@ -195,15 +195,15 @@ public class IOSApplication implements Application {
 		return IOSGraphics.alloc().init(scale, this, config, input, config.useGL30);
 	}
 
-    /**
-     * With this method you can simply extend IOSApplication and override this method to load your custom class that
-     * extends IOSInput.
-     *
-     * @return an IOSInput instance that handles the input of the application.
-     */
-    protected IOSInput createInput() {
-        return new IOSInput(this);
-    }
+	/**
+	 * With this method you can simply extend IOSApplication and override this method to load your custom class that extends
+	 * IOSInput.
+	 *
+	 * @return an IOSInput instance that handles the input of the application.
+	 */
+	protected IOSInput createInput () {
+		return new IOSInput(this);
+	}
 
 	private int getIosVersion () {
 		String systemVersion = UIDevice.currentDevice().systemVersion();
