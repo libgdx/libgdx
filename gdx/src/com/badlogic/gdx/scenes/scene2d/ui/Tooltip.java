@@ -83,6 +83,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 			container.toFront();
 			return false;
 		}
+		setContainerPosition(event.getListenerActor(), x, y);
 		manager.touchDown(this);
 		return false;
 	}
