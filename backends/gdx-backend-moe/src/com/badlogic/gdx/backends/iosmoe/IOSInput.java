@@ -79,7 +79,7 @@ public class IOSInput implements Input {
 	InputProcessor inputProcessor = null;
 
 	boolean hasVibrator;
-	CMMotionManager motionManager;
+	protected CMMotionManager motionManager;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
@@ -105,7 +105,7 @@ public class IOSInput implements Input {
 		}
 	}
 
-	private void setupAccelerometer () {
+	protected void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			motionManager.setAccelerometerUpdateInterval(config.accelerometerUpdate);
 			CMMotionManager.Block_startAccelerometerUpdatesToQueueWithHandler handler = new CMMotionManager.Block_startAccelerometerUpdatesToQueueWithHandler() {
@@ -119,7 +119,7 @@ public class IOSInput implements Input {
 		}
 	}
 
-	private void setupMagnetometer () {
+	protected void setupMagnetometer () {
 		if (motionManager.isMagnetometerAvailable() && config.useCompass)
 			compassSupported = true;
 		else
