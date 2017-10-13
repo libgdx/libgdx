@@ -18,7 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -30,10 +29,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A container that contains two widgets and is divided either horizontally or vertically. The user may resize the widgets. The
- * child widgets are always sized to fill their half of the splitpane.
+ * child widgets are always sized to fill their side of the SplitPane.
  * <p>
- * The preferred size of a splitpane is that of the child widgets and the size of the {@link SplitPaneStyle#handle}. The widgets
- * are sized depending on the splitpane's size and the {@link #setSplitAmount(float) split position}.
+ * Minimum and maximum split amounts can be set to limit the motion of the resizing handle. The handle position is also prevented
+ * from shrinking the children below their minimum sizes. If these limits over-constrain the handle, it will be locked and placed
+ * at an averaged location, resulting in cropped children. The minimum child size can be ignored (allowing dynamic cropping) by
+ * wrapping the child in a {@linkplain Container} with a minimum size of 0 and {@linkplain Container#fill() fill()} set, or by
+ * overriding {@link #clampSplitAmount()}.
+ * <p>
+ * The preferred size of a SplitPane is that of the child widgets and the size of the {@link SplitPaneStyle#handle}. The widgets
+ * are sized depending on the SplitPane size and the {@link #setSplitAmount(float) split position}.
  * @author mzechner
  * @author Nathan Sweet */
 public class SplitPane extends WidgetGroup {
@@ -41,13 +46,11 @@ public class SplitPane extends WidgetGroup {
 	private Actor firstWidget, secondWidget;
 	boolean vertical;
 	float splitAmount = 0.5f, minAmount, maxAmount = 1;
-	private float oldSplitAmount;
 
 	private Rectangle firstWidgetBounds = new Rectangle();
 	private Rectangle secondWidgetBounds = new Rectangle();
 	Rectangle handleBounds = new Rectangle();
-	private Rectangle firstScissors = new Rectangle();
-	private Rectangle secondScissors = new Rectangle();
+	private Rectangle tempScissors = new Rectangle();
 
 	Vector2 lastPoint = new Vector2();
 	Vector2 handlePosition = new Vector2();
@@ -67,8 +70,6 @@ public class SplitPane extends WidgetGroup {
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style) {
-		this.firstWidget = firstWidget;
-		this.secondWidget = secondWidget;
 		this.vertical = vertical;
 		setStyle(style);
 		setFirstWidget(firstWidget);
@@ -109,8 +110,6 @@ public class SplitPane extends WidgetGroup {
 					dragX = Math.max(0, dragX);
 					dragX = Math.min(availWidth, dragX);
 					splitAmount = dragX / availWidth;
-					if (splitAmount < minAmount) splitAmount = minAmount;
-					if (splitAmount > maxAmount) splitAmount = maxAmount;
 					lastPoint.set(x, y);
 				} else {
 					float delta = y - lastPoint.y;
@@ -120,8 +119,6 @@ public class SplitPane extends WidgetGroup {
 					dragY = Math.max(0, dragY);
 					dragY = Math.min(availHeight, dragY);
 					splitAmount = 1 - (dragY / availHeight);
-					if (splitAmount < minAmount) splitAmount = minAmount;
-					if (splitAmount > maxAmount) splitAmount = maxAmount;
 					lastPoint.set(x, y);
 				}
 				invalidate();
@@ -142,6 +139,7 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public void layout () {
+		clampSplitAmount();
 		if (!vertical)
 			calculateHorizBoundsAndPositions();
 		else
@@ -163,34 +161,47 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth () {
-		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget
-			.getWidth());
-		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth()
-			: secondWidget.getWidth());
+		float first = firstWidget == null ? 0
+			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth());
+		float second = secondWidget == null ? 0
+			: (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth());
 		if (vertical) return Math.max(first, second);
 		return first + style.handle.getMinWidth() + second;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float first = firstWidget == null ? 0 : (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight()
-			: firstWidget.getHeight());
-		float second = secondWidget == null ? 0 : (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight()
-			: secondWidget.getHeight());
+		float first = firstWidget == null ? 0
+			: (firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight());
+		float second = secondWidget == null ? 0
+			: (secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight());
 		if (!vertical) return Math.max(first, second);
 		return first + style.handle.getMinHeight() + second;
 	}
 
 	public float getMinWidth () {
-		return 0;
+		float first = firstWidget instanceof Layout ? ((Layout)firstWidget).getMinWidth() : 0;
+		float second = secondWidget instanceof Layout ? ((Layout)secondWidget).getMinWidth() : 0;
+		if (vertical) return Math.max(first, second);
+		return first + style.handle.getMinWidth() + second;
 	}
 
 	public float getMinHeight () {
-		return 0;
+		float first = firstWidget instanceof Layout ? ((Layout)firstWidget).getMinHeight() : 0;
+		float second = secondWidget instanceof Layout ? ((Layout)secondWidget).getMinHeight() : 0;
+		if (!vertical) return Math.max(first, second);
+		return first + style.handle.getMinHeight() + second;
 	}
 
 	public void setVertical (boolean vertical) {
+		if (this.vertical == vertical)
+			return;
 		this.vertical = vertical;
+		invalidateHierarchy();
+	}
+
+	public boolean isVertical () {
+		return vertical;
 	}
 
 	private void calculateHorizBoundsAndPositions () {
@@ -229,52 +240,84 @@ public class SplitPane extends WidgetGroup {
 		validate();
 
 		Color color = getColor();
+		float alpha = color.a * parentAlpha;
 
-		Drawable handle = style.handle;
 		applyTransform(batch, computeTransform());
-		Matrix4 transform = batch.getTransformMatrix();
-		if (firstWidget != null) {
+		if (firstWidget != null && firstWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(firstWidgetBounds, firstScissors);
-			if (ScissorStack.pushScissors(firstScissors)) {
-				if (firstWidget.isVisible()) firstWidget.draw(batch, parentAlpha * color.a);
+			getStage().calculateScissors(firstWidgetBounds, tempScissors);
+			if (ScissorStack.pushScissors(tempScissors)) {
+				firstWidget.draw(batch, alpha);
 				batch.flush();
 				ScissorStack.popScissors();
 			}
 		}
-		if (secondWidget != null) {
+		if (secondWidget != null && secondWidget.isVisible()) {
 			batch.flush();
-			getStage().calculateScissors(secondWidgetBounds, secondScissors);
-			if (ScissorStack.pushScissors(secondScissors)) {
-				if (secondWidget.isVisible()) secondWidget.draw(batch, parentAlpha * color.a);
+			getStage().calculateScissors(secondWidgetBounds, tempScissors);
+			if (ScissorStack.pushScissors(tempScissors)) {
+				secondWidget.draw(batch, alpha);
 				batch.flush();
 				ScissorStack.popScissors();
 			}
 		}
-		batch.setColor(color.r, color.g, color.b, parentAlpha * color.a);
-		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
+		batch.setColor(color.r, color.g, color.b, alpha);
+		style.handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}
 
-	/** @param split The split amount between the min and max amount. */
-	public void setSplitAmount (float split) {
-		this.splitAmount = Math.max(Math.min(maxAmount, split), minAmount);
+	/** @param splitAmount The split amount between the min and max amount. This parameter is clamped during
+	 * layout. See {@link #clampSplitAmount()}.*/
+	public void setSplitAmount (float splitAmount) {
+		this.splitAmount = splitAmount; // will be clamped during layout
 		invalidate();
 	}
 
-	public float getSplit () {
+	public float getSplitAmount () {
 		return splitAmount;
 	}
 
+	/** Called during layout to clamp the {@link #splitAmount} within the set limits. By default it imposes the limits of the
+	 * {@linkplain #getMinSplitAmount() min amount}, {@linkplain #getMaxSplitAmount() max amount}, and min sizes of the children. This
+	 * method is internally called in response to layout, so it should not call {@link #invalidate()}. */
+	protected void clampSplitAmount () {
+		float effectiveMinAmount = minAmount, effectiveMaxAmount = maxAmount;
+		
+		if (vertical){
+			float availableHeight = getHeight() - style.handle.getMinHeight();
+			if (firstWidget instanceof Layout)
+				effectiveMinAmount = Math.max(effectiveMinAmount, Math.min(((Layout)firstWidget).getMinHeight() / availableHeight, 1));
+			if (secondWidget instanceof Layout)
+				effectiveMaxAmount = Math.min(effectiveMaxAmount, 1 - Math.min(((Layout)secondWidget).getMinHeight() / availableHeight, 1));
+		} else {
+			float availableWidth = getWidth() - style.handle.getMinWidth();
+			if (firstWidget instanceof Layout)
+				effectiveMinAmount = Math.max(effectiveMinAmount, Math.min(((Layout)firstWidget).getMinWidth() / availableWidth, 1));
+			if (secondWidget instanceof Layout)
+				effectiveMaxAmount = Math.min(effectiveMaxAmount, 1 - Math.min(((Layout)secondWidget).getMinWidth() / availableWidth, 1));
+		}
+		
+		if (effectiveMinAmount > effectiveMaxAmount) // Locked handle. Average the position.
+			splitAmount = 0.5f * (effectiveMinAmount + effectiveMaxAmount);
+		else
+			splitAmount =  Math.max(Math.min(splitAmount, effectiveMaxAmount), effectiveMinAmount);
+	}
+
+	public float getMinSplitAmount () {
+		return minAmount;
+	}
+
 	public void setMinSplitAmount (float minAmount) {
-		if (minAmount < 0) throw new GdxRuntimeException("minAmount has to be >= 0");
-		if (minAmount >= maxAmount) throw new GdxRuntimeException("minAmount has to be < maxAmount");
+		if (minAmount < 0 || minAmount > 1) throw new GdxRuntimeException("minAmount has to be >= 0 and <= 1");
 		this.minAmount = minAmount;
 	}
 
+	public float getMaxSplitAmount () {
+		return maxAmount;
+	}
+
 	public void setMaxSplitAmount (float maxAmount) {
-		if (maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be <= 1");
-		if (maxAmount <= minAmount) throw new GdxRuntimeException("maxAmount has to be > minAmount");
+		if (maxAmount < 0 || maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be >= 0 and <= 1");
 		this.maxAmount = maxAmount;
 	}
 
@@ -295,19 +338,45 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	public void addActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
 	public void addActorAt (int index, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
 
 	public boolean removeActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor == firstWidget) {
+			setFirstWidget(null);
+			return true;
+		}
+		if (actor == secondWidget) {
+			setSecondWidget(null);
+			return true;
+		}
+		return true;
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor == firstWidget) {
+			super.removeActor(actor, unfocus);
+			firstWidget = null;
+			invalidate();
+			return true;
+		}
+		if (actor == secondWidget) {
+			super.removeActor(actor, unfocus);
+			secondWidget = null;
+			invalidate();
+			return true;
+		}
+		return false;
 	}
 
 	/** The style for a splitpane, see {@link SplitPane}.

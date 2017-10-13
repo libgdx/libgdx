@@ -37,8 +37,8 @@ import org.lwjgl.opengl.GL11;
 
 public class Lwjgl3Graphics implements Graphics, Disposable {
 	private final Lwjgl3Window window;
-	private final GL20 gl20;
-	private final GL30 gl30;
+	private GL20 gl20;
+	private GL30 gl30;
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
 	private volatile int backBufferHeight;
@@ -140,6 +140,16 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 	@Override
 	public GL30 getGL30() {
 		return gl30;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
 	}
 
 	@Override
@@ -370,24 +380,18 @@ public class Lwjgl3Graphics implements Graphics, Disposable {
 		GLFW.glfwSetWindowTitle(window.getWindowHandle(), title);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setUndecorated(boolean undecorated) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setDecorated(!undecorated);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_DECORATED, undecorated ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
 	}
 
-	/**
-	 * The window must be recreated via {@link #setWindowedMode(int, int)} in order
-	 * for the changes to take effect.
-	 */
 	@Override
 	public void setResizable(boolean resizable) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setResizable(resizable);
+		GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_RESIZABLE, resizable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 	}
 
 	@Override

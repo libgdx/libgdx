@@ -63,6 +63,7 @@ libgdx-*.zip.MD5
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
 /extensions/gdx-setup/gdx-setup.jar
+/extensions/gdx-setup/test/
 
 #the LWJGL3 libs are pulled via fetch.xml
 /backends/gdx-backend-lwjgl3/libs/lwjgl*.jar

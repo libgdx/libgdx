@@ -114,6 +114,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy, boolean focusableView) {
+		AndroidGL20.init();
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
@@ -177,7 +178,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
-	private void updatePpi () {
+	protected void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
 		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -214,6 +215,41 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	/** {@inheritDoc} */
 	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+		if (gl30 == null) {
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
+
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public int getHeight () {
 		return height;
 	}
@@ -239,7 +275,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 	 * Motorola CLIQ and the Samsung Behold II.
 	 *
 	 * @param gl */
-	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
+	protected void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
 		String versionString = gl.glGetString(GL10.GL_VERSION);
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);
 		String rendererString = gl.glGetString(GL10.GL_RENDERER);
@@ -306,7 +342,7 @@ public class AndroidGraphics implements Graphics, Renderer {
 		gl.glViewport(0, 0, this.width, this.height);
 	}
 
-	private void logConfig (EGLConfig config) {
+	protected void logConfig (EGLConfig config) {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 		int r = getAttrib(egl, display, config, EGL10.EGL_RED_SIZE, 0);
@@ -686,15 +722,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		return true;
 	}
 
-	@Override
-	public boolean isGL30Available () {
-		return gl30 != null;
-	}
-
-	@Override
-	public GL30 getGL30 () {
-		return gl30;
-	}
 
 	@Override
 	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {

@@ -265,8 +265,9 @@
 		<include name="graphics/glutils/VertexData.java"/>
 
 	<!-- graphics/profiling -->
-		<include name="graphics/profiling/GL20Profiler.java"/>
-		<include name="graphics/profiling/GL30Profiler.java"/>
+		<include name="graphics/profiling/GL20Interceptor.java"/>
+		<include name="graphics/profiling/GL30Interceptor.java"/>
+		<include name="graphics/profiling/GLInterceptor.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
 		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						
@@ -279,6 +280,7 @@
 		<include name="maps/ImageResolver.java"/>
 		<include name="maps/Map.java"/>
 		<include name="maps/MapLayer.java"/>
+		<include name="maps/MapGroupLayer.java"/>
 		<include name="maps/MapLayers.java"/>
 		<include name="maps/MapObject.java"/>
 		<include name="maps/MapObjects.java"/>

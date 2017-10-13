@@ -17,6 +17,7 @@
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 
 /** @brief Generalises the concept of tile in a TiledMap */
@@ -58,5 +59,8 @@ public interface TiledMapTile {
 
 	/** @return tile's properties set */
 	public MapProperties getProperties ();
+
+	/** @return collection of objects contained in the tile */
+	public MapObjects getObjects();
 
 }

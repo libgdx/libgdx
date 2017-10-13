@@ -41,8 +41,8 @@ public class Lwjgl3Window implements Disposable {
 	private final ApplicationListener listener;
 	private boolean listenerInitialized = false;
 	private Lwjgl3WindowListener windowListener;
-	private final Lwjgl3Graphics graphics;
-	private final Lwjgl3Input input;
+	private Lwjgl3Graphics graphics;
+	private Lwjgl3Input input;
 	private final Lwjgl3ApplicationConfiguration config;
 	private final Array<Runnable> runnables = new Array<Runnable>();
 	private final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -152,23 +152,29 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 
-	Lwjgl3Window(long windowHandle, ApplicationListener listener,
-			Lwjgl3ApplicationConfiguration config) {
-		this.windowHandle = windowHandle;
+	Lwjgl3Window(ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
 		this.listener = listener;
 		this.windowListener = config.windowListener;
 		this.config = config;
-		this.input = new Lwjgl3Input(this);
-		this.graphics = new Lwjgl3Graphics(this);
 		this.tmpBuffer = BufferUtils.createIntBuffer(1);
 		this.tmpBuffer2 = BufferUtils.createIntBuffer(1);
-		
+	}
+
+	void create(long windowHandle) {
+		this.windowHandle = windowHandle;
+		this.input = new Lwjgl3Input(this);
+		this.graphics = new Lwjgl3Graphics(this);
+
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
 		GLFW.glfwSetWindowMaximizeCallback(windowHandle, maximizeCallback);
 		GLFW.glfwSetWindowCloseCallback(windowHandle, closeCallback);
 		GLFW.glfwSetDropCallback(windowHandle, dropCallback);
 		GLFW.glfwSetWindowRefreshCallback(windowHandle, refreshCallback);
+
+		if (windowListener != null) {
+			windowListener.created(this);
+		}
 	}
 
 	/** @return the {@link ApplicationListener} associated with this window **/	 
@@ -263,7 +269,7 @@ public class Lwjgl3Window implements Disposable {
 	
 	/**
 	 * Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
-	 * @param icon One or more images. The one closest to the system's desired size will be scaled. Good sizes include 
+	 * @param image One or more images. The one closest to the system's desired size will be scaled. Good sizes include
 	 * 16x16, 32x32 and 48x48. Pixmap format {@link Pixmap.Format.RGBA8888 RGBA8888} is preferred so the images will not 
 	 * have to be copied and converted. The chosen image is copied, and the provided Pixmaps are not disposed.
 	 */
@@ -291,9 +297,6 @@ public class Lwjgl3Window implements Disposable {
 		if (SharedLibraryLoader.isMac)
 			return;
 
-		Pixmap.Blending previousBlending = Pixmap.getBlending();
-		Pixmap.setBlending(Pixmap.Blending.None);
-
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
 
@@ -302,6 +305,7 @@ public class Lwjgl3Window implements Disposable {
 
 			if (pixmap.getFormat() != Pixmap.Format.RGBA8888) {
 				Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGBA8888);
+				rgba.setBlending(Pixmap.Blending.None);
 				rgba.drawPixmap(pixmap, 0, 0);
 				tmpPixmaps[i] = rgba;
 				pixmap = rgba;
@@ -324,7 +328,6 @@ public class Lwjgl3Window implements Disposable {
 			}
 		}
 
-		Pixmap.setBlending(previousBlending);
 	}
 
 	public void setTitle (CharSequence title){

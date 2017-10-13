@@ -30,41 +30,41 @@ import java.util.Map;
 import java.util.Set;
 
 public class IOSPreferences implements Preferences {
-	NSMutableDictionary<NSString, NSObject> nsDictionary;
+	NSMutableDictionary<String, Object> nsDictionary;
 	File file;
 
-	public IOSPreferences (NSMutableDictionary<NSString, NSObject> nsDictionary, String filePath) {
+	public IOSPreferences (NSMutableDictionary<String, Object> nsDictionary, String filePath) {
 		this.nsDictionary = nsDictionary;
 		this.file = new File(filePath);
 	}
 
 	@Override
 	public Preferences putBoolean (String key, boolean val) {
-		nsDictionary.put(convertKey(key), NSNumber.numberWithBool(val));
+		nsDictionary.put(key, NSNumber.numberWithBool(val));
 		return this;
 	}
 
 	@Override
 	public Preferences putInteger (String key, int val) {
-		nsDictionary.put(convertKey(key), NSNumber.numberWithInt(val));
+		nsDictionary.put(key, NSNumber.numberWithInt(val));
 		return this;
 	}
 
 	@Override
 	public Preferences putLong (String key, long val) {
-		nsDictionary.put(convertKey(key), NSNumber.numberWithLongLong(val));
+		nsDictionary.put(key, NSNumber.numberWithLongLong(val));
 		return this;
 	}
 
 	@Override
 	public Preferences putFloat (String key, float val) {
-		nsDictionary.put(convertKey(key), NSNumber.numberWithFloat(val));
+		nsDictionary.put(key, NSNumber.numberWithFloat(val));
 		return this;
 	}
 
 	@Override
 	public Preferences putString (String key, String val) {
-		nsDictionary.put(convertKey(key), NSString.stringWithString(val));
+		nsDictionary.put(key, NSString.stringWithString(val));
 		return this;
 	}
 
@@ -90,28 +90,28 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public boolean getBoolean (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get(convertKey(key));
+		NSNumber value = (NSNumber)nsDictionary.get(key);
 		if (value == null) return false;
 		return value.boolValue();
 	}
 
 	@Override
 	public int getInteger (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get(convertKey(key));
+		NSNumber value = (NSNumber)nsDictionary.get(key);
 		if (value == null) return 0;
 		return value.intValue();
 	}
 
 	@Override
 	public long getLong (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get(convertKey(key));
+		NSNumber value = (NSNumber)nsDictionary.get(key);
 		if (value == null) return 0L;
 		return value.longLongValue();
 	}
 
 	@Override
 	public float getFloat (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get(convertKey(key));
+		NSNumber value = (NSNumber)nsDictionary.get(key);
 		if (value == null) return 0f;
 		return value.floatValue();
 	}
@@ -119,7 +119,7 @@ public class IOSPreferences implements Preferences {
 	@Override
 	public String getString (String key) {
 		//Implicit mapping from NSString to String apparently?
-		Object value = nsDictionary.get(convertKey(key));
+		Object value = nsDictionary.get(key);
 		if (value == null) return "";
 		return value.toString();
 	}
@@ -157,16 +157,16 @@ public class IOSPreferences implements Preferences {
 	@Override
 	public Map<String, ?> get () {
 		Map<String, Object> map = new HashMap<String, Object>();
-		for (NSString key : nsDictionary.keySet()) {
-			NSObject value = nsDictionary.get(key);
-			map.put(key.toString(), value.toString());
+		for (String key : nsDictionary.keySet()) {
+			Object value = nsDictionary.get(key);
+			map.put(key, value);
 		}
 		return map;
 	}
 
 	@Override
 	public boolean contains (String key) {
-		return nsDictionary.containsKey(convertKey(key));
+		return nsDictionary.containsKey(key);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void remove (String key) {
-		nsDictionary.remove(convertKey(key));
+		nsDictionary.remove(key);
 	}
 
 	private NSString convertKey (String key) {

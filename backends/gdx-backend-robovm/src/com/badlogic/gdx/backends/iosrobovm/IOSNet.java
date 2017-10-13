@@ -20,7 +20,6 @@ import org.robovm.apple.foundation.NSURL;
 import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.net.NetJavaSocketImpl;
@@ -65,6 +64,11 @@ public class IOSNet implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		return uiApp.openURL(new NSURL(URI));
+		NSURL url = new NSURL(URI);
+		if (uiApp.canOpenURL(url)) {
+			uiApp.openURL(url);
+			return true;
+		}
+		return false;
 	}
 }

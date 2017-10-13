@@ -28,6 +28,21 @@ import com.badlogic.gdx.ApplicationListener;
  * @author badlogic
  */
 public interface Lwjgl3WindowListener {
+
+	/**
+	 * Called after the GLFW window is created. Before this callback is received, it's
+	 * unsafe to use any {@link Lwjgl3Window} member functions which, for their part,
+	 * involve calling GLFW functions.
+	 *
+	 * For the main window, this is an immediate callback from inside
+	 * {@link Lwjgl3Application#Lwjgl3Application(ApplicationListener, Lwjgl3ApplicationConfiguration)}.
+	 *
+	 * @param window the window instance
+	 *
+	 * @see Lwjgl3Application#newWindow(ApplicationListener, Lwjgl3WindowConfiguration)
+	 */
+	void created(Lwjgl3Window window);
+
 	/**
 	 * Called when the window is iconified (i.e. its minimize button
 	 * was clicked), or when restored from the iconified state. When a window becomes

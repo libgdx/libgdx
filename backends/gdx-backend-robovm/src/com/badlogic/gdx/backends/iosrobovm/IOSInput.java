@@ -107,7 +107,7 @@ public class IOSInput implements Input {
 
 	boolean hasVibrator;
 	//CMMotionManager motionManager;
-	UIAccelerometerDelegate accelerometerDelegate;
+	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
 
@@ -125,13 +125,13 @@ public class IOSInput implements Input {
 		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
 	}
 
-	private void setupCompass () {
+	protected void setupCompass () {
 		if (config.useCompass) {
 			//setupMagnetometer();
 		}
 	}
 	
-	private void setupAccelerometer () {
+	protected void setupAccelerometer () {
 		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
 
@@ -610,7 +610,7 @@ public class IOSInput implements Input {
 				switch (event.phase) {
 				case Began:
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-					if (numTouched == 1) justTouched = true;
+					if (numTouched >= 1) justTouched = true;
 					break;
 				case Cancelled:
 				case Ended:

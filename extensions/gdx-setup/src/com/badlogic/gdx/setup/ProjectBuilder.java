@@ -50,7 +50,7 @@ public class ProjectBuilder {
 		return incompatibilities;
 	}
 
-	public boolean build() throws IOException {
+	public boolean build(Language language) throws IOException {
 		settingsFile = File.createTempFile("libgdx-setup-settings", ".gradle");
 		buildFile = File.createTempFile("libgdx-setup-build", ".gradle");
 		if (!settingsFile.exists()) {
@@ -78,10 +78,10 @@ public class ProjectBuilder {
 			FileWriter buildWriter = new FileWriter(buildFile.getAbsoluteFile());
 			BufferedWriter buildBw = new BufferedWriter(buildWriter);
 
-			BuildScriptHelper.addBuildScript(modules, buildBw);
+			BuildScriptHelper.addBuildScript(language, modules, buildBw);
 			BuildScriptHelper.addAllProjects(buildBw);
 			for (ProjectType module : modules) {
-				BuildScriptHelper.addProject(module, dependencies, buildBw);
+				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
 
 			//Add task here for now

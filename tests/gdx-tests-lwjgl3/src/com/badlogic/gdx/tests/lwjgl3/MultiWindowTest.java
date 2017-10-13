@@ -4,8 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
@@ -53,16 +53,22 @@ public class MultiWindowTest {
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
 				config.setWindowPosition(MathUtils.random(0, mode.width - 640), MathUtils.random(0, mode.height - 480));
 				config.setTitle("Child window");
+				config.setWindowListener(new Lwjgl3WindowAdapter() {
+					@Override
+					public void created(Lwjgl3Window window) {
+						latestWindow = window;
+					}
+				});
 				Class clazz = childWindowClasses[index++ % childWindowClasses.length];
 				ApplicationListener listener = createChildWindowClass(clazz);
-				latestWindow = app.newWindow(listener, config);
+				app.newWindow(listener, config);
 			}
 
 			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && latestWindow != null){
 				latestWindow.setTitle("Retitled window");
 				int size = 48;
-				Pixmap.setBlending(Blending.None);
 				Pixmap icon = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+				icon.setBlending(Blending.None);
 				icon.setColor(Color.BLUE);
 				icon.fill();
 				icon.setColor(Color.CLEAR);

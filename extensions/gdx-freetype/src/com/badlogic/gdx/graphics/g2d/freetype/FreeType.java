@@ -663,9 +663,16 @@ public class FreeType {
 					for (int y = 0; y < rows; y++) {
 						src.get(srcRow);
 						for (int x = 0; x < width; x++) {
-							float alpha = (srcRow[x] & 0xff) / 255f;
-							alpha = (float)Math.pow(alpha, gamma); // Inverse gamma.
-							dstRow[x] = rgb | (int)(a * alpha);
+							// Zero raised to any power is always zero.
+							// 255 (=one) raised to any power is always one.
+							// We only need Math.pow() when alpha is NOT zero and NOT one.
+							int alpha = srcRow[x] & 0xff;
+							if (alpha == 0)
+								dstRow[x] = rgb;
+							else if (alpha == 255)
+								dstRow[x] = rgb | a;
+							else
+								dstRow[x] = rgb | (int)(a * (float)Math.pow(alpha / 255f, gamma)); // Inverse gamma.
 						}
 						dst.put(dstRow);
 					}
@@ -675,10 +682,8 @@ public class FreeType {
 			Pixmap converted = pixmap;
 			if (format != pixmap.getFormat()) {
 				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-				Blending blending = Pixmap.getBlending();
-				Pixmap.setBlending(Blending.None);
+				converted.setBlending(Blending.None);
 				converted.drawPixmap(pixmap, 0, 0);
-				Pixmap.setBlending(blending);
 				pixmap.dispose();
 			}
 			return converted;

@@ -53,7 +53,7 @@ public abstract class Interpolation {
 	/** By Ken Perlin. */
 	static public final Interpolation smoother = new Interpolation() {
 		public float apply (float a) {
-			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
+			return a * a * a * (a * (a * 6 - 15) + 10);
 		}
 	};
 	static public final Interpolation fade = smoother;

@@ -1,3 +1,6 @@
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
 task copyNatives << {
     file("xcode/native/ios/").mkdirs();
     def LD_FLAGS = "LIBGDX_NATIVES = "
@@ -28,23 +31,18 @@ task copyNatives << {
     }
 }
 
-task createBuildDir {
-    def file = new File('build/xcode/ios-moe.xcodeproj')
-    if (!file.exists()) {
-        file.mkdirs();
-    }
-}
-
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-
+// Setup Multi-OS Engine
 moe {
     xcode {
+        project 'xcode/ios-moe.xcodeproj'
         mainTarget 'ios-moe'
-        packageName '%PACKAGE%'
-        deploymentTarget = '9.0'
-        xcodeProjectDirPath 'xcode'
-        generateProject false
+        testTarget 'ios-moe-Test'
+    }
+
+    remoteBuild {
+        resources = [ file("../%ASSET_PATH%") ]
     }
 }
 
@@ -55,8 +53,9 @@ moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
 
 // Setup Eclipse
 eclipse {
-    // Set MOE nature
+    // Set Multi-OS Engine nature
     project {
+        name = appName + "-ios-moe"
         natures 'org.multi-os-engine.project'
     }
 }

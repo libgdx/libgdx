@@ -15,15 +15,47 @@
  ******************************************************************************/
 
 buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
     dependencies {
-        classpath "org.multi-os-engine:moe-gradle:${versions.moePlugin}"
+        // Multi-OS Engine plugin
+        classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "${versions.moe}"
     }
 }
 
+// Apply plugins
+apply plugin: 'eclipse'
 apply plugin: 'moe'
 
 sourceSets.main.java.srcDirs = ["src/main/java"]
-sourceSets.main.resources.srcDirs = ["src/main/resources"]
+sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
+
+// Set source and target to Java 8
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+// Set maven repository
+repositories {
+    jcenter()
+}
+
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
+// Setup Multi-OS Engine
+moe {
+    xcode {
+        project 'xcode/IOSTests.xcodeproj'
+        mainTarget 'IOSTests'
+        testTarget 'IOSTests-Test'
+    }
+}
+
+configurations {
+    natives
+}
 
 dependencies {
     compile project(":tests:gdx-tests")
@@ -31,38 +63,40 @@ dependencies {
     natives testnatives.ios
 }
 
-task copyNatives << {
-    file("xcode/native/ios/").mkdirs();
-    def LD_FLAGS = "LIBGDX_NATIVES = "
-    configurations.natives.files.each { nativeFolder  ->
-        def outputDir = file("xcode/native/ios")
-        def nativeFiles = nativeFolder.listFiles()
-        nativeFiles.each { nativeFile ->
-            copy {
-                from nativeFile.getAbsolutePath()
-                into outputDir
-            }
-            LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
-        }
-    }
-    def outFlags = file("xcode/IOSTests/custom.xcconfig");
-    outFlags.write LD_FLAGS
-
-    def proguard = file("proguard.append.cfg")
-    if (!proguard.exists()) {
-        proguard = new File("proguard.append.cfg")
-        proguard << "-keep class com.badlogic.** { *; }\n"
-        proguard << "-keep enum com.badlogic.** { *; }\n"
+// Setup Eclipse
+eclipse {
+    // Set Multi-OS Engine nature
+    project {
+        natures 'org.multi-os-engine.project'
     }
 }
 
-moe {
-    xcode {
-        mainTarget 'IOSTests'
-        packageName 'com.badlogicgames.gdx.tests'
-        deploymentTarget = '9.0'
-        xcodeProjectDirPath 'xcode'
-        generateProject false
+task copyNatives {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def LD_FLAGS = "LIBGDX_NATIVES = "
+        configurations.natives.files.each { nativeFolder ->
+            def outputDir = file("xcode/native/ios")
+            def nativeFiles = nativeFolder.listFiles()
+            nativeFiles.each { nativeFile ->
+                if (!nativeFile.absolutePath.endsWith(".tvos")) {
+                    copy {
+                        from nativeFile.getAbsolutePath()
+                        into outputDir
+                    }
+                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
+                }
+            }
+        }
+        def outFlags = file("xcode/IOSTests/custom.xcconfig");
+        outFlags.write LD_FLAGS
+
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
     }
 }
 

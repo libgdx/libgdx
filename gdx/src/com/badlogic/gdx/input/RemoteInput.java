@@ -97,22 +97,28 @@ public class RemoteInput implements Runnable, Input {
 
 			if (processor != null) {
 				if (touchEvent != null) {
-					touchX[touchEvent.pointer] = touchEvent.x;
-					touchY[touchEvent.pointer] = touchEvent.y;
 					switch (touchEvent.type) {
 					case TouchEvent.TOUCH_DOWN:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						processor.touchDown(touchEvent.x, touchEvent.y, touchEvent.pointer, Input.Buttons.LEFT);
 						isTouched[touchEvent.pointer] = true;
 						justTouched = true;
 						break;
 					case TouchEvent.TOUCH_UP:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						processor.touchUp(touchEvent.x, touchEvent.y, touchEvent.pointer, Input.Buttons.LEFT);
 						isTouched[touchEvent.pointer] = false;
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
+						deltaX[touchEvent.pointer] = touchEvent.x - touchX[touchEvent.pointer];
+						deltaY[touchEvent.pointer] = touchEvent.y - touchY[touchEvent.pointer];
 						processor.touchDragged(touchEvent.x, touchEvent.y, touchEvent.pointer);
 						break;
 					}
+					touchX[touchEvent.pointer] = touchEvent.x;
+					touchY[touchEvent.pointer] = touchEvent.y;
 				}
 				if (keyEvent != null) {
 					switch (keyEvent.type) {
@@ -139,15 +145,25 @@ public class RemoteInput implements Runnable, Input {
 				}
 			} else {
 				if (touchEvent != null) {
-					touchX[touchEvent.pointer] = touchEvent.x;
-					touchY[touchEvent.pointer] = touchEvent.y;
-					if (touchEvent.type == TouchEvent.TOUCH_DOWN) {
+					switch(touchEvent.type) {
+					case TouchEvent.TOUCH_DOWN:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						isTouched[touchEvent.pointer] = true;
 						justTouched = true;
-					}
-					if (touchEvent.type == TouchEvent.TOUCH_UP) {
+						break;
+					case TouchEvent.TOUCH_UP:
+						deltaX[touchEvent.pointer] = 0;
+						deltaY[touchEvent.pointer] = 0;
 						isTouched[touchEvent.pointer] = false;
+						break;
+					case TouchEvent.TOUCH_DRAGGED:
+						deltaX[touchEvent.pointer] = touchEvent.x - touchX[touchEvent.pointer];
+						deltaY[touchEvent.pointer] = touchEvent.y - touchY[touchEvent.pointer];
+						break;
 					}
+					touchX[touchEvent.pointer] = touchEvent.x;
+					touchY[touchEvent.pointer] = touchEvent.y;
 				}
 				if (keyEvent != null) {
 					if (keyEvent.type == KeyEvent.KEY_DOWN) {
@@ -183,6 +199,8 @@ public class RemoteInput implements Runnable, Input {
 	boolean[] keys = new boolean[256];
 	boolean keyJustPressed = false;
 	boolean[] justPressedKeys = new boolean[256];
+	int[] deltaX = new int[20];
+	int[] deltaY = new int[20];
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	boolean isTouched[] = new boolean[20];
@@ -513,23 +531,22 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override
 	public int getDeltaX () {
-		// TODO Auto-generated method stub
-		return 0;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX (int pointer) {
-		return 0;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getDeltaY () {
-		return 0;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
-		return 0;
+		return deltaY[pointer];
 	}
 
 	@Override

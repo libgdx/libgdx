@@ -1,7 +1,23 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 public enum IOSDevice {
-	
+
 	IPHONE_2G("iPhone1,1", 163),
 	IPHONE_3G("iPhone1,2", 163),
 	IPHONE_3GS("iPhone2,1", 163),
@@ -23,6 +39,13 @@ public enum IOSDevice {
 	IPHONE_7_PLUS_CDMA_GSM("iPhone9,2", 401),
 	IPHONE_7("iPhone9,3", 326),
 	IPHONE_7_PLUS("iPhone9,4", 401),
+	IPHONE_SE("iPhone8,4", 326),
+	IPHONE_8_CDMA_GSM("iPhone10,1", 326),
+	IPHONE_8_PLUS_CDMA_GSM("iPhone10,2",401),
+	IPHONE_X_CDMA_GSM("iPhone10,3", 458),
+	IPHONE_8("iPhone10,4", 326),
+    	IPHONE_8_PLUS("iPhone10,5", 401),
+	IPHONE_X("iPhone10,6", 458),
 	
 	IPOD_TOUCH_1G("iPod1,1", 163),
 	IPOD_TOUCH_2G("iPod2,1", 163),
@@ -30,7 +53,7 @@ public enum IOSDevice {
 	IPOD_TOUCH_4G("iPod4,1", 326),
 	IPOD_TOUCH_5G("iPod5,1", 326),
 	IPOD_TOUCH_6G("iPod7,1", 326),
-	
+
 	IPAD("iPad1,1", 132),
 	IPAD_3G("iPad1,2", 132),
 	IPAD_2_WIFI("iPad2,1", 132),
@@ -63,18 +86,24 @@ public enum IOSDevice {
 	IPAD_PRO("iPad6,8", 264),
 	IPAD_PRO_97_WIFI("iPad6,3", 264),
 	IPAD_PRO_97("iPad6,4", 264),
+	IPAD_5_WIFI("iPad6,11", 264),
+	IPAD_5_WIFI_CELLULAR("iPad6,12", 264),
+	IPAD_PRO_2_WIFI("iPad7,1", 264),
+	IPAD_PRO_2_WIFI_CELLULAR("iPad7,2", 264),
+	IPAD_PRO_10_5_WIFI("iPad7,3", 264),
+	IPAD_PRO_10_5_WIFI_CELLULAR("iPad7,4", 264),
 
 	SIMULATOR_32("i386", 264),
 	SIMULATOR_64("x86_64", 264);
-	
+
 	final String machineString;
 	final int ppi;
-	
+
 	IOSDevice(String machineString, int ppi) {
 		this.machineString = machineString;
 		this.ppi = ppi;
 	}
-	
+
 	public static IOSDevice getDevice (String machineString) {
 		for (IOSDevice device : values()) {
 			if (device.machineString.equalsIgnoreCase(machineString)) return device;
@@ -82,5 +111,5 @@ public enum IOSDevice {
 		return null;
 	}
 
-	
+
 }

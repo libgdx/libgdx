@@ -17,12 +17,14 @@
 buildscript {
     dependencies {
         classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:${versions.gwtPlugin}"
+        classpath "org.akhikhl.gretty:gretty:2.0.0"
     }
 }
-
-apply plugin: "jetty"
-apply plugin: "gwt"
 apply plugin: "war"
+apply plugin: 'org.akhikhl.gretty'
+apply plugin: "gwt"
+
+
 
 dependencies {
     compile project(":tests:gdx-tests")
@@ -32,7 +34,7 @@ dependencies {
 }
 
 gwt {
-    gwtVersion='2.6.0' // Should match the gwt version used for building the gwt backend
+    gwtVersion='2.8.0' // Should match the gwt version used for building the gwt backend
     maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize="1G"
 
@@ -41,39 +43,67 @@ gwt {
     devModules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
     project.webAppDirName = 'webapp'
 
-    compiler {
-        strict = true;
-        enableClosureCompiler = true;
-        disableCastChecking = true;
-    }
+    compiler.strict = true
+    compiler.disableCastChecking = true
 }
 
-task draftRun(type: JettyRunWar) {
-    dependsOn draftWar
-    dependsOn.remove('war')
-    webApp=draftWar.archivePath
-    daemon=true
+
+gretty {
+    webAppDirName = "war"
+    inplaceMode = "hard"
 }
 
-task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
-    dependsOn draftRun
-    doFirst {
-        gwt.modules = gwt.devModules
-    }
-}
-
+import org.akhikhl.gretty.AppBeforeIntegrationTestTask
+import org.akhikhl.gretty.AppAfterIntegrationTestTask
 
 draftWar {
     from "war"
 }
 
-task addSource << {
-    sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
-    sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
-    sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
-    sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers').sourceSets.main.allJava.srcDirs)
-    sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers-gwt').sourceSets.main.allJava.srcDirs)
-    sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+task myBeforeIntegration(type: AppBeforeIntegrationTestTask) {
+    dependsOn draftWar
+    resourceBase = draftWar.archivePath.toString()
+    integrationTestTask 'superDev'
+}
+
+task myAfterIntegration(type: AppAfterIntegrationTestTask) {
+    integrationTestTask 'superDev'
+}
+
+task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
+    doFirst {
+        gwt.modules = gwt.devModules
+    }
+}
+
+task dist(dependsOn: [clean, compileGwt]) {
+    doLast {
+        file("build/dist").mkdirs()
+        copy {
+            from "build/gwt/out"
+            into "build/dist"
+        }
+        copy {
+            from "webapp"
+            into "build/dist"
+        }
+        copy {
+            from "war"
+            into "build/dist"
+        }
+    }
+}
+
+
+task addSource {
+    doLast {
+        sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':backends:gdx-backends-gwt').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':extensions:gdx-controllers:gdx-controllers-gwt').sourceSets.main.allJava.srcDirs)
+        sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
+    }
 }
 
 tasks.compileGwt.dependsOn(addSource)

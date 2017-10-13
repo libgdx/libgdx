@@ -320,7 +320,7 @@ public class Window extends Table {
 	}
 
 	public float getPrefWidth () {
-		return Math.max(super.getPrefWidth(), titleLabel.getPrefWidth() + getPadLeft() + getPadRight());
+		return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getPadLeft() + getPadRight());
 	}
 
 	public Table getTitleTable () {

@@ -150,6 +150,17 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+		this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
+	}
+	
+	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+	 * 
+	 * @param type the {@link VertexDataType} to be used, VBO or VA.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param maxVertices the maximum number of vertices this mesh can hold
+	 * @param maxIndices the maximum number of indices this mesh can hold
+	 * @param attributes the {@link VertexAttributes}. */
+	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
 		switch (type) {
 		case VertexBufferObject:
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
@@ -492,10 +503,16 @@ public class Mesh implements Disposable {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 			}
 		} else {
-			if (indices.getNumIndices() > 0)
+			if (indices.getNumIndices() > 0) {
+				if (count + offset > indices.getNumMaxIndices()) {
+					throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
+						+ count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+				}
+				
 				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
-			else
+			} else {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+			}
 		}
 
 		if (autoBind) unbind(shader);
@@ -1027,7 +1044,7 @@ public class Mesh implements Disposable {
 					if (a == null) continue;
 					for (int j = 0; j < a.numComponents; j++)
 						checks[++idx] = (short)(a.offset + j);
-					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					attrs[++ai] = a.copy();
 					newVertexSize += a.numComponents;
 				}
 			}
@@ -1081,7 +1098,7 @@ public class Mesh implements Disposable {
 		else
 			result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, attrs);
 		result.setVertices(vertices, 0, numVertices * newVertexSize);
-		result.setIndices(indices);
+		if (indices != null) result.setIndices(indices);
 		return result;
 	}
 

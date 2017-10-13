@@ -22,6 +22,8 @@ dependencies {
     compile testnatives.desktop
 }
 
+sourceSets.main.resources.srcDirs = ["assets"]
+
 ext {
     particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
     particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
@@ -32,12 +34,12 @@ ext {
 }
 
 task dist2DParticles (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir);
+    from files(toolsAssetsDir)
 
-    baseName = "runnable-2D-particles"
+    archiveName = "runnable-2D-particles.jar"
 
     manifest {
         attributes 'Main-Class': particles2DMainClass
@@ -45,12 +47,12 @@ task dist2DParticles (type: Jar) {
 }
 
 task dist3DParticles (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(toolsAssetsDir)
 
-    baseName = "runnable-3D-particles"
+    archiveName = "runnable-3D-particles.jar"
 
     manifest {
         attributes 'Main-Class': particles3DMainClass
@@ -58,12 +60,12 @@ task dist3DParticles (type: Jar) {
 }
 
 task distHiero (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir);
+    from files(toolsAssetsDir)
 
-    baseName = "runnable-hiero"
+    archiveName = "runnable-hiero.jar"
 
     manifest {
         attributes 'Main-Class': hieroMainClass
@@ -71,18 +73,20 @@ task distHiero (type: Jar) {
 }
 
 task distTexturePacker (type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
-    from files(toolsAssetsDir);
+    from files(toolsAssetsDir)
 
-    baseName = "runnable-texturepacker"
+    archiveName = "runnable-texturepacker.jar"
 
     manifest {
         attributes 'Main-Class': texturePackerMainClass
     }
 }
 
-task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) << {
-    println "Building ye runnables"
+task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) {
+    doLast {
+        println "Building ye runnables"
+    }
 }
