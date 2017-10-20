@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class FloatFrameBuffer extends FrameBuffer {
 
 	/**
-	 * Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder}
+	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
 	 * @param bufferBuilder
 	 **/

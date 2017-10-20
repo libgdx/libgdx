@@ -43,7 +43,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	/**
-	 * Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder}
+	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
 	 * @param bufferBuilder
 	 **/

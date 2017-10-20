@@ -70,7 +70,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
 
 	/**
-	 * Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder}
+	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
 	 * @param bufferBuilder
 	 **/

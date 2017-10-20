@@ -81,7 +81,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	protected GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder;
 
-	/** Creates a GLFrameBuffer from the specifications provided by {@param bufferBuilder} **/
+	/** Creates a GLFrameBuffer from the specifications provided by bufferBuilder **/
 	protected GLFrameBuffer (GLFrameBufferBuilder<? extends GLFrameBuffer<T>> bufferBuilder) {
 		this.bufferBuilder = bufferBuilder;
 		build();
