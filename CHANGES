@@ -1,4 +1,5 @@
 [1.9.7]
+- API Change: GLFrameBuffer has been refactored https://github.com/libgdx/libgdx/pull/4882. Create standard FrameBuffers with static methods. Customized FBOS with FrameBufferBuilder
 - API addition: Tiled group layer support 
 - Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
