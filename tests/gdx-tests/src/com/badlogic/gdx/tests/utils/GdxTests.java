@@ -100,6 +100,7 @@ public class GdxTests {
 		Benchmark3DTest.class,
 		BitmapFontAlignmentTest.class,
 		BitmapFontDistanceFieldTest.class,
+        BitmapFontDistanceFieldFromSkinTest.class,
 		BitmapFontFlipTest.class,
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
