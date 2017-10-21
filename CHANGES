@@ -2,6 +2,12 @@
 - API addition: Skin now can create the BitmapFont with support mipmap filters
 - API addition: Skin now by default creates the DistanceFieldFont, Skin.getDistanceFieldFont()
 - API addition: Tiled group layer support
+- Update to MobiVM(RoboVM) 2.3.3
+- Add iOS 11 support
+- Update to Lwjgl 3.1.3
+- Update to MOE 1.4.0
+- API Change: GLFrameBuffer has been refactored https://github.com/libgdx/libgdx/pull/4882. Create standard FrameBuffers with static methods. Customized FBOS with FrameBufferBuilder
+- API addition: Tiled group layer support 
 - Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
 - Fix Animation backing array type
