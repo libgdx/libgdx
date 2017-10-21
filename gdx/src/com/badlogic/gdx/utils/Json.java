@@ -327,6 +327,7 @@ public class Json {
 		int i = 0;
 		for (FieldMetadata metadata : fields.values()) {
 			Field field = metadata.field;
+			if (readDeprecated && ignoreDeprecated && field.isAnnotationPresent(Deprecated.class)) continue;
 			try {
 				values[i++] = field.get(object);
 			} catch (ReflectionException ex) {
