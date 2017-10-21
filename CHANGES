@@ -1,5 +1,7 @@
 [1.9.7]
-- API addition: Tiled group layer support 
+- API addition: Skin now can create the BitmapFont with support mipmap filters
+- API addition: Skin now by default creates the DistanceFieldFont, Skin.getDistanceFieldFont()
+- API addition: Tiled group layer support
 - Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
 - Fix Animation backing array type
