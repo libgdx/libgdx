@@ -30,6 +30,8 @@
 - API Change: removed JGLFW backend
 - Fixed mixed up use of TexturePacker.Settings.stripWhitespaceX|Y.
 - Added joystick POV support to LWJGL3 controller backend.
+- API Addition: Billboard particles' scaling can be defined with different X and Y values.
+- API Addition: Billboard particles can now be aligned with the projected 2D motion on the screen.
 - Added support for 2d particles sprite animation.
 - API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
 - Added support for 2d particles independant scale X and Y.

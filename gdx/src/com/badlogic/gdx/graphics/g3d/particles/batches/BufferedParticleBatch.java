@@ -74,6 +74,10 @@ public abstract class BufferedParticleBatch<T extends ParticleControllerRenderDa
 		sorter.setCamera(camera);
 	}
 
+	public Camera getCamera () {
+		return this.camera;
+	}
+
 	public ParticleSorter getSorter () {
 		return sorter;
 	}

@@ -83,6 +83,20 @@ public class ParticleChannels {
 		}
 	}
 
+	public static class Scale2Initializer implements ChannelInitializer<FloatChannel> {
+		private static Scale2Initializer instance;
+
+		public static Scale2Initializer get () {
+			if (instance == null) instance = new Scale2Initializer();
+			return instance;
+		}
+
+		@Override
+		public void init (FloatChannel channel) {
+			Arrays.fill(channel.data, 0, channel.data.length, 1);
+		}
+	}
+
 	public static class Rotation2dInitializer implements ChannelInitializer<FloatChannel> {
 		private static Rotation2dInitializer instance;
 
@@ -111,8 +125,8 @@ public class ParticleChannels {
 		@Override
 		public void init (FloatChannel channel) {
 			for (int i = 0, c = channel.data.length; i < c; i += channel.strideSize) {
-				channel.data[i + ParticleChannels.XOffset] = channel.data[i + ParticleChannels.YOffset] = channel.data[i
-					+ ParticleChannels.ZOffset] = 0;
+				channel.data[i + ParticleChannels.XOffset] = channel.data[i
+					+ ParticleChannels.YOffset] = channel.data[i + ParticleChannels.ZOffset] = 0;
 				channel.data[i + ParticleChannels.WOffset] = 1;
 			}
 		}
@@ -128,6 +142,7 @@ public class ParticleChannels {
 	public static final ChannelDescriptor Rotation2D = new ChannelDescriptor(newGlobalId(), float.class, 2);
 	public static final ChannelDescriptor Rotation3D = new ChannelDescriptor(newGlobalId(), float.class, 4);
 	public static final ChannelDescriptor Scale = new ChannelDescriptor(newGlobalId(), float.class, 1);
+	public static final ChannelDescriptor Scale2 = new ChannelDescriptor(newGlobalId(), float.class, 2);
 	public static final ChannelDescriptor ModelInstance = new ChannelDescriptor(newGlobalId(), ModelInstance.class, 1);
 	public static final ChannelDescriptor ParticleController = new ChannelDescriptor(newGlobalId(), ParticleController.class, 1);
 	public static final ChannelDescriptor Acceleration = new ChannelDescriptor(newGlobalId(), float.class, 3); // gl units/s2
@@ -138,10 +153,11 @@ public class ParticleChannels {
 	public static final ChannelDescriptor Interpolation6 = new ChannelDescriptor(-1, float.class, 6);
 
 	// Offsets
-	/** Offsets to acess a particular value inside a stride of a given channel */
+	/** Offsets to access a particular value inside a stride of a given channel */
 	public static final int CurrentLifeOffset = 0, TotalLifeOffset = 1, LifePercentOffset = 2;
 	public static final int RedOffset = 0, GreenOffset = 1, BlueOffset = 2, AlphaOffset = 3;
 	public static final int InterpolationStartOffset = 0, InterpolationDiffOffset = 1;
+	public static final int Interpolation4StartOffset = 0, Interpolation4DiffOffset = 2;
 	public static final int VelocityStrengthStartOffset = 0, VelocityStrengthDiffOffset = 1, VelocityThetaStartOffset = 0,
 		VelocityThetaDiffOffset = 1, VelocityPhiStartOffset = 2, VelocityPhiDiffOffset = 3;
 	public static final int XOffset = 0, YOffset = 1, ZOffset = 2, WOffset = 3;
