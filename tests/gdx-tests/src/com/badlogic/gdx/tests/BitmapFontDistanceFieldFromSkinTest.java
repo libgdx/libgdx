@@ -65,6 +65,8 @@ public class BitmapFontDistanceFieldFromSkinTest extends GdxTest {
 
 	@Override
 	public void create () {
+		Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth() + 250, Gdx.graphics.getHeight());
+		
 		camera = new OrthographicCamera();
         // IMPORTANT!!!
         distanceFieldShader = DistanceFieldFont.createDistanceFieldShader();
