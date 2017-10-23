@@ -94,8 +94,8 @@ public class Wav {
 				if (type != 1) {
 					String name;
 					switch (type) {
-					case 0x0001:
-						name = "PCM";
+					case 0x0002:
+						name = "ADPCM";
 						break;
 					case 0x0003:
 						name = "IEEE float";
@@ -104,7 +104,7 @@ public class Wav {
 						name = "8-bit ITU-T G.711 A-law";
 						break;
 					case 0x0007:
-						name = "8-bit ITU-T G.711 μ-law";
+						name = "8-bit ITU-T G.711 u-law";
 						break;
 					case 0xFFFE:
 						name = "Extensible";
@@ -112,7 +112,7 @@ public class Wav {
 					default:
 						name = "Unknown";
 					}
-					throw new GdxRuntimeException("WAV files must be PCM: " + name + " (" + type + ")");
+					throw new GdxRuntimeException("WAV files must be PCM, unsupported format: " + name + " (" + type + ")");
 				}
 
 				channels = read() & 0xff | (read() & 0xff) << 8;
