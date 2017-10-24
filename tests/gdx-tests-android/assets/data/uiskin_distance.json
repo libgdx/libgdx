@@ -1,0 +1,15 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	description-font: { file: arial-15.fnt, flip: true },
+	regular-font: { file: verdana39.fnt, useMipMap: true, flip: true }
+},
+com.badlogic.gdx.graphics.g2d.DistanceFieldFont: {
+	distance-field-font: { file: verdana39distancefield.fnt, useMipMap: true, smoothing: 4, flip: true }
+},
+com.badlogic.gdx.graphics.Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 },
+}
+}
