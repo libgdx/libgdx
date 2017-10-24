@@ -14,10 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 
-group = "box2d-parent"
 
-subprojects { box2dproject ->
-    dependencies {
-        compileOnly project(":gdx")
-    }
+task runBox2DBuild (type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "com.badlogic.gdx.physics.box2d.utils.Box2DBuild"
+    standardInput = System.in
+}
+
+dependencies {
+    compile project(":extensions:gdx-jnigen")
 }
