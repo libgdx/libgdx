@@ -41,7 +41,7 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 	/** @deprecated Experimental, likely to change, do not use! */
 	public DirectionalShadowLight (int shadowMapWidth, int shadowMapHeight, float shadowViewportWidth, float shadowViewportHeight,
 		float shadowNear, float shadowFar) {
-		fbo = new FrameBuffer(Format.RGBA8888, shadowMapWidth, shadowMapHeight, true);
+		fbo = FrameBuffer.createFrameBuffer(Format.RGBA8888, shadowMapWidth, shadowMapHeight, true);
 		cam = new OrthographicCamera(shadowViewportWidth, shadowViewportHeight);
 		cam.near = shadowNear;
 		cam.far = shadowFar;

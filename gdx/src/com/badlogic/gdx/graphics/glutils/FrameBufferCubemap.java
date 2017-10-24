@@ -19,7 +19,9 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -67,14 +69,23 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** cubemap sides cache */
 	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
 
+	/**
+	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
+	 *
+	 * @param bufferBuilder
+	 **/
+	protected FrameBufferCubemap (GLFrameBufferBuilder<? extends GLFrameBuffer<Cubemap>> bufferBuilder) {
+		super(bufferBuilder);
+	}
+
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 *
 	 * @param format
 	 * @param width
 	 * @param height
 	 * @param hasDepth */
-	public FrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth) {
-		this(format, width, height, hasDepth, false);
+	public static FrameBufferCubemap createFrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth) {
+		return createFrameBufferCubemap(format, width, height, hasDepth, false);
 	}
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
@@ -86,15 +97,18 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @param hasStencil whether to attach a stencil buffer
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
-	public FrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
-		super(format, width, height, hasDepth, hasStencil);
+	public static FrameBufferCubemap createFrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
+		FrameBufferCubemapBuilder frameBufferBuilder = new FrameBufferCubemapBuilder(width, height);
+		frameBufferBuilder.addBasicColorTextureAttachment(format);
+		if (hasDepth) frameBufferBuilder.addDepthRenderBufferAttachment();
+		if (hasStencil) frameBufferBuilder.addStencilRenderBufferAttachment();
+		return frameBufferBuilder.build();
 	}
 
+
 	@Override
-	protected Cubemap createColorTexture () {
-		int glFormat = Pixmap.Format.toGlFormat(format);
-		int glType = Pixmap.Format.toGlType(format);
-		GLOnlyTextureData data = new GLOnlyTextureData(width, height, 0, glFormat, glFormat, glType);
+	protected Cubemap createTexture (GLFrameBufferAttachmentSpec attachmentSpec) {
+		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
 		Cubemap result = new Cubemap(data, data, data, data, data, data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
@@ -107,13 +121,13 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	}
 
 	@Override
-	protected void attachFrameBufferColorTexture() {
+	protected void attachFrameBufferColorTexture (Cubemap texture) {
 		GL20 gl = Gdx.gl20;
-		int glHandle = colorTexture.getTextureObjectHandle();
+		int glHandle = texture.getTextureObjectHandle();
 		Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
 		for (Cubemap.CubemapSide side : sides) {
 			gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
-					glHandle, 0);
+				glHandle, 0);
 		}
 	}
 
@@ -142,8 +156,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** Bind the side, making it active to render on. Should be called in between a call to {@link #begin()} and {@link #end()}.
 	 * @param side The side to bind */
 	protected void bindSide (final Cubemap.CubemapSide side) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum,
-			colorTexture.getTextureObjectHandle(), 0);
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getColorBufferTexture().getTextureObjectHandle(), 0);
 	}
 
 	/** Get the currently bound side. */
