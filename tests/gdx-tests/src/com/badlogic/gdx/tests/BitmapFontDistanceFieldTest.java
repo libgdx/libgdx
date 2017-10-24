@@ -141,10 +141,6 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		return (int)Math.ceil(maxWidth);
 	}
 
-	private float getBaselineShift (float shift) {
-		return shift;
-	}
-
 	@Override
 	public void resize (int width, int height) {
 		super.resize(width, height);
