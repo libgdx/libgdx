@@ -123,7 +123,7 @@
 	   <name>gdx-dialogs</name>
 	   <description>Provides cross-platform support for native dialogs</description>
 	   <package>de.tomgrill.gdxdialogs</package>
-	   <version>1.2.1</version>
+	   <version>1.2.3</version>
 	   <compatibility>1.9.5</compatibility>
 	   <website>https://github.com/TomGrill/gdx-dialogs</website>
 	   <gwtInherits></gwtInherits>
