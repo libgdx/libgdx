@@ -34,6 +34,7 @@
 - API Change: ParticleEmitter getSprite, setSprite, getImagePath, setImagePath are now getSprites, setSprites, getImagePaths, setImagePaths.
 - Added support for 2d particles independant scale X and Y.
 - API Change: ParticleEmitter getScale, matchSize are now getScaleX/getScaleY, matchSizeX/matchSizeY. Added scaleSize(float scaleX, float scaleY)
+- API Change: Added iconDropped() callback to AndroidWallpaperListener.
 
 [1.9.6]
 - Fix performance regression in LWJGL3 backend, use java.nio instead of BufferUtils. Those are intrinsics and quite a bit faster than BufferUtils on HotSpot.
