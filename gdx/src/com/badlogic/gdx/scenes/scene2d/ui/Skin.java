@@ -466,7 +466,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
-			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
+			public BitmapFont read(Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
 				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
@@ -483,30 +483,30 @@ public class Skin implements Disposable {
 					BitmapFont font;
 					Array<TextureRegion> regions = skin.getRegions(regionName);
 					if (regions != null)
-					    if (regions.first().getTexture().getTextureData().useMipMaps() == useMipMap)
-					        font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
-                        else
-                            throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
+						if (regions.first().getTexture().getTextureData().useMipMaps() == useMipMap)
+							font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
+						else
+							throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
 					else {
 						TextureRegion region = skin.optional(regionName, TextureRegion.class);
 						if (region != null)
-                            if (region.getTexture().getTextureData().useMipMaps() == useMipMap)
-                                font = new BitmapFont(fontFile, region, flip);
-                            else
-                                throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
+							if (region.getTexture().getTextureData().useMipMaps() == useMipMap)
+								font = new BitmapFont(fontFile, region, flip);
+							else
+								throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
 						else {
 							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
 							if (imageFile.exists())
-							    if (useMipMap) {
-                                    Texture texture = new Texture(imageFile, true);
-                                    font = new BitmapFont(fontFile, new TextureRegion(texture), flip);
-                                } else
-                                    font = new BitmapFont(fontFile, imageFile, flip);
+								if (useMipMap) {
+									Texture texture = new Texture(imageFile, true);
+									font = new BitmapFont(fontFile, new TextureRegion(texture), flip);
+								} else
+									font = new BitmapFont(fontFile, imageFile, flip);
 							else {
-                                if (useMipMap)
-                                    throw new SerializationException("For MipMap using, use a atlas's region with the same name as the font, else use a PNG file in the same directory as the FNT file.");
-                                font = new BitmapFont(fontFile, flip);
-                            }
+								if (useMipMap)
+									throw new SerializationException("For MipMap using, use a atlas's region with the same name as the font, else use a PNG file in the same directory as the FNT file.");
+								font = new BitmapFont(fontFile, flip);
+							}
 						}
 					}
 					font.getData().markupEnabled = markupEnabled;
@@ -519,64 +519,64 @@ public class Skin implements Disposable {
 			}
 		});
 
-        json.setSerializer(DistanceFieldFont.class, new ReadOnlySerializer<DistanceFieldFont>() {
-            @Override
-            public DistanceFieldFont read(Json json, JsonValue jsonData, Class type) {
-                String path = json.readValue("file", String.class, jsonData);
-                int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
-                Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
-                Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
-                Boolean useMipMap = json.readValue("useMipMap", Boolean.class, false, jsonData);
-                float smoothing = json.readValue("smoothing", float.class, 0f, jsonData);
+		json.setSerializer(DistanceFieldFont.class, new ReadOnlySerializer<DistanceFieldFont>() {
+			@Override
+			public DistanceFieldFont read(Json json, JsonValue jsonData, Class type) {
+				String path = json.readValue("file", String.class, jsonData);
+				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
+				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
+				Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
+				Boolean useMipMap = json.readValue("useMipMap", Boolean.class, false, jsonData);
+				float smoothing = json.readValue("smoothing", float.class, 0f, jsonData);
 
-                if (smoothing < 0f) throw new IllegalArgumentException("smoothing cannot be < 0");
+				if (smoothing < 0f) throw new IllegalArgumentException("smoothing cannot be < 0");
 
-                FileHandle fontFile = skinFile.parent().child(path);
-                if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
-                if (!fontFile.exists()) throw new SerializationException("DistanceFieldFont file not found: " + fontFile);
+				FileHandle fontFile = skinFile.parent().child(path);
+				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
+				if (!fontFile.exists()) throw new SerializationException("DistanceFieldFont file not found: " + fontFile);
 
-                // Use a region with the same name as the distance field font, else use a PNG file in the same directory as the FNT file.
-                String regionName = fontFile.nameWithoutExtension();
-                try {
-                    DistanceFieldFont font;
-                    Array<TextureRegion> regions = skin.getRegions(regionName);
-                    if (regions != null)
-                        if (regions.first().getTexture().getTextureData().useMipMaps() == useMipMap)
-                            font = new DistanceFieldFont(new BitmapFontData(fontFile, flip), regions, true);
-                        else
-                            throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
-                    else {
-                        TextureRegion region = skin.optional(regionName, TextureRegion.class);
-                        if (region != null)
-                            if (region.getTexture().getTextureData().useMipMaps() == useMipMap)
-                                font = new DistanceFieldFont(fontFile, region, flip);
-                            else
-                                throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
-                        else {
-                            FileHandle imageFile = fontFile.parent().child(regionName + ".png");
-                            if (imageFile.exists())
-                                if (useMipMap) {
-                                    Texture texture = new Texture(imageFile, true);
-                                    font = new DistanceFieldFont(fontFile, new TextureRegion(texture), flip);
-                                } else
-                                    font = new DistanceFieldFont(fontFile, imageFile, flip);
-                            else {
-                                if (useMipMap)
-                                    throw new SerializationException("For MipMap using, use a atlas's region with the same name as the distance field font, else use a PNG file in the same directory as the FNT file.");
-                                font = new DistanceFieldFont(fontFile, flip);
-                            }
-                        }
-                    }
-                    font.getData().markupEnabled = markupEnabled;
-                    // Scaled size is the desired cap height to scale the font to.
-                    if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
-                    font.setDistanceFieldSmoothing(smoothing);
-                    return font;
-                } catch (RuntimeException ex) {
-                    throw new SerializationException("Error loading bitmap distance field font: " + fontFile, ex);
-                }
-            }
-        });
+				// Use a region with the same name as the distance field font, else use a PNG file in the same directory as the FNT file.
+				String regionName = fontFile.nameWithoutExtension();
+				try {
+					DistanceFieldFont font;
+					Array<TextureRegion> regions = skin.getRegions(regionName);
+					if (regions != null)
+						if (regions.first().getTexture().getTextureData().useMipMaps() == useMipMap)
+							font = new DistanceFieldFont(new BitmapFontData(fontFile, flip), regions, true);
+						else
+							throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
+					else {
+						TextureRegion region = skin.optional(regionName, TextureRegion.class);
+						if (region != null)
+							if (region.getTexture().getTextureData().useMipMaps() == useMipMap)
+								font = new DistanceFieldFont(fontFile, region, flip);
+							else
+								throw new SerializationException("Set the minFilter to MipMap within atlas's file or remove \"useMipMap: true\" within skin's json file");
+						else {
+							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+							if (imageFile.exists())
+								if (useMipMap) {
+									Texture texture = new Texture(imageFile, true);
+									font = new DistanceFieldFont(fontFile, new TextureRegion(texture), flip);
+								} else
+									font = new DistanceFieldFont(fontFile, imageFile, flip);
+							else {
+								if (useMipMap)
+									throw new SerializationException("For MipMap using, use a atlas's region with the same name as the distance field font, else use a PNG file in the same directory as the FNT file.");
+								font = new DistanceFieldFont(fontFile, flip);
+							}
+						}
+					}
+					font.getData().markupEnabled = markupEnabled;
+					// Scaled size is the desired cap height to scale the font to.
+					if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
+					font.setDistanceFieldSmoothing(smoothing);
+					return font;
+				} catch (RuntimeException ex) {
+					throw new SerializationException("Error loading bitmap distance field font: " + fontFile, ex);
+				}
+			}
+		});
 
 		json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
 			public Color read (Json json, JsonValue jsonData, Class type) {
