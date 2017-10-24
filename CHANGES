@@ -1,3 +1,7 @@
+[1.9.8]
+- API Addition: Support for customizing render buffer attachments in GLFrameBuffers
+- API Change: Revert to constructors for GLFrameBuffers for easier customization
+
 [1.9.7]
 - Update to MobiVM(RoboVM) 2.3.3
 - Add iOS 11 support
