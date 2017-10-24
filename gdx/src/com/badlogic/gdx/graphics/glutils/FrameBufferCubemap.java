@@ -19,9 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -69,6 +67,8 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** cubemap sides cache */
 	private static final Cubemap.CubemapSide[] cubemapSides = Cubemap.CubemapSide.values();
 
+	FrameBufferCubemap () {}
+
 	/**
 	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
@@ -84,8 +84,8 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	 * @param width
 	 * @param height
 	 * @param hasDepth */
-	public static FrameBufferCubemap createFrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth) {
-		return createFrameBufferCubemap(format, width, height, hasDepth, false);
+	public FrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth) {
+		this(format, width, height, hasDepth, false);
 	}
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
@@ -97,17 +97,19 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @param hasStencil whether to attach a stencil buffer
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
-	public static FrameBufferCubemap createFrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
+	public FrameBufferCubemap (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
 		FrameBufferCubemapBuilder frameBufferBuilder = new FrameBufferCubemapBuilder(width, height);
 		frameBufferBuilder.addBasicColorTextureAttachment(format);
-		if (hasDepth) frameBufferBuilder.addDepthRenderBufferAttachment();
-		if (hasStencil) frameBufferBuilder.addStencilRenderBufferAttachment();
-		return frameBufferBuilder.build();
+		if (hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
+		if (hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
+		this.bufferBuilder = frameBufferBuilder;
+
+		build();
 	}
 
 
 	@Override
-	protected Cubemap createTexture (GLFrameBufferAttachmentSpec attachmentSpec) {
+	protected Cubemap createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
 		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
 		Cubemap result = new Cubemap(data, data, data, data, data, data);
 		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);

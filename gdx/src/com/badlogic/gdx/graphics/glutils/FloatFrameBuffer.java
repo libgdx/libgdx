@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** This is a {@link FrameBuffer} variant backed by a float texture. */
 public class FloatFrameBuffer extends FrameBuffer {
 
+	FloatFrameBuffer () {}
+
 	/**
 	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
@@ -42,15 +44,17 @@ public class FloatFrameBuffer extends FrameBuffer {
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
-	public static FloatFrameBuffer createFloatFrameBuffer (int width, int height, boolean hasDepth) {
+	public FloatFrameBuffer (int width, int height, boolean hasDepth) {
 		FloatFrameBufferBuilder bufferBuilder = new FloatFrameBufferBuilder(width, height);
 		bufferBuilder.addFloatAttachment(GL30.GL_RGBA32F, GL30.GL_RGBA, GL30.GL_FLOAT, false);
-		if (hasDepth) bufferBuilder.addDepthRenderBufferAttachment();
-		return bufferBuilder.build();
+		if (hasDepth) bufferBuilder.addBasicDepthRenderBuffer();
+		this.bufferBuilder = bufferBuilder;
+
+		build();
 	}
 
 	@Override
-	protected Texture createTexture (GLFrameBufferAttachmentSpec attachmentSpec) {
+	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
 		FloatTextureData data = new FloatTextureData(
 			bufferBuilder.width, bufferBuilder.height,
 			attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type,
