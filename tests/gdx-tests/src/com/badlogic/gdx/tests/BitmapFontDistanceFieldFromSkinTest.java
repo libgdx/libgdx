@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.DistanceFieldFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -59,33 +60,34 @@ public class BitmapFontDistanceFieldFromSkinTest extends GdxTest {
 	private BitmapFont descriptionFont;
 	private BitmapFont regularFont;
 	private DistanceFieldFont distanceFieldFont;
-    private ShaderProgram distanceFieldShader;
-    private CustomDistanceFieldShader customDistanceFieldShader;
+	private ShaderProgram distanceFieldShader;
+	private CustomDistanceFieldShader customDistanceFieldShader;
 	private GlyphLayout layout = new GlyphLayout();
 
 	@Override
 	public void create () {
 		Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth() + 250, Gdx.graphics.getHeight());
-		
+
 		camera = new OrthographicCamera();
-        // IMPORTANT!!!
-        distanceFieldShader = DistanceFieldFont.createDistanceFieldShader();
-        spriteBatch = new SpriteBatch();
-        spriteBatch.setShader(distanceFieldShader);
+		// IMPORTANT!!!
+		distanceFieldShader = DistanceFieldFont.createDistanceFieldShader();
+		spriteBatch = new SpriteBatch();
+		spriteBatch.setShader(distanceFieldShader);
 
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/uiskin.atlas"));
+		skin = new Skin(Gdx.files.internal("data/uiskin_distance.json"), atlas);
 
-        descriptionFont = skin.getFont("description-font");
-        descriptionFont.setColor(skin.getColor("red"));
+		descriptionFont = skin.getFont("description-font");
+		descriptionFont.setColor(skin.getColor("red"));
 
-        regularFont = skin.getFont("regular-font");
-        regularFont.setColor(Color.BLACK);
+		regularFont = skin.getFont("regular-font");
+		regularFont.setColor(Color.BLACK);
 
-        distanceFieldFont = skin.getDistanceFieldFont("distance-field-font");
-        distanceFieldFont.setColor(skin.getColor("black"));
+		distanceFieldFont = skin.getDistanceFieldFont("distance-field-font");
+		distanceFieldFont.setColor(skin.getColor("black"));
 
-        customDistanceFieldShader = new CustomDistanceFieldShader();
-        ShaderProgram.pedantic = false; // Useful when debugging this test
+		customDistanceFieldShader = new CustomDistanceFieldShader();
+		ShaderProgram.pedantic = false; // Useful when debugging this test
 
 	}
 
@@ -124,23 +126,23 @@ public class BitmapFontDistanceFieldFromSkinTest extends GdxTest {
 
 		// draw distance field font
 		if (font instanceof DistanceFieldFont) {
-            if (useShader)
-                ((DistanceFieldFont) font).setDistanceFieldSmoothing(4);
-            else
-                ((DistanceFieldFont) font).setDistanceFieldSmoothing(0);
+			if (useShader)
+				((DistanceFieldFont) font).setDistanceFieldSmoothing(4);
+			else
+				((DistanceFieldFont) font).setDistanceFieldSmoothing(0);
 
-            for (float scale : SCALES) {
-                font.getData().setScale(scale);
-                layout.setText(font, TEXT);
-                maxWidth = Math.max(maxWidth, layout.width);
-                font.draw(spriteBatch, layout, x, y);
-                y += font.getLineHeight();
-                spriteBatch.flush();
-            }
-            return (int)Math.ceil(maxWidth);
-        }
+			for (float scale : SCALES) {
+				font.getData().setScale(scale);
+				layout.setText(font, TEXT);
+				maxWidth = Math.max(maxWidth, layout.width);
+				font.draw(spriteBatch, layout, x, y);
+				y += font.getLineHeight();
+				spriteBatch.flush();
+			}
+			return (int) Math.ceil(maxWidth);
+		}
 
-        // draw bitmap font
+		// draw bitmap font
 		if (useShader) {
 			spriteBatch.setShader(customDistanceFieldShader);
 		} else {
@@ -161,10 +163,6 @@ public class BitmapFontDistanceFieldFromSkinTest extends GdxTest {
 		return (int)Math.ceil(maxWidth);
 	}
 
-	private float getBaselineShift (float shift) {
-		return shift;
-	}
-
 	@Override
 	public void resize (int width, int height) {
 		super.resize(width, height);
@@ -179,7 +177,7 @@ public class BitmapFontDistanceFieldFromSkinTest extends GdxTest {
 		descriptionFont.dispose();
 		regularFont.dispose();
 		distanceFieldFont.dispose();
-        distanceFieldShader.dispose();
-        customDistanceFieldShader.dispose();
+		distanceFieldShader.dispose();
+		customDistanceFieldShader.dispose();
 	}
 }
