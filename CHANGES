@@ -1,4 +1,5 @@
 [1.9.8]
+- API Addition: Circular Motion Dynamics Modifier for 3d particles
 - API Addition: Support for customizing render buffer attachments in GLFrameBuffers
 - API Change: Revert to constructors for GLFrameBuffers for easier customization
 
