@@ -53,6 +53,7 @@ import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
+import com.badlogic.gdx.tests.g3d.CircularMotionTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.FrameBufferCubemapTest;
 import com.badlogic.gdx.tests.g3d.HeightMapTest;
@@ -110,6 +111,7 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		CircularMotionTest.class,
 		CollectionsTest.class,
 		ColorTest.class,
 		ContainerTest.class,
