@@ -217,9 +217,9 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final float layerOffsetX = layer.getOffsetX() * unitScale;
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
 		// offset in tiled is y down, so we flip it
-		final float layerOffsetY = -layer.getOffsetY() * unitScale;
+		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
 
 		final int col1 = Math.max(0, (int)((cacheBounds.x - layerOffsetX) / layerTileWidth));
 		final int col2 = Math.min(layerWidth,

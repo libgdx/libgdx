@@ -620,7 +620,7 @@ public class Stage extends InputAdapter implements Disposable {
 				event.setRelatedActor(oldKeyboardFocus);
 				actor.fire(event);
 				success = !event.isCancelled();
-				if (!success) setKeyboardFocus(oldKeyboardFocus);
+				if (!success) keyboardFocus = oldKeyboardFocus;
 			}
 		}
 		Pools.free(event);
@@ -655,7 +655,7 @@ public class Stage extends InputAdapter implements Disposable {
 				event.setRelatedActor(oldScrollFocus);
 				actor.fire(event);
 				success = !event.isCancelled();
-				if (!success) setScrollFocus(oldScrollFocus);
+				if (!success) scrollFocus = oldScrollFocus;
 			}
 		}
 		Pools.free(event);
@@ -781,7 +781,7 @@ public class Stage extends InputAdapter implements Disposable {
 		else
 			root.setDebug(false, true);
 	}
-	
+
 	public boolean isDebugAll () {
 		return debugAll;
 	}
@@ -837,7 +837,7 @@ public class Stage extends InputAdapter implements Disposable {
 		int x1 = x0 + viewport.getScreenWidth();
 		int y0 = viewport.getScreenY();
 		int y1 = y0 + viewport.getScreenHeight();
-		screenY = Gdx.graphics.getHeight() - screenY;
+		screenY = Gdx.graphics.getHeight() - 1 - screenY;
 		return screenX >= x0 && screenX < x1 && screenY >= y0 && screenY < y1;
 	}
 

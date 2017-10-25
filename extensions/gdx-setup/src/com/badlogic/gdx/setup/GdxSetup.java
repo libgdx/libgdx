@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -131,27 +132,15 @@ public class GdxSetup {
 	}
 
 	private static int readAPIVersion (File parentFile) {
-		File properties = new File(parentFile, "source.properties");
-		FileReader reader;
-		BufferedReader buffer;
+		File propertiesFile = new File(parentFile, "source.properties");
+		Properties properties;
 		try {
-			reader = new FileReader(properties);
-			buffer = new BufferedReader(reader);
+			properties = readPropertiesFromFile(propertiesFile);
 
-			String line = null;
+			String versionString = properties.getProperty("AndroidVersion.ApiLevel");
 
-			while ((line = buffer.readLine()) != null) {
-				if (line.contains("AndroidVersion.ApiLevel")) {
+			return Integer.parseInt(versionString);
 
-					String versionString = line.split("\\=")[1];
-					int apiLevel = Integer.parseInt(versionString);
-
-					buffer.close();
-					reader.close();
-
-					return apiLevel;
-				}
-			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -163,36 +152,44 @@ public class GdxSetup {
 	}
 
 	private static String readBuildToolsVersion (File parentFile) {
-		File properties = new File(parentFile, "source.properties");
-		FileReader reader;
-		BufferedReader buffer;
+		File propertiesFile = new File(parentFile, "source.properties");
+		Properties properties;
 		try {
-			reader = new FileReader(properties);
-			buffer = new BufferedReader(reader);
-
-			String line = null;
-
-			while ((line = buffer.readLine()) != null) {
-				if (line.contains("Pkg.Revision")) {
-
-					String versionString = line.split("\\=")[1];
-					int count = versionString.split("\\.").length;
-					for (int i = 0; i < 3 - count; i++) {
-						versionString += ".0";
-					}
-
-					buffer.close();
-					reader.close();
-
-					return versionString;
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			properties = readPropertiesFromFile(propertiesFile);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return "0.0.0";
 		}
-		return "0.0.0";
+
+		String versionString = properties.getProperty("Pkg.Revision");
+		if (versionString == null) {
+			return "0.0.0";
+		}
+
+		int count = versionString.split("\\.").length;
+		for (int i = 0; i < 3 - count; i++) {
+			versionString += ".0";
+		}
+
+		return versionString;
+	}
+
+	private static Properties readPropertiesFromFile (File propertiesFile) throws IOException {
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(propertiesFile);
+			Properties properties = new Properties();
+			properties.load(stream);
+			return properties;
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	private static boolean versionsEqual(int[] testVersion, int[] targetVersion) {
@@ -313,10 +310,29 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Default-375w-667h@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-414w-736h@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
-			project.files.add(new ProjectFile("ios/data/Icon-72@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/Contents.json", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+
+
+
 			project.files.add(new ProjectFile("ios/build.gradle", true));
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
@@ -333,10 +349,28 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon-72@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Icon@2x.png", false));
+
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/Contents.json", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/Contents.json", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
 			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));

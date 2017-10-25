@@ -208,15 +208,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		}
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
 			Element element = root.getChild(i);
-			String name = element.getName();
-			if (name.equals("layer")) {
-				loadTileLayer(map, element);
-			} else if (name.equals("objectgroup")) {
-				loadObjectGroup(map, element);
-			}
-			else if (name.equals("imagelayer")) {
-				loadImageLayer(map, element, tmxFile, imageResolver);
-			}
+			loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
 		}
 		return map;
 	}
@@ -441,6 +433,14 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						animatedTile.setId(tile.getId());
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
+					}
+
+					Element objectgroupElement = tileElement.getChildByName("objectgroup");
+					if (objectgroupElement != null) {
+
+						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
+							loadObject(map, tile, objectElement);
+						}
 					}
 
 					String terrain = tileElement.getAttribute("terrain", null);
