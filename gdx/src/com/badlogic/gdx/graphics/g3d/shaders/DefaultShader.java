@@ -531,7 +531,7 @@ public class DefaultShader extends BaseShader {
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
 		this.renderable = renderable;
 		attributesMask = attributes.getMask() | optionalAttributes;
-		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
+		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
 
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights : 0];
 		for (int i = 0; i < directionalLights.length; i++)
