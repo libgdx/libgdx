@@ -162,6 +162,14 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		return mask;
 	}
 
+	/**
+	 * Calculates the mask based on {@link VertexAttributes#getMask()} and packs the attributes count into the last 32 bits.
+	 * @return the mask with attributes count packed into the last 32 bits.
+	 */
+	public long getMaskWithSizePacked () {
+		return getMask() | ((long)attributes.length << 32);
+	}
+
 	@Override
 	public int compareTo (VertexAttributes o) {
 		if (attributes.length != o.attributes.length) return attributes.length - o.attributes.length;
