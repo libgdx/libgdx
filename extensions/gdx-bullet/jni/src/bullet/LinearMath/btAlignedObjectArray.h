@@ -322,7 +322,7 @@ protected:
 		{
 			public:
 
-				bool operator() ( const T& a, const T& b )
+				bool operator() ( const T& a, const T& b ) const
 				{
 					return ( a < b );
 				}
@@ -476,15 +476,18 @@ protected:
 		return index;
 	}
 
+    void removeAtIndex(int index)
+    {
+        if (index<size())
+        {
+            swap( index,size()-1);
+            pop_back();
+        }
+    }
 	void	remove(const T& key)
 	{
-
 		int findIndex = findLinearSearch(key);
-		if (findIndex<size())
-		{
-			swap( findIndex,size()-1);
-			pop_back();
-		}
+        removeAtIndex(findIndex);
 	}
 
 	//PCK: whole function

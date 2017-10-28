@@ -468,14 +468,11 @@ btCollisionShape* btWorldImporter::convertCollisionShape(  btCollisionShapeData*
 				btCompoundShapeData* compoundData = (btCompoundShapeData*)shapeData;
 				btCompoundShape* compoundShape = createCompoundShape();
 
-				btCompoundShapeChildData* childShapeDataArray = &compoundData->m_childShapePtr[0];
-				
-
+			
 				btAlignedObjectArray<btCollisionShape*> childShapes;
 				for (int i=0;i<compoundData->m_numChildShapes;i++)
 				{
-					btCompoundShapeChildData* ptr = &compoundData->m_childShapePtr[i];
-
+					
 					btCollisionShapeData* cd = compoundData->m_childShapePtr[i].m_childShape;
 
 					btCollisionShape* childShape = convertCollisionShape(cd);
@@ -997,14 +994,14 @@ void	btWorldImporter::convertConstraintFloat(btTypedConstraintFloatData* constra
 						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i],dofData->m_linearSpringStiffnessLimited[i]!=0);
 						dof->setEquilibriumPoint(i,dofData->m_linearEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i,dofData->m_linearEnableSpring[i]!=0);
-						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i],dofData->m_linearSpringDampingLimited[i]);
+						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i],(dofData->m_linearSpringDampingLimited[i]!=0));
 					}
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i],dofData->m_angularSpringStiffnessLimited[i]);
+						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i],(dofData->m_angularSpringStiffnessLimited[i]!=0));
 						dof->setEquilibriumPoint(i+3,dofData->m_angularEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i+3,dofData->m_angularEnableSpring[i]!=0);
-						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i],dofData->m_angularSpringDampingLimited[i]);
+						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i],dofData->m_angularSpringDampingLimited[i]!=0);
 					}
 
 				}
@@ -1275,7 +1272,7 @@ void	btWorldImporter::convertConstraintDouble(btTypedConstraintDoubleData* const
 					btVector3 axisInA,axisInB;
 					axisInA.deSerializeDouble(gearData->m_axisInA);
 					axisInB.deSerializeDouble(gearData->m_axisInB);
-					gear = createGearConstraint(*rbA, *rbB, axisInA,axisInB, gearData->m_ratio);
+					gear = createGearConstraint(*rbA, *rbB, axisInA,axisInB, static_cast<btScalar>(gearData->m_ratio));
 				} else
 				{
 					btAssert(0);
@@ -1324,17 +1321,17 @@ void	btWorldImporter::convertConstraintDouble(btTypedConstraintDoubleData* const
 					//6-dof: 3 linear followed by 3 angular
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i,dofData->m_linearSpringStiffness.m_floats[i],dofData->m_linearSpringStiffnessLimited[i]);
-						dof->setEquilibriumPoint(i,dofData->m_linearEquilibriumPoint.m_floats[i]);
+						dof->setStiffness(i,static_cast<btScalar>(dofData->m_linearSpringStiffness.m_floats[i]),dofData->m_linearSpringStiffnessLimited[i]!=0);
+						dof->setEquilibriumPoint(i,static_cast<btScalar>(dofData->m_linearEquilibriumPoint.m_floats[i]));
 						dof->enableSpring(i,dofData->m_linearEnableSpring[i]!=0);
-						dof->setDamping(i,dofData->m_linearSpringDamping.m_floats[i],dofData->m_linearSpringDampingLimited[i]);
+						dof->setDamping(i,static_cast<btScalar>(dofData->m_linearSpringDamping.m_floats[i]),(dofData->m_linearSpringDampingLimited[i]!=0));
 					}
 					for (i=0;i<3;i++)
 					{
-						dof->setStiffness(i+3,dofData->m_angularSpringStiffness.m_floats[i],dofData->m_angularSpringStiffnessLimited[i]);
-						dof->setEquilibriumPoint(i+3,dofData->m_angularEquilibriumPoint.m_floats[i]);
+						dof->setStiffness(i+3,static_cast<btScalar>(dofData->m_angularSpringStiffness.m_floats[i]),(dofData->m_angularSpringStiffnessLimited[i]!=0));
+						dof->setEquilibriumPoint(i+3,static_cast<btScalar>(dofData->m_angularEquilibriumPoint.m_floats[i]));
 						dof->enableSpring(i+3,dofData->m_angularEnableSpring[i]!=0);
-						dof->setDamping(i+3,dofData->m_angularSpringDamping.m_floats[i],dofData->m_angularSpringDampingLimited[i]);
+						dof->setDamping(i+3,static_cast<btScalar>(dofData->m_angularSpringDamping.m_floats[i]),(dofData->m_angularSpringDampingLimited[i]!=0));
 					}
 
 				}

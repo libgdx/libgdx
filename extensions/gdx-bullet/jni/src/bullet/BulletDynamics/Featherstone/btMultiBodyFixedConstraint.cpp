@@ -187,25 +187,25 @@ void btMultiBodyFixedConstraint::debugDraw(class btIDebugDraw* drawer)
 	{
 		btVector3 pivot = m_rigidBodyA->getCenterOfMassTransform() * m_pivotInA;
 		tr.setOrigin(pivot);
-		drawer->drawTransform(tr, 0.1);
+		drawer->drawTransform(tr, static_cast<btScalar>(0.1));
 	}
 	if (m_bodyA)
 	{
 		btVector3 pivotAworld = m_bodyA->localPosToWorld(m_linkA, m_pivotInA);
 		tr.setOrigin(pivotAworld);
-		drawer->drawTransform(tr, 0.1);
+		drawer->drawTransform(tr, static_cast<btScalar>(0.1));
 	}
 	if (m_rigidBodyB)
 	{
 		// that ideally should draw the same frame
 		btVector3 pivot = m_rigidBodyB->getCenterOfMassTransform() * m_pivotInB;
 		tr.setOrigin(pivot);
-		drawer->drawTransform(tr, 0.1);
+		drawer->drawTransform(tr, static_cast<btScalar>(0.1));
 	}
 	if (m_bodyB)
 	{
 		btVector3 pivotBworld = m_bodyB->localPosToWorld(m_linkB, m_pivotInB);
 		tr.setOrigin(pivotBworld);
-		drawer->drawTransform(tr, 0.1);
+		drawer->drawTransform(tr, static_cast<btScalar>(0.1));
 	}
 }

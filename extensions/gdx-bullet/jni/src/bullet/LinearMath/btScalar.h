@@ -28,8 +28,16 @@ subject to the following restrictions:
 #include <stdlib.h>//size_t for MSVC 6.0
 #include <float.h>
 
+#ifdef __GNUC__
+	#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+		// support ptrdiff_t in GCC 4.6
+		// see more https://gcc.gnu.org/gcc-4.6/porting_to.html
+		#include <cstddef>
+	#endif
+#endif
+
 /* SVN $Revision$ on $Date$ from http://bullet.googlecode.com*/
-#define BT_BULLET_VERSION 285
+#define BT_BULLET_VERSION 286
 
 inline int	btGetVersion()
 {
@@ -175,13 +183,12 @@ inline int	btGetVersion()
 	//non-windows systems
 
 #if (defined (__APPLE__) && (!defined (BT_USE_DOUBLE_PRECISION)))
-	#include <TargetConditionals.h>
-	#if (defined (__i386__) || defined (__x86_64__)) && (!(TARGET_IPHONE_SIMULATOR))
-		//#define BT_USE_SIMD_VECTOR3
-		//#define BT_USE_SSE
+    #if defined (__i386__) || defined (__x86_64__)
+		#define BT_USE_SIMD_VECTOR3
+		#define BT_USE_SSE
 		//BT_USE_SSE_IN_API is enabled on Mac OSX by default, because memory is automatically aligned on 16-byte boundaries
 		//if apps run into issues, we will disable the next line
-		//#define BT_USE_SSE_IN_API
+		#define BT_USE_SSE_IN_API
         #ifdef BT_USE_SSE
             // include appropriate SSE level
             #if defined (__SSE4_1__)

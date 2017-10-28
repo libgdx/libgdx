@@ -24,7 +24,7 @@ subject to the following restrictions:
 #include "LinearMath/btSerializer.h"
 
 
-void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, short group, short mask)
+void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
 {
 	m_multiBodies.push_back(body);
 
@@ -332,10 +332,10 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 				}
 			}
 
-			if (m_solverInfo->m_minimumSolverBatchSize<=1)
-			{
-				m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
-			} else
+			//if (m_solverInfo->m_minimumSolverBatchSize<=1)
+			//{
+			//	m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
+			//} else
 			{
 				
 				for (i=0;i<numBodies;i++)
@@ -384,7 +384,7 @@ btMultiBodyDynamicsWorld::btMultiBodyDynamicsWorld(btDispatcher* dispatcher,btBr
 	m_multiBodyConstraintSolver(constraintSolver)
 {
 	//split impulse is not yet supported for Featherstone hierarchies
-	getSolverInfo().m_splitImpulse = false;
+//	getSolverInfo().m_splitImpulse = false;
 	getSolverInfo().m_solverMode |=SOLVER_USE_2_FRICTION_DIRECTIONS;
 	m_solverMultiBodyIslandCallback = new MultiBodyInplaceSolverIslandCallback(constraintSolver,dispatcher);
 }
@@ -823,7 +823,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 				btMultiBody* bod = m_multiBodies[b];
 				bod->forwardKinematics(m_scratch_world_to_local1,m_scratch_local_origin1);
 				
-				getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), 0.1);
+				getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), static_cast<btScalar>(0.1));
 
 
 				for (int m = 0; m<bod->getNumLinks(); m++)
@@ -831,7 +831,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 					
 					const btTransform& tr = bod->getLink(m).m_cachedWorldTransform;
 
-					getDebugDrawer()->drawTransform(tr, 0.1);
+					getDebugDrawer()->drawTransform(tr, static_cast<btScalar>(0.1));
 
 						//draw the joint axis
 					if (bod->getLink(m).m_jointType==btMultibodyLink::eRevolute)

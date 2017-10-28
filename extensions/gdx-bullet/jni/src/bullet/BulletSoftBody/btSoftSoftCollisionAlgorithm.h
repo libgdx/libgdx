@@ -30,8 +30,8 @@ class btSoftSoftCollisionAlgorithm : public btCollisionAlgorithm
 	bool	m_ownManifold;
 	btPersistentManifold*	m_manifoldPtr;
 
-	btSoftBody*	m_softBody0;
-	btSoftBody*	m_softBody1;
+//	btSoftBody*	m_softBody0;
+//	btSoftBody*	m_softBody1;
 
 
 public:

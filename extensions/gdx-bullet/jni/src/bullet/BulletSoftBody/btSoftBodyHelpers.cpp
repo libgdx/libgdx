@@ -123,8 +123,9 @@ static inline T				average(const btAlignedObjectArray<T>& items)
 	return(sum(items)/n);
 }
 
+#if 0
 //
-static inline btScalar		tetravolume(const btVector3& x0,
+ inline static btScalar		tetravolume(const btVector3& x0,
 										const btVector3& x1,
 										const btVector3& x2,
 										const btVector3& x3)
@@ -134,6 +135,7 @@ static inline btScalar		tetravolume(const btVector3& x0,
 	const btVector3	c=x3-x0;
 	return(btDot(a,btCross(b,c)));
 }
+#endif
 
 //
 #if 0
@@ -537,7 +539,7 @@ void btSoftBodyHelpers::ReoptimizeLinkOrder(btSoftBody *psb /* This can be repla
 {
 	int i, nLinks=psb->m_links.size(), nNodes=psb->m_nodes.size();
 	btSoftBody::Link *lr;
-	int ar, br;
+	ptrdiff_t ar, br;
 	btSoftBody::Node *node0 = &(psb->m_nodes[0]);
 	btSoftBody::Node *node1 = &(psb->m_nodes[1]);
 	LinkDepsPtr_t linkDep;

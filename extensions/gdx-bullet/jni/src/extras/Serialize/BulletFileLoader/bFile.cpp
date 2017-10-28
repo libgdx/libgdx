@@ -27,14 +27,14 @@ subject to the following restrictions:
 #define SIZEOFBLENDERHEADER 12
 #define MAX_ARRAY_LENGTH 512
 using namespace bParse;
-#define MAX_STRLEN 1024
+#define MAX_STRLEN static_cast<size_t>(1024)
 
 const char* getCleanName(const char* memName, char* buffer)
 {
-	int slen = strlen(memName);
+	size_t slen = strlen(memName);
 	assert(slen<MAX_STRLEN);
 	slen=btMin(slen,MAX_STRLEN);
-	for (int i=0;i<slen;i++)
+	for (size_t i=0;i<slen;i++)
 	{
 		if (memName[i]==']'||memName[i]=='[')
 		{
@@ -75,7 +75,8 @@ bFile::bFile(const char *filename, const char headerString[7])
 		fseek(fp, 0L, SEEK_SET);
 
 		mFileBuffer = (char*)malloc(mFileLen+1);
-		fread(mFileBuffer, mFileLen, 1, fp);
+		size_t bytesRead;
+		bytesRead = fread(mFileBuffer, mFileLen, 1, fp);
 
 		fclose(fp);
 
@@ -411,7 +412,7 @@ void bFile::swapDNA(char* ptr)
 
 //	void bDNA::init(char *data, int len, bool swap)
 	int *intPtr=0;short *shtPtr=0;
-	char *cp = 0;int dataLen =0;long nr=0;
+	char *cp = 0;int dataLen =0;
 	intPtr = (int*)data;
 
 	/*
@@ -573,7 +574,7 @@ void bFile::writeFile(const char* fileName)
 void bFile::preSwap()
 {
 
-	const bool brokenDNA = (mFlags&FD_BROKEN_DNA)!=0;
+	//const bool brokenDNA = (mFlags&FD_BROKEN_DNA)!=0;
 	//FD_ENDIAN_SWAP
 	//byte 8 determines the endianness of the file, little (v) versus big (V)
 	int littleEndian= 1;
@@ -1285,7 +1286,7 @@ int bFile::resolvePointersStructRecursive(char *strcPtr, int dna_nr, int verbose
 						}
 						//skip the *
 						printf("<%s type=\"pointer\"> ",&memName[1]);
-						printf("%d ", array[a]);
+						printf("%p ", array[a]);
 						printf("</%s>\n",&memName[1]);
 					}
 
@@ -1303,7 +1304,7 @@ int bFile::resolvePointersStructRecursive(char *strcPtr, int dna_nr, int verbose
 						printf("  ");
 					}
 					printf("<%s type=\"pointer\"> ",&memName[1]);
-					printf("%d ", ptr);
+					printf("%p ", ptr);
 					printf("</%s>\n",&memName[1]);
 				}
 				ptr = findLibPointer(ptr);
@@ -1484,7 +1485,7 @@ void bFile::resolvePointers(int verboseMode)
 				char* oldType = fileDna->getType(oldStruct[0]);
 				
 				if (verboseMode & FD_VERBOSE_EXPORT_XML)
-					printf(" <%s pointer=%d>\n",oldType,dataChunk.oldPtr);
+					printf(" <%s pointer=%p>\n",oldType,dataChunk.oldPtr);
 
 				resolvePointersChunk(dataChunk, verboseMode);
 

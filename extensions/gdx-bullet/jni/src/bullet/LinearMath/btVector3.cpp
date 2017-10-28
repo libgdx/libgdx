@@ -176,12 +176,12 @@ long _maxdot_large( const float *vv, const float *vec, unsigned long count, floa
             for( index = 0; 0 == (test=_mm_movemask_ps( _mm_cmpeq_ps( stack_array[index], max))); index++ )   // local_count must be a multiple of 4
             {}
             // record where it is.
-            maxIndex = 4*index + segment + indexTable[test];
+            maxIndex = static_cast<long>(4*index + segment + indexTable[test]);
         }
     }
     
     // account for work we've already done
-    count -= segment;
+    count -= static_cast<long>(segment);
     
     // Deal with the last < STACK_ARRAY_COUNT vectors
     max = dotMax;
@@ -424,7 +424,7 @@ long _maxdot_large( const float *vv, const float *vec, unsigned long count, floa
         size_t test;
         for( index = 0; 0 == (test=_mm_movemask_ps( _mm_cmpeq_ps( stack_array[index], max))); index++ )   // local_count must be a multiple of 4
         {}
-        maxIndex = 4*index + segment + indexTable[test];
+        maxIndex = static_cast<long>(4*index + segment + indexTable[test]);
     }
     
     _mm_store_ss( dotResult, dotMax);
@@ -561,12 +561,12 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
             for( index = 0; 0 == (test=_mm_movemask_ps( _mm_cmpeq_ps( stack_array[index], min))); index++ )   // local_count must be a multiple of 4
             {}
             // record where it is.
-            minIndex = 4*index + segment + indexTable[test];
+            minIndex = static_cast<long>(4*index + segment + indexTable[test]);
         }
     }
     
     // account for work we've already done
-    count -= segment;
+    count -= static_cast<long>(segment);
     
     // Deal with the last < STACK_ARRAY_COUNT vectors
     min = dotmin;
@@ -812,7 +812,7 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
         size_t test;
         for( index = 0; 0 == (test=_mm_movemask_ps( _mm_cmpeq_ps( stack_array[index], min))); index++ )   // local_count must be a multiple of 4
         {}
-        minIndex = 4*index + segment + indexTable[test];
+        minIndex = static_cast<long>(4*index + segment + indexTable[test]);
     }
     
     _mm_store_ss( dotResult, dotmin);

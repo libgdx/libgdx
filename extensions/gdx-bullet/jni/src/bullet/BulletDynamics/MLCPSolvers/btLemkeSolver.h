@@ -208,8 +208,8 @@ public:
 
 		int errorIndexMax = -1;
 		int errorIndexMin = -1;
-		float errorValueMax = -1e30;
-		float errorValueMin = 1e30;
+		btScalar errorValueMax = static_cast<btScalar>(-1e30);
+		btScalar errorValueMin = static_cast<btScalar>(1e30);
 		
 		for (int i=0;i<n;i++)
 		{
@@ -288,8 +288,8 @@ public:
 		bool fail = false;
 		int errorIndexMax = -1;
 		int errorIndexMin = -1;
-		float errorValueMax = -1e30;
-		float errorValueMin = 1e30;
+		btScalar errorValueMax = static_cast<btScalar>(-1e30);
+		btScalar errorValueMin = static_cast<btScalar>(1e30);
 		
 		for (int i=0;i<dimension;i++)
 		{

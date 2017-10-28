@@ -31,7 +31,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
+	<property name="g++-opts" value="-c -Wall -O2 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -83,9 +83,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -101,9 +102,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -141,9 +143,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -159,9 +162,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -199,9 +203,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -217,9 +222,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+            <arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -257,9 +263,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -275,9 +282,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -315,9 +323,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -333,9 +342,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -373,9 +383,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -391,9 +402,10 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
 			<arg value="-Isrc/extras/Serialize/"/>
+			<arg value="-Isrc/extras/"/>
 
 			<srcfile/>
 			<arg value="-o"/>

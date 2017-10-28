@@ -139,7 +139,7 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_jumpAxis.setValue(0.0f, 0.0f, 1.0f);
 	setUp(up);
 	setStepHeight(stepHeight);
-	m_addedMargin = 0.02;
+	m_addedMargin = static_cast<btScalar>(0.02);
 	m_walkDirection.setValue(0.0,0.0,0.0);
 	m_AngVel.setValue(0.0, 0.0, 0.0);
 	m_useGhostObjectSweepTest = true;	
@@ -149,7 +149,7 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_velocityTimeInterval = 0.0;
 	m_verticalVelocity = 0.0;
 	m_verticalOffset = 0.0;
-	m_gravity = 9.8 * 3.0 ; // 3G acceleration.
+	m_gravity = static_cast<btScalar>(9.8 * 3.0) ; // 3G acceleration.
 	m_fallSpeed = 55.0; // Terminal velocity of a sky diver in m/s.
 	m_jumpSpeed = 10.0; // ?
 	m_SetjumpSpeed = m_jumpSpeed;
@@ -158,7 +158,7 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_interpolateUp = true;
 	setMaxSlope(btRadians(45.0));
 	m_currentStepOffset = 0.0;
-	m_maxPenetrationDepth = 0.2;
+	m_maxPenetrationDepth = static_cast<btScalar>(0.2);
 	full_drop = false;
 	bounce_fix = false;
 	m_linearDamping = btScalar(0.0);
@@ -559,7 +559,7 @@ void btKinematicCharacterController::stepDown ( btCollisionWorld* collisionWorld
 		break;
 	}
 
-	if (m_ghostObject->hasContactResponse() && (callback.hasHit() && needsCollision(m_ghostObject, callback.m_hitCollisionObject)) || runonce == true)
+	if ((m_ghostObject->hasContactResponse() && (callback.hasHit() && needsCollision(m_ghostObject, callback.m_hitCollisionObject))) || runonce == true)
 	{
 		// we dropped a fraction of the height -> hit floor
 		btScalar fraction = (m_currentPosition.getY() - callback.m_hitPointWorld.getY()) / 2;
@@ -751,7 +751,7 @@ void btKinematicCharacterController::playerStep (  btCollisionWorld* collisionWo
 	m_wasOnGround = onGround();
 
 	//btVector3 lvel = m_walkDirection;
-	btScalar c = 0.0f;
+	//btScalar c = 0.0f;
 	
 	if (m_walkDirection.length2() > 0)
 	{

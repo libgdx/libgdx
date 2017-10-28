@@ -553,6 +553,8 @@ typedef struct bInvalidHandle {
         double m_deactivationTime;
         double m_friction;
         double m_rollingFriction;
+        double m_contactDamping;
+        double m_contactStiffness;
         double m_restitution;
         double m_hitFraction;
         double m_ccdSweptSphereRadius;
@@ -585,6 +587,8 @@ typedef struct bInvalidHandle {
         float m_deactivationTime;
         float m_friction;
         float m_rollingFriction;
+        float m_contactDamping;
+        float m_contactStiffness;
         float m_restitution;
         float m_hitFraction;
         float m_ccdSweptSphereRadius;
