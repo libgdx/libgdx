@@ -185,17 +185,16 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public boolean flush () {
-		boolean success = false;
-		// FIXME: how to hoist the success or failure of write to return it?
+		final boolean[] success = {false};
 		ObjCRuntime.autoreleasepool(new Runnable() {
 			@Override
 			public void run() {
 				if (!nsDictionary.writeToFileAtomically(file.getAbsolutePath(), false)) {
 					Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
+					success[0] = true;
 				}
 			}
 		});
-		success = true; // FIXME: should reflect the success of NSDictionary write.
-		return success;
+		return success[0];.
 	}
 }
