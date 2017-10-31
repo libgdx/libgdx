@@ -60,7 +60,8 @@ public class GwtPreferences implements Preferences {
 	}
 
 	@Override
-	public void flush () {
+	public boolean flush () {
+		boolean success = false;
 		try {
 			// remove all old values
 			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
@@ -74,10 +75,13 @@ public class GwtPreferences implements Preferences {
 				String storageValue = "" + values.get(key).toString();
 				GwtFiles.LocalStorage.setItem(storageKey, storageValue);
 			}
+			
+			success = true;
 
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't flush preferences");
 		}
+		return success;
 	}
 
 	@Override
