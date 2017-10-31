@@ -78,5 +78,5 @@ public interface Preferences {
 	public void remove (String key);
 
 	/** Makes sure the preferences are persisted. */
-	public void flush ();
+	public boolean flush ();
 }
