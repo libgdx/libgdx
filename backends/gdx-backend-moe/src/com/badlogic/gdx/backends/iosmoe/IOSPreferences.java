@@ -195,6 +195,6 @@ public class IOSPreferences implements Preferences {
 				}
 			}
 		});
-		return success[0];.
+		return success[0];
 	}
 }
