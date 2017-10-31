@@ -173,7 +173,7 @@ public class HeadlessPreferences implements Preferences {
 
 	@Override
 	public boolean flush () {
-		success = false;
+		boolean success = false;
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(file.write(false));
