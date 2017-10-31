@@ -184,7 +184,9 @@ public class IOSPreferences implements Preferences {
 	}
 
 	@Override
-	public void flush () {
+	public boolean flush () {
+		boolean success = false;
+		// FIXME: how to hoist the success or failure of write to return it?
 		ObjCRuntime.autoreleasepool(new Runnable() {
 			@Override
 			public void run() {
@@ -193,5 +195,7 @@ public class IOSPreferences implements Preferences {
 				}
 			}
 		});
+		success = true; // FIXME: should reflect the success of NSDictionary write.
+		return success;
 	}
 }
