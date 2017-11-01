@@ -16,11 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
-import com.badlogic.gdx.utils.Array;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -38,6 +33,12 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Resampling;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import com.badlogic.gdx.utils.Array;
+
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
@@ -47,7 +48,7 @@ public class ImageProcessor {
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 	private float scale = 1;
-	private TexturePacker.InterpolationMode interpolationMode = TexturePacker.InterpolationMode.Bicubic;
+	private Resampling resampling = Resampling.bicubic;
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public ImageProcessor (File rootDir, Settings settings) {
@@ -118,8 +119,8 @@ public class ImageProcessor {
 		this.scale = scale;
 	}
 
-	public void setInterpolation(TexturePacker.InterpolationMode mode) {
-		interpolationMode = mode;
+	public void setResampling (Resampling resampling) {
+		this.resampling = resampling;
 	}
 
 	public Array<Rect> getImages () {
@@ -170,7 +171,7 @@ public class ImageProcessor {
 			} else {
 				Graphics2D g = (Graphics2D)newImage.getGraphics();
 				g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolationMode.value);
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, resampling.value);
 				g.drawImage(image, 0, 0, width, height, null);
 			}
 			image = newImage;
