@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -114,6 +113,15 @@ public class TexturePacker {
 
 			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
+
+			// Be forgiving about interpolation - for backwards-compatibility assume it can be unset, null,
+			// empty or missing elements. Missing elements will simply default to the original 'bicubic'.
+			if (settings.interpolation != null && settings.interpolation.length > i) {
+				if (settings.interpolation[i] != null) {
+					imageProcessor.setInterpolation(settings.interpolation[i]);
+				}
+			}
+
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
 				InputImage inputImage = inputImages.get(ii);
 				if (inputImage.file != null)
@@ -601,6 +609,7 @@ public class TexturePacker {
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
+		public InterpolationMode[] interpolation = {InterpolationMode.Bicubic};
 		public String[] scaleSuffix = {""};
 		public String atlasExtension = ".atlas";
 
@@ -651,6 +660,7 @@ public class TexturePacker {
 			grid = settings.grid;
 			scale = Arrays.copyOf(settings.scale, settings.scale.length);
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
+			interpolation = Arrays.copyOf(settings.interpolation, settings.interpolation.length);
 			atlasExtension = settings.atlasExtension;
 		}
 
@@ -850,5 +860,19 @@ public class TexturePacker {
 		if (settings == null) settings = new Settings();
 
 		process(settings, input, output, packFileName);
+	}
+
+	public static enum InterpolationMode {
+
+		Nearest(RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR),
+		Bilinear(RenderingHints.VALUE_INTERPOLATION_BILINEAR),
+		Bicubic(RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+		final Object value;
+
+		InterpolationMode(Object value) {
+			this.value = value;
+		}
+
 	}
 }

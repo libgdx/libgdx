@@ -1,4 +1,5 @@
 [1.9.8]
+- API Addition: Possibility to specify TexturePacker settings interpolation mode when scaling.
 - API Addition: Support for customizing render buffer attachments in GLFrameBuffers
 - API Change: Revert to constructors for GLFrameBuffers for easier customization
 
