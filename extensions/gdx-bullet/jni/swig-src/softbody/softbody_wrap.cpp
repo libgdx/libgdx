@@ -3765,30 +3765,30 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1sRayCast_1feature_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1sRayCast_1feature_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   btSoftBody::sRayCast *arg1 = (btSoftBody::sRayCast *) 0 ;
-  btSoftBody::eFeature::_ arg2 ;
+  btSoftBody::eFeature::_ *arg2 = (btSoftBody::eFeature::_ *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody::sRayCast **)&jarg1; 
-  arg2 = (btSoftBody::eFeature::_)jarg2; 
-  if (arg1) (arg1)->feature = arg2;
+  arg2 = *(btSoftBody::eFeature::_ **)&jarg2; 
+  if (arg1) (arg1)->feature = *arg2;
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1sRayCast_1feature_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1sRayCast_1feature_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   btSoftBody::sRayCast *arg1 = (btSoftBody::sRayCast *) 0 ;
-  btSoftBody::eFeature::_ result;
+  btSoftBody::eFeature::_ *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody::sRayCast **)&jarg1; 
-  result = (btSoftBody::eFeature::_) ((arg1)->feature);
-  jresult = (jint)result; 
+  result = (btSoftBody::eFeature::_ *)& ((arg1)->feature);
+  *(btSoftBody::eFeature::_ **)&jresult = result; 
   return jresult;
 }
 
@@ -8072,8 +8072,8 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Joint_1Type(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Joint_1Type(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   btSoftBody::Joint *arg1 = (btSoftBody::Joint *) 0 ;
   btSoftBody::Joint::eType::_ result;
   
@@ -8081,8 +8081,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody::Joint **)&jarg1; 
-  result = (btSoftBody::Joint::eType::_)((btSoftBody::Joint const *)arg1)->Type();
-  jresult = (jint)result; 
+  result = ((btSoftBody::Joint const *)arg1)->Type();
+  *(btSoftBody::Joint::eType::_ **)&jresult = new btSoftBody::Joint::eType::_((const btSoftBody::Joint::eType::_ &)result); 
   return jresult;
 }
 
@@ -8596,30 +8596,30 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Config_1aeromodel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Config_1aeromodel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   btSoftBody::Config *arg1 = (btSoftBody::Config *) 0 ;
-  btSoftBody::eAeroModel::_ arg2 ;
+  btSoftBody::eAeroModel::_ *arg2 = (btSoftBody::eAeroModel::_ *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody::Config **)&jarg1; 
-  arg2 = (btSoftBody::eAeroModel::_)jarg2; 
-  if (arg1) (arg1)->aeromodel = arg2;
+  arg2 = *(btSoftBody::eAeroModel::_ **)&jarg2; 
+  if (arg1) (arg1)->aeromodel = *arg2;
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Config_1aeromodel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1Config_1aeromodel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
   btSoftBody::Config *arg1 = (btSoftBody::Config *) 0 ;
-  btSoftBody::eAeroModel::_ result;
+  btSoftBody::eAeroModel::_ *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody::Config **)&jarg1; 
-  result = (btSoftBody::eAeroModel::_) ((arg1)->aeromodel);
-  jresult = (jint)result; 
+  result = (btSoftBody::eAeroModel::_ *)& ((arg1)->aeromodel);
+  *(btSoftBody::eAeroModel::_ **)&jresult = result; 
   return jresult;
 }
 
@@ -12437,15 +12437,21 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_Softbo
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1setSolver(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1setSolver(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   btSoftBody *arg1 = (btSoftBody *) 0 ;
   btSoftBody::eSolverPresets::_ arg2 ;
+  btSoftBody::eSolverPresets::_ *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody **)&jarg1; 
-  arg2 = (btSoftBody::eSolverPresets::_)jarg2; 
+  argp2 = *(btSoftBody::eSolverPresets::_ **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btSoftBody::eSolverPresets::_");
+    return ;
+  }
+  arg2 = *argp2; 
   (arg1)->setSolver(arg2);
 }
 
@@ -12997,16 +13003,42 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1getSolver_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1getSolver_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jlong jresult = 0 ;
   btSoftBody::ePSolver::_ arg1 ;
+  btSoftBody::ePSolver::_ *argp1 ;
   btSoftBody::psolver_t result;
   
   (void)jenv;
   (void)jcls;
-  arg1 = (btSoftBody::ePSolver::_)jarg1; 
+  argp1 = *(btSoftBody::ePSolver::_ **)&jarg1; 
+  if (!argp1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btSoftBody::ePSolver::_");
+    return 0;
+  }
+  arg1 = *argp1; 
   result = (btSoftBody::psolver_t)btSoftBody::getSolver(arg1);
   *(btSoftBody::psolver_t *)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1getSolver_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jlong jresult = 0 ;
+  btSoftBody::eVSolver::_ arg1 ;
+  btSoftBody::eVSolver::_ *argp1 ;
+  btSoftBody::vsolver_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  argp1 = *(btSoftBody::eVSolver::_ **)&jarg1; 
+  if (!argp1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btSoftBody::eVSolver::_");
+    return 0;
+  }
+  arg1 = *argp1; 
+  result = (btSoftBody::vsolver_t)btSoftBody::getSolver(arg1);
+  *(btSoftBody::vsolver_t *)&jresult = result; 
   return jresult;
 }
 

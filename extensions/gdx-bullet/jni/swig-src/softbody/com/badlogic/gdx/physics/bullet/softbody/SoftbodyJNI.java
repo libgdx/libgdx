@@ -138,8 +138,8 @@ public class SoftbodyJNI {
   public final static native void delete_btSoftBody_fMaterial(long jarg1);
   public final static native void btSoftBody_sRayCast_body_set(long jarg1, btSoftBody.sRayCast jarg1_, long jarg2, btSoftBody jarg2_);
   public final static native long btSoftBody_sRayCast_body_get(long jarg1, btSoftBody.sRayCast jarg1_);
-  public final static native void btSoftBody_sRayCast_feature_set(long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
-  public final static native int btSoftBody_sRayCast_feature_get(long jarg1, btSoftBody.sRayCast jarg1_);
+  public final static native void btSoftBody_sRayCast_feature_set(long jarg1, btSoftBody.sRayCast jarg1_, long jarg2);
+  public final static native long btSoftBody_sRayCast_feature_get(long jarg1, btSoftBody.sRayCast jarg1_);
   public final static native void btSoftBody_sRayCast_index_set(long jarg1, btSoftBody.sRayCast jarg1_, int jarg2);
   public final static native int btSoftBody_sRayCast_index_get(long jarg1, btSoftBody.sRayCast jarg1_);
   public final static native void btSoftBody_sRayCast_fraction_set(long jarg1, btSoftBody.sRayCast jarg1_, float jarg2);
@@ -441,7 +441,7 @@ public class SoftbodyJNI {
   public final static native void btSoftBody_Joint_Prepare(long jarg1, btSoftBody.Joint jarg1_, float jarg2, int jarg3);
   public final static native void btSoftBody_Joint_Solve(long jarg1, btSoftBody.Joint jarg1_, float jarg2, float jarg3);
   public final static native void btSoftBody_Joint_Terminate(long jarg1, btSoftBody.Joint jarg1_, float jarg2);
-  public final static native int btSoftBody_Joint_Type(long jarg1, btSoftBody.Joint jarg1_);
+  public final static native long btSoftBody_Joint_Type(long jarg1, btSoftBody.Joint jarg1_);
   public final static native void btSoftBody_LJoint_Specs_position_set(long jarg1, btSoftBody.LJoint.Specs jarg1_, long jarg2, btVector3 jarg2_);
   public final static native long btSoftBody_LJoint_Specs_position_get(long jarg1, btSoftBody.LJoint.Specs jarg1_);
   public final static native long new_btSoftBody_LJoint_Specs();
@@ -479,8 +479,8 @@ public class SoftbodyJNI {
   public final static native float btSoftBody_CJoint_friction_get(long jarg1, btSoftBody.CJoint jarg1_);
   public final static native long new_btSoftBody_CJoint();
   public final static native void delete_btSoftBody_CJoint(long jarg1);
-  public final static native void btSoftBody_Config_aeromodel_set(long jarg1, btSoftBody.Config jarg1_, int jarg2);
-  public final static native int btSoftBody_Config_aeromodel_get(long jarg1, btSoftBody.Config jarg1_);
+  public final static native void btSoftBody_Config_aeromodel_set(long jarg1, btSoftBody.Config jarg1_, long jarg2);
+  public final static native long btSoftBody_Config_aeromodel_get(long jarg1, btSoftBody.Config jarg1_);
   public final static native void btSoftBody_Config_kVCF_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
   public final static native float btSoftBody_Config_kVCF_get(long jarg1, btSoftBody.Config jarg1_);
   public final static native void btSoftBody_Config_kDP_set(long jarg1, btSoftBody.Config jarg1_, float jarg2);
@@ -714,7 +714,7 @@ public class SoftbodyJNI {
   public final static native boolean btSoftBody_cutLink__SWIG_0(long jarg1, btSoftBody jarg1_, int jarg2, int jarg3, float jarg4);
   public final static native boolean btSoftBody_cutLink__SWIG_1(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBody.Node jarg2_, long jarg3, btSoftBody.Node jarg3_, float jarg4);
   public final static native boolean btSoftBody_rayTest__SWIG_0(long jarg1, btSoftBody jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btSoftBody.sRayCast jarg4_);
-  public final static native void btSoftBody_setSolver(long jarg1, btSoftBody jarg1_, int jarg2);
+  public final static native void btSoftBody_setSolver(long jarg1, btSoftBody jarg1_, long jarg2);
   public final static native void btSoftBody_predictMotion(long jarg1, btSoftBody jarg1_, float jarg2);
   public final static native void btSoftBody_solveConstraints(long jarg1, btSoftBody jarg1_);
   public final static native void btSoftBody_staticSolve(long jarg1, btSoftBody jarg1_, int jarg2);
@@ -753,7 +753,8 @@ public class SoftbodyJNI {
   public final static native void btSoftBody_PSolve_SContacts(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
   public final static native void btSoftBody_PSolve_Links(long jarg1, btSoftBody jarg1_, float jarg2, float jarg3);
   public final static native void btSoftBody_VSolve_Links(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native long btSoftBody_getSolver__SWIG_0(int jarg1);
+  public final static native long btSoftBody_getSolver__SWIG_0(long jarg1);
+  public final static native long btSoftBody_getSolver__SWIG_1(long jarg1);
   public final static native long new_btSoftBody__SWIG_2(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7, int jarg8, java.nio.ShortBuffer jarg9, int jarg10);
   public final static native int btSoftBody_getNodeCount(long jarg1, btSoftBody jarg1_);
   public final static native long btSoftBody_getNode(long jarg1, btSoftBody jarg1_, int jarg2);

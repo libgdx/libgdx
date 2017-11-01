@@ -81,7 +81,7 @@ public:
 	//
 
 	///eAeroModel 
-	struct eAeroModel { enum _ {
+	struct eAeroModel { enum _Constants {
 		V_Point,			///Vertex normals are oriented toward velocity
 		V_TwoSided,			///Vertex normals are flipped to match velocity	
 		V_TwoSidedLiftDrag, ///Vertex normals are flipped to match velocity and lift and drag forces are applied
@@ -93,13 +93,13 @@ public:
 	};};
 
 	///eVSolver : velocities solvers
-	struct	eVSolver { enum _ {
+	struct	eVSolver { enum _Constants {
 		Linear,		///Linear solver
 		END
 	};};
 
 	///ePSolver : positions solvers
-	struct	ePSolver { enum _ {
+	struct	ePSolver { enum _Constants {
 		Linear,		///Linear solver
 		Anchors,	///Anchor solver
 		RContacts,	///Rigid contacts solver
@@ -108,7 +108,7 @@ public:
 	};};
 
 	///eSolverPresets
-	struct	eSolverPresets { enum _ {
+	struct	eSolverPresets { enum _Constants {
 		Positions,
 		Velocities,
 		Default	=	Positions,
@@ -116,7 +116,7 @@ public:
 	};};
 
 	///eFeature
-	struct	eFeature { enum _ {
+	struct	eFeature { enum _Constants {
 		None,
 		Node,
 		Link,
@@ -133,7 +133,7 @@ public:
 	//
 
 	///fCollision
-	struct fCollision { enum _ {
+	struct fCollision { enum _Constants {
 		RVSmask	=	0x000f,	///Rigid versus soft mask
 		SDF_RS	=	0x0001,	///SDF based rigid vs soft
 		CL_RS	=	0x0002, ///Cluster vs convex rigid vs soft
@@ -148,7 +148,7 @@ public:
 	};};
 
 	///fMaterial
-	struct fMaterial { enum _ {
+	struct fMaterial { enum _Constants {
 		DebugDraw	=	0x0001,	/// Enable debug draw
 		/* presets	*/ 
 		Default		=	DebugDraw,
@@ -483,7 +483,7 @@ public:
 	/* Joint		*/ 
 	struct	Joint
 	{
-		struct eType { enum _ {
+		struct eType { enum _Constants {
 			Linear=0,
 			Angular,
 			Contact
