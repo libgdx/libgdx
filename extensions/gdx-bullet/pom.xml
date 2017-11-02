@@ -48,6 +48,7 @@
                 <source>jni/swig-src/dynamics</source>
                 <source>jni/swig-src/softbody</source>
                 <source>jni/swig-src/extras</source>
+                <source>jni/swig-src/inversedynamics</source>
               </sources>
             </configuration>
           </execution>
