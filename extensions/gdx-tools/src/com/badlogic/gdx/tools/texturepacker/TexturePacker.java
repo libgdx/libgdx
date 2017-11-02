@@ -116,8 +116,8 @@ public class TexturePacker {
 			progress.start(0.35f);
 			imageProcessor.setScale(settings.scale[i]);
 
-			if (settings.resampling != null && settings.resampling.length > i && settings.resampling[i] != null)
-				imageProcessor.setResampling(settings.resampling[i]);
+			if (settings.scaleResampling != null && settings.scaleResampling.length > i && settings.scaleResampling[i] != null)
+				imageProcessor.setResampling(settings.scaleResampling[i]);
 
 			for (int ii = 0, nn = inputImages.size; ii < nn; ii++) {
 				InputImage inputImage = inputImages.get(ii);
@@ -606,8 +606,8 @@ public class TexturePacker {
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
-		public Resampling[] resampling = {Resampling.bicubic};
 		public String[] scaleSuffix = {""};
+		public Resampling[] scaleResampling = {Resampling.bicubic};
 		public String atlasExtension = ".atlas";
 
 		public Settings () {
@@ -657,7 +657,7 @@ public class TexturePacker {
 			grid = settings.grid;
 			scale = Arrays.copyOf(settings.scale, settings.scale.length);
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
-			resampling = Arrays.copyOf(settings.resampling, settings.resampling.length);
+			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);
 			atlasExtension = settings.atlasExtension;
 		}
 

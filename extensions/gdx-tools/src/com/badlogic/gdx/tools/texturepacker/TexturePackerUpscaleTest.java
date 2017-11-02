@@ -22,7 +22,7 @@ public class TexturePackerUpscaleTest {
 	public static void main (String[] args) {
 		TexturePacker.Settings settings = new TexturePacker.Settings();
 		settings.scale = new float[] {4};
-		settings.resampling = new TexturePacker.Resampling[] {TexturePacker.Resampling.nearest};
+		settings.scaleResampling = new TexturePacker.Resampling[] {TexturePacker.Resampling.nearest};
 
 		TexturePacker packer = new TexturePacker(settings);
 		packer.addImage(new File("tests/gdx-tests-gwt/war/assets/data/bobrgb888-32x32.png"));
