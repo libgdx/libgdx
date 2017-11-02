@@ -58,7 +58,7 @@ struct btContactSolverInfoData
 	int			m_minimumSolverBatchSize;
 	btScalar	m_maxGyroscopicForce;
 	btScalar	m_singleAxisRollingFrictionThreshold;
-
+	btScalar	m_leastSquaresResidualThreshold;
 
 };
 
@@ -91,6 +91,7 @@ struct btContactSolverInfo : public btContactSolverInfoData
 		m_minimumSolverBatchSize = 128; //try to combine islands until the amount of constraints reaches this limit
 		m_maxGyroscopicForce = 100.f; ///it is only used for 'explicit' version of gyroscopic force
 		m_singleAxisRollingFrictionThreshold = 1e30f;///if the velocity is above this threshold, it will use a single constraint row (axis), otherwise 3 rows.
+		m_leastSquaresResidualThreshold = 0.f;
 	}
 };
 

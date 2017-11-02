@@ -391,7 +391,8 @@ public:
 
 
 		btDefaultSerializer(int totalSize=0, unsigned char*	buffer=0)
-			:m_totalSize(totalSize),
+			:m_uniqueIdGenerator(0),
+			m_totalSize(totalSize),
 			m_currentSize(0),
 			m_dna(0),
 			m_dnaLength(0),
@@ -446,6 +447,26 @@ public:
 				btAlignedFree(m_dna);
 		}
 
+		static int getMemoryDnaSizeInBytes()
+		{
+			const bool VOID_IS_8 = ((sizeof(void*) == 8));
+
+			if (VOID_IS_8)
+			{
+				return sBulletDNAlen64;
+			}
+			return sBulletDNAlen;
+		}
+		static const char* getMemoryDna()
+		{
+			const bool VOID_IS_8 = ((sizeof(void*) == 8));
+			if (VOID_IS_8)
+			{
+				return (const char*)sBulletDNAstr64;
+			}
+			return (const char*)sBulletDNAstr;
+		}
+
 		void	insertHeader()
 		{
 			writeHeader(m_buffer);
@@ -484,7 +505,7 @@ public:
 
 			buffer[9] = '2';
 			buffer[10] = '8';
-			buffer[11] = '5';
+			buffer[11] = '6';
 
 		}
 
@@ -541,6 +562,7 @@ public:
 
 		virtual	void*	getUniquePointer(void*oldPtr)
 		{
+			btAssert(m_uniqueIdGenerator >= 0);
 			if (!oldPtr)
 				return 0;
 

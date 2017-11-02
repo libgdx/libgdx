@@ -52,6 +52,7 @@ namespace {
         bottom_out = -displacement.cross(top_out) + rotation_matrix * bottom_in;
     }
 
+#if 0
     void InverseSpatialTransform(const btMatrix3x3 &rotation_matrix,
                                  const btVector3 &displacement,
                                  const btVector3 &top_in,
@@ -81,6 +82,8 @@ namespace {
 		top_out = a_top.cross(b_top);
 		bottom_out = a_bottom.cross(b_top) + a_top.cross(b_bottom);
 	}
+#endif
+	
 }
 
 
@@ -427,6 +430,13 @@ const btQuaternion & btMultiBody::getParentToLocalRot(int i) const
 
 btVector3 btMultiBody::localPosToWorld(int i, const btVector3 &local_pos) const
 {
+	btAssert(i>=-1);
+	btAssert(i<m_links.size());
+	if ((i<-1) || (i>=m_links.size()))
+	{
+		return btVector3(SIMD_INFINITY,SIMD_INFINITY,SIMD_INFINITY);
+	}
+
     btVector3 result = local_pos;
     while (i != -1) {
         // 'result' is in frame i. transform it to frame parent(i)
@@ -444,6 +454,13 @@ btVector3 btMultiBody::localPosToWorld(int i, const btVector3 &local_pos) const
 
 btVector3 btMultiBody::worldPosToLocal(int i, const btVector3 &world_pos) const
 {
+	btAssert(i>=-1);
+	btAssert(i<m_links.size());
+	if ((i<-1) || (i>=m_links.size()))
+	{
+		return btVector3(SIMD_INFINITY,SIMD_INFINITY,SIMD_INFINITY);
+	}
+
     if (i == -1) {
         // world to base
         return quatRotate(getWorldToBaseRot(),(world_pos - getBasePos()));
@@ -455,6 +472,14 @@ btVector3 btMultiBody::worldPosToLocal(int i, const btVector3 &world_pos) const
 
 btVector3 btMultiBody::localDirToWorld(int i, const btVector3 &local_dir) const
 {
+	btAssert(i>=-1);
+	btAssert(i<m_links.size());
+	if ((i<-1) || (i>=m_links.size()))
+	{
+		return btVector3(SIMD_INFINITY,SIMD_INFINITY,SIMD_INFINITY);
+	}
+
+
     btVector3 result = local_dir;
     while (i != -1) {
         result = quatRotate(getParentToLocalRot(i).inverse() , result);
@@ -466,6 +491,13 @@ btVector3 btMultiBody::localDirToWorld(int i, const btVector3 &local_dir) const
 
 btVector3 btMultiBody::worldDirToLocal(int i, const btVector3 &world_dir) const
 {
+	btAssert(i>=-1);
+	btAssert(i<m_links.size());
+	if ((i<-1) || (i>=m_links.size()))
+	{
+		return btVector3(SIMD_INFINITY,SIMD_INFINITY,SIMD_INFINITY);
+	}
+
     if (i == -1) {
         return quatRotate(getWorldToBaseRot(), world_dir);
     } else {
@@ -570,7 +602,7 @@ void btMultiBody::clearForcesAndTorques()
 
 void btMultiBody::clearVelocities()
 {
-	for (int i = 0; i < 6 + getNumLinks(); ++i) 
+	for (int i = 0; i < 6 + getNumDofs(); ++i) 
 	{
 		m_realBuf[i] = 0.f;
 	}
@@ -1765,7 +1797,6 @@ void btMultiBody::goToSleep()
 
 void btMultiBody::checkMotionAndSleepIfRequired(btScalar timestep)
 {
-	int num_links = getNumLinks();
 	extern bool gDisableDeactivation;
     if (!m_canSleep || gDisableDeactivation) 
 	{

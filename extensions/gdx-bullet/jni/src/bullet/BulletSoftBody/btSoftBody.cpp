@@ -18,6 +18,8 @@ subject to the following restrictions:
 #include "BulletSoftBody/btSoftBodySolvers.h"
 #include "btSoftBodyData.h"
 #include "LinearMath/btSerializer.h"
+#include "BulletDynamics/Featherstone/btMultiBodyLinkCollider.h"
+#include "BulletDynamics/Featherstone/btMultiBodyConstraint.h"
 
 
 //
@@ -3018,6 +3020,7 @@ void				btSoftBody::PSolve_Anchors(btSoftBody* psb,btScalar kst,btScalar ti)
 	}
 }
 
+
 //
 void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti)
 {
@@ -3029,9 +3032,39 @@ void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti)
 		const sCti&			cti = c.m_cti;	
 		if (cti.m_colObj->hasContactResponse()) 
 		{
-			btRigidBody* tmpRigid = (btRigidBody*)btRigidBody::upcast(cti.m_colObj);
-			const btVector3		va = tmpRigid ? tmpRigid->getVelocityInLocalPoint(c.m_c1)*dt : btVector3(0,0,0);
-			const btVector3		vb = c.m_node->m_x-c.m_node->m_q;	
+            btVector3 va(0,0,0);
+            btRigidBody* rigidCol;
+            btMultiBodyLinkCollider* multibodyLinkCol;
+            btScalar* deltaV;
+            btMultiBodyJacobianData jacobianData;
+            if (cti.m_colObj->getInternalType() == btCollisionObject::CO_RIGID_BODY)
+            {
+                rigidCol = (btRigidBody*)btRigidBody::upcast(cti.m_colObj);
+                va = rigidCol ? rigidCol->getVelocityInLocalPoint(c.m_c1)*dt : btVector3(0,0,0);
+            }
+			else if (cti.m_colObj->getInternalType() == btCollisionObject::CO_FEATHERSTONE_LINK)
+            {
+                multibodyLinkCol = (btMultiBodyLinkCollider*)btMultiBodyLinkCollider::upcast(cti.m_colObj);
+                if (multibodyLinkCol)
+                {
+                    const int ndof  = multibodyLinkCol->m_multiBody->getNumDofs() + 6;
+                    jacobianData.m_jacobians.resize(ndof);
+                    jacobianData.m_deltaVelocitiesUnitImpulse.resize(ndof);
+                    btScalar* jac=&jacobianData.m_jacobians[0];
+                    
+                    multibodyLinkCol->m_multiBody->fillContactJacobianMultiDof(multibodyLinkCol->m_link, c.m_node->m_x, cti.m_normal, jac, jacobianData.scratch_r, jacobianData.scratch_v, jacobianData.scratch_m);
+                    deltaV = &jacobianData.m_deltaVelocitiesUnitImpulse[0];
+                    multibodyLinkCol->m_multiBody->calcAccelerationDeltasMultiDof(&jacobianData.m_jacobians[0],deltaV,jacobianData.scratch_r, jacobianData.scratch_v);
+                    
+                    btScalar vel = 0.0;
+                    for (int j = 0; j < ndof ; ++j) {
+                        vel += multibodyLinkCol->m_multiBody->getVelocityVector()[j] * jac[j];
+                    }
+                    va = cti.m_normal*vel*dt;
+                }
+            }
+            
+			const btVector3		vb = c.m_node->m_x-c.m_node->m_q;
 			const btVector3		vr = vb-va;
 			const btScalar		dn = btDot(vr, cti.m_normal);		
 			if(dn<=SIMD_EPSILON)
@@ -3041,8 +3074,20 @@ void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti)
 				// c0 is the impulse matrix, c3 is 1 - the friction coefficient or 0, c4 is the contact hardness coefficient
 				const btVector3		impulse = c.m_c0 * ( (vr - (fv * c.m_c3) + (cti.m_normal * (dp * c.m_c4))) * kst );
 				c.m_node->m_x -= impulse * c.m_c2;
-				if (tmpRigid)
-					tmpRigid->applyImpulse(impulse,c.m_c1);
+                
+                if (cti.m_colObj->getInternalType() == btCollisionObject::CO_RIGID_BODY)
+                {
+                    if (rigidCol)
+                        rigidCol->applyImpulse(impulse,c.m_c1);
+                }
+                else if (cti.m_colObj->getInternalType() == btCollisionObject::CO_FEATHERSTONE_LINK)
+                {
+                    if (multibodyLinkCol)
+                    {
+                        double multiplier = 0.5;
+                        multibodyLinkCol->m_multiBody->applyDeltaVeeMultiDof(deltaV,-impulse.length()*multiplier);
+                    }
+                }
 			}
 		}
 	}

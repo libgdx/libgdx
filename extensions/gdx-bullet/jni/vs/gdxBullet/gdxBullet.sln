@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gdxBullet", "gdxBullet\gdxBullet.vcxproj", "{57008B00-26B2-4F53-9C54-F4D17B5C3122}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "softbody", "softbody\softbody.vcxproj", "{95A6580B-06DD-4447-A850-3C496F152717}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extras", "extras\extras.vcxproj", "{87CEFE24-380B-46EC-9D23-46E5E5EE1B38}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inveresdynamics", "inveresdynamics\inveresdynamics.vcxproj", "{12472F27-86F2-408B-86C3-F127AFFD0236}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,14 @@ Global
 		{87CEFE24-380B-46EC-9D23-46E5E5EE1B38}.Release|Win32.ActiveCfg = Release|Win32
 		{87CEFE24-380B-46EC-9D23-46E5E5EE1B38}.Release|Win32.Build.0 = Release|Win32
 		{87CEFE24-380B-46EC-9D23-46E5E5EE1B38}.Release|x64.ActiveCfg = Release|Win32
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Debug|Win32.Build.0 = Debug|Win32
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Debug|x64.ActiveCfg = Debug|x64
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Debug|x64.Build.0 = Debug|x64
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Release|Win32.ActiveCfg = Release|Win32
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Release|Win32.Build.0 = Release|Win32
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Release|x64.ActiveCfg = Release|x64
+		{12472F27-86F2-408B-86C3-F127AFFD0236}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

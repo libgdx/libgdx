@@ -22,6 +22,9 @@
     <Filter Include="Source Files\serialize\BulletWorldImporter">
       <UniqueIdentifier>{98c913fa-d39d-42c1-a99a-cd8008cad857}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\inversedynamics">
+      <UniqueIdentifier>{0c8f8d3e-8f60-4ff7-9a17-49fed9136208}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp">
@@ -41,6 +44,42 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
       <Filter>Source Files\serialize\BulletWorldImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\btMultiBodyTreeCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CloneTreeCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\CoilCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\DillCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\IDRandomUtil.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\invdyn_bullet_comparison.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyNameMap.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\MultiBodyTreeDebugGraph.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\RandomTreeCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\SimpleTreeCreator.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\InverseDynamics\User2InternalIndex.cpp">
+      <Filter>Source Files\inversedynamics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

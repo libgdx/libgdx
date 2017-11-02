@@ -85,15 +85,6 @@ CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision
 %}
 %include "BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
 
-%ignore btMultiSapBroadphase::btMultiSapProxy::m_bridgeProxies;
-%{
-#include <BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h>
-void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
-{
-}
-%}
-%include "BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h"
-
 %{
 #include <BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h>
 %}

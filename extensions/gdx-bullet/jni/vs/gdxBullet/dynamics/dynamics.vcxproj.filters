@@ -108,9 +108,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
     </ClCompile>

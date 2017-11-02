@@ -79,6 +79,7 @@ protected:
 
 	int				m_islandTag1;
 	int				m_companionId;
+    int             m_worldArrayIndex;  // index of object in world's collisionObjects array
 
 	mutable int				m_activationState1;
 	mutable btScalar			m_deactivationTime;
@@ -121,6 +122,7 @@ protected:
 	///internal update revision number. It will be increased when the object changes. This allows some subsystems to perform lazy evaluation.
 	int			m_updateRevision;
 
+	btVector3	m_customDebugColorRGB;
 
 public:
 
@@ -135,7 +137,8 @@ public:
 		CF_CHARACTER_OBJECT = 16,
 		CF_DISABLE_VISUALIZE_OBJECT = 32, //disable debug drawing
 		CF_DISABLE_SPU_COLLISION_PROCESSING = 64,//disable parallel/SPU processing
-		CF_HAS_CONTACT_STIFFNESS_DAMPING = 128
+		CF_HAS_CONTACT_STIFFNESS_DAMPING = 128,
+		CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR = 256,
 	};
 
 	enum	CollisionObjectTypes
@@ -455,7 +458,18 @@ public:
 		m_companionId = id;
 	}
 
-	SIMD_FORCE_INLINE btScalar			getHitFraction() const
+    SIMD_FORCE_INLINE int getWorldArrayIndex() const
+    {
+        return	m_worldArrayIndex;
+    }
+
+    // only should be called by CollisionWorld
+    void setWorldArrayIndex(int ix)
+    {
+        m_worldArrayIndex = ix;
+    }
+
+    SIMD_FORCE_INLINE btScalar			getHitFraction() const
 	{
 		return m_hitFraction; 
 	}
@@ -544,6 +558,26 @@ public:
 		return m_updateRevision;
 	}
 
+	void	setCustomDebugColor(const btVector3& colorRGB)
+	{
+		m_customDebugColorRGB = colorRGB;
+		m_collisionFlags |= CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR;
+	}
+
+	void	removeCustomDebugColor()
+	{
+		m_collisionFlags &= ~CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR;
+	}
+
+	bool getCustomDebugColor(btVector3& colorRGB) const
+	{
+		bool hasCustomColor = (0!=(m_collisionFlags&CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR));
+		if (hasCustomColor)
+		{
+			colorRGB = m_customDebugColorRGB;
+		}
+		return hasCustomColor;
+	}
 
 	inline bool checkCollideWith(const btCollisionObject* co) const
 	{

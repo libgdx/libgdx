@@ -539,7 +539,7 @@ btVector3 btDiscreteDynamicsWorld::getGravity () const
 	return m_gravity;
 }
 
-void	btDiscreteDynamicsWorld::addCollisionObject(btCollisionObject* collisionObject,short int collisionFilterGroup,short int collisionFilterMask)
+void	btDiscreteDynamicsWorld::addCollisionObject(btCollisionObject* collisionObject, int collisionFilterGroup, int collisionFilterMask)
 {
 	btCollisionWorld::addCollisionObject(collisionObject,collisionFilterGroup,collisionFilterMask);
 }
@@ -578,14 +578,14 @@ void	btDiscreteDynamicsWorld::addRigidBody(btRigidBody* body)
 		}
 
 		bool isDynamic = !(body->isStaticObject() || body->isKinematicObject());
-		short collisionFilterGroup = isDynamic? short(btBroadphaseProxy::DefaultFilter) : short(btBroadphaseProxy::StaticFilter);
-		short collisionFilterMask = isDynamic? 	short(btBroadphaseProxy::AllFilter) : 	short(btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
+		int collisionFilterGroup = isDynamic? int(btBroadphaseProxy::DefaultFilter) : int(btBroadphaseProxy::StaticFilter);
+		int collisionFilterMask = isDynamic? 	int(btBroadphaseProxy::AllFilter) : 	int(btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
 
 		addCollisionObject(body,collisionFilterGroup,collisionFilterMask);
 	}
 }
 
-void	btDiscreteDynamicsWorld::addRigidBody(btRigidBody* body, short group, short mask)
+void	btDiscreteDynamicsWorld::addRigidBody(btRigidBody* body, int group, int mask)
 {
 	if (!body->isStaticOrKinematicObject() && !(body->getFlags() &BT_DISABLE_WORLD_GRAVITY))
 	{
@@ -878,25 +878,12 @@ public:
 int gNumClampedCcdMotions=0;
 
 
-void	btDiscreteDynamicsWorld::createPredictiveContacts(btScalar timeStep)
+void btDiscreteDynamicsWorld::createPredictiveContactsInternal( btRigidBody** bodies, int numBodies, btScalar timeStep)
 {
-	BT_PROFILE("createPredictiveContacts");
-
-	{
-		BT_PROFILE("release predictive contact manifolds");
-
-		for (int i=0;i<m_predictiveManifolds.size();i++)
-		{
-			btPersistentManifold* manifold = m_predictiveManifolds[i];
-			this->m_dispatcher1->releaseManifold(manifold);
-		}
-		m_predictiveManifolds.clear();
-	}
-
 	btTransform predictedTrans;
-	for ( int i=0;i<m_nonStaticRigidBodies.size();i++)
+	for ( int i=0;i<numBodies;i++)
 	{
-		btRigidBody* body = m_nonStaticRigidBodies[i];
+		btRigidBody* body = bodies[i];
 		body->setHitFraction(1.f);
 
 		if (body->isActive() && (!body->isStaticOrKinematicObject()))
@@ -953,7 +940,9 @@ void	btDiscreteDynamicsWorld::createPredictiveContacts(btScalar timeStep)
 
 
 						btPersistentManifold* manifold = m_dispatcher1->getNewManifold(body,sweepResults.m_hitCollisionObject);
+                        btMutexLock( &m_predictiveManifoldsMutex );
 						m_predictiveManifolds.push_back(manifold);
+                        btMutexUnlock( &m_predictiveManifoldsMutex );
 
 						btVector3 worldPointB = body->getWorldTransform().getOrigin()+distVec;
 						btVector3 localPointB = sweepResults.m_hitCollisionObject->getWorldTransform().inverse()*worldPointB;
@@ -974,13 +963,35 @@ void	btDiscreteDynamicsWorld::createPredictiveContacts(btScalar timeStep)
 		}
 	}
 }
-void	btDiscreteDynamicsWorld::integrateTransforms(btScalar timeStep)
+
+void btDiscreteDynamicsWorld::releasePredictiveContacts()
 {
-	BT_PROFILE("integrateTransforms");
+    BT_PROFILE( "release predictive contact manifolds" );
+
+    for ( int i = 0; i < m_predictiveManifolds.size(); i++ )
+    {
+        btPersistentManifold* manifold = m_predictiveManifolds[ i ];
+        this->m_dispatcher1->releaseManifold( manifold );
+    }
+    m_predictiveManifolds.clear();
+}
+
+void btDiscreteDynamicsWorld::createPredictiveContacts(btScalar timeStep)
+{
+	BT_PROFILE("createPredictiveContacts");
+    releasePredictiveContacts();
+    if (m_nonStaticRigidBodies.size() > 0)
+    {
+        createPredictiveContactsInternal( &m_nonStaticRigidBodies[ 0 ], m_nonStaticRigidBodies.size(), timeStep );
+    }
+}
+
+void btDiscreteDynamicsWorld::integrateTransformsInternal( btRigidBody** bodies, int numBodies, btScalar timeStep )
+{
 	btTransform predictedTrans;
-	for ( int i=0;i<m_nonStaticRigidBodies.size();i++)
+	for (int i=0;i<numBodies;i++)
 	{
-		btRigidBody* body = m_nonStaticRigidBodies[i];
+		btRigidBody* body = bodies[i];
 		body->setHitFraction(1.f);
 
 		if (body->isActive() && (!body->isStaticOrKinematicObject()))
@@ -1080,7 +1091,17 @@ void	btDiscreteDynamicsWorld::integrateTransforms(btScalar timeStep)
 
 	}
 
-	///this should probably be switched on by default, but it is not well tested yet
+}
+
+void btDiscreteDynamicsWorld::integrateTransforms(btScalar timeStep)
+{
+	BT_PROFILE("integrateTransforms");
+    if (m_nonStaticRigidBodies.size() > 0)
+    {
+        integrateTransformsInternal(&m_nonStaticRigidBodies[0], m_nonStaticRigidBodies.size(), timeStep);
+    }
+
+    ///this should probably be switched on by default, but it is not well tested yet
 	if (m_applySpeculativeContactRestitution)
 	{
 		BT_PROFILE("apply speculative contact restitution");
@@ -1114,9 +1135,7 @@ void	btDiscreteDynamicsWorld::integrateTransforms(btScalar timeStep)
 			}
 		}
 	}
-
 }
-
 
 
 

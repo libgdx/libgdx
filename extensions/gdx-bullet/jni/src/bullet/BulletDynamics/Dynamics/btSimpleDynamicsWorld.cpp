@@ -155,7 +155,7 @@ void	btSimpleDynamicsWorld::addRigidBody(btRigidBody* body)
 	}
 }
 
-void	btSimpleDynamicsWorld::addRigidBody(btRigidBody* body, short group, short mask)
+void	btSimpleDynamicsWorld::addRigidBody(btRigidBody* body, int group, int mask)
 {
 	body->setGravity(m_gravity);
 

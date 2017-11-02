@@ -56,7 +56,7 @@ public:
 
 	virtual void	addRigidBody(btRigidBody* body);
 
-	virtual void	addRigidBody(btRigidBody* body, short group, short mask);
+	virtual void	addRigidBody(btRigidBody* body, int group, int mask);
 
 	virtual void	removeRigidBody(btRigidBody* body);
 
