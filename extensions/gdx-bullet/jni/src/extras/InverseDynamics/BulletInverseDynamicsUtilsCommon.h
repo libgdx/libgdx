@@ -2,6 +2,7 @@
 #define BULLET_INVERSE_DYNAMICS_UTILS_COMMON_H
 #include "CoilCreator.hpp"
 #include "MultiBodyTreeCreator.hpp"
+//#include "btMultiBodyFromURDF.hpp"
 #include "DillCreator.hpp"
 #include "MultiBodyTreeDebugGraph.hpp"
 #include "btMultiBodyTreeCreator.hpp"

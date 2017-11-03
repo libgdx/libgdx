@@ -1,8 +1,26 @@
 /*
- * %W% %E%
- *
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 #ifndef _JAVASOFT_JAWT_H_
@@ -136,7 +154,9 @@ typedef struct jawt_DrawingSurfaceInfo {
     /*
      * Pointer to the platform-specific information.  This can be safely
      * cast to a JAWT_Win32DrawingSurfaceInfo on Windows or a
-     * JAWT_X11DrawingSurfaceInfo on Solaris.  See jawt_md.h for details.
+     * JAWT_X11DrawingSurfaceInfo on Solaris. On Mac OS X this is a
+     * pointer to a NSObject that conforms to the JAWT_SurfaceLayers
+     * protocol. See jawt_md.h for details.
      */
     void* platformInfo;
     /* Cached pointer to the underlying drawing surface */
@@ -203,7 +223,7 @@ typedef struct jawt_DrawingSurface {
      */
     void (JNICALL *FreeDrawingSurfaceInfo)
         (JAWT_DrawingSurfaceInfo* dsi);
-    /* 
+    /*
      * Unlock the drawing surface of the target component for native rendering.
      */
     void (JNICALL *Unlock)
@@ -270,6 +290,7 @@ jboolean JNICALL JAWT_GetAWT(JNIEnv* env, JAWT* awt);
 
 #define JAWT_VERSION_1_3 0x00010003
 #define JAWT_VERSION_1_4 0x00010004
+#define JAWT_VERSION_1_7 0x00010007
 
 #ifdef __cplusplus
 } /* extern "C" */

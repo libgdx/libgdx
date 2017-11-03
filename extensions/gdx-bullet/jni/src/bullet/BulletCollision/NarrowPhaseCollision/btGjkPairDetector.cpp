@@ -35,7 +35,7 @@ subject to the following restrictions:
 	btScalar gGjkEpaPenetrationTolerance = 1e-7;
 #else
 	#define REL_ERROR2 btScalar(1.0e-6)
-	btScalar gGjkEpaPenetrationTolerance = 0.001;
+	btScalar gGjkEpaPenetrationTolerance = static_cast<btScalar>(0.001);
 #endif
 
 //temp globals, to improve GJK/EPA/penetration calculations

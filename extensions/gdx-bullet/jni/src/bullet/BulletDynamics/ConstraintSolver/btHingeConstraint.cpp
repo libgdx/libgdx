@@ -317,7 +317,7 @@ static btScalar btShortestAngularDistance(btScalar accAngle, btScalar curAngle)
 
 static btScalar btShortestAngleUpdate(btScalar accAngle, btScalar curAngle)
 {
-	btScalar tol(0.3);
+	btScalar tol(static_cast<btScalar>(0.3));
 	btScalar result = btShortestAngularDistance(accAngle, curAngle);
 
 	  if (btFabs(result) > tol)

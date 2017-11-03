@@ -40,8 +40,15 @@ email: projectileman@yahoo.com
 /**
 Configuration var for applying interpolation of  contact normals
 */
+#ifndef NORMAL_CONTACT_AVERAGE
 #define NORMAL_CONTACT_AVERAGE 1
+#endif
+
+#ifndef CONTACT_DIFF_EPSILON
 #define CONTACT_DIFF_EPSILON 0.00001f
+#endif
+
+#ifndef BT_CONTACT_H_STRUCTS_INCLUDED
 
 /// Structure for collision results
 ///Functions for managing and sorting contacts resulting from a collision query.
@@ -121,6 +128,7 @@ public:
 
 };
 
+#endif
 
 class gim_contact_array:public gim_array<GIM_CONTACT>
 {

@@ -51,5 +51,8 @@
     <ClCompile Include="..\..\..\swig-src\softbody\softbody_wrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

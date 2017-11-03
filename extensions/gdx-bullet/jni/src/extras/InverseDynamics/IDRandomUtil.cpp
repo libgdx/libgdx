@@ -11,10 +11,10 @@ namespace btInverseDynamics {
 
 // constants for random mass and inertia generation
 // these are arbitrary positive values.
-static const float mass_min = 0.001;
-static const float mass_max = 1.0;
+static const idScalar mass_min = static_cast<idScalar>(0.001);
+static const idScalar mass_max = static_cast<idScalar>(1.0);
 
-void randomInit() { srand(time(NULL)); }
+void randomInit() { srand(static_cast<unsigned int>(time(NULL))); }
 void randomInit(unsigned seed) { srand(seed); }
 
 int randomInt(int low, int high) { return rand() % (high + 1 - low) + low; }

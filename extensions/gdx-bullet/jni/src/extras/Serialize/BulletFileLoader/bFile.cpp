@@ -27,14 +27,14 @@ subject to the following restrictions:
 #define SIZEOFBLENDERHEADER 12
 #define MAX_ARRAY_LENGTH 512
 using namespace bParse;
-#define MAX_STRLEN 1024
+#define MAX_STRLEN static_cast<size_t>(1024)
 
 const char* getCleanName(const char* memName, char* buffer)
 {
-	int slen = strlen(memName);
+	size_t slen = strlen(memName);
 	assert(slen<MAX_STRLEN);
 	slen=btMin(slen,MAX_STRLEN);
-	for (int i=0;i<slen;i++)
+	for (size_t i=0;i<slen;i++)
 	{
 		if (memName[i]==']'||memName[i]=='[')
 		{

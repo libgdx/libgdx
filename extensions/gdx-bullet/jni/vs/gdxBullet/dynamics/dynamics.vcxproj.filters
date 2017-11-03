@@ -141,5 +141,14 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp">
       <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

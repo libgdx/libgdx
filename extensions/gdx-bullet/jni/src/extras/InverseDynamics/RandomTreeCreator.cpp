@@ -62,9 +62,9 @@ int RandomTreeCreator::getBody(const int body_index, int* parent_index, JointTyp
     (*body_r_body_com)(0) = randomFloat(-1.0, 1.0);
     (*body_r_body_com)(1) = randomFloat(-1.0, 1.0);
     (*body_r_body_com)(2) = randomFloat(-1.0, 1.0);
-    const double a = randomFloat(-BT_ID_PI, BT_ID_PI);
-    const double b = randomFloat(-BT_ID_PI, BT_ID_PI);
-    const double c = randomFloat(-BT_ID_PI, BT_ID_PI);
+    const idScalar a = randomFloat(-BT_ID_PI, BT_ID_PI);
+    const idScalar b = randomFloat(-BT_ID_PI, BT_ID_PI);
+    const idScalar c = randomFloat(-BT_ID_PI, BT_ID_PI);
     vec3 ii = randomInertiaPrincipal();
     mat33 ii_diag;
     setZero(ii_diag);

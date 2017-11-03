@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -27,27 +27,27 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,7 +66,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHingeConstraint.cpp" />
@@ -132,8 +133,10 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btTypedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />

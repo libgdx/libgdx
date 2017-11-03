@@ -20,7 +20,7 @@ MultiBodyTree::MultiBodyImpl::MultiBodyImpl(int num_bodies_, int num_dofs_)
 
 	m_world_gravity(0) = 0.0;
 	m_world_gravity(1) = 0.0;
-	m_world_gravity(2) = -9.8;
+	m_world_gravity(2) = static_cast<idScalar>(-9.8);
 }
 
 const char *MultiBodyTree::MultiBodyImpl::jointTypeToString(const JointType &type) const {
@@ -155,12 +155,12 @@ int MultiBodyTree::MultiBodyImpl::generateIndexSets() {
 		} else {
 			if (-1 == parent) {
 				// multiple bodies are directly linked to the environment, ie, not a single root
-				error_message("building index sets parent(%zu)= -1 (multiple roots)\n", child);
+				error_message("building index sets parent(%d)= -1 (multiple roots)\n", static_cast<int>(child));
 			} else {
 				// should never happen
 				error_message(
-					"building index sets. parent_index[%zu]= %d, but m_parent_index.size()= %d\n",
-					child, parent, static_cast<int>(m_parent_index.size()));
+					"building index sets. parent_index[%d]= %d, but m_parent_index.size()= %d\n",
+					static_cast<int>(child), parent, static_cast<int>(m_parent_index.size()));
 			}
 			return -1;
 		}
@@ -738,7 +738,7 @@ int MultiBodyTree::MultiBodyImpl::calculateMassMatrix(const vecx &q, const bool 
 						return -1;
 					}
 					setSixDoFJacobians(row - q_index_min, Jac_JR, Jac_JT);
-					const double Mrc = Jac_JR.dot(body_eom_rot) + Jac_JT.dot(body_eom_trans);
+					const idScalar Mrc = Jac_JR.dot(body_eom_rot) + Jac_JT.dot(body_eom_trans);
 					setMatxxElem(col, row, Mrc, mass_matrix);
 				}
 				// 2. ancestor dofs
@@ -763,7 +763,7 @@ int MultiBodyTree::MultiBodyImpl::calculateMassMatrix(const vecx &q, const bool 
 						if (FLOATING == parent_body.m_joint_type) {
 							setSixDoFJacobians(row - parent_body_q_index_min, Jac_JR, Jac_JT);
 						}
-						const double Mrc = Jac_JR.dot(body_eom_rot) + Jac_JT.dot(body_eom_trans);
+						const idScalar Mrc = Jac_JR.dot(body_eom_rot) + Jac_JT.dot(body_eom_trans);
 						setMatxxElem(col, row, Mrc, mass_matrix);
 					}
 

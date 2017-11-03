@@ -45,7 +45,7 @@ struct	SoftBodyNodeData
 struct	SoftBodyLinkData
 {
 	SoftBodyMaterialData	*m_material;
-	int						m_nodeIndices[2];			// Node pointers
+	ptrdiff_t				m_nodeIndices[2];			// Node pointers
 	float					m_restLength;			// Rest length		
 	int						m_bbending;		// Bending link
 };
@@ -54,7 +54,7 @@ struct	SoftBodyFaceData
 {
 	btVector3FloatData		m_normal;		// Normal
 	SoftBodyMaterialData	*m_material;
-	int						m_nodeIndices[3];			// Node pointers
+	ptrdiff_t				m_nodeIndices[3];			// Node pointers
 	float					m_restArea;			// Rest area
 };	
 
@@ -62,7 +62,7 @@ struct	SoftBodyTetraData
 {
 	btVector3FloatData		m_c0[4];		// gradients
 	SoftBodyMaterialData	*m_material;
-	int						m_nodeIndices[4];			// Node pointers		
+	ptrdiff_t				m_nodeIndices[4];			// Node pointers		
 	float					m_restVolume;			// Rest volume
 	float					m_c1;			// (4*kVST)/(im0+im1+im2+im3)
 	float					m_c2;			// m_c1/sum(|g0..3|^2)
@@ -75,7 +75,7 @@ struct	SoftRigidAnchorData
 	btVector3FloatData		m_c1;			// Relative anchor
 	btVector3FloatData		m_localFrame;		// Anchor position in body space
 	btRigidBodyData			*m_rigidBody;
-	int						m_nodeIndex;			// Node pointer
+	ptrdiff_t				m_nodeIndex;			// Node pointer
 	float					m_c2;			// ima*dt
 };
 
