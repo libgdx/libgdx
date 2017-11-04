@@ -238,6 +238,7 @@ public class LinearMathJNI {
   public final static native void btQuaternion_setRotation(long jarg1, btQuaternion jarg1_, Vector3 jarg2, float jarg3);
   public final static native void btQuaternion_setEuler(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
   public final static native void btQuaternion_setEulerZYX(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
+  public final static native void btQuaternion_getEulerZYX(long jarg1, btQuaternion jarg1_, long jarg2, long jarg3, long jarg4);
   public final static native Quaternion btQuaternion_operatorAdditionAssignment(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
   public final static native Quaternion btQuaternion_operatorSubtractionAssignment(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
   public final static native Quaternion btQuaternion_operatorMultiplicationAssignment__SWIG_0(long jarg1, btQuaternion jarg1_, float jarg2);
@@ -245,6 +246,7 @@ public class LinearMathJNI {
   public final static native float btQuaternion_dot(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
   public final static native float btQuaternion_length2(long jarg1, btQuaternion jarg1_);
   public final static native float btQuaternion_length(long jarg1, btQuaternion jarg1_);
+  public final static native Quaternion btQuaternion_safeNormalize(long jarg1, btQuaternion jarg1_);
   public final static native Quaternion btQuaternion_normalize(long jarg1, btQuaternion jarg1_);
   public final static native Quaternion btQuaternion_operatorMultiplication(long jarg1, btQuaternion jarg1_, float jarg2);
   public final static native Quaternion btQuaternion_operatorDivision(long jarg1, btQuaternion jarg1_, float jarg2);
@@ -326,7 +328,12 @@ public class LinearMathJNI {
   public final static native float btMatrix3x3_tdotx(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
   public final static native float btMatrix3x3_tdoty(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
   public final static native float btMatrix3x3_tdotz(long jarg1, btMatrix3x3 jarg1_, Vector3 jarg2);
-  public final static native void btMatrix3x3_diagonalize(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3, int jarg4);
+  public final static native void btMatrix3x3_extractRotation__SWIG_0(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2, float jarg3, int jarg4);
+  public final static native void btMatrix3x3_extractRotation__SWIG_1(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2, float jarg3);
+  public final static native void btMatrix3x3_extractRotation__SWIG_2(long jarg1, btMatrix3x3 jarg1_, Quaternion jarg2);
+  public final static native void btMatrix3x3_diagonalize__SWIG_0(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3, int jarg4);
+  public final static native void btMatrix3x3_diagonalize__SWIG_1(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2, float jarg3);
+  public final static native void btMatrix3x3_diagonalize__SWIG_2(long jarg1, btMatrix3x3 jarg1_, Matrix3 jarg2);
   public final static native float btMatrix3x3_cofac(long jarg1, btMatrix3x3 jarg1_, int jarg2, int jarg3, int jarg4, int jarg5);
   public final static native void btMatrix3x3_serialize(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
   public final static native void btMatrix3x3_serializeFloat(long jarg1, btMatrix3x3 jarg1_, long jarg2, btMatrix3x3FloatData jarg2_);
@@ -422,6 +429,8 @@ public class LinearMathJNI {
   public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
   public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
   public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_clearLines(long jarg1, btIDebugDraw jarg1_);
+  public final static native void btIDebugDraw_clearLinesSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
   public final static native void btIDebugDraw_flushLines(long jarg1, btIDebugDraw jarg1_);
   public final static native void btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_);
   public final static native long new_btIDebugDraw();
@@ -623,7 +632,8 @@ public class LinearMathJNI {
   public final static native boolean btHashString_equals(long jarg1, btHashString jarg1_, long jarg2, btHashString jarg2_);
   public final static native void delete_btHashString(long jarg1);
   public final static native int BT_HASH_NULL_get();
-  public final static native long new_btHashInt(int jarg1);
+  public final static native long new_btHashInt__SWIG_0();
+  public final static native long new_btHashInt__SWIG_1(int jarg1);
   public final static native int btHashInt_getUid1(long jarg1, btHashInt jarg1_);
   public final static native void btHashInt_setUid1(long jarg1, btHashInt jarg1_, int jarg2);
   public final static native boolean btHashInt_equals(long jarg1, btHashInt jarg1_, long jarg2, btHashInt jarg2_);
@@ -816,6 +826,11 @@ public class LinearMathJNI {
   public final static native void btSpatialTransformationMatrix_transformInverse__SWIG_3(long jarg1, btSpatialTransformationMatrix jarg1_, long jarg2, btSymmetricSpatialDyad jarg2_, long jarg3, btSymmetricSpatialDyad jarg3_);
   public final static native long new_btSpatialTransformationMatrix();
   public final static native void delete_btSpatialTransformationMatrix(long jarg1);
+  public final static native long BT_MAX_THREAD_COUNT_get();
+  public final static native boolean btIsMainThread();
+  public final static native boolean btThreadsAreRunning();
+  public final static native long btGetCurrentThreadIndex();
+  public final static native void btResetThreadIndexCounter();
   public final static native long new_btSpinMutex();
   public final static native void btSpinMutex_lock(long jarg1, btSpinMutex jarg1_);
   public final static native void btSpinMutex_unlock(long jarg1, btSpinMutex jarg1_);
@@ -824,6 +839,23 @@ public class LinearMathJNI {
   public final static native void btMutexLock(long jarg1, btSpinMutex jarg1_);
   public final static native void btMutexUnlock(long jarg1, btSpinMutex jarg1_);
   public final static native boolean btMutexTryLock(long jarg1, btSpinMutex jarg1_);
+  public final static native void delete_btIParallelForBody(long jarg1);
+  public final static native void btIParallelForBody_forLoop(long jarg1, btIParallelForBody jarg1_, int jarg2, int jarg3);
+  public final static native void delete_btITaskScheduler(long jarg1);
+  public final static native String btITaskScheduler_getName(long jarg1, btITaskScheduler jarg1_);
+  public final static native int btITaskScheduler_getMaxNumThreads(long jarg1, btITaskScheduler jarg1_);
+  public final static native int btITaskScheduler_getNumThreads(long jarg1, btITaskScheduler jarg1_);
+  public final static native void btITaskScheduler_setNumThreads(long jarg1, btITaskScheduler jarg1_, int jarg2);
+  public final static native void btITaskScheduler_parallelFor(long jarg1, btITaskScheduler jarg1_, int jarg2, int jarg3, int jarg4, long jarg5, btIParallelForBody jarg5_);
+  public final static native void btITaskScheduler_activate(long jarg1, btITaskScheduler jarg1_);
+  public final static native void btITaskScheduler_deactivate(long jarg1, btITaskScheduler jarg1_);
+  public final static native void btSetTaskScheduler(long jarg1, btITaskScheduler jarg1_);
+  public final static native long btGetTaskScheduler();
+  public final static native long btGetSequentialTaskScheduler();
+  public final static native long btGetOpenMPTaskScheduler();
+  public final static native long btGetTBBTaskScheduler();
+  public final static native long btGetPPLTaskScheduler();
+  public final static native void btParallelFor(int jarg1, int jarg2, int jarg3, long jarg4, btIParallelForBody jarg4_);
   public final static native void delete_btMotionState(long jarg1);
   public final static native void btMotionState_getWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
   public final static native void btMotionState_setWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
@@ -879,6 +911,7 @@ public class LinearMathJNI {
   public final static native void btVector3Array_swap(long jarg1, btVector3Array jarg1_, int jarg2, int jarg3);
   public final static native int btVector3Array_findBinarySearch(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
   public final static native int btVector3Array_findLinearSearch(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
+  public final static native int btVector3Array_findLinearSearch2(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
   public final static native void btVector3Array_removeAtIndex(long jarg1, btVector3Array jarg1_, int jarg2);
   public final static native void btVector3Array_remove(long jarg1, btVector3Array jarg1_, Vector3 jarg2);
   public final static native void btVector3Array_initializeFromBuffer(long jarg1, btVector3Array jarg1_, long jarg2, int jarg3, int jarg4);
@@ -909,6 +942,7 @@ public class LinearMathJNI {
   public final static native void btScalarArray_swap(long jarg1, btScalarArray jarg1_, int jarg2, int jarg3);
   public final static native int btScalarArray_findBinarySearch(long jarg1, btScalarArray jarg1_, float jarg2);
   public final static native int btScalarArray_findLinearSearch(long jarg1, btScalarArray jarg1_, float jarg2);
+  public final static native int btScalarArray_findLinearSearch2(long jarg1, btScalarArray jarg1_, float jarg2);
   public final static native void btScalarArray_removeAtIndex(long jarg1, btScalarArray jarg1_, int jarg2);
   public final static native void btScalarArray_remove(long jarg1, btScalarArray jarg1_, float jarg2);
   public final static native void btScalarArray_initializeFromBuffer(long jarg1, btScalarArray jarg1_, long jarg2, int jarg3, int jarg4);
@@ -996,6 +1030,9 @@ public class LinearMathJNI {
   }
   public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw jself, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
     jself.drawPlane(planeNormal, planeConst, transform, color);
+  }
+  public static void SwigDirector_btIDebugDraw_clearLines(btIDebugDraw jself) {
+    jself.clearLines();
   }
   public static void SwigDirector_btIDebugDraw_flushLines(btIDebugDraw jself) {
     jself.flushLines();

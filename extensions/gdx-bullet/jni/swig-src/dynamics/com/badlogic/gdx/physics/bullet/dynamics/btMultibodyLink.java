@@ -371,6 +371,38 @@ public class btMultibodyLink extends BulletBase {
     return DynamicsJNI.btMultibodyLink_jointFriction_get(swigCPtr, this);
   }
 
+  public void setJointLowerLimit(float value) {
+    DynamicsJNI.btMultibodyLink_jointLowerLimit_set(swigCPtr, this, value);
+  }
+
+  public float getJointLowerLimit() {
+    return DynamicsJNI.btMultibodyLink_jointLowerLimit_get(swigCPtr, this);
+  }
+
+  public void setJointUpperLimit(float value) {
+    DynamicsJNI.btMultibodyLink_jointUpperLimit_set(swigCPtr, this, value);
+  }
+
+  public float getJointUpperLimit() {
+    return DynamicsJNI.btMultibodyLink_jointUpperLimit_get(swigCPtr, this);
+  }
+
+  public void setJointMaxForce(float value) {
+    DynamicsJNI.btMultibodyLink_jointMaxForce_set(swigCPtr, this, value);
+  }
+
+  public float getJointMaxForce() {
+    return DynamicsJNI.btMultibodyLink_jointMaxForce_get(swigCPtr, this);
+  }
+
+  public void setJointMaxVelocity(float value) {
+    DynamicsJNI.btMultibodyLink_jointMaxVelocity_set(swigCPtr, this, value);
+  }
+
+  public float getJointMaxVelocity() {
+    return DynamicsJNI.btMultibodyLink_jointMaxVelocity_get(swigCPtr, this);
+  }
+
   public btMultibodyLink() {
     this(DynamicsJNI.new_btMultibodyLink(), true);
   }

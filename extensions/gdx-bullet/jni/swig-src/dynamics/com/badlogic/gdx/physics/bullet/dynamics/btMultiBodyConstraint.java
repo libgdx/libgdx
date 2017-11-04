@@ -185,4 +185,20 @@ public class btMultiBodyConstraint extends BulletBase {
     DynamicsJNI.btMultiBodyConstraint_debugDraw(swigCPtr, this, btIDebugDraw.getCPtr(drawer), drawer);
   }
 
+  public void setGearRatio(float ratio) {
+    DynamicsJNI.btMultiBodyConstraint_setGearRatio(swigCPtr, this, ratio);
+  }
+
+  public void setGearAuxLink(int gearAuxLink) {
+    DynamicsJNI.btMultiBodyConstraint_setGearAuxLink(swigCPtr, this, gearAuxLink);
+  }
+
+  public void setRelativePositionTarget(float relPosTarget) {
+    DynamicsJNI.btMultiBodyConstraint_setRelativePositionTarget(swigCPtr, this, relPosTarget);
+  }
+
+  public void setErp(float erp) {
+    DynamicsJNI.btMultiBodyConstraint_setErp(swigCPtr, this, erp);
+  }
+
 }

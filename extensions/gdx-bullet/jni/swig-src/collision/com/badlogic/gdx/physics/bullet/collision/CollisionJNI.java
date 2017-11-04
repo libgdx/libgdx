@@ -1992,6 +1992,7 @@ public class CollisionJNI {
   public final static native void btCollisionObjectArray_swap(long jarg1, btCollisionObjectArray jarg1_, int jarg2, int jarg3);
   public final static native int btCollisionObjectArray_findBinarySearch(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native int btCollisionObjectArray_findLinearSearch(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native int btCollisionObjectArray_findLinearSearch2(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btCollisionObjectArray_removeAtIndex(long jarg1, btCollisionObjectArray jarg1_, int jarg2);
   public final static native void btCollisionObjectArray_remove(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btCollisionObjectArray_initializeFromBuffer(long jarg1, btCollisionObjectArray jarg1_, long jarg2, int jarg3, int jarg4);
@@ -2022,6 +2023,7 @@ public class CollisionJNI {
   public final static native void btCollisionObjectConstArray_swap(long jarg1, btCollisionObjectConstArray jarg1_, int jarg2, int jarg3);
   public final static native int btCollisionObjectConstArray_findBinarySearch(long jarg1, btCollisionObjectConstArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native int btCollisionObjectConstArray_findLinearSearch(long jarg1, btCollisionObjectConstArray jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native int btCollisionObjectConstArray_findLinearSearch2(long jarg1, btCollisionObjectConstArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btCollisionObjectConstArray_removeAtIndex(long jarg1, btCollisionObjectConstArray jarg1_, int jarg2);
   public final static native void btCollisionObjectConstArray_remove(long jarg1, btCollisionObjectConstArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btCollisionObjectConstArray_initializeFromBuffer(long jarg1, btCollisionObjectConstArray jarg1_, long jarg2, int jarg3, int jarg4);
@@ -2501,6 +2503,9 @@ public class CollisionJNI {
   public final static native long btCollisionDispatcher_getCollisionConfiguration(long jarg1, btCollisionDispatcher jarg1_);
   public final static native long btCollisionDispatcher_getCollisionConfigurationConst(long jarg1, btCollisionDispatcher jarg1_);
   public final static native void btCollisionDispatcher_setCollisionConfiguration(long jarg1, btCollisionDispatcher jarg1_, long jarg2, btCollisionConfiguration jarg2_);
+  public final static native long new_btCollisionDispatcherMt__SWIG_0(long jarg1, btCollisionConfiguration jarg1_, int jarg2);
+  public final static native long new_btCollisionDispatcherMt__SWIG_1(long jarg1, btCollisionConfiguration jarg1_);
+  public final static native void delete_btCollisionDispatcherMt(long jarg1);
   public final static native long new_btConvexConvexAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, btConvexPenetrationDepthSolver jarg5_, int jarg6, int jarg7);
   public final static native void delete_btConvexConvexAlgorithm(long jarg1);
   public final static native void btConvexConvexAlgorithm_setLowLevelOfDetail(long jarg1, btConvexConvexAlgorithm jarg1_, boolean jarg2);
@@ -2615,6 +2620,7 @@ public class CollisionJNI {
   public final static native void btPersistentManifoldArray_swap(long jarg1, btPersistentManifoldArray jarg1_, int jarg2, int jarg3);
   public final static native int btPersistentManifoldArray_findBinarySearch(long jarg1, btPersistentManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
   public final static native int btPersistentManifoldArray_findLinearSearch(long jarg1, btPersistentManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native int btPersistentManifoldArray_findLinearSearch2(long jarg1, btPersistentManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
   public final static native void btPersistentManifoldArray_removeAtIndex(long jarg1, btPersistentManifoldArray jarg1_, int jarg2);
   public final static native void btPersistentManifoldArray_remove(long jarg1, btPersistentManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
   public final static native void btPersistentManifoldArray_initializeFromBuffer(long jarg1, btPersistentManifoldArray jarg1_, long jarg2, int jarg3, int jarg4);
@@ -3473,6 +3479,16 @@ public class CollisionJNI {
   public final static native void btContactArray_merge_contacts__SWIG_1(long jarg1, btContactArray jarg1_, long jarg2, btContactArray jarg2_);
   public final static native void btContactArray_merge_contacts_unique(long jarg1, btContactArray jarg1_, long jarg2, btContactArray jarg2_);
   public final static native void delete_btContactArray(long jarg1);
+  public final static native long btCompoundFromGimpactShape_operatorNew__SWIG_0(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2);
+  public final static native void btCompoundFromGimpactShape_operatorDelete__SWIG_0(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2);
+  public final static native long btCompoundFromGimpactShape_operatorNew__SWIG_1(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2, long jarg3);
+  public final static native void btCompoundFromGimpactShape_operatorDelete__SWIG_1(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2, long jarg3);
+  public final static native long btCompoundFromGimpactShape_operatorNewArray__SWIG_0(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2);
+  public final static native void btCompoundFromGimpactShape_operatorDeleteArray__SWIG_0(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2);
+  public final static native long btCompoundFromGimpactShape_operatorNewArray__SWIG_1(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2, long jarg3);
+  public final static native void btCompoundFromGimpactShape_operatorDeleteArray__SWIG_1(long jarg1, btCompoundFromGimpactShape jarg1_, long jarg2, long jarg3);
+  public final static native void delete_btCompoundFromGimpactShape(long jarg1);
+  public final static native long new_btCompoundFromGimpactShape();
   public final static native void MyCallback_ignorePart_set(long jarg1, MyCallback jarg1_, int jarg2);
   public final static native int MyCallback_ignorePart_get(long jarg1, MyCallback jarg1_);
   public final static native void MyCallback_ignoreTriangleIndex_set(long jarg1, MyCallback jarg1_, int jarg2);
@@ -3947,6 +3963,7 @@ public class CollisionJNI {
   public final static native long btSphereBoxCollisionAlgorithm_CreateFunc_SWIGUpcast(long jarg1);
   public final static native long btSphereBoxCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btCollisionDispatcher_SWIGUpcast(long jarg1);
+  public final static native long btCollisionDispatcherMt_SWIGUpcast(long jarg1);
   public final static native long btConvexConvexAlgorithm_CreateFunc_SWIGUpcast(long jarg1);
   public final static native long btConvexConvexAlgorithm_SWIGUpcast(long jarg1);
   public final static native long SphereTriangleDetector_SWIGUpcast(long jarg1);
@@ -3975,6 +3992,7 @@ public class CollisionJNI {
   public final static native long btGImpactMeshShapePart_SWIGUpcast(long jarg1);
   public final static native long btGImpactMeshShape_SWIGUpcast(long jarg1);
   public final static native long btContactArray_SWIGUpcast(long jarg1);
+  public final static native long btCompoundFromGimpactShape_SWIGUpcast(long jarg1);
   public final static native long MyCallback_SWIGUpcast(long jarg1);
   public final static native long MyInternalTriangleIndexCallback_SWIGUpcast(long jarg1);
   public final static native long btGImpactCollisionAlgorithm_CreateFunc_SWIGUpcast(long jarg1);

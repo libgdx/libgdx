@@ -198,6 +198,10 @@ public class btVector3Array extends BulletBase {
     return LinearMathJNI.btVector3Array_findLinearSearch(swigCPtr, this, key);
   }
 
+  public int findLinearSearch2(Vector3 key) {
+    return LinearMathJNI.btVector3Array_findLinearSearch2(swigCPtr, this, key);
+  }
+
   public void removeAtIndex(int index) {
     LinearMathJNI.btVector3Array_removeAtIndex(swigCPtr, this, index);
   }

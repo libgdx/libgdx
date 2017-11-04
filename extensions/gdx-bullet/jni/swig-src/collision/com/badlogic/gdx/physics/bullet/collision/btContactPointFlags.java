@@ -13,5 +13,6 @@ public final class btContactPointFlags {
   public final static int BT_CONTACT_FLAG_HAS_CONTACT_CFM = 2;
   public final static int BT_CONTACT_FLAG_HAS_CONTACT_ERP = 4;
   public final static int BT_CONTACT_FLAG_CONTACT_STIFFNESS_DAMPING = 8;
+  public final static int BT_CONTACT_FLAG_FRICTION_ANCHOR = 16;
 }
 

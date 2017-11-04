@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public interface LinearMathConstants {
-  public final static int BT_BULLET_VERSION = 286;
+  public final static int BT_BULLET_VERSION = 287;
   public final static double BT_LARGE_FLOAT = 1e18;
   public final static double BT_ONE = 1.0;
   public final static double BT_ZERO = 0.0;

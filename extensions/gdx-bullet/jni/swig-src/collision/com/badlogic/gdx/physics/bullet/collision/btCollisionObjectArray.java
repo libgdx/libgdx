@@ -199,6 +199,10 @@ public class btCollisionObjectArray extends BulletBase {
     return CollisionJNI.btCollisionObjectArray_findLinearSearch(swigCPtr, this, btCollisionObject.getCPtr(key), key);
   }
 
+  public int findLinearSearch2(btCollisionObject key) {
+    return CollisionJNI.btCollisionObjectArray_findLinearSearch2(swigCPtr, this, btCollisionObject.getCPtr(key), key);
+  }
+
   public void removeAtIndex(int index) {
     CollisionJNI.btCollisionObjectArray_removeAtIndex(swigCPtr, this, index);
   }

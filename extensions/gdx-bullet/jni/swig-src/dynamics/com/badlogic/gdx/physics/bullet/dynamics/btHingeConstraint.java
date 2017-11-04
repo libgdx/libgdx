@@ -287,8 +287,8 @@ public class btHingeConstraint extends btTypedConstraint {
     return DynamicsJNI.btHingeConstraint_getEnableAngularMotor(swigCPtr, this);
   }
 
-  public float getMotorTargetVelosity() {
-    return DynamicsJNI.btHingeConstraint_getMotorTargetVelosity(swigCPtr, this);
+  public float getMotorTargetVelocity() {
+    return DynamicsJNI.btHingeConstraint_getMotorTargetVelocity(swigCPtr, this);
   }
 
   public float getMaxMotorImpulse() {

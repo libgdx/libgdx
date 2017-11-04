@@ -49,6 +49,7 @@ public class ExtrasJNI {
   public final static native void btStringArray_swap(long jarg1, btStringArray jarg1_, int jarg2, int jarg3);
   public final static native int btStringArray_findBinarySearch(long jarg1, btStringArray jarg1_, String jarg2);
   public final static native int btStringArray_findLinearSearch(long jarg1, btStringArray jarg1_, String jarg2);
+  public final static native int btStringArray_findLinearSearch2(long jarg1, btStringArray jarg1_, String jarg2);
   public final static native void btStringArray_removeAtIndex(long jarg1, btStringArray jarg1_, int jarg2);
   public final static native void btStringArray_remove(long jarg1, btStringArray jarg1_, String jarg2);
   public final static native void btStringArray_initializeFromBuffer(long jarg1, btStringArray jarg1_, long jarg2, int jarg3, int jarg4);
@@ -1808,6 +1809,14 @@ public class ExtrasJNI {
   public final static native double btMultiBodyLinkDoubleData_jointDamping_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
   public final static native void btMultiBodyLinkDoubleData_jointFriction_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
   public final static native double btMultiBodyLinkDoubleData_jointFriction_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
+  public final static native void btMultiBodyLinkDoubleData_jointLowerLimit_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
+  public final static native double btMultiBodyLinkDoubleData_jointLowerLimit_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
+  public final static native void btMultiBodyLinkDoubleData_jointUpperLimit_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
+  public final static native double btMultiBodyLinkDoubleData_jointUpperLimit_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
+  public final static native void btMultiBodyLinkDoubleData_jointMaxForce_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
+  public final static native double btMultiBodyLinkDoubleData_jointMaxForce_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
+  public final static native void btMultiBodyLinkDoubleData_jointMaxVelocity_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, double jarg2);
+  public final static native double btMultiBodyLinkDoubleData_jointMaxVelocity_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
   public final static native void btMultiBodyLinkDoubleData_linkName_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, String jarg2);
   public final static native String btMultiBodyLinkDoubleData_linkName_get(long jarg1, btMultiBodyLinkDoubleData jarg1_);
   public final static native void btMultiBodyLinkDoubleData_jointName_set(long jarg1, btMultiBodyLinkDoubleData jarg1_, String jarg2);
@@ -1850,6 +1859,14 @@ public class ExtrasJNI {
   public final static native float btMultiBodyLinkFloatData_jointDamping_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
   public final static native void btMultiBodyLinkFloatData_jointFriction_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
   public final static native float btMultiBodyLinkFloatData_jointFriction_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
+  public final static native void btMultiBodyLinkFloatData_jointLowerLimit_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
+  public final static native float btMultiBodyLinkFloatData_jointLowerLimit_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
+  public final static native void btMultiBodyLinkFloatData_jointUpperLimit_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
+  public final static native float btMultiBodyLinkFloatData_jointUpperLimit_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
+  public final static native void btMultiBodyLinkFloatData_jointMaxForce_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
+  public final static native float btMultiBodyLinkFloatData_jointMaxForce_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
+  public final static native void btMultiBodyLinkFloatData_jointMaxVelocity_set(long jarg1, btMultiBodyLinkFloatData jarg1_, float jarg2);
+  public final static native float btMultiBodyLinkFloatData_jointMaxVelocity_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
   public final static native void btMultiBodyLinkFloatData_linkName_set(long jarg1, btMultiBodyLinkFloatData jarg1_, String jarg2);
   public final static native String btMultiBodyLinkFloatData_linkName_get(long jarg1, btMultiBodyLinkFloatData jarg1_);
   public final static native void btMultiBodyLinkFloatData_jointName_set(long jarg1, btMultiBodyLinkFloatData jarg1_, String jarg2);

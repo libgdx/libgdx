@@ -69,5 +69,8 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btThreads.cpp">
       <Filter>Source Files\bullet\LinearMath</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer64.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

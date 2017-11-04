@@ -170,6 +170,10 @@ public class btDynamicsWorld extends btCollisionWorld {
     return new btContactSolverInfo(DynamicsJNI.btDynamicsWorld_getSolverInfo(swigCPtr, this), false);
   }
 
+  public btContactSolverInfo getSolverInfoConst() {
+    return new btContactSolverInfo(DynamicsJNI.btDynamicsWorld_getSolverInfoConst(swigCPtr, this), false);
+  }
+
   public void addVehicle(btActionInterface vehicle) {
     DynamicsJNI.btDynamicsWorld_addVehicle(swigCPtr, this, btActionInterface.getCPtr(vehicle), vehicle);
   }

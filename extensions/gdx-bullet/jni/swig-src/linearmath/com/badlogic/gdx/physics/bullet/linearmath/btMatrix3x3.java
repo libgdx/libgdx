@@ -207,8 +207,28 @@ public class btMatrix3x3 extends BulletBase {
     return LinearMathJNI.btMatrix3x3_tdotz(swigCPtr, this, v);
   }
 
-  public void diagonalize(Matrix3 rot, float threshold, int maxSteps) {
-    LinearMathJNI.btMatrix3x3_diagonalize(swigCPtr, this, rot, threshold, maxSteps);
+  public void extractRotation(Quaternion q, float tolerance, int maxIter) {
+    LinearMathJNI.btMatrix3x3_extractRotation__SWIG_0(swigCPtr, this, q, tolerance, maxIter);
+  }
+
+  public void extractRotation(Quaternion q, float tolerance) {
+    LinearMathJNI.btMatrix3x3_extractRotation__SWIG_1(swigCPtr, this, q, tolerance);
+  }
+
+  public void extractRotation(Quaternion q) {
+    LinearMathJNI.btMatrix3x3_extractRotation__SWIG_2(swigCPtr, this, q);
+  }
+
+  public void diagonalize(Matrix3 rot, float tolerance, int maxIter) {
+    LinearMathJNI.btMatrix3x3_diagonalize__SWIG_0(swigCPtr, this, rot, tolerance, maxIter);
+  }
+
+  public void diagonalize(Matrix3 rot, float tolerance) {
+    LinearMathJNI.btMatrix3x3_diagonalize__SWIG_1(swigCPtr, this, rot, tolerance);
+  }
+
+  public void diagonalize(Matrix3 rot) {
+    LinearMathJNI.btMatrix3x3_diagonalize__SWIG_2(swigCPtr, this, rot);
   }
 
   public float cofac(int r1, int c1, int r2, int c2) {

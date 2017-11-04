@@ -91,8 +91,8 @@ public class btDiscreteDynamicsWorldMt extends btDiscreteDynamicsWorld {
     DynamicsJNI.btDiscreteDynamicsWorldMt_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
   }
 
-  public btDiscreteDynamicsWorldMt(btDispatcher dispatcher, btBroadphaseInterface pairCache, btConstraintSolver constraintSolver, btCollisionConfiguration collisionConfiguration) {
-    this(DynamicsJNI.new_btDiscreteDynamicsWorldMt(btDispatcher.getCPtr(dispatcher), dispatcher, btBroadphaseInterface.getCPtr(pairCache), pairCache, btConstraintSolver.getCPtr(constraintSolver), constraintSolver, btCollisionConfiguration.getCPtr(collisionConfiguration), collisionConfiguration), true);
+  public btDiscreteDynamicsWorldMt(btDispatcher dispatcher, btBroadphaseInterface pairCache, btConstraintSolverPoolMt constraintSolver, btCollisionConfiguration collisionConfiguration) {
+    this(DynamicsJNI.new_btDiscreteDynamicsWorldMt(btDispatcher.getCPtr(dispatcher), dispatcher, btBroadphaseInterface.getCPtr(pairCache), pairCache, btConstraintSolverPoolMt.getCPtr(constraintSolver), constraintSolver, btCollisionConfiguration.getCPtr(collisionConfiguration), collisionConfiguration), true);
   }
 
 }

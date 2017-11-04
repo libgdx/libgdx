@@ -57,8 +57,12 @@ public class btHashInt extends BulletBase {
 		super.delete();
 	}
 
+  public btHashInt() {
+    this(LinearMathJNI.new_btHashInt__SWIG_0(), true);
+  }
+
   public btHashInt(int uid) {
-    this(LinearMathJNI.new_btHashInt(uid), true);
+    this(LinearMathJNI.new_btHashInt__SWIG_1(uid), true);
   }
 
   public int getUid1() {

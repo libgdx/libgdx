@@ -201,6 +201,10 @@ public class btPersistentManifoldArray extends BulletBase {
     return CollisionJNI.btPersistentManifoldArray_findLinearSearch(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
   }
 
+  public int findLinearSearch2(btPersistentManifold key) {
+    return CollisionJNI.btPersistentManifoldArray_findLinearSearch2(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
+  }
+
   public void removeAtIndex(int index) {
     CollisionJNI.btPersistentManifoldArray_removeAtIndex(swigCPtr, this, index);
   }

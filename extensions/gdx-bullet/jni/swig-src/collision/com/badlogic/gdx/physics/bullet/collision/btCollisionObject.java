@@ -570,6 +570,8 @@ public class btCollisionObject extends BulletBase implements
     public final static int CF_DISABLE_SPU_COLLISION_PROCESSING = 64;
     public final static int CF_HAS_CONTACT_STIFFNESS_DAMPING = 128;
     public final static int CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR = 256;
+    public final static int CF_HAS_FRICTION_ANCHOR = 512;
+    public final static int CF_HAS_COLLISION_SOUND_TRIGGER = 1024;
   }
 
   public final static class CollisionObjectTypes {

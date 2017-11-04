@@ -83,10 +83,6 @@ public class btMultiBodyJointMotor extends btMultiBodyConstraint {
     DynamicsJNI.btMultiBodyJointMotor_setPositionTarget__SWIG_1(swigCPtr, this, posTarget);
   }
 
-  public void setErp(float erp) {
-    DynamicsJNI.btMultiBodyJointMotor_setErp(swigCPtr, this, erp);
-  }
-
   public float getErp() {
     return DynamicsJNI.btMultiBodyJointMotor_getErp(swigCPtr, this);
   }

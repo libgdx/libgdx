@@ -88,6 +88,11 @@ public class btMultiBodyDynamicsWorld extends btDiscreteDynamicsWorld {
     return (cPtr == 0) ? null : new btMultiBody(cPtr, false);
   }
 
+  public btMultiBody getMultiBodyConst(int mbIndex) {
+    long cPtr = DynamicsJNI.btMultiBodyDynamicsWorld_getMultiBodyConst(swigCPtr, this, mbIndex);
+    return (cPtr == 0) ? null : new btMultiBody(cPtr, false);
+  }
+
   public void addMultiBodyConstraint(btMultiBodyConstraint constraint) {
     DynamicsJNI.btMultiBodyDynamicsWorld_addMultiBodyConstraint(swigCPtr, this, btMultiBodyConstraint.getCPtr(constraint), constraint);
   }

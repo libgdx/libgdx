@@ -150,5 +150,8 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyGearConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

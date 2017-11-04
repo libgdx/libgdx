@@ -94,7 +94,13 @@ SIMD_FORCE_INLINE	const char*	btStaticPlaneShape::serialize(void* dataBuffer, bt
 	m_localScaling.serializeFloat(planeData->m_localScaling);
 	m_planeNormal.serializeFloat(planeData->m_planeNormal);
 	planeData->m_planeConstant = float(m_planeConstant);
-		
+
+	// Fill padding with zeros to appease msan.
+	planeData->m_pad[0] = 0;
+	planeData->m_pad[1] = 0;
+	planeData->m_pad[2] = 0;
+	planeData->m_pad[3] = 0;
+
 	return "btStaticPlaneShapeData";
 }
 

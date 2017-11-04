@@ -198,6 +198,10 @@ public class btScalarArray extends BulletBase {
     return LinearMathJNI.btScalarArray_findLinearSearch(swigCPtr, this, key);
   }
 
+  public int findLinearSearch2(float key) {
+    return LinearMathJNI.btScalarArray_findLinearSearch2(swigCPtr, this, key);
+  }
+
   public void removeAtIndex(int index) {
     LinearMathJNI.btScalarArray_removeAtIndex(swigCPtr, this, index);
   }

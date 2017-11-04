@@ -509,16 +509,69 @@ public class LinearMath implements LinearMathConstants {
     return LinearMathJNI.btStrLen(str);
   }
 
-  public static void btMutexLock(btSpinMutex arg0) {
-    LinearMathJNI.btMutexLock(btSpinMutex.getCPtr(arg0), arg0);
+  public static long getBT_MAX_THREAD_COUNT() {
+    return LinearMathJNI.BT_MAX_THREAD_COUNT_get();
   }
 
-  public static void btMutexUnlock(btSpinMutex arg0) {
-    LinearMathJNI.btMutexUnlock(btSpinMutex.getCPtr(arg0), arg0);
+  public static boolean btIsMainThread() {
+    return LinearMathJNI.btIsMainThread();
   }
 
-  public static boolean btMutexTryLock(btSpinMutex arg0) {
-    return LinearMathJNI.btMutexTryLock(btSpinMutex.getCPtr(arg0), arg0);
+  public static boolean btThreadsAreRunning() {
+    return LinearMathJNI.btThreadsAreRunning();
+  }
+
+  public static long btGetCurrentThreadIndex() {
+    return LinearMathJNI.btGetCurrentThreadIndex();
+  }
+
+  public static void btResetThreadIndexCounter() {
+    LinearMathJNI.btResetThreadIndexCounter();
+  }
+
+  public static void btMutexLock(btSpinMutex mutex) {
+    LinearMathJNI.btMutexLock(btSpinMutex.getCPtr(mutex), mutex);
+  }
+
+  public static void btMutexUnlock(btSpinMutex mutex) {
+    LinearMathJNI.btMutexUnlock(btSpinMutex.getCPtr(mutex), mutex);
+  }
+
+  public static boolean btMutexTryLock(btSpinMutex mutex) {
+    return LinearMathJNI.btMutexTryLock(btSpinMutex.getCPtr(mutex), mutex);
+  }
+
+  public static void btSetTaskScheduler(btITaskScheduler ts) {
+    LinearMathJNI.btSetTaskScheduler(btITaskScheduler.getCPtr(ts), ts);
+  }
+
+  public static btITaskScheduler btGetTaskScheduler() {
+    long cPtr = LinearMathJNI.btGetTaskScheduler();
+    return (cPtr == 0) ? null : new btITaskScheduler(cPtr, false);
+  }
+
+  public static btITaskScheduler btGetSequentialTaskScheduler() {
+    long cPtr = LinearMathJNI.btGetSequentialTaskScheduler();
+    return (cPtr == 0) ? null : new btITaskScheduler(cPtr, false);
+  }
+
+  public static btITaskScheduler btGetOpenMPTaskScheduler() {
+    long cPtr = LinearMathJNI.btGetOpenMPTaskScheduler();
+    return (cPtr == 0) ? null : new btITaskScheduler(cPtr, false);
+  }
+
+  public static btITaskScheduler btGetTBBTaskScheduler() {
+    long cPtr = LinearMathJNI.btGetTBBTaskScheduler();
+    return (cPtr == 0) ? null : new btITaskScheduler(cPtr, false);
+  }
+
+  public static btITaskScheduler btGetPPLTaskScheduler() {
+    long cPtr = LinearMathJNI.btGetPPLTaskScheduler();
+    return (cPtr == 0) ? null : new btITaskScheduler(cPtr, false);
+  }
+
+  public static void btParallelFor(int iBegin, int iEnd, int grainSize, btIParallelForBody body) {
+    LinearMathJNI.btParallelFor(iBegin, iEnd, grainSize, btIParallelForBody.getCPtr(body), body);
   }
 
 }

@@ -157,6 +157,11 @@ public class btMultiBody extends BulletBase {
     return (cPtr == 0) ? null : new btMultiBodyLinkCollider(cPtr, false);
   }
 
+  public btMultiBodyLinkCollider getLinkCollider(int index) {
+    long cPtr = DynamicsJNI.btMultiBody_getLinkCollider(swigCPtr, this, index);
+    return (cPtr == 0) ? null : new btMultiBodyLinkCollider(cPtr, false);
+  }
+
   public int getParent(int link_num) {
     return DynamicsJNI.btMultiBody_getParent(swigCPtr, this, link_num);
   }

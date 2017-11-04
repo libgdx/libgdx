@@ -193,6 +193,38 @@ public class btMultiBodyLinkDoubleData extends BulletBase {
     return DynamicsJNI.btMultiBodyLinkDoubleData_jointFriction_get(swigCPtr, this);
   }
 
+  public void setJointLowerLimit(double value) {
+    DynamicsJNI.btMultiBodyLinkDoubleData_jointLowerLimit_set(swigCPtr, this, value);
+  }
+
+  public double getJointLowerLimit() {
+    return DynamicsJNI.btMultiBodyLinkDoubleData_jointLowerLimit_get(swigCPtr, this);
+  }
+
+  public void setJointUpperLimit(double value) {
+    DynamicsJNI.btMultiBodyLinkDoubleData_jointUpperLimit_set(swigCPtr, this, value);
+  }
+
+  public double getJointUpperLimit() {
+    return DynamicsJNI.btMultiBodyLinkDoubleData_jointUpperLimit_get(swigCPtr, this);
+  }
+
+  public void setJointMaxForce(double value) {
+    DynamicsJNI.btMultiBodyLinkDoubleData_jointMaxForce_set(swigCPtr, this, value);
+  }
+
+  public double getJointMaxForce() {
+    return DynamicsJNI.btMultiBodyLinkDoubleData_jointMaxForce_get(swigCPtr, this);
+  }
+
+  public void setJointMaxVelocity(double value) {
+    DynamicsJNI.btMultiBodyLinkDoubleData_jointMaxVelocity_set(swigCPtr, this, value);
+  }
+
+  public double getJointMaxVelocity() {
+    return DynamicsJNI.btMultiBodyLinkDoubleData_jointMaxVelocity_get(swigCPtr, this);
+  }
+
   public void setLinkName(String value) {
     DynamicsJNI.btMultiBodyLinkDoubleData_linkName_set(swigCPtr, this, value);
   }

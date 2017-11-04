@@ -61,6 +61,7 @@ import com.badlogic.gdx.math.Matrix4;
 %include "./btTypedConstraint.i"
 
 %rename(getConstraintConst) btDynamicsWorld::getConstraint(int) const;
+%rename(getSolverInfoConst) btDynamicsWorld::getSolverInfo() const;
 %{
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 %}
@@ -257,11 +258,17 @@ import com.badlogic.gdx.math.Matrix4;
 %include "BulletDynamics/Featherstone/btMultiBodyConstraint.h"
 
 %{
+#include <BulletDynamics/Featherstone/btMultiBodyGearConstraint.h>
+%}
+%include "BulletDynamics/Featherstone/btMultiBodyGearConstraint.h"
+
+%{
 #include <BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h>
 %}
 %include "BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h"
 
 %rename(getMultiBodyConstraintConst) btMultiBodyDynamicsWorld::getMultiBodyConstraint(int) const;
+%rename(getMultiBodyConst) btMultiBodyDynamicsWorld::getMultiBody(int) const;
 %{
 #include <BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h>
 %}

@@ -81,8 +81,12 @@ public class btQuaternion extends btQuadWord {
     LinearMathJNI.btQuaternion_setEuler(swigCPtr, this, yaw, pitch, roll);
   }
 
-  public void setEulerZYX(float yaw, float pitch, float roll) {
-    LinearMathJNI.btQuaternion_setEulerZYX(swigCPtr, this, yaw, pitch, roll);
+  public void setEulerZYX(float yawZ, float pitchY, float rollX) {
+    LinearMathJNI.btQuaternion_setEulerZYX(swigCPtr, this, yawZ, pitchY, rollX);
+  }
+
+  public void getEulerZYX(SWIGTYPE_p_float yawZ, SWIGTYPE_p_float pitchY, SWIGTYPE_p_float rollX) {
+    LinearMathJNI.btQuaternion_getEulerZYX(swigCPtr, this, SWIGTYPE_p_float.getCPtr(yawZ), SWIGTYPE_p_float.getCPtr(pitchY), SWIGTYPE_p_float.getCPtr(rollX));
   }
 
   public Quaternion operatorAdditionAssignment(Quaternion q) {
@@ -112,6 +116,10 @@ public class btQuaternion extends btQuadWord {
   public float length() {
     return LinearMathJNI.btQuaternion_length(swigCPtr, this);
   }
+
+  public Quaternion safeNormalize() {
+	return LinearMathJNI.btQuaternion_safeNormalize(swigCPtr, this);
+}
 
   public Quaternion normalize() {
 	return LinearMathJNI.btQuaternion_normalize(swigCPtr, this);

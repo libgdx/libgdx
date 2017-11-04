@@ -130,6 +130,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcherMt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp" />

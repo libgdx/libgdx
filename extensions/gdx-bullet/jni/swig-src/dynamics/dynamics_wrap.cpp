@@ -2002,6 +2002,9 @@ SWIGINTERN btRigidBody *new_btRigidBody__SWIG_1(bool dummy,btScalar mass,btMotio
 #include <BulletDynamics/Featherstone/btMultiBodyConstraint.h>
 
 
+#include <BulletDynamics/Featherstone/btMultiBodyGearConstraint.h>
+
+
 #include <BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h>
 
 
@@ -8775,6 +8778,21 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btDynamicsWorld_1getSolverInfoConst(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  btContactSolverInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  result = (btContactSolverInfo *) &((btDynamicsWorld const *)arg1)->getSolverInfo();
+  *(btContactSolverInfo **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btDynamicsWorld_1addVehicle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
   btActionInterface *arg2 = (btActionInterface *) 0 ;
@@ -10986,6 +11004,62 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1frictionERP_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_frictionERP = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1frictionERP_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  result = (btScalar) ((arg1)->m_frictionERP);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1frictionCFM_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_frictionCFM = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1frictionCFM_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  result = (btScalar) ((arg1)->m_frictionCFM);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1splitImpulse_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
   int arg2 ;
@@ -11289,6 +11363,34 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
   (void)jarg1_;
   arg1 = *(btContactSolverInfoData **)&jarg1; 
   result = (btScalar) ((arg1)->m_leastSquaresResidualThreshold);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1restitutionVelocityThreshold_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_restitutionVelocityThreshold = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btContactSolverInfoData_1restitutionVelocityThreshold_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btContactSolverInfoData *arg1 = (btContactSolverInfoData *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btContactSolverInfoData **)&jarg1; 
+  result = (btScalar) ((arg1)->m_restitutionVelocityThreshold);
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -29571,7 +29673,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynami
 }
 
 
-SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeConstraint_1getMotorTargetVelosity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btHingeConstraint_1getMotorTargetVelocity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jfloat jresult = 0 ;
   btHingeConstraint *arg1 = (btHingeConstraint *) 0 ;
   btScalar result;
@@ -29580,7 +29682,7 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btHingeConstraint **)&jarg1; 
-  result = (btScalar)(arg1)->getMotorTargetVelosity();
+  result = (btScalar)(arg1)->getMotorTargetVelocity();
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -35651,6 +35753,46 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btConstraintSolverPoolMt_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  btConstraintSolverPoolMt *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  result = (btConstraintSolverPoolMt *)new btConstraintSolverPoolMt(arg1);
+  *(btConstraintSolverPoolMt **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btConstraintSolverPoolMt_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jint jarg2) {
+  jlong jresult = 0 ;
+  btConstraintSolver **arg1 = (btConstraintSolver **) 0 ;
+  int arg2 ;
+  btConstraintSolverPoolMt *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btConstraintSolver ***)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btConstraintSolverPoolMt *)new btConstraintSolverPoolMt(arg1,arg2);
+  *(btConstraintSolverPoolMt **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btConstraintSolverPoolMt(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btConstraintSolverPoolMt *arg1 = (btConstraintSolverPoolMt *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btConstraintSolverPoolMt **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btDiscreteDynamicsWorldMt_1operatorNew_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   jlong jresult = 0 ;
   btDiscreteDynamicsWorldMt *arg1 = (btDiscreteDynamicsWorldMt *) 0 ;
@@ -35783,7 +35925,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   jlong jresult = 0 ;
   btDispatcher *arg1 = (btDispatcher *) 0 ;
   btBroadphaseInterface *arg2 = (btBroadphaseInterface *) 0 ;
-  btConstraintSolver *arg3 = (btConstraintSolver *) 0 ;
+  btConstraintSolverPoolMt *arg3 = (btConstraintSolverPoolMt *) 0 ;
   btCollisionConfiguration *arg4 = (btCollisionConfiguration *) 0 ;
   btDiscreteDynamicsWorldMt *result = 0 ;
   
@@ -35795,7 +35937,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   (void)jarg4_;
   arg1 = *(btDispatcher **)&jarg1; 
   arg2 = *(btBroadphaseInterface **)&jarg2; 
-  arg3 = *(btConstraintSolver **)&jarg3; 
+  arg3 = *(btConstraintSolverPoolMt **)&jarg3; 
   arg4 = *(btCollisionConfiguration **)&jarg4; 
   result = (btDiscreteDynamicsWorldMt *)new btDiscreteDynamicsWorldMt(arg1,arg2,arg3,arg4);
   *(btDiscreteDynamicsWorldMt **)&jresult = result; 
@@ -36030,7 +36172,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSimulationIslandManagerMt_1defaultIslandDispatch(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSimulationIslandManagerMt_1serialIslandDispatch(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jobject jarg2_) {
   btAlignedObjectArray< btSimulationIslandManagerMt::Island * > *arg1 = (btAlignedObjectArray< btSimulationIslandManagerMt::Island * > *) 0 ;
   btSimulationIslandManagerMt::IslandCallback *arg2 = (btSimulationIslandManagerMt::IslandCallback *) 0 ;
   
@@ -36039,7 +36181,20 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jarg2_;
   arg1 = *(btAlignedObjectArray< btSimulationIslandManagerMt::Island * > **)&jarg1; 
   arg2 = *(btSimulationIslandManagerMt::IslandCallback **)&jarg2; 
-  btSimulationIslandManagerMt::defaultIslandDispatch(arg1,arg2);
+  btSimulationIslandManagerMt::serialIslandDispatch(arg1,arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btSimulationIslandManagerMt_1parallelIslandDispatch(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btSimulationIslandManagerMt::Island * > *arg1 = (btAlignedObjectArray< btSimulationIslandManagerMt::Island * > *) 0 ;
+  btSimulationIslandManagerMt::IslandCallback *arg2 = (btSimulationIslandManagerMt::IslandCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btSimulationIslandManagerMt::Island * > **)&jarg1; 
+  arg2 = *(btSimulationIslandManagerMt::IslandCallback **)&jarg2; 
+  btSimulationIslandManagerMt::parallelIslandDispatch(arg1,arg2);
 }
 
 
@@ -36785,6 +36940,23 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   (void)jarg1_;
   arg1 = *(btMultiBody **)&jarg1; 
   result = (btMultiBodyLinkCollider *)(arg1)->getBaseCollider();
+  *(btMultiBodyLinkCollider **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBody_1getLinkCollider(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btMultiBody *arg1 = (btMultiBody *) 0 ;
+  int arg2 ;
+  btMultiBodyLinkCollider *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBody **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btMultiBodyLinkCollider *)(arg1)->getLinkCollider(arg2);
   *(btMultiBodyLinkCollider **)&jresult = result; 
   return jresult;
 }
@@ -39322,6 +39494,118 @@ SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointLowerLimit = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointLowerLimit);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointUpperLimit = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointUpperLimit);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointMaxForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointMaxForce = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointMaxForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointMaxForce);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointMaxVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointMaxVelocity = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1jointMaxVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointMaxVelocity);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkDoubleData_1linkName_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   btMultiBodyLinkDoubleData *arg1 = (btMultiBodyLinkDoubleData *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -39982,6 +40266,118 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
   (void)jarg1_;
   arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
   result = (float) ((arg1)->m_jointFriction);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointLowerLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointLowerLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointUpperLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointUpperLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointMaxForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointMaxForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointMaxForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointMaxForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointMaxVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointMaxVelocity = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyLinkFloatData_1jointMaxVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultiBodyLinkFloatData *arg1 = (btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointMaxVelocity);
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -41462,6 +41858,206 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyConstraint_1setGearRatio(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyConstraint *arg1 = (btMultiBodyConstraint *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyConstraint **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->setGearRatio(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyConstraint_1setGearAuxLink(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btMultiBodyConstraint *arg1 = (btMultiBodyConstraint *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyConstraint **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setGearAuxLink(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyConstraint_1setRelativePositionTarget(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyConstraint *arg1 = (btMultiBodyConstraint *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyConstraint **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->setRelativePositionTarget(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyConstraint_1setErp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultiBodyConstraint *arg1 = (btMultiBodyConstraint *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyConstraint **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->setErp(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_new_1btMultiBodyGearConstraint(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_, jint jarg4, jobject jarg5, jobject jarg6, jobject jarg7, jobject jarg8) {
+  jlong jresult = 0 ;
+  btMultiBody *arg1 = (btMultiBody *) 0 ;
+  int arg2 ;
+  btMultiBody *arg3 = (btMultiBody *) 0 ;
+  int arg4 ;
+  btVector3 *arg5 = 0 ;
+  btVector3 *arg6 = 0 ;
+  btMatrix3x3 *arg7 = 0 ;
+  btMatrix3x3 *arg8 = 0 ;
+  btMultiBodyGearConstraint *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg3_;
+  arg1 = *(btMultiBody **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = *(btMultiBody **)&jarg3; 
+  arg4 = (int)jarg4; 
+  btVector3 local_arg5;
+  gdx_setbtVector3FromVector3(jenv, local_arg5, jarg5);
+  arg5 = &local_arg5;
+  gdxAutoCommitVector3 auto_commit_arg5(jenv, jarg5, &local_arg5);
+  btVector3 local_arg6;
+  gdx_setbtVector3FromVector3(jenv, local_arg6, jarg6);
+  arg6 = &local_arg6;
+  gdxAutoCommitVector3 auto_commit_arg6(jenv, jarg6, &local_arg6);
+  btMatrix3x3 local_arg7;
+  gdx_setbtMatrix3x3FromMatrix3(jenv, local_arg7, jarg7);
+  arg7 = &local_arg7;
+  gdxAutoCommitMatrix3 auto_commit_arg7(jenv, jarg7, &local_arg7);
+  btMatrix3x3 local_arg8;
+  gdx_setbtMatrix3x3FromMatrix3(jenv, local_arg8, jarg8);
+  arg8 = &local_arg8;
+  gdxAutoCommitMatrix3 auto_commit_arg8(jenv, jarg8, &local_arg8);
+  result = (btMultiBodyGearConstraint *)new btMultiBodyGearConstraint(arg1,arg2,arg3,arg4,(btVector3 const &)*arg5,(btVector3 const &)*arg6,(btMatrix3x3 const &)*arg7,(btMatrix3x3 const &)*arg8);
+  *(btMultiBodyGearConstraint **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_delete_1btMultiBodyGearConstraint(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1getPivotInA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  result = (btVector3 *) &((btMultiBodyGearConstraint const *)arg1)->getPivotInA();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1setPivotInA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setPivotInA((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1getPivotInB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  result = (btVector3 *) &((btMultiBodyGearConstraint const *)arg1)->getPivotInB();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1getFrameInA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btMatrix3x3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  result = (btMatrix3x3 *) &((btMultiBodyGearConstraint const *)arg1)->getFrameInA();
+  jresult = gdx_getReturnMatrix3(jenv);
+  gdx_setMatrix3FrombtMatrix3x3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1setFrameInA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btMatrix3x3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  btMatrix3x3 local_arg2;
+  gdx_setbtMatrix3x3FromMatrix3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setFrameInA((btMatrix3x3 const &)*arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1getFrameInB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btMultiBodyGearConstraint *arg1 = (btMultiBodyGearConstraint *) 0 ;
+  btMatrix3x3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyGearConstraint **)&jarg1; 
+  result = (btMatrix3x3 *) &((btMultiBodyGearConstraint const *)arg1)->getFrameInB();
+  jresult = gdx_getReturnMatrix3(jenv);
+  gdx_setMatrix3FrombtMatrix3x3(jenv, jresult, result);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyConstraintSolver_1operatorNew_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   jlong jresult = 0 ;
   btMultiBodyConstraintSolver *arg1 = (btMultiBodyConstraintSolver *) 0 ;
@@ -41801,6 +42397,23 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   arg1 = *(btMultiBodyDynamicsWorld **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (btMultiBody *)(arg1)->getMultiBody(arg2);
+  *(btMultiBody **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyDynamicsWorld_1getMultiBodyConst(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btMultiBodyDynamicsWorld *arg1 = (btMultiBodyDynamicsWorld *) 0 ;
+  int arg2 ;
+  btMultiBody *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultiBodyDynamicsWorld **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btMultiBody *)((btMultiBodyDynamicsWorld const *)arg1)->getMultiBody(arg2);
   *(btMultiBody **)&jresult = result; 
   return jresult;
 }
@@ -42320,19 +42933,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   arg1 = *(btMultiBodyJointMotor **)&jarg1; 
   arg2 = (btScalar)jarg2; 
   (arg1)->setPositionTarget(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyJointMotor_1setErp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
-  btMultiBodyJointMotor *arg1 = (btMultiBodyJointMotor *) 0 ;
-  btScalar arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btMultiBodyJointMotor **)&jarg1; 
-  arg2 = (btScalar)jarg2; 
-  (arg1)->setErp(arg2);
 }
 
 
@@ -43490,6 +44090,118 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
   (void)jarg1_;
   arg1 = *(btMultibodyLink **)&jarg1; 
   result = (btScalar) ((arg1)->m_jointFriction);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_jointLowerLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  result = (btScalar) ((arg1)->m_jointLowerLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_jointUpperLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  result = (btScalar) ((arg1)->m_jointUpperLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointMaxForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_jointMaxForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointMaxForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  result = (btScalar) ((arg1)->m_jointMaxForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointMaxVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_jointMaxVelocity = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultibodyLink_1jointMaxVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btMultibodyLink *arg1 = (btMultibodyLink *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMultibodyLink **)&jarg1; 
+  result = (btScalar) ((arg1)->m_jointMaxVelocity);
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -46656,6 +47368,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     return baseptr;
 }
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btConstraintSolverPoolMt_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btConstraintSolver **)&baseptr = *(btConstraintSolverPoolMt **)&jarg1;
+    return baseptr;
+}
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btDiscreteDynamicsWorldMt_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
@@ -46669,6 +47389,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     (void)jenv;
     (void)jcls;
     *(btSimulationIslandManager **)&baseptr = *(btSimulationIslandManagerMt **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btMultiBodyGearConstraint_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btMultiBodyConstraint **)&baseptr = *(btMultiBodyGearConstraint **)&jarg1;
     return baseptr;
 }
 

@@ -41,6 +41,10 @@
 %ignore btAlignedObjectArray<GIM_BVH_DATA>::findLinearSearch;
 %ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::findLinearSearch;
 
+%ignore btAlignedObjectArray<GIM_PAIR>::findLinearSearch2;
+%ignore btAlignedObjectArray<GIM_BVH_DATA>::findLinearSearch2;
+%ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::findLinearSearch2;
+
 %ignore btAlignedObjectArray<GIM_PAIR>::findBinarySearch;
 %ignore btAlignedObjectArray<GIM_BVH_DATA>::findBinarySearch;
 %ignore btAlignedObjectArray<GIM_BVH_TREE_NODE>::findBinarySearch;
@@ -75,6 +79,7 @@
 
 %ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::less::operator();
 %ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::findLinearSearch;
+%ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::findLinearSearch2;
 %ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::findBinarySearch;
 %ignore btAlignedObjectArray<BT_QUANTIZED_BVH_NODE>::remove;
 
@@ -109,6 +114,7 @@
 
 %ignore btAlignedObjectArray<GIM_CONTACT>::less::operator();
 %ignore btAlignedObjectArray<GIM_CONTACT>::findLinearSearch;
+%ignore btAlignedObjectArray<GIM_CONTACT>::findLinearSearch2;
 %ignore btAlignedObjectArray<GIM_CONTACT>::findBinarySearch;
 %ignore btAlignedObjectArray<GIM_CONTACT>::remove;
 

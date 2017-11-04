@@ -198,6 +198,38 @@ public class btMultiBodyLinkDoubleData extends BulletBase {
     return ExtrasJNI.btMultiBodyLinkDoubleData_jointFriction_get(swigCPtr, this);
   }
 
+  public void setJointLowerLimit(double value) {
+    ExtrasJNI.btMultiBodyLinkDoubleData_jointLowerLimit_set(swigCPtr, this, value);
+  }
+
+  public double getJointLowerLimit() {
+    return ExtrasJNI.btMultiBodyLinkDoubleData_jointLowerLimit_get(swigCPtr, this);
+  }
+
+  public void setJointUpperLimit(double value) {
+    ExtrasJNI.btMultiBodyLinkDoubleData_jointUpperLimit_set(swigCPtr, this, value);
+  }
+
+  public double getJointUpperLimit() {
+    return ExtrasJNI.btMultiBodyLinkDoubleData_jointUpperLimit_get(swigCPtr, this);
+  }
+
+  public void setJointMaxForce(double value) {
+    ExtrasJNI.btMultiBodyLinkDoubleData_jointMaxForce_set(swigCPtr, this, value);
+  }
+
+  public double getJointMaxForce() {
+    return ExtrasJNI.btMultiBodyLinkDoubleData_jointMaxForce_get(swigCPtr, this);
+  }
+
+  public void setJointMaxVelocity(double value) {
+    ExtrasJNI.btMultiBodyLinkDoubleData_jointMaxVelocity_set(swigCPtr, this, value);
+  }
+
+  public double getJointMaxVelocity() {
+    return ExtrasJNI.btMultiBodyLinkDoubleData_jointMaxVelocity_get(swigCPtr, this);
+  }
+
   public void setLinkName(String value) {
     ExtrasJNI.btMultiBodyLinkDoubleData_linkName_set(swigCPtr, this, value);
   }

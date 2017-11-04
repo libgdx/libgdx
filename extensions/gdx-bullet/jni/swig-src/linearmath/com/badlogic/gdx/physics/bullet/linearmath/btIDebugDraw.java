@@ -288,6 +288,10 @@ public class btIDebugDraw extends BulletBase {
     if (getClass() == btIDebugDraw.class) LinearMathJNI.btIDebugDraw_drawPlane(swigCPtr, this, planeNormal, planeConst, transform, color); else LinearMathJNI.btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(swigCPtr, this, planeNormal, planeConst, transform, color);
   }
 
+  public void clearLines() {
+    if (getClass() == btIDebugDraw.class) LinearMathJNI.btIDebugDraw_clearLines(swigCPtr, this); else LinearMathJNI.btIDebugDraw_clearLinesSwigExplicitbtIDebugDraw(swigCPtr, this);
+  }
+
   public void flushLines() {
     if (getClass() == btIDebugDraw.class) LinearMathJNI.btIDebugDraw_flushLines(swigCPtr, this); else LinearMathJNI.btIDebugDraw_flushLinesSwigExplicitbtIDebugDraw(swigCPtr, this);
   }

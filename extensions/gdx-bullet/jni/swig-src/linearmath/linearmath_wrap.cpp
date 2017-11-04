@@ -661,7 +661,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_LinearMathJNI = NULL;
-    jmethodID director_method_ids[29];
+    jmethodID director_method_ids[30];
   }
 }
 
@@ -2860,18 +2860,42 @@ void SwigDirector_btIDebugDraw::drawPlane(btVector3 const &planeNormal, btScalar
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
 
-void SwigDirector_btIDebugDraw::flushLines() {
+void SwigDirector_btIDebugDraw::clearLines() {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
   
   if (!swig_override[26]) {
-    btIDebugDraw::flushLines();
+    btIDebugDraw::clearLines();
     return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[26], swigjobj);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in btIDebugDraw::clearLines ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
+void SwigDirector_btIDebugDraw::flushLines() {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[27]) {
+    btIDebugDraw::flushLines();
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[27], swigjobj);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -2969,6 +2993,9 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
       "drawPlane", "(Lcom/badlogic/gdx/math/Vector3;FLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Vector3;)V", NULL 
     },
     {
+      "clearLines", "()V", NULL 
+    },
+    {
       "flushLines", "()V", NULL 
     }
   };
@@ -2982,7 +3009,7 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 27; ++i) {
+    for (int i = 0; i < 28; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -3021,7 +3048,7 @@ void SwigDirector_btMotionState::getWorldTransform(btTransform &worldTrans) cons
     jworldTrans = gdx_takePoolObjectMatrix4(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxAutoCommitbtTransformAndReleaseMatrix4 auto_commit_worldTrans(jenv, jworldTrans, &worldTrans, "poolMatrix4");
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[27], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[28], swigjobj, jworldTrans);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -3049,7 +3076,7 @@ void SwigDirector_btMotionState::setWorldTransform(btTransform const &worldTrans
     jworldTrans = gdx_takePoolObjectMatrix4(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxPoolAutoReleaseMatrix4 autoRelease_jworldTrans(jenv, "poolMatrix4", jworldTrans);
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[28], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_method_ids[29], swigjobj, jworldTrans);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -6927,6 +6954,35 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1getEulerZYX(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3, jlong jarg4) {
+  btQuaternion *arg1 = (btQuaternion *) 0 ;
+  btScalar *arg2 = 0 ;
+  btScalar *arg3 = 0 ;
+  btScalar *arg4 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btQuaternion **)&jarg1; 
+  arg2 = *(btScalar **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btScalar & reference is null");
+    return ;
+  } 
+  arg3 = *(btScalar **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btScalar & reference is null");
+    return ;
+  } 
+  arg4 = *(btScalar **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btScalar & reference is null");
+    return ;
+  } 
+  ((btQuaternion const *)arg1)->getEulerZYX(*arg2,*arg3,*arg4);
+}
+
+
 SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1operatorAdditionAssignment(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jobject jresult = 0 ;
   btQuaternion *arg1 = (btQuaternion *) 0 ;
@@ -7056,6 +7112,22 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
   arg1 = *(btQuaternion **)&jarg1; 
   result = (btScalar)((btQuaternion const *)arg1)->length();
   jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1safeNormalize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btQuaternion *arg1 = (btQuaternion *) 0 ;
+  btQuaternion *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btQuaternion **)&jarg1; 
+  result = (btQuaternion *) &(arg1)->safeNormalize();
+  jresult = gdx_getReturnQuaternion(jenv);
+  gdx_setQuaternionFrombtQuaternion(jenv, jresult, result);
   return jresult;
 }
 
@@ -8634,7 +8706,61 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1diagonalize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3, jint jarg4) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1extractRotation_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3, jint jarg4) {
+  btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
+  btQuaternion *arg2 = 0 ;
+  btScalar arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMatrix3x3 **)&jarg1; 
+  btQuaternion local_arg2;
+  gdx_setbtQuaternionFromQuaternion(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
+  arg3 = (btScalar)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->extractRotation(*arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1extractRotation_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3) {
+  btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
+  btQuaternion *arg2 = 0 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMatrix3x3 **)&jarg1; 
+  btQuaternion local_arg2;
+  gdx_setbtQuaternionFromQuaternion(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
+  arg3 = (btScalar)jarg3; 
+  (arg1)->extractRotation(*arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1extractRotation_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
+  btQuaternion *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMatrix3x3 **)&jarg1; 
+  btQuaternion local_arg2;
+  gdx_setbtQuaternionFromQuaternion(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->extractRotation(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1diagonalize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3, jint jarg4) {
   btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
   btMatrix3x3 *arg2 = 0 ;
   btScalar arg3 ;
@@ -8651,6 +8777,40 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   arg3 = (btScalar)jarg3; 
   arg4 = (int)jarg4; 
   (arg1)->diagonalize(*arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1diagonalize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3) {
+  btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
+  btMatrix3x3 *arg2 = 0 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMatrix3x3 **)&jarg1; 
+  btMatrix3x3 local_arg2;
+  gdx_setbtMatrix3x3FromMatrix3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  arg3 = (btScalar)jarg3; 
+  (arg1)->diagonalize(*arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btMatrix3x3_1diagonalize_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btMatrix3x3 *arg1 = (btMatrix3x3 *) 0 ;
+  btMatrix3x3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btMatrix3x3 **)&jarg1; 
+  btMatrix3x3 local_arg2;
+  gdx_setbtMatrix3x3FromMatrix3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->diagonalize(*arg2);
 }
 
 
@@ -10964,6 +11124,28 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   arg5 = &local_arg5;
   gdxAutoCommitVector3 auto_commit_arg5(jenv, jarg5, &local_arg5);
   (arg1)->btIDebugDraw::drawPlane((btVector3 const &)*arg2,arg3,(btTransform const &)*arg4,(btVector3 const &)*arg5);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1clearLines(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  (arg1)->clearLines();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1clearLinesSwigExplicitbtIDebugDraw(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  (arg1)->btIDebugDraw::clearLines();
 }
 
 
@@ -14058,7 +14240,19 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btHashInt(JNIEnv *jenv, jclass jcls, jint jarg1) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btHashInt_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btHashInt *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btHashInt *)new btHashInt();
+  *(btHashInt **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btHashInt_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1) {
   jlong jresult = 0 ;
   int arg1 ;
   btHashInt *result = 0 ;
@@ -17159,6 +17353,61 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_BT_1MAX_1THREAD_1COUNT_1get(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (unsigned int)(unsigned int)BT_MAX_THREAD_COUNT;
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIsMainThread(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)btIsMainThread();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btThreadsAreRunning(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)btThreadsAreRunning();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetCurrentThreadIndex(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (unsigned int)btGetCurrentThreadIndex();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btResetThreadIndexCounter(JNIEnv *jenv, jclass jcls) {
+  (void)jenv;
+  (void)jcls;
+  btResetThreadIndexCounter();
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btSpinMutex(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   btSpinMutex *result = 0 ;
@@ -17252,6 +17501,237 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   result = (bool)btMutexTryLock(arg1);
   jresult = (jboolean)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_delete_1btIParallelForBody(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btIParallelForBody *arg1 = (btIParallelForBody *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btIParallelForBody **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIParallelForBody_1forLoop(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btIParallelForBody *arg1 = (btIParallelForBody *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIParallelForBody **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  ((btIParallelForBody const *)arg1)->forLoop(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_delete_1btITaskScheduler(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1getName(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  result = (char *)((btITaskScheduler const *)arg1)->getName();
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1getMaxNumThreads(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  result = (int)((btITaskScheduler const *)arg1)->getMaxNumThreads();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1getNumThreads(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  result = (int)((btITaskScheduler const *)arg1)->getNumThreads();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1setNumThreads(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setNumThreads(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1parallelFor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4, jlong jarg5, jobject jarg5_) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  btIParallelForBody *arg5 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg5_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = *(btIParallelForBody **)&jarg5;
+  if (!arg5) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btIParallelForBody const & reference is null");
+    return ;
+  } 
+  (arg1)->parallelFor(arg2,arg3,arg4,(btIParallelForBody const &)*arg5);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1activate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  (arg1)->activate();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btITaskScheduler_1deactivate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  (arg1)->deactivate();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btSetTaskScheduler(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btITaskScheduler *arg1 = (btITaskScheduler *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btITaskScheduler **)&jarg1; 
+  btSetTaskScheduler(arg1);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetTaskScheduler(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btITaskScheduler *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btITaskScheduler *)btGetTaskScheduler();
+  *(btITaskScheduler **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetSequentialTaskScheduler(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btITaskScheduler *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btITaskScheduler *)btGetSequentialTaskScheduler();
+  *(btITaskScheduler **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetOpenMPTaskScheduler(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btITaskScheduler *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btITaskScheduler *)btGetOpenMPTaskScheduler();
+  *(btITaskScheduler **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetTBBTaskScheduler(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btITaskScheduler *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btITaskScheduler *)btGetTBBTaskScheduler();
+  *(btITaskScheduler **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGetPPLTaskScheduler(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btITaskScheduler *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btITaskScheduler *)btGetPPLTaskScheduler();
+  *(btITaskScheduler **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btParallelFor(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2, jint jarg3, jlong jarg4, jobject jarg4_) {
+  int arg1 ;
+  int arg2 ;
+  int arg3 ;
+  btIParallelForBody *arg4 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg4_;
+  arg1 = (int)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = *(btIParallelForBody **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btIParallelForBody const & reference is null");
+    return ;
+  } 
+  btParallelFor(arg1,arg2,arg3,(btIParallelForBody const &)*arg4);
 }
 
 
@@ -18096,6 +18576,26 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1findLinearSearch2(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (int)((btAlignedObjectArray< btVector3 > const *)arg1)->findLinearSearch2((btVector3 const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1removeAtIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
   int arg2 ;
@@ -18560,6 +19060,25 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1findLinearSearch2(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  result = (int)((btAlignedObjectArray< btScalar > const *)arg1)->findLinearSearch2((float const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1removeAtIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
   int arg2 ;
@@ -18669,7 +19188,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   static struct {
     const char *method;
     const char *signature;
-  } methods[29] = {
+  } methods[30] = {
     {
       "SwigDirector_btIDebugDraw_getDefaultColors", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;)J" 
     },
@@ -18747,6 +19266,9 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
     },
     {
       "SwigDirector_btIDebugDraw_drawPlane", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;Lcom/badlogic/gdx/math/Vector3;FLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Vector3;)V" 
+    },
+    {
+      "SwigDirector_btIDebugDraw_clearLines", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;)V" 
     },
     {
       "SwigDirector_btIDebugDraw_flushLines", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;)V" 

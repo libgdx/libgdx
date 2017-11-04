@@ -2249,6 +2249,30 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_bt
 }
 
 
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btStringArray_1findLinearSearch2(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< char * > *arg1 = (btAlignedObjectArray< char * > *) 0 ;
+  char **arg2 = 0 ;
+  char *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< char * > **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    temp2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!temp2) return 0;
+  }
+  arg2 = &temp2;
+  result = (int)((btAlignedObjectArray< char * > const *)arg1)->findLinearSearch2((char *const &)*arg2);
+  jresult = (jint)result; 
+  if (arg2 && *arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)*arg2);
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btStringArray_1removeAtIndex(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btAlignedObjectArray< char * > *arg1 = (btAlignedObjectArray< char * > *) 0 ;
   int arg2 ;
@@ -28327,6 +28351,118 @@ SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointLowerLimit = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointLowerLimit);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointUpperLimit = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointUpperLimit);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointMaxForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointMaxForce = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointMaxForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointMaxForce);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointMaxVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jdouble jarg2) {
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->m_jointMaxVelocity = arg2;
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1jointMaxVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jdouble jresult = 0 ;
+  Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkDoubleData **)&jarg1; 
+  result = (double) ((arg1)->m_jointMaxVelocity);
+  jresult = (jdouble)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkDoubleData_1linkName_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   Bullet::btMultiBodyLinkDoubleData *arg1 = (Bullet::btMultiBodyLinkDoubleData *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -28987,6 +29123,118 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_
   (void)jarg1_;
   arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
   result = (float) ((arg1)->m_jointFriction);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointLowerLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointLowerLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointLowerLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointLowerLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointUpperLimit_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointUpperLimit = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointUpperLimit_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointUpperLimit);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointMaxForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointMaxForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointMaxForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointMaxForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointMaxVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->m_jointMaxVelocity = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btMultiBodyLinkFloatData_1jointMaxVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  Bullet::btMultiBodyLinkFloatData *arg1 = (Bullet::btMultiBodyLinkFloatData *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(Bullet::btMultiBodyLinkFloatData **)&jarg1; 
+  result = (float) ((arg1)->m_jointMaxVelocity);
   jresult = (jfloat)result; 
   return jresult;
 }

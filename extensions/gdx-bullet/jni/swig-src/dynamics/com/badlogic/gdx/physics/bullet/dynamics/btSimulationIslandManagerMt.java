@@ -204,8 +204,12 @@ public class btSimulationIslandManagerMt extends btSimulationIslandManager {
   
   }
 
-  public static void defaultIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t islands, btSimulationIslandManagerMt.IslandCallback callback) {
-    DynamicsJNI.btSimulationIslandManagerMt_defaultIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t.getCPtr(islands), btSimulationIslandManagerMt.IslandCallback.getCPtr(callback), callback);
+  public static void serialIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t islandsPtr, btSimulationIslandManagerMt.IslandCallback callback) {
+    DynamicsJNI.btSimulationIslandManagerMt_serialIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t.getCPtr(islandsPtr), btSimulationIslandManagerMt.IslandCallback.getCPtr(callback), callback);
+  }
+
+  public static void parallelIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t islandsPtr, btSimulationIslandManagerMt.IslandCallback callback) {
+    DynamicsJNI.btSimulationIslandManagerMt_parallelIslandDispatch(SWIGTYPE_p_btAlignedObjectArrayT_btSimulationIslandManagerMt__Island_p_t.getCPtr(islandsPtr), btSimulationIslandManagerMt.IslandCallback.getCPtr(callback), callback);
   }
 
   public btSimulationIslandManagerMt() {

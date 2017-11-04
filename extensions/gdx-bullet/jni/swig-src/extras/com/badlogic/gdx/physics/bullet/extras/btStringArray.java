@@ -205,6 +205,10 @@ public class btStringArray extends BulletBase {
     return ExtrasJNI.btStringArray_findLinearSearch(swigCPtr, this, key);
   }
 
+  public int findLinearSearch2(String key) {
+    return ExtrasJNI.btStringArray_findLinearSearch2(swigCPtr, this, key);
+  }
+
   public void removeAtIndex(int index) {
     ExtrasJNI.btStringArray_removeAtIndex(swigCPtr, this, index);
   }

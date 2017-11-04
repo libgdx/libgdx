@@ -1362,6 +1362,22 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_inversedynamics_Inv
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_inversedynamics_InverseDynamicsJNI_skew(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2) {
+  vec3 *arg1 = 0 ;
+  mat33 *arg2 = (mat33 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(vec3 **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "vec3 & reference is null");
+    return ;
+  } 
+  arg2 = *(mat33 **)&jarg2; 
+  btInverseDynamicsBullet3::skew(*arg1,arg2);
+}
+
+
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_inversedynamics_InverseDynamicsJNI_maxAbs_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jfloat jresult = 0 ;
   vecx *arg1 = 0 ;

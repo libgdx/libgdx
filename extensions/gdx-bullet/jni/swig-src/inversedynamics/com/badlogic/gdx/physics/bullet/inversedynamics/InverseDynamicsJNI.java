@@ -22,6 +22,7 @@ public class InverseDynamicsJNI {
   public final static native void setZero__SWIG_0(long jarg1);
   public final static native void setZero__SWIG_1(long jarg1);
   public final static native void setZero__SWIG_2(long jarg1);
+  public final static native void skew(long jarg1, long jarg2);
   public final static native float maxAbs__SWIG_0(long jarg1);
   public final static native float maxAbs__SWIG_1(long jarg1);
   public final static native void getVecMatFromDH(float jarg1, float jarg2, float jarg3, float jarg4, long jarg5, long jarg6);

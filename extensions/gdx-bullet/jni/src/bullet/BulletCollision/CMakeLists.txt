@@ -15,6 +15,7 @@ SET(BulletCollision_SRCS
 	CollisionDispatch/btBox2dBox2dCollisionAlgorithm.cpp
 	CollisionDispatch/btBoxBoxDetector.cpp
 	CollisionDispatch/btCollisionDispatcher.cpp
+	CollisionDispatch/btCollisionDispatcherMt.cpp
 	CollisionDispatch/btCollisionObject.cpp
 	CollisionDispatch/btCollisionWorld.cpp
 	CollisionDispatch/btCollisionWorldImporter.cpp
@@ -123,6 +124,7 @@ SET(CollisionDispatch_HDRS
 	CollisionDispatch/btCollisionConfiguration.h
 	CollisionDispatch/btCollisionCreateFunc.h
 	CollisionDispatch/btCollisionDispatcher.h
+	CollisionDispatch/btCollisionDispatcherMt.h
 	CollisionDispatch/btCollisionObject.h
 	CollisionDispatch/btCollisionObjectWrapper.h
 	CollisionDispatch/btCollisionWorld.h

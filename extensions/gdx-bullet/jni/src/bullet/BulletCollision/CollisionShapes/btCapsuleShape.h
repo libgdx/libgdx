@@ -164,11 +164,17 @@ SIMD_FORCE_INLINE	int	btCapsuleShape::calculateSerializeBufferSize() const
 SIMD_FORCE_INLINE	const char*	btCapsuleShape::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 	btCapsuleShapeData* shapeData = (btCapsuleShapeData*) dataBuffer;
-	
+
 	btConvexInternalShape::serialize(&shapeData->m_convexInternalShapeData,serializer);
 
 	shapeData->m_upAxis = m_upAxis;
-	
+
+	// Fill padding with zeros to appease msan.
+	shapeData->m_padding[0] = 0;
+	shapeData->m_padding[1] = 0;
+	shapeData->m_padding[2] = 0;
+	shapeData->m_padding[3] = 0;
+
 	return "btCapsuleShapeData";
 }
 
