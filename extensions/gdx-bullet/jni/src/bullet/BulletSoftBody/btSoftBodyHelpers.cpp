@@ -539,7 +539,7 @@ void btSoftBodyHelpers::ReoptimizeLinkOrder(btSoftBody *psb /* This can be repla
 {
 	int i, nLinks=psb->m_links.size(), nNodes=psb->m_nodes.size();
 	btSoftBody::Link *lr;
-	ptrdiff_t ar, br;
+	std::ptrdiff_t ar, br;
 	btSoftBody::Node *node0 = &(psb->m_nodes[0]);
 	btSoftBody::Node *node1 = &(psb->m_nodes[1]);
 	LinkDepsPtr_t linkDep;

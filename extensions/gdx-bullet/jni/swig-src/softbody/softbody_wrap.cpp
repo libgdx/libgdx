@@ -14600,17 +14600,17 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyLinkData *arg1 = (SoftBodyLinkData *) 0 ;
-  ptrdiff_t *arg2 ;
+  std::ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyLinkData **)&jarg1; 
-  arg2 = *(ptrdiff_t **)&jarg2; 
+  arg2 = *(std::ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)2; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
+    std::ptrdiff_t *b = (std::ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)2; ii++) b[ii] = *((std::ptrdiff_t *) arg2 + ii);
   }
   
 }
@@ -14619,14 +14619,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyLinkData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SoftBodyLinkData *arg1 = (SoftBodyLinkData *) 0 ;
-  ptrdiff_t *result = 0 ;
+  std::ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyLinkData **)&jarg1; 
-  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
-  *(ptrdiff_t **)&jresult = result; 
+  result = (std::ptrdiff_t *)(std::ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(std::ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -14769,17 +14769,17 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyFaceData *arg1 = (SoftBodyFaceData *) 0 ;
-  ptrdiff_t *arg2 ;
+  std::ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyFaceData **)&jarg1; 
-  arg2 = *(ptrdiff_t **)&jarg2; 
+  arg2 = *(std::ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
+    std::ptrdiff_t *b = (std::ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)3; ii++) b[ii] = *((std::ptrdiff_t *) arg2 + ii);
   }
   
 }
@@ -14788,14 +14788,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyFaceData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SoftBodyFaceData *arg1 = (SoftBodyFaceData *) 0 ;
-  ptrdiff_t *result = 0 ;
+  std::ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyFaceData **)&jarg1; 
-  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
-  *(ptrdiff_t **)&jresult = result; 
+  result = (std::ptrdiff_t *)(std::ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(std::ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -14915,17 +14915,17 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftBodyTetraData *arg1 = (SoftBodyTetraData *) 0 ;
-  ptrdiff_t *arg2 ;
+  std::ptrdiff_t *arg2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyTetraData **)&jarg1; 
-  arg2 = *(ptrdiff_t **)&jarg2; 
+  arg2 = *(std::ptrdiff_t **)&jarg2; 
   {
     size_t ii;
-    ptrdiff_t *b = (ptrdiff_t *) arg1->m_nodeIndices;
-    for (ii = 0; ii < (size_t)4; ii++) b[ii] = *((ptrdiff_t *) arg2 + ii);
+    std::ptrdiff_t *b = (std::ptrdiff_t *) arg1->m_nodeIndices;
+    for (ii = 0; ii < (size_t)4; ii++) b[ii] = *((std::ptrdiff_t *) arg2 + ii);
   }
   
 }
@@ -14934,14 +14934,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftBodyTetraData_1nodeIndices_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SoftBodyTetraData *arg1 = (SoftBodyTetraData *) 0 ;
-  ptrdiff_t *result = 0 ;
+  std::ptrdiff_t *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftBodyTetraData **)&jarg1; 
-  result = (ptrdiff_t *)(ptrdiff_t *) ((arg1)->m_nodeIndices);
-  *(ptrdiff_t **)&jresult = result; 
+  result = (std::ptrdiff_t *)(std::ptrdiff_t *) ((arg1)->m_nodeIndices);
+  *(std::ptrdiff_t **)&jresult = result; 
   return jresult;
 }
 
@@ -15198,16 +15198,16 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
 
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
   SoftRigidAnchorData *arg1 = (SoftRigidAnchorData *) 0 ;
-  ptrdiff_t arg2 ;
-  ptrdiff_t *argp2 ;
+  std::ptrdiff_t arg2 ;
+  std::ptrdiff_t *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftRigidAnchorData **)&jarg1; 
-  argp2 = *(ptrdiff_t **)&jarg2; 
+  argp2 = *(std::ptrdiff_t **)&jarg2; 
   if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null ptrdiff_t");
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null std::ptrdiff_t");
     return ;
   }
   arg2 = *argp2; 
@@ -15218,14 +15218,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_SoftRigidAnchorData_1nodeIndex_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SoftRigidAnchorData *arg1 = (SoftRigidAnchorData *) 0 ;
-  ptrdiff_t result;
+  std::ptrdiff_t result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SoftRigidAnchorData **)&jarg1; 
   result =  ((arg1)->m_nodeIndex);
-  *(ptrdiff_t **)&jresult = new ptrdiff_t((const ptrdiff_t &)result); 
+  *(std::ptrdiff_t **)&jresult = new std::ptrdiff_t((const std::ptrdiff_t &)result); 
   return jresult;
 }
 

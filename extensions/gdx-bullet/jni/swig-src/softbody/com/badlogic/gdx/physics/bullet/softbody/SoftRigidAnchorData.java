@@ -96,12 +96,12 @@ public class SoftRigidAnchorData extends BulletBase {
     return (cPtr == 0) ? null : new btRigidBodyFloatData(cPtr, false);
   }
 
-  public void setNodeIndex(SWIGTYPE_p_ptrdiff_t value) {
-    SoftbodyJNI.SoftRigidAnchorData_nodeIndex_set(swigCPtr, this, SWIGTYPE_p_ptrdiff_t.getCPtr(value));
+  public void setNodeIndex(SWIGTYPE_p_std__ptrdiff_t value) {
+    SoftbodyJNI.SoftRigidAnchorData_nodeIndex_set(swigCPtr, this, SWIGTYPE_p_std__ptrdiff_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_ptrdiff_t getNodeIndex() {
-    return new SWIGTYPE_p_ptrdiff_t(SoftbodyJNI.SoftRigidAnchorData_nodeIndex_get(swigCPtr, this), true);
+  public SWIGTYPE_p_std__ptrdiff_t getNodeIndex() {
+    return new SWIGTYPE_p_std__ptrdiff_t(SoftbodyJNI.SoftRigidAnchorData_nodeIndex_get(swigCPtr, this), true);
   }
 
   public void setC2(float value) {
