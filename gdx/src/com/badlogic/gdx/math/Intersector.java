@@ -620,7 +620,7 @@ public final class Intersector {
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
-		if (triangles.length % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+		if (triangles.length % 9 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
 		for (int i = 0; i < triangles.length - 6; i += 9) {
 			boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
