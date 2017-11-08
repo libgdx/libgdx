@@ -1333,7 +1333,7 @@ void btCollisionWorld::debugDrawObject(const btTransform& worldTransform, const 
 	// Draw a small simplex at the center of the object
 	if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawFrames)
 	{
-		getDebugDrawer()->drawTransform(worldTransform,1);
+		getDebugDrawer()->drawTransform(worldTransform,.1);
 	}
 
 	if (shape->getShapeType() == COMPOUND_SHAPE_PROXYTYPE)
@@ -1514,6 +1514,8 @@ void	btCollisionWorld::debugDrawWorld()
 {
 	if (getDebugDrawer())
 	{
+		getDebugDrawer()->clearLines();
+
 		btIDebugDraw::DefaultColors defaultColors = getDebugDrawer()->getDefaultColors();
 
 		if ( getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)

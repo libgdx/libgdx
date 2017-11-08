@@ -14,7 +14,7 @@
 // Ogre (www.ogre3d.org).
 
 #include "btQuickprof.h"
-
+#include "btThreads.h"
 
 
 
@@ -218,7 +218,7 @@ unsigned long long int btClock::getTimeNanoseconds()
 		QueryPerformanceCounter(&currentTime);
 		elapsedTime.QuadPart = currentTime.QuadPart - 
 			m_data->mStartTime.QuadPart;
-		elapsedTime.QuadPart *= 1e9;
+		elapsedTime.QuadPart *= 1000000000;
 		elapsedTime.QuadPart /= m_data->mClockFrequency.QuadPart;
 
 		return (unsigned long long) elapsedTime.QuadPart;
@@ -287,7 +287,7 @@ static btClock gProfileClock;
 
 inline void Profile_Get_Ticks(unsigned long int * ticks)
 {
-	*ticks = gProfileClock.getTimeMicroseconds();
+	*ticks = (unsigned long int)gProfileClock.getTimeMicroseconds();
 }
 
 inline float Profile_Get_Tick_Rate(void)
@@ -518,7 +518,7 @@ CProfileIterator *	CProfileManager::Get_Iterator( void )
 { 
 
 		int threadIndex = btQuickprofGetCurrentThreadIndex2();
-		if (threadIndex<0)
+		if ((threadIndex<0) || threadIndex >= BT_QUICKPROF_MAX_THREAD_COUNT)
 			return 0;
 
 		return new CProfileIterator( &gRoots[threadIndex]); 
@@ -549,7 +549,7 @@ void						CProfileManager::CleanupMemory(void)
 void	CProfileManager::Start_Profile( const char * name )
 {
 	int threadIndex = btQuickprofGetCurrentThreadIndex2();
-	if (threadIndex<0)
+	if ((threadIndex<0) || threadIndex >= BT_QUICKPROF_MAX_THREAD_COUNT)
 		return;
 
 	if (name != gCurrentNodes[threadIndex]->Get_Name()) {
@@ -566,7 +566,7 @@ void	CProfileManager::Start_Profile( const char * name )
 void	CProfileManager::Stop_Profile( void )
 {
 	int threadIndex = btQuickprofGetCurrentThreadIndex2();
-	if (threadIndex<0)
+	if ((threadIndex<0) || threadIndex >= BT_QUICKPROF_MAX_THREAD_COUNT)
 		return;
 
 	// Return will indicate whether we should back up to our parent (we may
@@ -590,7 +590,7 @@ void	CProfileManager::Reset( void )
 {
 	gProfileClock.reset();
 	int threadIndex = btQuickprofGetCurrentThreadIndex2();
-	if (threadIndex<0)
+	if ((threadIndex<0) || threadIndex >= BT_QUICKPROF_MAX_THREAD_COUNT)
 		return;
 	gRoots[threadIndex].Reset();
 	gRoots[threadIndex].Call();
@@ -685,9 +685,16 @@ void	CProfileManager::dumpAll()
 
 unsigned int btQuickprofGetCurrentThreadIndex2()
 {
+#if BT_THREADSAFE
+    return btGetCurrentThreadIndex();
+#else // #if BT_THREADSAFE
 	const unsigned int kNullIndex = ~0U;
 #ifdef _WIN32
-	__declspec( thread ) static unsigned int sThreadIndex = kNullIndex;
+    #if defined(__MINGW32__) || defined(__MINGW64__)
+        static __thread unsigned int sThreadIndex = kNullIndex;
+    #else
+        __declspec( thread ) static unsigned int sThreadIndex = kNullIndex;
+    #endif
 #else
 #ifdef __APPLE__
 	#if TARGET_OS_IPHONE
@@ -713,6 +720,7 @@ unsigned int btQuickprofGetCurrentThreadIndex2()
 		sThreadIndex = gThreadCounter++;
 	}
 	return sThreadIndex;
+#endif // #else // #if BT_THREADSAFE
 }
 
 void	btEnterProfileZoneDefault(const char* name)

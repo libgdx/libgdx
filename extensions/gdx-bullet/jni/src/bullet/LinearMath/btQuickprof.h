@@ -65,9 +65,11 @@ btLeaveProfileZoneFunc* btGetCurrentLeaveProfileZoneFunc();
 void btSetCustomEnterProfileZoneFunc(btEnterProfileZoneFunc* enterFunc);
 void btSetCustomLeaveProfileZoneFunc(btLeaveProfileZoneFunc* leaveFunc);
 
-
+#ifndef BT_NO_PROFILE // FIX redefinition
 //To disable built-in profiling, please comment out next line
 //#define BT_NO_PROFILE 1
+#endif //BT_NO_PROFILE
+
 #ifndef BT_NO_PROFILE
 //btQuickprofGetCurrentThreadIndex will return -1 if thread index cannot be determined, 
 //otherwise returns thread index in range [0..maxThreads]

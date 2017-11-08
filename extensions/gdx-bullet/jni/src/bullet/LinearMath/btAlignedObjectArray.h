@@ -475,6 +475,24 @@ protected:
 		}
 		return index;
 	}
+    
+    // If the key is not in the array, return -1 instead of 0,
+    // since 0 also means the first element in the array.
+    int	findLinearSearch2(const T& key) const
+    {
+        int index=-1;
+        int i;
+        
+        for (i=0;i<size();i++)
+        {
+            if (m_data[i] == key)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 
     void removeAtIndex(int index)
     {

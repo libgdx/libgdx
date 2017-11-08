@@ -664,6 +664,11 @@ SIMD_FORCE_INLINE const char* btGeneric6DofSpring2Constraint::serialize(void* da
 
 	dof->m_rotateOrder = m_rotateOrder;
 
+	dof->m_padding1[0] = 0;
+	dof->m_padding1[1] = 0;
+	dof->m_padding1[2] = 0;
+	dof->m_padding1[3] = 0;
+
 	return btGeneric6DofSpring2ConstraintDataName;
 }
 

@@ -374,7 +374,7 @@ void	btDiscreteDynamicsWorld::synchronizeSingleMotionState(btRigidBody* body)
 
 void	btDiscreteDynamicsWorld::synchronizeMotionStates()
 {
-	BT_PROFILE("synchronizeMotionStates");
+//	BT_PROFILE("synchronizeMotionStates");
 	if (m_synchronizeAllMotionStates)
 	{
 		//iterate  over all collision objects
@@ -402,7 +402,6 @@ int	btDiscreteDynamicsWorld::stepSimulation( btScalar timeStep,int maxSubSteps, 
 {
 	startProfiling(timeStep);
 
-	BT_PROFILE("stepSimulation");
 
 	int numSimulationSubSteps = 0;
 
@@ -1511,6 +1510,9 @@ void	btDiscreteDynamicsWorld::serializeDynamicsWorldInfo(btSerializer* serialize
 		worldInfo->m_solverInfo.m_minimumSolverBatchSize = getSolverInfo().m_minimumSolverBatchSize;
 
 		worldInfo->m_solverInfo.m_splitImpulse = getSolverInfo().m_splitImpulse;
+
+		// Fill padding with zeros to appease msan.
+		memset(worldInfo->m_solverInfo.m_padding, 0, sizeof(worldInfo->m_solverInfo.m_padding));
 
 #ifdef BT_USE_DOUBLE_PRECISION
 		const char* structType = "btDynamicsWorldDoubleData";

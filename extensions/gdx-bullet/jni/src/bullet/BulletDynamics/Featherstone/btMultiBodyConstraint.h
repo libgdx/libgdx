@@ -183,6 +183,12 @@ public:
 
 	virtual void debugDraw(class btIDebugDraw* drawer)=0;
 
+	virtual void setGearRatio(btScalar ratio) {}
+	virtual void setGearAuxLink(int gearAuxLink) {}
+	virtual void setRelativePositionTarget(btScalar relPosTarget){}
+	virtual void setErp(btScalar erp){}
+	
+	
 };
 
 #endif //BT_MULTIBODY_CONSTRAINT_H
