@@ -24,6 +24,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletCollision/CollisionDispatch/btBoxBoxCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btBoxBoxDetector.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.cpp\
+	src/bullet/BulletCollision/CollisionDispatch/btCollisionDispatcherMt.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionObject.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionWorld.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionWorldImporter.cpp\
@@ -131,6 +132,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyFixedConstraint.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyGearConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointLimitConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointMotor.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyPoint2Point.cpp\
@@ -160,6 +162,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btPolarDecomposition.cpp\
 	src/bullet/LinearMath/btQuickprof.cpp\
 	src/bullet/LinearMath/btSerializer.cpp\
+	src/bullet/LinearMath/btSerializer64.cpp\
 	src/bullet/LinearMath/btThreads.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
 	src/custom/gdx/collision/ClosestNotMeConvexResultCallback.cpp\
