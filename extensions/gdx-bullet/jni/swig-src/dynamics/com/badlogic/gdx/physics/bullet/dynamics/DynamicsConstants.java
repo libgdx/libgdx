@@ -29,4 +29,7 @@ public interface DynamicsConstants {
   public final static int BT_6DOF_FLAGS_AXIS_SHIFT2 = 4;
   public final static int _BT_USE_CENTER_LIMIT_ = 1;
   public final static String btHingeConstraintDataName = "btHingeConstraintFloatData";
+  public final static String btGearConstraintDataName = "btGearConstraintFloatData";
+  public final static String btMultiBodyDataName = "btMultiBodyFloatData";
+  public final static String btMultiBodyLinkDataName = "btMultiBodyLinkFloatData";
 }

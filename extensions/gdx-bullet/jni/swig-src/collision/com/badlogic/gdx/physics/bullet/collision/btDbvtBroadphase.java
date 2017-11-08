@@ -250,11 +250,6 @@ public class btDbvtBroadphase extends btBroadphaseInterface {
     CollisionJNI.btDbvtBroadphase_rayTest__SWIG_2(swigCPtr, this, rayFrom, rayTo, btBroadphaseRayCallback.getCPtr(rayCallback), rayCallback);
   }
 
-  public btOverlappingPairCache getOverlappingPairCache() {
-    long cPtr = CollisionJNI.btDbvtBroadphase_getOverlappingPairCache__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
-  }
-
   public void performDeferredRemoval(btDispatcher dispatcher) {
     CollisionJNI.btDbvtBroadphase_performDeferredRemoval(swigCPtr, this, btDispatcher.getCPtr(dispatcher), dispatcher);
   }

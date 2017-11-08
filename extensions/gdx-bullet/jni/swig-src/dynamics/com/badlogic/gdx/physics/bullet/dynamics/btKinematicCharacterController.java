@@ -59,6 +59,38 @@ public class btKinematicCharacterController extends btCharacterControllerInterfa
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return DynamicsJNI.btKinematicCharacterController_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    DynamicsJNI.btKinematicCharacterController_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return DynamicsJNI.btKinematicCharacterController_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    DynamicsJNI.btKinematicCharacterController_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return DynamicsJNI.btKinematicCharacterController_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    DynamicsJNI.btKinematicCharacterController_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return DynamicsJNI.btKinematicCharacterController_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    DynamicsJNI.btKinematicCharacterController_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public btKinematicCharacterController(btPairCachingGhostObject ghostObject, btConvexShape convexShape, float stepHeight, Vector3 up) {
     this(DynamicsJNI.new_btKinematicCharacterController__SWIG_0(btPairCachingGhostObject.getCPtr(ghostObject), ghostObject, btConvexShape.getCPtr(convexShape), convexShape, stepHeight, up), true);
   }

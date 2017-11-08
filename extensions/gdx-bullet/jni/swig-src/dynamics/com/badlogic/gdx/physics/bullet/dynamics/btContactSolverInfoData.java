@@ -147,6 +147,22 @@ public class btContactSolverInfoData extends BulletBase {
     return DynamicsJNI.btContactSolverInfoData_globalCfm_get(swigCPtr, this);
   }
 
+  public void setFrictionERP(float value) {
+    DynamicsJNI.btContactSolverInfoData_frictionERP_set(swigCPtr, this, value);
+  }
+
+  public float getFrictionERP() {
+    return DynamicsJNI.btContactSolverInfoData_frictionERP_get(swigCPtr, this);
+  }
+
+  public void setFrictionCFM(float value) {
+    DynamicsJNI.btContactSolverInfoData_frictionCFM_set(swigCPtr, this, value);
+  }
+
+  public float getFrictionCFM() {
+    return DynamicsJNI.btContactSolverInfoData_frictionCFM_get(swigCPtr, this);
+  }
+
   public void setSplitImpulse(int value) {
     DynamicsJNI.btContactSolverInfoData_splitImpulse_set(swigCPtr, this, value);
   }
@@ -233,6 +249,14 @@ public class btContactSolverInfoData extends BulletBase {
 
   public float getLeastSquaresResidualThreshold() {
     return DynamicsJNI.btContactSolverInfoData_leastSquaresResidualThreshold_get(swigCPtr, this);
+  }
+
+  public void setRestitutionVelocityThreshold(float value) {
+    DynamicsJNI.btContactSolverInfoData_restitutionVelocityThreshold_set(swigCPtr, this, value);
+  }
+
+  public float getRestitutionVelocityThreshold() {
+    return DynamicsJNI.btContactSolverInfoData_restitutionVelocityThreshold_get(swigCPtr, this);
   }
 
   public btContactSolverInfoData() {

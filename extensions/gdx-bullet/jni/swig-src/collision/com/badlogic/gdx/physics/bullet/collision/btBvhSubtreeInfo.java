@@ -58,6 +58,38 @@ public class btBvhSubtreeInfo extends BulletBase {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btBvhSubtreeInfo_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btBvhSubtreeInfo_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btBvhSubtreeInfo_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btBvhSubtreeInfo_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btBvhSubtreeInfo_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btBvhSubtreeInfo_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btBvhSubtreeInfo_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btBvhSubtreeInfo_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public void setQuantizedAabbMin(int[] value) {
     CollisionJNI.btBvhSubtreeInfo_quantizedAabbMin_set(swigCPtr, this, value);
   }

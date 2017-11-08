@@ -58,6 +58,10 @@ public class btBroadphasePairSortPredicate extends BulletBase {
 		super.delete();
 	}
 
+  public boolean operatorFunctionCall(btBroadphasePair a, btBroadphasePair b) {
+    return CollisionJNI.btBroadphasePairSortPredicate_operatorFunctionCall(swigCPtr, this, a, b);
+  }
+
   public btBroadphasePairSortPredicate() {
     this(CollisionJNI.new_btBroadphasePairSortPredicate(), true);
   }

@@ -59,6 +59,38 @@ public class btSolverConstraint extends BulletBase {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return DynamicsJNI.btSolverConstraint_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    DynamicsJNI.btSolverConstraint_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return DynamicsJNI.btSolverConstraint_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    DynamicsJNI.btSolverConstraint_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return DynamicsJNI.btSolverConstraint_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    DynamicsJNI.btSolverConstraint_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return DynamicsJNI.btSolverConstraint_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    DynamicsJNI.btSolverConstraint_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public void setRelpos1CrossNormal(btVector3 value) {
     DynamicsJNI.btSolverConstraint_relpos1CrossNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }

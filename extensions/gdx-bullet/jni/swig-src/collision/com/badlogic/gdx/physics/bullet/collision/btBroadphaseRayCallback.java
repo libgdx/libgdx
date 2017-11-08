@@ -98,7 +98,7 @@ public class btBroadphaseRayCallback extends btBroadphaseAabbCallback {
     return CollisionJNI.btBroadphaseRayCallback_lambda_max_get(swigCPtr, this);
   }
 
-  public btBroadphaseRayCallback() {
+  protected btBroadphaseRayCallback() {
     this(CollisionJNI.new_btBroadphaseRayCallback(), true);
     CollisionJNI.btBroadphaseRayCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }

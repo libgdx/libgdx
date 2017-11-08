@@ -12,11 +12,14 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.physics.bullet.inversedynamics.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.bullet.inversedynamics.MultiBodyTree;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btContactSolverInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 
 public class btMultiBodyTreeCreator extends MultiBodyTreeCreator {
 	private long swigCPtr;
@@ -65,12 +68,12 @@ public class btMultiBodyTreeCreator extends MultiBodyTreeCreator {
     this(ExtrasJNI.new_btMultiBodyTreeCreator(), true);
   }
 
-  public int createFromBtMultiBody(SWIGTYPE_p_btMultiBody btmb, boolean verbose) {
-    return ExtrasJNI.btMultiBodyTreeCreator_createFromBtMultiBody__SWIG_0(swigCPtr, this, SWIGTYPE_p_btMultiBody.getCPtr(btmb), verbose);
+  public int createFromBtMultiBody(btMultiBody btmb, boolean verbose) {
+    return ExtrasJNI.btMultiBodyTreeCreator_createFromBtMultiBody__SWIG_0(swigCPtr, this, btMultiBody.getCPtr(btmb), btmb, verbose);
   }
 
-  public int createFromBtMultiBody(SWIGTYPE_p_btMultiBody btmb) {
-    return ExtrasJNI.btMultiBodyTreeCreator_createFromBtMultiBody__SWIG_1(swigCPtr, this, SWIGTYPE_p_btMultiBody.getCPtr(btmb));
+  public int createFromBtMultiBody(btMultiBody btmb) {
+    return ExtrasJNI.btMultiBodyTreeCreator_createFromBtMultiBody__SWIG_1(swigCPtr, this, btMultiBody.getCPtr(btmb), btmb);
   }
 
 }

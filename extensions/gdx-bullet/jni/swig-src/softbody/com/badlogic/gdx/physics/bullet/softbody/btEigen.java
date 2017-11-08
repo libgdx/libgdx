@@ -60,12 +60,12 @@ public class btEigen extends BulletBase {
 		super.delete();
 	}
 
-  public static int system(Matrix3 a, SWIGTYPE_p_btMatrix3x3 vectors, btVector3 values) {
-    return SoftbodyJNI.btEigen_system__SWIG_0(a, SWIGTYPE_p_btMatrix3x3.getCPtr(vectors), btVector3.getCPtr(values), values);
+  public static int system(Matrix3 a, btMatrix3x3 vectors, btVector3 values) {
+    return SoftbodyJNI.btEigen_system__SWIG_0(a, btMatrix3x3.getCPtr(vectors), vectors, btVector3.getCPtr(values), values);
   }
 
-  public static int system(Matrix3 a, SWIGTYPE_p_btMatrix3x3 vectors) {
-    return SoftbodyJNI.btEigen_system__SWIG_1(a, SWIGTYPE_p_btMatrix3x3.getCPtr(vectors));
+  public static int system(Matrix3 a, btMatrix3x3 vectors) {
+    return SoftbodyJNI.btEigen_system__SWIG_1(a, btMatrix3x3.getCPtr(vectors), vectors);
   }
 
   public btEigen() {

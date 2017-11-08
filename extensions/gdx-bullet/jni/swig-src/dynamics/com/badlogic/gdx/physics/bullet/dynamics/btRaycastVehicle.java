@@ -218,7 +218,11 @@ public class btRaycastVehicle extends btActionInterface {
   }
 
   public btWheelInfo getWheelInfo(int index) {
-    return new btWheelInfo(DynamicsJNI.btRaycastVehicle_getWheelInfo__SWIG_0(swigCPtr, this, index), false);
+    return new btWheelInfo(DynamicsJNI.btRaycastVehicle_getWheelInfo(swigCPtr, this, index), false);
+  }
+
+  public btWheelInfo getWheelInfoConst(int index) {
+    return new btWheelInfo(DynamicsJNI.btRaycastVehicle_getWheelInfoConst(swigCPtr, this, index), false);
   }
 
   public void updateWheelTransformsWS(btWheelInfo wheel, boolean interpolatedTransform) {
@@ -246,7 +250,11 @@ public class btRaycastVehicle extends btActionInterface {
   }
 
   public btRigidBody getRigidBody() {
-	return btRigidBody.getInstance(DynamicsJNI.btRaycastVehicle_getRigidBody__SWIG_0(swigCPtr, this), false);
+	return btRigidBody.getInstance(DynamicsJNI.btRaycastVehicle_getRigidBody(swigCPtr, this), false);
+}
+
+  public btRigidBody getRigidBodyConst() {
+	return btRigidBody.getInstance(DynamicsJNI.btRaycastVehicle_getRigidBodyConst(swigCPtr, this), false);
 }
 
   public int getRightAxis() {

@@ -79,7 +79,11 @@ public class btUnionFind extends BulletBase {
   }
 
   public btElement getElement(int index) {
-    return new btElement(CollisionJNI.btUnionFind_getElement__SWIG_0(swigCPtr, this, index), false);
+    return new btElement(CollisionJNI.btUnionFind_getElement(swigCPtr, this, index), false);
+  }
+
+  public btElement getElementConst(int index) {
+    return new btElement(CollisionJNI.btUnionFind_getElementConst(swigCPtr, this, index), false);
   }
 
   public void allocate(int N) {

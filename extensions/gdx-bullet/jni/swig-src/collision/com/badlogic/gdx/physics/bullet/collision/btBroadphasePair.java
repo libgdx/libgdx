@@ -87,6 +87,38 @@ public class btBroadphasePair extends BulletBase {
     this(CollisionJNI.new_btBroadphasePair__SWIG_0(), true);
   }
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btBroadphasePair_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btBroadphasePair_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btBroadphasePair_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btBroadphasePair_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btBroadphasePair_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btBroadphasePair_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btBroadphasePair_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btBroadphasePair_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public btBroadphasePair(btBroadphasePair other) {
     this(CollisionJNI.new_btBroadphasePair__SWIG_1(other), true);
   }

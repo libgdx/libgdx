@@ -58,6 +58,38 @@ public class btConcaveShape extends btCollisionShape {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btConcaveShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btConcaveShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btConcaveShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btConcaveShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btConcaveShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btConcaveShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btConcaveShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btConcaveShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public void processAllTriangles(btTriangleCallback callback, Vector3 aabbMin, Vector3 aabbMax) {
     CollisionJNI.btConcaveShape_processAllTriangles(swigCPtr, this, btTriangleCallback.getCPtr(callback), callback, aabbMin, aabbMax);
   }

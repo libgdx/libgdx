@@ -97,4 +97,12 @@ public class int4 extends BulletBase {
     this(LinearMathJNI.new_int4__SWIG_1(_x, _y, _z, _w), true);
   }
 
+  public int operatorSubscriptConst(int i) {
+    return LinearMathJNI.int4_operatorSubscriptConst(swigCPtr, this, i);
+  }
+
+  public SWIGTYPE_p_int operatorSubscript(int i) {
+    return new SWIGTYPE_p_int(LinearMathJNI.int4_operatorSubscript(swigCPtr, this, i), false);
+  }
+
 }

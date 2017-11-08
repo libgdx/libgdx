@@ -1183,6 +1183,38 @@ public class btSoftBody extends btCollisionObject {
       return SoftbodyJNI.btSoftBody_Link_c2_get(swigCPtr, this);
     }
   
+    public long operatorNew(long sizeInBytes) {
+      return SoftbodyJNI.btSoftBody_Link_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+    }
+  
+    public void operatorDelete(long ptr) {
+      SoftbodyJNI.btSoftBody_Link_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+    }
+  
+    public long operatorNew(long arg0, long ptr) {
+      return SoftbodyJNI.btSoftBody_Link_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+    }
+  
+    public void operatorDelete(long arg0, long arg1) {
+      SoftbodyJNI.btSoftBody_Link_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+    }
+  
+    public long operatorNewArray(long sizeInBytes) {
+      return SoftbodyJNI.btSoftBody_Link_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+    }
+  
+    public void operatorDeleteArray(long ptr) {
+      SoftbodyJNI.btSoftBody_Link_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+    }
+  
+    public long operatorNewArray(long arg0, long ptr) {
+      return SoftbodyJNI.btSoftBody_Link_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+    }
+  
+    public void operatorDeleteArray(long arg0, long arg1) {
+      SoftbodyJNI.btSoftBody_Link_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+    }
+  
     public Link() {
       this(SoftbodyJNI.new_btSoftBody_Link(), true);
     }
@@ -1432,13 +1464,14 @@ public class btSoftBody extends btCollisionObject {
       return (cPtr == 0) ? null : new btSoftBody.Node(cPtr, false);
     }
   
-    public void setC0(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_RContact_c0_set(swigCPtr, this, value);
+    public void setC0(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_RContact_c0_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getC0() {
-  	return SoftbodyJNI.btSoftBody_RContact_c0_get(swigCPtr, this);
-  }
+    public btMatrix3x3 getC0() {
+      long cPtr = SoftbodyJNI.btSoftBody_RContact_c0_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
   
     public void setC1(btVector3 value) {
       SoftbodyJNI.btSoftBody_RContact_c1_set(swigCPtr, this, btVector3.getCPtr(value), value);
@@ -1665,13 +1698,14 @@ public class btSoftBody extends btCollisionObject {
       return SoftbodyJNI.btSoftBody_Anchor_influence_get(swigCPtr, this);
     }
   
-    public void setC0(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Anchor_c0_set(swigCPtr, this, value);
+    public void setC0(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Anchor_c0_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getC0() {
-  	return SoftbodyJNI.btSoftBody_Anchor_c0_get(swigCPtr, this);
-  }
+    public btMatrix3x3 getC0() {
+      long cPtr = SoftbodyJNI.btSoftBody_Anchor_c0_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
   
     public void setC1(btVector3 value) {
       SoftbodyJNI.btSoftBody_Anchor_c1_set(swigCPtr, this, btVector3.getCPtr(value), value);
@@ -1738,10 +1772,6 @@ public class btSoftBody extends btCollisionObject {
   		}
   		super.delete();
   	}
-  
-    public void setText(String value) {
-      SoftbodyJNI.btSoftBody_Note_text_set(swigCPtr, this, value);
-    }
   
     public String getText() {
       return SoftbodyJNI.btSoftBody_Note_text_get(swigCPtr, this);
@@ -1881,29 +1911,32 @@ public class btSoftBody extends btCollisionObject {
       return (cPtr == 0) ? null : new btVector3(cPtr, false);
     }
   
-    public void setRot(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Pose_rot_set(swigCPtr, this, value);
+    public void setRot(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Pose_rot_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getRot() {
-  	return SoftbodyJNI.btSoftBody_Pose_rot_get(swigCPtr, this);
-  }
-  
-    public void setScl(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Pose_scl_set(swigCPtr, this, value);
+    public btMatrix3x3 getRot() {
+      long cPtr = SoftbodyJNI.btSoftBody_Pose_rot_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
     }
   
-    public Matrix3 getScl() {
-  	return SoftbodyJNI.btSoftBody_Pose_scl_get(swigCPtr, this);
-  }
-  
-    public void setAqq(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Pose_aqq_set(swigCPtr, this, value);
+    public void setScl(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Pose_scl_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getAqq() {
-  	return SoftbodyJNI.btSoftBody_Pose_aqq_get(swigCPtr, this);
-  }
+    public btMatrix3x3 getScl() {
+      long cPtr = SoftbodyJNI.btSoftBody_Pose_scl_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
+  
+    public void setAqq(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Pose_aqq_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
+    }
+  
+    public btMatrix3x3 getAqq() {
+      long cPtr = SoftbodyJNI.btSoftBody_Pose_aqq_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
   
     public Pose() {
       this(SoftbodyJNI.new_btSoftBody_Pose(), true);
@@ -2006,21 +2039,23 @@ public class btSoftBody extends btCollisionObject {
       return SoftbodyJNI.btSoftBody_Cluster_imass_get(swigCPtr, this);
     }
   
-    public void setLocii(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Cluster_locii_set(swigCPtr, this, value);
+    public void setLocii(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Cluster_locii_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getLocii() {
-  	return SoftbodyJNI.btSoftBody_Cluster_locii_get(swigCPtr, this);
-  }
-  
-    public void setInvwi(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Cluster_invwi_set(swigCPtr, this, value);
+    public btMatrix3x3 getLocii() {
+      long cPtr = SoftbodyJNI.btSoftBody_Cluster_locii_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
     }
   
-    public Matrix3 getInvwi() {
-  	return SoftbodyJNI.btSoftBody_Cluster_invwi_get(swigCPtr, this);
-  }
+    public void setInvwi(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Cluster_invwi_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
+    }
+  
+    public btMatrix3x3 getInvwi() {
+      long cPtr = SoftbodyJNI.btSoftBody_Cluster_invwi_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
   
     public void setCom(btVector3 value) {
       SoftbodyJNI.btSoftBody_Cluster_com_set(swigCPtr, this, btVector3.getCPtr(value), value);
@@ -2248,6 +2283,14 @@ public class btSoftBody extends btCollisionObject {
   
     public Impulse() {
       this(SoftbodyJNI.new_btSoftBody_Impulse(), true);
+    }
+  
+    public btSoftBody.Impulse operatorSubtraction() {
+      return new btSoftBody.Impulse(SoftbodyJNI.btSoftBody_Impulse_operatorSubtraction(swigCPtr, this), true);
+    }
+  
+    public btSoftBody.Impulse operatorMultiplication(float x) {
+      return new btSoftBody.Impulse(SoftbodyJNI.btSoftBody_Impulse_operatorMultiplication(swigCPtr, this, x), true);
     }
   
   }
@@ -2625,13 +2668,14 @@ public class btSoftBody extends btCollisionObject {
       return (cPtr == 0) ? null : new btVector3(cPtr, false);
     }
   
-    public void setMassmatrix(Matrix3 value) {
-      SoftbodyJNI.btSoftBody_Joint_massmatrix_set(swigCPtr, this, value);
+    public void setMassmatrix(btMatrix3x3 value) {
+      SoftbodyJNI.btSoftBody_Joint_massmatrix_set(swigCPtr, this, btMatrix3x3.getCPtr(value), value);
     }
   
-    public Matrix3 getMassmatrix() {
-  	return SoftbodyJNI.btSoftBody_Joint_massmatrix_get(swigCPtr, this);
-  }
+    public btMatrix3x3 getMassmatrix() {
+      long cPtr = SoftbodyJNI.btSoftBody_Joint_massmatrix_get(swigCPtr, this);
+      return (cPtr == 0) ? null : new btMatrix3x3(cPtr, false);
+    }
   
     public void setDelete(boolean value) {
       SoftbodyJNI.btSoftBody_Joint_delete_set(swigCPtr, this, value);
@@ -4197,8 +4241,13 @@ public class btSoftBody extends btCollisionObject {
     SoftbodyJNI.btSoftBody_setWindVelocity(swigCPtr, this, velocity);
   }
 
+  public static btSoftBody upcastConstBtCollisionObject(btCollisionObject colObj) {
+    long cPtr = SoftbodyJNI.btSoftBody_upcastConstBtCollisionObject(btCollisionObject.getCPtr(colObj), colObj);
+    return (cPtr == 0) ? null : new btSoftBody(cPtr, false);
+  }
+
   public static btSoftBody upcast(btCollisionObject colObj) {
-    long cPtr = SoftbodyJNI.btSoftBody_upcast__SWIG_0(btCollisionObject.getCPtr(colObj), colObj);
+    long cPtr = SoftbodyJNI.btSoftBody_upcast(btCollisionObject.getCPtr(colObj), colObj);
     return (cPtr == 0) ? null : new btSoftBody(cPtr, false);
   }
 

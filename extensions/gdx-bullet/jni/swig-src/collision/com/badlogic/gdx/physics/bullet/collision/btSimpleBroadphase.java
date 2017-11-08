@@ -86,11 +86,6 @@ public class btSimpleBroadphase extends btBroadphaseInterface {
     CollisionJNI.btSimpleBroadphase_rayTest__SWIG_2(swigCPtr, this, rayFrom, rayTo, btBroadphaseRayCallback.getCPtr(rayCallback), rayCallback);
   }
 
-  public btOverlappingPairCache getOverlappingPairCache() {
-    long cPtr = CollisionJNI.btSimpleBroadphase_getOverlappingPairCache__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
-  }
-
   public boolean testAabbOverlap(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
     return CollisionJNI.btSimpleBroadphase_testAabbOverlap(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);
   }

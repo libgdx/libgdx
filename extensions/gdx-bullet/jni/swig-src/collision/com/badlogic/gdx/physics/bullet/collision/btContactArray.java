@@ -15,15 +15,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btContactArray extends BulletBase {
+public class btContactArray extends btGimContactArray {
 	private long swigCPtr;
 	
 	protected btContactArray(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, cPtr, cMemoryOwn);
+		super(className, CollisionJNI.btContactArray_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btContactArray, normally you should not need this constructor it's intended for low-level usage. */ 
+	/** Construct a new btContactArray, normally you should not need this constructor it's intended for low-level usage. */
 	public btContactArray(long cPtr, boolean cMemoryOwn) {
 		this("btContactArray", cPtr, cMemoryOwn);
 		construct();
@@ -33,7 +33,7 @@ public class btContactArray extends BulletBase {
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(swigCPtr = cPtr, cMemoryOwn);
+		super.reset(CollisionJNI.btContactArray_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
 	
 	public static long getCPtr(btContactArray obj) {

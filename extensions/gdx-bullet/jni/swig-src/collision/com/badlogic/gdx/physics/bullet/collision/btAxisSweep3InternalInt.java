@@ -58,6 +58,38 @@ public class btAxisSweep3InternalInt extends btBroadphaseInterface {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btAxisSweep3InternalInt_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btAxisSweep3InternalInt_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btAxisSweep3InternalInt_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btAxisSweep3InternalInt_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btAxisSweep3InternalInt_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btAxisSweep3InternalInt_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btAxisSweep3InternalInt_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btAxisSweep3InternalInt_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   static public class Edge extends BulletBase {
   	private long swigCPtr;
   	
@@ -170,6 +202,38 @@ public class btAxisSweep3InternalInt extends btBroadphaseInterface {
   		super.delete();
   	}
   
+    public long operatorNew(long sizeInBytes) {
+      return CollisionJNI.btAxisSweep3InternalInt_Handle_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+    }
+  
+    public void operatorDelete(long ptr) {
+      CollisionJNI.btAxisSweep3InternalInt_Handle_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+    }
+  
+    public long operatorNew(long arg0, long ptr) {
+      return CollisionJNI.btAxisSweep3InternalInt_Handle_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+    }
+  
+    public void operatorDelete(long arg0, long arg1) {
+      CollisionJNI.btAxisSweep3InternalInt_Handle_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+    }
+  
+    public long operatorNewArray(long sizeInBytes) {
+      return CollisionJNI.btAxisSweep3InternalInt_Handle_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+    }
+  
+    public void operatorDeleteArray(long ptr) {
+      CollisionJNI.btAxisSweep3InternalInt_Handle_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+    }
+  
+    public long operatorNewArray(long arg0, long ptr) {
+      return CollisionJNI.btAxisSweep3InternalInt_Handle_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+    }
+  
+    public void operatorDeleteArray(long arg0, long arg1) {
+      CollisionJNI.btAxisSweep3InternalInt_Handle_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+    }
+  
     public void setMinEdges(long[] value) {
       CollisionJNI.btAxisSweep3InternalInt_Handle_minEdges_set(swigCPtr, this, value);
     }
@@ -270,11 +334,6 @@ public class btAxisSweep3InternalInt extends btBroadphaseInterface {
 
   public boolean testAabbOverlap(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
     return CollisionJNI.btAxisSweep3InternalInt_testAabbOverlap(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);
-  }
-
-  public btOverlappingPairCache getOverlappingPairCache() {
-    long cPtr = CollisionJNI.btAxisSweep3InternalInt_getOverlappingPairCache__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
   }
 
   public void setOverlappingPairUserCallback(btOverlappingPairCallback pairCallback) {

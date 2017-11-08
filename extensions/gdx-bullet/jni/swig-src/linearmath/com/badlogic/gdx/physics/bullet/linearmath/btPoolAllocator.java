@@ -90,7 +90,11 @@ public class btPoolAllocator extends BulletBase {
   }
 
   public java.nio.ByteBuffer getPoolAddress() {
-    return LinearMathJNI.btPoolAllocator_getPoolAddress__SWIG_0(swigCPtr, this);
+    return LinearMathJNI.btPoolAllocator_getPoolAddress(swigCPtr, this);
+}
+
+  public java.nio.ByteBuffer getPoolAddressConst() {
+    return LinearMathJNI.btPoolAllocator_getPoolAddressConst(swigCPtr, this);
 }
 
 }

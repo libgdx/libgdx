@@ -22,6 +22,7 @@ public class InverseDynamicsJNI {
   public final static native void setZero__SWIG_0(long jarg1);
   public final static native void setZero__SWIG_1(long jarg1);
   public final static native void setZero__SWIG_2(long jarg1);
+  public final static native void skew(long jarg1, long jarg2);
   public final static native float maxAbs__SWIG_0(long jarg1);
   public final static native float maxAbs__SWIG_1(long jarg1);
   public final static native void getVecMatFromDH(float jarg1, float jarg2, float jarg3, float jarg4, long jarg5, long jarg6);
@@ -38,6 +39,14 @@ public class InverseDynamicsJNI {
   public final static native long transformY(float jarg1);
   public final static native long transformZ(float jarg1);
   public final static native long rpyFromMatrix(long jarg1);
+  public final static native long MultiBodyTree_operatorNew__SWIG_0(long jarg1, MultiBodyTree jarg1_, long jarg2);
+  public final static native void MultiBodyTree_operatorDelete__SWIG_0(long jarg1, MultiBodyTree jarg1_, long jarg2);
+  public final static native long MultiBodyTree_operatorNew__SWIG_1(long jarg1, MultiBodyTree jarg1_, long jarg2, long jarg3);
+  public final static native void MultiBodyTree_operatorDelete__SWIG_1(long jarg1, MultiBodyTree jarg1_, long jarg2, long jarg3);
+  public final static native long MultiBodyTree_operatorNewArray__SWIG_0(long jarg1, MultiBodyTree jarg1_, long jarg2);
+  public final static native void MultiBodyTree_operatorDeleteArray__SWIG_0(long jarg1, MultiBodyTree jarg1_, long jarg2);
+  public final static native long MultiBodyTree_operatorNewArray__SWIG_1(long jarg1, MultiBodyTree jarg1_, long jarg2, long jarg3);
+  public final static native void MultiBodyTree_operatorDeleteArray__SWIG_1(long jarg1, MultiBodyTree jarg1_, long jarg2, long jarg3);
   public final static native long new_MultiBodyTree();
   public final static native void delete_MultiBodyTree(long jarg1);
   public final static native int MultiBodyTree_addBody(long jarg1, MultiBodyTree jarg1_, int jarg2, int jarg3, int jarg4, long jarg5, long jarg6, long jarg7, float jarg8, long jarg9, long jarg10, int jarg11, long jarg12);

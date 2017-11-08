@@ -70,4 +70,8 @@ public class btAngleCompareFunc extends BulletBase {
     this(LinearMathJNI.new_btAngleCompareFunc(anchor), true);
   }
 
+  public boolean operatorFunctionCall(GrahamVector3 a, GrahamVector3 b) {
+    return LinearMathJNI.btAngleCompareFunc_operatorFunctionCall(swigCPtr, this, GrahamVector3.getCPtr(a), a, GrahamVector3.getCPtr(b), b);
+  }
+
 }

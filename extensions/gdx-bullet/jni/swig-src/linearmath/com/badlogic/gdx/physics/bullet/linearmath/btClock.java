@@ -65,6 +65,10 @@ public class btClock extends BulletBase {
     this(LinearMathJNI.new_btClock__SWIG_1(btClock.getCPtr(other), other), true);
   }
 
+  public btClock operatorAssignment(btClock other) {
+    return new btClock(LinearMathJNI.btClock_operatorAssignment(swigCPtr, this, btClock.getCPtr(other), other), false);
+  }
+
   public void reset() {
     LinearMathJNI.btClock_reset(swigCPtr, this);
   }

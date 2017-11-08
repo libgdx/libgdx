@@ -1,5 +1,7 @@
 %module btConvexHullShape
 
+%rename(getUnscaledPointsConst) btConvexHullShape::getUnscaledPoints() const;
+
 %{
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 %}

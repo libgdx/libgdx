@@ -59,7 +59,11 @@ public class btOverlappingPairCache extends btOverlappingPairCallback {
 	}
 
   public btBroadphasePair getOverlappingPairArrayPtr() {
-	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCache_getOverlappingPairArrayPtr__SWIG_0(swigCPtr, this), false);
+	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCache_getOverlappingPairArrayPtr(swigCPtr, this), false);
+}
+
+  public btBroadphasePair getOverlappingPairArrayPtrConst() {
+	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCache_getOverlappingPairArrayPtrConst(swigCPtr, this), false);
 }
 
   public btBroadphasePairArray getOverlappingPairArray() {

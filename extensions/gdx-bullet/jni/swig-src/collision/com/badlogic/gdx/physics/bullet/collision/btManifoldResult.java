@@ -70,8 +70,13 @@ public class btManifoldResult extends btDiscreteCollisionDetectorInterface.Resul
     CollisionJNI.btManifoldResult_setPersistentManifold(swigCPtr, this, btPersistentManifold.getCPtr(manifoldPtr), manifoldPtr);
   }
 
+  public btPersistentManifold getPersistentManifoldConst() {
+    long cPtr = CollisionJNI.btManifoldResult_getPersistentManifoldConst(swigCPtr, this);
+    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+  }
+
   public btPersistentManifold getPersistentManifold() {
-    long cPtr = CollisionJNI.btManifoldResult_getPersistentManifold__SWIG_0(swigCPtr, this);
+    long cPtr = CollisionJNI.btManifoldResult_getPersistentManifold(swigCPtr, this);
     return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
   }
 

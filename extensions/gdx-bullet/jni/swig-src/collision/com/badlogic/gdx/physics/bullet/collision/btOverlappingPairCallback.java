@@ -58,21 +58,6 @@ public class btOverlappingPairCallback extends BulletBase {
 		super.delete();
 	}
 
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
-
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    CollisionJNI.btOverlappingPairCallback_change_ownership(this, swigCPtr, false);
-  }
-
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    CollisionJNI.btOverlappingPairCallback_change_ownership(this, swigCPtr, true);
-  }
-
   public btBroadphasePair addOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
 	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCallback_addOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1), false);
 }
@@ -83,11 +68,6 @@ public class btOverlappingPairCallback extends BulletBase {
 
   public void removeOverlappingPairsContainingProxy(btBroadphaseProxy proxy0, btDispatcher dispatcher) {
     CollisionJNI.btOverlappingPairCallback_removeOverlappingPairsContainingProxy(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btDispatcher.getCPtr(dispatcher), dispatcher);
-  }
-
-  public btOverlappingPairCallback() {
-    this(CollisionJNI.new_btOverlappingPairCallback(), true);
-    CollisionJNI.btOverlappingPairCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

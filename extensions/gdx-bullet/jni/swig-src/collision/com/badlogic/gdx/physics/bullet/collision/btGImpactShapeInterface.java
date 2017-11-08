@@ -133,7 +133,12 @@ public class btGImpactShapeInterface extends btConcaveShape {
   }
 
   public btCollisionShape getChildShape(int index) {
-    long cPtr = CollisionJNI.btGImpactShapeInterface_getChildShape__SWIG_0(swigCPtr, this, index);
+    long cPtr = CollisionJNI.btGImpactShapeInterface_getChildShape(swigCPtr, this, index);
+    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
+  }
+
+  public btCollisionShape getChildShapeConst(int index) {
+    long cPtr = CollisionJNI.btGImpactShapeInterface_getChildShapeConst(swigCPtr, this, index);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 

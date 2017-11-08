@@ -205,6 +205,38 @@ public class btIndexedMesh extends BulletBase {
 		this.tag = tag;
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btIndexedMesh_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btIndexedMesh_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btIndexedMesh_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btIndexedMesh_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btIndexedMesh_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btIndexedMesh_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btIndexedMesh_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btIndexedMesh_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public void setNumTriangles(int value) {
     CollisionJNI.btIndexedMesh_numTriangles_set(swigCPtr, this, value);
   }

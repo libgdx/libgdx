@@ -57,10 +57,6 @@ public class btHashString extends BulletBase {
 		super.delete();
 	}
 
-  public void setString(String value) {
-    LinearMathJNI.btHashString_string_set(swigCPtr, this, value);
-  }
-
   public String getString() {
     return LinearMathJNI.btHashString_string_get(swigCPtr, this);
   }

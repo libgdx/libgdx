@@ -93,4 +93,17 @@ public class Dynamics implements DynamicsConstants {
     DynamicsJNI.resolveSingleBilateral(btRigidBody.getCPtr(body1), body1, pos1, btRigidBody.getCPtr(body2), body2, pos2, distance, normal, SWIGTYPE_p_float.getCPtr(impulse), timeStep);
   }
 
+  public static boolean btSolveDantzigLCP(int n, java.nio.FloatBuffer A, java.nio.FloatBuffer x, java.nio.FloatBuffer b, java.nio.FloatBuffer w, int nub, java.nio.FloatBuffer lo, java.nio.FloatBuffer hi, java.nio.IntBuffer findex, btDantzigScratchMemory scratch) {
+    assert A.isDirect() : "Buffer must be allocated direct.";
+    assert x.isDirect() : "Buffer must be allocated direct.";
+    assert b.isDirect() : "Buffer must be allocated direct.";
+    assert w.isDirect() : "Buffer must be allocated direct.";
+    assert lo.isDirect() : "Buffer must be allocated direct.";
+    assert hi.isDirect() : "Buffer must be allocated direct.";
+    assert findex.isDirect() : "Buffer must be allocated direct.";
+    {
+      return DynamicsJNI.btSolveDantzigLCP(n, A, x, b, w, nub, lo, hi, findex, btDantzigScratchMemory.getCPtr(scratch), scratch);
+    }
+  }
+
 }

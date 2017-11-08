@@ -66,8 +66,13 @@ public class btCollisionWorld extends BulletBase {
     CollisionJNI.btCollisionWorld_setBroadphase(swigCPtr, this, btBroadphaseInterface.getCPtr(pairCache), pairCache);
   }
 
+  public btBroadphaseInterface getBroadphaseConst() {
+    long cPtr = CollisionJNI.btCollisionWorld_getBroadphaseConst(swigCPtr, this);
+    return (cPtr == 0) ? null : new btBroadphaseInterface(cPtr, false);
+  }
+
   public btBroadphaseInterface getBroadphase() {
-    long cPtr = CollisionJNI.btCollisionWorld_getBroadphase__SWIG_0(swigCPtr, this);
+    long cPtr = CollisionJNI.btCollisionWorld_getBroadphase(swigCPtr, this);
     return (cPtr == 0) ? null : new btBroadphaseInterface(cPtr, false);
   }
 
@@ -77,7 +82,12 @@ public class btCollisionWorld extends BulletBase {
   }
 
   public btDispatcher getDispatcher() {
-    long cPtr = CollisionJNI.btCollisionWorld_getDispatcher__SWIG_0(swigCPtr, this);
+    long cPtr = CollisionJNI.btCollisionWorld_getDispatcher(swigCPtr, this);
+    return (cPtr == 0) ? null : new btDispatcher(cPtr, false);
+  }
+
+  public btDispatcher getDispatcherConst() {
+    long cPtr = CollisionJNI.btCollisionWorld_getDispatcherConst(swigCPtr, this);
     return (cPtr == 0) ? null : new btDispatcher(cPtr, false);
   }
 
@@ -163,7 +173,11 @@ public class btCollisionWorld extends BulletBase {
   }
 
   public btCollisionObjectArray getCollisionObjectArray() {
-    return new btCollisionObjectArray(CollisionJNI.btCollisionWorld_getCollisionObjectArray__SWIG_0(swigCPtr, this), false);
+    return new btCollisionObjectArray(CollisionJNI.btCollisionWorld_getCollisionObjectArray(swigCPtr, this), false);
+  }
+
+  public btCollisionObjectArray getCollisionObjectArrayConst() {
+    return new btCollisionObjectArray(CollisionJNI.btCollisionWorld_getCollisionObjectArrayConst(swigCPtr, this), false);
   }
 
   public void removeCollisionObject(btCollisionObject collisionObject) {
@@ -175,7 +189,11 @@ public class btCollisionWorld extends BulletBase {
   }
 
   public btDispatcherInfo getDispatchInfo() {
-    return new btDispatcherInfo(CollisionJNI.btCollisionWorld_getDispatchInfo__SWIG_0(swigCPtr, this), false);
+    return new btDispatcherInfo(CollisionJNI.btCollisionWorld_getDispatchInfo(swigCPtr, this), false);
+  }
+
+  public btDispatcherInfo getDispatchInfoConst() {
+    return new btDispatcherInfo(CollisionJNI.btCollisionWorld_getDispatchInfoConst(swigCPtr, this), false);
   }
 
   public boolean getForceUpdateAllAabbs() {
@@ -186,8 +204,8 @@ public class btCollisionWorld extends BulletBase {
     CollisionJNI.btCollisionWorld_setForceUpdateAllAabbs(swigCPtr, this, forceUpdateAllAabbs);
   }
 
-  public void serialize(SWIGTYPE_p_btSerializer serializer) {
-    CollisionJNI.btCollisionWorld_serialize(swigCPtr, this, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public void serialize(btSerializer serializer) {
+    CollisionJNI.btCollisionWorld_serialize(swigCPtr, this, btSerializer.getCPtr(serializer), serializer);
   }
 
 }

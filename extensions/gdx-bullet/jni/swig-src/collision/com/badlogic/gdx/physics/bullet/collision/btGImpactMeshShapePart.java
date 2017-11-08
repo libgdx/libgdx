@@ -259,11 +259,6 @@ public class btGImpactMeshShapePart extends btGImpactShapeInterface {
     this(CollisionJNI.new_btGImpactMeshShapePart__SWIG_1(btStridingMeshInterface.getCPtr(meshInterface), meshInterface, part), true);
   }
 
-  public btCollisionShape getChildShape(int index) {
-    long cPtr = CollisionJNI.btGImpactMeshShapePart_getChildShape__SWIG_0(swigCPtr, this, index);
-    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
-  }
-
   public btGImpactMeshShapePart.TrimeshPrimitiveManager getTrimeshPrimitiveManager() {
     long cPtr = CollisionJNI.btGImpactMeshShapePart_getTrimeshPrimitiveManager(swigCPtr, this);
     return (cPtr == 0) ? null : new btGImpactMeshShapePart.TrimeshPrimitiveManager(cPtr, false);

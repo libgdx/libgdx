@@ -64,7 +64,12 @@ public class btContactConstraint extends btTypedConstraint {
   }
 
   public btPersistentManifold getContactManifold() {
-    long cPtr = DynamicsJNI.btContactConstraint_getContactManifold__SWIG_0(swigCPtr, this);
+    long cPtr = DynamicsJNI.btContactConstraint_getContactManifold(swigCPtr, this);
+    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+  }
+
+  public btPersistentManifold getContactManifoldConst() {
+    long cPtr = DynamicsJNI.btContactConstraint_getContactManifoldConst(swigCPtr, this);
     return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
   }
 

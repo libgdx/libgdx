@@ -9,6 +9,30 @@
 #include <gdx/common/jniHelpers.h>
 %}
 
+%rename(operatorNew) operator new;
+%rename(operatorDelete) operator delete;
+%rename(operatorNewArray) operator new[];
+%rename(operatorDeleteArray) operator delete[];
+
+%rename(operatorEqualTo) operator==;
+%rename(operatorNotEqualTo) operator!=;
+%rename(operatorLessThan) operator<;
+%rename(operatorGreaterThan) operator>;
+
+%rename(operatorSubscript) operator[];
+%rename(operatorFunctionCall) operator();
+%rename(operatorAssignment) operator=;
+
+%rename(operatorAddition) operator+;
+%rename(operatorSubtraction) operator-;
+%rename(operatorMultiplication) operator*;
+%rename(operatorDivision) operator/;
+
+%rename(operatorAdditionAssignment) operator+=;
+%rename(operatorSubtractionAssignment) operator-=;
+%rename(operatorMultiplicationAssignment) operator*=;
+%rename(operatorDivisionAssignment) operator/=;
+
 %rename("%(strip:[m_])s", %$ismember, %$ispublic, %$not %$isclass, %$not %$istemplate, %$not %$isfunction, regexmatch$name="m_.*$") "";
 %ignore btHashString::getHash;
 %ignore btTypedObject::getObjectType;

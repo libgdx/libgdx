@@ -58,6 +58,38 @@ public class btCompoundShapeChild extends BulletBase {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btCompoundShapeChild_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btCompoundShapeChild_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btCompoundShapeChild_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btCompoundShapeChild_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btCompoundShapeChild_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btCompoundShapeChild_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btCompoundShapeChild_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btCompoundShapeChild_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public void setTransform(btTransform value) {
     CollisionJNI.btCompoundShapeChild_transform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }

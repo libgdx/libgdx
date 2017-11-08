@@ -129,7 +129,12 @@ public class btDynamicsWorld extends btCollisionWorld {
   }
 
   public btTypedConstraint getConstraint(int index) {
-    long cPtr = DynamicsJNI.btDynamicsWorld_getConstraint__SWIG_0(swigCPtr, this, index);
+    long cPtr = DynamicsJNI.btDynamicsWorld_getConstraint(swigCPtr, this, index);
+    return (cPtr == 0) ? null : new btTypedConstraint(cPtr, false);
+  }
+
+  public btTypedConstraint getConstraintConst(int index) {
+    long cPtr = DynamicsJNI.btDynamicsWorld_getConstraintConst(swigCPtr, this, index);
     return (cPtr == 0) ? null : new btTypedConstraint(cPtr, false);
   }
 
@@ -163,6 +168,10 @@ public class btDynamicsWorld extends btCollisionWorld {
 
   public btContactSolverInfo getSolverInfo() {
     return new btContactSolverInfo(DynamicsJNI.btDynamicsWorld_getSolverInfo(swigCPtr, this), false);
+  }
+
+  public btContactSolverInfo getSolverInfoConst() {
+    return new btContactSolverInfo(DynamicsJNI.btDynamicsWorld_getSolverInfoConst(swigCPtr, this), false);
   }
 
   public void addVehicle(btActionInterface vehicle) {

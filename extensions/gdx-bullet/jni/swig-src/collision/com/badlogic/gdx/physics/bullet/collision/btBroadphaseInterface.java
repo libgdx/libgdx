@@ -95,7 +95,12 @@ public class btBroadphaseInterface extends BulletBase {
   }
 
   public btOverlappingPairCache getOverlappingPairCache() {
-    long cPtr = CollisionJNI.btBroadphaseInterface_getOverlappingPairCache__SWIG_0(swigCPtr, this);
+    long cPtr = CollisionJNI.btBroadphaseInterface_getOverlappingPairCache(swigCPtr, this);
+    return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
+  }
+
+  public btOverlappingPairCache getOverlappingPairCacheConst() {
+    long cPtr = CollisionJNI.btBroadphaseInterface_getOverlappingPairCacheConst(swigCPtr, this);
     return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
   }
 

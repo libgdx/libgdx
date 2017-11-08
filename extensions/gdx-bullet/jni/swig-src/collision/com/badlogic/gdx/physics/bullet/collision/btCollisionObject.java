@@ -169,6 +169,38 @@ public class btCollisionObject extends BulletBase implements
 		return collisionShape; 
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btCollisionObject_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btCollisionObject_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btCollisionObject_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btCollisionObject_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btCollisionObject_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btCollisionObject_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btCollisionObject_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btCollisionObject_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public boolean mergesSimulationIslands() {
     return CollisionJNI.btCollisionObject_mergesSimulationIslands(swigCPtr, this);
   }
@@ -474,12 +506,12 @@ public class btCollisionObject extends BulletBase implements
     return CollisionJNI.btCollisionObject_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btCollisionObject_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, btSerializer serializer) {
+    return CollisionJNI.btCollisionObject_serialize(swigCPtr, this, dataBuffer, btSerializer.getCPtr(serializer), serializer);
   }
 
-  public void serializeSingleObject(SWIGTYPE_p_btSerializer serializer) {
-    CollisionJNI.btCollisionObject_serializeSingleObject(swigCPtr, this, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public void serializeSingleObject(btSerializer serializer) {
+    CollisionJNI.btCollisionObject_serializeSingleObject(swigCPtr, this, btSerializer.getCPtr(serializer), serializer);
   }
 
   private void internalSetGdxBridge(GdxCollisionObjectBridge bridge) {
@@ -521,6 +553,8 @@ public class btCollisionObject extends BulletBase implements
     public final static int CF_DISABLE_SPU_COLLISION_PROCESSING = 64;
     public final static int CF_HAS_CONTACT_STIFFNESS_DAMPING = 128;
     public final static int CF_HAS_CUSTOM_DEBUG_RENDERING_COLOR = 256;
+    public final static int CF_HAS_FRICTION_ANCHOR = 512;
+    public final static int CF_HAS_COLLISION_SOUND_TRIGGER = 1024;
   }
 
   public final static class CollisionObjectTypes {

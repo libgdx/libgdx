@@ -74,6 +74,10 @@ public class InverseDynamics {
     InverseDynamicsJNI.setZero__SWIG_2(SWIGTYPE_p_mat33.getCPtr(m));
   }
 
+  public static void skew(SWIGTYPE_p_vec3 v, SWIGTYPE_p_mat33 result) {
+    InverseDynamicsJNI.skew(SWIGTYPE_p_vec3.getCPtr(v), SWIGTYPE_p_mat33.getCPtr(result));
+  }
+
   public static float maxAbs(SWIGTYPE_p_vecx v) {
     return InverseDynamicsJNI.maxAbs__SWIG_0(SWIGTYPE_p_vecx.getCPtr(v));
   }

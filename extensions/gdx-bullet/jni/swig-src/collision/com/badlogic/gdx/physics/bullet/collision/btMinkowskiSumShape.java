@@ -58,6 +58,38 @@ public class btMinkowskiSumShape extends btConvexInternalShape {
 		super.delete();
 	}
 
+  public long operatorNew(long sizeInBytes) {
+    return CollisionJNI.btMinkowskiSumShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDelete(long ptr) {
+    CollisionJNI.btMinkowskiSumShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNew(long arg0, long ptr) {
+    return CollisionJNI.btMinkowskiSumShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDelete(long arg0, long arg1) {
+    CollisionJNI.btMinkowskiSumShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
+  public long operatorNewArray(long sizeInBytes) {
+    return CollisionJNI.btMinkowskiSumShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+  }
+
+  public void operatorDeleteArray(long ptr) {
+    CollisionJNI.btMinkowskiSumShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+  }
+
+  public long operatorNewArray(long arg0, long ptr) {
+    return CollisionJNI.btMinkowskiSumShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+  }
+
+  public void operatorDeleteArray(long arg0, long arg1) {
+    CollisionJNI.btMinkowskiSumShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+  }
+
   public btMinkowskiSumShape(btConvexShape shapeA, btConvexShape shapeB) {
     this(CollisionJNI.new_btMinkowskiSumShape(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB), true);
   }

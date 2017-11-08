@@ -12,11 +12,14 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.physics.bullet.inversedynamics.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.bullet.inversedynamics.MultiBodyTree;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btContactSolverInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 
 public class btStringArray extends BulletBase {
 	private long swigCPtr;
@@ -61,6 +64,10 @@ public class btStringArray extends BulletBase {
 		super.delete();
 	}
 
+  public btStringArray operatorAssignment(btStringArray other) {
+    return new btStringArray(ExtrasJNI.btStringArray_operatorAssignment(swigCPtr, this, btStringArray.getCPtr(other), other), false);
+  }
+
   public btStringArray() {
     this(ExtrasJNI.new_btStringArray__SWIG_0(), true);
   }
@@ -73,8 +80,20 @@ public class btStringArray extends BulletBase {
     return ExtrasJNI.btStringArray_size(swigCPtr, this);
   }
 
+  public String atConst(int n) {
+    return ExtrasJNI.btStringArray_atConst(swigCPtr, this, n);
+  }
+
   public String at(int n) {
-    return ExtrasJNI.btStringArray_at__SWIG_0(swigCPtr, this, n);
+    return ExtrasJNI.btStringArray_at(swigCPtr, this, n);
+  }
+
+  public String operatorSubscriptConst(int n) {
+    return ExtrasJNI.btStringArray_operatorSubscriptConst(swigCPtr, this, n);
+  }
+
+  public String operatorSubscript(int n) {
+    return ExtrasJNI.btStringArray_operatorSubscript(swigCPtr, this, n);
   }
 
   public void clear() {
@@ -164,6 +183,10 @@ public class btStringArray extends BulletBase {
   		super.delete();
   	}
   
+    public boolean operatorFunctionCall(String a, String b) {
+      return ExtrasJNI.btStringArray_less_operatorFunctionCall(swigCPtr, this, a, b);
+    }
+  
     public less() {
       this(ExtrasJNI.new_btStringArray_less(), true);
     }
@@ -180,6 +203,10 @@ public class btStringArray extends BulletBase {
 
   public int findLinearSearch(String key) {
     return ExtrasJNI.btStringArray_findLinearSearch(swigCPtr, this, key);
+  }
+
+  public int findLinearSearch2(String key) {
+    return ExtrasJNI.btStringArray_findLinearSearch2(swigCPtr, this, key);
   }
 
   public void removeAtIndex(int index) {

@@ -103,7 +103,12 @@ public class btDispatcher extends BulletBase {
   }
 
   public btPoolAllocator getInternalManifoldPool() {
-    long cPtr = CollisionJNI.btDispatcher_getInternalManifoldPool__SWIG_0(swigCPtr, this);
+    long cPtr = CollisionJNI.btDispatcher_getInternalManifoldPool(swigCPtr, this);
+    return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
+  }
+
+  public btPoolAllocator getInternalManifoldPoolConst() {
+    long cPtr = CollisionJNI.btDispatcher_getInternalManifoldPoolConst(swigCPtr, this);
     return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
   }
 

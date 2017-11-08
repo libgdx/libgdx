@@ -1,3 +1,4 @@
+
 %module btSoftBody
 
 %template(btSparseSdf3) btSparseSdf<3>;
@@ -18,6 +19,10 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 %{
 #include <BulletSoftBody/btSoftBody.h>
 %}
+
+%immutable btSoftBody::Note::m_text;
+
+%rename(upcastConstBtCollisionObject) btSoftBody::upcast(btCollisionObject const *);
 
 %rename(EnumFlagType) btSoftBody::eAeroModel::_;
 %rename(EnumFlagType) btSoftBody::eVSolver::_;

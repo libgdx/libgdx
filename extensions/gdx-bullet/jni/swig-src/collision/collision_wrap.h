@@ -56,23 +56,6 @@ protected:
     Swig::BoolArray<1> swig_override;
 };
 
-class SwigDirector_btOverlappingPairCallback : public btOverlappingPairCallback, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_btOverlappingPairCallback(JNIEnv *jenv);
-    virtual ~SwigDirector_btOverlappingPairCallback();
-    virtual btBroadphasePair *addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1);
-    virtual void *removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher);
-    virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy *proxy0, btDispatcher *dispatcher);
-public:
-    bool swig_overrides(int n) {
-      return (n < 3 ? swig_override[n] : false);
-    }
-protected:
-    Swig::BoolArray<3> swig_override;
-};
-
 struct SwigDirector_btOverlapCallback : public btOverlapCallback, public Swig::Director {
 
 public:
@@ -173,15 +156,14 @@ public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_btGhostPairCallback(JNIEnv *jenv);
     virtual ~SwigDirector_btGhostPairCallback();
-    virtual btBroadphasePair *addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1);
     virtual void *removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher);
     virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy *arg0, btDispatcher *arg1);
 public:
     bool swig_overrides(int n) {
-      return (n < 3 ? swig_override[n] : false);
+      return (n < 2 ? swig_override[n] : false);
     }
 protected:
-    Swig::BoolArray<3> swig_override;
+    Swig::BoolArray<2> swig_override;
 };
 
 struct SwigDirector_RayResultCallback : public btCollisionWorld::RayResultCallback, public Swig::Director {

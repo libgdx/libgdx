@@ -145,9 +145,4 @@ public class btGImpactCompoundShape extends btGImpactShapeInterface {
     CollisionJNI.btGImpactCompoundShape_addChildShape__SWIG_1(swigCPtr, this, btCollisionShape.getCPtr(shape), shape);
   }
 
-  public btCollisionShape getChildShape(int index) {
-    long cPtr = CollisionJNI.btGImpactCompoundShape_getChildShape__SWIG_0(swigCPtr, this, index);
-    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
-  }
-
 }
