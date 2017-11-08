@@ -105,7 +105,7 @@ public class GlyphLayout implements Poolable {
 		while (true) {
 			// Each run is delimited by newline or left square bracket.
 			int runEnd = -1;
-			boolean newline = false, colorRun = false;
+			boolean newline = false;
 			if (start == end) {
 				if (runStart == end) break; // End of string with no run to process, we're done.
 				runEnd = end; // End of string, process last run.
@@ -124,7 +124,6 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
-							colorRun = true;
 						} else if (length == -2) {
 							start++; // Skip first of "[[" escape sequence.
 							continue outer;
@@ -141,7 +140,7 @@ public class GlyphLayout implements Poolable {
 					run.color.set(color);
 					run.x = x;
 					run.y = y;
-					fontData.getGlyphs(run, str, runStart, runEnd, colorRun);
+					fontData.getGlyphs(run, str, runStart, runEnd, false);
 					if (run.glyphs.size == 0)
 						glyphRunPool.free(run);
 					else {
@@ -170,8 +169,10 @@ public class GlyphLayout implements Poolable {
 									wrapIndex = i - 1;
 								}
 								GlyphRun next;
-								if (wrapIndex == 0)
+								if (wrapIndex == 0) {
 									next = run; // No wrap index, move entire run to next line.
+									run.width = 0;
+								}
 								else {
 									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 									runs.add(next);
@@ -317,7 +318,8 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
 			xAdvances1.addAll(xAdvances2, 0, wrapIndex + 1);
 			xAdvances2.removeRange(1, wrapIndex); // Leave first entry to be overwritten by next line.
-			xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
+			//xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
+			xAdvances2.set(0,0);	// Set first glyph starting at 0
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 			// Equivalent to:
