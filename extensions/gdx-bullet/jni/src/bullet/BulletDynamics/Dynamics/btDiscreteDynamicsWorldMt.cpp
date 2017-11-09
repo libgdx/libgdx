@@ -108,8 +108,108 @@ struct InplaceSolverIslandCallbackMt : public btSimulationIslandManagerMt::Islan
 };
 
 
+///
+/// btConstraintSolverPoolMt
+///
 
-btDiscreteDynamicsWorldMt::btDiscreteDynamicsWorldMt(btDispatcher* dispatcher,btBroadphaseInterface* pairCache,btConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration)
+btConstraintSolverPoolMt::ThreadSolver* btConstraintSolverPoolMt::getAndLockThreadSolver()
+{
+    int i = 0;
+#if BT_THREADSAFE
+    i = btGetCurrentThreadIndex() % m_solvers.size();
+#endif // #if BT_THREADSAFE
+    while ( true )
+    {
+        ThreadSolver& solver = m_solvers[ i ];
+        if ( solver.mutex.tryLock() )
+        {
+            return &solver;
+        }
+        // failed, try the next one
+        i = ( i + 1 ) % m_solvers.size();
+    }
+    return NULL;
+}
+
+void btConstraintSolverPoolMt::init( btConstraintSolver** solvers, int numSolvers )
+{
+    m_solverType = BT_SEQUENTIAL_IMPULSE_SOLVER;
+    m_solvers.resize( numSolvers );
+    for ( int i = 0; i < numSolvers; ++i )
+    {
+        m_solvers[ i ].solver = solvers[ i ];
+    }
+    if ( numSolvers > 0 )
+    {
+        m_solverType = solvers[ 0 ]->getSolverType();
+    }
+}
+
+// create the solvers for me
+btConstraintSolverPoolMt::btConstraintSolverPoolMt( int numSolvers )
+{
+    btAlignedObjectArray<btConstraintSolver*> solvers;
+    solvers.reserve( numSolvers );
+    for ( int i = 0; i < numSolvers; ++i )
+    {
+        btConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
+        solvers.push_back( solver );
+    }
+    init( &solvers[ 0 ], numSolvers );
+}
+
+// pass in fully constructed solvers (destructor will delete them)
+btConstraintSolverPoolMt::btConstraintSolverPoolMt( btConstraintSolver** solvers, int numSolvers )
+{
+    init( solvers, numSolvers );
+}
+
+btConstraintSolverPoolMt::~btConstraintSolverPoolMt()
+{
+    // delete all solvers
+    for ( int i = 0; i < m_solvers.size(); ++i )
+    {
+        ThreadSolver& solver = m_solvers[ i ];
+        delete solver.solver;
+        solver.solver = NULL;
+    }
+}
+
+///solve a group of constraints
+btScalar btConstraintSolverPoolMt::solveGroup( btCollisionObject** bodies,
+    int numBodies,
+    btPersistentManifold** manifolds,
+    int numManifolds,
+    btTypedConstraint** constraints,
+    int numConstraints,
+    const btContactSolverInfo& info,
+    btIDebugDraw* debugDrawer,
+    btDispatcher* dispatcher
+)
+{
+    ThreadSolver* ts = getAndLockThreadSolver();
+    ts->solver->solveGroup( bodies, numBodies, manifolds, numManifolds, constraints, numConstraints, info, debugDrawer, dispatcher );
+    ts->mutex.unlock();
+    return 0.0f;
+}
+
+void btConstraintSolverPoolMt::reset()
+{
+    for ( int i = 0; i < m_solvers.size(); ++i )
+    {
+        ThreadSolver& solver = m_solvers[ i ];
+        solver.mutex.lock();
+        solver.solver->reset();
+        solver.mutex.unlock();
+    }
+}
+
+
+///
+/// btDiscreteDynamicsWorldMt
+///
+
+btDiscreteDynamicsWorldMt::btDiscreteDynamicsWorldMt(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btConstraintSolverPoolMt* constraintSolver, btCollisionConfiguration* collisionConfiguration)
 : btDiscreteDynamicsWorld(dispatcher,pairCache,constraintSolver,collisionConfiguration)
 {
 	if (m_ownsIslandManager)
@@ -124,8 +224,8 @@ btDiscreteDynamicsWorldMt::btDiscreteDynamicsWorldMt(btDispatcher* dispatcher,bt
 	{
 		void* mem = btAlignedAlloc(sizeof(btSimulationIslandManagerMt),16);
 		btSimulationIslandManagerMt* im = new (mem) btSimulationIslandManagerMt();
-        m_islandManager = im;
         im->setMinimumSolverBatchSize( m_solverInfo.m_minimumSolverBatchSize );
+        m_islandManager = im;
 	}
 }
 
@@ -145,7 +245,7 @@ btDiscreteDynamicsWorldMt::~btDiscreteDynamicsWorldMt()
 }
 
 
-void	btDiscreteDynamicsWorldMt::solveConstraints(btContactSolverInfo& solverInfo)
+void btDiscreteDynamicsWorldMt::solveConstraints(btContactSolverInfo& solverInfo)
 {
 	BT_PROFILE("solveConstraints");
 
@@ -159,4 +259,69 @@ void	btDiscreteDynamicsWorldMt::solveConstraints(btContactSolverInfo& solverInfo
 	m_constraintSolver->allSolved(solverInfo, m_debugDrawer);
 }
 
+
+struct UpdaterUnconstrainedMotion : public btIParallelForBody
+{
+    btScalar timeStep;
+    btRigidBody** rigidBodies;
+
+    void forLoop( int iBegin, int iEnd ) const BT_OVERRIDE
+    {
+        for ( int i = iBegin; i < iEnd; ++i )
+        {
+            btRigidBody* body = rigidBodies[ i ];
+            if ( !body->isStaticOrKinematicObject() )
+            {
+                //don't integrate/update velocities here, it happens in the constraint solver
+                body->applyDamping( timeStep );
+                body->predictIntegratedTransform( timeStep, body->getInterpolationWorldTransform() );
+            }
+        }
+    }
+};
+
+
+void btDiscreteDynamicsWorldMt::predictUnconstraintMotion( btScalar timeStep )
+{
+    BT_PROFILE( "predictUnconstraintMotion" );
+    if ( m_nonStaticRigidBodies.size() > 0 )
+    {
+        UpdaterUnconstrainedMotion update;
+        update.timeStep = timeStep;
+        update.rigidBodies = &m_nonStaticRigidBodies[ 0 ];
+        int grainSize = 50;  // num of iterations per task for task scheduler
+        btParallelFor( 0, m_nonStaticRigidBodies.size(), grainSize, update );
+    }
+}
+
+
+void btDiscreteDynamicsWorldMt::createPredictiveContacts( btScalar timeStep )
+{
+    BT_PROFILE( "createPredictiveContacts" );
+    releasePredictiveContacts();
+    if ( m_nonStaticRigidBodies.size() > 0 )
+    {
+        UpdaterCreatePredictiveContacts update;
+        update.world = this;
+        update.timeStep = timeStep;
+        update.rigidBodies = &m_nonStaticRigidBodies[ 0 ];
+        int grainSize = 50;  // num of iterations per task for task scheduler
+        btParallelFor( 0, m_nonStaticRigidBodies.size(), grainSize, update );
+    }
+}
+
+
+void btDiscreteDynamicsWorldMt::integrateTransforms( btScalar timeStep )
+{
+    BT_PROFILE( "integrateTransforms" );
+    if ( m_nonStaticRigidBodies.size() > 0 )
+    {
+        UpdaterIntegrateTransforms update;
+        update.world = this;
+        update.timeStep = timeStep;
+        update.rigidBodies = &m_nonStaticRigidBodies[ 0 ];
+        int grainSize = 50;  // num of iterations per task for task scheduler
+        btParallelFor( 0, m_nonStaticRigidBodies.size(), grainSize, update );
+    }
+}
 

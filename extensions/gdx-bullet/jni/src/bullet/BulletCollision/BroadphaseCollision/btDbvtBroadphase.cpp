@@ -544,7 +544,9 @@ void							btDbvtBroadphase::collide(btDispatcher* dispatcher)
 	btDbvtProxy*	current=m_stageRoots[m_stageCurrent];
 	if(current)
 	{
+#if DBVT_BP_ACCURATESLEEPING
 		btDbvtTreeCollider	collider(this);
+#endif
 		do	{
 			btDbvtProxy*	next=current->links[1];
 			listremove(current,m_stageRoots[current->stage]);

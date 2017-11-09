@@ -100,9 +100,9 @@ void btDefaultSoftBodySolver::copySoftBodyToVertexBuffer( const btSoftBody *cons
 			for( int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex )
 			{
 				btVector3 position = clothVertices[vertexIndex].m_x;
-				*(vertexPointer + 0) = position.getX();
-				*(vertexPointer + 1) = position.getY();
-				*(vertexPointer + 2) = position.getZ();
+				*(vertexPointer + 0) = (float)position.getX();
+				*(vertexPointer + 1) = (float)position.getY();
+				*(vertexPointer + 2) = (float)position.getZ();
 				vertexPointer += vertexStride;
 			}
 		}
@@ -115,9 +115,9 @@ void btDefaultSoftBodySolver::copySoftBodyToVertexBuffer( const btSoftBody *cons
 			for( int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex )
 			{
 				btVector3 normal = clothVertices[vertexIndex].m_n;
-				*(normalPointer + 0) = normal.getX();
-				*(normalPointer + 1) = normal.getY();
-				*(normalPointer + 2) = normal.getZ();
+				*(normalPointer + 0) = (float)normal.getX();
+				*(normalPointer + 1) = (float)normal.getY();
+				*(normalPointer + 2) = (float)normal.getZ();
 				normalPointer += normalStride;
 			}
 		}

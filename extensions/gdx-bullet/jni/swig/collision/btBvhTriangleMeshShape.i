@@ -7,6 +7,8 @@
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 %}
 
+%rename(getTriangleInfoMapConst) btBvhTriangleMeshShape::getTriangleInfoMap() const;
+
 %ignore btBvhTriangleMeshShape::btBvhTriangleMeshShape(btStridingMeshInterface* meshInterface, bool useQuantizedAabbCompression, bool buildBvh = true);
 %ignore btBvhTriangleMeshShape::btBvhTriangleMeshShape(btStridingMeshInterface* meshInterface, bool useQuantizedAabbCompression,const btVector3& bvhAabbMin,const btVector3& bvhAabbMax, bool buildBvh = true);
 %javamethodmodifiers btBvhTriangleMeshShape::btBvhTriangleMeshShape "private";

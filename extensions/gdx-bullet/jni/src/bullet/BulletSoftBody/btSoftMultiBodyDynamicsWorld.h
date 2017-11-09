@@ -20,7 +20,9 @@ subject to the following restrictions:
 #include "BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h"
 #include "BulletSoftBody/btSoftBody.h"
 
+#ifndef BT_SOFT_RIGID_DYNAMICS_WORLD_H
 typedef	btAlignedObjectArray<btSoftBody*> btSoftBodyArray;
+#endif
 
 class btSoftBodySolver;
 

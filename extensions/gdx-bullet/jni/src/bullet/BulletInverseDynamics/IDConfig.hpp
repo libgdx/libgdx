@@ -32,9 +32,9 @@
 #define BT_ID_POW(x, y) btPow(static_cast<btScalar>(x), static_cast<btScalar>(y))
 #define BT_ID_PI SIMD_PI
 #ifdef _WIN32
-#define BT_ID_SNPRINTF _snprintf
+	#define BT_ID_SNPRINTF _snprintf
 #else
-#define BT_ID_SNPRINTF snprintf
+	#define BT_ID_SNPRINTF snprintf
 #endif //
 #endif
 // error messages

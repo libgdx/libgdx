@@ -798,6 +798,8 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 {
 	BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
 
+	btDiscreteDynamicsWorld::debugDrawWorld();
+
 	bool drawConstraints = false;
 	if (getDebugDrawer())
 	{
@@ -823,7 +825,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 				btMultiBody* bod = m_multiBodies[b];
 				bod->forwardKinematics(m_scratch_world_to_local1,m_scratch_local_origin1);
 				
-				getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), 0.1);
+				getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), static_cast<btScalar>(0.1));
 
 
 				for (int m = 0; m<bod->getNumLinks(); m++)
@@ -831,7 +833,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 					
 					const btTransform& tr = bod->getLink(m).m_cachedWorldTransform;
 
-					getDebugDrawer()->drawTransform(tr, 0.1);
+					getDebugDrawer()->drawTransform(tr, static_cast<btScalar>(0.1));
 
 						//draw the joint axis
 					if (bod->getLink(m).m_jointType==btMultibodyLink::eRevolute)
@@ -867,7 +869,7 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 		}
 	}
 
-	btDiscreteDynamicsWorld::debugDrawWorld();
+	
 }
 
 
@@ -917,7 +919,7 @@ void btMultiBodyDynamicsWorld::clearMultiBodyConstraintForces()
 void btMultiBodyDynamicsWorld::clearMultiBodyForces()
 {
               {
-                BT_PROFILE("clearMultiBodyForces");
+               // BT_PROFILE("clearMultiBodyForces");
                 for (int i=0;i<this->m_multiBodies.size();i++)
                 {
                         btMultiBody* bod = m_multiBodies[i];

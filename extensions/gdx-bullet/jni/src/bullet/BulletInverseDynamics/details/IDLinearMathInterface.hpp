@@ -43,7 +43,7 @@ public:
 	friend mat33 operator/(const mat33& a, const idScalar& s);
 };
 
-inline mat33 operator/(const mat33& a, const idScalar& s) { return a * (1.0 / s); }
+inline mat33 operator/(const mat33& a, const idScalar& s) { return a * (static_cast<idScalar>(1.0) / s); }
 
 inline mat33 operator*(const idScalar& s, const mat33& a) { return a * s; }
 

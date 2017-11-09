@@ -41,6 +41,10 @@ struct	btBroadphaseRayCallback : public btBroadphaseAabbCallback
 	btScalar		m_lambda_max;
 
 	virtual ~btBroadphaseRayCallback() {}
+	
+protected:
+    
+    btBroadphaseRayCallback() {}
 };
 
 #include "LinearMath/btVector3.h"

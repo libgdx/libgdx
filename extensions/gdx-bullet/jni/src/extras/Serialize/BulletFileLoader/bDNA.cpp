@@ -276,7 +276,7 @@ void bDNA::initCmpFlags(bDNA *memDNA)
 
 
 static int name_is_array(char* name, int* dim1, int* dim2) {
-	int len = strlen(name);
+	size_t len = strlen(name);
 	/*fprintf(stderr,"[%s]",name);*/
 	/*if (len >= 1) {
 	if (name[len-1] != ']')
@@ -508,11 +508,11 @@ void bDNA::init(char *data, int len, bool swap)
 int bDNA::getArraySize(char* string)
 {
 	int ret = 1;
-	int len = strlen(string);
+	size_t len = strlen(string);
 
 	
 	char* next = 0;
-	for (int i=0; i<len; i++)
+	for (size_t i=0; i<len; i++)
 	{
 		char c = string[i];
 

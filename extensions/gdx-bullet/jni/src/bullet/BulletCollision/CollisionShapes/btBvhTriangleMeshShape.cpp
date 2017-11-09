@@ -437,6 +437,9 @@ const char*	btBvhTriangleMeshShape::serialize(void* dataBuffer, btSerializer* se
 		trimeshData->m_triangleInfoMap = 0;
 	}
 
+	// Fill padding with zeros to appease msan.
+	memset(trimeshData->m_pad3, 0, sizeof(trimeshData->m_pad3));
+
 	return "btTriangleMeshShapeData";
 }
 

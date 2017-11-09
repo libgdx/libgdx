@@ -137,9 +137,7 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_ghostObject = ghostObject;
 	m_up.setValue(0.0f, 0.0f, 1.0f);
 	m_jumpAxis.setValue(0.0f, 0.0f, 1.0f);
-	setUp(up);
-	setStepHeight(stepHeight);
-	m_addedMargin = 0.02;
+	m_addedMargin = static_cast<btScalar>(0.02);
 	m_walkDirection.setValue(0.0,0.0,0.0);
 	m_AngVel.setValue(0.0, 0.0, 0.0);
 	m_useGhostObjectSweepTest = true;	
@@ -149,20 +147,23 @@ btKinematicCharacterController::btKinematicCharacterController (btPairCachingGho
 	m_velocityTimeInterval = 0.0;
 	m_verticalVelocity = 0.0;
 	m_verticalOffset = 0.0;
-	m_gravity = 9.8 * 3.0 ; // 3G acceleration.
+	m_gravity = static_cast<btScalar>(9.8 * 3.0) ; // 3G acceleration.
 	m_fallSpeed = 55.0; // Terminal velocity of a sky diver in m/s.
 	m_jumpSpeed = 10.0; // ?
 	m_SetjumpSpeed = m_jumpSpeed;
 	m_wasOnGround = false;
 	m_wasJumping = false;
 	m_interpolateUp = true;
-	setMaxSlope(btRadians(45.0));
 	m_currentStepOffset = 0.0;
-	m_maxPenetrationDepth = 0.2;
+	m_maxPenetrationDepth = static_cast<btScalar>(0.2);
 	full_drop = false;
 	bounce_fix = false;
 	m_linearDamping = btScalar(0.0);
 	m_angularDamping = btScalar(0.0);
+
+	setUp(up);
+	setStepHeight(stepHeight);
+	setMaxSlope(btRadians(45.0));
 }
 
 btKinematicCharacterController::~btKinematicCharacterController ()
@@ -657,7 +658,7 @@ void btKinematicCharacterController::setLinearVelocity(const btVector3& velocity
 		if (c != 0)
 		{
 			//there is a component in walkdirection for vertical velocity
-			btVector3 upComponent = m_up * (sinf(SIMD_HALF_PI - acosf(c)) * m_walkDirection.length());
+			btVector3 upComponent = m_up * (btSin(SIMD_HALF_PI - btAcos(c)) * m_walkDirection.length());
 			m_walkDirection -= upComponent;
 			m_verticalVelocity = (c < 0.0f ? -1 : 1) * upComponent.length();
 			

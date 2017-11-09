@@ -1,9 +1,26 @@
 /*
- * %W% %E%
- * 
- * Copyright (c) 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2004, 2012, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- * 
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 #ifndef CLASSFILE_CONSTANTS_H
@@ -12,6 +29,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* Classfile version number for this information */
+#define JVM_CLASSFILE_MAJOR_VERSION 52
+#define JVM_CLASSFILE_MINOR_VERSION 0
 
 /* Flags */
 
@@ -56,14 +77,30 @@ enum {
     JVM_CONSTANT_Unicode                = 2, /* unused */
     JVM_CONSTANT_Integer                = 3,
     JVM_CONSTANT_Float                  = 4,
-    JVM_CONSTANT_Long                   = 5,      
+    JVM_CONSTANT_Long                   = 5,
     JVM_CONSTANT_Double                 = 6,
     JVM_CONSTANT_Class                  = 7,
     JVM_CONSTANT_String                 = 8,
     JVM_CONSTANT_Fieldref               = 9,
     JVM_CONSTANT_Methodref              = 10,
     JVM_CONSTANT_InterfaceMethodref     = 11,
-    JVM_CONSTANT_NameAndType            = 12
+    JVM_CONSTANT_NameAndType            = 12,
+    JVM_CONSTANT_MethodHandle           = 15,  // JSR 292
+    JVM_CONSTANT_MethodType             = 16,   // JSR 292
+    JVM_CONSTANT_InvokeDynamic          = 18
+};
+
+/* JVM_CONSTANT_MethodHandle subtypes */
+enum {
+    JVM_REF_getField                = 1,
+    JVM_REF_getStatic               = 2,
+    JVM_REF_putField                = 3,
+    JVM_REF_putStatic               = 4,
+    JVM_REF_invokeVirtual           = 5,
+    JVM_REF_invokeStatic            = 6,
+    JVM_REF_invokeSpecial           = 7,
+    JVM_REF_newInvokeSpecial        = 8,
+    JVM_REF_invokeInterface         = 9
 };
 
 /* StackMapTable type item numbers */
@@ -289,7 +326,7 @@ enum {
     JVM_OPC_invokespecial       = 183,
     JVM_OPC_invokestatic        = 184,
     JVM_OPC_invokeinterface     = 185,
-    JVM_OPC_xxxunusedxxx        = 186,
+    JVM_OPC_invokedynamic       = 186,
     JVM_OPC_new                 = 187,
     JVM_OPC_newarray            = 188,
     JVM_OPC_anewarray           = 189,
@@ -498,7 +535,7 @@ enum {
    3,   /* invokespecial */             \
    3,   /* invokestatic */              \
    5,   /* invokeinterface */           \
-   0,   /* xxxunusedxxx */              \
+   5,   /* invokedynamic */             \
    3,   /* new */                       \
    2,   /* newarray */                  \
    3,   /* anewarray */                 \

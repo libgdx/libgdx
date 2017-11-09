@@ -33,6 +33,18 @@ void setZero(mat33 &m) {
 	m(2, 2) = 0;
 }
 
+void skew(vec3& v, mat33* result) {
+	(*result)(0, 0) = 0.0;
+	(*result)(0, 1) = -v(2);
+	(*result)(0, 2) = v(1);
+	(*result)(1, 0) = v(2);
+	(*result)(1, 1) = 0.0;
+	(*result)(1, 2) = -v(0);
+	(*result)(2, 0) = -v(1);
+	(*result)(2, 1) = v(0);
+	(*result)(2, 2) = 0.0;
+}
+
 idScalar maxAbs(const vecx &v) {
 	idScalar result = 0.0;
 	for (int i = 0; i < v.size(); i++) {
@@ -69,7 +81,7 @@ idScalar maxAbsMat3x(const mat3x &m) {
 
 void mul(const mat33 &a, const mat3x &b, mat3x *result) {
     if (b.cols() != result->cols()) {
-        error_message("size missmatch. a.cols()= %d, b.cols()= %d\n",
+        error_message("size missmatch. b.cols()= %d, result->cols()= %d\n",
                       static_cast<int>(b.cols()), static_cast<int>(result->cols()));
         abort();
     }
@@ -215,7 +227,7 @@ void getVecMatFromDH(idScalar theta, idScalar d, idScalar a, idScalar alpha, vec
 void bodyTParentFromAxisAngle(const vec3 &axis, const idScalar &angle, mat33 *T) {
 	const idScalar c = BT_ID_COS(angle);
 	const idScalar s = -BT_ID_SIN(angle);
-	const idScalar one_m_c = 1.0 - c;
+	const idScalar one_m_c = static_cast<idScalar>(1.0) - c;
 
 	const idScalar &x = axis(0);
 	const idScalar &y = axis(1);
@@ -375,7 +387,7 @@ bool isValidTransformMatrix(const mat33 &m) {
 	// check for unit length column vectors
 	for (int i = 0; i < 3; i++) {
 		const idScalar length_minus_1 =
-			BT_ID_FABS(m(0, i) * m(0, i) + m(1, i) * m(1, i) + m(2, i) * m(2, i) - 1.0);
+			BT_ID_FABS(m(0, i) * m(0, i) + m(1, i) * m(1, i) + m(2, i) * m(2, i) - static_cast<idScalar>(1.0));
 		if (length_minus_1 > kAxisLengthEpsilon) {
 			error_message("Not a valid rotation matrix (column %d not unit length)\n"
 						  "column = [%.18e %.18e %.18e]\n"
@@ -411,7 +423,7 @@ bool isValidTransformMatrix(const mat33 &m) {
 }
 
 bool isUnitVector(const vec3 &vector) {
-	return BT_ID_FABS(vector(0) * vector(0) + vector(1) * vector(1) + vector(2) * vector(2) - 1.0) <
+	return BT_ID_FABS(vector(0) * vector(0) + vector(1) * vector(1) + vector(2) * vector(2) - static_cast<idScalar>(1.0)) <
 		   kIsZero;
 }
 

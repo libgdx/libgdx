@@ -15,6 +15,7 @@ subject to the following restrictions:
 
 
 #include "LinearMath/btScalar.h"
+#include "LinearMath/btThreads.h"
 #include "btSimulationIslandManagerMt.h"
 #include "BulletCollision/BroadphaseCollision/btDispatcher.h"
 #include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
@@ -44,7 +45,7 @@ btSimulationIslandManagerMt::btSimulationIslandManagerMt()
 {
     m_minimumSolverBatchSize = calcBatchCost(0, 128, 0);
     m_batchIslandMinBodyCount = 32;
-    m_islandDispatch = defaultIslandDispatch;
+    m_islandDispatch = parallelIslandDispatch;
     m_batchIsland = NULL;
 }
 
@@ -545,8 +546,9 @@ void btSimulationIslandManagerMt::mergeIslands()
 }
 
 
-void btSimulationIslandManagerMt::defaultIslandDispatch( btAlignedObjectArray<Island*>* islandsPtr, IslandCallback* callback )
+void btSimulationIslandManagerMt::serialIslandDispatch( btAlignedObjectArray<Island*>* islandsPtr, IslandCallback* callback )
 {
+    BT_PROFILE( "serialIslandDispatch" );
     // serial dispatch
     btAlignedObjectArray<Island*>& islands = *islandsPtr;
     for ( int i = 0; i < islands.size(); ++i )
@@ -564,6 +566,41 @@ void btSimulationIslandManagerMt::defaultIslandDispatch( btAlignedObjectArray<Is
                                  );
     }
 }
+
+struct UpdateIslandDispatcher : public btIParallelForBody
+{
+    btAlignedObjectArray<btSimulationIslandManagerMt::Island*>* islandsPtr;
+    btSimulationIslandManagerMt::IslandCallback* callback;
+
+    void forLoop( int iBegin, int iEnd ) const BT_OVERRIDE
+    {
+        for ( int i = iBegin; i < iEnd; ++i )
+        {
+            btSimulationIslandManagerMt::Island* island = ( *islandsPtr )[ i ];
+            btPersistentManifold** manifolds = island->manifoldArray.size() ? &island->manifoldArray[ 0 ] : NULL;
+            btTypedConstraint** constraintsPtr = island->constraintArray.size() ? &island->constraintArray[ 0 ] : NULL;
+            callback->processIsland( &island->bodyArray[ 0 ],
+                island->bodyArray.size(),
+                manifolds,
+                island->manifoldArray.size(),
+                constraintsPtr,
+                island->constraintArray.size(),
+                island->id
+            );
+        }
+    }
+};
+
+void btSimulationIslandManagerMt::parallelIslandDispatch( btAlignedObjectArray<Island*>* islandsPtr, IslandCallback* callback )
+{
+    BT_PROFILE( "parallelIslandDispatch" );
+    int grainSize = 1;  // iterations per task
+    UpdateIslandDispatcher dispatcher;
+    dispatcher.islandsPtr = islandsPtr;
+    dispatcher.callback = callback;
+    btParallelFor( 0, islandsPtr->size(), grainSize, dispatcher );
+}
+
 
 ///@todo: this is random access, it can be walked 'cache friendly'!
 void btSimulationIslandManagerMt::buildAndProcessIslands( btDispatcher* dispatcher,

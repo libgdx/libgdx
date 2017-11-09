@@ -11,6 +11,7 @@ SET(LinearMath_SRCS
 	btPolarDecomposition.cpp
 	btQuickprof.cpp
 	btSerializer.cpp
+	btSerializer64.cpp
 	btThreads.cpp
 	btVector3.cpp
 )
