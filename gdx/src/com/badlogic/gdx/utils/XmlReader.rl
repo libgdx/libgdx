@@ -43,7 +43,7 @@ public class XmlReader {
 		return parse(data, 0, data.length);
 	}
 
-	public Element parse (Reader reader) throws IOException {
+	public Element parse (Reader reader) {
 		try {
 			char[] data = new char[1024];
 			int offset = 0;
@@ -65,7 +65,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (InputStream input) throws IOException {
+	public Element parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
@@ -75,7 +75,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (FileHandle file) throws IOException {
+	public Element parse (FileHandle file) {
 		InputStream is = null;
 		try {
 			return parse(file.reader("UTF-8"));
