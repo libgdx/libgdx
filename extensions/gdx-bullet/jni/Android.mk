@@ -169,7 +169,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/custom/gdx/collision/ClosestNotMeRayResultCallback.cpp\
 	src/custom/gdx/collision/ContactCache.cpp\
 	src/custom/gdx/collision/ContactListener.cpp\
-	src/custom/gdx/collision/GdxCollisionObjectBridge.cpp\
 	src/custom/gdx/common/jniHelpers.cpp\
 	src/custom/gdx/dynamics/FilterableVehicleRaycaster.cpp\
 	src/custom/gdx/dynamics/InternalTickCallback.cpp\
