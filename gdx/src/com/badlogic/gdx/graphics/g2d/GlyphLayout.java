@@ -169,17 +169,17 @@ public class GlyphLayout implements Poolable {
 									wrapIndex = i - 1;
 								}
 								GlyphRun next;
-								if (wrapIndex == 0) { // No wrap index, move entire run to next line.
-									next = run;
+								if (wrapIndex == 0) {
+									next = run; // No wrap index, move entire run to next line.
 									run.width = 0;
-									width = Math.max(width, run.x);
-								} else {
+								}
+								else {
 									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 									runs.add(next);
-									width = Math.max(width, run.x + run.width);
 								}
 
 								// Start the loop over with the new run on the next line.
+								width = Math.max(width, run.x + run.width);
 								x = 0;
 								y += fontData.down;
 								lines++;
@@ -318,7 +318,8 @@ public class GlyphLayout implements Poolable {
 			FloatArray xAdvances2 = first.xAdvances; // Starts with all the xAdvances.
 			xAdvances1.addAll(xAdvances2, 0, wrapIndex + 1);
 			xAdvances2.removeRange(1, wrapIndex); // Leave first entry to be overwritten by next line.
-			xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
+			//xAdvances2.set(0, -glyphs2.first().xoffset * fontData.scaleX - fontData.padLeft);
+			xAdvances2.set(0,0);	// Set first glyph starting at 0
 			first.xAdvances = xAdvances1;
 			second.xAdvances = xAdvances2;
 			// Equivalent to:
