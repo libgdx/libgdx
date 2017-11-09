@@ -122,7 +122,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDbvt.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp" />
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btMultiSapBroadphase.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp" />

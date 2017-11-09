@@ -7,7 +7,6 @@ SET(BulletCollision_SRCS
 	BroadphaseCollision/btDbvt.cpp
 	BroadphaseCollision/btDbvtBroadphase.cpp
 	BroadphaseCollision/btDispatcher.cpp
-	BroadphaseCollision/btMultiSapBroadphase.cpp
 	BroadphaseCollision/btOverlappingPairCache.cpp
 	BroadphaseCollision/btQuantizedBvh.cpp
 	BroadphaseCollision/btSimpleBroadphase.cpp
@@ -110,7 +109,6 @@ SET(BroadphaseCollision_HDRS
 	BroadphaseCollision/btDbvt.h
 	BroadphaseCollision/btDbvtBroadphase.h
 	BroadphaseCollision/btDispatcher.h
-	BroadphaseCollision/btMultiSapBroadphase.h
 	BroadphaseCollision/btOverlappingPairCache.h
 	BroadphaseCollision/btOverlappingPairCallback.h
 	BroadphaseCollision/btQuantizedBvh.h

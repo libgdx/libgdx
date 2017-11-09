@@ -32,14 +32,16 @@ subject to the following restrictions:
 //must be above the machine epsilon
 #ifdef  BT_USE_DOUBLE_PRECISION
 	#define REL_ERROR2 btScalar(1.0e-12)
+	btScalar gGjkEpaPenetrationTolerance = 1e-7;
 #else
 	#define REL_ERROR2 btScalar(1.0e-6)
+	btScalar gGjkEpaPenetrationTolerance = 0.001;
 #endif
 
 //temp globals, to improve GJK/EPA/penetration calculations
 int gNumDeepPenetrationChecks = 0;
 int gNumGjkChecks = 0;
-btScalar gGjkEpaPenetrationTolerance = 0.001;
+
 
 btGjkPairDetector::btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver)
 :m_cachedSeparatingAxis(btScalar(0.),btScalar(1.),btScalar(0.)),
@@ -279,7 +281,7 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 			btScalar lenSqr =m_cachedSeparatingAxis.length2();
 			
 			//valid normal
-			if (lenSqr < 0.0001)
+			if (lenSqr < REL_ERROR2)
 			{
 				m_degenerateSimplex = 5;
 			} 
@@ -351,46 +353,7 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 							pointOnA = tmpPointOnA;
 							pointOnB = tmpPointOnB;
 							normalInB = tmpNormalInB;
-							///todo: need to track down this EPA penetration solver degeneracy
-							///the penetration solver reports penetration but the contact normal
-							///connecting the contact points is pointing in the opposite direction
-							///until then, detect the issue and revert the normal
-							{
-								btScalar d1=0;
-								{
-									btVector3 seperatingAxisInA = (normalInB)* input.m_transformA.getBasis();
-									btVector3 seperatingAxisInB = -normalInB* input.m_transformB.getBasis();
-								
-
-									btVector3 pInA = m_minkowskiA->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInA);
-									btVector3 qInB = m_minkowskiB->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInB);
-
-									btVector3  pWorld = localTransA(pInA);	
-									btVector3  qWorld = localTransB(qInB);
-									btVector3 w	= pWorld - qWorld;
-									d1 = (-normalInB).dot(w);
-								}
-								btScalar d0 = 0.f;
-								{
-									btVector3 seperatingAxisInA = (-normalInB)* input.m_transformA.getBasis();
-									btVector3 seperatingAxisInB = normalInB* input.m_transformB.getBasis();
-								
-
-									btVector3 pInA = m_minkowskiA->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInA);
-									btVector3 qInB = m_minkowskiB->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInB);
-
-									btVector3  pWorld = localTransA(pInA);	
-									btVector3  qWorld = localTransB(qInB);
-									btVector3 w	= pWorld - qWorld;
-									d0 = normalInB.dot(w);
-								}
-								if (d1>d0)
-								{
-									m_lastUsedMethod = 10;
-									normalInB*=-1;
-								} 
-
-							}
+							
 							isValid = true;
 							
 						} else
@@ -447,6 +410,47 @@ void btGjkPairDetector::getClosestPointsNonVirtual(const ClosestPointInput& inpu
 		m_cachedSeparatingAxis = normalInB;
 		m_cachedSeparatingDistance = distance;
 
+		{
+		///todo: need to track down this EPA penetration solver degeneracy
+		///the penetration solver reports penetration but the contact normal
+		///connecting the contact points is pointing in the opposite direction
+		///until then, detect the issue and revert the normal
+
+			btScalar d1=0;
+			{
+				btVector3 seperatingAxisInA = (normalInB)* input.m_transformA.getBasis();
+				btVector3 seperatingAxisInB = -normalInB* input.m_transformB.getBasis();
+			
+
+				btVector3 pInA = m_minkowskiA->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInA);
+				btVector3 qInB = m_minkowskiB->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInB);
+
+				btVector3  pWorld = localTransA(pInA);	
+				btVector3  qWorld = localTransB(qInB);
+				btVector3 w	= pWorld - qWorld;
+				d1 = (-normalInB).dot(w);
+			}
+			btScalar d0 = 0.f;
+			{
+				btVector3 seperatingAxisInA = (-normalInB)* input.m_transformA.getBasis();
+				btVector3 seperatingAxisInB = normalInB* input.m_transformB.getBasis();
+			
+
+				btVector3 pInA = m_minkowskiA->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInA);
+				btVector3 qInB = m_minkowskiB->localGetSupportVertexWithoutMarginNonVirtual(seperatingAxisInB);
+
+				btVector3  pWorld = localTransA(pInA);	
+				btVector3  qWorld = localTransB(qInB);
+				btVector3 w	= pWorld - qWorld;
+				d0 = normalInB.dot(w);
+			}
+			if (d1>d0)
+			{
+				m_lastUsedMethod = 10;
+				normalInB*=-1;
+			} 
+
+		}
 		output.addContactPoint(
 			normalInB,
 			pointOnB+positionOffset,

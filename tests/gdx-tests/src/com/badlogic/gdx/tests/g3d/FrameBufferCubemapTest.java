@@ -36,7 +36,7 @@ public class FrameBufferCubemapTest extends Basic3DSceneTest {
 		camFb.far = 1000f;
 		camFb.update();
 		
-		fb = FrameBufferCubemap.createFrameBufferCubemap(Format.RGBA8888, 800, 800, true);
+		fb = new FrameBufferCubemap(Format.RGBA8888, 800, 800, true);
 		cubemap = fb.getColorBufferTexture();
 
 		ObjLoader objLoader = new ObjLoader();

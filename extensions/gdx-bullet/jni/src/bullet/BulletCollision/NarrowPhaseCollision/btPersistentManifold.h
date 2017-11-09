@@ -59,8 +59,8 @@ enum btContactManifoldTypes
 ///note that some pairs of objects might have more then one contact manifold.
 
 
-ATTRIBUTE_ALIGNED128( class) btPersistentManifold : public btTypedObject
-//ATTRIBUTE_ALIGNED16( class) btPersistentManifold : public btTypedObject
+//ATTRIBUTE_ALIGNED128( class) btPersistentManifold : public btTypedObject
+ATTRIBUTE_ALIGNED16( class) btPersistentManifold : public btTypedObject
 {
 
 	btManifoldPoint m_pointCache[MANIFOLD_CACHE_SIZE];

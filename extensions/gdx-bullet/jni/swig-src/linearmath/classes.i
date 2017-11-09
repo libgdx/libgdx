@@ -1,3 +1,4 @@
+SPECIFY_CLASS(CProfileSample, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(ConvexH, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(GrahamVector3, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(HullDesc, com.badlogic.gdx.physics.bullet.linearmath)
@@ -17,6 +18,8 @@ SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_int_t, com.badlogic.gdx.physics.b
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_btMatrix3x3DoubleData, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_btMatrix3x3FloatData, com.badlogic.gdx.physics.bullet.linearmath)
+SPECIFY_CLASS(SWIGTYPE_p_f___void, com.badlogic.gdx.physics.bullet.linearmath)
+SPECIFY_CLASS(SWIGTYPE_p_f_p_q_const__char__void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_f_p_void__void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_f_size_t__p_void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_f_size_t_int__p_void, com.badlogic.gdx.physics.bullet.linearmath)

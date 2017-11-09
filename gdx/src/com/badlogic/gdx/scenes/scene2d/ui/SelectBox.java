@@ -303,8 +303,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return prefHeight;
 	}
 
-	protected String toString (T obj) {
-		return obj.toString();
+	protected String toString (T item) {
+		return item.toString();
 	}
 
 	public void showList () {

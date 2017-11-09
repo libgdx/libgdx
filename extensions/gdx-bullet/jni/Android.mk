@@ -2,10 +2,10 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := gdx-bullet
-LOCAL_C_INCLUDES := src/bullet/ src/custom/ src/extras/Serialize/ 
+LOCAL_C_INCLUDES := src/bullet/ src/custom/ src/extras/Serialize/ src/extras/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
-LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -fexceptions
+LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2 -fexceptions
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
@@ -16,7 +16,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletCollision/BroadphaseCollision/btDbvt.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btDbvtBroadphase.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btDispatcher.cpp\
-	src/bullet/BulletCollision/BroadphaseCollision/btMultiSapBroadphase.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btOverlappingPairCache.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btQuantizedBvh.cpp\
 	src/bullet/BulletCollision/BroadphaseCollision/btSimpleBroadphase.cpp\
@@ -123,8 +122,10 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/ConstraintSolver/btTypedConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btUniversalConstraint.cpp\
 	src/bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.cpp\
+	src/bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorldMt.cpp\
 	src/bullet/BulletDynamics/Dynamics/btRigidBody.cpp\
 	src/bullet/BulletDynamics/Dynamics/btSimpleDynamicsWorld.cpp\
+	src/bullet/BulletDynamics/Dynamics/btSimulationIslandManagerMt.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBody.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraint.cpp\
 	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.cpp\
@@ -139,11 +140,16 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/MLCPSolvers/btMLCPSolver.cpp\
 	src/bullet/BulletDynamics/Vehicle/btRaycastVehicle.cpp\
 	src/bullet/BulletDynamics/Vehicle/btWheelInfo.cpp\
+	src/bullet/BulletInverseDynamics/details/MultiBodyTreeImpl.cpp\
+	src/bullet/BulletInverseDynamics/details/MultiBodyTreeInitCache.cpp\
+	src/bullet/BulletInverseDynamics/IDMath.cpp\
+	src/bullet/BulletInverseDynamics/MultiBodyTree.cpp\
 	src/bullet/BulletSoftBody/btDefaultSoftBodySolver.cpp\
 	src/bullet/BulletSoftBody/btSoftBody.cpp\
 	src/bullet/BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.cpp\
 	src/bullet/BulletSoftBody/btSoftBodyHelpers.cpp\
 	src/bullet/BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.cpp\
+	src/bullet/BulletSoftBody/btSoftMultiBodyDynamicsWorld.cpp\
 	src/bullet/BulletSoftBody/btSoftRigidCollisionAlgorithm.cpp\
 	src/bullet/BulletSoftBody/btSoftRigidDynamicsWorld.cpp\
 	src/bullet/BulletSoftBody/btSoftSoftCollisionAlgorithm.cpp\
@@ -154,6 +160,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btPolarDecomposition.cpp\
 	src/bullet/LinearMath/btQuickprof.cpp\
 	src/bullet/LinearMath/btSerializer.cpp\
+	src/bullet/LinearMath/btThreads.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
 	src/custom/gdx/collision/ClosestNotMeConvexResultCallback.cpp\
 	src/custom/gdx/collision/ClosestNotMeRayResultCallback.cpp\
@@ -164,6 +171,18 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/custom/gdx/dynamics/FilterableVehicleRaycaster.cpp\
 	src/custom/gdx/dynamics/InternalTickCallback.cpp\
 	src/custom/gdx/linearmath/mathtypes.cpp\
+	src/extras/InverseDynamics/btMultiBodyTreeCreator.cpp\
+	src/extras/InverseDynamics/CloneTreeCreator.cpp\
+	src/extras/InverseDynamics/CoilCreator.cpp\
+	src/extras/InverseDynamics/DillCreator.cpp\
+	src/extras/InverseDynamics/IDRandomUtil.cpp\
+	src/extras/InverseDynamics/invdyn_bullet_comparison.cpp\
+	src/extras/InverseDynamics/MultiBodyNameMap.cpp\
+	src/extras/InverseDynamics/MultiBodyTreeCreator.cpp\
+	src/extras/InverseDynamics/MultiBodyTreeDebugGraph.cpp\
+	src/extras/InverseDynamics/RandomTreeCreator.cpp\
+	src/extras/InverseDynamics/SimpleTreeCreator.cpp\
+	src/extras/InverseDynamics/User2InternalIndex.cpp\
 	src/extras/Serialize/BulletFileLoader/bChunk.cpp\
 	src/extras/Serialize/BulletFileLoader/bDNA.cpp\
 	src/extras/Serialize/BulletFileLoader/bFile.cpp\
@@ -173,6 +192,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	swig-src/collision/collision_wrap.cpp\
 	swig-src/dynamics/dynamics_wrap.cpp\
 	swig-src/extras/extras_wrap.cpp\
+	swig-src/inversedynamics/inversedynamics_wrap.cpp\
 	swig-src/linearmath/linearmath_wrap.cpp\
 	swig-src/softbody/softbody_wrap.cpp
  

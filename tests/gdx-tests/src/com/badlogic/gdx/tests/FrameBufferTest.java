@@ -132,8 +132,8 @@ public class FrameBufferTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		spriteBatch = new SpriteBatch();
-		frameBuffer = FrameBuffer.createFrameBuffer(Format.RGB565, 128, 128, false);
-		stencilFrameBuffer = FrameBuffer.createFrameBuffer(Format.RGB565, 128, 128, false, true);
+		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false);
+		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true, true);
 		createShader(Gdx.graphics);
 	}
 

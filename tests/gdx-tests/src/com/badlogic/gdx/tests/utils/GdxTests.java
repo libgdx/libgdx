@@ -83,6 +83,8 @@ public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
 		// @off
 		IssueTest.class,
+		LabelColorAndWrap.class,
+			LabelColorAndWrap2.class,
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,

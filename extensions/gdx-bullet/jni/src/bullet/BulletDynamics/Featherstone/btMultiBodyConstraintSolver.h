@@ -43,7 +43,7 @@ protected:
 	btMultiBodyConstraint**					m_tmpMultiBodyConstraints;
 	int										m_tmpNumMultiBodyConstraints;
 
-	void resolveSingleConstraintRowGeneric(const btMultiBodySolverConstraint& c);
+	btScalar resolveSingleConstraintRowGeneric(const btMultiBodySolverConstraint& c);
 	
 
 	void convertContacts(btPersistentManifold** manifoldPtr,int numManifolds, const btContactSolverInfo& infoGlobal);

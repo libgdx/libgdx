@@ -12,6 +12,7 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+#define CLEAR_MANIFOLD 1
 
 #include "btSphereSphereCollisionAlgorithm.h"
 #include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
@@ -62,7 +63,7 @@ void btSphereSphereCollisionAlgorithm::processCollision (const btCollisionObject
 #endif
 
 	///iff distance positive, don't generate a new contact
-	if ( len > (radius0+radius1))
+	if ( len > (radius0+radius1+resultOut->m_closestPointDistanceThreshold))
 	{
 #ifndef CLEAR_MANIFOLD
 		resultOut->refreshContactPoints();
