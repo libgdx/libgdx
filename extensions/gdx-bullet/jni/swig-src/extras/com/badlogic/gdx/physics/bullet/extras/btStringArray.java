@@ -80,20 +80,12 @@ public class btStringArray extends BulletBase {
     return ExtrasJNI.btStringArray_size(swigCPtr, this);
   }
 
-  public String atConst(int n) {
-    return ExtrasJNI.btStringArray_atConst(swigCPtr, this, n);
-  }
-
   public String at(int n) {
-    return ExtrasJNI.btStringArray_at(swigCPtr, this, n);
-  }
-
-  public String operatorSubscriptConst(int n) {
-    return ExtrasJNI.btStringArray_operatorSubscriptConst(swigCPtr, this, n);
+    return ExtrasJNI.btStringArray_at__SWIG_0(swigCPtr, this, n);
   }
 
   public String operatorSubscript(int n) {
-    return ExtrasJNI.btStringArray_operatorSubscript(swigCPtr, this, n);
+    return ExtrasJNI.btStringArray_operatorSubscript__SWIG_0(swigCPtr, this, n);
   }
 
   public void clear() {

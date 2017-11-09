@@ -66,14 +66,6 @@ public class Extras {
 		}
 	};
 
-  public static int getCHUNK_HEADER_LEN() {
-    return ExtrasJNI.CHUNK_HEADER_LEN_get();
-  }
-
-  public static boolean getVOID_IS_8() {
-    return ExtrasJNI.VOID_IS_8_get();
-  }
-
   public static MultiBodyTree CreateMultiBodyTree(MultiBodyTreeCreator creator) {
     long cPtr = ExtrasJNI.CreateMultiBodyTree(MultiBodyTreeCreator.getCPtr(creator), creator);
     return (cPtr == 0) ? null : new MultiBodyTree(cPtr, false);

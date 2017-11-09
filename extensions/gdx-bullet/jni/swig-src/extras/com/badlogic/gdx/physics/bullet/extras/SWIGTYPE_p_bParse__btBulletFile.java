@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet.extras;
 
-public class SWIGTYPE_p_bPtrMap {
+public class SWIGTYPE_p_bParse__btBulletFile {
   private transient long swigCPtr;
 
-  protected SWIGTYPE_p_bPtrMap(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
+  protected SWIGTYPE_p_bParse__btBulletFile(long cPtr, @SuppressWarnings("unused") boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_bPtrMap() {
+  protected SWIGTYPE_p_bParse__btBulletFile() {
     swigCPtr = 0;
   }
 
-  protected static long getCPtr(SWIGTYPE_p_bPtrMap obj) {
+  protected static long getCPtr(SWIGTYPE_p_bParse__btBulletFile obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

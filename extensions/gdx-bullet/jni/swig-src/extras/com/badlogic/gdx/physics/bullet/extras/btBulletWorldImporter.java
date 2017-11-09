@@ -79,6 +79,18 @@ public class btBulletWorldImporter extends btWorldImporter {
     ExtrasJNI.btBulletWorldImporter_change_ownership(this, swigCPtr, true);
   }
 
+	public boolean loadFile(final com.badlogic.gdx.files.FileHandle fileHandle) {
+		final int len = (int)fileHandle.length();
+		if (len <= 0)
+			throw new com.badlogic.gdx.utils.GdxRuntimeException("Incorrect file specified");
+		java.nio.ByteBuffer buff = com.badlogic.gdx.utils.BufferUtils.newUnsafeByteBuffer(len);
+		buff.put(fileHandle.readBytes());
+		buff.position(0);
+		boolean result = loadFileFromMemory(buff, len);
+		com.badlogic.gdx.utils.BufferUtils.disposeUnsafeByteBuffer(buff);
+		return result;
+	}
+
   public btBulletWorldImporter(btDynamicsWorld world) {
     this(ExtrasJNI.new_btBulletWorldImporter__SWIG_0(btDynamicsWorld.getCPtr(world), world), true);
     ExtrasJNI.btBulletWorldImporter_director_connect(this, swigCPtr, swigCMemOwn, true);
@@ -97,12 +109,12 @@ public class btBulletWorldImporter extends btWorldImporter {
     return ExtrasJNI.btBulletWorldImporter_loadFile__SWIG_1(swigCPtr, this, fileName);
   }
 
-  public boolean loadFileFromMemory(btBulletFile file) {
-    return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_0(swigCPtr, this, btBulletFile.getCPtr(file), file);
+  public boolean loadFileFromMemory(SWIGTYPE_p_bParse__btBulletFile file) {
+    return ExtrasJNI.btBulletWorldImporter_loadFileFromMemory__SWIG_0(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
   }
 
-  public boolean convertAllObjects(btBulletFile file) {
-    return (getClass() == btBulletWorldImporter.class) ? ExtrasJNI.btBulletWorldImporter_convertAllObjects(swigCPtr, this, btBulletFile.getCPtr(file), file) : ExtrasJNI.btBulletWorldImporter_convertAllObjectsSwigExplicitbtBulletWorldImporter(swigCPtr, this, btBulletFile.getCPtr(file), file);
+  public boolean convertAllObjects(SWIGTYPE_p_bParse__btBulletFile file) {
+    return (getClass() == btBulletWorldImporter.class) ? ExtrasJNI.btBulletWorldImporter_convertAllObjects(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file)) : ExtrasJNI.btBulletWorldImporter_convertAllObjectsSwigExplicitbtBulletWorldImporter(swigCPtr, this, SWIGTYPE_p_bParse__btBulletFile.getCPtr(file));
   }
 
   public boolean loadFileFromMemory(java.nio.ByteBuffer memoryBuffer, int len) {

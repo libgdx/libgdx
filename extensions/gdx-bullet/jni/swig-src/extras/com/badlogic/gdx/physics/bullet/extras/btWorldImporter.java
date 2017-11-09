@@ -138,8 +138,8 @@ public class btWorldImporter extends BulletBase {
     return (cPtr == 0) ? null : new btTypedConstraint(cPtr, false);
   }
 
-  public String getNameForPointerConst(long ptr) {
-    return ExtrasJNI.btWorldImporter_getNameForPointerConst(swigCPtr, this, ptr);
+  public String getNameForPointer(long ptr) {
+    return ExtrasJNI.btWorldImporter_getNameForPointer__SWIG_0(swigCPtr, this, ptr);
   }
 
   public void setDynamicsWorldInfo(Vector3 gravity, btContactSolverInfo solverInfo) {
@@ -350,10 +350,6 @@ public class btWorldImporter extends BulletBase {
   public btGearConstraint createGearConstraint(btRigidBody rbA, btRigidBody rbB, Vector3 axisInA, Vector3 axisInB, float ratio) {
     long cPtr = ExtrasJNI.btWorldImporter_createGearConstraint(swigCPtr, this, btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, axisInA, axisInB, ratio);
     return (cPtr == 0) ? null : new btGearConstraint(cPtr, false);
-  }
-
-  public String getNameForPointer(long cPtr) {
-    return ExtrasJNI.btWorldImporter_getNameForPointer(swigCPtr, this, cPtr);
   }
 
 }
