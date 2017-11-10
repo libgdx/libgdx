@@ -824,10 +824,6 @@ public class BitmapFont implements Disposable {
 				char ch = (char)glyphs.get(i).id;
 				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
-			for (i=0; i<start; i++) { // Move forward excluding whitespaces
-				char ch = (char)glyphs.get(i).id;
-				if (!isWhitespace(ch)) return i;
-			}
 			return 0;
 		}
 

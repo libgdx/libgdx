@@ -76,7 +76,6 @@ import com.badlogic.gdx.tests.InterpolationTest;
 import com.badlogic.gdx.tests.InverseKinematicsTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
-import com.badlogic.gdx.tests.LabelColorAndWrap;
 import com.badlogic.gdx.tests.LabelScaleTest;
 import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
@@ -458,8 +457,7 @@ public class GwtTestWrapper extends GdxTest {
 
 	Instancer[] tests = {new Instancer() {
 		public GdxTest instance () {
-			//return new AccelerometerTest();
-			return new LabelColorAndWrap();
+			return new AccelerometerTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
