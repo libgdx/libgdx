@@ -105,7 +105,7 @@ public class GlyphLayout implements Poolable {
 		while (true) {
 			// Each run is delimited by newline or left square bracket.
 			int runEnd = -1;
-			boolean newline = false, colorRun = false;
+			boolean newline = false;
 			if (start == end) {
 				if (runStart == end) break; // End of string with no run to process, we're done.
 				runEnd = end; // End of string, process last run.
@@ -124,7 +124,6 @@ public class GlyphLayout implements Poolable {
 							runEnd = start - 1;
 							start += length + 1;
 							nextColor = colorStack.peek();
-							colorRun = true;
 						} else if (length == -2) {
 							start++; // Skip first of "[[" escape sequence.
 							continue outer;
@@ -141,7 +140,7 @@ public class GlyphLayout implements Poolable {
 					run.color.set(color);
 					run.x = x;
 					run.y = y;
-					fontData.getGlyphs(run, str, runStart, runEnd, colorRun);
+					fontData.getGlyphs(run, str, runStart, runEnd, false);
 					if (run.glyphs.size == 0)
 						glyphRunPool.free(run);
 					else {
