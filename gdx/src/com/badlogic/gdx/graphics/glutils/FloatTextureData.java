@@ -92,9 +92,10 @@ public class FloatTextureData implements TextureData {
 			Gdx.gl.glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
 
 		} else {
-			if (!Gdx.graphics.supportsExtension("GL_ARB_texture_float"))
-				throw new GdxRuntimeException("Extension GL_ARB_texture_float not supported!");
-
+			if (!Gdx.graphics.isGL30Available()) {
+				if (!Gdx.graphics.supportsExtension("GL_ARB_texture_float"))
+					throw new GdxRuntimeException("Extension GL_ARB_texture_float not supported!");
+			}
 			// in desktop OpenGL the texture format is defined only by the third argument,
 			// hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
 			Gdx.gl.glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL20.GL_FLOAT, buffer);
