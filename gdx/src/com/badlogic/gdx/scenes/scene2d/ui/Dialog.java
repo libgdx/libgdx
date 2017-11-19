@@ -199,6 +199,7 @@ public class Dialog extends Window {
 
 		pack();
 		stage.addActor(this);
+		stage.cancelTouchFocus();
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 		if (action != null) addAction(action);
