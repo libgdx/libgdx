@@ -58,7 +58,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * <pre>
  * FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(&quot;myfont.ttf&quot;));
  * BitmapFont font = gen.generateFont(16);
- * gen.dispose();
+ * gen.dispose(); // Don't dispose if doing incremental glyph generation.
  * </pre>
  * 
  * The generator has to be disposed once it is no longer used. The returned {@link BitmapFont} instances are managed by the user
