@@ -188,6 +188,11 @@ public class Sprite extends TextureRegion {
 		translate(x - this.x, y - this.y);
 	}
 
+	/** Sets the position where the sprite will be drawn, relative to its current origin.  */
+	public void setOriginBasedPosition (float x, float y) {
+		setPosition(x - this.originX, y - this.originX);
+	}
+
 	/** Sets the x position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
 	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}. */
