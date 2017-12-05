@@ -18,9 +18,9 @@ package com.badlogic.gdx.utils;
 
 import java.util.NoSuchElementException;
 
-/** An {@link ObjectSet} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead for
- * put and remove. {@link #iterator() Iteration} is ordered and faster than an unordered set. Keys can also be accessed and the
- * order changed using {@link #orderedItems()}.
+/** An {@link ObjectSet} that also stores keys in an {@link Array} using the insertion order. There is some additional overhead
+ * for put and remove. {@link #iterator() Iteration} is ordered and faster than an unordered set. Keys can also be accessed and
+ * the order changed using {@link #orderedItems()}.
  * @author Nathan Sweet */
 public class OrderedSet<T> extends ObjectSet<T> {
 	final Array<T> items;
@@ -47,8 +47,19 @@ public class OrderedSet<T> extends ObjectSet<T> {
 	}
 
 	public boolean add (T key) {
-		if (!contains(key)) items.add(key);
-		return super.add(key);
+		if (!super.add(key)) return false;
+		items.add(key);
+		return true;
+	}
+
+	public boolean add (T key, int index) {
+		if (!super.add(key)) {
+			items.removeValue(key, true);
+			items.insert(index, key);
+			return false;
+		}
+		items.insert(index, key);
+		return true;
 	}
 
 	public boolean remove (T key) {
@@ -89,16 +100,20 @@ public class OrderedSet<T> extends ObjectSet<T> {
 
 	public String toString () {
 		if (size == 0) return "{}";
+		T[] items = this.items.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('{');
-		Array<T> keys = this.items;
-		for (int i = 0, n = keys.size; i < n; i++) {
-			T key = keys.get(i);
-			if (i > 0) buffer.append(", ");
-			buffer.append(key);
+		buffer.append(items[0]);
+		for (int i = 1; i < size; i++) {
+			buffer.append(", ");
+			buffer.append(items[i]);
 		}
 		buffer.append('}');
 		return buffer.toString();
+	}
+
+	public String toString (String separator) {
+		return items.toString(separator);
 	}
 
 	static public class OrderedSetIterator<T> extends ObjectSetIterator<T> {

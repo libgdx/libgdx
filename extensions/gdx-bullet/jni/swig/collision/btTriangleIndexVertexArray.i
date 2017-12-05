@@ -141,7 +141,7 @@ import java.nio.ShortBuffer;
 	public void set(final MeshPart meshPart) {
 		if (meshPart.primitiveType != com.badlogic.gdx.graphics.GL20.GL_TRIANGLES)
 			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh must be indexed and triangulated");
-		set(meshPart, meshPart.mesh, meshPart.indexOffset, meshPart.numVertices);
+		set(meshPart, meshPart.mesh, meshPart.offset, meshPart.size);
 	}
 	
 	/** Convenience method to set this btIndexedMesh to the specified {@link Mesh} 

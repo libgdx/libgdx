@@ -37,7 +37,6 @@ import com.badlogic.gdx.utils.ShortArray;
  * @author Nathan Sweet (rewrite, return indices, no allocation, optimizations) */
 public class EarClippingTriangulator {
 	static private final int CONCAVE = -1;
-	static private final int TANGENTIAL = 0;
 	static private final int CONVEX = 1;
 
 	private final ShortArray indicesArray = new ShortArray();
@@ -116,7 +115,7 @@ public class EarClippingTriangulator {
 		}
 	}
 
-	/** @return {@link #CONCAVE}, {@link #TANGENTIAL} or {@link #CONVEX} */
+	/** @return {@link #CONCAVE} or {@link #CONVEX} */
 	private int classifyVertex (int index) {
 		short[] indices = this.indices;
 		int previous = indices[previousIndex(index)] * 2;

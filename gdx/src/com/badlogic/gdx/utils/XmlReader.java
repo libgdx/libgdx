@@ -44,7 +44,7 @@ public class XmlReader {
 		return parse(data, 0, data.length);
 	}
 
-	public Element parse (Reader reader) throws IOException {
+	public Element parse (Reader reader) {
 		try {
 			char[] data = new char[1024];
 			int offset = 0;
@@ -66,7 +66,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (InputStream input) throws IOException {
+	public Element parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
@@ -76,7 +76,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (FileHandle file) throws IOException {
+	public Element parse (FileHandle file) {
 		try {
 			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
@@ -326,8 +326,8 @@ public class XmlReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing XML on line " + lineNumber + " near: "
-				+ new String(data, p, Math.min(32, pe - p)));
+			throw new SerializationException(
+				"Error parsing XML on line " + lineNumber + " near: " + new String(data, p, Math.min(32, pe - p)));
 		} else if (elements.size != 0) {
 			Element element = elements.peek();
 			elements.clear();
@@ -354,9 +354,9 @@ public class XmlReader {
 
 	private static char[] init__xml_trans_keys_0 () {
 		return new char[] {32, 60, 9, 13, 32, 47, 62, 9, 13, 32, 47, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32,
-			61, 9, 13, 32, 34, 39, 9, 13, 34, 34, 32, 47, 62, 9, 13, 32, 62, 9, 13, 32, 62, 9, 13, 39, 39, 32, 60, 9, 13, 60, 32,
-			47, 62, 9, 13, 32, 47, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32, 61, 9, 13, 32, 34, 39, 9, 13, 34,
-			34, 32, 47, 62, 9, 13, 32, 62, 9, 13, 32, 62, 9, 13, 60, 32, 47, 9, 13, 62, 62, 39, 39, 32, 9, 13, 0};
+			61, 9, 13, 32, 34, 39, 9, 13, 34, 34, 32, 47, 62, 9, 13, 32, 62, 9, 13, 32, 62, 9, 13, 39, 39, 32, 60, 9, 13, 60, 32, 47,
+			62, 9, 13, 32, 47, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32, 47, 61, 62, 9, 13, 32, 61, 9, 13, 32, 34, 39, 9, 13, 34, 34, 32,
+			47, 62, 9, 13, 32, 62, 9, 13, 32, 62, 9, 13, 60, 32, 47, 9, 13, 62, 62, 39, 39, 32, 9, 13, 0};
 	}
 
 	private static final char _xml_trans_keys[] = init__xml_trans_keys_0();
@@ -376,18 +376,18 @@ public class XmlReader {
 	private static final byte _xml_range_lengths[] = init__xml_range_lengths_0();
 
 	private static short[] init__xml_index_offsets_0 () {
-		return new short[] {0, 0, 4, 9, 14, 20, 26, 30, 35, 37, 39, 44, 48, 52, 54, 56, 60, 62, 67, 72, 78, 84, 88, 93, 95, 97,
-			102, 106, 110, 112, 116, 118, 120, 122, 124, 127};
+		return new short[] {0, 0, 4, 9, 14, 20, 26, 30, 35, 37, 39, 44, 48, 52, 54, 56, 60, 62, 67, 72, 78, 84, 88, 93, 95, 97, 102,
+			106, 110, 112, 116, 118, 120, 122, 124, 127};
 	}
 
 	private static final short _xml_index_offsets[] = init__xml_index_offsets_0();
 
 	private static byte[] init__xml_indicies_0 () {
 		return new byte[] {0, 2, 0, 1, 2, 1, 1, 2, 3, 5, 6, 7, 5, 4, 9, 10, 1, 11, 9, 8, 13, 1, 14, 1, 13, 12, 15, 16, 15, 1, 16,
-			17, 18, 16, 1, 20, 19, 22, 21, 9, 10, 11, 9, 1, 23, 24, 23, 1, 25, 11, 25, 1, 20, 26, 22, 27, 29, 30, 29, 28, 32, 31,
-			30, 34, 1, 30, 33, 36, 37, 38, 36, 35, 40, 41, 1, 42, 40, 39, 44, 1, 45, 1, 44, 43, 46, 47, 46, 1, 47, 48, 49, 47, 1,
-			51, 50, 53, 52, 40, 41, 42, 40, 1, 54, 55, 54, 1, 56, 42, 56, 1, 57, 1, 57, 34, 57, 1, 1, 58, 59, 58, 51, 60, 53, 61,
-			62, 62, 1, 1, 0};
+			17, 18, 16, 1, 20, 19, 22, 21, 9, 10, 11, 9, 1, 23, 24, 23, 1, 25, 11, 25, 1, 20, 26, 22, 27, 29, 30, 29, 28, 32, 31, 30,
+			34, 1, 30, 33, 36, 37, 38, 36, 35, 40, 41, 1, 42, 40, 39, 44, 1, 45, 1, 44, 43, 46, 47, 46, 1, 47, 48, 49, 47, 1, 51, 50,
+			53, 52, 40, 41, 42, 40, 1, 54, 55, 54, 1, 56, 42, 56, 1, 57, 1, 57, 34, 57, 1, 1, 58, 59, 58, 51, 60, 53, 61, 62, 62, 1,
+			1, 0};
 	}
 
 	private static final byte _xml_indicies[] = init__xml_indicies_0();
@@ -401,8 +401,8 @@ public class XmlReader {
 	private static final byte _xml_trans_targs[] = init__xml_trans_targs_0();
 
 	private static byte[] init__xml_trans_actions_0 () {
-		return new byte[] {0, 0, 0, 1, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 1, 0, 1, 0, 0, 0,
-			15, 1, 0, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 0, 0, 7, 1, 0, 0};
+		return new byte[] {0, 0, 0, 1, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 1, 0, 1, 0, 0, 0, 15,
+			1, 0, 0, 3, 3, 20, 1, 0, 0, 9, 0, 11, 11, 0, 0, 0, 0, 1, 17, 0, 13, 5, 23, 0, 0, 0, 7, 1, 0, 0};
 	}
 
 	private static final byte _xml_trans_actions[] = init__xml_trans_actions_0();
@@ -470,9 +470,9 @@ public class XmlReader {
 
 		/** @throws GdxRuntimeException if the attribute was not found. */
 		public String getAttribute (String name) {
-			if (attributes == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (attributes == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			String value = attributes.get(name);
-			if (value == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			return value;
 		}
 
@@ -481,6 +481,11 @@ public class XmlReader {
 			String value = attributes.get(name);
 			if (value == null) return defaultValue;
 			return value;
+		}
+
+		public boolean hasAttribute (String name) {
+			if (attributes == null) return false;
+			return attributes.containsKey(name);
 		}
 
 		public void setAttribute (String name, String value) {
@@ -581,6 +586,11 @@ public class XmlReader {
 			return null;
 		}
 
+		public boolean hasChild (String name) {
+			if (children == null) return false;
+			return getChildByName(name) != null;
+		}
+
 		/** @param name the name of the child {@link Element}
 		 * @return the first child having the given name or null, recurses */
 		public Element getChildByNameRecursive (String name) {
@@ -592,6 +602,11 @@ public class XmlReader {
 				if (found != null) return found;
 			}
 			return null;
+		}
+
+		public boolean hasChildRecursive (String name) {
+			if (children == null) return false;
+			return getChildByNameRecursive(name) != null;
 		}
 
 		/** @param name the name of the children

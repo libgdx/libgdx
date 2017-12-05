@@ -35,7 +35,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
 import java.io.IOException;
 
 /** @brief synchronous loader for TMX maps created with the Tiled tool */
@@ -160,6 +162,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		int mapHeight = root.getIntAttribute("height", 0);
 		int tileWidth = root.getIntAttribute("tilewidth", 0);
 		int tileHeight = root.getIntAttribute("tileheight", 0);
+		int hexSideLength = root.getIntAttribute("hexsidelength", 0);
+		String staggerAxis = root.getAttribute("staggeraxis", null);
+		String staggerIndex = root.getAttribute("staggerindex", null);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
 
 		MapProperties mapProperties = map.getProperties();
@@ -170,6 +175,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		mapProperties.put("height", mapHeight);
 		mapProperties.put("tilewidth", tileWidth);
 		mapProperties.put("tileheight", tileHeight);
+		mapProperties.put("hexsidelength", hexSideLength);
+		if (staggerAxis != null) {
+			mapProperties.put("staggeraxis", staggerAxis);
+		}
+		if (staggerIndex != null) {
+			mapProperties.put("staggerindex", staggerIndex);
+		}
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
@@ -198,15 +210,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		}
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
 			Element element = root.getChild(i);
-			String name = element.getName();
-			if (name.equals("layer")) {
-				loadTileLayer(map, element);
-			} else if (name.equals("objectgroup")) {
-				loadObjectGroup(map, element);
-			}
-			else if (name.equals("imagelayer")) {
-				loadImageLayer(map, element, tmxFile, imageResolver);
-			}
+			loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
 		}
 		return map;
 	}
@@ -338,7 +342,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						imageHeight = imageElement.getIntAttribute("height", 0);
 						image = getRelativeFileHandle(tsx, imageSource);
 					}					
-				} catch (IOException e) {
+				} catch (SerializationException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
@@ -394,7 +398,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						imageSource = imageElement.getAttribute("source");
 						imageWidth = imageElement.getIntAttribute("width", 0);
 						imageHeight = imageElement.getIntAttribute("height", 0);
-						image = getRelativeFileHandle(tmxFile, imageSource);
+
+						if (source != null) {
+							image = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
+						} else {
+							image = getRelativeFileHandle(tmxFile, imageSource);
+						}
 					}
 					TextureRegion texture = imageResolver.getImage(image.path());
 					TiledMapTile tile = new StaticTiledMapTile(texture);
@@ -426,6 +435,14 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 						animatedTile.setId(tile.getId());
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
+					}
+
+					Element objectgroupElement = tileElement.getChildByName("objectgroup");
+					if (objectgroupElement != null) {
+
+						for (Element objectElement: objectgroupElement.getChildrenByName("object")) {
+							loadObject(map, tile, objectElement);
+						}
 					}
 
 					String terrain = tileElement.getAttribute("terrain", null);

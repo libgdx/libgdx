@@ -92,10 +92,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
-			if (attribute.usage == VertexAttributes.Usage.ColorPacked)
-				count += 4;
-			else
-				count += 4 * attribute.numComponents;
+			count += attribute.getSizeInBytes();
 		}
 
 		return count;
@@ -163,6 +160,14 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 			mask = result;
 		}
 		return mask;
+	}
+
+	/**
+	 * Calculates the mask based on {@link VertexAttributes#getMask()} and packs the attributes count into the last 32 bits.
+	 * @return the mask with attributes count packed into the last 32 bits.
+	 */
+	public long getMaskWithSizePacked () {
+		return getMask() | ((long)attributes.length << 32);
 	}
 
 	@Override

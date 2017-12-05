@@ -29,6 +29,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int16Array;
@@ -47,20 +49,44 @@ import com.google.gwt.webgl.client.WebGLTexture;
 import com.google.gwt.webgl.client.WebGLUniformLocation;
 
 public class GwtGL20 implements GL20 {
-	final Map<Integer, WebGLProgram> programs = new HashMap<Integer, WebGLProgram>();
-	int nextProgramId = 1;
-	final Map<Integer, WebGLShader> shaders = new HashMap<Integer, WebGLShader>();
-	int nextShaderId = 1;
-	final Map<Integer, WebGLBuffer> buffers = new HashMap<Integer, WebGLBuffer>();
-	int nextBufferId = 1;
-	final Map<Integer, WebGLFramebuffer> frameBuffers = new HashMap<Integer, WebGLFramebuffer>();
-	int nextFrameBufferId = 1;
-	final Map<Integer, WebGLRenderbuffer> renderBuffers = new HashMap<Integer, WebGLRenderbuffer>();
-	int nextRenderBufferId = 1;
-	final Map<Integer, WebGLTexture> textures = new HashMap<Integer, WebGLTexture>();
-	int nextTextureId = 1;
-	final Map<Integer, Map<Integer, WebGLUniformLocation>> uniforms = new HashMap<Integer, Map<Integer, WebGLUniformLocation>>();
-	int nextUniformId = 1;
+
+	static final class IntMap<T extends JavaScriptObject> extends JavaScriptObject {
+
+		protected IntMap() {
+			super();
+		}
+
+		public static native <T extends JavaScriptObject> IntMap<T> create() /*-{
+			return [undefined];
+		}-*/;
+
+		public native T get(int key) /*-{
+			return this[key];
+		}-*/;
+
+		public native void put(int key, T value) /*-{
+			this[key] = value;
+		}-*/;
+
+		public native int add(T value) /*-{
+			this.push(value);
+			return this.length - 1;
+		}-*/;
+
+		public native T remove(int key) /*-{
+			var value = this[key];
+			delete this[key];
+			return value;
+		}-*/;
+	}
+
+	final IntMap<WebGLProgram> programs = IntMap.create();
+	final IntMap<WebGLShader> shaders = IntMap.create();
+	final IntMap<WebGLBuffer> buffers = IntMap.create();
+	final IntMap<WebGLFramebuffer> frameBuffers = IntMap.create();
+	final IntMap<WebGLRenderbuffer> renderBuffers = IntMap.create();
+	final IntMap<WebGLTexture> textures = IntMap.create();
+	final IntMap<IntMap<WebGLUniformLocation>> uniforms = IntMap.create();
 	int currProgram = 0;
 
 	Float32Array floatBuffer = TypedArrays.createFloat32Array(2000 * 20);
@@ -71,27 +97,8 @@ public class GwtGL20 implements GL20 {
 	final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
-		;
 		this.gl = gl;
 		this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
-	}
-
-	private void ensureCapacity (FloatBuffer buffer) {
-		if (buffer.remaining() > floatBuffer.length()) {
-			floatBuffer = TypedArrays.createFloat32Array(buffer.remaining());
-		}
-	}
-
-	private void ensureCapacity (ShortBuffer buffer) {
-		if (buffer.remaining() > shortBuffer.length()) {
-			shortBuffer = TypedArrays.createInt16Array(buffer.remaining());
-		}
-	}
-
-	private void ensureCapacity (IntBuffer buffer) {
-		if (buffer.remaining() > intBuffer.length()) {
-			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
-		}
 	}
 
 	public Float32Array copy (FloatBuffer buffer) {
@@ -130,378 +137,37 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
-	private int allocateUniformLocationId (int program, WebGLUniformLocation location) {
-		Map<Integer, WebGLUniformLocation> progUniforms = uniforms.get(program);
-		if (progUniforms == null) {
-			progUniforms = new HashMap<Integer, WebGLUniformLocation>();
-			uniforms.put(program, progUniforms);
+	private void ensureCapacity (FloatBuffer buffer) {
+		if (buffer.remaining() > floatBuffer.length()) {
+			floatBuffer = TypedArrays.createFloat32Array(buffer.remaining());
 		}
-		// FIXME check if uniform already stored.
-		int id = nextUniformId++;
-		progUniforms.put(id, location);
-		return id;
+	}
+
+	private void ensureCapacity (ShortBuffer buffer) {
+		if (buffer.remaining() > shortBuffer.length()) {
+			shortBuffer = TypedArrays.createInt16Array(buffer.remaining());
+		}
+	}
+
+	private void ensureCapacity (IntBuffer buffer) {
+		if (buffer.remaining() > intBuffer.length()) {
+			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
+		}
 	}
 
 	private WebGLUniformLocation getUniformLocation (int location) {
 		return uniforms.get(currProgram).get(location);
 	}
 
-	private int allocateShaderId (WebGLShader shader) {
-		int id = nextShaderId++;
-		shaders.put(id, shader);
-		return id;
-	}
-
-	private void deallocateShaderId (int id) {
-		shaders.remove(id);
-	}
-
-	private int allocateProgramId (WebGLProgram program) {
-		int id = nextProgramId++;
-		programs.put(id, program);
-		return id;
-	}
-
-	private void deallocateProgramId (int id) {
-		uniforms.remove(id);
-		programs.remove(id);
-	}
-
-	private int allocateBufferId (WebGLBuffer buffer) {
-		int id = nextBufferId++;
-		buffers.put(id, buffer);
-		return id;
-	}
-
-	private void deallocateBufferId (int id) {
-		buffers.remove(id);
-	}
-
-	private int allocateFrameBufferId (WebGLFramebuffer frameBuffer) {
-		int id = nextBufferId++;
-		frameBuffers.put(id, frameBuffer);
-		return id;
-	}
-
-	private void deallocateFrameBufferId (int id) {
-		frameBuffers.remove(id);
-	}
-
-	private int allocateRenderBufferId (WebGLRenderbuffer renderBuffer) {
-		int id = nextRenderBufferId++;
-		renderBuffers.put(id, renderBuffer);
-		return id;
-	}
-
-	private void deallocateRenderBufferId (int id) {
-		renderBuffers.remove(id);
-	}
-
-	private int allocateTextureId (WebGLTexture texture) {
-		int id = nextTextureId++;
-		textures.put(id, texture);
-		return id;
-	}
-
-	private void deallocateTextureId (int id) {
-		textures.remove(id);
-	}
+	//
+	//
+	// Public methods. Please keep ordered -----------------------------------------------------------------------------
+	//
+	//
 
 	@Override
 	public void glActiveTexture (int texture) {
 		gl.activeTexture(texture);
-	}
-
-	@Override
-	public void glBindTexture (int target, int texture) {
-		gl.bindTexture(target, textures.get(texture));
-	}
-
-	@Override
-	public void glBlendFunc (int sfactor, int dfactor) {
-		gl.blendFunc(sfactor, dfactor);
-	}
-
-	@Override
-	public void glClear (int mask) {
-		gl.clear(mask);
-	}
-
-	@Override
-	public void glClearColor (float red, float green, float blue, float alpha) {
-		gl.clearColor(red, green, blue, alpha);
-	}
-
-	@Override
-	public void glClearDepthf (float depth) {
-		gl.clearDepth(depth);
-	}
-
-	@Override
-	public void glClearStencil (int s) {
-		gl.clearStencil(s);
-	}
-
-	@Override
-	public void glColorMask (boolean red, boolean green, boolean blue, boolean alpha) {
-		gl.colorMask(red, green, blue, alpha);
-	}
-
-	@Override
-	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
-		int imageSize, Buffer data) {
-		throw new GdxRuntimeException("compressed textures not supported by GWT WebGL backend");
-	}
-
-	@Override
-	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
-		int imageSize, Buffer data) {
-		throw new GdxRuntimeException("compressed textures not supported by GWT WebGL backend");
-	}
-
-	@Override
-	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
-		gl.copyTexImage2D(target, level, internalformat, x, y, width, height, border);
-	}
-
-	@Override
-	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) {
-		gl.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
-	}
-
-	@Override
-	public void glCullFace (int mode) {
-		gl.cullFace(mode);
-	}
-
-	@Override
-	public void glDeleteTextures (int n, IntBuffer textures) {
-		for (int i = 0; i < n; i++) {
-			int id = textures.get();
-			WebGLTexture texture = this.textures.get(id);
-			deallocateTextureId(id);
-			gl.deleteTexture(texture);
-		}
-	}
-	
-	@Override
-	public void glDeleteTexture (int id) {
-		WebGLTexture texture = this.textures.get(id);
-		deallocateTextureId(id);
-		gl.deleteTexture(texture);
-	}
-
-	@Override
-	public void glDepthFunc (int func) {
-		gl.depthFunc(func);
-	}
-
-	@Override
-	public void glDepthMask (boolean flag) {
-		gl.depthMask(flag);
-	}
-
-	@Override
-	public void glDepthRangef (float zNear, float zFar) {
-		gl.depthRange(zNear, zFar);
-	}
-
-	@Override
-	public void glDisable (int cap) {
-		gl.disable(cap);
-	}
-
-	@Override
-	public void glDrawArrays (int mode, int first, int count) {
-		gl.drawArrays(mode, first, count);
-	}
-
-	@Override
-	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		gl.drawElements(mode, count, type, indices.position()); // FIXME this is assuming WebGL supports client side buffers...
-	}
-
-	@Override
-	public void glEnable (int cap) {
-		gl.enable(cap);
-	}
-
-	@Override
-	public void glFinish () {
-		gl.finish();
-	}
-
-	@Override
-	public void glFlush () {
-		gl.flush();
-	}
-
-	@Override
-	public void glFrontFace (int mode) {
-		gl.frontFace(mode);
-	}
-
-	@Override
-	public void glGenTextures (int n, IntBuffer textures) {
-		WebGLTexture texture = gl.createTexture();
-		int id = allocateTextureId(texture);
-		textures.put(id);
-	}
-	
-	@Override
-	public int glGenTexture () {
-		WebGLTexture texture = gl.createTexture();
-		return allocateTextureId(texture);
-	}
-
-	@Override
-	public int glGetError () {
-		return gl.getError();
-	}
-
-	@Override
-	public void glGetIntegerv (int pname, IntBuffer params) {
-		if (pname == GL20.GL_ACTIVE_TEXTURE || pname == GL20.GL_ALPHA_BITS || pname == GL20.GL_BLEND_DST_ALPHA
-			|| pname == GL20.GL_BLEND_DST_RGB || pname == GL20.GL_BLEND_EQUATION_ALPHA || pname == GL20.GL_BLEND_EQUATION_RGB
-			|| pname == GL20.GL_BLEND_SRC_ALPHA || pname == GL20.GL_BLEND_SRC_RGB || pname == GL20.GL_BLUE_BITS
-			|| pname == GL20.GL_CULL_FACE_MODE || pname == GL20.GL_DEPTH_BITS || pname == GL20.GL_DEPTH_FUNC
-			|| pname == GL20.GL_FRONT_FACE || pname == GL20.GL_GENERATE_MIPMAP_HINT || pname == GL20.GL_GREEN_BITS
-			|| pname == GL20.GL_IMPLEMENTATION_COLOR_READ_FORMAT || pname == GL20.GL_IMPLEMENTATION_COLOR_READ_TYPE
-			|| pname == GL20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_CUBE_MAP_TEXTURE_SIZE
-			|| pname == GL20.GL_MAX_FRAGMENT_UNIFORM_VECTORS || pname == GL20.GL_MAX_RENDERBUFFER_SIZE
-			|| pname == GL20.GL_MAX_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_TEXTURE_SIZE || pname == GL20.GL_MAX_VARYING_VECTORS
-			|| pname == GL20.GL_MAX_VERTEX_ATTRIBS || pname == GL20.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
-			|| pname == GL20.GL_MAX_VERTEX_UNIFORM_VECTORS || pname == GL20.GL_NUM_COMPRESSED_TEXTURE_FORMATS
-			|| pname == GL20.GL_PACK_ALIGNMENT || pname == GL20.GL_RED_BITS || pname == GL20.GL_SAMPLE_BUFFERS
-			|| pname == GL20.GL_SAMPLES || pname == GL20.GL_STENCIL_BACK_FAIL || pname == GL20.GL_STENCIL_BACK_FUNC
-			|| pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_FAIL || pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_PASS
-			|| pname == GL20.GL_STENCIL_BACK_REF || pname == GL20.GL_STENCIL_BACK_VALUE_MASK
-			|| pname == GL20.GL_STENCIL_BACK_WRITEMASK || pname == GL20.GL_STENCIL_BITS || pname == GL20.GL_STENCIL_CLEAR_VALUE
-			|| pname == GL20.GL_STENCIL_FAIL || pname == GL20.GL_STENCIL_FUNC || pname == GL20.GL_STENCIL_PASS_DEPTH_FAIL
-			|| pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
-			|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT)
-			params.put(0, gl.getParameteri(pname));
-		else
-			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
-	}
-
-	@Override
-	public String glGetString (int name) {
-		return gl.getParameterString(name);
-	}
-
-	@Override
-	public void glHint (int target, int mode) {
-		gl.hint(target, mode);
-	}
-
-	@Override
-	public void glLineWidth (float width) {
-		gl.lineWidth(width);
-	}
-
-	@Override
-	public void glPixelStorei (int pname, int param) {
-		gl.pixelStorei(pname, param);
-	}
-
-	@Override
-	public void glPolygonOffset (float factor, float units) {
-		gl.polygonOffset(factor, units);
-	}
-
-	@Override
-	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
-		// verify request
-		if ((format != WebGLRenderingContext.RGBA) || (type != WebGLRenderingContext.UNSIGNED_BYTE)) {
-			throw new GdxRuntimeException("Only format RGBA and type UNSIGNED_BYTE are currently supported for glReadPixels(...).");
-		}
-		if (!(pixels instanceof ByteBuffer)) {
-			throw new GdxRuntimeException("Inputed pixels buffer needs to be of type ByteBuffer for glReadPixels(...).");
-		}
-
-		// create new ArrayBufferView (4 bytes per pixel)
-		int size = 4 * width * height;
-		Uint8Array buffer = Uint8ArrayNative.create(size);
-
-		// read bytes to ArrayBufferView
-		gl.readPixels(x, y, width, height, format, type, buffer);
-
-		// copy ArrayBufferView to our pixels array
-		ByteBuffer pixelsByte = (ByteBuffer)pixels;
-		for (int i = 0; i < size; i++) {
-			pixelsByte.put((byte)(buffer.get(i) & 0x000000ff));
-		}
-	}
-
-	@Override
-	public void glScissor (int x, int y, int width, int height) {
-		gl.scissor(x, y, width, height);
-	}
-
-	@Override
-	public void glStencilFunc (int func, int ref, int mask) {
-		gl.stencilFunc(func, ref, mask);
-	}
-
-	@Override
-	public void glStencilMask (int mask) {
-		gl.stencilMask(mask);
-	}
-
-	@Override
-	public void glStencilOp (int fail, int zfail, int zpass) {
-		gl.stencilOp(fail, zfail, zpass);
-	}
-
-	@Override
-	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
-		Buffer pixels) {
-        if (pixels.limit() > 1) {
-            HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
-
-            ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-            int remainingBytes = pixels.remaining() * 4;
-
-            int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-
-            Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
-
-            gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
-        } else {
-            Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-            gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
-        }
-	}
-
-	@Override
-	public void glTexParameterf (int target, int pname, float param) {
-		gl.texParameterf(target, pname, param);
-	}
-
-	@Override
-	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
-		Buffer pixels) {
-        if (pixels.limit() > 1) {
-            HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
-
-            ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-            int remainingBytes = pixels.remaining() * 4;
-
-            int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-
-            Uint8Array buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
-
-            gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
-        } else {
-            Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer) pixels).get(0));
-            gl.texSubImage2D(target, level, xoffset, yoffset, format, type, pixmap.getCanvasElement());
-        }
-	}
-
-	@Override
-	public void glViewport (int x, int y, int width, int height) {
-		gl.viewport(x, y, width, height);
 	}
 
 	@Override
@@ -533,6 +199,11 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glBindTexture (int target, int texture) {
+		gl.bindTexture(target, textures.get(texture));
+	}
+
+	@Override
 	public void glBlendColor (float red, float green, float blue, float alpha) {
 		gl.blendColor(red, green, blue, alpha);
 	}
@@ -545,6 +216,11 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glBlendEquationSeparate (int modeRGB, int modeAlpha) {
 		gl.blendEquationSeparate(modeRGB, modeAlpha);
+	}
+
+	@Override
+	public void glBlendFunc (int sfactor, int dfactor) {
+		gl.blendFunc(sfactor, dfactor);
 	}
 
 	@Override
@@ -580,86 +256,162 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glClear (int mask) {
+		gl.clear(mask);
+	}
+
+	@Override
+	public void glClearColor (float red, float green, float blue, float alpha) {
+		gl.clearColor(red, green, blue, alpha);
+	}
+
+	@Override
+	public void glClearDepthf (float depth) {
+		gl.clearDepth(depth);
+	}
+
+	@Override
+	public void glClearStencil (int s) {
+		gl.clearStencil(s);
+	}
+
+	@Override
+	public void glColorMask (boolean red, boolean green, boolean blue, boolean alpha) {
+		gl.colorMask(red, green, blue, alpha);
+	}
+
+	@Override
 	public void glCompileShader (int shader) {
 		WebGLShader glShader = shaders.get(shader);
 		gl.compileShader(glShader);
 	}
 
 	@Override
+	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
+		int imageSize, Buffer data) {
+		throw new GdxRuntimeException("compressed textures not supported by GWT WebGL backend");
+	}
+
+	@Override
+	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+		int imageSize, Buffer data) {
+		throw new GdxRuntimeException("compressed textures not supported by GWT WebGL backend");
+	}
+
+	@Override
+	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
+		gl.copyTexImage2D(target, level, internalformat, x, y, width, height, border);
+	}
+
+	@Override
+	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) {
+		gl.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+	}
+
+	@Override
 	public int glCreateProgram () {
 		WebGLProgram program = gl.createProgram();
-		return allocateProgramId(program);
+		return programs.add(program);
 	}
 
 	@Override
 	public int glCreateShader (int type) {
 		WebGLShader shader = gl.createShader(type);
-		return allocateShaderId(shader);
+		return shaders.add(shader);
+	}
+
+	@Override
+	public void glCullFace (int mode) {
+		gl.cullFace(mode);
+	}
+
+	@Override
+	public void glDeleteBuffer (int id) {
+		WebGLBuffer buffer = this.buffers.remove(id);
+		gl.deleteBuffer(buffer);
 	}
 
 	@Override
 	public void glDeleteBuffers (int n, IntBuffer buffers) {
 		for (int i = 0; i < n; i++) {
 			int id = buffers.get();
-			WebGLBuffer buffer = this.buffers.get(id);
-			deallocateBufferId(id);
+			WebGLBuffer buffer = this.buffers.remove(id);
 			gl.deleteBuffer(buffer);
 		}
 	}
-	
+
 	@Override
-	public void glDeleteBuffer (int id) {
-		WebGLBuffer buffer = this.buffers.get(id);
-		deallocateBufferId(id);
-		gl.deleteBuffer(buffer);
+	public void glDeleteFramebuffer (int id) {
+		WebGLFramebuffer fb = this.frameBuffers.remove(id);
+		gl.deleteFramebuffer(fb);
 	}
 
 	@Override
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
 		for (int i = 0; i < n; i++) {
 			int id = framebuffers.get();
-			WebGLFramebuffer fb = this.frameBuffers.get(id);
-			deallocateFrameBufferId(id);
+			WebGLFramebuffer fb = this.frameBuffers.remove(id);
 			gl.deleteFramebuffer(fb);
 		}
 	}
 
 	@Override
-	public void glDeleteFramebuffer (int id) {
-		WebGLFramebuffer fb = this.frameBuffers.get(id);
-		deallocateFrameBufferId(id);
-		gl.deleteFramebuffer(fb);
-	}
-	
-	@Override
 	public void glDeleteProgram (int program) {
 		WebGLProgram prog = programs.get(program);
-		deallocateProgramId(program);
+		programs.remove(program);
+		uniforms.remove(program);
 		gl.deleteProgram(prog);
+	}
+
+	@Override
+	public void glDeleteRenderbuffer (int id) {
+		WebGLRenderbuffer rb = this.renderBuffers.remove(id);
+		gl.deleteRenderbuffer(rb);
 	}
 
 	@Override
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
 		for (int i = 0; i < n; i++) {
 			int id = renderbuffers.get();
-			WebGLRenderbuffer rb = this.renderBuffers.get(id);
-			deallocateRenderBufferId(id);
+			WebGLRenderbuffer rb = this.renderBuffers.remove(id);
 			gl.deleteRenderbuffer(rb);
 		}
-	}
-	
-	@Override
-	public void glDeleteRenderbuffer (int id) {
-		WebGLRenderbuffer rb = this.renderBuffers.get(id);
-		deallocateRenderBufferId(id);
-		gl.deleteRenderbuffer(rb);
 	}
 
 	@Override
 	public void glDeleteShader (int shader) {
-		WebGLShader sh = shaders.get(shader);
-		deallocateShaderId(shader);
+		WebGLShader sh = shaders.remove(shader);
 		gl.deleteShader(sh);
+	}
+
+	@Override
+	public void glDeleteTexture (int id) {
+		WebGLTexture texture = this.textures.remove(id);
+		gl.deleteTexture(texture);
+	}
+
+	@Override
+	public void glDeleteTextures (int n, IntBuffer textures) {
+		for (int i = 0; i < n; i++) {
+			int id = textures.get();
+			WebGLTexture texture = this.textures.remove(id);
+			gl.deleteTexture(texture);
+		}
+	}
+
+	@Override
+	public void glDepthFunc (int func) {
+		gl.depthFunc(func);
+	}
+
+	@Override
+	public void glDepthMask (boolean flag) {
+		gl.depthMask(flag);
+	}
+
+	@Override
+	public void glDepthRangef (float zNear, float zFar) {
+		gl.depthRange(zNear, zFar);
 	}
 
 	@Override
@@ -668,8 +420,23 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glDisable (int cap) {
+		gl.disable(cap);
+	}
+
+	@Override
 	public void glDisableVertexAttribArray (int index) {
 		gl.disableVertexAttribArray(index);
+	}
+
+	@Override
+	public void glDrawArrays (int mode, int first, int count) {
+		gl.drawArrays(mode, first, count);
+	}
+
+	@Override
+	public void glDrawElements (int mode, int count, int type, Buffer indices) {
+		gl.drawElements(mode, count, type, indices.position()); // FIXME this is assuming WebGL supports client side buffers...
 	}
 
 	@Override
@@ -678,8 +445,23 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glEnable (int cap) {
+		gl.enable(cap);
+	}
+
+	@Override
 	public void glEnableVertexAttribArray (int index) {
 		gl.enableVertexAttribArray(index);
+	}
+
+	@Override
+	public void glFinish () {
+		gl.finish();
+	}
+
+	@Override
+	public void glFlush () {
+		gl.flush();
 	}
 
 	@Override
@@ -693,18 +475,23 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
-	public void glGenBuffers (int n, IntBuffer buffers) {
-		for (int i = 0; i < n; i++) {
-			WebGLBuffer buffer = gl.createBuffer();
-			int id = allocateBufferId(buffer);
-			buffers.put(id);
-		}
+	public void glFrontFace (int mode) {
+		gl.frontFace(mode);
 	}
-	
+
 	@Override
 	public int glGenBuffer () {
 		WebGLBuffer buffer = gl.createBuffer();
-		return allocateBufferId(buffer);
+		return buffers.add(buffer);
+	}
+
+	@Override
+	public void glGenBuffers (int n, IntBuffer buffers) {
+		for (int i = 0; i < n; i++) {
+			WebGLBuffer buffer = gl.createBuffer();
+			int id = this.buffers.add(buffer);
+			buffers.put(id);
+		}
 	}
 
 	@Override
@@ -713,34 +500,50 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public int glGenFramebuffer () {
+		WebGLFramebuffer fb = gl.createFramebuffer();
+		return frameBuffers.add(fb);
+	}
+
+	@Override
 	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
 		for (int i = 0; i < n; i++) {
 			WebGLFramebuffer fb = gl.createFramebuffer();
-			int id = allocateFrameBufferId(fb);
+			int id = this.frameBuffers.add(fb);
 			framebuffers.put(id);
 		}
 	}
-	
+
 	@Override
-	public int glGenFramebuffer () {
-		WebGLFramebuffer fb = gl.createFramebuffer();
-		return allocateFrameBufferId(fb);
+	public int glGenRenderbuffer () {
+		WebGLRenderbuffer rb = gl.createRenderbuffer();
+		return renderBuffers.add(rb);
 	}
 
 	@Override
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
 		for (int i = 0; i < n; i++) {
 			WebGLRenderbuffer rb = gl.createRenderbuffer();
-			int id = allocateRenderBufferId(rb);
+			int id = this.renderBuffers.add(rb);
 			renderbuffers.put(id);
 		}
 	}
-	
+
 	@Override
-	public int glGenRenderbuffer () {
-		WebGLRenderbuffer rb = gl.createRenderbuffer();
-		return allocateRenderBufferId(rb);
+	public int glGenTexture () {
+		WebGLTexture texture = gl.createTexture();
+		return textures.add(texture);
 	}
+
+	@Override
+	public void glGenTextures (int n, IntBuffer textures) {
+		for (int i = 0; i < n; i++) {
+			WebGLTexture texture = gl.createTexture();
+			int id = this.textures.add(texture);
+			textures.put(id);
+		}
+	}
+
 
 	@Override
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
@@ -782,9 +585,14 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public int glGetError () {
+		return gl.getError();
+	}
+
+	@Override
 	public void glGetFloatv (int pname, FloatBuffer params) {
 		if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
-			|| pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
+				|| pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
 			params.put(0, gl.getParameterf(pname));
 		else
 			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
@@ -794,6 +602,45 @@ public class GwtGL20 implements GL20 {
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
 		// FIXME
 		throw new GdxRuntimeException("not implemented");
+	}
+
+	@Override
+	public void glGetIntegerv (int pname, IntBuffer params) {
+		if (pname == GL20.GL_ACTIVE_TEXTURE || pname == GL20.GL_ALPHA_BITS || pname == GL20.GL_BLEND_DST_ALPHA
+				|| pname == GL20.GL_BLEND_DST_RGB || pname == GL20.GL_BLEND_EQUATION_ALPHA || pname == GL20.GL_BLEND_EQUATION_RGB
+				|| pname == GL20.GL_BLEND_SRC_ALPHA || pname == GL20.GL_BLEND_SRC_RGB || pname == GL20.GL_BLUE_BITS
+				|| pname == GL20.GL_CULL_FACE_MODE || pname == GL20.GL_DEPTH_BITS || pname == GL20.GL_DEPTH_FUNC
+				|| pname == GL20.GL_FRONT_FACE || pname == GL20.GL_GENERATE_MIPMAP_HINT || pname == GL20.GL_GREEN_BITS
+				|| pname == GL20.GL_IMPLEMENTATION_COLOR_READ_FORMAT || pname == GL20.GL_IMPLEMENTATION_COLOR_READ_TYPE
+				|| pname == GL20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_CUBE_MAP_TEXTURE_SIZE
+				|| pname == GL20.GL_MAX_FRAGMENT_UNIFORM_VECTORS || pname == GL20.GL_MAX_RENDERBUFFER_SIZE
+				|| pname == GL20.GL_MAX_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_TEXTURE_SIZE || pname == GL20.GL_MAX_VARYING_VECTORS
+				|| pname == GL20.GL_MAX_VERTEX_ATTRIBS || pname == GL20.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+				|| pname == GL20.GL_MAX_VERTEX_UNIFORM_VECTORS || pname == GL20.GL_NUM_COMPRESSED_TEXTURE_FORMATS
+				|| pname == GL20.GL_PACK_ALIGNMENT || pname == GL20.GL_RED_BITS || pname == GL20.GL_SAMPLE_BUFFERS
+				|| pname == GL20.GL_SAMPLES || pname == GL20.GL_STENCIL_BACK_FAIL || pname == GL20.GL_STENCIL_BACK_FUNC
+				|| pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_FAIL || pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_PASS
+				|| pname == GL20.GL_STENCIL_BACK_REF || pname == GL20.GL_STENCIL_BACK_VALUE_MASK
+				|| pname == GL20.GL_STENCIL_BACK_WRITEMASK || pname == GL20.GL_STENCIL_BITS || pname == GL20.GL_STENCIL_CLEAR_VALUE
+				|| pname == GL20.GL_STENCIL_FAIL || pname == GL20.GL_STENCIL_FUNC || pname == GL20.GL_STENCIL_PASS_DEPTH_FAIL
+				|| pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
+				|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT)
+			params.put(0, gl.getParameteri(pname));
+		else if (pname == GL20.GL_VIEWPORT) {
+			Int32Array array = gl.getParameterv(pname);
+			params.put(0, array.get(0));
+			params.put(1, array.get(1));
+			params.put(2, array.get(2));
+			params.put(3, array.get(3));
+			params.flip();
+		} else
+			throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
+	}
+
+
+	@Override
+	public String glGetProgramInfoLog (int program) {
+		return gl.getProgramInfoLog(programs.get(program));
 	}
 
 	@Override
@@ -807,14 +654,14 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
-	public String glGetProgramInfoLog (int program) {
-		return gl.getProgramInfoLog(programs.get(program));
-	}
-
-	@Override
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
 		// FIXME
 		throw new GdxRuntimeException("not implemented");
+	}
+
+	@Override
+	public String glGetShaderInfoLog (int shader) {
+		return gl.getShaderInfoLog(shaders.get(shader));
 	}
 
 	@Override
@@ -829,13 +676,13 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
-	public String glGetShaderInfoLog (int shader) {
-		return gl.getShaderInfoLog(shaders.get(shader));
+	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
+		throw new GdxRuntimeException("glGetShaderPrecisionFormat not supported by GWT WebGL backend");
 	}
 
 	@Override
-	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
-		throw new GdxRuntimeException("glGetShaderPrecisionFormat not supported by GWT WebGL backend");
+	public String glGetString (int name) {
+		return gl.getParameterString(name);
 	}
 
 	@Override
@@ -863,7 +710,15 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public int glGetUniformLocation (int program, String name) {
 		WebGLUniformLocation location = gl.getUniformLocation(programs.get(program), name);
-		return allocateUniformLocationId(program, location);
+		if (location == null) return -1;
+		IntMap<WebGLUniformLocation> progUniforms = uniforms.get(program);
+		if (progUniforms == null) {
+			progUniforms = IntMap.create();
+			uniforms.put(program, progUniforms);
+		}
+		// FIXME check if uniform already stored.
+		int id = progUniforms.add(location);
+		return id;
 	}
 
 	@Override
@@ -881,6 +736,11 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glGetVertexAttribPointerv (int index, int pname, Buffer pointer) {
 		throw new GdxRuntimeException("glGetVertexAttribPointer not supported by GWT WebGL backend");
+	}
+
+	@Override
+	public void glHint (int target, int mode) {
+		gl.hint(target, mode);
 	}
 
 	@Override
@@ -924,6 +784,40 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glLineWidth (float width) {
+		gl.lineWidth(width);
+	}
+
+	@Override
+	public void glPixelStorei (int pname, int param) {
+		gl.pixelStorei(pname, param);
+	}
+
+	@Override
+	public void glPolygonOffset (float factor, float units) {
+		gl.polygonOffset(factor, units);
+	}
+
+	@Override
+	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
+		// verify request
+		if ((format != WebGLRenderingContext.RGBA) || (type != WebGLRenderingContext.UNSIGNED_BYTE)) {
+			throw new GdxRuntimeException(
+				"Only format RGBA and type UNSIGNED_BYTE are currently supported for glReadPixels(...). Create an issue when you need other formats.");
+		}
+		if (!(pixels instanceof ByteBuffer)) {
+			throw new GdxRuntimeException("Inputed pixels buffer needs to be of type ByteBuffer for glReadPixels(...).");
+		}
+
+		// create new ArrayBufferView (4 bytes per pixel)
+		int size = 4 * width * height;
+		Uint8Array buffer = TypedArrays.createUint8Array(((HasArrayBufferView)pixels).getTypedArray().buffer(), 0, size);
+
+		// read bytes to ArrayBufferView
+		gl.readPixels(x, y, width, height, format, type, buffer);
+	}
+
+	@Override
 	public void glReleaseShaderCompiler () {
 		throw new GdxRuntimeException("not implemented");
 	}
@@ -939,6 +833,11 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glScissor (int x, int y, int width, int height) {
+		gl.scissor(x, y, width, height);
+	}
+
+	@Override
 	public void glShaderBinary (int n, IntBuffer shaders, int binaryformat, Buffer binary, int length) {
 		throw new GdxRuntimeException("glShaderBinary not supported by GWT WebGL backend");
 	}
@@ -949,8 +848,18 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glStencilFunc (int func, int ref, int mask) {
+		gl.stencilFunc(func, ref, mask);
+	}
+
+	@Override
 	public void glStencilFuncSeparate (int face, int func, int ref, int mask) {
 		gl.stencilFuncSeparate(face, func, ref, mask);
+	}
+
+	@Override
+	public void glStencilMask (int mask) {
+		gl.stencilMask(mask);
 	}
 
 	@Override
@@ -959,13 +868,54 @@ public class GwtGL20 implements GL20 {
 	}
 
 	@Override
+	public void glStencilOp (int fail, int zfail, int zpass) {
+		gl.stencilOp(fail, zfail, zpass);
+	}
+
+	@Override
 	public void glStencilOpSeparate (int face, int fail, int zfail, int zpass) {
 		gl.stencilOpSeparate(face, fail, zfail, zpass);
 	}
 
 	@Override
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		Buffer pixels) {
+		if (pixels == null) {
+			gl.texImage2D(target, level, internalformat, width, height, border, format, type, null);
+		} else {
+			if (pixels.limit() > 1) {
+				HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
+				ArrayBufferView webGLArray = arrayHolder.getTypedArray();
+				ArrayBufferView buffer;
+				if (pixels instanceof FloatBuffer) {
+					buffer = webGLArray;
+				} else {
+					int remainingBytes = pixels.remaining() * 4;
+					int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+				}
+				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
+			} else {
+				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
+				// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+				if (pixmap.canUseImageElement()) {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getImageElement());
+				}
+				else {
+					gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void glTexParameterf (int target, int pname, float param) {
+		gl.texParameterf(target, pname, param);
+	}
+
+	@Override
 	public void glTexParameterfv (int target, int pname, FloatBuffer params) {
-		gl.texParameterf(target, pname, params.get());
+          gl.texParameterf(target, pname, params.get());
 	}
 
 	@Override
@@ -976,6 +926,27 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glTexParameteriv (int target, int pname, IntBuffer params) {
 		gl.texParameterf(target, pname, params.get());
+	}
+
+	@Override
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+								 Buffer pixels) {
+		if (pixels.limit() > 1) {
+			HasArrayBufferView arrayHolder = (HasArrayBufferView) pixels;
+			ArrayBufferView webGLArray = arrayHolder.getTypedArray();
+			ArrayBufferView buffer;
+			if (pixels instanceof FloatBuffer) {
+				buffer = webGLArray;
+			} else {
+				int remainingBytes = pixels.remaining() * 4;
+				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+				buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+			}
+			gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, buffer);
+		} else {
+			Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer) pixels).get(0));
+			gl.texSubImage2D(target, level, xoffset, yoffset, format, type, pixmap.getCanvasElement());
+		}
 	}
 
 	@Override
@@ -1217,5 +1188,10 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr) {
 		gl.vertexAttribPointer(indx, size, type, normalized, stride, ptr);
+	}
+
+	@Override
+	public void glViewport (int x, int y, int width, int height) {
+		gl.viewport(x, y, width, height);
 	}
 }

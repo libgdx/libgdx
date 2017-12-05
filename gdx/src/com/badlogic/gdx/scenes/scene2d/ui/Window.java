@@ -44,11 +44,13 @@ public class Window extends Table {
 	private WindowStyle style;
 	boolean isMovable = true, isModal, isResizable;
 	int resizeBorder = 8;
-	boolean dragging;
 	boolean keepWithinStage = true;
 	Label titleLabel;
 	Table titleTable;
 	boolean drawTitleTable;
+	
+	protected int edge;
+	protected boolean dragging;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -87,31 +89,34 @@ public class Window extends Table {
 			}
 		});
 		addListener(new InputListener() {
-			int edge;
 			float startX, startY, lastX, lastY;
+
+			private void updateEdge (float x, float y) {
+				float border = resizeBorder / 2f;
+				float width = getWidth(), height = getHeight();
+				float padTop = getPadTop(), padLeft = getPadLeft(), padBottom = getPadBottom(), padRight = getPadRight();
+				float left = padLeft, right = width - padRight, bottom = padBottom;
+				edge = 0;
+				if (isResizable && x >= left - border && x <= right + border && y >= bottom - border) {
+					if (x < left + border) edge |= Align.left;
+					if (x > right - border) edge |= Align.right;
+					if (y < bottom + border) edge |= Align.bottom;
+					if (edge != 0) border += 25;
+					if (x < left + border) edge |= Align.left;
+					if (x > right - border) edge |= Align.right;
+					if (y < bottom + border) edge |= Align.bottom;
+				}
+				if (isMovable && edge == 0 && y <= height && y >= height - padTop && x >= left && x <= right) edge = MOVE;
+			}
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
-					int border = resizeBorder;
-					float width = getWidth(), height = getHeight();
-					edge = 0;
-					if (isResizable) {
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
-						if (edge != 0) border += 25;
-						if (x < border) edge |= Align.left;
-						if (x > width - border) edge |= Align.right;
-						if (y < border) edge |= Align.bottom;
-						if (y > height - border) edge |= Align.top;
-					}
-					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
+					updateEdge(x, y);
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
-					lastX = x;
-					lastY = y;
+					lastX = x - getWidth();
+					lastY = y - getHeight();
 				}
 				return edge != 0 || isModal;
 			}
@@ -150,24 +155,23 @@ public class Window extends Table {
 					windowY += amountY;
 				}
 				if ((edge & Align.right) != 0) {
-					float amountX = x - lastX;
+					float amountX = x - lastX - width;
 					if (width + amountX < minWidth) amountX = minWidth - width;
 					if (clampPosition && windowX + width + amountX > stage.getWidth()) amountX = stage.getWidth() - windowX - width;
 					width += amountX;
 				}
 				if ((edge & Align.top) != 0) {
-					float amountY = y - lastY;
+					float amountY = y - lastY - height;
 					if (height + amountY < minHeight) amountY = minHeight - height;
 					if (clampPosition && windowY + height + amountY > stage.getHeight())
 						amountY = stage.getHeight() - windowY - height;
 					height += amountY;
 				}
-				lastX = x;
-				lastY = y;
 				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
+				updateEdge(x, y);
 				return isModal;
 			}
 
@@ -238,8 +242,8 @@ public class Window extends Table {
 		if (style.stageBackground != null) {
 			stageToLocalCoordinates(tmpPosition.set(0, 0));
 			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
-			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY()
-				+ tmpSize.y);
+			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x,
+				getY() + tmpSize.y);
 		}
 
 		super.draw(batch, parentAlpha);
@@ -316,7 +320,7 @@ public class Window extends Table {
 	}
 
 	public float getPrefWidth () {
-		return Math.max(super.getPrefWidth(), titleLabel.getPrefWidth() + getPadLeft() + getPadRight());
+		return Math.max(super.getPrefWidth(), titleTable.getPrefWidth() + getPadLeft() + getPadRight());
 	}
 
 	public Table getTitleTable () {

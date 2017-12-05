@@ -71,8 +71,8 @@ public abstract class Camera {
 
 	/** Recalculates the direction of the camera to look at the point (x, y, z). This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at
-	 * @param y the x-coordinate of the point to look at
-	 * @param z the x-coordinate of the point to look at */
+	 * @param y the y-coordinate of the point to look at
+	 * @param z the z-coordinate of the point to look at */
 	public void lookAt (float x, float y, float z) {
 		tmpVec.set(x, y, z).sub(position).nor();
 		if (!tmpVec.isZero()) {
@@ -118,7 +118,7 @@ public abstract class Camera {
 	 * will not be orthogonalized.
 	 * 
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotate (Vector3 axis, float angle) {
 		direction.rotate(axis, angle);
 		up.rotate(axis, angle);
@@ -147,7 +147,7 @@ public abstract class Camera {
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around
-	 * @param angle the angle */
+	 * @param angle the angle, in degrees */
 	public void rotateAround (Vector3 point, Vector3 axis, float angle) {
 		tmpVec.set(point);
 		tmpVec.sub(position);
@@ -189,7 +189,8 @@ public abstract class Camera {
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
-	 * @param viewportHeight the height of the viewport in pixels */
+	 * @param viewportHeight the height of the viewport in pixels
+	 * @return the mutated and unprojected screenCoords {@link Vector3} */
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		float x = screenCoords.x, y = screenCoords.y;
 		x = x - viewportX;
@@ -207,7 +208,8 @@ public abstract class Camera {
 	 * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left
 	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
 	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
-	 * @param screenCoords the point in screen coordinates */
+	 * @param screenCoords the point in screen coordinates
+	 * @return the mutated and unprojected screenCoords {@link Vector3} */
 	public Vector3 unproject (Vector3 screenCoords) {
 		unproject(screenCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		return screenCoords;
@@ -216,7 +218,8 @@ public abstract class Camera {
 	/** Projects the {@link Vector3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
 	 * deviation: The viewport is assumed to span the whole screen. The screen coordinate system has its origin in the
 	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
-	 * useable in conjunction with {@link Batch} and similar classes. */
+	 * useable in conjunction with {@link Batch} and similar classes.
+	 * @return the mutated and projected worldCoords {@link Vector3} */
 	public Vector3 project (Vector3 worldCoords) {
 		project(worldCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		return worldCoords;
@@ -231,7 +234,8 @@ public abstract class Camera {
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
-	 * @param viewportHeight the height of the viewport in pixels */
+	 * @param viewportHeight the height of the viewport in pixels
+	 * @return the mutated and projected worldCoords {@link Vector3} */
 	public Vector3 project (Vector3 worldCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		worldCoords.prj(combined);
 		worldCoords.x = viewportWidth * (worldCoords.x + 1) / 2 + viewportX;

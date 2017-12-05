@@ -21,10 +21,10 @@ subject to the following restrictions:
 #include "LinearMath/btQuickprof.h"
 #include "btMultiBodyConstraint.h"
 #include "LinearMath/btIDebugDraw.h"
-	
+#include "LinearMath/btSerializer.h"
 
 
-void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, short group, short mask)
+void	btMultiBodyDynamicsWorld::addMultiBody(btMultiBody* body, int group, int mask)
 {
 	m_multiBodies.push_back(body);
 
@@ -332,10 +332,10 @@ struct MultiBodyInplaceSolverIslandCallback : public btSimulationIslandManager::
 				}
 			}
 
-			if (m_solverInfo->m_minimumSolverBatchSize<=1)
-			{
-				m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
-			} else
+			//if (m_solverInfo->m_minimumSolverBatchSize<=1)
+			//{
+			//	m_solver->solveGroup( bodies,numBodies,manifolds, numManifolds,startConstraint,numCurConstraints,*m_solverInfo,m_debugDrawer,m_dispatcher);
+			//} else
 			{
 				
 				for (i=0;i<numBodies;i++)
@@ -384,7 +384,7 @@ btMultiBodyDynamicsWorld::btMultiBodyDynamicsWorld(btDispatcher* dispatcher,btBr
 	m_multiBodyConstraintSolver(constraintSolver)
 {
 	//split impulse is not yet supported for Featherstone hierarchies
-	getSolverInfo().m_splitImpulse = false;
+//	getSolverInfo().m_splitImpulse = false;
 	getSolverInfo().m_solverMode |=SOLVER_USE_2_FRICTION_DIRECTIONS;
 	m_solverMultiBodyIslandCallback = new MultiBodyInplaceSolverIslandCallback(constraintSolver,dispatcher);
 }
@@ -394,12 +394,19 @@ btMultiBodyDynamicsWorld::~btMultiBodyDynamicsWorld ()
 	delete m_solverMultiBodyIslandCallback;
 }
 
-void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
+void	btMultiBodyDynamicsWorld::forwardKinematics()
 {
 
-	btAlignedObjectArray<btScalar> scratch_r;
-	btAlignedObjectArray<btVector3> scratch_v;
-	btAlignedObjectArray<btMatrix3x3> scratch_m;
+	for (int b=0;b<m_multiBodies.size();b++)
+	{
+		btMultiBody* bod = m_multiBodies[b];
+		bod->forwardKinematics(m_scratch_world_to_local,m_scratch_local_origin);
+	}
+}
+void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
+{
+	forwardKinematics();
+
 
 
 	BT_PROFILE("solveConstraints");
@@ -429,9 +436,9 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 	/// solve all the constraints for this island
 	m_islandManager->buildAndProcessIslands(getCollisionWorld()->getDispatcher(),getCollisionWorld(),m_solverMultiBodyIslandCallback);
 
-
+#ifndef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
 	{
-		BT_PROFILE("btMultiBody addForce and stepVelocities");
+		BT_PROFILE("btMultiBody addForce");
 		for (int i=0;i<this->m_multiBodies.size();i++)
 		{
 			btMultiBody* bod = m_multiBodies[i];
@@ -451,9 +458,9 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 			if (!isSleeping)
 			{
 				//useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
-				scratch_r.resize(bod->getNumLinks()+1);			//multidof? ("Y"s use it and it is used to store qdd)
-				scratch_v.resize(bod->getNumLinks()+1);
-				scratch_m.resize(bod->getNumLinks()+1);
+				m_scratch_r.resize(bod->getNumLinks()+1);			//multidof? ("Y"s use it and it is used to store qdd)
+				m_scratch_v.resize(bod->getNumLinks()+1);
+				m_scratch_m.resize(bod->getNumLinks()+1);
 
 				bod->addBaseForce(m_gravity * bod->getBaseMass());
 
@@ -461,14 +468,42 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 				{
 					bod->addLinkForce(j, m_gravity * bod->getLinkMass(j));
 				}
+			}//if (!isSleeping)
+		}
+	}
+#endif //BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
+	
 
+	{
+		BT_PROFILE("btMultiBody stepVelocities");
+		for (int i=0;i<this->m_multiBodies.size();i++)
+		{
+			btMultiBody* bod = m_multiBodies[i];
+
+			bool isSleeping = false;
+			
+			if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+			{
+				isSleeping = true;
+			} 
+			for (int b=0;b<bod->getNumLinks();b++)
+			{
+				if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState()==ISLAND_SLEEPING)
+					isSleeping = true;
+			} 
+
+			if (!isSleeping)
+			{
+				//useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
+				m_scratch_r.resize(bod->getNumLinks()+1);			//multidof? ("Y"s use it and it is used to store qdd)
+				m_scratch_v.resize(bod->getNumLinks()+1);
+				m_scratch_m.resize(bod->getNumLinks()+1);
 				bool doNotUpdatePos = false;
 
-				if(bod->isMultiDof())
 				{
 					if(!bod->isUsingRK4Integration())
 					{
-						bod->stepVelocitiesMultiDof(solverInfo.m_timeStep, scratch_r, scratch_v, scratch_m);
+						bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(solverInfo.m_timeStep, m_scratch_r, m_scratch_v, m_scratch_m);
 					}
 					else
 					{						
@@ -554,9 +589,9 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 						//
 
 						btScalar h = solverInfo.m_timeStep;
-						#define output &scratch_r[bod->getNumDofs()]
+						#define output &m_scratch_r[bod->getNumDofs()]
 						//calc qdd0 from: q0 & qd0	
-						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(0., m_scratch_r, m_scratch_v, m_scratch_m);
 						pCopy(output, scratch_qdd0, 0, numDofs);
 						//calc q1 = q0 + h/2 * qd0
 						pResetQx();
@@ -566,7 +601,7 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 						//
 						//calc qdd1 from: q1 & qd1
 						pCopyToVelocityVector(bod, scratch_qd1);
-						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(0., m_scratch_r, m_scratch_v, m_scratch_m);
 						pCopy(output, scratch_qdd1, 0, numDofs);
 						//calc q2 = q0 + h/2 * qd1
 						pResetQx();
@@ -576,7 +611,7 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 						//
 						//calc qdd2 from: q2 & qd2
 						pCopyToVelocityVector(bod, scratch_qd2);
-						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(0., m_scratch_r, m_scratch_v, m_scratch_m);
 						pCopy(output, scratch_qdd2, 0, numDofs);
 						//calc q3 = q0 + h * qd2
 						pResetQx();
@@ -586,7 +621,7 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 						//
 						//calc qdd3 from: q3 & qd3
 						pCopyToVelocityVector(bod, scratch_qd3);
-						bod->stepVelocitiesMultiDof(0., scratch_r, scratch_v, scratch_m);
+						bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(0., m_scratch_r, m_scratch_v, m_scratch_m);
 						pCopy(output, scratch_qdd3, 0, numDofs);
 
 						//
@@ -621,23 +656,67 @@ void	btMultiBodyDynamicsWorld::solveConstraints(btContactSolverInfo& solverInfo)
 						{
 							for(int link = 0; link < bod->getNumLinks(); ++link)
 								bod->getLink(link).updateCacheMultiDof();
-							bod->stepVelocitiesMultiDof(0, scratch_r, scratch_v, scratch_m);
+							bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(0, m_scratch_r, m_scratch_v, m_scratch_m);
 						}
 						
 					}
 				}
-				else//if(bod->isMultiDof())
-				{
-					bod->stepVelocities(solverInfo.m_timeStep, scratch_r, scratch_v, scratch_m);
-				}
+				
+#ifndef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
 				bod->clearForcesAndTorques();
+#endif //BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
 			}//if (!isSleeping)
 		}
 	}
 
+	clearMultiBodyConstraintForces();
+
 	m_solverMultiBodyIslandCallback->processConstraints();
 	
 	m_constraintSolver->allSolved(solverInfo, m_debugDrawer);
+
+	{
+                BT_PROFILE("btMultiBody stepVelocities");
+                for (int i=0;i<this->m_multiBodies.size();i++)
+                {
+                        btMultiBody* bod = m_multiBodies[i];
+
+                        bool isSleeping = false;
+
+                        if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+                        {
+                                isSleeping = true;
+                        }
+                        for (int b=0;b<bod->getNumLinks();b++)
+                        {
+                                if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState()==ISLAND_SLEEPING)
+                                        isSleeping = true;
+                        }
+
+                        if (!isSleeping)
+                        {
+                                //useless? they get resized in stepVelocities once again (AND DIFFERENTLY)
+                                m_scratch_r.resize(bod->getNumLinks()+1);                 //multidof? ("Y"s use it and it is used to store qdd)
+                                m_scratch_v.resize(bod->getNumLinks()+1);
+                                m_scratch_m.resize(bod->getNumLinks()+1);
+
+                                
+                            {
+                                if(!bod->isUsingRK4Integration())
+                                {
+									bool isConstraintPass = true;
+                                    bod->computeAccelerationsArticulatedBodyAlgorithmMultiDof(solverInfo.m_timeStep, m_scratch_r, m_scratch_v, m_scratch_m, isConstraintPass);
+                                }
+				}
+			}
+		}
+	}
+
+	for (int i=0;i<this->m_multiBodies.size();i++)
+	{
+		btMultiBody* bod = m_multiBodies[i];
+		bod->processDeltaVeeMultiDof2();
+	}
 
 }
 
@@ -648,9 +727,7 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 	{
 		BT_PROFILE("btMultiBody stepPositions");
 		//integrate and update the Featherstone hierarchies
-		btAlignedObjectArray<btQuaternion> world_to_local;
-		btAlignedObjectArray<btVector3> local_origin;
-
+	
 		for (int b=0;b<m_multiBodies.size();b++)
 		{
 			btMultiBody* bod = m_multiBodies[b];
@@ -671,10 +748,8 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 				int nLinks = bod->getNumLinks();
 
 				///base + num m_links
-				world_to_local.resize(nLinks+1);
-				local_origin.resize(nLinks+1);
-
-				if(bod->isMultiDof())
+			
+				
 				{
 					if(!bod->isPosUpdated())
 						bod->stepPositionsMultiDof(timeStep);
@@ -687,55 +762,12 @@ void	btMultiBodyDynamicsWorld::integrateTransforms(btScalar timeStep)
 						bod->setPosUpdated(false);
 					}
 				}
-				else
-					bod->stepPositions(timeStep);			
+				
+				m_scratch_world_to_local.resize(nLinks+1);
+				m_scratch_local_origin.resize(nLinks+1);
 
-				world_to_local[0] = bod->getWorldToBaseRot();
-				local_origin[0] = bod->getBasePos();
-
-				if (bod->getBaseCollider())
-				{
-					btVector3 posr = local_origin[0];
-				//	float pos[4]={posr.x(),posr.y(),posr.z(),1};
-					btScalar quat[4]={-world_to_local[0].x(),-world_to_local[0].y(),-world_to_local[0].z(),world_to_local[0].w()};
-					btTransform tr;
-					tr.setIdentity();
-					tr.setOrigin(posr);
-					tr.setRotation(btQuaternion(quat[0],quat[1],quat[2],quat[3]));
-
-					bod->getBaseCollider()->setWorldTransform(tr);
-
-				}
-      
-				for (int k=0;k<bod->getNumLinks();k++)
-				{
-					const int parent = bod->getParent(k);
-					world_to_local[k+1] = bod->getParentToLocalRot(k) * world_to_local[parent+1];
-					local_origin[k+1] = local_origin[parent+1] + (quatRotate(world_to_local[k+1].inverse() , bod->getRVector(k)));
-				}
-
-
-				for (int m=0;m<bod->getNumLinks();m++)
-				{
-					btMultiBodyLinkCollider* col = bod->getLink(m).m_collider;
-					if (col)
-					{
-						int link = col->m_link;
-						btAssert(link == m);
-
-						int index = link+1;
-
-						btVector3 posr = local_origin[index];
-			//			float pos[4]={posr.x(),posr.y(),posr.z(),1};
-						btScalar quat[4]={-world_to_local[index].x(),-world_to_local[index].y(),-world_to_local[index].z(),world_to_local[index].w()};
-						btTransform tr;
-						tr.setIdentity();
-						tr.setOrigin(posr);
-						tr.setRotation(btQuaternion(quat[0],quat[1],quat[2],quat[3]));
-
-						col->setWorldTransform(tr);
-					}
-				}
+				bod->updateCollisionObjectWorldTransforms(m_scratch_world_to_local,m_scratch_local_origin);
+				
 			} else
 			{
 				bod->clearVelocities();
@@ -766,6 +798,8 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 {
 	BT_PROFILE("btMultiBodyDynamicsWorld debugDrawWorld");
 
+	btDiscreteDynamicsWorld::debugDrawWorld();
+
 	bool drawConstraints = false;
 	if (getDebugDrawer())
 	{
@@ -779,8 +813,6 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 		{
 			BT_PROFILE("btMultiBody debugDrawWorld");
 			
-			btAlignedObjectArray<btQuaternion> world_to_local;
-			btAlignedObjectArray<btVector3> local_origin;
 
 			for (int c=0;c<m_multiBodyConstraints.size();c++)
 			{
@@ -791,56 +823,169 @@ void	btMultiBodyDynamicsWorld::debugDrawWorld()
 			for (int b = 0; b<m_multiBodies.size(); b++)
 			{
 				btMultiBody* bod = m_multiBodies[b];
-				int nLinks = bod->getNumLinks();
-
-				///base + num m_links
-				world_to_local.resize(nLinks + 1);
-				local_origin.resize(nLinks + 1);
-
-					
-				world_to_local[0] = bod->getWorldToBaseRot();
-				local_origin[0] = bod->getBasePos();
-
+				bod->forwardKinematics(m_scratch_world_to_local1,m_scratch_local_origin1);
 				
-				{
-					btVector3 posr = local_origin[0];
-					//	float pos[4]={posr.x(),posr.y(),posr.z(),1};
-					btScalar quat[4] = { -world_to_local[0].x(), -world_to_local[0].y(), -world_to_local[0].z(), world_to_local[0].w() };
-					btTransform tr;
-					tr.setIdentity();
-					tr.setOrigin(posr);
-					tr.setRotation(btQuaternion(quat[0], quat[1], quat[2], quat[3]));
-
-					getDebugDrawer()->drawTransform(tr, 0.1);
-
-				}
-
-				for (int k = 0; k<bod->getNumLinks(); k++)
-				{
-					const int parent = bod->getParent(k);
-					world_to_local[k + 1] = bod->getParentToLocalRot(k) * world_to_local[parent + 1];
-					local_origin[k + 1] = local_origin[parent + 1] + (quatRotate(world_to_local[k + 1].inverse(), bod->getRVector(k)));
-				}
+				getDebugDrawer()->drawTransform(bod->getBaseWorldTransform(), 0.1);
 
 
 				for (int m = 0; m<bod->getNumLinks(); m++)
 				{
-					int link = m;
-					int index = link + 1;
-
-					btVector3 posr = local_origin[index];
-					//			float pos[4]={posr.x(),posr.y(),posr.z(),1};
-					btScalar quat[4] = { -world_to_local[index].x(), -world_to_local[index].y(), -world_to_local[index].z(), world_to_local[index].w() };
-					btTransform tr;
-					tr.setIdentity();
-					tr.setOrigin(posr);
-					tr.setRotation(btQuaternion(quat[0], quat[1], quat[2], quat[3]));
+					
+					const btTransform& tr = bod->getLink(m).m_cachedWorldTransform;
 
 					getDebugDrawer()->drawTransform(tr, 0.1);
+
+						//draw the joint axis
+					if (bod->getLink(m).m_jointType==btMultibodyLink::eRevolute)
+					{
+						btVector3 vec = quatRotate(tr.getRotation(),bod->getLink(m).m_axes[0].m_topVec);
+					
+						btVector4 color(0,0,0,1);//1,1,1);
+						btVector3 from = vec+tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						btVector3 to = tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						getDebugDrawer()->drawLine(from,to,color);
+					}
+					if (bod->getLink(m).m_jointType==btMultibodyLink::eFixed)
+					{
+						btVector3 vec = quatRotate(tr.getRotation(),bod->getLink(m).m_axes[0].m_bottomVec);
+					
+						btVector4 color(0,0,0,1);//1,1,1);
+						btVector3 from = vec+tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						btVector3 to = tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						getDebugDrawer()->drawLine(from,to,color);
+					}
+					if (bod->getLink(m).m_jointType==btMultibodyLink::ePrismatic)
+					{
+						btVector3 vec = quatRotate(tr.getRotation(),bod->getLink(m).m_axes[0].m_bottomVec);
+					
+						btVector4 color(0,0,0,1);//1,1,1);
+						btVector3 from = vec+tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						btVector3 to = tr.getOrigin()-quatRotate(tr.getRotation(),bod->getLink(m).m_dVector);
+						getDebugDrawer()->drawLine(from,to,color);
+					}
+					
 				}
 			}
 		}
 	}
 
-	btDiscreteDynamicsWorld::debugDrawWorld();
+	
+}
+
+
+
+void btMultiBodyDynamicsWorld::applyGravity()
+{
+        btDiscreteDynamicsWorld::applyGravity();
+#ifdef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
+        BT_PROFILE("btMultiBody addGravity");
+        for (int i=0;i<this->m_multiBodies.size();i++)
+        {
+                btMultiBody* bod = m_multiBodies[i];
+
+                bool isSleeping = false;
+
+                if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+                {
+                        isSleeping = true;
+                }
+                for (int b=0;b<bod->getNumLinks();b++)
+                {
+                        if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState()==ISLAND_SLEEPING)
+                                isSleeping = true;
+                }
+
+                if (!isSleeping)
+                {
+                        bod->addBaseForce(m_gravity * bod->getBaseMass());
+
+                        for (int j = 0; j < bod->getNumLinks(); ++j)
+                        {
+                                bod->addLinkForce(j, m_gravity * bod->getLinkMass(j));
+                        }
+                }//if (!isSleeping)
+        }
+#endif //BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
+}
+
+void btMultiBodyDynamicsWorld::clearMultiBodyConstraintForces()
+{ 
+  for (int i=0;i<this->m_multiBodies.size();i++)
+                {       
+                        btMultiBody* bod = m_multiBodies[i];
+			bod->clearConstraintForces();
+                  } 
+}
+void btMultiBodyDynamicsWorld::clearMultiBodyForces()
+{
+              {
+               // BT_PROFILE("clearMultiBodyForces");
+                for (int i=0;i<this->m_multiBodies.size();i++)
+                {
+                        btMultiBody* bod = m_multiBodies[i];
+
+                        bool isSleeping = false;
+
+                        if (bod->getBaseCollider() && bod->getBaseCollider()->getActivationState() == ISLAND_SLEEPING)
+                        {       
+                                isSleeping = true;
+                        }
+                        for (int b=0;b<bod->getNumLinks();b++)
+                        {       
+                                if (bod->getLink(b).m_collider && bod->getLink(b).m_collider->getActivationState()==ISLAND_SLEEPING)     
+                                        isSleeping = true;
+                        }
+
+                        if (!isSleeping)
+                        {
+                        btMultiBody* bod = m_multiBodies[i];
+                        bod->clearForcesAndTorques();
+                	}
+		}
+	}
+
+}
+void btMultiBodyDynamicsWorld::clearForces()
+{
+        btDiscreteDynamicsWorld::clearForces();
+
+#ifdef BT_USE_VIRTUAL_CLEARFORCES_AND_GRAVITY
+	clearMultiBodyForces();
+#endif
+}
+
+
+
+
+void	btMultiBodyDynamicsWorld::serialize(btSerializer* serializer)
+{
+
+	serializer->startSerialization();
+
+	serializeDynamicsWorldInfo( serializer);
+
+	serializeMultiBodies(serializer);
+
+	serializeRigidBodies(serializer);
+
+	serializeCollisionObjects(serializer);
+
+	serializer->finishSerialization();
+}
+
+void	btMultiBodyDynamicsWorld::serializeMultiBodies(btSerializer* serializer)
+{
+	int i;
+	//serialize all collision objects
+	for (i=0;i<m_multiBodies.size();i++)
+	{
+		btMultiBody* mb = m_multiBodies[i];
+		{
+			int len = mb->calculateSerializeBufferSize();
+			btChunk* chunk = serializer->allocate(len,1);
+			const char* structType = mb->serialize(chunk->m_oldPtr, serializer);
+			serializer->finalizeChunk(chunk,structType,BT_MULTIBODY_CODE,mb);
+		}
+	}
+
 }

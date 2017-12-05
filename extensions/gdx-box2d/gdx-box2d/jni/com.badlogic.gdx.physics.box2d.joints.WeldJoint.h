@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniG
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniGetReferenceAngle
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetReferenceAngle
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
  * Method:    jniGetFrequency
  * Signature: (J)F
  */

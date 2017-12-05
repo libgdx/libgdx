@@ -50,9 +50,7 @@ public class TextButton extends Button {
 	}
 
 	public void setStyle (ButtonStyle style) {
-		if (style == null) {
-			throw new NullPointerException("style cannot be null");
-		}
+		if (style == null) throw new NullPointerException("style cannot be null");
 		if (!(style instanceof TextButtonStyle)) throw new IllegalArgumentException("style must be a TextButtonStyle.");
 		super.setStyle(style);
 		this.style = (TextButtonStyle)style;
@@ -89,7 +87,7 @@ public class TextButton extends Button {
 		return label;
 	}
 
-	public Cell getLabelCell () {
+	public Cell<Label> getLabelCell () {
 		return getCell(label);
 	}
 
@@ -99,10 +97,6 @@ public class TextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
-	}
-
-	public String toString () {
-		return super.toString() + ": " + label.getText();
 	}
 
 	/** The style for a text button, see {@link TextButton}.
@@ -127,7 +121,7 @@ public class TextButton extends Button {
 			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
 			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
 			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
-			if (style.checkedOverFontColor != null) this.checkedFontColor = new Color(style.checkedOverFontColor);
+			if (style.checkedOverFontColor != null) this.checkedOverFontColor = new Color(style.checkedOverFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 		}
 	}

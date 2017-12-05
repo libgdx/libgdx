@@ -30,6 +30,7 @@ import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerManager;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
@@ -116,6 +117,14 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 									if(listener.axisMoved(event.controller, event.code, event.axisValue)) break;
 								}
 								break;
+							case AndroidControllerEvent.POV:
+								for (ControllerListener listener : listeners) {
+									if (listener.povMoved(event.controller, 0, event.povDirection)) break;
+								}
+								for (ControllerListener listener : event.controller.getListeners()) {
+									if (listener.povMoved(event.controller, 0, event.povDirection)) break;
+								}
+								break;
 							default:
 						}
 					}
@@ -134,21 +143,46 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 		if(controller != null) {
 			synchronized(eventQueue) {
 				final int historySize = motionEvent.getHistorySize();
+
+				if (controller.hasPovAxis()) {
+					int direction = 0;
+					float povX = motionEvent.getAxisValue(MotionEvent.AXIS_HAT_X);
+					float povY = motionEvent.getAxisValue(MotionEvent.AXIS_HAT_Y);
+					if (Float.compare(povY, -1.0f) == 0) {
+						direction |= 0x00000001;
+					} else if (Float.compare(povY, 1.0f) == 0) {
+						direction |= 0x00000010;
+					}
+					if (Float.compare(povX, 1.0f) == 0) {
+						direction |= 0x00000100;
+					} else if (Float.compare(povX, -1.0f) == 0) {
+						direction |= 0x00001000;
+					}
+					if (direction != controller.pov) {
+						controller.pov = direction;
+						AndroidControllerEvent event = eventPool.obtain();
+						event.type = AndroidControllerEvent.POV;
+						event.controller = controller;
+						event.povDirection = controller.getPov(0);
+						eventQueue.add(event);
+					}
+				}
+
 				int axisIndex = 0;
-            for (int axisId: controller.axesIds) {
-            	float axisValue = motionEvent.getAxisValue(axisId);
-            	if(controller.getAxis(axisIndex) == axisValue) {
-            		axisIndex++;
-            		continue;
-            	}
-            	AndroidControllerEvent event = eventPool.obtain();
-   				event.type = AndroidControllerEvent.AXIS;
-   				event.controller = controller;
-   				event.code = axisIndex;
-   				event.axisValue = axisValue;
-   				eventQueue.add(event);
-   				axisIndex++;
-            }
+            	for (int axisId: controller.axesIds) {
+					float axisValue = motionEvent.getAxisValue(axisId);
+					if(controller.getAxis(axisIndex) == axisValue) {
+						axisIndex++;
+						continue;
+					}
+					AndroidControllerEvent event = eventPool.obtain();
+					event.type = AndroidControllerEvent.AXIS;
+					event.controller = controller;
+					event.code = axisIndex;
+					event.axisValue = axisValue;
+					eventQueue.add(event);
+					axisIndex++;
+				}
 			}
 			return true;
 		}
@@ -166,11 +200,48 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 				AndroidControllerEvent event = eventPool.obtain();
 				event.controller = controller;
 				if(keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-					event.type = AndroidControllerEvent.BUTTON_DOWN;
+					if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov |= 0x00000001;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov |= 0x00000010;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov |= 0x00000100;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov |= 0x00001000;
+						event.povDirection = controller.getPov(0);
+					} else {
+						event.type = AndroidControllerEvent.BUTTON_DOWN;
+						event.code = keyCode;
+					}
 				} else {
-					event.type = AndroidControllerEvent.BUTTON_UP;
+					if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov &= 0x00001110;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov &= 0x00001101;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov &= 0x00001011;
+						event.povDirection = controller.getPov(0);
+					} else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+						event.type = AndroidControllerEvent.POV;
+						controller.pov &= 0x00000111;
+						event.povDirection = controller.getPov(0);
+					} else {
+						event.type = AndroidControllerEvent.BUTTON_UP;
+						event.code = keyCode;
+					}
 				}
-				event.code = keyCode;
 				eventQueue.add(event);
 			}
 			if (keyCode == KeyEvent.KEYCODE_BACK && !Gdx.input.isCatchBackKey()) {
@@ -276,5 +347,10 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	public void clearListeners () {
 		listeners.clear();
 		
+	}
+
+	@Override
+	public Array<ControllerListener> getListeners () {
+		return listeners;
 	}
 }

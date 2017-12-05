@@ -17,6 +17,7 @@
 package com.badlogic.gdx.maps.tiled.tiles;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
@@ -34,6 +35,8 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	private BlendMode blendMode = BlendMode.ALPHA;
 
 	private MapProperties properties;
+
+	private MapObjects objects;
 
 	private StaticTiledMapTile[] frameTiles;
 
@@ -134,6 +137,14 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 			properties = new MapProperties();
 		}
 		return properties;
+	}
+
+	@Override
+	public MapObjects getObjects() {
+		if (objects == null) {
+			objects = new MapObjects();
+		}
+		return objects;
 	}
 
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step

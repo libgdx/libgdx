@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Array;
  * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()} method provides the strategy with a list
  * of all the decals, which are contained in the group itself, and will be rendered before the associated call to
  * {@link #afterGroup(int)}.<br/>
- * A call to {@code beforeGroup()} is always fallowed by a call to {@code afterGroup()}.<br/>
+ * A call to {@code beforeGroup()} is always followed by a call to {@code afterGroup()}.<br/>
  * <b>Groups are always invoked based on their ascending int values</b>. Group -10 will be rendered before group -5, group -5
  * before group 0, group 0 before group 6 and so on.<br/>
  * The call order for a single flush is always {@code beforeGroups(), beforeGroup1(), afterGroup1(), ... beforeGroupN(),

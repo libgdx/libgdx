@@ -24,8 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -35,6 +33,8 @@ import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -119,12 +119,12 @@ public class NetJavaImpl {
 		}
 	}
 
-	private final ExecutorService executorService;
+	private final AsyncExecutor asyncExecutor;
 	final ObjectMap<HttpRequest, HttpURLConnection> connections;
 	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
 
 	public NetJavaImpl () {
-		executorService = Executors.newCachedThreadPool();
+		asyncExecutor = new AsyncExecutor(1);
 		connections = new ObjectMap<HttpRequest, HttpURLConnection>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -166,9 +166,9 @@ public class NetJavaImpl {
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
 
-			executorService.submit(new Runnable() {
+			asyncExecutor.submit(new AsyncTask<Void>() {
 				@Override
-				public void run () {
+				public Void call () throws Exception {
 					try {
 						// Set the content for POST and PUT (GET has the information embedded in the URL)
 						if (doingOutPut) {
@@ -215,6 +215,8 @@ public class NetJavaImpl {
 							removeFromConnectionsAndListeners(httpRequest);
 						}
 					}
+
+					return null;
 				}
 			});
 		} catch (Exception e) {

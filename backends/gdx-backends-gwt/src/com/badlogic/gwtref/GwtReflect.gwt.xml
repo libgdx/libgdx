@@ -15,6 +15,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.TextureRegion" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g2d.Sprite" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.BitmapFont" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.NinePatch" />
@@ -29,9 +31,13 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.Disposable" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.utils.Json" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.ObjectMap" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.OrderedMap" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.utils.Queue" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.VertexAttribute" />
 	<extend-configuration-property name="gdx.reflect.include"

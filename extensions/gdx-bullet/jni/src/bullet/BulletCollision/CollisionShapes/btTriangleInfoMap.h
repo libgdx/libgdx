@@ -195,6 +195,13 @@ SIMD_FORCE_INLINE	const char*	btTriangleInfoMap::serialize(void* dataBuffer, btS
 		serializer->finalizeChunk(chunk,"int",BT_ARRAY_CODE,(void*) &m_keyArray[0]);
 
 	}
+
+	// Fill padding with zeros to appease msan.
+	tmapData->m_padding[0] = 0;
+	tmapData->m_padding[1] = 0;
+	tmapData->m_padding[2] = 0;
+	tmapData->m_padding[3] = 0;
+
 	return "btTriangleInfoMapData";
 }
 

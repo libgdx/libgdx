@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" orientation="orthogonal" tileheight="16" tilewidth="16" version="1.0" width="20"><properties><property name="atlas" value="tileset/packed.atlas"/><property name="blended tiles" value=""/></properties>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" orientation="orthogonal" tileheight="16" tilewidth="16" version="1.0" width="20"><properties><property name="atlas" value="tileset/packed.atlas"/></properties>
  <tileset firstgid="1" name="ts1" tileheight="16" tilewidth="16">
   <image height="256" source="tilesets/tileset1.png" width="256"/>
  </tileset>

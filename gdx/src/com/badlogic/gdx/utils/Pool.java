@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 /** A pool of objects that can be reused to avoid allocation.
+ * @see Pools
  * @author Nathan Sweet */
 abstract public class Pool<T> {
 	/** The maximum number of objects that will be pooled. */
@@ -58,20 +59,26 @@ abstract public class Pool<T> {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
 		}
+		reset(object);
+	}
+
+	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
+	 * {@link Poolable#reset()} if the object is {@link Poolable}. */
+	protected void reset (T object) {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
 	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * @see #free(Object) */
 	public void freeAll (Array<T> objects) {
-		if (objects == null) throw new IllegalArgumentException("object cannot be null.");
+		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
 		for (int i = 0; i < objects.size; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
 			if (freeObjects.size < max) freeObjects.add(object);
-			if (object instanceof Poolable) ((Poolable)object).reset();
+			reset(object);
 		}
 		peak = Math.max(peak, freeObjects.size);
 	}
@@ -86,7 +93,7 @@ abstract public class Pool<T> {
 		return freeObjects.size;
 	}
 
-	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link #free(Object)}. */
+	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link Pool#free(Object)}. */
 	static public interface Poolable {
 		/** Resets the object for reuse. Object references should be nulled and fields may be set to default values. */
 		public void reset ();

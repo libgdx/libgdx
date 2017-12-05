@@ -16,12 +16,15 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 
 /** Represents the glyph in a font for a unicode codepoint.
  * @author Nathan Sweet */
@@ -31,34 +34,61 @@ public class Glyph {
 	private short yOffset;
 	private boolean isMissing;
 	private Shape shape;
-	private float u, v, u2, v2;
-	private Texture texture;
+	float u, v, u2, v2;
+	private int xOffset, xAdvance;
+	Texture texture;
 
 	Glyph (int codePoint, Rectangle bounds, GlyphVector vector, int index, UnicodeFont unicodeFont) {
 		this.codePoint = codePoint;
 
-		GlyphMetrics metrics = vector.getGlyphMetrics(index);
-		int lsb = (int)metrics.getLSB();
-		if (lsb > 0) lsb = 0;
-		int rsb = (int)metrics.getRSB();
-		if (rsb > 0) rsb = 0;
+		int padTop = unicodeFont.getPaddingTop(), padBottom = unicodeFont.getPaddingBottom();
+		int padLeft = unicodeFont.getPaddingLeft(), padRight = unicodeFont.getPaddingRight();
 
-		int glyphWidth = bounds.width - lsb - rsb;
-		int glyphHeight = bounds.height;
-		if (glyphWidth > 0 && glyphHeight > 0) {
-			int padTop = unicodeFont.getPaddingTop();
-			int padRight = unicodeFont.getPaddingRight();
-			int padBottom = unicodeFont.getPaddingBottom();
-			int padLeft = unicodeFont.getPaddingLeft();
-			int glyphSpacing = 1; // Needed to prevent filtering problems.
-			width = (short)(glyphWidth + padLeft + padRight + glyphSpacing);
-			height = (short)(glyphHeight + padTop + padBottom + glyphSpacing);
-			yOffset = (short)(unicodeFont.getAscent() + bounds.y - padTop);
+		if (unicodeFont.renderType == RenderType.FreeType && unicodeFont.bitmapFont != null) {
+			BitmapFont.Glyph g = unicodeFont.bitmapFont.getData().getGlyph((char)codePoint);
+			if (g == null)
+				isMissing = true;
+			else {
+				boolean empty = g.width == 0 || g.height == 0;
+				width = empty ? 0 : (short)(g.width + padLeft + padRight);
+				height = empty ? 0 : (short)(g.height + padTop + padBottom);
+				yOffset = (short)(g.yoffset - padTop);
+				xOffset = g.xoffset - unicodeFont.getPaddingLeft();
+				xAdvance = g.xadvance + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft()
+					+ unicodeFont.getPaddingRight();
+				isMissing = codePoint == 0;
+			}
+
+		} else {
+			GlyphMetrics metrics = vector.getGlyphMetrics(index);
+			int lsb = (int)metrics.getLSB();
+			if (lsb > 0) lsb = 0;
+			int rsb = (int)metrics.getRSB();
+			if (rsb > 0) rsb = 0;
+
+			int glyphWidth = bounds.width - lsb - rsb;
+			int glyphHeight = bounds.height;
+			if (glyphWidth > 0 && glyphHeight > 0) {
+				width = (short)(glyphWidth + padLeft + padRight);
+				height = (short)(glyphHeight + padTop + padBottom);
+				yOffset = (short)(unicodeFont.getAscent() + bounds.y - padTop);
+			}
+
+			// xOffset and xAdvance will be incorrect for unicode characters such as combining marks or non-spacing characters
+			// (eg Pnujabi's "\u0A1C\u0A47") that require the context of surrounding glyphs to determine spacing, but this is the
+			// best we can do with the BMFont format.
+			char[] chars = Character.toChars(codePoint);
+			GlyphVector charVector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
+				Font.LAYOUT_LEFT_TO_RIGHT);
+			GlyphMetrics charMetrics = charVector.getGlyphMetrics(0);
+			xOffset = charVector.getGlyphPixelBounds(0, GlyphPage.renderContext, 0, 0).x - unicodeFont.getPaddingLeft();
+			xAdvance = (int)(metrics.getAdvanceX() + unicodeFont.getPaddingAdvanceX() + unicodeFont.getPaddingLeft()
+				+ unicodeFont.getPaddingRight());
+
+			shape = vector.getGlyphOutline(index, -bounds.x + unicodeFont.getPaddingLeft(), -bounds.y + unicodeFont.getPaddingTop());
+
+			isMissing = !unicodeFont.getFont().canDisplay((char)codePoint);
 		}
-
-		shape = vector.getGlyphOutline(index, -bounds.x + unicodeFont.getPaddingLeft(), -bounds.y + unicodeFont.getPaddingTop());
-
-		isMissing = !unicodeFont.getFont().canDisplay((char)codePoint);
 	}
 
 	/** The unicode codepoint the glyph represents. */
@@ -121,5 +151,13 @@ public class Glyph {
 	/** The distance from drawing y location to top of this glyph, causing the glyph to sit on the baseline. */
 	public int getYOffset () {
 		return yOffset;
+	}
+
+	public int getXOffset () {
+		return xOffset;
+	}
+
+	public int getXAdvance () {
+		return xAdvance;
 	}
 }

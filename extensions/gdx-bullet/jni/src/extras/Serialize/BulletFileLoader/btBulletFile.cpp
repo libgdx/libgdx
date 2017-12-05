@@ -123,7 +123,14 @@ void btBulletFile::parseData()
 	//const bool swap = (mFlags&FD_ENDIAN_SWAP)!=0;
 	
 
+	int remain = mFileLen;
+
 	mDataStart = 12;
+	remain-=12;
+	
+	//invalid/empty file?
+	if (remain < sizeof(bChunkInd))
+		return;
 
 	char *dataPtr = mFileBuffer+mDataStart;
 
@@ -167,6 +174,11 @@ void btBulletFile::parseData()
 					//bListBasePtr *listID = mMain->getListBasePtr(dataChunk.code);
 					//if (listID)
 					//	listID->push_back((bStructHandle*)id);
+				}
+
+				if (dataChunk.code == BT_MULTIBODY_CODE)
+				{
+					m_multiBodies.push_back((bStructHandle*)id);
 				}
 
 				if (dataChunk.code == BT_SOFTBODY_CODE)
@@ -215,7 +227,7 @@ void btBulletFile::parseData()
 		//		}
 			} else
 			{
-				printf("unknown chunk\n");
+				//printf("unknown chunk\n");
 
 				mLibPointers.insert(dataChunk.oldPtr, (bStructHandle*)dataPtrHead);
 			}
@@ -226,6 +238,9 @@ void btBulletFile::parseData()
 
 		
 		dataPtr += seek;
+		remain-=seek;
+		if (remain<=0)
+			break;
 
 		seek =  getNextBlock(&dataChunk, dataPtr, mFlags);
 		if (mFlags &FD_ENDIAN_SWAP) 
@@ -421,3 +436,4 @@ void	btBulletFile::addStruct(const	char* structType,void* data, int len, void* o
 	mLibPointers.insert(dataChunk.oldPtr, (bStructHandle*)data);
 	m_chunks.push_back(dataChunk);
 }
+

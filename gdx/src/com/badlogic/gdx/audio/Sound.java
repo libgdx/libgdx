@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.Disposable;
  * </p>
  * 
  * <p>
- * <b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so
+ * <b>Note</b>: any values provided will not be clamped, it is the developer's responsibility to do so
  * </p>
  * 
  * @author badlogicgames@gmail.com */
@@ -119,15 +119,9 @@ public interface Sound extends Disposable {
 	public void setVolume (long soundId, float volume);
 
 	/** Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
-	 * If the sound is no longer playing, this has no effect.
+	 * If the sound is no longer playing, this has no effect. Note that panning only works for mono sounds, not for stereo sounds!
 	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
-	public void setPan (long soundId, float pan, float volume);
-
-	/** Sets the priority of a sound currently being played back. Higher priority sounds will be considered last if the maximum
-	 * number of concurrently playing sounds is exceeded. This is only a hint and might not be honored by a backend implementation.
-	 * @param soundId the sound id as returned by {@link #play()} or {@link #loop()} and their overloaded equivalents.
-	 * @param priority the priority (0 == lowest) */
-	public void setPriority (long soundId, int priority);
+	public void setPan (long soundId, float pan, float volume);	
 }

@@ -187,6 +187,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_color.a = v_color.a * (255.0/254.0);\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";

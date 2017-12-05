@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -39,17 +41,21 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * @author mzechner, realitix */
 public class FrameBuffer extends GLFrameBuffer<Texture> {
 
-	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
+	FrameBuffer () {}
+
+	/**
+	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
-	 * @param format
-	 * @param width
-	 * @param height
-	 * @param hasDepth
-	 */
+	 * @param bufferBuilder
+	 **/
+	protected FrameBuffer (GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder) {
+		super(bufferBuilder);
+	}
+
+	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
 		this(format, width, height, hasDepth, false);
 	}
-
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
 	 *
@@ -60,17 +66,34 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
-		super(format, width, height, hasDepth, hasStencil);
+		FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
+		frameBufferBuilder.addBasicColorTextureAttachment(format);
+		if (hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
+		if (hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
+		this.bufferBuilder = frameBufferBuilder;
+
+		build();
 	}
 
-	/** Override this method in a derived class to set up the backing texture as you like. */
 	@Override
-	protected void setupTexture () {
-		colorTexture = new Texture(width, height, format);
-		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
+		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
+		Texture result = new Texture(data);
+		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		return result;
 	}
-	
+
+	@Override
+	protected void disposeColorTexture (Texture colorTexture) {
+		colorTexture.dispose();
+	}
+
+	@Override
+	protected void attachFrameBufferColorTexture (Texture texture) {
+		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
+	}
+
 	/** See {@link GLFrameBuffer#unbind()} */
 	public static void unbind () {
 		GLFrameBuffer.unbind();

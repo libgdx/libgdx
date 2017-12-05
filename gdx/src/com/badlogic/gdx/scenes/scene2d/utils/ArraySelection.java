@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 public class ArraySelection<T> extends Selection<T> {
 	private Array<T> array;
 	private boolean rangeSelect = true;
+	private int rangeStart;
 
 	public ArraySelection (Array<T> array) {
 		this.array = array;
@@ -20,23 +21,28 @@ public class ArraySelection<T> extends Selection<T> {
 	public void choose (T item) {
 		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
-		if (selected.size > 0 && rangeSelect && multiple
-			&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
-			int low = array.indexOf(getLastSelected(), false);
-			int high = array.indexOf(item, false);
-			if (low > high) {
-				int temp = low;
-				low = high;
-				high = temp;
-			}
+		int index = array.indexOf(item, false);
+		if (selected.size > 0 && rangeSelect && multiple && UIUtils.shift()) {
+			int oldRangeState = rangeStart;
 			snapshot();
+			// Select new range.
+			int start = rangeStart, end = index;
+			if (start > end) {
+				int temp = end;
+				end = start;
+				start = temp;
+			}
 			if (!UIUtils.ctrl()) selected.clear();
-			for (; low <= high; low++)
-				selected.add(array.get(low));
-			if (fireChangeEvent()) revert();
+			for (int i = start; i <= end; i++)
+				selected.add(array.get(i));
+			if (fireChangeEvent()) {
+				rangeStart = oldRangeState;
+				revert();
+			}
 			cleanup();
 			return;
-		}
+		} else
+			rangeStart = index;
 		super.choose(item);
 	}
 

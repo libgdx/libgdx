@@ -1,4 +1,4 @@
-apply plugin: "java"
+apply plugin: "%LANG%"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -12,6 +12,15 @@ task run(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+}
+
+task debug(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+    debug = true
 }
 
 task dist(type: Jar) {

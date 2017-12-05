@@ -8,7 +8,7 @@
 %feature("director") btNodeOverlapCallback;
 %feature("director") btOverlapCallback;
 %feature("director") btOverlapFilterCallback;
-%feature("director") btOverlappingPairCallback;
+//%feature("director") btOverlappingPairCallback;
 %feature("director") btTriangleCallback;
 %feature("director") btTriangleConvexcastCallback;
 %feature("director") btTriangleRaycastCallback;
@@ -70,15 +70,11 @@ CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision
 %}
 %include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
 
+%rename(getOverlappingPairCacheConst) btBroadphaseInterface::getOverlappingPairCache() const;
 %{
 #include <BulletCollision/BroadphaseCollision/btBroadphaseInterface.h>
 %}
 %include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
-
-%{
-#include <BulletCollision/BroadphaseCollision/btDbvt.h>
-%}
-%include "BulletCollision/BroadphaseCollision/btDbvt.h"
 
 %{
 #include <BulletCollision/BroadphaseCollision/btQuantizedBvh.h>
@@ -86,29 +82,18 @@ CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision
 %include "BulletCollision/BroadphaseCollision/btQuantizedBvh.h"
 
 %{
-#include <BulletCollision/BroadphaseCollision/btDbvtBroadphase.h>
-%}
-%include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
-
-%{
 #include <BulletCollision/BroadphaseCollision/btSimpleBroadphase.h>
 %}
 %include "BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
 
 %ignore btMultiSapBroadphase::btMultiSapProxy::m_bridgeProxies;
-%{
-#include <BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h>
-void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
-{
-}
-%}
-%include "BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h"
 
 %{
 #include <BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h>
 %}
 %include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
 
+%feature("nodirector") btOverlappingPairCallback::addOverlappingPair
 %{
 #include <BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h>
 %}
@@ -116,11 +101,16 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./btAxisSweep3.i"
 
+%rename(getInternalManifoldPoolConst) btDispatcher::getInternalManifoldPool() const;
 %{
 #include <BulletCollision/BroadphaseCollision/btDispatcher.h>
 %}
 %include "BulletCollision/BroadphaseCollision/btDispatcher.h"
 
+%rename(getOverlappingPairArrayPtrConst) btOverlappingPairCache::getOverlappingPairArrayPtr() const;
+%rename(getOverlappingPairArrayPtrConst) btHashedOverlappingPairCache::getOverlappingPairArrayPtr() const;
+%rename(getOverlappingPairArrayConst) btHashedOverlappingPairCache::getOverlappingPairArray() const;
+%rename(getOverlappingPairArrayConst) btSortedOverlappingPairCache::getOverlappingPairArray() const;
 %{
 #include <BulletCollision/BroadphaseCollision/btOverlappingPairCache.h>
 %}
@@ -156,6 +146,11 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleCallback.h"
 
+%rename(getAtIndexConst) btHashMap< btHashInt,btTriangleInfo >::getAtIndex(int) const;
+%rename(getKeyAtIndexConst) btHashMap< btHashInt,btTriangleInfo >::getKeyAtIndex(int) const;
+%rename(findConst) btHashMap< btHashInt,btTriangleInfo >::find(btHashInt const &) const;
+%rename(operatorSubscriptConst) btHashMap< btHashInt,btTriangleInfo >::operator [](btHashInt const &) const;
+%template(btHashMapInternalShortBtHashIntBtTriangleInfo) btHashMap<btHashInt,btTriangleInfo>;
 %{
 #include <BulletCollision/CollisionShapes/btTriangleInfoMap.h>
 %}
@@ -168,6 +163,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./btHeightfieldTerrainShape.i"
 
+%rename(getMeshInterfaceConst) btTriangleMeshShape::getMeshInterface() const;
 %{
 #include <BulletCollision/CollisionShapes/btTriangleMeshShape.h>
 %}
@@ -195,6 +191,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btCollisionMargin.h"
 
+%rename(getVertexPtrConst) btTriangleShape::getVertexPtr(int) const;
 %{
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 %}
@@ -237,15 +234,13 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btMaterial.h"
 
+%rename(getChildShapeConst) btScaledBvhTriangleMeshShape::getChildShape() const;
 %{
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 %}
 %include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-%}
-%include "BulletCollision/CollisionShapes/btShapeHull.h"
+%include "./btShapeHull.i"
 
 %include "./btConvexHullShape.i"
 
@@ -269,6 +264,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btConeShape.h"
 
+%rename(getMeshInterfaceConst) btConvexTriangleMeshShape::getMeshInterface() const;
 %{
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 %}
@@ -289,29 +285,41 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionShapes/btTetrahedronShape.h"
 
+%rename(getChildShapeConst) btUniformScalingShape::getChildShape() const;
 %{
 #include <BulletCollision/CollisionShapes/btUniformScalingShape.h>
 %}
 %include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
 
-%include "./btCompoundShape.i"
-
+%rename(getUnscaledPointsConst) btConvexPointCloudShape::getUnscaledPoints() const;
 %{
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
 %}
 %include "BulletCollision/CollisionShapes/btConvexPointCloudShape.h"
 
+%rename(getChildShapeConst) btConvex2dShape::getChildShape() const;
 %{
 #include <BulletCollision/CollisionShapes/btConvex2dShape.h>
 %}
 %include "BulletCollision/CollisionShapes/btConvex2dShape.h"
 
 %include "./btCollisionObject.i"
+%include "./btDbvt.i"
+%include "./btCompoundShape.i"
 
+%rename(atConst) btAlignedObjectArray< btCollisionObject * >::at(int) const;
+%rename(atConst) btAlignedObjectArray< const btCollisionObject * >::at(int) const;
+%rename(operatorSubscriptConst) btAlignedObjectArray< btCollisionObject * >::operator [](int) const;
+%rename(operatorSubscriptConst) btAlignedObjectArray< const btCollisionObject * >::operator [](int) const;
 %template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
 %template(btCollisionObjectConstArray) btAlignedObjectArray<const btCollisionObject*>;
 
 %include "./btCollisionObjectWrapper.i"
+
+%{
+#include <BulletCollision/CollisionDispatch/btCollisionCreateFunc.h>
+%}
+%include "BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.h>
@@ -334,6 +342,11 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "BulletCollision/CollisionDispatch/btConvexPlaneCollisionAlgorithm.h"
 
 %{
+#include <BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h>
+%}
+%include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
+
+%{
 #include <BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h"
@@ -348,11 +361,14 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
 
+%rename(getPersistentManifoldConst) btManifoldResult::getPersistentManifold() const;
 %{
 #include <BulletCollision/CollisionDispatch/btManifoldResult.h>
 %}
 %include "BulletCollision/CollisionDispatch/btManifoldResult.h"
 
+%rename(getOverlappingPairArrayPtrConst) btHashedSimplePairCache::getOverlappingPairArrayPtr() const;
+%rename(getOverlappingPairArrayConst) btHashedSimplePairCache::getOverlappingPairArray() const;
 %{
 #include <BulletCollision/CollisionDispatch/btHashedSimplePairCache.h>
 %}
@@ -369,15 +385,11 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "BulletCollision/CollisionDispatch/btBoxBoxCollisionAlgorithm.h"
 
 %{
-#include <BulletCollision/CollisionDispatch/btCollisionCreateFunc.h>
-%}
-%include "BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
-
-%{
 #include <BulletCollision/CollisionDispatch/btBox2dBox2dCollisionAlgorithm.h>
 %}
 %include "BulletCollision/CollisionDispatch/btBox2dBox2dCollisionAlgorithm.h"
 
+%rename(getElementConst) btUnionFind::getElement(int) const;
 %{
 #include <BulletCollision/CollisionDispatch/btUnionFind.h>
 %}
@@ -393,6 +405,10 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionDispatch/btSimulationIslandManager.h"
 
+%rename(getOverlappingObjectConst) btGhostObject::getOverlappingObject(int) const;
+%rename(getOverlappingPairsConst) btGhostObject::getOverlappingPairs() const;
+%rename(upcastConstBtCollisionObject) btGhostObject::upcast(btCollisionObject const *);
+//%feature("nodirector") btGhostObject::addOverlappingPair
 %{
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 %}
@@ -425,10 +441,17 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/CollisionDispatch/btSphereBoxCollisionAlgorithm.h"
 
+%rename(getManifoldByIndexInternalConst) btCollisionDispatcher::getManifoldByIndexInternal(int) const;
+%rename(getCollisionConfigurationConst) btCollisionDispatcher::getCollisionConfiguration() const;
 %{
 #include <BulletCollision/CollisionDispatch/btCollisionDispatcher.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
+
+%{
+#include <BulletCollision/CollisionDispatch/btCollisionDispatcherMt.h>
+%}
+%include "BulletCollision/CollisionDispatch/btCollisionDispatcherMt.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.h>
@@ -446,11 +469,6 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
 
 %{
-#include <BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h>
-%}
-%include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
-
-%{
 #include <BulletCollision/NarrowPhaseCollision/btConvexCast.h>
 %}
 %include "BulletCollision/NarrowPhaseCollision/btConvexCast.h"
@@ -465,11 +483,14 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
 
+%rename(getContactPointConst) btPersistentManifold::getContactPoint(int) const;
 %{
 #include <BulletCollision/NarrowPhaseCollision/btPersistentManifold.h>
 %}
 %include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 
+%rename(atConst) btAlignedObjectArray< btPersistentManifold* >::at(int) const;
+%rename(operatorSubscriptConst) btAlignedObjectArray< btPersistentManifold* >::operator [](int) const;
 %template(btPersistentManifoldArray) btAlignedObjectArray<btPersistentManifold*>;
 
 %{
@@ -524,6 +545,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
 
+%rename(m_numVerticesVar) btVoronoiSimplexSolver::numVertices;
 %{
 #include <BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h>
 %}
@@ -540,3 +562,28 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "./btBroadphasePairArray.i"
 
 %include "./gimpact.i"
+
+%{
+#include <BulletCollision/CollisionDispatch/btCollisionWorldImporter.h>
+%}
+%include "BulletCollision/CollisionDispatch/btCollisionWorldImporter.h"
+
+%{
+#include <BulletCollision/NarrowPhaseCollision/btComputeGjkEpaPenetration.h>
+%}
+%include "BulletCollision/NarrowPhaseCollision/btComputeGjkEpaPenetration.h"
+
+%{
+#include <BulletCollision/NarrowPhaseCollision/btGjkCollisionDescription.h>
+%}
+%include "BulletCollision/NarrowPhaseCollision/btGjkCollisionDescription.h"
+
+%{
+#include <BulletCollision/NarrowPhaseCollision/btGjkEpa3.h>
+%}
+%include "BulletCollision/NarrowPhaseCollision/btGjkEpa3.h"
+
+%{
+#include <BulletCollision/NarrowPhaseCollision/btMprPenetration.h>
+%}
+%include "BulletCollision/NarrowPhaseCollision/btMprPenetration.h"

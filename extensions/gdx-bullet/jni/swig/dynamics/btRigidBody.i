@@ -4,6 +4,9 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 %}
 
+%rename(getBroadphaseProxyConst) btRigidBody::getBroadphaseProxy() const;
+%rename(getMotionStateConst) btRigidBody::getMotionState() const;
+
 %rename(i_motionState) btRigidBody::btRigidBodyConstructionInfo::m_motionState;
 %javamethodmodifiers btRigidBody::btRigidBodyConstructionInfo::m_motionState "private";
 %rename(i_collisionShape) btRigidBody::btRigidBodyConstructionInfo::m_collisionShape;
@@ -26,12 +29,12 @@
 
 %typemap(javacode) btRigidBody::btRigidBodyConstructionInfo %{
 	protected btMotionState motionState;
-	
+
 	public void setMotionState(btMotionState motionState) {
 		refMotionState(motionState);
 		setI_motionState(motionState);
 	}
-	
+
 	protected void refMotionState(btMotionState motionState) {
 		if (this.motionState == motionState)
 			return;
@@ -41,18 +44,18 @@
 		if (this.motionState != null)
 			this.motionState.obtain();
 	}
-	
+
 	public btMotionState getMotionState() {
 		return motionState;
 	}
-	
+
 	protected btCollisionShape collisionShape;
-	
+
 	public void setCollisionShape(btCollisionShape collisionShape) {
 		refCollisionShape(collisionShape);
 		setI_collisionShape(collisionShape);
 	}
-	
+
 	protected void refCollisionShape(btCollisionShape shape) {
 		if (collisionShape == shape)
 			return;
@@ -62,23 +65,23 @@
 		if (collisionShape != null)
 			collisionShape.obtain();
 	}
-	
+
 	public btCollisionShape getCollisionShape() {
 		return collisionShape;
 	}
-	
+
 	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
 		this(false, mass, motionState, collisionShape, localInertia);
 		refMotionState(motionState);
 		refCollisionShape(collisionShape);
 	}
-	
+
 	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape) {
 		this(false, mass, motionState, collisionShape);
 		refMotionState(motionState);
 		refCollisionShape(collisionShape);
 	}
-	
+
 	@Override
 	public void dispose() {
 		if (motionState != null)
@@ -93,7 +96,7 @@
 
 %extend btRigidBody::btRigidBodyConstructionInfo {
 	btRigidBodyConstructionInfo(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {
-		return new btRigidBody::btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia); 
+		return new btRigidBody::btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
 	}
 };
 
@@ -112,7 +115,7 @@
 
 %extend btRigidBody {
 	btRigidBody(bool dummy, const btRigidBody::btRigidBodyConstructionInfo& constructionInfo) {
-		return new btRigidBody(constructionInfo); 
+		return new btRigidBody(constructionInfo);
 	}
 	btRigidBody(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {
 		return new btRigidBody(mass, motionState, collisionShape, localInertia);
@@ -121,12 +124,12 @@
 
 %typemap(javacode) btRigidBody %{
 	protected btMotionState motionState;
-	
+
 	/** @return The existing instance for the specified pointer, or null if the instance doesn't exist */
 	public static btRigidBody getInstance(final long swigCPtr) {
 		return (btRigidBody)btCollisionObject.getInstance(swigCPtr);
 	}
-		
+
 	/** @return The existing instance for the specified pointer, or a newly created instance if the instance didn't exist */
 	public static btRigidBody getInstance(final long swigCPtr, boolean owner) {
 		if (swigCPtr == 0)
@@ -136,30 +139,30 @@
 				result = new btRigidBody(swigCPtr, owner);
 		return result;
 	}
-	
+
 	public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
 		this(false, constructionInfo);
 		refCollisionShape(constructionInfo.getCollisionShape());
 		refMotionState(constructionInfo.getMotionState());
 	}
-	
+
 	public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
 		this(false, mass, motionState, collisionShape, localInertia);
 		refCollisionShape(collisionShape);
 		refMotionState(motionState);
 	}
-	
+
 	public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape) {
 		this(false, mass, motionState, collisionShape);
 		refCollisionShape(collisionShape);
 		refMotionState(motionState);
 	}
-  
+
 	public void setMotionState(btMotionState motionState) {
 		refMotionState(motionState);
 		internalSetMotionState(motionState);
 	}
-	
+
 	protected void refMotionState(btMotionState motionState) {
 		if (this.motionState == motionState)
 			return;
@@ -169,11 +172,11 @@
 		if (this.motionState != null)
 			this.motionState.obtain();
 	}
-	
+
 	public btMotionState getMotionState() {
 		return motionState;
 	}
-	
+
 	@Override
 	public void dispose() {
 		if (motionState != null)

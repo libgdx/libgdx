@@ -55,14 +55,12 @@ public class HeightMapTest extends BaseG3dTest {
 
 		ground = new Renderable();
 		ground.environment = environment;
-		ground.mesh = field.mesh;
-		ground.primitiveType = GL20.GL_TRIANGLES;
-		ground.meshPartOffset = 0;
-		ground.meshPartSize = field.mesh.getNumIndices();
+		ground.meshPart.mesh = field.mesh;
+		ground.meshPart.primitiveType = GL20.GL_TRIANGLES;
+		ground.meshPart.offset = 0;
+		ground.meshPart.size = field.mesh.getNumIndices();
+		ground.meshPart.update();
 		ground.material = new Material(TextureAttribute.createDiffuse(texture));
-
-		BoundingBox bb = field.mesh.calculateBoundingBox();
-		Gdx.app.log("BB", bb.toString());
 	}
 
 	@Override

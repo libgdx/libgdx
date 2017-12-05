@@ -186,24 +186,28 @@ public class JsonWriter extends Writer {
 			if (value == null) return "null";
 			String string = value.toString();
 			if (value instanceof Number || value instanceof Boolean) return string;
-			string = string.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
+			StringBuilder buffer = new StringBuilder(string);
+			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
-				int length = string.length();
-				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
+				int length = buffer.length();
+				if (length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
+					return buffer.toString();
 			}
-			return '"' + string.replace("\"", "\\\"") + '"';
+			return '"' + buffer.replace('"', "\\\"").toString() + '"';
 		}
 
 		public String quoteName (String value) {
-			value = value.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
+			StringBuilder buffer = new StringBuilder(value);
+			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
 			switch (this) {
 			case minimal:
-				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(value).matches()) return value;
+				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
+					return buffer.toString();
 			case javascript:
-				if (javascriptPattern.matcher(value).matches()) return value;
+				if (javascriptPattern.matcher(buffer).matches()) return buffer.toString();
 			}
-			return '"' + value.replace("\"", "\\\"") + '"';
+			return '"' + buffer.replace('"', "\\\"").toString() + '"';
 		}
 	}
 }

@@ -102,9 +102,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets the tile to be used for this cell.
 		 * 
-		 * @param tile the {@link TiledMapTile} to use for this cell. */
-		public void setTile (TiledMapTile tile) {
+		 * @param tile the {@link TiledMapTile} to use for this cell. 
+		 * @return this, for method chaining */
+		public Cell setTile (TiledMapTile tile) {
 			this.tile = tile;
+			return this;
 		}
 
 		/** @return Whether the tile should be flipped horizontally. */
@@ -114,9 +116,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile horizontally.
 		 * 
-		 * @param flipHorizontally whether or not to flip the tile horizontally. */
-		public void setFlipHorizontally (boolean flipHorizontally) {
+		 * @param flipHorizontally whether or not to flip the tile horizontally. 
+		 * @return this, for method chaining */
+		public Cell setFlipHorizontally (boolean flipHorizontally) {
 			this.flipHorizontally = flipHorizontally;
+			return this;
 		}
 
 		/** @return Whether the tile should be flipped vertically. */
@@ -126,9 +130,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets whether to flip the tile vertically.
 		 * 
-		 * @param flipVertically whether or not this tile should be flipped vertically. */
-		public void setFlipVertically (boolean flipVertically) {
+		 * @param flipVertically whether or not this tile should be flipped vertically. 
+		 * @return this, for method chaining */
+		public Cell setFlipVertically (boolean flipVertically) {
 			this.flipVertically = flipVertically;
+			return this;
 		}
 
 		/** @return The rotation of this cell, in degrees. */
@@ -138,9 +144,11 @@ public class TiledMapTileLayer extends MapLayer {
 
 		/** Sets the rotation of this cell, in degrees.
 		 * 
-		 * @param rotation the rotation in degrees. */
-		public void setRotation (int rotation) {
+		 * @param rotation the rotation in degrees. 
+		 * @return this, for method chaining */
+		public Cell setRotation (int rotation) {
 			this.rotation = rotation;
+			return this;
 		}
 
 		public static final int ROTATE_0 = 0;

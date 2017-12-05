@@ -43,7 +43,7 @@ public class XmlReader {
 		return parse(data, 0, data.length);
 	}
 
-	public Element parse (Reader reader) throws IOException {
+	public Element parse (Reader reader) {
 		try {
 			char[] data = new char[1024];
 			int offset = 0;
@@ -65,7 +65,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (InputStream input) throws IOException {
+	public Element parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
@@ -75,7 +75,7 @@ public class XmlReader {
 		}
 	}
 
-	public Element parse (FileHandle file) throws IOException {
+	public Element parse (FileHandle file) {
 		InputStream is = null;
 		try {
 			return parse(file.reader("UTF-8"));
@@ -265,9 +265,9 @@ public class XmlReader {
 
 		/** @throws GdxRuntimeException if the attribute was not found. */
 		public String getAttribute (String name) {
-			if (attributes == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (attributes == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			String value = attributes.get(name);
-			if (value == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute: " + name);
 			return value;
 		}
 
@@ -276,6 +276,11 @@ public class XmlReader {
 			String value = attributes.get(name);
 			if (value == null) return defaultValue;
 			return value;
+		}
+
+		public boolean hasAttribute (String name) {
+			if (attributes == null) return false;
+			return attributes.containsKey(name);
 		}
 
 		public void setAttribute (String name, String value) {
@@ -289,9 +294,9 @@ public class XmlReader {
 		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
-		public Element getChild (int i) {
+		public Element getChild (int index) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			return children.get(i);
+			return children.get(index);
 		}
 
 		public void addChild (Element element) {
@@ -376,6 +381,11 @@ public class XmlReader {
 			return null;
 		}
 
+		public boolean hasChild (String name) {
+			if (children == null) return false;
+			return getChildByName(name) != null;
+		}
+
 		/** @param name the name of the child {@link Element}
 		 * @return the first child having the given name or null, recurses */
 		public Element getChildByNameRecursive (String name) {
@@ -387,6 +397,11 @@ public class XmlReader {
 				if (found != null) return found;
 			}
 			return null;
+		}
+
+		public boolean hasChildRecursive (String name) {
+			if (children == null) return false;
+			return getChildByNameRecursive(name) != null;
 		}
 
 		/** @param name the name of the children

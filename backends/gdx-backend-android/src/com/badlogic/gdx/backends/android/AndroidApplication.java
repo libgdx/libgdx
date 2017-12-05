@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -66,14 +68,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
@@ -130,6 +134,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
@@ -141,6 +146,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
+		this.clipboard = new AndroidClipboard(this);
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -369,13 +375,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
 
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
 		return clipboard;
 	}
 
@@ -407,36 +409,32 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -447,6 +445,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public int getLogLevel () {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override
@@ -505,7 +513,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
+	public SnapshotArray<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
 

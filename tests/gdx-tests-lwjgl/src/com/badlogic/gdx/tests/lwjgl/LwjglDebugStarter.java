@@ -18,11 +18,10 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BitmapFontTest;
-import com.badlogic.gdx.tests.FullscreenTest;
-import com.badlogic.gdx.tests.JsonTest;
+import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.extensions.ControllersTest;
-import com.badlogic.gdx.tests.extensions.FreeTypeIncrementalTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -34,13 +33,14 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new BitmapFontTest();		
+		GdxTest test = new GroupTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;
-		config.height = 600;
+		config.height = 600;		
+//		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
 		new LwjglApplication(test, config);
 	}
 }

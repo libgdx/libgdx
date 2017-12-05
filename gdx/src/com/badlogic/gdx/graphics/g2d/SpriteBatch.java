@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -34,6 +35,10 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
+	/** @deprecated Do not use, this field is for testing only and is likely to be removed. Sets the {@link VertexDataType} to be
+	 *             used when gles 3 is not available, defaults to {@link VertexDataType#VertexArray}. */
+	@Deprecated public static VertexDataType defaultVertexDataType = VertexDataType.VertexArray;
+
 	private Mesh mesh;
 
 	final float[] vertices;
@@ -50,6 +55,8 @@ public class SpriteBatch implements Batch {
 	private boolean blendingDisabled = false;
 	private int blendSrcFunc = GL20.GL_SRC_ALPHA;
 	private int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
+	private int blendSrcFuncAlpha = GL20.GL_SRC_ALPHA;
+	private int blendDstFuncAlpha = GL20.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
 	private ShaderProgram customShader = null;
@@ -85,18 +92,17 @@ public class SpriteBatch implements Batch {
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link #createDefaultShader()}.
-	 * @param size The max number of sprites in a single batch. Max of 5460.
+	 * @param size The max number of sprites in a single batch. Max of 8191.
 	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
-		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
-		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
+		// 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
+		if (size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if (Gdx.gl30 != null) {
-			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
-		}
-		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		VertexDataType vertexDataType = (Gdx.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
+
+		mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
+			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -327,30 +333,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x1;
-		vertices[idx++] = y1;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x1;
+		vertices[idx + 1] = y1;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x2;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x2;
+		vertices[idx + 6] = y2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = x3;
-		vertices[idx++] = y3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = x3;
+		vertices[idx + 11] = y3;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = x4;
-		vertices[idx++] = y4;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = x4;
+		vertices[idx + 16] = y4;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -386,30 +392,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -432,30 +438,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -474,30 +480,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -525,30 +531,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -607,30 +613,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x;
+		vertices[idx + 1] = y;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x;
+		vertices[idx + 6] = fy2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = fx2;
+		vertices[idx + 11] = fy2;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = fx2;
+		vertices[idx + 16] = y;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -727,30 +733,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x1;
-		vertices[idx++] = y1;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x1;
+		vertices[idx + 1] = y1;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x2;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x2;
+		vertices[idx + 6] = y2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = x3;
-		vertices[idx++] = y3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = x3;
+		vertices[idx + 11] = y3;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = x4;
-		vertices[idx++] = y4;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = x4;
+		vertices[idx + 16] = y4;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -863,30 +869,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x1;
-		vertices[idx++] = y1;
-		vertices[idx++] = color;
-		vertices[idx++] = u1;
-		vertices[idx++] = v1;
+		vertices[idx] = x1;
+		vertices[idx + 1] = y1;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u1;
+		vertices[idx + 4] = v1;
 
-		vertices[idx++] = x2;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x2;
+		vertices[idx + 6] = y2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u2;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = x3;
-		vertices[idx++] = y3;
-		vertices[idx++] = color;
-		vertices[idx++] = u3;
-		vertices[idx++] = v3;
+		vertices[idx + 10] = x3;
+		vertices[idx + 11] = y3;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u3;
+		vertices[idx + 14] = v3;
 
-		vertices[idx++] = x4;
-		vertices[idx++] = y4;
-		vertices[idx++] = color;
-		vertices[idx++] = u4;
-		vertices[idx++] = v4;
-		this.idx = idx;
+		vertices[idx + 15] = x4;
+		vertices[idx + 16] = y4;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u4;
+		vertices[idx + 19] = v4;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -919,30 +925,30 @@ public class SpriteBatch implements Batch {
 
 		float color = this.color;
 		int idx = this.idx;
-		vertices[idx++] = x1;
-		vertices[idx++] = y1;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
+		vertices[idx] = x1;
+		vertices[idx + 1] = y1;
+		vertices[idx + 2] = color;
+		vertices[idx + 3] = u;
+		vertices[idx + 4] = v;
 
-		vertices[idx++] = x2;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
+		vertices[idx + 5] = x2;
+		vertices[idx + 6] = y2;
+		vertices[idx + 7] = color;
+		vertices[idx + 8] = u;
+		vertices[idx + 9] = v2;
 
-		vertices[idx++] = x3;
-		vertices[idx++] = y3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
+		vertices[idx + 10] = x3;
+		vertices[idx + 11] = y3;
+		vertices[idx + 12] = color;
+		vertices[idx + 13] = u2;
+		vertices[idx + 14] = v2;
 
-		vertices[idx++] = x4;
-		vertices[idx++] = y4;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
-		this.idx = idx;
+		vertices[idx + 15] = x4;
+		vertices[idx + 16] = y4;
+		vertices[idx + 17] = color;
+		vertices[idx + 18] = u2;
+		vertices[idx + 19] = v;
+		this.idx = idx + 20;
 	}
 
 	@Override
@@ -965,7 +971,7 @@ public class SpriteBatch implements Batch {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
 		}
 
 		mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, count);
@@ -989,10 +995,17 @@ public class SpriteBatch implements Batch {
 
 	@Override
 	public void setBlendFunction (int srcFunc, int dstFunc) {
-		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
+		setBlendFunctionSeparate(srcFunc, dstFunc, srcFunc, dstFunc);
+	}
+
+	@Override
+	public void setBlendFunctionSeparate(int srcFuncColor, int dstFuncColor, int srcFuncAlpha, int dstFuncAlpha) {
+		if (blendSrcFunc == srcFuncColor && blendDstFunc == dstFuncColor && blendSrcFuncAlpha == srcFuncAlpha && blendDstFuncAlpha == dstFuncAlpha) return;
 		flush();
-		blendSrcFunc = srcFunc;
-		blendDstFunc = dstFunc;
+		blendSrcFunc = srcFuncColor;
+		blendDstFunc = dstFuncColor;
+		blendSrcFuncAlpha = srcFuncAlpha;
+		blendDstFuncAlpha = dstFuncAlpha;
 	}
 
 	@Override
@@ -1003,6 +1016,16 @@ public class SpriteBatch implements Batch {
 	@Override
 	public int getBlendDstFunc () {
 		return blendDstFunc;
+	}
+
+	@Override
+	public int getBlendSrcFuncAlpha() {
+		return blendSrcFuncAlpha;
+	}
+
+	@Override
+	public int getBlendDstFuncAlpha() {
+		return blendDstFuncAlpha;
 	}
 
 	@Override

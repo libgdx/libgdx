@@ -6,7 +6,7 @@ See https://github.com/libgdx/libgdx/commit/da30acc5b3521d0fda760ba765ae76a951bd
 - Add a default ctor to btWheelInfo.h (around line 82): `btWheelInfo() {}`
 - Comment out `class btVehicleTuning;` in btRaycastVehicle.h ~22
 - Add ContactStartedCallback and ContactEndedCallback, based on http://www.bulletphysics.org/Bullet/phpBB3/viewtopic.php?t=7739&p=32470, as shown in https://github.com/libgdx/libgdx/commit/d492533c3ed9447560770a7482d32c2bfbae5df7:
-  btManifoldResult.cpp ~87:
+  btManifoldResult.cpp ~113:
 	bool isNewCollision = m_manifoldPtr->getNumContacts() == 0;
   btManifoldResult.cpp ~154: 
 	if (gContactStartedCallback && isNewCollision)
@@ -20,8 +20,8 @@ See https://github.com/libgdx/libgdx/commit/da30acc5b3521d0fda760ba765ae76a951bd
 	#ifndef SWIG
 	class btPersistentManifold;
   btPersistentManifold.h ~36:
-	typedef void(*ContactStartedCallback)(btPersistentManifold* const &manifold);
-	typedef void(*ContactEndedCallback)(btPersistentManifold* const &manifold);
+	typedef void (*ContactStartedCallback)(btPersistentManifold* const &manifold);
+	typedef void (*ContactEndedCallback)(btPersistentManifold* const &manifold);
   btPersistentManifold.h ~40:
 	extern ContactStartedCallback gContactStartedCallback;
 	extern ContactEndedCallback gContactEndedCallback;
@@ -31,7 +31,7 @@ See https://github.com/libgdx/libgdx/commit/da30acc5b3521d0fda760ba765ae76a951bd
 		{
 			gContactEndedCallback(this);
 		}
-  btPersistentManifold.h ~242:
+  btPersistentManifold.h ~236:
 		if (gContactEndedCallback && m_cachedPoints)
 		{
 			gContactEndedCallback(this);

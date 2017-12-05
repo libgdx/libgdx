@@ -864,6 +864,16 @@ public class Matrix4 implements Serializable {
 		quat.setEulerAngles(yaw, pitch, roll);
 		return set(quat);
 	}
+	
+	/** Sets this matrix to a rotation matrix from the given euler angles.
+	 * @param yaw the yaw in radians
+	 * @param pitch the pitch in radians
+	 * @param roll the roll in radians
+	 * @return This matrix */
+	public Matrix4 setFromEulerAnglesRad (float yaw, float pitch, float roll) {
+		quat.setEulerAnglesRad(yaw, pitch, roll);
+		return set(quat);
+	}
 
 	/** Sets this matrix to a scaling matrix
 	 * 
@@ -1601,5 +1611,12 @@ public class Matrix4 implements Serializable {
 		dst[9] = val[M03];
 		dst[10] = val[M13];
 		dst[11] = val[M23];
+	}
+
+	/** @return True if this matrix has any rotation or scaling, false otherwise */
+	public boolean hasRotationOrScaling () {
+		return !(MathUtils.isEqual(val[M00], 1) && MathUtils.isEqual(val[M11], 1) && MathUtils.isEqual(val[M22], 1)
+				&& MathUtils.isZero(val[M01]) && MathUtils.isZero(val[M02]) && MathUtils.isZero(val[M10]) && MathUtils.isZero(val[M12])
+				&& MathUtils.isZero(val[M20]) && MathUtils.isZero(val[M21]));
 	}
 }

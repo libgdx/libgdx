@@ -44,6 +44,13 @@ public class UBJsonTest extends GdxTest {
 			uw.set("xfloats", new float[] {Float.MIN_VALUE, Float.MAX_VALUE, Float.NaN, Float.NEGATIVE_INFINITY});
 			uw.set("double", 0.000000000000000000001);
 			uw.set("long", Long.MAX_VALUE);
+			uw.set("3bytes", new byte[] {(byte)1, (byte)2, (byte)3});
+			uw.set("3shorts", new short[] {(short)1, (short)2, (short)3});
+			uw.set("3ints", new int[] {1, 2, 3});
+			uw.set("3long", new long[] {1l, 2l, 3l});
+			uw.set("3double", new double[] {1, 2, 3.456789});
+			uw.set("3char", new char[] {'a', 'b', 'c'});
+			uw.set("3strings", new String[] {"", "a", "abc"});
 			uw.array("arr");
 			uw.object().pop();
 			uw.value(true).value(false).value(true);

@@ -21,6 +21,7 @@ import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -34,7 +35,19 @@ public class LwjglApplicationConfiguration {
 
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;
-	
+	/** The OpenGL context major version (the part in front of the decimal point) used to emulate OpenGL ES 3.0, when the version is
+	 * not supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when
+	 * {@link #useGL30} is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a
+	 * lower value might cause some features not to function properly. OSX requires 3.2 though.
+	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	public int gles30ContextMajorVersion = 3;
+	/** The OpenGL context major version (the part after the decimal point) used to emulate OpenGL ES 3.0, when the version is not
+	 * supported it will fall back to OpenGL ES 2.0 emulation. Defaults to 3.2 (major=3, minor=2). Only used when {@link #useGL30}
+	 * is true. OpenGL is fully compatible with OpenGL ES 3.0 since version 4.3, setting the context version to a lower value might
+	 * cause some features not to function properly. OSX requires 3.2 though.
+	 * @see <a href="http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html">LWJGL OSX ContextAttribs note</a> */
+	public int gles30ContextMinorVersion = 2;
+
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
 	/** number of bits for depth and stencil buffer **/
@@ -73,13 +86,15 @@ public class LwjglApplicationConfiguration {
 	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+	/** Preferences file type on the desktop. Default is FileType.External */
+	public Files.FileType preferencesFileType = FileType.External;
 	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
 	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
 	/** enable HDPI mode on Mac OS X **/
 	public boolean useHDPI = false;
 
 	Array<String> iconPaths = new Array();
-	Array<FileType> iconFileTypes = new Array();	
+	Array<FileType> iconFileTypes = new Array();
 
 	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
 	 * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */

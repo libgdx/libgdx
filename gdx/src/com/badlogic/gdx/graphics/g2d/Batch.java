@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * A Batch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A Batch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw all provided
+ * A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided
  * sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
  * <p>
  * A Batch has to be disposed if it is no longer used.
@@ -178,13 +178,25 @@ public interface Batch extends Disposable {
 	public void enableBlending ();
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
-	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
+	 * @param srcFunc the source function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param dstFunc the destination function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc);
+
+	/** Sets separate (color/alpha) blending function to be used when rendering sprites.
+	 * @param srcFuncColor the source color function, e.g. GL20.GL_SRC_ALPHA. If set to -1, Batch won't change the blending function.
+	 * @param dstFuncColor the destination color function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
+	 * @param srcFuncAlpha the source alpha function, e.g. GL20.GL_SRC_ALPHA.
+	 * @param dstFuncAlpha the destination alpha function, e.g. GL20.GL_ONE_MINUS_SRC_ALPHA.
+	 * */
+	public void setBlendFunctionSeparate (int srcFuncColor, int dstFuncColor, int srcFuncAlpha, int dstFuncAlpha);
 
 	public int getBlendSrcFunc ();
 
 	public int getBlendDstFunc ();
+
+	public int getBlendSrcFuncAlpha ();
+
+	public int getBlendDstFuncAlpha ();
 
 	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getProjectionMatrix ();
@@ -196,8 +208,7 @@ public interface Batch extends Disposable {
 	 * current batch is flushed to the gpu. */
 	public void setProjectionMatrix (Matrix4 projection);
 
-	/** Sets the transform matrix to be used by this Batch. If this is called inside a {@link #begin()}/{@link #end()} block, the
-	 * current batch is flushed to the gpu. */
+	/** Sets the transform matrix to be used by this Batch. */
 	public void setTransformMatrix (Matrix4 transform);
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture

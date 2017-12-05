@@ -132,8 +132,6 @@ public class KTXProcessor {
 			// Process all faces
 			int nFaces = isCubemap ? 6 : 1;
 			Image[][] images = new Image[nFaces][];
-			Pixmap.setBlending(Blending.None);
-			Pixmap.setFilter(Filter.BiLinear);
 			int texWidth = -1, texHeight = -1, texFormat = -1, nLevels = 0;
 			for (int face = 0; face < nFaces; face++) {
 				ETC1Data etc1 = null;
@@ -164,6 +162,8 @@ public class KTXProcessor {
 						texHeight = etc1.height;
 					} else {
 						facePixmap = new Pixmap(file);
+						facePixmap.setBlending(Blending.None);
+						facePixmap.setFilter(Filter.BiLinear);
 						nLevels = 1;
 						texWidth = facePixmap.getWidth();
 						texHeight = facePixmap.getHeight();
@@ -204,6 +204,8 @@ public class KTXProcessor {
 					}
 					if (levelETCData == null) {
 						levelPixmap = new Pixmap(levelWidth, levelHeight, facePixmap.getFormat());
+						levelPixmap.setBlending(Blending.None);
+						levelPixmap.setFilter(Filter.BiLinear);
 						levelPixmap.drawPixmap(facePixmap, 0, 0, facePixmap.getWidth(), facePixmap.getHeight(), 0, 0,
 							levelPixmap.getWidth(), levelPixmap.getHeight());
 					}
@@ -215,6 +217,8 @@ public class KTXProcessor {
 						if (levelPixmap == null) levelPixmap = ETC1.decodeImage(levelETCData, Format.RGB888);
 						int w = levelPixmap.getWidth(), h = levelPixmap.getHeight();
 						Pixmap pm = new Pixmap(w, h * 2, levelPixmap.getFormat());
+						pm.setBlending(Blending.None);
+						pm.setFilter(Filter.BiLinear);
 						pm.drawPixmap(levelPixmap, 0, 0);
 						for (int y = 0; y < h; y++) {
 							for (int x = 0; x < w; x++) {
@@ -233,6 +237,8 @@ public class KTXProcessor {
 							if (!isAlphaAtlas)
 								System.out.println("Converting from " + levelPixmap.getFormat() + " to RGB888 for ETC1 compression");
 							Pixmap tmp = new Pixmap(levelPixmap.getWidth(), levelPixmap.getHeight(), Format.RGB888);
+							tmp.setBlending(Blending.None);
+							tmp.setFilter(Filter.BiLinear);
 							tmp.drawPixmap(levelPixmap, 0, 0, 0, 0, levelPixmap.getWidth(), levelPixmap.getHeight());
 							levelPixmap.dispose();
 							levelPixmap = tmp;
@@ -331,9 +337,12 @@ public class KTXProcessor {
 				}
 
 				out.close();
+				System.out.println("Finished");
 			} catch (Exception e) {
 				Gdx.app.error("KTXProcessor", "Error writing to file: " + output.getName(), e);
 			}
+
+			Gdx.app.exit();
 		}
 	}
 

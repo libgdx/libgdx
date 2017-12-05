@@ -27,7 +27,7 @@ subject to the following restrictions:
  * @section install_sec Installation
  *
  * @subsection step1 Step 1: Download
- * You can download the Bullet Physics Library from the Google Code repository: http://code.google.com/p/bullet/downloads/list
+ * You can download the Bullet Physics Library from the github repository: https://github.com/bulletphysics/bullet3/releases 
  *
  * @subsection step2 Step 2: Building
  * Bullet has multiple build systems, including premake, cmake and autotools. Premake and cmake support all platforms.
@@ -205,8 +205,8 @@ public:
 	{
 		btScalar	m_closestHitFraction;
 		const btCollisionObject*		m_collisionObject;
-		short int	m_collisionFilterGroup;
-		short int	m_collisionFilterMask;
+		int	m_collisionFilterGroup;
+		int	m_collisionFilterMask;
 		//@BP Mod - Custom flags, currently used to enable backface culling on tri-meshes, see btRaycastCallback.h. Apply any of the EFlags defined there on m_flags here to invoke.
 		unsigned int m_flags;
 
@@ -340,8 +340,8 @@ public:
 	struct	ConvexResultCallback
 	{
 		btScalar	m_closestHitFraction;
-		short int	m_collisionFilterGroup;
-		short int	m_collisionFilterMask;
+		int	m_collisionFilterGroup;
+		int	m_collisionFilterMask;
 		
 		ConvexResultCallback()
 			:m_closestHitFraction(btScalar(1.)),
@@ -410,12 +410,14 @@ public:
 	///ContactResultCallback is used to report contact points
 	struct	ContactResultCallback
 	{
-		short int	m_collisionFilterGroup;
-		short int	m_collisionFilterMask;
-		
+		int	m_collisionFilterGroup;
+		int	m_collisionFilterMask;
+		btScalar	m_closestDistanceThreshold;
+
 		ContactResultCallback()
 			:m_collisionFilterGroup(btBroadphaseProxy::DefaultFilter),
-			m_collisionFilterMask(btBroadphaseProxy::AllFilter)
+			m_collisionFilterMask(btBroadphaseProxy::AllFilter),
+			m_closestDistanceThreshold(0)
 		{
 		}
 
@@ -481,7 +483,7 @@ public:
 											const btCollisionObjectWrapper* colObjWrap,
 											ConvexResultCallback& resultCallback, btScalar allowedPenetration);
 
-	virtual void	addCollisionObject(btCollisionObject* collisionObject,short int collisionFilterGroup=btBroadphaseProxy::DefaultFilter,short int collisionFilterMask=btBroadphaseProxy::AllFilter);
+	virtual void	addCollisionObject(btCollisionObject* collisionObject, int collisionFilterGroup=btBroadphaseProxy::DefaultFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter);
 
 	btCollisionObjectArray& getCollisionObjectArray()
 	{

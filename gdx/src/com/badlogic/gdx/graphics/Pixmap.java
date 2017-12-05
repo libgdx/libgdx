@@ -69,6 +69,14 @@ public class Pixmap implements Disposable {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGBA8888) return RGBA8888;
 			throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
 		}
+		
+		public static int toGlFormat (Format format) {
+			return Gdx2DPixmap.toGlFormat(toGdx2DPixmapFormat(format));
+		}
+		
+		public static int toGlType (Format format) {
+			return Gdx2DPixmap.toGlType(toGdx2DPixmapFormat(format));
+		}
 	}
 
 	/** Blending functions to be set with {@link Pixmap#setBlending}.
@@ -84,8 +92,8 @@ public class Pixmap implements Disposable {
 		NearestNeighbour, BiLinear
 	}
 
-	/** global blending state **/
-	private static Blending blending = Blending.SourceOver;
+	private Blending blending = Blending.SourceOver;
+	private Filter filter = Filter.BiLinear;
 
 	final Gdx2DPixmap pixmap;
 	int color = 0;
@@ -94,16 +102,17 @@ public class Pixmap implements Disposable {
 
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
-	public static void setBlending (Blending blending) {
-		Pixmap.blending = blending;
-		Gdx2DPixmap.setBlend(blending == Blending.None ? 0 : 1);
+	public void setBlending (Blending blending) {
+		this.blending = blending;
+		pixmap.setBlend(blending == Blending.None ? 0 : 1);
 	}
 
 	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
 	 * @param filter the filter. */
-	public static void setFilter (Filter filter) {
-		Gdx2DPixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
+	public void setFilter (Filter filter) {
+		this.filter = filter;
+		pixmap.setScale(filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 	}
 
 	/** Creates a new Pixmap instance with the given width, height and format.
@@ -202,7 +211,7 @@ public class Pixmap implements Disposable {
 		pixmap.drawRect(x, y, width, height, color);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
@@ -211,28 +220,28 @@ public class Pixmap implements Disposable {
 		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap.
+	/** Draws an area from another Pixmap to this Pixmap.
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param x The target x-coordinate (top left corner)
 	 * @param y The target y-coordinate (top left corner)
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
-	 * @param srcWidth The width of the area form the other Pixmap in pixels
-	 * @param srcHeight The height of the area form the other Pixmap in pixles */
+	 * @param srcWidth The width of the area from the other Pixmap in pixels
+	 * @param srcHeight The height of the area from the other Pixmap in pixels */
 	public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
 	}
 
-	/** Draws an area form another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
+	/** Draws an area from another Pixmap to this Pixmap. This will automatically scale and stretch the source image to the
 	 * specified target rectangle. Use {@link Pixmap#setFilter(Filter)} to specify the type of filtering to be used (nearest
 	 * neighbour or bilinear).
 	 * 
 	 * @param pixmap The other Pixmap
 	 * @param srcx The source x-coordinate (top left corner)
 	 * @param srcy The source y-coordinate (top left corner);
-	 * @param srcWidth The width of the area form the other Pixmap in pixels
-	 * @param srcHeight The height of the area form the other Pixmap in pixles
+	 * @param srcWidth The width of the area from the other Pixmap in pixels
+	 * @param srcHeight The height of the area from the other Pixmap in pixels
 	 * @param dstx The target x-coordinate (top left corner)
 	 * @param dsty The target y-coordinate (top left corner)
 	 * @param dstWidth The target width
@@ -363,7 +372,12 @@ public class Pixmap implements Disposable {
 	}
 
 	/** @return the currently set {@link Blending} */
-	public static Blending getBlending () {
+	public Blending getBlending () {
 		return blending;
+	}
+	
+	/** @return the currently set {@link Filter} */
+	public Filter getFilter (){
+		return filter;
 	}
 }

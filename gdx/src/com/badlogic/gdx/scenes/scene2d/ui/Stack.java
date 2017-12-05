@@ -49,6 +49,12 @@ public class Stack extends WidgetGroup {
 		setTouchable(Touchable.childrenOnly);
 	}
 
+	public Stack (Actor... actors) {
+		this();
+		for (Actor actor : actors)
+			addActor(actor);
+	}
+
 	public void invalidate () {
 		super.invalidate();
 		sizeInvalid = true;

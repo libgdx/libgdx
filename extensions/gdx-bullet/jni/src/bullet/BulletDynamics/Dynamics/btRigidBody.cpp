@@ -79,6 +79,8 @@ void	btRigidBody::setupRigidBody(const btRigidBody::btRigidBodyConstructionInfo&
 	//moved to btCollisionObject
 	m_friction = constructionInfo.m_friction;
 	m_rollingFriction = constructionInfo.m_rollingFriction;
+    m_spinningFriction = constructionInfo.m_spinningFriction;
+    
 	m_restitution = constructionInfo.m_restitution;
 
 	setCollisionShape( constructionInfo.m_collisionShape );
@@ -303,13 +305,6 @@ btVector3 btRigidBody::computeGyroscopicForceExplicit(btScalar maxGyroscopicForc
 	return gf;
 }
 
-void btSetCrossMatrixMinus(btMatrix3x3& res, const btVector3& a)
-{
-	const btScalar a_0 = a[0], a_1 = a[1], a_2 = a[2];
-	res.setValue(0, +a_2, -a_1,
-		-a_2, 0, +a_0,
-		+a_1, -a_0, 0);
-}
 
 btVector3 btRigidBody::computeGyroscopicImpulseImplicit_Body(btScalar step) const
 {	
@@ -511,6 +506,11 @@ const char*	btRigidBody::serialize(void* dataBuffer, class btSerializer* seriali
 	rbd->m_additionalAngularDampingFactor = m_additionalAngularDampingFactor;
 	rbd->m_linearSleepingThreshold=m_linearSleepingThreshold;
 	rbd->m_angularSleepingThreshold = m_angularSleepingThreshold;
+
+	// Fill padding with zeros to appease msan.
+#ifdef BT_USE_DOUBLE_PRECISION
+	memset(rbd->m_padding, 0, sizeof(rbd->m_padding));
+#endif
 
 	return btRigidBodyDataName;
 }

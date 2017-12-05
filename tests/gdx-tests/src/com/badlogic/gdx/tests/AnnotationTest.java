@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -64,6 +65,19 @@ public class AnnotationTest extends GdxTest {
 		@TestAnnotation(name = "MyAnnotatedMethod", values = {6, 7}) public int annotatedMethod () { return 0; };		
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Inherited
+	static public @interface TestInheritAnnotation {
+	}
+
+	@TestInheritAnnotation
+	static public class InheritClassA {
+	}
+
+	@TestAnnotation(name = "MyInheritClassB")
+	static public class InheritClassB extends InheritClassA {
+	}
+	
 	@Override
 	public void create () {
 		font = new BitmapFont();
@@ -108,7 +122,15 @@ public class AnnotationTest extends GdxTest {
 			} else {
 				println("ERROR: Method 'annotatedMethod' not found.");
 			}
-			
+
+			println("Class annotations w/@Inherit:");
+			Annotation[] annotations = ClassReflection.getAnnotations(InheritClassB.class);
+			for (Annotation a : annotations) {
+				println(" name=" + a.getAnnotationType().getSimpleName());
+			}
+			if (!ClassReflection.isAnnotationPresent(InheritClassB.class, TestInheritAnnotation.class)) {
+				println("ERROR: Inherited class annotation not found.");
+			}
 		} catch (Exception e) {
 			println("FAILED: " + e.getMessage());
 			message += e.getClass();

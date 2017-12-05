@@ -16,10 +16,15 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.backends.gwt.GwtGraphics.OrientationLockType;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
+	/** If true, SoundManager2 will not be used. This means {@link Application#getAudio()} returns null and the SoundManager2 file
+	 * are not used. */
+	public boolean disableAudio;
 	/** the width of the drawing area in pixels **/
 	public int width;
 	/** the height of the drawing area in pixels **/
@@ -45,8 +50,11 @@ public class GwtApplicationConfiguration {
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
 	 * effectively allows transparent backgrounds in GWT, at a performance cost. **/
 	public boolean alpha = false;
-	/** wether to use premultipliedalpha, may have performance impact  **/
+	/** whether to use premultipliedalpha, may have performance impact  **/
 	public boolean premultipliedAlpha = false;
+	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
+	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
+	public OrientationLockType fullscreenOrientation;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

@@ -1,0 +1,106 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        // Multi-OS Engine plugin
+        classpath group: 'org.multi-os-engine', name: 'moe-gradle', version: "${versions.moe}"
+    }
+}
+
+// Apply plugins
+apply plugin: 'eclipse'
+apply plugin: 'moe'
+
+sourceSets.main.java.srcDirs = ["src/main/java"]
+sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
+
+// Set source and target to Java 8
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+// Set maven repository
+repositories {
+    jcenter()
+}
+
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
+// Setup Multi-OS Engine
+moe {
+    xcode {
+        project 'xcode/IOSTests.xcodeproj'
+        mainTarget 'IOSTests'
+        testTarget 'IOSTests-Test'
+    }
+}
+
+configurations {
+    natives
+}
+
+dependencies {
+    compile project(":tests:gdx-tests")
+    compile project(":backends:gdx-backend-moe")
+    natives testnatives.ios
+}
+
+// Setup Eclipse
+eclipse {
+    // Set Multi-OS Engine nature
+    project {
+        natures 'org.multi-os-engine.project'
+    }
+}
+
+task copyNatives {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def LD_FLAGS = "LIBGDX_NATIVES = "
+        configurations.natives.files.each { nativeFolder ->
+            def outputDir = file("xcode/native/ios")
+            def nativeFiles = nativeFolder.listFiles()
+            nativeFiles.each { nativeFile ->
+                if (!nativeFile.absolutePath.endsWith(".tvos")) {
+                    copy {
+                        from nativeFile.getAbsolutePath()
+                        into outputDir
+                    }
+                    LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + nativeFile.getName()
+                }
+            }
+        }
+        def outFlags = file("xcode/IOSTests/custom.xcconfig");
+        outFlags.write LD_FLAGS
+
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
+    }
+}
+
+moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
+moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
+moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
+moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives

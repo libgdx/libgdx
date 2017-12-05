@@ -40,7 +40,7 @@ public class DragAndDrop {
 	ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
 	private float tapSquareSize = 8;
 	private int button;
-	float dragActorX = 14, dragActorY = -20;
+	float dragActorX = 0, dragActorY = 0;
 	float touchOffsetX, touchOffsetY;
 	long dragStartTime;
 	int dragTime = 250;
@@ -89,14 +89,16 @@ public class DragAndDrop {
 						if (!target.actor.isAscendantOf(hit)) continue;
 						newTarget = target;
 						target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
-						isValidTarget = target.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 						break;
 					}
 				}
+				// If over a new target, notify the former target that it's being left behind.
 				if (newTarget != target) {
 					if (target != null) target.reset(source, payload);
 					target = newTarget;
 				}
+				// Notify new target of drag.
+				if (newTarget != null) isValidTarget = newTarget.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 
 				if (dragActor != null) dragActor.setTouchable(dragActorTouchable);
 
@@ -110,8 +112,8 @@ public class DragAndDrop {
 					dragActor = actor;
 					stage.addActor(actor);
 				}
-				float actorX = event.getStageX() + dragActorX;
-				float actorY = event.getStageY() + dragActorY - actor.getHeight();
+				float actorX = event.getStageX() - actor.getWidth() + dragActorX;
+				float actorY = event.getStageY() + dragActorY;
 				if (keepWithinStage) {
 					if (actorX < 0) actorX = 0;
 					if (actorY < 0) actorY = 0;
@@ -183,7 +185,8 @@ public class DragAndDrop {
 		this.dragActorY = dragActorY;
 	}
 
-	/** Sets an offset in stage coordinates from the touch position which is used to determine the drop location. Default is 0,0. */
+	/** Sets an offset in stage coordinates from the touch position which is used to determine the drop location. Default is
+	 * 0,0. */
 	public void setTouchOffset (float touchOffsetX, float touchOffsetY) {
 		this.touchOffsetX = touchOffsetX;
 		this.touchOffsetY = touchOffsetY;
@@ -215,7 +218,7 @@ public class DragAndDrop {
 		this.keepWithinStage = keepWithinStage;
 	}
 
-	/** A target where a payload can be dragged from.
+	/** A source where a payload can be dragged from.
 	 * @author Nathan Sweet */
 	static abstract public class Source {
 		final Actor actor;
@@ -225,10 +228,12 @@ public class DragAndDrop {
 			this.actor = actor;
 		}
 
-		/** @return May be null. */
+		/** Called when a drag is started on the source. The coordinates are in the source's local coordinate system.
+		 * @return If null the drag will not affect any targets. */
 		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
 
-		/** @param payload null if dragStart returned null.
+		/** Called when a drag for the source is stopped. The coordinates are in the source's local coordinate system.
+		 * @param payload null if dragStart returned null.
 		 * @param target null if not dropped on a valid target. */
 		public void dragStop (InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
 		}
@@ -251,14 +256,15 @@ public class DragAndDrop {
 				throw new IllegalArgumentException("The stage root cannot be a drag and drop target.");
 		}
 
-		/** Called when the object is dragged over the target. The coordinates are in the target's local coordinate system.
-		 * @return true if this is a valid target for the object. */
+		/** Called when the payload is dragged over the target. The coordinates are in the target's local coordinate system.
+		 * @return true if this is a valid target for the payload. */
 		abstract public boolean drag (Source source, Payload payload, float x, float y, int pointer);
 
-		/** Called when the object is no longer over the target, whether because the touch was moved or a drop occurred. */
+		/** Called when the payload is no longer over the target, whether because the touch was moved or a drop occurred. */
 		public void reset (Source source, Payload payload) {
 		}
 
+		/** Called when the payload is dropped on the target. The coordinates are in the target's local coordinate system. */
 		abstract public void drop (Source source, Payload payload, float x, float y, int pointer);
 
 		public Actor getActor () {
@@ -267,7 +273,8 @@ public class DragAndDrop {
 	}
 
 	/** The payload of a drag and drop operation. Actors can be optionally provided to follow the cursor and change when over a
-	 * target. */
+	 * target. Such Actors will be added and removed from the stage automatically during the drag operation. Care should be taken
+	 * when using the source Actor as a payload drag actor. */
 	static public class Payload {
 		Actor dragActor, validDragActor, invalidDragActor;
 		Object object;

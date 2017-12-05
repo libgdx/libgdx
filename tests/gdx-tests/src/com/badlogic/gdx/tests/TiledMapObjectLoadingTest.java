@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -34,6 +35,8 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -79,13 +82,24 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		shapeRenderer.setColor(Color.BLUE);
 		Gdx.gl20.glLineWidth(2);
 		MapLayer layer = map.getLayers().get("Objects");
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
-			if (mapObject instanceof TextureMapObject) {
-				TextureMapObject tmObject = (TextureMapObject)mapObject;
+			if (!mapObject.isVisible()) continue;
+			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
-				batch.draw(tmObject.getTextureRegion(), tmObject.getX(), tmObject.getY(), tmObject.getOriginX(),
-					tmObject.getOriginY(), tmObject.getTextureRegion().getRegionWidth(),
-					tmObject.getTextureRegion().getRegionHeight(), tmObject.getScaleX(), tmObject.getScaleY(), tmObject.getOpacity());
+				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
+				TextureRegion textureRegion = tmtObject.getTile().getTextureRegion();
+				// TilEd rotation is clockwise, we need counter-clockwise.
+				float rotation = -tmtObject.getRotation();
+				float scaleX = tmtObject.getScaleX();
+				float scaleY = tmtObject.getScaleY();
+				float xPos = tmtObject.getX();
+				float yPos = tmtObject.getY();
+				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
+				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY,
+					textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
+				// We flip back to the original state.
+				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.end();
 			} else if (mapObject instanceof EllipseMapObject) {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

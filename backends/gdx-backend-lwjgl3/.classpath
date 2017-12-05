@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/gdx/libs/gdx-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-jemalloc-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-macos.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-linux.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-macos.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry exported="true" kind="lib" path="libs/AppleJavaExtensions-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-stb-natives-windows.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

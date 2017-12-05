@@ -17,8 +17,6 @@
 #include "stb_image.h"
 #include "jpgd_c.h"
 
-static uint32_t gdx2d_blend = GDX2D_BLEND_NONE;
-static uint32_t gdx2d_scale = GDX2D_SCALE_NEAREST;
 
 static uint32_t* lu4 = 0;
 static uint32_t* lu5 = 0;
@@ -235,6 +233,8 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	pixmap->width = (uint32_t)width;
 	pixmap->height = (uint32_t)height;
 	pixmap->format = (uint32_t)format;
+	pixmap->blend = GDX2D_BLEND_SRC_OVER;
+	pixmap->scale = GDX2D_SCALE_BILINEAR;
 	pixmap->pixels = pixels;
 	return pixmap;
 }
@@ -262,6 +262,8 @@ gdx2d_pixmap* gdx2d_new(uint32_t width, uint32_t height, uint32_t format) {
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
+	pixmap->blend = GDX2D_BLEND_SRC_OVER;
+	pixmap->scale = GDX2D_SCALE_BILINEAR;
 	pixmap->pixels = (unsigned char*)malloc(width * height * gdx2d_bytes_per_pixel(format));
 	if (!pixmap->pixels) {
 		free((void*)pixmap);
@@ -274,12 +276,12 @@ void gdx2d_free(const gdx2d_pixmap* pixmap) {
 	free((void*)pixmap);
 }
 
-void gdx2d_set_blend (uint32_t blend) {
-	gdx2d_blend = blend;
+void gdx2d_set_blend (gdx2d_pixmap* pixmap, uint32_t blend) {
+    pixmap->blend = blend;
 }
 
-void gdx2d_set_scale (uint32_t scale) {
-	gdx2d_scale = scale;
+void gdx2d_set_scale (gdx2d_pixmap* pixmap, uint32_t scale) {
+	pixmap->scale = scale;
 }
 
 const char *gdx2d_get_failure_reason(void) {
@@ -408,7 +410,7 @@ uint32_t gdx2d_get_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 }
 
 void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t col) {
-	if(gdx2d_blend) {
+	if(pixmap->blend) {
 		uint32_t dst = gdx2d_get_pixel(pixmap, x, y);
 		col = blend(col, dst);
 		col = to_format(pixmap->format, col);
@@ -437,7 +439,7 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
     dx <<= 1;    
 
     if(in_pixmap(pixmap, x0, y0)) {
-    	if(gdx2d_blend) {
+    	if(pixmap->blend) {
     		col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
     	}
     	pset(addr, col_format);
@@ -453,7 +455,7 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
             fraction += dy;
 			if(in_pixmap(pixmap, x0, y0)) {
 				addr = ptr + (x0 + y0 * pixmap->width) * bpp;
-				if(gdx2d_blend) {
+				if(pixmap->blend) {
 					col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
 				}
 				pset(addr, col_format);
@@ -470,7 +472,7 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
 			fraction += dx;
 			if(in_pixmap(pixmap, x0, y0)) {
 				addr = ptr + (x0 + y0 * pixmap->width) * bpp;
-				if(gdx2d_blend) {
+				if(pixmap->blend) {
 					col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
 				}
 				pset(addr, col_format);
@@ -505,7 +507,7 @@ static inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int
 	ptr += (x1 + y * pixmap->width) * bpp;
 
 	while(x1 != x2) {
-		if(gdx2d_blend) {
+		if(pixmap->blend) {
 			col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(ptr))));
 		}
 		pset(ptr, col_format);
@@ -541,7 +543,7 @@ static inline void vline(const gdx2d_pixmap* pixmap, int32_t y1, int32_t y2, int
 	ptr += (x + y1 * pixmap->width) * bpp;
 
 	while(y1 != y2) {
-		if(gdx2d_blend) {
+		if(pixmap->blend) {
 			col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(ptr))));
 		}
 		pset(ptr, col_format);
@@ -793,7 +795,7 @@ static inline void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pi
 			const void* dst_ptr = dst_pixmap->pixels + dx * dbpp + dy * dpitch;
 			uint32_t src_col = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
 
-			if(gdx2d_blend) {
+			if(dst_pixmap->blend) {
 				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
 				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
 			} else {
@@ -874,7 +876,7 @@ static inline void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pix
 
 			uint32_t src_col = (r << 24) | (g << 16) | (b << 8) | a;
 
-			if(gdx2d_blend) {
+			if(dst_pixmap->blend) {
 				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
 				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
 			} else {
@@ -923,7 +925,7 @@ static inline void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixma
 			const void* dst_ptr = dst_pixmap->pixels + dx * dbpp + dy * dpitch;
 			uint32_t src_col = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
 
-			if(gdx2d_blend) {
+			if(dst_pixmap->blend) {
 				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
 				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
 			} else {
@@ -938,9 +940,9 @@ static inline void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixma
 static inline void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
-	if(gdx2d_scale == GDX2D_SCALE_NEAREST)
+	if(dst_pixmap->scale == GDX2D_SCALE_NEAREST)
 		blit_linear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
-	if(gdx2d_scale == GDX2D_SCALE_BILINEAR)
+	if(dst_pixmap->scale == GDX2D_SCALE_BILINEAR)
 		blit_bilinear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
 }
 

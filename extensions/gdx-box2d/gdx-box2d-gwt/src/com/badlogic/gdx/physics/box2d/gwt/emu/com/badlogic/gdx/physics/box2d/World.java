@@ -153,9 +153,10 @@ public final class World implements Disposable {
 	public void destroyBody (Body body) {
 		JointEdge jointEdge = body.body.getJointList();
 		while (jointEdge != null) {
+			JointEdge next = jointEdge.next;			
 			world.destroyJoint(jointEdge.joint);
 			joints.remove(jointEdge.joint);
-			jointEdge = jointEdge.next;
+			jointEdge = next;
 		}
 		world.destroyBody(body.body);
 		bodies.remove(body.body);
@@ -348,12 +349,16 @@ public final class World implements Disposable {
 	Vector2 normal = new Vector2();
 
 	public void rayCast (final RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		rayCast(callback, point1.x, point1.y, point2.x, point2.y);
+	}
+
+	public void rayCast (final RayCastCallback callback, float point1X, float point1Y, float point2X, float point2Y) {
 		// FIXME pool RayCastCallback?
 		world.raycast(new org.jbox2d.callbacks.RayCastCallback() {
 			@Override
 			public float reportFixture (org.jbox2d.dynamics.Fixture f, Vec2 p, Vec2 n, float fraction) {
 				return callback.reportRayFixture(fixtures.get(f), point.set(p.x, p.y), normal.set(n.x, n.y), fraction);
 			}
-		}, this.point1.set(point1.x, point1.y), this.point2.set(point2.x, point2.y));
+		}, this.point1.set(point1X, point1Y), this.point2.set(point2X, point2Y));
 	}
 }

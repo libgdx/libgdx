@@ -177,7 +177,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					if (tokens.length == 1)
 						activeGroup.materialName = "default";
 					else
-						activeGroup.materialName = tokens[1];
+						activeGroup.materialName = tokens[1].replace('.', '_');
 				}
 			}
 			reader.close();
@@ -243,9 +243,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-			String nodeId = "node" + (++id);
-			String meshId = "mesh" + id;
-			String partId = "part" + id;
+			String stringId = Integer.toString(++id);
+			String nodeId = "default".equals(group.name) ? "node" + stringId : group.name;
+			String meshId = "default".equals(group.name) ? "mesh" + stringId : group.name;
+			String partId = "default".equals(group.name) ? "part" + stringId : group.name;
 			ModelNode node = new ModelNode();
 			node.id = nodeId;
 			node.meshId = meshId;

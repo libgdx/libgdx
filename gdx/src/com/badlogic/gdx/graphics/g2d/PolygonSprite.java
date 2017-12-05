@@ -37,7 +37,6 @@ public class PolygonSprite {
 
 	public PolygonSprite (PolygonRegion region) {
 		setRegion(region);
-		setColor(1, 1, 1, 1);
 		setSize(region.region.regionWidth, region.region.regionHeight);
 		setOrigin(width / 2, height / 2);
 	}
@@ -62,7 +61,6 @@ public class PolygonSprite {
 		scaleX = sprite.scaleX;
 		scaleY = sprite.scaleY;
 		color.set(sprite.color);
-		dirty = sprite.dirty;
 	}
 
 	/** Sets the position and size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale
@@ -310,14 +308,15 @@ public class PolygonSprite {
 		return scaleY;
 	}
 
-	/** Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
-	 * {@link #setColor(float, float, float, float)} must be used. */
+	/** Returns the color of this sprite. Modifying the returned color will have unexpected effects unless {@link #setColor(Color)}
+	 * or {@link #setColor(float, float, float, float)} is subsequently called before drawing this sprite. */
 	public Color getColor () {
 		return color;
 	}
 
-	/** Returns the actual color used in the vertices of this sprite. Changing the returned color will have no affect,
-	 * {@link #setColor(Color)} or {@link #setColor(float, float, float, float)} must be used. */
+	/** Returns the actual color used in the vertices of this sprite. Modifying the returned color will have unexpected effects
+	 * unless {@link #setColor(Color)} or {@link #setColor(float, float, float, float)} is subsequently called before drawing this
+	 * sprite. */
 	public Color getVertexColor () {
 		int intBits = NumberUtils.floatToIntColor(vertices[2]);
 		Color color = this.color;
@@ -337,9 +336,10 @@ public class PolygonSprite {
 		if (vertices == null || regionVertices.length != vertices.length) vertices = new float[(regionVertices.length / 2) * 5];
 
 		// Set the color and UVs in this sprite's vertices.
+		float floatColor = color.toFloatBits();
 		float[] vertices = this.vertices;
 		for (int i = 0, v = 2, n = regionVertices.length; i < n; i += 2, v += 5) {
-			vertices[v] = color.toFloatBits();
+			vertices[v] = floatColor;
 			vertices[v + 1] = textureCoords[i];
 			vertices[v + 2] = textureCoords[i + 1];
 		}

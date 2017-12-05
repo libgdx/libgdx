@@ -16,15 +16,15 @@
 
 package com.badlogic.gdx.jnigen.parsing;
 
-import japa.parser.JavaParser;
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.BodyDeclaration;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.body.EnumDeclaration;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.body.ModifierSet;
-import japa.parser.ast.body.Parameter;
-import japa.parser.ast.body.TypeDeclaration;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.ModifierSet;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 	private static final Map<String, ArgumentType> plainOldDataTypes;
 	private static final Map<String, ArgumentType> arrayTypes;
 	private static final Map<String, ArgumentType> bufferTypes;
+	private static final Map<String, ArgumentType> otherTypes;
+	public static String CustomIgnoreTag = "";
 
 	static {
 		plainOldDataTypes = new HashMap<String, ArgumentType>();
@@ -71,6 +73,11 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		bufferTypes.put("LongBuffer", ArgumentType.LongBuffer);
 		bufferTypes.put("FloatBuffer", ArgumentType.FloatBuffer);
 		bufferTypes.put("DoubleBuffer", ArgumentType.DoubleBuffer);
+		
+		otherTypes = new HashMap<String, ArgumentType>();
+		otherTypes.put("String", ArgumentType.String);
+		otherTypes.put("Class", ArgumentType.Class);
+		otherTypes.put("Throwable", ArgumentType.Throwable);
 	}
 
 	Stack<TypeDeclaration> classStack = new Stack<TypeDeclaration>();
@@ -169,7 +176,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 
 		if (plainOldDataTypes.containsKey(type)) return plainOldDataTypes.get(type);
 		if (bufferTypes.containsKey(type)) return bufferTypes.get(type);
-		if (type.equals("String")) return ArgumentType.String;
+		if (otherTypes.containsKey(type)) return otherTypes.get(type);
 		return ArgumentType.Object;
 	}
 
@@ -201,6 +208,7 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 			JniSection section = iter.next();
 			if (section.getNativeCode().startsWith("JNI")) iter.remove();
 			if (section.getNativeCode().startsWith("-{")) iter.remove();
+			if (!CustomIgnoreTag.isEmpty() && section.getNativeCode().startsWith(CustomIgnoreTag)) iter.remove();
 		}
 		return sections;
 	}

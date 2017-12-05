@@ -36,21 +36,16 @@ public class ImageTextButton extends Button {
 	private ImageTextButtonStyle style;
 
 	public ImageTextButton (String text, Skin skin) {
-		this(text, skin.get(ImageTextButtonStyle.class), true);
+		this(text, skin.get(ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
 	public ImageTextButton (String text, Skin skin, String styleName) {
-		this(text, skin.get(styleName, ImageTextButtonStyle.class), true);
-		setSkin(skin);
-	}
-	
-	public ImageTextButton (String text, Skin skin, String styleName, boolean imageLeft) {
-		this(text, skin.get(styleName, ImageTextButtonStyle.class), imageLeft);
+		this(text, skin.get(styleName, ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
 
-	public ImageTextButton (String text, ImageTextButtonStyle style, boolean imageLeft) {
+	public ImageTextButton (String text, ImageTextButtonStyle style) {
 		super(style);
 		this.style = style;
 
@@ -61,14 +56,9 @@ public class ImageTextButton extends Button {
 
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
-		
-		if (imageLeft) {
-			add(image);
-			add(label);
-		} else {
-			add(label);
-			add(image);
-		}
+
+		add(image);
+		add(label);
 
 		setStyle(style);
 
@@ -93,7 +83,8 @@ public class ImageTextButton extends Button {
 		return style;
 	}
 
-	private void updateImage () {
+	/** Updates the Image with the appropriate Drawable from the style before it is drawn. */
+	protected void updateImage () {
 		Drawable drawable = null;
 		if (isDisabled() && style.imageDisabled != null)
 			drawable = style.imageDisabled;
@@ -147,10 +138,6 @@ public class ImageTextButton extends Button {
 
 	public CharSequence getText () {
 		return label.getText();
-	}
-
-	public String toString () {
-		return super.toString() + ": " + label.getText();
 	}
 
 	/** The style for an image text button, see {@link ImageTextButton}.

@@ -16,11 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
-import com.badlogic.gdx.utils.Array;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -38,6 +33,12 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Alias;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Resampling;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import com.badlogic.gdx.utils.Array;
+
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
@@ -47,6 +48,7 @@ public class ImageProcessor {
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 	private float scale = 1;
+	private Resampling resampling = Resampling.bicubic;
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public ImageProcessor (File rootDir, Settings settings) {
@@ -94,7 +96,7 @@ public class ImageProcessor {
 		Rect rect = processImage(image, name);
 
 		if (rect == null) {
-			if(!settings.silent) System.out.println("Ignoring blank input image: " + name);
+			if (!settings.silent) System.out.println("Ignoring blank input image: " + name);
 			return null;
 		}
 
@@ -115,6 +117,10 @@ public class ImageProcessor {
 
 	public void setScale (float scale) {
 		this.scale = scale;
+	}
+
+	public void setResampling (Resampling resampling) {
+		this.resampling = resampling;
 	}
 
 	public Array<Rect> getImages () {
@@ -157,15 +163,15 @@ public class ImageProcessor {
 		// Scale image.
 		if (scale != 1) {
 			int originalWidth = width, originalHeight = height;
-			width = Math.round(width * scale);
-			height = Math.round(height * scale);
+			width = Math.max(1, Math.round(width * scale));
+			height = Math.max(1, Math.round(height * scale));
 			BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 			if (scale < 1) {
 				newImage.getGraphics().drawImage(image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);
 			} else {
 				Graphics2D g = (Graphics2D)newImage.getGraphics();
 				g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, resampling.value);
 				g.drawImage(image, 0, 0, width, height, null);
 			}
 			image = newImage;
@@ -205,7 +211,7 @@ public class ImageProcessor {
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
-		if (settings.stripWhitespaceX) {
+		if (settings.stripWhitespaceY) {
 			outer:
 			for (int y = 0; y < source.getHeight(); y++) {
 				for (int x = 0; x < source.getWidth(); x++) {
@@ -226,10 +232,15 @@ public class ImageProcessor {
 				}
 				bottom--;
 			}
+			// Leave 1px so nothing is copied into padding.
+			if (settings.duplicatePadding) {
+				if (top > 0) top--;
+				if (bottom < source.getHeight()) bottom++;
+			}
 		}
 		int left = 0;
 		int right = source.getWidth();
-		if (settings.stripWhitespaceY) {
+		if (settings.stripWhitespaceX) {
 			outer:
 			for (int x = 0; x < source.getWidth(); x++) {
 				for (int y = top; y < bottom; y++) {
@@ -249,6 +260,11 @@ public class ImageProcessor {
 					if (alpha > settings.alphaThreshold) break outer;
 				}
 				right--;
+			}
+			// Leave 1px so nothing is copied into padding.
+			if (settings.duplicatePadding) {
+				if (left > 0) left--;
+				if (right < source.getWidth()) right++;
 			}
 		}
 		int newWidth = right - left;
@@ -378,11 +394,12 @@ public class ImageProcessor {
 		return pads;
 	}
 
-	/** Hunts for the start or end of a sequence of split pixels. Begins searching at (startX, startY) then follows along the x or y
-	 * axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent pixel
-	 * if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border which
-	 * will be stripped. */
-	static private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
+	/** Hunts for the start or end of a sequence of split pixels. Begins searching at (startX, startY) then follows along the x or
+	 * y axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent
+	 * pixel if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border
+	 * which will be stripped. */
+	static private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint,
+		boolean xAxis) {
 		int[] rgba = new int[4];
 
 		int next = xAxis ? startX : startY;

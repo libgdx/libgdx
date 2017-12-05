@@ -21,11 +21,13 @@ import java.util.Stack;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.assets.loaders.CubemapLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.ShaderProgramLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
@@ -33,6 +35,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -43,6 +46,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -75,6 +79,9 @@ public class AssetManager implements Disposable {
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
+	int peakTasks = 0;
+        
+	final FileHandleResolver resolver;
 
 	Logger log = new Logger("AssetManager", Application.LOG_NONE);
 
@@ -85,22 +92,41 @@ public class AssetManager implements Disposable {
 
 	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager (FileHandleResolver resolver) {
-		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
-		setLoader(Music.class, new MusicLoader(resolver));
-		setLoader(Pixmap.class, new PixmapLoader(resolver));
-		setLoader(Sound.class, new SoundLoader(resolver));
-		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
-		setLoader(Texture.class, new TextureLoader(resolver));
-		setLoader(Skin.class, new SkinLoader(resolver));
-		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
-		setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
-			new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
-		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
-		setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
-		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
-		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
-		setLoader(Model.class, ".obj", new ObjLoader(resolver));
+		this(resolver, true);
+	}
+
+	/** Creates a new AssetManager with optionally all default loaders. If you don't add the default loaders then you do have to
+	 * manually add the loaders you need, including any loaders they might depend on.
+	 * @param defaultLoaders whether to add the default loaders */
+	public AssetManager (FileHandleResolver resolver, boolean defaultLoaders) {
+		this.resolver = resolver;
+		if (defaultLoaders) {
+			setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+			setLoader(Music.class, new MusicLoader(resolver));
+			setLoader(Pixmap.class, new PixmapLoader(resolver));
+			setLoader(Sound.class, new SoundLoader(resolver));
+			setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+			setLoader(Texture.class, new TextureLoader(resolver));
+			setLoader(Skin.class, new SkinLoader(resolver));
+			setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+			setLoader(com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.class,
+				new com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader(resolver));
+			setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
+			setLoader(I18NBundle.class, new I18NBundleLoader(resolver));
+			setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
+			setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
+			setLoader(Model.class, ".obj", new ObjLoader(resolver));
+			setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
+			setLoader(Cubemap.class, new CubemapLoader(resolver));
+		}
 		executor = new AsyncExecutor(1);
+	}
+
+	/** Returns the {@link FileHandleResolver} for which this AssetManager
+	 * was loaded with.
+	 * @return the file handle resolver which this AssetManager uses */
+	public FileHandleResolver getFileHandleResolver () {
+		return resolver;
 	}
 
 	/** @param fileName the asset file name
@@ -299,6 +325,7 @@ public class AssetManager implements Disposable {
 		if (loadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
+			peakTasks = 0;
 		}
 
 		// check if an asset with the same name but a different type has already been added.
@@ -379,7 +406,7 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	/** Blocks until the specified aseet is loaded.
+	/** Blocks until the specified asset is loaded.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader}) */
 	public void finishLoadingAsset (String fileName) {
 		log.debug("Waiting for asset to be loaded: " + fileName);
@@ -453,6 +480,7 @@ public class AssetManager implements Disposable {
 		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(assetDesc.type));
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
+		peakTasks++;
 	}
 
 	/** Adds an asset to this AssetManager */
@@ -473,10 +501,22 @@ public class AssetManager implements Disposable {
 	 * @return true if the asset is loaded or the task was cancelled. */
 	private boolean updateTask () {
 		AssetLoadingTask task = tasks.peek();
+
+		boolean complete = true;
+		try {
+			complete = task.cancel || task.update();
+		} catch (RuntimeException ex) {
+			task.cancel = true;
+			taskFailed(task.assetDesc, ex);
+		}
+
 		// if the task has been cancelled or has finished loading
-		if (task.cancel || task.update()) {
+		if (complete) {
 			// increase the number of loaded assets and pop the task from the stack
-			if (tasks.size() == 1) loaded++;
+			if (tasks.size() == 1)  {
+				loaded++;
+				peakTasks = 0;
+			}
 			tasks.pop();
 
 			if (task.cancel) return true;
@@ -494,6 +534,12 @@ public class AssetManager implements Disposable {
 			return true;
 		}
 		return false;
+	}
+
+	/** Called when a task throws an exception during loading. The default implementation rethrows the exception. A subclass may
+	 * supress the default implementation when loading assets where loading failure is recoverable. */
+	protected void taskFailed (AssetDescriptor assetDesc, RuntimeException ex) {
+		throw ex;
 	}
 
 	private void incrementRefCountedDependencies (String parent) {
@@ -571,7 +617,11 @@ public class AssetManager implements Disposable {
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
 		if (toLoad == 0) return 1;
-		return Math.min(1, loaded / (float)toLoad);
+		float fractionalLoaded = (float)loaded;
+		if (peakTasks > 0) {
+			fractionalLoaded += ((peakTasks - tasks.size()) / (float)peakTasks);
+		}
+		return Math.min(1, fractionalLoaded / (float)toLoad);
 	}
 
 	/** Sets an {@link AssetErrorListener} to be invoked in case loading an asset failed.
@@ -626,6 +676,7 @@ public class AssetManager implements Disposable {
 		this.assetDependencies.clear();
 		this.loaded = 0;
 		this.toLoad = 0;
+		this.peakTasks = 0;
 		this.loadQueue.clear();
 		this.tasks.clear();
 	}
