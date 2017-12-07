@@ -589,7 +589,7 @@ public class Actor {
 	}
 
 	public void setOriginX (float originX) {
-		this.originX = originX;
+		this.originX = originX + x;
 	}
 
 	public float getOriginY () {
@@ -597,30 +597,30 @@ public class Actor {
 	}
 
 	public void setOriginY (float originY) {
-		this.originY = originY;
+		this.originY = originY + y;
 	}
 
 	/** Sets the origin position which is relative to the actor's bottom left corner. */
 	public void setOrigin (float originX, float originY) {
-		this.originX = originX;
-		this.originY = originY;
+		setOriginX(originX);
+		setOriginY(originY);
 	}
 
 	/** Sets the origin position to the specified {@link Align alignment}. */
 	public void setOrigin (int alignment) {
 		if ((alignment & left) != 0)
-			originX = 0;
+			originX = x;
 		else if ((alignment & right) != 0)
-			originX = width;
+			originX = x + width;
 		else
-			originX = width / 2;
+			originX = x + (width / 2);
 
 		if ((alignment & bottom) != 0)
-			originY = 0;
+			originY = y;
 		else if ((alignment & top) != 0)
-			originY = height;
+			originY = y + height;
 		else
-			originY = height / 2;
+			originY = y + (height / 2);
 	}
 
 	public float getScaleX () {
