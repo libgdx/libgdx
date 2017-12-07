@@ -413,9 +413,9 @@ public class Actor {
 	 * coordinates. */
 	public void setX (float x, int alignment) {
 
-		if ((alignment & right) != 0)
+		if ((alignment & left) != 0)
 			x -= width;
-		else if ((alignment & left) == 0) //
+		else if ((alignment & right) == 0) //
 			x -= width / 2;
 
 		if (this.x != x) {
@@ -440,9 +440,9 @@ public class Actor {
 	 * coordinates. */
 	public void setY (float y, int alignment) {
 
-		if ((alignment & top) != 0)
+		if ((alignment & bottom) != 0)
 			y -= height;
-		else if ((alignment & bottom) == 0) //
+		else if ((alignment & top) == 0) //
 			y -= height / 2;
 
 		if (this.y != y) {
@@ -473,14 +473,14 @@ public class Actor {
 	/** Sets the position using the specified {@link Align alignment}. Note this may set the position to non-integer
 	 * coordinates. */
 	public void setPosition (float x, float y, int alignment) {
-		if ((alignment & right) != 0)
+		if ((alignment & left) != 0)
 			x -= width;
-		else if ((alignment & left) == 0) //
+		else if ((alignment & right) == 0) //
 			x -= width / 2;
 
-		if ((alignment & top) != 0)
+		if ((alignment & bottom) != 0)
 			y -= height;
-		else if ((alignment & bottom) == 0) //
+		else if ((alignment & top) == 0) //
 			y -= height / 2;
 
 		if (this.x != x || this.y != y) {
@@ -589,7 +589,7 @@ public class Actor {
 	}
 
 	public void setOriginX (float originX) {
-		this.originX = originX;
+		this.originX = originX + x;
 	}
 
 	public float getOriginY () {
@@ -597,30 +597,30 @@ public class Actor {
 	}
 
 	public void setOriginY (float originY) {
-		this.originY = originY;
+		this.originY = originY + y;
 	}
 
 	/** Sets the origin position which is relative to the actor's bottom left corner. */
 	public void setOrigin (float originX, float originY) {
-		this.originX = originX;
-		this.originY = originY;
+		setOriginX(originX);
+		setOriginY(originY);
 	}
 
 	/** Sets the origin position to the specified {@link Align alignment}. */
 	public void setOrigin (int alignment) {
 		if ((alignment & left) != 0)
-			originX = 0;
+			setOriginX(0);
 		else if ((alignment & right) != 0)
-			originX = width;
+			setOriginX(width);
 		else
-			originX = width / 2;
+			setOriginX(width / 2);
 
 		if ((alignment & bottom) != 0)
-			originY = 0;
+			setOriginY(0);
 		else if ((alignment & top) != 0)
-			originY = height;
+			setOriginY(height);
 		else
-			originY = height / 2;
+			setOriginY(height / 2);
 	}
 
 	public float getScaleX () {
