@@ -609,18 +609,18 @@ public class Actor {
 	/** Sets the origin position to the specified {@link Align alignment}. */
 	public void setOrigin (int alignment) {
 		if ((alignment & left) != 0)
-			originX = x;
+			setOriginX(0);
 		else if ((alignment & right) != 0)
-			originX = x + width;
+			setOriginX(width);
 		else
-			originX = x + (width / 2);
+			setOriginX(width / 2);
 
 		if ((alignment & bottom) != 0)
-			originY = y;
+			setOriginY(0);
 		else if ((alignment & top) != 0)
-			originY = y + height;
+			setOriginY(height);
 		else
-			originY = y + (height / 2);
+			setOriginY(height / 2);
 	}
 
 	public float getScaleX () {
