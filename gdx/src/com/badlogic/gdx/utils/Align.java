@@ -19,14 +19,14 @@ package com.badlogic.gdx.utils;
 /** Provides bit flag constants for alignment.
  * @author Nathan Sweet */
 public class Align {
-	static public final int center = 1 << 0;
-	static public final int top = 1 << 1;
-	static public final int bottom = 1 << 2;
-	static public final int left = 1 << 3;
-	static public final int right = 1 << 4;
+	static public final int center = 1 << 0;                //     1
+	static public final int top = 1 << 1;                   //    10
+	static public final int bottom = 1 << 2;                //   100
+	static public final int left = 1 << 3;                  //  1000
+	static public final int right = 1 << 4;                 // 10000
 
-	static public final int topLeft = top | left;
-	static public final int topRight = top | right;
-	static public final int bottomLeft = bottom | left;
-	static public final int bottomRight = bottom | right;
+	static public final int topLeft = top | left;           //  1010
+	static public final int topRight = top | right;         // 10010
+	static public final int bottomLeft = bottom | left;     //  1100
+	static public final int bottomRight = bottom | right;   // 10100
 }
