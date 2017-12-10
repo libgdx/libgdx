@@ -153,7 +153,7 @@ public class PairCacheTest extends BaseBulletTest {
 			if (algorithm != null) algorithm.getAllContactManifolds(manifoldArray);
 
 			for (int j = 0; j < manifoldArray.size(); j++) {
-				btPersistentManifold manifold = manifoldArray.at(j);
+				btPersistentManifold manifold = manifoldArray.atConst(j);
 
 				boolean isFirstBody = manifold.getBody0() == ghostObject;
 				int otherObjectIndex = isFirstBody ? manifold.getBody1().getUserValue() : manifold.getBody0().getUserValue();

@@ -20,10 +20,17 @@ sourceSets.main.java.srcDirs = [
         "jni/swig-src/extras",
         "jni/swig-src/linearmath",
         "jni/swig-src/softbody",
+        "jni/swig-src/inversedynamics",
         "src"
 ]
 
 dependencies {
-    compileOnly project(":gdx")
-    compileOnly project(":extensions:gdx-jnigen")
+    compile project(":gdx")
+    compile project(":extensions:gdx-jnigen")
+}
+
+task runBulletBuild (type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "com.badlogic.gdx.physics.bullet.BulletBuild"
+    standardInput = System.in
 }

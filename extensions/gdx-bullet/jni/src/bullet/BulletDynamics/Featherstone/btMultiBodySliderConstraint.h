@@ -63,7 +63,7 @@ public:
 		return m_pivotInB;
 	}
 
-	void setPivotInB(const btVector3& pivotInB)
+	virtual void setPivotInB(const btVector3& pivotInB)
 	{
 		m_pivotInB = pivotInB;
 	}
@@ -83,7 +83,7 @@ public:
         return m_frameInB;
     }
     
-    void setFrameInB(const btMatrix3x3& frameInB)
+    virtual void setFrameInB(const btMatrix3x3& frameInB)
     {
         m_frameInB = frameInB;
     }

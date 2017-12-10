@@ -41,6 +41,7 @@ enum btContactPointFlags
 	BT_CONTACT_FLAG_HAS_CONTACT_CFM=2,
 	BT_CONTACT_FLAG_HAS_CONTACT_ERP=4,
     BT_CONTACT_FLAG_CONTACT_STIFFNESS_DAMPING = 8,
+	BT_CONTACT_FLAG_FRICTION_ANCHOR = 16,
 };
 
 /// ManifoldContactPoint collects and maintains persistent contactpoints.

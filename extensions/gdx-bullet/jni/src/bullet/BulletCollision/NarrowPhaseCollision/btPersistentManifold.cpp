@@ -281,6 +281,7 @@ void btPersistentManifold::refreshContactPoints(const btTransform& trA,const btT
 			removeContactPoint(i);
 		} else
 		{
+            //todo: friction anchor may require the contact to be around a bit longer
 			//contact also becomes invalid when relative movement orthogonal to normal exceeds margin
 			projectedPoint = manifoldPoint.m_positionWorldOnA - manifoldPoint.m_normalWorldOnB * manifoldPoint.m_distance1;
 			projectedDifference = manifoldPoint.m_positionWorldOnB - projectedPoint;

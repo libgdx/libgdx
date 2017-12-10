@@ -78,6 +78,33 @@ public class LongArray {
 		items[size++] = value;
 	}
 
+	public void add (long value1, long value2) {
+		long[] items = this.items;
+		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		size += 2;
+	}
+
+	public void add (long value1, long value2, long value3) {
+		long[] items = this.items;
+		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		size += 3;
+	}
+
+	public void add (long value1, long value2, long value3, long value4) {
+		long[] items = this.items;
+		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		size += 4;
+	}
+
 	public void addAll (LongArray array) {
 		addAll(array, 0, array.size);
 	}
@@ -259,7 +286,7 @@ public class LongArray {
 		return items;
 	}
 
-	/** Sets the array size, leaving any values beyond the current size undefined. 
+	/** Sets the array size, leaving any values beyond the current size undefined.
 	 * @return {@link #items} */
 	public long[] setSize (int newSize) {
 		if (newSize > items.length) resize(Math.max(8, newSize));

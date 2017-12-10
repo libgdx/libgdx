@@ -356,7 +356,7 @@ public class Lwjgl3Window implements Disposable {
 		return input;
 	}
 
-	long getWindowHandle() {
+	public long getWindowHandle() {
 		return windowHandle;
 	}
 	

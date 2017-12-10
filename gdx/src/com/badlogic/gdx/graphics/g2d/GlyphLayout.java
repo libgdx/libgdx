@@ -170,15 +170,17 @@ public class GlyphLayout implements Poolable {
 									wrapIndex = i - 1;
 								}
 								GlyphRun next;
-								if (wrapIndex == 0)
-									next = run; // No wrap index, move entire run to next line.
-								else {
+								if (wrapIndex == 0) { // No wrap index, move entire run to next line.
+									next = run;
+									run.width = 0;
+									width = Math.max(width, run.x);
+								} else {
 									next = wrap(fontData, run, glyphRunPool, wrapIndex, i);
 									runs.add(next);
+									width = Math.max(width, run.x + run.width);
 								}
 
 								// Start the loop over with the new run on the next line.
-								width = Math.max(width, run.x + run.width);
 								x = 0;
 								y += fontData.down;
 								lines++;

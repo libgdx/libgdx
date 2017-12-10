@@ -141,6 +141,14 @@ SIMD_FORCE_INLINE	const char*	btGearConstraint::serialize(void* dataBuffer, btSe
 
 	gear->m_ratio = m_ratio;
 
+	// Fill padding with zeros to appease msan.
+#ifndef BT_USE_DOUBLE_PRECISION
+	gear->m_padding[0] = 0;
+	gear->m_padding[1] = 0;
+	gear->m_padding[2] = 0;
+	gear->m_padding[3] = 0;
+#endif
+
 	return btGearConstraintDataName;
 }
 

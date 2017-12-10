@@ -58,7 +58,7 @@ public:
 
 	virtual ~btMultiBodyDynamicsWorld ();
 
-	virtual void	addMultiBody(btMultiBody* body, short group= btBroadphaseProxy::DefaultFilter, short mask=btBroadphaseProxy::AllFilter);
+	virtual void	addMultiBody(btMultiBody* body, int group= btBroadphaseProxy::DefaultFilter, int mask=btBroadphaseProxy::AllFilter);
 
 	virtual void	removeMultiBody(btMultiBody* body);
 
@@ -68,6 +68,11 @@ public:
 	}
 
 	btMultiBody*	getMultiBody(int mbIndex)
+	{
+		return m_multiBodies[mbIndex];
+	}
+
+	const btMultiBody*	getMultiBody(int mbIndex) const
 	{
 		return m_multiBodies[mbIndex];
 	}

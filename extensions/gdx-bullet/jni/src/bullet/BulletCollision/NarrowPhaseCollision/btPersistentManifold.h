@@ -59,8 +59,8 @@ enum btContactManifoldTypes
 ///note that some pairs of objects might have more then one contact manifold.
 
 
-ATTRIBUTE_ALIGNED128( class) btPersistentManifold : public btTypedObject
-//ATTRIBUTE_ALIGNED16( class) btPersistentManifold : public btTypedObject
+//ATTRIBUTE_ALIGNED128( class) btPersistentManifold : public btTypedObject
+ATTRIBUTE_ALIGNED16( class) btPersistentManifold : public btTypedObject
 {
 
 	btManifoldPoint m_pointCache[MANIFOLD_CACHE_SIZE];
@@ -185,39 +185,54 @@ public:
 			gContactEndedCallback(this);
 		}
 	}
-	void replaceContactPoint(const btManifoldPoint& newPoint,int insertIndex)
+	void replaceContactPoint(const btManifoldPoint& newPoint, int insertIndex)
 	{
 		btAssert(validContactDistance(newPoint));
 
 #define MAINTAIN_PERSISTENCY 1
 #ifdef MAINTAIN_PERSISTENCY
-		int	lifeTime = m_pointCache[insertIndex].getLifeTime();
-		btScalar	appliedImpulse = m_pointCache[insertIndex].m_appliedImpulse;
-		btScalar	appliedLateralImpulse1 = m_pointCache[insertIndex].m_appliedImpulseLateral1;
-		btScalar	appliedLateralImpulse2 = m_pointCache[insertIndex].m_appliedImpulseLateral2;
-//		bool isLateralFrictionInitialized = m_pointCache[insertIndex].m_lateralFrictionInitialized;
-		
-		
-			
-		btAssert(lifeTime>=0);
-		void* cache = m_pointCache[insertIndex].m_userPersistentData;
-		
-		m_pointCache[insertIndex] = newPoint;
-		m_pointCache[insertIndex].m_userPersistentData = cache;
-		m_pointCache[insertIndex].m_appliedImpulse = appliedImpulse;
-		m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
-		m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
-		
+		int lifeTime = m_pointCache[insertIndex].getLifeTime();
+		btScalar appliedImpulse = m_pointCache[insertIndex].m_appliedImpulse;
+		btScalar appliedLateralImpulse1 = m_pointCache[insertIndex].m_appliedImpulseLateral1;
+		btScalar appliedLateralImpulse2 = m_pointCache[insertIndex].m_appliedImpulseLateral2;
+
+		bool replacePoint = true;
+		///we keep existing contact points for friction anchors
+		///if the friction force is within the Coulomb friction cone
+		if (newPoint.m_contactPointFlags & BT_CONTACT_FLAG_FRICTION_ANCHOR)
+		{
+			//   printf("appliedImpulse=%f\n", appliedImpulse);
+			//   printf("appliedLateralImpulse1=%f\n", appliedLateralImpulse1);
+			//   printf("appliedLateralImpulse2=%f\n", appliedLateralImpulse2);
+			//   printf("mu = %f\n", m_pointCache[insertIndex].m_combinedFriction);
+			btScalar mu = m_pointCache[insertIndex].m_combinedFriction;
+			btScalar eps = 0;  //we could allow to enlarge or shrink the tolerance to check against the friction cone a bit, say 1e-7
+			btScalar a = appliedLateralImpulse1 * appliedLateralImpulse1 + appliedLateralImpulse2 * appliedLateralImpulse2;
+			btScalar b = eps + mu * appliedImpulse;
+			b = b * b;
+			replacePoint = (a) > (b);
+		}
+
+		if (replacePoint)
+		{
+			btAssert(lifeTime >= 0);
+			void* cache = m_pointCache[insertIndex].m_userPersistentData;
+
+			m_pointCache[insertIndex] = newPoint;
+			m_pointCache[insertIndex].m_userPersistentData = cache;
+			m_pointCache[insertIndex].m_appliedImpulse = appliedImpulse;
+			m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
+			m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
+		}
 
 		m_pointCache[insertIndex].m_lifeTime = lifeTime;
 #else
 		clearUserCache(m_pointCache[insertIndex]);
 		m_pointCache[insertIndex] = newPoint;
-	
+
 #endif
 	}
 
-	
 	bool validContactDistance(const btManifoldPoint& pt) const
 	{
 		return pt.m_distance1 <= getContactBreakingThreshold();
