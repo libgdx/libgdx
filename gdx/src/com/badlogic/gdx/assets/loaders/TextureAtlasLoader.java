@@ -30,8 +30,13 @@ import com.badlogic.gdx.utils.Array;
 /** {@link AssetLoader} to load {@link TextureAtlas} instances. Passing a {@link TextureAtlasParameter} to
  * {@link AssetManager#load(String, Class, AssetLoaderParameters)} allows to specify whether the atlas regions should be flipped
  * on the y-axis or not.
+ * @param <T> TextureAtlas or subclass of TextureAtlas. If a subclass of TextureAtlas is specified, the 
+ * {@link #load(AssetManager, String, FileHandle, TextureAtlasParameter)} method must be overridden to return the correct
+ * type.
  * @author mzechner */
-public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, TextureAtlasLoader.TextureAtlasParameter> {
+public class TextureAtlasLoader<T extends TextureAtlas, P extends TextureAtlasLoader.TextureAtlasParameter<T>>
+	extends SynchronousAssetLoader<T, P> {
+	
 	public TextureAtlasLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -39,15 +44,18 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 	TextureAtlasData data;
 
 	@Override
-	public TextureAtlas load (AssetManager assetManager, String fileName, FileHandle file, TextureAtlasParameter parameter) {
+	public T load (AssetManager assetManager, String fileName, FileHandle file, TextureAtlasParameter parameter) {
 		for (Page page : data.getPages()) {
-			Texture texture = assetManager.get(page.textureFile.path().replaceAll("\\\\", "/"), Texture.class);
+			Texture texture = assetManager.get(toFilePath(page.textureFile), Texture.class);
 			page.texture = texture;
 		}
-
-	 	TextureAtlas atlas = new TextureAtlas(data);
- 		data = null;
- 		return atlas;
+		TextureAtlas atlas = new TextureAtlas(data);
+		data = null;
+		return (T)atlas;
+	}
+	
+	protected static String toFilePath (FileHandle textureFileHandle){
+		return textureFileHandle.path().replaceAll("\\\\", "/");
 	}
 
 	@Override
@@ -60,6 +68,10 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			data = new TextureAtlasData(atlasFile, imgDir, false);
 		}
 
+		return getDependencies(data);
+	}
+	
+	protected Array<AssetDescriptor> getDependencies (TextureAtlasData data){
 		Array<AssetDescriptor> dependencies = new Array();
 		for (Page page : data.getPages()) {
 			TextureParameter params = new TextureParameter();
@@ -72,7 +84,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 		return dependencies;
 	}
 
-	static public class TextureAtlasParameter extends AssetLoaderParameters<TextureAtlas> {
+	static public class TextureAtlasParameter<T extends TextureAtlas> extends AssetLoaderParameters<T> {
 		/** whether to flip the texture atlas vertically **/
 		public boolean flip = false;
 

@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureArrayData;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** @author Tomski **/
 public class FileTextureArrayData implements TextureArrayData {
 
+	private String[] files;
 	private TextureData[] textureDatas;
 	private boolean prepared;
 	private Pixmap.Format format;
@@ -37,8 +39,10 @@ public class FileTextureArrayData implements TextureArrayData {
 		this.format = format;
 		this.useMipMaps = useMipMaps;
 		this.depth = files.length;
+		this.files = new String[files.length];
 		textureDatas = new TextureData[files.length];
 		for (int i = 0; i < files.length; i++) {
+			this.files[i] = files[i].path().replaceAll("\\\\", "/");
 			textureDatas[i] = TextureData.Factory.loadFromFile(files[i], format, useMipMaps);
 		}
 	}
@@ -68,6 +72,8 @@ public class FileTextureArrayData implements TextureArrayData {
 
 	@Override
 	public void consumeTextureArrayData () {
+		if (!prepared) throw new GdxRuntimeException("Call prepare() first.");
+		prepared = false;
 		for (int i = 0; i < textureDatas.length; i++) {
 			if (textureDatas[i].getType() == TextureData.TextureDataType.Custom) {
 				textureDatas[i].consumeCustomData(GL30.GL_TEXTURE_2D_ARRAY);
@@ -107,22 +113,42 @@ public class FileTextureArrayData implements TextureArrayData {
 	}
 
 	@Override
-	public int getInternalFormat () {
-		return Pixmap.Format.toGlFormat(format);
-	}
-
-	@Override
-	public int getGLType () {
-		return Pixmap.Format.toGlType(format);
-	}
-
-	@Override
 	public boolean isManaged () {
-		for (TextureData data : textureDatas) {
-			if (!data.isManaged()) {
-				return false;
-			}
-		}
 		return true;
+	}
+	
+	@Override
+	public String[] getFiles () {
+		return files;
+	}
+
+	@Override
+	public TextureDataType getType () {
+		return TextureDataType.PixmapArray;
+	}
+
+	@Override
+	public Pixmap consumePixmap () {
+		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+	}
+
+	@Override
+	public boolean disposePixmap () {
+		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+	}
+
+	@Override
+	public void consumeCustomData (int target) {
+		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
+	}
+
+	@Override
+	public Format getFormat () {
+		return format;
+	}
+
+	@Override
+	public boolean useMipMaps () {
+		return useMipMaps;
 	}
 }

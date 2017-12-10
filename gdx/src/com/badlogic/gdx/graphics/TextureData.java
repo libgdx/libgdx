@@ -41,7 +41,7 @@ public interface TextureData {
 	/** The type of this {@link TextureData}.
 	 * @author mzechner */
 	public enum TextureDataType {
-		Pixmap, Custom
+		Pixmap, PixmapArray, Custom
 	}
 
 	/** @return the {@link TextureDataType} */

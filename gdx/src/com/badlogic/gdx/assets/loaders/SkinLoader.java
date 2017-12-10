@@ -22,6 +22,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureArrayAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -42,10 +43,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, SkinParameter parameter) {
+		Class atlasClass = (parameter == null || !parameter.useTextureArrayAtlas) ? TextureAtlas.class : TextureArrayAtlas.class;
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter == null || parameter.textureAtlasPath == null)
-			deps.add(new AssetDescriptor(file.pathWithoutExtension() + ".atlas", TextureAtlas.class));
-		else if (parameter.textureAtlasPath != null) deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
+			deps.add(new AssetDescriptor(file.pathWithoutExtension() + ".atlas", atlasClass));
+		else if (parameter.textureAtlasPath != null) deps.add(new AssetDescriptor(parameter.textureAtlasPath, atlasClass));
 		return deps;
 	}
 
@@ -58,14 +60,16 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		String textureAtlasPath = file.pathWithoutExtension() + ".atlas";
 		ObjectMap<String, Object> resources = null;
 		if (parameter != null) {
-			if (parameter.textureAtlasPath != null){
+			if (parameter.textureAtlasPath != null) {
 				textureAtlasPath = parameter.textureAtlasPath;
 			}
-			if (parameter.resources != null){
+			if (parameter.resources != null) {
 				resources = parameter.resources;
 			}
 		}
-		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
+		Class<? extends TextureAtlas> atlasClass = (parameter == null || !parameter.useTextureArrayAtlas) ? TextureAtlas.class
+			: TextureArrayAtlas.class;
+		TextureAtlas atlas = manager.get(textureAtlasPath, atlasClass);
 		Skin skin = new Skin(atlas);
 		if (resources != null) {
 			for (Entry<String, Object> entry : resources.entries()) {
@@ -79,6 +83,8 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {
 		public final String textureAtlasPath;
 		public final ObjectMap<String, Object> resources;
+		/** Whether to use a {@link TextureArrayAtlas} instead of the default ({@link TextureAtlas}). */
+		public boolean useTextureArrayAtlas;
 
 		public SkinParameter () {
 			this(null, null);

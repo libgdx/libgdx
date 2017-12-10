@@ -284,4 +284,26 @@ public class TextureRegion {
 		TextureRegion region = new TextureRegion(texture);
 		return region.split(tileWidth, tileHeight);
 	}
+	
+	/** Replaces the non-fractional component of the texture coordinates with the given layer integer. Useful for packing the layer
+	 * of a TextureArray, so TextureArrays can be used with {@link Batch batches}. The three dimensional texture coordinate can be
+	 * unpacked in the vertex shader by using the {@code fract()} and {@code floor()} functions, i.e.:
+	 * 
+	 * <pre>
+	 *  {@code texCoordsOut = vec3(frac(a_texCoords), floor(a_texCoords.x));}
+	 * </pre>
+	 * 
+	 * Any existing non-fractional parts of the texture coordinates will be lost.
+	 * @param region
+	 * @param layer */
+	public static void putLayerInCoordinates (TextureRegion region, int layer){
+		region.setRegion(mergeCoordinate(region.u, layer), mergeCoordinate(region.v, layer), mergeCoordinate(region.u2, layer),
+			mergeCoordinate(region.v2, layer));
+	}
+	
+	private static float mergeCoordinate (float coord, int layer){
+		if (coord == 1f)
+			coord = 0.9999f;
+		return coord - (float)Math.floor(coord) + layer;
+	}
 }

@@ -45,6 +45,9 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 public class LwjglTestStarter extends JFrame {
+	
+	static boolean useGL30 = false;
+	
 	public LwjglTestStarter () throws HeadlessException {
 		super("libgdx Tests");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +65,6 @@ public class LwjglTestStarter extends JFrame {
 	 * @return {@code true} if the test was found and run, {@code false} otherwise
 	 */
 	public static boolean runTest (String testName) {
-		boolean useGL30 = false;
 		GdxTest test = GdxTests.newTest(testName);
 		if (test == null) {
 			return false;
@@ -138,12 +140,19 @@ public class LwjglTestStarter extends JFrame {
 	 * Runs a libgdx test.
 	 * 
 	 * If no arguments are provided on the command line, shows a list of tests to choose from.
-	 * If an argument is present, the test with that name will immediately be run.
+	 * If the first argument is present, the test with that name will immediately be run. If "gl30" is
+	 * an argument, {@link LwjglApplicationConfiguration#useGL30} will be set true.
 	 * 
 	 * @param argv command line arguments
 	 */
 	public static void main (String[] argv) throws Exception {
 		if (argv.length > 0) {
+			for (String str : argv){
+				if (str.equals("gl30")) {
+					useGL30 = true;
+					break;
+				}
+			}
 			if (runTest(argv[0])) {
 				return;
 				// Otherwise, fall back to showing the list

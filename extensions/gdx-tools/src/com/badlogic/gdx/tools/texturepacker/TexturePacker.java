@@ -131,6 +131,17 @@ public class TexturePacker {
 
 			progress.start(0.19f);
 			Array<Page> pages = packer.pack(progress, imageProcessor.getImages());
+			if (settings.equalPageSizes) {
+				int maxWidth = 0, maxHeight = 0;
+				for (Page page : pages) {
+					maxWidth = Math.max(maxWidth, page.width);
+					maxHeight = Math.max(maxHeight, page.height);
+				}
+				for (Page page : pages) {
+					page.width = maxWidth;
+					page.height = maxHeight;
+				}
+			}
 			progress.end();
 
 			progress.start(0.45f);
@@ -605,6 +616,7 @@ public class TexturePacker {
 		public int bleedIterations = 2;
 		public boolean limitMemory = true;
 		public boolean grid;
+		public boolean equalPageSizes;
 		public float[] scale = {1};
 		public String[] scaleSuffix = {""};
 		public Resampling[] scaleResampling = {Resampling.bicubic};
@@ -655,6 +667,7 @@ public class TexturePacker {
 			bleedIterations = settings.bleedIterations;
 			limitMemory = settings.limitMemory;
 			grid = settings.grid;
+			equalPageSizes = settings.equalPageSizes;
 			scale = Arrays.copyOf(settings.scale, settings.scale.length);
 			scaleSuffix = Arrays.copyOf(settings.scaleSuffix, settings.scaleSuffix.length);
 			scaleResampling = Arrays.copyOf(settings.scaleResampling, settings.scaleResampling.length);

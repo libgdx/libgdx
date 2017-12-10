@@ -327,7 +327,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
 		Cubemap.invalidateAllCubemaps(app);
-		TextureArray.invalidateAllTextureArrays(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
@@ -565,7 +564,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 		Mesh.clearAllMeshes(app);
 		Texture.clearAllTextures(app);
 		Cubemap.clearAllCubemaps(app);
-		TextureArray.clearAllTextureArrays(app);
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 

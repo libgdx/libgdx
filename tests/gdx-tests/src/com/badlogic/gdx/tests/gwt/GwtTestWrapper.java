@@ -103,6 +103,7 @@ import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
+import com.badlogic.gdx.tests.TextureArrayAtlasTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
@@ -739,6 +740,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TextButtonTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TextureArrayAtlasTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

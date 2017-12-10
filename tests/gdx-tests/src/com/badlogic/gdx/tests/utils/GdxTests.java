@@ -231,6 +231,7 @@ public class GdxTests {
 		TextButtonTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
+		TextureArrayAtlasTest.class,
 		TextureArrayTest.class,
 		TextureDataTest.class,
 		TextureDownloadTest.class,
@@ -323,7 +324,10 @@ public class GdxTests {
 	public static GdxTest newTest (String testName) {
 		testName = originalToObfuscated.get(testName, testName);
 		try {
-			return forName(testName).newInstance();
+			Class<? extends GdxTest> testClass = forName(testName);
+			if (testClass == null)
+				return null; // non-existent class
+			return testClass.newInstance();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
