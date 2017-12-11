@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.SpotLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointShadowLight;
 import com.badlogic.gdx.graphics.g3d.environment.ShadowMap;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.utils.Array;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Environment extends Attributes {
 	/** @deprecated Experimental, likely to change, do not use! */
 	public ShadowMap shadowMap;
+	public PointShadowLight shadowBox;
 
 	public Environment () {
 	}

@@ -466,6 +466,9 @@ public class DefaultShader extends BaseShader {
 	protected final int u_shadowMapProjViewTrans = register(new Uniform("u_shadowMapProjViewTrans"));
 	protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
 	protected final int u_shadowPCFOffset = register(new Uniform("u_shadowPCFOffset"));
+	protected final int u_lightPosition = register(new Uniform("u_lightPosition"));
+	protected final int u_shadowBoxNearFar = register(new Uniform("u_shadowBoxNearFar"));
+	protected final int u_shadowBox = register(new Uniform("u_shadowBox"));
 	// FIXME Cache vertex attribute locations...
 
 	protected int dirLightsLoc;
@@ -665,6 +668,7 @@ public class DefaultShader extends BaseShader {
 					prefix += "#define fogFlag\n";
 				}
 				if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
+				if (renderable.environment.shadowBox != null) prefix += "#define shadowBoxFlag\n";
 				if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
 			}
 		}
@@ -881,10 +885,17 @@ public class DefaultShader extends BaseShader {
 			set(u_fogColor, ((ColorAttribute)attributes.get(ColorAttribute.Fog)).color);
 		}
 
-		if (lights != null && lights.shadowMap != null) {
-			set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
-			set(u_shadowTexture, lights.shadowMap.getDepthMap());
-			set(u_shadowPCFOffset, 1.f / (2f * lights.shadowMap.getDepthMap().texture.getWidth()));
+		if (lights != null) {
+			if (lights.shadowMap != null) {
+				set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
+				set(u_shadowTexture, lights.shadowMap.getDepthMap());
+				set(u_shadowPCFOffset, 1.f / (2f * lights.shadowMap.getDepthMap().texture.getWidth()));
+			} 
+			if (lights.shadowBox != null) {
+				set(u_lightPosition, lights.shadowBox.position);
+				set(u_shadowBoxNearFar, lights.shadowBox.getNear(), lights.shadowBox.getFar());
+				set(u_shadowBox, lights.shadowBox.getFrameBufferCube().getColorBufferTexture());
+			}
 		}
 
 		lightsSet = true;

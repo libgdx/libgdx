@@ -1,5 +1,7 @@
 attribute vec3 a_position;
-uniform mat4 u_projViewWorldTrans;
+uniform mat4 u_viewWorldTrans;
+uniform mat4 u_projTrans;
+uniform vec2 u_cameraNearFar;
 
 #if defined(diffuseTextureFlag) && defined(blendedFlag)
 #define blendedTextureFlag
@@ -111,15 +113,19 @@ void main() {
 		#endif //boneWeight7Flag
 	#endif //skinningFlag
 
+
+
 	#ifdef skinningFlag
-		vec4 pos = u_projViewWorldTrans * skinning * vec4(a_position, 1.0);
+		vec4 viewPos = u_viewWorldTrans * skinning * vec4(a_position, 1.0);
 	#else
-		vec4 pos = u_projViewWorldTrans * vec4(a_position, 1.0);
+		vec4 viewPos = u_viewWorldTrans * vec4(a_position, 1.0);
 	#endif
-
+	
+	vec4 pos = u_projTrans * viewPos;
+	
 	#ifdef PackedDepthFlag
-		v_depth = pos.z / pos.w * 0.5 + 0.5;
+		v_depth = (-viewPos.z - u_cameraNearFar.x) / (u_cameraNearFar.y - u_cameraNearFar.x);
 	#endif //PackedDepthFlag
-
+	
 	gl_Position = pos;
 }

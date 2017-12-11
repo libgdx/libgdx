@@ -178,6 +178,12 @@ varying vec3 v_shadowMapUv;
 #define separateAmbientFlag
 #endif //shadowMapFlag
 
+#if defined(shadowBoxFlag) && !defined(shadowMapFlag)
+varying vec3 v_lightToPos;
+uniform vec3 u_lightPosition;
+#define separateAmbientFlag
+#endif //shadowBoxFlag
+
 #if defined(ambientFlag) && defined(separateAmbientFlag)
 varying vec3 v_ambientLight;
 #endif //separateAmbientFlag
@@ -245,6 +251,10 @@ void main() {
 		v_shadowMapUv.xyz = (spos.xyz / spos.w) * 0.5 + 0.5;
 		v_shadowMapUv.z = min(v_shadowMapUv.z, 0.998);
 	#endif //shadowMapFlag
+	
+	#ifdef shadowBoxFlag
+		v_lightToPos = pos.xyz - u_lightPosition;
+	#endif //shadowBoxFlag
 	
 	#if defined(normalFlag)
 		#if defined(skinningFlag)
