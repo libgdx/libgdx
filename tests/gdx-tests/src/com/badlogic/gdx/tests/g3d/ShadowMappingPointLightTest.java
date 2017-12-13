@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.PointShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
@@ -45,6 +46,7 @@ public class ShadowMappingPointLightTest extends GdxTest {
 	ModelInstance instance2;
 	Environment environment;
 	PointShadowLight shadowLight;
+	private ModelBatch shadowModelBatch;
 
 	@Override
 	public void create () {
@@ -55,6 +57,7 @@ public class ShadowMappingPointLightTest extends GdxTest {
 		shadowLight.set(.4f, .4f, .5f, 0, 5, 4, 1000f);
 		environment.add(shadowLight);
 		environment.shadowBox = shadowLight;
+		shadowModelBatch = new ModelBatch(new DepthShaderProvider());
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0f, 7f, 10f);
@@ -98,7 +101,9 @@ public class ShadowMappingPointLightTest extends GdxTest {
 
 		shadowLight.begin();
 		while (shadowLight.nextSide()) {
-			shadowLight.getModelBatch().render(instance);
+			shadowModelBatch.begin(shadowLight.camera);
+			shadowModelBatch.render(instance);
+			shadowModelBatch.end();
 		}
 		shadowLight.end();
 		modelBatch.begin(cam);

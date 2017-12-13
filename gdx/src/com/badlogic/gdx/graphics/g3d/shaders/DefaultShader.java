@@ -893,7 +893,7 @@ public class DefaultShader extends BaseShader {
 			} 
 			if (lights.shadowBox != null) {
 				set(u_lightPosition, lights.shadowBox.position);
-				set(u_shadowBoxNearFar, lights.shadowBox.getNear(), lights.shadowBox.getFar());
+				set(u_shadowBoxNearFar, lights.shadowBox.camera.near, lights.shadowBox.camera.far);
 				set(u_shadowBox, lights.shadowBox.getFrameBufferCube().getColorBufferTexture());
 			}
 		}
