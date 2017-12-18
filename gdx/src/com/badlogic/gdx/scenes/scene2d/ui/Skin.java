@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
@@ -426,6 +427,49 @@ public class Skin implements Disposable {
 				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
 					return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
+			}
+
+			static final String CASCADE_PARENT_TAG = "parent";
+
+			protected boolean isNonexistantFieldKnown (Class type, String fieldName) {
+				return fieldName.equals(CASCADE_PARENT_TAG);
+			}
+
+			public void readFields (Object object, JsonValue jsonMap) {
+				ObjectMap<String, FieldMetadata> fields = getFields(object.getClass());
+				// Use parent's field values as defaults if "parent" isn't the name of an actual field.
+				if (jsonMap.get(CASCADE_PARENT_TAG) != null && !fields.containsKey(CASCADE_PARENT_TAG)) {
+					Class parentType = object.getClass();
+					String parentName = readValue(CASCADE_PARENT_TAG, String.class, jsonMap);
+					Object parent = null;
+					while (parent == null && parentType != Object.class) {
+						try {
+							parent = get(parentName, parentType);
+						} catch (GdxRuntimeException e) { // parent doesn't exist
+							parentType = parentType.getSuperclass(); // can use ancestor class as parent
+						}
+					}
+					if (parent != null) { // Have parent. Copy field values to use as defaults.
+						ObjectMap<String, FieldMetadata> parentFields = getFields(parentType);
+						for (ObjectMap.Entry<String, FieldMetadata> entry : parentFields) {
+							Field srcField = entry.value.field;
+							Field dstField = fields.get(entry.key).field;
+							try {
+								dstField.set(object, srcField.get(parent));
+							} catch (ReflectionException e) {
+								SerializationException se = new SerializationException(
+									"Failed to copy parent field " + srcField.getName() + " for parent " + parentName, e);
+								se.addTrace(jsonMap.child.trace());
+								throw se;
+							}
+						}
+					} else if (!isIgnoreUnknownFields()) {
+						SerializationException se = new SerializationException("Could not find parent with name " + parentName);
+						se.addTrace(jsonMap.child.trace());
+						throw se;
+					}
+				}
+				super.readFields(object, jsonMap);
 			}
 		};
 		json.setTypeName(null);

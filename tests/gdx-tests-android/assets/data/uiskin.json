@@ -11,11 +11,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 },
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: { down: default-round-down, up: default-round },
-	toggle: { down: default-round-down, checked: default-round-down, up: default-round }
+	toggle: { parent: default, checked: default-round-down }
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white },
-	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red }
+	toggle: { parent: default, checked: default-round-down, downFontColor: red }
 },
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
@@ -33,7 +33,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: { titleFont: default-font, background: default-window, titleFontColor: white },
-	dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialogDim }
+	dialog: { parent: default, stageBackground: dialogDim }
 },
 com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	default-horizontal: { background: default-slider, knob: default-slider-knob },
