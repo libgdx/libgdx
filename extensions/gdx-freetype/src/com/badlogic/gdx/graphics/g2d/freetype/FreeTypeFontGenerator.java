@@ -178,11 +178,11 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * generated. Using big sizes might cause such an exception.
 	 * @param parameter configures how the font is generated */
 	public BitmapFont generateFont (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
+		boolean updateTextureRegions = data.regions == null && parameter.packer != null;
+		if (updateTextureRegions) data.regions = new Array();
 		generateData(parameter, data);
-		if (data.regions == null && parameter.packer != null) {
-			data.regions = new Array();
+		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
-		}
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
