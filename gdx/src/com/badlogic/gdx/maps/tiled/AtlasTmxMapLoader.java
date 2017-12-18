@@ -358,7 +358,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 				for (AtlasRegion region : atlas.findRegions(regionsName)) {
 					// handle unused tile ids
 					if (region != null) {
-						int tileid = region.index + 1;
+						int tileid = region.index + firstgid;
 						if (tileid >= firstgid && tileid <= lastgid) {
 							StaticTiledMapTile tile = new StaticTiledMapTile(region);
 							tile.setId(tileid);

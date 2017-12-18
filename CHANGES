@@ -1,4 +1,7 @@
 [1.9.8]
+- Add iPhoneX images
+- Fix MacOS issue with GL_ARB_texture_float extension check
+- Fix AtlasTmxMapLoader tileset tile id offset
 - Bullet: updated to 2.87, see: http://bulletphysics.org/wordpress/?p=485
 - API Addition: Possibility to specify TexturePacker settings for resampling when scaling.
 - API Addition: Support for customizing render buffer attachments in GLFrameBuffers
