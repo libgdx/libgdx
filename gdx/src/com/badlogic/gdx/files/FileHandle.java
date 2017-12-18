@@ -704,9 +704,4 @@ public class FileHandle {
 				copyFile(srcFile, destFile);
 		}
 	}
-
-	static public void main (String[] args) throws Exception {
-		FileHandle f = new FileHandle("C:/Users/Nate/Desktop/blah/asd.txt");
-		f.moveTo(new FileHandle("C:/Users/Nate/Desktop/blah/ASD.txt"));
-	}
 }
