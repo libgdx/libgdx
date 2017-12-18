@@ -57,6 +57,11 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
+	private ObjectMap<String, Class> jsonClassTags = new ObjectMap(DEFAULT_TAGGED_STYLES.length);
+	{		
+		for (Class cls : DEFAULT_TAGGED_STYLES)
+			jsonClassTags.put(cls.getSimpleName(), cls);
+	}
 
 	/** Creates an empty skin. */
 	public Skin () {
@@ -528,14 +533,16 @@ public class Skin implements Disposable {
 			}
 		});
 		
-		for (Class cls : AUTO_TAGGED_STYLES){
-			json.addClassTag(cls.getSimpleName(), cls);
+		if (jsonClassTags != null){
+			for (ObjectMap.Entry<String, Class> entry : jsonClassTags){
+				json.addClassTag(entry.key, entry.value);
+			}
 		}
 
 		return json;
 	}
 	
-	private static final Class[] AUTO_TAGGED_STYLES = {
+	private static final Class[] DEFAULT_TAGGED_STYLES = {
 		BitmapFont.class, Color.class, TintedDrawable.class,
 		NinePatchDrawable.class, SpriteDrawable.class, TextureRegionDrawable.class, TiledDrawable.class,
 		Button.ButtonStyle.class, CheckBox.CheckBoxStyle.class, ImageButton.ImageButtonStyle.class, 
@@ -545,6 +552,14 @@ public class Skin implements Disposable {
 		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class,
 		Tree.TreeStyle.class, Window.WindowStyle.class
 	};
+	
+	 
+	/** @return A map of class name tags that will be used with {@link Json} to load the skin. The contents
+	 *  of the map can be modified before calling {@link #load(FileHandle)}. The map is initially populated
+	 *  with the simple class names of LibGDX classes commonly used in skins.*/
+	public ObjectMap<String, Class> getJsonClassTags () {
+		return jsonClassTags;
+	}
 
 	static private Method findMethod (Class type, String name) {
 		Method[] methods = ClassReflection.getMethods(type);
