@@ -108,12 +108,17 @@ public class TextField extends Widget implements Disableable {
 	private int visibleTextStart, visibleTextEnd;
 	private int maxLength = 0;
 
-	private float blinkTime = 0.32f;
-	boolean cursorOn = false;
-	boolean focused = false;
+	boolean focused;
+	boolean cursorOn;
+	float blinkTime = 0.32f;
+	final Task blinkTask = new Task() {
+		public void run () {
+			cursorOn = !cursorOn;
+			Gdx.graphics.requestRendering();
+		}
+	};
 
-	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
-	CursorBlinkTask cursorBlinkTask = new CursorBlinkTask();
+	final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
 	public TextField (String text, Skin skin) {
@@ -135,17 +140,13 @@ public class TextField extends Widget implements Disableable {
 	protected void initialize () {
 		addListener(inputListener = createInputListener());
 		addListener(new FocusListener() {
-			@Override
 			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
-				if (focused) {
-					cursorOn = true;
-					Timer.schedule(cursorBlinkTask, 0f, blinkTime);
-					cursorBlinkTask.restart();
-				} else {
+				blinkTask.cancel();
+				cursorOn = focused;
+				if (focused)
+					Timer.schedule(blinkTask, blinkTime, blinkTime);
+				else
 					keyRepeatTask.cancel();
-					cursorBlinkTask.cancel();
-					cursorOn = false;
-				}
 				TextField.this.focused = focused;
 			}
 		});
@@ -303,7 +304,6 @@ public class TextField extends Widget implements Disableable {
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
@@ -770,28 +770,6 @@ public class TextField extends Widget implements Disableable {
 		}
 	}
 
-	class CursorBlinkTask extends Task {
-		private boolean skipNextBlink = false;
-
-		@Override
-		public void run () {
-			if (skipNextBlink) {
-				skipNextBlink = false;
-				return;
-			}
-
-			cursorOn = !cursorOn;
-			Gdx.graphics.requestRendering();
-		}
-
-		/** Forces the task to skip next blink cycle update. Since {@link Timer} API doesn't provide a way to restart repeated task
-		 * immediately, this method is used to imitate blinking restart. */
-		public void restart () {
-			skipNextBlink = true;
-			cursorOn = true;
-		}
-	}
-
 	/** Interface for listening to typed characters.
 	 * @author mzechner */
 	static public interface TextFieldListener {
@@ -804,11 +782,9 @@ public class TextField extends Widget implements Disableable {
 		public boolean acceptChar (TextField textField, char c);
 
 		static public class DigitsOnlyFilter implements TextFieldFilter {
-			@Override
 			public boolean acceptChar (TextField textField, char c) {
 				return Character.isDigit(c);
 			}
-
 		}
 	}
 
@@ -822,7 +798,6 @@ public class TextField extends Widget implements Disableable {
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		@Override
 		public void show (boolean visible) {
 			Gdx.input.setOnscreenKeyboardVisible(visible);
 		}
@@ -864,8 +839,11 @@ public class TextField extends Widget implements Disableable {
 		}
 
 		protected void setCursorPosition (float x, float y) {
-			cursorBlinkTask.restart();
 			cursor = letterUnderCursor(x);
+
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 		}
 
 		protected void goHome (boolean jump) {
@@ -879,7 +857,9 @@ public class TextField extends Widget implements Disableable {
 		public boolean keyDown (InputEvent event, int keycode) {
 			if (disabled) return false;
 
-			cursorBlinkTask.restart();
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
