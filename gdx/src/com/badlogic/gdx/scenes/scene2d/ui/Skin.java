@@ -428,6 +428,8 @@ public class Skin implements Disposable {
 		final Skin skin = this;
 
 		final Json json = new Json() {
+			static private final String parentFieldName = "parent";
+
 			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
 				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
@@ -435,42 +437,40 @@ public class Skin implements Disposable {
 				return super.readValue(type, elementType, jsonData);
 			}
 
-			static final String CASCADE_PARENT_TAG = "parent";
-
 			protected boolean ignoreUnknownField (Class type, String fieldName) {
-				return fieldName.equals(CASCADE_PARENT_TAG);
+				return fieldName.equals(parentFieldName);
 			}
 
 			public void readFields (Object object, JsonValue jsonMap) {
 				ObjectMap<String, FieldMetadata> fields = getFields(object.getClass());
 				// Use parent's field values as defaults if "parent" isn't the name of an actual field.
-				if (jsonMap.get(CASCADE_PARENT_TAG) != null && !fields.containsKey(CASCADE_PARENT_TAG)) {
+				if (jsonMap.has(parentFieldName) && !fields.containsKey(parentFieldName)) {
 					Class parentType = object.getClass();
-					String parentName = readValue(CASCADE_PARENT_TAG, String.class, jsonMap);
+					String parentName = readValue(parentFieldName, String.class, jsonMap);
 					Object parent = null;
 					while (parent == null && parentType != Object.class) {
 						try {
 							parent = get(parentName, parentType);
-						} catch (GdxRuntimeException e) { // parent doesn't exist
-							parentType = parentType.getSuperclass(); // can use ancestor class as parent
+						} catch (GdxRuntimeException ex) { // Resource doesn't exist.
+							parentType = parentType.getSuperclass(); // Try resource for super class.
 						}
 					}
-					if (parent != null) { // Have parent. Copy field values to use as defaults.
-						ObjectMap<String, FieldMetadata> parentFields = getFields(parentType);
-						for (ObjectMap.Entry<String, FieldMetadata> entry : parentFields) {
+					if (parent != null) { // Parent resource found, copy field values to use as defaults.
+						for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(parentType)) {
 							Field srcField = entry.value.field;
 							Field dstField = fields.get(entry.key).field;
 							try {
 								dstField.set(object, srcField.get(parent));
-							} catch (ReflectionException e) {
+							} catch (ReflectionException ex) {
 								SerializationException se = new SerializationException(
-									"Failed to copy parent field " + srcField.getName() + " for parent " + parentName, e);
+									"Failed to copy parent field " + srcField.getName() + " for parent: " + parentName, ex);
 								se.addTrace(jsonMap.child.trace());
 								throw se;
 							}
 						}
 					} else if (!getIgnoreUnknownFields()) {
-						SerializationException se = new SerializationException("Could not find parent with name " + parentName);
+						SerializationException se = new SerializationException(
+							"Could not find parent resource with name: " + parentName);
 						se.addTrace(jsonMap.child.trace());
 						throw se;
 					}

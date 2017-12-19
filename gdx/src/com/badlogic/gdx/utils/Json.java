@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -831,11 +830,11 @@ public class Json {
 		}
 	}
 
-	/** Called for each unknown field name encountered by {@link #readFields(Object, JsonValue)} when 
-	 * {@link #ignoreUnknownFields} is false to determine whether a specific unknown field name should be ignored anyway.
+	/** Called for each unknown field name encountered by {@link #readFields(Object, JsonValue)} when {@link #ignoreUnknownFields}
+	 * is false to determine whether the unknown field name should be ignored.
 	 * @param type The object type being read.
-	 * @param fieldName A field name encountered in the Json map for which there is no actual field.
-	 * @return Whether the field name should be treated as known, i.e., not throw an exception when encountered in
+	 * @param fieldName A field name encountered in the JSON for which there is no matching class field.
+	 * @return true if the field name should be ignored and an exception won't be thrown by
 	 *         {@link #readFields(Object, JsonValue)}. */
 	protected boolean ignoreUnknownField (Class type, String fieldName) {
 		return false;
