@@ -431,7 +431,7 @@ public class Skin implements Disposable {
 
 			static final String CASCADE_PARENT_TAG = "parent";
 
-			protected boolean isNonexistantFieldKnown (Class type, String fieldName) {
+			protected boolean ignoreUnknownField (Class type, String fieldName) {
 				return fieldName.equals(CASCADE_PARENT_TAG);
 			}
 
@@ -463,7 +463,7 @@ public class Skin implements Disposable {
 								throw se;
 							}
 						}
-					} else if (!isIgnoreUnknownFields()) {
+					} else if (!getIgnoreUnknownFields()) {
 						SerializationException se = new SerializationException("Could not find parent with name " + parentName);
 						se.addTrace(jsonMap.child.trace());
 						throw se;

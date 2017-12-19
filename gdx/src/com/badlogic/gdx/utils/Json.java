@@ -78,7 +78,7 @@ public class Json {
 		this.ignoreUnknownFields = ignoreUnknownFields;
 	}
 
-	public boolean isIgnoreUnknownFields () {
+	public boolean getIgnoreUnknownFields () {
 		return ignoreUnknownFields;
 	}
 
@@ -130,10 +130,6 @@ public class Json {
 	 * "class". */
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
-	}
-	
-	public String getTypeName () {
-		return typeName;
 	}
 
 	/** Sets the serializer to use when the type being deserialized is not known (null).
@@ -808,7 +804,7 @@ public class Json {
 			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
 				if (child.name.equals(typeName)) continue;
-				if (ignoreUnknownFields || isNonexistantFieldKnown(type, child.name)) {
+				if (ignoreUnknownFields || ignoreUnknownField(type, child.name)) {
 					if (debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
 					continue;
 				} else {
@@ -835,13 +831,13 @@ public class Json {
 		}
 	}
 
-	/** Override to allow subclasses to use fake field names for other purposes in {@link #readFields(Object, JsonValue)} without
-	 * triggering an exception for unknown fields.
+	/** Called for each unknown field name encountered by {@link #readFields(Object, JsonValue)} when 
+	 * {@link #ignoreUnknownFields} is false to determine whether a specific unknown field name should be ignored anyway.
 	 * @param type The object type being read.
 	 * @param fieldName A field name encountered in the Json map for which there is no actual field.
 	 * @return Whether the field name should be treated as known, i.e., not throw an exception when encountered in
-	 *         {@code readFields()}. */
-	protected boolean isNonexistantFieldKnown (Class type, String fieldName) {
+	 *         {@link #readFields(Object, JsonValue)}. */
+	protected boolean ignoreUnknownField (Class type, String fieldName) {
 		return false;
 	}
 
