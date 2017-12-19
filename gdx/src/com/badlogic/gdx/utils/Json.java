@@ -161,7 +161,7 @@ public class Json {
 		metadata.elementType = elementType;
 	}
 
-	protected final OrderedMap<String, FieldMetadata> getFields (Class type) {
+	private OrderedMap<String, FieldMetadata> getFields (Class type) {
 		OrderedMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields != null) return fields;
 
@@ -1055,6 +1055,23 @@ public class Json {
 		return null;
 	}
 
+	/** Each field on the <code>to</code> object is set to the value for the field with the same name on the <code>from</code>
+	 * object. The <code>from</code> object must have at least all the fields as the <code>to</code> object with the same name and
+	 * type. */
+	public void copyFields (Object from, Object to) {
+		ObjectMap<String, FieldMetadata> fromFields = getFields(from.getClass());
+		for (ObjectMap.Entry<String, FieldMetadata> entry : getFields(to.getClass())) {
+			Field toField = entry.value.field;
+			FieldMetadata fromField = fromFields.get(entry.key);
+			if (fromField == null) throw new SerializationException("From object is missing field: " + toField.getName());
+			try {
+				toField.set(to, fromField.field.get(from));
+			} catch (ReflectionException ex) {
+				throw new SerializationException("Error copying field: " + toField.getName(), ex);
+			}
+		}
+	}
+
 	private String convertToString (Enum e) {
 		return enumNames ? e.name() : e.toString();
 	}
@@ -1117,8 +1134,8 @@ public class Json {
 		return new JsonReader().parse(json).prettyPrint(settings);
 	}
 
-	static protected class FieldMetadata {
-		public final Field field;
+	static private class FieldMetadata {
+		final Field field;
 		Class elementType;
 
 		public FieldMetadata (Field field) {
