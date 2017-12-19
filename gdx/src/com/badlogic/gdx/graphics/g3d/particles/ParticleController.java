@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.particles;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
@@ -219,6 +220,12 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 
 	/** Updates the particles data */
 	public void update () {
+		update(Gdx.graphics.getDeltaTime());
+	}
+
+	/** Updates the particles data */
+	public void update (float deltaTime) {
+		setTimeStep(deltaTime);
 		emitter.update();
 		for (Influencer influencer : influencers)
 			influencer.update();
