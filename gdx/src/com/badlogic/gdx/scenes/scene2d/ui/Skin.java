@@ -57,10 +57,11 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
-	private ObjectMap<String, Class> jsonClassTags = new ObjectMap(DEFAULT_TAGGED_STYLES.length);
-	{		
-		for (Class cls : DEFAULT_TAGGED_STYLES)
-			jsonClassTags.put(cls.getSimpleName(), cls);
+	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
+
+	{
+		for (Class c : defaultTagClasses)
+			jsonClassTags.put(c.getSimpleName(), c);
 	}
 
 	/** Creates an empty skin. */
@@ -111,7 +112,7 @@ public class Skin implements Disposable {
 			AtlasRegion region = regions.get(i);
 			String name = region.name;
 			if (region.index != -1) {
-			    name += "_" + region.index;
+				name += "_" + region.index;
 			}
 			add(name, region, TextureRegion.class);
 		}
@@ -532,34 +533,27 @@ public class Skin implements Disposable {
 				return drawable;
 			}
 		});
-		
-		if (jsonClassTags != null){
-			for (ObjectMap.Entry<String, Class> entry : jsonClassTags){
-				json.addClassTag(entry.key, entry.value);
-			}
-		}
+
+		for (ObjectMap.Entry<String, Class> entry : jsonClassTags)
+			json.addClassTag(entry.key, entry.value);
 
 		return json;
 	}
-	
-	private static final Class[] DEFAULT_TAGGED_STYLES = {
-		BitmapFont.class, Color.class, TintedDrawable.class,
-		NinePatchDrawable.class, SpriteDrawable.class, TextureRegionDrawable.class, TiledDrawable.class,
-		Button.ButtonStyle.class, CheckBox.CheckBoxStyle.class, ImageButton.ImageButtonStyle.class, 
-		ImageTextButton.ImageTextButtonStyle.class, Label.LabelStyle.class, List.ListStyle.class, 
-		ProgressBar.ProgressBarStyle.class, ScrollPane.ScrollPaneStyle.class, SelectBox.SelectBoxStyle.class,
-		Slider.SliderStyle.class, SplitPane.SplitPaneStyle.class, TextButton.TextButtonStyle.class, 
-		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class,
-		Tree.TreeStyle.class, Window.WindowStyle.class
-	};
-	
-	 
-	/** @return A map of class name tags that will be used with {@link Json} to load the skin. The contents
-	 *  of the map can be modified before calling {@link #load(FileHandle)}. The map is initially populated
-	 *  with the simple class names of LibGDX classes commonly used in skins.*/
+
+	/** Returns a map of {@link Json#addClassTag(String, Class) class tags} that will be used when loading skin JSON. The map can
+	 * be modified before calling {@link #load(FileHandle)}. By default the map is populated with the simple class names of libGDX
+	 * classes commonly used in skins. */
 	public ObjectMap<String, Class> getJsonClassTags () {
 		return jsonClassTags;
 	}
+
+	static private final Class[] defaultTagClasses = {BitmapFont.class, Color.class, TintedDrawable.class, NinePatchDrawable.class,
+		SpriteDrawable.class, TextureRegionDrawable.class, TiledDrawable.class, Button.ButtonStyle.class,
+		CheckBox.CheckBoxStyle.class, ImageButton.ImageButtonStyle.class, ImageTextButton.ImageTextButtonStyle.class,
+		Label.LabelStyle.class, List.ListStyle.class, ProgressBar.ProgressBarStyle.class, ScrollPane.ScrollPaneStyle.class,
+		SelectBox.SelectBoxStyle.class, Slider.SliderStyle.class, SplitPane.SplitPaneStyle.class, TextButton.TextButtonStyle.class,
+		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class, Tree.TreeStyle.class,
+		Window.WindowStyle.class};
 
 	static private Method findMethod (Class type, String name) {
 		Method[] methods = ClassReflection.getMethods(type);
