@@ -58,15 +58,15 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		String textureAtlasPath = file.pathWithoutExtension() + ".atlas";
 		ObjectMap<String, Object> resources = null;
 		if (parameter != null) {
-			if (parameter.textureAtlasPath != null){
+			if (parameter.textureAtlasPath != null) {
 				textureAtlasPath = parameter.textureAtlasPath;
 			}
-			if (parameter.resources != null){
+			if (parameter.resources != null) {
 				resources = parameter.resources;
 			}
 		}
 		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-		Skin skin = generateSkin(atlas);
+		Skin skin = newSkin(atlas);
 		if (resources != null) {
 			for (Entry<String, Object> entry : resources.entries()) {
 				skin.add(entry.key, entry.value);
@@ -75,11 +75,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		skin.load(file);
 		return skin;
 	}
-	
-	/** Override to allow subclasses of Skin to be loaded.
-	 * @param atlas The TextureAtlas that the skin will use. 
+
+	/** Override to allow subclasses of Skin to be loaded or the skin instance to be configured.
+	 * @param atlas The TextureAtlas that the skin will use.
 	 * @return A new Skin (or subclass of Skin) instance based on the provided TextureAtlas. */
-	protected Skin generateSkin (TextureAtlas atlas){
+	protected Skin newSkin (TextureAtlas atlas) {
 		return new Skin(atlas);
 	}
 
@@ -91,7 +91,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 			this(null, null);
 		}
 
-		public SkinParameter(ObjectMap<String, Object> resources){
+		public SkinParameter (ObjectMap<String, Object> resources) {
 			this(null, resources);
 		}
 
