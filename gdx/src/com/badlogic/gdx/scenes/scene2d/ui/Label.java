@@ -102,7 +102,15 @@ public class Label extends Widget {
 		}
 		invalidateHierarchy();
 	}
+	
+	/** @param newText Text to append to the end of this label. */
+	public void addText(CharSequence newText) {
+		if (newText == null || newText.length() == 0) return;
+		text.append(newText);
+		invalidateHierarchy();
+	}
 
+	/** @return true if and only if this.getText().toString().equals(other) **/
 	public boolean textEquals (CharSequence other) {
 		int length = text.length;
 		char[] chars = text.chars;
