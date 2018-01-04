@@ -1,11 +1,13 @@
 
 package com.badlogic.gdx.math;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.badlogic.gdx.math.Intersector.MinimumTranslationVector;
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
 public class IntersectorTest {
@@ -106,4 +108,53 @@ public class IntersectorTest {
 			assertTrue("Either first or second way must be right (first: " + first + ", second: " + second + ")", first ^ second);
 		}
 	}
+
+	@Test
+	public void testOverlapConvexPolygons () {		
+		/*
+		 * Rough sketch:         depth
+		 *                      |-----|
+		 * D##########################C
+		 * #                          #
+		 * #                    1 ° ° #
+		 * #                    °     #° °
+		 * #                    °     #    ° °
+		 * #                    °     #        ° °
+		 * #                    °     #           ° 3
+		 * #                     °    #        ° °
+		 * #                     °    #    ° °
+		 * #                     °    #° °
+		 * #                     2 ° °#
+		 * #                          #
+		 * A##########################B
+		 * 
+		 */ 
+		
+		/*
+		 * When the triangle is checked against the rectangle, the MTV should have the normal (1.0, 0.0).
+		 * 
+		 * Instead it has the normal (-1.0, 0.0) because the triangle has more points on the left side of the checked axis (normal
+		 * of edge B-C) of the rectangle than on the right. This results in the triangle moving further into the rectangle if the
+		 * MTV is applied to its position.
+		 */
+		
+		MinimumTranslationVector mtv = new MinimumTranslationVector();
+		float triangleMinX = 14;
+		float squareMaxX = 16;
+		float expectedDepth = Math.abs(squareMaxX - triangleMinX);
+		
+		// Given a rectangle and a slightly irregular triangle overlapping from the right
+		float[] triangle = {triangleMinX, 4, triangleMinX + 0.1f, 12, 22, 8};
+		float[] rectangle = {0, 0, squareMaxX, 0, squareMaxX, 16, 0, 16};
+
+		// When check for overlap
+		boolean overlaps = Intersector.overlapConvexPolygons(triangle, rectangle, mtv);
+
+		// Assert that it resolves the collision by translating to the right
+		assertTrue("They should overlap", overlaps);
+		assertEquals("MTV depth should be ~" + expectedDepth, expectedDepth, mtv.depth, 0.01f);
+		assertEquals("MTV shouldn't translate on the y-axis", 0f, mtv.normal.y, 0f);
+		assertTrue("MTV should translate to the right", mtv.normal.x > 0f); // fails
+	}
+
 }
