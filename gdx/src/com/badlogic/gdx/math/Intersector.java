@@ -949,17 +949,32 @@ public final class Intersector {
 		float overlap = Float.MAX_VALUE;
 		float smallestAxisX = 0;
 		float smallestAxisY = 0;
-		int numInNormalDir;
 
 		int end1 = offset1 + count1;
 		int end2 = offset2 + count2;
-
+		
+		float min1X = Float.MAX_VALUE, min1Y = Float.MAX_VALUE, min2X = Float.MAX_VALUE, min2Y = Float.MAX_VALUE;
+		float max1X = Float.MIN_VALUE, max1Y = Float.MIN_VALUE, max2X = Float.MIN_VALUE, max2Y = Float.MIN_VALUE;
+		
 		// Get polygon1 axes
 		for (int i = offset1; i < end1; i += 2) {
 			float x1 = verts1[i];
 			float y1 = verts1[i + 1];
 			float x2 = verts1[(i + 2) % count1];
 			float y2 = verts1[(i + 3) % count1];
+			
+			if (x1 < min1X) {
+				min1X = x1;
+			}
+			if (x1 > max1X) {
+				max1X = x1;
+			}
+			if (y1 < min1Y) {
+				min1Y = y1;
+			}
+			if (y1 > max1Y) {
+				max1Y = y1;
+			}
 
 			float axisX = y1 - y2;
 			float axisY = -(x1 - x2);
@@ -983,12 +998,10 @@ public final class Intersector {
 			}
 
 			// Project polygon2 onto this axis
-			numInNormalDir = 0;
 			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
 			for (int j = offset2; j < end2; j += 2) {
 				// Counts the number of points that are within the projected area.
-				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts2[j], verts2[j + 1]);
 				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
@@ -1012,9 +1025,8 @@ public final class Intersector {
 				}
 				if (o < overlap) {
 					overlap = o;
-					// Adjusts the direction based on the number of points found
-					smallestAxisX = numInNormalDir >= 0 ? axisX : -axisX;
-					smallestAxisY = numInNormalDir >= 0 ? axisY : -axisY;
+					smallestAxisX = axisX;
+					smallestAxisY = axisY;
 				}
 			}
 			// -- End check for separation on this axis --//
@@ -1026,6 +1038,19 @@ public final class Intersector {
 			float y1 = verts2[i + 1];
 			float x2 = verts2[(i + 2) % count2];
 			float y2 = verts2[(i + 3) % count2];
+			
+			if (x1 < min2X) {
+				min2X = x1;
+			}
+			if (x1 > max2X) {
+				max2X = x1;
+			}
+			if (y1 < min2Y) {
+				min2Y = y1;
+			}
+			if (y1 > max2Y) {
+				max2Y = y1;
+			}
 
 			float axisX = y1 - y2;
 			float axisY = -(x1 - x2);
@@ -1035,7 +1060,6 @@ public final class Intersector {
 			axisY /= length;
 
 			// -- Begin check for separation on this axis --//
-			numInNormalDir = 0;
 
 			// Project polygon1 onto this axis
 			float min1 = axisX * verts1[0] + axisY * verts1[1];
@@ -1043,7 +1067,6 @@ public final class Intersector {
 			for (int j = offset1; j < end1; j += 2) {
 				float p = axisX * verts1[j] + axisY * verts1[j + 1];
 				// Counts the number of points that are within the projected area.
-				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts1[j], verts1[j + 1]);
 				if (p < min1) {
 					min1 = p;
 				} else if (p > max1) {
@@ -1080,14 +1103,28 @@ public final class Intersector {
 
 				if (o < overlap) {
 					overlap = o;
-					// Adjusts the direction based on the number of points found
-					smallestAxisX = numInNormalDir < 0 ? axisX : -axisX;
-					smallestAxisY = numInNormalDir < 0 ? axisY : -axisY;
+					smallestAxisX = axisX;
+					smallestAxisY = axisY;
 				}
 			}
 			// -- End check for separation on this axis --//
 		}
 		if (mtv != null) {
+			// Adjusts the direction based on the direction of verts1 to verts2
+			float center1X = min1X + 0.5f * (max1X - min1X);
+			float center1Y = min1Y + 0.5f * (max1Y - min1Y);
+			float center2X = min2X + 0.5f * (max2X - min2X);
+			float center2Y = min2Y + 0.5f * (max2Y - min2Y);
+			
+			float dirX = center2X - center1X;
+			float dirY = center2Y - center1Y;
+
+			float dot = dirX * smallestAxisX + dirY * smallestAxisY;
+			if (dot > 0) {
+				smallestAxisX = -smallestAxisX;
+				smallestAxisY = -smallestAxisY;
+			}
+
 			mtv.normal.set(smallestAxisX, smallestAxisY);
 			mtv.depth = overlap;
 		}

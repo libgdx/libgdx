@@ -154,7 +154,7 @@ public class IntersectorTest {
 		assertTrue("They should overlap", overlaps);
 		assertEquals("MTV depth should be ~" + expectedDepth, expectedDepth, mtv.depth, 0.01f);
 		assertEquals("MTV shouldn't translate on the y-axis", 0f, mtv.normal.y, 0f);
-		assertTrue("MTV should translate to the right", mtv.normal.x > 0f); // fails
+		assertTrue("MTV should translate to the right", mtv.normal.x > 0f);
 	}
 
 }
