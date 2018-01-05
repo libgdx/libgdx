@@ -64,21 +64,14 @@ public class Lwjgl3Net implements Net {
 
 	@Override
 	public boolean openURI (String URI) {
-		if(SharedLibraryLoader.isMac) {
-			try {
-				FileManager.openURL(URI);
-				return true;
-			} catch (IOException e) {
-				return false;
-			}
-		} else {
-			try {
-				Desktop.getDesktop().browse(new URI(URI));
-				return true;
-			} catch (Throwable t) {
-				return false;
-			}
+		class NativeWrapper {
+					public native void openURL(String url) /*-{
+	 					var aURL = url;
+  						$wnd.location.href = aURL;
+					}-*/;
 		}
+		new NativeWrapper().openURL(URI);
 	}
+	
 
 }
