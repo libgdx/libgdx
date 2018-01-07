@@ -203,8 +203,9 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public boolean openURI (String URI) {
-		Window.open(URI, "_blank", null);
-		return true;
-	}
+	public native boolean openURI (String URI) /*-{
+	 var aURL = URI;
+  $wnd.location.href = aURL;
+  	return true;
+}-*/;
 }
