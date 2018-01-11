@@ -23,12 +23,12 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.IntArray;
 
 final class AndroidSound implements Sound {
-	final SoundPool soundPool;
+	final AndroidSoundPool soundPool;
 	final AudioManager manager;
 	final int soundId;
 	final IntArray streamIds = new IntArray(8);
 
-	AndroidSound (SoundPool pool, AudioManager manager, int soundId) {
+	AndroidSound (AndroidSoundPool pool, AudioManager manager, int soundId) {
 		this.soundPool = pool;
 		this.manager = manager;
 		this.soundId = soundId;
@@ -47,7 +47,7 @@ final class AndroidSound implements Sound {
 	@Override
 	public long play (float volume) {
 		if (streamIds.size == 8) streamIds.pop();
-		int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
+		int streamId = soundPool.playSound(soundId, volume, volume, 1, 0, 1);
 		// standardise error code with other backends
 		if (streamId == 0) return -1;
 		streamIds.insert(0, streamId);
