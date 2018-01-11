@@ -212,5 +212,6 @@ public final class AndroidAudio implements Audio {
 			}
 		}
 		soundPool.release();
+		soundPool.clearCache();
 	}
 }
