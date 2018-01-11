@@ -75,15 +75,15 @@ public class Timer {
 	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval.
 	 * @param repeatCount If negative, the task will repeat forever. */
 	public Task scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		synchronized (task) {
-			if (task.timer != null) throw new IllegalArgumentException("The same task may not be scheduled twice.");
-			task.timer = this;
-			task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
-			task.intervalMillis = (long)(intervalSeconds * 1000);
-			task.repeatCount = repeatCount;
-		}
 		synchronized (this) {
-			tasks.add(task);
+			synchronized (task) {
+				if (task.timer != null) throw new IllegalArgumentException("The same task may not be scheduled twice.");
+				task.timer = this;
+				task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
+				task.intervalMillis = (long)(intervalSeconds * 1000);
+				task.repeatCount = repeatCount;
+				tasks.add(task);
+			}
 		}
 		synchronized (threadLock) {
 			threadLock.notifyAll();
@@ -114,6 +114,7 @@ public class Timer {
 		for (int i = 0, n = tasks.size; i < n; i++) {
 			Task task = tasks.get(i);
 			synchronized (task) {
+				task.executeTimeMillis = 0;
 				task.timer = null;
 			}
 		}
@@ -190,7 +191,7 @@ public class Timer {
 		final Application app;
 		long executeTimeMillis, intervalMillis;
 		int repeatCount;
-		Timer timer;
+		volatile Timer timer;
 
 		public Task () {
 			app = Gdx.app; // Store which app to postRunnable (eg for multiple LwjglAWTCanvas).
@@ -202,11 +203,21 @@ public class Timer {
 		abstract public void run ();
 
 		/** Cancels the task. It will not be executed until it is scheduled again. This method can be called at any time. */
-		public synchronized void cancel () {
-			executeTimeMillis = 0;
+		public void cancel () {
+			Timer timer = this.timer;
 			if (timer != null) {
-				timer.tasks.removeValue(this, true);
-				timer = null;
+				synchronized (timer) {
+					synchronized (this) {
+						executeTimeMillis = 0;
+						this.timer = null;
+						timer.tasks.removeValue(this, true);
+					}
+				}
+			} else {
+				synchronized (this) {
+					executeTimeMillis = 0;
+					this.timer = null;
+				}
 			}
 		}
 
@@ -220,7 +231,7 @@ public class Timer {
 		 * }
 		 * </pre>
 		 */
-		public synchronized boolean isScheduled () {
+		public boolean isScheduled () {
 			return timer != null;
 		}
 
