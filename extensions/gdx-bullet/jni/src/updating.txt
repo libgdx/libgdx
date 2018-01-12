@@ -36,6 +36,10 @@ See https://github.com/libgdx/libgdx/commit/da30acc5b3521d0fda760ba765ae76a951bd
 		{
 			gContactEndedCallback(this);
 		}
+  btConvexPolyhedron.h ~34 (inside struct btFace):
+	bool operator==(const btFace& other) const {return false;}
+	bool operator>(const btFace& other) const {return false;}
+	bool operator<(const btFace& other) const {return false;}
 - Fix cast error for mingw: bDNA.cpp ~393+429 & bFile.cpp ~446+483: `nr= (long)*(intptr_t*)&cp;`
 - Disable SSE for IOS, in btScalar.h, around line 176, that starts with `#if (defined(__APPLE__) `...
   btScalar.h ~177: Add: `#include <TargetConditionals.h>`
