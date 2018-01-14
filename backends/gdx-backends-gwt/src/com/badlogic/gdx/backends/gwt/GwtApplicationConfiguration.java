@@ -55,6 +55,9 @@ public class GwtApplicationConfiguration {
 	/** screen-orientation to attempt locking as the application enters full-screen-mode. Note that on mobile browsers, full-screen
 	 * mode can typically only be entered on a user gesture (click, tap, key-stroke) **/
 	public OrientationLockType fullscreenOrientation;
+	/* Whether openURI will open page in new tab. By default it will, however if may be blocked by popup blocker. */
+	/* To prevent the page from being blocked you can redirect to the new page. However this will exit your game.  */
+	public boolean openURLInNewWindow = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
