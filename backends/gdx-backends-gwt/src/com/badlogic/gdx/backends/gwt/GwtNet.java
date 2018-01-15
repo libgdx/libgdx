@@ -104,8 +104,8 @@ public class GwtNet implements Net {
 		}
 	}
 
-	public GwtNet (GwtApplicationConfiguration aConfig) {
-		config = aConfig;
+	public GwtNet (GwtApplicationConfiguration config) {
+		this.config = config;
 		requests = new ObjectMap<HttpRequest, Request>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -207,26 +207,13 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public boolean openURI (String URI){
-
-		class NativeWrapper{
-			public native boolean redirectURI (String URI) /*-{
-	 			var aURL = URI;
-  				$wnd.location.href = aURL;
-  				return true;
-			}-*/;
-		}
-		if(config.openURLInNewWindow){
+	public boolean openURI (String URI) {
+		if (config.openURLInNewWindow) {
 			Window.open(URI, "_blank", null);
-		}
-		else{
+		} else {
 			Window.Location.assign(URI);
 		}
 		return true;
-	};
-
-
-
-
+	}
 
 }
