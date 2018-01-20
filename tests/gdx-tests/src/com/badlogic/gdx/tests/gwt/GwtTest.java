@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests.gwt;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -40,6 +38,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GwtTest extends GdxTest {
 	ShaderProgram shader;

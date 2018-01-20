@@ -105,8 +105,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		setApplicationLogger(new GwtApplicationLogger(this.config.log));
 
-		addEventListeners();
-
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
 		} else {
@@ -170,6 +168,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					if(loadingListener != null)
 						loadingListener.beforeSetup();
 					setupLoop();
+					addEventListeners();
 					if(loadingListener != null)
 						loadingListener.afterSetup();
 				}
