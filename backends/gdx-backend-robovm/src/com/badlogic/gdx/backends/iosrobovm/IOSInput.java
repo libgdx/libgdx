@@ -56,6 +56,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
+	private static final int POINTER_NOT_FOUND = -1;
 
 	private static class NSObjectWrapper<T extends NSObject> {
 		private static final long HANDLE_OFFSET;
@@ -639,7 +640,13 @@ public class IOSInput implements Input {
 		for (int i = 0; i < touchDown.length; i++) {
 			if (touchDown[i] == ptr) return i;
 		}
-		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
+		// If pointer is not found
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < touchDown.length; i++) {
+			sb.append(i + ":" + touchDown[i] + " ");
+		}
+		Gdx.app.error("IOSInput", "Pointer ID lookup failed: " + ptr + ", " + sb.toString());
+		return POINTER_NOT_FOUND;
 	}
 
 	private static class NSSetExtensions extends NSExtensions {
@@ -678,7 +685,6 @@ public class IOSInput implements Input {
 				event.y = locY;
 				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
-				touchEvents.add(event);
 
 				if (phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
@@ -690,22 +696,32 @@ public class IOSInput implements Input {
 					numTouched++;
 				}
 
-				if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
+				else if (phase == UITouchPhase.Moved || phase == UITouchPhase.Stationary) {
 					event.pointer = findPointer(touch);
-					deltaX[event.pointer] = event.x - touchX[event.pointer];
-					deltaY[event.pointer] = event.y - touchY[event.pointer];
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						deltaX[event.pointer] = event.x - touchX[event.pointer];
+						deltaY[event.pointer] = event.y - touchY[event.pointer];
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+					}
 				}
 
-				if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
+				else if (phase == UITouchPhase.Cancelled || phase == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0;
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0;
-					numTouched--;
+					if (event.pointer != POINTER_NOT_FOUND) {
+						touchDown[event.pointer] = 0;
+						touchX[event.pointer] = event.x;
+						touchY[event.pointer] = event.y;
+						deltaX[event.pointer] = 0;
+						deltaY[event.pointer] = 0;
+						numTouched--;
+					}
+				}
+
+				if (event.pointer != POINTER_NOT_FOUND) {
+					touchEvents.add(event);
+				} else {
+					touchEventPool.free(event);
 				}
 			}
 		}
