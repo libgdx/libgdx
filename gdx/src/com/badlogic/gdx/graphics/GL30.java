@@ -208,6 +208,7 @@ public interface GL30 extends GL20 {
 	public final int GL_COLOR_ATTACHMENT14 = 0x8CEE;
 	public final int GL_COLOR_ATTACHMENT15 = 0x8CEF;
 	public final int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE = 0x8D56;
+	public final int GL_FRAMEBUFFER_SRGB = 0x8DB9;
 	public final int GL_MAX_SAMPLES = 0x8D57;
 	public final int GL_HALF_FLOAT = 0x140B;
 	public final int GL_MAP_READ_BIT = 0x0001;
