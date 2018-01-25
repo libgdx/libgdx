@@ -829,11 +829,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (realId[i] == pointerId) return i;
 		}
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < len; i++) {
-			buf.append(i + ":" + realId[i] + " ");
+			sb.append(i + ":" + realId[i] + " ");
 		}
-		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
+		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
 		return -1;
 	}
 
