@@ -36,13 +36,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -108,11 +108,17 @@ public class TextField extends Widget implements Disableable {
 	private int visibleTextStart, visibleTextEnd;
 	private int maxLength = 0;
 
-	private float blinkTime = 0.32f;
-	boolean cursorOn = true;
-	long lastBlink;
+	boolean focused;
+	boolean cursorOn;
+	float blinkTime = 0.32f;
+	final Task blinkTask = new Task() {
+		public void run () {
+			cursorOn = !cursorOn;
+			Gdx.graphics.requestRendering();
+		}
+	};
 
-	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
+	final KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	boolean programmaticChangeEvents;
 
 	public TextField (String text, Skin skin) {
@@ -133,6 +139,17 @@ public class TextField extends Widget implements Disableable {
 
 	protected void initialize () {
 		addListener(inputListener = createInputListener());
+		addListener(new FocusListener() {
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				blinkTask.cancel();
+				cursorOn = focused;
+				if (focused)
+					Timer.schedule(blinkTask, blinkTime, blinkTime);
+				else
+					keyRepeatTask.cancel();
+				TextField.this.focused = focused;
+			}
+		});
 	}
 
 	protected InputListener createInputListener () {
@@ -287,12 +304,7 @@ public class TextField extends Widget implements Disableable {
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 	}
 
-	@Override
 	public void draw (Batch batch, float parentAlpha) {
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
-		if (!focused) keyRepeatTask.cancel();
-
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
 			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
@@ -337,11 +349,8 @@ public class TextField extends Widget implements Disableable {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
 		}
-		if (focused && !disabled) {
-			blink();
-			if (cursorOn && cursorPatch != null) {
-				drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
-			}
+		if (!disabled && cursorOn && cursorPatch != null) {
+			drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
 		}
 	}
 
@@ -415,18 +424,6 @@ public class TextField extends Widget implements Disableable {
 		glyphPositions.add(x);
 
 		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
-	}
-
-	private void blink () {
-		if (!Gdx.graphics.isContinuousRendering()) {
-			cursorOn = true;
-			return;
-		}
-		long time = TimeUtils.nanoTime();
-		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
-			cursorOn = !cursorOn;
-			lastBlink = time;
-		}
 	}
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
@@ -785,11 +782,9 @@ public class TextField extends Widget implements Disableable {
 		public boolean acceptChar (TextField textField, char c);
 
 		static public class DigitsOnlyFilter implements TextFieldFilter {
-			@Override
 			public boolean acceptChar (TextField textField, char c) {
 				return Character.isDigit(c);
 			}
-
 		}
 	}
 
@@ -803,7 +798,6 @@ public class TextField extends Widget implements Disableable {
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		@Override
 		public void show (boolean visible) {
 			Gdx.input.setOnscreenKeyboardVisible(visible);
 		}
@@ -845,9 +839,11 @@ public class TextField extends Widget implements Disableable {
 		}
 
 		protected void setCursorPosition (float x, float y) {
-			lastBlink = 0;
-			cursorOn = false;
 			cursor = letterUnderCursor(x);
+
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 		}
 
 		protected void goHome (boolean jump) {
@@ -861,8 +857,9 @@ public class TextField extends Widget implements Disableable {
 		public boolean keyDown (InputEvent event, int keycode) {
 			if (disabled) return false;
 
-			lastBlink = 0;
-			cursorOn = false;
+			cursorOn = focused;
+			blinkTask.cancel();
+			if (focused) Timer.schedule(blinkTask, blinkTime, blinkTime);
 
 			Stage stage = getStage();
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;

@@ -210,7 +210,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;
-		this.net = new GwtNet();
+		this.net = new GwtNet(config);
 		Gdx.net = this.net;
 		this.clipboard = new GwtClipboard();
 		updateLogLabelSize();

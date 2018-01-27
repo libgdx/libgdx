@@ -99,6 +99,7 @@ public class BulletBuild {
 		ios.cExcludes = ios.cppExcludes = excludes;
 		ios.headerDirs = headers;
 		ios.cppFlags += cppFlags;
+		ios.cppFlags += " -stdlib=libc++";
 
 		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, mac64, android, ios);
 		new FileHandle(new File("jni/Application.mk")).writeString("\nAPP_STL := stlport_static\n", true);

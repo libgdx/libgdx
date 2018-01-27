@@ -58,7 +58,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * <pre>
  * FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(&quot;myfont.ttf&quot;));
  * BitmapFont font = gen.generateFont(16);
- * gen.dispose();
+ * gen.dispose(); // Don't dispose if doing incremental glyph generation.
  * </pre>
  * 
  * The generator has to be disposed once it is no longer used. The returned {@link BitmapFont} instances are managed by the user
@@ -178,11 +178,11 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * generated. Using big sizes might cause such an exception.
 	 * @param parameter configures how the font is generated */
 	public BitmapFont generateFont (FreeTypeFontParameter parameter, FreeTypeBitmapFontData data) {
+		boolean updateTextureRegions = data.regions == null && parameter.packer != null;
+		if (updateTextureRegions) data.regions = new Array();
 		generateData(parameter, data);
-		if (data.regions == null && parameter.packer != null) {
-			data.regions = new Array();
+		if (updateTextureRegions)
 			parameter.packer.updateTextureRegions(data.regions, parameter.minFilter, parameter.magFilter, parameter.genMipMaps);
-		}
 		BitmapFont font = new BitmapFont(data, data.regions, true);
 		font.setOwnsTexture(parameter.packer == null);
 		return font;
