@@ -65,47 +65,47 @@ public class HieroSettings {
 				String[] pieces = line.split("=", 2);
 				String name = pieces[0].trim();
 				String value = pieces[1];
-				if (name.equals("font.name")) {
+				if ("font.name".equals(name)) {
 					fontName = value;
-				} else if (name.equals("font.size")) {
+				} else if ("font.size".equals(name)) {
 					fontSize = Integer.parseInt(value);
-				} else if (name.equals("font.gamma")) {
+				} else if ("font.gamma".equals(name)) {
 					gamma = Float.parseFloat(value);
-				} else if (name.equals("font.mono")) {
+				} else if ("font.mono".equals(name)) {
 					mono = Boolean.parseBoolean(value);
-				} else if (name.equals("font.size")) {
+				} else if ("font.size".equals(name)) {
 					fontSize = Integer.parseInt(value);
-				} else if (name.equals("font.bold")) {
+				} else if ("font.bold".equals(name)) {
 					bold = Boolean.parseBoolean(value);
-				} else if (name.equals("font.italic")) {
+				} else if ("font.italic".equals(name)) {
 					italic = Boolean.parseBoolean(value);
-				} else if (name.equals("font2.file")) {
+				} else if ("font2.file".equals(name)) {
 					font2File = value;
-				} else if (name.equals("font2.use")) {
+				} else if ("font2.use".equals(name)) {
 					font2Active = Boolean.parseBoolean(value);
-				} else if (name.equals("pad.top")) {
+				} else if ("pad.top".equals(name)) {
 					paddingTop = Integer.parseInt(value);
-				} else if (name.equals("pad.right")) {
+				} else if ("pad.right".equals(name)) {
 					paddingRight = Integer.parseInt(value);
-				} else if (name.equals("pad.bottom")) {
+				} else if ("pad.bottom".equals(name)) {
 					paddingBottom = Integer.parseInt(value);
-				} else if (name.equals("pad.left")) {
+				} else if ("pad.left".equals(name)) {
 					paddingLeft = Integer.parseInt(value);
-				} else if (name.equals("pad.advance.x")) {
+				} else if ("pad.advance.x".equals(name)) {
 					paddingAdvanceX = Integer.parseInt(value);
-				} else if (name.equals("pad.advance.y")) {
+				} else if ("pad.advance.y".equals(name)) {
 					paddingAdvanceY = Integer.parseInt(value);
-				} else if (name.equals("glyph.page.width")) {
+				} else if ("glyph.page.width".equals(name)) {
 					glyphPageWidth = Integer.parseInt(value);
-				} else if (name.equals("glyph.page.height")) {
+				} else if ("glyph.page.height".equals(name)) {
 					glyphPageHeight = Integer.parseInt(value);
-				} else if (name.equals("glyph.native.rendering")) {
+				} else if ("glyph.native.rendering".equals(name)) {
 					nativeRendering = Boolean.parseBoolean(value);
-				} else if (name.equals("glyph.text")) {
+				} else if ("glyph.text".equals(name)) {
 					glyphText = value;
 				} else if (name.equals(RENDER_TYPE)) {
 					renderType = Integer.parseInt(value);
-				} else if (name.equals("effect.class")) {
+				} else if ("effect.class".equals(name)) {
 					try {
 						effects.add(Class.forName(value).newInstance());
 					} catch (Throwable ex) {

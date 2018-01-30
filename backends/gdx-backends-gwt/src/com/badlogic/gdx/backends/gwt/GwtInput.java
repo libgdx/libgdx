@@ -497,7 +497,7 @@ public class GwtInput implements Input {
 	}
 
 	private void handleEvent (NativeEvent e) {
-		if (e.getType().equals("mousedown")) {
+		if ("mousedown".equals(e.getType())) {
 			if (!e.getEventTarget().equals(canvas) || touched[0]) {
 				float mouseX = getRelativeX(e, canvas);
 				float mouseY = getRelativeY(e, canvas);
@@ -523,7 +523,7 @@ public class GwtInput implements Input {
 			if (processor != null) processor.touchDown(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
 
-		if (e.getType().equals("mousemove")) {
+		if ("mousemove".equals(e.getType())) {
 			if (isCursorCatched()) {
 				this.deltaX[0] = (int)getMovementXJSNI(e);
 				this.deltaY[0] = (int)getMovementYJSNI(e);
@@ -544,7 +544,7 @@ public class GwtInput implements Input {
 			}
 		}
 
-		if (e.getType().equals("mouseup")) {
+		if ("mouseup".equals(e.getType())) {
 			if (!touched[0]) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
 			this.touched[0] = pressedButtons.size > 0;
@@ -570,7 +570,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("keydown") && hasFocus) {
+		if ("keydown".equals(e.getType()) && hasFocus) {
 			// System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
 			if (code == 67) {
@@ -592,13 +592,13 @@ public class GwtInput implements Input {
 			}
 		}
 
-		if (e.getType().equals("keypress") && hasFocus) {
+		if ("keypress".equals(e.getType()) && hasFocus) {
 			// System.out.println("keypress");
 			char c = (char)e.getCharCode();
 			if (processor != null) processor.keyTyped(c);
 		}
 
-		if (e.getType().equals("keyup") && hasFocus) {
+		if ("keyup".equals(e.getType()) && hasFocus) {
 			// System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
 			if (pressedKeys[code]) {
@@ -610,7 +610,7 @@ public class GwtInput implements Input {
 			}
 		}
 
-		if (e.getType().equals("touchstart")) {
+		if ("touchstart".equals(e.getType())) {
 			this.justTouched = true;
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
@@ -630,7 +630,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("touchmove")) {
+		if ("touchmove".equals(e.getType())) {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
@@ -647,7 +647,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("touchcancel")) {
+		if ("touchcancel".equals(e.getType())) {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
@@ -666,7 +666,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			e.preventDefault();
 		}
-		if (e.getType().equals("touchend")) {
+		if ("touchend".equals(e.getType())) {
 			JsArray<Touch> touches = e.getChangedTouches();
 			for (int i = 0, j = touches.length(); i < j; i++) {
 				Touch touch = touches.get(i);
