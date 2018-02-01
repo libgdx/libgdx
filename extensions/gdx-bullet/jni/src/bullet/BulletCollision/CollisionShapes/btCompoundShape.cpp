@@ -18,7 +18,7 @@ subject to the following restrictions:
 #include "BulletCollision/BroadphaseCollision/btDbvt.h"
 #include "LinearMath/btSerializer.h"
 
-btCompoundShape::btCompoundShape(bool enableDynamicAabbTree)
+btCompoundShape::btCompoundShape(bool enableDynamicAabbTree, const int initialChildCapacity)
 : m_localAabbMin(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT)),
 m_localAabbMax(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT)),
 m_dynamicAabbTree(0),
@@ -34,6 +34,8 @@ m_localScaling(btScalar(1.),btScalar(1.),btScalar(1.))
 		m_dynamicAabbTree = new(mem) btDbvt();
 		btAssert(mem==m_dynamicAabbTree);
 	}
+
+	m_children.reserve(initialChildCapacity);
 }
 
 

@@ -52,6 +52,11 @@ public class FreeTypeTest extends GdxTest {
 		parameter.size = 15;
 		parameter.flip = flip;
 		parameter.genMipMaps = true;
+		// parameter.shadowOffsetX = 1;
+		// parameter.shadowOffsetY = 1;
+		// parameter.shadowColor = Color.GREEN;
+		// parameter.borderWidth = 1f;
+		// parameter.borderColor = Color.PURPLE;
 
 		FreeTypeBitmapFontData fontData = generator.generateData(parameter);
 		ftFont = generator.generateFont(parameter);

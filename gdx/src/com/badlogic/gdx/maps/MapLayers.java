@@ -43,6 +43,16 @@ public class MapLayers implements Iterable<MapLayer> {
 		return null;
 	}
 
+	/** Get the index of the layer having the specified name, or -1 if no such layer exists. */
+	public int getIndex (String name) {
+		return getIndex(get(name));
+	}
+
+	/** Get the index of the layer in the collection, or -1 if no such layer exists. */
+	public int getIndex (MapLayer layer) {
+		return layers.indexOf(layer, true);
+	}
+
 	/** @return number of layers in the collection */
 	public int getCount () {
 		return layers.size;
@@ -61,6 +71,11 @@ public class MapLayers implements Iterable<MapLayer> {
 	/** @param layer layer to be removed */
 	public void remove (MapLayer layer) {
 		layers.removeValue(layer, true);
+	}
+
+	/** @return the number of map layers **/
+	public int size () {
+		return layers.size;
 	}
 
 	/** @param type

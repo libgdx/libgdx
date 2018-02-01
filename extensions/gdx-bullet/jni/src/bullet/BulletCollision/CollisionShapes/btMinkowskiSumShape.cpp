@@ -55,6 +55,23 @@ btScalar	btMinkowskiSumShape::getMargin() const
 void	btMinkowskiSumShape::calculateLocalInertia(btScalar mass,btVector3& inertia) const
 {
 	(void)mass;
-	btAssert(0);
-	inertia.setValue(0,0,0);
+	//inertia of the AABB of the Minkowski sum
+	btTransform identity;
+	identity.setIdentity();
+	btVector3 aabbMin,aabbMax;
+	getAabb(identity,aabbMin,aabbMax);
+
+	btVector3 halfExtents = (aabbMax-aabbMin)*btScalar(0.5);
+
+	btScalar margin = getMargin();
+
+	btScalar lx=btScalar(2.)*(halfExtents.x()+margin);
+	btScalar ly=btScalar(2.)*(halfExtents.y()+margin);
+	btScalar lz=btScalar(2.)*(halfExtents.z()+margin);
+	const btScalar x2 = lx*lx;
+	const btScalar y2 = ly*ly;
+	const btScalar z2 = lz*lz;
+	const btScalar scaledmass = mass * btScalar(0.08333333);
+
+	inertia = scaledmass * (btVector3(y2+z2,x2+z2,x2+y2));
 }

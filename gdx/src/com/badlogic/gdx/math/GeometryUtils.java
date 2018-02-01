@@ -32,6 +32,7 @@ public final class GeometryUtils {
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
 	 * </pre>
+	 * 
 	 * @return barycentricOut */
 	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
 		Vector2 v0 = tmp1.set(b).sub(a);
@@ -98,7 +99,6 @@ public final class GeometryUtils {
 	static public boolean colinear (float x1, float y1, float x2, float y2, float x3, float y3) {
 		float dx21 = x2 - x1, dy21 = y2 - y1;
 		float dx32 = x3 - x2, dy32 = y3 - y2;
-		float dx13 = x1 - x3, dy13 = y1 - y3;
 		float det = dx32 * dy21 - dx21 * dy32;
 		return Math.abs(det) < MathUtils.FLOAT_ROUNDING_ERROR;
 	}
@@ -121,6 +121,45 @@ public final class GeometryUtils {
 		float sqr1 = x1 * x1 + y1 * y1, sqr2 = x2 * x2 + y2 * y2, sqr3 = x3 * x3 + y3 * y3;
 		circumcenter.set((sqr1 * dy32 + sqr2 * dy13 + sqr3 * dy21) / det, -(sqr1 * dx32 + sqr2 * dx13 + sqr3 * dx21) / det);
 		return circumcenter;
+	}
+
+	static public float triangleCircumradius (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float m1, m2, mx1, mx2, my1, my2, x, y;
+		if (Math.abs(y2 - y1) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx2 = (x2 + x3) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (x2 + x1) / 2;
+			y = m2 * (x - mx2) + my2;
+		} else if (Math.abs(y3 - y2) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			m1 = -(x2 - x1) / (y2 - y1);
+			mx1 = (x1 + x2) / 2;
+			my1 = (y1 + y2) / 2;
+			x = (x3 + x2) / 2;
+			y = m1 * (x - mx1) + my1;
+		} else {
+			m1 = -(x2 - x1) / (y2 - y1);
+			m2 = -(x3 - x2) / (y3 - y2);
+			mx1 = (x1 + x2) / 2;
+			mx2 = (x2 + x3) / 2;
+			my1 = (y1 + y2) / 2;
+			my2 = (y2 + y3) / 2;
+			x = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+			y = m1 * (x - mx1) + my1;
+		}
+		float dx = x1 - x, dy = y1 - y;
+		return (float)Math.sqrt(dx * dx + dy * dy);
+	}
+
+	/** Ratio of circumradius to shortest edge as a measure of triangle quality.
+	 * <p>
+	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
+	 * Generation, Formulation, and Partition. */
+	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
+		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
+		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
+		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
+		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
 
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -183,11 +222,9 @@ public final class GeometryUtils {
 			int x1 = i;
 			int y1 = i + 1;
 			int x2 = (i + 2) % n;
-			if(x2 < offset)
-				x2 += offset;
+			if (x2 < offset) x2 += offset;
 			int y2 = (i + 3) % n;
-			if(y2 < offset)
-				y2 += offset;
+			if (y2 < offset) y2 += offset;
 			area += polygon[x1] * polygon[y2];
 			area -= polygon[x2] * polygon[y1];
 		}
@@ -196,9 +233,13 @@ public final class GeometryUtils {
 	}
 
 	static public void ensureCCW (float[] polygon) {
-		if (!areVerticesClockwise(polygon, 0, polygon.length)) return;
-		int lastX = polygon.length - 2;
-		for (int i = 0, n = polygon.length / 2; i < n; i += 2) {
+		ensureCCW(polygon, 0, polygon.length);
+	}
+
+	static public void ensureCCW (float[] polygon, int offset, int count) {
+		if (!isClockwise(polygon, offset, count)) return;
+		int lastX = offset + count - 2;
+		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
 			float x = polygon[i];
 			float y = polygon[i + 1];
@@ -209,7 +250,7 @@ public final class GeometryUtils {
 		}
 	}
 
-	static private boolean areVerticesClockwise (float[] polygon, int offset, int count) {
+	static public boolean isClockwise (float[] polygon, int offset, int count) {
 		if (count <= 2) return false;
 		float area = 0, p1x, p1y, p2x, p2y;
 		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
@@ -219,10 +260,10 @@ public final class GeometryUtils {
 			p2y = polygon[i + 3];
 			area += p1x * p2y - p2x * p1y;
 		}
-		p1x = polygon[count - 2];
-		p1y = polygon[count - 1];
-		p2x = polygon[0];
-		p2y = polygon[1];
+		p1x = polygon[offset + count - 2];
+		p1y = polygon[offset + count - 1];
+		p2x = polygon[offset];
+		p2y = polygon[offset + 1];
 		return area + p1x * p2y - p2x * p1y < 0;
 	}
 }

@@ -71,9 +71,9 @@ public final class BufferUtils {
 
 		ByteBuffer byteBuffer = (ByteBuffer)dst;
 		int oldPosition = byteBuffer.position();
+		byteBuffer.limit(oldPosition + numElements);
 		byteBuffer.put(src, srcOffset, numElements);
 		byteBuffer.position(oldPosition);
-		byteBuffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -93,9 +93,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or ShortBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -115,9 +115,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -137,9 +137,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -159,9 +159,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -177,9 +177,9 @@ public final class BufferUtils {
 		FloatBuffer buffer = asFloatBuffer(dst);
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -199,9 +199,9 @@ public final class BufferUtils {
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
 
 		int oldPosition = buffer.position();
+		buffer.limit(oldPosition + numElements);
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
-		buffer.limit(oldPosition + numElements);
 	}
 	
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -368,7 +368,6 @@ public final class BufferUtils {
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
-			idx += stride;
 			final float x = arr[idx    ];
 			final float y = arr[idx + 1];
 			final float z = dimensions >= 3 ? arr[idx + 2] : 0f;
@@ -380,6 +379,7 @@ public final class BufferUtils {
 				if (dimensions >= 4)
 					arr[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
 			}
+			idx += stride;
 		}
 		buffer.put(arr);
 		buffer.position(pos);
@@ -401,7 +401,6 @@ public final class BufferUtils {
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
-			idx += stride;
 			final float x = arr[idx    ];
 			final float y = arr[idx + 1];
 			final float z = dimensions >= 3 ? arr[idx + 2] : 1f;
@@ -409,6 +408,7 @@ public final class BufferUtils {
 			arr[idx+1] = x * m[ 1] + y * m[ 4] + z * m[ 7];
 			if (dimensions >= 3)
 				arr[idx+2] = x * m[ 2] + y * m[ 5] + z * m[8];
+			idx += stride;
 		}
 		buffer.put(arr);
 		buffer.position(pos);

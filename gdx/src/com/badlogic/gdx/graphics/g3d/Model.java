@@ -102,7 +102,7 @@ public class Model implements Disposable {
 		load(modelData, textureProvider);
 	}
 
-	private void load (ModelData modelData, TextureProvider textureProvider) {
+	protected void load (ModelData modelData, TextureProvider textureProvider) {
 		loadMeshes(modelData.meshes);
 		loadMaterials(modelData.materials, textureProvider);
 		loadNodes(modelData.nodes);
@@ -110,7 +110,7 @@ public class Model implements Disposable {
 		calculateTransforms();
 	}
 
-	private void loadAnimations (Iterable<ModelAnimation> modelAnimations) {
+	protected void loadAnimations (Iterable<ModelAnimation> modelAnimations) {
 		for (final ModelAnimation anim : modelAnimations) {
 			Animation animation = new Animation();
 			animation.id = anim.id;
@@ -160,7 +160,7 @@ public class Model implements Disposable {
 
 	private ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<NodePart, ArrayMap<String, Matrix4>>();
 
-	private void loadNodes (Iterable<ModelNode> modelNodes) {
+	protected void loadNodes (Iterable<ModelNode> modelNodes) {
 		nodePartBones.clear();
 		for (ModelNode node : modelNodes) {
 			nodes.add(loadNode(node));
@@ -174,7 +174,7 @@ public class Model implements Disposable {
 		}
 	}
 
-	private Node loadNode (ModelNode modelNode) {
+	protected Node loadNode (ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
 
@@ -226,13 +226,13 @@ public class Model implements Disposable {
 		return node;
 	}
 
-	private void loadMeshes (Iterable<ModelMesh> meshes) {
+	protected void loadMeshes (Iterable<ModelMesh> meshes) {
 		for (ModelMesh mesh : meshes) {
 			convertMesh(mesh);
 		}
 	}
 
-	private void convertMesh (ModelMesh modelMesh) {
+	protected void convertMesh (ModelMesh modelMesh) {
 		int numIndices = 0;
 		for (ModelMeshPart part : modelMesh.parts) {
 			numIndices += part.indices.length;
@@ -251,23 +251,25 @@ public class Model implements Disposable {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
 			meshPart.primitiveType = part.primitiveType;
-			meshPart.indexOffset = offset;
-			meshPart.numVertices = part.indices.length;
+			meshPart.offset = offset;
+			meshPart.size = part.indices.length;
 			meshPart.mesh = mesh;
 			mesh.getIndicesBuffer().put(part.indices);
-			offset += meshPart.numVertices;
+			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
 		mesh.getIndicesBuffer().position(0);
+		for (MeshPart part : meshParts)
+			part.update();
 	}
 
-	private void loadMaterials (Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
+	protected void loadMaterials (Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
 		for (ModelMaterial mtl : modelMaterials) {
 			this.materials.add(convertMaterial(mtl, textureProvider));
 		}
 	}
 
-	private Material convertMaterial (ModelMaterial mtl, TextureProvider textureProvider) {
+	protected Material convertMaterial (ModelMaterial mtl, TextureProvider textureProvider) {
 		Material result = new Material();
 		result.id = mtl.id;
 		if (mtl.ambient != null) result.set(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));

@@ -32,7 +32,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -82,8 +81,8 @@ public class FileHandle {
 		this.type = type;
 	}
 
-	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png. backward
-	 *         slashes will be replaced by forward slashes. */
+	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
+	 *         backward slashes will be replaced by forward slashes. */
 	public String path () {
 		return file.getPath().replace('\\', '/');
 	}
@@ -478,25 +477,22 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
-	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
-	 * classpath will return false. */
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an
+	 * {@link FileType#Internal} handle to an empty directory will return false. On the desktop, an {@link FileType#Internal}
+	 * handle to a directory on the classpath will return false. */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
 		return file().isDirectory();
 	}
 
-	/** Returns a handle to the child with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
-	 *            doesn't exist. */
+	/** Returns a handle to the child with the specified name. */
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
 	}
 
 	/** Returns a handle to the sibling with the specified name.
-	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
-	 *            doesn't exist, or this file is the root. */
+	 * @throws GdxRuntimeException if this file is the root. */
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new FileHandle(new File(file.getParent(), name), type);
@@ -520,8 +516,8 @@ public class FileHandle {
 		file().mkdirs();
 	}
 
-	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
-	 * will always return false. Note that this can be very slow for internal files on Android! */
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a
+	 * directory will always return false. Note that this can be very slow for internal files on Android! */
 	public boolean exists () {
 		switch (type) {
 		case Internal:
@@ -572,8 +568,7 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
 	 *            file, or copying failed. */
 	public void copyTo (FileHandle dest) {
-		boolean sourceDir = isDirectory();
-		if (!sourceDir) {
+		if (!isDirectory()) {
 			if (dest.isDirectory()) dest = dest.child(name());
 			copyFile(this, dest);
 			return;
@@ -584,16 +579,23 @@ public class FileHandle {
 			dest.mkdirs();
 			if (!dest.isDirectory()) throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
 		}
-		if (!sourceDir) dest = dest.child(name());
-		copyDirectory(this, dest);
+		copyDirectory(this, dest.child(name()));
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
 	 * @throws GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
 	 *            {@link FileType#Internal} file. */
 	public void moveTo (FileHandle dest) {
-		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot move a classpath file: " + file);
-		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		switch (type) {
+		case Classpath:
+			throw new GdxRuntimeException("Cannot move a classpath file: " + file);
+		case Internal:
+			throw new GdxRuntimeException("Cannot move an internal file: " + file);
+		case Absolute:
+		case External:
+			// Try rename for efficiency and to change case on case-insensitive file systems.
+			if (file().renameTo(dest.file())) return;
+		}
 		copyTo(dest);
 		delete();
 		if (exists() && isDirectory()) deleteDirectory();

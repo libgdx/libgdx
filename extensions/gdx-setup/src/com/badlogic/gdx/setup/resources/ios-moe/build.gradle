@@ -1,0 +1,63 @@
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
+task copyNatives {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def LD_FLAGS = "LIBGDX_NATIVES = "
+        configurations.natives.files.each { jar->
+            def outputDir = null
+            if (jar.name.endsWith("natives-ios.jar")) outputDir = file("xcode/native/ios")
+            if (outputDir != null) {
+                FileCollection fileCollection = zipTree(jar)
+                for (File libFile : fileCollection) {
+                    if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
+                        copy {
+                            from libFile.getAbsolutePath()
+                            into outputDir
+                        }
+                        LD_FLAGS += " -force_load \${SRCROOT}/native/ios/" + libFile.getName()
+                    }
+                }
+            }
+        }
+        def outFlags = file("xcode/ios-moe/custom.xcconfig");
+        outFlags.write LD_FLAGS
+
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "\n-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
+    }
+}
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+// Setup Multi-OS Engine
+moe {
+    xcode {
+        project 'xcode/ios-moe.xcodeproj'
+        mainTarget 'ios-moe'
+        testTarget 'ios-moe-Test'
+    }
+
+    remoteBuild {
+        resources = [ file("../%ASSET_PATH%") ]
+    }
+}
+
+moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
+moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
+moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
+moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+// Setup Eclipse
+eclipse {
+    // Set Multi-OS Engine nature
+    project {
+        name = appName + "-ios-moe"
+        natures 'org.multi-os-engine.project'
+    }
+}

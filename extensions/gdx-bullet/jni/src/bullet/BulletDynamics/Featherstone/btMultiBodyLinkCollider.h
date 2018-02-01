@@ -4,8 +4,8 @@ Copyright (c) 2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
-Permission is granted to anyone to use this software for any purpose, 
-including commercial applications, and to alter it and redistribute it freely, 
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it freely,
 subject to the following restrictions:
 
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
@@ -74,15 +74,48 @@ public:
 		if (m_link>=0)
 		{
 			const btMultibodyLink& link = m_multiBody->getLink(this->m_link);
-			if ((link.m_flags&BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && link.m_parent == other->m_link)
-				return false;
+			if (link.m_flags&BT_MULTIBODYLINKFLAGS_DISABLE_ALL_PARENT_COLLISION)
+			{
+				int parent_of_this = m_link;
+				while (1)
+				{
+					if (parent_of_this==-1)
+						break;
+					parent_of_this = m_multiBody->getLink(parent_of_this).m_parent;
+					if (parent_of_this==other->m_link)
+					{
+						return false;
+					}
+				}
+			}
+			else if (link.m_flags&BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION)
+			{
+				if ( link.m_parent == other->m_link)
+					return false;
+			}
+
 		}
-		
+
 		if (other->m_link>=0)
 		{
 			const btMultibodyLink& otherLink = other->m_multiBody->getLink(other->m_link);
-			if ((otherLink.m_flags& BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION) && otherLink.m_parent == this->m_link)
-				return false;
+			if (otherLink.m_flags& BT_MULTIBODYLINKFLAGS_DISABLE_ALL_PARENT_COLLISION)
+			{
+				int parent_of_other = other->m_link;
+				while (1)
+				{
+					if (parent_of_other==-1)
+						break;
+					parent_of_other = m_multiBody->getLink(parent_of_other).m_parent;
+					if (parent_of_other==this->m_link)
+						return false;
+				}
+			}
+			else if (otherLink.m_flags& BT_MULTIBODYLINKFLAGS_DISABLE_PARENT_COLLISION)
+			{
+				if (otherLink.m_parent == this->m_link)
+					return false;
+			}
 		}
 		return true;
 	}

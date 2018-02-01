@@ -7,7 +7,7 @@ import org.junit.Test;
 public class BitsTest {
 
 	@Test
-	public void test_most_significant_bits_hashcode_and_equals() {
+	public void testHashcodeAndEquals() {
 		Bits b1 = new Bits();
 		Bits b2 = new Bits();
 		
@@ -33,7 +33,7 @@ public class BitsTest {
 	}
 	
 	@Test
-	public void test_xor() {
+	public void testXor() {
 		Bits b1 = new Bits();
 		Bits b2 = new Bits();
 		
@@ -51,7 +51,7 @@ public class BitsTest {
 	}
 	
 	@Test
-	public void test_or() {
+	public void testOr() {
 		Bits b1 = new Bits();
 		Bits b2 = new Bits();
 		
@@ -69,7 +69,7 @@ public class BitsTest {
 	}
 	
 	@Test
-	public void test_and() {
+	public void testAnd() {
 		Bits b1 = new Bits();
 		Bits b2 = new Bits();
 		

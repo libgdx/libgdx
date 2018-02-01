@@ -7,6 +7,10 @@
  */
 %include "../common/gdxDisableBuffers.i"
 
+%rename(getRigidBodyAConst) btTypedConstraint::getRigidBodyA() const;
+%rename(getRigidBodyBConst) btTypedConstraint::getRigidBodyB() const;
+%rename(getJointFeedbackConst) btTypedConstraint::getJointFeedback() const;
+
 %{
 #include <BulletDynamics/ConstraintSolver/btTypedConstraint.h>
 %}

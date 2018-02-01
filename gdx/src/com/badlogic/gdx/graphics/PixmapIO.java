@@ -186,7 +186,6 @@ public class PixmapIO {
 		static private final byte PAETH = 4;
 
 		private final ChunkBuffer buffer;
-		private final DeflaterOutputStream deflaterOutput;
 		private final Deflater deflater;
 		private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
 		private boolean flipY = true;
@@ -199,7 +198,6 @@ public class PixmapIO {
 		public PNG (int initialBufferSize) {
 			buffer = new ChunkBuffer(initialBufferSize);
 			deflater = new Deflater();
-			deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 		}
 
 		/** If true, the resulting PNG is flipped vertically. Default is true. */
@@ -223,6 +221,7 @@ public class PixmapIO {
 
 		/** Writes the pixmap to the stream without closing the stream. */
 		public void write (OutputStream output, Pixmap pixmap) throws IOException {
+			DeflaterOutputStream deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 			DataOutputStream dataOutput = new DataOutputStream(output);
 			dataOutput.write(SIGNATURE);
 

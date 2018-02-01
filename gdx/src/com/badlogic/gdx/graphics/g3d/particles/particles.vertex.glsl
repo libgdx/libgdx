@@ -82,7 +82,7 @@ attribute vec4 a_region;
 
 //out
 varying vec4 v_color;
-varying mat2 v_rotation;
+varying vec4 v_rotation;
 varying MED vec4 v_region;
 varying vec2 v_uvRegionCenter;
 
@@ -100,7 +100,7 @@ void main(){
 	vec4 projCorner = u_projTrans * vec4(halfSize, halfSize, eyePos.z, eyePos.w);
 	gl_PointSize = u_screenWidth * projCorner.x / projCorner.w;
 	gl_Position = u_projTrans * eyePos;
-	v_rotation = mat2(a_sizeAndRotation.y, a_sizeAndRotation.z, -a_sizeAndRotation.z, a_sizeAndRotation.y);
+	v_rotation = vec4(a_sizeAndRotation.y, a_sizeAndRotation.z, -a_sizeAndRotation.z, a_sizeAndRotation.y);
 	v_color = a_color;
 	v_region.xy = a_region.xy;
 	v_region.zw = a_region.zw -a_region.xy;	

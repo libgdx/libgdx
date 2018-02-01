@@ -77,13 +77,13 @@ public class SoftMeshTest extends BaseBulletTest {
 
 		meshPart.mesh.scale(6, 6, 6);
 
-		indexMap = BufferUtils.newShortBuffer(meshPart.numVertices);
+		indexMap = BufferUtils.newShortBuffer(meshPart.size);
 
 		positionOffset = meshPart.mesh.getVertexAttribute(Usage.Position).offset;
 		normalOffset = meshPart.mesh.getVertexAttribute(Usage.Normal).offset;
 
 		softBody = new btSoftBody(worldInfo, meshPart.mesh.getVerticesBuffer(), meshPart.mesh.getVertexSize(), positionOffset,
-			normalOffset, meshPart.mesh.getIndicesBuffer(), meshPart.indexOffset, meshPart.numVertices, indexMap, 0);
+			normalOffset, meshPart.mesh.getIndicesBuffer(), meshPart.offset, meshPart.size, indexMap, 0);
 		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a fully dynamic body.
 		softBody.setMass(0, 0);
 		com.badlogic.gdx.physics.bullet.softbody.btSoftBody.Material pm = softBody.appendMaterial();
@@ -121,7 +121,7 @@ public class SoftMeshTest extends BaseBulletTest {
 		if (world.renderMeshes) {
 			MeshPart meshPart = model.nodes.get(0).parts.get(0).meshPart;
 			softBody.getVertices(meshPart.mesh.getVerticesBuffer(), meshPart.mesh.getVertexSize(), positionOffset, normalOffset,
-				meshPart.mesh.getIndicesBuffer(), meshPart.indexOffset, meshPart.numVertices, indexMap, 0);
+				meshPart.mesh.getIndicesBuffer(), meshPart.offset, meshPart.size, indexMap, 0);
 			softBody.getWorldTransform(entity.transform);
 		}
 		super.render();

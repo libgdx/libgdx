@@ -55,6 +55,7 @@ public class PngTest extends GdxTest {
 				PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f));
 				// writer.setCompression(Deflater.NO_COMPRESSION);
 				writer.write(file, pixmap);
+				writer.write(file, pixmap); // Write twice to make sure the object is reusable.
 				writer.dispose();
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);

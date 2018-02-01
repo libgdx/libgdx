@@ -77,8 +77,8 @@ public interface Shader extends Disposable {
 	/** Renders the {@link Renderable}, must be called between {@link #begin(Camera, RenderContext)} and {@link #end()}. The Shader
 	 * instance might not be able to render every type of {@link Renderable}s. Use the {@link #canRender(Renderable)} method to
 	 * check if the Shader is capable of rendering a specific {@link Renderable}.
-	 * @param renderable The renderable to render, all required fields (e.g. {@link Renderable#mesh}, {@link Renderable#material}
-	 *           and others) must be set. The {@link Renderable#shader} field will be ignored. */
+	 * @param renderable The renderable to render, all required fields (e.g. {@link Renderable#material} and others) must be set.
+	 *           The {@link Renderable#shader} field will be ignored. */
 	void render (final Renderable renderable);
 
 	/** Cleanup the context so other shaders can render. Must be called when done rendering using the {@link #render(Renderable)}

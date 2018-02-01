@@ -24,6 +24,11 @@
 %ignore btCollisionWorld::ClosestRayResultCallback::m_hitNormalWorld;
 %ignore btCollisionWorld::ClosestRayResultCallback::m_hitPointWorld;
 
+%rename(getBroadphaseConst) btCollisionWorld::getBroadphase() const;
+%rename(getDispatcherConst) btCollisionWorld::getDispatcher() const;
+%rename(getCollisionObjectArrayConst) btCollisionWorld::getCollisionObjectArray() const;
+%rename(getDispatchInfoConst) btCollisionWorld::getDispatchInfo() const;
+
 %extend btCollisionWorld::ClosestRayResultCallback {
 	void getRayFromWorld(btVector3 &out) {
 		out = $self->m_rayFromWorld;
@@ -31,21 +36,21 @@
 	void setRayFromWorld(btVector3 const &value) {
 		$self->m_rayFromWorld = value;
 	}
-	
+
 	void getRayToWorld(btVector3 &out) {
 		out = $self->m_rayToWorld;
 	}
 	void setRayToWorld(btVector3 const &value) {
 		$self->m_rayToWorld = value;
 	}
-	
+
 	void getHitNormalWorld(btVector3 &out) {
 		out = $self->m_hitNormalWorld;
 	}
 	void setHitNormalWorld(btVector3 const &value) {
 		$self->m_hitNormalWorld = value;
 	}
-	
+
 	void getHitPointWorld(btVector3 &out) {
 		out = $self->m_hitPointWorld;
 	}
@@ -64,7 +69,7 @@
 	void setRayFromWorld(btVector3 const &value) {
 		$self->m_rayFromWorld = value;
 	}
-	
+
 	void getRayToWorld(btVector3 &out) {
 		out = $self->m_rayToWorld;
 	}
@@ -83,7 +88,7 @@
 	void setHitNormalLocal(btVector3 const &value) {
 		$self->m_hitNormalLocal = value;
 	}
-	
+
 	void getHitPointLocal(btVector3 &out) {
 		out = $self->m_hitPointLocal;
 	}
@@ -104,21 +109,21 @@
 	void setRayFromWorld(btVector3 const &value) {
 		$self->m_convexFromWorld = value;
 	}
-	
+
 	void getConvexToWorld(btVector3 &out) {
 		out = $self->m_convexToWorld;
 	}
 	void setConvexToWorld(btVector3 const &value) {
 		$self->m_convexToWorld = value;
 	}
-	
+
 	void getHitNormalWorld(btVector3 &out) {
 		out = $self->m_hitNormalWorld;
 	}
 	void setHitNormalWorld(btVector3 const &value) {
 		$self->m_hitNormalWorld = value;
 	}
-	
+
 	void getHitPointWorld(btVector3 &out) {
 		out = $self->m_hitPointWorld;
 	}
@@ -131,5 +136,3 @@
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
-
-	

@@ -199,10 +199,8 @@ public abstract class GLTexture implements Disposable {
 		boolean disposePixmap = data.disposePixmap();
 		if (data.getFormat() != pixmap.getFormat()) {
 			Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data.getFormat());
-			Blending blend = Pixmap.getBlending();
-			Pixmap.setBlending(Blending.None);
+			tmp.setBlending(Blending.None);
 			tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-			Pixmap.setBlending(blend);
 			if (data.disposePixmap()) {
 				pixmap.dispose();
 			}

@@ -121,9 +121,11 @@ public final class Method {
 	/** Returns true if the method includes an annotation of the provided class type. */
 	public boolean isAnnotationPresent (Class<? extends java.lang.annotation.Annotation> annotationType) {
 		java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
-		for (java.lang.annotation.Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(annotationType)) {
-				return true;
+		if (annotations != null) {
+			for (java.lang.annotation.Annotation annotation : annotations) {
+				if (annotation.annotationType().equals(annotationType)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -134,6 +136,8 @@ public final class Method {
 	 * Does not include parameter annotations. */
 	public Annotation[] getDeclaredAnnotations () {
 		java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
+		if (annotations == null)
+			return new Annotation[0];
 		Annotation[] result = new Annotation[annotations.length];
 		for (int i = 0; i < annotations.length; i++) {
 			result[i] = new Annotation(annotations[i]);
@@ -146,6 +150,8 @@ public final class Method {
 	 * type he's looking for. */
 	public Annotation getDeclaredAnnotation (Class<? extends java.lang.annotation.Annotation> annotationType) {
 		java.lang.annotation.Annotation[] annotations = method.getDeclaredAnnotations();
+		if (annotations == null)
+			return null;
 		for (java.lang.annotation.Annotation annotation : annotations) {
 			if (annotation.annotationType().equals(annotationType)) {
 				return new Annotation(annotation);

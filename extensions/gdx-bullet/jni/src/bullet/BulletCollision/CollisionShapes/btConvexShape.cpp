@@ -48,7 +48,7 @@ btConvexShape::~btConvexShape()
 }
 
 
-void btConvexShape::project(const btTransform& trans, const btVector3& dir, btScalar& min, btScalar& max) const
+void btConvexShape::project(const btTransform& trans, const btVector3& dir, btScalar& min, btScalar& max, btVector3& witnesPtMin,btVector3& witnesPtMax) const
 {
 	btVector3 localAxis = dir*trans.getBasis();
 	btVector3 vtx1 = trans(localGetSupportingVertex(localAxis));
@@ -56,12 +56,16 @@ void btConvexShape::project(const btTransform& trans, const btVector3& dir, btSc
 
 	min = vtx1.dot(dir);
 	max = vtx2.dot(dir);
-
+	witnesPtMax = vtx2;
+	witnesPtMin = vtx1;
+	
 	if(min>max)
 	{
 		btScalar tmp = min;
 		min = max;
 		max = tmp;
+		witnesPtMax = vtx1;
+		witnesPtMin = vtx2;
 	}
 }
 
@@ -226,14 +230,13 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 		btScalar halfHeight = capsuleShape->getHalfHeight();
 		int capsuleUpAxis = capsuleShape->getUpAxis();
 
-		btScalar radius = capsuleShape->getRadius();
 		btVector3 supVec(0,0,0);
 
 		btScalar maxDot(btScalar(-BT_LARGE_FLOAT));
 
 		btVector3 vec = vec0;
 		btScalar lenSqr = vec.length2();
-		if (lenSqr < btScalar(0.0001))
+		if (lenSqr < SIMD_EPSILON*SIMD_EPSILON)
 		{
 			vec.setValue(1,0,0);
 		} else
@@ -247,8 +250,7 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 			btVector3 pos(0,0,0);
 			pos[capsuleUpAxis] = halfHeight;
 
-			//vtx = pos +vec*(radius);
-			vtx = pos +vec*(radius) - vec * capsuleShape->getMarginNV();
+			vtx = pos;
 			newDot = vec.dot(vtx);
 			
 
@@ -262,8 +264,7 @@ btVector3 btConvexShape::localGetSupportVertexWithoutMarginNonVirtual (const btV
 			btVector3 pos(0,0,0);
 			pos[capsuleUpAxis] = -halfHeight;
 
-			//vtx = pos +vec*(radius);
-			vtx = pos +vec*(radius) - vec * capsuleShape->getMarginNV();
+			vtx = pos;
 			newDot = vec.dot(vtx);
 			if (newDot > maxDot)
 			{
@@ -423,7 +424,6 @@ void btConvexShape::getAabbNonVirtual (const btTransform& t, btVector3& aabbMin,
 		btVector3 halfExtents(capsuleShape->getRadius(),capsuleShape->getRadius(),capsuleShape->getRadius());
 		int m_upAxis = capsuleShape->getUpAxis();
 		halfExtents[m_upAxis] = capsuleShape->getRadius() + capsuleShape->getHalfHeight();
-		halfExtents += btVector3(capsuleShape->getMarginNonVirtual(),capsuleShape->getMarginNonVirtual(),capsuleShape->getMarginNonVirtual());
 		btMatrix3x3 abs_b = t.getBasis().absolute();  
 		btVector3 center = t.getOrigin();
         btVector3 extent = halfExtents.dot3(abs_b[0], abs_b[1], abs_b[2]);    

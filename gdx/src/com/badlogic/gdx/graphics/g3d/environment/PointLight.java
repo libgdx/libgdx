@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,24 @@ package com.badlogic.gdx.graphics.g3d.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
-public class PointLight extends BaseLight {
+public class PointLight extends BaseLight<PointLight> {
 	public final Vector3 position = new Vector3();
 	public float intensity;
+
+	public PointLight setPosition(float positionX, float positionY, float positionZ) {
+		this.position.set(positionX, positionY, positionZ);
+		return this;
+	}
+
+	public PointLight setPosition(Vector3 position) {
+		this.position.set(position);
+		return this;
+	}
+
+	public PointLight setIntensity(float intensity) {
+		this.intensity = intensity;
+		return this;
+	}
 
 	public PointLight set (final PointLight copyFrom) {
 		return set(copyFrom.color, copyFrom.position, copyFrom.intensity);

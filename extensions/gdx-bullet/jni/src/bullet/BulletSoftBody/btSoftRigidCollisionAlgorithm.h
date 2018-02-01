@@ -31,8 +31,8 @@ class btSoftRigidCollisionAlgorithm : public btCollisionAlgorithm
 	//	bool	m_ownManifold;
 	//	btPersistentManifold*	m_manifoldPtr;
 
-	btSoftBody*				m_softBody;
-	btCollisionObject*		m_rigidCollisionObject;
+	//btSoftBody*				m_softBody;
+	//btCollisionObject*		m_rigidCollisionObject;
 
 	///for rigid versus soft (instead of soft versus rigid), we use this swapped boolean
 	bool	m_isSwapped;

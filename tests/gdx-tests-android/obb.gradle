@@ -1,0 +1,56 @@
+task copyAssets {
+    doLast {
+        def assets = fileTree('assets')
+        copy {
+            from assets
+            into "build/obbassets"
+            rename { fileName ->
+                fileName = "obbasset-" + fileName
+            }
+        }
+    }
+}
+
+task zipAssets(type: Zip) {
+    destinationDir = file("build/obb")
+    entryCompression = ZipEntryCompression.STORED
+    from "build/obbassets"
+    baseName = "main.1.com.badlogic.gdx.tests.android"
+    extension = "obb"
+}
+
+def getADBPath() {
+    def path
+    def localProperties = new File("local.properties")
+    if (localProperties.exists()) {
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        def sdkDir = properties.getProperty('sdk.dir')
+        if (sdkDir) {
+            path = sdkDir
+        } else {
+            path = "$System.env.ANDROID_HOME"
+        }
+    } else {
+        path = "$System.env.ANDROID_HOME"
+    }
+
+    def adb = path + "/platform-tools/adb"
+    adb
+}
+
+task createOBBDir(type: Exec) {
+    def adb = getADBPath()
+    commandLine "$adb", 'shell', 'mkdir', '-p', '/mnt/sdcard/Android/obb/com.badlogic.gdx.tests.android'
+}
+task uploadOBB(type: Exec) {
+    def adb = getADBPath()
+    commandLine "$adb", 'push', 'build/obb/main.1.com.badlogic.gdx.tests.android.obb', '/mnt/sdcard/Android/obb/com.badlogic.gdx.tests.android'
+}
+
+copyAssets.dependsOn clean
+zipAssets.dependsOn copyAssets
+createOBBDir.dependsOn zipAssets
+uploadOBB.dependsOn createOBBDir

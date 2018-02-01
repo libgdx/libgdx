@@ -23,6 +23,59 @@ subject to the following restrictions:
 #include "btGImpactMassUtil.h"
 
 
+btGImpactMeshShapePart::btGImpactMeshShapePart( btStridingMeshInterface * meshInterface, int part )
+{
+    // moved from .h to .cpp because of conditional compilation
+    // (The setting of BT_THREADSAFE may differ between various cpp files, so it is best to
+    // avoid using it in h files)
+    m_primitive_manager.m_meshInterface = meshInterface;
+    m_primitive_manager.m_part = part;
+    m_box_set.setPrimitiveManager( &m_primitive_manager );
+#if BT_THREADSAFE
+    // If threadsafe is requested, this object uses a different lock/unlock
+    //  model with the btStridingMeshInterface -- lock once when the object is constructed
+    //  and unlock once in the destructor.
+    // The other way of locking and unlocking for each collision check in the narrowphase
+    // is not threadsafe.  Note these are not thread-locks, they are calls to the meshInterface's
+    // getLockedReadOnlyVertexIndexBase virtual function, which by default just returns a couple of
+    // pointers.  In theory a client could override the lock function to do all sorts of
+    // things like reading data from GPU memory, or decompressing data on the fly, but such things
+    // do not seem all that likely or useful, given the performance cost.
+    m_primitive_manager.lock();
+#endif
+}
+
+btGImpactMeshShapePart::~btGImpactMeshShapePart()
+{
+    // moved from .h to .cpp because of conditional compilation
+#if BT_THREADSAFE
+    m_primitive_manager.unlock();
+#endif
+}
+
+void btGImpactMeshShapePart::lockChildShapes() const
+{
+    // moved from .h to .cpp because of conditional compilation
+#if ! BT_THREADSAFE
+    // called in the narrowphase -- not threadsafe!
+    void * dummy = (void*) ( m_box_set.getPrimitiveManager() );
+    TrimeshPrimitiveManager * dummymanager = static_cast<TrimeshPrimitiveManager *>( dummy );
+    dummymanager->lock();
+#endif
+}
+
+void btGImpactMeshShapePart::unlockChildShapes()  const
+{
+    // moved from .h to .cpp because of conditional compilation
+#if ! BT_THREADSAFE
+    // called in the narrowphase -- not threadsafe!
+    void * dummy = (void*) ( m_box_set.getPrimitiveManager() );
+    TrimeshPrimitiveManager * dummymanager = static_cast<TrimeshPrimitiveManager *>( dummy );
+    dummymanager->unlock();
+#endif
+}
+
+
 #define CALC_EXACT_INERTIA 1
 
 

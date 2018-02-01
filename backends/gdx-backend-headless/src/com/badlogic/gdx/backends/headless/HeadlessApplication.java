@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -50,6 +51,8 @@ public class HeadlessApplication implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
+	private String preferencesdir;
 	private final long renderInterval;
 
 	public HeadlessApplication(ApplicationListener listener) {
@@ -61,6 +64,7 @@ public class HeadlessApplication implements Application {
 			config = new HeadlessApplicationConfiguration();
 		
 		HeadlessNativesLoader.load();
+		setApplicationLogger(new HeadlessApplicationLogger());
 		this.listener = listener;
 		this.files = new HeadlessFiles();
 		this.net = new HeadlessNet();
@@ -69,6 +73,8 @@ public class HeadlessApplication implements Application {
 		this.graphics = new MockGraphics();
 		this.audio = new MockAudio();
 		this.input = new MockInput();
+
+		this.preferencesdir = config.preferencesDirectory;
 
 		Gdx.app = this;
 		Gdx.files = files;
@@ -103,8 +109,6 @@ public class HeadlessApplication implements Application {
 		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
 		listener.create();
-
-		boolean wasActive = true;
 
 		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
@@ -209,7 +213,7 @@ public class HeadlessApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new HeadlessPreferences(name, ".prefs/");
+			Preferences prefs = new HeadlessPreferences(name, this.preferencesdir);
 			preferences.put(name, prefs);
 			return prefs;
 		}
@@ -230,47 +234,32 @@ public class HeadlessApplication implements Application {
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
-		}
+		if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ": " + message);
-			exception.printStackTrace(System.err);
-		}
+		if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
 	}
 
 	@Override
@@ -281,6 +270,16 @@ public class HeadlessApplication implements Application {
 	@Override
 	public int getLogLevel() {
 		return logLevel;
+	}
+
+	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
 	}
 
 	@Override

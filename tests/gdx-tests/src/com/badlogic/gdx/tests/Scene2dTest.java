@@ -16,10 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -32,11 +29,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -167,6 +168,40 @@ public class Scene2dTest extends GdxTest {
 		window.pack();
 		window.pack();
 		stage.addActor(window);
+
+		ImageTextButtonStyle style = new ImageTextButtonStyle(skin.get("default", TextButtonStyle.class));
+		style.imageUp = skin.getDrawable("default-round");
+		ImageTextButton buttonLeft = new ImageTextButton("HI IM LEFT", style);
+		ImageTextButton buttonRight = new ImageTextButton("HI IM RIGHT", style) {
+			{
+				clearChildren();
+				add(getLabel());
+				add(getImage());
+			}
+		};
+		CheckBox checkBoxLeft = new CheckBox("HI IM LEFT", skin, "default");
+		CheckBox checkBoxRight = new CheckBox("HI IM RIGHT", skin, "default") {
+			{
+				clearChildren();
+				add(getLabel());
+				add(getImage());
+			}
+		};
+
+		buttonLeft.setPosition(300, 400);
+		buttonRight.setPosition(300, 370);
+		checkBoxLeft.setPosition(150, 400);
+		checkBoxRight.setPosition(150, 370);
+
+		stage.addActor(buttonLeft);
+		stage.addActor(buttonRight);
+		stage.addActor(checkBoxLeft);
+		stage.addActor(checkBoxRight);
+
+		buttonLeft.debug();
+		buttonRight.debug();
+		checkBoxLeft.debug();
+		checkBoxRight.debug();
 	}
 
 	public void render () {

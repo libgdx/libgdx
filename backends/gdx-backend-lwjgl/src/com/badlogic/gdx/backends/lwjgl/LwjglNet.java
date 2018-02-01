@@ -45,6 +45,11 @@ public class LwjglNet implements Net {
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
+	
+	@Override
+	public ServerSocket newServerSocket (Protocol protocol, String ipAddress, int port, ServerSocketHints hints) {
+		return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);
+	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {

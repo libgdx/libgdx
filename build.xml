@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.5.7-SNAPSHOT"/>
+	<property name="version" value="1.9.5-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -21,6 +21,7 @@
 	<target name="gdx-jnigen">
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
 			<property name="distDir" value="${distDir}/extensions/gdx-jnigen"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-jnigen"/>
 			<!-- we shouldn't build any natives -->
 			<property name="build-natives" value="false"/>
@@ -49,6 +50,7 @@
 			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
 		</fileset>
 		<ant antfile="../build-template.xml" dir="gdx">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx"/>
 			<reference refid="classpath"/>
 			<reference refid="resourcefiles"/>
@@ -61,6 +63,7 @@
                 <pathelement location="${distDir}/gdx.jar"/>                    
         </path>
         <ant antfile="../../build-template.xml" dir="backends/gdx-backend-headless">
+			    <property name="javacTarget" value="1.6"/>
                 <property name="jar" value="gdx-backend-headless"/>
                 <reference refid="classpath"/>
                 <reference refid="jarfiles"/>
@@ -74,21 +77,23 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-lwjgl"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
 
-	<!-- gdx jglfw backend -->
-	<target name="gdx-backend-jglfw" depends="gdx-core">
-		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/jglfw.jar"/>
-		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+	<!-- gdx lwjgl3 backend -->
+	<target name="gdx-backend-lwjgl3" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
-		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jglfw">
-			<property name="jar" value="gdx-backend-jglfw"/>
+		<ant antfile="fetch.xml">
+			<target name="fetch-lwjgl3"/>
+		</ant>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl3">
+			<property name="javacTarget" value="1.8"/>
+			<property name="jar" value="gdx-backend-lwjgl3"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
@@ -99,6 +104,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-android">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-android"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -110,6 +116,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backends-gwt">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -124,6 +131,7 @@
             <target name="fetch-robovm"/>
         </ant>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-backend-robovm"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -131,15 +139,17 @@
 
 	<!-- build the extensions -->
 	<!-- gdx tools -->
-	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl,gdx-backend-headless">
+	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-headless,gdx-freetype">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
 			<pathelement location="${distDir}/gdx-backend-headless.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-freetype/gdx-freetype.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="extensions/gdx-tools/assets"/>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-tools">
 			<property name="distDir" value="${distDir}/extensions/gdx-tools"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-tools"/>
 			<reference refid="classpath"/>
 			<reference refid="resourcefiles"/>
@@ -154,6 +164,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d/"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -169,6 +180,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-box2d-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -181,6 +193,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -194,7 +207,22 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-desktop"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
+	<target name="gdx-controllers-lwjgl3" depends="gdx-core,gdx-controllers,gdx-backend-lwjgl3">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl3.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-lwjgl3">
+			<property name="distDir" value="${distDir}/extensions/gdx-controllers/"/>
+			<property name="javacTarget" value="1.8"/>
+			<property name="jar" value="gdx-controllers-lwjgl3"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
@@ -208,6 +236,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-android"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -223,6 +252,7 @@
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-controllers-gwt"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -236,6 +266,7 @@
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-freetype">
 			<property name="distDir" value="${distDir}/extensions/gdx-freetype"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-freetype"/>
 			<reference refid="classpath"/>
 		</ant>
@@ -253,6 +284,7 @@
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
+			<property name="javacTarget" value="1.6"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
 			<reference refid="src"/>
@@ -292,7 +324,6 @@
 				<exclude name="com/badlogic/gdx/utils/XmlReader.rl" />
 				<exclude name="com/badlogic/gdx/utils/JsonReader.rl" />
 			</fileset>
-			<fileset dir="backends" includes="gdx-backend-jglfw/src/com/badlogic/gdx/backends/jglfw/JglfwApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java"/>
             <fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplicationConfiguration.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglCanvas.java"/>
@@ -307,7 +338,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl3,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-lwjgl3,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

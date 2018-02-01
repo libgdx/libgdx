@@ -133,9 +133,9 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			running = true;
 			resume = true;
 
-			// by jw: added synchronization, there was nothing before
 			while (resume) {
 				try {
+					requestRendering();
 					synch.wait();
 				} catch (InterruptedException ignored) {
 					Gdx.app.log("AndroidGraphics", "waiting for resume synchronization failed!");
@@ -170,7 +170,6 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 
 			if (resume) {
 				resume = false;
-				// by jw: originally was not synchronized
 				synch.notifyAll();
 			}
 

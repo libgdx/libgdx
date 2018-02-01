@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -41,6 +42,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.Tooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -102,14 +105,18 @@ public class UITest extends GdxTest {
 		textfield.setMessageText("Click here!");
 		textfield.setAlignment(Align.center);
 		final SelectBox selectBox = new SelectBox(skin);
+		selectBox.setAlignment(Align.right);
+		selectBox.getList().setAlignment(Align.right);
+		selectBox.getStyle().listStyle.selection.setRightWidth(10);
+		selectBox.getStyle().listStyle.selection.setLeftWidth(20);
 		selectBox.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println(selectBox.getSelected());
 			}
 		});
-		selectBox.setItems("Android1", "Windows1 long text in item", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
-			"Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5", "OSX5",
-			"Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
+		selectBox.setItems("Android1", "Windows1 long text in item", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2",
+			"Android3", "Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5",
+			"OSX5", "Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
 		selectBox.setSelected("Linux6");
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
@@ -120,7 +127,11 @@ public class UITest extends GdxTest {
 		// list.getSelection().setToggle(true);
 		ScrollPane scrollPane2 = new ScrollPane(list, skin);
 		scrollPane2.setFlickScroll(false);
-		SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin, "default-horizontal");
+		Label minSizeLabel = new Label("minWidth cell", skin); // demos SplitPane respecting widget's minWidth
+		Table rightSideTable = new Table(skin);
+		rightSideTable.add(minSizeLabel).growX().row();
+		rightSideTable.add(scrollPane2).grow();
+		SplitPane splitPane = new SplitPane(scrollPane, rightSideTable, false, skin, "default-horizontal");
 		fpsLabel = new Label("fps:", skin);
 
 		// configures an example of a TextField in password mode.
@@ -129,6 +140,14 @@ public class UITest extends GdxTest {
 		passwordTextField.setMessageText("password");
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
+
+		buttonMulti.addListener(new TextTooltip(
+			"This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!",
+			skin));
+		Table tooltipTable = new Table(skin);
+		tooltipTable.pad(10).background("default-round");
+		tooltipTable.add(new TextButton("Fancy tooltip!", skin));
+		imgButton.addListener(new Tooltip(tooltipTable));
 
 		// window.debug();
 		Window window = new Window("Dialog", skin);

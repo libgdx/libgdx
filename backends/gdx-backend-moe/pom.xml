@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.badlogicgames.gdx</groupId>
+    <artifactId>gdx-parent</artifactId>
+    <version>1.9.9-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>gdx-backend-moe</artifactId>
+  <packaging>jar</packaging>
+  <name>libGDX iOS Multi-OS Engine Backend</name>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter</name>
+            <url>https://dl.bintray.com/multi-os-engine/maven</url>
+        </repository>
+    </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gdx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+      
+    <dependency>
+      <groupId>com.intel.moe</groupId>
+      <artifactId>moe-core</artifactId>
+      <version>${moe.version}</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/moe-core.jar</systemPath>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>com.intel.moe</groupId>
+      <artifactId>moe-ios</artifactId>
+      <version>${moe.version}</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/libs/moe-ios.jar</systemPath>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+</project>

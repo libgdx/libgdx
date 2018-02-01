@@ -495,22 +495,24 @@ int btGeneric6DofSpring2Constraint::setLinearLimits(btConstraintInfo2* info, int
 	{
 		if(m_linearLimits.m_currentLimit[i] || m_linearLimits.m_enableMotor[i] || m_linearLimits.m_enableSpring[i])
 		{ // re-use rotational motor code
-			limot.m_bounce              = m_linearLimits.m_bounce[i];
-			limot.m_currentLimit        = m_linearLimits.m_currentLimit[i];
-			limot.m_currentPosition     = m_linearLimits.m_currentLinearDiff[i];
-			limot.m_currentLimitError   = m_linearLimits.m_currentLimitError[i];
-			limot.m_currentLimitErrorHi = m_linearLimits.m_currentLimitErrorHi[i];
-			limot.m_enableMotor         = m_linearLimits.m_enableMotor[i];
-			limot.m_servoMotor          = m_linearLimits.m_servoMotor[i];
-			limot.m_servoTarget         = m_linearLimits.m_servoTarget[i];
-			limot.m_enableSpring        = m_linearLimits.m_enableSpring[i];
-			limot.m_springStiffness     = m_linearLimits.m_springStiffness[i];
-			limot.m_springDamping       = m_linearLimits.m_springDamping[i];
-			limot.m_equilibriumPoint    = m_linearLimits.m_equilibriumPoint[i];
-			limot.m_hiLimit             = m_linearLimits.m_upperLimit[i];
-			limot.m_loLimit             = m_linearLimits.m_lowerLimit[i];
-			limot.m_maxMotorForce       = m_linearLimits.m_maxMotorForce[i];
-			limot.m_targetVelocity      = m_linearLimits.m_targetVelocity[i];
+			limot.m_bounce                 = m_linearLimits.m_bounce[i];
+			limot.m_currentLimit           = m_linearLimits.m_currentLimit[i];
+			limot.m_currentPosition        = m_linearLimits.m_currentLinearDiff[i];
+			limot.m_currentLimitError      = m_linearLimits.m_currentLimitError[i];
+			limot.m_currentLimitErrorHi    = m_linearLimits.m_currentLimitErrorHi[i];
+			limot.m_enableMotor            = m_linearLimits.m_enableMotor[i];
+			limot.m_servoMotor             = m_linearLimits.m_servoMotor[i];
+			limot.m_servoTarget            = m_linearLimits.m_servoTarget[i];
+			limot.m_enableSpring           = m_linearLimits.m_enableSpring[i];
+			limot.m_springStiffness        = m_linearLimits.m_springStiffness[i];
+			limot.m_springStiffnessLimited = m_linearLimits.m_springStiffnessLimited[i];
+			limot.m_springDamping          = m_linearLimits.m_springDamping[i];
+			limot.m_springDampingLimited   = m_linearLimits.m_springDampingLimited[i];
+			limot.m_equilibriumPoint       = m_linearLimits.m_equilibriumPoint[i];
+			limot.m_hiLimit                = m_linearLimits.m_upperLimit[i];
+			limot.m_loLimit                = m_linearLimits.m_lowerLimit[i];
+			limot.m_maxMotorForce          = m_linearLimits.m_maxMotorForce[i];
+			limot.m_targetVelocity         = m_linearLimits.m_targetVelocity[i];
 			btVector3 axis = m_calculatedTransformA.getBasis().getColumn(i);
 			int flags = m_flags >> (i * BT_6DOF_FLAGS_AXIS_SHIFT2);
 			limot.m_stopCFM  = (flags & BT_6DOF_FLAGS_CFM_STOP2) ? m_linearLimits.m_stopCFM[i] : info->cfm[0];
@@ -727,6 +729,21 @@ int btGeneric6DofSpring2Constraint::get_limit_motor_info2(
 	if (limot->m_enableMotor && limot->m_servoMotor)
 	{
 		btScalar error = limot->m_currentPosition - limot->m_servoTarget;
+		btScalar curServoTarget = limot->m_servoTarget;
+		if (rotational)
+		{
+			if (error > SIMD_PI)
+			{
+				error -= SIMD_2_PI;
+				curServoTarget +=SIMD_2_PI;
+			}
+			if (error < -SIMD_PI)
+			{
+				error += SIMD_2_PI;
+				curServoTarget -=SIMD_2_PI;
+			}
+		}
+
 		calculateJacobi(limot,transA,transB,info,srow,ax1,rotational,rotAllowed);
 		btScalar targetvelocity = error<0 ? -limot->m_targetVelocity : limot->m_targetVelocity;
 		btScalar tag_vel = -targetvelocity;
@@ -737,13 +754,13 @@ int btGeneric6DofSpring2Constraint::get_limit_motor_info2(
 			btScalar hiLimit;
 			if(limot->m_loLimit > limot->m_hiLimit)
 			{
-				lowLimit = error > 0 ? limot->m_servoTarget : -SIMD_INFINITY;
-				hiLimit  = error < 0 ? limot->m_servoTarget :  SIMD_INFINITY;
+				lowLimit = error > 0 ? curServoTarget : -SIMD_INFINITY;
+				hiLimit  = error < 0 ? curServoTarget :  SIMD_INFINITY;
 			}
 			else
 			{
-				lowLimit = error > 0 && limot->m_servoTarget>limot->m_loLimit ? limot->m_servoTarget : limot->m_loLimit;
-				hiLimit  = error < 0 && limot->m_servoTarget<limot->m_hiLimit ? limot->m_servoTarget : limot->m_hiLimit;
+				lowLimit = error > 0 && curServoTarget>limot->m_loLimit ? curServoTarget : limot->m_loLimit;
+				hiLimit  = error < 0 && curServoTarget<limot->m_hiLimit ? curServoTarget : limot->m_hiLimit;
 			}
 			mot_fact = getMotorFactor(limot->m_currentPosition, lowLimit, hiLimit, tag_vel, info->fps * limot->m_motorERP);
 		} 
@@ -785,12 +802,12 @@ int btGeneric6DofSpring2Constraint::get_limit_motor_info2(
 
 
 		//limit stiffness (the spring should not be sampled faster that the quarter of its angular frequency)
-		if( 0.25 < angularfreq * dt)
+		if(limot->m_springStiffnessLimited && 0.25 < angularfreq * dt)
 		{
-			ks = BT_ONE / dt / dt / btScalar(16.0) / m;
+			ks = BT_ONE / dt / dt / btScalar(16.0) * m;
 		}
-		//avoid overdamping
-		if(kd * dt > m)
+		//avoid damping that would blow up the spring
+		if(limot->m_springDampingLimited && kd * dt > m)
 		{
 			kd = m / dt;
 		}
@@ -996,13 +1013,49 @@ void btGeneric6DofSpring2Constraint::setTargetVelocity(int index, btScalar veloc
 		m_angularLimits[index - 3].m_targetVelocity = velocity;
 }
 
-void btGeneric6DofSpring2Constraint::setServoTarget(int index, btScalar target)
+
+
+void btGeneric6DofSpring2Constraint::setServoTarget(int index, btScalar targetOrg)
 {
 	btAssert((index >= 0) && (index < 6));
 	if (index<3)
-		m_linearLimits.m_servoTarget[index] = target;
+	{
+		m_linearLimits.m_servoTarget[index] = targetOrg;
+	}
 	else
+	{
+		//wrap between -PI and PI, see also
+		//https://stackoverflow.com/questions/4633177/c-how-to-wrap-a-float-to-the-interval-pi-pi
+
+		btScalar target = targetOrg+SIMD_PI;
+		if (1)
+		{
+			btScalar m = target - SIMD_2_PI * floor(target/SIMD_2_PI);
+			// handle boundary cases resulted from floating-point cut off:
+			{
+				if (m>=SIMD_2_PI)
+				{
+					target = 0;
+				} else
+				{
+					if (m<0 )
+					{
+						if (SIMD_2_PI+m == SIMD_2_PI)
+							target = 0;
+						else
+							target = SIMD_2_PI+m;
+					}
+					else
+					{
+						target = m;
+					}
+				}
+			}
+			target -= SIMD_PI;
+		}
+		
 		m_angularLimits[index - 3].m_servoTarget = target;
+	}
 }
 
 void btGeneric6DofSpring2Constraint::setMaxMotorForce(int index, btScalar force)
@@ -1023,22 +1076,28 @@ void btGeneric6DofSpring2Constraint::enableSpring(int index, bool onOff)
 		m_angularLimits[index - 3] .m_enableSpring = onOff;
 }
 
-void btGeneric6DofSpring2Constraint::setStiffness(int index, btScalar stiffness)
+void btGeneric6DofSpring2Constraint::setStiffness(int index, btScalar stiffness, bool limitIfNeeded)
 {
 	btAssert((index >= 0) && (index < 6));
-	if (index<3)
+	if (index<3) {
 		m_linearLimits.m_springStiffness[index] = stiffness;
-	else
-		m_angularLimits[index - 3] .m_springStiffness = stiffness;
+		m_linearLimits.m_springStiffnessLimited[index] = limitIfNeeded;
+	} else {
+		m_angularLimits[index - 3].m_springStiffness = stiffness;
+		m_angularLimits[index - 3].m_springStiffnessLimited = limitIfNeeded;
+	}
 }
 
-void btGeneric6DofSpring2Constraint::setDamping(int index, btScalar damping)
+void btGeneric6DofSpring2Constraint::setDamping(int index, btScalar damping, bool limitIfNeeded)
 {
 	btAssert((index >= 0) && (index < 6));
-	if (index<3)
+	if (index<3) {
 		m_linearLimits.m_springDamping[index] = damping;
-	else
-		m_angularLimits[index - 3] .m_springDamping = damping;
+		m_linearLimits.m_springDampingLimited[index] = limitIfNeeded;
+	} else {
+		m_angularLimits[index - 3].m_springDamping = damping;
+		m_angularLimits[index - 3].m_springDampingLimited = limitIfNeeded;
+	}
 }
 
 void btGeneric6DofSpring2Constraint::setEquilibriumPoint()

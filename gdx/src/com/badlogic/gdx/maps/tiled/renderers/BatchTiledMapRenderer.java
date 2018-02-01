@@ -43,7 +43,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
@@ -120,7 +122,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		batch.setProjectionMatrix(camera.combined);
 		float width = camera.viewportWidth * camera.zoom;
 		float height = camera.viewportHeight * camera.zoom;
-		viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
+		float w = width * Math.abs(camera.up.y) + height * Math.abs(camera.up.x);
+		float h = height * Math.abs(camera.up.y) + width * Math.abs(camera.up.x);
+		viewBounds.set(camera.position.x - w / 2, camera.position.y - h / 2, w, h);
 	}
 
 	@Override
@@ -133,15 +137,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public void render () {
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
-			if (layer.isVisible()) {
-				if (layer instanceof TiledMapTileLayer) {
-					renderTileLayer((TiledMapTileLayer)layer);
-				} if (layer instanceof TiledMapImageLayer) {
-					renderImageLayer((TiledMapImageLayer)layer);
-				} else {
-					renderObjects(layer);
-				}
-			}
+			renderMapLayer(layer);
 		}
 		endRender();
 	}
@@ -151,33 +147,45 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		beginRender();
 		for (int layerIdx : layers) {
 			MapLayer layer = map.getLayers().get(layerIdx);
-			if (layer.isVisible()) {
-				if (layer instanceof TiledMapTileLayer) {
-					renderTileLayer((TiledMapTileLayer)layer);
-				} else if (layer instanceof TiledMapImageLayer) {
-					renderImageLayer((TiledMapImageLayer)layer);
-				} else {
-					renderObjects(layer);
-				}
-			}
+			renderMapLayer(layer);
 		}
 		endRender();
 	}
 
+	protected void renderMapLayer (MapLayer layer) {
+		if (!layer.isVisible()) return;
+		if (layer instanceof MapGroupLayer) {
+			MapLayers childLayers = ((MapGroupLayer)layer).getLayers();
+			for (int i = 0; i < childLayers.size(); i++) {
+				MapLayer childLayer = childLayers.get(i);
+				if (!childLayer.isVisible()) continue;
+				renderMapLayer(childLayer);
+			}
+		} else {
+			if (layer instanceof TiledMapTileLayer) {
+				renderTileLayer((TiledMapTileLayer)layer);
+			} else if (layer instanceof TiledMapImageLayer) {
+				renderImageLayer((TiledMapImageLayer)layer);
+			} else {
+				renderObjects(layer);
+			}
+		}
+	}
+
 	@Override
-	public void renderObjects(MapLayer layer) {
+	public void renderObjects (MapLayer layer) {
 		for (MapObject object : layer.getObjects()) {
 			renderObject(object);
 		}
 	}
 
 	@Override
-	public void renderObject(MapObject object) {
+	public void renderObject (MapObject object) {
 
 	}
 	
 	@Override
-	public void renderImageLayer(TiledMapImageLayer layer) {
+	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 		final float color = Color.toFloatBits(batchColor.r,
 														  batchColor.g,

@@ -9,17 +9,29 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
         }
 
         instrumentTest.setRoot('tests')
     }
+    packagingOptions {
+        exclude 'META-INF/robovm/ios/robovm.xml'
+    }
+    defaultConfig {
+        applicationId "%PACKAGE%"
+        minSdkVersion 9
+        targetSdkVersion %API_LEVEL%
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
-// needed to add JNI shared libraries to APK when compiling on CLI
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniFolders = new HashSet<File>()
-    pkgTask.jniFolders.add(new File(projectDir, 'libs'))
-}
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
@@ -27,12 +39,16 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
 task copyAndroidNatives() { 
     file("libs/armeabi/").mkdirs();
     file("libs/armeabi-v7a/").mkdirs();
+    file("libs/arm64-v8a/").mkdirs();
+    file("libs/x86_64/").mkdirs();
     file("libs/x86/").mkdirs();
 
     configurations.natives.files.each { jar ->
         def outputDir = null
-        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+        if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+        if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")        
         if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+        if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
         if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
         if(outputDir != null) {
             copy {
@@ -63,12 +79,12 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', '%PACKAGE%.android/%PACKAGE%.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', '%PACKAGE%/%PACKAGE%.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
 eclipse {
-    // need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
+    // need to specify Java source sets explicitly, SpringSource Gradle Eclipse plugin
     // ignores any nodes added in classpath.file.withXml
     sourceSets {
         main {

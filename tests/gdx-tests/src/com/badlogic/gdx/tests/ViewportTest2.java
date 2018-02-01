@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
@@ -101,7 +102,7 @@ public class ViewportTest2 extends GdxTest {
 			ScalingViewport scalingViewport = (ScalingViewport)viewport;
 			int screenWidth = Gdx.graphics.getWidth();
 			int screenHeight = Gdx.graphics.getHeight();
-			Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
+			HdpiUtils.glViewport(0, 0, screenWidth, screenHeight);
 			batch.getProjectionMatrix().idt().setToOrtho2D(0, 0, screenWidth, screenHeight);
 			batch.getTransformMatrix().idt();
 			batch.begin();

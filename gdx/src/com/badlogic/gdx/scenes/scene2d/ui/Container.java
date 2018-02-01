@@ -189,9 +189,17 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		if (actor != this.actor) return false;
 		setActor(null);
 		return true;
+	}
+
+	public boolean removeActor (Actor actor, boolean unfocus) {
+		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		if (actor != this.actor) return false;
+		this.actor = null;
+		return super.removeActor(actor, unfocus);
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
@@ -597,7 +605,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefWidth () {
 		float v = prefWidth.get(actor);
 		if (background != null) v = Math.max(v, background.getMinWidth());
-		return v + padLeft.get(this) + padRight.get(this);
+		return Math.max(getMinWidth(), v + padLeft.get(this) + padRight.get(this));
 	}
 
 	public Value getPrefHeightValue () {
@@ -607,7 +615,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	public float getPrefHeight () {
 		float v = prefHeight.get(actor);
 		if (background != null) v = Math.max(v, background.getMinHeight());
-		return v + padTop.get(this) + padBottom.get(this);
+		return Math.max(getMinHeight(), v + padTop.get(this) + padBottom.get(this));
 	}
 
 	public Value getMaxWidthValue () {
@@ -720,8 +728,9 @@ public class Container<T extends Actor> extends WidgetGroup {
 			if (clip) {
 				shapes.flush();
 				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
-				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
-					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
+				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight())
+					: clipBegin(padLeft, padBottom, getWidth() - padLeft - padRight.get(this),
+						getHeight() - padBottom - padTop.get(this));
 				if (draw) {
 					drawDebugChildren(shapes);
 					clipEnd();

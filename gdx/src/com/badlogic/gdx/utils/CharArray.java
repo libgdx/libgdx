@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/** A resizable, ordered or unordered char array. Avoids the boxing that occurs with ArrayList<Character>. If unordered, this class
- * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
+/** A resizable, ordered or unordered char array. Avoids the boxing that occurs with ArrayList<Character>. If unordered, this
+ * class avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class CharArray {
 	public char[] items;
@@ -76,6 +76,33 @@ public class CharArray {
 		char[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
+	}
+
+	public void add (char value1, char value2) {
+		char[] items = this.items;
+		if (size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		size += 2;
+	}
+
+	public void add (char value1, char value2, char value3) {
+		char[] items = this.items;
+		if (size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		size += 3;
+	}
+
+	public void add (char value1, char value2, char value3, char value4) {
+		char[] items = this.items;
+		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		size += 4;
 	}
 
 	public void addAll (CharArray array) {
@@ -242,8 +269,8 @@ public class CharArray {
 		size = 0;
 	}
 
-	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
+	 * have been removed, or if it is known that more items will not be added.
 	 * @return {@link #items} */
 	public char[] shrink () {
 		if (items.length != size) resize(size);
@@ -256,6 +283,14 @@ public class CharArray {
 	public char[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		return items;
+	}
+
+	/** Sets the array size, leaving any values beyond the current size undefined.
+	 * @return {@link #items} */
+	public char[] setSize (int newSize) {
+		if (newSize > items.length) resize(Math.max(8, newSize));
+		size = newSize;
 		return items;
 	}
 
@@ -309,14 +344,27 @@ public class CharArray {
 		return array;
 	}
 
+	public int hashCode () {
+		if (!ordered) return super.hashCode();
+		char[] items = this.items;
+		int h = 1;
+		for (int i = 0, n = size; i < n; i++)
+			h = h * 31 + items[i];
+		return h;
+	}
+
 	public boolean equals (Object object) {
 		if (object == this) return true;
+		if (!ordered) return false;
 		if (!(object instanceof CharArray)) return false;
 		CharArray array = (CharArray)object;
+		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;
+		char[] items1 = this.items;
+		char[] items2 = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items1[i] != items2[i]) return false;
 		return true;
 	}
 

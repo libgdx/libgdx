@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -57,14 +59,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidClipboard clipboard;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
+	protected ApplicationLogger applicationLogger;
 
 	protected Callbacks callbacks;
 
@@ -150,6 +154,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
@@ -158,6 +163,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.clipboard = new AndroidClipboard(getActivity());
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -214,8 +220,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		input.onPause();
 
 		// davebaol & mobidevelop:
-		// This fragment is currently being removed from its activity or the activity is in the process of finishing
-		if (isRemoving() || getActivity().isFinishing()) {
+		// This fragment (or one of the parent)  is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
@@ -305,13 +311,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return new AndroidPreferences(getActivity().getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-
 	@Override
 	public Clipboard getClipboard () {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(getActivity());
-		}
 		return clipboard;
 	}
 
@@ -386,6 +387,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
+	public void setApplicationLogger (ApplicationLogger applicationLogger) {
+		this.applicationLogger = applicationLogger;
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger () {
+		return applicationLogger;
+	}
+
+	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
@@ -420,7 +431,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
+	public SnapshotArray<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
 
@@ -463,5 +474,23 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public WindowManager getWindowManager () {
 		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+	}
+
+	/**
+	* Iterates over nested fragments hierarchy and returns true if one of the fragment is in the removal process
+	*
+	* @return true - one of the parent fragments is being removed
+	*/
+	private boolean isAnyParentFragmentRemoving() {
+		Fragment fragment = getParentFragment();
+
+		 while (fragment != null) {
+			if (fragment.isRemoving())
+				return true;
+
+			fragment = fragment.getParentFragment();
+		}
+
+		return false;
 	}
 }

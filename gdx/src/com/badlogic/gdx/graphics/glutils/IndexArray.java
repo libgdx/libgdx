@@ -16,18 +16,14 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.utils.BufferUtils;
 
 public class IndexArray implements IndexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
-
-	ShortBuffer buffer;
-	ByteBuffer byteBuffer;
+	final ShortBuffer buffer;
+	final ByteBuffer byteBuffer;
 
 	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
 	private final boolean empty;
@@ -87,6 +83,14 @@ public class IndexArray implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
+	}
+
+	@Override
+	public void updateIndices (int targetOffset, short[] indices, int offset, int count) {
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 2);
+		BufferUtils.copy(indices, offset, byteBuffer, count);
+		byteBuffer.position(pos);
 	}
 
 	/** <p>

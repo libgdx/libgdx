@@ -131,21 +131,11 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 			if (useShader) {
 				distanceFieldShader.setSmoothing(smoothing / scale);
 			}
-			font.draw(spriteBatch, layout, x, y + scale * getBaselineShift(font));
+			font.draw(spriteBatch, layout, x, y);
 			y += font.getLineHeight();
 			spriteBatch.flush();
 		}
 		return (int)Math.ceil(maxWidth);
-	}
-
-	private float getBaselineShift (BitmapFont font) {
-		if (font == distanceFieldFont) {
-			// We set -8 paddingAdvanceY in Hiero to compensate for 4 padding on each side.
-			// Unfortunately the padding affects the baseline inside the font description.
-			return -8;
-		} else {
-			return 0;
-		}
 	}
 
 	private float getBaselineShift (float shift) {

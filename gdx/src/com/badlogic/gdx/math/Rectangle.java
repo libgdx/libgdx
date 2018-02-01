@@ -14,7 +14,10 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.Scaling;
 
 /** Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com */
@@ -192,6 +195,13 @@ public class Rectangle implements Serializable, Shape2D {
 		return contains(point.x, point.y);
 	}
 
+	/** @param circle the circle
+	 * @return whether the circle is contained in the rectangle */
+	public boolean contains (Circle circle) {
+		return (circle.x - circle.radius >= x) && (circle.x + circle.radius <= x + width)
+			&& (circle.y - circle.radius >= y) && (circle.y + circle.radius <= y + height);
+	}
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
 	public boolean contains (Rectangle rectangle) {
@@ -322,7 +332,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** Fits this rectangle around another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
 	 * other rectangle (e.g. Having a camera translate and scale to show a given area)
 	 * @param rect the other rectangle to fit this rectangle around
-	 * @return this rectangle for chaining */
+	 * @return this rectangle for chaining
+	 * @see Scaling */
 	public Rectangle fitOutside (Rectangle rect) {
 		float ratio = getAspectRatio();
 
@@ -341,7 +352,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** Fits this rectangle into another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
 	 * other rectangle (e.g. Scaling a texture within a arbitrary cell without squeezing)
 	 * @param rect the other rectangle to fit this rectangle inside
-	 * @return this rectangle for chaining */
+	 * @return this rectangle for chaining
+	 * @see Scaling */
 	public Rectangle fitInside (Rectangle rect) {
 		float ratio = getAspectRatio();
 
@@ -357,8 +369,32 @@ public class Rectangle implements Serializable, Shape2D {
 		return this;
 	}
 
+	/** Converts this {@code Rectangle} to a string in the format {@code [x,y,width,height]}.
+	 * @return a string representation of this object. */
 	public String toString () {
-		return x + "," + y + "," + width + "," + height;
+		return "[" + x + "," + y + "," + width + "," + height + "]";
+	}
+
+	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}
+	 * .
+	 * @param v the string.
+	 * @return this rectangle for chaining */
+	public Rectangle fromString (String v) {
+		int s0 = v.indexOf(',', 1);
+		int s1 = v.indexOf(',', s0 + 1);
+		int s2 = v.indexOf(',', s1 + 1);
+		if (s0 != -1 && s1 != -1 && s2 != -1 && v.charAt(0) == '[' && v.charAt(v.length() - 1) == ']') {
+			try {
+				float x = Float.parseFloat(v.substring(1, s0));
+				float y = Float.parseFloat(v.substring(s0 + 1, s1));
+				float width = Float.parseFloat(v.substring(s1 + 1, s2));
+				float height = Float.parseFloat(v.substring(s2 + 1, v.length() - 1));
+				return this.set(x, y, width, height);
+			} catch (NumberFormatException ex) {
+				// Throw a GdxRuntimeException
+			}
+		}
+		throw new GdxRuntimeException("Malformed Rectangle: " + v);
 	}
 
 	public float area () {

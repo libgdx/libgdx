@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.FileProcessor;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectSet;
-
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -31,6 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
@@ -53,7 +52,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
-		addInputSuffix(".png", ".jpg");
+		addInputSuffix(".png", ".jpg", ".jpeg");
 	}
 
 	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
@@ -116,6 +115,9 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				merge(rootSettings, settingsFile);
 			}
 
+			String atlasExtension = rootSettings.atlasExtension == null ? "" : rootSettings.atlasExtension;
+			atlasExtension = Pattern.quote(atlasExtension);
+
 			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
 				FileProcessor deleteProcessor = new FileProcessor() {
 					protected void processFile (Entry inputFile) throws Exception {
@@ -124,14 +126,14 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				};
 				deleteProcessor.setRecursive(false);
 
-				String scaledPackFileName = rootSettings.getScaledPackFileName(packFileName, i);
-				File packFile = new File(scaledPackFileName);
+				File packFile = new File(rootSettings.getScaledPackFileName(packFileName, i));
+				String scaledPackFileName = packFile.getName();
 
 				String prefix = packFile.getName();
 				int dotIndex = prefix.lastIndexOf('.');
 				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg)");
-				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg|jpeg)");
+				deleteProcessor.addInputRegex("(?i)" + prefix + atlasExtension);
 
 				String dir = packFile.getParent();
 				if (dir == null)
@@ -152,10 +154,12 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		while (true) {
 			settings = dirToSettings.get(parent);
 			if (settings != null) break;
-			if (parent.equals(root)) break;
+			if (parent == null || parent.equals(root)) break;
 			parent = parent.getParentFile();
 		}
 		if (settings == null) settings = defaultSettings;
+
+		if (settings.ignore) return;
 
 		if (settings.combineSubdirectories) {
 			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
@@ -212,9 +216,13 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 		// Pack.
 		if (!settings.silent) System.out.println(inputDir.inputFile.getName());
-		TexturePacker packer = new TexturePacker(root, settings);
+		TexturePacker packer = newTexturePacker(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);
 		packer.pack(inputDir.outputDir, packFileName);
+	}
+
+	protected TexturePacker newTexturePacker (File root, Settings settings) {
+		return new TexturePacker(root, settings);
 	}
 }

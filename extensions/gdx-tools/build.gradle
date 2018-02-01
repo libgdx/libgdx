@@ -1,0 +1,92 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+dependencies {
+    compile project(":gdx")
+    compile project(":backends:gdx-backend-lwjgl")
+    compile project(":extensions:gdx-freetype")
+    compile project(":backends:gdx-backend-headless")
+    compile testnatives.desktop
+}
+
+sourceSets.main.resources.srcDirs = ["assets"]
+
+ext {
+    particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
+    particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
+    hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
+    texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
+
+    toolsAssetsDir = ["assets"]
+}
+
+task dist2DParticles (type: Jar) {
+    from files(sourceSets.main.java.outputDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(toolsAssetsDir)
+
+    archiveName = "runnable-2D-particles.jar"
+
+    manifest {
+        attributes 'Main-Class': particles2DMainClass
+    }
+}
+
+task dist3DParticles (type: Jar) {
+    from files(sourceSets.main.java.outputDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(toolsAssetsDir)
+
+    archiveName = "runnable-3D-particles.jar"
+
+    manifest {
+        attributes 'Main-Class': particles3DMainClass
+    }
+}
+
+task distHiero (type: Jar) {
+    from files(sourceSets.main.java.outputDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(toolsAssetsDir)
+
+    archiveName = "runnable-hiero.jar"
+
+    manifest {
+        attributes 'Main-Class': hieroMainClass
+    }
+}
+
+task distTexturePacker (type: Jar) {
+    from files(sourceSets.main.java.outputDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(toolsAssetsDir)
+
+    archiveName = "runnable-texturepacker.jar"
+
+    manifest {
+        attributes 'Main-Class': texturePackerMainClass
+    }
+}
+
+task buildRunnables (dependsOn: [classes, dist2DParticles, dist3DParticles, distHiero, distTexturePacker]) {
+    doLast {
+        println "Building ye runnables"
+    }
+}

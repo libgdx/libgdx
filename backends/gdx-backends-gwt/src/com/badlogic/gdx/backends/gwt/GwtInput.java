@@ -22,11 +22,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
@@ -85,6 +83,24 @@ public class GwtInput implements Input {
 
 	@Override
 	public float getAccelerometerZ () {
+		return 0;
+	}
+	
+	@Override
+	public float getGyroscopeX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeY () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getGyroscopeZ () {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -150,7 +166,7 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched[0];
+		return pressedButtons.contains(button) && touched[0];
 	}
 
 	@Override
@@ -246,6 +262,11 @@ public class GwtInput implements Input {
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
+	}
+
+	@Override
+	public boolean isCatchMenuKey () {
+		return false;
 	}
 
 	@Override
@@ -375,10 +396,6 @@ public class GwtInput implements Input {
 		// FIXME??
 	}
 
-	@Override
-	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
-	}
-
 	// kindly borrowed from our dear playn friends...
 	static native void addEventListener (JavaScriptObject target, String name, GwtInput handler, boolean capture) /*-{
 		target
@@ -406,7 +423,7 @@ public class GwtInput implements Input {
 				// on mac
 				delta = -1.0 * evt.wheelDelta / 40;
 			}
-		} else if (agentInfo.isChrome || agentInfo.isSafari) {
+		} else if (agentInfo.isChrome || agentInfo.isSafari || agentInfo.isIE) {
 			delta = -1.0 * evt.wheelDelta / 120;
 			// handle touchpad for chrome
 			if (Math.abs(delta) < 1) {
@@ -968,4 +985,5 @@ public class GwtInput implements Input {
 	private static final int KEY_BACKSLASH = 220;
 	private static final int KEY_CLOSE_BRACKET = 221;
 	private static final int KEY_SINGLE_QUOTE = 222;
+
 }

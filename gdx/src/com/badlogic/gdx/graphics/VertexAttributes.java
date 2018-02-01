@@ -66,10 +66,16 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 
 	/** Returns the offset for the first VertexAttribute with the specified usage.
 	 * @param usage The usage of the VertexAttribute. */
-	public int getOffset (int usage) {
+	public int getOffset (int usage, int defaultIfNotFound) {
 		VertexAttribute vertexAttribute = findByUsage(usage);
-		if (vertexAttribute == null) return 0;
+		if (vertexAttribute == null) return defaultIfNotFound;
 		return vertexAttribute.offset / 4;
+	}
+	
+	/** Returns the offset for the first VertexAttribute with the specified usage.
+	 * @param usage The usage of the VertexAttribute. */
+	public int getOffset (int usage) {
+		return getOffset(usage, 0);
 	}
 
 	/** Returns the first VertexAttribute for the given usage.
@@ -86,10 +92,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
-			if (attribute.usage == VertexAttributes.Usage.ColorPacked)
-				count += 4;
-			else
-				count += 4 * attribute.numComponents;
+			count += attribute.getSizeInBytes();
 		}
 
 		return count;
@@ -157,6 +160,14 @@ public final class VertexAttributes implements Iterable<VertexAttribute>, Compar
 			mask = result;
 		}
 		return mask;
+	}
+
+	/**
+	 * Calculates the mask based on {@link VertexAttributes#getMask()} and packs the attributes count into the last 32 bits.
+	 * @return the mask with attributes count packed into the last 32 bits.
+	 */
+	public long getMaskWithSizePacked () {
+		return getMask() | ((long)attributes.length << 32);
 	}
 
 	@Override

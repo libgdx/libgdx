@@ -1,0 +1,63 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+apply from: "gradle/dependencies.gradle"
+
+
+allprojects {
+    group = 'com.badlogicgames.gdx'
+    version = '1.9.5-SNAPSHOT'
+
+    buildscript {
+        repositories {
+            mavenCentral()
+            jcenter()
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+}
+
+configure(subprojects - project(":tests:gdx-tests-android")) {
+    apply plugin: "idea"
+    apply plugin: "java"
+
+    compileJava {
+        options.fork = true
+        options.incremental = true
+    }
+
+    idea {
+        module {
+            scopes.PROVIDED.minus += [configurations.compile]
+            scopes.COMPILE.plus += [configurations.compile]
+        }
+    }
+}
+
+task fetchNatives {
+    doLast {
+        ant.importBuild "fetch.xml"
+        fetch.execute()
+        copy.execute()
+    }
+}
+

@@ -285,13 +285,17 @@ public class NativeCodeGenerator {
 		process.waitFor();
 		if (process.exitValue() != 0) {
 			System.out.println();
+			System.out.println("Command: " + command);
 			InputStream errorStream = process.getErrorStream();
 			int c = 0;
 			while ((c = errorStream.read()) != -1) {
 				System.out.print((char)c);
 			}
-			System.out.println("Command: " + command);
 		}
+	}
+
+	protected void emitHeaderInclude (StringBuffer buffer, String fileName) {
+		buffer.append("#include <" + fileName + ">\n");
 	}
 
 	private void generateCppFile (ArrayList<JavaSegment> javaSegments, FileDescriptor hFile, FileDescriptor cppFile)
@@ -300,7 +304,7 @@ public class NativeCodeGenerator {
 		ArrayList<CMethod> cMethods = cMethodParser.parse(headerFileContent).getMethods();
 
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("#include <" + hFile.name() + ">\n");
+		emitHeaderInclude(buffer, hFile.name());
 
 		for (JavaSegment segment : javaSegments) {
 			if (segment instanceof JniSection) {
@@ -324,8 +328,10 @@ public class NativeCodeGenerator {
 
 	private CMethod findCMethod (JavaMethod javaMethod, ArrayList<CMethod> cMethods) {
 		for (CMethod cMethod : cMethods) {
-			if (cMethod.getHead().endsWith(javaMethod.getClassName() + "_" + javaMethod.getName())
-				|| cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName() + "__")) {
+			String javaMethodName = javaMethod.getName().replace("_", "_1");
+			String javaClassName = javaMethod.getClassName().toString().replace("_", "_1");
+			if (cMethod.getHead().endsWith(javaClassName + "_" + javaMethodName)
+				|| cMethod.getHead().contains(javaClassName + "_" + javaMethodName + "__")) {
 				// FIXME poor man's overloaded method check...
 				// FIXME float test[] won't work, needs to be float[] test.
 				if (cMethod.getArgumentTypes().length - 2 == javaMethod.getArguments().size()) {
@@ -423,7 +429,7 @@ public class NativeCodeGenerator {
 
 	}
 
-	private void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
+	protected void emitMethodBody (StringBuffer buffer, JavaMethod javaMethod) {
 		// emit a line marker
 		emitLineMarker(buffer, javaMethod.getEndIndex());
 

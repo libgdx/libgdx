@@ -194,6 +194,7 @@ public class Polygon implements Shape2D {
 	}
 
 	/** Returns whether an x, y pair is contained within the polygon. */
+	@Override
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
@@ -207,6 +208,11 @@ public class Polygon implements Shape2D {
 			if (((y1 <= y && y < y2) || (y2 <= y && y < y1)) && x < ((x2 - x1) / (y2 - y1) * (y - y1) + x1)) intersects++;
 		}
 		return (intersects & 1) == 1;
+	}
+
+	@Override
+	public boolean contains (Vector2 point) {
+		return contains(point.x, point.y);
 	}
 
 	/** Returns the x-coordinate of the polygon's position within the world. */

@@ -42,6 +42,7 @@ public class RemoteSender implements InputProcessor {
 	public static final int ACCEL = 6;
 	public static final int COMPASS = 7;
 	public static final int SIZE = 8;
+	public static final int GYRO = 9;
 
 	public RemoteSender (String ip, int port) {
 		try {
@@ -73,6 +74,10 @@ public class RemoteSender implements InputProcessor {
 			out.writeInt(SIZE);
 			out.writeFloat(Gdx.graphics.getWidth());
 			out.writeFloat(Gdx.graphics.getHeight());
+			out.writeInt(GYRO);
+			out.writeFloat(Gdx.input.getGyroscopeX());
+			out.writeFloat(Gdx.input.getGyroscopeY());
+			out.writeFloat(Gdx.input.getGyroscopeZ());
 		} catch (Throwable t) {
 			out = null;
 			connected = false;

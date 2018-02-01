@@ -169,7 +169,7 @@ public class ShaderTest extends GdxTest {
 				set(u_color, colorAttr.color);
 			}
 
-			renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize);
+			renderable.meshPart.render(program);
 		}
 
 		@Override
@@ -252,7 +252,7 @@ public class ShaderTest extends GdxTest {
 
 		camController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);

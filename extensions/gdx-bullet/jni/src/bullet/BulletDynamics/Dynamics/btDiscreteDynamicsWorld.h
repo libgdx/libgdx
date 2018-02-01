@@ -30,6 +30,7 @@ class btIDebugDraw;
 struct InplaceSolverIslandCallback;
 
 #include "LinearMath/btAlignedObjectArray.h"
+#include "LinearMath/btThreads.h"
 
 
 ///btDiscreteDynamicsWorld provides discrete rigid body simulation
@@ -68,9 +69,11 @@ protected:
 	bool	m_latencyMotionStateInterpolation;
 
 	btAlignedObjectArray<btPersistentManifold*>	m_predictiveManifolds;
+    btSpinMutex m_predictiveManifoldsMutex;  // used to synchronize threads creating predictive contacts
 
 	virtual void	predictUnconstraintMotion(btScalar timeStep);
 	
+    void integrateTransformsInternal( btRigidBody** bodies, int numBodies, btScalar timeStep );  // can be called in parallel
 	virtual void	integrateTransforms(btScalar timeStep);
 		
 	virtual void	calculateSimulationIslands();
@@ -85,7 +88,9 @@ protected:
 
 	virtual void	internalSingleStepSimulation( btScalar timeStep);
 
-	void	createPredictiveContacts(btScalar timeStep);
+    void releasePredictiveContacts();
+    void createPredictiveContactsInternal( btRigidBody** bodies, int numBodies, btScalar timeStep );  // can be called in parallel
+	virtual void	createPredictiveContacts(btScalar timeStep);
 
 	virtual void	saveKinematicState(btScalar timeStep);
 
@@ -139,11 +144,11 @@ public:
 
 	virtual btVector3 getGravity () const;
 
-	virtual void	addCollisionObject(btCollisionObject* collisionObject,short int collisionFilterGroup=btBroadphaseProxy::StaticFilter,short int collisionFilterMask=btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
+	virtual void	addCollisionObject(btCollisionObject* collisionObject, int collisionFilterGroup=btBroadphaseProxy::StaticFilter, int collisionFilterMask=btBroadphaseProxy::AllFilter ^ btBroadphaseProxy::StaticFilter);
 
 	virtual void	addRigidBody(btRigidBody* body);
 
-	virtual void	addRigidBody(btRigidBody* body, short group, short mask);
+	virtual void	addRigidBody(btRigidBody* body, int group, int mask);
 
 	virtual void	removeRigidBody(btRigidBody* body);
 

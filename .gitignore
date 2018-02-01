@@ -2,7 +2,10 @@
 *~
 .*.swp
 .DS_STORE
-
+robovm-build/
+project.xcworkspace/
+xcuserdata/
+xcode/native/
 .gradle/
 build/
 bin/
@@ -17,6 +20,7 @@ gen/
 gen-external-apklibs/
 armeabi/
 armeabi-v7a/
+arm64-v8a/
 linux32/
 linux64/
 windows32/
@@ -27,15 +31,20 @@ Debug/
 Release/
 x64/
 x86/
+x86_64/
+robovm-build/
 ipch/
 /dist
 
 *.a
+*.a.tvos
 *.dll
 *.dll.mdb
 *.userprefs
 *.sdf
 *.class
+hs_err_pid*
+Thumbs.db
 
 libgdx-*.zip
 libgdx-*.zip.MD5
@@ -54,6 +63,17 @@ libgdx-*.zip.MD5
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
 /extensions/gdx-setup/gdx-setup.jar
+/extensions/gdx-setup/test/
+
+#the LWJGL3 libs are pulled via fetch.xml
+/backends/gdx-backend-lwjgl3/libs/lwjgl*.jar
 
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war
+
+#directories created by fetch.xml
+/tests/gdx-tests-android/libs
+/tmp/
+
+#gradle wrapper
+/local.properties

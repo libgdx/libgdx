@@ -115,7 +115,7 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
-	/** by jw: Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
+	/** Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
 	 * 
 	 * @param staticVertices whether vertices of this mesh are static or not. Allows for internal optimizations.
 	 * @param staticIndices whether indices of this mesh are static or not. Allows for internal optimizations.
@@ -133,8 +133,8 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
-	private VertexData makeVertexBuffer(boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
-		if(Gdx.gl30 != null) {
+	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
+		if (Gdx.gl30 != null) {
 			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
 		} else {
 			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
@@ -150,28 +150,39 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		switch(type) {
-			case VertexBufferObject:
-				vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObject(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexBufferObjectSubData:
-				vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexBufferObjectWithVAO:
-				vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-				indices = new IndexBufferObjectSubData(isStatic, maxIndices);
-				isVertexArray = false;
-				break;
-			case VertexArray:
-			default:
-				vertices = new VertexArray(maxVertices, attributes);
-				indices = new IndexArray(maxIndices);
-				isVertexArray = true;
-				break;
+		this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
+	}
+	
+	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+	 * 
+	 * @param type the {@link VertexDataType} to be used, VBO or VA.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param maxVertices the maximum number of vertices this mesh can hold
+	 * @param maxIndices the maximum number of indices this mesh can hold
+	 * @param attributes the {@link VertexAttributes}. */
+	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		switch (type) {
+		case VertexBufferObject:
+			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexBufferObjectSubData:
+			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexBufferObjectWithVAO:
+			vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			isVertexArray = false;
+			break;
+		case VertexArray:
+		default:
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexArray(maxIndices);
+			isVertexArray = true;
+			break;
 		}
 
 		addManagedMesh(Gdx.app, this);
@@ -492,10 +503,16 @@ public class Mesh implements Disposable {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 			}
 		} else {
-			if (indices.getNumIndices() > 0)
+			if (indices.getNumIndices() > 0) {
+				if (count + offset > indices.getNumMaxIndices()) {
+					throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: "
+						+ count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+				}
+				
 				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
-			else
+			} else {
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+			}
 		}
 
 		if (autoBind) unbind(shader);
@@ -609,14 +626,15 @@ public class Mesh implements Disposable {
 
 	/** Extends the specified {@link BoundingBox} with the specified part.
 	 * @param out the bounding box to store the result in.
-	 * @param offset the start index of the part.
-	 * @param count the amount of indices the part contains.
+	 * @param offset the start of the part.
+	 * @param count the size of the part.
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox (final BoundingBox out, int offset, int count, final Matrix4 transform) {
-		int numIndices = getNumIndices();
-		if (offset < 0 || count < 1 || offset + count > numIndices)
-			throw new GdxRuntimeException("Not enough indices ( offset=" + offset + ", count=" + count + ", max=" + numIndices
-				+ " )");
+		final int numIndices = getNumIndices();
+		final int numVertices = getNumVertices();
+		final int max = numIndices == 0 ? numVertices : numIndices;
+		if (offset < 0 || count < 1 || offset + count > max)
+			throw new GdxRuntimeException("Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
 		final FloatBuffer verts = vertices.getBuffer();
 		final ShortBuffer index = indices.getBuffer();
@@ -627,27 +645,54 @@ public class Mesh implements Disposable {
 
 		switch (posAttrib.numComponents) {
 		case 1:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), 0, 0);
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), 0, 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), 0, 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		case 2:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		case 3:
-			for (int i = offset; i < end; i++) {
-				final int idx = index.get(i) * vertexSize + posoff;
-				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
-				if (transform != null) tmpV.mul(transform);
-				out.ext(tmpV);
+			if (numIndices > 0) {
+				for (int i = offset; i < end; i++) {
+					final int idx = index.get(i) * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
+			} else {
+				for (int i = offset; i < end; i++) {
+					final int idx = i * vertexSize + posoff;
+					tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+					if (transform != null) tmpV.mul(transform);
+					out.ext(tmpV);
+				}
 			}
 			break;
 		}
@@ -999,7 +1044,7 @@ public class Mesh implements Disposable {
 					if (a == null) continue;
 					for (int j = 0; j < a.numComponents; j++)
 						checks[++idx] = (short)(a.offset + j);
-					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					attrs[++ai] = a.copy();
 					newVertexSize += a.numComponents;
 				}
 			}
@@ -1053,7 +1098,7 @@ public class Mesh implements Disposable {
 		else
 			result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, attrs);
 		result.setVertices(vertices, 0, numVertices * newVertexSize);
-		result.setIndices(indices);
+		if (indices != null) result.setIndices(indices);
 		return result;
 	}
 

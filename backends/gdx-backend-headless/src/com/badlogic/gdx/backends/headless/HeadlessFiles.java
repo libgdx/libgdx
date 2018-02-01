@@ -24,7 +24,7 @@ import com.badlogic.gdx.files.FileHandle;
 /** @author mzechner
  * @author Nathan Sweet */
 public final class HeadlessFiles implements Files {
-	static public final String externalPath = System.getProperty("user.home") + "/";
+	static public final String externalPath = System.getProperty("user.home") + File.separator;
 	static public final String localPath = new File("").getAbsolutePath() + File.separator;
 
 	@Override

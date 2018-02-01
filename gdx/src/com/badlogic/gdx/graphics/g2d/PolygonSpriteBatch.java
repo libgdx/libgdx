@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
-import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -74,6 +73,8 @@ public class PolygonSpriteBatch implements Batch {
 	private boolean blendingDisabled;
 	private int blendSrcFunc = GL20.GL_SRC_ALPHA;
 	private int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
+	private int blendSrcFuncAlpha = GL20.GL_SRC_ALPHA;
+	private int blendDstFuncAlpha = GL20.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
 	private ShaderProgram customShader;
@@ -91,16 +92,24 @@ public class PolygonSpriteBatch implements Batch {
 	/** The maximum number of triangles rendered in one batch so far. **/
 	public int maxTrianglesInBatch = 0;
 
-	/** Constructs a new PolygonSpriteBatch with a size of 2000, the default shader, and one buffer.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, ShaderProgram) */
+	/** Constructs a PolygonSpriteBatch with the default shader, 2000 vertices, and 4000 triangles.
+	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch () {
 		this(2000, null);
 	}
 
-	/** Constructs a PolygonSpriteBatch with the default shader and one buffer.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, ShaderProgram) */
+	/** Constructs a PolygonSpriteBatch with the default shader, size vertices, and size * 2 triangles.
+	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
+	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size) {
-		this(size, null);
+		this(size, size * 2, null);
+	}
+
+	/** Constructs a PolygonSpriteBatch with the specified shader, size vertices and size * 2 triangles.
+	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
+	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
+	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
+		this(size, size * 2, defaultShader);
 	}
 
 	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
@@ -109,22 +118,26 @@ public class PolygonSpriteBatch implements Batch {
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
-	 * @param size The max number of vertices and number of triangles in a single batch. Max of 10920.
-	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
-	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
-		// 32767 is max index, so 32767 / 3 - (32767 / 3 % 3) = 10920.
-		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
+	 * @param maxVertices The max number of vertices in a single batch. Max of 32767.
+	 * @param maxTriangles The max number of triangles in a single batch.
+	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately.
+	 *           May be null to use the default shader. */
+	public PolygonSpriteBatch (int maxVertices, int maxTriangles, ShaderProgram defaultShader) {
+		// 32767 is max vertex index.
+		if (maxVertices > 32767)
+			throw new IllegalArgumentException("Can't have more than 32767 vertices per batch: " + maxVertices);
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
 		if (Gdx.gl30 != null) {
 			vertexDataType = VertexDataType.VertexBufferObjectWithVAO;
 		}
-		mesh = new Mesh(vertexDataType, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		mesh = new Mesh(vertexDataType, false, maxVertices, maxTriangles * 3,
+			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-		vertices = new float[size * VERTEX_SIZE];
-		triangles = new short[size * 3];
+		vertices = new float[maxVertices * VERTEX_SIZE];
+		triangles = new short[maxTriangles * 3];
 
 		if (defaultShader == null) {
 			shader = SpriteBatch.createDefaultShader();
@@ -212,8 +225,8 @@ public class PolygonSpriteBatch implements Batch {
 		final Texture texture = region.region.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -251,8 +264,8 @@ public class PolygonSpriteBatch implements Batch {
 		final Texture texture = textureRegion.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -296,8 +309,8 @@ public class PolygonSpriteBatch implements Batch {
 		Texture texture = textureRegion.texture;
 		if (texture != lastTexture)
 			switchTexture(texture);
-		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
-			flush();
+		else if (triangleIndex + regionTrianglesLength > triangles.length
+			|| vertexIndex + regionVerticesLength * VERTEX_SIZE / 2 > vertices.length) flush();
 
 		int triangleIndex = this.triangleIndex;
 		int vertexIndex = this.vertexIndex;
@@ -1191,12 +1204,11 @@ public class PolygonSpriteBatch implements Batch {
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, vertexIndex);
 		mesh.setIndices(triangles, 0, triangleIndex);
-
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
 		}
 
 		mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, trianglesInBatch);
@@ -1219,10 +1231,17 @@ public class PolygonSpriteBatch implements Batch {
 
 	@Override
 	public void setBlendFunction (int srcFunc, int dstFunc) {
-		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
+		setBlendFunctionSeparate(srcFunc, dstFunc, srcFunc, dstFunc);
+	}
+
+	@Override
+	public void setBlendFunctionSeparate(int srcFuncColor, int dstFuncColor, int srcFuncAlpha, int dstFuncAlpha) {
+		if (blendSrcFunc == srcFuncColor && blendDstFunc == dstFuncColor && blendSrcFuncAlpha == srcFuncAlpha && blendDstFuncAlpha == dstFuncAlpha) return;
 		flush();
-		blendSrcFunc = srcFunc;
-		blendDstFunc = dstFunc;
+		blendSrcFunc = srcFuncColor;
+		blendDstFunc = dstFuncColor;
+		blendSrcFuncAlpha = srcFuncAlpha;
+		blendDstFuncAlpha = dstFuncAlpha;
 	}
 
 	@Override
@@ -1233,6 +1252,16 @@ public class PolygonSpriteBatch implements Batch {
 	@Override
 	public int getBlendDstFunc () {
 		return blendDstFunc;
+	}
+
+	@Override
+	public int getBlendSrcFuncAlpha() {
+		return blendSrcFuncAlpha;
+	}
+
+	@Override
+	public int getBlendDstFuncAlpha() {
+		return blendDstFuncAlpha;
 	}
 
 	@Override
@@ -1309,7 +1338,7 @@ public class PolygonSpriteBatch implements Batch {
 		}
 		return customShader;
 	}
-	
+
 	@Override
 	public boolean isBlendingEnabled () {
 		return !blendingDisabled;

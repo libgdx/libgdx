@@ -464,458 +464,476 @@ public class WebGLRenderingContext extends JavaScriptObject {
 
 	/** Returns a WebGL context for the given canvas element. Returns null if no 3d context is available. */
 	public static native WebGLRenderingContext getContext (CanvasElement canvas, WebGLContextAttributes attributes) /*-{
-																																							var names = ["experimental-webgl", "webgl", "moz-webgl", "webkit-webgl", "webkit-3d"];
-																																							for (var i = 0; i < names.length; i++) {
-																																							try {
-																																							var ctx = canvas.getContext(names[i], attributes);
-																																							if (ctx != null) {
-																																							// Hook for the semi-standard WebGLDebugUtils script.
-																																							if ($wnd.WebGLDebugUtils) {
-																																							if ($wnd.console && $wnd.console.log) console.log('WebGL debugging enabled');
-																																							return $wnd.WebGLDebugUtils.makeDebugContext(ctx);
-																																							}
-																																							return ctx;
-																																							}
-																																							} catch(e) {
-																																							}
-																																							}
-																																							return null;
-																																							}-*/;
+		var names = [ "experimental-webgl", "webgl", "moz-webgl",
+				"webkit-webgl", "webkit-3d" ];
+
+		for ( var i = 0; i < names.length; i++) {
+			try {
+				var ctx = canvas.getContext(names[i], attributes);
+
+				if (ctx != null) {
+					// Hook for the semi-standard WebGLDebugUtils script.
+					if ($wnd.WebGLDebugUtils) {
+						if ($wnd.console && $wnd.console.log)
+							console.log('WebGL debugging enabled');
+						return $wnd.WebGLDebugUtils.makeDebugContext(ctx);
+					}
+					return ctx;
+				}
+			} catch (e) {
+			}
+		}
+
+		return null;
+	}-*/;
 
 	protected WebGLRenderingContext () {
 	}
 
 	public final native CanvasElement getCanvas () /*-{
-																	return this.canvas;
-																	}-*/;
+		return this.canvas;
+	}-*/;
 
 	public final native WebGLContextAttributes getContextAttributes () /*-{
-																								return this.getContextAttributes();
-																								}-*/;
+		return this.getContextAttributes();
+	}-*/;
 
 	public final native boolean isContextLost () /*-{
-																return this.isContextLost();
-																}-*/;
+		return this.isContextLost();
+	}-*/;
 
 	public final native JsArrayString getSupportedExtensions () /*-{
-																					return this.getSupportedExtensions();
-																					}-*/;
+		return this.getSupportedExtensions();
+	}-*/;
 
 	public final native JavaScriptObject getExtension (String name) /*-{
-																							return this.getExtension(name);
-																							}-*/;
+		return this.getExtension(name);
+	}-*/;
 
 	public final native void activeTexture (int texture) /*-{
-																			this.activeTexture(texture);
-																			}-*/;
+		this.activeTexture(texture);
+	}-*/;
 
 	public final native void attachShader (WebGLProgram program, WebGLShader shader) /*-{
-																												this.attachShader(program, shader);
-																												}-*/;
+		this.attachShader(program, shader);
+	}-*/;
 
 	public final native void bindAttribLocation (WebGLProgram program, int index, String name) /*-{
-																																this.bindAttribLocation(program, index, name);
-																																}-*/;
+		this.bindAttribLocation(program, index, name);
+	}-*/;
 
 	public final native void bindBuffer (int target, WebGLBuffer buffer) /*-{
-																								this.bindBuffer(target, buffer);
-																								}-*/;
+		this.bindBuffer(target, buffer);
+	}-*/;
 
 	public final native void bindFramebuffer (int target, WebGLFramebuffer framebuffer) /*-{
-																													this.bindFramebuffer(target, framebuffer);
-																													}-*/;
+		this.bindFramebuffer(target, framebuffer);
+	}-*/;
 
 	public final native void bindRenderbuffer (int target, WebGLRenderbuffer renderbuffer) /*-{
-																														this.bindRenderbuffer(target, renderbuffer);
-																														}-*/;
+		this.bindRenderbuffer(target, renderbuffer);
+	}-*/;
 
 	public final native void bindTexture (int target, WebGLTexture texture) /*-{
-																									this.bindTexture(target, texture);
-																									}-*/;
+		this.bindTexture(target, texture);
+	}-*/;
 
 	public final native void blendColor (float red, float green, float blue, float alpha) /*-{
-																														this.blendColor(red, green, blue, alpha);
-																														}-*/;
+		this.blendColor(red, green, blue, alpha);
+	}-*/;
 
 	public final native void blendEquation (int mode) /*-{
-																		this.blendEquation(mode);
-																		}-*/;
+		this.blendEquation(mode);
+	}-*/;
 
 	public final native void blendEquationSeparate (int modeRGB, int modeAlpha) /*-{
-																											this.blendEquationSeparate(modeRGB, modeAlpha);
-																											}-*/;
+		this.blendEquationSeparate(modeRGB, modeAlpha);
+	}-*/;
 
 	public final native void blendFunc (int sfactor, int dfactor) /*-{
-																						this.blendFunc(sfactor, dfactor);
-																						}-*/;
+		this.blendFunc(sfactor, dfactor);
+	}-*/;
 
 	public final native void blendFuncSeparate (int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) /*-{
-																																	this.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
-																																	}-*/;
+		this.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+	}-*/;
 
 	public final native void bufferData (int target, int size, int usage) /*-{
-																									this.bufferData(target, size, usage);
-																									}-*/;
+		this.bufferData(target, size, usage);
+	}-*/;
 
 	public final native void bufferData (int target, ArrayBufferView data, int usage) /*-{
-																													this.bufferData(target, data, usage);
-																													}-*/;
+		this.bufferData(target, data, usage);
+	}-*/;
 
 	public final native void bufferData (int target, ArrayBuffer data, int usage) /*-{
-																											this.bufferData(target, data, usage);
-																											}-*/;
+		this.bufferData(target, data, usage);
+	}-*/;
 
 	public final native void bufferSubData (int target, int offset, ArrayBufferView data) /*-{
-																														this.bufferSubData(target, offset, data);
-																														}-*/;
+		this.bufferSubData(target, offset, data);
+	}-*/;
 
 	public final native void bufferSubData (int target, int offset, ArrayBuffer data) /*-{
-																													this.bufferSubData(target, offset, data);
-																													}-*/;
+		this.bufferSubData(target, offset, data);
+	}-*/;
 
 	public final native int checkFramebufferStatus (int target) /*-{
-																					return this.checkFramebufferStatus(target);
-																					}-*/;
+		return this.checkFramebufferStatus(target);
+	}-*/;
 
 	public final native void clear (int mask) /*-{
-															this.clear(mask);
-															}-*/;
+		this.clear(mask);
+	}-*/;
 
 	public final native void clearColor (float red, float green, float blue, float alpha) /*-{
-																														this.clearColor(red, green, blue, alpha);
-																														}-*/;
+		this.clearColor(red, green, blue, alpha);
+	}-*/;
 
 	public final native void clearDepth (float depth) /*-{
-																		this.clearDepth(depth);
-																		}-*/;
+		this.clearDepth(depth);
+	}-*/;
 
 	public final native void clearStencil (int s) /*-{
-																	this.clearStencil(s);
-																	}-*/;
+		this.clearStencil(s);
+	}-*/;
 
 	public final native void colorMask (boolean red, boolean green, boolean blue, boolean alpha) /*-{
-																																this.colorMask(red, green, blue, alpha);
-																																}-*/;
+		this.colorMask(red, green, blue, alpha);
+	}-*/;
 
 	public final native void compileShader (WebGLShader shader) /*-{
-																					this.compileShader(shader);
-																					}-*/;
+		this.compileShader(shader);
+	}-*/;
 
 	public final native void copyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height,
 		int border) /*-{
-						this.copyTexImage2D(target, level, internalformat, x, y, width, height, border);
-						}-*/;
+		this.copyTexImage2D(target, level, internalformat, x, y, width, height,
+				border);
+	}-*/;
 
 	public final native void copyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width,
 		int height) /*-{
-						this.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
-						}-*/;
+		this.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width,
+				height);
+	}-*/;
 
 	public final native WebGLBuffer createBuffer () /*-{
-																	return this.createBuffer();
-																	}-*/;
+		return this.createBuffer();
+	}-*/;
 
 	public final native WebGLFramebuffer createFramebuffer () /*-{
-																					return this.createFramebuffer();
-																					}-*/;
+		return this.createFramebuffer();
+	}-*/;
 
 	public final native WebGLProgram createProgram () /*-{
-																		return this.createProgram();
-																		}-*/;
+		return this.createProgram();
+	}-*/;
 
 	public final native WebGLRenderbuffer createRenderbuffer () /*-{
-																					return this.createRenderbuffer();
-																					}-*/;
+		return this.createRenderbuffer();
+	}-*/;
 
 	public final native WebGLShader createShader (int type) /*-{
-																				return this.createShader(type);
-																				}-*/;
+		return this.createShader(type);
+	}-*/;
 
 	public final native WebGLTexture createTexture () /*-{
-																		return this.createTexture();
-																		}-*/;
+		return this.createTexture();
+	}-*/;
 
 	public final native void cullFace (int mode) /*-{
-																this.cullFace(mode);
-																}-*/;
+		this.cullFace(mode);
+	}-*/;
 
 	public final native void deleteBuffer (WebGLBuffer buffer) /*-{
-																					this.deleteBuffer(buffer);
-																					}-*/;
+		this.deleteBuffer(buffer);
+	}-*/;
 
 	public final native void deleteFramebuffer (WebGLFramebuffer framebuffer) /*-{
-																										this.deleteFramebuffer(framebuffer);
-																										}-*/;
+		this.deleteFramebuffer(framebuffer);
+	}-*/;
 
 	public final native void deleteProgram (WebGLProgram program) /*-{
-																						this.deleteProgram(program);
-																						}-*/;
+		this.deleteProgram(program);
+	}-*/;
 
 	public final native void deleteRenderbuffer (WebGLRenderbuffer renderbuffer) /*-{
-																											this.deleteRenderbuffer(renderbuffer);
-																											}-*/;
+		this.deleteRenderbuffer(renderbuffer);
+	}-*/;
 
 	public final native void deleteShader (WebGLShader shader) /*-{
-																					this.deleteShader(shader);
-																					}-*/;
+		this.deleteShader(shader);
+	}-*/;
 
 	public final native void deleteTexture (WebGLTexture texture) /*-{
-																						this.deleteTexture(texture);
-																						}-*/;
+		this.deleteTexture(texture);
+	}-*/;
 
 	public final native void depthFunc (int func) /*-{
-																	this.depthFunc(func);
-																	}-*/;
+		this.depthFunc(func);
+	}-*/;
 
 	public final native void depthMask (boolean flag) /*-{
-																		this.depthMask(flag);
-																		}-*/;
+		this.depthMask(flag);
+	}-*/;
 
 	public final native void depthRange (float zNear, float zFar) /*-{
-																						this.depthRange(zNear, zFar);
-																						}-*/;
+		this.depthRange(zNear, zFar);
+	}-*/;
 
 	public final native void detachShader (WebGLProgram program, WebGLShader shader) /*-{
-																												this.detachShader(program, shader);
-																												}-*/;
+		this.detachShader(program, shader);
+	}-*/;
 
 	public final native void disable (int cap) /*-{
-																this.disable(cap);
-																}-*/;
+		this.disable(cap);
+	}-*/;
 
 	public final native void disableVertexAttribArray (int index) /*-{
-																						this.disableVertexAttribArray(index);
-																						}-*/;
+		this.disableVertexAttribArray(index);
+	}-*/;
 
 	public final native void drawArrays (int mode, int first, int count) /*-{
-																								this.drawArrays(mode, first, count);
-																								}-*/;
+		this.drawArrays(mode, first, count);
+	}-*/;
 
 	public final native void drawElements (int mode, int count, int type, int offset) /*-{
-																													this.drawElements(mode, count, type, offset);
-																													}-*/;
+		this.drawElements(mode, count, type, offset);
+	}-*/;
 
 	public final native void enable (int cap) /*-{
-															this.enable(cap);
-															}-*/;
+		this.enable(cap);
+	}-*/;
 
 	public final native void enableVertexAttribArray (int index) /*-{
-																						this.enableVertexAttribArray(index);
-																						}-*/;
+		this.enableVertexAttribArray(index);
+	}-*/;
 
 	public final native void finish () /*-{
-													this.finish();
-													}-*/;
+		this.finish();
+	}-*/;
 
 	public final native void flush () /*-{
-													this.flush();
-													}-*/;
+		this.flush();
+	}-*/;
 
 	public final native void framebufferRenderbuffer (int target, int attachment, int renderbuffertarget,
 		WebGLRenderbuffer renderbuffer) /*-{
-													this.framebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
-													}-*/;
+		this.framebufferRenderbuffer(target, attachment, renderbuffertarget,
+				renderbuffer);
+	}-*/;
 
 	public final native void framebufferTexture2D (int target, int attachment, int textarget, WebGLTexture texture, int level) /*-{
-																																										this.framebufferTexture2D(target, attachment, textarget, texture, level);
-																																										}-*/;
+		this
+				.framebufferTexture2D(target, attachment, textarget, texture,
+						level);
+	}-*/;
 
 	public final native void frontFace (int mode) /*-{
-																	this.frontFace(mode);
-																	}-*/;
+		this.frontFace(mode);
+	}-*/;
 
 	public final native void generateMipmap (int target) /*-{
-																			this.generateMipmap(target);
-																			}-*/;
+		this.generateMipmap(target);
+	}-*/;
 
 	public final native WebGLActiveInfo getActiveAttrib (WebGLProgram program, int index) /*-{
-																														return this.getActiveAttrib(program, index);
-																														}-*/;
+		return this.getActiveAttrib(program, index);
+	}-*/;
 
 	public final native WebGLActiveInfo getActiveUniform (WebGLProgram program, int index) /*-{
-																														return this.getActiveUniform(program, index);
-																														}-*/;
+		return this.getActiveUniform(program, index);
+	}-*/;
 
 	public final native JsArray<WebGLShader> getAttachedShaders (WebGLProgram program) /*-{
-																													return this.getAttachedShaders(program);
-																													}-*/;
+		return this.getAttachedShaders(program);
+	}-*/;
 
 	public final native int getAttribLocation (WebGLProgram program, String name) /*-{
-																											return this.getAttribLocation(program, name);
-																											}-*/;
+		return this.getAttribLocation(program, name);
+	}-*/;
 
 	public final native int getError () /*-{
-													return this.getError();
-													}-*/;
+		return this.getError();
+	}-*/;
 
 	public final native String getProgramInfoLog (WebGLProgram program) /*-{
-																								return this.getProgramInfoLog(program);
-																								}-*/;
+		return this.getProgramInfoLog(program);
+	}-*/;
 
 	public final native String getShaderInfoLog (WebGLShader shader) /*-{
-																							return this.getShaderInfoLog(shader);
-																							}-*/;
+		return this.getShaderInfoLog(shader);
+	}-*/;
 
 	public final native String getShaderSource (WebGLShader shader) /*-{
-																							return this.getShaderSource(shader);
-																							}-*/;
+		return this.getShaderSource(shader);
+	}-*/;
 
 	public final native WebGLUniformLocation getUniformLocation (WebGLProgram program, String name) /*-{
-																																	return this.getUniformLocation(program, name);
-																																	}-*/;
+		return this.getUniformLocation(program, name);
+	}-*/;
 
 	public final native int getVertexAttribOffset (int index, int pname) /*-{
-																								return this.getVertexAttribOffset(index, pname);
-																								}-*/;
+		return this.getVertexAttribOffset(index, pname);
+	}-*/;
 
 	public final native void hint (int target, int mode) /*-{
-																			this.hint(target, mode);
-																			}-*/;
+		this.hint(target, mode);
+	}-*/;
 
 	public final native boolean isBuffer (WebGLBuffer buffer) /*-{
-																					return this.isBuffer(buffer);
-																					}-*/;
+		return this.isBuffer(buffer);
+	}-*/;
 
 	public final native boolean isEnabled (int cap) /*-{
-																	return this.isEnabled(cap);
-																	}-*/;
+		return this.isEnabled(cap);
+	}-*/;
 
 	public final native boolean isFramebuffer (WebGLFramebuffer framebuffer) /*-{
-																										return this.isFramebuffer(framebuffer);
-																										}-*/;
+		return this.isFramebuffer(framebuffer);
+	}-*/;
 
 	public final native boolean isProgram (WebGLProgram program) /*-{
-																						return this.isProgram(program);
-																						}-*/;
+		return this.isProgram(program);
+	}-*/;
 
 	public final native boolean isRenderbuffer (WebGLRenderbuffer renderbuffer) /*-{
-																											return this.isRenderbuffer(renderbuffer);
-																											}-*/;
+		return this.isRenderbuffer(renderbuffer);
+	}-*/;
 
 	public final native boolean isShader (WebGLShader shader) /*-{
-																					return this.isShader(shader);
-																					}-*/;
+		return this.isShader(shader);
+	}-*/;
 
 	public final native boolean isTexture (WebGLTexture texture) /*-{
-																						return this.isTexture(texture);
-																						}-*/;
+		return this.isTexture(texture);
+	}-*/;
 
 	public final native void lineWidth (float width) /*-{
-																		this.lineWidth(width);
-																		}-*/;
+		this.lineWidth(width);
+	}-*/;
 
 	public final native void linkProgram (WebGLProgram program) /*-{
-																					this.linkProgram(program);
-																					}-*/;
+		this.linkProgram(program);
+	}-*/;
 
 	public final native void pixelStorei (int pname, int param) /*-{
-																					this.pixelStorei(pname, param);
-																					}-*/;
+		this.pixelStorei(pname, param);
+	}-*/;
 
 	public final native void polygonOffset (float factor, float units) /*-{
-																								this.polygonOffset(factor, units);
-																								}-*/;
+		this.polygonOffset(factor, units);
+	}-*/;
 
 	public final native void readPixels (int x, int y, int width, int height, int format, int type, ArrayBufferView pixels) /*-{
-																																									this.readPixels(x, y, width, height, format, type, pixels);
-																																									}-*/;
+		this.readPixels(x, y, width, height, format, type, pixels);
+	}-*/;
 
 	public final native void renderbufferStorage (int target, int internalformat, int width, int height) /*-{
-																																			this.renderbufferStorage(target, internalformat, width, height);
-																																			}-*/;
+		this.renderbufferStorage(target, internalformat, width, height);
+	}-*/;
 
 	public final native void sampleCoverage (float value, boolean invert) /*-{
-																									this.sampleCoverage(value, invert);
-																									}-*/;
+		this.sampleCoverage(value, invert);
+	}-*/;
 
 	public final native void scissor (int x, int y, int width, int height) /*-{
-																									this.scissor(x, y, width, height);
-																									}-*/;
+		this.scissor(x, y, width, height);
+	}-*/;
 
 	public final native void shaderSource (WebGLShader shader, String source) /*-{
-																										this.shaderSource(shader, source);
-																										}-*/;
+		this.shaderSource(shader, source);
+	}-*/;
 
 	public final native void stencilFunc (int func, int ref, int mask) /*-{
-																								this.stencilFunc(func, ref, mask);
-																								}-*/;
+		this.stencilFunc(func, ref, mask);
+	}-*/;
 
 	public final native void stencilFuncSeparate (int face, int func, int ref, int mask) /*-{
-																														this.stencilFuncSeparate(face, func, ref, mask);
-																														}-*/;
+		this.stencilFuncSeparate(face, func, ref, mask);
+	}-*/;
 
 	public final native void stencilMask (int mask) /*-{
-																	this.stencilMask(mask);
-																	}-*/;
+		this.stencilMask(mask);
+	}-*/;
 
 	public final native void stencilMaskSeparate (int face, int mask) /*-{
-																							this.stencilMaskSeparate(face, mask);
-																							}-*/;
+		this.stencilMaskSeparate(face, mask);
+	}-*/;
 
 	public final native void stencilOp (int fail, int zfail, int zpass) /*-{
-																								this.stencilOp(fail, zfail, zpass);
-																								}-*/;
+		this.stencilOp(fail, zfail, zpass);
+	}-*/;
 
 	public final native void stencilOpSeparate (int face, int fail, int zfail, int zpass) /*-{
-																														this.stencilOpSeparate(face, fail, zfail, zpass);
-																														}-*/;
+		this.stencilOpSeparate(face, fail, zfail, zpass);
+	}-*/;
 
 	public final native void texImage2D (int target, int level, int internalformat, int width, int height, int border, int format,
 		int type, ArrayBufferView pixels) /*-{
-														this.texImage2D(target, level, internalformat, width, height, border, format, type, pixels);
-														}-*/;
+		this.texImage2D(target, level, internalformat, width, height, border,
+				format, type, pixels);
+	}-*/;
 
 	public final native void texImage2D (int target, int level, int internalformat, int format, int type, ImageData pixels) /*-{
-																																									this.texImage2D(target, level, internalformat, format, type, pixels);
-																																									}-*/;
+		this.texImage2D(target, level, internalformat, format, type, pixels);
+	}-*/;
 
 	public final native void texImage2D (int target, int level, int internalformat, int format, int type, ImageElement image) /*-{
-																																										this.texImage2D(target, level, internalformat, format, type, image);
-																																										}-*/;
+		this.texImage2D(target, level, internalformat, format, type, image);
+	}-*/;
 
 	public final native void texImage2D (int target, int level, int internalformat, int format, int type, CanvasElement canvas) /*-{
-																																											this.texImage2D(target, level, internalformat, format, type, canvas);
-																																											}-*/;
+		this.texImage2D(target, level, internalformat, format, type, canvas);
+	}-*/;
 
 	public final native void texImage2D (int target, int level, int internalformat, int format, int type, VideoElement video) /*-{
-																																										this.texImage2D(target, level, internalformat, format, type, video);
-																																										}-*/;
+		this.texImage2D(target, level, internalformat, format, type, video);
+	}-*/;
 
 	public final native void texParameterf (int target, int pname, float param) /*-{
-																											this.texParameterf(target, pname, param);
-																											}-*/;
+		this.texParameterf(target, pname, param);
+	}-*/;
 
 	public final native void texParameteri (int target, int pname, int param) /*-{
-																										this.texParameteri(target, pname, param);
-																										}-*/;
+		this.texParameteri(target, pname, param);
+	}-*/;
 
 	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int type, ArrayBufferView pixels) /*-{
-														this.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
-														}-*/;
+		this.texSubImage2D(target, level, xoffset, yoffset, width, height,
+				format, type, pixels);
+	}-*/;
 
 	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type, ImageData pixels) /*-{
-																																												this.texSubImage2D(target, level, xoffset, yoffset, format, type, pixels);
-																																												}-*/;
+		this.texSubImage2D(target, level, xoffset, yoffset, format, type,
+				pixels);
+	}-*/;
 
 	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type,
 		ImageElement image) /*-{
-									this.texSubImage2D(target, level, xoffset, yoffset, format, type, image);
-									}-*/;
+		this
+				.texSubImage2D(target, level, xoffset, yoffset, format, type,
+						image);
+	}-*/;
 
 	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type,
 		CanvasElement canvas) /*-{
-										this.texSubImage2D(target, level, xoffset, yoffset, format, type, canvas);
-										}-*/;
+		this.texSubImage2D(target, level, xoffset, yoffset, format, type,
+				canvas);
+	}-*/;
 
 	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int format, int type,
 		VideoElement video) /*-{
-									this.texSubImage2D(target, level, xoffset, yoffset, format, type, video);
-									}-*/;
+		this
+				.texSubImage2D(target, level, xoffset, yoffset, format, type,
+						video);
+	}-*/;
 
 	public final native void uniform1f (WebGLUniformLocation location, float x) /*-{
-																											this.uniform1f(location, x);
-																											}-*/;
+		this.uniform1f(location, x);
+	}-*/;
 
 	public final void uniform1fv (WebGLUniformLocation location, Float32Array v) {
 		this.uniform1fv(location, (JavaScriptObject)v);
@@ -926,12 +944,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform1fv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform1fv(location, v);
-																															}-*/;
+		this.uniform1fv(location, v);
+	}-*/;
 
 	public final native void uniform1i (WebGLUniformLocation location, int x) /*-{
-																										this.uniform1i(location, x);
-																										}-*/;
+		this.uniform1i(location, x);
+	}-*/;
 
 	public final void uniform1iv (WebGLUniformLocation location, Int32Array v) {
 		this.uniform1iv(location, (JavaScriptObject)v);
@@ -942,12 +960,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform1iv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform1iv(location, v);
-																															}-*/;
+		this.uniform1iv(location, v);
+	}-*/;
 
 	public final native void uniform2f (WebGLUniformLocation location, float x, float y) /*-{
-																														this.uniform2f(location, x, y);
-																														}-*/;
+		this.uniform2f(location, x, y);
+	}-*/;
 
 	public final void uniform2fv (WebGLUniformLocation location, Float32Array v) {
 		this.uniform2fv(location, (JavaScriptObject)v);
@@ -958,12 +976,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform2fv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform2fv(location, v);
-																															}-*/;
+		this.uniform2fv(location, v);
+	}-*/;
 
 	public final native void uniform2i (WebGLUniformLocation location, int x, int y) /*-{
-																												this.uniform2i(location, x, y);
-																												}-*/;
+		this.uniform2i(location, x, y);
+	}-*/;
 
 	public final void uniform2iv (WebGLUniformLocation location, Int32Array v) {
 		this.uniform2iv(location, (JavaScriptObject)v);
@@ -974,12 +992,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform2iv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform2iv(location, v);
-																															}-*/;
+		this.uniform2iv(location, v);
+	}-*/;
 
 	public final native void uniform3f (WebGLUniformLocation location, float x, float y, float z) /*-{
-																																	this.uniform3f(location, x, y, z);
-																																	}-*/;
+		this.uniform3f(location, x, y, z);
+	}-*/;
 
 	public final void uniform3fv (WebGLUniformLocation location, Float32Array v) {
 		this.uniform3fv(location, (JavaScriptObject)v);
@@ -990,29 +1008,29 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform3fv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform3fv(location, v);
-																															}-*/;
+		this.uniform3fv(location, v);
+	}-*/;
 
 	public final native void uniform3i (WebGLUniformLocation location, int x, int y, int z) /*-{
-																															this.uniform3i(location, x, y, z);
-																															}-*/;
+		this.uniform3i(location, x, y, z);
+	}-*/;
 
 	public final void uniform3iv (WebGLUniformLocation location, Int32Array v) {
 		this.uniform3iv(location, (JavaScriptObject)v);
 	}
 
 	public final void uniform3iv (WebGLUniformLocation location, int[] v) {
-		
+
 		this.uniform3iv(location, toJsArray(v));
 	}
 
 	private final native void uniform3iv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform3iv(location, v);
-																															}-*/;
+		this.uniform3iv(location, v);
+	}-*/;
 
 	public final native void uniform4f (WebGLUniformLocation location, float x, float y, float z, float w) /*-{
-																																				this.uniform4f(location, x, y, z, w);
-																																				}-*/;
+		this.uniform4f(location, x, y, z, w);
+	}-*/;
 
 	public final void uniform4fv (WebGLUniformLocation location, Float32Array v) {
 		this.uniform4fv(location, (JavaScriptObject)v);
@@ -1023,12 +1041,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform4fv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform4fv(location, v);
-																															}-*/;
+		this.uniform4fv(location, v);
+	}-*/;
 
 	public final native void uniform4i (WebGLUniformLocation location, int x, int y, int z, int w) /*-{
-																																	this.uniform4i(location, x, y, z, w);
-																																	}-*/;
+		this.uniform4i(location, x, y, z, w);
+	}-*/;
 
 	public final void uniform4iv (WebGLUniformLocation location, Int32Array v) {
 		this.uniform4iv(location, (JavaScriptObject)v);
@@ -1039,8 +1057,8 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniform4iv (WebGLUniformLocation location, JavaScriptObject v) /*-{
-																															this.uniform4iv(location, v);
-																															}-*/;
+		this.uniform4iv(location, v);
+	}-*/;
 
 	public final void uniformMatrix2fv (WebGLUniformLocation location, boolean transpose, Float32Array value) {
 		this.uniformMatrix2fv(location, transpose, (JavaScriptObject)value);
@@ -1051,8 +1069,8 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniformMatrix2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value) /*-{
-																																									this.uniformMatrix2fv(location, transpose, value);
-																																									}-*/;
+		this.uniformMatrix2fv(location, transpose, value);
+	}-*/;
 
 	public final void uniformMatrix3fv (WebGLUniformLocation location, boolean transpose, Float32Array value) {
 		this.uniformMatrix3fv(location, transpose, (JavaScriptObject)value);
@@ -1063,8 +1081,8 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniformMatrix3fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value) /*-{
-																																									this.uniformMatrix3fv(location, transpose, value);
-																																									}-*/;
+		this.uniformMatrix3fv(location, transpose, value);
+	}-*/;
 
 	public final void uniformMatrix4fv (WebGLUniformLocation location, boolean transpose, Float32Array value) {
 		this.uniformMatrix4fv(location, transpose, (JavaScriptObject)value);
@@ -1075,20 +1093,20 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void uniformMatrix4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value) /*-{
-																																									this.uniformMatrix4fv(location, transpose, value);
-																																									}-*/;
+		this.uniformMatrix4fv(location, transpose, value);
+	}-*/;
 
 	public final native void useProgram (WebGLProgram program) /*-{
-																					this.useProgram(program);
-																					}-*/;
+		this.useProgram(program);
+	}-*/;
 
 	public final native void validateProgram (WebGLProgram program) /*-{
-																							this.validateProgram(program);
-																							}-*/;
+		this.validateProgram(program);
+	}-*/;
 
 	public final native void vertexAttrib1f (int indx, float x) /*-{
-																					this.vertexAttrib1f(indx, x);
-																					}-*/;
+		this.vertexAttrib1f(indx, x);
+	}-*/;
 
 	public final void vertexAttrib1fv (int indx, Float32Array values) {
 		this.vertexAttrib1fv(indx, (JavaScriptObject)values);
@@ -1099,12 +1117,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void vertexAttrib1fv (int indx, JavaScriptObject values) /*-{
-																											this.vertexAttrib1fv(indx, values);
-																											}-*/;
+		this.vertexAttrib1fv(indx, values);
+	}-*/;
 
 	public final native void vertexAttrib2f (int indx, float x, float y) /*-{
-																								this.vertexAttrib2f(indx, x, y);
-																								}-*/;
+		this.vertexAttrib2f(indx, x, y);
+	}-*/;
 
 	public final void vertexAttrib2fv (int indx, Float32Array values) {
 		this.vertexAttrib2fv(indx, (JavaScriptObject)values);
@@ -1115,12 +1133,12 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void vertexAttrib2fv (int indx, JavaScriptObject values) /*-{
-																											this.vertexAttrib2fv(indx, values);
-																											}-*/;
+		this.vertexAttrib2fv(indx, values);
+	}-*/;
 
 	public final native void vertexAttrib3f (int indx, float x, float y, float z) /*-{
-																											this.vertexAttrib3f(indx, x, y, z);
-																											}-*/;
+		this.vertexAttrib3f(indx, x, y, z);
+	}-*/;
 
 	public final void vertexAttrib3fv (int indx, Float32Array values) {
 		this.vertexAttrib3fv(indx, (JavaScriptObject)values);
@@ -1131,50 +1149,51 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	}
 
 	private final native void vertexAttrib3fv (int indx, JavaScriptObject values) /*-{
-																											this.vertexAttrib3fv(indx, values);
-																											}-*/;
+		this.vertexAttrib3fv(indx, values);
+	}-*/;
 
 	public final native void vertexAttrib4f (int indx, float x, float y, float z, float w) /*-{
-																														this.vertexAttrib4f(indx, x, y, z, w);
-																														}-*/;
+		this.vertexAttrib4f(indx, x, y, z, w);
+	}-*/;
 
 	public final void vertexAttrib4fv (int indx, Float32Array values) {
 		this.vertexAttrib4fv(indx, (JavaScriptObject)values);
 	}
 
 	public final void vertexAttrib4fv (int indx, float[] values) {
-			this.vertexAttrib4fv(indx, toJsArray(values));
+		this.vertexAttrib4fv(indx, toJsArray(values));
 	}
 
-	public final Float32Array toJsArray(float[] values) {
+	public final Float32Array toJsArray (float[] values) {
 		Float32Array array = TypedArrays.createFloat32Array(values.length);
 		array.set(values);
 		return array;
 	}
-	public final Int32Array toJsArray(int[] values) {
+
+	public final Int32Array toJsArray (int[] values) {
 		Int32Array array = TypedArrays.createInt32Array(values.length);
 		array.set(values);
 		return array;
-	}	
-	
+	}
+
 	private final native void vertexAttrib4fv (int indx, JavaScriptObject values) /*-{
-																											this.vertexAttrib4fv(indx, values);
-																											}-*/;
+		this.vertexAttrib4fv(indx, values);
+	}-*/;
 
 	public final native void vertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int offset) /*-{
-																																									this.vertexAttribPointer(indx, size, type, normalized, stride, offset);
-																																									}-*/;
+		this.vertexAttribPointer(indx, size, type, normalized, stride, offset);
+	}-*/;
 
 	public final native void viewport (int x, int y, int width, int height) /*-{
-																									this.viewport(x, y, width, height);
-																									}-*/;
+		this.viewport(x, y, width, height);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of RENDERER, SHADING_LANGUAGE_VERSION, VENDOR, VERSION */
 	public final native String getParameterString (int pname) /*-{
-																					return this.getParameter(pname);
-																					}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
@@ -1189,89 +1208,89 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	 *           STENCIL_CLEAR_VALUE, STENCIL_FAIL, STENCIL_FUNC, STENCIL_PASS_DEPTH_FAIL, STENCIL_PASS_DEPTH_PASS, STENCIL_REF,
 	 *           STENCIL_VALUE_MASK, STENCIL_WRITEMASK, SUBPIXEL_BITS, UNPACK_ALIGNMENT */
 	public final native int getParameteri (int pname) /*-{
-																		return this.getParameter(pname);
-																		}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of BLEND, CULL_FACE, DEPTH_TEST, DEPTH_WRITEMASK, DITHER, POLYGON_OFFSET_FILL, SAMPLE_COVERAGE_INVERT,
 	 *           SCISSOR_TEST, STENCIL_TEST, UNPACK_FLIP_Y_WEBGL, UNPACK_PREMULTIPLY_ALPHA_WEBGL */
 	public final native boolean getParameterb (int pname) /*-{
-																			return this.getParameter(pname);
-																			}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of DEPTH_CLEAR_VALUE, LINE_WIDTH, POLYGON_OFFSET_FACTOR, POLYGON_OFFSET_UNITS, SAMPLE_COVERAGE_VALUE */
 	public final native float getParameterf (int pname) /*-{
-																			return this.getParameter(pname);
-																			}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of ARRAY_BUFFER_BINDING, COMPRESSED_TEXTURE_FORMATS, CURRENT_PROGRAM, ELEMENT_ARRAY_BUFFER_BINDING,
 	 *           FRAMEBUFFER_BINDING, RENDERBUFFER_BINDING, TEXTURE_BINDING_2D, TEXTURE_BINDING_CUBE_MAP */
 	public final native <T extends WebGLObject> T getParametero (int pname) /*-{
-																									return this.getParameter(pname);
-																									}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of ALIASED_LINE_WIDTH_RANGE, ALIASED_POINT_SIZE_RANGE, BLEND_COLOR, COLOR_CLEAR_VALUE, COLOR_WRITEMASK,
 	 *           DEPTH_RANGE, MAX_VIEWPORT_DIMS, SCISSOR_BOX, VIEWPORT */
 	public final native <T extends ArrayBufferView> T getParameterv (int pname) /*-{
-																											return this.getParameter(pname);
-																											}-*/;
+		return this.getParameter(pname);
+	}-*/;
 
 	/** Return the uniform value at the passed location in the passed program. */
 	public final native boolean getUniformb (WebGLProgram program, WebGLUniformLocation location) /*-{
-																																	return this.getUniform(program, location);
-																																	}-*/;
+		return this.getUniform(program, location);
+	}-*/;
 
 	/** Return the uniform value at the passed location in the passed program. */
 	public final native int getUniformi (WebGLProgram program, WebGLUniformLocation location) /*-{
-																															return this.getUniform(program, location);
-																															}-*/;
+		return this.getUniform(program, location);
+	}-*/;
 
 	/** Return the uniform value at the passed location in the passed program. */
 	public final native float getUniformf (WebGLProgram program, WebGLUniformLocation location) /*-{
-																																return this.getUniform(program, location);
-																																}-*/;
+		return this.getUniform(program, location);
+	}-*/;
 
 	/** Return the uniform value at the passed location in the passed program. */
 	public final native <T extends ArrayBufferView> T getUniformv (WebGLProgram program, WebGLUniformLocation location) /*-{
-																																								return this.getUniform(program, location);
-																																								}-*/;
+		return this.getUniform(program, location);
+	}-*/;
 
 	/** Return the information requested in pname about the vertex attribute at the passed index.
 	 * 
 	 * @param pname one of VERTEX_ATTRIB_ARRAY_SIZE, VERTEX_ATTRIB_ARRAY_STRIDE, VERTEX_ATTRIB_ARRAY_TYPE */
 	public final native int getVertexAttribi (int index, int pname) /*-{
-																							return this.getVertexAttrib(index, pname);
-																							}-*/;
+		return this.getVertexAttrib(index, pname);
+	}-*/;
 
 	/** Return the information requested in pname about the vertex attribute at the passed index.
 	 * 
 	 * @param pname one of VERTEX_ATTRIB_ARRAY_ENABLED, VERTEX_ATTRIB_ARRAY_NORMALIZED */
 	public final native boolean getVertexAttribb (int index, int pname) /*-{
-																								return this.getVertexAttrib(index, pname);
-																								}-*/;
+		return this.getVertexAttrib(index, pname);
+	}-*/;
 
 	/** Return the information requested in pname about the vertex attribute at the passed index.
 	 * 
 	 * @param pname VERTEX_ATTRIB_ARRAY_BUFFER_BINDING
 	 * @return {@link WebGLBuffer} */
 	public final native <T extends WebGLObject> T getVertexAttribo (int index, int pname) /*-{
-																														return this.getVertexAttrib(index, pname);
-																														}-*/;
+		return this.getVertexAttrib(index, pname);
+	}-*/;
 
 	/** Return the information requested in pname about the vertex attribute at the passed index.
 	 * 
 	 * @param pname CURRENT_VERTEX_ATTRIB
 	 * @return a {@link Float32Array} with 4 elements */
 	public final native Float32Array getVertexAttribv (int index, int pname) /*-{
-																										return this.getVertexAttrib(index, pname);
-																										}-*/;
+		return this.getVertexAttrib(index, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed target. The type returned is the natural type for the requested
 	 * pname, as given in the following table: If an attempt is made to call this function with no WebGLTexture bound (see above),
@@ -1279,22 +1298,22 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	 * 
 	 * @param pname one of TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER, TEXTURE_WRAP_S, TEXTURE_WRAP_T */
 	public final native int getTexParameter (int target, int pname) /*-{
-																							return this.getTexParameter(target, pname);
-																							}-*/;
+		return this.getTexParameter(target, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed shader.
 	 * 
 	 * @param pname one of DELETE_STATUS, COMPILE_STATUS */
 	public final native boolean getShaderParameterb (WebGLShader shader, int pname) /*-{
-																												return this.getShaderParameter(shader, pname);
-																												}-*/;
+		return this.getShaderParameter(shader, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed shader.
 	 * 
 	 * @param pname one of SHADER_TYPE, INFO_LOG_LENGTH, SHADER_SOURCE_LENGTH */
 	public final native int getShaderParameteri (WebGLShader shader, int pname) /*-{
-																											return this.getShaderParameter(shader, pname);
-																											}-*/;
+		return this.getShaderParameter(shader, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed target.
 	 * 
@@ -1302,44 +1321,46 @@ public class WebGLRenderingContext extends JavaScriptObject {
 	 *           RENDERBUFFER_GREEN_SIZE, RENDERBUFFER_BLUE_SIZE, RENDERBUFFER_ALPHA_SIZE, RENDERBUFFER_DEPTH_SIZE,
 	 *           RENDERBUFFER_STENCIL_SIZE */
 	public final native int getRenderbufferParameter (int target, int pname) /*-{
-																										return this.getRenderbufferParameter(target, pname);
-																										}-*/;
+		return this.getRenderbufferParameter(target, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed program.
 	 * 
 	 * @param pname one of DELETE_STATUS, LINK_STATUS, VALIDATE_STATUS */
 	public final native boolean getProgramParameterb (WebGLProgram program, int pname) /*-{
-																													return this.getProgramParameter(program, pname);
-																													}-*/;
+		return this.getProgramParameter(program, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed program.
 	 * 
 	 * @param pname one of INFO_LOG_LENGTH, ATTACHED_SHADERS, ACTIVE_ATTRIBUTES, ACTIVE_ATTRIBUTE_MAX_LENGTH, ACTIVE_UNIFORMS,
 	 *           ACTIVE_UNIFORM_MAX_LENGTH */
 	public final native int getProgramParameteri (WebGLProgram program, int pname) /*-{
-																												return this.getProgramParameter(program, pname);
-																												}-*/;
+		return this.getProgramParameter(program, pname);
+	}-*/;
 
 	/** Return the value for the passed pname.
 	 * 
 	 * @param pname one of BUFFER_SIZE, BUFFER_USAGE */
 	public final native int getBufferParameter (int target, int pname) /*-{
-																								return this.getBufferParameter(target, pname);
-																								}-*/;
+		return this.getBufferParameter(target, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed target and attachment.
 	 * 
 	 * @param pname one of FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
 	 *           FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE */
 	public final native int getFramebufferAttachmentParameteri (int target, int attachment, int pname) /*-{
-																																		return this.getFramebufferAttachmentParameter(target, attachment, pname);
-																																		}-*/;
+		return this
+				.getFramebufferAttachmentParameter(target, attachment, pname);
+	}-*/;
 
 	/** Return the value for the passed pname given the passed target and attachment.
 	 * 
 	 * @param pname FRAMEBUFFER_ATTACHMENT_OBJECT_NAME
 	 * @return {@link WebGLRenderbuffer} or {@link WebGLTexture} */
 	public final native <T extends WebGLObject> T getFramebufferAttachmentParametero (int target, int attachment, int pname) /*-{
-																																										return this.getFramebufferAttachmentParameter(target, attachment, pname);
-																																										}-*/;
+		return this
+				.getFramebufferAttachmentParameter(target, attachment, pname);
+	}-*/;
 }
