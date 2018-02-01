@@ -49,7 +49,7 @@ abstract class DescriptivePool<T extends DescriptivePool.DescriptivePoolable> ex
 
     	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link Pool#free(Object)}. */
     	static public interface DescriptivePoolable extends Poolable {
-       		/** Called ONLY when an object is added to the pool.
+		/** Called ONLY when an object is added to the pool.
       	   	* Note: Will call after {@link #reset()} in {@link Pool#free(Object)} related methods */
         	public void onFree ();
 
