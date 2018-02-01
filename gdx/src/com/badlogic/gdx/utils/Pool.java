@@ -48,7 +48,13 @@ abstract public class Pool<T> {
 	/** Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
 	 * {@link #free(Object) freed}). */
 	public T obtain () {
-		return freeObjects.size == 0 ? newObject() : freeObjects.pop();
+		if (freeObjects.size == 0) {
+			return newObject();
+		} else {
+			T object = freeObjects.pop();
+			if (object instanceof Poolable) ((Poolable)object).onObtain();
+			return object;
+		}
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
@@ -57,8 +63,10 @@ abstract public class Pool<T> {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		if (freeObjects.size < max) {
 			freeObjects.add(object);
+			if (object instanceof Poolable) ((Poolable)object).onFree();
 			peak = Math.max(peak, freeObjects.size);
 		}
+		//Note that {@link Poolable#onFree()} is only called when the object is actually added to the pool, not when reset
 		reset(object);
 	}
 
@@ -77,7 +85,10 @@ abstract public class Pool<T> {
 		for (int i = 0; i < objects.size; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
-			if (freeObjects.size < max) freeObjects.add(object);
+			if (freeObjects.size < max) {
+				freeObjects.add(object);
+                                if (object instanceof Poolable) ((Poolable)object).onFree();
+			}
 			reset(object);
 		}
 		peak = Math.max(peak, freeObjects.size);
@@ -97,5 +108,12 @@ abstract public class Pool<T> {
 	static public interface Poolable {
 		/** Resets the object for reuse. Object references should be nulled and fields may be set to default values. */
 		public void reset ();
+		
+		/** Called ONLY when an object is added to the pool.
+		/* Note: Will call after {@link #reset()} in {@link Pool#free(Object)} related methods */
+		public default void onFree (){ }
+		
+		/** Called whenever the object is removed from the pool. */
+		public default void onObtain (){ }
 	}
 }
