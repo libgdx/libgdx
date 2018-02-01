@@ -58,7 +58,7 @@ abstract public class Pool<T> {
 	}
 	
 	/** Called when an object is retrieved from the pool using {@link #obtain()} */
-	protected void onObtain(T object){ }
+	protected void onObtain (T object){ }
 	
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
 	 * {@link #max} free objects, the specified object is reset but not added to the pool. */
@@ -73,7 +73,7 @@ abstract public class Pool<T> {
 	}
 	
 	/** Called when an object is freed to the pool using {@link #free(Object)}} or {@link #freeAll(Array)} */
-	protected void onFree(T object){ }
+	protected void onFree (T object){ }
 
 	/** Called when an object is freed to clear the state of the object for possible later reuse. The default implementation calls
 	 * {@link Poolable#reset()} if the object is {@link Poolable}. */
