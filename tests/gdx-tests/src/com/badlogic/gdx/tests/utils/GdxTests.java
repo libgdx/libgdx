@@ -163,6 +163,7 @@ public class GdxTests {
 		LifeCycleTest.class,
 		LightsTest.class,
 		MaterialTest.class,
+		MaterialEmissiveTest.class,
 		MatrixJNITest.class,
 		MeshBuilderTest.class,
 		MeshShaderTest.class,
