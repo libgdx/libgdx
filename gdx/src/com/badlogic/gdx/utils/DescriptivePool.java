@@ -37,14 +37,27 @@ abstract class DescriptivePool<T extends DescriptivePool.DescriptivePoolable> ex
         }
 
         @Override
-        protected void onObtain (T object) {
-                object.onObtain();
-        }
+        public T obtain () {
+		T obj = super.obtain();
+		obj.onObtain();
+		return obj;
+	}
 
     	@Override
-    	protected void onFree (T object){
-        	object.onFree();
+    	public void free (T object){
+        	super.free(object);
+		object.onFree();
     	}
+	
+	@Override
+	public void freeAll (Array<T> objects) {
+		super.freeAll(objects);
+		for (int i = 0; i < objects.size; i++) {
+			T object = objects.get(i);
+			if (object == null) continue;
+			object.onFree();
+		}
+	}
 
 
     	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link Pool#free(Object)}. */
