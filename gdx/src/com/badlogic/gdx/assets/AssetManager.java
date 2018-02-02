@@ -708,31 +708,31 @@ public class AssetManager implements Disposable {
 
 	/** @return a string containing ref count and dependency information for all assets. */
 	public synchronized String getDiagnostics () {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (String fileName : assetTypes.keys()) {
-			buffer.append(fileName);
-			buffer.append(", ");
+			sb.append(fileName);
+			sb.append(", ");
 
 			Class type = assetTypes.get(fileName);
 			RefCountedContainer assetRef = assets.get(type).get(fileName);
 			Array<String> dependencies = assetDependencies.get(fileName);
 
-			buffer.append(ClassReflection.getSimpleName(type));
+			sb.append(ClassReflection.getSimpleName(type));
 
-			buffer.append(", refs: ");
-			buffer.append(assetRef.getRefCount());
+			sb.append(", refs: ");
+			sb.append(assetRef.getRefCount());
 
 			if (dependencies != null) {
-				buffer.append(", deps: [");
+				sb.append(", deps: [");
 				for (String dep : dependencies) {
-					buffer.append(dep);
-					buffer.append(",");
+					sb.append(dep);
+					sb.append(",");
 				}
-				buffer.append("]");
+				sb.append("]");
 			}
-			buffer.append("\n");
+			sb.append("\n");
 		}
-		return buffer.toString();
+		return sb.toString();
 	}
 
 	/** @return the file names of all loaded assets. */

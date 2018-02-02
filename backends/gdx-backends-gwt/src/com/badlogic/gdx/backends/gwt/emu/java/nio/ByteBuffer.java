@@ -819,15 +819,15 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * @return a string representing the state of this byte buffer.
 	 * @since Android 1.0 */
 	public String toString () {
-		StringBuffer buf = new StringBuffer();
-		buf.append(getClass().getName());
-		buf.append(", status: capacity="); //$NON-NLS-1$
-		buf.append(capacity());
-		buf.append(" position="); //$NON-NLS-1$
-		buf.append(position());
-		buf.append(" limit="); //$NON-NLS-1$
-		buf.append(limit());
-		return buf.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getName());
+		sb.append(", status: capacity="); //$NON-NLS-1$
+		sb.append(capacity());
+		sb.append(" position="); //$NON-NLS-1$
+		sb.append(position());
+		sb.append(" limit="); //$NON-NLS-1$
+		sb.append(limit());
+		return sb.toString();
 	}
 
 	public ByteBuffer stringToByteBuffer (String s) {
